@@ -16,7 +16,7 @@ lru = "0.18.1"
 dashmap = "7.0.0-rc2"
 parking_lot = "0.12.3"
 moka = { version = "0.12.10", optional = true, features = ["sync", "future"] }
-scc = { version = "2.3.6", optional = true }
+scc = { version = "3.8.4", optional = true }
 pyo3 = { version = "0.29", optional = true, features = ["abi3-py312", "extension-module"] }
 [features]
 default = ["moka"]
