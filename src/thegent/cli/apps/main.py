@@ -23,7 +23,8 @@ from typing import Optional
 import typer
 
 app = typer.Typer(
-    help="thegent - Unified agent orchestration CLI for Factory skills, droids, and multi-agent workflows."
+    help="thegent - Unified agent orchestration CLI for Factory skills, droids, and multi-agent workflows.",
+    invoke_without_command=True,
 )
 
 
