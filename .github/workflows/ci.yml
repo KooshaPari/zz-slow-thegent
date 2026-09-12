@@ -60,9 +60,8 @@ jobs:
             echo "has_go=true" >> $GITHUB_OUTPUT
           fi
 
-          # TypeScript / JS: require a supported lockfile so npm caching and
-          # deterministic installation cannot fail on incidental package.json files.
-          if [ -f "package.json" ] && { [ -f "package-lock.json" ] || [ -f "npm-shrinkwrap.json" ] || [ -f "yarn.lock" ] || [ -f "pnpm-lock.yaml" ] || [ -f "bun.lock" ] || [ -f "bun.lockb" ]; }; then
+          # TypeScript / JS: needs package.json (with type=module or tsconfig or js files)
+          if [ -f "package.json" ]; then
             echo "has_typescript=true" >> $GITHUB_OUTPUT
           fi
 
@@ -108,7 +107,7 @@ jobs:
       - uses: actions/checkout@v4
       - uses: dtolnay/rust-toolchain@stable
       - name: cargo-deny check
-        uses: EmbarkStudios/cargo-deny-action@bb137d7af7e4fb67e5f82a49c4fce4fad40782fe # v6
+        uses: EmbarkStudios/cargo-deny-action@v1
         with:
           arguments: --all-features
 
@@ -122,7 +121,7 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with:
-          python-version: '3.11'
+          python-version: "3.11"
       - name: Install ruff
         run: pip install ruff
       - name: ruff check
@@ -140,7 +139,7 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-go@v5
         with:
-          go-version: '1.22'
+          go-version: "1.22"
       - name: gofmt check
         run: gofmt -l . 2>&1 || echo "::warning::gofmt issues (advisory)"
       - name: go vet
@@ -158,8 +157,17 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
-          node-version: '20'
-      - run: npm ci --no-audit --no-fund || npm install --no-audit --no-fund
+          node-version: "20"
+      # Some language-detected checkouts contain package.json but no npm
+      # lockfile. setup-node's npm cache requires a lockfile and otherwise
+      # fails before the advisory TS/JS checks can run.
+      - name: Install JavaScript dependencies
+        run: |
+          if [ -f package-lock.json ] || [ -f npm-shrinkwrap.json ]; then
+            npm ci --no-audit --no-fund
+          else
+            npm install --no-package-lock --legacy-peer-deps --no-audit --no-fund
+          fi
       - name: lint
         run: |
           if [ -f package.json ] && grep -q '"lint"' package.json; then
@@ -179,6 +187,8 @@ jobs:
     continue-on-error: true
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
       - name: gitleaks
         uses: gitleaks/gitleaks-action@v2
         env:
@@ -198,7 +208,8 @@ jobs:
   lint:
     name: ci / lint
     if: always()
-    needs: [detect, rust, cargo-deny, python, go, typescript, security, dep-review]
+    needs:
+      [detect, rust, cargo-deny, python, go, typescript, security, dep-review]
     runs-on: ubuntu-latest
     steps:
       - name: Aggregate lint gate

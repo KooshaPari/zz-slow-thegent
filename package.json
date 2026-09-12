@@ -41,7 +41,7 @@
   "overrides": {
     "minimatch": "^10.2.2",
     "glob": ">=10.5.0",
-    "esbuild": ">=0.25.0",
+    "esbuild": "^0.28.0",
     "picomatch": ">=2.3.2",
     "flatted": ">=3.4.2"
   }
