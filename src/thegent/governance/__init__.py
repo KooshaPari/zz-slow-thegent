@@ -15,9 +15,15 @@ _LAZY_IMPORTS: dict[str, tuple[str, str]] = {
     "CostAggregator": ("thegent.cost.aggregator", "CostAggregator"),
     "CostEstimator": ("thegent.cost.aggregator", "CostEstimator"),
     # Compliance
-    "ComplianceReporter": ("thegent.governance.compliance_reports", "ComplianceReporter"),
+    "ComplianceReporter": (
+        "thegent.governance.compliance_reports",
+        "ComplianceReporter",
+    ),
     # Federated policy
-    "FederatedPolicyEngine": ("thegent.governance.federated_policy", "FederatedPolicyEngine"),
+    "FederatedPolicyEngine": (
+        "thegent.governance.federated_policy",
+        "FederatedPolicyEngine",
+    ),
     "PolicyRule": ("thegent.governance.federated_policy", "PolicyRule"),
     "PolicyScope": ("thegent.governance.federated_policy", "PolicyScope"),
     # Input guardrails
@@ -26,14 +32,32 @@ _LAZY_IMPORTS: dict[str, tuple[str, str]] = {
     # Phase 2.1: Provider Scoring System (WP-5003)
     "AggregatedMetrics": ("thegent.governance.metrics", "AggregatedMetrics"),
     "MetricsCollector": ("thegent.governance.metrics", "MetricsCollector"),
-    "ProviderMetricsSnapshot": ("thegent.governance.metrics", "ProviderMetricsSnapshot"),
+    "ProviderMetricsSnapshot": (
+        "thegent.governance.metrics",
+        "ProviderMetricsSnapshot",
+    ),
     "get_metrics_collector": ("thegent.governance.metrics", "get_metrics_collector"),
-    "initialize_metrics_collector": ("thegent.governance.metrics", "initialize_metrics_collector"),
+    "initialize_metrics_collector": (
+        "thegent.governance.metrics",
+        "initialize_metrics_collector",
+    ),
     # Override events
-    "OverrideActivatedEvent": ("thegent.governance.override_events", "OverrideActivatedEvent"),
-    "OverrideEventEmitter": ("thegent.governance.override_events", "OverrideEventEmitter"),
-    "OverrideExpiredEvent": ("thegent.governance.override_events", "OverrideExpiredEvent"),
-    "OverrideExpiryMonitor": ("thegent.governance.override_events", "OverrideExpiryMonitor"),
+    "OverrideActivatedEvent": (
+        "thegent.governance.override_events",
+        "OverrideActivatedEvent",
+    ),
+    "OverrideEventEmitter": (
+        "thegent.governance.override_events",
+        "OverrideEventEmitter",
+    ),
+    "OverrideExpiredEvent": (
+        "thegent.governance.override_events",
+        "OverrideExpiredEvent",
+    ),
+    "OverrideExpiryMonitor": (
+        "thegent.governance.override_events",
+        "OverrideExpiryMonitor",
+    ),
     # Providers
     "ProviderConfig": ("thegent.governance.providers", "ProviderConfig"),
     "ProviderRegistry": ("thegent.governance.providers", "ProviderRegistry"),
