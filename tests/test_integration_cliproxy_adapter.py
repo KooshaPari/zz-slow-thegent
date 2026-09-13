@@ -1,8 +1,8 @@
 """Integration tests for cliproxy_adapter: Responses API bridge."""
 
-import orjson as json
 from unittest.mock import patch
 
+import orjson as json
 import pytest
 
 from thegent.cliproxy_adapter import (

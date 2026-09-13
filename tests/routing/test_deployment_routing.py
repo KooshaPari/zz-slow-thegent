@@ -6,7 +6,6 @@
 
 from __future__ import annotations
 
-
 import pytest
 
 from thegent.utils.routing_impl.cost_aware_router import (
@@ -18,7 +17,6 @@ from thegent.utils.routing_impl.cost_aware_router import (
     SessionStickyRouter,
     get_session_sticky_extra,
 )
-
 
 # ---------------------------------------------------------------------------
 # GW-17: Provider budget routing

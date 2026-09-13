@@ -13,14 +13,12 @@ Source: src/thegent/governance/slo_metrics.py
 from __future__ import annotations
 
 import json
-import tempfile
-from datetime import UTC, datetime
+from datetime import datetime
 from pathlib import Path
 from typing import ClassVar
 
 import pytest
 
-from thegent.governance import slo_metrics as _mod
 from thegent.governance.slo_metrics import (
     SloEmitter,
     SloMetric,

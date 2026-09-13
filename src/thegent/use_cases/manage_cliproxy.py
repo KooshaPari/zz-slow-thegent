@@ -17,7 +17,7 @@ import httpx
 
 from thegent.config import ThegentSettings
 from thegent.domain.provider_config import OAUTH_ONLY_PROVIDERS
-from thegent.infra.fast_yaml_parser import yaml_load, yaml_dumps
+from thegent.infra.fast_yaml_parser import yaml_dumps, yaml_load
 
 _LOG = logging.getLogger(__name__)
 

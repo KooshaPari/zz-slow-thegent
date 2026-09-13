@@ -2,11 +2,11 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from enum import Enum
+from enum import Enum, StrEnum
 from typing import Any
 
 
-class CoordinationMode(str, Enum):
+class CoordinationMode(StrEnum):
     """Coordination modes."""
     SYNC = "sync"
     ASYNC = "async"

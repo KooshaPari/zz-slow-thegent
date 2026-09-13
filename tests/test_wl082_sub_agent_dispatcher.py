@@ -39,13 +39,9 @@ from __future__ import annotations
 
 import uuid
 
-import pytest
-
-from thegent.agents.plangent import PlanNode
 from thegent.orchestration.inter_agent_protocol import InterAgentMessage, MessageBus
 from thegent.orchestration.plan import OrchestrationPlan
 from thegent.orchestration.sub_agent_dispatcher import SubAgentDispatcher
-
 
 # ---------------------------------------------------------------------------
 # Fixtures
@@ -308,7 +304,7 @@ def test_dispatch_all_linear_chain_respects_order() -> None:
     plan = _make_plan()
     node_a = plan.add_task("task A", agent_hint="worker")
     node_b = plan.add_task("task B", agent_hint="worker", depends_on=[node_a.id])
-    node_c = plan.add_task("task C", agent_hint="worker", depends_on=[node_b.id])
+    plan.add_task("task C", agent_hint="worker", depends_on=[node_b.id])
     dispatcher = SubAgentDispatcher(bus=bus, plan=plan)
     ids = dispatcher.dispatch_all(plan)
     # All 3 nodes dispatched
@@ -327,7 +323,7 @@ def test_dispatch_all_diamond_dag() -> None:
     node_a = plan.add_task("task A", agent_hint="worker")
     node_b = plan.add_task("task B", agent_hint="worker", depends_on=[node_a.id])
     node_c = plan.add_task("task C", agent_hint="worker", depends_on=[node_a.id])
-    node_d = plan.add_task("task D", agent_hint="worker", depends_on=[node_b.id, node_c.id])
+    plan.add_task("task D", agent_hint="worker", depends_on=[node_b.id, node_c.id])
     dispatcher = SubAgentDispatcher(bus=bus, plan=plan)
     ids = dispatcher.dispatch_all(plan)
     assert len(ids) == 4
@@ -345,7 +341,7 @@ def test_dispatch_all_multiple_independent_roots() -> None:
     plan = _make_plan()
     root1 = plan.add_task("root 1", agent_hint="worker")
     root2 = plan.add_task("root 2", agent_hint="worker")
-    child = plan.add_task("child", agent_hint="worker", depends_on=[root1.id, root2.id])
+    plan.add_task("child", agent_hint="worker", depends_on=[root1.id, root2.id])
     dispatcher = SubAgentDispatcher(bus=bus, plan=plan)
     ids = dispatcher.dispatch_all(plan)
     assert len(ids) == 3

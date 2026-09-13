@@ -8,9 +8,6 @@ These tests verify:
 - Support detection
 """
 
-import tempfile
-import time
-from pathlib import Path
 
 import pytest
 

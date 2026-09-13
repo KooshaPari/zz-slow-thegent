@@ -36,10 +36,7 @@ def confirm(prompt: str, default: bool = False) -> bool:
 
 def progress_bar(current: int, total: int, width: int = 40) -> str:
     """Create a progress bar string."""
-    if total == 0:
-        percent = 0.0
-    else:
-        percent = current / total
+    percent = 0.0 if total == 0 else current / total
     filled = int(width * percent)
     bar = "=" * filled + "-" * (width - filled)
     return f"[{bar}] {int(percent * 100)}%"

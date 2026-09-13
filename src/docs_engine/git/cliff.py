@@ -1,5 +1,4 @@
 """Cliff - STUB."""
-from dataclasses import dataclass
 
 
 class CliffRunner:

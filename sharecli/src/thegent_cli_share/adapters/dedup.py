@@ -1,6 +1,6 @@
 """In-memory lock adapter for command deduplication."""
 
-from typing import Optional
+
 from ..domain.entities import CommandLock, LockStatus
 from ..domain.value_objects import CommandHash
 
@@ -12,7 +12,7 @@ class InMemoryLockAdapter:
         self._locks: dict[str, CommandLock] = {}
 
     def acquire(
-        self, cmd_hash: CommandHash, pid: int, output_path: Optional[str] = None
+        self, cmd_hash: CommandHash, pid: int, output_path: str | None = None
     ) -> CommandLock:
         """Acquire a command lock."""
         key = str(cmd_hash)
@@ -36,7 +36,7 @@ class InMemoryLockAdapter:
         lock = self._locks[key]
         lock.release(pid)
 
-    def get(self, cmd_hash: CommandHash) -> Optional[CommandLock]:
+    def get(self, cmd_hash: CommandHash) -> CommandLock | None:
         """Get lock status."""
         return self._locks.get(str(cmd_hash))
 

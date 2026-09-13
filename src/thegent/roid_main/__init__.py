@@ -3,7 +3,6 @@ from __future__ import annotations
 
 from typing import Any
 
-
 GEMINI_FLASH_MODEL = "gemini-2.0-flash"
 _MODEL_ALIAS = {
     "flash": "gemini-2.0-flash",

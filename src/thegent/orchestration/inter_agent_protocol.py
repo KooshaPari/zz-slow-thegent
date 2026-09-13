@@ -305,9 +305,7 @@ class InterAgentProtocol:
 
     def send(self, message: InterAgentMessage) -> bool:
         """Acknowledge send (no actual transport)."""
-        if not isinstance(message, InterAgentMessage):
-            return False
-        return True
+        return isinstance(message, InterAgentMessage)
 
     def receive(self) -> InterAgentMessage | None:
         """Return ``None`` (no synchronous receive transport)."""

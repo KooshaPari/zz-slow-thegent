@@ -11,15 +11,17 @@ Traces to: FR-SEC-001 (secret detection), FR-GOV-006 (native binary integration)
 
 from __future__ import annotations
 
-import orjson as json
 import logging
 import re
 import shutil
 import subprocess
-from thegent.infra.shim_subprocess import run as shim_run
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Final
+
+import orjson as json
+
+from thegent.infra.shim_subprocess import run as shim_run
 
 _log = logging.getLogger(__name__)
 

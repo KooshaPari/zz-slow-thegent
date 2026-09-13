@@ -5,7 +5,6 @@ and utility functions extracted from the codex_proxy monolith.
 """
 
 import logging
-import os
 import shutil
 import subprocess
 import tempfile

@@ -1,9 +1,6 @@
 """Tests for crew harness integration."""
 
-from pathlib import Path
 from unittest.mock import MagicMock, patch
-
-import pytest
 
 from thegent.agents.base import RunResult
 from thegent.agents.crew.executor import ExecutionResult

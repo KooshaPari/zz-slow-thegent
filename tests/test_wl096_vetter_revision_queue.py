@@ -44,7 +44,6 @@ from thegent.govern.vetter.models import (
 )
 from thegent.govern.vetter.orchestrator import VetterOrchestrator
 
-
 # ---------------------------------------------------------------------------
 # Helpers
 # ---------------------------------------------------------------------------

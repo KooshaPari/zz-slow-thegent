@@ -1,4 +1,3 @@
-from pathlib import Path
 
 import pytest
 
@@ -8,7 +7,6 @@ from thegent.governance.compliance import (
     US_SEC_PROFILE,
     ComplianceAuditTrail,
     ComplianceEnforcer,
-    ComplianceProfileType,
 )
 
 

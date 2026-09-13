@@ -9,8 +9,9 @@ Contract surface asserted by
 # @trace AUDIT-N+88
 """
 
-import orjson as json
 from typing import Any
+
+import orjson as json
 
 from thegent.governance.ledger import IncidentLedger
 

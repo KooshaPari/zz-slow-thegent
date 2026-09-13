@@ -16,7 +16,6 @@ import json
 import time
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Any
 from unittest.mock import patch
 
 import pytest

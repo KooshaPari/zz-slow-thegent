@@ -13,10 +13,7 @@ from __future__ import annotations
 
 import asyncio
 import subprocess
-from dataclasses import dataclass, field
 from unittest.mock import MagicMock, patch
-
-import pytest
 
 from thegent.govern.vetter.checks import RuffVetterCheck, TestPassVetterCheck
 from thegent.govern.vetter.models import VetterCheck, VetterCheckResult

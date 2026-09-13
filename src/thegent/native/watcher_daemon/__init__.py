@@ -16,9 +16,9 @@ class WatchEvent(Enum):
 class WatcherDaemon:
     """Watcher daemon for file system watching."""
 
-    _instance: "WatcherDaemon | None" = None
+    _instance: WatcherDaemon | None = None
 
-    def __new__(cls, config: dict[str, Any] | None = None) -> "WatcherDaemon":
+    def __new__(cls, config: dict[str, Any] | None = None) -> WatcherDaemon:
         if cls._instance is None:
             cls._instance = super().__new__(cls)
             cls._instance._initialized = False

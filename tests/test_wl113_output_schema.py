@@ -8,14 +8,12 @@ system prompt injection, and codex arg generation.
 
 from __future__ import annotations
 
-import orjson as json
 from pathlib import Path
-from unittest.mock import MagicMock, patch
 
+import orjson as json
 import pytest
 
 from thegent.agents.output_schema import OutputSchemaValidator
-
 
 # ---------------------------------------------------------------------------
 # Fixtures
@@ -269,8 +267,9 @@ class TestRunImplOutputSchema:
     def test_run_impl_accepts_output_schema_parameter(self) -> None:
         # @trace WL-113
         """run_impl signature accepts output_schema keyword argument."""
-        from thegent.cli.commands.impl import run_impl
         import inspect
+
+        from thegent.cli.commands.impl import run_impl
 
         sig = inspect.signature(run_impl)
         assert "output_schema" in sig.parameters
@@ -278,8 +277,9 @@ class TestRunImplOutputSchema:
     def test_output_schema_parameter_defaults_to_none(self) -> None:
         # @trace WL-113
         """output_schema parameter defaults to None."""
-        from thegent.cli.commands.impl import run_impl
         import inspect
+
+        from thegent.cli.commands.impl import run_impl
 
         sig = inspect.signature(run_impl)
         assert sig.parameters["output_schema"].default is None

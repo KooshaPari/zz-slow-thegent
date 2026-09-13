@@ -2,7 +2,7 @@
 # Part of thegent-contracts sub-project
 
 from dataclasses import dataclass
-from typing import Any, Optional
+from typing import Any
 
 
 @dataclass
@@ -22,7 +22,7 @@ class IPCResponse:
     request_id: str
     success: bool
     result: Any = None
-    error: Optional[str] = None
+    error: str | None = None
 
 
 def create_request(command: str, payload: dict, source: str = "cli") -> IPCRequest:

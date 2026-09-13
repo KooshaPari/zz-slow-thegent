@@ -5,7 +5,9 @@ to reduce the main file size and improve maintainability.
 """
 
 from thegent.integrations.adapters.checkpoint_adapter import CheckpointAdapter
-from thegent.integrations.adapters.connector_config_adapter import ConnectorConfigAdapter
+from thegent.integrations.adapters.connector_config_adapter import (
+    ConnectorConfigAdapter,
+)
 from thegent.integrations.adapters.encryption_adapter import (
     compute_artifact_key,
     xor_decrypt,

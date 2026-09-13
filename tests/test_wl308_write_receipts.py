@@ -5,10 +5,10 @@
 
 from __future__ import annotations
 
-import orjson as json
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from pathlib import Path
 
+import orjson as json
 import pytest
 
 from thegent.integrations.write_receipts import WriteReceipt, WriteReceiptLog
@@ -19,7 +19,7 @@ class TestWriteReceiptDataclass:
 
     def test_receipt_creation(self) -> None:
         """Create a WriteReceipt."""
-        ts = datetime.now(timezone.utc)
+        ts = datetime.now(UTC)
         receipt = WriteReceipt(
             wl_id="WL-001",
             connector="github",
@@ -40,7 +40,7 @@ class TestWriteReceiptDataclass:
 
     def test_receipt_with_none_remote_id(self) -> None:
         """Receipt can have None remote_id for failed operations."""
-        ts = datetime.now(timezone.utc)
+        ts = datetime.now(UTC)
         receipt = WriteReceipt(
             wl_id="WL-002",
             connector="github",
@@ -56,7 +56,7 @@ class TestWriteReceiptDataclass:
 
     def test_receipt_to_dict(self) -> None:
         """to_dict converts receipt to dict with ISO timestamp."""
-        ts = datetime(2026, 2, 22, 12, 0, 0, tzinfo=timezone.utc)
+        ts = datetime(2026, 2, 22, 12, 0, 0, tzinfo=UTC)
         receipt = WriteReceipt(
             wl_id="WL-001",
             connector="github",
@@ -77,7 +77,7 @@ class TestWriteReceiptDataclass:
     @pytest.mark.requirement("WL-308")
     def test_receipt_all_fields_in_dict(self) -> None:
         """to_dict includes all receipt fields."""
-        ts = datetime.now(timezone.utc)
+        ts = datetime.now(UTC)
         receipt = WriteReceipt(
             wl_id="WL-001",
             connector="github",
@@ -129,7 +129,7 @@ class TestWriteReceiptLogAppend:
     def test_append_single_receipt(self, tmp_path: Path) -> None:
         """Append a single receipt."""
         log = WriteReceiptLog(tmp_path / "receipts.jsonl")
-        ts = datetime.now(timezone.utc)
+        ts = datetime.now(UTC)
         receipt = WriteReceipt(
             wl_id="WL-001",
             connector="github",
@@ -147,7 +147,7 @@ class TestWriteReceiptLogAppend:
     def test_append_multiple_receipts(self, tmp_path: Path) -> None:
         """Append multiple receipts."""
         log = WriteReceiptLog(tmp_path / "receipts.jsonl")
-        ts = datetime.now(timezone.utc)
+        ts = datetime.now(UTC)
 
         for i in range(3):
             receipt = WriteReceipt(
@@ -167,7 +167,7 @@ class TestWriteReceiptLogAppend:
     def test_append_creates_jsonl(self, tmp_path: Path) -> None:
         """Append creates JSONL format (one JSON object per line)."""
         log = WriteReceiptLog(tmp_path / "receipts.jsonl")
-        ts = datetime.now(timezone.utc)
+        ts = datetime.now(UTC)
         receipt = WriteReceipt(
             wl_id="WL-001",
             connector="github",
@@ -194,7 +194,7 @@ class TestWriteReceiptLogAppend:
     def test_append_preserves_timestamp(self, tmp_path: Path) -> None:
         """Append preserves timestamp as ISO string."""
         log = WriteReceiptLog(tmp_path / "receipts.jsonl")
-        ts = datetime(2026, 2, 22, 14, 30, 45, tzinfo=timezone.utc)
+        ts = datetime(2026, 2, 22, 14, 30, 45, tzinfo=UTC)
         receipt = WriteReceipt(
             wl_id="WL-001",
             connector="github",
@@ -223,7 +223,7 @@ class TestWriteReceiptLogReadAll:
     def test_read_all_single_receipt(self, tmp_path: Path) -> None:
         """read_all returns single receipt."""
         log = WriteReceiptLog(tmp_path / "receipts.jsonl")
-        ts = datetime.now(timezone.utc)
+        ts = datetime.now(UTC)
         receipt = WriteReceipt(
             wl_id="WL-001",
             connector="github",
@@ -242,7 +242,7 @@ class TestWriteReceiptLogReadAll:
     def test_read_all_multiple_receipts(self, tmp_path: Path) -> None:
         """read_all returns all receipts."""
         log = WriteReceiptLog(tmp_path / "receipts.jsonl")
-        ts = datetime.now(timezone.utc)
+        ts = datetime.now(UTC)
 
         for i in range(5):
             receipt = WriteReceipt(
@@ -263,7 +263,7 @@ class TestWriteReceiptLogReadAll:
     def test_read_all_preserves_data(self, tmp_path: Path) -> None:
         """read_all preserves all receipt data."""
         log = WriteReceiptLog(tmp_path / "receipts.jsonl")
-        ts = datetime(2026, 2, 22, 12, 0, 0, tzinfo=timezone.utc)
+        ts = datetime(2026, 2, 22, 12, 0, 0, tzinfo=UTC)
         original = WriteReceipt(
             wl_id="WL-001",
             connector="github",
@@ -296,7 +296,7 @@ class TestWriteReceiptLogReadAll:
     def test_read_all_returns_writereceipt_objects(self, tmp_path: Path) -> None:
         """read_all returns WriteReceipt instances."""
         log = WriteReceiptLog(tmp_path / "receipts.jsonl")
-        ts = datetime.now(timezone.utc)
+        ts = datetime.now(UTC)
         receipt = WriteReceipt(
             wl_id="WL-001",
             connector="github",
@@ -319,7 +319,7 @@ class TestWriteReceiptLogReadByCycle:
     def test_read_by_cycle_single_match(self, tmp_path: Path) -> None:
         """read_by_cycle returns receipts for matching cycle."""
         log = WriteReceiptLog(tmp_path / "receipts.jsonl")
-        ts = datetime.now(timezone.utc)
+        ts = datetime.now(UTC)
 
         r1 = WriteReceipt("WL-001", "github", "create", "gh-1", True, ts, "cycle-1")
         r2 = WriteReceipt("WL-002", "github", "create", "gh-2", True, ts, "cycle-2")
@@ -334,7 +334,7 @@ class TestWriteReceiptLogReadByCycle:
     def test_read_by_cycle_multiple_matches(self, tmp_path: Path) -> None:
         """read_by_cycle returns all matching receipts."""
         log = WriteReceiptLog(tmp_path / "receipts.jsonl")
-        ts = datetime.now(timezone.utc)
+        ts = datetime.now(UTC)
 
         for i in range(3):
             r = WriteReceipt(f"WL-{i:03d}", "github", "create", f"gh-{i}", True, ts, "cycle-1")
@@ -346,7 +346,7 @@ class TestWriteReceiptLogReadByCycle:
     def test_read_by_cycle_no_matches(self, tmp_path: Path) -> None:
         """read_by_cycle returns empty list when no matches."""
         log = WriteReceiptLog(tmp_path / "receipts.jsonl")
-        ts = datetime.now(timezone.utc)
+        ts = datetime.now(UTC)
 
         r = WriteReceipt("WL-001", "github", "create", "gh-1", True, ts, "cycle-1")
         log.append(r)
@@ -376,7 +376,7 @@ class TestWriteReceiptLogReadByCycle:
     def test_read_by_cycle_filtering_accuracy(self, tmp_path: Path) -> None:
         """read_by_cycle accurately filters by cycle."""
         log = WriteReceiptLog(tmp_path / "receipts.jsonl")
-        ts = datetime.now(timezone.utc)
+        ts = datetime.now(UTC)
 
         for cycle in ["c1", "c2", "c3"]:
             for i in range(2):
@@ -394,7 +394,7 @@ class TestWriteReceiptLogReadFailures:
     def test_read_failures_no_failures(self, tmp_path: Path) -> None:
         """read_failures returns empty list when all succeed."""
         log = WriteReceiptLog(tmp_path / "receipts.jsonl")
-        ts = datetime.now(timezone.utc)
+        ts = datetime.now(UTC)
 
         for i in range(3):
             r = WriteReceipt(f"WL-{i:03d}", "github", "create", f"gh-{i}", True, ts, "cycle-1")
@@ -406,7 +406,7 @@ class TestWriteReceiptLogReadFailures:
     def test_read_failures_all_failures(self, tmp_path: Path) -> None:
         """read_failures returns all failed receipts."""
         log = WriteReceiptLog(tmp_path / "receipts.jsonl")
-        ts = datetime.now(timezone.utc)
+        ts = datetime.now(UTC)
 
         for i in range(3):
             r = WriteReceipt(f"WL-{i:03d}", "github", "create", None, False, ts, "cycle-1")
@@ -419,7 +419,7 @@ class TestWriteReceiptLogReadFailures:
     def test_read_failures_mixed(self, tmp_path: Path) -> None:
         """read_failures returns only failed receipts."""
         log = WriteReceiptLog(tmp_path / "receipts.jsonl")
-        ts = datetime.now(timezone.utc)
+        ts = datetime.now(UTC)
 
         success = WriteReceipt("WL-001", "github", "create", "gh-1", True, ts, "cycle-1")
         failure = WriteReceipt("WL-002", "github", "create", None, False, ts, "cycle-1")
@@ -441,7 +441,7 @@ class TestWriteReceiptLogReadFailures:
     def test_read_failures_accurate_filter(self, tmp_path: Path) -> None:
         """read_failures accurately identifies failures."""
         log = WriteReceiptLog(tmp_path / "receipts.jsonl")
-        ts = datetime.now(timezone.utc)
+        ts = datetime.now(UTC)
 
         # Add mixed receipts
         log.append(WriteReceipt("WL-001", "github", "create", "gh-1", True, ts, "cycle-1"))
@@ -461,7 +461,7 @@ class TestWriteReceiptLogIntegration:
     def test_full_workflow(self, tmp_path: Path) -> None:
         """Complete workflow: append, read_all, filter, read_failures."""
         log = WriteReceiptLog(tmp_path / "receipts.jsonl")
-        ts = datetime.now(timezone.utc)
+        ts = datetime.now(UTC)
 
         # Append some receipts
         for i in range(2):
@@ -489,7 +489,7 @@ class TestWriteReceiptLogIntegration:
     def test_round_trip_consistency(self, tmp_path: Path) -> None:
         """Data survives write and read."""
         log = WriteReceiptLog(tmp_path / "receipts.jsonl")
-        ts = datetime(2026, 2, 22, 15, 30, 45, tzinfo=timezone.utc)
+        ts = datetime(2026, 2, 22, 15, 30, 45, tzinfo=UTC)
         original = WriteReceipt(
             wl_id="WL-123",
             connector="github",

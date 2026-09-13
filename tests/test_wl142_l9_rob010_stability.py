@@ -229,7 +229,6 @@ def test_registry_singleton_is_used_by_helper(helpers_module) -> None:
 
     from thegent.contracts.registry import (
         CONTRACT_REGISTRY,
-        CONTRACT_SCHEMA_VERSION,
     )
 
     # Capture the real method BEFORE patching so the stub does not

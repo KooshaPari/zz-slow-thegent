@@ -1,4 +1,3 @@
-import os
 import re
 from pathlib import Path
 
@@ -18,7 +17,7 @@ def extract_links_from_md(file_path):
             for url in bare_urls:
                 if not any(l["url"] == url for l in links):
                     links.append({"title": "Direct Link", "url": url, "source": f"MD: {Path(file_path).name}"})
-    except Exception as e:
+    except Exception:
         pass
     return links
 

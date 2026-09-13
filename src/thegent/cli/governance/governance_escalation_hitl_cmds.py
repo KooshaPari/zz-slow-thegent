@@ -11,7 +11,6 @@ import sys
 
 import orjson as json
 import typer
-
 from rich.panel import Panel
 from rich.table import Table
 
@@ -170,8 +169,8 @@ def govern_approve_cmd(run_id: str, reason: str | None = None) -> None:
     Reads pending approvals from governance_events.jsonl, updates status to
     'approved', and triggers continuation of the blocked run.
     """
-    from thegent.cli.governance.governance_impl import govern_approve_impl
     from thegent.cli.governance.governance import govern_get_pending_approval_impl
+    from thegent.cli.governance.governance_impl import govern_approve_impl
     from thegent.governance.diff_renderer import DiffPayload, DiffRenderer
 
     pending = govern_get_pending_approval_impl(run_id=run_id)
@@ -207,8 +206,8 @@ def govern_reject_cmd(run_id: str, reason: str | None = None) -> None:
 
 def govern_list_pending_cmd(format: str | None = None) -> None:
     """WL-019-B: List all pending HITL approval requests (G-GP-05)."""
-    from thegent.cli.governance.governance_impl import govern_list_pending_impl
     from thegent.cli.governance.diff_renderer import DiffPayload, DiffRenderer
+    from thegent.cli.governance.governance_impl import govern_list_pending_impl
 
     items = govern_list_pending_impl()
     fmt = _normalize_output_format(format)

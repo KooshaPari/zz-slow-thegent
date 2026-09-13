@@ -6,13 +6,13 @@ available, falling back to the original psutil-based scan otherwise.
 """
 
 import contextlib
-from importlib import import_module
-import orjson as json
 import logging
 from datetime import UTC, datetime
+from importlib import import_module
 from pathlib import Path
 from typing import Any
 
+import orjson as json
 import psutil
 from pydantic import BaseModel, Field
 

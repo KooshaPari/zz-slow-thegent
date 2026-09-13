@@ -10,7 +10,10 @@ from unittest.mock import MagicMock, patch
 import httpx
 import pytest
 
-from thegent.integrations.startup_validation import StartupValidationResult, StartupValidator
+from thegent.integrations.startup_validation import (
+    StartupValidationResult,
+    StartupValidator,
+)
 
 
 class TestStartupValidationResult:

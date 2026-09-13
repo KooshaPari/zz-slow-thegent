@@ -5,9 +5,9 @@ This module provides zero-knowledge proof verification for agent state governanc
 
 from __future__ import annotations
 
-from dataclasses import dataclass, field
-from datetime import datetime, timedelta, UTC
 import hashlib
+from dataclasses import dataclass
+from datetime import UTC, datetime, timedelta
 
 
 @dataclass

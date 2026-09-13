@@ -1,4 +1,3 @@
-from typing import Optional
 
 """Unit tests for AgentDeployer with LifecycleController integration."""
 

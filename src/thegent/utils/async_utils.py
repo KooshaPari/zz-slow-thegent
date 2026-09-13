@@ -7,17 +7,17 @@ from __future__ import annotations
 
 import asyncio
 import logging
-from collections.abc import Awaitable
+from collections.abc import Awaitable, Callable
 from concurrent.futures import ThreadPoolExecutor
 from functools import wraps
-from typing import Any, Callable, TypeVar
+from typing import Any, TypeVar
 
 logger = logging.getLogger(__name__)
 
 T = TypeVar("T")
 
 
-async def run_in_thread(func: Callable[..., T], *args: Any, **kwargs: Any) -> T:
+async def run_in_thread[T](func: Callable[..., T], *args: Any, **kwargs: Any) -> T:
     """Run a blocking function in a thread pool.
 
     Args:
@@ -33,7 +33,7 @@ async def run_in_thread(func: Callable[..., T], *args: Any, **kwargs: Any) -> T:
         return await loop.run_in_executor(executor, lambda: func(*args, **kwargs))
 
 
-async def gather_with_limit(
+async def gather_with_limit[T](
     *tasks: Awaitable[T],
     limit: int = 10,
 ) -> list[T]:
@@ -97,7 +97,7 @@ def async_retry(
     return decorator
 
 
-async def wait_for_all(
+async def wait_for_all[T](
     tasks: list[Awaitable[T]],
     timeout: float | None = None,
 ) -> list[T]:

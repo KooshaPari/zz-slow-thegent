@@ -25,7 +25,6 @@ from unittest.mock import MagicMock, patch
 
 import pytest
 
-
 _WIRE_DONE = ("_phase_update_teammate_status",)
 
 

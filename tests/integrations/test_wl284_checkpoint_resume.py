@@ -5,7 +5,7 @@
 
 from __future__ import annotations
 
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from pathlib import Path
 
 import pytest
@@ -19,7 +19,7 @@ class TestCheckpoint:
     @pytest.mark.requirement("WL-284")
     def test_checkpoint_creation(self) -> None:
         """Can create a Checkpoint with required fields."""
-        created_at = datetime.now(timezone.utc)
+        created_at = datetime.now(UTC)
         checkpoint = Checkpoint(
             checkpoint_id="cp-001",
             cycle_id="cycle-1",
@@ -47,7 +47,7 @@ class TestCheckpointStoreSave:
             cycle_id="cycle-1",
             last_processed_idx=100,
             total_items=1000,
-            created_at=datetime.now(timezone.utc),
+            created_at=datetime.now(UTC),
         )
 
         CheckpointStore.save(checkpoint, store_dir)
@@ -62,7 +62,7 @@ class TestCheckpointStoreSave:
             cycle_id="cycle-1",
             last_processed_idx=100,
             total_items=1000,
-            created_at=datetime(2024, 1, 1, 12, 0, 0, tzinfo=timezone.utc),
+            created_at=datetime(2024, 1, 1, 12, 0, 0, tzinfo=UTC),
         )
 
         path = CheckpointStore.save(checkpoint, tmp_path)
@@ -79,7 +79,7 @@ class TestCheckpointStoreSave:
             cycle_id="cycle-1",
             last_processed_idx=100,
             total_items=1000,
-            created_at=datetime.now(timezone.utc),
+            created_at=datetime.now(UTC),
         )
 
         result = CheckpointStore.save(checkpoint, tmp_path)
@@ -97,7 +97,7 @@ class TestCheckpointStoreSave:
             cycle_id="cycle-1",
             last_processed_idx=100,
             total_items=1000,
-            created_at=datetime(2024, 1, 1, 12, 0, 0, tzinfo=timezone.utc),
+            created_at=datetime(2024, 1, 1, 12, 0, 0, tzinfo=UTC),
         )
 
         CheckpointStore.save(checkpoint, tmp_path)
@@ -122,7 +122,7 @@ class TestCheckpointStoreLoad:
             cycle_id="cycle-1",
             last_processed_idx=100,
             total_items=1000,
-            created_at=datetime(2024, 1, 1, 12, 0, 0, tzinfo=timezone.utc),
+            created_at=datetime(2024, 1, 1, 12, 0, 0, tzinfo=UTC),
         )
 
         CheckpointStore.save(original, tmp_path)
@@ -136,7 +136,7 @@ class TestCheckpointStoreLoad:
     @pytest.mark.requirement("WL-284")
     def test_load_preserves_datetime(self, tmp_path: Path) -> None:
         """load preserves datetime precision."""
-        original_dt = datetime(2024, 1, 1, 12, 30, 45, 123456, tzinfo=timezone.utc)
+        original_dt = datetime(2024, 1, 1, 12, 30, 45, 123456, tzinfo=UTC)
         original = Checkpoint(
             checkpoint_id="cp-001",
             cycle_id="cycle-1",
@@ -164,14 +164,14 @@ class TestCheckpointStoreLoad:
             cycle_id="cycle-1",
             last_processed_idx=100,
             total_items=1000,
-            created_at=datetime.now(timezone.utc),
+            created_at=datetime.now(UTC),
         )
         cp2 = Checkpoint(
             checkpoint_id="cp-002",
             cycle_id="cycle-1",
             last_processed_idx=200,
             total_items=1000,
-            created_at=datetime.now(timezone.utc),
+            created_at=datetime.now(UTC),
         )
 
         CheckpointStore.save(cp1, tmp_path)
@@ -194,14 +194,14 @@ class TestCheckpointStoreLatest:
             cycle_id="cycle-1",
             last_processed_idx=100,
             total_items=1000,
-            created_at=datetime(2024, 1, 1, 10, 0, 0, tzinfo=timezone.utc),
+            created_at=datetime(2024, 1, 1, 10, 0, 0, tzinfo=UTC),
         )
         cp2 = Checkpoint(
             checkpoint_id="cp-002",
             cycle_id="cycle-1",
             last_processed_idx=200,
             total_items=1000,
-            created_at=datetime(2024, 1, 1, 12, 0, 0, tzinfo=timezone.utc),
+            created_at=datetime(2024, 1, 1, 12, 0, 0, tzinfo=UTC),
         )
 
         CheckpointStore.save(cp1, tmp_path)
@@ -220,14 +220,14 @@ class TestCheckpointStoreLatest:
             cycle_id="cycle-1",
             last_processed_idx=100,
             total_items=1000,
-            created_at=datetime.now(timezone.utc),
+            created_at=datetime.now(UTC),
         )
         cp2 = Checkpoint(
             checkpoint_id="cp-002",
             cycle_id="cycle-2",
             last_processed_idx=200,
             total_items=1000,
-            created_at=datetime.now(timezone.utc),
+            created_at=datetime.now(UTC),
         )
 
         CheckpointStore.save(cp1, tmp_path)
@@ -259,7 +259,7 @@ class TestCheckpointStoreLatest:
             cycle_id="cycle-1",
             last_processed_idx=100,
             total_items=1000,
-            created_at=datetime.now(timezone.utc),
+            created_at=datetime.now(UTC),
         )
 
         CheckpointStore.save(cp, tmp_path)
@@ -280,7 +280,7 @@ class TestCheckpointStoreDelete:
             cycle_id="cycle-1",
             last_processed_idx=100,
             total_items=1000,
-            created_at=datetime.now(timezone.utc),
+            created_at=datetime.now(UTC),
         )
 
         CheckpointStore.save(checkpoint, tmp_path)
@@ -302,14 +302,14 @@ class TestCheckpointStoreDelete:
             cycle_id="cycle-1",
             last_processed_idx=100,
             total_items=1000,
-            created_at=datetime.now(timezone.utc),
+            created_at=datetime.now(UTC),
         )
         cp2 = Checkpoint(
             checkpoint_id="cp-002",
             cycle_id="cycle-1",
             last_processed_idx=200,
             total_items=1000,
-            created_at=datetime.now(timezone.utc),
+            created_at=datetime.now(UTC),
         )
 
         CheckpointStore.save(cp1, tmp_path)
@@ -337,7 +337,7 @@ class TestCheckpointStoreListCheckpoints:
             cycle_id="cycle-1",
             last_processed_idx=100,
             total_items=1000,
-            created_at=datetime.now(timezone.utc),
+            created_at=datetime.now(UTC),
         )
 
         CheckpointStore.save(checkpoint, tmp_path)
@@ -353,21 +353,21 @@ class TestCheckpointStoreListCheckpoints:
             cycle_id="cycle-1",
             last_processed_idx=300,
             total_items=1000,
-            created_at=datetime.now(timezone.utc),
+            created_at=datetime.now(UTC),
         )
         cp2 = Checkpoint(
             checkpoint_id="cp-001",
             cycle_id="cycle-1",
             last_processed_idx=100,
             total_items=1000,
-            created_at=datetime.now(timezone.utc),
+            created_at=datetime.now(UTC),
         )
         cp3 = Checkpoint(
             checkpoint_id="cp-002",
             cycle_id="cycle-1",
             last_processed_idx=200,
             total_items=1000,
-            created_at=datetime.now(timezone.utc),
+            created_at=datetime.now(UTC),
         )
 
         CheckpointStore.save(cp1, tmp_path)
@@ -386,14 +386,14 @@ class TestCheckpointStoreListCheckpoints:
             cycle_id="cycle-1",
             last_processed_idx=100,
             total_items=1000,
-            created_at=datetime.now(timezone.utc),
+            created_at=datetime.now(UTC),
         )
         cp2 = Checkpoint(
             checkpoint_id="cp-002",
             cycle_id="cycle-2",
             last_processed_idx=200,
             total_items=1000,
-            created_at=datetime.now(timezone.utc),
+            created_at=datetime.now(UTC),
         )
 
         CheckpointStore.save(cp1, tmp_path)
@@ -423,7 +423,7 @@ class TestCheckpointStoreListCheckpoints:
             cycle_id="cycle-1",
             last_processed_idx=100,
             total_items=1000,
-            created_at=datetime.now(timezone.utc),
+            created_at=datetime.now(UTC),
         )
         CheckpointStore.save(checkpoint, tmp_path)
 

@@ -1,12 +1,16 @@
 """Hook runner with shell detection and cross-platform support."""
 
 import subprocess
-from thegent.infra.shim_subprocess import run as shim_run
 import sys
 from pathlib import Path
 
 from thegent.config import get_settings
-from thegent.infra.shell_detection import ShellType, get_preferred_shell, get_shell_executable
+from thegent.infra.shell_detection import (
+    ShellType,
+    get_preferred_shell,
+    get_shell_executable,
+)
+from thegent.infra.shim_subprocess import run as shim_run
 
 
 def _resolve_shell_type() -> ShellType:

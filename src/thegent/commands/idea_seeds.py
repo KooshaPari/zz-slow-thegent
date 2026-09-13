@@ -10,7 +10,6 @@ from __future__ import annotations
 import os
 import re
 from dataclasses import dataclass
-from typing import Any
 
 
 def _make_slug(text: str) -> str:

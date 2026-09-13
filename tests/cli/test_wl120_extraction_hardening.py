@@ -15,7 +15,6 @@ import types
 
 import pytest
 
-
 DAG_CMD_FUNCTIONS = [
     "dag_validate_cmd",
     "dag_list_cmd",

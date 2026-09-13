@@ -2,7 +2,10 @@ from __future__ import annotations
 
 import orjson as json
 
-from thegent.models.quality_values import get_model_quality_for_role, get_model_quality_index
+from thegent.models.quality_values import (
+    get_model_quality_for_role,
+    get_model_quality_index,
+)
 
 
 def _write_benchmarks(path):

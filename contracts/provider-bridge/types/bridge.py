@@ -1,9 +1,9 @@
 from __future__ import annotations
 
+from collections.abc import Iterable
 from dataclasses import dataclass
 from datetime import datetime
-from typing import Any, Iterable, Literal, Protocol, TypedDict
-
+from typing import Any, Literal, Protocol, TypedDict
 
 Capability = Literal["chat_completion", "embeddings", "rerank", "tool_execution"]
 LaneID = Literal["litellm_donut", "bifrost", "native"]
@@ -175,7 +175,7 @@ class MetaproviderAdapter(ProviderAdapter, Protocol):
 class Middleware(Protocol):
     def name(self) -> str: ...
 
-    def handle(self, req: ExecutionRequest, next_handler: "Handler") -> ExecutionResponse: ...
+    def handle(self, req: ExecutionRequest, next_handler: Handler) -> ExecutionResponse: ...
 
 
 class Handler(Protocol):

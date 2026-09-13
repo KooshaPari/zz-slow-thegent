@@ -7,8 +7,6 @@ Related to:
 
 from __future__ import annotations
 
-import pytest
-
 
 class TestTUIWidgets:
     """Test TUI interactive widgets."""

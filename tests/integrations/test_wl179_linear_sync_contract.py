@@ -9,8 +9,12 @@ from typing import Any
 import pytest
 
 from thegent.integrations.connector_mapping_cache import ConnectorMappingCache
-from thegent.integrations.linear_graphql import LinearGraphQLConfig, sync_from_linear, sync_to_linear
-from thegent.integrations.linear_graphql import LinearGraphQLError
+from thegent.integrations.linear_graphql import (
+    LinearGraphQLConfig,
+    LinearGraphQLError,
+    sync_from_linear,
+    sync_to_linear,
+)
 
 
 @dataclass

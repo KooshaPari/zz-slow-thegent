@@ -3,7 +3,6 @@
 from __future__ import annotations
 
 import errno
-import orjson as json
 import subprocess
 from datetime import UTC, datetime, timedelta
 from pathlib import Path
@@ -11,6 +10,7 @@ from types import SimpleNamespace
 from unittest.mock import patch
 
 import httpx
+import orjson as json
 import pytest
 
 # discover_models was removed from provider_model_manager; skip the file.

@@ -14,7 +14,6 @@ import pytest
 
 from thegent.integrations.workstream_autosync import WorkstreamParser
 
-
 # ---------------------------------------------------------------------------
 # Test: Malformed WL Sections
 # ---------------------------------------------------------------------------

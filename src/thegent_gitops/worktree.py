@@ -19,13 +19,14 @@ import logging
 import os
 import shutil
 import subprocess
-from thegent.infra.shim_subprocess import run as shim_run
 import tempfile
 import time
 from contextlib import contextmanager, suppress
 from dataclasses import dataclass, field
 from pathlib import Path
 from typing import TYPE_CHECKING
+
+from thegent.infra.shim_subprocess import run as shim_run
 
 if TYPE_CHECKING:
     from collections.abc import Generator

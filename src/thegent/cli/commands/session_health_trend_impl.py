@@ -29,7 +29,6 @@ from thegent.cli.commands.session_health_report_impl import (  # noqa: F401
     _health_snapshot_log_path,
 )
 
-
 _KNOWN_TREND_PAYLOAD_TYPES: tuple[str, ...] = (
     "session_contract_health_report",
     "session_contract_health_gate",
@@ -57,7 +56,9 @@ def _resolve_snapshot_path() -> Any:
         if callable(fn):
             return fn()
     # Fallback — re-import at call time.
-    from thegent.cli.commands.session_health_impl import _health_snapshot_log_path as _fn
+    from thegent.cli.commands.session_health_impl import (
+        _health_snapshot_log_path as _fn,
+    )
 
     return _fn()
 

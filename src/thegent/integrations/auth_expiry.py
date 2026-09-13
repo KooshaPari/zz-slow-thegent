@@ -6,12 +6,12 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from datetime import datetime, timedelta, UTC
-from enum import Enum
+from datetime import UTC, datetime, timedelta
+from enum import StrEnum
 from typing import Any
 
 
-class ExpiryStatus(str, Enum):
+class ExpiryStatus(StrEnum):
     """Status of token expiry."""
 
     VALID = "valid"

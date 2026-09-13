@@ -180,7 +180,6 @@ from thegent.orchestration.consensus.redlock_atomic import (
     make_redlock_controller,
 )
 
-
 # ---------------------------------------------------------------------------
 # Helpers — mirrored from the dormant test clusters so the spec is
 # hermetic.

@@ -5,8 +5,8 @@ from __future__ import annotations
 from dataclasses import dataclass
 from pathlib import Path
 
-from .paths import phenotype_repos_root, should_include_repo
 from .git_ops import sanitize_repo_id
+from .paths import phenotype_repos_root, should_include_repo
 
 
 @dataclass(slots=True)

@@ -3,16 +3,17 @@ Enables agents to discover, wrap, and use new tools dynamically at runtime.
 Includes automatic interface adaptation for foreign tool protocols.
 """
 
-import orjson as json
 import logging
 import shlex
-from thegent.infra.shim_subprocess import run as shim_run
 from collections.abc import Callable
 from importlib import import_module
 from typing import Any
 
 import httpx
+import orjson as json
 from pydantic import BaseModel, TypeAdapter
+
+from thegent.infra.shim_subprocess import run as shim_run
 
 _log = logging.getLogger(__name__)
 

@@ -13,12 +13,13 @@ and Augment Code.
 
 from __future__ import annotations
 
-import orjson as json
 import logging
 from dataclasses import dataclass, field
 from datetime import UTC, datetime
 from pathlib import Path
 from typing import Any
+
+import orjson as json
 
 logger = logging.getLogger(__name__)
 

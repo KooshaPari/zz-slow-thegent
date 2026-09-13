@@ -18,11 +18,7 @@ import pytest
 from thegent.commands.sync import (
     OperationResult,
     SyncCommand,
-    SyncOperationStatus,
-    SyncResult,
 )
-from thegent.integrations.connector_mapping_cache import ConnectorMappingCache
-from thegent.integrations.sync_policy_contract import ConnectorPolicy, SyncPolicyContract
 
 # ---------------------------------------------------------------------------
 # Shared fixtures / helpers

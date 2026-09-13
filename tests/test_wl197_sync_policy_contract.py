@@ -9,7 +9,10 @@ from __future__ import annotations
 
 import pytest
 
-from thegent.integrations.sync_policy_contract import SyncPolicyContract, SyncPolicyValidator
+from thegent.integrations.sync_policy_contract import (
+    SyncPolicyContract,
+    SyncPolicyValidator,
+)
 
 
 @pytest.mark.requirement("WL-197")

@@ -2,8 +2,9 @@
 
 from __future__ import annotations
 
-import orjson as json
 from pathlib import Path
+
+import orjson as json
 
 from tests.e2e.test_split_hygiene import (
     REQUIRED_E2E_GOVERNANCE_BUNDLE_COMMAND,

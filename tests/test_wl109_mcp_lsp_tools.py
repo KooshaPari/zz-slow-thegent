@@ -6,8 +6,8 @@ from pathlib import Path
 
 import pytest
 
-from thegent.mcp.server import _server_tools_workstream_lsp
 from thegent.mcp.lsp_tools import lsp_diagnostics, lsp_hover, lsp_symbol_lookup
+from thegent.mcp.server import _server_tools_workstream_lsp
 
 
 class _FakeAdapter:

@@ -7,9 +7,10 @@ with abstract dependencies.
 
 from __future__ import annotations
 
+from collections.abc import Callable
 from dataclasses import dataclass
-from typing import Any, Callable, Optional, Protocol
 from pathlib import Path
+from typing import Any, Optional, Protocol
 
 from thegent.core.ports import EventBusInterface  # noqa: F401  -- canonical (WL150)
 
@@ -21,7 +22,7 @@ class LoggerInterface(Protocol):
         """Log informational message."""
         ...
 
-    def error(self, message: str, exc: Optional[Exception] = None, **kwargs: Any) -> None:
+    def error(self, message: str, exc: Exception | None = None, **kwargs: Any) -> None:
         """Log error message."""
         ...
 
@@ -43,7 +44,7 @@ class ExecutionResult:
 
     success: bool
     output: Any = None
-    error: Optional[str] = None
+    error: str | None = None
     metadata: dict[str, Any] = None
 
     def __post_init__(self):
@@ -63,10 +64,10 @@ class Executor:
 
     def __init__(
         self,
-        logger: Optional[LoggerInterface] = None,
-        event_bus: Optional[EventBusInterface] = None,
-        agent_factory: Optional[Callable] = None,
-        model_factory: Optional[Callable] = None,
+        logger: LoggerInterface | None = None,
+        event_bus: EventBusInterface | None = None,
+        agent_factory: Callable | None = None,
+        model_factory: Callable | None = None,
     ):
         """Initialize executor with injected dependencies.
 
@@ -85,7 +86,7 @@ class Executor:
         self,
         task_id: str,
         task_spec: dict[str, Any],
-        workspace_path: Optional[Path] = None,
+        workspace_path: Path | None = None,
     ) -> ExecutionResult:
         """Execute a task.
 
@@ -136,7 +137,7 @@ class Executor:
         self,
         task_id: str,
         task_spec: dict[str, Any],
-        workspace_path: Optional[Path],
+        workspace_path: Path | None,
     ) -> ExecutionResult:
         """Internal task execution logic."""
         # Placeholder for actual execution logic
@@ -154,7 +155,7 @@ class Executor:
             def info(self, message: str, **kwargs: Any) -> None:
                 pass
 
-            def error(self, message: str, exc: Optional[Exception] = None, **kwargs: Any) -> None:
+            def error(self, message: str, exc: Exception | None = None, **kwargs: Any) -> None:
                 pass
 
             def debug(self, message: str, **kwargs: Any) -> None:

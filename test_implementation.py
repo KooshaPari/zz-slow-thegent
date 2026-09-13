@@ -4,8 +4,9 @@ from pathlib import Path
 # Add src to sys.path
 sys.path.append(str(Path("src").resolve()))
 
+from thegent.routing.tool_router import ToolRouter
+
 from thegent.infra.sandbox import WasmSandbox
-from thegent.routing.tool_router import ToolDefinition, ToolRouter
 
 
 def test_tool_router():
@@ -18,7 +19,7 @@ def test_tool_router():
         pass
 
     # Test injection
-    injection = router.get_tool_prompt_injection(prompt)
+    router.get_tool_prompt_injection(prompt)
 
     # Clean up
     registry_path = Path("test_tools_registry.json")
@@ -27,7 +28,7 @@ def test_tool_router():
 
 
 def test_wasm_sandbox():
-    sandbox = WasmSandbox(sandbox_id="test-sandbox")
+    WasmSandbox(sandbox_id="test-sandbox")
 
     # Note: Real Wasm execution requires a .wasm file and extism installed.
     # This just tests the class instantiation and interface.

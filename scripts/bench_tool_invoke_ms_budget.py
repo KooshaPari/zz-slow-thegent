@@ -26,8 +26,8 @@ import json
 import statistics
 import sys
 import time
+from collections.abc import Callable
 from pathlib import Path
-from typing import Callable
 
 # Ensure the workspace is on sys.path when run as a script.
 _REPO = Path(__file__).resolve().parent.parent

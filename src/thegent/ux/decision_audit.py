@@ -27,15 +27,17 @@ governance JSONL pipeline already lives in
 
 from __future__ import annotations
 
+import contextlib
 import json
 import logging
 import os
 import threading
 import time
 from collections import deque
+from collections.abc import Callable
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import TYPE_CHECKING, Callable, Optional
+from typing import TYPE_CHECKING
 
 from .cockpit import DecisionNotice
 
@@ -639,18 +641,14 @@ class DecisionAuditAppender:
         oldest = self._path.with_name(f"{self._path.name}.{self._max_backups}")
         if self._max_backups <= 0:
             # No siblings retained; remove the active file outright.
-            try:
+            with contextlib.suppress(FileNotFoundError):
                 self._path.unlink()
-            except FileNotFoundError:
-                pass
             self._line_count = 0
             self._bytes_written = 0
             self._rotation_count += 1
             return
-        try:
+        with contextlib.suppress(FileNotFoundError):
             oldest.unlink()
-        except FileNotFoundError:
-            pass
         # Step 2: shift the existing siblings outward, from highest
         # index downward so we never overwrite a sibling that has
         # not yet been renamed (the previous "upward" iteration
@@ -664,10 +662,8 @@ class DecisionAuditAppender:
             except FileNotFoundError:
                 continue
         # Step 3: move the active file into the .1 slot.
-        try:
+        with contextlib.suppress(FileNotFoundError):
             os.rename(self._path, self._path.with_name(f"{self._path.name}.1"))
-        except FileNotFoundError:
-            pass
         # AUDIT-23: after the rename the in-memory ``_pending_fsync``
         # counter applies to the new active file. The rotated sibling
         # was already flushed by ``fh.flush()`` + ``os.fsync()`` at
@@ -719,7 +715,7 @@ class DecisionAuditTailer:
       the warning log and does not hammer the cockpit lock.
     """
 
-    cockpit: "OperatorCockpit"
+    cockpit: OperatorCockpit
     appender: DecisionAuditAppender
     interval_s: float = DEFAULT_TAIL_INTERVAL_S
     max_batch: int = 64
@@ -730,8 +726,8 @@ class DecisionAuditTailer:
     # AUDIT-24 observability surface.
     drain_count: int = 0
     drain_errors_total: int = 0
-    last_error: Optional[str] = None
-    last_error_at: Optional[float] = None
+    last_error: str | None = None
+    last_error_at: float | None = None
     dlq: deque[tuple[float, str]] = field(default_factory=lambda: deque(maxlen=64))
     # Capped exponential back-off: 1s → 2s → 4s → ... → ``max_backoff_s``.
     _consecutive_failures: int = 0
@@ -812,7 +808,7 @@ class DecisionAuditTailer:
     # Internals
     # ------------------------------------------------------------------
 
-    def _collect_new(self) -> "Sequence[DecisionNotice]":
+    def _collect_new(self) -> Sequence[DecisionNotice]:
         # AUDIT-6 (Phase 3/4 third-pass hardening): the prior drain logic
         # acquired ``cockpit._lock`` only for the snapshot step, then
         # advanced ``_last_seen_index`` under a separate lock. A

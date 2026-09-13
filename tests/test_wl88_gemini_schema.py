@@ -5,8 +5,9 @@ Related to CLIProxyAPI#1649 - incorrect renaming of parameters to parametersJson
 
 from __future__ import annotations
 
-import pytest
 from unittest.mock import patch
+
+import pytest
 
 
 class TestGeminiSchemaMapping:

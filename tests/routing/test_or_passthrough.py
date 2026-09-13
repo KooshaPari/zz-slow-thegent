@@ -7,7 +7,10 @@ from __future__ import annotations
 
 import pytest
 
-from thegent.cliproxy_adapter import _OR_PASSTHROUGH_FIELDS, build_openrouter_passthrough_body
+from thegent.cliproxy_adapter import (
+    _OR_PASSTHROUGH_FIELDS,
+    build_openrouter_passthrough_body,
+)
 
 
 @pytest.mark.requirement("FR-REQEXT-042")

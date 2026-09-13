@@ -9,7 +9,7 @@ Tests cover:
 
 from __future__ import annotations
 
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from unittest.mock import patch
 
 import pytest
@@ -23,7 +23,7 @@ from thegent.integrations.hourly_change_digest import (
 def _aware_datetime(*args, **kwargs):
     if "tzinfo" in kwargs:
         return datetime(*args, **kwargs)  # noqa: DTZ001 -- tzinfo is already supplied by caller branch guard
-    return datetime(*args, tzinfo=timezone.utc, **kwargs)
+    return datetime(*args, tzinfo=UTC, **kwargs)
 
 
 @pytest.mark.requirement("WL-237")
@@ -65,7 +65,7 @@ class TestHourlyChangeDigest:
     @patch("thegent.integrations.hourly_change_digest.datetime")
     def test_record_change(self, mock_datetime) -> None:
         """Test recording a change with automatic hour derivation."""
-        mock_now = datetime(2026, 2, 22, 15, 30, 45, tzinfo=timezone.utc)
+        mock_now = datetime(2026, 2, 22, 15, 30, 45, tzinfo=UTC)
         mock_datetime.now.return_value = mock_now
         mock_datetime.side_effect = _aware_datetime
 
@@ -79,7 +79,7 @@ class TestHourlyChangeDigest:
     @patch("thegent.integrations.hourly_change_digest.datetime")
     def test_record_multiple_changes_same_hour(self, mock_datetime) -> None:
         """Test recording multiple changes in the same hour."""
-        mock_now = datetime(2026, 2, 22, 14, 15, 0, tzinfo=timezone.utc)
+        mock_now = datetime(2026, 2, 22, 14, 15, 0, tzinfo=UTC)
         mock_datetime.now.return_value = mock_now
         mock_datetime.side_effect = _aware_datetime
 
@@ -163,7 +163,7 @@ class TestHourlyChangeDigest:
     @patch("thegent.integrations.hourly_change_digest.datetime")
     def test_full_workflow(self, mock_datetime) -> None:
         """Test a complete workflow with recording and digestion."""
-        mock_now = datetime(2026, 2, 22, 16, 45, 0, tzinfo=timezone.utc)
+        mock_now = datetime(2026, 2, 22, 16, 45, 0, tzinfo=UTC)
         mock_datetime.now.return_value = mock_now
         mock_datetime.side_effect = _aware_datetime
 

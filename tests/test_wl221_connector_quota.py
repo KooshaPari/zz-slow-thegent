@@ -5,8 +5,9 @@
 
 from __future__ import annotations
 
+from datetime import UTC, datetime, timedelta
+
 import pytest
-from datetime import datetime, timedelta, timezone
 
 from thegent.integrations.connector_quota import (
     ConnectorQuota,
@@ -117,11 +118,11 @@ class TestQuotaBudgetManager:
         # Manually set reset time to past
         quota = manager.get_quota("github")
         quota.used_today = 100
-        quota.reset_at = datetime.now(timezone.utc) - timedelta(hours=1)
+        quota.reset_at = datetime.now(UTC) - timedelta(hours=1)
 
         manager.reset_daily()
         assert quota.used_today == 0
-        assert quota.reset_at > datetime.now(timezone.utc)
+        assert quota.reset_at > datetime.now(UTC)
 
     @pytest.mark.requirement("WL-221")
     def test_get_all_quotas(self):

@@ -3,12 +3,17 @@
 # Lazy import pattern to avoid circular dependencies
 # The thegent-agents package is the source of truth
 
-from typing import TYPE_CHECKING, Any, Any
+from typing import TYPE_CHECKING, Any
 
 if TYPE_CHECKING:
     from thegent.agents.base import AgentRunner, RunResult
     from thegent.agents.direct_agents import DirectAgentRunner
-    from thegent.agents.flash_agent import FlashAgent, FlashAgentConfig, FlashAgentResult, flash
+    from thegent.agents.flash_agent import (
+        FlashAgent,
+        FlashAgentConfig,
+        FlashAgentResult,
+        flash,
+    )
     from thegent.agents.maif_runner import MAIFAgentRunner
     from thegent.agents.registry import (
         AGENT_LABELS,

@@ -36,10 +36,9 @@ class PerformanceModule:
 
         # Selection Logic
         # 1. Try Native Extension (Rust/C) first on CPython
-        if not IS_PYPY:
-            if "native" in self._implementations:
-                self._selected = self._implementations["native"]
-                return self._selected
+        if not IS_PYPY and "native" in self._implementations:
+            self._selected = self._implementations["native"]
+            return self._selected
 
         # 2. Try PyPy optimized logic
         if IS_PYPY and "pypy" in self._implementations:

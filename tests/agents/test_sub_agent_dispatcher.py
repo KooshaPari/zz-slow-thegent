@@ -6,8 +6,6 @@
 from __future__ import annotations
 
 import asyncio
-from dataclasses import dataclass, field
-from pathlib import Path
 from typing import Any
 from unittest.mock import AsyncMock, MagicMock, patch
 
@@ -21,7 +19,6 @@ from thegent.agents.sub_agent_dispatcher import (
     SubAgentResult,
     SubAgentTask,
 )
-
 
 # ---------------------------------------------------------------------------
 # Helpers / fixtures
@@ -512,9 +509,8 @@ async def test_dispatch_flash_runner_exception_raises_dispatch_error():
         "thegent.agents.sub_agent_dispatcher.FlashAgent.run",
         new_callable=AsyncMock,
         side_effect=RuntimeError("internal flash error"),
-    ):
-        with pytest.raises(DispatchError, match="internal flash error"):
-            await dispatcher.dispatch(task)
+    ), pytest.raises(DispatchError, match="internal flash error"):
+        await dispatcher.dispatch(task)
 
 
 # ---------------------------------------------------------------------------

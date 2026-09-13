@@ -4,7 +4,10 @@ from __future__ import annotations
 
 import pytest
 
-from thegent.integrations.policy_whatif_simulation import PolicySimulationInput, simulate_policy_change
+from thegent.integrations.policy_whatif_simulation import (
+    PolicySimulationInput,
+    simulate_policy_change,
+)
 
 
 @pytest.mark.requirement("WL-294")

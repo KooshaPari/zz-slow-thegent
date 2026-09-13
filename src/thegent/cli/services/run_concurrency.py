@@ -43,7 +43,7 @@ class ConcurrencyResult:
     estimated_wait: float = 0.0
 
 
-def get_resource_based_limit(settings: "ThegentSettings | None" = None) -> int:
+def get_resource_based_limit(settings: ThegentSettings | None = None) -> int:
     """Get maximum concurrent runs based on system resources.
 
     Args:
@@ -76,9 +76,8 @@ def get_resource_based_limit(settings: "ThegentSettings | None" = None) -> int:
 
     # Apply settings override if set
     settings_limit = getattr(settings, "max_concurrent_runs", None) if settings else None
-    if settings_limit:
-        if settings_limit:
-            max_concurrent = min(max_concurrent, settings_limit)
+    if settings_limit and settings_limit:
+        max_concurrent = min(max_concurrent, settings_limit)
 
     return max(1, max_concurrent)
 
@@ -153,10 +152,7 @@ def classify_burst_load(
     # Calculate rate
     if len(recent_requests) >= 2:
         time_span = recent_requests[-1] - recent_requests[0]
-        if time_span > 0:
-            rate = len(recent_requests) / time_span
-        else:
-            rate = 0
+        rate = len(recent_requests) / time_span if time_span > 0 else 0
     else:
         rate = recent_count / 10 if recent_count else 0
 

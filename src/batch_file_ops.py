@@ -7,7 +7,6 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Any
 
 
 class BatchFileOpsError(Exception):
@@ -50,7 +49,7 @@ def batch_read_files(paths: list[str]) -> dict[str, str]:
                 results[path_str] = path.read_text(encoding="utf-8")
             else:
                 results[path_str] = ""
-        except Exception as e:
+        except Exception:
             results[path_str] = ""
     return results
 

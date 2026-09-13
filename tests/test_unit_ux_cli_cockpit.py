@@ -23,7 +23,6 @@ from typer.testing import CliRunner
 from thegent.ux.cli_cockpit import app as cockpit_app
 from thegent.ux.decision_audit import DecisionAuditAppender
 
-
 runner = CliRunner()
 pytestmark = pytest.mark.unit
 

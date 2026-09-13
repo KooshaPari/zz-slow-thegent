@@ -70,9 +70,9 @@ class TestConnectorChaosTestSuite:
     def test_add_multiple_scenarios(self) -> None:
         """Test adding multiple scenarios to the suite."""
         suite = ConnectorChaosTestSuite()
-        s1 = suite.add_scenario("timeout", "timeout_fault")
-        s2 = suite.add_scenario("drop", "connection_drop", 0.5)
-        s3 = suite.add_scenario("error", "error_response")
+        suite.add_scenario("timeout", "timeout_fault")
+        suite.add_scenario("drop", "connection_drop", 0.5)
+        suite.add_scenario("error", "error_response")
 
         scenarios = suite.scenarios()
         assert len(scenarios) == 3

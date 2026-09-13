@@ -2,12 +2,12 @@
 
 from __future__ import annotations
 
-import orjson as json
 import shutil
 import subprocess
 import sys
 from pathlib import Path
 
+import orjson as json
 import pytest
 
 

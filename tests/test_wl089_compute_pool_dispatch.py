@@ -37,12 +37,11 @@ Covers:
 
 from __future__ import annotations
 
-import asyncio
 from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
 
-from thegent.core.worker_pool import AgentResult, AgentTask
+from thegent.core.worker_pool import AgentResult
 from thegent.orchestration.event_queue import SubAgentEventQueue
 from thegent.orchestration.protocol import (
     SubAgentRequest,
@@ -55,7 +54,6 @@ from thegent.orchestration.sub_agent_dispatcher import (
     SubAgentDispatcher,
     is_cli_harness,
 )
-
 
 # ---------------------------------------------------------------------------
 # Helpers / Fixtures

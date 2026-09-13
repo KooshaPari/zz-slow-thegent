@@ -5,13 +5,13 @@ Implements a triple-tier memory architecture:
 3. Semantic Memory (Persistent Knowledge Graph / Mem0 pattern)
 """
 
-import orjson as json
 import logging
 import sqlite3
 from datetime import UTC, datetime
 from pathlib import Path
 from typing import Any
 
+import orjson as json
 from pydantic import BaseModel, Field
 
 _log = logging.getLogger(__name__)

@@ -5,7 +5,7 @@
 
 from __future__ import annotations
 
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 
 import pytest
 
@@ -21,7 +21,7 @@ class TestMappingVersion:
     @pytest.mark.requirement("WL-311")
     def test_create_mapping_version(self) -> None:
         """Can create a MappingVersion with all fields."""
-        now = datetime.now(timezone.utc)
+        now = datetime.now(UTC)
         mappings = {"key1": "value1", "key2": "value2"}
         version = MappingVersion(
             version=1,
@@ -38,7 +38,7 @@ class TestMappingVersion:
     @pytest.mark.requirement("WL-311")
     def test_mapping_version_default_label(self) -> None:
         """MappingVersion defaults label to empty string."""
-        now = datetime.now(timezone.utc)
+        now = datetime.now(UTC)
         version = MappingVersion(
             version=1,
             mappings={"key": "value"},

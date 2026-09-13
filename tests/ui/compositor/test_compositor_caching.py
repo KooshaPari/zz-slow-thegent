@@ -28,7 +28,7 @@ from unittest.mock import MagicMock
 
 import pytest
 
-from thegent.ui.compositor.compositor import CacheStats, Compositor, Panel
+from thegent.ui.compositor.compositor import Compositor, Panel
 
 # ---------------------------------------------------------------------------
 # Helpers
@@ -521,7 +521,7 @@ def test_recover_panel_then_render_gets_fresh_result() -> None:
     comp = Compositor()
     comp.add_panel(panel)
 
-    r1 = comp.render_panel("r")
+    comp.render_panel("r")
     assert panel.has_error
 
     comp.recover_panel("r")

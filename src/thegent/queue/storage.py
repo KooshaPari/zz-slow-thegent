@@ -7,11 +7,12 @@ so deferral injection has a stable on-disk format.
 
 from __future__ import annotations
 
+import contextlib
 import json
 import os
 import tempfile
 import uuid
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from pathlib import Path
 from typing import Any
 
@@ -104,10 +105,8 @@ class PromptQueue:
                     f.write(json.dumps(item) + "\n")
             os.replace(tmp, self.queue_file)
         except Exception:
-            try:
+            with contextlib.suppress(OSError):
                 os.unlink(tmp)
-            except OSError:
-                pass
             raise
 
     def append(
@@ -125,7 +124,7 @@ class PromptQueue:
             "prompt": prompt,
             "status": status,
             "source": source,
-            "created_at": datetime.now(timezone.utc).isoformat(),
+            "created_at": datetime.now(UTC).isoformat(),
         }
         if project is not None:
             item["project"] = project

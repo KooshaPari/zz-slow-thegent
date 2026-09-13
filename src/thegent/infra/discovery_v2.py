@@ -4,12 +4,13 @@ Includes /proc scanner with agent patterns, heartbeats, and cleanup.
 
 import logging
 import time
+from collections.abc import Callable
 from datetime import UTC, datetime
 from pathlib import Path
-from collections.abc import Callable
 from typing import Any, ClassVar
 
 import psutil
+
 from thegent.infra.fast_yaml_parser import yaml_dump
 
 logger = logging.getLogger(__name__)

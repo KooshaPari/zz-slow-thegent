@@ -15,7 +15,7 @@ from typer.testing import CliRunner
 from thegent.cli.apps import audit
 
 if TYPE_CHECKING:
-    from pathlib import Path
+    pass
 
 runner = CliRunner()
 

@@ -2,9 +2,9 @@
 
 from __future__ import annotations
 
-import orjson as json
 from pathlib import Path
 
+import orjson as json
 from typer.testing import CliRunner
 
 from thegent.bench.store import load_bench_records

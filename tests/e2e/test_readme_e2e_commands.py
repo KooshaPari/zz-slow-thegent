@@ -3,11 +3,10 @@
 # noqa: PT018
 from __future__ import annotations
 
-from collections import Counter
-from pathlib import Path
 import re
 import shlex
-
+from collections import Counter
+from pathlib import Path
 
 README_PATH = Path(__file__).with_name("README.md")
 REPO_ROOT = README_PATH.parents[2]

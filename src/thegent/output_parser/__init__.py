@@ -1,6 +1,7 @@
 """Output parser for extracting structured data from model outputs."""
 from __future__ import annotations
 
+import contextlib
 import json
 import re
 from dataclasses import dataclass
@@ -77,10 +78,8 @@ def extract_condensed_structured(raw: str, schema: dict[str, Any] | None = None)
     # Try to extract JSON from the raw output
     json_match = re.search(r"\{[^{}]*\}", raw, re.DOTALL)
     if json_match:
-        try:
+        with contextlib.suppress(json.JSONDecodeError):
             result["parsed"] = json.loads(json_match.group(0))
-        except json.JSONDecodeError:
-            pass
 
     return result
 

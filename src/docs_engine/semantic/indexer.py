@@ -1,6 +1,6 @@
 """Semantic indexer - STUB."""
 
-from typing import Any, Dict, List
+from typing import Any
 
 
 class SemanticIndexer:

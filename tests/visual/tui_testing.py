@@ -3,9 +3,9 @@ Visual TUI Testing for thegent
 Applitools-style visual regression for terminal UI
 """
 
-import pytest
 import subprocess
-from pathlib import Path
+
+import pytest
 
 
 class TestTUI:

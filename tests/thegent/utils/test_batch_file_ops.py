@@ -4,12 +4,9 @@ Unit tests for thegent.utils.batch_file_ops.
 
 from __future__ import annotations
 
-import os
-from pathlib import Path
-
 import pytest
 
-from thegent.utils.batch_file_ops import BatchFileOperations, BatchResult
+from thegent.utils.batch_file_ops import BatchFileOperations
 
 
 @pytest.fixture

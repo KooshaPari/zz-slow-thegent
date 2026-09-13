@@ -26,7 +26,6 @@ from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any
 
-
 # Canonical ladders — mirrored from the dormant corridor so the
 # classifier is hermetic and never reaches into the test corpus.
 _TIMEOUT_STEPS: list[str] = ["retry_with_backoff", "increase_timeout", "escalate"]

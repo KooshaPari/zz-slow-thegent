@@ -7,7 +7,14 @@ from enum import StrEnum
 from typing import Any
 
 from pydantic import BaseModel
-from rich.progress import BarColumn, Progress, SpinnerColumn, TaskProgressColumn, TextColumn, TimeRemainingColumn
+from rich.progress import (
+    BarColumn,
+    Progress,
+    SpinnerColumn,
+    TaskProgressColumn,
+    TextColumn,
+    TimeRemainingColumn,
+)
 
 # Type for verification callback: (task_id, result) -> Any
 VerificationCallback = Callable[[str, Any], Any]
@@ -240,11 +247,10 @@ class LifecycleController:
                     on_worker_output(combined)
 
                 # 4. Soft Loop Check: allow human override/stop (SOFT mode)
-                if self.mode == LoopMode.SOFT:
-                    if "STOP" in combined:
-                        self.state.stopped = True
-                        self.state.stop_reason = "Human stop signal detected (SOFT mode)"
-                        break
+                if self.mode == LoopMode.SOFT and "STOP" in combined:
+                    self.state.stopped = True
+                    self.state.stop_reason = "Human stop signal detected (SOFT mode)"
+                    break
 
                 # 5. Preset Prompt Routing (WP-1201 Phase 1)
                 matched_preset = match_preset(combined)
@@ -292,7 +298,10 @@ class LifecycleController:
                     if any(
                         kw in (decision_result.reason or "").lower() for kw in ["security", "cost", "risk", "policy"]
                     ):
-                        from thegent.governance.escalation import EscalationPriority, EscalationQueue
+                        from thegent.governance.escalation import (
+                            EscalationPriority,
+                            EscalationQueue,
+                        )
 
                         eq = EscalationQueue(self.settings)
                         eq.escalate(

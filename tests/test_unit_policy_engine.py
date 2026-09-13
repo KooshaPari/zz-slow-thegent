@@ -2,7 +2,6 @@
 
 from __future__ import annotations
 
-import time
 from pathlib import Path
 
 import pytest
@@ -18,7 +17,6 @@ from thegent.governance.policy_engine import (
     Verdict,
     evaluate_pre_check,
 )
-
 
 # All tests in this module are unit tests.
 pytestmark = pytest.mark.unit

@@ -5,8 +5,8 @@ from pathlib import Path
 import pytest
 import typer
 
-from thegent.cli.commands import cli as cli_shim
 from thegent.cli.apps.plan import app as plan_app
+from thegent.cli.commands import cli as cli_shim
 from thegent.cli.commands.plan_cmds import (
     plan_lint_workstream_cmd,
     plan_normalize_workstream_cmd,

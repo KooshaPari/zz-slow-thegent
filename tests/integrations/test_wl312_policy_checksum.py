@@ -5,7 +5,7 @@
 
 from __future__ import annotations
 
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 
 import pytest
 
@@ -22,7 +22,7 @@ class TestPolicyChecksum:
     @pytest.mark.requirement("WL-226")
     def test_create_policy_checksum(self) -> None:
         """Can create a PolicyChecksum with all fields."""
-        now = datetime.now(timezone.utc)
+        now = datetime.now(UTC)
         checksum = PolicyChecksum(
             policy_id="policy-auth-001",
             checksum="abc123def456",

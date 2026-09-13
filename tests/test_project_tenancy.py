@@ -5,9 +5,9 @@
 
 from __future__ import annotations
 
-import orjson as json
 from typing import TYPE_CHECKING
 
+import orjson as json
 import pytest
 from typer.testing import CliRunner
 
@@ -984,7 +984,7 @@ class TestSetupProjectDoctorCli:
             project_cli,
             ["init", "--name", "dr-proj", "--path", str(proj), "--tenant", "dr-proj"],
         )
-        result = cli_runner.invoke(project_cli, ["doctor", "dr-proj", "--fix"])
+        cli_runner.invoke(project_cli, ["doctor", "dr-proj", "--fix"])
         # After fix, all fixable checks should pass
         assert (proj / ".thegent" / "config.yaml").exists()
         assert (proj / ".thegent" / "ownership.json").exists()

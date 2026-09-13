@@ -6,18 +6,18 @@ Asserts the contract surface FR-GOV-KR-001..015.
 
 from __future__ import annotations
 
-import pytest
 from datetime import UTC, datetime, timedelta
 from pathlib import Path
+
+import pytest
 
 from thegent.governance.key_rotation import (
     ApiKeyRecord,
     KeyRegistry,
     KeyRotationMonitor,
     KeyRotationWebhook,
-    KeyRotationWarning,
-    make_expiry_utc,
     __all__,
+    make_expiry_utc,
 )
 
 

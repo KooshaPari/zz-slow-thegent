@@ -27,7 +27,7 @@ def _get_run_spend(alert_system: object) -> float:
     return 0.0
 
 
-def check_budget_limits(settings: "ThegentSettings") -> tuple[bool, str | None]:
+def check_budget_limits(settings: ThegentSettings) -> tuple[bool, str | None]:
     """Check if budget limits have been exceeded.
 
     Args:
@@ -61,7 +61,7 @@ def check_budget_limits(settings: "ThegentSettings") -> tuple[bool, str | None]:
     return False, None
 
 
-def check_budget_warning(settings: "ThegentSettings") -> tuple[bool, str | None]:
+def check_budget_warning(settings: ThegentSettings) -> tuple[bool, str | None]:
     """Check if budget is approaching limits (warning).
 
     Args:

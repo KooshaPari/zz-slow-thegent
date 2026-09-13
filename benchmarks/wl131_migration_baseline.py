@@ -8,10 +8,10 @@ nominated for Rust migration in the WL-131 Batch-A plan.
 
 from __future__ import annotations
 
-import orjson as json
-import time
 import logging
+import time
 
+import orjson as json
 from thegent.routing.model_suffix_parser import parse_model_suffix
 
 INPUTS = [

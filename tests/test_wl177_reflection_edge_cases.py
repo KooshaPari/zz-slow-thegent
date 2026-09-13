@@ -4,8 +4,15 @@ from __future__ import annotations
 
 import pytest
 
-from thegent.integrations.gh_project_sync import _status_from_github, _status_to_github_option
-from thegent.integrations.linear_graphql import LinearGraphQLError, _status_from_linear, _status_to_linear_type
+from thegent.integrations.gh_project_sync import (
+    _status_from_github,
+    _status_to_github_option,
+)
+from thegent.integrations.linear_graphql import (
+    LinearGraphQLError,
+    _status_from_linear,
+    _status_to_linear_type,
+)
 from thegent.integrations.workstream_autosync import WorkstreamItem, WorkstreamParser
 
 

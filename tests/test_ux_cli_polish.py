@@ -13,16 +13,13 @@ Covers:
 
 from __future__ import annotations
 
-import orjson as json
 import os
 import sys
-import tempfile
-from io import StringIO
+from datetime import UTC
 from pathlib import Path
 from unittest.mock import MagicMock, patch
 
-import pytest
-
+import orjson as json
 
 # ---------------------------------------------------------------------------
 # WP-4001: Actionable Error Messages
@@ -115,9 +112,8 @@ class TestJsonOutputRegistryList:
         rec.name = name
         rec.project_root = Path(project)
         rec.capabilities = caps
-        from datetime import timezone
 
-        rec.last_seen = datetime(2025, 1, 1, 12, 0, tzinfo=timezone.utc)
+        rec.last_seen = datetime(2025, 1, 1, 12, 0, tzinfo=UTC)
         return rec
 
     def test_json_format_empty_registry(self, capsys) -> None:
@@ -219,8 +215,9 @@ class TestShellCompletions:
     """
 
     def test_main_app_has_completion_enabled(self) -> None:
-        from thegent.cli.apps.main import app
         from typer.main import get_command
+
+        from thegent.cli.apps.main import app
 
         click_cmd = get_command(app)
         # When add_completion=True typer injects --install-completion and

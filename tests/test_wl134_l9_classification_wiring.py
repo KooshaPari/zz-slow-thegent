@@ -38,7 +38,6 @@ from unittest.mock import MagicMock, patch
 
 import pytest
 
-
 _WIRE_DONE = (
     "_phase_resolve_task_metadata",
     "_phase_dispatch_grounded_run",
@@ -120,12 +119,11 @@ def test_phase_release_idle_and_publish_uses_correct_bus_event_shape(
 ) -> None:
     """When publish_bus_event is reachable, it must publish ``run.end`` with the
     4-tuple payload ``(run_id, exit_code, duration_s, status)``."""
-    from pathlib import Path
-
     # Inject the lazy-import target modules into sys.modules so the
     # production ``from ... import`` succeeds.
     import sys
     import types
+    from pathlib import Path
 
     fake_eye_mod = types.ModuleType("thegent.cli.shared.eye_state")
     fake_eye_cls = MagicMock()

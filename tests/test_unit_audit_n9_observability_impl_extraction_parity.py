@@ -39,7 +39,6 @@ from pathlib import Path
 
 import pytest
 
-
 # ---------------------------------------------------------------------------
 # Module paths. Centralized so a future rename only touches one constant.
 # ---------------------------------------------------------------------------

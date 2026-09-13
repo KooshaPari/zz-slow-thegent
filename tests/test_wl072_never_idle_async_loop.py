@@ -9,7 +9,6 @@ creating and destroying one on every gardening tick via asyncio.run().
 from __future__ import annotations
 
 import asyncio
-import threading
 from pathlib import Path
 from typing import Any
 from unittest.mock import AsyncMock, MagicMock, patch

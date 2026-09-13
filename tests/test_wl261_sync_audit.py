@@ -5,10 +5,10 @@
 
 from __future__ import annotations
 
-import orjson as json
 import re
 from pathlib import Path
 
+import orjson as json
 import pytest
 
 from thegent.integrations.sync_auditor import SyncAuditor, SyncPolicyAudit

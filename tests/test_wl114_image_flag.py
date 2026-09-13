@@ -6,10 +6,9 @@
 from __future__ import annotations
 
 import base64
-import orjson as json
 from pathlib import Path
-from unittest.mock import MagicMock, patch
 
+import orjson as json
 import pytest
 
 from thegent.agents.image_inputs import (
@@ -21,7 +20,6 @@ from thegent.agents.image_inputs import (
 )
 from thegent.agents.run_options import CODEX_AGENTS, IMAGE_CAPABLE_AGENTS
 from thegent.cli.commands.impl import _normalize_image_paths, _validate_image_capability
-
 
 # ---------------------------------------------------------------------------
 # image_inputs module — encode_image_to_base64

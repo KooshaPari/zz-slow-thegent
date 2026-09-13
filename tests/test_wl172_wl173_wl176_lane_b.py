@@ -3,16 +3,20 @@
 from __future__ import annotations
 
 import asyncio
-import orjson as json
 from pathlib import Path
 from types import SimpleNamespace
 from typing import Any
 
+import orjson as json
 import pytest
 from typer.testing import CliRunner
 
 from thegent.cli.apps.sync import app
-from thegent.integrations.workstream_autosync import WorkstreamAutosyncConfig, WorkstreamAutosyncRunner, WorkstreamItem
+from thegent.integrations.workstream_autosync import (
+    WorkstreamAutosyncConfig,
+    WorkstreamAutosyncRunner,
+    WorkstreamItem,
+)
 from thegent.mcp.manage import mcp_down, mcp_up
 
 

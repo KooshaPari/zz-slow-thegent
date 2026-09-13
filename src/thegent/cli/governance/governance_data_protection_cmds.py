@@ -16,8 +16,9 @@ def data_protection_cmd(format: str | None = None) -> None:
 
         console.print(json.dumps(status))
     else:
-        from thegent.cli import console
         from rich.table import Table
+
+        from thegent.cli import console
 
         table = Table(title="Data Protection Status")
         table.add_column("Setting", style="cyan")

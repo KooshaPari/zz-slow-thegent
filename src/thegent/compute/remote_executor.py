@@ -1,5 +1,6 @@
 """Stub module."""
 from __future__ import annotations
+
 from dataclasses import dataclass, field
 from typing import Any
 
@@ -57,7 +58,7 @@ class RemoteTask:
         }
 
     @classmethod
-    def from_dict(cls, data: dict[str, Any]) -> "RemoteTask":
+    def from_dict(cls, data: dict[str, Any]) -> RemoteTask:
         """Create from dictionary."""
         return cls(
             id=data.get("id", ""),

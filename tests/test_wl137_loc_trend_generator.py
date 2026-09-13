@@ -7,7 +7,6 @@ import pytest
 
 from conftest import _load_script_module
 
-
 SCRIPT_PATH = Path(__file__).resolve().parents[1] / "scripts" / "generate_wl120_wl136_loc_trend.py"
 MODULE = _load_script_module("generate_wl120_wl136_loc_trend", SCRIPT_PATH)
 

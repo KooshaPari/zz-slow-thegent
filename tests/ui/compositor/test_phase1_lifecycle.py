@@ -11,7 +11,7 @@ Tests for:
 import subprocess
 import tempfile
 from pathlib import Path
-from unittest.mock import MagicMock, Mock, patch
+from unittest.mock import Mock, patch
 
 import pytest
 
@@ -242,7 +242,6 @@ class TestTerminalPaneClose:
         pane = TerminalPane("test-pane", "/tmp")
         pane.spawn_shell()
 
-        original_pid = pane.process.pid if pane.process else None
         pane.close()
 
         assert pane.process is None

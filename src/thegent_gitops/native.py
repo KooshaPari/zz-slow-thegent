@@ -11,10 +11,10 @@ from __future__ import annotations
 
 import logging
 import subprocess
-from thegent.infra.shim_subprocess import run as shim_run
 from pathlib import Path
 from typing import Any
 
+from thegent.infra.shim_subprocess import run as shim_run
 
 _log = logging.getLogger(__name__)
 

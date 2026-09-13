@@ -3,11 +3,12 @@
 from __future__ import annotations
 
 import contextlib
-import orjson as json
 import math
 from pathlib import Path
 from typing import TYPE_CHECKING, Any
 from urllib.parse import urlparse
+
+import orjson as json
 
 if TYPE_CHECKING:
     from thegent.agents.base import RunResult
@@ -134,7 +135,10 @@ def resolve_grounding_sources_for_output(
     result_grounding_sources: list[str] | None,
 ) -> list[str]:
     """Resolve grounding source URLs from structured data first, text fallback second."""
-    from thegent.utils.routing_impl.grounding import extract_grounding_sources, extract_grounding_sources_from_payload
+    from thegent.utils.routing_impl.grounding import (
+        extract_grounding_sources,
+        extract_grounding_sources_from_payload,
+    )
 
     if result_grounding_sources:
         structured_sources = extract_grounding_sources_from_payload({"sources": result_grounding_sources})

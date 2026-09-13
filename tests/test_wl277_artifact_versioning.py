@@ -5,7 +5,7 @@
 
 from __future__ import annotations
 
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 
 import pytest
 
@@ -21,7 +21,7 @@ class TestArtifactVersion:
 
     def test_artifact_version_creation(self) -> None:
         """Test creating an ArtifactVersion."""
-        now = datetime.now(timezone.utc)
+        now = datetime.now(UTC)
         version = ArtifactVersion(format_version="1.0", schema_hash="abc123", created_at=now)
         assert version.format_version == "1.0"
         assert version.schema_hash == "abc123"
@@ -29,7 +29,7 @@ class TestArtifactVersion:
 
     def test_artifact_version_fields(self) -> None:
         """Test ArtifactVersion has expected fields."""
-        now = datetime.now(timezone.utc)
+        now = datetime.now(UTC)
         version = ArtifactVersion(format_version="2.0", schema_hash="def456", created_at=now)
         assert hasattr(version, "format_version")
         assert hasattr(version, "schema_hash")
@@ -43,9 +43,9 @@ class TestArtifactFormatRegistry:
     def test_register_version(self) -> None:
         """Test registering a new version."""
         registry = ArtifactFormatRegistry()
-        before = datetime.now(timezone.utc)
+        before = datetime.now(UTC)
         version = registry.register("1.0", "hash123")
-        after = datetime.now(timezone.utc)
+        after = datetime.now(UTC)
         assert version.format_version == "1.0"
         assert version.schema_hash == "hash123"
         assert before <= version.created_at <= after
@@ -68,7 +68,7 @@ class TestArtifactFormatRegistry:
     def test_latest_with_versions(self) -> None:
         """Test getting the latest version."""
         registry = ArtifactFormatRegistry()
-        v1 = registry.register("1.0", "hash1")
+        registry.register("1.0", "hash1")
         v2 = registry.register("2.0", "hash2")
         latest = registry.latest()
         assert latest == v2
@@ -107,8 +107,8 @@ class TestArtifactFormatRegistry:
     def test_register_overwrites(self) -> None:
         """Test that registering same version overwrites previous."""
         registry = ArtifactFormatRegistry()
-        v1 = registry.register("1.0", "hash1")
-        v2 = registry.register("1.0", "hash1-new")
+        registry.register("1.0", "hash1")
+        registry.register("1.0", "hash1-new")
         versions = registry.all_versions()
         assert len(versions) == 1
         assert versions[0].schema_hash == "hash1-new"

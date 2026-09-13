@@ -8,8 +8,9 @@ import os
 import re
 import shutil
 import subprocess
-from thegent.infra.shim_subprocess import run as shim_run
 from pathlib import Path
+
+from thegent.infra.shim_subprocess import run as shim_run
 
 _FASTEST_SHELL: str | None = None
 _SHELL_CACHE_ENABLED = True

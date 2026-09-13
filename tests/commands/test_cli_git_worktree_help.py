@@ -60,7 +60,7 @@ def test_root_help_shortcut_block_matches_shortcuts() -> None:
 
     # @trace WL-040 WP-4004
     """
-    from thegent.cli.help_examples import ROOT_HELP_SHORTCUTS, ROOT_HELP_SHORTCUT_BLOCK
+    from thegent.cli.help_examples import ROOT_HELP_SHORTCUT_BLOCK, ROOT_HELP_SHORTCUTS
 
     assert "\n".join(ROOT_HELP_SHORTCUTS) == ROOT_HELP_SHORTCUT_BLOCK
     assert "thegent help worktree" in ROOT_HELP_SHORTCUT_BLOCK

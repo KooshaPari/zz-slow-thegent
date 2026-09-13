@@ -10,13 +10,13 @@ Covers: run_impl, bg_impl, status_impl, stop_impl, wait_impl,
         _run_background_session_observer).
 """
 
-import orjson as json
 import os
 import signal
 from datetime import UTC, datetime
 from pathlib import Path
 from unittest.mock import MagicMock, patch
 
+import orjson as json
 import pytest
 import typer
 

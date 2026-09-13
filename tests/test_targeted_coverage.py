@@ -1,7 +1,5 @@
 """Targeted tests to increase coverage."""
 
-import pytest
-from unittest.mock import patch, MagicMock
 
 
 class TestExecutionPolicy:
@@ -33,7 +31,7 @@ class TestProjectMigrate:
 
     def test_project_scaffold_import(self):
         """Test scaffold functions import."""
-        from thegent.project.scaffold import scaffold_greenfield, scaffold_brownfield
+        from thegent.project.scaffold import scaffold_greenfield
 
         result = scaffold_greenfield("myapp", template="python")
         assert result["name"] == "myapp"

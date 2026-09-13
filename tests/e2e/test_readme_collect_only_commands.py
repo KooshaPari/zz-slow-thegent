@@ -2,14 +2,13 @@
 
 from __future__ import annotations
 
-from pathlib import Path
 import re
 import shlex
 import subprocess
 import sys
+from pathlib import Path
 
 import pytest
-
 
 README_PATH = Path(__file__).with_name("README.md")
 REPO_ROOT = README_PATH.parents[2]

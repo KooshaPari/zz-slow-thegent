@@ -17,11 +17,11 @@ from __future__ import annotations
 
 import copy
 from dataclasses import dataclass, field
-from enum import Enum
+from enum import StrEnum
 from typing import Any
 
 
-class ModelSuffix(str, Enum):
+class ModelSuffix(StrEnum):
     NITRO = "nitro"  # fastest/highest priority inference
     FLOOR = "floor"  # cheapest/lowest priority inference
     FREE = "free"  # free tier models only
@@ -169,9 +169,8 @@ def apply_suffix_to_request(body: dict[str, Any], parsed: ParsedModel) -> dict[s
     """
     result = copy.deepcopy(body)
 
-    if ModelSuffix.THINKING in parsed.suffixes:
-        if "reasoning" not in result:
-            result["reasoning"] = {"effort": "high"}
+    if ModelSuffix.THINKING in parsed.suffixes and "reasoning" not in result:
+        result["reasoning"] = {"effort": "high"}
 
     if ModelSuffix.ONLINE in parsed.suffixes:
         web_plugin = {"id": "web", "max_results": 5}

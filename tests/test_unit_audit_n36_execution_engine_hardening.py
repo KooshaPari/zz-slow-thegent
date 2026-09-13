@@ -57,7 +57,6 @@ from thegent.agents.base import AgentRunner, RunResult
 from thegent.execution import Auditor, RunMeta
 from thegent.orchestration.execution.engine import ExecutionEngine
 
-
 # ---------------------------------------------------------------------------
 # Helpers
 # ---------------------------------------------------------------------------

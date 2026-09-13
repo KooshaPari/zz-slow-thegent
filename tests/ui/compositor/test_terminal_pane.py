@@ -75,7 +75,6 @@ class TestTerminalPaneCleanup:
         """Test that cleanup terminates process cleanly."""
         pane = TerminalPane("test-pane", "/tmp")
         pane.spawn_shell("/bin/sh")
-        pane_id = pane.pane_id
         pane.close()
         # Should have cleaned up
         assert pane.process is None

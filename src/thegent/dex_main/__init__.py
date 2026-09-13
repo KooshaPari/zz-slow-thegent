@@ -57,7 +57,6 @@ def _get_codex_env() -> dict[str, Any]:
     Returns:
         Dictionary of Codex-related environment variables.
     """
-    import os
     return {
         "OPENAI_API_KEY": os.environ.get("OPENAI_API_KEY", ""),
         "ANTHROPIC_API_KEY": os.environ.get("ANTHROPIC_API_KEY", ""),
@@ -132,7 +131,6 @@ def _exec_native_codex(args: list[str]) -> None:
     Args:
         args: Arguments to pass to codex.
     """
-    import os
     codex_path = resolve_codex_cli_path()
     os.execvpe(codex_path, [codex_path] + args, os.environ.copy())
 
@@ -150,10 +148,9 @@ def _run_codex_interactive(
         dangerously_bypass: Whether to bypass safety checks.
         extra_args: Additional arguments to pass to codex.
     """
-    import os
 
     provider = _resolve_provider_for_model(model)
-    canonical_model = _MODEL_ALIAS.get(model, model)
+    _MODEL_ALIAS.get(model, model)
 
     env = _get_codex_env()
 
@@ -223,7 +220,6 @@ def default_dex(
     extra_args: list[str] = typer.Option([], help="Extra arguments to pass to the command"),
 ) -> None:
     """Default command that runs flash model."""
-    import os
     import sys
 
     if ctx.invoked_subcommand is not None:
@@ -252,7 +248,7 @@ def default_dex(
             cleaned_extra.append(arg)
             if arg == "--model":
                 skip_next = True
-    
+
     _run_codex_interactive(model, dangerously_bypass=True, extra_args=cleaned_extra)
 
 # Also expose the subcommands as separate commands

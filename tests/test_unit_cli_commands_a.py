@@ -5,11 +5,11 @@ covering the actual function bodies rather than routing through CliRunner.
 """
 
 import io
-import orjson as json
 import signal
 from pathlib import Path
 from unittest.mock import MagicMock, patch
 
+import orjson as json
 import pytest
 import typer
 

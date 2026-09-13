@@ -14,22 +14,22 @@ class ObservabilityEvent:
 
 class AsyncLogger:
     """Async-compatible logger."""
-    
+
     def __init__(self, name: str = "thegent") -> None:
         self.logger = logging.getLogger(name)
-    
+
     async def info(self, msg: str, **kwargs: Any) -> None:
         """Log info message."""
         self.logger.info(msg, **kwargs)
-    
+
     async def error(self, msg: str, **kwargs: Any) -> None:
         """Log error message."""
         self.logger.error(msg, **kwargs)
-    
+
     async def warning(self, msg: str, **kwargs: Any) -> None:
         """Log warning message."""
         self.logger.warning(msg, **kwargs)
-    
+
     async def debug(self, msg: str, **kwargs: Any) -> None:
         """Log debug message."""
         self.logger.debug(msg, **kwargs)

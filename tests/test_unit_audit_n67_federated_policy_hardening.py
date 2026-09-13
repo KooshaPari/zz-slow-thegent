@@ -3,11 +3,8 @@
 
 from __future__ import annotations
 
-import json
 import threading
 from pathlib import Path
-
-import pytest
 
 from thegent.governance.federated_policy import (
     FederatedPolicyEngine,
@@ -302,9 +299,8 @@ class TestFRGovFP021LockIsReentrant:
         engine = FederatedPolicyEngine()
         assert isinstance(engine._lock, type(threading.RLock()))
         # Verify re-entrancy: acquiring the lock twice from the same thread should not deadlock
-        with engine._lock:
-            with engine._lock:
-                pass  # No deadlock = pass
+        with engine._lock, engine._lock:
+            pass  # No deadlock = pass
 
 
 # ---------------------------------------------------------------------------

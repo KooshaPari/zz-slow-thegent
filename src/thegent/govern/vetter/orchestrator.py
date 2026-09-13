@@ -16,11 +16,12 @@ Opt-in extensions:
 
 from __future__ import annotations
 
-import orjson as json
 import time
-from datetime import datetime, UTC
+from datetime import UTC, datetime
 from pathlib import Path
 from typing import Any
+
+import orjson as json
 
 from thegent.govern.vetter.models import (
     VetterCheckResult,

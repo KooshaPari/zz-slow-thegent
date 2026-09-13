@@ -106,9 +106,7 @@ class SLAAgreement:
         now = datetime.now()
         if self.valid_from and now < self.valid_from:
             return False
-        if self.valid_until and now > self.valid_until:
-            return False
-        return True
+        return not (self.valid_until and now > self.valid_until)
 
 
 @dataclass
@@ -190,7 +188,7 @@ class ContractRegistry:
 
 
 @dataclass
-class ParsedOutput(Generic[T]):
+class ParsedOutput[T]:
     """Container for parsed output with metadata."""
 
     content: T

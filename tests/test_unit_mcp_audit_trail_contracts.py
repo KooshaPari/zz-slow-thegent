@@ -21,9 +21,7 @@ Covers:
 from __future__ import annotations
 
 import hashlib
-import json
 import threading
-import time
 
 import pytest
 
@@ -34,10 +32,7 @@ from thegent.mcp.server.mcp_audit_trail import (
     _stable_json,
 )
 from thegent.mcp.server.mcp_server_contracts import (
-    CONTRACTS,
     OBSERVE_SUMMARY_CONTRACT,
-    CONTRACT_HEALTH_GATE_CONTRACT,
-    HEALTH_TREND_CONTRACT,
     SCHEMA_VERSION,
     get_contract,
     list_contracts,

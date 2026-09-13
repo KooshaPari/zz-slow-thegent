@@ -26,7 +26,6 @@ from thegent.ux.cockpit import (
     OperatorCockpit,
 )
 
-
 pytestmark = pytest.mark.unit
 
 

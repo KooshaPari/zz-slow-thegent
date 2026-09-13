@@ -9,7 +9,10 @@ from __future__ import annotations
 
 import pytest
 
-from thegent.integrations.connector_circuit_breaker import CircuitState, ConnectorCircuitBreaker
+from thegent.integrations.connector_circuit_breaker import (
+    CircuitState,
+    ConnectorCircuitBreaker,
+)
 
 
 @pytest.mark.requirement("WL-194")

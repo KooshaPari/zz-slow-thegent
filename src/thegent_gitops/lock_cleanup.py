@@ -5,10 +5,9 @@ Uses mtime + lsof for safe removal (per GIT_INDEX_LOCK_OS_LEVEL_AND_AGENT_SYSTEM
 """
 
 import platform
-import subprocess
 import shlex
+import subprocess
 from collections.abc import Iterator
-from typing import Optional
 from pathlib import Path
 
 from thegent.infra import run_subprocess_optimized
@@ -57,7 +56,7 @@ def _resolve_git_dir(git_ref: Path) -> Path | None:
     return (git_ref.parent / payload).resolve()
 
 
-def _has_open_holder(lock_path: Path) -> Optional[bool]:
+def _has_open_holder(lock_path: Path) -> bool | None:
     """Return True if any process has the lock file open (lsof)."""
     try:
         result = run_subprocess_optimized(

@@ -5,11 +5,11 @@
 
 from __future__ import annotations
 
-import orjson as json
-import pytest
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from pathlib import Path
 from tempfile import TemporaryDirectory
+
+import pytest
 
 from thegent.integrations.drift_replay import DriftManifest, DriftReplayEngine
 
@@ -18,7 +18,7 @@ from thegent.integrations.drift_replay import DriftManifest, DriftReplayEngine
 def test_drift_manifest_dataclass() -> None:
     """Test DriftManifest dataclass creation."""
     drifts = [{"field": "status", "from": "TODO", "to": "DONE"}]
-    timestamp = datetime.now(timezone.utc)
+    timestamp = datetime.now(UTC)
 
     manifest = DriftManifest(
         manifest_id="MAN-001",
@@ -36,7 +36,7 @@ def test_drift_manifest_dataclass() -> None:
 def test_drift_manifest_to_dict() -> None:
     """Test DriftManifest to_dict serialization."""
     drifts = [{"field": "status", "from": "TODO", "to": "DONE"}]
-    timestamp = datetime(2025, 1, 15, 10, 30, 45, tzinfo=timezone.utc)
+    timestamp = datetime(2025, 1, 15, 10, 30, 45, tzinfo=UTC)
 
     manifest = DriftManifest(
         manifest_id="MAN-001",
@@ -78,7 +78,7 @@ def test_archive_manifest_success() -> None:
             manifest_id="MAN-001",
             cycle_id="CYCLE-001",
             drifts=[{"field": "status", "from": "TODO", "to": "DONE"}],
-            captured_at=datetime.now(timezone.utc),
+            captured_at=datetime.now(UTC),
         )
 
         result_path = DriftReplayEngine.archive_manifest(manifest, archive_dir)
@@ -94,7 +94,7 @@ def test_archive_manifest_invalid_dir() -> None:
         manifest_id="MAN-001",
         cycle_id="CYCLE-001",
         drifts=[],
-        captured_at=datetime.now(timezone.utc),
+        captured_at=datetime.now(UTC),
     )
 
     with pytest.raises(ValueError, match="Archive directory does not exist"):
@@ -111,7 +111,7 @@ def test_load_manifest_success() -> None:
             manifest_id="MAN-001",
             cycle_id="CYCLE-001",
             drifts=[{"field": "status", "from": "TODO", "to": "DONE"}],
-            captured_at=datetime.now(timezone.utc),
+            captured_at=datetime.now(UTC),
         )
         DriftReplayEngine.archive_manifest(original_manifest, archive_dir)
 
@@ -159,7 +159,7 @@ def test_list_manifests_multiple() -> None:
                 manifest_id=f"MAN-{i:03d}",
                 cycle_id=f"CYCLE-{i}",
                 drifts=[],
-                captured_at=datetime.now(timezone.utc),
+                captured_at=datetime.now(UTC),
             )
             DriftReplayEngine.archive_manifest(manifest, archive_dir)
 
@@ -178,7 +178,7 @@ def test_replay_returns_drifts() -> None:
         manifest_id="MAN-001",
         cycle_id="CYCLE-001",
         drifts=drifts,
-        captured_at=datetime.now(timezone.utc),
+        captured_at=datetime.now(UTC),
     )
 
     result = DriftReplayEngine.replay(manifest)
@@ -197,7 +197,7 @@ def test_replay_deterministic() -> None:
         manifest_id="MAN-001",
         cycle_id="CYCLE-001",
         drifts=drifts,
-        captured_at=datetime.now(timezone.utc),
+        captured_at=datetime.now(UTC),
     )
 
     result1 = DriftReplayEngine.replay(manifest)
@@ -218,7 +218,7 @@ def test_roundtrip_manifest() -> None:
                 {"field": "status", "from": "TODO", "to": "DONE"},
                 {"field": "priority", "from": "P2", "to": "P1"},
             ],
-            captured_at=datetime(2025, 1, 15, 10, 30, 45, tzinfo=timezone.utc),
+            captured_at=datetime(2025, 1, 15, 10, 30, 45, tzinfo=UTC),
         )
 
         DriftReplayEngine.archive_manifest(original, archive_dir)

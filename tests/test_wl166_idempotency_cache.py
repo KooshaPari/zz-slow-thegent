@@ -5,14 +5,13 @@
 
 from __future__ import annotations
 
-import orjson as json
-from datetime import datetime, timedelta, timezone
+from datetime import UTC, datetime, timedelta
 from pathlib import Path
 
+import orjson as json
 import pytest
 
 from thegent.integrations.idempotency_cache import IdempotencyCache, IdempotencyRecord
-
 
 # ---------------------------------------------------------------------------
 # Test: IdempotencyRecord
@@ -153,7 +152,7 @@ class TestIdempotencyCacheBasic:
         """Test clearing records older than a given datetime."""
         cache = IdempotencyCache(cache_path=tmp_path / "cache.json")
 
-        now = datetime.now(timezone.utc)
+        now = datetime.now(UTC)
         old_time = (now - timedelta(days=2)).isoformat()
         recent_time = now.isoformat()
 
@@ -185,8 +184,8 @@ class TestIdempotencyCacheBasic:
         """Test clearing records using an ISO 8601 string cutoff."""
         cache = IdempotencyCache(cache_path=tmp_path / "cache.json")
 
-        old_time = (datetime.now(timezone.utc) - timedelta(days=2)).isoformat()
-        recent_time = datetime.now(timezone.utc).isoformat()
+        old_time = (datetime.now(UTC) - timedelta(days=2)).isoformat()
+        recent_time = datetime.now(UTC).isoformat()
 
         cache._records["op-old"] = IdempotencyRecord(
             operation_id="op-old",
@@ -203,7 +202,7 @@ class TestIdempotencyCacheBasic:
             content_hash="hash-recent",
         )
 
-        cutoff_str = (datetime.now(timezone.utc) - timedelta(days=1)).isoformat()
+        cutoff_str = (datetime.now(UTC) - timedelta(days=1)).isoformat()
         removed = cache.clear_older_than(cutoff_str)
 
         assert removed == 1

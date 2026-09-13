@@ -2,7 +2,6 @@
 from dataclasses import dataclass, field
 from typing import Any
 
-
 ALL_PLATFORMS = ["linux", "darwin", "windows"]
 
 

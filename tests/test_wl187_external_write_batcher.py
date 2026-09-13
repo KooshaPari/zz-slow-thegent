@@ -9,7 +9,10 @@ from __future__ import annotations
 
 import pytest
 
-from thegent.integrations.external_write_batcher import ExternalWriteBatcher, WriteRequest
+from thegent.integrations.external_write_batcher import (
+    ExternalWriteBatcher,
+    WriteRequest,
+)
 
 
 @pytest.mark.requirement("WL-187")

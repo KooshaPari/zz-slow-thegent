@@ -13,7 +13,6 @@ from __future__ import annotations
 
 import logging
 import subprocess
-import sys
 from dataclasses import dataclass, field
 from pathlib import Path
 from typing import TYPE_CHECKING, Any
@@ -21,14 +20,13 @@ from typing import TYPE_CHECKING, Any
 from thegent.infra.wasm_plugin import (
     ExtismRuntime,
     PluginStatus,
-    ResourceLimits,
     WasmCapability,
     WasmPluginMetadata,
     WasmRuntimeStatus,
 )
 
 if TYPE_CHECKING:
-    from collections.abc import Iterable
+    pass
 
 _log = logging.getLogger(__name__)
 

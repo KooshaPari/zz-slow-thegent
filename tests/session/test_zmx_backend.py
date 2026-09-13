@@ -7,10 +7,10 @@ All subprocess calls are mocked — no zmx binary required.
 
 from __future__ import annotations
 
-import orjson as json
 import subprocess
 from unittest.mock import MagicMock, patch
 
+import orjson as json
 import pytest
 
 from thegent.session.zmx_backend import (

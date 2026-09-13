@@ -83,7 +83,7 @@ class BearerAuthMiddleware:
         app: The ASGI application to wrap.
     """
 
-    _settings: "ThegentSettings | None" = None
+    _settings: ThegentSettings | None = None
 
     def __init__(self, app: Any) -> None:
         """Initialize the middleware with an ASGI app.
@@ -128,7 +128,7 @@ class BearerAuthMiddleware:
         cls._settings = None
 
 
-def get_settings() -> "ThegentSettings":
+def get_settings() -> ThegentSettings:
     """Get the ThegentSettings singleton.
 
     Returns:

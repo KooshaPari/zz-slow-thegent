@@ -1,6 +1,5 @@
 # tests/agent_roles/test_spec_renderer.py
 # @trace FR-AR-001
-import pytest
 from pathlib import Path
 
 
@@ -34,8 +33,8 @@ fr_traces:
 
 
 def test_renderer_produces_valid_md(tmp_path: Path) -> None:
-    from agent_roles.spec import AgentRoleSpec
     from agent_roles.renderer import RoleRenderer
+    from agent_roles.spec import AgentRoleSpec
 
     spec = AgentRoleSpec(
         name="mutation_tester",
@@ -60,8 +59,8 @@ def test_renderer_produces_valid_md(tmp_path: Path) -> None:
 
 
 def test_renderer_output_path(tmp_path: Path) -> None:
-    from agent_roles.spec import AgentRoleSpec
     from agent_roles.renderer import RoleRenderer
+    from agent_roles.spec import AgentRoleSpec
 
     spec = AgentRoleSpec(
         name="doc_writer",

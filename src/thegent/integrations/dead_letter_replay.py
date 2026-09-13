@@ -7,8 +7,8 @@ Orchestrates deterministic replay of queued failures with result tracking.
 
 from __future__ import annotations
 
+from collections.abc import Callable
 from dataclasses import dataclass
-from typing import Callable
 
 from thegent.integrations.dead_letter_queue import DeadLetterEntry, DeadLetterQueue
 

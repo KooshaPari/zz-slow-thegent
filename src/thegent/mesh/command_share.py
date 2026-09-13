@@ -1,15 +1,21 @@
 """Command sharing service composed from the durable mesh adapters."""
 from __future__ import annotations
 
+from collections.abc import Mapping
 from pathlib import Path
 from typing import Any
 from uuid import uuid4
-from collections.abc import Mapping
 
 from .cache import Singleflight
 from .contracts import (
-    AcquireLockCommand, CommandKey, EnqueueTaskCommand, EventType, MeshEvent,
-    MergeCommand, QueuePort, ReleaseLockCommand,
+    AcquireLockCommand,
+    CommandKey,
+    EnqueueTaskCommand,
+    EventType,
+    MergeCommand,
+    MeshEvent,
+    QueuePort,
+    ReleaseLockCommand,
 )
 from .coordination import FileClaimsRegistry
 from .smart_merge import SmartMerger

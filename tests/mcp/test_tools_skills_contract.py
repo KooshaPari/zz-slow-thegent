@@ -3,14 +3,12 @@
 from __future__ import annotations
 
 import importlib.util
-import orjson as json
+from pathlib import Path
 from typing import Any
 
+import orjson as json
 import pytest
 from fastmcp.tools.tool import ToolResult
-
-from pathlib import Path
-
 
 MODULE_PATH = Path(__file__).resolve().parents[2] / "src" / "thegent" / "mcp" / "server" / "tools_skills.py"
 SPEC = importlib.util.spec_from_file_location("tools_skills", MODULE_PATH)

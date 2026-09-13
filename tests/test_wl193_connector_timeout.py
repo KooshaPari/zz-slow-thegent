@@ -9,7 +9,10 @@ from __future__ import annotations
 
 import pytest
 
-from thegent.integrations.connector_timeout import ConnectorTimeoutConfig, ConnectorTimeoutRegistry
+from thegent.integrations.connector_timeout import (
+    ConnectorTimeoutConfig,
+    ConnectorTimeoutRegistry,
+)
 
 
 @pytest.mark.requirement("WL-193")

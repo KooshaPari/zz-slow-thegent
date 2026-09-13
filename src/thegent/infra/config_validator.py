@@ -5,6 +5,7 @@ settings before they are used.
 """
 
 from pathlib import Path
+
 from rich.console import Console
 from rich.panel import Panel
 from rich.table import Table

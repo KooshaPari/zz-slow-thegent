@@ -5,7 +5,7 @@
 
 from __future__ import annotations
 
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from pathlib import Path
 
 import pytest
@@ -27,7 +27,7 @@ def item() -> ResearchItem:
         summary="A cool project",
         score=500,
         tags=["python", "ai"],
-        fetched_at=datetime.now(timezone.utc),
+        fetched_at=datetime.now(UTC),
         relevance=0.9,
     )
 
@@ -89,7 +89,7 @@ def test_mirror_filters_low_relevance(db_path: Path, tmp_path: Path) -> None:
         summary="irrelevant",
         score=1,
         tags=[],
-        fetched_at=datetime.now(timezone.utc),
+        fetched_at=datetime.now(UTC),
         relevance=0.1,
     )
     store.upsert(low)

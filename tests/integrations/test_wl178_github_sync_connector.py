@@ -2,19 +2,19 @@
 
 from __future__ import annotations
 
-import orjson as json
 from pathlib import Path
 from typing import Any
 
+import orjson as json
 import pytest
 
+from thegent.integrations.connector_mapping_cache import ConnectorMappingCache
 from thegent.integrations.gh_project_sync import (
     GHProjectConfig,
     GHProjectSyncError,
     sync_from_github,
     sync_to_github,
 )
-from thegent.integrations.connector_mapping_cache import ConnectorMappingCache
 
 
 @pytest.fixture

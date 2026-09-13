@@ -1,5 +1,5 @@
 import random
-from typing import Callable, List
+from collections.abc import Callable
 
 
 class Teleprompter:
@@ -20,7 +20,7 @@ class Teleprompter:
         ]
         return random.choice(variants)
 
-    def optimize(self, prompts: List[str], metric: Callable[[str], float]) -> List[str]:
+    def optimize(self, prompts: list[str], metric: Callable[[str], float]) -> list[str]:
         """Optimize a list of prompts via hill-climbing.
 
         Args:

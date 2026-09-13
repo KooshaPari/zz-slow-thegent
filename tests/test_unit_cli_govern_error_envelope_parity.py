@@ -457,19 +457,18 @@ class TestGovernErrorEnvelopeFunctional:
             width=200,
         )
 
-        with patch.object(govern_mod, "err_console", captured_console):
-            with patch(
-                "thegent.cli.governance.governance.govern_vet_impl",
-                side_effect=ValueError("[red]malicious[/red] boom"),
-            ):
-                # Click 8.2+ removed `mix_stderr`; stderr is always separated.
-                # Capture both stdout and stderr explicitly via result.
-                runner = CliRunner()
-                result = runner.invoke(
-                    govern_mod.app,
-                    ["vet", "fake-run-id", "--policy", "default"],
-                    catch_exceptions=False,
-                )
+        with patch.object(govern_mod, "err_console", captured_console), patch(
+            "thegent.cli.governance.governance.govern_vet_impl",
+            side_effect=ValueError("[red]malicious[/red] boom"),
+        ):
+            # Click 8.2+ removed `mix_stderr`; stderr is always separated.
+            # Capture both stdout and stderr explicitly via result.
+            runner = CliRunner()
+            result = runner.invoke(
+                govern_mod.app,
+                ["vet", "fake-run-id", "--policy", "default"],
+                catch_exceptions=False,
+            )
 
         # The envelope failure path exits 1.
         assert result.exit_code == 1

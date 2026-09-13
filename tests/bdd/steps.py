@@ -2,18 +2,19 @@
 BDD Step Definitions for Python (behave)
 """
 
-from behave import given, when, then
-from dataclasses import dataclass, field
-from typing import Optional, List, Dict, Any
-from datetime import datetime
-import uuid
 import time
+import uuid
+from dataclasses import dataclass, field
+from datetime import datetime
+from typing import Any
+
+from behave import given, then, when
 
 
 @dataclass
 class TestContext:
-    entity: Optional[dict[str, Any]] = None
-    last_error: Optional[Exception] = None
+    entity: dict[str, Any] | None = None
+    last_error: Exception | None = None
     events: list[dict[str, Any]] = field(default_factory=list)
     config: dict[str, Any] = field(default_factory=dict)
     results: list[Any] = field(default_factory=list)

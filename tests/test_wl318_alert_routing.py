@@ -5,8 +5,9 @@
 
 from __future__ import annotations
 
+from datetime import UTC, datetime
+
 import pytest
-from datetime import datetime, timezone
 
 from thegent.integrations.alert_routing import (
     Alert,
@@ -26,7 +27,7 @@ def test_alert_severity_enum() -> None:
 @pytest.mark.requirement("WL-318")
 def test_alert_dataclass() -> None:
     """Test Alert dataclass creation."""
-    timestamp = datetime.now(timezone.utc)
+    timestamp = datetime.now(UTC)
     alert = Alert(
         alert_id="ALR-001",
         severity=AlertSeverity.WARN,
@@ -117,7 +118,7 @@ def test_route_single_hook() -> None:
         severity=AlertSeverity.INFO,
         message="Test",
         context={},
-        timestamp=datetime.now(timezone.utc),
+        timestamp=datetime.now(UTC),
     )
 
     count = router.route(alert)
@@ -145,7 +146,7 @@ def test_route_multiple_hooks() -> None:
         severity=AlertSeverity.CRITICAL,
         message="Test",
         context={},
-        timestamp=datetime.now(timezone.utc),
+        timestamp=datetime.now(UTC),
     )
 
     count = router.route(alert)
@@ -164,7 +165,7 @@ def test_route_no_hooks() -> None:
         severity=AlertSeverity.INFO,
         message="Test",
         context={},
-        timestamp=datetime.now(timezone.utc),
+        timestamp=datetime.now(UTC),
     )
 
     count = router.route(alert)
@@ -188,7 +189,7 @@ def test_route_passes_alert_context() -> None:
         severity=AlertSeverity.CRITICAL,
         message="Critical error",
         context={"user": "alice", "action": "sync"},
-        timestamp=datetime.now(timezone.utc),
+        timestamp=datetime.now(UTC),
     )
 
     router.route(alert)
@@ -233,7 +234,7 @@ def test_hook_exception_isolation() -> None:
         severity=AlertSeverity.INFO,
         message="Test",
         context={},
-        timestamp=datetime.now(timezone.utc),
+        timestamp=datetime.now(UTC),
     )
 
     # This will raise because hook fails - test that isolation is tested

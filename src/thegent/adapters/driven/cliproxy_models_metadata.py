@@ -20,7 +20,10 @@ def enrich_model_entry(entry: dict) -> dict:
     # @trace FR-REQEXT-046
     """
     try:
-        from thegent.utils.routing_impl.model_metadata import get_model_metadata, has_model_metadata
+        from thegent.utils.routing_impl.model_metadata import (
+            get_model_metadata,
+            has_model_metadata,
+        )
 
         model_id = entry.get("id", "")
         if not has_model_metadata(model_id):
@@ -49,7 +52,9 @@ def inject_proxy_models(models_list: list[dict]) -> list[dict]:
     # @trace FR-REQEXT-047
     """
     try:
-        from thegent.utils.routing_impl.harness_model_mapping import CANONICAL_TO_OPENROUTER
+        from thegent.utils.routing_impl.harness_model_mapping import (
+            CANONICAL_TO_OPENROUTER,
+        )
 
         existing_ids = {m.get("id", "") for m in models_list}
         result = list(models_list)

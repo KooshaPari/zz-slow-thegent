@@ -7,8 +7,10 @@ from __future__ import annotations
 
 import pytest
 
-from thegent.cliproxy_adapter import inject_native_finish_reason, normalize_finish_reason
-
+from thegent.cliproxy_adapter import (
+    inject_native_finish_reason,
+    normalize_finish_reason,
+)
 
 # ---------------------------------------------------------------------------
 # normalize_finish_reason tests

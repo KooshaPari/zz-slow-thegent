@@ -19,6 +19,7 @@ Coverage:
 from __future__ import annotations
 
 import hashlib
+
 import orjson as json
 
 from thegent.cliproxy_adapter import _compute_models_etag, _transform_models_response

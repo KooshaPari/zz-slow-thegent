@@ -45,7 +45,6 @@ from thegent.contracts.registry import (
     ContractVersionInfo,
 )
 
-
 __all__ = [
     "MigrationController",
 ]

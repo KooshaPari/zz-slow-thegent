@@ -5,15 +5,11 @@ Contract surface: FR-GOV-VG-001..015
 
 from unittest.mock import MagicMock
 
-import pytest
-
 from thegent.governance.verification_gate import (
-    AGENT_TIER_ESCALATION,
     DEFAULT_MAX_REROLLS,
     HealthComputerProtocol,
     ScannerProtocol,
     ScanResultProtocol,
-    TaskExecutionProtocol,
     TaskVerification,
     VerificationGate,
     VerificationVerdict,

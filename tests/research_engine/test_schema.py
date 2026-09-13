@@ -1,6 +1,6 @@
 # tests/research_engine/test_schema.py
 # @trace FR-RE-002
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 
 
 def test_research_item_roundtrip() -> None:
@@ -14,7 +14,7 @@ def test_research_item_roundtrip() -> None:
         summary="A summary",
         score=100,
         tags=["python", "mcp"],
-        fetched_at=datetime.now(timezone.utc),
+        fetched_at=datetime.now(UTC),
         relevance=0.85,
     )
     assert item.slug == "abc123def456"
@@ -32,7 +32,7 @@ def test_research_item_slug_from_url() -> None:
         summary="",
         score=0,
         tags=[],
-        fetched_at=datetime.now(timezone.utc),
+        fetched_at=datetime.now(UTC),
         relevance=0.0,
     )
     assert len(item.slug) == 12

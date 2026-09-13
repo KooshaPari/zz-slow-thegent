@@ -5,7 +5,7 @@
 
 from __future__ import annotations
 
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 
 import pytest
 
@@ -21,8 +21,8 @@ class TestSignedCapabilityCreation:
     @pytest.mark.requirement("WL-293")
     def test_create_signed_capability(self) -> None:
         """Can create a SignedCapability with required fields."""
-        now = datetime.now(timezone.utc)
-        expires = datetime.fromtimestamp(now.timestamp() + 3600, tz=timezone.utc)
+        now = datetime.now(UTC)
+        expires = datetime.fromtimestamp(now.timestamp() + 3600, tz=UTC)
 
         cap = SignedCapability(
             capability_id="CAP-001",
@@ -97,7 +97,7 @@ class TestSignedCapabilityCacheStore:
     @pytest.mark.requirement("WL-293")
     def test_store_sets_expiry(self, cache: SignedCapabilityCache) -> None:
         """store sets expires_at based on TTL."""
-        before = datetime.now(timezone.utc)
+        before = datetime.now(UTC)
         cap = cache.store(
             capability_id="CAP-001",
             connector="github",
@@ -105,11 +105,11 @@ class TestSignedCapabilityCacheStore:
             enabled=True,
             signature="sig_abc123",
         )
-        after = datetime.now(timezone.utc)
+        after = datetime.now(UTC)
 
         # expires_at should be approximately TTL from now
-        min_expected = datetime.fromtimestamp(before.timestamp() + 3600, tz=timezone.utc)
-        max_expected = datetime.fromtimestamp(after.timestamp() + 3600, tz=timezone.utc)
+        min_expected = datetime.fromtimestamp(before.timestamp() + 3600, tz=UTC)
+        max_expected = datetime.fromtimestamp(after.timestamp() + 3600, tz=UTC)
 
         assert min_expected <= cap.expires_at <= max_expected
 
@@ -197,7 +197,7 @@ class TestSignedCapabilityCacheGet:
 
         # Manually expire the capability
         cap = cache._capabilities["CAP-001"]
-        cap.expires_at = datetime.now(timezone.utc)
+        cap.expires_at = datetime.now(UTC)
 
         result = cache.get("CAP-001")
         assert result is None
@@ -233,7 +233,7 @@ class TestSignedCapabilityCacheIsExpired:
     def test_is_expired_true_for_expired(self, cache_with_capability: SignedCapabilityCache) -> None:
         """is_expired returns True for expired capability."""
         cap = cache_with_capability._capabilities["CAP-001"]
-        cap.expires_at = datetime.now(timezone.utc)
+        cap.expires_at = datetime.now(UTC)
 
         assert cache_with_capability.is_expired("CAP-001") is True
 
@@ -281,9 +281,9 @@ class TestSignedCapabilityCacheRenew:
     @pytest.mark.requirement("WL-293")
     def test_renew_updates_last_renewed(self, cache_with_capability: SignedCapabilityCache) -> None:
         """renew updates last_renewed_at timestamp."""
-        before = datetime.now(timezone.utc)
+        before = datetime.now(UTC)
         renewed = cache_with_capability.renew("CAP-001", "sig_new456")
-        after = datetime.now(timezone.utc)
+        after = datetime.now(UTC)
 
         assert renewed is not None
         assert before <= renewed.last_renewed_at <= after
@@ -412,7 +412,7 @@ class TestSignedCapabilityCacheCleanupExpired:
         )
 
         # Add one expired capability manually
-        now = datetime.now(timezone.utc)
+        now = datetime.now(UTC)
         expired_cap = SignedCapability(
             capability_id="CAP-002",
             connector="github",
@@ -420,7 +420,7 @@ class TestSignedCapabilityCacheCleanupExpired:
             enabled=True,
             signature="sig_2",
             created_at=now,
-            expires_at=datetime.fromtimestamp(now.timestamp() - 1, tz=timezone.utc),
+            expires_at=datetime.fromtimestamp(now.timestamp() - 1, tz=UTC),
             last_renewed_at=now,
         )
         cache._capabilities["CAP-002"] = expired_cap

@@ -2,12 +2,12 @@
 Integration tests for document queue system.
 """
 
-import orjson as json
 import logging
 import tempfile
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from pathlib import Path
 
+import orjson as json
 import pytest
 
 from thegent.agents.document import (
@@ -22,10 +22,10 @@ from thegent.agents.document import (
 from thegent.agents.document.processor import (
     compute_file_hash,
     count_lines,
+    extract_frontmatter,
     extract_headings,
     extract_links,
     extract_metadata,
-    extract_frontmatter,
 )
 
 
@@ -57,7 +57,7 @@ Some content here.
 def sample_queue_file(temp_dir):
     """Create a sample queue file."""
     queue_data = {
-        "scan_date": datetime.now(timezone.utc).isoformat(),
+        "scan_date": datetime.now(UTC).isoformat(),
         "scan_params": {},
         "summary": {"2026-02": {"total": 1, "by_location": {"test": 1}}},
         "queue": [

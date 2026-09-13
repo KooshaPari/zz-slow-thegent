@@ -3,8 +3,7 @@
 from __future__ import annotations
 
 import subprocess
-from typing import TYPE_CHECKING, Any
-
+from typing import Any
 
 _MODEL_ALIASES = {
     "cursor": "composer-1.5",

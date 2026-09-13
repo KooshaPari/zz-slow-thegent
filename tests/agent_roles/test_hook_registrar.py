@@ -10,8 +10,8 @@ import yaml
 def test_register_adds_to_hook_config(tmp_path: Path) -> None:
     """Test that register() adds spec to hook-config.yaml."""
     # @trace FR-AR-002
-    from agent_roles.spec import AgentRoleSpec
     from agent_roles.hook_registrar import HookRegistrar
+    from agent_roles.spec import AgentRoleSpec
 
     config_path = tmp_path / "hook-config.yaml"
     config_path.write_text("hooks: []\n")
@@ -43,8 +43,8 @@ def test_register_adds_to_hook_config(tmp_path: Path) -> None:
 def test_register_idempotent(tmp_path: Path) -> None:
     """Test that registering same spec twice does not duplicate entry."""
     # @trace FR-AR-002
-    from agent_roles.spec import AgentRoleSpec
     from agent_roles.hook_registrar import HookRegistrar
+    from agent_roles.spec import AgentRoleSpec
 
     config_path = tmp_path / "hook-config.yaml"
     config_path.write_text("hooks: []\n")

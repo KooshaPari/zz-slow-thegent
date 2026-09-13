@@ -109,7 +109,7 @@ class WatchdogTrigger:
         self._use_watchfiles = WATCHFILES_AVAILABLE
         # Fallback to watchdog if watchfiles not available
         if not self._use_watchfiles and WATCHDOG_AVAILABLE:
-            self._observer: "Observer | None" = None  # type: ignore[valid-type]
+            self._observer: Observer | None = None  # type: ignore[valid-type]
             self._handler: FileSystemEventHandler | None = None  # type: ignore[valid-type]
         else:
             self._observer = None
@@ -217,10 +217,7 @@ class WatchdogTrigger:
 
         # Check if any parent directory is excluded
         parts = path.parts
-        if any(part in self.EXCLUDE_DIRS for part in parts):
-            return False
-
-        return True
+        return not any(part in self.EXCLUDE_DIRS for part in parts)
 
     def _on_file_change(self) -> None:
         """Called when a watched file changes."""
@@ -299,10 +296,7 @@ if not WATCHFILES_AVAILABLE:
 
             # Check if any parent directory is excluded
             parts = Path(path).parts
-            if any(part in self._exclude_dirs for part in parts):
-                return False
-
-            return True
+            return not any(part in self._exclude_dirs for part in parts)
 
         def on_modified(self, event: Any) -> None:
             """Called when a file is modified."""

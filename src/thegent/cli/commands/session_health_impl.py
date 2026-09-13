@@ -26,13 +26,12 @@ sibling tests.
 
 from __future__ import annotations
 
-import os
 import hashlib
+import os
 from pathlib import Path
 from typing import Any
 
 from thegent.config import ThegentSettings
-
 
 # AUDIT-N+19: schema-version constant re-exported so callers can
 # ``from thegent.cli import HEALTH_PAYLOAD_SCHEMA_VERSION``.

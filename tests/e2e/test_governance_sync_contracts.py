@@ -2,12 +2,11 @@
 
 from __future__ import annotations
 
-from pathlib import Path
 import re
 import shlex
+from pathlib import Path
 
 from tests.e2e import test_split_hygiene
-
 
 GOVERNANCE_HELPER_NAME_PARTS = (
     "governance",

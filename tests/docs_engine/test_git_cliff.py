@@ -3,7 +3,8 @@
 # @trace FR-DOCS-010
 """
 
-from unittest.mock import patch, MagicMock
+from unittest.mock import MagicMock, patch
+
 from docs_engine.git.cliff import CliffRunner
 
 

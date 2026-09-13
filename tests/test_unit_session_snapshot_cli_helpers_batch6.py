@@ -1,7 +1,8 @@
 from __future__ import annotations
 
-import orjson as json
 from pathlib import Path
+
+import orjson as json
 
 import thegent.orchestration.state.session_snapshot_cli_helpers as helpers
 from thegent.orchestration.state.session_scraper import SessionScraper

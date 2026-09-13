@@ -7,11 +7,12 @@ from __future__ import annotations
 
 import hashlib
 import json
+from collections.abc import Mapping
 from dataclasses import dataclass, field
-from datetime import datetime, timezone
-from enum import Enum, StrEnum
+from datetime import UTC, datetime
+from enum import StrEnum
 from pathlib import Path
-from typing import Any, Mapping, Protocol
+from typing import Any, Protocol
 from uuid import uuid4
 
 
@@ -35,7 +36,7 @@ class CommandKey:
         execution_profile: str,
         *,
         allowlisted_env: set[str] | frozenset[str] | None = None,
-    ) -> "CommandKey":
+    ) -> CommandKey:
         """Hash only explicitly allowlisted environment names."""
         allowed = allowlisted_env or frozenset()
         canonical = {
@@ -141,7 +142,7 @@ class MeshEvent:
     correlation_id: str
     payload: Mapping[str, Any] = field(default_factory=dict)
     event_id: str = field(default_factory=lambda: uuid4().hex)
-    occurred_at: datetime = field(default_factory=lambda: datetime.now(timezone.utc))
+    occurred_at: datetime = field(default_factory=lambda: datetime.now(UTC))
 
 
 class QueuePort(Protocol):

@@ -1,7 +1,6 @@
 """Stub module."""
 from typing import Any
 
-
 DEFAULT_MCP_URL = "http://localhost:8080"
 
 

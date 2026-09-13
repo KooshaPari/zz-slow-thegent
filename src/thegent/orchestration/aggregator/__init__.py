@@ -131,10 +131,7 @@ class ResultAggregator:
     def summary(self) -> str:
         """Return a one-line human-readable summary string."""
         total = len(self._messages)
-        if self._errors:
-            verdict = "FAILED"
-        else:
-            verdict = "PASSED"
+        verdict = "FAILED" if self._errors else "PASSED"
         by_type = ", ".join(f"{k}={v}" for k, v in sorted(self._by_type.items())) or "none"
         return (
             f"ResultAggregator summary: total={total} verdict={verdict} "

@@ -1,5 +1,6 @@
 """Stub module for cost-aware objective selection."""
 from __future__ import annotations
+
 from dataclasses import dataclass
 
 

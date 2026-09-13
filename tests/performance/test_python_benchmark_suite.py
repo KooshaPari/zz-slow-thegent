@@ -1,7 +1,8 @@
 from __future__ import annotations
 
-import orjson as json
 from pathlib import Path
+
+import orjson as json
 
 # scripts.benchmark_python_suite module was removed.
 import pytest

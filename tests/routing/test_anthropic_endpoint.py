@@ -18,7 +18,6 @@ from thegent.cliproxy_adapter import (
     anthropic_response_to_messages_format,
 )
 
-
 # ---------------------------------------------------------------------------
 # anthropic_messages_to_chat_completions
 # ---------------------------------------------------------------------------

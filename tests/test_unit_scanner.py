@@ -9,11 +9,11 @@ Traces to: FR-GOV-001 (health score computation), FR-GOV-002 (dimension scanning
 
 from __future__ import annotations
 
-import orjson as json
 import subprocess
 from typing import TYPE_CHECKING
 from unittest.mock import patch
 
+import orjson as json
 import pytest
 
 from thegent.governance.scanner import (

@@ -4,6 +4,7 @@
 """
 
 import pytest
+
 from docs_engine.db.indexer import DocIndexer
 from docs_engine.db.queries import DocQueries
 

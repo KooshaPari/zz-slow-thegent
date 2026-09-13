@@ -8,12 +8,12 @@ prompt functions, operations/modes tools, and suggest_prompt.
 from __future__ import annotations
 
 import asyncio
-import orjson as json
 import os
 from pathlib import Path
 from typing import TYPE_CHECKING, Any
 from unittest.mock import AsyncMock, MagicMock, patch
 
+import orjson as json
 import pytest
 
 fastmcp = pytest.importorskip("fastmcp", reason="fastmcp required for MCP server tests")

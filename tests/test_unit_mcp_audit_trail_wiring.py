@@ -57,8 +57,8 @@ import pytest
 
 from thegent.mcp.server import (
     MCP_AUDIT_DEFAULT_MAX_ENTRIES,
-    audited_budget,
     audit_context,
+    audited_budget,
     get_audit_trail,
     mcp_audit_query,
     mcp_audit_recent,
@@ -74,7 +74,6 @@ from thegent.mcp.server.mcp_audit_trail import (
     AuditEntryKind,
     MCPAuditTrail,
 )
-
 
 # ------------------------------------------------------------------
 # Fixtures
@@ -208,7 +207,7 @@ class TestDefensiveConfig:
             monkeypatch.setenv("THEGENT_MCP_AUDIT_MAX_ENTRIES", bad)
         else:
             monkeypatch.delenv("THEGENT_MCP_AUDIT_MAX_ENTRIES", raising=False)
-        with warnings.catch_warnings(record=True) as caught:
+        with warnings.catch_warnings(record=True):
             warnings.simplefilter("always")
             trail = reset_audit_trail()
         # Validate that the resolution fell back to default; some
@@ -306,12 +305,11 @@ class TestAuditContext:
         assert entry.extra["verdict"] == "allow"
 
     def test_error_path_records_and_reraises(self) -> None:
-        with pytest.raises(RuntimeError, match="boom"):
-            with audit_context(
-                kind="tool_invocation",
-                operation="fail",
-            ):
-                raise RuntimeError("boom")
+        with pytest.raises(RuntimeError, match="boom"), audit_context(
+            kind="tool_invocation",
+            operation="fail",
+        ):
+            raise RuntimeError("boom")
 
         entry = mcp_audit_recent()[-1]
         assert entry.outcome == "error"
@@ -800,13 +798,12 @@ class TestAuditedBudgetHelper:
         assert "tool_invoke_ms" in MCP_PERF_BUDGETS
 
     def test_exception_path_records_error_outcome_and_reraises(self) -> None:
-        with pytest.raises(ValueError):
-            with audited_budget(
-                kind="tool_invocation",
-                operation="tool_invoke_ms",
-                budget_ms=10_000.0,
-            ):
-                raise ValueError("simulated")
+        with pytest.raises(ValueError), audited_budget(
+            kind="tool_invocation",
+            operation="tool_invoke_ms",
+            budget_ms=10_000.0,
+        ):
+            raise ValueError("simulated")
 
         recent = mcp_audit_recent(n=1)
         assert recent[0].outcome == "error"
@@ -831,15 +828,14 @@ class TestAuditedBudgetHelper:
         """
         from thegent.mcp.server.mcp_perf_gates import MCPBudgetExceeded
 
-        with pytest.raises(MCPBudgetExceeded):
-            with audited_budget(
-                kind="tool_invocation",
-                operation="tool_invoke_ms",
-                budget_ms=0.001,  # 1 microsecond — impossible to satisfy
-            ):
-                # Yield to the scheduler so the context sees at least
-                # a few microseconds of elapsed time.
-                _time.sleep(0.005)
+        with pytest.raises(MCPBudgetExceeded), audited_budget(
+            kind="tool_invocation",
+            operation="tool_invoke_ms",
+            budget_ms=0.001,  # 1 microsecond — impossible to satisfy
+        ):
+            # Yield to the scheduler so the context sees at least
+            # a few microseconds of elapsed time.
+            _time.sleep(0.005)
 
         recent = mcp_audit_recent(n=1)
         # The audit entry was recorded even though the budget
@@ -852,13 +848,12 @@ class TestAuditedBudgetHelper:
         contract from ``audit_context``: unknown strings coerce to
         ``TOOL_INVOCATION`` with a ``UserWarning``.
         """
-        with pytest.warns(UserWarning, match="unknown kind"):
-            with audited_budget(
-                kind="totally_bogus_kind",
-                operation="tool_invoke_ms",
-                budget_ms=10_000.0,
-            ):
-                pass
+        with pytest.warns(UserWarning, match="unknown kind"), audited_budget(
+            kind="totally_bogus_kind",
+            operation="tool_invoke_ms",
+            budget_ms=10_000.0,
+        ):
+            pass
         recent = mcp_audit_recent(n=1)
         assert recent[0].kind == AuditEntryKind.TOOL_INVOCATION
 

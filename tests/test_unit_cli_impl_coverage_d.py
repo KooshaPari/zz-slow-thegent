@@ -30,12 +30,12 @@ Covers uncovered branches and edge cases in:
 - dag_raw_impl ambiguous cwd (line 3462)
 """
 
-import orjson as json
 import os
 from datetime import UTC, datetime, timedelta
 from pathlib import Path
 from unittest.mock import MagicMock, patch
 
+import orjson as json
 import pytest
 
 

@@ -24,6 +24,7 @@ the bulk form is selected when called with keyword-only args.
 
 from __future__ import annotations
 
+import contextlib
 import os
 import signal
 import subprocess
@@ -163,10 +164,8 @@ def _prune_stale_shadow_and_logs(
                 if mtime < cutoff_log:
                     log_count += 1
                     if not dry_run:
-                        try:
+                        with contextlib.suppress(OSError):
                             entry.unlink()
-                        except OSError:
-                            pass
     except OSError:
         pass
 

@@ -12,10 +12,8 @@ Every test carries # @trace WL-091
 from __future__ import annotations
 
 import asyncio
-import orjson as json
-from typing import Literal
 
-import pytest
+import orjson as json
 from pydantic import BaseModel
 
 from thegent.govern.vetter.checks import (
@@ -24,7 +22,6 @@ from thegent.govern.vetter.checks import (
     SchemaVetterCheck,
 )
 from thegent.govern.vetter.models import VetterCheck, VetterCheckResult
-
 
 # ---------------------------------------------------------------------------
 # Helpers / shared fixtures

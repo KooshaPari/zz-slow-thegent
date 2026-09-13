@@ -3,10 +3,11 @@
 Handles checkpoint persistence and failure queue management.
 """
 
-import orjson as json
 from datetime import datetime
 from pathlib import Path
 from typing import Any
+
+import orjson as json
 
 from thegent.integrations.workstream_autosync_shared import (
     FailureRecord,

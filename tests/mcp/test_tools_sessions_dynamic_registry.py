@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 import orjson as json
-
 import pytest
 
 import thegent.mcp.server as mcp_server

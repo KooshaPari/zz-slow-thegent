@@ -7,7 +7,7 @@ Tests the trend reporting system for long-horizon analytics on drift/error/laten
 
 from __future__ import annotations
 
-from datetime import datetime, timedelta, timezone
+from datetime import UTC, datetime
 
 import pytest
 
@@ -20,7 +20,7 @@ class TestTrendDataPoint:
         """# @trace WL-257 — TrendDataPoint can be created with required fields."""
         from thegent.integrations.historical_trends import TrendDataPoint
 
-        now = datetime.now(timezone.utc)
+        now = datetime.now(UTC)
         point = TrendDataPoint(timestamp=now, metric="latency", value=100.5)
 
         assert point.timestamp == now
@@ -192,4 +192,4 @@ class TestHistoricalTrendReport:
         report = HistoricalTrendReport()
         point = report.record("latency", 100.0)
 
-        assert point.timestamp.tzinfo == timezone.utc
+        assert point.timestamp.tzinfo == UTC

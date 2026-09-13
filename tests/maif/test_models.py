@@ -4,10 +4,10 @@ Tests the ActionType enum and MAIFArtifact dataclass with validators.
 """
 
 import hashlib
-import orjson as json
 import uuid
 from datetime import datetime
 
+import orjson as json
 import pytest
 
 from thegent.maif.models import ActionType, MAIFArtifact

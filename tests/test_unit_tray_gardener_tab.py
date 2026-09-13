@@ -5,7 +5,6 @@ import pytest
 pytest.importorskip("PySide6")
 
 import ast
-import os
 from pathlib import Path
 
 
@@ -283,9 +282,7 @@ class TestGardenerTabPackage:
     def test_tabs_package_exports_gardener(self):
         """tabs package exports gardener tab."""
         import sys
-        import os
         from pathlib import Path
-        import sys
 
         # Add src to path
         src_path = Path(__file__).parent.parent.parent / "src"

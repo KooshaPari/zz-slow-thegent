@@ -166,7 +166,7 @@ def _parse_args(argv: list[str]) -> argparse.Namespace:
 def main(argv: list[str] | None = None) -> int:
     args = _parse_args(argv or sys.argv[1:])
     report = build_report(core_dir=args.core_dir, config_path=args.config)
-    is_ok = bool(report["ok"])
+    bool(report["ok"])
     violations = list(report["violations"])
     mode = "strict" if args.strict else "advisory"
 

@@ -11,10 +11,11 @@ from __future__ import annotations
 
 import contextlib
 import logging
-import orjson as json
 from typing import Any
 
-from thegent.config import ThegentSettings
+import orjson as json
+
+from thegent.cliproxy_error_utils import _make_error_body
 from thegent.cliproxy_header_utils import extract_websocket_forward_headers
 from thegent.cliproxy_request_transform import (
     _extract_delta_content,
@@ -23,7 +24,7 @@ from thegent.cliproxy_request_transform import (
     _responses_to_chat_completions,
 )
 from thegent.cliproxy_stream_state import ResponsesStreamState
-from thegent.cliproxy_error_utils import _make_error_body
+from thegent.config import ThegentSettings
 
 _log = logging.getLogger(__name__)
 

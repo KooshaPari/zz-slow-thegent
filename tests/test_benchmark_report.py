@@ -1,9 +1,10 @@
 from __future__ import annotations
 
-import orjson as json
 import subprocess
 import sys
 from pathlib import Path
+
+import orjson as json
 
 SCRIPT_PATH = Path("scripts/benchmark-report.py")
 

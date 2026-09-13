@@ -46,10 +46,8 @@ from typing import Any
 
 import pytest
 
-from thegent.cli.commands import impl
-from thegent.cli.commands import observability_impl
+from thegent.cli.commands import impl, observability_impl
 from thegent.cli.services import observability as services_observability
-
 
 # ---------------------------------------------------------------------------
 # 1. observability_impl exposes _build_observe_trend_payload as the canonical

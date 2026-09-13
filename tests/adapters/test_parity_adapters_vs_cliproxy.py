@@ -17,15 +17,12 @@ Test cases:
 
 from __future__ import annotations
 
-import orjson as json
 import shutil
-import subprocess
-import sys
 from pathlib import Path
 from typing import Any
 
+import orjson as json
 import pytest
-
 
 # ============================================================================
 # Configuration and Helpers
@@ -141,7 +138,9 @@ class TestPythonAcpAdapter:
 
     def test_translate_simple_message(self, simple_message_request: dict[str, Any]) -> None:
         """Test translation of a simple message."""
-        from thegent.mcp.server_dispatch_helpers import parse_acp_payload, format_acp_response
+        from thegent.mcp.server_dispatch_helpers import (
+            parse_acp_payload,
+        )
 
         # Simulate incoming ACP payload (context dict as JSON string)
         payload_json = json.dumps(simple_message_request)

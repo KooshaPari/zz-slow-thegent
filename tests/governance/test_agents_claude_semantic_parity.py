@@ -3,7 +3,6 @@ from __future__ import annotations
 import re
 from pathlib import Path
 
-
 ROOT = Path(__file__).resolve().parents[2]
 AGENTS_PATH = ROOT / "AGENTS.md"
 CLAUDE_PATH = ROOT / "CLAUDE.md"

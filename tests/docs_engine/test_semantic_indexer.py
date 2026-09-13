@@ -4,6 +4,7 @@
 """
 
 from pathlib import Path
+
 from docs_engine.semantic.indexer import SemanticIndexer
 
 

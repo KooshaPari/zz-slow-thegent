@@ -5,13 +5,13 @@
 
 from __future__ import annotations
 
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 
 import pytest
 
 from thegent.integrations.reflection_rollback import (
-    RollbackEntry,
     ReflectionRollbackStore,
+    RollbackEntry,
 )
 
 
@@ -21,7 +21,7 @@ class TestRollbackEntry:
     @pytest.mark.requirement("WL-185")
     def test_rollback_entry_creation(self):
         """# @trace WL-185 — RollbackEntry can be created with required fields."""
-        now = datetime.now(timezone.utc)
+        now = datetime.now(UTC)
         snapshot = {"key": "value"}
         entry = RollbackEntry(entry_id="entry_1", timestamp=now, snapshot=snapshot)
         assert entry.entry_id == "entry_1"
@@ -32,7 +32,7 @@ class TestRollbackEntry:
     def test_rollback_entry_snapshot_copy(self):
         """# @trace WL-185 — RollbackEntry stores snapshot as-is."""
         snapshot = {"data": {"nested": "value"}}
-        entry = RollbackEntry(entry_id="test", timestamp=datetime.now(timezone.utc), snapshot=snapshot)
+        entry = RollbackEntry(entry_id="test", timestamp=datetime.now(UTC), snapshot=snapshot)
         assert entry.snapshot == {"data": {"nested": "value"}}
 
 
@@ -49,10 +49,10 @@ class TestReflectionRollbackStore:
     def test_record_single_entry(self):
         """# @trace WL-185 — record creates a new entry."""
         store = ReflectionRollbackStore()
-        before = datetime.now(timezone.utc)
+        before = datetime.now(UTC)
         snapshot = {"state": "initial"}
         entry = store.record("entry_1", snapshot)
-        after = datetime.now(timezone.utc)
+        after = datetime.now(UTC)
 
         assert entry.entry_id == "entry_1"
         assert before <= entry.timestamp <= after

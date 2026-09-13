@@ -10,10 +10,10 @@ Tests for:
 
 from __future__ import annotations
 
-import orjson as json
 from pathlib import Path
-from unittest.mock import MagicMock, patch
+from unittest.mock import MagicMock
 
+import orjson as json
 import pytest
 from typer.testing import CliRunner
 

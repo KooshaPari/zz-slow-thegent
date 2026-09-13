@@ -6,11 +6,12 @@
 from __future__ import annotations
 
 import json as _json
-import orjson as json
 import re
 import time
 from dataclasses import asdict, dataclass
 from pathlib import Path
+
+import orjson as json
 
 WL_ID_PATTERN = re.compile(r"^WL-\d+$")
 

@@ -2,8 +2,8 @@
 
 from __future__ import annotations
 
-from importlib import import_module
 import sys  # noqa: F401
+from importlib import import_module
 from pathlib import Path
 from typing import Any
 

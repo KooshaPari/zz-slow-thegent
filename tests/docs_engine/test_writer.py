@@ -4,9 +4,10 @@
 """
 
 import pytest
+
 from docs_engine.capture.writer import DocWriter
-from docs_engine.schema.base import DocType
 from docs_engine.db.queries import DocQueries
+from docs_engine.schema.base import DocType
 
 
 def test_write_idea_creates_file(tmp_path):

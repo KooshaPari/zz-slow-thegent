@@ -29,7 +29,6 @@ import re
 from dataclasses import dataclass, field
 from typing import Any
 
-
 # Pre-compiled patterns. The first matches a balanced XML tag pair;
 # the second matches a still-open trailing tag prefix.
 #: Schema version of the parser module. Bumped only when the public

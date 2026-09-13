@@ -16,13 +16,10 @@ backend path.
 from __future__ import annotations
 
 import logging
-import orjson as json
 
+import orjson as json
 from starlette.requests import Request
 from starlette.responses import Response
-
-from thegent.config import ThegentSettings
-from thegent.integrations.bifrost import BifrostValidationError, get_bifrost
 
 from thegent.adapters.driven.cliproxy_openrouter import _is_openrouter_backend
 from thegent.adapters.driven.cliproxy_proxy_handlers import (
@@ -30,9 +27,10 @@ from thegent.adapters.driven.cliproxy_proxy_handlers import (
     _proxy_request,
     _proxy_stream,
 )
-
 from thegent.cliproxy_header_utils import sanitize_outbound_request_headers
 from thegent.cliproxy_models_transform import transform_models_response
+from thegent.config import ThegentSettings
+from thegent.integrations.bifrost import BifrostValidationError, get_bifrost
 
 _log = logging.getLogger(__name__)
 
@@ -68,7 +66,9 @@ async def proxy_handler(request: Request) -> Response:
     # Route Responses API to LiteLLM Router if enabled
     if use_litellm and path == "/v1/responses" and request.method == "POST":
         try:
-            from thegent.utils.routing_impl.litellm_responses_handler import handle_responses_request
+            from thegent.utils.routing_impl.litellm_responses_handler import (
+                handle_responses_request,
+            )
 
             return await handle_responses_request(request)
         except Exception as e:

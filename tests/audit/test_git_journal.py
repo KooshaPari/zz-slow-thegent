@@ -153,7 +153,7 @@ class TestInterruptedSessionRecovery:
         """Test recovery from interrupted session."""
         journal = GitJournal(git_repo, session_id="interrupt-recovery")
         (git_repo / "important.txt").write_text("important data\n")
-        sha1 = journal.record_file_change("important.txt", b"important data\n", action="created")
+        journal.record_file_change("important.txt", b"important data\n", action="created")
         stored_parent = journal._parent_sha
 
         recovery_journal = GitJournal(git_repo, session_id="interrupt-recovery")

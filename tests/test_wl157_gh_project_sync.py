@@ -9,11 +9,11 @@ Tests cover:
 - CSV export/import
 """
 
-import orjson as json
 import tempfile
 from pathlib import Path
 from unittest.mock import patch
 
+import orjson as json
 import pytest
 
 from thegent.integrations.gh_project_sync import (

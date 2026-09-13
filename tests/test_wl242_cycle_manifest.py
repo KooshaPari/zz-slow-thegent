@@ -5,7 +5,7 @@
 
 from __future__ import annotations
 
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 
 import pytest
 
@@ -21,7 +21,7 @@ class TestCycleManifest:
 
     def test_cycle_manifest_creation(self) -> None:
         """Test creating a CycleManifest."""
-        now = datetime.now(timezone.utc)
+        now = datetime.now(UTC)
         manifest = CycleManifest(cycle_id="cycle-1", created_at=now, items=("a", "b"))
         assert manifest.cycle_id == "cycle-1"
         assert manifest.created_at == now
@@ -29,14 +29,14 @@ class TestCycleManifest:
 
     def test_cycle_manifest_frozen(self) -> None:
         """Test that CycleManifest is immutable."""
-        now = datetime.now(timezone.utc)
+        now = datetime.now(UTC)
         manifest = CycleManifest(cycle_id="cycle-1", created_at=now, items=("a",))
         with pytest.raises(Exception):  # FrozenInstanceError
             manifest.cycle_id = "cycle-2"
 
     def test_cycle_manifest_items_tuple(self) -> None:
         """Test that items are stored as tuple."""
-        now = datetime.now(timezone.utc)
+        now = datetime.now(UTC)
         manifest = CycleManifest(cycle_id="cycle-1", created_at=now, items=("x", "y", "z"))
         assert isinstance(manifest.items, tuple)
         assert manifest.items == ("x", "y", "z")
@@ -49,9 +49,9 @@ class TestCycleManifestStore:
     def test_create_manifest(self) -> None:
         """Test creating a new cycle manifest."""
         store = CycleManifestStore()
-        before = datetime.now(timezone.utc)
+        before = datetime.now(UTC)
         manifest = store.create("cycle-1", ["item1", "item2"])
-        after = datetime.now(timezone.utc)
+        after = datetime.now(UTC)
         assert manifest.cycle_id == "cycle-1"
         assert manifest.items == ("item1", "item2")
         assert before <= manifest.created_at <= after
@@ -121,7 +121,7 @@ class TestCycleManifestStore:
     def test_manifest_immutability_preserved(self) -> None:
         """Test that stored manifests remain immutable."""
         store = CycleManifestStore()
-        manifest = store.create("cycle-1", ["a", "b"])
+        store.create("cycle-1", ["a", "b"])
         retrieved = store.get("cycle-1")
         with pytest.raises(Exception):  # FrozenInstanceError
             retrieved.cycle_id = "modified"

@@ -6,9 +6,10 @@ across macOS, Linux, and Windows.
 
 import logging
 import platform
-from thegent.infra.shim_subprocess import run as shim_run
 from dataclasses import dataclass
 from pathlib import Path
+
+from thegent.infra.shim_subprocess import run as shim_run
 
 logger = logging.getLogger(__name__)
 

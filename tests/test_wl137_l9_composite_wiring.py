@@ -40,7 +40,6 @@ from unittest.mock import MagicMock, patch
 
 import pytest
 
-
 # ---------------------------------------------------------------------------
 # 1. Wire-up regression: every new helper must be referenced from run_impl_core
 # ---------------------------------------------------------------------------
@@ -445,7 +444,7 @@ def patch_get_run_cost_tracker(helpers_module, tracker):
 
     @contextmanager
     def _patch():
-        original = helpers_module._phase_init_tracker.__globals__.get("get_run_cost_tracker")
+        helpers_module._phase_init_tracker.__globals__.get("get_run_cost_tracker")
         # The helper does a module-level import inside its body, so we must
         # patch the symbol inside ``thegent.cost.tracker`` instead.
         import thegent.cost.tracker as cost_tracker_mod

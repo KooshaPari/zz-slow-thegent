@@ -34,9 +34,9 @@ def test_emit_slo_stub_pass_at_threshold_boundary() -> None:
 def test_emit_wl135_script_jsonl_append(tmp_path: Path) -> None:
     jsonl_path = tmp_path / "slo_stub.jsonl"
 
-    from scripts.emit_wl135_slo_stub import main as emit_main
-
     import sys
+
+    from scripts.emit_wl135_slo_stub import main as emit_main
 
     argv = sys.argv
     try:

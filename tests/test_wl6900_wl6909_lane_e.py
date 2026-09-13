@@ -2,7 +2,6 @@
 
 from __future__ import annotations
 
-import orjson as json
 import subprocess
 import sys
 from datetime import UTC, datetime, timedelta
@@ -12,9 +11,10 @@ from types import SimpleNamespace
 from unittest.mock import MagicMock
 
 import httpx
+import orjson as json
 import pytest
 
-from thegent import doctor_setup_checks, shell_cli, shared_mcp_manager, summary
+from thegent import doctor_setup_checks, shared_mcp_manager, shell_cli, summary
 from thegent.resources.network import NetworkMonitor
 
 

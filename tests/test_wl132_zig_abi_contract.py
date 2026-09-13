@@ -8,10 +8,10 @@ Validates:
 
 from __future__ import annotations
 
-import orjson as json
 import subprocess
 from pathlib import Path
 
+import orjson as json
 import pytest
 
 CONTRACT_PATH = Path(__file__).parent.parent / "contracts" / "runtime" / "zig_abi_contract_v1.json"

@@ -13,11 +13,11 @@ Covers:
 
 from __future__ import annotations
 
-import orjson as json
 import subprocess
 from typing import Any
 from unittest.mock import MagicMock, patch
 
+import orjson as json
 import pytest
 
 from thegent.compute import TailscaleConfig as ExportedConfig

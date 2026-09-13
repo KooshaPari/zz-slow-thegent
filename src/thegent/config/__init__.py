@@ -11,10 +11,6 @@ The main ThegentSettings class is the primary entry point and is designed to be
 backward compatible with the original monolithic configuration class.
 """
 
-from thegent.config.settings import ThegentSettings, get_settings
-from thegent.config.model_config import ModelConfig
-from thegent.config.path_config import PathConfig
-from thegent.config.runtime_config import RuntimeConfig
 from thegent.config.logging_config import (
     LoggingConfig,
     SecretMaskingFormatter,
@@ -22,6 +18,10 @@ from thegent.config.logging_config import (
     register_secret_for_masking,
     registered_secrets,
 )
+from thegent.config.model_config import ModelConfig
+from thegent.config.path_config import PathConfig
+from thegent.config.runtime_config import RuntimeConfig
+from thegent.config.settings import ThegentSettings, get_settings
 
 __all__ = [
     "ThegentSettings",

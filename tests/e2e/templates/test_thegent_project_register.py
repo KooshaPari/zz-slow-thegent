@@ -5,9 +5,10 @@ Agent Journey: Agent executes thegent project init command
 Expected Behavior: Command executes successfully and returns expected output
 """
 
-import pytest
 import tempfile
 from pathlib import Path
+
+import pytest
 from typer.testing import CliRunner
 
 from thegent.main import app

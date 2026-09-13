@@ -13,10 +13,10 @@ FR Traceability: @trace FR-MCP-CTX-001 through FR-MCP-CTX-006
 
 from __future__ import annotations
 
-import orjson as json
 from typing import TYPE_CHECKING, Any
 from unittest.mock import AsyncMock, MagicMock, patch
 
+import orjson as json
 import pytest
 
 if TYPE_CHECKING:
@@ -75,7 +75,6 @@ class TestSeedDetectContextApi:
         # @trace FR-MCP-CTX-001
         from fastmcp import FastMCP
         from thegent.mcp_tools_seeds import (
-            _ctx_info,  # ensures module-level symbol exists
             register_seed_tools,
         )
 

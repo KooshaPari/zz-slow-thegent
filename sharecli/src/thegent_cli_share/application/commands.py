@@ -1,9 +1,8 @@
 """Application commands - CQRS command handlers."""
 
 from dataclasses import dataclass
-from typing import Optional
 
-from ..domain.entities import QueuePriority, MergeStrategy
+from ..domain.entities import MergeStrategy, QueuePriority
 
 
 @dataclass
@@ -11,7 +10,7 @@ class AcquireLockCommand:
     """Command to acquire a lock on a command."""
     cmd_hash: str
     pid: int
-    output_path: Optional[str] = None
+    output_path: str | None = None
     timeout_seconds: int = 3600
 
 
@@ -27,8 +26,8 @@ class EnqueueTaskCommand:
     """Command to enqueue a task."""
     command: str
     priority: QueuePriority = QueuePriority.NORMAL
-    cwd: Optional[str] = None
-    env: Optional[dict[str, str]] = None
+    cwd: str | None = None
+    env: dict[str, str] | None = None
     timeout_seconds: int = 3600
 
 

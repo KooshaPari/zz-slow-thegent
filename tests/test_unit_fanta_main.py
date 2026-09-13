@@ -6,8 +6,7 @@ from unittest.mock import MagicMock, patch
 import pytest
 from typer.testing import CliRunner
 
-from thegent.fanta_main import GEMINI_FLASH_MODEL, _MODEL_ALIAS, default_fanta
-from thegent.fanta_main import app
+from thegent.fanta_main import _MODEL_ALIAS, GEMINI_FLASH_MODEL, app, default_fanta
 
 runner = CliRunner()
 

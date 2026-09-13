@@ -252,7 +252,6 @@ class TestTryLaunchNextThrottle:
 
     def test_throttle_sleeps_then_aborts_if_still_throttled(self) -> None:  # @trace FR-ALS-THROTTLE-007
         """_try_launch_next sleeps then aborts if still throttled after sleep."""
-        import time
 
         system = self._make_system()
 

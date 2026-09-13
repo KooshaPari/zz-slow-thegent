@@ -1,6 +1,11 @@
 """Unit tests for WP-3002: Signed action artifacts."""
 
-from thegent.governance.signatures import ArtifactSigner, generate_artifact_hash, sign_artifact, verify_signature
+from thegent.governance.signatures import (
+    ArtifactSigner,
+    generate_artifact_hash,
+    sign_artifact,
+    verify_signature,
+)
 
 
 def test_hash_consistency():

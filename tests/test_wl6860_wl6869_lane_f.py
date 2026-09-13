@@ -4,15 +4,27 @@ from __future__ import annotations
 
 import builtins
 import io
-import orjson as json
 import sys
 from pathlib import Path
 from types import SimpleNamespace
 
+import orjson as json
 import pytest
 
-from thegent import clode_config_isolation, cliproxy_models_transform, config_provider, execution, thegent_platform
-from thegent.execution import ConcurrencyController, HandoffManager, MessageEntry, RunMeta, RunRegistry
+from thegent import (
+    cliproxy_models_transform,
+    clode_config_isolation,
+    config_provider,
+    execution,
+    thegent_platform,
+)
+from thegent.execution import (
+    ConcurrencyController,
+    HandoffManager,
+    MessageEntry,
+    RunMeta,
+    RunRegistry,
+)
 
 
 @pytest.fixture(autouse=True)

@@ -7,12 +7,11 @@ from __future__ import annotations
 
 import asyncio
 import uuid
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 
 import pytest
 
 from thegent.orchestration.inter_agent_protocol import InterAgentMessage, MessageBus
-
 
 # ---------------------------------------------------------------------------
 # InterAgentMessage: field defaults
@@ -55,18 +54,18 @@ class TestInterAgentMessageDefaults:
         )
         assert isinstance(msg.created_at, datetime)
         assert msg.created_at.tzinfo is not None
-        assert msg.created_at.tzinfo == timezone.utc
+        assert msg.created_at.tzinfo == UTC
 
     def test_created_at_is_recent(self):
         # @trace WL-080
-        before = datetime.now(timezone.utc)
+        before = datetime.now(UTC)
         msg = InterAgentMessage(
             sender_id="agent-a",
             recipient_id="agent-b",
             message_type="heartbeat",
             payload={},
         )
-        after = datetime.now(timezone.utc)
+        after = datetime.now(UTC)
         assert before <= msg.created_at <= after
 
     def test_correlation_id_defaults_to_none(self):

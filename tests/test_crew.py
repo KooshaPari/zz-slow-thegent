@@ -16,9 +16,9 @@ from thegent.agents.crew import (
     WorkflowEngine,
 )
 from thegent.agents.crew.executor import (
+    AgentAssigner,
     ExecutionResult,
     HierarchicalAssigner,
-    AgentAssigner,
     RoundRobinAssigner,
     SkillBasedAssigner,
     TaskExecutor,

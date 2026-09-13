@@ -16,7 +16,7 @@ import asyncio
 import logging
 import uuid
 from dataclasses import dataclass, field
-from enum import Enum
+from enum import StrEnum
 from pathlib import Path
 from typing import TYPE_CHECKING, Any, cast
 
@@ -36,7 +36,7 @@ _FLASH_TAG = "flash"
 _COMPUTE_INTENSIVE_KEY = "compute_intensive"
 
 
-class DispatchMode(str, Enum):
+class DispatchMode(StrEnum):
     """Execution mode selected by :meth:`SubAgentDispatcher._select_mode`.
 
     # @trace WL-080
@@ -196,7 +196,7 @@ class SubAgentDispatcher:
         )
 
         results: list[SubAgentResult] = []
-        for task, outcome in zip(tasks, raw):
+        for task, outcome in zip(tasks, raw, strict=False):
             if isinstance(outcome, SubAgentResult):
                 results.append(outcome)
             elif isinstance(outcome, BaseException):

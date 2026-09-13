@@ -4,8 +4,9 @@ information format. Allows for migration between model architectures or digital-
 """
 
 import base64
-import orjson as json
 import logging
+
+import orjson as json
 
 _log = logging.getLogger(__name__)
 

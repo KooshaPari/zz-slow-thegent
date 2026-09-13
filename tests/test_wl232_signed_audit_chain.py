@@ -6,8 +6,8 @@
 from __future__ import annotations
 
 import hashlib
-import orjson as json
 
+import orjson as json
 import pytest
 
 from thegent.integrations.signed_audit_chain import (

@@ -5,7 +5,6 @@ from __future__ import annotations
 import re
 from pathlib import Path
 
-
 README_PATH = Path(__file__).with_name("README.md")
 
 EXPECTED_GOVERNANCE_ROW_ORDER = (

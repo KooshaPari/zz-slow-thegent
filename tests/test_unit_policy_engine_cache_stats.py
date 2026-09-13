@@ -29,8 +29,7 @@ from pathlib import Path
 import pytest
 
 from thegent.config.settings import ThegentSettings
-from thegent.governance.policy_engine import PolicyContext, PolicyEngine, Verdict
-
+from thegent.governance.policy_engine import PolicyContext, PolicyEngine
 
 pytestmark = pytest.mark.unit
 
@@ -193,7 +192,7 @@ class TestCacheStatsConcurrent:
         readers = 8
         writers = 4
         iters = 50
-        stop = threading.Event()
+        threading.Event()
 
         def reader_loop() -> None:
             for _ in range(iters):

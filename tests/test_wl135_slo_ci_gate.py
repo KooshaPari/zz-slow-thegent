@@ -8,10 +8,11 @@ and correctly exits 0 (no data / all green) or 1 (any red metric).
 from __future__ import annotations
 
 import ast
-import orjson as json
 import subprocess
 import sys
 from pathlib import Path
+
+import orjson as json
 
 ROOT = Path(__file__).parent.parent
 GATE_SCRIPT = ROOT / "scripts" / "check_slo_gate.py"

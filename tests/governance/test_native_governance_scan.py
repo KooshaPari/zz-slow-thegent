@@ -17,17 +17,16 @@ Traces to: FR-GOV-007 (governance violation detection), FR-GOV-006 (native binar
 from __future__ import annotations
 
 import dataclasses
-import orjson as json
 import subprocess
 from pathlib import Path
 from unittest.mock import patch
 
+import orjson as json
 import pytest
 
 from thegent.governance.native_governance_scan import (
     GovernanceViolation,
     NativeGovernanceScanner,
-    _find_binary,
     _parse_binary_output,
     _python_check_contract,
     _python_scan_all,

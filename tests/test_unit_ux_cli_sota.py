@@ -25,7 +25,6 @@ from typer.testing import CliRunner
 
 from thegent.ux.cli_sota import app
 
-
 pytestmark = pytest.mark.unit
 
 

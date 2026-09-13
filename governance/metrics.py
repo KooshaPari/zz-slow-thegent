@@ -151,7 +151,7 @@ class ProviderMetricsCollector:
             async with asyncio.Lock():
                 with open(logfile, "a") as f:
                     f.write(line)
-        except Exception as e:
+        except Exception:
             # Log but don't fail - metrics collection shouldn't break execution
             pass
 
@@ -298,7 +298,7 @@ class ProviderMetricsCollector:
                         results_by_provider[result.provider_id] = []
 
                     results_by_provider[result.provider_id].append(result)
-        except Exception as e:
+        except Exception:
             return {}
 
         # Aggregate metrics per provider

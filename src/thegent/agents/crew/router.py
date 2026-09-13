@@ -1,7 +1,7 @@
 """RouterManager with multi-runtime optimized backends."""
 
-import logging
 import importlib
+import logging
 import tempfile
 from pathlib import Path
 from typing import Any

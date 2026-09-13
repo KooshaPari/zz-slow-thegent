@@ -21,14 +21,14 @@ import os
 import subprocess
 import sys
 import webbrowser
+from collections.abc import Callable
 from pathlib import Path
-from typing import Any, Callable
+from typing import Any
 
 from thegent.config.settings import ThegentSettings
 from thegent.domain.provider_config import OAUTH_ONLY_PROVIDERS
 from thegent.infra.fast_yaml_parser import yaml_dumps, yaml_load
 from thegent.infra.shim_subprocess import run as shim_run
-
 from thegent.use_cases.manage_cliproxy_config import (
     PROVIDER_LOGIN_CONFIG,
     _ensure_config,

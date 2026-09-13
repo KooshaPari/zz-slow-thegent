@@ -3,9 +3,9 @@
 @trace WL-158
 """
 
-import orjson as json
 from pathlib import Path
 
+import orjson as json
 import pytest
 
 from thegent.planning.board_artifact_integrator import (

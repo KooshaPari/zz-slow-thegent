@@ -6,11 +6,12 @@ Replays drift scenarios from archived manifests for deterministic debugging.
 
 from __future__ import annotations
 
-import orjson
 from dataclasses import dataclass
 from datetime import datetime
 from pathlib import Path
 from typing import cast
+
+import orjson
 
 from thegent.integrations.base import SerializableMixin
 

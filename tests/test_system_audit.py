@@ -5,11 +5,11 @@ Traces to: FR-AUDIT-001 through FR-AUDIT-020
 
 from __future__ import annotations
 
-import orjson as json
 import os
 import textwrap
 from typing import TYPE_CHECKING
 
+import orjson as json
 import pytest
 
 from thegent.audit.system_audit import (

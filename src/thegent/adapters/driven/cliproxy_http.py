@@ -13,7 +13,7 @@ class CliproxyHTTPClient:
 
     def __init__(self, base_url: str | None = None) -> None:
         """Initialize the HTTP client.
-        
+
         Args:
             base_url: Base URL for the CLIProxy service.
         """
@@ -21,11 +21,11 @@ class CliproxyHTTPClient:
 
     async def get(self, path: str, **kwargs: Any) -> dict[str, Any]:
         """Perform a GET request.
-        
+
         Args:
             path: API path.
             **kwargs: Additional request options.
-            
+
         Returns:
             Response dictionary.
         """
@@ -33,11 +33,11 @@ class CliproxyHTTPClient:
 
     async def post(self, path: str, **kwargs: Any) -> dict[str, Any]:
         """Perform a POST request.
-        
+
         Args:
             path: API path.
             **kwargs: Additional request options.
-            
+
         Returns:
             Response dictionary.
         """
@@ -49,10 +49,10 @@ class CliproxyResponseTransformer:
 
     def transform(self, response: dict[str, Any]) -> dict[str, Any]:
         """Transform a response.
-        
+
         Args:
             response: Raw response.
-            
+
         Returns:
             Transformed response.
         """
@@ -67,7 +67,7 @@ class CliproxyHeaderManager:
 
     def get_headers(self) -> dict[str, str]:
         """Get default headers.
-        
+
         Returns:
             Header dictionary.
         """

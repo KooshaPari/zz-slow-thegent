@@ -1,9 +1,9 @@
 """Tests for WP-3005: Policy drift detection."""
 
-import orjson as json
 import time
 from unittest.mock import MagicMock
 
+import orjson as json
 import pytest
 
 from thegent.config import ThegentSettings

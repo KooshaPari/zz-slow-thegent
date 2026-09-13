@@ -4,7 +4,6 @@ workspace packages, mapping old monorepo modules to their new package names.
 """
 
 import re
-import sys
 from pathlib import Path
 
 # ---------------------------------------------------------------------------
@@ -178,7 +177,7 @@ def rewrite_file(path: Path) -> int:
 def count_changes(original: str, rewritten: str) -> int:
     orig_lines = original.splitlines()
     new_lines = rewritten.splitlines()
-    return sum(1 for a, b in zip(orig_lines, new_lines) if a != b) + abs(len(orig_lines) - len(new_lines))
+    return sum(1 for a, b in zip(orig_lines, new_lines, strict=False) if a != b) + abs(len(orig_lines) - len(new_lines))
 
 
 def process_directory(root: Path) -> None:

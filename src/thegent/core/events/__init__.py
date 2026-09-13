@@ -51,11 +51,8 @@ Design choices (frozen at WL150, regression-pinned):
 
 from __future__ import annotations
 
-from typing import Any, Callable
-
-# Re-export the canonical Protocol so callers can ``isinstance`` /
-# ``runtime_checkable`` against the symbol they import.
-from thegent.core.ports import EventBusInterface  # noqa: F401
+from collections.abc import Callable
+from typing import Any
 
 from thegent.core.events.in_memory_bus import (  # noqa: F401
     EventHandlerError,
@@ -64,6 +61,9 @@ from thegent.core.events.in_memory_bus import (  # noqa: F401
     reset_default_event_bus,
 )
 
+# Re-export the canonical Protocol so callers can ``isinstance`` /
+# ``runtime_checkable`` against the symbol they import.
+from thegent.core.ports import EventBusInterface  # noqa: F401
 
 EventHandler = Callable[[Any], None]
 

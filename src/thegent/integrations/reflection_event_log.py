@@ -5,11 +5,12 @@
 
 from __future__ import annotations
 
-import orjson as json
 from dataclasses import asdict, dataclass
 from datetime import datetime
 from pathlib import Path
 from typing import Any
+
+import orjson as json
 
 from thegent.docgen.code_annotation import CodeAnnotationGenerator
 

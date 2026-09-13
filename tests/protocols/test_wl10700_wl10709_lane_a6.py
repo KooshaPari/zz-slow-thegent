@@ -15,9 +15,9 @@ from thegent.protocols.turn_submit_boundaries import (
     resolve_policy_enforcement_plan_target,
     resolve_queue_execution_target,
     resolve_session_persistence_plan_target,
+    resolve_terminal_outcome_target,
     resolve_workflow_execution_target,
 )
-from thegent.protocols.turn_submit_boundaries import resolve_terminal_outcome_target
 
 
 def test_wl10700_queue_priority_is_separated_from_execution_window() -> None:

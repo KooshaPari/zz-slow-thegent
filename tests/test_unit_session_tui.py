@@ -9,6 +9,7 @@ from unittest.mock import patch
 import psutil
 import pytest
 from rich.console import Console
+
 from thegent.ux.session_tui import SessionTUI
 
 

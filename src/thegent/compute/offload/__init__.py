@@ -11,9 +11,7 @@ class ComputeNode:
 
     def offload(self, task: dict) -> bool:
         """Offload a task to this node."""
-        if self.available:
-            return True
-        return False
+        return bool(self.available)
 
 
 from typing import Any

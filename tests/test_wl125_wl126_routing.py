@@ -7,8 +7,6 @@ Related to:
 
 from __future__ import annotations
 
-import pytest
-
 
 class TestModelRouting:
     """Test model routing logic."""

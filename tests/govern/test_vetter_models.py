@@ -17,10 +17,10 @@ Covers:
 from __future__ import annotations
 
 import asyncio
-import orjson as json
 from pathlib import Path
 from unittest.mock import AsyncMock, MagicMock, patch
 
+import orjson as json
 import pytest
 
 from thegent.govern.vetter.checks import (

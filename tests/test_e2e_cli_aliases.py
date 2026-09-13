@@ -6,7 +6,8 @@ from pathlib import Path
 from unittest.mock import MagicMock
 
 import pytest
-from tests.e2e.cli_assertions import expected_trend_health_signature, load_cli_json
+
+from tests.e2e.cli_assertions import load_cli_json
 from tests.e2e.cli_runner_compat import CompatCliRunner
 
 sys.modules.setdefault("thegent_git", MagicMock())

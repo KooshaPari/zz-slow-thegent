@@ -42,11 +42,8 @@ from unittest.mock import MagicMock
 
 import pytest
 
-from thegent.cli.commands import impl
-from thegent.cli.commands import session_impl
-from thegent.cli.commands import observability_impl
+from thegent.cli.commands import impl, observability_impl, session_impl
 from thegent.cli.services import observability as services_observability
-
 
 # ---------------------------------------------------------------------------
 # 1. session_impl module exists and exports the canonical 14 helpers

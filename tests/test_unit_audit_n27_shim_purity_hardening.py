@@ -55,14 +55,12 @@ import inspect
 
 import pytest
 
-from thegent.cli.commands import impl
-from thegent.cli.commands import observability_impl
+from thegent.cli.commands import impl, observability_impl
 from thegent.cli.services import (
     run_audio_helpers,
     run_event_helpers,
     run_input_helpers,
 )
-
 
 # ---------------------------------------------------------------------------
 # Module paths. Centralized so a future rename only touches one constant.

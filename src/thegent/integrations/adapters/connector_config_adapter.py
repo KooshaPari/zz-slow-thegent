@@ -6,7 +6,10 @@ Handles connector-specific configuration (timeouts, circuit breakers, etc).
 from typing import Any
 
 from thegent.integrations.error_budget import ErrorBudgetConfig, ErrorBudgetTracker
-from thegent.integrations.rate_limit_backoff import RateLimitBackoffManager, RateLimitConfig
+from thegent.integrations.rate_limit_backoff import (
+    RateLimitBackoffManager,
+    RateLimitConfig,
+)
 from thegent.utils.routing_impl.circuit_breaker import (
     ProviderCircuitBreakerConfig,
     ProviderCircuitBreakerRegistry,

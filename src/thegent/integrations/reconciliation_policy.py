@@ -10,12 +10,12 @@ from __future__ import annotations
 
 import logging
 from dataclasses import dataclass
-from enum import Enum
+from enum import StrEnum
 
 logger = logging.getLogger(__name__)
 
 
-class ReconciliationMode(str, Enum):
+class ReconciliationMode(StrEnum):
     """Reconciliation modes for conflict resolution."""
 
     BOARD_ID_FIRST = "board_id_first"

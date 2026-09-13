@@ -5,7 +5,8 @@ Routes requests to appropriate agents/models based on rules.
 """
 from __future__ import annotations
 
-from typing import Any, Callable, Optional
+from collections.abc import Callable
+from typing import Any, Optional
 
 
 class Router:
@@ -17,8 +18,8 @@ class Router:
 
     def __init__(
         self,
-        agent_factory: Optional[Callable] = None,
-        model_factory: Optional[Callable] = None,
+        agent_factory: Callable | None = None,
+        model_factory: Callable | None = None,
     ):
         """Initialize router with injected factories.
 
@@ -29,7 +30,7 @@ class Router:
         self.agent_factory = agent_factory
         self.model_factory = model_factory
 
-    def select_agent(self, task_spec: dict[str, Any]) -> Optional[str]:
+    def select_agent(self, task_spec: dict[str, Any]) -> str | None:
         """Select an agent for a task.
 
         Args:
@@ -46,7 +47,7 @@ class Router:
         # Default fallback
         return "default_agent"
 
-    def select_model(self, task_spec: dict[str, Any]) -> Optional[str]:
+    def select_model(self, task_spec: dict[str, Any]) -> str | None:
         """Select a model for a task.
 
         Args:

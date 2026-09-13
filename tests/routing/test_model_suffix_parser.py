@@ -16,7 +16,6 @@ from thegent.utils.routing_impl.model_suffix_parser import (
     resolve_suffix_model,
 )
 
-
 # ---------------------------------------------------------------------------
 # parse_model_suffixes
 # ---------------------------------------------------------------------------

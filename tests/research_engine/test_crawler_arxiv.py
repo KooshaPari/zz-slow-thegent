@@ -2,10 +2,8 @@
 
 from __future__ import annotations
 
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from unittest.mock import MagicMock, patch
-
-import pytest
 
 
 def _make_result(title: str, url: str, abstract: str = "") -> MagicMock:
@@ -14,7 +12,7 @@ def _make_result(title: str, url: str, abstract: str = "") -> MagicMock:
     r.title = title
     r.entry_id = url
     r.summary = abstract
-    r.updated = datetime.now(timezone.utc)
+    r.updated = datetime.now(UTC)
     return r
 
 

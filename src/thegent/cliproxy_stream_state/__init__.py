@@ -10,14 +10,14 @@ from typing import Any
 
 class ResponsesStreamState:
     """Manages state for streaming responses.
-    
+
     This class tracks the state of a streaming response session,
     including accumulated content, tool calls, and usage metrics.
     """
 
     def __init__(self, request_id: str) -> None:
         """Initialize stream state.
-        
+
         Args:
             request_id: The request identifier.
         """
@@ -28,7 +28,7 @@ class ResponsesStreamState:
 
     def add_content(self, content: str) -> None:
         """Add content to the stream.
-        
+
         Args:
             content: Content to add.
         """
@@ -36,7 +36,7 @@ class ResponsesStreamState:
 
     def add_tool_call(self, tool_call: dict[str, Any]) -> None:
         """Add a tool call to the stream.
-        
+
         Args:
             tool_call: Tool call to add.
         """
@@ -44,7 +44,7 @@ class ResponsesStreamState:
 
     def set_usage(self, usage: dict[str, Any]) -> None:
         """Set usage metrics.
-        
+
         Args:
             usage: Usage dictionary.
         """
@@ -53,7 +53,7 @@ class ResponsesStreamState:
     @property
     def content(self) -> str:
         """Get accumulated content.
-        
+
         Returns:
             Concatenated content string.
         """
@@ -62,7 +62,7 @@ class ResponsesStreamState:
     @property
     def tool_calls(self) -> list[dict[str, Any]]:
         """Get accumulated tool calls.
-        
+
         Returns:
             List of tool calls.
         """
@@ -71,7 +71,7 @@ class ResponsesStreamState:
     @property
     def usage(self) -> dict[str, Any]:
         """Get usage metrics.
-        
+
         Returns:
             Usage dictionary.
         """
@@ -79,7 +79,7 @@ class ResponsesStreamState:
 
     def to_dict(self) -> dict[str, Any]:
         """Convert state to dictionary.
-        
+
         Returns:
             State dictionary.
         """

@@ -20,12 +20,11 @@ import pytest
 import yaml
 
 from thegent.agents.capability_index import (
-    AgentRecord,
     AgentRecommendation,
+    AgentRecord,
     CapabilityIndex,
     DoctorResult,
     _coerce_list,
-    _load_agent_file,
     _parse_frontmatter,
     _tf_idf_score,
     _tokenize,
@@ -587,7 +586,7 @@ class TestAutoAgentSelection:
             from thegent.cli.apps.run import app
 
             runner = CliRunner()
-            result = runner.invoke(app, ["agent", "write documentation for my module"], catch_exceptions=True)
+            runner.invoke(app, ["agent", "write documentation for my module"], catch_exceptions=True)
             # run_cmd should have been called with agent="doc-writer"
             if mock_run_cmd.called:
                 call_kwargs = mock_run_cmd.call_args
@@ -605,7 +604,7 @@ class TestAutoAgentSelection:
             runner = CliRunner()
             with patch("thegent.cli.commands.cli.run_cmd") as mock_run_cmd:
                 mock_run_cmd.return_value = None
-                result = runner.invoke(
+                runner.invoke(
                     app,
                     ["agent", "do some task", "--no-auto-agent"],
                     catch_exceptions=True,

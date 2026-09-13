@@ -15,7 +15,6 @@ import os
 import time
 import uuid
 from dataclasses import dataclass
-from typing import Optional
 
 import httpx
 import litellm
@@ -54,7 +53,7 @@ class FlashAgent:
     Falls back to litellm if available when CLIProxy is unavailable.
     """
 
-    def __init__(self, cliproxy_url: Optional[str] = None):
+    def __init__(self, cliproxy_url: str | None = None):
         """Initialize the flash agent.
 
         Args:
@@ -121,7 +120,7 @@ class FlashAgent:
                 elapsed_s=elapsed_s,
                 agent_id=agent_id,
             )
-        except asyncio.TimeoutError:
+        except TimeoutError:
             elapsed_s = time.monotonic() - start
             return FlashAgentResult(
                 output="",
@@ -162,7 +161,7 @@ class FlashAgent:
                 elapsed_s=elapsed_s,
                 agent_id=agent_id,
             )
-        except asyncio.TimeoutError:
+        except TimeoutError:
             elapsed_s = time.monotonic() - start
             return FlashAgentResult(
                 output="",

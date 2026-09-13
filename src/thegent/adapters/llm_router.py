@@ -10,11 +10,10 @@ Target: ~500 LOC unified router
 from __future__ import annotations
 
 import os
-from typing import Any
 from dataclasses import dataclass
+from typing import Any
 
-import litellm
-from litellm import completion, acompletion, completion_cost
+from litellm import acompletion, completion_cost
 from tenacity import retry, stop_after_attempt, wait_exponential
 
 
@@ -41,10 +40,10 @@ PROVIDERS: dict[str, ProviderConfig] = {
 
 class LLMRouter:
     """Unified router for LLM providers using LiteLLM.
-    
+
     Replaces the custom 1,884 LOC implementation with a ~200 LOC
     wrapper around the industry-standard LiteLLM library.
-    
+
     Usage:
         router = LLMRouter()
         response = await router.route(
@@ -53,29 +52,29 @@ class LLMRouter:
             provider="openai"
         )
     """
-    
+
     def __init__(self) -> None:
         self._provider_configs = PROVIDERS
         self._fallback_chain: list[str] = ["openai", "anthropic", "gemini"]
-    
+
     def get_model_string(self, provider: str, model: str) -> str:
         """Get the LiteLLM-compatible model string."""
         config = self._provider_configs.get(provider)
         if not config:
             return model  # Assume user passed full model string
-        
+
         # Handle provider-specific prefixes
         if provider == "openrouter":
             return f"openrouter/{model}"
         return f"{config.provider}/{model}"
-    
+
     def _get_api_key(self, provider: str) -> str | None:
         """Get API key from environment."""
         config = self._provider_configs.get(provider)
         if not config:
             return None
         return os.getenv(config.api_key_env)
-    
+
     @retry(
         stop=stop_after_attempt(3),
         wait=wait_exponential(multiplier=1, min=2, max=10),
@@ -92,17 +91,17 @@ class LLMRouter:
         **kwargs: Any
     ) -> Any:
         """Route a completion request to the specified provider.
-        
+
         Uses tenacity for automatic retries with exponential backoff.
         All the complex retry logic from litellm_router.py is replaced
         by this single decorator.
         """
         model_string = self.get_model_string(provider, model)
         api_key = self._get_api_key(provider)
-        
+
         if not api_key:
             raise ValueError(f"No API key found for provider: {provider}")
-        
+
         try:
             if stream:
                 return await acompletion(
@@ -123,10 +122,10 @@ class LLMRouter:
                     api_key=api_key,
                     **kwargs
                 )
-        except Exception as e:
+        except Exception:
             # Log and re-raise for tenacity retry
             raise
-    
+
     async def route_with_fallback(
         self,
         messages: list[dict[str, str]],
@@ -136,7 +135,7 @@ class LLMRouter:
     ) -> Any:
         """Route with automatic fallback to next provider on failure."""
         providers = providers or self._fallback_chain
-        
+
         last_error = None
         for provider in providers:
             try:
@@ -144,9 +143,9 @@ class LLMRouter:
             except Exception as e:
                 last_error = e
                 continue
-        
+
         raise last_error or RuntimeError("All providers failed")
-    
+
     def estimate_cost(
         self,
         model: str,

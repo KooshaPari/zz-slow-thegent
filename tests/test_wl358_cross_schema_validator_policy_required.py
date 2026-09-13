@@ -1,8 +1,9 @@
 from __future__ import annotations
 
-import orjson as json
 import subprocess
 from pathlib import Path
+
+import orjson as json
 
 
 def test_wl358_cross_schema_validator_fails_without_evidence_policy(tmp_path: Path) -> None:

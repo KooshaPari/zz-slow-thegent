@@ -1,4 +1,5 @@
 from pathlib import Path
+
 import pytest
 
 from thegent.mesh.command_share import CommandShareService

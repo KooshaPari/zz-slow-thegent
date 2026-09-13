@@ -5,10 +5,11 @@
 
 from __future__ import annotations
 
-import orjson as json
-import pytest
 from pathlib import Path
 from tempfile import TemporaryDirectory
+
+import orjson as json
+import pytest
 
 from thegent.integrations.sandbox_seeder import SandboxSeeder, SeedRecord
 
@@ -158,7 +159,7 @@ def test_roundtrip_seeds() -> None:
         loaded_seeds = SandboxSeeder.load_seeds(output_file)
 
         assert len(loaded_seeds) == len(original_seeds)
-        for original, loaded in zip(original_seeds, loaded_seeds):
+        for original, loaded in zip(original_seeds, loaded_seeds, strict=False):
             assert original.wl_id == loaded.wl_id
             assert original.title == loaded.title
             assert original.status == loaded.status

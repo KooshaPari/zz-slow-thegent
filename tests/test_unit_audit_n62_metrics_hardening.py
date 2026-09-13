@@ -6,7 +6,6 @@ metrics module.
 
 from __future__ import annotations
 
-import tempfile
 import time
 from pathlib import Path
 from typing import ClassVar
@@ -17,10 +16,7 @@ from thegent.governance.metrics import (
     AggregatedMetrics,
     ExecutionResult,
     MetricsCollector,
-    ProviderMetricsCollector,
     ProviderMetricsSnapshot,
-    get_metrics_collector,
-    initialize_metrics_collector,
 )
 
 

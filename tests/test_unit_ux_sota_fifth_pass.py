@@ -35,8 +35,8 @@ from pathlib import Path
 
 import pytest
 
-from thegent.ux.cli_cockpit import _exc_text, app as cockpit_app
-
+from thegent.ux.cli_cockpit import _exc_text
+from thegent.ux.cli_cockpit import app as cockpit_app
 
 pytestmark = pytest.mark.unit
 

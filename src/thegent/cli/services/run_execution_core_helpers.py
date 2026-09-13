@@ -29,17 +29,10 @@ from thegent.ux.cli_errors import print_exc
 err_console = Console(stderr=True)
 
 # Import decomposed modules
-from thegent.use_cases.execute_task import ExecutionOrchestrator
-from thegent.adapters.execution_io import (
-    ShadowWorkspaceManager,
-    ResourceLockManager,
-    ProcessEnvironmentBuilder,
-    ProcessSpawner,
-)
 
 from thegent.agents import get_fallback_agents, get_runner, resolve_agent
-from thegent.agents.resilience import is_usage_limit
 from thegent.agents.base import AgentRunner, RunResult
+from thegent.agents.resilience import is_usage_limit
 
 
 # Lazy import wrapper to avoid circular dependency
@@ -64,35 +57,38 @@ class _LazyImpl:
 _impl_lazy = _LazyImpl()
 
 # These are now accessed via _impl_lazy._apply_pareto_routing etc.
-from thegent.cli.commands.observability_impl import escalate_add_impl
-from thegent.cli.services import run_session_helpers as _rsh
-from thegent.cli.services.run_session_helpers import resolve_cwd as _resolve_cwd
-from thegent.config import ThegentSettings
-from thegent.execution import AgentSource, InteractivityMode, RunMeta, RunRegistry
-from thegent.execution import (  # noqa: F401 — surfaced via _bind_impl_namespace
-    Auditor,
-    CircuitBreakerRegistry,
-    ConcurrencyController,
-    FreshnessValidator,
-    InterruptionTracker,
-    LoadClassifier,
-    OverrideRegistry,
-    PolicyEngine,
-    TrustBoundaryValidator,
-)
-from thegent.maif import MAIFRunner
-from thegent.agents.registry import list_agent_names
-from thegent.output_parser import condense_stream_to_display, extract_condensed
-from thegent.cli.commands.session_meta_impl import (
-    _build_continuation_prompt,
-    _save_session_meta,
-)
-
-from thegent.cli.services import run_session_helpers as _rsh_impl
 import os
 import platform
 import socket
 import subprocess
+
+from thegent.agents.registry import list_agent_names
+from thegent.cli.commands.observability_impl import escalate_add_impl
+from thegent.cli.commands.session_meta_impl import (
+    _build_continuation_prompt,
+    _save_session_meta,
+)
+from thegent.cli.services import run_session_helpers as _rsh
+from thegent.cli.services import run_session_helpers as _rsh_impl
+from thegent.cli.services.run_session_helpers import resolve_cwd as _resolve_cwd
+from thegent.config import ThegentSettings
+from thegent.execution import (  # noqa: F401 — surfaced via _bind_impl_namespace
+    AgentSource,
+    Auditor,
+    CircuitBreakerRegistry,
+    ConcurrencyController,
+    FreshnessValidator,
+    InteractivityMode,
+    InterruptionTracker,
+    LoadClassifier,
+    OverrideRegistry,
+    PolicyEngine,
+    RunMeta,
+    RunRegistry,
+    TrustBoundaryValidator,
+)
+from thegent.maif import MAIFRunner
+from thegent.output_parser import condense_stream_to_display, extract_condensed
 
 _log = structlog.get_logger(__name__)
 console = Console()
@@ -398,7 +394,6 @@ def _phase_acquire_concurrency(
     rid: str,
 ) -> dict[str, Any] | None:
     """Concurrency controller acquisition (WP-5001)."""
-    from thegent.execution import ConcurrencyController
 
     cc = ConcurrencyController(
         settings.session_dir,
@@ -485,9 +480,6 @@ def _phase_fatigue_freshness_burst(
     """Combined fatigue + freshness + burst checks (WP-4004 / WP-4005 / WP-5002)."""
     from thegent.execution import (
         DeferralQueue,
-        FreshnessValidator,
-        InterruptionTracker,
-        LoadClassifier,
     )
 
     it = InterruptionTracker(settings.session_dir)
@@ -985,7 +977,10 @@ def _phase_dispatch_grounded_run(
         run_id=run_id,
         _google_grounding_requested=google_grounding,
     )
-    from thegent.agents.grounding import GEMINI_GROUNDING_AGENTS, run_gemini_with_grounding
+    from thegent.agents.grounding import (
+        GEMINI_GROUNDING_AGENTS,
+        run_gemini_with_grounding,
+    )
 
     if agent not in GEMINI_GROUNDING_AGENTS:
         return {
@@ -1032,9 +1027,11 @@ def _phase_build_fallback_plan(
     """
     from thegent.agents.state_machine import FallbackStateMachine
     from thegent.contracts.policy import FallbackPolicy
-    from thegent.contracts.telemetry import ContractTelemetry, rank_providers_by_parser_quality
+    from thegent.contracts.telemetry import (
+        ContractTelemetry,
+        rank_providers_by_parser_quality,
+    )
 
-    use_stream = not full
     agents_to_try: list[str] = [agent] if agent else []
     if model:
         try:
@@ -1494,7 +1491,6 @@ def _phase_build_execution_services(
     """
     from thegent.execution import (
         Auditor,
-        CircuitBreakerRegistry,
         OverrideRegistry,
         PolicyEngine,
         TrustBoundaryValidator,
@@ -2007,12 +2003,10 @@ def run_impl_core(
     # the orchestrator stays a thin composer (CC ↓, inlined 18 lines).
     services = _phase_build_execution_services(settings, registry)
     circuit_breaker = services.circuit_breaker
-    trust_boundary = services.trust_boundary
     override_registry = services.override_registry
     policy_engine = services.policy_engine
     auditor = services.auditor
     maif_runner = services.maif_runner
-    escalation_sla_minutes = services.escalation_sla_minutes
 
     # WP-3007: Trust Boundary Checks — delegated to ``_phase_apply_trust_boundary``
     # so the canonical failure-payload shape (with ``run_id``) lives in one
@@ -2411,7 +2405,6 @@ def _phase_bg_init_services(
     """
     from thegent.execution import (
         Auditor,
-        CircuitBreakerRegistry,
         OverrideRegistry,
         PolicyEngine,
         TrustBoundaryValidator,
@@ -2517,10 +2510,10 @@ def _phase_bg_remote_dispatch(
     """
     if not remote:
         return None
-    from thegent.research.remote_compute import RemoteComputeClient
-
     import sys
     import tempfile
+
+    from thegent.research.remote_compute import RemoteComputeClient
 
     client = RemoteComputeClient(remote)
     remote_path = Path(tempfile.gettempdir()) / f"thegent-run-{run_meta.run_id}"
@@ -2849,7 +2842,6 @@ def bg_impl_core(
     if impl_ns is None:
         raise ValueError("impl_ns is required")
     _bind_impl_namespace(impl_ns)
-    import sys
 
     settings = ThegentSettings()
     rid, _tracker = _phase_bg_init_tracker(settings, run_id)

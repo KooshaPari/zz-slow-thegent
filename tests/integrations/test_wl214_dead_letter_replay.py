@@ -6,7 +6,7 @@
 from __future__ import annotations
 
 from collections.abc import Generator
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from pathlib import Path
 from tempfile import TemporaryDirectory
 
@@ -68,13 +68,13 @@ class TestDeadLetterReplayEngineReplayOne:
     @pytest.fixture
     def engine_with_entry(
         self,
-    ) -> Generator[tuple[DeadLetterReplayEngine, DeadLetterQueue, Path], None, None]:
+    ) -> Generator[tuple[DeadLetterReplayEngine, DeadLetterQueue, Path]]:
         """Provide engine with pre-loaded entry."""
         tmpdir = TemporaryDirectory()
         store_path = Path(tmpdir.name) / "queue.jsonl"
         dlq = DeadLetterQueue(store_path)
 
-        now = datetime.now(timezone.utc)
+        now = datetime.now(UTC)
         dlq.enqueue(
             DeadLetterEntry(
                 entry_id="DLQ-replay-1",
@@ -182,13 +182,13 @@ class TestDeadLetterReplayEngineReplayAll:
     @pytest.fixture
     def engine_with_multiple(
         self,
-    ) -> Generator[tuple[DeadLetterReplayEngine, DeadLetterQueue], None, None]:
+    ) -> Generator[tuple[DeadLetterReplayEngine, DeadLetterQueue]]:
         """Provide engine with multiple pending entries."""
         tmpdir = TemporaryDirectory()
         store_path = Path(tmpdir.name) / "queue.jsonl"
         dlq = DeadLetterQueue(store_path, max_retries=3)
 
-        now = datetime.now(timezone.utc)
+        now = datetime.now(UTC)
 
         # Add 2 pending and 1 resolved
         dlq.enqueue(

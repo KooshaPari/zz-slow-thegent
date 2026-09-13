@@ -9,10 +9,12 @@ This package contains infrastructure utilities including:
 - Multi-runtime diagnostics
 """
 
+from thegent.infra.cache_v2 import MultiTierCache, get_cache
 from thegent.infra.enhanced_errors import (
     ConfigurationError,
     DependencyError,
     EnhancedError,
+    InfraRuntimeError,
     NetworkError,
     create_config_error,
     create_dependency_error,
@@ -22,10 +24,6 @@ from thegent.infra.enhanced_errors import (
     format_error,
     format_error_with_context,
 )
-from thegent.infra.enhanced_errors import (
-    InfraRuntimeError,
-)
-from thegent.infra.cache_v2 import MultiTierCache, get_cache
 from thegent.infra.fast_file_ops import (
     copy_file,
     copy_tree,

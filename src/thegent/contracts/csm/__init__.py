@@ -14,9 +14,9 @@ keep working unchanged.
 from __future__ import annotations
 
 from thegent.contracts.csm.v1 import (
+    CanonicalStructuredMessage,
     CSMPhase,
     CSMStatus,
-    CanonicalStructuredMessage,
     get_csm,
 )
 

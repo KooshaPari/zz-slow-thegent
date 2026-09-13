@@ -7,18 +7,16 @@ aggregators.py, and aggregator_controller.py.
 from __future__ import annotations
 
 import json
-import tempfile
 from datetime import UTC, datetime, timedelta
 from pathlib import Path
-from typing import Any
 from unittest.mock import MagicMock, patch
 
 import pytest
 
 from thegent.cost.aggregator import CostAggregator, CostEstimator
+from thegent.cost.aggregator_controller import BudgetTier, CostController, UsageSnapshot
 from thegent.cost.aggregators import BudgetAlert as SimpleBudgetAlert
 from thegent.cost.aggregators import CostCap, CostTracker
-from thegent.cost.aggregator_controller import BudgetTier, CostController, UsageSnapshot
 from thegent.cost.budget_alerts import BudgetAlertSystem, BudgetConfig
 from thegent.cost.cost_quality_optimization import CostQualityOptimizer
 from thegent.cost.tracker import CostEntry, RunCostTracker, get_run_cost_tracker
@@ -381,7 +379,7 @@ class TestRunCostTracker:
 
     def test_init_creates_cost_dir(self, tmp_path: Path) -> None:
         """Test tracker creates cost directory on init."""
-        tracker = RunCostTracker(cost_dir=tmp_path)
+        RunCostTracker(cost_dir=tmp_path)
         assert tmp_path.exists()
         assert tmp_path.is_dir()
 

@@ -10,19 +10,17 @@ Tests the conversation dumper functionality including:
 
 from __future__ import annotations
 
-import orjson as json
-from datetime import datetime, timezone
-from pathlib import Path
+from datetime import UTC, datetime
 
+import orjson as json
 import pytest
 
 from thegent.session.conversation_dumper import (
+    DEFAULT_DUMPS_DIR,
     ConversationDumper,
     ConversationRecord,
-    DEFAULT_DUMPS_DIR,
     get_dumper,
 )
-
 
 # ---------------------------------------------------------------------------
 # Fixtures
@@ -48,7 +46,7 @@ def sample_record():
     """Create a sample ConversationRecord for testing."""
     return ConversationRecord(
         conversation_id="test-conv-123",
-        timestamp=datetime(2026, 2, 20, 10, 30, 0, tzinfo=timezone.utc),
+        timestamp=datetime(2026, 2, 20, 10, 30, 0, tzinfo=UTC),
         model="claude-3-opus",
         prompt="Hello, how are you?",
         response="I'm doing well, thank you!",
@@ -282,11 +280,11 @@ class TestListDumps:
         import time
 
         # Create dumps with different IDs and slight delay to ensure different timestamps
-        path1 = dumper.dump_conversation("conv-a", "model", "p1", "r1")
+        dumper.dump_conversation("conv-a", "model", "p1", "r1")
         time.sleep(0.15)  # Ensure different timestamp
-        path2 = dumper.dump_conversation("conv-b", "model", "p2", "r2")
+        dumper.dump_conversation("conv-b", "model", "p2", "r2")
         time.sleep(0.15)
-        path3 = dumper.dump_conversation("conv-a", "model", "p3", "r3")
+        dumper.dump_conversation("conv-a", "model", "p3", "r3")
 
         # Verify we created 3 files
         all_dumps = list(temp_dumps_dir.glob("conversation-*.md"))

@@ -3,11 +3,10 @@
 Tests cover TaskRequest, TaskResult, and TaskWorkerPool lifecycle.
 """
 
-import asyncio
-import orjson as json
 from pathlib import Path
-from unittest.mock import AsyncMock, MagicMock, patch
+from unittest.mock import MagicMock, patch
 
+import orjson as json
 import pytest
 
 from thegent.orchestration.worker_pool import (

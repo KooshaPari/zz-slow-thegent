@@ -10,7 +10,6 @@ from enum import Enum
 from typing import cast
 
 from thegent.infra.shim_subprocess import run as shim_run
-
 from thegent.integrations.base import DataclassConfig
 
 logger = logging.getLogger(__name__)

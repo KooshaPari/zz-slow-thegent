@@ -5,7 +5,7 @@
 
 from __future__ import annotations
 
-from datetime import datetime, timedelta, timezone
+from datetime import UTC, datetime, timedelta
 
 import pytest
 
@@ -22,7 +22,7 @@ class TestAuthExpiryDetector:
     def test_detect_expiry_valid(self):
         """Test detecting valid token."""
         detector = AuthExpiryDetector()
-        future = datetime.now(timezone.utc) + timedelta(hours=48)
+        future = datetime.now(UTC) + timedelta(hours=48)
         token_info = {"expires_at": future}
 
         result = detector.detect_expiry(token_info)
@@ -35,7 +35,7 @@ class TestAuthExpiryDetector:
     def test_detect_expiry_expiring_soon(self):
         """Test detecting token expiring soon."""
         detector = AuthExpiryDetector()
-        soon = datetime.now(timezone.utc) + timedelta(hours=12)
+        soon = datetime.now(UTC) + timedelta(hours=12)
         token_info = {"expires_at": soon}
 
         result = detector.detect_expiry(token_info)
@@ -48,7 +48,7 @@ class TestAuthExpiryDetector:
     def test_detect_expiry_expired(self):
         """Test detecting expired token."""
         detector = AuthExpiryDetector()
-        past = datetime.now(timezone.utc) - timedelta(hours=1)
+        past = datetime.now(UTC) - timedelta(hours=1)
         token_info = {"expires_at": past}
 
         result = detector.detect_expiry(token_info)
@@ -61,7 +61,7 @@ class TestAuthExpiryDetector:
     def test_detect_expiry_with_timestamp(self):
         """Test detecting expiry from unix timestamp."""
         detector = AuthExpiryDetector()
-        future = datetime.now(timezone.utc) + timedelta(hours=48)
+        future = datetime.now(UTC) + timedelta(hours=48)
         timestamp = int(future.timestamp())
         token_info = {"expiry_timestamp": timestamp}
 
@@ -98,7 +98,7 @@ class TestAuthExpiryDetector:
     def test_detect_expiry_with_iso_string(self):
         """Test detecting expiry from ISO format string."""
         detector = AuthExpiryDetector()
-        future = datetime.now(timezone.utc) + timedelta(hours=48)
+        future = datetime.now(UTC) + timedelta(hours=48)
         token_info = {"expires_at": future.isoformat()}
 
         result = detector.detect_expiry(token_info)
@@ -118,7 +118,7 @@ class TestAuthExpiryDetector:
     def test_is_expired_quick_check(self):
         """Test quick is_expired check."""
         detector = AuthExpiryDetector()
-        past = datetime.now(timezone.utc) - timedelta(hours=1)
+        past = datetime.now(UTC) - timedelta(hours=1)
         token_info = {"expires_at": past}
 
         assert detector.is_expired(token_info) is True
@@ -127,7 +127,7 @@ class TestAuthExpiryDetector:
     def test_is_expired_not_expired(self):
         """Test is_expired on valid token."""
         detector = AuthExpiryDetector()
-        future = datetime.now(timezone.utc) + timedelta(hours=48)
+        future = datetime.now(UTC) + timedelta(hours=48)
         token_info = {"expires_at": future}
 
         assert detector.is_expired(token_info) is False
@@ -136,7 +136,7 @@ class TestAuthExpiryDetector:
     def test_is_expiring_soon_quick_check(self):
         """Test quick is_expiring_soon check."""
         detector = AuthExpiryDetector()
-        soon = datetime.now(timezone.utc) + timedelta(hours=12)
+        soon = datetime.now(UTC) + timedelta(hours=12)
         token_info = {"expires_at": soon}
 
         assert detector.is_expiring_soon(token_info) is True
@@ -145,7 +145,7 @@ class TestAuthExpiryDetector:
     def test_is_expiring_soon_not_expiring(self):
         """Test is_expiring_soon on valid token."""
         detector = AuthExpiryDetector()
-        future = datetime.now(timezone.utc) + timedelta(hours=48)
+        future = datetime.now(UTC) + timedelta(hours=48)
         token_info = {"expires_at": future}
 
         assert detector.is_expiring_soon(token_info) is False
@@ -154,7 +154,7 @@ class TestAuthExpiryDetector:
     def test_custom_threshold(self):
         """Test custom expiry threshold."""
         detector = AuthExpiryDetector(expiring_soon_threshold_hours=6)
-        soon = datetime.now(timezone.utc) + timedelta(hours=8)
+        soon = datetime.now(UTC) + timedelta(hours=8)
         token_info = {"expires_at": soon}
 
         result = detector.detect_expiry(token_info)

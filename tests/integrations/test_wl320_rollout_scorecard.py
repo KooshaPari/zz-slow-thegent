@@ -8,8 +8,8 @@ from __future__ import annotations
 import pytest
 
 from thegent.integrations.rollout_scorecard import (
-    RolloutScorecard,
     RolloutProfile,
+    RolloutScorecard,
     ScorecardCheck,
     load_rollout_profile,
     validate_rollout_profile,

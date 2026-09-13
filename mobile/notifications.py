@@ -19,11 +19,7 @@ class NotificationBridge:
         """Send a push notification to a specific device."""
         _log.info("Sending push notification to device: %s", device_token[:10] + "...")
 
-        message = {
-            "message": {"token": device_token, "notification": {"title": title, "body": body}, "data": data or {}}
-        }
 
-        headers = {"Authorization": f"Bearer {self.fcm_api_key}", "Content-Type": "application/json"}
 
         try:
             # Simulated HTTP call

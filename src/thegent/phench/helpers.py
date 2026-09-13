@@ -9,8 +9,8 @@ from .config import (
     DEFAULT_EXCLUDED_REPOS,
 )
 from .git_ops import sanitize_repo_id
-from .models import ModuleManifest, RepoSelection, RunnerCatalog, TargetLock
-from .paths import phenotype_root, repository_root_candidates
+from .models import ModuleManifest, RepoSelection, TargetLock
+from .paths import repository_root_candidates
 
 __all__ = [
     "_parse_lock",

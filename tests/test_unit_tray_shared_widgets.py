@@ -38,7 +38,7 @@ class TestMetricCard:
 
             from thegent.tray.core.shared_widgets import metric_card
 
-            card = metric_card("CPU", "45", "%")
+            metric_card("CPU", "45", "%")
 
             # Verify QGroupBox was called
             mock_groupbox.assert_called_once_with("CPU")
@@ -55,7 +55,7 @@ class TestMetricCard:
 
             from thegent.tray.core.shared_widgets import metric_card
 
-            card = metric_card("Memory", "1024", "MB")
+            metric_card("Memory", "1024", "MB")
 
             # Verify title was set via constructor
             mock_groupbox.assert_called_with("Memory")
@@ -73,7 +73,7 @@ class TestMetricCard:
 
             from thegent.tray.core.shared_widgets import metric_card
 
-            card = metric_card("Disk", "500", "GB")
+            metric_card("Disk", "500", "GB")
 
             # Verify layout has widgets added
             assert mock_layout_instance.addWidget.call_count == 2
@@ -95,7 +95,7 @@ class TestCreateStatusBadge:
 
             from thegent.tray.core.shared_widgets import create_status_badge
 
-            badge = create_status_badge("success")
+            create_status_badge("success")
 
             # Verify QLabel was created with correct text
             mock_label.assert_called_once_with("Success")
@@ -111,7 +111,7 @@ class TestCreateStatusBadge:
 
             from thegent.tray.core.shared_widgets import create_status_badge
 
-            badge = create_status_badge("warning")
+            create_status_badge("warning")
 
             mock_label.assert_called_once_with("Warning")
 
@@ -126,7 +126,7 @@ class TestCreateStatusBadge:
 
             from thegent.tray.core.shared_widgets import create_status_badge
 
-            badge = create_status_badge("error")
+            create_status_badge("error")
 
             mock_label.assert_called_once_with("Error")
 
@@ -141,6 +141,6 @@ class TestCreateStatusBadge:
 
             from thegent.tray.core.shared_widgets import create_status_badge
 
-            badge = create_status_badge("unknown")
+            create_status_badge("unknown")
 
             mock_label.assert_called_once_with("Unknown")

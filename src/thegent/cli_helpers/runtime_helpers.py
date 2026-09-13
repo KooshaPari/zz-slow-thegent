@@ -8,14 +8,12 @@ from __future__ import annotations
 
 import getpass
 import os
-import sys
 from pathlib import Path
-from typing import TYPE_CHECKING, Any
+from typing import Any
 
 import typer
 
 from thegent.config import ThegentSettings
-
 
 # Health payload schema version
 HEALTH_PAYLOAD_SCHEMA_VERSION = "3.0"

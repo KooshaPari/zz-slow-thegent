@@ -1,11 +1,11 @@
 """Unit tests for execution registry and state-aware orchestration (G-KD-03)."""
 
-import orjson as json
 import tempfile
 from datetime import UTC, datetime
 from pathlib import Path
 from unittest.mock import MagicMock, patch
 
+import orjson as json
 import pytest
 
 from thegent.execution import (

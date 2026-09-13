@@ -102,7 +102,7 @@ class CLIProxyRoutingClient:
             quality_score=data["quality_score"],
         )
 
-    def __enter__(self) -> "CLIProxyRoutingClient":
+    def __enter__(self) -> CLIProxyRoutingClient:
         """Context manager entry."""
         return self
 

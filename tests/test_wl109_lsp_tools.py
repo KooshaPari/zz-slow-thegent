@@ -14,26 +14,22 @@ from __future__ import annotations
 
 from pathlib import Path
 from typing import Any
-from unittest.mock import patch
 
 import pytest
 
 from thegent.mcp.lsp_tools import (
     Diagnostic,
     HoverInfo,
-    LspToolAdapter,
     SymbolInfo,
+    _ensure_position,
+    _validate_existing_file,
     lsp_diagnostics,
     lsp_diagnostics_impl,
-    lsp_hover,
     lsp_hover_impl,
     lsp_symbol_lookup,
     lsp_symbol_lookup_impl,
-    _validate_existing_file,
-    _ensure_position,
 )
 from thegent.mcp.server import _server_tools_workstream_lsp
-
 
 # ---------------------------------------------------------------------------
 # Fake LSP adapters

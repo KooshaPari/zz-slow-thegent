@@ -139,13 +139,12 @@ class TeammateManager:
                 )
 
                 # Heuristic teammate check if not already confirmed
-                if not is_teammate:
-                    if (
-                        "teammate" in content.lower()
-                        or "specialized agent" in content.lower()
-                        or "persona" in content.lower()
-                    ):
-                        is_teammate = True
+                if not is_teammate and (
+                    "teammate" in content.lower()
+                    or "specialized agent" in content.lower()
+                    or "persona" in content.lower()
+                ):
+                    is_teammate = True
 
                 # Only include if it looks like a teammate
                 if not is_teammate:

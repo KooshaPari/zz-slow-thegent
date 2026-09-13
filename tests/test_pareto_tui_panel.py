@@ -12,14 +12,12 @@ Covers:
 from __future__ import annotations
 
 import json
-import textwrap
 from pathlib import Path
 
 import pytest
 
 from thegent.cli.tui.pareto import ParetoTuiSession
 from thegent.utils.routing_impl.route_executor import RouterStatus
-
 
 # ---------------------------------------------------------------------------
 # Fixtures

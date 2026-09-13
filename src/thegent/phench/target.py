@@ -31,8 +31,8 @@ from .helpers import (
 
 
 def _snapshot_id() -> str:
-    from datetime import UTC, datetime
     import secrets
+    from datetime import UTC, datetime
 
     return f"{datetime.now(UTC).strftime('%Y%m%dT%H%M%SZ')}-{secrets.token_hex(4)}"
 
@@ -82,9 +82,9 @@ def _append_repo_selection(
 from .models import (
     ModuleManifest,
     RepoSelection,
+    RunnerCatalog,
     RuntimeRepo,
     RuntimeState,
-    RunnerCatalog,
     TargetLock,
     TargetMode,
 )

@@ -4,9 +4,10 @@ Includes worktree creation, branch coordination, and cleanup.
 
 import logging
 import subprocess
-from thegent.infra.shim_subprocess import run as shim_run
 import time
 from pathlib import Path
+
+from thegent.infra.shim_subprocess import run as shim_run
 
 logger = logging.getLogger(__name__)
 

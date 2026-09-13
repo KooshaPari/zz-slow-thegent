@@ -7,9 +7,9 @@ FR Traceability:
 
 from __future__ import annotations
 
-import orjson as json
 from pathlib import Path
 
+import orjson as json
 import pytest
 
 from thegent.governance.hitl import (
@@ -19,7 +19,6 @@ from thegent.governance.hitl import (
     PolicyEngine,
     RunContext,
 )
-
 
 # ---------------------------------------------------------------------------
 # Fixtures
@@ -348,7 +347,7 @@ class TestHITLApprovalWorkflow:
         self._seed_pending(tmp_session, "run_w_02")
         workflow = HITLApprovalWorkflow(tmp_session)
         workflow.approve("run_w_02")
-        log = GovernanceEventLog(tmp_session)
+        GovernanceEventLog(tmp_session)
         events_path = tmp_session / "governance_events.jsonl"
         events = [json.loads(l) for l in events_path.read_text().splitlines() if l.strip()]
         resolution_events = [e for e in events if e.get("event_type") == "hitl_resolution"]

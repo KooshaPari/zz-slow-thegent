@@ -6,7 +6,7 @@
 from __future__ import annotations
 
 from collections.abc import Generator
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from pathlib import Path
 from tempfile import TemporaryDirectory
 
@@ -21,7 +21,7 @@ class TestDeadLetterEntryCreation:
     @pytest.mark.requirement("WL-213")
     def test_create_entry_minimal(self) -> None:
         """Can create a DeadLetterEntry with required fields."""
-        now = datetime.now(timezone.utc)
+        now = datetime.now(UTC)
         entry = DeadLetterEntry(
             entry_id="DLQ-001",
             wl_id="WL-042",
@@ -44,7 +44,7 @@ class TestDeadLetterEntryCreation:
     @pytest.mark.requirement("WL-213")
     def test_create_entry_with_retry_count(self) -> None:
         """Can create a DeadLetterEntry with explicit retry_count."""
-        now = datetime.now(timezone.utc)
+        now = datetime.now(UTC)
         entry = DeadLetterEntry(
             entry_id="DLQ-002",
             wl_id="WL-043",
@@ -86,7 +86,7 @@ class TestDeadLetterQueueEnqueue:
     """Test DeadLetterQueue.enqueue operations."""
 
     @pytest.fixture
-    def dlq(self) -> Generator[tuple[DeadLetterQueue, Path], None, None]:
+    def dlq(self) -> Generator[tuple[DeadLetterQueue, Path]]:
         """Provide a DeadLetterQueue and temp store path."""
         tmpdir = TemporaryDirectory()
         store_path = Path(tmpdir.name) / "queue.jsonl"
@@ -97,7 +97,7 @@ class TestDeadLetterQueueEnqueue:
     def test_enqueue_single_entry(self, dlq: tuple[DeadLetterQueue, Path]) -> None:
         """enqueue persists entry to JSONL file."""
         queue, store_path = dlq
-        now = datetime.now(timezone.utc)
+        now = datetime.now(UTC)
         entry = DeadLetterEntry(
             entry_id="DLQ-003",
             wl_id="WL-044",
@@ -119,7 +119,7 @@ class TestDeadLetterQueueEnqueue:
     def test_enqueue_multiple_entries(self, dlq: tuple[DeadLetterQueue, Path]) -> None:
         """enqueue appends multiple entries."""
         queue, store_path = dlq
-        now = datetime.now(timezone.utc)
+        now = datetime.now(UTC)
 
         for i in range(3):
             entry = DeadLetterEntry(
@@ -141,13 +141,13 @@ class TestDeadLetterQueueRead:
     """Test DeadLetterQueue.read_all operations."""
 
     @pytest.fixture
-    def dlq_with_entries(self) -> Generator[tuple[DeadLetterQueue, Path], None, None]:
+    def dlq_with_entries(self) -> Generator[tuple[DeadLetterQueue, Path]]:
         """Provide a DeadLetterQueue with pre-loaded entries."""
         tmpdir = TemporaryDirectory()
         store_path = Path(tmpdir.name) / "queue.jsonl"
         queue = DeadLetterQueue(store_path)
 
-        now = datetime.now(timezone.utc)
+        now = datetime.now(UTC)
         for i in range(3):
             entry = DeadLetterEntry(
                 entry_id=f"DLQ-{i}",
@@ -193,13 +193,13 @@ class TestDeadLetterQueuePending:
     """Test DeadLetterQueue.pending operations."""
 
     @pytest.fixture
-    def dlq_with_mixed_retries(self) -> Generator[tuple[DeadLetterQueue, Path], None, None]:
+    def dlq_with_mixed_retries(self) -> Generator[tuple[DeadLetterQueue, Path]]:
         """Provide DLQ with both pending and resolved entries."""
         tmpdir = TemporaryDirectory()
         store_path = Path(tmpdir.name) / "queue.jsonl"
         queue = DeadLetterQueue(store_path, max_retries=3)
 
-        now = datetime.now(timezone.utc)
+        now = datetime.now(UTC)
 
         # Entry with 0 retries (pending)
         queue.enqueue(
@@ -266,13 +266,13 @@ class TestDeadLetterQueueMarkRetried:
     """Test DeadLetterQueue.mark_retried operations."""
 
     @pytest.fixture
-    def dlq_single_entry(self) -> Generator[tuple[DeadLetterQueue, Path], None, None]:
+    def dlq_single_entry(self) -> Generator[tuple[DeadLetterQueue, Path]]:
         """Provide DLQ with single entry."""
         tmpdir = TemporaryDirectory()
         store_path = Path(tmpdir.name) / "queue.jsonl"
         queue = DeadLetterQueue(store_path)
 
-        now = datetime.now(timezone.utc)
+        now = datetime.now(UTC)
         queue.enqueue(
             DeadLetterEntry(
                 entry_id="DLQ-test",
@@ -320,13 +320,13 @@ class TestDeadLetterQueuePurgeResolved:
     """Test DeadLetterQueue.purge_resolved operations."""
 
     @pytest.fixture
-    def dlq_with_resolved(self) -> Generator[tuple[DeadLetterQueue, Path], None, None]:
+    def dlq_with_resolved(self) -> Generator[tuple[DeadLetterQueue, Path]]:
         """Provide DLQ with mix of pending and resolved entries."""
         tmpdir = TemporaryDirectory()
         store_path = Path(tmpdir.name) / "queue.jsonl"
         queue = DeadLetterQueue(store_path, max_retries=2)
 
-        now = datetime.now(timezone.utc)
+        now = datetime.now(UTC)
 
         # Pending
         queue.enqueue(

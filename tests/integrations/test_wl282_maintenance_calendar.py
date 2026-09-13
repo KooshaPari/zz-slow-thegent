@@ -5,7 +5,7 @@
 
 from __future__ import annotations
 
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 
 import pytest
 
@@ -21,8 +21,8 @@ class TestMaintenanceWindow:
     @pytest.mark.requirement("WL-282")
     def test_maintenance_window_creation(self) -> None:
         """Can create a MaintenanceWindow with required fields."""
-        start = datetime(2024, 1, 1, 12, 0, 0, tzinfo=timezone.utc)
-        end = datetime(2024, 1, 1, 14, 0, 0, tzinfo=timezone.utc)
+        start = datetime(2024, 1, 1, 12, 0, 0, tzinfo=UTC)
+        end = datetime(2024, 1, 1, 14, 0, 0, tzinfo=UTC)
         window = MaintenanceWindow(
             connector="github",
             start=start,
@@ -49,13 +49,13 @@ class TestMaintenanceCalendar:
         """Can add a maintenance window to the calendar."""
         window = MaintenanceWindow(
             connector="github",
-            start=datetime(2024, 1, 1, 12, 0, 0, tzinfo=timezone.utc),
-            end=datetime(2024, 1, 1, 14, 0, 0, tzinfo=timezone.utc),
+            start=datetime(2024, 1, 1, 12, 0, 0, tzinfo=UTC),
+            end=datetime(2024, 1, 1, 14, 0, 0, tzinfo=UTC),
             reason="Maintenance",
         )
         calendar.add_window(window)
 
-        windows = calendar.upcoming_windows("github", after=datetime(2024, 1, 1, 0, 0, 0, tzinfo=timezone.utc))
+        windows = calendar.upcoming_windows("github", after=datetime(2024, 1, 1, 0, 0, 0, tzinfo=UTC))
         assert len(windows) == 1
         assert windows[0].connector == "github"
 
@@ -64,13 +64,13 @@ class TestMaintenanceCalendar:
         """is_in_maintenance returns True when in active window."""
         window = MaintenanceWindow(
             connector="github",
-            start=datetime(2024, 1, 1, 12, 0, 0, tzinfo=timezone.utc),
-            end=datetime(2024, 1, 1, 14, 0, 0, tzinfo=timezone.utc),
+            start=datetime(2024, 1, 1, 12, 0, 0, tzinfo=UTC),
+            end=datetime(2024, 1, 1, 14, 0, 0, tzinfo=UTC),
             reason="Maintenance",
         )
         calendar.add_window(window)
 
-        at = datetime(2024, 1, 1, 13, 0, 0, tzinfo=timezone.utc)
+        at = datetime(2024, 1, 1, 13, 0, 0, tzinfo=UTC)
         assert calendar.is_in_maintenance("github", at=at) is True
 
     @pytest.mark.requirement("WL-282")
@@ -78,13 +78,13 @@ class TestMaintenanceCalendar:
         """is_in_maintenance returns False before window."""
         window = MaintenanceWindow(
             connector="github",
-            start=datetime(2024, 1, 1, 12, 0, 0, tzinfo=timezone.utc),
-            end=datetime(2024, 1, 1, 14, 0, 0, tzinfo=timezone.utc),
+            start=datetime(2024, 1, 1, 12, 0, 0, tzinfo=UTC),
+            end=datetime(2024, 1, 1, 14, 0, 0, tzinfo=UTC),
             reason="Maintenance",
         )
         calendar.add_window(window)
 
-        at = datetime(2024, 1, 1, 11, 0, 0, tzinfo=timezone.utc)
+        at = datetime(2024, 1, 1, 11, 0, 0, tzinfo=UTC)
         assert calendar.is_in_maintenance("github", at=at) is False
 
     @pytest.mark.requirement("WL-282")
@@ -92,13 +92,13 @@ class TestMaintenanceCalendar:
         """is_in_maintenance returns False after window."""
         window = MaintenanceWindow(
             connector="github",
-            start=datetime(2024, 1, 1, 12, 0, 0, tzinfo=timezone.utc),
-            end=datetime(2024, 1, 1, 14, 0, 0, tzinfo=timezone.utc),
+            start=datetime(2024, 1, 1, 12, 0, 0, tzinfo=UTC),
+            end=datetime(2024, 1, 1, 14, 0, 0, tzinfo=UTC),
             reason="Maintenance",
         )
         calendar.add_window(window)
 
-        at = datetime(2024, 1, 1, 15, 0, 0, tzinfo=timezone.utc)
+        at = datetime(2024, 1, 1, 15, 0, 0, tzinfo=UTC)
         assert calendar.is_in_maintenance("github", at=at) is False
 
     @pytest.mark.requirement("WL-282")
@@ -106,8 +106,8 @@ class TestMaintenanceCalendar:
         """is_in_maintenance uses current UTC time by default."""
         window = MaintenanceWindow(
             connector="github",
-            start=datetime(2000, 1, 1, 0, 0, 0, tzinfo=timezone.utc),
-            end=datetime(2000, 1, 1, 2, 0, 0, tzinfo=timezone.utc),
+            start=datetime(2000, 1, 1, 0, 0, 0, tzinfo=UTC),
+            end=datetime(2000, 1, 1, 2, 0, 0, tzinfo=UTC),
             reason="Old maintenance",
         )
         calendar.add_window(window)
@@ -120,13 +120,13 @@ class TestMaintenanceCalendar:
         """is_in_maintenance returns True at window start boundary."""
         window = MaintenanceWindow(
             connector="github",
-            start=datetime(2024, 1, 1, 12, 0, 0, tzinfo=timezone.utc),
-            end=datetime(2024, 1, 1, 14, 0, 0, tzinfo=timezone.utc),
+            start=datetime(2024, 1, 1, 12, 0, 0, tzinfo=UTC),
+            end=datetime(2024, 1, 1, 14, 0, 0, tzinfo=UTC),
             reason="Maintenance",
         )
         calendar.add_window(window)
 
-        at = datetime(2024, 1, 1, 12, 0, 0, tzinfo=timezone.utc)
+        at = datetime(2024, 1, 1, 12, 0, 0, tzinfo=UTC)
         assert calendar.is_in_maintenance("github", at=at) is True
 
     @pytest.mark.requirement("WL-282")
@@ -134,13 +134,13 @@ class TestMaintenanceCalendar:
         """is_in_maintenance returns True at window end boundary."""
         window = MaintenanceWindow(
             connector="github",
-            start=datetime(2024, 1, 1, 12, 0, 0, tzinfo=timezone.utc),
-            end=datetime(2024, 1, 1, 14, 0, 0, tzinfo=timezone.utc),
+            start=datetime(2024, 1, 1, 12, 0, 0, tzinfo=UTC),
+            end=datetime(2024, 1, 1, 14, 0, 0, tzinfo=UTC),
             reason="Maintenance",
         )
         calendar.add_window(window)
 
-        at = datetime(2024, 1, 1, 14, 0, 0, tzinfo=timezone.utc)
+        at = datetime(2024, 1, 1, 14, 0, 0, tzinfo=UTC)
         assert calendar.is_in_maintenance("github", at=at) is True
 
     @pytest.mark.requirement("WL-282")
@@ -148,13 +148,13 @@ class TestMaintenanceCalendar:
         """is_in_maintenance returns False for different connector."""
         window = MaintenanceWindow(
             connector="github",
-            start=datetime(2024, 1, 1, 12, 0, 0, tzinfo=timezone.utc),
-            end=datetime(2024, 1, 1, 14, 0, 0, tzinfo=timezone.utc),
+            start=datetime(2024, 1, 1, 12, 0, 0, tzinfo=UTC),
+            end=datetime(2024, 1, 1, 14, 0, 0, tzinfo=UTC),
             reason="Maintenance",
         )
         calendar.add_window(window)
 
-        at = datetime(2024, 1, 1, 13, 0, 0, tzinfo=timezone.utc)
+        at = datetime(2024, 1, 1, 13, 0, 0, tzinfo=UTC)
         assert calendar.is_in_maintenance("linear", at=at) is False
 
     @pytest.mark.requirement("WL-282")
@@ -162,13 +162,13 @@ class TestMaintenanceCalendar:
         """upcoming_windows returns single upcoming window."""
         window = MaintenanceWindow(
             connector="github",
-            start=datetime(2024, 1, 1, 12, 0, 0, tzinfo=timezone.utc),
-            end=datetime(2024, 1, 1, 14, 0, 0, tzinfo=timezone.utc),
+            start=datetime(2024, 1, 1, 12, 0, 0, tzinfo=UTC),
+            end=datetime(2024, 1, 1, 14, 0, 0, tzinfo=UTC),
             reason="Maintenance",
         )
         calendar.add_window(window)
 
-        after = datetime(2024, 1, 1, 0, 0, 0, tzinfo=timezone.utc)
+        after = datetime(2024, 1, 1, 0, 0, 0, tzinfo=UTC)
         windows = calendar.upcoming_windows("github", after=after)
 
         assert len(windows) == 1
@@ -179,20 +179,20 @@ class TestMaintenanceCalendar:
         """upcoming_windows returns windows sorted by start time."""
         window1 = MaintenanceWindow(
             connector="github",
-            start=datetime(2024, 1, 2, 12, 0, 0, tzinfo=timezone.utc),
-            end=datetime(2024, 1, 2, 14, 0, 0, tzinfo=timezone.utc),
+            start=datetime(2024, 1, 2, 12, 0, 0, tzinfo=UTC),
+            end=datetime(2024, 1, 2, 14, 0, 0, tzinfo=UTC),
             reason="Maintenance 2",
         )
         window2 = MaintenanceWindow(
             connector="github",
-            start=datetime(2024, 1, 1, 12, 0, 0, tzinfo=timezone.utc),
-            end=datetime(2024, 1, 1, 14, 0, 0, tzinfo=timezone.utc),
+            start=datetime(2024, 1, 1, 12, 0, 0, tzinfo=UTC),
+            end=datetime(2024, 1, 1, 14, 0, 0, tzinfo=UTC),
             reason="Maintenance 1",
         )
         calendar.add_window(window1)
         calendar.add_window(window2)
 
-        after = datetime(2024, 1, 1, 0, 0, 0, tzinfo=timezone.utc)
+        after = datetime(2024, 1, 1, 0, 0, 0, tzinfo=UTC)
         windows = calendar.upcoming_windows("github", after=after)
 
         assert len(windows) == 2
@@ -203,20 +203,20 @@ class TestMaintenanceCalendar:
         """upcoming_windows only returns windows for specified connector."""
         window_github = MaintenanceWindow(
             connector="github",
-            start=datetime(2024, 1, 1, 12, 0, 0, tzinfo=timezone.utc),
-            end=datetime(2024, 1, 1, 14, 0, 0, tzinfo=timezone.utc),
+            start=datetime(2024, 1, 1, 12, 0, 0, tzinfo=UTC),
+            end=datetime(2024, 1, 1, 14, 0, 0, tzinfo=UTC),
             reason="Github maintenance",
         )
         window_linear = MaintenanceWindow(
             connector="linear",
-            start=datetime(2024, 1, 1, 12, 0, 0, tzinfo=timezone.utc),
-            end=datetime(2024, 1, 1, 14, 0, 0, tzinfo=timezone.utc),
+            start=datetime(2024, 1, 1, 12, 0, 0, tzinfo=UTC),
+            end=datetime(2024, 1, 1, 14, 0, 0, tzinfo=UTC),
             reason="Linear maintenance",
         )
         calendar.add_window(window_github)
         calendar.add_window(window_linear)
 
-        after = datetime(2024, 1, 1, 0, 0, 0, tzinfo=timezone.utc)
+        after = datetime(2024, 1, 1, 0, 0, 0, tzinfo=UTC)
         windows = calendar.upcoming_windows("github", after=after)
 
         assert len(windows) == 1
@@ -227,32 +227,32 @@ class TestMaintenanceCalendar:
         """upcoming_windows filters windows that start after 'after' time."""
         window_past = MaintenanceWindow(
             connector="github",
-            start=datetime(2024, 1, 1, 12, 0, 0, tzinfo=timezone.utc),
-            end=datetime(2024, 1, 1, 14, 0, 0, tzinfo=timezone.utc),
+            start=datetime(2024, 1, 1, 12, 0, 0, tzinfo=UTC),
+            end=datetime(2024, 1, 1, 14, 0, 0, tzinfo=UTC),
             reason="Past maintenance",
         )
         window_future = MaintenanceWindow(
             connector="github",
-            start=datetime(2024, 1, 2, 12, 0, 0, tzinfo=timezone.utc),
-            end=datetime(2024, 1, 2, 14, 0, 0, tzinfo=timezone.utc),
+            start=datetime(2024, 1, 2, 12, 0, 0, tzinfo=UTC),
+            end=datetime(2024, 1, 2, 14, 0, 0, tzinfo=UTC),
             reason="Future maintenance",
         )
         calendar.add_window(window_past)
         calendar.add_window(window_future)
 
-        after = datetime(2024, 1, 2, 0, 0, 0, tzinfo=timezone.utc)
+        after = datetime(2024, 1, 2, 0, 0, 0, tzinfo=UTC)
         windows = calendar.upcoming_windows("github", after=after)
 
         assert len(windows) == 1
-        assert windows[0].start == datetime(2024, 1, 2, 12, 0, 0, tzinfo=timezone.utc)
+        assert windows[0].start == datetime(2024, 1, 2, 12, 0, 0, tzinfo=UTC)
 
     @pytest.mark.requirement("WL-282")
     def test_upcoming_windows_default_after_now(self, calendar: MaintenanceCalendar) -> None:
         """upcoming_windows uses current UTC time by default."""
         window = MaintenanceWindow(
             connector="github",
-            start=datetime(2000, 1, 1, 12, 0, 0, tzinfo=timezone.utc),
-            end=datetime(2000, 1, 1, 14, 0, 0, tzinfo=timezone.utc),
+            start=datetime(2000, 1, 1, 12, 0, 0, tzinfo=UTC),
+            end=datetime(2000, 1, 1, 14, 0, 0, tzinfo=UTC),
             reason="Old maintenance",
         )
         calendar.add_window(window)
@@ -273,7 +273,7 @@ class TestMaintenanceCalendar:
         ]
         calendar.load_from_config(config)
 
-        after = datetime(2024, 1, 1, 0, 0, 0, tzinfo=timezone.utc)
+        after = datetime(2024, 1, 1, 0, 0, 0, tzinfo=UTC)
         windows = calendar.upcoming_windows("github", after=after)
         assert len(windows) == 1
         assert windows[0].connector == "github"
@@ -298,7 +298,7 @@ class TestMaintenanceCalendar:
         ]
         calendar.load_from_config(config)
 
-        after = datetime(2024, 1, 1, 0, 0, 0, tzinfo=timezone.utc)
+        after = datetime(2024, 1, 1, 0, 0, 0, tzinfo=UTC)
         github_windows = calendar.upcoming_windows("github", after=after)
         linear_windows = calendar.upcoming_windows("linear", after=after)
 
@@ -344,8 +344,8 @@ class TestMaintenanceCalendar:
         """list_connectors returns single connector."""
         window = MaintenanceWindow(
             connector="github",
-            start=datetime(2024, 1, 1, 12, 0, 0, tzinfo=timezone.utc),
-            end=datetime(2024, 1, 1, 14, 0, 0, tzinfo=timezone.utc),
+            start=datetime(2024, 1, 1, 12, 0, 0, tzinfo=UTC),
+            end=datetime(2024, 1, 1, 14, 0, 0, tzinfo=UTC),
             reason="Maintenance",
         )
         calendar.add_window(window)
@@ -358,20 +358,20 @@ class TestMaintenanceCalendar:
         """list_connectors returns all connectors, sorted alphabetically."""
         window_github = MaintenanceWindow(
             connector="github",
-            start=datetime(2024, 1, 1, 12, 0, 0, tzinfo=timezone.utc),
-            end=datetime(2024, 1, 1, 14, 0, 0, tzinfo=timezone.utc),
+            start=datetime(2024, 1, 1, 12, 0, 0, tzinfo=UTC),
+            end=datetime(2024, 1, 1, 14, 0, 0, tzinfo=UTC),
             reason="Maintenance",
         )
         window_slack = MaintenanceWindow(
             connector="slack",
-            start=datetime(2024, 1, 1, 12, 0, 0, tzinfo=timezone.utc),
-            end=datetime(2024, 1, 1, 14, 0, 0, tzinfo=timezone.utc),
+            start=datetime(2024, 1, 1, 12, 0, 0, tzinfo=UTC),
+            end=datetime(2024, 1, 1, 14, 0, 0, tzinfo=UTC),
             reason="Maintenance",
         )
         window_linear = MaintenanceWindow(
             connector="linear",
-            start=datetime(2024, 1, 1, 12, 0, 0, tzinfo=timezone.utc),
-            end=datetime(2024, 1, 1, 14, 0, 0, tzinfo=timezone.utc),
+            start=datetime(2024, 1, 1, 12, 0, 0, tzinfo=UTC),
+            end=datetime(2024, 1, 1, 14, 0, 0, tzinfo=UTC),
             reason="Maintenance",
         )
         calendar.add_window(window_github)
@@ -386,14 +386,14 @@ class TestMaintenanceCalendar:
         """list_connectors returns unique connectors even with multiple windows."""
         window1 = MaintenanceWindow(
             connector="github",
-            start=datetime(2024, 1, 1, 12, 0, 0, tzinfo=timezone.utc),
-            end=datetime(2024, 1, 1, 14, 0, 0, tzinfo=timezone.utc),
+            start=datetime(2024, 1, 1, 12, 0, 0, tzinfo=UTC),
+            end=datetime(2024, 1, 1, 14, 0, 0, tzinfo=UTC),
             reason="Maintenance 1",
         )
         window2 = MaintenanceWindow(
             connector="github",
-            start=datetime(2024, 1, 2, 12, 0, 0, tzinfo=timezone.utc),
-            end=datetime(2024, 1, 2, 14, 0, 0, tzinfo=timezone.utc),
+            start=datetime(2024, 1, 2, 12, 0, 0, tzinfo=UTC),
+            end=datetime(2024, 1, 2, 14, 0, 0, tzinfo=UTC),
             reason="Maintenance 2",
         )
         calendar.add_window(window1)

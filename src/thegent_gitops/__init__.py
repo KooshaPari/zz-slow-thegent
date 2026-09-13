@@ -29,7 +29,13 @@ from thegent_gitops.lock_cleanup import (
     lock_cleanup_uninstall,
     run_lock_cleanup,
 )
-from thegent_gitops.native import GitNative, get_head, get_status, has_changes, list_branches
+from thegent_gitops.native import (
+    GitNative,
+    get_head,
+    get_status,
+    has_changes,
+    list_branches,
+)
 from thegent_gitops.worktree import WorktreeContext, WorktreePool
 
 __all__ = [

@@ -13,12 +13,7 @@ Source: src/thegent/governance/ledger.py
 
 from __future__ import annotations
 
-import json
-from pathlib import Path
-
-import pytest
-
-from thegent.governance.ledger import LedgerVerifier, IncidentLedger
+from thegent.governance.ledger import IncidentLedger, LedgerVerifier
 
 
 class TestLedgerVerifierInit:

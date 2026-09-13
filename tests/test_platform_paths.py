@@ -1,8 +1,6 @@
 from pathlib import Path
 from unittest.mock import patch
 
-import pytest
-
 from thegent.platform_paths import get_config_dir
 from thegent.thg_platform import Platform
 
@@ -54,6 +52,6 @@ def test_get_config_dir_linux(monkeypatch):
 def test_get_config_dir_override(monkeypatch):
     """Test get_config_dir with THGENT_CONFIG_DIR override."""
     monkeypatch.setenv("THGENT_CONFIG_DIR", "/tmp/custom_config")
-    with patch("pathlib.Path.mkdir") as mock_mkdir:
+    with patch("pathlib.Path.mkdir"):
         config_dir = get_config_dir()
         assert config_dir == Path("/tmp/custom_config")

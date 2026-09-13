@@ -1,6 +1,5 @@
 """Unit tests for MCP REST endpoints for tray integration."""
 
-from unittest.mock import MagicMock, patch
 
 import pytest
 

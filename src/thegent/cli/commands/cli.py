@@ -7,7 +7,6 @@ team operations, and other CLI features.
 from __future__ import annotations
 
 import os
-import subprocess
 import time
 from pathlib import Path
 from typing import TYPE_CHECKING, Any
@@ -532,7 +531,7 @@ def stop_cmd(
 # Team Commands
 # =============================================================================
 
-console: "Console" = None  # Will be set by CLI framework
+console: Console = None  # Will be set by CLI framework
 
 
 def team_create_cmd(
@@ -540,7 +539,7 @@ def team_create_cmd(
     name: str,
     leader: str | None = None,
     teammates: str | None = None,
-    console: "Console" | None = None,
+    console: Console | None = None,
 ) -> None:
     """Create a new team.
 
@@ -565,7 +564,7 @@ def team_task_add_cmd(
     team_id: str,
     title: str,
     description: str,
-    console: "Console" | None = None,
+    console: Console | None = None,
 ) -> None:
     """Add a task to a team.
 
@@ -588,7 +587,7 @@ def team_task_add_cmd(
 def team_task_list_cmd(
     *,
     team_id: str,
-    console: "Console" | None = None,
+    console: Console | None = None,
 ) -> None:
     """List tasks for a team.
 
@@ -617,27 +616,22 @@ def team_task_list_cmd(
 # shim → infinite recursion). The local `logs_cmd` (line 295) and
 # `stop_cmd` (line 370) remain the canonical implementations because
 # they are defined BEFORE the wildcard import below.
-from thegent.cli.commands.run_cmds import *  # noqa: F401,F403,E402
-from thegent.cli.commands.session_cmds import *  # noqa: F401,F403,E402
-from thegent.cli.commands.governance_cmds import *  # noqa: F401,F403,E402
-from thegent.cli.commands.plan_cmds import *  # noqa: F401,F403,E402
-from thegent.cli.commands.model_cmds import *  # noqa: F401,F403,E402
-from thegent.cli.commands.infra_cmds import *  # noqa: F401,F403,E402
-from thegent.cli.commands.team_cmds import *  # noqa: F401,F403,E402
-
-# WL-136 B90-W2-D2: _tooling_* aliases for backward compat
-from thegent.cli.commands.cli_tooling import (  # noqa: E402,F401
-    audit_verify_cmd as _tooling_audit_verify_cmd,
-    benchmark_cmd as _tooling_benchmark_cmd,
-    deep_research_cmd as _tooling_deep_research_cmd,
-    drift_monitor_cmd as _tooling_drift_monitor_cmd,
-    roadmap_cmd as _tooling_roadmap_cmd,
-)
-
 # WL-120 Wave-X: private compat re-exports via _cli_shared wildcard.
 # The contract test ``test_cli_no_longer_has_explicit_private_cli_shared_import_block``
 # asserts the source does NOT contain the explicit ``from ... import (`` form.
 from thegent.cli.commands._cli_shared import *  # noqa: F401,F403,E402
+
+# WL-136 B90-W2-D2: _tooling_* aliases for backward compat
+from thegent.cli.commands.cli_tooling import (  # noqa: E402,F401
+    audit_verify_cmd as _tooling_audit_verify_cmd,
+)
+from thegent.cli.commands.governance_cmds import *  # noqa: F401,F403,E402
+from thegent.cli.commands.infra_cmds import *  # noqa: F401,F403,E402
+from thegent.cli.commands.model_cmds import *  # noqa: F401,F403,E402
+from thegent.cli.commands.plan_cmds import *  # noqa: F401,F403,E402
+from thegent.cli.commands.run_cmds import *  # noqa: F401,F403,E402
+from thegent.cli.commands.session_cmds import *  # noqa: F401,F403,E402
+from thegent.cli.commands.team_cmds import *  # noqa: F401,F403,E402
 
 # ---------------------------------------------------------------------------
 # WL-124/WL-125: Explicit delegating wrappers placed AFTER wildcard imports
@@ -651,7 +645,7 @@ def team_create_cmd(
     name: str,
     leader: str | None = None,
     teammates: str | None = None,
-    console: "Console" | None = None,
+    console: Console | None = None,
 ) -> None:
     """Create a new team (WL-124 delegating wrapper)."""
     from thegent.cli.commands.team_commands import team_create_cmd as _actual
@@ -667,7 +661,7 @@ def team_task_add_cmd(
     team_id: str,
     title: str,
     description: str,
-    console: "Console" | None = None,
+    console: Console | None = None,
 ) -> None:
     """Add a task to a team (WL-124 delegating wrapper)."""
     from thegent.cli.commands.team_commands import team_task_add_cmd as _actual
@@ -681,7 +675,7 @@ def team_task_add_cmd(
 def team_task_list_cmd(
     *,
     team_id: str,
-    console: "Console" | None = None,
+    console: Console | None = None,
 ) -> None:
     """List tasks for a team (WL-124 delegating wrapper)."""
     from thegent.cli.commands.team_commands import team_task_list_cmd as _actual
@@ -705,7 +699,7 @@ def forensics_snapshot_cmd(
     *,
     run_id: str,
     phase: str,
-    console: "Console" | None = None,
+    console: Console | None = None,
 ) -> None:
     """Take a forensics snapshot (WL-124 delegating wrapper)."""
     from thegent.cli.commands.recovery_commands import (
@@ -727,9 +721,9 @@ def queue_list_cmd(*, watch: bool = False) -> None:
 
 def project_register_cmd(
     *,
-    path: "Path",
+    path: Path,
     name: str,
-    console: "Console" | None = None,
+    console: Console | None = None,
 ) -> None:
     """Register a project (WL-124 delegating wrapper)."""
     from thegent.cli.commands.project_commands import (
@@ -745,7 +739,7 @@ def project_register_cmd(
 def project_list_cmd(
     *,
     format: str = "json",  # noqa: A002
-    console: "Console" | None = None,
+    console: Console | None = None,
 ) -> None:
     """List registered projects (WL-124 delegating wrapper)."""
     from thegent.cli.commands.project_commands import (

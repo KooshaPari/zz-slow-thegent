@@ -23,12 +23,12 @@ Covers remaining uncovered branches and edge cases in:
 - list_agents_impl (lines 3344-3358)
 """
 
-import orjson as json
 import os
 from datetime import UTC, datetime, timedelta
 from pathlib import Path
 from unittest.mock import MagicMock, patch
 
+import orjson as json
 import pytest
 
 

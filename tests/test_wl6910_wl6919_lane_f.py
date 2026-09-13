@@ -3,7 +3,6 @@
 from __future__ import annotations
 
 import contextlib
-import orjson as json
 import subprocess
 import sys
 from datetime import UTC, datetime
@@ -11,9 +10,10 @@ from errno import ESRCH
 from pathlib import Path
 from types import SimpleNamespace
 
+import orjson as json
 import pytest
 
-from thegent import dex_cli_helpers, resources, shell_cli, shared_mcp_manager, summary
+from thegent import dex_cli_helpers, resources, shared_mcp_manager, shell_cli, summary
 from thegent import install as install_module
 from thegent.compositor.terminal_pane import TerminalPane
 from thegent.ux.session_tui import SessionTUI

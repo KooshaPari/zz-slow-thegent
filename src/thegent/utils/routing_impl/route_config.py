@@ -22,7 +22,6 @@ import random
 from dataclasses import dataclass, field
 from typing import Any, Literal
 
-
 # ---------------------------------------------------------------------------
 # Sub-configs
 # ---------------------------------------------------------------------------
@@ -379,7 +378,7 @@ class PercentageSplit:
         draw = rand_value if rand_value is not None else random.random()
 
         cumulative = 0.0
-        for target, weight in zip(self.targets, self.weights):
+        for target, weight in zip(self.targets, self.weights, strict=False):
             cumulative += weight / total
             if draw < cumulative:
                 return target

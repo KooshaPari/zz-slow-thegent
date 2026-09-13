@@ -9,7 +9,6 @@ from typer.testing import CliRunner
 
 from thegent.cli.apps.routing import app as routing_app
 
-
 runner = CliRunner()
 
 

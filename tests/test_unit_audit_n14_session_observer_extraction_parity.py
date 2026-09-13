@@ -37,10 +37,7 @@ from unittest.mock import patch
 
 import pytest
 
-from thegent.cli.commands import impl
-from thegent.cli.commands import observability_impl
-from thegent.cli.commands import session_impl
-
+from thegent.cli.commands import impl, observability_impl, session_impl
 
 # ---------------------------------------------------------------------------
 # Module paths. Centralized so a future rename only touches one constant.

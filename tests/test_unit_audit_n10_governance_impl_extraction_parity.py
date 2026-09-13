@@ -47,12 +47,10 @@ from __future__ import annotations
 import importlib
 import inspect
 import os
-import stat
 from pathlib import Path
 from unittest.mock import patch
 
 import pytest
-
 
 # ---------------------------------------------------------------------------
 # Module paths. Centralized so a future rename only touches one constant.
@@ -371,26 +369,24 @@ class TestCanonicalRoundTrip:
         from unittest.mock import MagicMock
 
         gov = _load(GOVERNANCE_IMPL)
-        with patch.object(gov, "_session_dir", return_value=tmp_path):
-            with patch(
-                "thegent.execution.EscalationQueue",
-                return_value=MagicMock(resolve=MagicMock(return_value=True)),
-            ):
-                result = gov.escalate_approve_impl(run_id="r-1")
-                assert result is True
+        with patch.object(gov, "_session_dir", return_value=tmp_path), patch(
+            "thegent.execution.EscalationQueue",
+            return_value=MagicMock(resolve=MagicMock(return_value=True)),
+        ):
+            result = gov.escalate_approve_impl(run_id="r-1")
+            assert result is True
 
     # @trace FR-AUDIT-N+10-032
     def test_escalate_resolve_impl_returns_bool(self, tmp_path: Path) -> None:
         from unittest.mock import MagicMock
 
         gov = _load(GOVERNANCE_IMPL)
-        with patch.object(gov, "_session_dir", return_value=tmp_path):
-            with patch(
-                "thegent.execution.EscalationQueue",
-                return_value=MagicMock(resolve=MagicMock(return_value=False)),
-            ):
-                result = gov.escalate_resolve_impl(run_id="r-2", resolution="resolved")
-                assert result is False
+        with patch.object(gov, "_session_dir", return_value=tmp_path), patch(
+            "thegent.execution.EscalationQueue",
+            return_value=MagicMock(resolve=MagicMock(return_value=False)),
+        ):
+            result = gov.escalate_resolve_impl(run_id="r-2", resolution="resolved")
+            assert result is False
 
     # @trace FR-AUDIT-N+10-033
     def test_govern_approve_impl_returns_dict_with_run_id(self, tmp_path: Path) -> None:
@@ -425,13 +421,12 @@ class TestCanonicalRoundTrip:
         from unittest.mock import MagicMock
 
         gov = _load(GOVERNANCE_IMPL)
-        with patch.object(gov, "_session_dir", return_value=tmp_path):
-            with patch(
-                "thegent.governance.hitl.HITLApprovalWorkflow",
-                return_value=MagicMock(list_pending=MagicMock(return_value=[])),
-            ):
-                items = gov.govern_list_pending_impl()
-                assert items == []
+        with patch.object(gov, "_session_dir", return_value=tmp_path), patch(
+            "thegent.governance.hitl.HITLApprovalWorkflow",
+            return_value=MagicMock(list_pending=MagicMock(return_value=[])),
+        ):
+            items = gov.govern_list_pending_impl()
+            assert items == []
 
     # @trace FR-AUDIT-N+10-036
     def test_harness_register_host_impl_success(self) -> None:
@@ -549,20 +544,19 @@ class TestCanonicalRoundTrip:
                 detect_drift=MagicMock(return_value=[]),
                 get_drift_budget_status=MagicMock(return_value={"within_budget": True}),
             ),
+        ), patch(
+            "thegent.execution.EscalationQueue",
+            return_value=MagicMock(list_pending=MagicMock(return_value=[])),
         ):
-            with patch(
-                "thegent.execution.EscalationQueue",
-                return_value=MagicMock(list_pending=MagicMock(return_value=[])),
-            ):
-                result = gov.sweep_impl(
-                    drift_window=10,
-                    structural_budget=5.0,
-                    semantic_budget=10.0,
-                    include_audit=False,
-                    update_calibration_fn=lambda: {"updated": False},
-                )
-                assert "pass" in result
-                assert result["pass"] is True
+            result = gov.sweep_impl(
+                drift_window=10,
+                structural_budget=5.0,
+                semantic_budget=10.0,
+                include_audit=False,
+                update_calibration_fn=lambda: {"updated": False},
+            )
+            assert "pass" in result
+            assert result["pass"] is True
 
 
 # ---------------------------------------------------------------------------

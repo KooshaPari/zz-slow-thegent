@@ -18,12 +18,12 @@ Covers:
 
 from __future__ import annotations
 
-import orjson as json
 import time
 from pathlib import Path
 from typing import Any
 from unittest.mock import AsyncMock, MagicMock
 
+import orjson as json
 import pytest
 
 from thegent.govern.vetter.models import (
@@ -33,7 +33,6 @@ from thegent.govern.vetter.models import (
     VetterVerdict,
 )
 from thegent.govern.vetter.orchestrator import VetterOrchestrator
-
 
 # ---------------------------------------------------------------------------
 # Helpers: mock check factories

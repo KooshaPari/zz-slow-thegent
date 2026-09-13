@@ -14,7 +14,6 @@ from typer.testing import CliRunner
 
 from thegent.cli.apps.project import install_app, setup_project_app, update_app
 
-
 BROWNFIELD_VARIANTS = ("brownfield", "ag-dd", "none")
 PROJECT_SURFACES: tuple[tuple[str, Typer], ...] = (
     ("sys setup project", setup_project_app),

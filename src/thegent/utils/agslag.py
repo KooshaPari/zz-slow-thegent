@@ -1,9 +1,9 @@
 import logging
 import os
-from thegent.infra.shim_subprocess import run as shim_run
 from pathlib import Path
 from typing import Any
 
+from thegent.infra.shim_subprocess import run as shim_run
 from thegent.skills.deep_research import perform_deep_research
 
 logger = logging.getLogger(__name__)

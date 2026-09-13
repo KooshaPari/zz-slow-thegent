@@ -19,7 +19,6 @@ from thegent.ux.decision_audit import (
     DecisionAuditTailer,
 )
 
-
 pytestmark = pytest.mark.unit
 
 

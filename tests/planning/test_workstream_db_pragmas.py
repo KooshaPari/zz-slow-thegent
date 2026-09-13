@@ -12,8 +12,6 @@ import threading
 import time
 from pathlib import Path
 
-import pytest
-
 from thegent.db_helpers import apply_connection_pragmas
 from thegent.planning.workstream_entities import WorkstreamDB, entity_operation
 

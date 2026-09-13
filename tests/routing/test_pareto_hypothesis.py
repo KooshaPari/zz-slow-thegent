@@ -10,11 +10,10 @@ Tests verify mathematical properties of Pareto dominance and frontier computatio
 from __future__ import annotations
 
 import pytest
-from hypothesis import given, settings, assume
+from hypothesis import given, settings
 from hypothesis import strategies as st
 
 from thegent.utils.routing_impl.pareto_router import ParetoRouter, RouteCandidate
-
 
 # --- Strategies ---
 

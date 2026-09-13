@@ -12,7 +12,9 @@ pytest.importorskip(
     "scripts.beads_contract_smoke",
     reason="scripts.beads_contract_smoke module no longer importable; beads contract smoke tests skipped",
 )
-from scripts import beads_contract_smoke  # noqa: E402  (importorskip may skip before this)
+from scripts import (
+    beads_contract_smoke,  # noqa: E402  (importorskip may skip before this)
+)
 
 
 def test_main_fails_when_required_env_missing(monkeypatch: pytest.MonkeyPatch) -> None:

@@ -4,8 +4,9 @@
 """
 
 import orjson as json
-from docs_engine.export.json_export import JsonExporter
+
 from docs_engine.db.indexer import DocIndexer
+from docs_engine.export.json_export import JsonExporter
 
 
 def test_export_audit_log(tmp_path):

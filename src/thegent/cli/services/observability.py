@@ -1,11 +1,12 @@
 """Observability service helpers split out of CLI impl."""
 
 import hashlib
-import orjson as json
 from collections.abc import Callable
 from datetime import UTC, datetime
 from pathlib import Path
 from typing import Any
+
+import orjson as json
 
 from thegent.config import ThegentSettings
 

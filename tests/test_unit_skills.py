@@ -1,9 +1,9 @@
 """Tests for skills auto-discovery and MCP integration."""
 
-import orjson as json
 from pathlib import Path
 from unittest.mock import patch
 
+import orjson as json
 import pytest
 
 
@@ -258,8 +258,6 @@ class TestCLISkillsCommands:
 
     def test_skills_list_command(self):
         """Test the skills list CLI command."""
-        from io import StringIO
-        from unittest.mock import patch
 
         from thegent.cli.apps.skills import skills_list
 
@@ -283,7 +281,6 @@ class TestCLISkillsCommands:
 
     def test_skills_show_command_not_found(self):
         """Test the skills show CLI command for non-existent skill."""
-        from unittest.mock import patch
 
         import pytest
 

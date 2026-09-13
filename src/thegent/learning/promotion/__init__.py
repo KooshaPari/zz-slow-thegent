@@ -104,8 +104,9 @@ class ModelPromoter:
         Raises:
             KeyError: If the model is not found and custom_models_path is None.
         """
-        import yaml
         import json
+
+        import yaml
 
         if self._settings is None:
             # No settings, can't update unless model already in _models

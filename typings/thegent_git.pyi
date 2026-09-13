@@ -8,7 +8,6 @@ All functions accept an optional `path` as the first positional argument
 declarations in the Rust source.
 """
 
-from typing import Optional
 
 # ---------------------------------------------------------------------------
 # Basic operations (gix-based)

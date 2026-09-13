@@ -2,13 +2,14 @@
 
 from __future__ import annotations
 
+from unittest.mock import MagicMock, patch
+
 import pytest
-from unittest.mock import patch, MagicMock
 
 from thegent.agents.unified_session_index import (
-    HarnessType,
-    HarnessTUIMapper,
     HarnessActionError,
+    HarnessTUIMapper,
+    HarnessType,
 )
 
 

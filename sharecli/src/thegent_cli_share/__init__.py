@@ -19,41 +19,41 @@ xDD Methodologies Applied:
 
 __version__ = "0.1.0"
 
+from .application.commands import (
+    AcquireLockCommand,
+    EnqueueTaskCommand,
+    MergeCommand,
+    ReleaseLockCommand,
+)
+from .application.queries import (
+    GetLockQuery,
+    GetMergeCandidatesQuery,
+    GetQueueDepthQuery,
+    ListLocksQuery,
+)
 from .domain.entities import (
     CommandLock,
-    TaskQueueItem,
-    MergeCandidate,
     CoordinationState,
     LockStatus,
-    QueuePriority,
+    MergeCandidate,
     MergeStrategy,
+    QueuePriority,
+    TaskQueueItem,
+)
+from .domain.events import (
+    CliShareEvent,
+    CoordinationEvent,
+    MergeEvent,
+    TaskEvent,
 )
 from .domain.value_objects import (
     CommandHash,
 )
-from .domain.events import (
-    CliShareEvent,
-    TaskEvent,
-    MergeEvent,
-    CoordinationEvent,
-)
-from .application.commands import (
-    AcquireLockCommand,
-    ReleaseLockCommand,
-    EnqueueTaskCommand,
-    MergeCommand,
-)
-from .application.queries import (
-    GetLockQuery,
-    ListLocksQuery,
-    GetQueueDepthQuery,
-    GetMergeCandidatesQuery,
-)
 from .ports.driven import (
-    LockPort,
-    QueuePort,
-    MergePort,
     CoordinationPort,
+    LockPort,
+    MergePort,
+    QueuePort,
 )
 
 __all__ = [

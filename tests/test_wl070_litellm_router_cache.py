@@ -10,7 +10,7 @@ key is scoped per policy value.
 from __future__ import annotations
 
 from threading import Thread
-from unittest.mock import MagicMock, call, patch
+from unittest.mock import MagicMock, patch
 
 
 class TestGetLitellmRouterCaching:
@@ -88,7 +88,10 @@ class TestGetLitellmRouterCaching:
         with patch(
             "thegent.utils.routing_impl.litellm_router._build_litellm_router", side_effect=responses
         ) as mock_build:
-            from thegent.utils.routing_impl.litellm_router import _router_cache, get_litellm_router
+            from thegent.utils.routing_impl.litellm_router import (
+                _router_cache,
+                get_litellm_router,
+            )
 
             r1 = get_litellm_router("cost-based-routing")
             # Manually expire the cache entry to simulate TTL elapse

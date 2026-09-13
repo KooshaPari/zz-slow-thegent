@@ -4,7 +4,6 @@ import importlib.util
 import os
 import re
 import sys
-from collections.abc import Iterable
 from pathlib import Path
 from unittest.mock import MagicMock
 
@@ -77,10 +76,7 @@ def _matches_collection_guardrails(raw_path: Path) -> bool:
 
     if re.search(r"(^|/)dist/", path_str) is not None:
         return True
-    if re.search(r"(^|/)build/", path_str) is not None:
-        return True
-
-    return False
+    return re.search(r"(^|/)build/", path_str) is not None
 
 
 def _collection_item_key(item: pytest.Item) -> tuple[str, int, str]:

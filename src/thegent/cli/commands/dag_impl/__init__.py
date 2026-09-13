@@ -15,13 +15,13 @@ stubs in :mod:`thegent.cli.commands.impl` delegate here.
 
 from __future__ import annotations
 
+import contextlib
 import os
 import re
 import tempfile
 from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any
-
 
 # AUDIT-N+19 Phase 4: re-export ThegentSettings at module level so
 # `@patch("thegent.cli.commands.dag_impl.ThegentSettings")` resolves.
@@ -206,8 +206,10 @@ def _validate_agent(agent: str) -> str | None:
 # ``AttributeError``). Default to the registry implementations.
 # ---------------------------------------------------------------------------
 try:
-    from thegent.agents.registry import list_agent_names  # noqa: F401
-    from thegent.agents.registry import resolve_agent  # noqa: F401
+    from thegent.agents.registry import (
+        list_agent_names,  # noqa: F401
+        resolve_agent,  # noqa: F401
+    )
 except Exception:  # pragma: no cover - defensive
 
     def list_agent_names() -> list[str]:  # type: ignore[no-redef]
@@ -437,10 +439,8 @@ def _atomic_write(path: Path, content: str, *, backup: bool = False) -> None:
             f.write(content)
         os.replace(tmp_name, target)
     except Exception:
-        try:
+        with contextlib.suppress(OSError):
             os.unlink(tmp_name)
-        except OSError:
-            pass
         raise
 
 

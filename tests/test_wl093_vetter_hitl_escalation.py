@@ -17,23 +17,21 @@ Covers the full escalation path in VetterOrchestrator:
 
 from __future__ import annotations
 
-import orjson as json
 from pathlib import Path
 from typing import Any
-from unittest.mock import AsyncMock, MagicMock, call
+from unittest.mock import AsyncMock, MagicMock
 
+import orjson as json
 import pytest
 
+from thegent.cli.services import governance as governance_service
 from thegent.govern.vetter.models import (
     VetterCheckResult,
     VetterPolicy,
-    VetterResult,
     VetterVerdict,
 )
 from thegent.govern.vetter.orchestrator import VetterOrchestrator
-from thegent.cli.services import governance as governance_service
-from thegent.governance.hitl import GovernanceEventLog, HITLApprovalWorkflow
-
+from thegent.governance.hitl import HITLApprovalWorkflow
 
 # ---------------------------------------------------------------------------
 # Helpers

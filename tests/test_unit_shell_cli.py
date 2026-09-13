@@ -1,8 +1,8 @@
 """Unit tests for thegent.shell_cli error handling."""
 
+import platform as py_platform
 import subprocess
 from pathlib import Path
-import platform as py_platform
 
 import pytest
 from typer.testing import CliRunner

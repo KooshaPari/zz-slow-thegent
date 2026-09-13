@@ -5,10 +5,10 @@ Provides command-line interface for governance setup, quality assessment,
 auditing, and reporting.
 """
 
-import orjson as json
 from pathlib import Path
 
 import click
+import orjson as json
 
 from ...governance.audit_framework import AuditFramework, AuditType
 from ...governance.project_setup_enhanced import ProjectGovernanceSetupEnhanced
@@ -184,7 +184,7 @@ def generate_report(project_path: str, format: str, output: str | None):
     audit_results = None
     try:
         framework = AuditFramework(project)
-        results = framework.run_all_audits()
+        framework.run_all_audits()
         audit_results = framework.generate_report()
     except Exception as e:
         click.echo(f"Warning: Could not run audits: {e}")

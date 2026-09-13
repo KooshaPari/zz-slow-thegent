@@ -5,9 +5,10 @@ Tests for cost_tracker, alerting, donut_adapter, and enhanced router features.
 
 from __future__ import annotations
 
-import orjson as json
 from pathlib import Path  # noqa: TC003 -- Path used in pytest fixture type hints
 from unittest.mock import patch
+
+import orjson as json
 
 # ============================================================================
 # Cost Tracker Tests

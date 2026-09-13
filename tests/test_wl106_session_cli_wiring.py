@@ -12,7 +12,6 @@ from thegent.cli.apps.run import app as run_app
 from thegent.cli.commands import cli as cli_cmd
 from thegent.session import SessionManagerError
 
-
 runner = CliRunner()
 
 

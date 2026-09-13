@@ -10,36 +10,6 @@ Architecture:
 - adapters.plugin_host_adapter: WASM plugin host integration
 """
 
-from thegent.adapters.ports import (
-    # Driven (Outbound) Ports
-    HTTPClientPort,
-    CachePort,
-    MetricsPort,
-    AuthPort,
-    # Driving (Inbound) Ports
-    ProviderExecutionPort,
-    RoutingPort,
-    GovernancePort,
-    # Unified Registry
-    AdapterRegistry,
-    PluginInterface,
-    DriverPlugin,
-    RouterPlugin,
-    PluginHost,
-    # Registration Decorators
-    register_driver,
-    register_router,
-    register_cache,
-)
-
-# Plugin Host Adapter - WASM/Extism integration
-from thegent.adapters.plugin_host_adapter import (
-    PluginHostAdapter,
-    PluginHostConfig,
-    LoadedPlugin,
-    get_plugin_host,
-)
-
 # Execution I/O adapters — decomposition seams for the run/bg orchestrators.
 # See ``thegent.adapters.execution_io`` for the AUDIT-N+5 hand-off context.
 from thegent.adapters.execution_io import (
@@ -49,6 +19,35 @@ from thegent.adapters.execution_io import (
     ResourceLockManager,
     ShadowWorkspaceManager,
     SpawnResult,
+)
+
+# Plugin Host Adapter - WASM/Extism integration
+from thegent.adapters.plugin_host_adapter import (
+    LoadedPlugin,
+    PluginHostAdapter,
+    PluginHostConfig,
+    get_plugin_host,
+)
+from thegent.adapters.ports import (
+    # Unified Registry
+    AdapterRegistry,
+    AuthPort,
+    CachePort,
+    DriverPlugin,
+    GovernancePort,
+    # Driven (Outbound) Ports
+    HTTPClientPort,
+    MetricsPort,
+    PluginHost,
+    PluginInterface,
+    # Driving (Inbound) Ports
+    ProviderExecutionPort,
+    RouterPlugin,
+    RoutingPort,
+    register_cache,
+    # Registration Decorators
+    register_driver,
+    register_router,
 )
 
 __all__ = [

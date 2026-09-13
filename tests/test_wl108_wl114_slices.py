@@ -3,11 +3,16 @@
 from __future__ import annotations
 
 from pathlib import Path
+
 import pytest
 
 from thegent.agents.base import RunResult
 from thegent.cli.commands.cli import _format_context_usage_line
-from thegent.cli.commands.impl import _append_context_usage, _normalize_image_paths, _validate_image_capability
+from thegent.cli.commands.impl import (
+    _append_context_usage,
+    _normalize_image_paths,
+    _validate_image_capability,
+)
 from thegent.cli.services.run_input_helpers import build_context_usage_payload
 from thegent.tui.widgets.statusbar import compute_context_usage_display
 

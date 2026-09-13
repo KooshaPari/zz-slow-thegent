@@ -20,6 +20,7 @@ it re-checks the guard before killing anything.
 
 from __future__ import annotations
 
+import contextlib
 import os
 import re
 import time
@@ -269,10 +270,8 @@ class SmartPruner:
             sessions = list(ps_impl() or [])
         except Exception:
             sessions = []
-        try:
-            panes = list(list_tmux_panes() or [])
-        except Exception:
-            panes = []
+        with contextlib.suppress(Exception):
+            list(list_tmux_panes() or [])
 
         results: dict[str, Any] = {"pruned": 0, "kept": 0, "dry_run": bool(dry_run)}
         for session in sessions:

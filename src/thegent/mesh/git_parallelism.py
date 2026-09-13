@@ -26,7 +26,6 @@ from typing import TYPE_CHECKING
 from thegent.infra.shim_subprocess import run as shim_run
 
 if TYPE_CHECKING:
-    from collections.abc import Generator
     from thegent.mesh.smart_merge import SmartMerger
 
 _log = logging.getLogger(__name__)
@@ -100,7 +99,7 @@ class WorktreeContext:
     path: Path
     branch: str
     project_root: Path
-    _pool_ref: "WorktreePool | None" = field(compare=False, repr=False, default=None)
+    _pool_ref: WorktreePool | None = field(compare=False, repr=False, default=None)
 
     def commit_all(self, message: str) -> str | None:
         """Stage all changes in the worktree and create a commit.
@@ -142,7 +141,7 @@ class _PoolStateLock:
         self._path = state_path
         self._fh = None
 
-    def __enter__(self) -> "_PoolStateLock":
+    def __enter__(self) -> _PoolStateLock:
         self._path.parent.mkdir(parents=True, exist_ok=True)
         if not self._path.exists():
             self._path.touch()
@@ -195,7 +194,7 @@ class WorktreePool:
         project_root: Path,
         target_branch: str = "HEAD",
         pool_root: Path | None = None,
-        merger: "SmartMerger | None" = None,
+        merger: SmartMerger | None = None,
     ) -> None:
         self.project_root = project_root.resolve()
         self.target_branch = target_branch
@@ -204,7 +203,7 @@ class WorktreePool:
         self._pool_dir = self._pool_root / self._phash
         self._pool_dir.mkdir(parents=True, exist_ok=True)
         self._state_path = self._pool_dir / _STATE_FILENAME
-        self._merger: "SmartMerger | None" = merger
+        self._merger: SmartMerger | None = merger
         self._git_ok = _git_available(self.project_root)
         self._worktrees_ok = self._git_ok and _worktrees_supported(self.project_root)
         self.worktrees: list[WorktreeContext] = []

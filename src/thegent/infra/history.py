@@ -3,12 +3,12 @@ Stores shell commands with rich context (cwd, task_id, exit_code) in a local SQL
 Enables semantic search and task reconstruction.
 """
 
-import orjson as json
 import logging
 import sqlite3
 from datetime import UTC, datetime
 from pathlib import Path
 
+import orjson as json
 from pydantic import BaseModel
 
 _log = logging.getLogger(__name__)

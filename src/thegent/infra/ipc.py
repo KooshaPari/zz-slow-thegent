@@ -6,16 +6,17 @@ filesystem notification, intent broadcast, conflict detection, and WAL.
 
 from __future__ import annotations
 
-import orjson as json
+import fcntl
 import logging
 import os
-import fcntl
 import threading
 import time
 import uuid
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
+
+import orjson as json
 
 try:
     from watchfiles import watch

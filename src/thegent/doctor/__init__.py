@@ -1,5 +1,6 @@
 """Thegent doctor module for system diagnostics and fixes."""
 from __future__ import annotations
+
 from typing import Any
 
 from .fixes import apply_fixes, display_fix_report
@@ -49,8 +50,8 @@ def _display_results(results: list[CheckResult]) -> None:
     Args:
         results: List of CheckResult objects to display.
     """
-    for result in results:
-        status = "PASS" if result.passed else "FAIL"
+    for _result in results:
+        pass
 
 
 __all__ = ["CheckResult", "_check_mcp_tools", "_check_runtime_infrastructure", "_apply_fixes", "_display_fix_report", "_display_results"]

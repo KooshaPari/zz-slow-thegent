@@ -43,7 +43,6 @@ from thegent.contracts.registry import (
     get_registry,
 )
 
-
 # ---------------------------------------------------------------------------
 # Helpers (mirrors the test_.._migration.py pattern)
 # ---------------------------------------------------------------------------

@@ -3,13 +3,13 @@
 from __future__ import annotations
 
 import logging
-import orjson as json
 import time
 from collections.abc import Callable
 from datetime import UTC, datetime
 from pathlib import Path
 from typing import Any
 
+import orjson as json
 import typer
 
 from thegent.agents import get_fallback_agents, list_agent_names
@@ -593,7 +593,11 @@ def harness_interact_impl(
     session_id: str | None = None,
 ) -> dict[str, Any]:
     """Execute a harness action via HarnessTUIMapper."""
-    from thegent.agents.unified_session_index import HarnessActionError, HarnessTUIMapper, HarnessType
+    from thegent.agents.unified_session_index import (
+        HarnessActionError,
+        HarnessTUIMapper,
+        HarnessType,
+    )
 
     try:
         harness_type = HarnessType(harness.lower())

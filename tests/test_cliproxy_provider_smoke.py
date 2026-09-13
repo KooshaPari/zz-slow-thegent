@@ -6,7 +6,6 @@ import importlib.util
 from pathlib import Path
 from types import SimpleNamespace
 
-
 _ROOT = Path(__file__).resolve().parents[1]
 _SCRIPT_PATH = _ROOT / "scripts" / "cliproxy_provider_smoke.py"
 

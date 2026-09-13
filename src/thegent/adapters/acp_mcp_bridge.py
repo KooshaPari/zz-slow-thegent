@@ -8,7 +8,12 @@ from __future__ import annotations
 from dataclasses import dataclass, field
 from typing import Any
 
-from thegent.adapters.acp_client import ACPClient, ACPClientError, ACPResult, ACPServerUnreachableError
+from thegent.adapters.acp_client import (
+    ACPClient,
+    ACPClientError,
+    ACPResult,
+    ACPServerUnreachableError,
+)
 
 # ---------------------------------------------------------------------------
 # Exceptions

@@ -4,7 +4,6 @@ Tests for SpeculativeConfig, compute_adaptive_timeout,
 select_speculative_providers, and should_terminate_early.
 """
 
-import pytest
 
 from thegent.orchestration.strategies.speculative_strategies import (
     SpeculativeConfig,

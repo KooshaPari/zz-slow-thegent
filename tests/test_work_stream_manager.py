@@ -4,8 +4,6 @@ import hashlib
 import threading
 from pathlib import Path
 
-import pytest
-
 from thegent.config import ThegentSettings
 from thegent.planning.work_stream import WorkStreamManager
 

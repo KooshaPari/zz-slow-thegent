@@ -7,10 +7,9 @@ and JSON persistence.
 
 from __future__ import annotations
 
-import orjson as json
 from datetime import datetime
-from pathlib import Path
 
+import orjson as json
 import pytest
 
 from thegent.integrations.team_ownership import (

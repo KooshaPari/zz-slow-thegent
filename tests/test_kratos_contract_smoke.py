@@ -1,8 +1,9 @@
 """Unit tests for kratos_contract_smoke.py"""
 
 import os
+from unittest.mock import MagicMock, patch
+
 import pytest
-from unittest.mock import patch, MagicMock
 
 
 def test_wrong_auth_provider_fails():

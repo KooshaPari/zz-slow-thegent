@@ -7,14 +7,13 @@ DDD (Domain-Driven Design) Principles:
 """
 
 from datetime import datetime
-from enum import Enum
-from typing import Optional
+from enum import StrEnum
 from uuid import UUID, uuid4
 
 from pydantic import BaseModel, Field
 
 
-class LockStatus(str, Enum):
+class LockStatus(StrEnum):
     """Lock status for command deduplication."""
     UNLOCKED = "unlocked"
     LOCKED = "locked"
@@ -22,7 +21,7 @@ class LockStatus(str, Enum):
     TIMED_OUT = "timed_out"
 
 
-class QueuePriority(str, Enum):
+class QueuePriority(StrEnum):
     """Task queue priority levels."""
     LOW = "low"
     NORMAL = "normal"
@@ -30,7 +29,7 @@ class QueuePriority(str, Enum):
     CRITICAL = "critical"
 
 
-class MergeStrategy(str, Enum):
+class MergeStrategy(StrEnum):
     """Merge strategies for smart merge."""
     AUTO = "auto"
     THEIRS = "theirs"
@@ -47,15 +46,15 @@ class CommandLock(BaseModel):
     cmd_hash: str = Field(description="Unique command hash")
     pid: int = Field(default=0, description="Process ID holding lock")
     status: LockStatus = Field(default=LockStatus.UNLOCKED)
-    output_path: Optional[str] = Field(default=None)
-    start_time: Optional[datetime] = Field(default=None)
+    output_path: str | None = Field(default=None)
+    start_time: datetime | None = Field(default=None)
     timeout_seconds: int = Field(default=3600)
 
     def is_locked(self) -> bool:
         """Check if the lock is held by a process."""
         return self.pid != 0 and self.status == LockStatus.LOCKED
 
-    def acquire(self, pid: int, output_path: Optional[str] = None) -> None:
+    def acquire(self, pid: int, output_path: str | None = None) -> None:
         """Acquire the lock for a process."""
         if self.is_locked() and self.pid != pid:
             raise ValueError(f"Lock held by PID {self.pid}")
@@ -85,12 +84,12 @@ class TaskQueueItem(BaseModel):
     command: str = Field(description="Command to execute")
     priority: QueuePriority = Field(default=QueuePriority.NORMAL)
     created_at: datetime = Field(default_factory=datetime.now)
-    started_at: Optional[datetime] = None
-    completed_at: Optional[datetime] = None
+    started_at: datetime | None = None
+    completed_at: datetime | None = None
     status: str = Field(default="pending")
-    cwd: Optional[str] = None
+    cwd: str | None = None
     env: dict[str, str] = Field(default_factory=dict)
-    result: Optional[dict] = None
+    result: dict | None = None
 
     @property
     def is_pending(self) -> bool:
@@ -131,8 +130,8 @@ class MergeCandidate(BaseModel):
 class CoordinationState(BaseModel):
     """Coordination state for distributed locking."""
     resource_id: str = Field(description="Resource being coordinated")
-    owner_id: Optional[str] = Field(default=None)
-    lease_expires_at: Optional[datetime] = None
+    owner_id: str | None = Field(default=None)
+    lease_expires_at: datetime | None = None
     version: int = Field(default=0)
     hlc_timestamp: int = Field(default=0)
 

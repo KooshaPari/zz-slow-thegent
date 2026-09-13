@@ -8,7 +8,7 @@ class QueryBuilder:
     def __init__(self) -> None:
         self._conditions: list[str] = []
 
-    def where(self, condition: str) -> "QueryBuilder":
+    def where(self, condition: str) -> QueryBuilder:
         self._conditions.append(condition)
         return self
 

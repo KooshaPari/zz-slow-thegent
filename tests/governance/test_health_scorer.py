@@ -15,14 +15,11 @@ Traces to: WP-3001
 from __future__ import annotations
 
 import json
-import tempfile
 from pathlib import Path
 
 import pytest
 
 from thegent.governance.health_scorer import (
-    DimensionScore,
-    HealthReport,
     HealthScorer,
 )
 

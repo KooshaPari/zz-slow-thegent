@@ -13,8 +13,8 @@ def test_wp_15002_ledger_integrity(tmp_path):
     ledger = IncidentLedger(ledger_path)
 
     # Record some artifacts
-    h1 = ledger.record_artifact("run-1", "start", {"msg": "hello"})
-    h2 = ledger.record_artifact("run-1", "output", {"val": 42})
+    ledger.record_artifact("run-1", "start", {"msg": "hello"})
+    ledger.record_artifact("run-1", "output", {"val": 42})
 
     assert ledger.verify_integrity() is True
     assert len(ledger.get_run_artifacts("run-1")) == 2

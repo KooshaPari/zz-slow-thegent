@@ -5,11 +5,11 @@
 
 from __future__ import annotations
 
-import orjson as json
 import tempfile
 from pathlib import Path
-from unittest.mock import MagicMock, patch
+from unittest.mock import patch
 
+import orjson as json
 import pytest
 
 from tests.conftest_factories import make_run_result

@@ -3,8 +3,9 @@
 import os
 import platform
 import re
-from thegent.infra.shim_subprocess import run as shim_run
 from hashlib import sha256
+
+from thegent.infra.shim_subprocess import run as shim_run
 
 
 class WslInterop:

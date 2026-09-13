@@ -20,11 +20,10 @@ import pytest
 from thegent.governance import compliance as _mod
 from thegent.governance.compliance import (
     ComplianceAuditTrail,
-    ComplianceExporter,
     ComplianceEvidence,
+    ComplianceExporter,
     ComplianceProfile,
     ComplianceProfileType,
-    EvidenceKind,
     EvidenceStore,
     RetentionEnforcer,
 )

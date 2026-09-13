@@ -16,6 +16,7 @@ GW-13: Adds LiteLLM model_list integration helpers:
 
 from __future__ import annotations
 
+import contextlib
 import logging
 import threading
 from dataclasses import dataclass, field
@@ -149,10 +150,8 @@ class ProviderCircuitBreaker:
             # *original* exception — the caller that triggers the trip sees the
             # real error, not CircuitOpenError.  Only callers that arrive when
             # the circuit is already open (checked above) see CircuitOpenError.
-            try:
+            with contextlib.suppress(pybreaker.CircuitBreakerError, Exception):
                 self._breaker.call(_raise_exc, exc)
-            except (pybreaker.CircuitBreakerError, Exception):
-                pass
             if self._breaker.current_state == pybreaker.STATE_OPEN:
                 _log.warning(
                     "Circuit breaker tripped OPEN for provider=%s after failure. fail_count=%d threshold=%d",
@@ -172,10 +171,8 @@ class ProviderCircuitBreaker:
 
     def record_failure(self) -> None:
         """Manually record a failure (increments counter, may trip to OPEN)."""
-        try:
+        with contextlib.suppress(RuntimeError, pybreaker.CircuitBreakerError):
             self._breaker.call(_raise_exc, RuntimeError("manual failure record"))
-        except (RuntimeError, pybreaker.CircuitBreakerError):
-            pass
 
     def reset(self) -> None:
         """Force-close the breaker (for testing / manual recovery)."""

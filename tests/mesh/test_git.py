@@ -2,13 +2,14 @@
 
 from __future__ import annotations
 
-import orjson as json
 import os
 import subprocess
 import time
 from pathlib import Path
 
+import orjson as json
 import pytest
+
 from thegent.mesh.git import GitParallelismManager
 
 

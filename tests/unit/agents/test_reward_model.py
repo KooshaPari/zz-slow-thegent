@@ -1,10 +1,9 @@
 """Unit tests for Recursive Reward Model (WP-39003)."""
 
-from datetime import datetime
 
 import pytest
 
-from thegent.agents.reward_model import RecursiveRewardModel, RewardSignal
+from thegent.agents.reward_model import RecursiveRewardModel
 
 
 class TestRecursiveRewardModel:

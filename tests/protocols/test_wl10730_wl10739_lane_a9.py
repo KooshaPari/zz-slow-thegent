@@ -20,11 +20,11 @@ from thegent.protocols.turn_submit_boundaries import (
     resolve_hook_invocation_target,
     resolve_observability_serialization_target,
     resolve_policy_enforcement_plan_target,
-    resolve_workflow_guard_target,
     resolve_session_persistence_plan_target,
     resolve_session_persistence_target,
     resolve_sync_commit_plan_target,
     resolve_terminal_outcome_target,
+    resolve_workflow_guard_target,
 )
 
 

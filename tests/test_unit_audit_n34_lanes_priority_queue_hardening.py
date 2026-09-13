@@ -74,7 +74,6 @@ from thegent.orchestration.execution.priority_queue import (
     make_priority_queue,
 )
 
-
 # ---------------------------------------------------------------------------
 # LaneModel + canonical map
 # ---------------------------------------------------------------------------

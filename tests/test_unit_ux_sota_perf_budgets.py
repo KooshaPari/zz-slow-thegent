@@ -15,12 +15,9 @@ Covers:
 
 from __future__ import annotations
 
-import json
 import tempfile
 import time
 from pathlib import Path
-
-import pytest
 
 
 # ---------------------------------------------------------------------------
@@ -168,7 +165,11 @@ class TestCockpitDecisionNoticePressure:
 
     def test_render_with_full_decision_notices_under_slo(self) -> None:
         """A cockpit at MAX_DECISION_NOTICES renders under 50 ms."""
-        from thegent.ux.cockpit import DecisionNotice, MAX_DECISION_NOTICES, OperatorCockpit
+        from thegent.ux.cockpit import (
+            MAX_DECISION_NOTICES,
+            DecisionNotice,
+            OperatorCockpit,
+        )
 
         c = OperatorCockpit()
         for i in range(MAX_DECISION_NOTICES):

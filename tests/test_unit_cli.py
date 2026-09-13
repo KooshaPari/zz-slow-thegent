@@ -1,10 +1,10 @@
 """Unit tests for CLI resolution logic."""
 
 import getpass
-import orjson as json
 from pathlib import Path
 from unittest.mock import patch
 
+import orjson as json
 import pytest
 import typer
 from typer.testing import CliRunner

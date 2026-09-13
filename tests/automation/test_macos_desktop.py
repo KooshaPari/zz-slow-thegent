@@ -8,7 +8,6 @@ FR traceability: FR-AUTO-001 through FR-AUTO-007 (macOS desktop automation).
 # @trace FR-AUTO-001 FR-AUTO-002 FR-AUTO-003 FR-AUTO-004 FR-AUTO-005 FR-AUTO-006 FR-AUTO-007
 
 import subprocess
-import sys
 from unittest.mock import MagicMock, patch
 
 import pytest

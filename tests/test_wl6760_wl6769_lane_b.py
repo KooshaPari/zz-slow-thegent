@@ -2,12 +2,12 @@
 
 from __future__ import annotations
 
-import orjson as json
 import sys
 import types
 from pathlib import Path
 
 import httpx
+import orjson as json
 import pytest
 
 from thegent.agents import cliproxy_manager

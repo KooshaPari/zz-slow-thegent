@@ -5,7 +5,7 @@
 
 from __future__ import annotations
 
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 
 import pytest
 
@@ -21,7 +21,7 @@ class TestStageTimer:
     @pytest.mark.requirement("WL-303")
     def test_create_stage_timer(self) -> None:
         """Can create a StageTimer with all fields."""
-        now = datetime.now(timezone.utc)
+        now = datetime.now(UTC)
         timer = StageTimer(
             stage="validate",
             duration_ms=150.5,
@@ -41,7 +41,7 @@ class TestStageTimer:
             stage="noop",
             duration_ms=0.0,
             cycle_id="cycle-1",
-            timestamp=datetime.now(timezone.utc),
+            timestamp=datetime.now(UTC),
         )
         assert timer.duration_ms == 0.0
 

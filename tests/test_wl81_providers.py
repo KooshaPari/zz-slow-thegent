@@ -8,8 +8,6 @@ Related to:
 
 from __future__ import annotations
 
-import pytest
-
 
 class TestProviderConfig:
     """Test provider configuration."""

@@ -4,9 +4,10 @@ Integration Tests
 Cross-module functionality tests.
 """
 
-import pytest
 import sys
 from pathlib import Path
+
+import pytest
 
 # Add src to path
 sys.path.insert(0, str(Path(__file__).parent.parent.parent / "src"))
@@ -17,24 +18,25 @@ class TestTeammateIntegration:
 
     def test_teammate_discovery_and_delegation(self):
         """Test discovering teammates and delegating tasks."""
-        from thegent.teammates import TeammateRegistry, Delegate
+        from thegent.teammates import Delegate, TeammateRegistry
 
         registry = TeammateRegistry(agents_dir="agents")
         teammates = registry.discover()
 
         assert len(teammates) >= 0  # May be empty if no agents dir
 
-        delegate = Delegate(registry)
+        Delegate(registry)
         # Would test delegation but needs actual teammate
 
     @pytest.mark.integration
     def test_delegation_with_caching(self):
         """Test delegation with cache integration."""
         from thegent.teammates import Delegate
+
         from thegent.cache import TieredCache
 
         cache = TieredCache()
-        delegate = Delegate()
+        Delegate()
 
         # Test cache can store delegation results
         cache.set("test_key", {"result": "success"})
@@ -129,9 +131,9 @@ class TestProcessIntegration:
 
     def test_process_cleanup_registration(self):
         """Test process cleanup registration."""
-        from thegent.process import register_cleanup
-
         import os
+
+        from thegent.process import register_cleanup
 
         register_cleanup(os.getpid())  # Register current process
 

@@ -8,10 +8,8 @@ import json
 import pytest
 
 from thegent.protocols.jsonrpc_agent_server import (
-    SUPPORTED_METHODS,
     SERVER_STATE,
-    WORKFLOW_STATE,
-    SESSION_STATE,
+    SUPPORTED_METHODS,
     process_jsonrpc_line,
     process_jsonrpc_line_full,
     serve_stdio,

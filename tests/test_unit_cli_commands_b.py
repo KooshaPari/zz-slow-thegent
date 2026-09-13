@@ -7,12 +7,12 @@ All functions are called DIRECTLY with internal dependencies mocked.
 
 from __future__ import annotations
 
-import orjson as json
 from pathlib import Path
 from typing import Any
 from unittest.mock import MagicMock, patch
 
 import click.exceptions
+import orjson as json
 import pytest
 
 from thegent.cli.commands.impl import DagDocument

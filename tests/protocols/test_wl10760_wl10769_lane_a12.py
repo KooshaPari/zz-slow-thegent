@@ -17,16 +17,16 @@ from thegent.protocols.turn_submit_boundaries import (
     build_session_state_update_phase,
     build_workflow_guard_phase,
     resolve_cli_handler_selection_target,
+    resolve_hook_invocation_target,
+    resolve_observability_serialization_target,
     resolve_policy_enforcement_plan_target,
     resolve_provider_final_selection_target,
     resolve_queue_execution_target,
     resolve_retry_outcome_target,
-    resolve_hook_invocation_target,
     resolve_session_persistence_plan_target,
     resolve_session_persistence_target,
     resolve_terminal_outcome_target,
     resolve_workflow_execution_target,
-    resolve_observability_serialization_target,
 )
 
 

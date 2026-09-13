@@ -7,7 +7,6 @@ Tests the performance dispatcher functionality including:
 - Performance module registration and selection
 """
 
-import sys
 from unittest.mock import MagicMock, patch
 
 import pytest

@@ -13,13 +13,11 @@ Source: src/thegent/governance/costs.py
 
 from __future__ import annotations
 
-import pytest
-
 from thegent.governance.costs import (
-    CostCap,
-    CostTracker,
     BudgetAlert,
+    CostCap,
     CostSensing,
+    CostTracker,
 )
 
 

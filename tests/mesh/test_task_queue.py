@@ -3,11 +3,10 @@
 # @trace heliosShield-task-queue
 """
 
-import orjson as json
-import os
 import time
 from pathlib import Path
 
+import orjson as json
 import pytest
 
 from thegent.mesh.task_queue import MaildirQueue
@@ -33,7 +32,7 @@ class TestInit:
 
     def test_directories_created(self, tmp_path: Path) -> None:
         """All three Maildir sub-directories are created."""
-        q = MaildirQueue(tmp_path / "q")
+        MaildirQueue(tmp_path / "q")
         assert (tmp_path / "q" / "tmp").is_dir()
         assert (tmp_path / "q" / "new").is_dir()
         assert (tmp_path / "q" / "cur").is_dir()

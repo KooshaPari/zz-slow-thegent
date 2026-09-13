@@ -10,8 +10,6 @@ Verifies PoisonPillDetector raises PoisonPillError for:
 
 from __future__ import annotations
 
-import time
-
 import pytest
 
 from thegent.governance.poison_pill import (
@@ -21,7 +19,6 @@ from thegent.governance.poison_pill import (
     PoisonPillDetector,
     PoisonPillError,
 )
-
 
 # ---------------------------------------------------------------------------
 # Chunk overflow tests

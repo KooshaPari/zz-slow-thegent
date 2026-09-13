@@ -13,7 +13,6 @@ import subprocess
 from pathlib import Path
 from typing import Any
 
-
 GEMINI_FLASH_MODEL = "gemini-2.0-flash"
 
 _MODEL_ALIAS = {

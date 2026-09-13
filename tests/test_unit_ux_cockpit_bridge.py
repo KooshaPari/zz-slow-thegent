@@ -31,7 +31,6 @@ from thegent.ux.cockpit_bridge import (
 from thegent.ux.explanations import DecisionExplanation, DisclosureLevel
 from thegent.ux.kpis.traffic import TrafficDashboard, TrafficEvent
 
-
 # ---------------------------------------------------------------------------
 # Fixtures
 # ---------------------------------------------------------------------------

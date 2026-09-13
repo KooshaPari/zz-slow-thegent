@@ -82,7 +82,7 @@ def _probe_harness_status() -> dict[str, Any]:
             "last_run": None,
             "details": result,
         }
-    except RuntimeError as e:
+    except RuntimeError:
         return {
             "status": "error",
             "active_probes": 0,

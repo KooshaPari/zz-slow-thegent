@@ -32,14 +32,13 @@ from thegent.ux.cli_cockpit import (
     app,
 )
 from thegent.ux.cockpit import (
-    DecisionNotice,
     MAX_DECISION_PANE_ROWS,
+    DecisionNotice,
     OperatorCockpit,
     _decision_glyph,
     _format_decision_row,
 )
-from thegent.ux.decision_audit import DecisionAuditAppender, DecisionAuditTailer
-
+from thegent.ux.decision_audit import DecisionAuditAppender
 
 pytestmark = pytest.mark.unit
 
@@ -850,7 +849,7 @@ class TestReplayCLI:
         assert payload["matched"] is True
         assert payload["mismatches"] == []
         assert len(payload["decisions"]) == len(expected)
-        for got, want in zip(payload["decisions"], expected):
+        for got, want in zip(payload["decisions"], expected, strict=False):
             assert got["verdict"] == want["verdict"]
             assert got["reason_code"] == want["reason_code"]
             assert got["rule_id"] == want["rule_id"]

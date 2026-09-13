@@ -19,7 +19,6 @@ import pytest
 
 from thegent.orchestration.pruning.smart_prune import (
     IDLE_COUNT_THRESHOLD,
-    IDLE_THRESHOLD_SECONDS,
     PROTECTED_PROCESS_NAMES,
     SessionSnapshot,
     SmartPruner,

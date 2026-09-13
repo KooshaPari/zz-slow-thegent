@@ -12,7 +12,6 @@ Tests cover:
 
 from __future__ import annotations
 
-import os
 from pathlib import Path
 from unittest.mock import MagicMock, patch
 
@@ -27,7 +26,6 @@ from thegent.agents.audio_inputs import (
     transcribe_audio_file,
 )
 from thegent.agents.base import RunResult
-
 
 # ---------------------------------------------------------------------------
 # build_codex_audio_include

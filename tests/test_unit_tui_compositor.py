@@ -7,7 +7,10 @@ _terminal = pytest.importorskip(
     "thegent.tools.terminal",
     reason="thegent.tools.terminal module removed; tui compositor tests skipped",
 )
-from thegent.tools.terminal import TmuxPane  # noqa: E402  (importorskip may skip before this)
+from thegent.tools.terminal import (
+    TmuxPane,  # noqa: E402  (importorskip may skip before this)
+)
+
 from thegent.ux.compositor import TUICompositor
 
 

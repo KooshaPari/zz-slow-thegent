@@ -20,10 +20,10 @@ from thegent.agents.routing_contracts import GEMINI_FLASH_MODEL, GEMINI_FLASH_PR
 from thegent.dex_main import (
     _DEX_BYPASS_FLAG,
     _DEX_YOLO_FLAG,
-    _run_codex_interactive,
     _MODEL_ALIAS,
-    _run_model_cmd,
     _resolve_provider_for_model,
+    _run_codex_interactive,
+    _run_model_cmd,
     app,
     default_dex,
 )

@@ -24,7 +24,6 @@ from thegent.utils.routing_impl.budget import (
     reset_budget_hierarchy,
 )
 
-
 # ---------------------------------------------------------------------------
 # BudgetRecord properties
 # ---------------------------------------------------------------------------

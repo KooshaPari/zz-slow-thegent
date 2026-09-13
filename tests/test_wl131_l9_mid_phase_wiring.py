@@ -27,7 +27,6 @@ import inspect
 
 import pytest
 
-
 _MID_PHASE_HELPERS = (
     "_phase_acquire_concurrency",
     "_phase_fatigue_freshness_burst",

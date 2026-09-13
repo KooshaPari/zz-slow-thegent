@@ -5,12 +5,15 @@
 
 from __future__ import annotations
 
-import orjson as json
-from datetime import datetime, timedelta, timezone
+from datetime import UTC, datetime, timedelta
 
+import orjson as json
 import pytest
 
-from thegent.integrations.reflection_event_log import ReflectionDecision, ReflectionEventLog
+from thegent.integrations.reflection_event_log import (
+    ReflectionDecision,
+    ReflectionEventLog,
+)
 
 
 class TestReflectionDecision:
@@ -19,7 +22,7 @@ class TestReflectionDecision:
     @pytest.mark.requirement("WL-195")
     def test_reflection_decision_creation(self):
         """# @trace WL-195 — ReflectionDecision can be created with required fields."""
-        now = datetime.now(timezone.utc).isoformat()
+        now = datetime.now(UTC).isoformat()
         decision = ReflectionDecision(
             wl_id="WL-195",
             decision_type="apply",
@@ -40,7 +43,7 @@ class TestReflectionDecision:
     @pytest.mark.requirement("WL-195")
     def test_reflection_decision_type_apply(self):
         """# @trace WL-195 — decision_type can be 'apply'."""
-        now = datetime.now(timezone.utc).isoformat()
+        now = datetime.now(UTC).isoformat()
         decision = ReflectionDecision(
             wl_id="WL-195",
             decision_type="apply",
@@ -55,7 +58,7 @@ class TestReflectionDecision:
     @pytest.mark.requirement("WL-195")
     def test_reflection_decision_type_skip(self):
         """# @trace WL-195 — decision_type can be 'skip'."""
-        now = datetime.now(timezone.utc).isoformat()
+        now = datetime.now(UTC).isoformat()
         decision = ReflectionDecision(
             wl_id="WL-195",
             decision_type="skip",
@@ -70,7 +73,7 @@ class TestReflectionDecision:
     @pytest.mark.requirement("WL-195")
     def test_reflection_decision_type_conflict(self):
         """# @trace WL-195 — decision_type can be 'conflict'."""
-        now = datetime.now(timezone.utc).isoformat()
+        now = datetime.now(UTC).isoformat()
         decision = ReflectionDecision(
             wl_id="WL-195",
             decision_type="conflict",
@@ -107,7 +110,7 @@ class TestReflectionEventLog:
         log_path = tmp_path / "events.jsonl"
         event_log = ReflectionEventLog(log_path)
 
-        now = datetime.now(timezone.utc).isoformat()
+        now = datetime.now(UTC).isoformat()
         decision = ReflectionDecision(
             wl_id="WL-195",
             decision_type="apply",
@@ -134,7 +137,7 @@ class TestReflectionEventLog:
         log_path = tmp_path / "events.jsonl"
         event_log = ReflectionEventLog(log_path)
 
-        now = datetime.now(timezone.utc).isoformat()
+        now = datetime.now(UTC).isoformat()
         decisions = [
             ReflectionDecision(
                 wl_id="WL-195",
@@ -170,7 +173,7 @@ class TestReflectionEventLog:
         log_path = tmp_path / "events.jsonl"
         event_log = ReflectionEventLog(log_path)
 
-        now = datetime.now(timezone.utc).isoformat()
+        now = datetime.now(UTC).isoformat()
         decisions = [
             ReflectionDecision(
                 wl_id="WL-195",
@@ -218,7 +221,7 @@ class TestReflectionEventLog:
         log_path = tmp_path / "events.jsonl"
         event_log = ReflectionEventLog(log_path)
 
-        now = datetime.now(timezone.utc)
+        now = datetime.now(UTC)
         past = (now - timedelta(hours=1)).isoformat()
         recent = now.isoformat()
         future = (now + timedelta(hours=1)).isoformat()
@@ -267,7 +270,7 @@ class TestReflectionEventLog:
 
         # First, create and populate the log
         event_log1 = ReflectionEventLog(log_path)
-        now = datetime.now(timezone.utc).isoformat()
+        now = datetime.now(UTC).isoformat()
         decision = ReflectionDecision(
             wl_id="WL-195",
             decision_type="apply",

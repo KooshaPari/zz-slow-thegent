@@ -9,7 +9,6 @@ from __future__ import annotations
 
 from typing import Any
 
-
 _CLODE_BYPASS_FLAG = "CLODE_BYPASS"
 _GLM_POLICY_COUNTER = {"claude": 0, "gemini": 0, "openai": 0}
 

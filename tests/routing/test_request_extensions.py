@@ -23,7 +23,6 @@ from thegent.cliproxy_adapter import (
 )
 from thegent.utils.routing_impl import harness_model_mapping
 
-
 # ---------------------------------------------------------------------------
 # GW-44: extract_provider_gateway_options
 # ---------------------------------------------------------------------------

@@ -1,7 +1,9 @@
 from __future__ import annotations
 
-import orjson as json
+import contextlib
 from pathlib import Path
+
+import orjson as json
 
 from thegent.orchestration.state.session_scraper import SessionScraper
 
@@ -238,15 +240,13 @@ def test_request_event_id_propagation_from_request_to_created_and_failed_events(
     )
 
     request_id_fail = "req-propagation-fail-001"
-    try:
+    with contextlib.suppress(OSError):
         scraper.persist_snapshot(
             trigger="hook:pre-commit",
             out_dir=tmp_path / "snapshots-failed",
             request_event_id=request_id_fail,
             event_log=event_log_failed,
         )
-    except OSError:
-        pass
 
     events_failed = [
         json.loads(line) for line in event_log_failed.read_text(encoding="utf-8").splitlines() if line.strip()

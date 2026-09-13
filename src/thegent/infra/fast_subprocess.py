@@ -15,10 +15,11 @@ Performance improvements:
 import asyncio
 import os
 import subprocess
-from thegent.infra.shim_subprocess import run as shim_run
 import sys
 import time
 from pathlib import Path
+
+from thegent.infra.shim_subprocess import run as shim_run
 
 
 def _record_history(

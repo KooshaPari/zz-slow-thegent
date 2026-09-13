@@ -5,11 +5,11 @@ Extracted from governance_policy_health_cmds.py as part of CLI refactoring (WL-1
 
 from __future__ import annotations
 
+import json
 import sys
 from pathlib import Path
 from typing import Any
 
-import json
 import typer
 from rich.table import Table
 
@@ -23,9 +23,9 @@ from thegent.cli.commands._cli_shared import (
 
 def govern_go_health_cmd(cd: Path | None = None, format: str | None = None) -> None:
     """Show current health score (composite 0-100, band, per-dimension breakdown)."""
+    from thegent.config import ThegentSettings
     from thegent.governance.health_score import HealthScoreComputer, get_band
     from thegent.governance.scanner import CodebaseScanner
-    from thegent.config import ThegentSettings
 
     settings = ThegentSettings()
     project_dir = _resolve_cwd(cd) or Path.cwd()
@@ -110,8 +110,8 @@ def govern_go_health_cmd(cd: Path | None = None, format: str | None = None) -> N
 
 def govern_go_status_cmd(cd: Path | None = None) -> None:
     """Show current governance status (state, cycle_id, shutdown_requested)."""
-    from thegent.governance.agileplus import AgilePlusLoop
     from thegent.config import ThegentSettings
+    from thegent.governance.agileplus import AgilePlusLoop
 
     settings = ThegentSettings()
     settings_any: Any = settings
@@ -143,9 +143,9 @@ def govern_go_cycle_cmd(cd: Path | None = None, force: bool = False, format: str
     import uuid
     from datetime import UTC, datetime
 
+    from thegent.config import ThegentSettings
     from thegent.governance.health_score import HealthScoreComputer, get_band
     from thegent.governance.scanner import CodebaseScanner
-    from thegent.config import ThegentSettings
 
     settings = ThegentSettings()
     settings_any: Any = settings
@@ -220,9 +220,9 @@ def govern_go_watch_cmd(
     import uuid
     from datetime import UTC, datetime
 
+    from thegent.config import ThegentSettings
     from thegent.governance.health_score import HealthScoreComputer, get_band
     from thegent.governance.scanner import CodebaseScanner
-    from thegent.config import ThegentSettings
 
     settings = ThegentSettings()
     project_dir = _resolve_cwd(cd) or Path.cwd()

@@ -8,7 +8,6 @@ Value Object Principles:
 
 from dataclasses import dataclass
 from datetime import datetime, timedelta
-from typing import Optional
 
 
 @dataclass(frozen=True)
@@ -60,9 +59,9 @@ class MergeConflict:
 class LockStatus:
     """Immutable lock status for command deduplication."""
     locked: bool
-    pid: Optional[int] = None
-    acquired_at: Optional[datetime] = None
-    expires_at: Optional[datetime] = None
+    pid: int | None = None
+    acquired_at: datetime | None = None
+    expires_at: datetime | None = None
 
     @classmethod
     def acquired(cls, pid: int, ttl_seconds: int = 3600) -> "LockStatus":

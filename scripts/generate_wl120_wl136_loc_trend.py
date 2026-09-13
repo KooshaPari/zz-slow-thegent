@@ -7,9 +7,8 @@ import argparse
 import datetime as dt
 import json
 import subprocess
-from pathlib import Path
-
 import tomllib
+from pathlib import Path
 
 
 def _parse_args() -> argparse.Namespace:

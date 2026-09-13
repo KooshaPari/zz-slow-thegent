@@ -9,7 +9,10 @@ from __future__ import annotations
 
 import pytest
 
-from thegent.integrations.prometheus_metrics import MetricSample, PrometheusMetricsExporter
+from thegent.integrations.prometheus_metrics import (
+    MetricSample,
+    PrometheusMetricsExporter,
+)
 
 
 @pytest.mark.requirement("WL-196")

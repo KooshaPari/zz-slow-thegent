@@ -7,7 +7,6 @@ the main CLI module.
 from __future__ import annotations
 
 import errno
-import math
 import os
 import sys
 import time
@@ -20,7 +19,6 @@ from thegent.config import ThegentSettings
 
 if TYPE_CHECKING:
     from thegent.contracts.telemetry import ContractTelemetry
-    from thegent.execution import EscalationQueue
 
 
 def _impl_globals() -> dict[str, Any]:
@@ -172,7 +170,9 @@ class DagPrioritizer:
 # AUDIT-N+19: ``DagDocument`` lives in :mod:`thegent.cli.commands.dag_impl`
 # (canonical dataclass home). Re-export here so legacy callers (and the
 # AUDIT-N+11 identity contract) continue to bind to the canonical type.
-from thegent.cli.commands.dag_impl import DagDocument as DagDocument  # noqa: F401,E402,PLC0414
+from thegent.cli.commands.dag_impl import (
+    DagDocument as DagDocument,  # noqa: F401,E402,PLC0414
+)
 
 
 def run_impl(
@@ -718,18 +718,20 @@ __all__ = [
 # AUDIT-N+9: re-export observability surface for backward compat with
 # external callers that still import from thegent.cli.commands.impl
 from thegent.cli.commands.observability_impl import (  # noqa: F401
-    observe_summary_impl,
-    _inject_time_constraint,
-    _append_observe_summary_snapshot,
     _append_health_snapshot,
+    _append_observe_summary_snapshot,
+    _build_audio_summary_metadata,
     _build_observe_summary_trend_scope,
     _build_observe_trend_block,
     _build_observe_trend_payload,
+    _build_run_event_details,
     _classify_observe_summary_trend_health,
     _compact_health_snapshot_log,
     _hash_health_payload,
     _hash_observe_summary_payload,
     _hash_observe_summary_trend_scope,
+    _health_scope_key,
+    _inject_time_constraint,
     _load_observe_summary_snapshots,
     _load_previous_health_snapshot,
     _observe_summary_freshness_bucket,
@@ -741,9 +743,7 @@ from thegent.cli.commands.observability_impl import (  # noqa: F401
     _resolve_health_policy,
     _run_background_session_observer,
     _validate_image_capability,
-    _build_audio_summary_metadata,
-    _build_run_event_details,
-    _health_scope_key,
+    observe_summary_impl,
 )
 
 # AUDIT-N+27: no WL-120 shadow wrappers for the AUDIT-N+9 moved helpers
@@ -836,44 +836,40 @@ del _SESSION_IMPL_REEXPORTS
 # module attribute on ``impl`` so legacy ``monkeypatch.setattr`` sites
 # like ``monkeypatch.setattr("thegent.cli.commands.impl.run_observe_helpers.<x>", ...)``
 # (in ``tests/test_wl125_run_observe_helpers_parity.py``) resolve.
-from thegent.cli.services import run_observe_helpers  # noqa: F401
-
-
 # AUDIT-N+12: surface ``thegent.cli.services.observability`` as a module
 # attribute on ``impl`` so the WL-120 reconciliation tests can monkeypatch
 # the dormant trend/escalation builders via
 # ``monkeypatch.setattr("thegent.cli.commands.impl.services_observability.<x>", ...)``.
 from thegent.cli.services import observability as services_observability  # noqa: F401
 
-
 # AUDIT-N+16 (WL-125 closure): surface ``thegent.cli.services.prompt_constraint_helpers``
 # as a module attribute on ``impl`` so legacy ``monkeypatch.setattr`` sites like
 # ``monkeypatch.setattr("thegent.cli.commands.impl.prompt_constraint_helpers.<x>", ...)``
 # (in ``tests/test_wl125_prompt_constraint_helpers_parity.py``) resolve.
-from thegent.cli.services import prompt_constraint_helpers  # noqa: F401
-
-
 # AUDIT-N+16 (WL-125 closure): surface canonical ``thegent.cli.services`` helper
 # modules as attributes on ``impl`` so legacy ``monkeypatch.setattr`` sites
 # like ``monkeypatch.setattr("thegent.cli.commands.impl.<svc_module>.<x>", ...)``
 # (in ``tests/test_wl125_*_parity.py``) resolve. These are thin re-exports:
 # canonical implementations live in the respective ``services`` submodules.
-from thegent.cli.services import pre_work_gate_helpers  # noqa: F401
-from thegent.cli.services import process_helpers  # noqa: F401
-from thegent.cli.services import retry_helpers  # noqa: F401
-from thegent.cli.services import run_audio_helpers  # noqa: F401
-from thegent.cli.services import run_dag_helpers  # noqa: F401
-from thegent.cli.services import run_event_helpers  # noqa: F401
-from thegent.cli.services import run_health_helpers  # noqa: F401
-from thegent.cli.services import run_input_helpers  # noqa: F401
-from thegent.cli.services import run_model_helpers  # noqa: F401
-from thegent.cli.services import run_post_surface_helpers  # noqa: F401
-from thegent.cli.services import run_session_helpers  # noqa: F401
-from thegent.cli.services import run_workstream_helpers  # noqa: F401
-from thegent.cli.services import session_id_helpers  # noqa: F401
-from thegent.cli.services import session_path_helpers  # noqa: F401
-from thegent.cli.services import spawn_retry_helpers  # noqa: F401
-
+from thegent.cli.services import (
+    pre_work_gate_helpers,  # noqa: F401
+    process_helpers,  # noqa: F401
+    prompt_constraint_helpers,  # noqa: F401
+    retry_helpers,  # noqa: F401
+    run_audio_helpers,  # noqa: F401
+    run_dag_helpers,  # noqa: F401
+    run_event_helpers,  # noqa: F401
+    run_health_helpers,  # noqa: F401
+    run_input_helpers,  # noqa: F401
+    run_model_helpers,  # noqa: F401
+    run_observe_helpers,  # noqa: F401
+    run_post_surface_helpers,  # noqa: F401
+    run_session_helpers,  # noqa: F401
+    run_workstream_helpers,  # noqa: F401
+    session_id_helpers,  # noqa: F401
+    session_path_helpers,  # noqa: F401
+    spawn_retry_helpers,  # noqa: F401
+)
 
 # AUDIT-N+16 (WL-125 closure): re-export the ``SECONDS_PER_TOOL_CALL`` constant
 # from the canonical home so external callers (and
@@ -901,24 +897,24 @@ except ImportError:  # pragma: no cover - defensive
 # these re-exports the ``@patch(...)`` decorators raise
 # ``AttributeError: module ... does not have the attribute '...'``.
 # ---------------------------------------------------------------------------
+import subprocess as _subprocess  # noqa: F401
+
 from thegent.agents import get_fallback_agents, get_runner, resolve_agent  # noqa: F401
 from thegent.agents.base import AgentRunner, RunResult  # noqa: F401
 from thegent.agents.resilience import is_usage_limit  # noqa: F401
 from thegent.cli.commands._cli_shared import RunRegistry  # noqa: F401
-from thegent.config import ThegentSettings  # noqa: F401
 from thegent.contracts.telemetry import (  # noqa: F401
     ContractTelemetry,
     rank_providers_by_parser_quality,
 )
-import subprocess as _subprocess  # noqa: F401
 from thegent.execution import (  # noqa: F401
     AgentSource,
     Auditor,
     CircuitBreakerRegistry,
     ConcurrencyController,
     FreshnessValidator,
-    InterruptionTracker,
     InteractivityMode,
+    InterruptionTracker,
     LoadClassifier,
     OverrideRegistry,
     PolicyEngine,
@@ -945,11 +941,11 @@ from thegent.cli.governance.governance_impl import (  # noqa: F401
     escalate_approve_impl,
     escalate_list_impl,
     escalate_resolve_impl,
-    govern_approve_impl,
-    govern_reject_impl,
-    govern_list_pending_impl,
-    harness_register_host_impl,
     get_data_protection_status_impl,
+    govern_approve_impl,
+    govern_list_pending_impl,
+    govern_reject_impl,
+    harness_register_host_impl,
     sweep_impl,
 )
 
@@ -1615,19 +1611,19 @@ def continuity_snapshot_impl(
 
 from thegent.cli.services import (  # noqa: F401
     pre_work_gate_helpers as _pre_work_gate_helpers,
-    process_helpers as _process_helpers,
-    run_audio_helpers as _run_audio_helpers,
-    run_event_helpers as _run_event_helpers,
+)
+from thegent.cli.services import (
     run_health_helpers as _run_health_helpers,
+)
+from thegent.cli.services import (
     run_model_helpers as _run_model_helpers,
-    run_observe_helpers as _run_observe_helpers,
-    run_post_surface_helpers as _run_post_surface_helpers,
-    run_session_helpers as _run_session_helpers,
+)
+from thegent.cli.services import (
     session_id_helpers as _session_id_helpers,
-    session_path_helpers as _session_path_helpers,
+)
+from thegent.cli.services import (
     spawn_retry_helpers as _spawn_retry_helpers,
 )
-
 
 # AUDIT-N+12 (WL-125 closure): the canonical re-export of ``_is_pid_running``
 # lives in ``session_impl`` and is assigned via the ``_SESSION_IMPL_REEXPORTS``

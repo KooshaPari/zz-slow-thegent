@@ -4,7 +4,10 @@ from __future__ import annotations
 
 import pytest
 
-from thegent.integrations.credential_source_validator import CredentialSources, resolve_credential_source
+from thegent.integrations.credential_source_validator import (
+    CredentialSources,
+    resolve_credential_source,
+)
 
 
 @pytest.mark.requirement("WL-263")

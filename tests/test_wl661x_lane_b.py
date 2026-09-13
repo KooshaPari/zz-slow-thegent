@@ -1,12 +1,12 @@
 from __future__ import annotations
 
-import orjson as json
 import importlib.util
 import sys
 import types
 from datetime import UTC, datetime
 from pathlib import Path
 
+import orjson as json
 import pytest
 
 import thegent.execution_jsonl_parsers as jsonl_parsers

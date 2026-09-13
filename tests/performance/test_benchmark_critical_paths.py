@@ -20,7 +20,9 @@ from thegent.governance.semantic_firewall import SemanticFirewall
 from thegent.governance.tee_check import TEEChecker
 from thegent.orchestration.plan import OrchestrationPlan
 from thegent.orchestration.sub_agent_dispatcher.dispatch_result import DispatchResult
-from thegent.orchestration.sub_agent_dispatcher.topological_sort import topological_order
+from thegent.orchestration.sub_agent_dispatcher.topological_sort import (
+    topological_order,
+)
 
 pytestmark = pytest.mark.performance
 

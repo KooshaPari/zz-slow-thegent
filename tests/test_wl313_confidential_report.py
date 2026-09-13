@@ -5,8 +5,9 @@
 
 from __future__ import annotations
 
+from datetime import UTC, datetime
+
 import pytest
-from datetime import datetime, timezone
 
 from thegent.integrations.confidential_report import (
     ConfidentialReportFilter,
@@ -164,9 +165,9 @@ def test_wrap_report_confidential() -> None:
 def test_wrap_report_includes_iso_timestamp() -> None:
     """Test wrap_report includes valid ISO timestamp."""
     report = {"data": "test"}
-    before = datetime.now(timezone.utc)
+    before = datetime.now(UTC)
     result = ConfidentialReportFilter.wrap_report(report, ReportSensitivity.PUBLIC, "REP-003")
-    after = datetime.now(timezone.utc)
+    after = datetime.now(UTC)
 
     timestamp = datetime.fromisoformat(result["generated_at"])
     assert before <= timestamp <= after

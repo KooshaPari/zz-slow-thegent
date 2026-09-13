@@ -1,10 +1,10 @@
 """Unit tests for thegent.models.scrapers — model discovery scrapers."""
 
-import orjson as json
 import time
 from pathlib import Path
 from unittest.mock import MagicMock, patch
 
+import orjson as json
 import pytest
 
 MODULE = "thegent.models.scrapers"

@@ -1,12 +1,13 @@
 """E2E tests for thegent CLI (read-only, deterministic)."""
 
-import orjson as json
 import sys
 from pathlib import Path
 from unittest.mock import MagicMock
 
+import orjson as json
 import pytest
-from tests.e2e.cli_assertions import expected_trend_health_signature, load_cli_json
+
+from tests.e2e.cli_assertions import load_cli_json
 from tests.e2e.cli_runner_compat import CompatCliRunner
 
 sys.modules.setdefault("thegent_git", MagicMock())

@@ -1,7 +1,6 @@
 from __future__ import annotations
 
-from thegent.cli.commands import infra_cmds
-from thegent.cli.commands import cli
+from thegent.cli.commands import cli, infra_cmds
 
 
 def test_recover_status_wrapper_delegates_to_extracted_module(monkeypatch) -> None:

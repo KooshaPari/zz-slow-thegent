@@ -8,10 +8,10 @@ Tests cover:
 See: docs/changes/research-economic-governance/tasks.md § Phase 2.1
 """
 
-import orjson as json
 import tempfile
 from pathlib import Path
 
+import orjson as json
 import pytest
 
 from thegent.governance.metrics import (

@@ -1,10 +1,10 @@
 """Unit tests for governance modules (G-GP)."""
 
-import orjson as json
 import os
 from pathlib import Path
 from unittest.mock import MagicMock, patch
 
+import orjson as json
 import pytest
 
 from thegent.cost.aggregator import CostAggregator, CostEstimator

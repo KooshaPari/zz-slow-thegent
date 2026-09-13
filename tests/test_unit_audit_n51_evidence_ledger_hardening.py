@@ -10,7 +10,6 @@ and corrupt-line resilience.
 
 from __future__ import annotations
 
-import hashlib
 import json
 import threading
 from pathlib import Path
@@ -222,7 +221,7 @@ class TestRecord:
         from thegent.governance.evidence_ledger import EvidenceLedger
 
         ledger = EvidenceLedger(session_dir=tmp_path)
-        h = ledger.record("task_dispatched", cycle_id="c-1", task_id="t-42")
+        ledger.record("task_dispatched", cycle_id="c-1", task_id="t-42")
         events = ledger.query(cycle_id="c-1")
         assert len(events) == 1
         assert events[0].payload["task_id"] == "t-42"

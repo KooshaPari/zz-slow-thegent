@@ -36,7 +36,6 @@ def test_app_with_session_state(session_state) -> None:  # type: ignore
 def test_app_action_new_pane(app: CompositApp) -> None:
     """Test new_pane action increments pane count."""
     app.on_mount()
-    initial_count = app._pane_count
     app.action_new_pane()
     # Action may error if screen not ready, but pane manager should reflect change
     assert app.pane_manager.root is not None
@@ -77,7 +76,6 @@ def test_app_key_bindings_complete(app: CompositApp) -> None:
 def test_app_action_split_vertical(app: CompositApp) -> None:
     """Test split_vertical action increments pane count (P1.2 AC-5)."""
     app.on_mount()
-    initial_count = app._pane_count
     app.action_split_vertical()
     # Action may error if screen not ready, but pane manager should reflect change
     assert app.pane_manager.root is not None
@@ -86,7 +84,6 @@ def test_app_action_split_vertical(app: CompositApp) -> None:
 def test_app_action_split_horizontal(app: CompositApp) -> None:
     """Test split_horizontal action increments pane count (P1.2 AC-5)."""
     app.on_mount()
-    initial_count = app._pane_count
     app.action_split_horizontal()
     # Action may error if screen not ready, but pane manager should reflect change
     assert app.pane_manager.root is not None

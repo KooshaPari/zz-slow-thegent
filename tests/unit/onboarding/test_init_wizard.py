@@ -283,11 +283,13 @@ class TestInitAppSurface:
             assert "init" in joined.lower(), f"`init` missing from launcher output:\n{joined}"
         else:
             # Fallback: the root CLI imports cleanly with init mounted.
-            from thegent.cli.apps.main import app  # noqa: F401  pylint: disable=import-outside-toplevel
+            from thegent.cli.apps.main import (
+                app,  # noqa: F401  pylint: disable=import-outside-toplevel
+            )
 
     def test_init_check_subcommand_does_not_write(self, tmp_path: Path) -> None:
         """`init check` runs through the Typer entry and never touches disk."""
-        result = subprocess.run(
+        subprocess.run(
             [
                 sys.executable,
                 "-c",

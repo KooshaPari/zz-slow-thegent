@@ -5,8 +5,9 @@
 
 from __future__ import annotations
 
-import pytest
 from unittest.mock import patch
+
+import pytest
 
 import thegent.observability.otel as otel_mod
 from thegent.observability.otel import (
@@ -20,7 +21,6 @@ from thegent.observability.otel import (
     reset_otel_config,
     start_llm_span,
 )
-
 
 # ---------------------------------------------------------------------------
 # Fixtures

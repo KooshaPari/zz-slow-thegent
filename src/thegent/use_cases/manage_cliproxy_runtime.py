@@ -24,13 +24,11 @@ import subprocess
 import sys
 import time
 from pathlib import Path
-from typing import TYPE_CHECKING
 
 import httpx
 
 from thegent.config import ThegentSettings
 from thegent.infra.fast_subprocess import run_subprocess_optimized
-
 
 _LOG = logging.getLogger(__name__)
 
@@ -61,7 +59,7 @@ def _which(cmd: str) -> str | None:
     return shutil.which(cmd)
 
 
-def resolve_binary(settings: "ThegentSettings") -> str:
+def resolve_binary(settings: ThegentSettings) -> str:
     """Resolve the CLIProxyAPIPlus binary path.
 
     Honours ``settings.cliproxy_binary`` (THGENT_CLIPROXY_BINARY) and

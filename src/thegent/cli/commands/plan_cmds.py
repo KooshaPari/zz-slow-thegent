@@ -16,7 +16,6 @@ forwarders so they observe ``monkeypatch.setattr`` patches at test time.
 
 from __future__ import annotations
 
-import importlib
 import sys
 from pathlib import Path
 from typing import Any
@@ -154,7 +153,6 @@ def dag_cancel_cmd(*args: Any, **kwargs: Any) -> int:
 
 def dag_status_cmd(*args: Any, **kwargs: Any) -> int:
     """Show DAG status. Delegates to dag_impl."""
-    from thegent.cli.commands.dag_impl import dag_status_impl
     return 0
 
 
@@ -210,7 +208,7 @@ def dag_sync_cmd(
         session_id = task.get("session_id") or task.get("evidence") or ""
         if not session_id:
             continue
-        owner = _default_owner_tag_fn(cwd) if callable(_default_owner_tag_fn) else None
+        _default_owner_tag_fn(cwd) if callable(_default_owner_tag_fn) else None
         meta_path = None
         if callable(_find_session_meta):
             try:
@@ -241,7 +239,7 @@ def dag_sync_cmd(
     if changed and settings is not None:
         try:
             from thegent.execution import CheckpointRegistry
-            ckpt = CheckpointRegistry(Path(getattr(settings, "session_dir", "/tmp")))
+            CheckpointRegistry(Path(getattr(settings, "session_dir", "/tmp")))
             content = _serialize_dag(doc)
             _atomic_write(dag_path, content)
         except Exception:
@@ -282,49 +280,42 @@ def dag_reconcile_cmd(
 
 def plan_incorporate_cmd(*args: Any, **kwargs: Any) -> int:
     """Incorporate a plan."""
-    from thegent.cli.commands.work_stream_impl import incorporate_impl
 
     return 0
 
 
 def plan_claim_cmd(*args: Any, **kwargs: Any) -> int:
     """Claim a plan task."""
-    from thegent.cli.commands.work_stream_impl import work_stream_claim_impl
 
     return 0
 
 
 def plan_complete_cmd(*args: Any, **kwargs: Any) -> int:
     """Complete a plan task."""
-    from thegent.cli.commands.work_stream_impl import work_stream_complete_impl
 
     return 0
 
 
 def plan_wait_next_cmd(*args: Any, **kwargs: Any) -> int:
     """Wait for the next plan task."""
-    from thegent.cli.commands.work_stream_impl import wait_next_impl
 
     return 0
 
 
 def plan_do_next_cmd(*args: Any, **kwargs: Any) -> int:
     """Execute the next plan task."""
-    from thegent.cli.commands.work_stream_impl import do_next_impl
 
     return 0
 
 
 def plan_get_next_cmd(*args: Any, **kwargs: Any) -> int:
     """Get the next plan task."""
-    from thegent.cli.commands.work_stream_impl import do_next_impl
 
     return 0
 
 
 def plan_loop_cmd(*args: Any, **kwargs: Any) -> int:
     """Loop through a plan."""
-    from thegent.cli.commands.work_stream_impl import do_next_impl
 
     return 0
 

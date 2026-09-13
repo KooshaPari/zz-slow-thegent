@@ -2,7 +2,7 @@
 # Read first 1258 lines
 with open('src/thegent/protocols/jsonrpc_agent_server.py') as f:
     lines = f.readlines()[:1258]
-    
+
 content = ''.join(lines)
 
 # Add missing functions

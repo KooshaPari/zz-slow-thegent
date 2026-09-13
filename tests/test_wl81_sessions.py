@@ -8,8 +8,6 @@ Related to:
 
 from __future__ import annotations
 
-import pytest
-
 
 class TestSessionState:
     """Test session state management."""
@@ -36,7 +34,6 @@ class TestSessionPersistence:
 
     def test_save_session(self) -> None:
         """Sessions should save to storage."""
-        session = {"id": "sess_123", "data": {}}
         saved = True  # Placeholder
         assert saved
 

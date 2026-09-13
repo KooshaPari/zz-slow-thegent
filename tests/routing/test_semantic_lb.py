@@ -11,11 +11,9 @@ import pytest
 
 from thegent.utils.routing_impl.semantic_lb import (
     ModelCapability,
-    SemanticLbResult,
     SemanticLoadBalancer,
     semantic_route,
 )
-
 
 # ---------------------------------------------------------------------------
 # Deterministic mock embedding provider

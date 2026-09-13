@@ -1,8 +1,8 @@
 from __future__ import annotations
 
-import orjson as json
 from pathlib import Path
 
+import orjson as json
 import yaml
 
 from conftest import _load_script_module

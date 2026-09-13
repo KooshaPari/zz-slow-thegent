@@ -5,8 +5,9 @@ Includes tmux session detection, command injection via send-keys, and readiness 
 import logging
 import re
 import subprocess
-from thegent.infra.shim_subprocess import run as shim_run
 import time
+
+from thegent.infra.shim_subprocess import run as shim_run
 
 logger = logging.getLogger(__name__)
 
@@ -30,9 +31,8 @@ class TmuxInjector:
 
     def inject_command(self, session_id: str, command: str, wait_for_readiness: bool = True) -> bool:
         """Inject command into tmux session using send-keys."""
-        if wait_for_readiness:
-            if not self.wait_for_ready(session_id):
-                logger.warning(f"Session {session_id} not ready, but injecting anyway.")
+        if wait_for_readiness and not self.wait_for_ready(session_id):
+            logger.warning(f"Session {session_id} not ready, but injecting anyway.")
 
         # send-keys -l for literal string, then Enter
         try:

@@ -4,13 +4,13 @@ import ast
 import hashlib
 import json
 import re
+from collections.abc import Iterable
 from copy import deepcopy
 from pathlib import Path
-from typing import Any, Iterable
+from typing import Any
 
 from .config import (
     DEFAULT_EXCLUDED_REPOS,
-    DEFAULT_SHARED_MODULE_REPO_EXCLUDE,
     SCAN_SHARED_REPOS_DEFAULT_MODULE_PREFIX,
     SCAN_SHARED_REPOS_MANIFEST_AUDIT_FILENAME,
     SCAN_SHARED_REPOS_MANIFEST_INDEX_FILENAME,
@@ -23,7 +23,7 @@ from .config import (
 )
 from .git_ops import sanitize_repo_id
 from .helpers import _repo_id_from_path
-from .modules import build_module_manifest_payload, list_modules
+from .modules import build_module_manifest_payload
 from .paths import module_manifests_root, phenotype_root
 from .store import utc_now_iso
 

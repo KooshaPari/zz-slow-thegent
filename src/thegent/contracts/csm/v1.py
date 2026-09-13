@@ -33,7 +33,6 @@ from dataclasses import dataclass, field
 from enum import Enum
 from typing import Any
 
-
 #: Default schema version string. Kept in sync with the canonical
 #: ``CONTRACT_SCHEMA_VERSION`` in ``thegent.contracts.registry``. The
 #: v1 module owns the field default; the registry owns the public

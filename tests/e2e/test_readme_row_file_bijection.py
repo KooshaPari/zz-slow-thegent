@@ -2,9 +2,9 @@
 
 from __future__ import annotations
 
-from pathlib import Path
 import re
 import shlex
+from pathlib import Path
 
 from tests.e2e.test_readme_row_order_contract import EXPECTED_GOVERNANCE_ROW_ORDER
 

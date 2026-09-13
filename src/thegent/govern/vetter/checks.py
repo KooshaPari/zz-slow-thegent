@@ -19,18 +19,22 @@ from __future__ import annotations
 import asyncio
 import logging
 import os
-import orjson as json
 import re
 import subprocess
-from thegent.infra.shim_subprocess import run as shim_run
+from collections.abc import Callable
 from dataclasses import dataclass, field
-from typing import Any, Callable, Literal
+from typing import Any, Literal
 
 import httpx
 import jsonschema
+import orjson as json
 from pydantic import BaseModel, StrictInt, ValidationError
 
-from thegent.govern.vetter.models import VetterCheckResult, VetterConfigError  # noqa: TC001
+from thegent.govern.vetter.models import (  # noqa: TC001
+    VetterCheckResult,
+    VetterConfigError,
+)
+from thegent.infra.shim_subprocess import run as shim_run
 
 logger = logging.getLogger(__name__)
 

@@ -1,5 +1,6 @@
 """Skills CLI module."""
 from __future__ import annotations
+
 from typing import Any
 
 __all__ = ["skills_list", "skills_select", "skills_show"]

@@ -33,6 +33,7 @@ tests still pin.
 
 from __future__ import annotations
 
+import contextlib
 import hashlib
 import json
 import os
@@ -46,8 +47,7 @@ from rich.console import Console
 from thegent.ux.cli_errors import print_exc
 
 if TYPE_CHECKING:
-    from thegent.contracts.telemetry import ContractTelemetry
-    from thegent.execution import EscalationQueue
+    pass
 
 # AUDIT-N+2 envelope-parity contract: every swept module exposes a
 # stderr ``Console`` and re-exports ``cli_errors.print_exc``.
@@ -643,11 +643,12 @@ def _build_observe_trend_block(trend_samples: int) -> dict[str, Any]:
     # AUDIT-N+12: WL-120 dormant-core reconciliation side-channel.
     if trend_samples > 0:
         try:
+            from datetime import UTC, datetime
+
             from thegent.cli.services.observability import (
                 build_observe_summary_escalation,
                 build_observe_summary_trend,
             )
-            from datetime import UTC, datetime
 
             result = build_observe_summary_trend(
                 trend_samples=trend_samples,
@@ -676,15 +677,13 @@ def _build_observe_trend_block(trend_samples: int) -> dict[str, Any]:
             # AUDIT-N+12: also exercise the escalation builder so the
             # WL-120 dormant-core round-trip covers both halves of the
             # observe-summary payload.
-            try:
+            with contextlib.suppress(Exception):
                 build_observe_summary_escalation(
                     pending=[],
                     past_sla=[],
                     now=datetime.now(tz=UTC),
                     top_escalations=5,
                 )
-            except Exception:
-                pass
             if isinstance(result, dict):
                 # Merge dormant-core trend fields into the block.
                 for key in (
@@ -1326,10 +1325,8 @@ def _load_observe_summary_snapshots(
     snapshots_dir = session_dir / "observe_snapshots"
     if snapshots_dir.exists():
         for f in sorted(snapshots_dir.glob("*.json"), key=lambda p: p.stat().st_mtime, reverse=True)[: limit or 100]:
-            try:
+            with contextlib.suppress(Exception):
                 snapshots.append(json.loads(f.read_text()))
-            except Exception:
-                pass
     return snapshots
 
 

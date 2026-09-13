@@ -2,8 +2,9 @@
 
 from __future__ import annotations
 
-import orjson as json
 from typing import TYPE_CHECKING
+
+import orjson as json
 
 if TYPE_CHECKING:
     from pathlib import Path
@@ -281,7 +282,7 @@ def test_get_pending_excludes_resolved(backlog: BacklogManager) -> None:
     """
     item_a = backlog.add("F-001", "coverage", 0.8, "Gap A")
     item_b = backlog.add("F-002", "lint", 0.5, "Lint B")
-    item_c = backlog.add("F-003", "security", 0.9, "Vuln C")
+    backlog.add("F-003", "security", 0.9, "Vuln C")
     backlog.resolve(item_a.item_id)
     backlog.defer(item_b.item_id, reason="Out of budget")
     pending = backlog.get_pending()

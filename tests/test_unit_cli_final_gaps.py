@@ -9,13 +9,13 @@ Covers specific uncovered lines: 722, 778, 1114-1115, 1697, 1705, 1748,
 
 from __future__ import annotations
 
-import orjson as json
 import time
 from pathlib import Path
 from typing import Any, Never
 from unittest.mock import MagicMock, patch
 
 import click.exceptions
+import orjson as json
 import pytest
 import typer
 

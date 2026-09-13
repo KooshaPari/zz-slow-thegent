@@ -2,11 +2,11 @@ from __future__ import annotations
 
 from pathlib import Path
 
-from click.exceptions import Exit
 import pytest
+from click.exceptions import Exit
 
-from thegent.cli.commands.cli import _inject_skill_instructions
 from thegent.cli.apps.skills import skills_list, skills_select
+from thegent.cli.commands.cli import _inject_skill_instructions
 from thegent.cli.commands.impl import resume_impl
 from thegent.skills.discovery import SkillInfo
 

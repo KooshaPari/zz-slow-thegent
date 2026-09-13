@@ -2,9 +2,10 @@
 
 from __future__ import annotations
 
+from typing import cast
+
 import pytest
 import typer
-from typing import cast
 
 from tests.e2e.command_surface import command_path_exists
 

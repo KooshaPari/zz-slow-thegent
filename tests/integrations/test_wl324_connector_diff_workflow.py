@@ -6,7 +6,10 @@ import json
 
 import pytest
 
-from thegent.integrations.workstream_autosync import WorkstreamAutosyncConfig, WorkstreamAutosyncRunner
+from thegent.integrations.workstream_autosync import (
+    WorkstreamAutosyncConfig,
+    WorkstreamAutosyncRunner,
+)
 
 
 @pytest.mark.asyncio

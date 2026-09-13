@@ -21,8 +21,8 @@ GenAI semantic convention attributes:
 
 import logging
 import threading
-from importlib import import_module
 from dataclasses import dataclass
+from importlib import import_module
 from typing import Any
 
 _log = logging.getLogger(__name__)

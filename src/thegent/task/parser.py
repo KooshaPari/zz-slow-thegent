@@ -2,9 +2,10 @@
 
 import json
 import re
-import yaml
 from pathlib import Path
-from typing import Dict, Any, Tuple
+from typing import Any
+
+import yaml
 
 __all__ = [
     "parse_yaml_frontmatter",

@@ -164,12 +164,11 @@ class TestMergeFilesCleanMerge:
         ours.write_text("ours content\n", encoding="utf-8")
         theirs.write_text("theirs\n", encoding="utf-8")
 
-        with mock.patch("shutil.which", return_value=None):
-            with mock.patch(
-                "subprocess.run",
-                side_effect=FileNotFoundError("git not found"),
-            ):
-                result = merge_files(base, ours, theirs, output)
+        with mock.patch("shutil.which", return_value=None), mock.patch(
+            "subprocess.run",
+            side_effect=FileNotFoundError("git not found"),
+        ):
+            result = merge_files(base, ours, theirs, output)
 
         assert result is False
         # Output should contain our content as the safe default

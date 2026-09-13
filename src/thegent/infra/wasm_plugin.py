@@ -11,7 +11,6 @@ Key features:
 - Graceful fallback if Wasm not available
 """
 
-import orjson as json
 import logging
 import threading
 import time
@@ -20,6 +19,8 @@ from dataclasses import dataclass, field
 from enum import Enum
 from pathlib import Path
 from typing import Any
+
+import orjson as json
 
 _log = logging.getLogger(__name__)
 

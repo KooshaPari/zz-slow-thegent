@@ -115,7 +115,7 @@ class OrchestrationPlan(Plan):
         model_hint: str | None = None,
         budget_tokens: int | None = None,
         metadata: dict[str, Any] | None = None,
-    ) -> "OrchestrationPlan":
+    ) -> OrchestrationPlan:
         """Build an :class:`OrchestrationPlan` from a single goal string.
 
         The returned plan carries no nodes (callers are expected to

@@ -8,7 +8,6 @@ Issue: CLIProxyAPIPlus#43 - Models from Codex are not accessible when Copilot is
 
 from __future__ import annotations
 
-import pytest
 from unittest.mock import patch
 
 from thegent.clode_main import _resolve_provider_for_model

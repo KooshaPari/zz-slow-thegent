@@ -16,12 +16,14 @@ process results without caring which backend was used.
 
 from __future__ import annotations
 
-import orjson as json
 import logging
 import shutil
-from thegent.infra.shim_subprocess import run as shim_run
 from dataclasses import dataclass, field
 from typing import TYPE_CHECKING, Any
+
+import orjson as json
+
+from thegent.infra.shim_subprocess import run as shim_run
 
 if TYPE_CHECKING:
     from pathlib import Path

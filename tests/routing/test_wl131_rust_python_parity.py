@@ -22,12 +22,11 @@ parity assertion is also run.
 
 from __future__ import annotations
 
-import orjson as json
 import os
 from typing import Any
 
+import orjson as json
 import pytest
-
 
 # ---------------------------------------------------------------------------
 # Helpers

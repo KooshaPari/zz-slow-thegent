@@ -3,10 +3,10 @@
 from __future__ import annotations
 
 import json as _json
-from typing import Any, TYPE_CHECKING
+from typing import TYPE_CHECKING, Any
 
 if TYPE_CHECKING:
-    from fastmcp.tools.tool import ToolResult
+    pass
 
 
 class _ToolResult:

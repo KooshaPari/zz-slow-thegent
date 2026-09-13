@@ -27,7 +27,6 @@ from thegent.utils.routing_impl.circuit_breaker import (
     ProviderCircuitBreakerRegistry,
 )
 
-
 # ===========================================================================
 # WP-2001: ProviderCircuitBreaker unit tests
 # ===========================================================================

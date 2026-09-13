@@ -38,7 +38,6 @@ from thegent.execution import (
     KPIManager,
 )
 
-
 # ---------------------------------------------------------------------------
 # CheckpointRegistry
 # ---------------------------------------------------------------------------
@@ -52,9 +51,8 @@ class TestCheckpointRegistryAppendLock:
         assert hasattr(reg, "_append_lock"), "CheckpointRegistry must expose _append_lock"
         lock = reg._append_lock
         # RLock supports re-entry from the same thread.
-        with lock:
-            with lock:  # re-entry: would deadlock if Lock, not RLock
-                pass
+        with lock, lock:  # re-entry: would deadlock if Lock, not RLock
+            pass
 
     def test_concurrent_create_checkpoint_serialised(self, tmp_path: Path) -> None:
         reg = CheckpointRegistry(tmp_path)
@@ -164,9 +162,8 @@ class TestHandoffManagerAppendLock:
         mgr = HandoffManager()
         assert hasattr(mgr, "_append_lock")
         lock = mgr._append_lock
-        with lock:
-            with lock:  # re-entry
-                pass
+        with lock, lock:  # re-entry
+            pass
 
     def test_concurrent_register_handoff_serialised(self) -> None:
         mgr = HandoffManager()
@@ -269,9 +266,8 @@ class TestKPIManagerAppendLock:
     def test_lock_attribute_is_rlock(self, tmp_path: Path) -> None:
         mgr = KPIManager(tmp_path)
         assert hasattr(mgr, "_append_lock")
-        with mgr._append_lock:
-            with mgr._append_lock:
-                pass
+        with mgr._append_lock, mgr._append_lock:
+            pass
 
     def test_concurrent_record_serialised(self, tmp_path: Path) -> None:
         mgr = KPIManager(tmp_path)

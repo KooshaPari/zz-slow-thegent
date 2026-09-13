@@ -6,13 +6,12 @@ FR Traceability: FR-VER-003 (shadow audit log with secret scrubbing)
 
 from __future__ import annotations
 
-import orjson as json
-import os
 import subprocess
 from pathlib import Path
 from typing import TYPE_CHECKING
 from unittest.mock import MagicMock, patch
 
+import orjson as json
 import pytest
 
 pytestmark = pytest.mark.skip(reason="Multiple pre-existing test failures - needs investigation")
@@ -23,7 +22,7 @@ from thegent.audit.shadow_audit_git import (
 )
 
 if TYPE_CHECKING:
-    from typing import Any
+    pass
 
 
 # ---------------------------------------------------------------------------
@@ -314,7 +313,7 @@ class TestRecordFileChangeBatching:
 
         # Record batch_size changes - should trigger flush
         sha1 = journal.record_file_change("file1.txt", b"content1", action="created")
-        sha2 = journal.record_file_change("file2.txt", b"content2", action="created")
+        journal.record_file_change("file2.txt", b"content2", action="created")
 
         # After 2 changes (batch_size), batch should be flushed
         assert len(journal._pending_changes) == 0
@@ -334,7 +333,7 @@ class TestRecordFileChangeBatching:
     def test_record_file_change_with_secrets(self, journal_enhanced: GitJournalEnhanced) -> None:
         """Test that secrets are scrubbed in record_file_change."""
         content = b"API_KEY=sk-1234567890abcdef1234567890abcdef1234567890abcdef12"
-        sha = journal_enhanced.record_file_change("config.py", content, action="created")
+        journal_enhanced.record_file_change("config.py", content, action="created")
 
         # Flush to commit
         journal_enhanced._flush_batch()
@@ -595,7 +594,7 @@ class TestFinalizeSession:
 
         initial_attestations = len(journal_with_attestation._attestations)
 
-        sha = journal_with_attestation.finalize_session()
+        journal_with_attestation.finalize_session()
 
         # Should have created final attestation
         assert len(journal_with_attestation._attestations) > initial_attestations
@@ -634,7 +633,7 @@ class TestFileWatching:
                 MagicMock(returncode=0, stdout=b"fswatch 1.0", stderr=b""),  # fswatch check
             ]
 
-            journal = GitJournalEnhanced(
+            GitJournalEnhanced(
                 repo_root=git_repo,
                 session_id="fswatch-test",
                 enable_watching=True,

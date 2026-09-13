@@ -11,14 +11,13 @@ import uuid
 from pathlib import Path
 
 import typer
-
 from rich.table import Table
 
 from thegent.cli.commands._cli_shared import (
+    _HEALTH_TARGETS_TEMPLATE,
     ThegentSettings,
     _bootstrap_metric_contracts,
     _get_health_targets_path,
-    _HEALTH_TARGETS_TEMPLATE,
     _normalize_output_format,
     _resolve_cwd,
     console,

@@ -14,7 +14,6 @@ from thegent.utils.routing_impl.guardrails.injection import (
     get_compiled_patterns,
 )
 
-
 pytestmark = pytest.mark.requirement("FR-GUARD-050")
 
 

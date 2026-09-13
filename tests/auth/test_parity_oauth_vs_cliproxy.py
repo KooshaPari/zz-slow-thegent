@@ -15,10 +15,9 @@ from __future__ import annotations
 import threading
 import time
 from dataclasses import dataclass
-from datetime import datetime, timedelta, timezone
+from datetime import UTC, datetime, timedelta
 
 import pytest
-
 
 # ========================================================================
 # Token Manager Implementation (Python equivalent of CLIProxy)
@@ -106,7 +105,7 @@ class OAuthTokenManager:
             token = self.store[provider_name]
 
             # Check expiry
-            if datetime.now(timezone.utc) >= token.expires_at:
+            if datetime.now(UTC) >= token.expires_at:
                 if self.provider is None:
                     raise RuntimeError("token expired and no provider available to refresh")
 
@@ -118,7 +117,7 @@ class OAuthTokenManager:
 
                 # Update token
                 token.access_token = new_access
-                token.expires_at = datetime.now(timezone.utc) + timedelta(hours=1)
+                token.expires_at = datetime.now(UTC) + timedelta(hours=1)
                 self.store[provider_name] = token
 
             return token
@@ -148,7 +147,7 @@ class TestOAuthTokenManagerBasic:
     def test_store_and_retrieve_token(self) -> None:
         """Test storing and retrieving a valid token."""
         manager = OAuthTokenManager()
-        future = datetime.now(timezone.utc) + timedelta(hours=1)
+        future = datetime.now(UTC) + timedelta(hours=1)
         token = Token(
             access_token="access_123",
             refresh_token="refresh_123",
@@ -170,7 +169,7 @@ class TestOAuthTokenManagerBasic:
     def test_expired_token_requires_provider(self) -> None:
         """Test RuntimeError when token expired and no provider available."""
         manager = OAuthTokenManager(provider=None)
-        past = datetime.now(timezone.utc) - timedelta(hours=1)
+        past = datetime.now(UTC) - timedelta(hours=1)
         expired_token = Token(
             access_token="old_access",
             refresh_token="refresh_123",
@@ -191,7 +190,7 @@ class TestOAuthTokenAutoRefresh:
         provider = MockOAuthProvider()
         manager = OAuthTokenManager(provider=provider)
 
-        future = datetime.now(timezone.utc) + timedelta(hours=1)
+        future = datetime.now(UTC) + timedelta(hours=1)
         token = Token(
             access_token="access_123",
             refresh_token="refresh_123",
@@ -209,7 +208,7 @@ class TestOAuthTokenAutoRefresh:
         provider = MockOAuthProvider()
         manager = OAuthTokenManager(provider=provider)
 
-        past = datetime.now(timezone.utc) - timedelta(hours=1)
+        past = datetime.now(UTC) - timedelta(hours=1)
         expired_token = Token(
             access_token="old_access",
             refresh_token="refresh_123",
@@ -222,7 +221,7 @@ class TestOAuthTokenAutoRefresh:
         assert provider.call_count == 1
         assert retrieved.access_token == "refreshed_access_token"
         # New expiry should be ~1 hour from now
-        now = datetime.now(timezone.utc)
+        now = datetime.now(UTC)
         assert retrieved.expires_at > now
         assert retrieved.expires_at < now + timedelta(hours=2)
 
@@ -232,7 +231,7 @@ class TestOAuthTokenAutoRefresh:
         manager = OAuthTokenManager(provider=provider)
 
         # Token expires in 30 minutes
-        soon = datetime.now(timezone.utc) + timedelta(minutes=30)
+        soon = datetime.now(UTC) + timedelta(minutes=30)
         token = Token(
             access_token="access_123",
             refresh_token="refresh_123",
@@ -253,7 +252,7 @@ class TestOAuthTokenAutoRefresh:
                 raise ValueError("Refresh API error")
 
         manager = OAuthTokenManager(provider=FailingProvider())
-        past = datetime.now(timezone.utc) - timedelta(hours=1)
+        past = datetime.now(UTC) - timedelta(hours=1)
         expired_token = Token(
             access_token="old_access",
             refresh_token="refresh_123",
@@ -276,7 +275,7 @@ class TestOAuthTokenThreadSafety:
         initial = Token(
             access_token="initial",
             refresh_token="refresh_123",
-            expires_at=datetime.now(timezone.utc) + timedelta(hours=1),
+            expires_at=datetime.now(UTC) + timedelta(hours=1),
         )
         manager.store_token("provider_a", initial)
 
@@ -289,7 +288,7 @@ class TestOAuthTokenThreadSafety:
                     new_token = Token(
                         access_token=f"access_{i}",
                         refresh_token="refresh_123",
-                        expires_at=datetime.now(timezone.utc) + timedelta(hours=1),
+                        expires_at=datetime.now(UTC) + timedelta(hours=1),
                     )
                     manager.store_token("provider_a", new_token)
                     time.sleep(0.001)
@@ -326,7 +325,7 @@ class TestOAuthTokenThreadSafety:
         provider = MockOAuthProvider()
         manager = OAuthTokenManager(provider=provider)
 
-        past = datetime.now(timezone.utc) - timedelta(hours=1)
+        past = datetime.now(UTC) - timedelta(hours=1)
         expired_token = Token(
             access_token="old_access",
             refresh_token="refresh_123",
@@ -366,7 +365,7 @@ class TestOAuthTokenMultiProvider:
         provider = MockOAuthProvider()
         manager = OAuthTokenManager(provider=provider)
 
-        future = datetime.now(timezone.utc) + timedelta(hours=1)
+        future = datetime.now(UTC) + timedelta(hours=1)
         token_a = Token("access_a", "refresh_a", future)
         token_b = Token("access_b", "refresh_b", future)
 
@@ -381,8 +380,8 @@ class TestOAuthTokenMultiProvider:
         provider = MockOAuthProvider()
         manager = OAuthTokenManager(provider=provider)
 
-        future = datetime.now(timezone.utc) + timedelta(hours=1)
-        past = datetime.now(timezone.utc) - timedelta(hours=1)
+        future = datetime.now(UTC) + timedelta(hours=1)
+        past = datetime.now(UTC) - timedelta(hours=1)
 
         token_valid = Token("access_valid", "refresh_valid", future)
         token_expired = Token("access_expired", "refresh_expired", past)
@@ -411,7 +410,7 @@ class TestOAuthTokenParity:
         #     ExpiresAt    time.Time `json:"expires_at"`
         # }
 
-        future = datetime.now(timezone.utc) + timedelta(hours=1)
+        future = datetime.now(UTC) + timedelta(hours=1)
         token = Token(
             access_token="test_access",
             refresh_token="test_refresh",
@@ -430,13 +429,13 @@ class TestOAuthTokenParity:
         provider = MockOAuthProvider()
         manager = OAuthTokenManager(provider=provider)
 
-        past = datetime.now(timezone.utc) - timedelta(hours=1)
+        past = datetime.now(UTC) - timedelta(hours=1)
         expired_token = Token("old", "refresh_123", past)
         manager.store_token("provider", expired_token)
 
-        before = datetime.now(timezone.utc)
+        before = datetime.now(UTC)
         manager.get_token("provider")
-        after = datetime.now(timezone.utc)
+        after = datetime.now(UTC)
 
         refreshed = manager.get_token("provider")
 
@@ -458,7 +457,7 @@ class TestOAuthTokenParity:
         provider = MockOAuthProvider()
         manager = OAuthTokenManager(provider=provider)
 
-        future = datetime.now(timezone.utc) + timedelta(hours=1)
+        future = datetime.now(UTC) + timedelta(hours=1)
         token = Token("access", "refresh", future)
         manager.store_token("provider", token)
 

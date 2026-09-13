@@ -89,7 +89,6 @@ from thegent.orchestration.sub_agent_dispatcher import (
 )
 from thegent.orchestration.unified_worker import UnifiedWorkerDaemon
 
-
 # ---------------------------------------------------------------------------
 # Helpers
 # ---------------------------------------------------------------------------
@@ -315,7 +314,6 @@ class TestDispatcherEventPublishing:
 
     def test_dispatch_emits_no_completed_when_budget_exceeded(self) -> None:
         """@trace FR-ORC-068"""
-        from thegent.orchestration.budget_tracker import BudgetExceededError
 
         mock_budget = MagicMock()
         mock_budget.check.side_effect = BudgetExceededError(node_id="req_budget_test", budget=0, actual=1)
@@ -415,7 +413,10 @@ class TestUnifiedWorkerDaemonSurface:
 
     def test_daemon_falls_back_to_global_queue(self) -> None:
         """When no event_queue is passed, the daemon binds to the global singleton."""
-        from thegent.orchestration.event_queue import get_global_event_queue, reset_global_event_queue
+        from thegent.orchestration.event_queue import (
+            get_global_event_queue,
+            reset_global_event_queue,
+        )
 
         reset_global_event_queue()
         daemon = UnifiedWorkerDaemon()

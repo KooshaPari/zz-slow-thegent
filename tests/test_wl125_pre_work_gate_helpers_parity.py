@@ -6,7 +6,6 @@ from pathlib import Path
 
 from thegent.cli.commands import impl, work_stream_impl
 
-
 ROOT = Path(__file__).resolve().parents[1]
 SCRIPT = ROOT / "scripts" / "check_instruction_architecture.py"
 

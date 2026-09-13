@@ -4,7 +4,6 @@ import hashlib
 import os
 import shutil
 import subprocess
-from thegent.infra.shim_subprocess import run as shim_run
 from collections.abc import Callable
 from pathlib import Path
 
@@ -15,6 +14,7 @@ from thegent.agents.resilience import TransientAgentError, is_retryable, with_re
 from thegent.config import ThegentSettings
 from thegent.governance.post_agent_run_hook import dispatch_post_agent_run_hook
 from thegent.infra.power import wrap_with_caffeinate
+from thegent.infra.shim_subprocess import run as shim_run
 from thegent.utils import strip_ansi
 
 _PROXY_MODEL = "claude-4.5-opus-high-thinking"

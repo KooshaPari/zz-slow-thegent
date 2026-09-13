@@ -11,11 +11,10 @@ Tests cover:
 - Backup and recovery
 """
 
-import orjson as json
 import sys
-import tempfile
 from pathlib import Path
 
+import orjson as json
 import pytest  # type: ignore
 
 sys.path.insert(0, str(Path(__file__).parent.parent / "scripts"))
@@ -23,8 +22,6 @@ sys.path.insert(0, str(Path(__file__).parent.parent / "scripts"))
 from batch_file_ops import (  # type: ignore
     BatchFileOps,
     BatchFileOpsError,
-    BatchOperation,
-    BatchOperationResult,
     batch_delete_files,
     batch_edit_files,
     batch_read_files,
@@ -206,7 +203,7 @@ class TestBatchEditFiles:
         test_file = tmp_path / "test.txt"
         test_file.write_text("foo foo foo")
 
-        result = batch_edit_files([(str(test_file), "foo", "bar")], count=1)
+        batch_edit_files([(str(test_file), "foo", "bar")], count=1)
 
         # Should only replace first occurrence
         assert test_file.read_text() == "bar foo foo"
@@ -216,7 +213,7 @@ class TestBatchEditFiles:
         test_file = tmp_path / "test.txt"
         test_file.write_text("foo foo foo")
 
-        result = batch_edit_files([(str(test_file), "foo", "bar")], count=-1)
+        batch_edit_files([(str(test_file), "foo", "bar")], count=-1)
 
         assert test_file.read_text() == "bar bar bar"
 
@@ -325,7 +322,7 @@ class TestBatchOperationResult:
         test_file = tmp_path / "test.txt"
         test_file.write_text("content")
 
-        result = batch_read_files([str(test_file)])
+        batch_read_files([str(test_file)])
 
         # Get result from a write operation which returns BatchOperationResult
         write_result = batch_write_files([(str(test_file), "new content")])

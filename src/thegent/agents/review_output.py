@@ -2,8 +2,9 @@
 
 from __future__ import annotations
 
-import orjson as json
 from typing import Any
+
+import orjson as json
 
 _SEVERITIES = frozenset({"critical", "high", "medium", "low"})
 _ISSUE_FIELDS = frozenset({"file", "line", "severity", "message", "suggestion"})

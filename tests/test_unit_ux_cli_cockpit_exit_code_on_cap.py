@@ -38,7 +38,6 @@ from typer.testing import CliRunner
 from thegent.ux.cli_cockpit import _follow_audit_log, app
 from thegent.ux.decision_audit import DecisionAuditAppender, DecisionNotice
 
-
 # ---------------------------------------------------------------------------
 # Helpers
 # ---------------------------------------------------------------------------
@@ -256,7 +255,7 @@ class TestExitCodeOnCapSingleShot:
     def test_single_shot_ignores_exit_code_on_cap(self, tmp_path: Path) -> None:
         """Single-shot always exits 0 regardless of --exit-code-on-cap."""
         log = tmp_path / "decisions.jsonl"
-        appender = _seed_appender(log, n=2, prefix="seed")
+        _seed_appender(log, n=2, prefix="seed")
 
         runner = CliRunner()
         result = runner.invoke(
@@ -334,7 +333,7 @@ class TestExitCodeOnCapNoCap:
     def test_no_cap_no_follow_exits_zero(self, tmp_path: Path) -> None:
         """Unbounded single-shot exits 0 even with non-zero --exit-code-on-cap."""
         log = tmp_path / "decisions.jsonl"
-        appender = _seed_appender(log, n=2, prefix="seed")
+        _seed_appender(log, n=2, prefix="seed")
 
         runner = CliRunner()
         result = runner.invoke(

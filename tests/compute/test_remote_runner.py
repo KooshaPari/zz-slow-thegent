@@ -19,14 +19,13 @@ Covers:
 
 from __future__ import annotations
 
-import asyncio
 from unittest.mock import MagicMock, patch
 
 import pytest
 
+from thegent.compute import RemoteProcess as ExportedProcess
 from thegent.compute import RemoteRunner as ExportedRunner
 from thegent.compute import RemoteRunnerError as ExportedError
-from thegent.compute import RemoteProcess as ExportedProcess
 from thegent.compute.remote_runner import (
     RemoteProcess,
     RemoteRunner,
@@ -111,7 +110,7 @@ class TestRunAgentTask:
         runner = RemoteRunner(node="worker-1")
         runner._executor = mock_executor
 
-        result = runner.run_agent_task(prompt="Hello world")
+        runner.run_agent_task(prompt="Hello world")
 
         # Verify execute was called
         mock_executor.execute.assert_called_once()
@@ -130,7 +129,7 @@ class TestRunAgentTask:
         runner = RemoteRunner(node="worker-1")
         runner._executor = mock_executor
 
-        result = runner.run_agent_task(prompt="Hello", agent="claude")
+        runner.run_agent_task(prompt="Hello", agent="claude")
 
         task = mock_executor.execute.call_args[0][0]
         assert "--agent claude" in task.command
@@ -145,7 +144,7 @@ class TestRunAgentTask:
         runner = RemoteRunner(node="worker-1")
         runner._executor = mock_executor
 
-        result = runner.run_agent_task(prompt="Hello", cd="/home/user/project")
+        runner.run_agent_task(prompt="Hello", cd="/home/user/project")
 
         task = mock_executor.execute.call_args[0][0]
         assert "cd /home/user/project" in task.command
@@ -160,7 +159,7 @@ class TestRunAgentTask:
         runner = RemoteRunner(node="worker-1")
         runner._executor = mock_executor
 
-        result = runner.run_agent_task(prompt="Hello")
+        runner.run_agent_task(prompt="Hello")
 
         task = mock_executor.execute.call_args[0][0]
         assert task.env.get("THGENT_REMOTE_EXEC") == "1"
@@ -175,7 +174,7 @@ class TestRunAgentTask:
         runner = RemoteRunner(node="worker-1")
         runner._executor = mock_executor
 
-        result = runner.run_agent_task(prompt="Hello", env={"MY_VAR": "test"})
+        runner.run_agent_task(prompt="Hello", env={"MY_VAR": "test"})
 
         task = mock_executor.execute.call_args[0][0]
         assert task.env.get("MY_VAR") == "test"
@@ -191,7 +190,7 @@ class TestRunAgentTask:
         runner = RemoteRunner(node="worker-1")
         runner._executor = mock_executor
 
-        result = runner.run_agent_task(prompt="Hello", timeout_s=600.0)
+        runner.run_agent_task(prompt="Hello", timeout_s=600.0)
 
         task = mock_executor.execute.call_args[0][0]
         assert task.timeout_s == 600.0
@@ -247,7 +246,7 @@ class TestExecute:
         runner = RemoteRunner(node="worker-1")
         runner._executor = mock_executor
 
-        result = runner.execute("ls -la")
+        runner.execute("ls -la")
 
         mock_executor.execute.assert_called_once()
         task = mock_executor.execute.call_args[0][0]

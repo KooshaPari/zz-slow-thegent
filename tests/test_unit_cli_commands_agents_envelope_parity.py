@@ -496,9 +496,7 @@ class TestEnvelopeRichmarkupSafetyEndToEnd:
         """A ``ValueError("[red]pwned[/red]")`` routes through
         ``safe_echo`` and the rendered output contains the literal
         escaped markup."""
-        from io import StringIO
 
-        from rich.console import Console
 
         from thegent.ux.cli_errors import safe_echo
 
@@ -572,17 +570,17 @@ class TestEnvelopeRichmarkupSafetyEndToEnd:
 
         We capture both streams and confirm the rendered line
         appears only on stderr."""
-        from thegent.ux.cli_errors import safe_echo
-
         import io
 
         from rich.console import Console
+
+        from thegent.ux.cli_errors import safe_echo
 
         sink = io.StringIO()
         # Use the standard Rich ``err_console`` pattern — but with a
         # StringIO so we can inspect what ``safe_echo`` ultimately
         # routed to ``typer.echo``.
-        console = Console(file=sink, force_terminal=True, stderr=True)
+        Console(file=sink, force_terminal=True, stderr=True)
 
         # We can't easily redirect ``typer.echo``'s stdout / stderr
         # from inside the Rich ``Console``; instead, monkey-patch

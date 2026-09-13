@@ -33,9 +33,8 @@ from thegent.core.events import (
     reset_default_event_bus,
 )
 from thegent.core.ports import EventBusInterface
-from thegent.execution.executor import Executor
 from thegent.execution.executor import EventBusInterface as ExecutorEventBusInterface
-
+from thegent.execution.executor import Executor
 
 # ---------------------------------------------------------------------------
 # Protocol identity / canonical parity

@@ -5,7 +5,6 @@
 # @trace TGNT-P10.3 Environment variable isolation
 """
 
-import os
 import socket
 from pathlib import Path
 from unittest.mock import patch

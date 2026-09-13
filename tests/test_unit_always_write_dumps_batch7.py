@@ -1,7 +1,8 @@
 from __future__ import annotations
 
-import orjson as json
 from pathlib import Path
+
+import orjson as json
 
 from thegent.research.always_write_dumps import ConversationDumper
 

@@ -12,9 +12,7 @@ import subprocess
 import tempfile
 import time
 from pathlib import Path
-from typing import TYPE_CHECKING, Any
-
-
+from typing import Any
 
 # EAGAIN/EWOULDBLOCK errno numbers for retry logic
 _EAGAIN_ERRNOS = {errno.EAGAIN, errno.EWOULDBLOCK, errno.EINTR}

@@ -11,7 +11,13 @@ from typer.testing import CliRunner
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))
 sys.modules.pop("thegent", None)
 
-from thegent.anen_main import GEMINI_FLASH_MODEL, _MODEL_ALIAS, _run_anen_with_alias, app, default_anen
+from thegent.anen_main import (
+    _MODEL_ALIAS,
+    GEMINI_FLASH_MODEL,
+    _run_anen_with_alias,
+    app,
+    default_anen,
+)
 
 runner = CliRunner()
 

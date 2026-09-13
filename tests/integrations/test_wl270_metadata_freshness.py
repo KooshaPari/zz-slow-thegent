@@ -6,7 +6,7 @@
 from __future__ import annotations
 
 import time
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 
 import pytest
 
@@ -22,7 +22,7 @@ class TestMetadataRecord:
     @pytest.mark.requirement("WL-270")
     def test_create_record(self) -> None:
         """Can create a MetadataRecord with all fields."""
-        now = datetime.now(timezone.utc)
+        now = datetime.now(UTC)
         record = MetadataRecord(key="api_version", value="v2.5", fetched_at=now)
 
         assert record.key == "api_version"
@@ -32,7 +32,7 @@ class TestMetadataRecord:
     @pytest.mark.requirement("WL-270")
     def test_record_with_different_values(self) -> None:
         """MetadataRecord can hold various string values."""
-        now = datetime.now(timezone.utc)
+        now = datetime.now(UTC)
         test_cases = [
             ("empty", ""),
             ("whitespace", "   "),

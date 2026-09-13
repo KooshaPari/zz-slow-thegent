@@ -7,12 +7,12 @@ from __future__ import annotations
 
 from collections import OrderedDict
 from dataclasses import dataclass
-from datetime import datetime, UTC
+from datetime import UTC, datetime
 from pathlib import Path
-from typing import ClassVar
+from typing import Any, ClassVar
 from uuid import uuid4
+
 import orjson as json
-from typing import Any
 
 
 @dataclass
@@ -99,7 +99,7 @@ class RollbackSnapshot:
         object.__setattr__(self, "_created_at", created_at)
 
     @classmethod
-    def from_file(cls, snapshot_path: Path) -> "RollbackSnapshot":
+    def from_file(cls, snapshot_path: Path) -> RollbackSnapshot:
         """Load and validate a persisted snapshot."""
         data = json.loads(snapshot_path.read_text(encoding="utf-8"))
         return cls(

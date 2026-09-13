@@ -7,7 +7,6 @@ from typing import Any
 
 from .config import (
     ENV_FILE,
-    RUNNER_FILE,
     RUNTIME_FILE,
 )
 from .env_doctor import run_env_doctor
@@ -17,7 +16,7 @@ from .helpers import (
 )
 from .models import RepoSelection, RunnerCatalog
 from .runner import build_runner_catalog
-from .store import dual_write, read_dual, utc_now_iso
+from .store import dual_write, read_dual
 
 
 def _normalize_repo_map(values: dict[str, str] | None, *, label: str) -> dict[str, str]:
@@ -60,9 +59,6 @@ def _run_env_doctor_for_materializations(
     materializations: list[dict[str, Any]],
     family: str | None = None,
 ) -> dict[str, Any]:
-    from dataclasses import asdict
-    from .config import ENV_FILE
-    from .env_doctor import run_env_doctor
 
     report = run_env_doctor(target, _materialization_checkouts(materializations))
     dual_write(target, ENV_FILE, report, family=family)

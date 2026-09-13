@@ -7,8 +7,6 @@ Related to:
 
 from __future__ import annotations
 
-import pytest
-
 
 class TestSchemaValidation:
     """Test schema validation."""
@@ -16,7 +14,6 @@ class TestSchemaValidation:
     def test_validates_schema(self) -> None:
         """Schema should validate data."""
         schema = {"type": "object"}
-        data = {"key": "value"}
         assert schema["type"] == "object"
 
 

@@ -13,11 +13,12 @@ writer is enough for the dormant-cluster contract.
 
 from __future__ import annotations
 
+import contextlib
 import json
 import os
 import tempfile
 from dataclasses import dataclass
-from datetime import datetime, timezone
+from datetime import UTC, datetime, timezone
 from pathlib import Path
 from typing import Any
 
@@ -91,10 +92,8 @@ class CircuitBreaker:
                 json.dump(state.to_dict(), f)
             os.replace(tmp, self._state_file)
         except Exception:
-            try:
+            with contextlib.suppress(OSError):
                 os.unlink(tmp)
-            except OSError:
-                pass
             raise
 
     def is_open(self) -> bool:
@@ -134,7 +133,7 @@ class CircuitBreaker:
 
 
 def _now_iso() -> str:
-    return datetime.now(timezone.utc).isoformat()
+    return datetime.now(UTC).isoformat()
 
 
 def _load_state(root: Path, circuit_name: str, threshold: int) -> CircuitState:

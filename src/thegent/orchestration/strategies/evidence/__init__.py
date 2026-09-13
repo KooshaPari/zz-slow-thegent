@@ -10,7 +10,7 @@ from __future__ import annotations
 import hashlib
 import json
 from dataclasses import dataclass, field
-from datetime import datetime, timezone
+from datetime import UTC, datetime, timezone
 from pathlib import Path
 from typing import Any
 
@@ -57,7 +57,7 @@ class PromotionGate:
             "run_id": run_id,
             "phase": phase,
             "evidence_hash": evidence_hash,
-            "ts": datetime.now(timezone.utc).isoformat(),
+            "ts": datetime.now(UTC).isoformat(),
             "evidence_path": str(evidence_path),
         }
         with self.audit_path.open("a") as f:
@@ -94,9 +94,7 @@ class PromotionGate:
         content = evidence_path.read_text()
         actual_hash = hashlib.sha256(content.encode()).hexdigest()
 
-        if actual_hash == evidence_hash:
-            return True
-        return False
+        return actual_hash == evidence_hash
 
 
 __all__ = ["PromotionGate"]

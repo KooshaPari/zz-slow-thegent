@@ -1,8 +1,8 @@
 from __future__ import annotations
 
-import orjson as json
 from pathlib import Path
 
+import orjson as json
 
 CONTRACT_PATH = Path("contracts/runtime/mojo_kernel_contract_v1.json")
 HARNESS_DEF_PATH = Path("benchmarks/mojo_score_rank_v1_harness.json")

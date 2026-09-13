@@ -3,9 +3,6 @@
 from __future__ import annotations
 
 import threading
-from typing import Sequence
-
-import pytest
 
 from thegent.ux.cockpit import CockpitConfig, OperatorCockpit
 from thegent.ux.progress_emitter import (
@@ -17,7 +14,6 @@ from thegent.ux.progress_emitter import (
     coalesce_ticks,
     stream_ticks,
 )
-
 
 # ---------------------------------------------------------------------------
 # Helpers / doubles

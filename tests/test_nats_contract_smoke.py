@@ -1,10 +1,9 @@
 """Unit tests for nats_contract_smoke.py"""
 
-import orjson as json
 import os
-import pytest
-import sys
 from unittest.mock import patch
+
+import pytest
 
 
 def _require_nats_servers() -> None:

@@ -3,23 +3,26 @@
 # @trace WL-159
 """
 
-import orjson as json
 import tempfile
 from collections.abc import Generator
 from pathlib import Path
 from unittest.mock import patch
 
+import orjson as json
 import pytest
 
 from thegent.commands.sync import SyncCommand, SyncOperationStatus
-from thegent.observability.prometheus import get_metrics_collector, reset_metrics_collector
+from thegent.observability.prometheus import (
+    get_metrics_collector,
+    reset_metrics_collector,
+)
 
 
 class TestBoardSyncWorkflow:
     """Test suite for board sync operationalization."""
 
     @pytest.fixture
-    def temp_project(self) -> Generator[Path, None, None]:
+    def temp_project(self) -> Generator[Path]:
         """Create temporary project structure for testing."""
         with tempfile.TemporaryDirectory() as tmpdir:
             root = Path(tmpdir)
@@ -399,7 +402,7 @@ class TestBoardSyncErrorHandling:
     """Test error handling in board sync."""
 
     @pytest.fixture
-    def temp_project(self) -> Generator[Path, None, None]:
+    def temp_project(self) -> Generator[Path]:
         """Create temporary project structure."""
         with tempfile.TemporaryDirectory() as tmpdir:
             root = Path(tmpdir)

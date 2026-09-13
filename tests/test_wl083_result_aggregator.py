@@ -5,11 +5,8 @@
 
 from __future__ import annotations
 
-import pytest
-
-from thegent.orchestration.inter_agent_protocol import InterAgentMessage
 from thegent.orchestration.aggregator import ResultAggregator
-
+from thegent.orchestration.inter_agent_protocol import InterAgentMessage
 
 # ---------------------------------------------------------------------------
 # Helpers

@@ -8,16 +8,17 @@ pydantic models consumable by the health-score computer.
 
 from __future__ import annotations
 
-import orjson as json
 import logging
 import re
 import subprocess
-from thegent.infra.shim_subprocess import run as shim_run
 import time
 from datetime import UTC, datetime
 from typing import TYPE_CHECKING
 
+import orjson as json
 from pydantic import BaseModel, Field
+
+from thegent.infra.shim_subprocess import run as shim_run
 
 if TYPE_CHECKING:
     from pathlib import Path

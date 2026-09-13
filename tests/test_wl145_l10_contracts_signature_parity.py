@@ -12,7 +12,7 @@ import inspect
 import pytest
 
 from thegent import contracts
-from thegent.contracts import adapters, parser, registry
+from thegent.contracts import registry
 from thegent.contracts.adapters import (
     ADAPTER_REGISTRY_VERSION,
     ADAPTERS,
@@ -27,7 +27,6 @@ from thegent.contracts.parser import (
     extract_tags,
     get_partial_state,
 )
-
 
 # ---------------------------------------------------------------------------
 # Version pinning (FR-CTR-002)

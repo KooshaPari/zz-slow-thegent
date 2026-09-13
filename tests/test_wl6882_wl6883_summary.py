@@ -1,10 +1,10 @@
 """WL-6882/WL-6883 closeout tests for summary diagnostics."""
 
-import orjson as json
 import subprocess
 from datetime import UTC, datetime, timedelta
 from pathlib import Path
 
+import orjson as json
 import pytest
 
 from thegent import summary

@@ -1,20 +1,20 @@
 """Shared models, parser, and config loading for workstream autosync."""
 
+import hashlib
 import logging
 import os
 import re
-import hashlib
 from dataclasses import dataclass, field
-from datetime import datetime, timedelta, UTC
-from enum import Enum
+from datetime import UTC, datetime, timedelta
+from enum import StrEnum
 from pathlib import Path
 from typing import Any
 
 import orjson as json
 
 from thegent.config_defaults import autosync_phase1_enabled
-from thegent.integrations.capability_alerts import ConnectorSLAThresholds
 from thegent.integrations.base import SerializableMixin
+from thegent.integrations.capability_alerts import ConnectorSLAThresholds
 
 OPEN_STATUSES: set[str] = {"BACKLOG", "IN PROGRESS", "REVIEW", "TODO", "OPEN"}
 WL_ID_PATTERN = re.compile(r"^WL-\d+$")
@@ -153,7 +153,7 @@ def compute_adaptive_sync_interval(
 # ---------------------------------------------------------------------------
 
 
-class SyncDirection(str, Enum):
+class SyncDirection(StrEnum):
     """Sync direction (read-only, write-only, bidirectional)."""
 
     READ_ONLY = "read_only"
@@ -161,7 +161,7 @@ class SyncDirection(str, Enum):
     BIDIRECTIONAL = "bidirectional"
 
 
-class RemoteMissingItemPolicy(str, Enum):
+class RemoteMissingItemPolicy(StrEnum):
     """Policy for local WL items missing from remote connector snapshots."""
 
     IGNORE = "ignore"
@@ -401,10 +401,7 @@ class WorkstreamAutosyncConfig:
             return True
 
         stop_path = self.emergency_stop_file_path
-        if stop_path and stop_path.exists():
-            return True
-
-        return False
+        return bool(stop_path and stop_path.exists())
 
     def effective_github_project_number(self) -> int:
         """Return effective GitHub project target (sandbox-aware)."""
@@ -438,7 +435,7 @@ class WorkstreamDuplicateTitleError(WorkstreamAutosyncConfigError):
     """Raised for duplicate workstream titles."""
 
 
-class RetryClass(str, Enum):
+class RetryClass(StrEnum):
     """Error classes driving retry/backoff policy."""
 
     TRANSIENT = "transient"

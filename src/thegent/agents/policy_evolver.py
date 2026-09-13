@@ -2,11 +2,12 @@
 Analyzes run failures and evolves policy thresholds automatically.
 """
 
-import orjson as json
 import logging
 from datetime import UTC, datetime
 from pathlib import Path
 from typing import Any
+
+import orjson as json
 
 from thegent.execution import PolicyEngine, RunRegistry
 

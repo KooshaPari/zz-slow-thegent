@@ -1,6 +1,5 @@
 """Tests for documentation link checker."""
 
-from pathlib import Path
 
 import pytest
 

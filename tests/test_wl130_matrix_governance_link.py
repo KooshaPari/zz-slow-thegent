@@ -5,8 +5,9 @@
 
 from __future__ import annotations
 
-import orjson as json
 from pathlib import Path
+
+import orjson as json
 
 ROOT = Path(__file__).parent.parent
 MATRIX_JSON = ROOT / "contracts" / "runtime" / "runtime-modularization-matrix.json"

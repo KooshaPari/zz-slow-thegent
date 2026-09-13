@@ -1,8 +1,9 @@
 from __future__ import annotations
 
 import importlib.util
-import orjson as json
 from pathlib import Path
+
+import orjson as json
 
 
 def _load_tools_governance_module() -> object:

@@ -6,8 +6,7 @@ import time
 from pathlib import Path
 from typing import Any
 
-from thegent.cli.services import pre_work_gate_helpers
-from thegent.cli.services import run_workstream_helpers
+from thegent.cli.services import pre_work_gate_helpers, run_workstream_helpers
 from thegent.config import ThegentSettings
 
 _log = __import__("logging").getLogger(__name__)

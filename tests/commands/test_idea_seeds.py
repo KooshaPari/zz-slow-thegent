@@ -10,8 +10,6 @@ from __future__ import annotations
 
 from pathlib import Path
 
-import pytest
-
 from thegent.commands.idea_seeds import (
     DEFAULT_EXTENSIONS,
     SEED_PATTERNS,

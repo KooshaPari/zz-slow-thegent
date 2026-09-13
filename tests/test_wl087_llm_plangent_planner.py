@@ -42,24 +42,21 @@ Covers:
 from __future__ import annotations
 
 import asyncio
-import orjson as json
-from types import SimpleNamespace
 from typing import Any
 from unittest.mock import AsyncMock, MagicMock, patch
 
+import orjson as json
 import pytest
 
 from thegent.agents.plangent import (
     LLMPlangentPlanner,
     Plan,
     PlangentPlanner,
-    PlanNode,
     _LLMNodeSpec,
     _parse_llm_response,
     _specs_to_plan_nodes,
 )
 from thegent.orchestration.plan import OrchestrationPlan
-
 
 # ---------------------------------------------------------------------------
 # Helpers

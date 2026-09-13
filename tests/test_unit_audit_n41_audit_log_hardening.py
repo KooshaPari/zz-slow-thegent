@@ -113,7 +113,6 @@ import pytest
 from thegent.orchestration.state import audit_log as _mod
 from thegent.orchestration.state.audit_log import ShadowAuditGit
 
-
 # ---------------------------------------------------------------------------
 # Helpers — fixtures + tiny content builders so each test reads top-to-bottom
 # ---------------------------------------------------------------------------

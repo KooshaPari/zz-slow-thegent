@@ -31,7 +31,6 @@ from thegent.compute.syncthing import SyncthingError, SyncthingWorkspaceSync
 from thegent.compute.tailscale import TailscaleError, TailscaleNode
 from thegent.sitback.watchdog import WatcherDaemon
 
-
 # ---------------------------------------------------------------------------
 # Helpers
 # ---------------------------------------------------------------------------

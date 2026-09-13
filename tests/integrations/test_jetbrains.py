@@ -8,11 +8,10 @@ All filesystem operations use pytest's tmp_path fixture so the real
 
 from __future__ import annotations
 
-import orjson as json
-import platform
 from pathlib import Path
 from unittest import mock
 
+import orjson as json
 import pytest
 
 from thegent.integrations.jetbrains import (
@@ -207,13 +206,12 @@ class TestDetectInstalledIdes:
         with mock.patch(
             "thegent.integrations.jetbrains._jetbrains_base_dirs",
             return_value=[bad_base],
+        ), mock.patch.object(
+            Path,
+            "iterdir",
+            side_effect=PermissionError("access denied"),
         ):
-            with mock.patch.object(
-                Path,
-                "iterdir",
-                side_effect=PermissionError("access denied"),
-            ):
-                configs = integration.detect_installed_ides()
+            configs = integration.detect_installed_ides()
 
         assert configs == []
 

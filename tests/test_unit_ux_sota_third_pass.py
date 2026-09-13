@@ -48,7 +48,6 @@ documents the contract a future operator / CI consumer can rely on.
 from __future__ import annotations
 
 import logging
-import re
 import threading
 import time
 from pathlib import Path
@@ -57,9 +56,9 @@ from unittest.mock import patch
 import pytest
 
 from thegent.ux.cockpit import (
+    _DEFAULT_CLOCK,
     DecisionNotice,
     OperatorCockpit,
-    _DEFAULT_CLOCK,
     _sanitize_console_text,
 )
 from thegent.ux.cockpit_bridge import _decision_notice_for, _notice_age_s
@@ -70,7 +69,6 @@ from thegent.ux.decision_audit import (
 from thegent.ux.kpis import traffic as traffic_mod
 from thegent.ux.kpis.traffic import TrafficDashboard, TrafficEvent, TrafficWindow
 from thegent.ux.progress_emitter import ProgressTick, ProgressTickEmitter
-
 
 pytestmark = pytest.mark.unit
 
@@ -546,13 +544,12 @@ class TestEmitReleasesLockAroundSink:
 
         e = ProgressTickEmitter(sink=_Probe())
         # Inject a fake lock that records held state.
-        held_during_emit: list[bool] = []
 
         class _ProbeLock:
             def __init__(self, real: threading.RLock) -> None:
                 self._real = real
 
-            def __enter__(self) -> "_ProbeLock":
+            def __enter__(self) -> _ProbeLock:
                 self._real.acquire()
                 return self
 
@@ -560,11 +557,10 @@ class TestEmitReleasesLockAroundSink:
                 self._real.release()
 
         # Replace ``_lock`` with a probe that toggles a flag.
-        original_lock = e._lock
         flag = {"held": False}
 
         class _FlagLock:
-            def __enter__(self) -> "_FlagLock":
+            def __enter__(self) -> _FlagLock:
                 flag["held"] = True
                 return self
 

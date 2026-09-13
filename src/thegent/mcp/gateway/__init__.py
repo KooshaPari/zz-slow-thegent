@@ -82,6 +82,7 @@ class McpGateway:
     def execute(self, tool_call: McpToolCall) -> McpToolResult:
         """Execute a tool call."""
         import json
+
         from thegent.mcp.gateway import subprocess
 
         if tool_call.server_id not in self._servers:

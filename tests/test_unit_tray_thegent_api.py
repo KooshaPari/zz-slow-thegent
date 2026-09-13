@@ -8,8 +8,8 @@ pytest.importorskip("PySide6")
 from thegent.tray.plugins.thegent.api_client import (
     Agent,
     CostSummary,
-    GardenerStatus,
     GamificationStats,
+    GardenerStatus,
     Project,
     Run,
     ThegentAPIClient,

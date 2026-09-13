@@ -16,23 +16,27 @@ if TYPE_CHECKING:
     from thegent.config import ThegentSettings
 
 # Re-export command modules
-from thegent.cli.commands import impl, cli, cli_dag, _cli_shared
-from thegent.cli.commands import cli_git_worktree_governance
-from thegent.cli.commands import cli_git_identity
-from thegent.cli.commands import work_stream_impl
-
 # Re-export domain command submodules (WL-124)
-from thegent.cli.commands import run_cmds
-from thegent.cli.commands import session_cmds
-from thegent.cli.commands import governance_cmds
-from thegent.cli.commands import plan_cmds
-from thegent.cli.commands import model_cmds
-from thegent.cli.commands import infra_cmds
-from thegent.cli.commands import team_cmds
+from thegent.cli.commands import (
+    _cli_shared,
+    cli,
+    cli_dag,
+    cli_git_identity,
+    cli_git_worktree_governance,
+    governance_cmds,
+    impl,
+    infra_cmds,
+    model_cmds,
+    plan_cmds,
+    run_cmds,
+    session_cmds,
+    session_owner_helpers,
+    team_cmds,
+    work_stream_impl,
+)
 
 # Re-export commonly used items
 from thegent.cli.commands.model_cmds import model_cmds_list
-from thegent.cli.commands import session_owner_helpers
 
 __all__ = [
     "impl",

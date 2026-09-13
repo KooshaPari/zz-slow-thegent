@@ -12,6 +12,7 @@ import uuid
 from pathlib import Path
 
 from rich.table import Table
+
 from thegent.cli.commands._cli_shared import (
     ThegentSettings,
     _normalize_output_format,

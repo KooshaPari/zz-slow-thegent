@@ -26,9 +26,10 @@ def test_policy_engine_instantiation():
     Creates an instance and verifies basic initialization.
     """
     try:
-        from thegent_policy import PolicyEngine
         import tempfile
         from pathlib import Path
+
+        from thegent_policy import PolicyEngine
 
         with tempfile.TemporaryDirectory() as tmpdir:
             config_path = Path(tmpdir) / "policy.toml"

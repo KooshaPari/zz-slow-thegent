@@ -15,8 +15,9 @@ from pathlib import Path
 from typing import Any
 
 from cachetools import TTLCache
-from thegent.integrations.base import SerializableMixin
+
 from thegent.infra.fast_yaml_parser import yaml_load
+from thegent.integrations.base import SerializableMixin
 
 logger = logging.getLogger(__name__)
 

@@ -3,8 +3,9 @@
 WARNING: Auto-generated stub module.
 """
 
-from typing import Any, Dict, List, Optional
 from dataclasses import dataclass
+from typing import Any, Dict, List, Optional
+
 
 @dataclass
 class EvalResult:
@@ -12,8 +13,8 @@ class EvalResult:
     metric: str
     value: float
     passed: bool
-    details: Optional[dict[str, Any]] = None
-    
+    details: dict[str, Any] | None = None
+
     def to_dict(self) -> dict[str, Any]:
         return {
             "metric": self.metric,
@@ -24,13 +25,13 @@ class EvalResult:
 
 class EvalPipeline:
     """Evaluation pipeline stub."""
-    
+
     def __init__(self, *args: Any, **kwargs: Any) -> None:
         pass
-    
+
     def run(self, *args: Any, **kwargs: Any) -> list[EvalResult]:
         return []
-    
+
     def add_metric(self, *args: Any, **kwargs: Any) -> None:
         pass
 

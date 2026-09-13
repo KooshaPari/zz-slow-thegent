@@ -1,8 +1,8 @@
 """JSON-RPC agent server protocol."""
 from __future__ import annotations
-from typing import Any
-import time as _time
 
+import time as _time
+from typing import Any
 
 SUPPORTED_METHODS = [
     "session/start",
@@ -398,11 +398,11 @@ def _build_turn_submit_execution_phase(parse_phase: dict[str, Any]) -> tuple[str
     unified_diff = parse_phase.get("unified_diff")
     error = parse_phase.get("error")
     notifications = parse_phase.get("notifications", [])
-    
+
     # Validate execution targets are resolved
     if session_id is None or turn is None:
         raise ValueError("Turn submit execution target unresolved")
-    
+
     return (session_id, turn, input_text, requires_approval, unified_diff, error, notifications)
 
 
@@ -824,16 +824,16 @@ def _build_turn_submit_phase_plan(request_id: str | int, params: dict[str, Any])
 
 def _build_turn_submit_parse_phase(plan: dict[str, Any]) -> dict[str, Any]:
     """Build turn submit parse phase from plan.
-    
+
     Validates session exists and input is a string.
     Returns parse_error if validation fails.
     """
     session_id = plan.get("session_id")
     input_text = plan.get("input")
-    
+
     # Check session exists
     session = SERVER_STATE.sessions.get(session_id) if session_id else None
-    
+
     # Build parse phase result - include both 'input' and 'user_input' keys for compatibility
     parse_phase: dict[str, Any] = {
         "session_id": session_id,
@@ -843,21 +843,21 @@ def _build_turn_submit_parse_phase(plan: dict[str, Any]) -> dict[str, Any]:
         "parse_error": None,
         "notifications": [],
     }
-    
+
     # Validate session
     if not session_id or not session:
         parse_phase["parse_error"] = {
             "error": {"code": -32001, "message": f"Session not found: {session_id}"}
         }
         return parse_phase
-    
+
     # Validate input is string
     if input_text is not None and not isinstance(input_text, str):
         parse_phase["parse_error"] = {
             "error": {"code": -32001, "message": "input_must_be_string"}
         }
         return parse_phase
-    
+
     # Create turn object for execution phase
     SERVER_STATE.turn_counter += 1
     turn_id = f"turn-{SERVER_STATE.turn_counter}"
@@ -870,10 +870,10 @@ def _build_turn_submit_parse_phase(plan: dict[str, Any]) -> dict[str, Any]:
     }
     SERVER_STATE.turns[turn_id] = turn
     session.setdefault("turn_ids", []).append(turn_id)
-    
+
     # Add turn to parse_phase for execution phase
     parse_phase["turn"] = turn
-    
+
     return parse_phase
 
 
@@ -883,7 +883,7 @@ def _build_turn_submit_commit_phase(
     input_text: str,
 ) -> dict[str, Any]:
     """Build turn submit commit phase.
-    
+
     Creates a turn record and associates it with the session.
     """
     SERVER_STATE.turn_counter += 1
@@ -913,11 +913,11 @@ def _resolve_turn_submit_commit_target(
     """Resolve turn submit commit target from commit phase."""
     turn = commit_phase.get("turn")
     session = commit_phase.get("session", {})
-    
+
     # Validate turn is a dict
     if not isinstance(turn, dict):
         raise ValueError("commit_target resolution requires valid turn dict")
-    
+
     session = session if isinstance(session, dict) else {}
     turn_id = turn.get("id", "") if isinstance(turn, dict) else ""
     return (turn_id, turn, session)
@@ -928,15 +928,15 @@ def _resolve_turn_submit_side_effects_target(
 ) -> tuple[str, str, str] | tuple[str, str]:
     """Resolve turn submit side effects target from side effects phase."""
     approval = side_effects_phase.get("approval")
-    
+
     # Validate approval exists
     if approval is None or not isinstance(approval, dict):
         raise ValueError("side-effects target resolution requires approval")
-    
+
     approval_id = approval.get("id", "") if isinstance(approval, dict) else ""
     approval_status = approval.get("status", "") if isinstance(approval, dict) else ""
     approval_diff = approval.get("diff") if isinstance(approval, dict) else None
-    
+
     # Return 3-tuple if diff is present, otherwise 2-tuple
     if approval_diff is not None:
         return (approval_id, approval_status, approval_diff)
@@ -948,11 +948,11 @@ def _resolve_turn_submit_response_target(
 ) -> tuple[dict[str, Any], dict[str, Any] | None]:
     """Resolve turn submit response target from response phase."""
     turn = response_phase.get("turn")
-    
+
     # Validate turn exists
     if turn is None:
         raise ValueError("response_target resolution requires turn")
-    
+
     approval = response_phase.get("approval")
     return (turn, approval)
 
@@ -964,7 +964,7 @@ def _build_turn_submit_commit_resolution_phase(
     session: dict[str, Any] | None = None,
 ) -> tuple[str, dict[str, Any], dict[str, Any]] | dict[str, Any]:
     """Resolve turn submit commit phase.
-    
+
     Supports two calling conventions:
     - New (lane C2): _build_turn_submit_commit_resolution_phase(commit_phase_dict)
       Returns tuple of (turn_id, turn, resolved_session)
@@ -978,10 +978,10 @@ def _build_turn_submit_commit_resolution_phase(
         turn_id = commit_phase.get("turn_id")
         turn = commit_phase.get("turn")
         session = commit_phase.get("session")
-        
+
         if turn_id is None or turn is None or session is None:
             raise ValueError("Turn submit commit target unresolved")
-        
+
         return (turn_id, turn, session)
     else:
         # Old calling convention (lane AF) - returns dict
@@ -1004,7 +1004,7 @@ def _build_turn_submit_side_effects_phase(
     approval_diff: str | None,
 ) -> dict[str, Any]:
     """Build turn submit side effects phase.
-    
+
     Prepares the phase for side effects resolution.
     """
     return {
@@ -1021,7 +1021,7 @@ def _build_turn_submit_side_effects_resolution_phase(
     side_effects_phase: dict[str, Any],
 ) -> tuple[str, str, dict[str, Any], str, bool, str | None]:
     """Resolve turn submit side effects phase.
-    
+
     Validates that session_id and turn_id are proper string values and turn is valid.
     Returns tuple of (session_id, turn_id, turn, user_input, requires_approval, approval_diff).
     Raises ValueError if targets are unresolved or have wrong types.
@@ -1032,16 +1032,16 @@ def _build_turn_submit_side_effects_resolution_phase(
     user_input = side_effects_phase.get("user_input")
     requires_approval = side_effects_phase.get("requires_approval")
     approval_diff = side_effects_phase.get("approval_diff")
-    
+
     # Validate session_id and turn_id are strings (not None or other types)
     # Also validate turn is a non-empty dict (has id)
     if not isinstance(session_id, str) or not isinstance(turn_id, str):
         raise ValueError("Turn submit side-effects target unresolved")
-    
+
     # Validate turn is a valid dict with id
     if not isinstance(turn, dict) or "id" not in turn:
         raise ValueError("Turn submit side-effects target unresolved")
-    
+
     return (session_id, turn_id, turn, user_input, requires_approval, approval_diff)
 
 
@@ -1052,7 +1052,7 @@ def _build_turn_submit_response_phase(
     approval: dict[str, Any] | None,
 ) -> dict[str, Any]:
     """Build turn submit response phase.
-    
+
     Prepares the phase for response resolution.
     """
     return {
@@ -1067,7 +1067,7 @@ def _build_turn_submit_response_resolution_phase(
     response_phase: dict[str, Any],
 ) -> tuple[bool, str | int, dict[str, Any], dict[str, Any] | None]:
     """Resolve turn submit response phase.
-    
+
     Extracts response components from the phase.
     Returns tuple of (request_has_id, request_id, resolved_turn, approval_payload).
     """
@@ -1075,5 +1075,5 @@ def _build_turn_submit_response_resolution_phase(
     request_id = response_phase.get("request_id")
     turn = response_phase.get("turn")
     approval = response_phase.get("approval")
-    
+
     return (request_has_id, request_id, turn, approval)

@@ -5,11 +5,11 @@ Tests the state machine, cycle execution, error handling, and graceful shutdown.
 
 from __future__ import annotations
 
-import orjson as json
 import signal
 from typing import TYPE_CHECKING
 from unittest.mock import MagicMock, patch
 
+import orjson as json
 import pytest
 from pydantic import ValidationError
 
@@ -537,7 +537,7 @@ def test_run_continuous_health_based_interval(
     ]
 
     with patch.object(AgilePlusLoop, "run_once", mock_run_once):
-        results = loop.run_continuous(interval_seconds=60, max_cycles=2)
+        loop.run_continuous(interval_seconds=60, max_cycles=2)
 
     # First call should have slept for interval * 2 (healthy)
     assert mock_sleep.call_count >= 1
@@ -560,7 +560,7 @@ def test_run_continuous_respects_shutdown(
     )
 
     with patch.object(AgilePlusLoop, "run_once", mock_run_once):
-        results = loop.run_continuous(interval_seconds=60, max_cycles=10)
+        loop.run_continuous(interval_seconds=60, max_cycles=10)
 
     # Should not have run any cycles due to shutdown
     assert mock_run_once.call_count == 0
@@ -710,10 +710,10 @@ def test_run_once_with_empty_findings(loop: AgilePlusLoop) -> None:
         patch.object(
             AgilePlusLoop, "_compute_health", return_value=MagicMock(score=50.0, band=MagicMock(value="warning"))
         ),
-        patch.object(AgilePlusLoop, "_run_analysis", return_value=[]) as mock_analysis,
+        patch.object(AgilePlusLoop, "_run_analysis", return_value=[]),
         patch.object(
             AgilePlusLoop, "_run_planning", return_value=MagicMock(tasks=[], total_estimated_calls=0)
-        ) as mock_planning,
+        ),
         patch.object(AgilePlusLoop, "_run_deployment") as mock_deploy,
         patch.object(AgilePlusLoop, "_run_verification", return_value=0),
         patch.object(AgilePlusLoop, "_run_commitment"),
@@ -807,7 +807,7 @@ def test_run_continuous_infinite_loop(
     loop._shutdown_requested = True
 
     with patch.object(AgilePlusLoop, "run_once") as mock_run, patch("time.sleep"):
-        results = loop.run_continuous(interval_seconds=60, max_cycles=None)
+        loop.run_continuous(interval_seconds=60, max_cycles=None)
 
     # Should stop immediately due to shutdown
     assert mock_run.call_count == 0

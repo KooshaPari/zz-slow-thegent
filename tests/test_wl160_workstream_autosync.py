@@ -10,32 +10,35 @@ Tests cover:
 """
 
 import os
+from datetime import UTC, datetime, timedelta
 from pathlib import Path
-from datetime import datetime, timezone, timedelta
-import orjson as json
 from unittest.mock import patch
 
+import orjson as json
 import pytest
 
-from thegent.integrations.policy_checksum import compute_payload_checksum
 from thegent.docgen.code_annotation import CodeAnnotationGenerator
 from thegent.execution import EscalationQueue
-from thegent.integrations.reflection_event_log import ReflectionDecision, ReflectionEventLog
+from thegent.integrations.idempotency_cache import IdempotencyCache
+from thegent.integrations.policy_checksum import compute_payload_checksum
+from thegent.integrations.reflection_event_log import (
+    ReflectionDecision,
+    ReflectionEventLog,
+)
 from thegent.integrations.workstream_autosync import (
     ConnectorSLAThresholds,
+    MaintenanceWindow,
+    RemoteMissingItemPolicy,
+    RetryClass,
     SyncDirection,
     SyncOperation,
-    RetryClass,
-    MaintenanceWindow,
-    WorkstreamAutosyncConfigError,
-    RemoteMissingItemPolicy,
     WorkstreamAutosyncConfig,
+    WorkstreamAutosyncConfigError,
     WorkstreamAutosyncRunner,
     WorkstreamItem,
     WorkstreamParser,
     load_autosync_config_from_env,
 )
-from thegent.integrations.idempotency_cache import IdempotencyCache
 
 
 @pytest.fixture
@@ -580,7 +583,7 @@ class TestWorkstreamAutosyncRunner:
     @pytest.mark.asyncio
     async def test_run_cycle_skips_maintenance(self, valid_github_config, sample_work_stream_file):
         """Run cycle should skip connectors in maintenance window."""
-        now = datetime.now(timezone.utc)
+        now = datetime.now(UTC)
         valid_github_config.work_stream_path = sample_work_stream_file
         runner = WorkstreamAutosyncRunner(valid_github_config)
 
@@ -613,7 +616,7 @@ class TestWorkstreamAutosyncRunner:
     @pytest.mark.asyncio
     async def test_maintenance_windows_are_project_scoped(self, valid_github_config):
         """Maintenance window checks can be scoped to specific project IDs."""
-        now = datetime.now(timezone.utc)
+        now = datetime.now(UTC)
         valid_github_config.maintenance_windows = [
             MaintenanceWindow(
                 connector="github",
@@ -777,7 +780,7 @@ class TestWorkstreamAutosyncRunner:
             items_failed=1,
             errors=["error"],
         )
-        operation.completed_at = datetime.now(timezone.utc)
+        operation.completed_at = datetime.now(UTC)
         operation.duration_seconds = 0.01
 
         runner._record_local_reflection_events(connector="github", operation=operation)
@@ -1175,9 +1178,8 @@ Extra: owner/repo#456
         with patch(
             "thegent.integrations.workstream_autosync.gh_sync_from_github",
             return_value={"items": remote_items, "errors": []},
-        ):
-            with pytest.raises(ValueError, match="Payload checksum mismatch"):
-                await runner._sync_from_github(items, work_stream)
+        ), pytest.raises(ValueError, match="Payload checksum mismatch"):
+            await runner._sync_from_github(items, work_stream)
 
     @pytest.mark.asyncio
     async def test_compact_snapshots_keeps_latest_only(self, tmp_path):
@@ -1261,7 +1263,7 @@ Extra: owner/repo#456
         runner.total_cycles = 4
         runner._append_cycle_manifest(
             status="success",
-            started_at=datetime(2026, 2, 22, 0, 0, tzinfo=timezone.utc),
+            started_at=datetime(2026, 2, 22, 0, 0, tzinfo=UTC),
             items=[
                 WorkstreamItem(item_id="WL-1", title="One", status="BACKLOG", priority="P1", area="sync"),
             ],
@@ -1285,7 +1287,7 @@ Extra: owner/repo#456
         status_path.parent.mkdir(parents=True, exist_ok=True)
         snapshot_path = status_path.parent / "autosync_snapshot_old.json"
         snapshot_path.write_text("{}", encoding="utf-8")
-        old_time = datetime.now(timezone.utc).timestamp() - 3_600
+        old_time = datetime.now(UTC).timestamp() - 3_600
         os.utime(snapshot_path, (old_time, old_time))
 
         config = WorkstreamAutosyncConfig(
@@ -1475,9 +1477,8 @@ Extra: owner/repo#456
         with patch(
             "thegent.integrations.workstream_autosync.linear_sync_from",
             return_value={"items": remote_items, "errors": []},
-        ):
-            with pytest.raises(ValueError, match="Payload checksum mismatch"):
-                await runner._sync_from_linear(items, work_stream)
+        ), pytest.raises(ValueError, match="Payload checksum mismatch"):
+            await runner._sync_from_linear(items, work_stream)
 
     @pytest.mark.asyncio
     async def test_sync_from_linear_accepts_expected_payload_checksum(self, tmp_path):

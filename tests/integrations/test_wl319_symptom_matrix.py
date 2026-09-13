@@ -4,7 +4,11 @@ from __future__ import annotations
 
 import pytest
 
-from thegent.integrations.symptom_matrix import SymptomEntry, find_by_keyword, get_symptom_matrix
+from thegent.integrations.symptom_matrix import (
+    SymptomEntry,
+    find_by_keyword,
+    get_symptom_matrix,
+)
 
 
 class TestSymptomEntry:

@@ -1,9 +1,10 @@
 """Task validator module for thegent."""
 
 import re
-from dataclasses import dataclass, field as dataclass_field
+from dataclasses import dataclass
+from dataclasses import field as dataclass_field
 from pathlib import Path
-from typing import Dict, Any, List
+from typing import Any
 
 __all__ = [
     "ValidationError",

@@ -6,9 +6,9 @@ import json
 import time
 import uuid
 from dataclasses import dataclass, field
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from pathlib import Path
-from typing import TYPE_CHECKING, Any
+from typing import Any
 
 
 @dataclass
@@ -20,7 +20,7 @@ class TaskRequest:
     cwd: str | None = None
     env: dict[str, str] = field(default_factory=dict)
     priority: int = 0
-    created_at: str = field(default_factory=lambda: datetime.now(timezone.utc).isoformat())
+    created_at: str = field(default_factory=lambda: datetime.now(UTC).isoformat())
 
     def to_dict(self) -> dict[str, Any]:
         """Convert to dictionary."""
@@ -43,7 +43,7 @@ class TaskResult:
     stdout: str = ""
     stderr: str = ""
     duration_s: float = 0.0
-    ended_at: str = field(default_factory=lambda: datetime.now(timezone.utc).isoformat())
+    ended_at: str = field(default_factory=lambda: datetime.now(UTC).isoformat())
 
     def to_dict(self) -> dict[str, Any]:
         """Convert to dictionary."""

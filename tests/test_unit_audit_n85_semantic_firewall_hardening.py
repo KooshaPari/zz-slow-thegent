@@ -11,9 +11,7 @@ Source: src/thegent/governance/semantic_firewall.py
 
 from __future__ import annotations
 
-import pytest
-
-from thegent.governance.semantic_firewall import SemanticFirewall, FirewallRule
+from thegent.governance.semantic_firewall import FirewallRule, SemanticFirewall
 
 
 class TestSemanticFirewallInit:

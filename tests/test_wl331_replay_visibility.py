@@ -11,7 +11,10 @@ from datetime import UTC, datetime, timedelta
 from typer.testing import CliRunner
 
 from thegent.cli.apps.sync import app
-from thegent.sync.dead_letter_queue import RemoteWriteDeadLetterQueue, RemoteWriteDeadLetterRecord
+from thegent.sync.dead_letter_queue import (
+    RemoteWriteDeadLetterQueue,
+    RemoteWriteDeadLetterRecord,
+)
 
 
 def _seed_dead_letter_queue(tmp_path) -> None:

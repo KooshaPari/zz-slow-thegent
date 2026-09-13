@@ -13,13 +13,13 @@ from thegent.clode_main import (
     _CLODE_BYPASS_FLAG,
     _GLM_POLICY_COUNTER,
     _MODEL_ALIAS,
-    _run_sitback_codex,
     _resolve_clode_token,
     _run_claude_interactive,
     _run_claude_print,
+    _run_sitback_codex,
     _run_sitback_droid,
-    sitback_cmd,
     app,
+    sitback_cmd,
 )
 
 runner = CliRunner()

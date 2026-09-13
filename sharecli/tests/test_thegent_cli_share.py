@@ -3,7 +3,7 @@
 import pytest
 from thegent_cli_share.adapters.dedup import InMemoryLockAdapter
 from thegent_cli_share.adapters.queue import InMemoryQueueAdapter
-from thegent_cli_share.domain.entities import CommandLock, TaskQueueItem, QueuePriority
+from thegent_cli_share.domain.entities import CommandLock, QueuePriority, TaskQueueItem
 from thegent_cli_share.domain.value_objects import CommandHash
 
 

@@ -151,9 +151,8 @@ class OverrideEventEmitter:
         """Thread-safe append of a JSON record to the JSONL file."""
         self._path.parent.mkdir(parents=True, exist_ok=True)
         line = json.dumps(record, separators=(",", ":")) + "\n"
-        with self._lock:
-            with self._path.open("a", encoding="utf-8") as fh:
-                fh.write(line)
+        with self._lock, self._path.open("a", encoding="utf-8") as fh:
+            fh.write(line)
 
 
 # ---------------------------------------------------------------------------

@@ -15,7 +15,6 @@ from thegent.ux.kpis.traffic import (
     render_trend,
 )
 
-
 pytestmark = pytest.mark.unit
 
 

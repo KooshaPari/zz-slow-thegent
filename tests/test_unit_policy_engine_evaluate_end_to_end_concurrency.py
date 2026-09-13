@@ -52,7 +52,6 @@ from thegent.governance.policy_engine import (
     PolicyEngineConfigError,
 )
 
-
 # All tests in this module are unit tests.
 pytestmark = pytest.mark.unit
 

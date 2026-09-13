@@ -5,7 +5,7 @@
 
 from __future__ import annotations
 
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 
 import pytest
 
@@ -28,7 +28,7 @@ class TestConflictEntryCreation:
     @pytest.mark.requirement("WL-205")
     def test_create_conflict_entry(self) -> None:
         """Can create a ConflictEntry with required fields."""
-        now = datetime.now(timezone.utc)
+        now = datetime.now(UTC)
         entry = ConflictEntry(
             conflict_id="CONF-001",
             wl_id="WL-001",
@@ -51,7 +51,7 @@ class TestConflictEntryCreation:
     @pytest.mark.requirement("WL-205")
     def test_create_conflict_entry_resolved(self) -> None:
         """Can create a ConflictEntry with resolved=True."""
-        now = datetime.now(timezone.utc)
+        now = datetime.now(UTC)
         entry = ConflictEntry(
             conflict_id="CONF-001",
             wl_id="WL-001",
@@ -85,7 +85,7 @@ class TestConflictQueueEnqueue:
     @pytest.mark.requirement("WL-205")
     def test_enqueue_single_entry(self, queue: ConflictQueue) -> None:
         """enqueue adds entry to queue."""
-        now = datetime.now(timezone.utc)
+        now = datetime.now(UTC)
         entry = ConflictEntry(
             conflict_id="CONF-001",
             wl_id="WL-001",
@@ -108,7 +108,7 @@ class TestConflictQueueEnqueue:
     @pytest.mark.requirement("WL-269")
     def test_enqueue_assigns_state_conflict_high_severity(self, queue: ConflictQueue) -> None:
         """enqueue classifies status/priority conflicts as high severity."""
-        now = datetime.now(timezone.utc)
+        now = datetime.now(UTC)
         entry = ConflictEntry(
             conflict_id="CONF-STATE",
             wl_id="WL-401",
@@ -138,7 +138,7 @@ class TestConflictClassification:
     @pytest.mark.requirement("WL-205")
     def test_enqueue_multiple_entries(self, queue: ConflictQueue) -> None:
         """enqueue can add multiple entries."""
-        now = datetime.now(timezone.utc)
+        now = datetime.now(UTC)
 
         for i in range(3):
             entry = ConflictEntry(
@@ -163,7 +163,7 @@ class TestConflictClassification:
     @pytest.mark.requirement("WL-205")
     def test_enqueue_empty_conflict_id_raises_error(self, queue: ConflictQueue) -> None:
         """enqueue raises ValueError for empty conflict_id."""
-        now = datetime.now(timezone.utc)
+        now = datetime.now(UTC)
         entry = ConflictEntry(
             conflict_id="",
             wl_id="WL-001",
@@ -185,7 +185,7 @@ class TestConflictQueueDequeue:
     def queue_with_entries(self) -> ConflictQueue:
         """Provide a ConflictQueue with entries."""
         queue = ConflictQueue()
-        now = datetime.now(timezone.utc)
+        now = datetime.now(UTC)
 
         for i in range(3):
             entry = ConflictEntry(
@@ -231,7 +231,7 @@ class TestConflictQueueDequeue:
     def test_dequeue_skips_resolved_entries(self) -> None:
         """dequeue skips resolved entries."""
         queue = ConflictQueue()
-        now = datetime.now(timezone.utc)
+        now = datetime.now(UTC)
 
         # Add two entries, mark first as resolved
         entry1 = ConflictEntry(
@@ -269,7 +269,7 @@ class TestConflictQueueResolve:
     def queue_with_entries(self) -> ConflictQueue:
         """Provide a ConflictQueue with entries."""
         queue = ConflictQueue()
-        now = datetime.now(timezone.utc)
+        now = datetime.now(UTC)
 
         for i in range(3):
             entry = ConflictEntry(
@@ -338,7 +338,7 @@ class TestConflictQueuePending:
     def test_pending_returns_unresolved_only(self) -> None:
         """pending returns only unresolved entries."""
         queue = ConflictQueue()
-        now = datetime.now(timezone.utc)
+        now = datetime.now(UTC)
 
         for i in range(3):
             resolved = i == 1
@@ -370,7 +370,7 @@ class TestConflictQueuePending:
     def test_pending_fifo_order(self) -> None:
         """pending returns entries in FIFO order."""
         queue = ConflictQueue()
-        now = datetime.now(timezone.utc)
+        now = datetime.now(UTC)
 
         for i in range(3):
             entry = ConflictEntry(
@@ -397,7 +397,7 @@ class TestConflictQueueAllEntries:
     def test_all_entries_includes_resolved_and_unresolved(self) -> None:
         """all_entries includes both resolved and unresolved."""
         queue = ConflictQueue()
-        now = datetime.now(timezone.utc)
+        now = datetime.now(UTC)
 
         for i in range(3):
             resolved = i == 1
@@ -421,7 +421,7 @@ class TestConflictQueueAllEntries:
     def test_all_entries_order(self) -> None:
         """all_entries maintains insertion order."""
         queue = ConflictQueue()
-        now = datetime.now(timezone.utc)
+        now = datetime.now(UTC)
 
         for i in range(3):
             entry = ConflictEntry(
@@ -455,7 +455,7 @@ class TestConflictQueueSize:
     def test_size_after_enqueue(self) -> None:
         """size increases with enqueue."""
         queue = ConflictQueue()
-        now = datetime.now(timezone.utc)
+        now = datetime.now(UTC)
 
         for i in range(3):
             entry = ConflictEntry(
@@ -475,7 +475,7 @@ class TestConflictQueueSize:
     def test_size_after_resolve(self) -> None:
         """size decreases with resolve."""
         queue = ConflictQueue()
-        now = datetime.now(timezone.utc)
+        now = datetime.now(UTC)
 
         for i in range(3):
             entry = ConflictEntry(
@@ -497,7 +497,7 @@ class TestConflictQueueSize:
     def test_size_ignores_resolved_on_enqueue(self) -> None:
         """size only counts unresolved entries even if added resolved."""
         queue = ConflictQueue()
-        now = datetime.now(timezone.utc)
+        now = datetime.now(UTC)
 
         entry = ConflictEntry(
             conflict_id="CONF-001",

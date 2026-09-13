@@ -12,7 +12,11 @@ from __future__ import annotations
 
 import pytest
 
-from thegent.coordination.hybrid_coordination import CoordinationMetrics, CoordinationMode, HybridCoordinationStrategy
+from thegent.coordination.hybrid_coordination import (
+    CoordinationMetrics,
+    CoordinationMode,
+    HybridCoordinationStrategy,
+)
 
 # ---------------------------------------------------------------------------
 # Fixtures
@@ -378,7 +382,11 @@ class TestCoordinate:
 
 def test_init_exports():
     """CoordinationMode, HybridCoordinationStrategy, CoordinationMetrics exported from __init__."""
-    from thegent.orchestration import CoordinationMetrics, CoordinationMode, HybridCoordinationStrategy
+    from thegent.orchestration import (
+        CoordinationMetrics,
+        CoordinationMode,
+        HybridCoordinationStrategy,
+    )
 
     assert CoordinationMode is not None
     assert HybridCoordinationStrategy is not None

@@ -11,20 +11,20 @@ Tests cover:
 from __future__ import annotations
 
 import time
-from pathlib import Path  # noqa: TC003 -- Path used at runtime in fixture bodies and path operations
+from pathlib import (
+    Path,  # noqa: TC003 -- Path used at runtime in fixture bodies and path operations
+)
 from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
 
 from thegent.utils.routing_impl.cursor_provider import (
+    _TOKEN_TTL_SECONDS,
     CursorExecutorManager,
     CursorProviderConfig,
     CursorTokenProvider,
-    _CURSOR_SERVER_TOKEN_CANDIDATES,
-    _TOKEN_TTL_SECONDS,
     build_cursor_routing_config,
 )
-
 
 # --------------------------------------------------------------------------- #
 # Fixtures                                                                     #

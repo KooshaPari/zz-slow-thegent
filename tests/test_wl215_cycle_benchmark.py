@@ -6,7 +6,7 @@
 from __future__ import annotations
 
 import time
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 
 import pytest
 
@@ -19,7 +19,7 @@ class TestCycleBenchmark:
     @pytest.mark.requirement("WL-215")
     def test_cycle_benchmark_creation(self):
         """# @trace WL-215 — CycleBenchmark can be created with required fields."""
-        now = datetime.now(timezone.utc)
+        now = datetime.now(UTC)
         benchmark = CycleBenchmark(cycle_id="test_cycle", start_time=now)
         assert benchmark.cycle_id == "test_cycle"
         assert benchmark.start_time == now
@@ -29,8 +29,8 @@ class TestCycleBenchmark:
     @pytest.mark.requirement("WL-215")
     def test_cycle_benchmark_with_all_fields(self):
         """# @trace WL-215 — CycleBenchmark can be created with all fields."""
-        now = datetime.now(timezone.utc)
-        end = datetime.now(timezone.utc)
+        now = datetime.now(UTC)
+        end = datetime.now(UTC)
         benchmark = CycleBenchmark(
             cycle_id="test_cycle",
             start_time=now,
@@ -50,9 +50,9 @@ class TestCycleBenchmarkHarness:
     def test_start_cycle(self):
         """# @trace WL-215 — start_cycle creates a benchmark and returns it."""
         harness = CycleBenchmarkHarness()
-        before = datetime.now(timezone.utc)
+        before = datetime.now(UTC)
         benchmark = harness.start_cycle("cycle_1")
-        after = datetime.now(timezone.utc)
+        after = datetime.now(UTC)
 
         assert benchmark.cycle_id == "cycle_1"
         assert before <= benchmark.start_time <= after
@@ -64,9 +64,9 @@ class TestCycleBenchmarkHarness:
         """# @trace WL-215 — end_cycle updates benchmark with end time and item count."""
         harness = CycleBenchmarkHarness()
         harness.start_cycle("cycle_1")
-        before = datetime.now(timezone.utc)
+        before = datetime.now(UTC)
         benchmark = harness.end_cycle("cycle_1", item_count=50)
-        after = datetime.now(timezone.utc)
+        after = datetime.now(UTC)
 
         assert benchmark.cycle_id == "cycle_1"
         assert before <= benchmark.end_time <= after

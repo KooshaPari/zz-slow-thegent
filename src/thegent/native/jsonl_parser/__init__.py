@@ -1,4 +1,5 @@
 """Stub module."""
+import contextlib
 import json
 from typing import Any
 
@@ -77,10 +78,8 @@ def _py_stream(content: str) -> list[str]:
     results = []
     for line in content.strip().split("\n"):
         if line:
-            try:
+            with contextlib.suppress(json.JSONDecodeError):
                 results.append(json.loads(line))
-            except json.JSONDecodeError:
-                pass
     return results
 
 

@@ -5,7 +5,7 @@
 
 from __future__ import annotations
 
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 
 import pytest
 
@@ -21,7 +21,7 @@ class TestRateLimitState:
     @pytest.mark.requirement("WL-286")
     def test_rate_limit_state_creation(self) -> None:
         """Can create a RateLimitState with required fields."""
-        updated = datetime.now(timezone.utc)
+        updated = datetime.now(UTC)
         state = RateLimitState(
             connector="github",
             requests_per_minute=60.0,
@@ -84,9 +84,9 @@ class TestAdaptiveRateLimiterSetLimit:
     @pytest.mark.requirement("WL-286")
     def test_set_limit_updates_last_updated(self, limiter: AdaptiveRateLimiter) -> None:
         """set_limit updates last_updated timestamp."""
-        before = datetime.now(timezone.utc)
+        before = datetime.now(UTC)
         limiter.set_limit("github", 120.0)
-        after = datetime.now(timezone.utc)
+        after = datetime.now(UTC)
 
         state = limiter.get_state("github")
         assert before <= state.last_updated <= after

@@ -17,7 +17,6 @@ from pathlib import Path
 
 import pytest
 
-
 # ---------------------------------------------------------------------------
 # AUDIT-N+5 — module-import surface (must resolve cleanly)
 # ---------------------------------------------------------------------------

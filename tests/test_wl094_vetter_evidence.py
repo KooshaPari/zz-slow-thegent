@@ -31,7 +31,6 @@ from thegent.govern.vetter.models import (
 from thegent.govern.vetter.orchestrator import VetterOrchestrator
 from thegent.governance.compliance import ComplianceEvidence, EvidenceStore
 
-
 # ---------------------------------------------------------------------------
 # Helpers
 # ---------------------------------------------------------------------------

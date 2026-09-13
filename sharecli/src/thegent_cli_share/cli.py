@@ -1,6 +1,5 @@
 """CLI interface for thegent-cli-share."""
 
-from typing import Optional
 
 import typer
 from rich.console import Console
@@ -9,7 +8,7 @@ from rich.table import Table
 from thegent_cli_share import __version__
 from thegent_cli_share.adapters.dedup import InMemoryLockAdapter
 from thegent_cli_share.adapters.queue import InMemoryQueueAdapter
-from thegent_cli_share.domain.entities import TaskQueueItem, QueuePriority
+from thegent_cli_share.domain.entities import QueuePriority, TaskQueueItem
 from thegent_cli_share.domain.value_objects import CommandHash
 
 app = typer.Typer(help="CLI share system - command deduplication and task queue")
@@ -24,7 +23,7 @@ _queue_adapter = InMemoryQueueAdapter()
 def lock_acquire(
     cmd_hash: str = typer.Argument(..., help="Command hash to lock"),
     pid: int = typer.Option(0, help="Process ID"),
-    output_path: Optional[str] = typer.Option(None, help="Output file path"),
+    output_path: str | None = typer.Option(None, help="Output file path"),
 ) -> None:
     """Acquire a command lock."""
     try:

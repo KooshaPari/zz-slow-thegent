@@ -332,10 +332,7 @@ def render_trend(
     if n == 0:
         return "·" * width
     buf = list(values)
-    if n < width:
-        buf = [0.0] * (width - n) + buf
-    else:
-        buf = buf[-width:]
+    buf = [0.0] * (width - n) + buf if n < width else buf[-width:]
     lo, hi = min(buf), max(buf)
     if hi - lo < 1e-9:
         return "·" * width

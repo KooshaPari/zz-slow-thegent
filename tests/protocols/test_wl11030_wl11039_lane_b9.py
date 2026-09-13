@@ -3,11 +3,13 @@
 from __future__ import annotations
 
 import orjson as json
-
 import pytest
 
 from thegent.protocols import jsonrpc_agent_server as server
-from thegent.protocols.jsonrpc_agent_server import SERVER_STATE, process_jsonrpc_line_full
+from thegent.protocols.jsonrpc_agent_server import (
+    SERVER_STATE,
+    process_jsonrpc_line_full,
+)
 
 
 def _reset_state() -> None:

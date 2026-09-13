@@ -8,9 +8,9 @@ for all required workloads.
 
 from __future__ import annotations
 
-import orjson as json
 from pathlib import Path
 
+import orjson as json
 import pytest
 
 MATRIX_PATH = Path(__file__).parent.parent / "contracts" / "runtime" / "runtime-modularization-matrix.json"

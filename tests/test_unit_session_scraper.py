@@ -1,8 +1,9 @@
 from __future__ import annotations
 
-import orjson as json
+import contextlib
 from pathlib import Path
 
+import orjson as json
 import pytest
 
 from thegent.orchestration.state.session_scraper import SessionScraper
@@ -310,15 +311,13 @@ def test_snapshot_failed_event_payload_schema_validation(monkeypatch, tmp_path: 
     monkeypatch.setattr("thegent.orchestration.state.session_scraper.SessionScraper.collect_snapshot", _raise_runtime)
 
     request_id = "req-evt-fail-001"
-    try:
+    with contextlib.suppress(RuntimeError):
         scraper.persist_snapshot(
             trigger="timer:15m",
             out_dir=tmp_path / "snapshots",
             request_event_id=request_id,
             event_log=event_log,
         )
-    except RuntimeError:
-        pass
 
     events = [json.loads(line) for line in event_log.read_text(encoding="utf-8").splitlines() if line.strip()]
     assert len(events) == 1

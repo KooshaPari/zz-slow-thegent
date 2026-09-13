@@ -11,9 +11,7 @@ Source: src/thegent/governance/value_lock.py
 
 from __future__ import annotations
 
-import pytest
-
-from thegent.governance.value_lock import ValueLock, LockedPrinciple
+from thegent.governance.value_lock import LockedPrinciple, ValueLock
 
 
 class TestValueLockInit:

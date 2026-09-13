@@ -55,7 +55,7 @@ from __future__ import annotations
 import json
 import os
 from dataclasses import dataclass, field
-from enum import Enum
+from enum import StrEnum
 from pathlib import Path
 from typing import Any
 
@@ -64,7 +64,7 @@ from typing import Any
 # ---------------------------------------------------------------------------
 
 
-class InitProfile(str, Enum):
+class InitProfile(StrEnum):
     """Supported first-run profiles.
 
     * ``minimal`` — scaffold only the config dir + AGENTS.md pointer.

@@ -4,7 +4,8 @@
 """
 
 import pytest
-from docs_engine.schema.base import DocFrontmatter, DocType, DocStatus
+
+from docs_engine.schema.base import DocFrontmatter, DocStatus, DocType
 
 
 def test_base_schema_requires_type():

@@ -16,7 +16,10 @@ class TestDefaultEnablementMigrator:
 
     def test_register_creates_plan_in_plan_phase(self):
         """# @trace WL-260 — register() creates feature in PLAN phase."""
-        from thegent.integrations.enablement_migration import DefaultEnablementMigrator, MigrationPhase
+        from thegent.integrations.enablement_migration import (
+            DefaultEnablementMigrator,
+            MigrationPhase,
+        )
 
         migrator = DefaultEnablementMigrator()
         plan = migrator.register("feature_1")
@@ -36,7 +39,10 @@ class TestDefaultEnablementMigrator:
 
     def test_advance_moves_to_next_phase(self):
         """# @trace WL-260 — advance() moves feature through phases sequentially."""
-        from thegent.integrations.enablement_migration import DefaultEnablementMigrator, MigrationPhase
+        from thegent.integrations.enablement_migration import (
+            DefaultEnablementMigrator,
+            MigrationPhase,
+        )
 
         migrator = DefaultEnablementMigrator()
         migrator.register("feature_1")
@@ -97,7 +103,10 @@ class TestDefaultEnablementMigrator:
 
     def test_by_phase_filters_correctly(self):
         """# @trace WL-260 — by_phase() returns only features in specified phase."""
-        from thegent.integrations.enablement_migration import DefaultEnablementMigrator, MigrationPhase
+        from thegent.integrations.enablement_migration import (
+            DefaultEnablementMigrator,
+            MigrationPhase,
+        )
 
         migrator = DefaultEnablementMigrator()
         migrator.register("feat_a")
@@ -123,7 +132,10 @@ class TestDefaultEnablementMigrator:
 
     def test_by_phase_returns_sorted_list(self):
         """# @trace WL-260 — by_phase() returns results sorted by feature_id."""
-        from thegent.integrations.enablement_migration import DefaultEnablementMigrator, MigrationPhase
+        from thegent.integrations.enablement_migration import (
+            DefaultEnablementMigrator,
+            MigrationPhase,
+        )
 
         migrator = DefaultEnablementMigrator()
         migrator.register("zebra")
@@ -137,7 +149,10 @@ class TestDefaultEnablementMigrator:
 
     def test_by_phase_empty(self):
         """# @trace WL-260 — by_phase() returns empty list when no features in phase."""
-        from thegent.integrations.enablement_migration import DefaultEnablementMigrator, MigrationPhase
+        from thegent.integrations.enablement_migration import (
+            DefaultEnablementMigrator,
+            MigrationPhase,
+        )
 
         migrator = DefaultEnablementMigrator()
         migrator.register("feat_a")

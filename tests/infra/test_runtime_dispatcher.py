@@ -5,25 +5,25 @@ and agent selection based on keyword matching.
 Also tests PerformanceModule, dispatchers, and runtime status functions.
 """
 
-from unittest.mock import MagicMock, patch
+from unittest.mock import MagicMock
 
 import pytest
 
 from thegent.infra.runtime_dispatcher import (
-    IS_PYPY,
+    HAS_EXTISM,
     HAS_FREETHREADING,
+    IS_PYPY,
     PerformanceModule,
+    WasmDispatcher,
     _python_route_logic,
+    get_json_dumps,
+    get_json_loads,
+    get_router,
+    get_runtime_status,
+    get_toml_loads,
     json_dumps_dispatcher,
     json_loads_dispatcher,
     toml_loads_dispatcher,
-    WasmDispatcher,
-    HAS_EXTISM,
-    get_json_dumps,
-    get_json_loads,
-    get_toml_loads,
-    get_router,
-    get_runtime_status,
 )
 
 

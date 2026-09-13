@@ -25,13 +25,14 @@ path only, where partial decomposition is worse than no decomposition.
 from __future__ import annotations
 
 import asyncio
-import orjson as json
 import logging
 import uuid
 from collections.abc import Callable
 from dataclasses import dataclass, field
 from datetime import UTC, datetime
 from typing import TYPE_CHECKING, Any, Literal
+
+import orjson as json
 
 from thegent.agents.flash_agent import FlashAgent, FlashAgentConfig
 
@@ -926,7 +927,7 @@ class LLMPlangentPlanner(PlangentPlanner):
     # Async helper — can be called directly for OrchestrationPlan output
     # ------------------------------------------------------------------
 
-    async def decompose_to_orchestration_plan(self, goal: str, max_depth: int = 3) -> "Any":
+    async def decompose_to_orchestration_plan(self, goal: str, max_depth: int = 3) -> Any:
         """Decompose *goal* directly into an OrchestrationPlan with full metadata.
 
         Unlike :meth:`decompose`, which loses agent_hint / budget_tokens when

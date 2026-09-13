@@ -26,9 +26,9 @@ unit tests with a temp directory.
 from __future__ import annotations
 
 import json
+from collections.abc import Iterable
 from pathlib import Path
-from typing import Any, Iterable
-
+from typing import Any
 
 # ---------------------------------------------------------------------------
 # Event-type constants (string contract pinned by tests).
@@ -70,7 +70,7 @@ def detect_drift(
 
 def rank_providers_by_parser_quality(
     providers: Iterable[str],
-    telemetry: "ContractTelemetry | None" = None,
+    telemetry: ContractTelemetry | None = None,
 ) -> list[str]:
     """Rank ``providers`` by aggregated parser quality.
 
@@ -102,7 +102,7 @@ def rank_providers_by_parser_quality(
 
 def get_contract_telemetry(
     session_dir: Path | str | None = None,
-) -> "ContractTelemetry":
+) -> ContractTelemetry:
     """Factory mirroring the original global instance API."""
     return ContractTelemetry(session_dir)
 

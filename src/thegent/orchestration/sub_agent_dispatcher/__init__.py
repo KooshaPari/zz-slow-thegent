@@ -35,6 +35,7 @@ import uuid
 from collections.abc import Iterable
 from typing import Any
 
+from thegent.agents.plangent import PlanNode
 from thegent.orchestration.inter_agent_protocol import (
     InterAgentMessage,
     MessageBus,
@@ -43,7 +44,6 @@ from thegent.orchestration.plan import (
     AGENT_HINT,
     OrchestrationPlan,
 )
-from thegent.agents.plangent import PlanNode
 
 # ---------------------------------------------------------------------------
 # Constants
@@ -56,8 +56,9 @@ _DISPATCHER_SENDER_PREFIX = "dispatcher"
 # DispatchResult — carried back from a runner to the executor.
 # ---------------------------------------------------------------------------
 
-from thegent.orchestration.sub_agent_dispatcher.dispatch_result import DispatchResult
+import contextlib
 
+from thegent.orchestration.sub_agent_dispatcher.dispatch_result import DispatchResult
 
 # ---------------------------------------------------------------------------
 # SubAgentDispatcher — canonical (bus + plan) implementation
@@ -249,10 +250,8 @@ class SubAgentDispatcher:
             # FR-ORC-069: a broken event_queue (QueueFull) must not
             # break the dispatch path.  Swap the COMPLETED event for a
             # no-op silently so the dispatch result is still returned.
-            try:
+            with contextlib.suppress(QueueFull):
                 self._safe_publish_event(completed_event)
-            except QueueFull:
-                pass
             return message.id
 
     def _safe_publish_event(self, event: Any) -> None:
@@ -599,7 +598,7 @@ class CapabilityIndex:
         return list(self.capabilities.get(agent_id, []))
 
     @classmethod
-    def get_default(cls) -> "CapabilityIndex":
+    def get_default(cls) -> CapabilityIndex:
         """Return a process-wide default :class:`CapabilityIndex`."""
         global _DEFAULT_CAPABILITY_INDEX
         try:

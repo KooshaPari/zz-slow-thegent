@@ -9,21 +9,25 @@ OR-13: retries transient HTTP statuses (408/502/503) with backoff. 402 (insuffic
 """
 from __future__ import annotations
 
-import contextlib
 import logging
-import orjson as json
-from typing import AsyncIterator, cast
+from collections.abc import AsyncIterator
+from typing import cast
 
+import orjson as json
 from starlette.requests import Request
 from starlette.responses import Response, StreamingResponse
 from starlette.types import Send
 
+from thegent.adapters.driven.cliproxy_openrouter import (
+    _inject_openrouter_headers,
+    _is_openrouter_backend,
+)
 from thegent.cliproxy_error_utils import (
     _ERROR_MESSAGES,
     _RETRY_MAX_ATTEMPTS,
     InsufficientCreditsError,
-    _RetryableStreamError,
     _make_error_body,
+    _RetryableStreamError,
 )
 from thegent.cliproxy_header_utils import (
     filter_inbound_response_headers,
@@ -37,11 +41,6 @@ from thegent.cliproxy_request_transform import (
     _responses_to_chat_completions,
 )
 from thegent.cliproxy_stream_state import ResponsesStreamState
-
-from thegent.adapters.driven.cliproxy_openrouter import (
-    _inject_openrouter_headers,
-    _is_openrouter_backend,
-)
 
 _log = logging.getLogger(__name__)
 
@@ -59,6 +58,7 @@ async def _proxy_request(
     OR-13: Retry transient OpenRouter HTTP statuses (408/502/503) for non-streaming paths.
     """
     import asyncio
+
     import httpx
 
     body = b""

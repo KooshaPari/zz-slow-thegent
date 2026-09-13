@@ -35,7 +35,6 @@ from typer.testing import CliRunner
 from thegent.ux.cli_cockpit import app as cockpit_app
 from thegent.ux.cli_sota import app as sota_app
 
-
 # Per-mismatch sub-keys the JSON envelope MUST expose — shared with the
 # parity suite so we don't drift the contract across files.
 _MISMATCH_SUBKEYS: tuple[str, ...] = ("index", "fields", "expected", "actual")

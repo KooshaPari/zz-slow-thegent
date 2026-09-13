@@ -14,7 +14,6 @@ from typing import Any
 
 from thegent.integrations.base import SerializableMixin
 
-
 logger = logging.getLogger(__name__)
 
 # Default path for cost logs

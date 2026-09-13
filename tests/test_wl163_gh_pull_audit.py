@@ -5,10 +5,10 @@
 
 from __future__ import annotations
 
-import orjson as json
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from pathlib import Path
 
+import orjson as json
 import pytest
 
 from thegent.integrations.gh_pull_audit import (
@@ -26,7 +26,7 @@ def test_pull_reflection_audit_entry_creation() -> None:
         connector="github",
         before_status="open",
         after_status="closed",
-        timestamp=datetime.now(timezone.utc).isoformat(),
+        timestamp=datetime.now(UTC).isoformat(),
         sync_note="Synced from GitHub",
     )
 
@@ -41,7 +41,7 @@ def test_pull_reflection_audit_entry_creation() -> None:
 @pytest.mark.requirement("WL-163")
 def test_pull_reflection_audit_entry_to_dict() -> None:
     """Test converting PullReflectionAuditEntry to dictionary."""
-    now = datetime.now(timezone.utc).isoformat()
+    now = datetime.now(UTC).isoformat()
     entry = PullReflectionAuditEntry(
         wl_id="WL-002",
         cycle_id="cycle-123",
@@ -66,7 +66,7 @@ def test_pull_reflection_audit_entry_to_dict() -> None:
 @pytest.mark.requirement("WL-163")
 def test_pull_reflection_audit_entry_to_json_line() -> None:
     """Test converting PullReflectionAuditEntry to JSONL format."""
-    now = datetime.now(timezone.utc).isoformat()
+    now = datetime.now(UTC).isoformat()
     entry = PullReflectionAuditEntry(
         wl_id="WL-003",
         cycle_id="cycle-456",
@@ -98,7 +98,7 @@ def test_pull_reflection_audit_log_append_and_read_all(tmp_path: Path) -> None:
         connector="github",
         before_status="open",
         after_status="closed",
-        timestamp=datetime.now(timezone.utc).isoformat(),
+        timestamp=datetime.now(UTC).isoformat(),
     )
     entry2 = PullReflectionAuditEntry(
         wl_id="WL-002",
@@ -106,7 +106,7 @@ def test_pull_reflection_audit_log_append_and_read_all(tmp_path: Path) -> None:
         connector="linear",
         before_status="todo",
         after_status="done",
-        timestamp=datetime.now(timezone.utc).isoformat(),
+        timestamp=datetime.now(UTC).isoformat(),
     )
 
     log.append(entry1)
@@ -135,7 +135,7 @@ def test_pull_reflection_audit_log_read_by_cycle(tmp_path: Path) -> None:
         connector="github",
         before_status="open",
         after_status="closed",
-        timestamp=datetime.now(timezone.utc).isoformat(),
+        timestamp=datetime.now(UTC).isoformat(),
     )
     entry2 = PullReflectionAuditEntry(
         wl_id="WL-002",
@@ -143,7 +143,7 @@ def test_pull_reflection_audit_log_read_by_cycle(tmp_path: Path) -> None:
         connector="linear",
         before_status="todo",
         after_status="done",
-        timestamp=datetime.now(timezone.utc).isoformat(),
+        timestamp=datetime.now(UTC).isoformat(),
     )
     entry3 = PullReflectionAuditEntry(
         wl_id="WL-003",
@@ -151,7 +151,7 @@ def test_pull_reflection_audit_log_read_by_cycle(tmp_path: Path) -> None:
         connector="github",
         before_status="draft",
         after_status="ready",
-        timestamp=datetime.now(timezone.utc).isoformat(),
+        timestamp=datetime.now(UTC).isoformat(),
     )
 
     log.append(entry1)
@@ -197,7 +197,7 @@ def test_pull_reflection_audit_log_clear(tmp_path: Path) -> None:
         connector="github",
         before_status="open",
         after_status="closed",
-        timestamp=datetime.now(timezone.utc).isoformat(),
+        timestamp=datetime.now(UTC).isoformat(),
     )
     log.append(entry)
 

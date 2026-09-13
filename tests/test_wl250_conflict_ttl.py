@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import time
-from datetime import datetime, timedelta, timezone
+from datetime import UTC, datetime
 
 import pytest
 
@@ -17,7 +17,7 @@ class TestConflictRecord:
 
     def test_create_conflict_record_default(self) -> None:
         """Test creating a conflict record with default escalated=False."""
-        now = datetime.now(timezone.utc)
+        now = datetime.now(UTC)
         record = ConflictRecord(conflict_id="conflict_123", created_at=now)
         assert record.conflict_id == "conflict_123"
         assert record.created_at == now
@@ -25,7 +25,7 @@ class TestConflictRecord:
 
     def test_create_conflict_record_with_escalated(self) -> None:
         """Test creating a conflict record with escalated=True."""
-        now = datetime.now(timezone.utc)
+        now = datetime.now(UTC)
         record = ConflictRecord(
             conflict_id="conflict_456",
             created_at=now,
@@ -54,11 +54,11 @@ class TestConflictTTLManager:
     def test_register_creates_record(self) -> None:
         """Test registering a new conflict."""
         manager = ConflictTTLManager()
-        before = datetime.now(timezone.utc)
+        before = datetime.now(UTC)
 
         record = manager.register("conflict_1")
 
-        after = datetime.now(timezone.utc)
+        after = datetime.now(UTC)
         assert record.conflict_id == "conflict_1"
         assert record.escalated is False
         assert before <= record.created_at <= after
@@ -235,7 +235,7 @@ class TestConflictTTLManager:
         """Test workflow from registration through expiry."""
         manager = ConflictTTLManager(ttl_seconds=0.2, escalation_seconds=0.05)
 
-        record = manager.register("conflict_1")
+        manager.register("conflict_1")
         assert manager.is_expired("conflict_1") is False
 
         time.sleep(0.1)

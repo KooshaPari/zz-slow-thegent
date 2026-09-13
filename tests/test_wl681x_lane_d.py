@@ -1,10 +1,10 @@
 from __future__ import annotations
 
 import asyncio
-import orjson as json
 from pathlib import Path
 from types import SimpleNamespace
 
+import orjson as json
 import pytest
 
 from thegent.commands.sync import SyncCommand, SyncOperationStatus

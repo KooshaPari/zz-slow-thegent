@@ -26,7 +26,6 @@ from typing import Any
 from thegent.contracts.parser import extract_tags
 from thegent.contracts.telemetry import ContractTelemetry
 
-
 __all__ = [
     "ConformanceResult",
     "ConformanceTest",
@@ -229,7 +228,11 @@ def _evaluate(test: ConformanceTest) -> dict[str, Any]:
         if not sniff:
             # Don't even invoke the adapter for the no-tag malformed
             # case -- the parser would just return a PENDING fallback.
-            from thegent.contracts.csm import CanonicalStructuredMessage, CSMPhase, CSMStatus
+            from thegent.contracts.csm import (
+                CanonicalStructuredMessage,
+                CSMPhase,
+                CSMStatus,
+            )
 
             csm = CanonicalStructuredMessage(
                 status=CSMStatus.PENDING,

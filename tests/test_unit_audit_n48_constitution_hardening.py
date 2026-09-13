@@ -8,16 +8,13 @@ Source: src/thegent/governance/constitution.py
 
 from __future__ import annotations
 
-import hashlib
 from pathlib import Path
-from typing import Any
-from unittest.mock import patch
 
 import pytest
 
 from thegent.governance.constitution import (
-    ConstitutionManager,
     ConstitutionalViolation,
+    ConstitutionManager,
     ProofOfAlignment,
 )
 

@@ -15,9 +15,9 @@ from collections.abc import Callable
 from pathlib import Path
 from typing import Any
 
-from watchfiles import watch
 from watchdog.events import FileSystemEvent, FileSystemEventHandler
 from watchdog.observers import Observer
+from watchfiles import watch
 
 WATCHFILES_AVAILABLE = True
 WATCHDOG_AVAILABLE = True

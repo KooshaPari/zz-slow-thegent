@@ -11,17 +11,13 @@ Tests the auto-fix capabilities including:
 
 from __future__ import annotations
 
-import os
-from pathlib import Path
 from typing import TYPE_CHECKING
 from unittest.mock import MagicMock, patch
-
-import pytest
 
 from thegent.doctor import CheckResult, _apply_fixes, _display_fix_report
 
 if TYPE_CHECKING:
-    from collections.abc import Callable
+    pass
 
 
 # ---------------------------------------------------------------------------
@@ -338,6 +334,7 @@ class TestDoctorCLI:
     def test_clode_doctor_accepts_dry_run_param(self) -> None:
         """Test that clode_doctor accepts the dry_run parameter."""
         import inspect
+
         from thegent import clode_main
 
         # Get the signature of the doctor function
@@ -348,6 +345,7 @@ class TestDoctorCLI:
     def test_dex_doctor_accepts_dry_run_param(self) -> None:
         """Test that dex_doctor accepts the dry_run parameter."""
         import inspect
+
         from thegent import dex_main
 
         # Get the signature of the doctor function
@@ -358,6 +356,7 @@ class TestDoctorCLI:
     def test_roid_doctor_accepts_dry_run_param(self) -> None:
         """Test that roid_doctor accepts the dry_run parameter."""
         import inspect
+
         from thegent import roid_main
 
         # Get the signature of the doctor function
@@ -368,6 +367,7 @@ class TestDoctorCLI:
     def test_anen_doctor_accepts_dry_run_param(self) -> None:
         """Test that anen_doctor accepts the dry_run parameter."""
         import inspect
+
         from thegent import anen_main
 
         # Get the signature of the doctor function

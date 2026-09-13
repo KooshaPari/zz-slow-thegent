@@ -477,7 +477,7 @@ class OperatorCockpit:
         config: CockpitConfig | None = None,
         *,
         clock: Callable[[], float] | None = None,
-        audit_appender: "DecisionAuditAppender | None" = None,
+        audit_appender: DecisionAuditAppender | None = None,
         auto_tail: bool = False,
         tail_interval_s: float = 1.0,
     ) -> None:
@@ -524,7 +524,7 @@ class OperatorCockpit:
         # handle); the tailer is owned by the cockpit so the lifetime
         # matches the cockpit.
         self._audit_appender = audit_appender
-        self._audit_tailer: "DecisionAuditTailer | None" = None
+        self._audit_tailer: DecisionAuditTailer | None = None
         self._tail_interval_s = float(tail_interval_s)
         if audit_appender is not None and auto_tail:
             self._start_audit_tailer()
@@ -554,7 +554,7 @@ class OperatorCockpit:
         tailer.start()
         self._audit_tailer = tailer
 
-    def audit_appender(self) -> "DecisionAuditAppender | None":
+    def audit_appender(self) -> DecisionAuditAppender | None:
         """Return the JSONL audit appender the cockpit is wired to (or ``None``)."""
         return self._audit_appender
 
@@ -671,7 +671,7 @@ class OperatorCockpit:
 
     # -------------------------------------------------------------- AUDIT-N+15 traffic pane
 
-    def attach_traffic(self, dashboard: Any) -> "OperatorCockpit":
+    def attach_traffic(self, dashboard: Any) -> OperatorCockpit:
         """Attach a :class:`TrafficDashboard` so the cockpit renders a TRAFFIC pane.
 
         AUDIT-N+15: the operator cockpit gains a dedicated TRAFFIC pane
@@ -708,7 +708,7 @@ class OperatorCockpit:
 
     # -------------------------------------------------------------- AUDIT-N+18 dormant-core pane
 
-    def attach_dormant_core(self, dormant_source: Any) -> "OperatorCockpit":
+    def attach_dormant_core(self, dormant_source: Any) -> OperatorCockpit:
         """Attach a dormant-core envelope source so the cockpit renders a DORMANT_CORE pane.
 
         AUDIT-N+18: wire the AUDIT-N+13 dormant-core trend envelope
@@ -752,7 +752,7 @@ class OperatorCockpit:
 
     # -------------------------------------------------------------- AUDIT-N+22 MCP audit-trail pane
 
-    def attach_audit_trail(self, audit_source: Any) -> "OperatorCockpit":
+    def attach_audit_trail(self, audit_source: Any) -> OperatorCockpit:
         """Attach an MCP audit-trail source so the cockpit renders an MCP_AUDIT_STATS block.
 
         AUDIT-N+22 (SOTA audit pass 8, Lane A): wire the
@@ -815,10 +815,7 @@ class OperatorCockpit:
         if source is None:
             return None
         try:
-            if callable(source):
-                payload = source()
-            else:
-                payload = source.summary()
+            payload = source() if callable(source) else source.summary()
         except Exception:  # noqa: BLE001 - never crash the cockpit.
             return None
         return payload if isinstance(payload, dict) else None
@@ -1555,7 +1552,7 @@ class OperatorCockpit:
 
     # --------------------------------------------------- context-manager sugar
 
-    def __enter__(self) -> "OperatorCockpit":
+    def __enter__(self) -> OperatorCockpit:
         return self
 
     def __exit__(self, *exc: Any) -> None:
@@ -1569,7 +1566,7 @@ class OperatorCockpit:
 # ---------------------------------------------------------------------------
 
 
-def _finalize_cockpit(cockpit: "OperatorCockpit") -> None:
+def _finalize_cockpit(cockpit: OperatorCockpit) -> None:
     """Finaliser that stops the audit tailer at garbage-collection time.
 
     Registered via :func:`weakref.finalize` so that test suites and

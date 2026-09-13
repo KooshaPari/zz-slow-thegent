@@ -13,10 +13,10 @@ Traces to:
 from __future__ import annotations
 
 import json as _stdlib_json
-import orjson as json
 import tempfile
 from pathlib import Path
 
+import orjson as json
 import pytest
 
 from thegent.governance.federated_policy import (
@@ -26,12 +26,8 @@ from thegent.governance.federated_policy import (
 )
 from thegent.governance.federation import (
     JURISDICTION_PROFILES,
-    ArbitrationLog,
-    ConsentRelayStore,
     FederatedPolicyManager,
-    FederationManager,
     PolicyNamespace,
-    _apply_jurisdiction_overlay,
 )
 
 # ---------------------------------------------------------------------------

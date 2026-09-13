@@ -4,7 +4,7 @@
 
 __version__ = "0.1.0"
 
-from .commands import main, run, list_commands
+from .commands import list_commands, main, run
 from .parser import parse_args
 
 __all__ = ["list_commands", "main", "parse_args", "run"]

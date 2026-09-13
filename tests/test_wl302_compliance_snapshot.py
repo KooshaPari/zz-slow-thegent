@@ -5,10 +5,10 @@
 
 from __future__ import annotations
 
-import orjson as json
-from datetime import datetime, timedelta, timezone
+from datetime import UTC, datetime, timedelta
 from pathlib import Path
 
+import orjson as json
 import pytest
 
 from thegent.integrations.compliance_snapshot import ComplianceSnapshotScheduler
@@ -153,32 +153,32 @@ class TestShouldRun:
     def test_should_run_within_interval(self, tmp_path: Path) -> None:
         """Within interval returns False."""
         scheduler = ComplianceSnapshotScheduler(tmp_path, schedule_interval_hours=24)
-        last_run = datetime.now(timezone.utc) - timedelta(hours=12)
+        last_run = datetime.now(UTC) - timedelta(hours=12)
         assert scheduler.should_run(last_run) is False
 
     def test_should_run_at_interval_boundary(self, tmp_path: Path) -> None:
         """Exactly at interval boundary returns True."""
         scheduler = ComplianceSnapshotScheduler(tmp_path, schedule_interval_hours=24)
-        last_run = datetime.now(timezone.utc) - timedelta(hours=24)
+        last_run = datetime.now(UTC) - timedelta(hours=24)
         assert scheduler.should_run(last_run) is True
 
     def test_should_run_past_interval(self, tmp_path: Path) -> None:
         """Past interval returns True."""
         scheduler = ComplianceSnapshotScheduler(tmp_path, schedule_interval_hours=24)
-        last_run = datetime.now(timezone.utc) - timedelta(hours=48)
+        last_run = datetime.now(UTC) - timedelta(hours=48)
         assert scheduler.should_run(last_run) is True
 
     def test_should_run_short_interval(self, tmp_path: Path) -> None:
         """Works with short intervals."""
         scheduler = ComplianceSnapshotScheduler(tmp_path, schedule_interval_hours=1)
-        last_run = datetime.now(timezone.utc) - timedelta(minutes=61)
+        last_run = datetime.now(UTC) - timedelta(minutes=61)
         assert scheduler.should_run(last_run) is True
 
     @pytest.mark.requirement("WL-302")
     def test_should_run_uses_utc(self, tmp_path: Path) -> None:
         """should_run uses UTC timezone."""
         scheduler = ComplianceSnapshotScheduler(tmp_path, schedule_interval_hours=24)
-        now_utc = datetime.now(timezone.utc)
+        now_utc = datetime.now(UTC)
         last_run_utc = now_utc - timedelta(hours=25)
         assert scheduler.should_run(last_run_utc) is True
 

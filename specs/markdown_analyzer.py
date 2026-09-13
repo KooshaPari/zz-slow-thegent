@@ -280,7 +280,7 @@ class MarkdownAnalyzer:
     def _detect_content_type(self, file_path: Path, content: str) -> ContentType:
         """Detect content type from file path and content."""
         path_lower = str(file_path).lower()
-        content_lower = content.lower()
+        content.lower()
 
         # Check file name patterns
         if any(term in path_lower for term in ["spec", "specification"]):

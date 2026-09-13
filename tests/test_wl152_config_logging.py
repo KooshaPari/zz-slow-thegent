@@ -30,7 +30,6 @@ from __future__ import annotations
 import io
 import json
 import logging
-import os
 from collections.abc import Iterator
 from unittest.mock import patch
 
@@ -41,8 +40,8 @@ from thegent.config.logging_config import (
     LoggingConfig,
     SecretMaskingFormatter,
     configure_logging,
-    registered_secrets,
     register_secret_for_masking,
+    registered_secrets,
 )
 
 

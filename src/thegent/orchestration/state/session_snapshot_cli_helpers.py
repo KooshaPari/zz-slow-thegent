@@ -28,6 +28,7 @@ for session snapshot CLI display and export.
 """
 
 from __future__ import annotations
+
 from typing import Any
 
 

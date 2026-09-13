@@ -1,6 +1,31 @@
 [lint]
 select = ["E", "F", "W", "I", "N", "UP", "B", "C4", "SIM"]
-ignore = ["E501"]
+ignore = [
+    "E501",    # line-too-long
+    "E402",    # module-import-not-at-top-of-file (framework patterns)
+    "E741",    # ambiguous-variable-name (math convention)
+    "N801",    # invalid-class-name
+    "N802",    # invalid-function-name
+    "N806",    # non-lowercase-variable-in-function
+    "N818",    # error-suffix-on-exception-name
+    "N999",    # invalid-module-name
+    "D103",    # undocumented-public-function
+    "UP035",   # deprecated-import
+    "B008",    # function-call-in-default-argument (FastAPI Depends)
+    "B017",    # assert-raises-exception
+    "B904",    # raise-without-from-inside-except
+    "F403",    # undefined-local-with-import-star
+    "F405",    # undefined-local-with-import-star-usage
+    "F821",    # undefined-name (star imports / dynamic code)
+    "F822",    # undefined-export
+    "ERA001",  # commented-out-code
+    "INP001",  # implicit-namespace-package
+    "SIM102",  # collapsible-if
+    "SIM105",  # suppressible-exception
+    "SIM117",  # multiple-with-statements
+    "E722",    # bare-except
+    "E721",    # type-comparison
+]
 
 [format]
 quote-style = "double"

@@ -35,7 +35,6 @@ from thegent.native.watcher_daemon import (
     WatchSpec,
     _reset_singleton,
     _SpecHandler,
-    _try_get_breaker,
     get_watcher_daemon,
 )
 

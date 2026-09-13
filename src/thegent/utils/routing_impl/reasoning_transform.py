@@ -10,10 +10,10 @@ Normalizes {effort: "high"/"medium"/"low"} to provider-specific reasoning params
 
 from __future__ import annotations
 
-from enum import Enum
+from enum import StrEnum
 
 
-class ReasoningEffort(str, Enum):
+class ReasoningEffort(StrEnum):
     HIGH = "high"
     MEDIUM = "medium"
     LOW = "low"

@@ -7,7 +7,10 @@ from __future__ import annotations
 
 import pytest
 
-from thegent.integrations.capability_alerts import ConnectorSLAEvaluator, ConnectorSLAThresholds
+from thegent.integrations.capability_alerts import (
+    ConnectorSLAEvaluator,
+    ConnectorSLAThresholds,
+)
 from thegent.integrations.connector_toggle import ConnectorToggleRegistry
 from thegent.integrations.error_budget import ErrorBudgetTracker
 from thegent.integrations.pipeline_percentiles import PipelinePercentileTracker

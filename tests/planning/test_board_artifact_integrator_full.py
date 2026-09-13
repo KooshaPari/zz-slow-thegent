@@ -3,9 +3,6 @@
 from __future__ import annotations
 
 from pathlib import Path
-from unittest.mock import MagicMock, patch
-
-import pytest
 
 try:
     import orjson as json
@@ -314,7 +311,10 @@ class TestCreateBoardArtifactIntegrator:
 
     def test_creates_integrator(self, tmp_path: Path) -> None:
         """Factory creates BoardArtifactIntegrator instance."""
-        from thegent.planning.board_artifact_integrator import create_board_artifact_integrator, BoardArtifactIntegrator
+        from thegent.planning.board_artifact_integrator import (
+            BoardArtifactIntegrator,
+            create_board_artifact_integrator,
+        )
 
         integrator = create_board_artifact_integrator(board_artifacts_dir=tmp_path)
         assert isinstance(integrator, BoardArtifactIntegrator)

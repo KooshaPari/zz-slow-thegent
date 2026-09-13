@@ -2,8 +2,8 @@
 
 from __future__ import annotations
 
-from dataclasses import dataclass, field
 import re
+from dataclasses import dataclass, field
 from typing import Any
 
 from yaml import safe_dump, safe_load
@@ -27,8 +27,8 @@ class PaneNode:
     is_leaf: bool = True
     direction: str | None = None
     pane: Pane | None = None
-    children: list["PaneNode"] = field(default_factory=list)
-    parent: "PaneNode | None" = None
+    children: list[PaneNode] = field(default_factory=list)
+    parent: PaneNode | None = None
 
     def __post_init__(self) -> None:
         if self.pane is None and self.is_leaf:
@@ -36,7 +36,7 @@ class PaneNode:
         if not self.is_leaf:
             self.pane = None
 
-    def leaves(self) -> list["PaneNode"]:
+    def leaves(self) -> list[PaneNode]:
         """Return all leaf nodes."""
         if self.is_leaf:
             return [self]

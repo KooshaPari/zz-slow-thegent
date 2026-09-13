@@ -1,6 +1,5 @@
 """WP-5007: Recovery under sustained load drills test suite."""
 
-from concurrent.futures import ThreadPoolExecutor
 
 import pytest
 from typer.testing import CliRunner

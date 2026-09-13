@@ -7,7 +7,7 @@ from __future__ import annotations
 
 import pytest
 
-from thegent.cliproxy_adapter import TgHeaders, _TG_HEADER_NAMES, extract_tg_headers
+from thegent.cliproxy_adapter import _TG_HEADER_NAMES, TgHeaders, extract_tg_headers
 
 
 @pytest.mark.requirement("FR-ROUTE-020")

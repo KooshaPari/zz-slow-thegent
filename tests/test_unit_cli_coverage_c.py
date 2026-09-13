@@ -6,12 +6,12 @@ formatting code that tests_a and tests_b do not exercise.
 
 from __future__ import annotations
 
-import orjson as json
 from pathlib import Path
 from typing import Any
 from unittest.mock import MagicMock, patch
 
 import click.exceptions
+import orjson as json
 import pytest
 import typer
 

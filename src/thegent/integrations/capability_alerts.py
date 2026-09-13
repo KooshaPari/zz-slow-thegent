@@ -9,9 +9,10 @@ FR traceability: WL-305 (Capability Mismatch Alerts)
 from __future__ import annotations
 
 import logging
+from collections.abc import Callable
 from dataclasses import dataclass
-from datetime import datetime, UTC
-from typing import Any, Callable
+from datetime import UTC, datetime
+from typing import Any
 
 logger = logging.getLogger(__name__)
 

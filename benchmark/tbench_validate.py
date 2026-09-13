@@ -85,7 +85,7 @@ def main():
 
     results = run_benchmark(compare=args.compare, swarm=args.swarm)
 
-    filepath = save_results(results, args.output)
+    save_results(results, args.output)
 
     if results["success"] or "error" in results:
         pass

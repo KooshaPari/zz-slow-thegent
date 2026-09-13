@@ -13,7 +13,6 @@ from __future__ import annotations
 
 from typing import Any
 
-
 # ---------------------------------------------------------------------------
 # Thin stubs — callable, importable, deterministic.
 # ---------------------------------------------------------------------------
@@ -46,7 +45,6 @@ def dag_cancel_cmd(*args: Any, **kwargs: Any) -> int:
 
 def dag_status_cmd(*args: Any, **kwargs: Any) -> int:
     """Show DAG status."""
-    from thegent.cli.commands.dag_impl import dag_status_impl
 
     return 0
 

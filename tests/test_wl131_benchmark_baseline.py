@@ -10,10 +10,10 @@ from __future__ import annotations
 
 import importlib
 import importlib.util
-import orjson as json
 import sys
 from pathlib import Path
 
+import orjson as json
 import pytest
 
 ROOT = Path(__file__).resolve().parents[1]

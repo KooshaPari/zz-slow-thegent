@@ -3,12 +3,13 @@
 from __future__ import annotations
 
 import asyncio
-import orjson as json
 from pathlib import Path
 from types import SimpleNamespace
 from typing import TYPE_CHECKING, Any
 
+import orjson as json
 from pydantic import BaseModel, ConfigDict
+
 from thegent.config import ThegentSettings
 
 if TYPE_CHECKING:

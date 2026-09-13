@@ -21,10 +21,14 @@ src_path = Path(__file__).parent.parent.parent / "src"
 if str(src_path) not in sys.path:
     sys.path.insert(0, str(src_path))
 
-from thegent.audit.shadow_audit_git import GitJournal, GitJournalAsync, GitJournalEnhanced
+from thegent.audit.shadow_audit_git import (
+    GitJournal,
+    GitJournalAsync,
+    GitJournalEnhanced,
+)
 
 if TYPE_CHECKING:
-    from collections.abc import Awaitable, Callable
+    pass
 
 
 # ---------------------------------------------------------------------------

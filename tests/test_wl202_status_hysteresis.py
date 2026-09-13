@@ -7,7 +7,7 @@ within and across sync cycles.
 
 from __future__ import annotations
 
-from datetime import datetime, timedelta, timezone
+from datetime import UTC, datetime, timedelta
 
 import pytest
 
@@ -74,7 +74,7 @@ def test_cooldown_expires():
     gate2._transition_history["WL-300"] = [gate._transition_history["WL-300"][0]]
     # Manually set old timestamp
     old_record = gate2._transition_history["WL-300"][0]
-    old_record.timestamp = datetime.now(timezone.utc) - timedelta(seconds=400)
+    old_record.timestamp = datetime.now(UTC) - timedelta(seconds=400)
 
     # After expiry, should be allowed
     assert gate2.should_apply_transition("WL-300", "IN_PROGRESS") is True

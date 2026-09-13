@@ -6,12 +6,13 @@ Traces to: FR-GOV-001 (policy federation), FR-GOV-002 (scope precedence)
 
 from __future__ import annotations
 
-import orjson as json
 import logging
 import threading
 from dataclasses import dataclass, field
 from enum import Enum
 from typing import TYPE_CHECKING, Any
+
+import orjson as json
 
 if TYPE_CHECKING:
     from pathlib import Path

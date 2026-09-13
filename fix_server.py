@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """Fix the jsonrpc_agent_server.py file."""
 import ast
+import contextlib
 
 # Read current file (first 1600 lines)
 with open('src/thegent/protocols/jsonrpc_agent_server.py') as f:
@@ -23,7 +24,5 @@ with open('src/thegent/protocols/jsonrpc_agent_server.py', 'w') as f:
     f.write(content)
 
 # Verify syntax
-try:
+with contextlib.suppress(SyntaxError):
     ast.parse(content)
-except SyntaxError as e:
-    pass

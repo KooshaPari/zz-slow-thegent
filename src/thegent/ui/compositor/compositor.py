@@ -3,9 +3,10 @@
 from __future__ import annotations
 
 from collections import deque
+from collections.abc import Callable
 from dataclasses import dataclass
 from time import perf_counter, time
-from typing import Callable, TypedDict
+from typing import TypedDict
 
 
 class CacheStats(TypedDict):

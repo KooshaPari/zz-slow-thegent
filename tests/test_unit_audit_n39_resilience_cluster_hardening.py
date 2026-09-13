@@ -137,7 +137,6 @@ cluster.
 from __future__ import annotations
 
 import json
-import re
 import time
 from pathlib import Path
 from typing import Any
@@ -145,18 +144,6 @@ from unittest.mock import MagicMock, patch
 
 import pytest
 
-from thegent.orchestration.resilience.circuit_breaker import (
-    CircuitBreaker,
-    is_open,
-    record_failure,
-    record_success,
-    should_allow,
-)
-from thegent.orchestration.resilience.deferral import (
-    extract_deferred_tasks,
-    inject_deferred_tasks,
-    process_output_for_deferrals,
-)
 from thegent.orchestration.oversight import (
     get_oversight_action,
     record_oversight_event,
@@ -171,13 +158,22 @@ from thegent.orchestration.probes import (
 from thegent.orchestration.pruning.prune import mcp_prune
 from thegent.orchestration.pruning.smart_prune import (
     IDLE_COUNT_THRESHOLD,
-    PROTECTED_PROCESS_NAMES,
     SessionSnapshot,
     SmartPruner,
     _is_protected_process,
     smart_prune_main,
 )
-
+from thegent.orchestration.resilience.circuit_breaker import (
+    is_open,
+    record_failure,
+    record_success,
+    should_allow,
+)
+from thegent.orchestration.resilience.deferral import (
+    extract_deferred_tasks,
+    inject_deferred_tasks,
+    process_output_for_deferrals,
+)
 
 pytestmark = pytest.mark.unit
 

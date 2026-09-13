@@ -17,8 +17,6 @@ Covers:
 from __future__ import annotations
 
 import orjson as json
-from unittest.mock import patch
-
 import pytest
 from typer.testing import CliRunner
 

@@ -1,7 +1,7 @@
 """WL-332 tests for throttle telemetry in autosync cycle metrics."""
 
 import json
-from datetime import datetime, timedelta, timezone
+from datetime import UTC, datetime, timedelta
 from pathlib import Path
 
 import pytest
@@ -39,7 +39,7 @@ def _read_cycle_metrics_record(path: Path) -> dict[str, object]:
 
 def test_wl332_cycle_metrics_include_throttle_fields_when_idle(tmp_path: Path) -> None:
     runner = _build_runner(tmp_path)
-    started_at = datetime.now(timezone.utc)
+    started_at = datetime.now(UTC)
     completed_at = started_at + timedelta(seconds=1)
 
     runner._emit_cycle_metrics(
@@ -93,7 +93,7 @@ async def test_wl332_cycle_metrics_capture_retry_wait_and_attempt_bounds(
         sync_fn=_flaky_sync,
     )
 
-    started_at = datetime.now(timezone.utc)
+    started_at = datetime.now(UTC)
     completed_at = started_at + timedelta(seconds=1)
     runner._emit_cycle_metrics(
         started_at=started_at,

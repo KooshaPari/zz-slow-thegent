@@ -41,13 +41,14 @@ Contract highlights:
 
 from __future__ import annotations
 
+import contextlib
 import threading
 from dataclasses import FrozenInstanceError
 from pathlib import Path
 from typing import Any
 
-from thegent.execution import Auditor, RunMeta
 from thegent.agents.base import RunResult as _AgentRunResult
+from thegent.execution import Auditor, RunMeta
 
 # Type alias so ``execute`` can spell the return type explicitly.
 RunResult = _AgentRunResult
@@ -254,10 +255,8 @@ class ExecutionEngine:
                     # raise -- the dormant wiring test mocks
                     # ``sign_run`` so the signature may not exist on
                     # the test dataclass.
-                    try:
+                    with contextlib.suppress(AttributeError, FrozenInstanceError):
                         run_meta.signature = signature
-                    except (AttributeError, FrozenInstanceError):
-                        pass
             except Exception:
                 # Auditor sign_run failure swallowed (NEW-2).
                 pass

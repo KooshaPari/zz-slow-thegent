@@ -7,10 +7,10 @@ Coverage:
 
 from __future__ import annotations
 
-import orjson as json
 from unittest.mock import AsyncMock, patch
 
 import httpx
+import orjson as json
 import pytest
 from starlette.requests import Request
 

@@ -11,7 +11,7 @@ from __future__ import annotations
 import logging
 import statistics
 from dataclasses import dataclass
-from datetime import datetime, UTC
+from datetime import UTC, datetime
 
 logger = logging.getLogger(__name__)
 

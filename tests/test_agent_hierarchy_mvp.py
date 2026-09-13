@@ -23,7 +23,7 @@ from __future__ import annotations
 
 import threading
 from typing import Any
-from unittest.mock import MagicMock, patch
+from unittest.mock import MagicMock
 
 import pytest
 
@@ -66,7 +66,7 @@ def manager() -> AgentHierarchyManager:
 def populated_manager() -> AgentHierarchyManager:
     """Manager pre-populated with an orchestrator and three specialists."""
     m = AgentHierarchyManager(task_executor=_make_executor("result"))
-    orch = m.spawn_agent(
+    m.spawn_agent(
         {AgentCapability.ORCHESTRATE},
         agent_id="orch",
         name="orchestrator",

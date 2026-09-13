@@ -2,11 +2,11 @@
 
 from __future__ import annotations
 
+import platform as py_platform
 import subprocess
 from pathlib import Path
 
 import pytest
-import platform as py_platform
 
 from thegent import shell_cli
 

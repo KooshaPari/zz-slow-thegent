@@ -2,22 +2,25 @@
 
 from __future__ import annotations
 
-import orjson as json
-import logging
-from pathlib import Path
 import inspect
+import logging
 from collections.abc import AsyncIterable, Awaitable, Mapping
-from unittest.mock import Base
+from pathlib import Path
 from typing import TYPE_CHECKING, Any, cast
+from unittest.mock import Base
 
 import httpx
+import orjson as json
 from starlette.responses import Response, StreamingResponse
 
 if TYPE_CHECKING:
     from starlette.requests import Request
     from starlette.websockets import WebSocket
 
-from thegent.utils.routing_impl.litellm_router import build_dynamic_fallback_router, get_litellm_router
+from thegent.utils.routing_impl.litellm_router import (
+    build_dynamic_fallback_router,
+    get_litellm_router,
+)
 
 _log = logging.getLogger(__name__)
 

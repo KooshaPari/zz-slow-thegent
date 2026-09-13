@@ -34,15 +34,14 @@ from __future__ import annotations
 import json
 import re
 import sys
-import xml.etree.ElementTree as ET
 import xml.dom.minidom
+import xml.etree.ElementTree as ET
 from pathlib import Path
-from typing import Any, Optional
+from typing import Any
 
 import typer
 
 from .cli_cockpit import (
-    _apply_snapshot_flip,
     _apply_snapshot_flips,
     _build_batch_decision_log,
     _compare_decision,
@@ -168,8 +167,8 @@ def _render_report_text(
     matched: bool,
     mismatches: list[dict[str, Any]],
     decisions: list[dict[str, Any]],
-    audit_path: Optional[str],
-    flipped: Optional[list[str]] = None,
+    audit_path: str | None,
+    flipped: list[str] | None = None,
 ) -> str:
     """Plain-text report — identical contract to ``cockpit replay``.
 
@@ -192,8 +191,8 @@ def _render_report_json(
     matched: bool,
     mismatches: list[dict[str, Any]],
     decisions: list[dict[str, Any]],
-    audit_path: Optional[str],
-    flipped: Optional[list[str]] = None,
+    audit_path: str | None,
+    flipped: list[str] | None = None,
 ) -> str:
     """JSON envelope — same shape as ``cockpit replay --json``.
 
@@ -232,9 +231,9 @@ def _render_report_junitxml(
     matched: bool,
     mismatches: list[dict[str, Any]],
     decisions: list[dict[str, Any]],
-    audit_path: Optional[str],
+    audit_path: str | None,
     suite_name: str,
-    flipped: Optional[list[str]] = None,
+    flipped: list[str] | None = None,
 ) -> str:
     """JUnit-XML report for CI ingestion.
 
@@ -393,12 +392,12 @@ def sota_replay(
         "--report-format",
         help="Output report format: text, json, or junitxml.",
     ),
-    report_path: Optional[Path] = typer.Option(
+    report_path: Path | None = typer.Option(
         None,
         "--report-path",
         help="Write the report to this file (default: stdout).",
     ),
-    audit_path: Optional[Path] = typer.Option(
+    audit_path: Path | None = typer.Option(
         None,
         "--audit-path",
         help="Persist every replay decision to this JSONL file.",
@@ -418,7 +417,7 @@ def sota_replay(
         "--namespace",
         help="Federated policy namespace (pinned unless an entry declares its own).",
     ),
-    default_policy: Optional[str] = typer.Option(
+    default_policy: str | None = typer.Option(
         None,
         "--default-policy",
         help="Enable federated policy lookup with this default namespace on --commit.",
@@ -428,7 +427,7 @@ def sota_replay(
         "--suite-name",
         help="JUnit-XML testsuite name (only used for junitxml report-format).",
     ),
-    snapshot_flip: Optional[list[str]] = typer.Option(
+    snapshot_flip: list[str] | None = typer.Option(
         None,
         "--snapshot-flip",
         help=(
@@ -610,7 +609,7 @@ def sota_replay(
 
         # Persist decisions via the same appender pattern as
         # ``cockpit replay`` so the JSONL shape stays identical.
-        audit_str: Optional[str] = None
+        audit_str: str | None = None
         if audit_path is not None:
             from .decision_audit import DecisionAuditAppender
 
@@ -668,8 +667,8 @@ def sota_replay(
 
 def _format_sota_mismatch(
     idx: int,
-    expected: Optional[dict[str, Any]],
-    actual: Optional[dict[str, Any]],
+    expected: dict[str, Any] | None,
+    actual: dict[str, Any] | None,
     diff_fields: list[str],
 ) -> str:
     """Stable text format for one mismatch row (mirrors ``cockpit replay``)."""

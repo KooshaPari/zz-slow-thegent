@@ -1,12 +1,13 @@
 """Integration tests for research_engine end-to-end flow. @trace FR-RES-050"""
 
-import pytest
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 
-from research_engine.schema import ResearchItem
-from research_engine.store import ResearchStore
+import pytest
+
 from research_engine.digest import DigestGenerator
+from research_engine.schema import ResearchItem
 from research_engine.session_hook import inject_session_context
+from research_engine.store import ResearchStore
 
 
 @pytest.fixture
@@ -27,7 +28,7 @@ def sample_item():
         summary="A summary for integration testing.",
         score=42,
         tags=["python", "testing"],
-        fetched_at=datetime(2026, 1, 15, 12, 0, 0, tzinfo=timezone.utc),
+        fetched_at=datetime(2026, 1, 15, 12, 0, 0, tzinfo=UTC),
         relevance=0.85,
     )
 
@@ -106,7 +107,7 @@ def test_multiple_items_sorted_by_relevance(tmp_store):
         summary="Low relevance item.",
         score=1,
         tags=[],
-        fetched_at=datetime(2026, 1, 15, 12, 0, 0, tzinfo=timezone.utc),
+        fetched_at=datetime(2026, 1, 15, 12, 0, 0, tzinfo=UTC),
         relevance=0.2,
     )
     high = ResearchItem(
@@ -117,7 +118,7 @@ def test_multiple_items_sorted_by_relevance(tmp_store):
         summary="High relevance item.",
         score=100,
         tags=[],
-        fetched_at=datetime(2026, 1, 15, 12, 0, 0, tzinfo=timezone.utc),
+        fetched_at=datetime(2026, 1, 15, 12, 0, 0, tzinfo=UTC),
         relevance=0.95,
     )
     tmp_store.upsert(low)
@@ -139,7 +140,7 @@ def test_upsert_idempotent(tmp_store, sample_item):
         summary=sample_item.summary,
         score=100,
         tags=sample_item.tags,
-        fetched_at=datetime(2026, 1, 16, 12, 0, 0, tzinfo=timezone.utc),
+        fetched_at=datetime(2026, 1, 16, 12, 0, 0, tzinfo=UTC),
         relevance=0.95,
     )
     tmp_store.upsert(updated)

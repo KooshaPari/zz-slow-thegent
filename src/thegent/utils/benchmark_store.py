@@ -16,12 +16,11 @@ Usage:
 from __future__ import annotations
 
 import logging
-from typing import Optional
 
 from thegent.utils.tokenledger_adapter import (
+    BenchmarkData,
     TokenledgerAdapter,
     TokenledgerConfig,
-    BenchmarkData,
 )
 
 _log = logging.getLogger(__name__)
@@ -114,21 +113,21 @@ class BenchmarkStore:
 
     def __init__(
         self,
-        tokenledger_config: Optional[TokenledgerConfig] = None,
+        tokenledger_config: TokenledgerConfig | None = None,
         use_tokenledger: bool = True,
     ):
         self._use_tokenledger = use_tokenledger
-        self._tokenledger: Optional[TokenledgerAdapter] = None
+        self._tokenledger: TokenledgerAdapter | None = None
 
         if use_tokenledger:
             self._tokenledger = TokenledgerAdapter(tokenledger_config)
 
     @property
-    def tokenledger(self) -> Optional[TokenledgerAdapter]:
+    def tokenledger(self) -> TokenledgerAdapter | None:
         """Get the tokenledger adapter."""
         return self._tokenledger
 
-    def get_quality(self, model_id: str) -> Optional[float]:
+    def get_quality(self, model_id: str) -> float | None:
         """Get quality score for a model.
 
         Args:
@@ -148,7 +147,7 @@ class BenchmarkStore:
         # Fallback to hardcoded
         return QUALITY_PROXY.get(model_id)
 
-    def get_cost(self, model_id: str) -> Optional[float]:
+    def get_cost(self, model_id: str) -> float | None:
         """Get cost per 1K tokens for a model.
 
         Args:
@@ -168,7 +167,7 @@ class BenchmarkStore:
         # Fallback to hardcoded
         return COST_PER_1K_PROXY.get(model_id)
 
-    def get_latency(self, model_id: str) -> Optional[int]:
+    def get_latency(self, model_id: str) -> int | None:
         """Get latency in ms for a model.
 
         Args:
@@ -188,7 +187,7 @@ class BenchmarkStore:
         # Fallback to hardcoded
         return LATENCY_MS_PROXY.get(model_id)
 
-    def get_benchmark(self, model_id: str) -> Optional[BenchmarkData]:
+    def get_benchmark(self, model_id: str) -> BenchmarkData | None:
         """Get full benchmark data for a model.
 
         Args:
@@ -239,7 +238,7 @@ class BenchmarkStore:
 
 
 # Global store instance
-_store: Optional[BenchmarkStore] = None
+_store: BenchmarkStore | None = None
 
 
 def get_store() -> BenchmarkStore:
@@ -250,16 +249,16 @@ def get_store() -> BenchmarkStore:
     return _store
 
 
-def get_quality(model_id: str) -> Optional[float]:
+def get_quality(model_id: str) -> float | None:
     """Convenience function to get quality score."""
     return get_store().get_quality(model_id)
 
 
-def get_cost(model_id: str) -> Optional[float]:
+def get_cost(model_id: str) -> float | None:
     """Convenience function to get cost."""
     return get_store().get_cost(model_id)
 
 
-def get_latency(model_id: str) -> Optional[int]:
+def get_latency(model_id: str) -> int | None:
     """Convenience function to get latency."""
     return get_store().get_latency(model_id)

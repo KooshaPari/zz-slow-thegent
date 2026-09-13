@@ -38,7 +38,6 @@ import orjson as json
 from cachetools import TTLCache
 
 from thegent.config import ThegentSettings
-
 from thegent.governance.federated_policy import (
     FederatedPolicyEngine,
     PolicyRule,

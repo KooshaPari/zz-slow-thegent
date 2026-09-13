@@ -10,10 +10,6 @@ Source: src/thegent/governance/control_vectors.py
 
 from __future__ import annotations
 
-from pathlib import Path
-
-import pytest
-
 from thegent.governance.control_vectors import ControlVectorManager
 
 

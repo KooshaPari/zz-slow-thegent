@@ -15,7 +15,7 @@ import sys
 import textwrap
 import types
 from typing import TYPE_CHECKING
-from unittest.mock import MagicMock, patch
+from unittest.mock import patch
 
 import pytest
 

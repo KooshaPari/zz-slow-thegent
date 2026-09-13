@@ -16,7 +16,7 @@ import os
 import shutil
 import sys
 from collections import defaultdict
-from errno import ENOSYS, EOPNOTSUPP, EPERM, ENOTSUP
+from errno import ENOSYS, ENOTSUP, EOPNOTSUPP, EPERM
 from logging import getLogger
 from pathlib import Path
 from typing import Any

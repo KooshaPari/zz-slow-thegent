@@ -16,13 +16,13 @@ Implements:
 
 from __future__ import annotations
 
-import orjson as json
 import logging
 from datetime import UTC, datetime, timedelta
 from pathlib import Path
 from typing import Any
 
 import httpx
+import orjson as json
 from pydantic import BaseModel, ConfigDict, Field
 
 _log = logging.getLogger(__name__)

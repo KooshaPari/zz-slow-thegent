@@ -274,7 +274,6 @@ class TestSSHIdentityProxyClientHandling:
         mock_host.recv.return_value = b""
 
         # Setup socket mock to return different sockets
-        sockets = [mock_host, mock_host]  # For both client and host connections
         mock_socket_class.return_value.__enter__.return_value = mock_host
 
         proxy_with_env.start()
@@ -503,7 +502,7 @@ class TestSSHIdentityProxyForwardRecv:
 
         mock_client = MagicMock()
         mock_client.recv.side_effect = BlockingIOError()
-        mock_dst = MagicMock()
+        MagicMock()
 
         # Call _handle_client which uses _forward_recv internally
         proxy_with_env._handle_client(mock_client)
@@ -516,7 +515,7 @@ class TestSSHIdentityProxyForwardRecv:
 
         mock_client = MagicMock()
         mock_client.recv.return_value = b""  # Empty data
-        mock_dst = MagicMock()
+        MagicMock()
 
         proxy_with_env._handle_client(mock_client)
 
@@ -569,7 +568,7 @@ class TestSSHIdentityProxyHandleClientIntegration:
                         conn.close()
                     except TimeoutError:
                         pass
-            except Exception as e:
+            except Exception:
                 pass
 
         agent_thread = threading.Thread(target=mock_ssh_agent, daemon=True)
@@ -593,13 +592,13 @@ class TestSSHIdentityProxyHandleClientIntegration:
             # Wait for response
             time.sleep(0.3)
             try:
-                response = client.recv(4096)
+                client.recv(4096)
                 # Should have received response through proxy
             except TimeoutError:
                 pass
 
             client.close()
-        except Exception as e:
+        except Exception:
             pass
         finally:
             client_done.set()

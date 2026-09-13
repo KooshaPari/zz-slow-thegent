@@ -3,9 +3,9 @@ from __future__ import annotations
 
 import time
 import uuid
+from collections.abc import Callable
 from dataclasses import dataclass, field
-from typing import Any, Callable
-
+from typing import Any
 
 VALID_MESSAGE_TYPES = {"request", "response", "error", "event"}
 

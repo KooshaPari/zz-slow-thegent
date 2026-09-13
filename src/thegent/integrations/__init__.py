@@ -2,11 +2,11 @@
 
 # Base integration components
 from .base import (
-    IntegrationStatus,
-    IntegrationInfo,
-    DataclassConfig,
-    BaseIntegrationConfig,
     BaseIntegration,
+    BaseIntegrationConfig,
+    DataclassConfig,
+    IntegrationInfo,
+    IntegrationStatus,
 )
 
 # GitHub Actions helpers

@@ -39,7 +39,9 @@ class ExecutionPortAdapter:
         """Lazy-load dag_status_impl from CLI."""
         if self._dag_status_impl is None:
             try:
-                from thegent.cli.commands.impl import dag_status_impl as _dag_status_func
+                from thegent.cli.commands.impl import (
+                    dag_status_impl as _dag_status_func,
+                )
                 self._dag_status_impl = _dag_status_func
             except ImportError as e:
                 _logger.error("Failed to load dag_status_impl from CLI: %s", e)

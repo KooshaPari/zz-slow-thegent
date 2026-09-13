@@ -12,7 +12,12 @@ from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
 
-from thegent.agents.flash_agent import FlashAgent, FlashAgentConfig, FlashAgentResult, flash
+from thegent.agents.flash_agent import (
+    FlashAgent,
+    FlashAgentConfig,
+    FlashAgentResult,
+    flash,
+)
 
 if TYPE_CHECKING:
     from contextlib import AbstractContextManager

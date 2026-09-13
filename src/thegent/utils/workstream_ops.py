@@ -4,17 +4,20 @@ import contextlib
 import logging
 import os
 import tempfile
+from collections.abc import Iterator
 from datetime import UTC, datetime
 from pathlib import Path
-from typing import IO, Iterator
-from typing import Any
+from typing import IO, Any
 
 try:
     import fcntl
 except ImportError:  # pragma: no cover - platform-specific
     fcntl = None  # type: ignore[assignment]
 
-from thegent.commands.workstream import lint_workstream_schema, normalize_workstream_sections
+from thegent.commands.workstream import (
+    lint_workstream_schema,
+    normalize_workstream_sections,
+)
 from thegent.utils.helpers import safe_read_file
 from thegent.utils.reusable_helpers import ReusableHelpers
 

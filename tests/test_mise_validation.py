@@ -8,11 +8,8 @@ the key functions exist and behave correctly in dry-run/mock scenarios.
 
 from __future__ import annotations
 
-import shutil
 from pathlib import Path
 from unittest.mock import MagicMock, patch
-
-import pytest
 
 # ---------------------------------------------------------------------------
 # WL-035: mise integration validation

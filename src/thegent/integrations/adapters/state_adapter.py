@@ -3,10 +3,11 @@
 Handles local state persistence, checkpoints, and trends.
 """
 
-import orjson as json
-from datetime import datetime, UTC
+from datetime import UTC, datetime
 from pathlib import Path
 from typing import Any
+
+import orjson as json
 
 
 class StateAdapter:

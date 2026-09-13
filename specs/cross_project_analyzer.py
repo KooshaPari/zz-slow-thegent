@@ -281,7 +281,6 @@ class CrossProjectAnalyzer:
         """Group projects by relationships."""
         # Use relationship graph to find connected components
         groups = {}
-        visited = set()
 
         for rel in self.relationships:
             if rel.strength > 0.5:  # Strong relationships only

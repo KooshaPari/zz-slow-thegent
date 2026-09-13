@@ -11,8 +11,9 @@ Verifies that:
 from __future__ import annotations
 
 import importlib.util
-import orjson as json
 from pathlib import Path
+
+import orjson as json
 
 ROOT = Path(__file__).parent.parent
 SCRIPT = ROOT / "scripts" / "collect_loc_metrics.py"

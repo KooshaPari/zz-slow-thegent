@@ -124,10 +124,7 @@ def _validate_existing_file(uri: str) -> bool:
         True if the file exists and is accessible.
     """
     import os
-    if uri.startswith("file://"):
-        path = uri[7:]
-    else:
-        path = uri
+    path = uri[7:] if uri.startswith("file://") else uri
     return os.path.exists(path)
 
 

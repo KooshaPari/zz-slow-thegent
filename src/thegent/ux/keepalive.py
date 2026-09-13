@@ -14,10 +14,9 @@ Functions:
 
 from __future__ import annotations
 
-from contextlib import contextmanager
 import sys
 import threading
-import time
+from contextlib import contextmanager
 from dataclasses import dataclass
 from typing import TYPE_CHECKING
 
@@ -126,7 +125,7 @@ class TerminalKeepalive:
         except OSError:
             pass
 
-    def __enter__(self) -> "TerminalKeepalive":
+    def __enter__(self) -> TerminalKeepalive:
         """Start keepalive on context manager entry."""
         self.start()
         return self

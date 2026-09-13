@@ -12,17 +12,18 @@ Key Principles:
 
 import csv
 import io
-import orjson as json
 import logging
+import re
 import shutil
 import subprocess
-from thegent.infra.shim_subprocess import run as shim_run
-import re
 from dataclasses import dataclass
-from datetime import datetime, UTC
+from datetime import UTC, datetime
 from pathlib import Path
 from typing import Any, Literal
 
+import orjson as json
+
+from thegent.infra.shim_subprocess import run as shim_run
 from thegent.integrations.connector_mapping_cache import ConnectorMappingCache
 
 logger = logging.getLogger(__name__)

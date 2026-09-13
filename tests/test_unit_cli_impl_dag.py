@@ -8,10 +8,10 @@ observe_summary_impl, cockpit_cmd, feedback_cmd, _observe_summary_freshness_buck
 and health serialization helpers.
 """
 
-import orjson as json
 from pathlib import Path
 from unittest.mock import MagicMock, patch
 
+import orjson as json
 import pytest
 
 from thegent.cli.commands.impl import (

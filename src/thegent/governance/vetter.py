@@ -16,13 +16,14 @@ import abc
 import logging
 import re
 import subprocess
-from thegent.infra.shim_subprocess import run as shim_run
 from dataclasses import dataclass, field
 from enum import StrEnum
 from pathlib import Path
 from typing import Any
 
 from pydantic import BaseModel, ConfigDict, Field
+
+from thegent.infra.shim_subprocess import run as shim_run
 
 logger = logging.getLogger(__name__)
 

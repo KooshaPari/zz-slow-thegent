@@ -14,8 +14,8 @@ from typing import Any, ClassVar
 
 import typer
 from starlette.applications import Starlette
-from starlette.routing import Route
 from starlette.responses import JSONResponse, PlainTextResponse
+from starlette.routing import Route
 
 # Import RunResult for type checking
 from thegent.agents.base import RunResult
@@ -451,17 +451,17 @@ class ACPServerAdapter:
 
     async def run_stdio(self) -> None:
         """Run the server in stdio mode."""
-        import sys
         import json
+        import sys
 
         for line in sys.stdin:
             try:
                 msg = json.loads(line)
                 if msg.get("type") == "task":
-                    resp = await self.handle_acp_message(msg)
+                    await self.handle_acp_message(msg)
             except json.JSONDecodeError:
                 pass
-            except Exception as e:
+            except Exception:
                 pass
 
     async def run_http(

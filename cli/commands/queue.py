@@ -5,10 +5,10 @@ Provides command-line interface for scanning, managing, and processing
 document queues.
 """
 
-import orjson as json
 from pathlib import Path
 
 import click
+import orjson as json
 
 from ...agents.document import (
     DocumentAnalyzer,

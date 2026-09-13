@@ -2,10 +2,10 @@
 
 from __future__ import annotations
 
-import orjson as json
 import sqlite3
 from pathlib import Path  # noqa: TC003 -- used at runtime for Path construction
 
+import orjson as json
 import pytest
 
 from thegent.discovery.projects import ProjectRegistry

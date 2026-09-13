@@ -1,11 +1,10 @@
 """Unit tests for the modular CLI app entrypoints."""
 
-import orjson as json
-import pytest
-from types import SimpleNamespace
-from unittest.mock import ANY, patch
 from pathlib import Path
+from types import SimpleNamespace
+from unittest.mock import patch
 
+import orjson as json
 from typer.testing import CliRunner
 
 from thegent.cli.apps.main import app
@@ -1187,8 +1186,8 @@ def test_phench_projects_run_module_repo_ref_merges_cli_and_manifest_overrides()
         patch("thegent.cli.apps.phench.list_targets") as mock_list_targets,
         patch("thegent.cli.apps.phench.load_target_lock") as mock_load_target_lock,
         patch("thegent.cli.apps.phench_projects.load_module_manifest") as mock_load_module_manifest,
-        patch("thegent.cli.apps.phench.lock_target") as mock_lock_target,
-        patch("thegent.cli.apps.phench.materialize_target") as mock_materialize_target,
+        patch("thegent.cli.apps.phench.lock_target"),
+        patch("thegent.cli.apps.phench.materialize_target"),
         patch("thegent.cli.apps.phench.run_target") as mock_run_target,
     ):
         mock_list_targets.return_value = ["alpha"]

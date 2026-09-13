@@ -12,8 +12,6 @@ Source: src/thegent/governance/personas.py
 
 from __future__ import annotations
 
-import pytest
-
 from thegent.governance.personas import PersonaManager
 
 

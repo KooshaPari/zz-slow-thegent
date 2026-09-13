@@ -5,7 +5,7 @@
 
 from __future__ import annotations
 
-from datetime import datetime, timedelta, timezone
+from datetime import UTC, datetime, timedelta
 
 import pytest
 
@@ -40,7 +40,7 @@ class TestStaleItemCreation:
     @pytest.mark.requirement("WL-182")
     def test_create_stale_item(self) -> None:
         """Can create a StaleItem."""
-        now = datetime.now(timezone.utc)
+        now = datetime.now(UTC)
         old_time = now - timedelta(days=20)
 
         item = StaleItem(
@@ -82,7 +82,7 @@ class TestStaleItemDetectorIsStale:
     def test_is_stale_old_item(self) -> None:
         """is_stale returns True for old items."""
         detector = StaleItemDetector(StaleConfig(stale_after_days=14))
-        now = datetime.now(timezone.utc)
+        now = datetime.now(UTC)
         old_time = now - timedelta(days=20)
 
         assert detector.is_stale(old_time, now) is True
@@ -91,7 +91,7 @@ class TestStaleItemDetectorIsStale:
     def test_is_stale_new_item(self) -> None:
         """is_stale returns False for recent items."""
         detector = StaleItemDetector(StaleConfig(stale_after_days=14))
-        now = datetime.now(timezone.utc)
+        now = datetime.now(UTC)
         recent_time = now - timedelta(days=5)
 
         assert detector.is_stale(recent_time, now) is False
@@ -100,7 +100,7 @@ class TestStaleItemDetectorIsStale:
     def test_is_stale_at_threshold(self) -> None:
         """is_stale returns True when age equals threshold."""
         detector = StaleItemDetector(StaleConfig(stale_after_days=14))
-        now = datetime.now(timezone.utc)
+        now = datetime.now(UTC)
         threshold_time = now - timedelta(days=14)
 
         assert detector.is_stale(threshold_time, now) is True
@@ -109,7 +109,7 @@ class TestStaleItemDetectorIsStale:
     def test_is_stale_just_below_threshold(self) -> None:
         """is_stale returns False when age just below threshold."""
         detector = StaleItemDetector(StaleConfig(stale_after_days=14))
-        now = datetime.now(timezone.utc)
+        now = datetime.now(UTC)
         just_below_time = now - timedelta(days=13, hours=23)
 
         assert detector.is_stale(just_below_time, now) is False
@@ -118,7 +118,7 @@ class TestStaleItemDetectorIsStale:
     def test_is_stale_with_default_now(self) -> None:
         """is_stale uses UTC now when not specified."""
         detector = StaleItemDetector(StaleConfig(stale_after_days=14))
-        old_time = datetime.now(timezone.utc) - timedelta(days=20)
+        old_time = datetime.now(UTC) - timedelta(days=20)
 
         # Should not raise and should return True
         assert detector.is_stale(old_time) is True
@@ -127,7 +127,7 @@ class TestStaleItemDetectorIsStale:
     def test_is_stale_naive_datetime(self) -> None:
         """is_stale handles naive datetimes."""
         detector = StaleItemDetector(StaleConfig(stale_after_days=14))
-        now = datetime.now(timezone.utc)
+        now = datetime.now(UTC)
         old_time = datetime.now() - timedelta(days=20)  # naive
 
         # Should not raise
@@ -142,7 +142,7 @@ class TestStaleItemDetectorDetect:
     def test_detect_all_stale(self) -> None:
         """detect returns all items if all are stale."""
         detector = StaleItemDetector(StaleConfig(stale_after_days=14))
-        now = datetime.now(timezone.utc)
+        now = datetime.now(UTC)
 
         items = [
             {
@@ -167,7 +167,7 @@ class TestStaleItemDetectorDetect:
     def test_detect_no_stale(self) -> None:
         """detect returns empty list if no items are stale."""
         detector = StaleItemDetector(StaleConfig(stale_after_days=14))
-        now = datetime.now(timezone.utc)
+        now = datetime.now(UTC)
 
         items = [
             {
@@ -190,7 +190,7 @@ class TestStaleItemDetectorDetect:
     def test_detect_mixed_stale(self) -> None:
         """detect returns only stale items when mixed."""
         detector = StaleItemDetector(StaleConfig(stale_after_days=14))
-        now = datetime.now(timezone.utc)
+        now = datetime.now(UTC)
 
         items = [
             {
@@ -222,7 +222,7 @@ class TestStaleItemDetectorDetect:
     def test_detect_with_datetime_objects(self) -> None:
         """detect handles datetime objects (not just ISO strings)."""
         detector = StaleItemDetector(StaleConfig(stale_after_days=14))
-        now = datetime.now(timezone.utc)
+        now = datetime.now(UTC)
 
         items = [
             {
@@ -240,7 +240,7 @@ class TestStaleItemDetectorDetect:
     def test_detect_age_days_calculated(self) -> None:
         """detect calculates age_days correctly."""
         detector = StaleItemDetector(StaleConfig(stale_after_days=14))
-        now = datetime.now(timezone.utc)
+        now = datetime.now(UTC)
 
         items = [
             {
@@ -259,7 +259,7 @@ class TestStaleItemDetectorDetect:
     def test_detect_empty_list(self) -> None:
         """detect returns empty list for empty input."""
         detector = StaleItemDetector()
-        now = datetime.now(timezone.utc)
+        now = datetime.now(UTC)
 
         stale = detector.detect([], now)
 
@@ -285,7 +285,7 @@ class TestStaleItemDetectorSummary:
     def test_summary_single_item(self) -> None:
         """summary works with single item."""
         detector = StaleItemDetector()
-        now = datetime.now(timezone.utc)
+        now = datetime.now(UTC)
 
         stale_items = [
             StaleItem(
@@ -306,7 +306,7 @@ class TestStaleItemDetectorSummary:
     def test_summary_multiple_items(self) -> None:
         """summary tracks oldest and unique connectors."""
         detector = StaleItemDetector()
-        now = datetime.now(timezone.utc)
+        now = datetime.now(UTC)
 
         stale_items = [
             StaleItem(
@@ -339,7 +339,7 @@ class TestStaleItemDetectorSummary:
     def test_summary_connectors_sorted(self) -> None:
         """summary returns connectors in sorted order."""
         detector = StaleItemDetector()
-        now = datetime.now(timezone.utc)
+        now = datetime.now(UTC)
 
         stale_items = [
             StaleItem(

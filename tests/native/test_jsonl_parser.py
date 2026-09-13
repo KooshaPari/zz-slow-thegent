@@ -8,9 +8,10 @@ FR-JSONL-001  @trace FR-JSONL-001
 
 from __future__ import annotations
 
-import orjson as json
 from typing import TYPE_CHECKING
 from unittest.mock import patch
+
+import orjson as json
 
 if TYPE_CHECKING:
     from pathlib import Path

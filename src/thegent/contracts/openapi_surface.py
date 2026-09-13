@@ -31,7 +31,6 @@ from typing import Any
 
 import yaml
 
-
 _SPEC_PATH = Path(__file__).with_name("openapi.yaml")
 
 

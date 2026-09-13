@@ -16,13 +16,9 @@ from pathlib import Path
 from thegent.agents.base import AgentRunner, RunResult
 from thegent.agents.cliproxy_manager import ensure_proxy_running
 from thegent.agents.codex_proxy_base import (
-    CodexAuthError,
-    CodexInstanceError,
-    CodexModelError,
-    CodexResult,
-    CodexSandboxError,
     _LITELLM_CONTEXT_WINDOW_MAX,
     _PROXY_MODEL,
+    CodexInstanceError,
     _build_config_flags,
     _check_and_track_instance,
     _create_isolated_home,
@@ -216,7 +212,10 @@ class CodexProxyRunner(AgentRunner):
         # WL-116: Handle audio transcript inputs
         audio_transcript: str | None = None
         if audio_paths:
-            from thegent.agents.audio_inputs import inject_transcript_into_prompt, load_transcripts
+            from thegent.agents.audio_inputs import (
+                inject_transcript_into_prompt,
+                load_transcripts,
+            )
 
             audio_transcript, _audio_sources = load_transcripts(audio_paths)
             if audio_transcript:
@@ -703,9 +702,9 @@ class CodexProxyRunner(AgentRunner):
         # Execute with retry using tenacity
         from tenacity import (
             retry,
+            retry_if_exception_type,
             stop_after_attempt,
             wait_exponential,
-            retry_if_exception_type,
         )
 
         @retry(

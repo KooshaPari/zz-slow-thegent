@@ -5,11 +5,11 @@ Invariant contract: FR-GOV-TW-001..015
 
 from __future__ import annotations
 
-from thegent.governance import team_coordinator as team_mod
 from unittest.mock import MagicMock
 
 import pytest
 
+from thegent.governance import team_coordinator as team_mod
 from thegent.governance.agent_hierarchy import (
     AgentHierarchyManager,
     AgentNode,
@@ -21,7 +21,6 @@ from thegent.governance.agent_hierarchy import (
     TeamType,
 )
 from thegent.governance.team_coordinator import TeamCoordinator
-
 
 # ---------------------------------------------------------------------------
 # Helpers

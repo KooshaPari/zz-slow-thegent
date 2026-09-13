@@ -2,7 +2,10 @@
 
 from __future__ import annotations
 
-from thegent.cli.commands.cli import _format_grounding_sources_lines, _format_transcript_summary_line
+from thegent.cli.commands.cli import (
+    _format_grounding_sources_lines,
+    _format_transcript_summary_line,
+)
 
 
 def test_format_transcript_summary_line_from_audio_metadata() -> None:

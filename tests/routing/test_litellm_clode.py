@@ -17,10 +17,10 @@ FR traceability:
 
 from __future__ import annotations
 
-import orjson as json
 from typing import Any
 from unittest.mock import AsyncMock, MagicMock, patch
 
+import orjson as json
 import pytest  # noqa: F401 -- collected by pytest; needed for mark decorators
 from starlette.applications import Starlette
 from starlette.routing import Route, WebSocketRoute
@@ -530,7 +530,9 @@ class TestWebSocketResponsesRoute:
             "thegent.utils.routing_impl.litellm_responses_handler.get_litellm_router",
             return_value=mock_router,
         ):
-            from thegent.utils.routing_impl.litellm_responses_handler import handle_responses_websocket
+            from thegent.utils.routing_impl.litellm_responses_handler import (
+                handle_responses_websocket,
+            )
 
             app = Starlette(routes=[WebSocketRoute("/v1/responses/ws", handle_responses_websocket)])
             client = TestClient(app)
@@ -556,7 +558,9 @@ class TestWebSocketResponsesRoute:
             "thegent.utils.routing_impl.litellm_responses_handler.get_litellm_router",
             return_value=mock_router,
         ):
-            from thegent.utils.routing_impl.litellm_responses_handler import handle_responses_websocket
+            from thegent.utils.routing_impl.litellm_responses_handler import (
+                handle_responses_websocket,
+            )
 
             app = Starlette(routes=[WebSocketRoute("/v1/responses/ws", handle_responses_websocket)])
             client = TestClient(app)
@@ -580,7 +584,9 @@ class TestWebSocketResponsesRoute:
             "thegent.utils.routing_impl.litellm_responses_handler.get_litellm_router",
             return_value=mock_router,
         ):
-            from thegent.utils.routing_impl.litellm_responses_handler import handle_responses_websocket
+            from thegent.utils.routing_impl.litellm_responses_handler import (
+                handle_responses_websocket,
+            )
 
             app = Starlette(routes=[WebSocketRoute("/v1/responses/ws", handle_responses_websocket)])
             client = TestClient(app)

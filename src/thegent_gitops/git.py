@@ -1,15 +1,17 @@
 """High-performance parallel git operations for the agent mesh."""
 
-import logging
 import hashlib
-import orjson as json
+import logging
 import os
 import random
 import shutil
 import subprocess
-from thegent.infra.shim_subprocess import run as shim_run
 import time
 from pathlib import Path
+
+import orjson as json
+
+from thegent.infra.shim_subprocess import run as shim_run
 
 logger = logging.getLogger(__name__)
 
@@ -102,10 +104,7 @@ class GitParallelismManager:
         if age < stale_after_s:
             return False
 
-        if self._has_open_lock_holder(lock_path):
-            return False
-
-        return True
+        return not self._has_open_lock_holder(lock_path)
 
     def index_lock_status(self, stale_after_s: float = 90.0) -> dict[str, object]:
         """Return index lock state summary."""

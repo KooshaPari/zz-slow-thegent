@@ -6,13 +6,13 @@ Provides pluggable alert routing hooks for webhook, email, and event bus integra
 
 from __future__ import annotations
 
+from collections.abc import Callable
 from dataclasses import dataclass
 from datetime import datetime
-from enum import Enum
-from typing import Callable
+from enum import StrEnum
 
 
-class AlertSeverity(str, Enum):
+class AlertSeverity(StrEnum):
     """Alert severity classification."""
 
     INFO = "info"

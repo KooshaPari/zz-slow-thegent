@@ -15,7 +15,6 @@ Coverage targets:
 
 from __future__ import annotations
 
-import orjson as json
 import subprocess
 from typing import TYPE_CHECKING, Any
 from unittest.mock import MagicMock, patch
@@ -234,7 +233,7 @@ class TestDiscoveryClientNativePath:
     ) -> None:
         client = self._make_native_client(tmp_path)
         with patch.object(client, "_run", return_value=fake_all_json) as mock_run:
-            result = client.all(pattern="cursor")
+            client.all(pattern="cursor")
         mock_run.assert_called_once_with("all", "--pattern", "cursor")
 
     def test_tools_map_convenience(

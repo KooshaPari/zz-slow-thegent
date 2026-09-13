@@ -1,6 +1,5 @@
 """Tests for 'Edit on GitHub' link generator."""
 
-from pathlib import Path
 
 import pytest
 

@@ -3,10 +3,10 @@
 from __future__ import annotations
 
 import hashlib
-import orjson as json
 from datetime import UTC, datetime
 from typing import TYPE_CHECKING
 
+import orjson as json
 import pytest
 import typer
 

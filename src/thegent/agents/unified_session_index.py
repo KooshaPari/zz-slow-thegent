@@ -12,11 +12,12 @@ import logging
 import sqlite3
 import threading
 import time
+from collections.abc import Callable
 from dataclasses import dataclass, field
 from datetime import UTC, datetime
 from enum import Enum
 from pathlib import Path
-from typing import Any, Callable, ClassVar, cast
+from typing import Any, ClassVar, cast
 
 from thegent.infra.fast_file_watcher import FastFileWatcher
 from thegent.integrations.base import SerializableMixin
@@ -436,30 +437,29 @@ class UnifiedSessionIndex:
         limit: int = 100,
     ) -> list[AgentSession]:
         """Search sessions with filters."""
-        with self._lock:
-            with sqlite3.connect(self.db_path) as conn:
-                conn.row_factory = sqlite3.Row
+        with self._lock, sqlite3.connect(self.db_path) as conn:
+            conn.row_factory = sqlite3.Row
 
-                sql = "SELECT * FROM sessions WHERE 1=1"
-                params: list[Any] = []
+            sql = "SELECT * FROM sessions WHERE 1=1"
+            params: list[Any] = []
 
-                if harness:
-                    sql += " AND harness = ?"
-                    params.append(harness.value)
+            if harness:
+                sql += " AND harness = ?"
+                params.append(harness.value)
 
-                if project:
-                    sql += " AND project_path LIKE ?"
-                    params.append(f"%{project}%")
+            if project:
+                sql += " AND project_path LIKE ?"
+                params.append(f"%{project}%")
 
-                if query:
-                    sql += " AND (messages_json LIKE ? OR metadata_json LIKE ?)"
-                    params.extend([f"%{query}%", f"%{query}%"])
+            if query:
+                sql += " AND (messages_json LIKE ? OR metadata_json LIKE ?)"
+                params.extend([f"%{query}%", f"%{query}%"])
 
-                sql += " ORDER BY started_at DESC LIMIT ?"
-                params.append(limit)
+            sql += " ORDER BY started_at DESC LIMIT ?"
+            params.append(limit)
 
-                rows = conn.execute(sql, params).fetchall()
-                return [self._row_to_session(row) for row in rows]
+            rows = conn.execute(sql, params).fetchall()
+            return [self._row_to_session(row) for row in rows]
 
     def _row_to_session(self, row: sqlite3.Row) -> AgentSession:
         """Convert DB row to AgentSession."""
@@ -637,9 +637,10 @@ if __name__ == "__main__":
 # ---------------------------------------------------------------------------
 
 
-import subprocess
-from thegent.infra.shim_subprocess import run as shim_run
 import shlex
+import subprocess
+
+from thegent.infra.shim_subprocess import run as shim_run
 
 
 class HarnessActionError(Exception):

@@ -8,8 +8,9 @@ for immutable postmortem workflows.
 
 from __future__ import annotations
 
-import pytest
 from datetime import datetime
+
+import pytest
 
 from thegent.integrations.incident_snapshot import (
     IncidentSnapshotBundle,

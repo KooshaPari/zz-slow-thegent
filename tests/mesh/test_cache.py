@@ -6,12 +6,11 @@
 """
 
 import hashlib
-import orjson as json
 import threading
 import time
 from pathlib import Path
-from unittest.mock import MagicMock
 
+import orjson as json
 import pytest
 
 from thegent.mesh.cache import MeshCache, Singleflight
@@ -126,7 +125,7 @@ class TestMeshCacheInit:
 
     def test_cache_dir_created(self, tmp_path: Path) -> None:
         """MeshCache creates the cache sub-directory."""
-        mc = MeshCache(tmp_path / "mesh", capacity=10)
+        MeshCache(tmp_path / "mesh", capacity=10)
         assert (tmp_path / "mesh" / "cache").is_dir()
 
     def test_idempotent_init(self, tmp_path: Path) -> None:

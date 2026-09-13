@@ -11,8 +11,6 @@ Source: src/thegent/governance/plugin_lifecycle.py
 
 from __future__ import annotations
 
-import pytest
-
 from thegent.governance.plugin_lifecycle import (
     PluginLifecycleManager,
     PluginStatus,

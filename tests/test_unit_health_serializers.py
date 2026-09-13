@@ -3,8 +3,8 @@
 import csv
 import hashlib
 import io
-import orjson as json
 
+import orjson as json
 import pytest
 
 from thegent.cli.commands.cli import (

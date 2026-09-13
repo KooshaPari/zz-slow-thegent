@@ -304,7 +304,7 @@ class TestFDBudget:
         budget = FDBudget(threshold=0.8)
         # Division by zero handling
         try:
-            result = budget.check(0, 0)
+            budget.check(0, 0)
         except ZeroDivisionError:
             # If it raises, that's acceptable behavior
             pass

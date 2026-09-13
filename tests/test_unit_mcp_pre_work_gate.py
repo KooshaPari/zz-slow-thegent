@@ -2,10 +2,10 @@
 
 from __future__ import annotations
 
-import orjson as json
 from typing import TYPE_CHECKING, Any
 from unittest.mock import patch
 
+import orjson as json
 import pytest
 
 pytest.importorskip("fastmcp", reason="fastmcp required for MCP server tests")

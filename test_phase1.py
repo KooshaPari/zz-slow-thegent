@@ -9,7 +9,7 @@ from pathlib import Path
 try:
     from thegent.compositor import CompositApp, PaneManager, SessionState, TerminalPane
 
-except ImportError as e:
+except ImportError:
     sys.exit(1)
 
 # Test TerminalPane
@@ -17,7 +17,7 @@ try:
     pane = TerminalPane("test-pane", "/tmp")
     assert pane.pane_id == "test-pane"
     assert pane.working_dir == "/tmp"
-except Exception as e:
+except Exception:
     sys.exit(1)
 
 # Test PaneManager
@@ -28,7 +28,7 @@ try:
     assert pm.get_pane_count() == 2
     pm.close_pane(new_pane.pane.pane_id)
     assert pm.get_pane_count() == 1
-except Exception as e:
+except Exception:
     sys.exit(1)
 
 # Test SessionState
@@ -42,7 +42,7 @@ try:
         assert state.save_session(layout)
         loaded = state.load_session()
         assert loaded is not None
-except Exception as e:
+except Exception:
     sys.exit(1)
 
 # Test layout serialization
@@ -55,7 +55,7 @@ try:
     pm2 = PaneManager()
     pm2.restore_layout(layout)
     assert pm2.get_pane_count() == 3
-except Exception as e:
+except Exception:
     sys.exit(1)
 
 # Test focus rotation
@@ -67,5 +67,5 @@ try:
     assert pm.focus_pane_id != initial
     pm.focus_next()
     assert pm.focus_pane_id == initial
-except Exception as e:
+except Exception:
     sys.exit(1)

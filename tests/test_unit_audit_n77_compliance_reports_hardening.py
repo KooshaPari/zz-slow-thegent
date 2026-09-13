@@ -13,13 +13,10 @@ Source: src/thegent/governance/compliance_reports.py
 from __future__ import annotations
 
 import json
-import tempfile
-from pathlib import Path
 
 import pytest
 
 from thegent.governance.compliance_reports import ComplianceReporter
-
 
 # ---------------------------------------------------------------------------
 # FR-GOV-CR-001 .. FR-GOV-CR-015

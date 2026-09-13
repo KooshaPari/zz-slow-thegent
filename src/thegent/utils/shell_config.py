@@ -303,9 +303,8 @@ class ShellConfigAuditor:
 
         visited: set[Path] = set()
         for path in known_paths:
-            if path not in visited:
-                if _has_cycle(path, visited, set()):
-                    issues.append(f"Circular sourcing detected involving: {path.name}")
+            if path not in visited and _has_cycle(path, visited, set()):
+                issues.append(f"Circular sourcing detected involving: {path.name}")
 
         # Files with no functions or aliases
         for cfg in configs:

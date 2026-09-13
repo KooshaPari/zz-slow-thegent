@@ -23,8 +23,8 @@ from typing import Any
 import pytest
 
 from thegent.infra.perf_budget import (
-    PerformanceBudgetError,
     BudgetResult,
+    PerformanceBudgetError,
     budget_context,
     check_memory_budget,
     check_module_load_budget,
@@ -47,7 +47,6 @@ from thegent.ux.explanations import (
     explain_exception,
     explain_exit_code,
 )
-
 
 # =====================================================================
 # 1. mcp_perf_gates module exports

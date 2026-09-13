@@ -28,7 +28,6 @@ from thegent.ux.cockpit import (
     RunState,
 )
 
-
 pytestmark = pytest.mark.unit
 
 

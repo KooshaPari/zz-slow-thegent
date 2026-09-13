@@ -30,7 +30,6 @@ from thegent.ux.cockpit import DecisionNotice
 from thegent.ux.decision_audit import DecisionAuditAppender
 from thegent.ux.kpis.traffic import TrafficDashboard, TrafficEvent, TrafficWindow
 
-
 pytestmark = pytest.mark.unit
 
 

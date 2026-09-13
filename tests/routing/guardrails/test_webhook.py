@@ -15,7 +15,6 @@ from thegent.utils.routing_impl.guardrails.webhook import (
     call_webhook_guardrail,
 )
 
-
 pytestmark = pytest.mark.requirement("FR-GUARD-053")
 
 _PAYLOAD = {"messages": [{"role": "user", "content": "Hello"}]}

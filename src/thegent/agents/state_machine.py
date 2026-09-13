@@ -15,7 +15,12 @@ from types import MappingProxyType
 from typing import Any, ClassVar
 
 from thegent.agents.base import RunResult
-from thegent.agents.resilience import FailureKind, TransientAgentError, classify_failure, with_retry
+from thegent.agents.resilience import (
+    FailureKind,
+    TransientAgentError,
+    classify_failure,
+    with_retry,
+)
 from thegent.contracts.adapters import AdapterResult, normalize_output
 from thegent.contracts.policy import FallbackPolicy, evaluate_fallback
 from thegent.contracts.telemetry import (

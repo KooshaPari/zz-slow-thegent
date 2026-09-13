@@ -7,7 +7,6 @@ from typing import Any
 
 from thegent.infra.fast_yaml_parser import yaml_load
 
-
 _FIELD_REQUIRED_KEYS = ("type", "required")
 _OUTPUT_REQUIRED_KEYS = ("type",)
 

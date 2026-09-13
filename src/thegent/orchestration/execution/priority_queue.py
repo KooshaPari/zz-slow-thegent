@@ -32,6 +32,7 @@ compatibility.
 
 from __future__ import annotations
 
+import contextlib
 import heapq
 import threading
 import time
@@ -40,7 +41,6 @@ from queue import Empty, Full
 from typing import Any
 
 from thegent.orchestration.execution.lanes import LANE_PRIORITIES, LaneModel
-
 
 # ---------------------------------------------------------------------------
 # Legacy PriorityQueue (heap-based, push(priority, item) -> pop() -> item)
@@ -101,7 +101,7 @@ class QueuedRun:
         run_id: str,
         lane: str,
         metadata: dict[str, Any] | None = None,
-    ) -> "QueuedRun":
+    ) -> QueuedRun:
         """Build a ``QueuedRun`` with ``priority_score`` derived from ``lane``.
 
         Priority is sourced from ``LANE_PRIORITIES[lane]`` when known;
@@ -270,10 +270,8 @@ class RunPriorityQueue:
                 return False
             # Mark for lazy removal; the heap entry stays until
             # _dequeue_locked / drain surfaces and skips it.
-            try:
+            with contextlib.suppress(ValueError):
                 self._heap.remove(entry)
-            except ValueError:
-                pass
             heapq.heapify(self._heap)
             self._not_full.notify()
             return True

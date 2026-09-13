@@ -5,11 +5,11 @@ FR Traceability: FR-AGT-020 (cross-project persona discovery and search)
 
 from __future__ import annotations
 
-import orjson as json
 from datetime import UTC, datetime
 from pathlib import Path  # noqa: TC003 -- used at runtime for Path construction
 from textwrap import dedent
 
+import orjson as json
 import pytest
 
 from thegent.registry.cross_project import (

@@ -7,7 +7,7 @@ import json
 import typer
 from rich.console import Console
 
-from thegent.ux.cli_errors import exc_text, print_exc
+from thegent.ux.cli_errors import print_exc
 
 console = Console()
 
@@ -60,8 +60,8 @@ def govern_approve(
     run_id: str = typer.Argument(..., help="Run ID to approve"),
     reason: str | None = typer.Option(None, "--reason", "-r", help="Approval reason"),
 ) -> None:
-    from thegent.cli.governance.governance_impl import govern_approve_impl
     from thegent.cli.governance.governance import govern_get_pending_approval_impl
+    from thegent.cli.governance.governance_impl import govern_approve_impl
     from thegent.governance.diff_renderer import DiffPayload, DiffRenderer
 
     try:
@@ -186,9 +186,10 @@ def govern_negotiate(
     versions: str = typer.Option(..., "--versions", "-v", help="Comma-separated supported versions"),
 ) -> None:
     """Negotiate a contract version."""
+    from thegent.cli.commands.session_control_impl import (
+        session_contract_negotiate_impl,
+    )
     from thegent.mcp.server.tools_runtime import negotiate_contract_impl
-
-    from thegent.cli.commands.session_control_impl import session_contract_negotiate_impl
 
     version_list = [v.strip() for v in versions.split(",")]
     result_str = negotiate_contract_impl(

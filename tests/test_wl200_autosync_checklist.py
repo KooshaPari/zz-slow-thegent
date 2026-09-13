@@ -7,7 +7,10 @@ from __future__ import annotations
 
 import pytest
 
-from thegent.integrations.autosync_checklist import get_checklist_items, verify_prerequisites
+from thegent.integrations.autosync_checklist import (
+    get_checklist_items,
+    verify_prerequisites,
+)
 
 
 class TestGetChecklistItems:

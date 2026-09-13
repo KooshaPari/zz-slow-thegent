@@ -5,7 +5,6 @@ import pytest
 pytest.importorskip("PySide6")
 
 import ast
-import os
 from pathlib import Path
 
 
@@ -261,9 +260,8 @@ class TestTabsPackage:
 
     def test_tabs_package_exports(self):
         """tabs package exports required items."""
-        import os
-        from pathlib import Path
         import sys
+        from pathlib import Path
 
         # Add src to path
         src_path = Path(__file__).parent.parent / "src"

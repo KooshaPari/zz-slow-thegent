@@ -3,6 +3,7 @@
 from pathlib import Path
 
 import typer
+
 from thegent.mesh.agent_patterns import run_detection
 from thegent.mesh.mesh import MeshManager
 from thegent.mesh.observability import mesh_status_cmd

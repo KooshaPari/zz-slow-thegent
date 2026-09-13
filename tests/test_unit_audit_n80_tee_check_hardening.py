@@ -12,12 +12,10 @@ Source: src/thegent/governance/tee_check.py
 
 from __future__ import annotations
 
-import pytest
-
 from thegent.governance.tee_check import (
+    TEEAttestation,
     TEEChecker,
     TEEType,
-    TEEAttestation,
     get_tee_attestation,
 )
 

@@ -10,13 +10,12 @@ This module provides a robust keepalive mechanism that:
 - Provides detailed logging for debugging
 """
 
-from typing import Any
-
 import logging
 import os
 import sys
 import threading
 import time
+from typing import Any
 
 from thegent.infra.shim_subprocess import run as shim_run
 

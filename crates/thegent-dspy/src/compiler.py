@@ -1,30 +1,29 @@
-from abc import ABC, abstractmethod
-from typing import Any, Dict, List, Optional
 from dataclasses import dataclass, field
+from typing import Any
 
 
 @dataclass
 class Task:
     id: str
     command: str
-    dependencies: List[str] = field(default_factory=list)
+    dependencies: list[str] = field(default_factory=list)
     agent_role: str = "default"
 
 
 @dataclass
 class TaskGraph:
-    tasks: List[Task] = field(default_factory=list)
+    tasks: list[Task] = field(default_factory=list)
 
     def add_task(self, task: Task) -> None:
         self.tasks.append(task)
 
-    def get_task(self, task_id: str) -> Optional[Task]:
+    def get_task(self, task_id: str) -> Task | None:
         for t in self.tasks:
             if t.id == task_id:
                 return t
         return None
 
-    def topological_order(self) -> List[Task]:
+    def topological_order(self) -> list[Task]:
         visited = set()
         order = []
 
@@ -54,7 +53,7 @@ class SOPCompiler:
         "Aggregate": "aggregator",
     }
 
-    def compile(self, sop_graph: Dict[str, Any]) -> TaskGraph:
+    def compile(self, sop_graph: dict[str, Any]) -> TaskGraph:
         """Compile an SOP graph into a TaskGraph.
 
         Args:
@@ -68,12 +67,12 @@ class SOPCompiler:
         nodes = sop_graph.get("nodes", [])
         edges = sop_graph.get("edges", [])
 
-        node_map: Dict[str, Dict[str, Any]] = {}
+        node_map: dict[str, dict[str, Any]] = {}
         for node in nodes:
             nid = node.get("id", f"node_{len(node_map)}")
             node_map[nid] = node
 
-        deps: Dict[str, List[str]] = {n["id"]: [] for n in nodes}
+        deps: dict[str, list[str]] = {n["id"]: [] for n in nodes}
         for edge in edges:
             etype = edge.get("type", "Sequential")
             source = edge.get("source")

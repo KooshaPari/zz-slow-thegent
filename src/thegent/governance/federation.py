@@ -12,12 +12,13 @@ Implements FR-FED-001 through FR-FED-006 (WL-020):
 from __future__ import annotations
 
 import hashlib
-import orjson as json
 import logging
 import time
 from datetime import UTC, datetime
 from pathlib import Path
 from typing import Any
+
+import orjson as json
 
 _log = logging.getLogger(__name__)
 

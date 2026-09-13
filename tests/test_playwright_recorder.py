@@ -8,10 +8,10 @@ Tests cover:
 - Result serialization
 """
 
-import orjson as json
 import tempfile
 from pathlib import Path
 
+import orjson as json
 import pytest  # type: ignore
 from pydantic_core import ValidationError
 

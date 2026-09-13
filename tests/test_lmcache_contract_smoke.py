@@ -1,10 +1,9 @@
 """Unit tests for lmcache_contract_smoke.py"""
 
-import orjson as json
 import os
+from unittest.mock import MagicMock, patch
+
 import pytest
-import sys
-from unittest.mock import patch, MagicMock
 
 
 def test_missing_lmcache_enabled_fails():
@@ -40,18 +39,17 @@ def test_redis_backend_success():
             "LMCACHE_REDIS_HOST": "localhost",
             "LMCACHE_REDIS_PORT": "6379",
         },
-    ):
-        with patch("redis.Redis") as mock_redis:
-            mock_instance = MagicMock()
-            mock_instance.ping.return_value = True
-            mock_redis.return_value = mock_instance
+    ), patch("redis.Redis") as mock_redis:
+        mock_instance = MagicMock()
+        mock_instance.ping.return_value = True
+        mock_redis.return_value = mock_instance
 
-            import lmcache_contract_smoke as smoke
+        import lmcache_contract_smoke as smoke
 
-            result = lmcache_contract_smoke.asyncio.run(smoke._check_lmcache())
+        result = lmcache_contract_smoke.asyncio.run(smoke._check_lmcache())
 
-            assert result["ok"] is True
-            assert result["backend"] == "redis"
+        assert result["ok"] is True
+        assert result["backend"] == "redis"
 
 
 def test_http_backend_missing_url():
@@ -69,10 +67,10 @@ def test_http_backend_missing_url():
 def test_backend_not_installed():
     """Test behavior when redis-py not installed."""
     with patch.dict(os.environ, {"LMCACHE_ENABLED": "1", "LMCACHE_BACKEND": "redis"}):
-        import lmcache_contract_smoke as smoke
-
         # Temporarily remove redis from modules
         import sys
+
+        import lmcache_contract_smoke as smoke
 
         redis_backup = sys.modules.pop("redis", None)
 
