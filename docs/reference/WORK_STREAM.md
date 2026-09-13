@@ -6620,7 +6620,7 @@ Publish quick-start docs for unattended board reflection setup and verification 
 | Edge case | Handling |
 |-----------|----------|
 | **Concurrent sessions** (multiple Claude Code windows) | Project-scoped queue: `PROJECT_DIR/.claude/pending-queue.jsonl`. Each session writes to same file; append is atomic at line level. Stop hook runs per session; last one to stop flushes. Risk: duplicate handoff if two sessions stop close together. Mitigation: handoff file append with session_id; or lock file. |
-| **Multi-project** | Queue keyed by `PROJECT_DIR` (git root). Handoff written to `$PROJECT*DIR/docs/research/pending-handoff.md`. |
+| **Multi-project** | Queue keyed by `PROJECT_DIR` (git root). Handoff written to `$PROJECT\*DIR/docs/research/pending-handoff.md`. |
 | **Queue file missing/corrupt** | On read: if not exists, treat as empty. On write: mkdir -p parent; append. Corrupt line: skip, log to stderr. |
 | **PROJECT_DIR unset** | Fallback: `~/.claude/pending-queue.jsonl`and`~/.claude/pending-handoff.md`. User can set PROJECT_DIR in env. |
 | **Harvest script timeout** | Cursor harvest can take 1–2 min. Run in background on Stop? Or accept; user can `CURSOR_PROJECTS=`to skip. |
@@ -6830,7 +6830,7 @@ Publish quick-start docs for unattended board reflection setup and verification 
 | `src/thegent/cliproxy_adapter.py`|`src/cliproxy/server.py`+`src/cliproxy/responses_handler.py`| Remove`use_litellm_router`flag (always use LiteLLM); remove thegent settings import; remove`resolve_model_for_backend`(harness model mapping is thegent-specific) |
 |`src/thegent/routing/litellm_responses_handler.py`|`src/cliproxy/responses_handler.py`| Remove`get_litellm_router()`from thegent; replace with cliproxy's own router init |
 |`src/thegent/routing/litellm_router.py`|`src/cliproxy/router.py`(subset only) | Extract:`build_litellm_model_list`, `build_fallback_chains`, `get_litellm_router`. Remove: `EnhancedRouter`(thegent's wrapper with cost_tracker, alert_manager, donut_adapter), Pareto integration, model metadata validation specific to thegent |
-|`src/thegent/agents/cliproxy_data/provider_definitions.json`|`src/cliproxy/providers/definitions.json`| Portable as-is; remove`base_url_env`entries that reference`THGENT\**`env vars (replace with`CLIPROXY\__`) |
+|`src/thegent/agents/cliproxy_data/provider_definitions.json`|`src/cliproxy/providers/definitions.json`| Portable as-is; remove`base_url_env`entries that reference`THGENT\*\*`env vars (replace with`CLIPROXY\__`) |
 | `src/thegent/agents/cliproxy_data/model_definitions.json`|`src/cliproxy/providers/model_definitions.json`| Portable as-is |
 | # | Provider | Notes |
 |---|----------|-------|
@@ -11115,158 +11115,158 @@ Publish quick-start docs for unattended board reflection setup and verification 
       | Rule | Enforcement |
       |------|-------------|
       | Read | MCP tool `thegent_backlog_read`; type `backlog-*`; attribute-level visibility |
-    | Write | MCP tool `thegent_backlog_write`; claim/complete semantics only; no direct edit |
-    | Claim | `thegent_backlog_claim`; appends to CLAIMED; validates Depends |
-    | Complete | `thegent_backlog_complete`; moves to COMPLETED; requires run_id, artifact_ref |
-    | Audit | Every R/W logged to `thegent-audit-docs`|
-    | # | Category | Examples |
-    |---|----------|----------|
-    | 1–10 | **Read UX** | Pagination, search, filter by type/attr, sort, export, preview, diff, version compare, full-text index, fuzzy match |
-    | 11–20 | **Write UX** | Templates, validation, auto-complete, schema hints, conflict detection, merge preview, undo, draft save, auto-save, backup |
-    | 21–30 | **Performance** | Caching, lazy load, incremental sync, batch R/W, compression, dedup, indexing, prefetch, streaming, parallel |
-    | 31–40 | **Security** | Rate limit, quota, token scope, expiry, revocation, audit retention, redaction, PII mask, encryption at rest |
-    | 41–50 | **Session** | Turn coalescing, summary generation, handoff templates, escalation routing, checkpoint compression, replay, diff |
-    | 51–60 | **Integration** | Webhook on write, event bus, MCP broadcast, CLI sync, git hook, CI trigger, notification |
-    | 61–70 | **Governance** | Policy engine, override flow, approval chain, delegation, tenant isolation, cost tracking |
-    | 71–80 | **DX** | CLI shortcuts, aliases, bulk ops, scripts, templates, snippets, snippets library |
-    | 81–90 | **Observability** | Metrics, traces, dashboards, alerts, health checks, SLO |
-    | 91–100 | **Resilience** | Retry, backoff, fallback, circuit breaker, graceful degradation, offline mode |
-    | Phase | Scope |
-    |-------|-------|
-    | **P1** | MCP tools for BACKLOG read/write/claim/complete; strict guard |
-    | **P2** | 20 core document types; 20 attributes per type |
-    | **P3** | Session turn write-up; per-turn write-up flow |
-    | **P4** | Expand to 200 types; 200 attributes per type |
-    | **P5** | 100 polishes; QOL and optimizations |
-    | Component | Technology | Purpose |
-    |-----------|-----------|---------|
-    | **Shell Parser** |`mvdan/sh`| POSIX compatibility, command parsing |
-    | **TUI Framework** |`bubbletea`(Go) | Interactive REPL, terminal UI |
-    | **Logging** |`zap` (Uber) | Structured logging |
-    | **Language Runtime** | Custom (Go) | gsh scripting language interpreter |
-    | **Agent Protocol** | ACP (Agent Client Protocol) | External agent integration (e.g., Claude Code) |
-    | **LLM Integration** | OpenAI-compatible API | Supports Ollama (local) + OpenRouter/remote |
-    | Feature | gsh | zsh + Starship | thegent |
-    |---------|-----|----------------|---------|
-    | **POSIX Compatibility** | ✅ Full | ✅ Full | ❌ Python CLI |
-    | **Built-in AI Agents** | ✅ Native (`#`prefix) | ❌ Requires external tools | ✅ Via`thegent run/bg`|
-    | **Agent Scripting** | ✅ Custom language | ❌ Shell scripts only | ✅ Python + Markdown |
-    | **Command Suggestions** | ✅ AI-powered | ⚠️ Plugin-based (zsh-autosuggestions) | ❌ Not applicable |
-    | **External Agent Protocol** | ✅ ACP | ❌ None | ✅ MCP |
-    | **Extensibility** | ✅`~/.gsh/repl.gsh`| ✅`.zshrc`+ plugins | ✅ Python modules |
-    | **Startup Speed** | ⚠️ Unknown (early stage) | ✅ Fast (~80ms goal) | ✅ Fast (Python CLI) |
-    | **Maturity** | ⚠️ Early (v1.0) | ✅ Mature (decades) | ✅ Mature (production) |
-    | **Cross-platform** | ✅ Go (portable) | ✅ Unix-like | ✅ Python (cross-platform) |
-    | Feature | Claude Code | Codex | Gemini CLI | ANTE | Factory Droid | Aider | OpenCode | **thegent** |
-    |---------|:-----------:|:-----:|:----------:|:----:|:-------------:|:-----:|:--------:|:-----------:|
-    | Single-turn prompt exec | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ |
-    | Multi-turn conversation/session | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ |
-    | Streaming output | ✓ | ✓ | ✓ | ✓ | ✓ | ✗ | ✓ | ✓ |
-    | Background/async execution | ✓ | ✓ | ✗ | ✓ | ✗ | ✗ | ✗ | ~ |
-    | Session resume/continue | ✓ | ✓ | ✗ | ✓ | ~ | ✗ | ✓ | ~ |
-    | Parallel execution (multi-instance) | ✓ | ✓ | ✗ | ✓ | ✗ | ✓ | ✗ | ✓ |
-    | JSON/structured output mode | ✓ | ✓ | ~ | ~ | ✓ | ✗ | ~ | ✓ |
-    | Stdin piping support | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ |
-    | Max-turns / budget control | ✓ | ✓ | ✗ | ✓ | ✓ | ✗ | ✗ | ✓ |
-    | Non-interactive/headless mode | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ |
-    | Feature | Claude Code | Codex | Gemini CLI | ANTE | Factory Droid | Aider | OpenCode | **thegent** |
-    |---------|:-----------:|:-----:|:----------:|:----:|:-------------:|:-----:|:--------:|:-----------:|
-    | File read/write tools | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ |
-    | Shell command execution | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ |
-    | Web search | ✓ | ✓ | ✓ | ~ | ✗ | ✗ | ✗ | ✓ |
-    | MCP client (consume tools) | ✓ | ✓ | ✓ | ✗ | ✗ | ✗ | ✗ | ✓ |
-    | MCP server mode (expose tools) | ✗ | ~ | ✗ | ✗ | ✗ | ~ | ✗ | ✓ |
-    | Browser/Playwright automation | ✗ | ✗ | ✗ | ✗ | ~ | ✗ | ✗ | ✓ |
-    | Image/vision input | ✓ | ✓ | ✗ | ✗ | ✗ | ✗ | ✗ | ~ |
-    | Audio input | ✗ | ~ | ✗ | ✗ | ✗ | ✗ | ✗ | ✗ |
-    | Structured output (JSON schema) | ~ | ✓ | ✗ | ✗ | ✗ | ✗ | ✗ | ✓ |
-    | Git native integration | ✓ | ~ | ~ | ~ | ~ | ✓ | ~ | ✓ |
-    | LSP integration | ✗ | ✗ | ✗ | ✗ | ✗ | ✗ | ✓ | ~ |
-    | Dynamic client tools | ✗ | ✓ | ✗ | ✗ | ✗ | ✗ | ✗ | ✗ |
-    | Feature | Claude Code | Codex | Gemini CLI | ANTE | Factory Droid | Aider | OpenCode | **thegent** |
-    |---------|:-----------:|:-----:|:----------:|:----:|:-------------:|:-----:|:--------:|:-----------:|
-    | Sub-agent dispatch | ✓ | ~ | ✗ | ✓ | ✗ | ✗ | ✓ | ✓ |
-    | Multi-agent swarm coordination | ✗ | ~ | ✗ | ~ | ✗ | ✗ | ✗ | ✓ |
-    | Agent registry / capability index | ✗ | ✗ | ✗ | ✗ | ✗ | ✗ | ✗ | ✓ |
-    | Plan → execute workflow | ✓ | ~ | ✗ | ✓ | ✓ | ~ | ✓ | ✓ |
-    | DAG task execution | ✗ | ✗ | ✗ | ✗ | ✗ | ✗ | ✗ | ✓ |
-    | HITL (human-in-the-loop) approval | ✓ | ✓ | ✓ | ✓ | ✓ | ~ | ✓ | ✓ |
-    | Agent memory (cross-session) | ✓ | ~ | ✗ | ✓ | ~ | ✗ | ✓ | ✓ |
-    | Thread fork/rollback | ✗ | ✓ | ✗ | ✗ | ✗ | ✗ | ✗ | ✗ |
-    | Code review mode | ✗ | ✓ | ✗ | ✗ | ✗ | ✗ | ~ | ✗ |
-    | Skills / reusable procedures | ✓ | ✓ | ✓ | ✓ | ✗ | ✗ | ✓ | ~ |
-    | Project memory (CLAUDE.md style) | ✓ | ~ | ~ | ✓ | ✗ | ✗ | ✓ | ~ |
-    | Context compaction/summarization | ✓ | ✓ | ✗ | ✓ | ✗ | ✗ | ✗ | ✗ |
-    | Feature | Claude Code | Codex | Gemini CLI | ANTE | Factory Droid | Aider | OpenCode | **thegent** |
-    |---------|:-----------:|:-----:|:----------:|:----:|:-------------:|:-----:|:--------:|:-----------:|
-    | Multi-provider support | ~ | ~ | ~ | ✓ | ~ | ✓ | ✓ | ✓ |
-    | Model switching per task | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ |
-    | Cost-aware routing | ✗ | ✗ | ✗ | ✗ | ✗ | ✗ | ✗ | ✓ |
-    | Latency-aware routing | ✗ | ✗ | ✗ | ✗ | ✗ | ✗ | ✗ | ✓ |
-    | Proxy support (LiteLLM / custom) | ~ | ✓ | ✗ | ✗ | ✗ | ✓ | ✓ | ✓ |
-    | Rate limit handling / circuit breaker | ✓ | ✓ | ~ | ✓ | ✗ | ~ | ✗ | ✓ |
-    | Semantic cache | ✗ | ✗ | ✗ | ✗ | ✗ | ✗ | ✗ | ✓ |
-    | Pareto / multi-objective routing | ✗ | ✗ | ✗ | ✗ | ✗ | ✗ | ✗ | ✓ |
-    | Local / offline model support | ✗ | ✗ | ✗ | ✓ | ✗ | ✓ | ✓ | ~ |
-    | Model reasoning effort control | ✓ | ✓ | ✗ | ✗ | ✗ | ✗ | ✗ | ~ |
-    | Fallback chain / redundancy | ✗ | ✗ | ✗ | ✗ | ✗ | ✗ | ✗ | ✓ |
-    | Feature | Claude Code | Codex | Gemini CLI | ANTE | Factory Droid | Aider | OpenCode | **thegent** |
-    |---------|:-----------:|:-----:|:----------:|:----:|:-------------:|:-----:|:--------:|:-----------:|
-    | Sandbox / process isolation | ✓ | ✓ | ✓ | ~ | ✓ | ✗ | ✗ | ✓ |
-    | Tool approval policy (per-tool) | ✓ | ✓ | ✓ | ✓ | ✓ | ~ | ✓ | ✓ |
-    | Audit logging (tamper-evident) | ~ | ~ | ✗ | ✗ | ✓ | ✗ | ✗ | ✓ |
-    | Compliance evidence (MAIF artifacts) | ✗ | ✗ | ✗ | ✗ | ✗ | ✗ | ✗ | ✓ |
-    | Secret scanning | ✗ | ✗ | ✗ | ✗ | ✗ | ✗ | ✗ | ✓ |
-    | GDPR / data retention policy | ✗ | ✗ | ✗ | ✗ | ✗ | ✗ | ✗ | ✓ |
-    | Federated policy enforcement | ✗ | ✗ | ✗ | ✗ | ✗ | ✗ | ✗ | ✓ |
-    | Constitutional / rule enforcement | ✓ | ✗ | ✗ | ✗ | ✗ | ✗ | ✗ | ✓ |
-    | Policy override event auditing | ✗ | ✗ | ✗ | ✗ | ✗ | ✗ | ✗ | ✓ |
-    | Approval for file writes (fine-grained) | ✓ | ✓ | ✓ | ✓ | ✓ | ✗ | ~ | ✓ |
-    | Feature | Claude Code | Codex | Gemini CLI | ANTE | Factory Droid | Aider | OpenCode | **thegent** |
-    |---------|:-----------:|:-----:|:----------:|:----:|:-------------:|:-----:|:--------:|:-----------:|
-    | TUI (interactive terminal UI) | ✓ | ✓ | ✓ | ✓ | ~ | ✗ | ✓ | ~ |
-    | Inline diff review / approval UI | ✓ | ✓ | ✓ | ✓ | ✗ | ✗ | ✓ | ✗ |
-    | IDE integration | ✓ | ✓ | ✗ | ✗ | ✓ | ~ | ✓ | ~ |
-    | CLI completions (zsh/bash/fish) | ✓ | ✓ | ✓ | ~ | ✗ | ✗ | ✓ | ~ |
-    | Help system (contextual) | ✓ | ✓ | ✓ | ✓ | ~ | ✓ | ✓ | ✓ |
-    | Progress indicators / spinners | ✓ | ✓ | ✓ | ✓ | ~ | ✗ | ✓ | ✓ |
-    | Hooks / lifecycle events | ✓ | ✗ | ✓ | ✗ | ✗ | ✗ | ✗ | ✓ |
-    | Plugin / skill system | ✓ | ✓ | ✓ | ✓ | ✗ | ✗ | ✓ | ~ |
-    | Programmatic SDK | ~ | ✓ | ✗ | ✗ | ✗ | ✓ | ~ | ✗ |
-    | App server / embedding protocol | ✗ | ✓ | ✗ | ~ | ✗ | ✗ | ✗ | ✗ |
-    | Diff-streamed output | ✓ | ✓ | ✗ | ✓ | ✗ | ✓ | ✓ | ✗ |
-    | Context window status display | ✓ | ✓ | ✗ | ✓ | ✗ | ✓ | ✓ | ✗ |
-    | Session list / inspect CLI | ✓ | ✓ | ✗ | ✓ | ✗ | ✗ | ✓ | ✓ |
-    | Feature | Claude Code | Codex | Gemini CLI | ANTE | Factory Droid | Aider | OpenCode | **thegent** |
-    |---------|:-----------:|:-----:|:----------:|:----:|:-------------:|:-----:|:--------:|:-----------:|
-    | Windows support | ✓ | ✓ | ~ | ✗ | ✗ | ✓ | ✓ | ✓ |
-    | Docker support | ~ | ~ | ~ | ✗ | ✓ | ✓ | ~ | ~ |
-    | Multi-project tenancy | ✓ | ✓ | ✗ | ✗ | ✗ | ✗ | ✗ | ✓ |
-    | Team / org management | ✓ | ✓ | ✓ | ✗ | ✓ | ✗ | ✗ | ✓ |
-    | SSO / enterprise auth | ✓ | ✓ | ✓ | ✗ | ✓ | ✗ | ✗ | ~ |
-    | Cost tracking / budget enforcement | ✓ | ~ | ~ | ✗ | ✓ | ✗ | ✗ | ✓ |
-    | Self-hosted deployment | ✗ | ✗ | ✓ | ✓ | ✗ | ✓ | ✓ | ✓ |
-    | Benchmarking / eval mode | ✗ | ✗ | ✗ | ✗ | ✓ | ✗ | ✗ | ~ |
-    | Auto-install / doctor CLI | ✓ | ✓ | ✓ | ✗ | ✗ | ✗ | ✗ | ✓ |
-    | Cross-platform rules sync | ✗ | ✗ | ✗ | ✗ | ✗ | ✗ | ✗ | ✓ |
-    | Advantage | Description | Competitors |
-    |-----------|-------------|------------|
-    | **Pareto multi-objective routing** | Simultaneous cost + latency + quality optimization across providers | None |
-    | **Federated policy enforcement** | 3-level namespace hierarchy, EU-AI-Act/US-SEC jurisdiction profiles, arbitration | None |
-    | **MAIF compliance artifacts** | Tamper-evident audit evidence for AI governance | None |
-    | **Multi-agent swarm w/ RedLock** | Distributed concurrent agents with atomic coordination | None |
-    | **Agent capability registry** | TF-IDF-based capability matching, auto-agent selection | None |
-    | **DAG task execution** | Dependency-ordered task graphs with DagPrioritizer (Kahn + CPM) | None |
-    | **Work stream management** | Canonical WORK_STREAM.md with claim/complete lifecycle | None |
-    | **Cross-harness orchestration** | Wraps Claude Code + Codex + Gemini + ANTE + Droid + Cursor | None |
-    | **Semantic cache** | Embedding-based response caching (avoids duplicate LLM calls) | None |
-    | **Policy override event auditing** | Every policy override is logged with justification | None |
-    | **Context-aware model selection** | Tag router + task router selects model based on task semantic tags | None |
-    | **Secret scanning in hooks** | Gitleaks integrated into stop hook | None |
-    | **Cross-session memory synthesis** | Supermemory + local garden with semantic retrieval | ANTE (partial) |
-    | **MCP server mode** | Exposes tools to external MCP clients (port 3847) | Codex (2-tool prototype) |
-    | **Browser/Playwright tool** | Full browser automation via Playwright MCP server | None |
-    | **HITL approval workflow** |`thegent govern approve/reject` with full audit trail | Codex (partial, no audit) |
+  | Write | MCP tool `thegent_backlog_write`; claim/complete semantics only; no direct edit |
+  | Claim | `thegent_backlog_claim`; appends to CLAIMED; validates Depends |
+  | Complete | `thegent_backlog_complete`; moves to COMPLETED; requires run_id, artifact_ref |
+  | Audit | Every R/W logged to `thegent-audit-docs`|
+  | # | Category | Examples |
+  |---|----------|----------|
+  | 1–10 | **Read UX** | Pagination, search, filter by type/attr, sort, export, preview, diff, version compare, full-text index, fuzzy match |
+  | 11–20 | **Write UX** | Templates, validation, auto-complete, schema hints, conflict detection, merge preview, undo, draft save, auto-save, backup |
+  | 21–30 | **Performance** | Caching, lazy load, incremental sync, batch R/W, compression, dedup, indexing, prefetch, streaming, parallel |
+  | 31–40 | **Security** | Rate limit, quota, token scope, expiry, revocation, audit retention, redaction, PII mask, encryption at rest |
+  | 41–50 | **Session** | Turn coalescing, summary generation, handoff templates, escalation routing, checkpoint compression, replay, diff |
+  | 51–60 | **Integration** | Webhook on write, event bus, MCP broadcast, CLI sync, git hook, CI trigger, notification |
+  | 61–70 | **Governance** | Policy engine, override flow, approval chain, delegation, tenant isolation, cost tracking |
+  | 71–80 | **DX** | CLI shortcuts, aliases, bulk ops, scripts, templates, snippets, snippets library |
+  | 81–90 | **Observability** | Metrics, traces, dashboards, alerts, health checks, SLO |
+  | 91–100 | **Resilience** | Retry, backoff, fallback, circuit breaker, graceful degradation, offline mode |
+  | Phase | Scope |
+  |-------|-------|
+  | **P1** | MCP tools for BACKLOG read/write/claim/complete; strict guard |
+  | **P2** | 20 core document types; 20 attributes per type |
+  | **P3** | Session turn write-up; per-turn write-up flow |
+  | **P4** | Expand to 200 types; 200 attributes per type |
+  | **P5** | 100 polishes; QOL and optimizations |
+  | Component | Technology | Purpose |
+  |-----------|-----------|---------|
+  | **Shell Parser** |`mvdan/sh`| POSIX compatibility, command parsing |
+  | **TUI Framework** |`bubbletea`(Go) | Interactive REPL, terminal UI |
+  | **Logging** |`zap` (Uber) | Structured logging |
+  | **Language Runtime** | Custom (Go) | gsh scripting language interpreter |
+  | **Agent Protocol** | ACP (Agent Client Protocol) | External agent integration (e.g., Claude Code) |
+  | **LLM Integration** | OpenAI-compatible API | Supports Ollama (local) + OpenRouter/remote |
+  | Feature | gsh | zsh + Starship | thegent |
+  |---------|-----|----------------|---------|
+  | **POSIX Compatibility** | ✅ Full | ✅ Full | ❌ Python CLI |
+  | **Built-in AI Agents** | ✅ Native (`#`prefix) | ❌ Requires external tools | ✅ Via`thegent run/bg`|
+  | **Agent Scripting** | ✅ Custom language | ❌ Shell scripts only | ✅ Python + Markdown |
+  | **Command Suggestions** | ✅ AI-powered | ⚠️ Plugin-based (zsh-autosuggestions) | ❌ Not applicable |
+  | **External Agent Protocol** | ✅ ACP | ❌ None | ✅ MCP |
+  | **Extensibility** | ✅`~/.gsh/repl.gsh`| ✅`.zshrc`+ plugins | ✅ Python modules |
+  | **Startup Speed** | ⚠️ Unknown (early stage) | ✅ Fast (~80ms goal) | ✅ Fast (Python CLI) |
+  | **Maturity** | ⚠️ Early (v1.0) | ✅ Mature (decades) | ✅ Mature (production) |
+  | **Cross-platform** | ✅ Go (portable) | ✅ Unix-like | ✅ Python (cross-platform) |
+  | Feature | Claude Code | Codex | Gemini CLI | ANTE | Factory Droid | Aider | OpenCode | **thegent** |
+  |---------|:-----------:|:-----:|:----------:|:----:|:-------------:|:-----:|:--------:|:-----------:|
+  | Single-turn prompt exec | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ |
+  | Multi-turn conversation/session | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ |
+  | Streaming output | ✓ | ✓ | ✓ | ✓ | ✓ | ✗ | ✓ | ✓ |
+  | Background/async execution | ✓ | ✓ | ✗ | ✓ | ✗ | ✗ | ✗ | ~ |
+  | Session resume/continue | ✓ | ✓ | ✗ | ✓ | ~ | ✗ | ✓ | ~ |
+  | Parallel execution (multi-instance) | ✓ | ✓ | ✗ | ✓ | ✗ | ✓ | ✗ | ✓ |
+  | JSON/structured output mode | ✓ | ✓ | ~ | ~ | ✓ | ✗ | ~ | ✓ |
+  | Stdin piping support | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ |
+  | Max-turns / budget control | ✓ | ✓ | ✗ | ✓ | ✓ | ✗ | ✗ | ✓ |
+  | Non-interactive/headless mode | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ |
+  | Feature | Claude Code | Codex | Gemini CLI | ANTE | Factory Droid | Aider | OpenCode | **thegent** |
+  |---------|:-----------:|:-----:|:----------:|:----:|:-------------:|:-----:|:--------:|:-----------:|
+  | File read/write tools | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ |
+  | Shell command execution | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ |
+  | Web search | ✓ | ✓ | ✓ | ~ | ✗ | ✗ | ✗ | ✓ |
+  | MCP client (consume tools) | ✓ | ✓ | ✓ | ✗ | ✗ | ✗ | ✗ | ✓ |
+  | MCP server mode (expose tools) | ✗ | ~ | ✗ | ✗ | ✗ | ~ | ✗ | ✓ |
+  | Browser/Playwright automation | ✗ | ✗ | ✗ | ✗ | ~ | ✗ | ✗ | ✓ |
+  | Image/vision input | ✓ | ✓ | ✗ | ✗ | ✗ | ✗ | ✗ | ~ |
+  | Audio input | ✗ | ~ | ✗ | ✗ | ✗ | ✗ | ✗ | ✗ |
+  | Structured output (JSON schema) | ~ | ✓ | ✗ | ✗ | ✗ | ✗ | ✗ | ✓ |
+  | Git native integration | ✓ | ~ | ~ | ~ | ~ | ✓ | ~ | ✓ |
+  | LSP integration | ✗ | ✗ | ✗ | ✗ | ✗ | ✗ | ✓ | ~ |
+  | Dynamic client tools | ✗ | ✓ | ✗ | ✗ | ✗ | ✗ | ✗ | ✗ |
+  | Feature | Claude Code | Codex | Gemini CLI | ANTE | Factory Droid | Aider | OpenCode | **thegent** |
+  |---------|:-----------:|:-----:|:----------:|:----:|:-------------:|:-----:|:--------:|:-----------:|
+  | Sub-agent dispatch | ✓ | ~ | ✗ | ✓ | ✗ | ✗ | ✓ | ✓ |
+  | Multi-agent swarm coordination | ✗ | ~ | ✗ | ~ | ✗ | ✗ | ✗ | ✓ |
+  | Agent registry / capability index | ✗ | ✗ | ✗ | ✗ | ✗ | ✗ | ✗ | ✓ |
+  | Plan → execute workflow | ✓ | ~ | ✗ | ✓ | ✓ | ~ | ✓ | ✓ |
+  | DAG task execution | ✗ | ✗ | ✗ | ✗ | ✗ | ✗ | ✗ | ✓ |
+  | HITL (human-in-the-loop) approval | ✓ | ✓ | ✓ | ✓ | ✓ | ~ | ✓ | ✓ |
+  | Agent memory (cross-session) | ✓ | ~ | ✗ | ✓ | ~ | ✗ | ✓ | ✓ |
+  | Thread fork/rollback | ✗ | ✓ | ✗ | ✗ | ✗ | ✗ | ✗ | ✗ |
+  | Code review mode | ✗ | ✓ | ✗ | ✗ | ✗ | ✗ | ~ | ✗ |
+  | Skills / reusable procedures | ✓ | ✓ | ✓ | ✓ | ✗ | ✗ | ✓ | ~ |
+  | Project memory (CLAUDE.md style) | ✓ | ~ | ~ | ✓ | ✗ | ✗ | ✓ | ~ |
+  | Context compaction/summarization | ✓ | ✓ | ✗ | ✓ | ✗ | ✗ | ✗ | ✗ |
+  | Feature | Claude Code | Codex | Gemini CLI | ANTE | Factory Droid | Aider | OpenCode | **thegent** |
+  |---------|:-----------:|:-----:|:----------:|:----:|:-------------:|:-----:|:--------:|:-----------:|
+  | Multi-provider support | ~ | ~ | ~ | ✓ | ~ | ✓ | ✓ | ✓ |
+  | Model switching per task | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ |
+  | Cost-aware routing | ✗ | ✗ | ✗ | ✗ | ✗ | ✗ | ✗ | ✓ |
+  | Latency-aware routing | ✗ | ✗ | ✗ | ✗ | ✗ | ✗ | ✗ | ✓ |
+  | Proxy support (LiteLLM / custom) | ~ | ✓ | ✗ | ✗ | ✗ | ✓ | ✓ | ✓ |
+  | Rate limit handling / circuit breaker | ✓ | ✓ | ~ | ✓ | ✗ | ~ | ✗ | ✓ |
+  | Semantic cache | ✗ | ✗ | ✗ | ✗ | ✗ | ✗ | ✗ | ✓ |
+  | Pareto / multi-objective routing | ✗ | ✗ | ✗ | ✗ | ✗ | ✗ | ✗ | ✓ |
+  | Local / offline model support | ✗ | ✗ | ✗ | ✓ | ✗ | ✓ | ✓ | ~ |
+  | Model reasoning effort control | ✓ | ✓ | ✗ | ✗ | ✗ | ✗ | ✗ | ~ |
+  | Fallback chain / redundancy | ✗ | ✗ | ✗ | ✗ | ✗ | ✗ | ✗ | ✓ |
+  | Feature | Claude Code | Codex | Gemini CLI | ANTE | Factory Droid | Aider | OpenCode | **thegent** |
+  |---------|:-----------:|:-----:|:----------:|:----:|:-------------:|:-----:|:--------:|:-----------:|
+  | Sandbox / process isolation | ✓ | ✓ | ✓ | ~ | ✓ | ✗ | ✗ | ✓ |
+  | Tool approval policy (per-tool) | ✓ | ✓ | ✓ | ✓ | ✓ | ~ | ✓ | ✓ |
+  | Audit logging (tamper-evident) | ~ | ~ | ✗ | ✗ | ✓ | ✗ | ✗ | ✓ |
+  | Compliance evidence (MAIF artifacts) | ✗ | ✗ | ✗ | ✗ | ✗ | ✗ | ✗ | ✓ |
+  | Secret scanning | ✗ | ✗ | ✗ | ✗ | ✗ | ✗ | ✗ | ✓ |
+  | GDPR / data retention policy | ✗ | ✗ | ✗ | ✗ | ✗ | ✗ | ✗ | ✓ |
+  | Federated policy enforcement | ✗ | ✗ | ✗ | ✗ | ✗ | ✗ | ✗ | ✓ |
+  | Constitutional / rule enforcement | ✓ | ✗ | ✗ | ✗ | ✗ | ✗ | ✗ | ✓ |
+  | Policy override event auditing | ✗ | ✗ | ✗ | ✗ | ✗ | ✗ | ✗ | ✓ |
+  | Approval for file writes (fine-grained) | ✓ | ✓ | ✓ | ✓ | ✓ | ✗ | ~ | ✓ |
+  | Feature | Claude Code | Codex | Gemini CLI | ANTE | Factory Droid | Aider | OpenCode | **thegent** |
+  |---------|:-----------:|:-----:|:----------:|:----:|:-------------:|:-----:|:--------:|:-----------:|
+  | TUI (interactive terminal UI) | ✓ | ✓ | ✓ | ✓ | ~ | ✗ | ✓ | ~ |
+  | Inline diff review / approval UI | ✓ | ✓ | ✓ | ✓ | ✗ | ✗ | ✓ | ✗ |
+  | IDE integration | ✓ | ✓ | ✗ | ✗ | ✓ | ~ | ✓ | ~ |
+  | CLI completions (zsh/bash/fish) | ✓ | ✓ | ✓ | ~ | ✗ | ✗ | ✓ | ~ |
+  | Help system (contextual) | ✓ | ✓ | ✓ | ✓ | ~ | ✓ | ✓ | ✓ |
+  | Progress indicators / spinners | ✓ | ✓ | ✓ | ✓ | ~ | ✗ | ✓ | ✓ |
+  | Hooks / lifecycle events | ✓ | ✗ | ✓ | ✗ | ✗ | ✗ | ✗ | ✓ |
+  | Plugin / skill system | ✓ | ✓ | ✓ | ✓ | ✗ | ✗ | ✓ | ~ |
+  | Programmatic SDK | ~ | ✓ | ✗ | ✗ | ✗ | ✓ | ~ | ✗ |
+  | App server / embedding protocol | ✗ | ✓ | ✗ | ~ | ✗ | ✗ | ✗ | ✗ |
+  | Diff-streamed output | ✓ | ✓ | ✗ | ✓ | ✗ | ✓ | ✓ | ✗ |
+  | Context window status display | ✓ | ✓ | ✗ | ✓ | ✗ | ✓ | ✓ | ✗ |
+  | Session list / inspect CLI | ✓ | ✓ | ✗ | ✓ | ✗ | ✗ | ✓ | ✓ |
+  | Feature | Claude Code | Codex | Gemini CLI | ANTE | Factory Droid | Aider | OpenCode | **thegent** |
+  |---------|:-----------:|:-----:|:----------:|:----:|:-------------:|:-----:|:--------:|:-----------:|
+  | Windows support | ✓ | ✓ | ~ | ✗ | ✗ | ✓ | ✓ | ✓ |
+  | Docker support | ~ | ~ | ~ | ✗ | ✓ | ✓ | ~ | ~ |
+  | Multi-project tenancy | ✓ | ✓ | ✗ | ✗ | ✗ | ✗ | ✗ | ✓ |
+  | Team / org management | ✓ | ✓ | ✓ | ✗ | ✓ | ✗ | ✗ | ✓ |
+  | SSO / enterprise auth | ✓ | ✓ | ✓ | ✗ | ✓ | ✗ | ✗ | ~ |
+  | Cost tracking / budget enforcement | ✓ | ~ | ~ | ✗ | ✓ | ✗ | ✗ | ✓ |
+  | Self-hosted deployment | ✗ | ✗ | ✓ | ✓ | ✗ | ✓ | ✓ | ✓ |
+  | Benchmarking / eval mode | ✗ | ✗ | ✗ | ✗ | ✓ | ✗ | ✗ | ~ |
+  | Auto-install / doctor CLI | ✓ | ✓ | ✓ | ✗ | ✗ | ✗ | ✗ | ✓ |
+  | Cross-platform rules sync | ✗ | ✗ | ✗ | ✗ | ✗ | ✗ | ✗ | ✓ |
+  | Advantage | Description | Competitors |
+  |-----------|-------------|------------|
+  | **Pareto multi-objective routing** | Simultaneous cost + latency + quality optimization across providers | None |
+  | **Federated policy enforcement** | 3-level namespace hierarchy, EU-AI-Act/US-SEC jurisdiction profiles, arbitration | None |
+  | **MAIF compliance artifacts** | Tamper-evident audit evidence for AI governance | None |
+  | **Multi-agent swarm w/ RedLock** | Distributed concurrent agents with atomic coordination | None |
+  | **Agent capability registry** | TF-IDF-based capability matching, auto-agent selection | None |
+  | **DAG task execution** | Dependency-ordered task graphs with DagPrioritizer (Kahn + CPM) | None |
+  | **Work stream management** | Canonical WORK_STREAM.md with claim/complete lifecycle | None |
+  | **Cross-harness orchestration** | Wraps Claude Code + Codex + Gemini + ANTE + Droid + Cursor | None |
+  | **Semantic cache** | Embedding-based response caching (avoids duplicate LLM calls) | None |
+  | **Policy override event auditing** | Every policy override is logged with justification | None |
+  | **Context-aware model selection** | Tag router + task router selects model based on task semantic tags | None |
+  | **Secret scanning in hooks** | Gitleaks integrated into stop hook | None |
+  | **Cross-session memory synthesis** | Supermemory + local garden with semantic retrieval | ANTE (partial) |
+  | **MCP server mode** | Exposes tools to external MCP clients (port 3847) | Codex (2-tool prototype) |
+  | **Browser/Playwright tool** | Full browser automation via Playwright MCP server | None |
+  | **HITL approval workflow** |`thegent govern approve/reject` with full audit trail | Codex (partial, no audit) |
       | ID | Title | Priority | Effort | Blocked By |
       |----|-------|----------|--------|------------|
       | WL-100 | Diff renderer in TUI + HITL diff payload | P1 | M (3-5d) | none |
@@ -11571,10 +11571,10 @@ Publish quick-start docs for unattended board reflection setup and verification 
       | `STATE_DIR` | `~/.claude` | Offset file location |
       | File | Timestamp | Session ID | Content | Status |
       |------|-----------|------------|---------|--------|
-      | `seed_cursor_20260216T103017Z*_*199.md`| 2026-02-16 10:30:17Z | 87c98b2e-9c87-459c-919e-1430c46c5b5b | Idea seed detection system | ✅ Duplicate |
+      | `seed_cursor_20260216T103017Z*_\*199.md`| 2026-02-16 10:30:17Z | 87c98b2e-9c87-459c-919e-1430c46c5b5b | Idea seed detection system | ✅ Duplicate |
 |`seed_cursor_20260216T103017Z***201.md`| 2026-02-16 10:30:17Z | 87c98b2e-9c87-459c-919e-1430c46c5b5b | Idea seed detection system | ✅ Duplicate |
 |`seed_cursor_20260216T103237Z***199.md`| 2026-02-16 10:32:37Z | 87c98b2e-9c87-459c-919e-1430c46c5b5b | Idea seed detection system | ✅ Duplicate |
-|`seed_cursor_20260216T103237Z*_\_201.md` | 2026-02-16 10:32:37Z | 87c98b2e-9c87-459c-919e-1430c46c5b5b | Idea seed detection system | ✅ Duplicate |
+|`seed_cursor_20260216T103237Z\*_\_201.md` | 2026-02-16 10:32:37Z | 87c98b2e-9c87-459c-919e-1430c46c5b5b | Idea seed detection system | ✅ Duplicate |
 - [ ] Move 4 seed files to `archive/` directory
 - [ ] Update `IDEA_SEED_EXPANSION_COMPLETE.md` to reference archive location
 - [ ] Add note in expansion document about archive
@@ -12828,8 +12828,8 @@ Publish quick-start docs for unattended board reflection setup and verification 
 |`thegent plan do-next`|`thegent_do_next`| ✓ |
 |`thegent plan claim`/`complete`|`thegent_workstream_claim`, `thegent_workstream_complete`| ✓ |
 |`thegent loop`/`loop-takeover`/`loop-stop`|`thegent_loop*`| ✓ |
-|`thegent inbox list`/`inbox wait`|`thegent_inbox**`| ✓ |
-|`thegent list-agents`/`list-droids`/`list-models`|`thegent*list*_`| ✓ |
+|`thegent inbox list`/`inbox wait`|`thegent*inbox\**`| ✓ |
+|`thegent list-agents`/`list-droids`/`list-models`|`thegent*list\**`| ✓ |
 |`thegent terminal list`/`inspect`/`send`/`attach`|`thegent*terminal*_`| ✓ |
 |`thegent continuity snapshot`|`thegent*continuity_snapshot`| ✓ |
 |`thegent session-contracts`/`health-gate`/`health-report`/`health-trend`|`thegent_session_contract*`| ✓ |
@@ -12861,8 +12861,8 @@ Publish quick-start docs for unattended board reflection setup and verification 
 |`thegent_plan_approve`| — | ✓ |
 |`thegent_plan_create`| — | ✓ |
 |`thegent_protocol_list`/`get`| — | ✓ |
-|`thegent_discussion*_`/`research_finalize`/`validation_report`| — | ✓ |
-|`thegent_team_create`/`list`/`delegate`|`thegent team _`| ✓ (partial) |
+|`thegent_discussion*_`/`research*finalize`/`validation_report`| — | ✓ |
+|`thegent_team_create`/`list`/`delegate`|`thegent team *`| ✓ (partial) |
 |`thegent_dag_ready`/`run`/`sync`/`recover`|`thegent dag \*`| ✓ |
 | Feature | Usage | Location |
 |---------|-------|----------|
@@ -15642,7 +15642,7 @@ Publish quick-start docs for unattended board reflection setup and verification 
       | 5 | phase13-*, phase14-_, phase15-\* | Add Purpose, Depends, acceptance criteria, WORK_STREAM ID | Practical, holistic | ✅ **COMPLETE** |
       | 6 | GOVERNANCE_WP_GAPS.md | Gaps → BACKLOG; sprawl each with options | Practical, robustify | ✅ **COMPLETE** |
       | 7 | COST_ROUTING_DEFERRED.md | Implement or formalize deferred + unblock criteria | Practical, robustify | ✅ \*\*COMPLETE\*\* |
-      | 8 | SWARM_RESEARCH_INDEX, CROSS_PLATFORM__ index/summary | Add sprawl-status; link to this inventory | Holistic | ✅ **COMPLETE** |
+      | 8 | SWARM_RESEARCH_INDEX, CROSS_PLATFORM\_\_ index/summary | Add sprawl-status; link to this inventory | Holistic | ✅ **COMPLETE** |
       | 9 | 00-MASTER-INDEX | Add Research sprawl row; link here | Holistic | ✅ **COMPLETE** (already had RESEARCH_SPRAWL row) |
       | 10 | Full research/plans (long docs) | Summary table, cross-links, Next actions with IDs, failure modes | Optimize, robustify, holistic | 🔄 **PENDING** |
       | Step | Action | Status |
@@ -20157,59 +20157,59 @@ Publish quick-start docs for unattended board reflection setup and verification 
       |--------|--------|------------------|
       | heliosShield | Subprocess | `harness status`, `harness metrics`, etc. |
       | thegent | HTTP REST | `http://127.0.0.1:3847/api/v1/*`|
-    | Endpoint | Method | Description |
-    |----------|--------|-------------|
-    |`/api/v1/projects`| GET | List all projects |
-    |`/api/v1/projects`| POST | Create project |
-    |`/api/v1/projects/{id}`| GET | Get project details |
-    |`/api/v1/projects/{id}`| PUT | Update project |
-    |`/api/v1/projects/{id}`| DELETE | Delete project |
-    |`/api/v1/agents`| GET | List all agents |
-    |`/api/v1/agents/{id}`| GET | Get agent details |
-    |`/api/v1/agents/{id}`| PUT | Update agent |
-    |`/api/v1/runs`| GET | List runs (with filters) |
-    |`/api/v1/runs/{id}`| GET | Get run details |
-    |`/api/v1/gardener/status`| GET | Get gardener status |
-    |`/api/v1/gardener/start`| POST | Start gardener |
-    |`/api/v1/gardener/stop`| POST | Stop gardener |
-    |`/api/v1/gardener/scan`| POST | Trigger scan |
-    |`/api/v1/gardener/config`| GET/PUT | Gardener config |
-    |`/api/v1/costs/daily`| GET | Daily cost summary |
-    |`/api/v1/costs/monthly`| GET | Monthly cost summary |
-    |`/api/v1/costs/alerts`| GET/POST | Cost alerts |
-    |`/api/v1/gamification/stats`| GET | XP, level, stats |
-    |`/api/v1/gamification/achievements`| GET | Achievement list |
-    | Issue | Location | Note |
-    |-------|----------|------|
-    | **Checker agent hardcoded** |`agent*deployer.py:98`|`checker_agent_name="antigravity"`— should be configurable or derived from task/cost tier |
-    | **Session ID typo** |`loop_controller.py:56`|`logging.time.time()`→`time.time()`|
-    | **record_call dimension** |`agent_deployer.py:167`| Always`"claude"`— should use actual agent (e.g.`agent`or`task.dimension`) |
-      | Task | Description | Files |
-      |------|-------------|-------|
-      | 1 | AgentDeployer uses LifecycleController | agent_deployer.py, test |
-      | 2 | SOFT/HARD mode selection | agileplus.py, triggers.py |
-      | 3 | Verification callback | loop_controller.py, verification_gate.py |
-      | 4 | Sitback never-idle update | mcp_sitback.py |
-      | 5 | Health-threshold trigger | triggers.py |
-      | 6 | Integration test | test_integration\**.py |
-      | Feature | LiteLLM Support | Current State | Priority |
-      |---------|-----------------|---------------|----------|
-      | **Caching** | Redis, in-memory, caching groups | ❌ Not implemented | P0 |
-      | **Streaming** | Stream=True, async streaming | ❌ Not implemented | P0 |
-      | **Fallback/Cooldowns** | cooldown*time, fallbacks | ❌ Not implemented | P0 |
-      | **Cost Tracking** | cost per request, budget tracking | ❌ Not implemented | P1 |
-      | **Latency-based routing** | latency-based routing | ❌ Not implemented | P1 |
-      | **Traffic Mirroring** | traffic mirroring for testing | ❌ Not implemented | P2 |
-      | **Alerting** | Slack, webhook, email | ❌ Not implemented | P2 |
-      | **Context Window** | Pre-call validation | ❌ Not implemented | P1 |
-      | **Usage-based routing** | Redis-backed usage tracking | ❌ Not implemented | P2 |
-      | **Model Aliasing** | model_alias support | ⚠️ Partial | P1 |
-      | **Custom routing** | Custom routing function | ❌ Not implemented | P2 |
-      | Component | Integration Point | Status |
-      |-----------|-------------------|--------|
-      | **Queue** | Router reads model preference from queue metadata | ❌ TODO |
-      | **Harvest** | LiteLLM cost/latency data harvested on Stop | ❌ TODO |
-      | **MCP Tools** | `thegent_routing*\_` tools for routing control | ❌ TODO |
+  | Endpoint | Method | Description |
+  |----------|--------|-------------|
+  |`/api/v1/projects`| GET | List all projects |
+  |`/api/v1/projects`| POST | Create project |
+  |`/api/v1/projects/{id}`| GET | Get project details |
+  |`/api/v1/projects/{id}`| PUT | Update project |
+  |`/api/v1/projects/{id}`| DELETE | Delete project |
+  |`/api/v1/agents`| GET | List all agents |
+  |`/api/v1/agents/{id}`| GET | Get agent details |
+  |`/api/v1/agents/{id}`| PUT | Update agent |
+  |`/api/v1/runs`| GET | List runs (with filters) |
+  |`/api/v1/runs/{id}`| GET | Get run details |
+  |`/api/v1/gardener/status`| GET | Get gardener status |
+  |`/api/v1/gardener/start`| POST | Start gardener |
+  |`/api/v1/gardener/stop`| POST | Stop gardener |
+  |`/api/v1/gardener/scan`| POST | Trigger scan |
+  |`/api/v1/gardener/config`| GET/PUT | Gardener config |
+  |`/api/v1/costs/daily`| GET | Daily cost summary |
+  |`/api/v1/costs/monthly`| GET | Monthly cost summary |
+  |`/api/v1/costs/alerts`| GET/POST | Cost alerts |
+  |`/api/v1/gamification/stats`| GET | XP, level, stats |
+  |`/api/v1/gamification/achievements`| GET | Achievement list |
+  | Issue | Location | Note |
+  |-------|----------|------|
+  | **Checker agent hardcoded** |`agent\*deployer.py:98`|`checker_agent_name="antigravity"`— should be configurable or derived from task/cost tier |
+  | **Session ID typo** |`loop_controller.py:56`|`logging.time.time()`→`time.time()`|
+  | **record_call dimension** |`agent_deployer.py:167`| Always`"claude"`— should use actual agent (e.g.`agent`or`task.dimension`) |
+    | Task | Description | Files |
+    |------|-------------|-------|
+    | 1 | AgentDeployer uses LifecycleController | agent_deployer.py, test |
+    | 2 | SOFT/HARD mode selection | agileplus.py, triggers.py |
+    | 3 | Verification callback | loop_controller.py, verification_gate.py |
+    | 4 | Sitback never-idle update | mcp_sitback.py |
+    | 5 | Health-threshold trigger | triggers.py |
+    | 6 | Integration test | test_integration\**.py |
+    | Feature | LiteLLM Support | Current State | Priority |
+    |---------|-----------------|---------------|----------|
+    | **Caching** | Redis, in-memory, caching groups | ❌ Not implemented | P0 |
+    | **Streaming** | Stream=True, async streaming | ❌ Not implemented | P0 |
+    | **Fallback/Cooldowns** | cooldown*time, fallbacks | ❌ Not implemented | P0 |
+    | **Cost Tracking** | cost per request, budget tracking | ❌ Not implemented | P1 |
+    | **Latency-based routing** | latency-based routing | ❌ Not implemented | P1 |
+    | **Traffic Mirroring** | traffic mirroring for testing | ❌ Not implemented | P2 |
+    | **Alerting** | Slack, webhook, email | ❌ Not implemented | P2 |
+    | **Context Window** | Pre-call validation | ❌ Not implemented | P1 |
+    | **Usage-based routing** | Redis-backed usage tracking | ❌ Not implemented | P2 |
+    | **Model Aliasing** | model_alias support | ⚠️ Partial | P1 |
+    | **Custom routing** | Custom routing function | ❌ Not implemented | P2 |
+    | Component | Integration Point | Status |
+    |-----------|-------------------|--------|
+    | **Queue** | Router reads model preference from queue metadata | ❌ TODO |
+    | **Harvest** | LiteLLM cost/latency data harvested on Stop | ❌ TODO |
+    | **MCP Tools** | `thegent_routing\*\_` tools for routing control | ❌ TODO |
       | **Agent Teams** | Router shared across teammates | ⚠️ Partial |
       | **TUI** | Routing dashboard in sitback | ❌ TODO |
 - [ ] Caching enabled (Redis or in-memory)
@@ -20750,12 +20750,12 @@ Publish quick-start docs for unattended board reflection setup and verification 
       |-----------|-------|------------|
       | CLI entry point | `cli/commands/*.py`, `clode*main.py`| Typer+Textual, inherently sync I/O |
       | MCP server protocol |`mcp/server.py`, `mcp/tools/*.py`| FastMCP, network I/O, async schema |
-      | Agent dispatch |`agents/*.py`, `agents/crew/*.py`| Orchestration, async I/O bound |
-      | Session management |`coordination/*.py`, `mesh/mesh.py`| State machine, I/O coordination |
-      | HTTP/LLM calls |`routing/litellm_router.py`, `adapters/*.py`| LLM streaming, network I/O |
+      | Agent dispatch |`agents/_.py`, `agents/crew/_.py`| Orchestration, async I/O bound |
+      | Session management |`coordination/_.py`, `mesh/mesh.py`| State machine, I/O coordination |
+      | HTTP/LLM calls |`routing/litellm_router.py`, `adapters/_.py`| LLM streaming, network I/O |
       | Config management |`config.py`(→ split into`config/`) | Pydantic, declarative, no CPU |
-      | Planning/governance | `planning/*.py`, `governance/*.py`| Policy evaluation, state machines |
-      | Observability |`observe/`, `infra/otel*.py`| OpenTelemetry SDK, no CPU hotpath |
+      | Planning/governance | `planning/_.py`, `governance/_.py`| Policy evaluation, state machines |
+      | Observability |`observe/`, `infra/otel\*.py`| OpenTelemetry SDK, no CPU hotpath |
       | MCP tool registration |`mcp/server\**.py`(50 files) | Wiring layer, no computation |
 | Response building |`cli/commands/impl*response.py`| I/O + string assembly |
 | Component | Crate | Status | Action |
@@ -20764,7 +20764,7 @@ Publish quick-start docs for unattended board reflection setup and verification 
 | Git operations |`thegent-git`| ACTIVE ✅ | No change |
 | JSONL streaming parse |`thegent-jsonl`| ACTIVE ✅ | Complete PyO3 bindings |
 | Agent discovery |`thegent-discovery`| ACTIVE ✅ | No change |
-| Artifact signing/hashing |`thegent-crypto`| ACTIVE ✅ | Add`hash_execution_record()`|
+| Artifact signing/hashing |`thegent-crypto`| ACTIVE ✅ | Add`hash*execution_record()`|
 | Model name parsing |`thegent-parser`| ACTIVE, INCOMPLETE | Fix PyO3 export; enable as default |
 | JSONL checkpoint parsing |`thegent-parser`| ACTIVE, INCOMPLETE | Fix`parse_jsonl_file()`binding |
 | XML/think-block stripping |`thegent-parser`| ACTIVE ✅ | Verify wired in |
@@ -20860,7 +20860,7 @@ Publish quick-start docs for unattended board reflection setup and verification 
 | File | LOC | Action |
 |------|-----|--------|
 |`tests/test_e2e_cli.py`| 6,125 | Split into`tests/e2e/test_cli_basic.py`, `test_cli_advanced.py`, `test_cli_edge.py`|
-|`tests/test_unit_cli_impl_coverage_d.py`| 2,468 | Split into`tests/unit/cli/test_impl_d*_.py`|
+|`tests/test_unit_cli_impl_coverage_d.py`| 2,468 | Split into`tests/unit/cli/test_impl_d\**.py`|
 |`tests/test*unit_cli_coverage_c.py`| 2,466 | Split into`tests/unit/cli/test_coverage_c*_.py`|
 |`tests/test*unit_cli_commands_a.py`| 2,114 | Split into`tests/unit/cli/commands/test_a*_.py`|
 |`tests/test*unit_cli_commands_b.py`| 2,004 | Split into`tests/unit/cli/commands/test_b*_.py`|
@@ -20891,7 +20891,7 @@ Publish quick-start docs for unattended board reflection setup and verification 
 |`cost_governance.py` | ~90 | budget*_, cost*tracking*_, auto*router*_ |
       | `resilient_routing.py` | ~80 | routing*enabled, litellm*_, circuit*breaker*_ |
       | `concurrency_control.py` | ~75 | max*concurrency, critical_lane_slots, hysteresis*_ |
-      | `backend_integration.py` | ~85 | cliproxy*\*, cursor_api*_, mcp\__, opa*\* |
+      | `backend_integration.py` | ~85 | cliproxy*\*, cursor_api*\_, mcp\__, opa*\* |
       | `security_sandbox.py` | ~65 | sandbox*_, input*guardrails*_, agent*allowlist |
       | `platform_native.py` | ~70 | use_native*_, mac*keep_awake*_, tee*\* |
       | `distributed_services.py` | ~60 | redis*_, zmx\__, remote*nodes |
@@ -22266,104 +22266,104 @@ Publish quick-start docs for unattended board reflection setup and verification 
       | Project | Pattern | Location |
       |---------|---------|----------|
       | **API/argisroute** | `X-RateLimit-*`headers, metadata in responses | wrappers, rate limiting |
-    | **API/docs** |`metadata: { model, provider, processing_time_ms, token_usage }`| AGENT_SECURITY_COMPREHENSIVE_PART2 |
-    | **trace** | cliproxy config (routing, model_mappings) |`trace/backend/configs/cliproxy.yaml`|
-    | **CLIProxyAPI** | Bifrost integration, provider routing | API/research/CLIProxyAPI |
-    | Layer | Option | Pros | Cons |
-    |-------|--------|------|-----|
-    | **CLIProxyAPIPlus** | Add headers to proxied response | Single source; all clients benefit | Requires proxy modification |
-    | **CLIProxyAPIPlus** | Prefix first stream chunk with`<!-- model: X \| provider: Y \| latency_ms: Z -->`| Visible in stream; no client change | Pollutes content when debug on |
-    | **thegent** | Log to stderr when`--debug`| No proxy change | Only when thegent is caller |
-    | **LiteLLM** |`litellm.callbacks`or response metadata | Rich metrics | Only when LiteLLM is used |
-    | Phase | Task | Status |
-    |-------|------|--------|
-    | 1 | Add`--debug`to`thegent run`, `thegent bg`; set `THGENT_DEBUG=1`; proxy gets `-debug`when env set | ✓ Done |
-    | 2 | CLIProxyAPIPlus: add`-debug`flag; when set, add response headers | Pending (fork; thegent already passes`-debug`when THGENT_DEBUG=1) |
-    | 3 | CLIProxyAPIPlus: optional response prefix`<!-- model: X \| provider: Y \| latency_ms: Z -->`when debug | Pending (fork) |
-    | 4 | Document in PROVIDER_SETUP_GUIDE, CLAUDE.md | ✓ Done |
-    | Metric | Source | Header |
-    |--------|--------|--------|
-    | model | Resolved model alias |`X-Response-Model`|
-    | provider | Provider name (minimax, glm, nim, etc.) |`X-Response-Provider`|
-    | latency_ms | Request latency |`X-Latency-Ms`|
-    | tps_1m | Rolling TPS from metrics |`X-TPS-1m`|
-    | cost_per_1k | From GET /v1/metrics/providers |`X-Cost-Per-1k`(optional) |
-    | # | Pillar | Plan | Phased WBS |
-    |---|--------|------|------------|
-    | 1 | **Dynamic model scraping** — Scrape models from every provider; expose for discovery/selection | §9 | §10.1 |
-    | 2 | **Distributed routing** — Model-first invocation; route to best available backend | §3–§5 | §10.2 |
-    | 3 | **Provider capability merging** — Antigravity + claude + gemini etc. as one logical pool | §11 | §10.3 |
-    | Model | Providers that can serve it |
-    |-------|-----------------------------|
-    | gemini-3-flash | gemini (direct), antigravity (proxy) |
-    | claude-sonnet-4 | claude (direct), codex (proxy), antigravity (proxy) |
-    | gemini-2.0-flash | gemini (direct), antigravity (proxy) |
-    | MiniMax-M2.5 | minimax (proxy only) |
-    | GLM-5 | glm (proxy only) |
-    | Provider | Backend | Models (examples) |
-    |----------|---------|-------------------|
-    | claude | direct | haiku, sonnet, opus, claude-haiku-4.5, claude-sonnet-4, ... |
-    | gemini | direct | gemini-2.0-flash, gemini-3-flash, gemini-3-pro-preview, ... |
-    | copilot | direct | claude-haiku-4.5, gpt-5, gemini-3-pro-preview, ... |
-    | codex | direct | gpt-5, gpt-5.3-codex, ... |
-    | cursor-agent | direct | gemini-3-flash, composer-1.5, ... (from cursor --list-models) |
-    | antigravity | proxy | gemini-3-flash, gemini-3-pro-high, claude-\*, tstars2.0, ... |
-    | codex (proxy) | proxy | gpt-5-codex, claude-sonnet-4, ... |
-    | minimax | proxy | MiniMax-M2.5 |
-    | glm | proxy | GLM-5 |
-    | Provider | Scraping | Source |
-    |----------|----------|--------|
-    | cursor-agent | ✓ |`cursor agent --list-models`|
-    | copilot | ✓ |`copilot --help`→ parse`--model`choices |
-    | codex | ✓ |`cursor agent --list-models`filtered |
-    | gemini | ✗ | Hardcoded defaults |
-    | claude | ✗ | Hardcoded defaults |
-    | antigravity | ✗ | Hardcoded defaults |
-    | minimax | ✗ | Hardcoded |
-    | glm | ✗ | Hardcoded |
-    | Provider | Adapter | Method | Fallback |
-    |----------|---------|--------|----------|
-    | cursor-agent |`cursor_adapter`|`cursor agent --list-models`| config defaults |
-    | copilot |`copilot_adapter`|`copilot --help`→ regex choices | static list |
-    | codex |`codex_adapter`| cursor --list-models filtered, or codex --help | static list |
-    | gemini |`gemini_adapter`|`gemini --help`→ -m/--model, or API | config default |
-    | claude |`claude_adapter`|`claude --help`→ --model aliases | static list |
-    | antigravity |`proxy_adapter`|`GET {proxy}/v1/models`| config default |
-    | minimax |`proxy_adapter`| From proxy config openai-compatibility | static MiniMax-M2.5 |
-    | glm |`proxy_adapter`| From proxy config or native | static GLM-5 |
-    | Phase | Task ID | Description | Depends On |
-    |-------|---------|-------------|------------|
-    | 1.1 | S1.1 | Define`ModelScraper`interface and`CatalogView`schema | — |
-    | 1.1 | S1.2 | Implement`cursor_adapter`, `copilot_adapter`, `codex_adapter`(reuse existing logic) | S1.1 |
-    | 1.1 | S1.3 | Implement`proxy_adapter`for antigravity/minimax/glm (GET /v1/models or config) | S1.1 |
-    | 1.1 | S1.4 | Implement`gemini_adapter`, `claude_adapter`(--help or API) | S1.1 |
-    | 1.2 | S1.5 | Add cache layer (TTL 5–30 min, configurable) | S1.2–S1.4 |
-    | 1.2 | S1.6 | Merge adapter outputs into`CatalogView`(by_provider, by_model) | S1.5 |
-    | 1.3 | S1.7 | Wire`list_models_impl`to use scraped catalog; fallback to static on adapter failure | S1.6 |
-    | 1.3 | S1.8 | Add`thegent list-models --by-model`for unified view | S1.7 |
-    | 1.3 | S1.9 | MCP`thegent_list_models`returns scraped catalog | S1.7 |
-    | Phase | Task ID | Description | Depends On |
-    |-------|---------|-------------|------------|
-    | 2.1 | R1.1 | Define`ModelCatalog`, `Route`, `resolve_route(model_id, provider_hint?, policy?)`| — |
-    | 2.1 | R1.2 | Populate static catalog from`\_PROXY_MODEL`and provider defaults | R1.1 |
-    | 2.1 | R1.3 | Add alias table (haiku→claude-haiku-4.5, sonnet→claude-sonnet-4, etc.) | R1.1 |
-    | 2.2 | R2.1 | Add CLI`-M <model>`and`--provider`to`thegent run`| R1.2 |
-    | 2.2 | R2.2 | Model-first path: if`-M`without provider, call`resolve_route(model)`with prefer_direct | R2.1, R1.2 |
-    | 2.2 | R2.3 | MCP`thegent_run(model=..., provider=...)`with same semantics | R2.2 |
-    | 2.3 | R3.1 | Implement`run_with_failover(model, prompt, ...)`— retry next route on failure | R2.2 |
-    | 2.4 | R4.1 | Add`--routing prefer_direct | prefer_proxy | failover`(and config default) | R2.2 |
-    | Phase | Task ID | Description | Depends On |
-    |-------|---------|-------------|------------|
-    | 3.1 | M1.1 | Define capability merge rules: antigravity ∪ claude ∪ gemini ∪ codex ∪ copilot | R1.1 |
-    | 3.1 | M1.2 | Build overlap matrix: which models appear in which providers | S1.6, R1.2 |
-    | 3.1 | M1.3 | Canonicalize model IDs across providers (claude "sonnet" = codex "claude-sonnet-4" = antigravity "claude-sonnet-4") | R1.3 |
-    | 3.2 | M2.1 | Merge antigravity models into claude/gemini/codex capability sets for routing | M1.1, M1.2 |
-    | 3.2 | M2.2 | When resolving route for model X, consider all providers that serve X (not just primary) | R1.2, M2.1 |
-    | 3.3 | M3.1 | Discovery:`list-models --by-model`shows "claude-sonnet-4: claude, codex, antigravity" | S1.8, M1.2 |
-    | 3.3 | M3.2 | MCP catalog includes`by_model`with provider list per model | S1.9, M1.2 |
-    | Source | Method | Endpoint/Command | Response Format | Notes |
-    |--------|--------|------------------|-----------------|-------|
-    | **CLIProxyAPIPlus** | HTTP GET |`GET http://127.0.0.1:{port}/v1/models` | OpenAI-compatible `{data: [{id: "model-id", ...}]}` | Start proxy if not running; use `ensure_proxy_running()` |
+  | **API/docs** |`metadata: { model, provider, processing_time_ms, token_usage }`| AGENT_SECURITY_COMPREHENSIVE_PART2 |
+  | **trace** | cliproxy config (routing, model_mappings) |`trace/backend/configs/cliproxy.yaml`|
+  | **CLIProxyAPI** | Bifrost integration, provider routing | API/research/CLIProxyAPI |
+  | Layer | Option | Pros | Cons |
+  |-------|--------|------|-----|
+  | **CLIProxyAPIPlus** | Add headers to proxied response | Single source; all clients benefit | Requires proxy modification |
+  | **CLIProxyAPIPlus** | Prefix first stream chunk with`<!-- model: X \| provider: Y \| latency_ms: Z -->`| Visible in stream; no client change | Pollutes content when debug on |
+  | **thegent** | Log to stderr when`--debug`| No proxy change | Only when thegent is caller |
+  | **LiteLLM** |`litellm.callbacks`or response metadata | Rich metrics | Only when LiteLLM is used |
+  | Phase | Task | Status |
+  |-------|------|--------|
+  | 1 | Add`--debug`to`thegent run`, `thegent bg`; set `THGENT_DEBUG=1`; proxy gets `-debug`when env set | ✓ Done |
+  | 2 | CLIProxyAPIPlus: add`-debug`flag; when set, add response headers | Pending (fork; thegent already passes`-debug`when THGENT_DEBUG=1) |
+  | 3 | CLIProxyAPIPlus: optional response prefix`<!-- model: X \| provider: Y \| latency_ms: Z -->`when debug | Pending (fork) |
+  | 4 | Document in PROVIDER_SETUP_GUIDE, CLAUDE.md | ✓ Done |
+  | Metric | Source | Header |
+  |--------|--------|--------|
+  | model | Resolved model alias |`X-Response-Model`|
+  | provider | Provider name (minimax, glm, nim, etc.) |`X-Response-Provider`|
+  | latency_ms | Request latency |`X-Latency-Ms`|
+  | tps_1m | Rolling TPS from metrics |`X-TPS-1m`|
+  | cost_per_1k | From GET /v1/metrics/providers |`X-Cost-Per-1k`(optional) |
+  | # | Pillar | Plan | Phased WBS |
+  |---|--------|------|------------|
+  | 1 | **Dynamic model scraping** — Scrape models from every provider; expose for discovery/selection | §9 | §10.1 |
+  | 2 | **Distributed routing** — Model-first invocation; route to best available backend | §3–§5 | §10.2 |
+  | 3 | **Provider capability merging** — Antigravity + claude + gemini etc. as one logical pool | §11 | §10.3 |
+  | Model | Providers that can serve it |
+  |-------|-----------------------------|
+  | gemini-3-flash | gemini (direct), antigravity (proxy) |
+  | claude-sonnet-4 | claude (direct), codex (proxy), antigravity (proxy) |
+  | gemini-2.0-flash | gemini (direct), antigravity (proxy) |
+  | MiniMax-M2.5 | minimax (proxy only) |
+  | GLM-5 | glm (proxy only) |
+  | Provider | Backend | Models (examples) |
+  |----------|---------|-------------------|
+  | claude | direct | haiku, sonnet, opus, claude-haiku-4.5, claude-sonnet-4, ... |
+  | gemini | direct | gemini-2.0-flash, gemini-3-flash, gemini-3-pro-preview, ... |
+  | copilot | direct | claude-haiku-4.5, gpt-5, gemini-3-pro-preview, ... |
+  | codex | direct | gpt-5, gpt-5.3-codex, ... |
+  | cursor-agent | direct | gemini-3-flash, composer-1.5, ... (from cursor --list-models) |
+  | antigravity | proxy | gemini-3-flash, gemini-3-pro-high, claude-\*, tstars2.0, ... |
+  | codex (proxy) | proxy | gpt-5-codex, claude-sonnet-4, ... |
+  | minimax | proxy | MiniMax-M2.5 |
+  | glm | proxy | GLM-5 |
+  | Provider | Scraping | Source |
+  |----------|----------|--------|
+  | cursor-agent | ✓ |`cursor agent --list-models`|
+  | copilot | ✓ |`copilot --help`→ parse`--model`choices |
+  | codex | ✓ |`cursor agent --list-models`filtered |
+  | gemini | ✗ | Hardcoded defaults |
+  | claude | ✗ | Hardcoded defaults |
+  | antigravity | ✗ | Hardcoded defaults |
+  | minimax | ✗ | Hardcoded |
+  | glm | ✗ | Hardcoded |
+  | Provider | Adapter | Method | Fallback |
+  |----------|---------|--------|----------|
+  | cursor-agent |`cursor_adapter`|`cursor agent --list-models`| config defaults |
+  | copilot |`copilot_adapter`|`copilot --help`→ regex choices | static list |
+  | codex |`codex_adapter`| cursor --list-models filtered, or codex --help | static list |
+  | gemini |`gemini_adapter`|`gemini --help`→ -m/--model, or API | config default |
+  | claude |`claude_adapter`|`claude --help`→ --model aliases | static list |
+  | antigravity |`proxy_adapter`|`GET {proxy}/v1/models`| config default |
+  | minimax |`proxy_adapter`| From proxy config openai-compatibility | static MiniMax-M2.5 |
+  | glm |`proxy_adapter`| From proxy config or native | static GLM-5 |
+  | Phase | Task ID | Description | Depends On |
+  |-------|---------|-------------|------------|
+  | 1.1 | S1.1 | Define`ModelScraper`interface and`CatalogView`schema | — |
+  | 1.1 | S1.2 | Implement`cursor_adapter`, `copilot_adapter`, `codex_adapter`(reuse existing logic) | S1.1 |
+  | 1.1 | S1.3 | Implement`proxy_adapter`for antigravity/minimax/glm (GET /v1/models or config) | S1.1 |
+  | 1.1 | S1.4 | Implement`gemini_adapter`, `claude_adapter`(--help or API) | S1.1 |
+  | 1.2 | S1.5 | Add cache layer (TTL 5–30 min, configurable) | S1.2–S1.4 |
+  | 1.2 | S1.6 | Merge adapter outputs into`CatalogView`(by_provider, by_model) | S1.5 |
+  | 1.3 | S1.7 | Wire`list_models_impl`to use scraped catalog; fallback to static on adapter failure | S1.6 |
+  | 1.3 | S1.8 | Add`thegent list-models --by-model`for unified view | S1.7 |
+  | 1.3 | S1.9 | MCP`thegent_list_models`returns scraped catalog | S1.7 |
+  | Phase | Task ID | Description | Depends On |
+  |-------|---------|-------------|------------|
+  | 2.1 | R1.1 | Define`ModelCatalog`, `Route`, `resolve_route(model_id, provider_hint?, policy?)`| — |
+  | 2.1 | R1.2 | Populate static catalog from`\_PROXY_MODEL`and provider defaults | R1.1 |
+  | 2.1 | R1.3 | Add alias table (haiku→claude-haiku-4.5, sonnet→claude-sonnet-4, etc.) | R1.1 |
+  | 2.2 | R2.1 | Add CLI`-M <model>`and`--provider`to`thegent run`| R1.2 |
+  | 2.2 | R2.2 | Model-first path: if`-M`without provider, call`resolve_route(model)`with prefer_direct | R2.1, R1.2 |
+  | 2.2 | R2.3 | MCP`thegent_run(model=..., provider=...)`with same semantics | R2.2 |
+  | 2.3 | R3.1 | Implement`run_with_failover(model, prompt, ...)`— retry next route on failure | R2.2 |
+  | 2.4 | R4.1 | Add`--routing prefer_direct | prefer_proxy | failover`(and config default) | R2.2 |
+  | Phase | Task ID | Description | Depends On |
+  |-------|---------|-------------|------------|
+  | 3.1 | M1.1 | Define capability merge rules: antigravity ∪ claude ∪ gemini ∪ codex ∪ copilot | R1.1 |
+  | 3.1 | M1.2 | Build overlap matrix: which models appear in which providers | S1.6, R1.2 |
+  | 3.1 | M1.3 | Canonicalize model IDs across providers (claude "sonnet" = codex "claude-sonnet-4" = antigravity "claude-sonnet-4") | R1.3 |
+  | 3.2 | M2.1 | Merge antigravity models into claude/gemini/codex capability sets for routing | M1.1, M1.2 |
+  | 3.2 | M2.2 | When resolving route for model X, consider all providers that serve X (not just primary) | R1.2, M2.1 |
+  | 3.3 | M3.1 | Discovery:`list-models --by-model`shows "claude-sonnet-4: claude, codex, antigravity" | S1.8, M1.2 |
+  | 3.3 | M3.2 | MCP catalog includes`by_model`with provider list per model | S1.9, M1.2 |
+  | Source | Method | Endpoint/Command | Response Format | Notes |
+  |--------|--------|------------------|-----------------|-------|
+  | **CLIProxyAPIPlus** | HTTP GET |`GET http://127.0.0.1:{port}/v1/models` | OpenAI-compatible `{data: [{id: "model-id", ...}]}` | Start proxy if not running; use `ensure_proxy_running()` |
       | **Gemini** | CLI subprocess | `gemini --help` | stdout with `-m`/`--model` choices or usage | Parse regex for model names; fallback: config default |
       | **Claude** | CLI subprocess | `claude --help` | stdout with `--model` aliases | Parse "haiku", "sonnet", "opus" + full IDs |
       | **Cursor** | CLI subprocess | `cursor agent --list-models` | stdout, one model per line | Already used; filter by provider if needed |
@@ -22743,15 +22743,15 @@ Publish quick-start docs for unattended board reflection setup and verification 
       | Pattern | Description | Action |
       |---------|-------------|--------|
       | `*.md`| Canonical docs | Keep as-is |
-      |`*\_COMPLETE.md`| Completion reports | Consolidate to single file |
-      |`*\_SUMMARY.md`| Summary docs | Merge to parent |
-      |`*\_EXPANDED.md`| Extended versions | Merge to base |
-      |`*\_GUIDE.md`| How-to guides | Keep, standardize format |
-      |`*\_REFERENCE.md`| Reference docs | Keep, add to index |
-      |`*\_PLAN.md` | Planning docs | Archive to docs/plans/ |
+    |`_\_COMPLETE.md`| Completion reports | Consolidate to single file |
+    |`_\_SUMMARY.md`| Summary docs | Merge to parent |
+    |`_\_EXPANDED.md`| Extended versions | Merge to base |
+    |`_\_GUIDE.md`| How-to guides | Keep, standardize format |
+    |`_\_REFERENCE.md`| Reference docs | Keep, add to index |
+    |`_\_PLAN.md` | Planning docs | Archive to docs/plans/ |
       | Task | ID | File | Action | Ext. Summary |
       |------|-----|------|--------|--------------|
-      | B.1.1 | GUIDE-ARCH-001 | AGENT_DEBUGGING_AND_REMEDIATION_GUIDE.md | Extend | ✅ |
+      | B.1.1 | GUIDE-ARCH-001 | AGENT*DEBUGGING_AND_REMEDIATION_GUIDE.md | Extend | ✅ |
       | B.1.2 | GUIDE-ARCH-002 | AGENT_INSTRUCTIONS_THEGENT.md | Extend | ✅ |
       | B.1.3 | GUIDE-ARCH-003 | architecture-enforcement.md | Extend | ✅ |
       | B.1.4 | GUIDE-ARCH-004 | BKM_IMPLEMENTATION_GUIDES.md | Extend | ✅ |
@@ -22897,7 +22897,7 @@ Publish quick-start docs for unattended board reflection setup and verification 
       | E.1.1 | WS-IMPL-001 | Implement Supermemory integration | SESSION_RESEARCH_FRAGMENTS | P1 |
       | E.1.2 | WS-IMPL-002 | Implement Pareto routing | PARETO_FRONTIER\** | P1 |
       | E.1.3 | WS-IMPL-003 | Implement cost governance | COST*ROUTING_DEFERRED | P1 |
-      | E.1.4 | WS-IMPL-004 | Build thegent-hooks binary | HOOK_RUST_MIGRATION*_ | P1 |
+      | E.1.4 | WS-IMPL-004 | Build thegent-hooks binary | HOOK_RUST_MIGRATION\** | P1 |
       | E.1.5 | WS-IMPL-005 | Replace urllib with httpx | LIBRARY*REPLACEMENT*_ | P1 |
       | E.1.6 | WS-IMPL-006 | Migrate retry to tenacity | TENACITY*RETRY*_ | P1 |
       | E.1.7 | WS-IMPL-007 | Replace polling with watchdog | WATCHDOG*TRIGGER | P1 |
@@ -22910,7 +22910,7 @@ Publish quick-start docs for unattended board reflection setup and verification 
       | E.2.2 | WS-DOC-002 | Add EXTENSION*SUMMARY to all reference | reference/*.md | P1 |
       | E.2.3 | WS-DOC-003 | Standardize guide formatting | guides/_.md | P2 |
       | E.2.4 | WS-DOC-004 | Update reference index | reference/index.md | P1 |
-      | E.2.5 | WS-DOC-005 | Create doc cross-reference index | reference/XREF_INDEX.md | P2 |
+      | E.2.5 | WS-DOC-005 | Create doc cross-reference index | reference/XREF*INDEX.md | P2 |
       | ID | Title | Source Doc | Priority | Depends | Effort |
       |----|-------|------------|----------|---------|--------|
       | WS-XXX-000 | Description | DOC_NAME.md | P1/P2/P3 | ID1, ID2 | N hrs |
@@ -22921,7 +22921,7 @@ Publish quick-start docs for unattended board reflection setup and verification 
       | F.1.3 | IMPL-LIB-003 | Replace polling with watchdog (1 file) | File watching audit | Updated file |
       | Task | ID | Description | Input | Output |
       |------|-----|-------------|-------|--------|
-      | F.2.1 | IMPL-HOOK-001 | Build thegent-hooks binary | HOOK_RUST_MIGRATION_\* | Binary |
+      | F.2.1 | IMPL-HOOK-001 | Build thegent-hooks binary | HOOK_RUST_MIGRATION*\* | Binary |
       | F.2.2 | IMPL-HOOK-002 | Migrate hooks to use thegent-hooks (opt-in) | F.2.1 | Updated hooks |
       | F.2.3 | IMPL-HOOK-003 | Make thegent-hooks default | F.2.2 | Updated hooks |
       | F.2.4 | IMPL-HOOK-004 | Add performance benchmarks | F.2.1 | Benchmark report |
@@ -23160,14 +23160,14 @@ Publish quick-start docs for unattended board reflection setup and verification 
       |----------|----------|--------|
       | **Critical path (run often)** | quality-gate.sh, security-pipeline.sh, test-maturity.sh, async-test-runner.sh | **HIGH** — complex logic, cache, git, many subprocesses; native Rust “run-hook” for 1–2 gives largest win |
       | **Session/lifecycle** | session-cleanup.sh, session-start-*.sh, task-completed.sh, teammate-idle.sh, doc-location-guard.sh, prompt-submit-guard.sh | **MEDIUM** — some already native in hook-dispatcher (doc*location_guard, session_cleanup, prompt_submit_guard); rest can call thegent-hooks |
-      | **QA / governance** | governance-gates.sh, spec-verifier.sh, qa-preflight.sh, qa-*-gate.sh (many) | **MEDIUM** — governance_scan already in Rust; individual gates can stay shell that call thegent-hooks for init/cache/git |
+      | **QA / governance** | governance-gates.sh, spec-verifier.sh, qa-preflight.sh, qa-*-gate.sh (many) | **MEDIUM** — governance*scan already in Rust; individual gates can stay shell that call thegent-hooks for init/cache/git |
       | **Gardener / XP** | gardener-xp.sh, gardener-loop.sh, gardener-spawn.sh, gardener-*.sh | **MEDIUM** — invoked from Python (main.py); can become Rust binary or stay shell calling thegent-hooks |
       | **Harvest / ideas** | harvest-pending-queue.sh, harvest-idea-seeds-stop.sh | **LOW** — called from prompts.py; can stay shell or become small Rust CLI |
       | **Other** | complexity-ratchet.sh, auto-checkpoint.sh, change-doc-tracker.sh, pre-compact-snapshot.sh, hook-watcher.sh, speculative-stop-prewarmer.sh, stop-reconcile.sh, prune-orphans-stop.sh, suppression-*.sh, pre-commit-docs.sh, docs-build.sh | **LOW–MEDIUM** — keep as thin shell that call thegent-hooks for init/cache/git; or migrate hot ones later |
       | **Tests** | test_cache**.sh | **LOW** — dev only |
       | Shim | Role | Benefit |
       |------|------|--------|
-      | **git** | resolve*real_binary git; agent passthrough (codex/copilot/dex/claude/cursor); exec real git | **HIGH** — on every git in terminals/agents; already minimal (no common.sh). Replace with **Rust binary** that does resolve + passthrough + exec to avoid any bash. |
+      | **git** | resolve\*real_binary git; agent passthrough (codex/copilot/dex/claude/cursor); exec real git | **HIGH** — on every git in terminals/agents; already minimal (no common.sh). Replace with **Rust binary** that does resolve + passthrough + exec to avoid any bash. |
       | **grep** | resolve real grep; prefer rg, exec | **MEDIUM** — replace with Rust that exec’s rg or grep |
       | **find** | resolve real find; filter -q/--quiet; exec fd or find | **MEDIUM** — replace with Rust that filters args and exec’s |
       | **codex, copilot, dex, claude, cursor** | PATH prepend ~/.local/bin; resolve agent binary (dex→codex fallback); exec | **MEDIUM** — replace with single Rust binary `thegent-agent-shim <agent> argv...` to avoid bash + PATH parsing |
@@ -23187,7 +23187,7 @@ Publish quick-start docs for unattended board reflection setup and verification 
       | **monitor-process-count.sh**, **benchmark-comprehensive.sh** | Metrics/bench | **KEEP SHELL** — dev |
       | **dx-audit.sh**, **traceability-validator.sh**, **test-pyramid-validator.sh** | Audits | **LOW** — can stay shell |
       | **start_proxy_dev.sh**, **generate_demos.sh** | Dev helpers | **KEEP SHELL** |
-      | **build-docs.sh** (templates) | Build VitePress/docs | **KEEP SHELL** |
+      | **build-docs.sh** (templates) | Build VitePress/docs | **KEEP SHELL\** |
       | Caller | Invokes | Action |
       |--------|--------|--------|
       | main.py | hook-watcher.sh | Keep or replace with thegent-watcher (Rust) when that covers hook-watcher use case |
@@ -23203,14 +23203,14 @@ Publish quick-start docs for unattended board reflection setup and verification 
       | hook_share_result, hook_get_shared | `thegent-hooks share`, `get-shared` |
       | hook_should_run, hook_should_skip | `thegent-hooks should-run`, `skip` |
       | hook_config_get, hook_config_true | `thegent-hooks config-get` |
-      | hook_breaker*_ | `thegent-hooks breaker-check`, `breaker-record`, `breaker-reset` |
+      | hook_breaker** | `thegent-hooks breaker-check`, `breaker-record`, `breaker-reset` |
       | hook*debounce_file | `thegent-hooks debounce` |
       | hook_incremental*_ | `thegent-hooks incremental-check`, `incremental-record` |
       | hook*shared_fr_ids, hook_shared_fr_index | `thegent-hooks fr-ids`, `fr-index` |
       | get_affected_tests, affected_tests*_ | `thegent-hooks affected-tests` |
       | hook*prewarm_all | `thegent-hooks prewarm` |
-      | write*__report | `thegent-hooks report` |
-      | hook_learning__ | `thegent-hooks learning-record`, `learning-should-skip` |
+      | write***report | `thegent-hooks report` |
+      | hook_learning** | `thegent-hooks learning-record`, `learning-should-skip` |
       | Current (shell shim) | Rust binary | Notes |
       |----------------------|-------------|--------|
       | ~/.local/bin/git | **thegent-git-shim** (new) or **thegent-shims** | Single binary: `thegent-shims git -- argv...` — resolve real git, agent passthrough, exec. No bash. |
@@ -23223,7 +23223,7 @@ Publish quick-start docs for unattended board reflection setup and verification 
       | **Dispatchers** | Obsolete when hook-dispatcher + thegent-hooks are single path | pretool/posttool/stop-dispatcher.sh until Phase 4 |
       | **Event hooks** | Logic of quality-gate, security-pipeline (optionally) → **thegent-hooks run-hook**; all others become thin callers of thegent-hooks | Thin hooks that only call thegent-hooks; test/dev hooks |
       | **Install shims** | git, grep, find, codex/copilot/dex/claude/cursor → **thegent-shims** | Role shims (run, bg, …) as one-liners or later Rust |
-      | **Scripts** | — | install*zsh_plugins, fix*_, build-\_, benchmark, dx-audit, harvest (optional later), gardener (optional later) |
+      | **Scripts** | — | install*zsh_plugins, fix*\_, build-\_, benchmark, dx-audit, harvest (optional later), gardener (optional later) |
       | **Python-invoked** | gardener-xp, hook-watcher → Rust/MCP when beneficial | harvest-idea-seeds as shell until Phase 5 |
       | Task | Crate / Binary | Status | Interface |
       |------|----------------|--------|-----------|
@@ -23476,26 +23476,26 @@ Publish quick-start docs for unattended board reflection setup and verification 
 | **debounce** | Debounce leader/follower; output batch of files if leader |`hook*debounce_file`|
 | **incremental-check** / **incremental-record** | Manifest-based “inputs unchanged?” |`hook_incremental*_`|
 | **file-hash** | Content hash for paths (with optional file-hash cache) |`hash*for_cache`, `hook_file_hash_cache`|
-      | **fr-ids** | Parse FR-* from FUNCTIONAL*REQUIREMENTS.md, cache |`hook_shared_fr_ids`|
+      | **fr-ids** | Parse FR-* from FUNCTIONAL\*REQUIREMENTS.md, cache |`hook_shared_fr_ids`|
       | **fr-index** | Build file:FR index under shared |`hook_shared_fr_index`|
       | **affected-tests** | Affected tests for given files (pattern + coverage + imports) |`get_affected_tests`, `affected_tests\**`|
-| **prewarm** | Prewarm shared data, ruff, shellcheck caches |`hook*prewarm_all`|
-| **progress** | No-op or emit progress line (for idle timeout) |`hook_progress`|
-| **report** | Write pass/fail/na JSON report to VERIFY_DIR |`write_pass_report`, etc. |
-| **learning-record** / **learning-should-skip** | Learning-based skip | `hook_learning*\_`|
-| Concept | Current (shell) | Rust |
-|--------|------------------|------|
-| Cache root | HOOK_CACHE_DIR = $TMPDIR/claude-hook-cache-$UID | Same (env or directories crate) |
-| Shared dir | HOOK_CACHE_DIR/shared | Same |
-| Cache entry | HOOK_CACHE_DIR/{key}.out, .rc | Same |
-| Git cache | GIT_CACHE_DIR (e.g. .git-cache) or project-local | File cache under HOOK_CACHE_DIR/git or per-repo |
-| Config | hook-config.yaml, qa-local.json | Read via config module |
-| Breakers | HOOK_CACHE_DIR/breakers | Same |
-| Learning | HOOK_CACHE_DIR/learning/history.log | Same |
-| ID | Task | Est. Time | Dependencies |
-|----|------|-----------|--------------|
-| P1.1.1 | Install Syncthing on Windows | 15 min | None |
-| P1.1.2 | Create`D:\kush\` directory structure | 10 min | None |
+      | **prewarm** | Prewarm shared data, ruff, shellcheck caches |`hook*prewarm_all`|
+      | **progress** | No-op or emit progress line (for idle timeout) |`hook_progress`|
+      | **report** | Write pass/fail/na JSON report to VERIFY_DIR |`write_pass_report`, etc. |
+      | **learning-record** / **learning-should-skip** | Learning-based skip | `hook_learning*\_`|
+      | Concept | Current (shell) | Rust |
+      |--------|------------------|------|
+      | Cache root | HOOK_CACHE_DIR = $TMPDIR/claude-hook-cache-$UID | Same (env or directories crate) |
+      | Shared dir | HOOK_CACHE_DIR/shared | Same |
+      | Cache entry | HOOK_CACHE_DIR/{key}.out, .rc | Same |
+      | Git cache | GIT_CACHE_DIR (e.g. .git-cache) or project-local | File cache under HOOK_CACHE_DIR/git or per-repo |
+      | Config | hook-config.yaml, qa-local.json | Read via config module |
+      | Breakers | HOOK_CACHE_DIR/breakers | Same |
+      | Learning | HOOK_CACHE_DIR/learning/history.log | Same |
+      | ID | Task | Est. Time | Dependencies |
+      |----|------|-----------|--------------|
+      | P1.1.1 | Install Syncthing on Windows | 15 min | None |
+      | P1.1.2 | Create`D:\kush\` directory structure | 10 min | None |
       | P1.1.3 | Configure Syncthing folder: `D:\kush\` | 10 min | P1.1.1, P1.1.2 |
       | P1.1.4 | Install Tailscale on Windows | 10 min | None |
       | P1.1.5 | Configure Tailscale and get device IP | 5 min | P1.1.4 |

@@ -3031,7 +3031,7 @@ remaining_today = tokensPerDayCap - tokensUsedToday
 expected_remaining_today = tokensPerDayCap \* remaining_day_fraction
 
 day*shadow = 1 / max(remaining_today / expected_remaining_today, ε)
-effective_cost = base_cost * day_shadow _ monthly_budget_shadow
+effective_cost = base_cost * day*shadow * monthly*budget_shadow
 Also:
 Add rate-limit penalty if you’re near TPM/RPM; Cerebras explicitly lists those caps and notes limits can change.
 D2.2 NVIDIA build.nvidia.com serverless = volatile free plan
@@ -3044,7 +3044,7 @@ effective_cost = floor_cost + volatility_penalty + throttle_penalty
 Throttle penalty increases as you see 429/5xx.
 D2.3 NIM self-host = compute-metered
 Use measured throughput and rental cost:
-effective_$per_token = ($/hour) / (tokens_per_hour_realized)
+effective*$per_token = ($/hour) / (tokens_per_hour_realized)
 Where:
 tokens_per_hour_realized = measured aggregate tokens/sec at your reference concurrency × 3600.
 NIM ON vs OFF example provides a sanity check that throughput can nearly 2× and ITL improves in some configs.
@@ -3330,7 +3330,7 @@ Scope update: Cerebras, NVIDIA NIM (serverless + self-host), Step 3.5 Flash, Dee
    coding: test pass rate, lint/build success, escalation rate, tool/json adherence
    apply role: merge correctness / patch success rate
    Blend:
-   quality = (1-ρ(n))*sigmoid(offline_adj) + ρ(n)\*online_quality
+   quality = (1-ρ(n))\*sigmoid(offline_adj) + ρ(n)\*online_quality
    ρ(n)=n/(n+k)
    2.5 Router policy
    hard filter (capabilities, context, maxCost, minQuality, compliance)
