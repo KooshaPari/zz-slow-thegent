@@ -143,9 +143,7 @@ class TestVetterResult:
 
     def test_vetter_result_revision_is_fail(self) -> None:
         # @trace FR-VET-090
-        result = VetterResult.revision_requested(
-            check_name="c", policy_name="p", reason="y"
-        )
+        result = VetterResult.revision_requested(check_name="c", policy_name="p", reason="y")
         assert result.is_fail is True
         assert result.is_pass is False
 
@@ -224,9 +222,7 @@ class TestVetterPolicy:
 
     def test_vetter_policy_to_dict(self) -> None:
         # @trace FR-VET-090
-        policy = VetterPolicy(
-            name="p", severity=VetterSeverity.WARNING, description="desc"
-        )
+        policy = VetterPolicy(name="p", severity=VetterSeverity.WARNING, description="desc")
         d = policy.to_dict()
         assert d["name"] == "p"
         assert d["severity"] == "warning"
@@ -326,9 +322,7 @@ class TestVetterCheck:
                 return shared_policy
 
             def run(self, payload: dict[str, Any]) -> VetterResult:
-                return VetterResult.approved(
-                    check_name=self.name, policy_name=self.policy.name
-                )
+                return VetterResult.approved(check_name=self.name, policy_name=self.policy.name)
 
         check = _StablePolicyCheck()
         assert check.is_enabled is True
@@ -350,9 +344,7 @@ class TestVetterCheck:
                 return self._policy
 
             def run(self, payload: dict[str, Any]) -> VetterResult:
-                return VetterResult.approved(
-                    check_name=self.name, policy_name=self.policy.name
-                )
+                return VetterResult.approved(check_name=self.name, policy_name=self.policy.name)
 
         check = _DisabledPolicyCheck()
         assert check.is_enabled is False

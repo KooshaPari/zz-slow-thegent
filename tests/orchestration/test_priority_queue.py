@@ -450,9 +450,7 @@ class TestThreadSafety:
                 with lock:
                     consumed.append(run.run_id)
 
-        producers = [
-            threading.Thread(target=producer, args=(i * 20,)) for i in range(10)
-        ]
+        producers = [threading.Thread(target=producer, args=(i * 20,)) for i in range(10)]
         consumers = [threading.Thread(target=consumer) for _ in range(10)]
 
         for t in producers + consumers:
@@ -477,9 +475,7 @@ class TestThreadSafety:
             with lock:
                 results.append(r)
 
-        threads = [
-            threading.Thread(target=canceller, args=(str(i),)) for i in range(50)
-        ]
+        threads = [threading.Thread(target=canceller, args=(str(i),)) for i in range(50)]
         for t in threads:
             t.start()
         for t in threads:

@@ -239,11 +239,7 @@ def filter_models_by_preferences(
 
         # Sort priority group by position in prefs.order
         priority.sort(
-            key=lambda m: (
-                prefs.order.index(_provider_of(m))
-                if _provider_of(m) in prefs.order
-                else len(prefs.order)
-            )
+            key=lambda m: prefs.order.index(_provider_of(m)) if _provider_of(m) in prefs.order else len(prefs.order)
         )
 
         result = priority + fallback if prefs.allow_fallbacks else priority

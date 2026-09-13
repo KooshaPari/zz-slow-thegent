@@ -68,9 +68,7 @@ def test_markdown_frontmatter_includes_json_companion_path_when_written(
     json_path = md_path.with_suffix(".json")
 
     text = md_path.read_text(encoding="utf-8")
-    metadata_line = next(
-        line for line in text.splitlines() if line.startswith("metadata: ")
-    )
+    metadata_line = next(line for line in text.splitlines() if line.startswith("metadata: "))
     metadata = json.loads(metadata_line.removeprefix("metadata: "))
 
     assert metadata["json_companion_path"] == str(json_path)

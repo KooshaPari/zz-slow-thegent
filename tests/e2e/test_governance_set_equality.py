@@ -26,11 +26,7 @@ def _bundle_paths_from_readme() -> set[str]:
     text = README_PATH.read_text(encoding="utf-8")
     match = re.search(r"Full e2e governance unit bundle \(direct\).*?`([^`]+)`", text)
     assert match, "README missing full governance bundle row"
-    return {
-        token
-        for token in match.group(1).split()
-        if token.startswith("tests/") and token.endswith(".py")
-    }
+    return {token for token in match.group(1).split() if token.startswith("tests/") and token.endswith(".py")}
 
 
 def _required_registry_paths() -> set[str]:

@@ -26,9 +26,7 @@ def test_autosync_ga_readiness_warns_when_checks_missing(tmp_path):
 def test_autosync_ga_readiness_ok_when_all_checks_present(tmp_path, monkeypatch):
     docs_ref = tmp_path / "docs" / "reference"
     docs_ref.mkdir(parents=True)
-    (docs_ref / "AUTOSYNC_GA_READINESS_CRITERIA.md").write_text(
-        "ok\n", encoding="utf-8"
-    )
+    (docs_ref / "AUTOSYNC_GA_READINESS_CRITERIA.md").write_text("ok\n", encoding="utf-8")
     (docs_ref / "autosync_status.json").write_text("{}\n", encoding="utf-8")
     monkeypatch.setenv("THGENT_WORKSTREAM_AUTOSYNC_ENABLED", "true")
 

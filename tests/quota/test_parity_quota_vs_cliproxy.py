@@ -77,14 +77,12 @@ class QuotaEnforcer:
 
             if (
                 self.quota.max_tokens_per_day > 0
-                and self.usage.tokens_used + estimated_tokens
-                > self.quota.max_tokens_per_day
+                and self.usage.tokens_used + estimated_tokens > self.quota.max_tokens_per_day
             ):
                 return False
 
             return not (
-                self.quota.max_cost_per_day > 0
-                and self.usage.cost_used + estimated_cost > self.quota.max_cost_per_day
+                self.quota.max_cost_per_day > 0 and self.usage.cost_used + estimated_cost > self.quota.max_cost_per_day
             )
 
     def record_usage(self, record: UsageRecord) -> None:

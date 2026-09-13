@@ -68,17 +68,11 @@ _tools_sessions = _mcp_server._server_tools_sessions
 # ---------------------------------------------------------------------------
 
 
-def _make_spec(
-    name: str = "my_tool", description: str = "desc", schema: dict | None = None
-) -> DynamicToolSpec:
-    return DynamicToolSpec(
-        name=name, description=description, input_schema=schema or {"type": "object"}
-    )
+def _make_spec(name: str = "my_tool", description: str = "desc", schema: dict | None = None) -> DynamicToolSpec:
+    return DynamicToolSpec(name=name, description=description, input_schema=schema or {"type": "object"})
 
 
-def _make_registry_with_tool(
-    session_id: str = "sess-1", tool_name: str = "my_tool"
-) -> DynamicToolRegistry:
+def _make_registry_with_tool(session_id: str = "sess-1", tool_name: str = "my_tool") -> DynamicToolRegistry:
     reg = DynamicToolRegistry()
     reg.register_dynamic_tool(session_id, _make_spec(tool_name))
     return reg
@@ -94,9 +88,7 @@ class TestDynamicToolSpec:
 
     def test_fields_accessible(self):
         # @trace WL-105
-        spec = DynamicToolSpec(
-            name="tool_a", description="does stuff", input_schema={"type": "object"}
-        )
+        spec = DynamicToolSpec(name="tool_a", description="does stuff", input_schema={"type": "object"})
         assert spec.name == "tool_a"
         assert spec.description == "does stuff"
         assert spec.input_schema == {"type": "object"}
@@ -138,9 +130,7 @@ class TestRegisterDynamicTool:
         # @trace WL-105
         reg = DynamicToolRegistry()
         with pytest.raises(ValueError, match="name"):
-            reg.register_dynamic_tool(
-                "sess-1", DynamicToolSpec(name="  ", description="x", input_schema={})
-            )
+            reg.register_dynamic_tool("sess-1", DynamicToolSpec(name="  ", description="x", input_schema={}))
 
     def test_non_dict_schema_raises(self):
         # @trace WL-105
@@ -320,9 +310,7 @@ class TestResolveToolCall:
         # @trace WL-105
         reg = _make_registry_with_tool()
         call = reg.create_tool_call("sess-1", "my_tool", {})
-        result = reg.resolve_tool_call(
-            call.call_id, output=None, success=False, error="timeout"
-        )
+        result = reg.resolve_tool_call(call.call_id, output=None, success=False, error="timeout")
         assert result.success is False
         assert result.error == "timeout"
 
@@ -410,9 +398,7 @@ class TestEventHelpers:
 
     def test_completed_event_success_shape(self):
         # @trace WL-105
-        result = DynamicToolCallResult(
-            call_id="cid-1", output="result text", success=True
-        )
+        result = DynamicToolCallResult(call_id="cid-1", output="result text", success=True)
         event = DynamicToolRegistry.tool_call_completed_event(result)
         assert event["event"] == "tool_call_completed"
         assert event["callId"] == "cid-1"
@@ -422,9 +408,7 @@ class TestEventHelpers:
 
     def test_completed_event_failure_includes_error(self):
         # @trace WL-105
-        result = DynamicToolCallResult(
-            call_id="cid-2", output=None, success=False, error="timeout"
-        )
+        result = DynamicToolCallResult(call_id="cid-2", output=None, success=False, error="timeout")
         event = DynamicToolRegistry.tool_call_completed_event(result)
         assert event["success"] is False
         assert event["error"] == "timeout"
@@ -468,9 +452,7 @@ class TestSessionSendImplDynamicTools:
 
     def test_list_returns_registered_tools(self):
         # @trace WL-105
-        reg_payload = json.dumps(
-            {"name": "t1", "description": "t1", "input_schema": {}}
-        ).decode()
+        reg_payload = json.dumps({"name": "t1", "description": "t1", "input_schema": {}}).decode()
         self._send("sess-1", reg_payload, "dynamic_tool_register")
         result = self._send("sess-1", "{}", "dynamic_tool_list")
         assert result["success"] is True
@@ -478,13 +460,9 @@ class TestSessionSendImplDynamicTools:
 
     def test_invoke_creates_pending_call_event(self):
         # @trace WL-105
-        reg_payload = json.dumps(
-            {"name": "lookup", "description": "lookup", "input_schema": {}}
-        ).decode()
+        reg_payload = json.dumps({"name": "lookup", "description": "lookup", "input_schema": {}}).decode()
         self._send("sess-1", reg_payload, "dynamic_tool_register")
-        invoke_payload = json.dumps(
-            {"name": "lookup", "arguments": {"q": "hello"}}
-        ).decode()
+        invoke_payload = json.dumps({"name": "lookup", "arguments": {"q": "hello"}}).decode()
         result = self._send("sess-1", invoke_payload, "dynamic_tool_invoke")
         assert result["success"] is True
         assert result["event"]["event"] == "tool_call_requested"
@@ -492,16 +470,12 @@ class TestSessionSendImplDynamicTools:
 
     def test_complete_resolves_pending_call(self):
         # @trace WL-105
-        reg_payload = json.dumps(
-            {"name": "fetch", "description": "fetch", "input_schema": {}}
-        ).decode()
+        reg_payload = json.dumps({"name": "fetch", "description": "fetch", "input_schema": {}}).decode()
         self._send("sess-1", reg_payload, "dynamic_tool_register")
         invoke_payload = json.dumps({"name": "fetch", "arguments": {}}).decode()
         invoke_result = self._send("sess-1", invoke_payload, "dynamic_tool_invoke")
         call_id = invoke_result["event"]["callId"]
-        complete_payload = json.dumps(
-            {"callId": call_id, "output": "fetched!", "success": True}
-        ).decode()
+        complete_payload = json.dumps({"callId": call_id, "output": "fetched!", "success": True}).decode()
         result = self._send("sess-1", complete_payload, "dynamic_tool_complete")
         assert result["success"] is True
         assert result["event"]["event"] == "tool_call_completed"
@@ -515,9 +489,7 @@ class TestSessionSendImplDynamicTools:
 
     def test_complete_failed_no_error_raises(self):
         # @trace WL-105
-        reg_payload = json.dumps(
-            {"name": "bad_tool", "description": "bad", "input_schema": {}}
-        ).decode()
+        reg_payload = json.dumps({"name": "bad_tool", "description": "bad", "input_schema": {}}).decode()
         self._send("sess-1", reg_payload, "dynamic_tool_register")
         invoke_payload = json.dumps({"name": "bad_tool", "arguments": {}}).decode()
         invoke_result = self._send("sess-1", invoke_payload, "dynamic_tool_invoke")
@@ -589,9 +561,7 @@ class TestMCPToolCallables:
                 input_schema={},
             )
         )
-        call = _tools_sessions._dynamic_registry.create_tool_call(
-            "sess-z", "action", {}
-        )
+        call = _tools_sessions._dynamic_registry.create_tool_call("sess-z", "action", {})
         raw = self._run(
             thegent_complete_tool_call(
                 session_id="sess-z",

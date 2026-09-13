@@ -29,32 +29,24 @@ def _mock_completed(returncode: int = 0) -> MagicMock:
 
 @patch("thegent.roid_main._resolve_droid_cmd", return_value="droid")
 @patch("thegent.roid_main.subprocess.run")
-def test_default_roid_uses_flash_model(
-    mock_run: MagicMock, _mock_resolve: MagicMock
-) -> None:
+def test_default_roid_uses_flash_model(mock_run: MagicMock, _mock_resolve: MagicMock) -> None:
     mock_run.return_value = _mock_completed(0)
 
     result = runner.invoke(app, [])
 
     assert result.exit_code == 0
-    mock_run.assert_called_once_with(
-        ["droid", "--model", GEMINI_FLASH_MODEL], check=False
-    )
+    mock_run.assert_called_once_with(["droid", "--model", GEMINI_FLASH_MODEL], check=False)
 
 
 @patch("thegent.roid_main._resolve_droid_cmd", return_value="droid")
 @patch("thegent.roid_main.subprocess.run")
-def test_roid_flash_uses_flash_model(
-    mock_run: MagicMock, _mock_resolve: MagicMock
-) -> None:
+def test_roid_flash_uses_flash_model(mock_run: MagicMock, _mock_resolve: MagicMock) -> None:
     mock_run.return_value = _mock_completed(0)
 
     result = runner.invoke(app, ["flash"])
 
     assert result.exit_code == 0
-    mock_run.assert_called_once_with(
-        ["droid", "--model", GEMINI_FLASH_MODEL], check=False
-    )
+    mock_run.assert_called_once_with(["droid", "--model", GEMINI_FLASH_MODEL], check=False)
 
 
 def test_roid_dex_alias_maps_to_codex_model() -> None:
@@ -76,9 +68,7 @@ def test_roid_alias_parity_table(model_alias: str, canonical_model: str) -> None
 
 @patch("thegent.roid_main._resolve_droid_cmd", return_value="droid")
 @patch("thegent.roid_main.subprocess.run")
-def test_roid_mini_uses_gpt5_mini(
-    mock_run: MagicMock, _mock_resolve: MagicMock
-) -> None:
+def test_roid_mini_uses_gpt5_mini(mock_run: MagicMock, _mock_resolve: MagicMock) -> None:
     mock_run.return_value = _mock_completed(0)
 
     result = runner.invoke(app, ["mini"])

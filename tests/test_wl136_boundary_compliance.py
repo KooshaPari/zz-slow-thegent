@@ -19,19 +19,13 @@ AUDIT_SCRIPT = ROOT / "scripts" / "audit_boundary_compliance.py"
 # @trace WL-136 B90-W3-C4
 def test_audit_boundary_compliance_script_exists() -> None:
     """scripts/audit_boundary_compliance.py must exist."""
-    assert AUDIT_SCRIPT.exists(), (
-        f"audit_boundary_compliance.py not found at {AUDIT_SCRIPT}."
-    )
+    assert AUDIT_SCRIPT.exists(), f"audit_boundary_compliance.py not found at {AUDIT_SCRIPT}."
 
 
 def _load_audit_module():
     """Dynamically load audit_boundary_compliance.py as a module."""
-    spec = importlib.util.spec_from_file_location(
-        "audit_boundary_compliance", AUDIT_SCRIPT
-    )
-    assert spec is not None, (
-        "Could not create module spec for audit_boundary_compliance.py"
-    )
+    spec = importlib.util.spec_from_file_location("audit_boundary_compliance", AUDIT_SCRIPT)
+    assert spec is not None, "Could not create module spec for audit_boundary_compliance.py"
     assert spec.loader is not None, "Module spec has no loader"
     mod = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(mod)  # type: ignore[union-attr]
@@ -43,9 +37,7 @@ def test_audit_function_returns_list() -> None:
     """audit() from audit_boundary_compliance.py must return a list."""
     mod = _load_audit_module()
     result = mod.audit()
-    assert isinstance(result, list), (
-        f"audit() returned {type(result).__name__}, expected list."
-    )
+    assert isinstance(result, list), f"audit() returned {type(result).__name__}, expected list."
 
 
 # @trace WL-136 B90-W3-C4

@@ -20,9 +20,7 @@ def test_wl358_cross_schema_validator_fails_without_evidence_policy(
     )
     attestation.write_text(json.dumps({"subject": []}).decode(), encoding="utf-8")
 
-    script = (
-        Path(__file__).resolve().parents[1] / "hooks" / "qa-cross-schema-validator.sh"
-    )
+    script = Path(__file__).resolve().parents[1] / "hooks" / "qa-cross-schema-validator.sh"
     result = subprocess.run(
         ["bash", str(script), str(req), str(evidence), str(attestation)],
         capture_output=True,

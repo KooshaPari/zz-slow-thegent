@@ -27,9 +27,7 @@ class OverrideExpirationHandler:
         """Initialize expiration handler."""
         self.overrides: dict[str, dict[str, Any]] = {}
 
-    def register_override(
-        self, override_id: str, expires_at: datetime, policy: str
-    ) -> None:
+    def register_override(self, override_id: str, expires_at: datetime, policy: str) -> None:
         """Register a governance override.
 
         Args:

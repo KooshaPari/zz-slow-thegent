@@ -73,9 +73,7 @@ def test_load_task_classifier_schema_rejects_missing_output_type_flag(
         """,
         encoding="utf-8",
     )
-    with pytest.raises(
-        ValueError, match="outputs\\.worktree_mode missing required keys: type"
-    ):
+    with pytest.raises(ValueError, match="outputs\\.worktree_mode missing required keys: type"):
         load_task_classifier_schema(schema_path)
 
 

@@ -82,9 +82,7 @@ def default_workstream_autosync_migration_phases() -> list[dict[str, str]]:
     return [dict(phase) for phase in DEFAULT_WORKSTREAM_AUTOSYNC_MIGRATION_PHASES]
 
 
-def autosync_phase1_enabled(
-    *, explicit_env: str | None, repo_previously_opted_in: bool
-) -> bool:
+def autosync_phase1_enabled(*, explicit_env: str | None, repo_previously_opted_in: bool) -> bool:
     """Resolve phase-1 autosync enablement behavior.
 
     Phase 1 keeps existing behavior for repos that already opted in while

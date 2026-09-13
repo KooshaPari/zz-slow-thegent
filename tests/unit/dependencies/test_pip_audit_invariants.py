@@ -124,9 +124,7 @@ def test_script_exits_zero_on_canonical_workspace_with_six_checks() -> None:
         f"unexpected exit {result.returncode}\nstdout: {result.stdout}\nstderr: {result.stderr}"
     )
     # Canonical OK marker.
-    assert "[make pip-audit] OK" in result.stdout, (
-        f"expected OK marker in stdout: {result.stdout!r}"
-    )
+    assert "[make pip-audit] OK" in result.stdout, f"expected OK marker in stdout: {result.stdout!r}"
     # The six canonical check labels.
     expected = [
         "pip-audit tooling is available",
@@ -137,9 +135,7 @@ def test_script_exits_zero_on_canonical_workspace_with_six_checks() -> None:
         "baseline snapshot: current run does not introduce new vulnerabilities",
     ]
     for needle in expected:
-        assert needle in result.stdout, (
-            f"check label missing: {needle}\nstdout:\n{result.stdout}"
-        )
+        assert needle in result.stdout, f"check label missing: {needle}\nstdout:\n{result.stdout}"
 
 
 # ---------------------------------------------------------------------------
@@ -147,9 +143,7 @@ def test_script_exits_zero_on_canonical_workspace_with_six_checks() -> None:
 # ---------------------------------------------------------------------------
 
 
-def _run_script_with_root(
-    tmp: Path, *, offline: bool = False
-) -> subprocess.CompletedProcess[str]:
+def _run_script_with_root(tmp: Path, *, offline: bool = False) -> subprocess.CompletedProcess[str]:
     """Run the script in a sandbox where ROOT is rewritten to *tmp*.
 
     Reads the real script, patches its ``ROOT=`` assignment so the
@@ -233,9 +227,7 @@ def test_script_offline_path_exits_zero_with_placeholder_json() -> None:
     sandbox.mkdir()
     try:
         # Seed minimal artefacts so checks #2 and #3 succeed.
-        sandbox.joinpath("uv.lock").write_text(
-            "# fake uv.lock\n" * 200, encoding="utf-8"
-        )
+        sandbox.joinpath("uv.lock").write_text("# fake uv.lock\n" * 200, encoding="utf-8")
         sandbox.joinpath("pyproject.toml").write_text(
             textwrap.dedent(
                 """

@@ -538,15 +538,11 @@ class TestStripCommonPrefix:
         assert strip_common_prefix([]) == []
 
     def test_same_directory(self):
-        result = strip_common_prefix(
-            ["/home/user/projects/file1.txt", "/home/user/projects/file2.txt"]
-        )
+        result = strip_common_prefix(["/home/user/projects/file1.txt", "/home/user/projects/file2.txt"])
         assert result == ["file1.txt", "file2.txt"]
 
     def test_mixed_depths(self):
-        result = strip_common_prefix(
-            ["/home/user/projects/src/main.py", "/home/user/projects/test/test.py"]
-        )
+        result = strip_common_prefix(["/home/user/projects/src/main.py", "/home/user/projects/test/test.py"])
         assert result == [str(Path("src/main.py")), str(Path("test/test.py"))]
 
     def test_single_path(self):

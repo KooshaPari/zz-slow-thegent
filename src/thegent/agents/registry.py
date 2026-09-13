@@ -119,9 +119,7 @@ def get_runner(
         _logger.debug("No teammate found for '%s': %s", agent_name, exc)
         return None
     except Exception as exc:
-        raise RuntimeError(
-            f"Failed to create teammate runner for '{agent_name}'"
-        ) from exc
+        raise RuntimeError(f"Failed to create teammate runner for '{agent_name}'") from exc
 
     return None
 

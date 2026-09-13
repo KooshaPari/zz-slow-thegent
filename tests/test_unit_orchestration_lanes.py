@@ -122,9 +122,7 @@ class TestCheckCapacity:
     def test_standard_no_capacity_when_reserved_exhausted(self) -> None:
         # capacity=10, reserved=2 -> available=8 for non-critical; 8 active = at limit
         assert LaneModel.check_capacity("standard", active_count=7, total_capacity=10)
-        assert not LaneModel.check_capacity(
-            "standard", active_count=8, total_capacity=10
-        )
+        assert not LaneModel.check_capacity("standard", active_count=8, total_capacity=10)
 
     def test_small_capacity_floor(self) -> None:
         assert LaneModel.check_capacity("standard", active_count=0, total_capacity=1)

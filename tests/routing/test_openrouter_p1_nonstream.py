@@ -57,16 +57,12 @@ async def test_proxy_request_402_no_retry_normalized_error() -> None:
     mock_request = AsyncMock(
         return_value=httpx.Response(
             402,
-            content=json.dumps({"error": {"message": "insufficient credits"}})
-            .decode()
-            .encode(),
+            content=json.dumps({"error": {"message": "insufficient credits"}}).decode().encode(),
             headers={"content-type": "application/json"},
         )
     )
     with patch("httpx.AsyncClient.request", mock_request):
-        resp = await _proxy_request(
-            req, "https://openrouter.ai/api/v1", "/chat/completions"
-        )
+        resp = await _proxy_request(req, "https://openrouter.ai/api/v1", "/chat/completions")
     payload = json.loads(resp.body.decode())
     assert resp.status_code == 402
     assert payload["error"]["code"] == 402
@@ -80,30 +76,22 @@ async def test_proxy_request_503_retries_then_returns_normalized_error() -> None
         side_effect=[
             httpx.Response(
                 503,
-                content=json.dumps({"error": {"metadata": {"provider": "openrouter"}}})
-                .decode()
-                .encode(),
+                content=json.dumps({"error": {"metadata": {"provider": "openrouter"}}}).decode().encode(),
                 headers={"content-type": "application/json"},
             ),
             httpx.Response(
                 503,
-                content=json.dumps({"error": {"metadata": {"provider": "openrouter"}}})
-                .decode()
-                .encode(),
+                content=json.dumps({"error": {"metadata": {"provider": "openrouter"}}}).decode().encode(),
                 headers={"content-type": "application/json"},
             ),
             httpx.Response(
                 503,
-                content=json.dumps({"error": {"metadata": {"provider": "openrouter"}}})
-                .decode()
-                .encode(),
+                content=json.dumps({"error": {"metadata": {"provider": "openrouter"}}}).decode().encode(),
                 headers={"content-type": "application/json"},
             ),
             httpx.Response(
                 503,
-                content=json.dumps({"error": {"metadata": {"provider": "openrouter"}}})
-                .decode()
-                .encode(),
+                content=json.dumps({"error": {"metadata": {"provider": "openrouter"}}}).decode().encode(),
                 headers={"content-type": "application/json"},
             ),
         ]
@@ -112,9 +100,7 @@ async def test_proxy_request_503_retries_then_returns_normalized_error() -> None
         patch("httpx.AsyncClient.request", mock_request),
         patch("asyncio.sleep", AsyncMock()) as sleep_mock,
     ):
-        resp = await _proxy_request(
-            req, "https://openrouter.ai/api/v1", "/chat/completions"
-        )
+        resp = await _proxy_request(req, "https://openrouter.ai/api/v1", "/chat/completions")
     payload = json.loads(resp.body.decode())
     assert resp.status_code == 503
     assert payload["error"]["code"] == 503
@@ -130,9 +116,7 @@ async def test_proxy_request_502_retry_then_success() -> None:
         side_effect=[
             httpx.Response(
                 502,
-                content=json.dumps({"error": {"message": "temporary upstream"}})
-                .decode()
-                .encode(),
+                content=json.dumps({"error": {"message": "temporary upstream"}}).decode().encode(),
                 headers={"content-type": "application/json"},
             ),
             httpx.Response(
@@ -146,9 +130,7 @@ async def test_proxy_request_502_retry_then_success() -> None:
         patch("httpx.AsyncClient.request", mock_request),
         patch("asyncio.sleep", AsyncMock()) as sleep_mock,
     ):
-        resp = await _proxy_request(
-            req, "https://openrouter.ai/api/v1", "/chat/completions"
-        )
+        resp = await _proxy_request(req, "https://openrouter.ai/api/v1", "/chat/completions")
     payload = json.loads(resp.body.decode())
     assert resp.status_code == 200
     assert payload["ok"] is True

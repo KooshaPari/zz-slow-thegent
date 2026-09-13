@@ -20,9 +20,7 @@ class WorktreeManager:
         self.mesh_worktrees_dir = mesh_dir / "worktrees"
         self.mesh_worktrees_dir.mkdir(parents=True, exist_ok=True)
 
-    def create_worktree(
-        self, agent_id: str, branch_name: str | None = None
-    ) -> Path | None:
+    def create_worktree(self, agent_id: str, branch_name: str | None = None) -> Path | None:
         """Create a new worktree for an agent."""
         wt_path = self.mesh_worktrees_dir / f"agent-{agent_id}"
         if not branch_name:
@@ -37,9 +35,7 @@ class WorktreeManager:
             )
 
             cmd = ["git", "worktree", "add", str(wt_path), branch_name]
-            result = shim_run(
-                cmd, cwd=self.project_root, capture_output=True, text=True, check=False
-            )
+            result = shim_run(cmd, cwd=self.project_root, capture_output=True, text=True, check=False)
 
             if result.returncode == 0:
                 logger.info(f"Created worktree for agent {agent_id} at {wt_path}")
@@ -60,9 +56,7 @@ class WorktreeManager:
                     cwd=self.project_root,
                     check=True,
                 )
-                shim_run(
-                    ["git", "worktree", "prune"], cwd=self.project_root, check=True
-                )
+                shim_run(["git", "worktree", "prune"], cwd=self.project_root, check=True)
                 logger.info(f"Cleaned up worktree for agent {agent_id}")
             except subprocess.CalledProcessError as e:
                 logger.error(f"Failed to cleanup worktree: {e}")

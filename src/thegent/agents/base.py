@@ -174,9 +174,7 @@ class AgentRunner:
 
             settings = ThegentSettings()
             queue_path = settings.session_dir / "prompt_queue.jsonl"
-            injected = inject_deferred_tasks(
-                tasks, queue_path, project=effective_project
-            )
+            injected = inject_deferred_tasks(tasks, queue_path, project=effective_project)
             _log.info(
                 "Runner deferred %d task(s) into queue (project=%s)",
                 injected,

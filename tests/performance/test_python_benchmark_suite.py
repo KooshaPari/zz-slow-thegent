@@ -9,9 +9,7 @@ import pytest
 
 pytest.importorskip(
     "scripts.benchmark_python_suite",
-    reason=(
-        "scripts.benchmark_python_suite module removed; benchmark suite tests skipped"
-    ),
+    reason=("scripts.benchmark_python_suite module removed; benchmark suite tests skipped"),
 )
 from scripts.benchmark_python_suite import run_suite  # noqa: E402
 

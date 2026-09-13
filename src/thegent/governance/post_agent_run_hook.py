@@ -56,9 +56,7 @@ def dispatch_post_agent_run_hook(
     env = os.environ.copy()
     env["THGENT_RUN_ID"] = run_id or ""
     env["THGENT_SESSION_ID"] = session_id or ""
-    policy = str(
-        context.get("vetter_policy") or os.environ.get("THGENT_VETTER_POLICY", "")
-    )
+    policy = str(context.get("vetter_policy") or os.environ.get("THGENT_VETTER_POLICY", ""))
     env["THGENT_VETTER_POLICY"] = policy
 
     proc = shim_run(
@@ -71,11 +69,7 @@ def dispatch_post_agent_run_hook(
         env=env,
     )
     if proc.returncode != 0:
-        detail = (
-            (proc.stderr or "").strip()
-            or (proc.stdout or "").strip()
-            or f"exit_code={proc.returncode}"
-        )
+        detail = (proc.stderr or "").strip() or (proc.stdout or "").strip() or f"exit_code={proc.returncode}"
         raise RuntimeError(f"hook-dispatcher postagentrun failed: {detail}")
 
 

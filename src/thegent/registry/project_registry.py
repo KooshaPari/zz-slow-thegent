@@ -99,9 +99,7 @@ class ProjectRegistry:
             cursor = conn.execute("SELECT id, name, path FROM projects ORDER BY name")
             rows = cursor.fetchall()
 
-        return [
-            Project(id=row["id"], name=row["name"], path=row["path"]) for row in rows
-        ]
+        return [Project(id=row["id"], name=row["name"], path=row["path"]) for row in rows]
 
 
 @dataclass

@@ -99,11 +99,7 @@ def select_pareto_route(
         cost_norm = 1 - (c.get("cost", 0) / max_cost)
         latency_norm = 1 - (c.get("latency", 0) / max_latency)
 
-        score = (
-            quality * quality_weight
-            + cost_norm * cost_weight
-            + latency_norm * latency_weight
-        )
+        score = quality * quality_weight + cost_norm * cost_weight + latency_norm * latency_weight
 
         if score > best_score:
             best_score = score

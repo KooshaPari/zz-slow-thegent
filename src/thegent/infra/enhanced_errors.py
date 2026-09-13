@@ -81,22 +81,16 @@ class EnhancedError(Exception):
 
         # How to fix
         fix_text = "\n".join(f"  • {fix}" for fix in self.context.how_to_fix)
-        console.print(
-            Panel(f"[bold]How to fix:[/bold]\n{fix_text}", border_style="green")
-        )
+        console.print(Panel(f"[bold]How to fix:[/bold]\n{fix_text}", border_style="green"))
 
         # Related files
         if self.context.related_files:
             files_text = "\n".join(f"  • {f}" for f in self.context.related_files)
-            console.print(
-                Panel(f"[bold]Related files:[/bold]\n{files_text}", border_style="blue")
-            )
+            console.print(Panel(f"[bold]Related files:[/bold]\n{files_text}", border_style="blue"))
 
         # Command suggestion
         if self.context.command_suggestion:
-            console.print(
-                f"\n[dim]Try running:[/dim] [bold cyan]{self.context.command_suggestion}[/bold cyan]"
-            )
+            console.print(f"\n[dim]Try running:[/dim] [bold cyan]{self.context.command_suggestion}[/bold cyan]")
 
         # Documentation link
         if self.context.documentation_link:
@@ -123,9 +117,7 @@ class NetworkError(EnhancedError):
     """Error related to network connectivity."""
 
 
-def format_error_with_context(
-    error: Exception, context: ErrorContext | None = None
-) -> None:
+def format_error_with_context(error: Exception, context: ErrorContext | None = None) -> None:
     """Format and display an error with rich context."""
     if isinstance(error, EnhancedError):
         error.display()
@@ -151,9 +143,7 @@ def format_error_with_context(
         enhanced.display()
 
 
-def create_config_error(
-    message: str, config_file: Path, suggestion: str | None = None
-) -> ConfigurationError:
+def create_config_error(message: str, config_file: Path, suggestion: str | None = None) -> ConfigurationError:
     """Create a configuration error with context."""
     context = ErrorContext(
         error_type="ConfigurationError",
@@ -197,9 +187,7 @@ def create_runtime_error(
     return InfraRuntimeError(message, context=context)
 
 
-def create_dependency_error(
-    message: str, dependency: str, install_command: str | None = None
-) -> DependencyError:
+def create_dependency_error(message: str, dependency: str, install_command: str | None = None) -> DependencyError:
     """Create a dependency error with context."""
     fixes = [
         f"Install {dependency}",
@@ -220,9 +208,7 @@ def create_dependency_error(
     return DependencyError(message, context=context)
 
 
-def create_network_error(
-    message: str, endpoint: str | None = None, suggestion: str | None = None
-) -> NetworkError:
+def create_network_error(message: str, endpoint: str | None = None, suggestion: str | None = None) -> NetworkError:
     """Create a network error with context."""
     fixes = [
         "Check your internet connection",
@@ -261,9 +247,7 @@ def error_report(error: Exception, include_traceback: bool = True) -> dict[str, 
             "what_happened": context.what_happened,
             "why_it_happened": context.why_it_happened,
             "how_to_fix": context.how_to_fix,
-            "related_files": [str(f) for f in context.related_files]
-            if context.related_files
-            else [],
+            "related_files": [str(f) for f in context.related_files] if context.related_files else [],
         }
 
     if include_traceback:

@@ -169,9 +169,7 @@ def run(
     from thegent.config import ThegentSettings
 
     settings = ThegentSettings()
-    effective_host = (
-        host if host is not None else getattr(settings, "mcp_host", "0.0.0.0")
-    )  # noqa: S104
+    effective_host = host if host is not None else getattr(settings, "mcp_host", "0.0.0.0")  # noqa: S104
     effective_port = port if port is not None else getattr(settings, "mcp_port", 3847)
     app = mcp.http_app()
     uvicorn.run(app, host=effective_host, port=effective_port, lifespan="on")
@@ -215,8 +213,7 @@ def _summary_meta(payload: dict[str, Any]) -> dict[str, Any]:
     return {
         "status": payload.get("status"),
         "payload_type": payload.get("payload_type"),
-        "payload_schema_version": payload.get("payload_schema_version")
-        or payload.get("schema_version"),
+        "payload_schema_version": payload.get("payload_schema_version") or payload.get("schema_version"),
         "alerts_count": len(alerts) if isinstance(alerts, list) else 0,
         "drift_within_budget": drift.get("within_budget"),
         "backlog_count": escalation.get("backlog_count"),
@@ -311,23 +308,17 @@ def _health_trend_meta(payload: dict[str, Any]) -> dict[str, Any]:
         "blocked_ratio_delta": payload.get("blocked_ratio_delta"),
         "blocked_count_delta": payload.get("blocked_count_delta"),
         "latest_status": payload.get("latest_status") or latest.get("status"),
-        "latest_pass": payload.get("latest_pass")
-        if "latest_pass" in payload
-        else latest.get("pass"),
-        "latest_captured_at_utc": payload.get("latest_captured_at_utc")
-        or latest.get("captured_at_utc"),
-        "latest_blocked_ratio": payload.get("latest_blocked_ratio")
-        or latest.get("blocked_ratio"),
-        "latest_blocked_count": payload.get("latest_blocked_count")
-        or latest.get("blocked_count"),
+        "latest_pass": payload.get("latest_pass") if "latest_pass" in payload else latest.get("pass"),
+        "latest_captured_at_utc": payload.get("latest_captured_at_utc") or latest.get("captured_at_utc"),
+        "latest_blocked_ratio": payload.get("latest_blocked_ratio") or latest.get("blocked_ratio"),
+        "latest_blocked_count": payload.get("latest_blocked_count") or latest.get("blocked_count"),
         "latest_issue_types_csv": latest_csv,
         "latest_issue_types_json": latest_json_str,
         "latest_issue_types_hash": latest_hash,
         "latest_issue_types_count": latest_count,
         "compat_mode": payload.get("schema_compat_mode") or compat.get("mode"),
         "compat_aliases": compat_aliases,
-        "compat_aliases_count": payload.get("compat_aliases_count")
-        or len(compat_aliases),
+        "compat_aliases_count": payload.get("compat_aliases_count") or len(compat_aliases),
     }
 
 
@@ -632,9 +623,7 @@ async def thegent_run(
     resolved = _resolve_cwd(cd) if cd else default_cwd
     if agent is None and model is None:
         return _ToolResult(
-            content=_json.dumps(
-                {"exit_code": 1, "error": "no agent or model specified"}
-            ),
+            content=_json.dumps({"exit_code": 1, "error": "no agent or model specified"}),
             structured_content={"exit_code": 1, "error": "no agent or model specified"},
             meta={},
         )
@@ -689,9 +678,7 @@ async def thegent_bg(
     return _ToolResult(content=_json.dumps(result), structured_content=result, meta={})
 
 
-def thegent_status(
-    session_id: str, include_contract: bool = False, **kwargs: Any
-) -> Any:
+def thegent_status(session_id: str, include_contract: bool = False, **kwargs: Any) -> Any:
     """Get session status."""
     with audited_budget(AuditEntryKind.TOOL_INVOCATION, "tool_invoke_ms"):
         result = status_impl(session_id=session_id, include_contract=include_contract)
@@ -787,9 +774,7 @@ async def thegent_dag_list(
             )
         if isinstance(elicitation_result, CancelledElicitation):
             return _ToolResult(
-                content=_json.dumps(
-                    {"error": "CWD elicitation cancelled", "tasks": []}
-                ),
+                content=_json.dumps({"error": "CWD elicitation cancelled", "tasks": []}),
                 structured_content={"error": "CWD elicitation cancelled", "tasks": []},
                 meta={},
             )
@@ -799,9 +784,7 @@ async def thegent_dag_list(
                 resolved = Path(cwd_value)
         else:
             return _ToolResult(
-                content=_json.dumps(
-                    {"error": "Ambiguous CWD elicitation response", "tasks": []}
-                ),
+                content=_json.dumps({"error": "Ambiguous CWD elicitation response", "tasks": []}),
                 structured_content={
                     "error": "Ambiguous CWD elicitation response",
                     "tasks": [],
@@ -812,23 +795,17 @@ async def thegent_dag_list(
     with audited_budget(AuditEntryKind.TOOL_INVOCATION, "tool_invoke_ms"):
         result = dag_list_impl(cd=resolved)
     meta = {"execution_time_ms": round((_time.monotonic() - t0) * 1000.0, 2)}
-    return _ToolResult(
-        content=_json.dumps(result), structured_content=result, meta=meta
-    )
+    return _ToolResult(content=_json.dumps(result), structured_content=result, meta=meta)
 
 
-async def thegent_suggest_prompt(
-    raw_prompt: str, ctx: Any = None, **kwargs: Any
-) -> Any:
+async def thegent_suggest_prompt(raw_prompt: str, ctx: Any = None, **kwargs: Any) -> Any:
     """Suggest a refined prompt using sampling."""
     sampling_used = False
     suggested = raw_prompt
     if ctx is not None:
         try:
             with audited_budget(AuditEntryKind.TOOL_INVOCATION, "tool_invoke_ms"):
-                sample_result = await ctx.sample(
-                    f"Refine this prompt for clarity and completeness: {raw_prompt}"
-                )
+                sample_result = await ctx.sample(f"Refine this prompt for clarity and completeness: {raw_prompt}")
                 suggested = sample_result.text.strip()
                 sampling_used = True
         except Exception:  # noqa: BLE001
@@ -864,9 +841,7 @@ def thegent_list_models(
 ) -> Any:
     """List available models."""
     with audited_budget(AuditEntryKind.TOOL_INVOCATION, "tool_invoke_ms"):
-        result = list_models_impl(
-            provider=provider, include_contract=include_contract, by_model=by_model
-        )
+        result = list_models_impl(provider=provider, include_contract=include_contract, by_model=by_model)
     return _ToolResult(content=_json.dumps(result), structured_content=result, meta={})
 
 
@@ -885,23 +860,15 @@ def thegent_list_operations(
                     op = Operation(operation)
                 except (ValueError, KeyError):
                     return _ToolResult(
-                        content=_json.dumps(
-                            {"error": f"Unknown operation type: {operation}"}
-                        ),
-                        structured_content={
-                            "error": f"Unknown operation type: {operation}"
-                        },
+                        content=_json.dumps({"error": f"Unknown operation type: {operation}"}),
+                        structured_content={"error": f"Unknown operation type: {operation}"},
                         meta={},
                     )
                 entries = get_operations_by_type(op)
                 if not entries:
                     return _ToolResult(
-                        content=_json.dumps(
-                            {"error": f"No operations found for type: {operation}"}
-                        ),
-                        structured_content={
-                            "error": f"No operations found for type: {operation}"
-                        },
+                        content=_json.dumps({"error": f"No operations found for type: {operation}"}),
+                        structured_content={"error": f"No operations found for type: {operation}"},
                         meta={},
                     )
                 data = {
@@ -974,9 +941,7 @@ def thegent_session_contracts(
             strict=strict,
         )
     meta = {"execution_time_ms": round((_ct.monotonic() - t0) * 1000.0, 2)}
-    return _ToolResult(
-        content=_json.dumps(payload), structured_content=payload, meta=meta
-    )
+    return _ToolResult(content=_json.dumps(payload), structured_content=payload, meta=meta)
 
 
 def _list_droid_names(cwd: Path | None) -> list[str]:
@@ -989,11 +954,7 @@ def _list_droid_names(cwd: Path | None) -> list[str]:
     droids_dir = _resolve_droids_dir(effective_cwd, settings)
     if not droids_dir.exists():
         return []
-    return sorted(
-        p.name
-        for p in droids_dir.iterdir()
-        if p.is_dir() and not p.name.startswith(".")
-    )
+    return sorted(p.name for p in droids_dir.iterdir() if p.is_dir() and not p.name.startswith("."))
 
 
 def list_droids_impl(cd: Any = None) -> list[str]:
@@ -1036,9 +997,7 @@ def resource_dag(cd: str | Path | None = None, **kwargs: Any) -> str:
     return _stable_json(payload)
 
 
-def resource_models(
-    provider: str | None = None, include_contract: bool = False, **kwargs: Any
-) -> str:
+def resource_models(provider: str | None = None, include_contract: bool = False, **kwargs: Any) -> str:
     """MCP resource: list models."""
     payload = list_models_impl(provider=provider, include_contract=include_contract)
     return _stable_json(payload)
@@ -1064,17 +1023,13 @@ def resource_models_contract(**kwargs: Any) -> str:
     return _stable_json(payload)
 
 
-def resource_session_meta(
-    id: str, include_contract: bool = False, **kwargs: Any
-) -> str:
+def resource_session_meta(id: str, include_contract: bool = False, **kwargs: Any) -> str:
     """MCP resource: session metadata."""
     payload = status_impl(session_id=id, include_contract=include_contract)
     return _stable_json(payload)
 
 
-def resource_session_logs(
-    id: str, tail: int | None = None, stderr: bool = False, **kwargs: Any
-) -> str:
+def resource_session_logs(id: str, tail: int | None = None, stderr: bool = False, **kwargs: Any) -> str:
     """MCP resource: session logs."""
     return logs_impl(session_id=id, tail=tail, stderr=stderr)
 

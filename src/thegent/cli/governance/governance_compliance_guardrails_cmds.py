@@ -56,9 +56,7 @@ def compliance_plugin_check_cmd(plugin_id: str, signature: str) -> None:
     if verifier.verify_contract(contract):
         console.print(f"[green]Plugin {plugin_id} VERIFIED successfully.[/green]")
     else:
-        console.print(
-            f"[red]Plugin {plugin_id} verification FAILED. Invalid signature.[/red]"
-        )
+        console.print(f"[red]Plugin {plugin_id} verification FAILED. Invalid signature.[/red]")
 
 
 def compliance_redact_cmd(text: str) -> None:
@@ -74,9 +72,7 @@ def compliance_redact_cmd(text: str) -> None:
     console.print(redacted)
 
 
-def govern_cost_cmd(
-    owner: str | None = None, days: int = 1, format: str | None = None
-) -> None:
+def govern_cost_cmd(owner: str | None = None, days: int = 1, format: str | None = None) -> None:
     """Show daily cost aggregation (FR-GOV-002)."""
     settings = ThegentSettings()
     from thegent.cost.aggregator import CostAggregator
@@ -102,9 +98,7 @@ def govern_cost_cmd(
     console.print(f"Total: [green]${total:.4f} USD[/green]")
 
 
-def guardrails_check_cmd(
-    prompt: str, agent: str | None = None, model: str | None = None
-) -> None:
+def guardrails_check_cmd(prompt: str, agent: str | None = None, model: str | None = None) -> None:
     """Check a prompt against active guardrails (FR-GOV-003..006)."""
     from thegent.governance.input_guardrails import InputGuardrails
 

@@ -264,9 +264,7 @@ def test_scan_test_coverage_success(mock_run: object, scanner: CodebaseScanner) 
 
 
 @patch("thegent.governance.scanner._run_tool")
-def test_scan_test_coverage_no_match(
-    mock_run: object, scanner: CodebaseScanner
-) -> None:
+def test_scan_test_coverage_no_match(mock_run: object, scanner: CodebaseScanner) -> None:
     """_scan_test_coverage returns 0 when no percentage found.
 
     Traces to: FR-GOV-002
@@ -279,9 +277,7 @@ def test_scan_test_coverage_no_match(
 
 
 @patch("thegent.governance.scanner._run_tool")
-def test_scan_test_coverage_file_not_found(
-    mock_run: object, scanner: CodebaseScanner
-) -> None:
+def test_scan_test_coverage_file_not_found(mock_run: object, scanner: CodebaseScanner) -> None:
     """_scan_test_coverage handles pytest not installed gracefully.
 
     Traces to: FR-GOV-002
@@ -312,9 +308,7 @@ def test_scan_test_coverage_timeout(mock_run: object, scanner: CodebaseScanner) 
 
 
 @patch("thegent.governance.scanner._run_tool")
-def test_scan_lint_violations_success(
-    mock_run: object, scanner: CodebaseScanner
-) -> None:
+def test_scan_lint_violations_success(mock_run: object, scanner: CodebaseScanner) -> None:
     """_scan_lint_violations counts ruff output lines correctly.
 
     Traces to: FR-GOV-002
@@ -349,9 +343,7 @@ def test_scan_lint_violations_empty(mock_run: object, scanner: CodebaseScanner) 
 
 
 @patch("thegent.governance.scanner._run_tool")
-def test_scan_lint_violations_file_not_found(
-    mock_run: object, scanner: CodebaseScanner
-) -> None:
+def test_scan_lint_violations_file_not_found(mock_run: object, scanner: CodebaseScanner) -> None:
     """_scan_lint_violations handles ruff not installed gracefully.
 
     Traces to: FR-GOV-002
@@ -426,9 +418,7 @@ def test_scan_fragmented_research_fragmented(scanner: CodebaseScanner) -> None:
 
     Traces to: FR-GOV-002
     """
-    (scanner.project_dir / "docs" / "guides" / "research_notes.md").write_text(
-        "# Notes"
-    )
+    (scanner.project_dir / "docs" / "guides" / "research_notes.md").write_text("# Notes")
 
     result = scanner._scan_fragmented_research()
     assert result.current_value == 1.0
@@ -484,9 +474,7 @@ def test_scan_missing_specs_missing_files(scanner: CodebaseScanner) -> None:
 
 
 @patch("thegent.governance.scanner._run_tool")
-def test_scan_technical_debt_success(
-    mock_run: object, scanner: CodebaseScanner
-) -> None:
+def test_scan_technical_debt_success(mock_run: object, scanner: CodebaseScanner) -> None:
     """_scan_technical_debt parses radon output correctly.
 
     Traces to: FR-GOV-002
@@ -508,9 +496,7 @@ def test_scan_technical_debt_success(
 
 
 @patch("thegent.governance.scanner._run_tool")
-def test_scan_technical_debt_no_match(
-    mock_run: object, scanner: CodebaseScanner
-) -> None:
+def test_scan_technical_debt_no_match(mock_run: object, scanner: CodebaseScanner) -> None:
     """_scan_technical_debt returns 0 when no average found.
 
     Traces to: FR-GOV-002
@@ -523,9 +509,7 @@ def test_scan_technical_debt_no_match(
 
 
 @patch("thegent.governance.scanner._run_tool")
-def test_scan_technical_debt_file_not_found(
-    mock_run: object, scanner: CodebaseScanner
-) -> None:
+def test_scan_technical_debt_file_not_found(mock_run: object, scanner: CodebaseScanner) -> None:
     """_scan_technical_debt handles radon not installed gracefully.
 
     Traces to: FR-GOV-002

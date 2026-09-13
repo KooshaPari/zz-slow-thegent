@@ -25,9 +25,7 @@ def governance_cmd():
 @governance_cmd.command("analyze")
 @click.argument("project_path", type=click.Path(exists=True))
 @click.option("--output", "-o", type=click.Path(), help="Output file path")
-@click.option(
-    "--format", type=click.Choice(["json", "yaml", "markdown"]), default="json"
-)
+@click.option("--format", type=click.Choice(["json", "yaml", "markdown"]), default="json")
 def analyze_project(project_path: str, output: str | None, format: str):
     """Analyze project structure and governance."""
     project = Path(project_path)

@@ -557,15 +557,9 @@ class TestMonitoringEngine:
         engine = MonitoringEngine()
 
         results = {
-            "task1": ExecutionResult(
-                task_id="task1", success=True, duration_seconds=10.0
-            ),
-            "task2": ExecutionResult(
-                task_id="task2", success=True, duration_seconds=20.0
-            ),
-            "task3": ExecutionResult(
-                task_id="task3", success=False, duration_seconds=5.0
-            ),
+            "task1": ExecutionResult(task_id="task1", success=True, duration_seconds=10.0),
+            "task2": ExecutionResult(task_id="task2", success=True, duration_seconds=20.0),
+            "task3": ExecutionResult(task_id="task3", success=False, duration_seconds=5.0),
         }
 
         metrics = engine.track_performance("crew1", results)
@@ -580,12 +574,8 @@ class TestMonitoringEngine:
         engine = MonitoringEngine()
 
         results = {
-            "task1": ExecutionResult(
-                task_id="task1", success=True, tokens_used=100, cost_usd=0.01
-            ),
-            "task2": ExecutionResult(
-                task_id="task2", success=True, tokens_used=200, cost_usd=0.02
-            ),
+            "task1": ExecutionResult(task_id="task1", success=True, tokens_used=100, cost_usd=0.01),
+            "task2": ExecutionResult(task_id="task2", success=True, tokens_used=200, cost_usd=0.02),
         }
 
         metrics = engine.track_costs("crew1", results)

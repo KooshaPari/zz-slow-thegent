@@ -119,9 +119,7 @@ def safe_join(base: str | Path, *parts: str | Path) -> Path:
     resolved_candidate = _resolve(candidate)
 
     if not is_within(resolved_candidate, resolved_base):
-        raise ValueError(
-            f"Path escapes base '{resolved_base}': resolved to '{resolved_candidate}'"
-        )
+        raise ValueError(f"Path escapes base '{resolved_base}': resolved to '{resolved_candidate}'")
 
     return resolved_candidate
 
@@ -386,9 +384,7 @@ if __name__ == "__main__":
 
     cwd = Path.cwd()
     print(f"CWD: {cwd}")
-    print(
-        f"normalize_path('~/Desktop/demo.txt') -> {normalize_path('~/Desktop/demo.txt')}"
-    )
+    print(f"normalize_path('~/Desktop/demo.txt') -> {normalize_path('~/Desktop/demo.txt')}")
     print(f"normalize_path(None)                 -> {normalize_path(None)}")
 
     try:
@@ -399,19 +395,11 @@ if __name__ == "__main__":
     safe = safe_join("/tmp/sandbox", "sub/file.txt")
     print(f"safe_join('/tmp/sandbox', 'sub/file.txt') -> {safe}")
 
-    print(
-        f"is_within('/tmp/foo/bar', '/tmp/foo')     -> {is_within('/tmp/foo/bar', '/tmp/foo')}"
-    )
-    print(
-        f"is_within('/etc/hosts', '/tmp')            -> {is_within('/etc/hosts', '/tmp')}"
-    )
+    print(f"is_within('/tmp/foo/bar', '/tmp/foo')     -> {is_within('/tmp/foo/bar', '/tmp/foo')}")
+    print(f"is_within('/etc/hosts', '/tmp')            -> {is_within('/etc/hosts', '/tmp')}")
     print(f"safe_exists('/tmp')                        -> {safe_exists('/tmp')}")
-    print(
-        f"safe_exists('/nonexistent/xyzzy')          -> {safe_exists('/nonexistent/xyzzy')}"
-    )
-    print(
-        f"rel_to_cwd(cwd / 'scripts' / 'path_utils.py') -> {rel_to_cwd(cwd / 'scripts' / 'path_utils.py')}"
-    )
+    print(f"safe_exists('/nonexistent/xyzzy')          -> {safe_exists('/nonexistent/xyzzy')}")
+    print(f"rel_to_cwd(cwd / 'scripts' / 'path_utils.py') -> {rel_to_cwd(cwd / 'scripts' / 'path_utils.py')}")
 
     import tempfile
 

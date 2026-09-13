@@ -44,9 +44,7 @@ def test_worktree_governance_refresh_rebases_onto_remote_ref(tmp_path: Path) -> 
         capture_output=True,
     )
 
-    refresh = run_script(
-        repo_root, "refresh", anchor, "--remote", "origin", "--ref", "origin/canary"
-    )
+    refresh = run_script(repo_root, "refresh", anchor, "--remote", "origin", "--ref", "origin/canary")
     assert refresh.returncode == 0, refresh.stderr
     assert "[OK] refreshed worktree" in refresh.stdout
     assert "origin/canary" in refresh.stdout
@@ -64,9 +62,7 @@ def test_worktree_governance_refresh_uses_default_remote_branch(tmp_path: Path) 
 
     anchor = "fix-mcp-timeout"
     branch_name = f"backend/m/{anchor}"
-    push_remote_branch(
-        repo_root, branch_name, "default-track.txt", "default-track\n", "default-track"
-    )
+    push_remote_branch(repo_root, branch_name, "default-track.txt", "default-track\n", "default-track")
 
     active_path = repo_root / ".worktrees" / "backend" / "m" / anchor / "active"
     create = run_script(repo_root, "new", "backend", "m", anchor, "main")
@@ -152,14 +148,10 @@ def test_worktree_governance_refresh_fails_on_dirty_worktree(tmp_path: Path) -> 
     create = run_script(repo_root, "new", "backend", "m", anchor, "main")
     assert create.returncode == 0, create.stderr
 
-    dirty_file = (
-        repo_root / ".worktrees" / "backend" / "m" / anchor / "active" / "dirty.txt"
-    )
+    dirty_file = repo_root / ".worktrees" / "backend" / "m" / anchor / "active" / "dirty.txt"
     dirty_file.write_text("dirty\n", encoding="utf-8")
 
-    proc = run_script(
-        repo_root, "refresh", anchor, "--remote", "origin", "--ref", "origin/canary"
-    )
+    proc = run_script(repo_root, "refresh", anchor, "--remote", "origin", "--ref", "origin/canary")
     assert proc.returncode != 0
     assert "worktree has uncommitted changes" in proc.stderr
 

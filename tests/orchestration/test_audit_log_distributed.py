@@ -50,9 +50,7 @@ def secret_file(tmp_path: Path) -> Path:
     """Create a file with a secret for testing scrubbing."""
     file_path = tmp_path / "workdir" / "config.env"
     file_path.parent.mkdir(parents=True, exist_ok=True)
-    file_path.write_text(
-        "API_KEY=sk-abcdefghijklmnopqrstuvwxyz1234567890abcdefghijklmn"
-    )
+    file_path.write_text("API_KEY=sk-abcdefghijklmnopqrstuvwxyz1234567890abcdefghijklmn")
     return file_path
 
 
@@ -158,9 +156,7 @@ class TestDistributedRemoteHost:
         assert host1_file.exists()
         assert host2_file.exists()
 
-    def test_get_log_returns_remote_host_commits(
-        self, initialized_audit: ShadowAuditGit, sample_file: Path
-    ) -> None:
+    def test_get_log_returns_remote_host_commits(self, initialized_audit: ShadowAuditGit, sample_file: Path) -> None:
         """Verify get_log returns commits from remote hosts."""
         initialized_audit.commit_transaction(
             episode_id="ep-log-remote-001",
@@ -173,9 +169,7 @@ class TestDistributedRemoteHost:
         assert len(entries) >= 1
         assert any("ep-log-remote-001" in e["message"] for e in entries)
 
-    def test_get_log_filter_by_episode_with_remote(
-        self, initialized_audit: ShadowAuditGit, tmp_path: Path
-    ) -> None:
+    def test_get_log_filter_by_episode_with_remote(self, initialized_audit: ShadowAuditGit, tmp_path: Path) -> None:
         """Verify get_log can filter by episode_id for remote commits."""
         file1 = tmp_path / "w1" / "f.txt"
         file1.parent.mkdir(parents=True, exist_ok=True)
@@ -203,9 +197,7 @@ class TestDistributedRemoteHost:
         assert len(entries) >= 1
         assert all("ep-filter-remote" in e["message"] for e in entries)
 
-    def test_get_diff_for_remote_commit(
-        self, initialized_audit: ShadowAuditGit, sample_file: Path
-    ) -> None:
+    def test_get_diff_for_remote_commit(self, initialized_audit: ShadowAuditGit, sample_file: Path) -> None:
         """Verify get_diff works for commits from remote hosts."""
         initialized_audit.commit_transaction(
             episode_id="ep-diff-remote-001",
@@ -267,9 +259,7 @@ class TestDistributedSecretScrubbing:
 class TestDistributedEdgeCases:
     """Edge cases for distributed shadow git."""
 
-    def test_empty_changed_files_with_remote_host(
-        self, initialized_audit: ShadowAuditGit
-    ) -> None:
+    def test_empty_changed_files_with_remote_host(self, initialized_audit: ShadowAuditGit) -> None:
         """Verify empty file list with remote_host doesn't error."""
         # Should not raise
         initialized_audit.commit_transaction(
@@ -279,9 +269,7 @@ class TestDistributedEdgeCases:
             remote_host="empty-host",
         )
 
-    def test_nonexistent_file_with_remote_host_raises(
-        self, initialized_audit: ShadowAuditGit
-    ) -> None:
+    def test_nonexistent_file_with_remote_host_raises(self, initialized_audit: ShadowAuditGit) -> None:
         """Verify nonexistent file with remote_host raises FileNotFoundError."""
         with pytest.raises(FileNotFoundError):
             initialized_audit.commit_transaction(
@@ -324,14 +312,10 @@ class TestDistributedEdgeCases:
             remote_host="worker-node-01.us-east-1.prod",
         )
 
-        snapshot = (
-            audit_dir / "snapshots" / "worker-node-01.us-east-1.prod" / sample_file.name
-        )
+        snapshot = audit_dir / "snapshots" / "worker-node-01.us-east-1.prod" / sample_file.name
         assert snapshot.exists()
 
-    def test_concurrent_remote_hosts(
-        self, initialized_audit: ShadowAuditGit, audit_dir: Path, tmp_path: Path
-    ) -> None:
+    def test_concurrent_remote_hosts(self, initialized_audit: ShadowAuditGit, audit_dir: Path, tmp_path: Path) -> None:
         """Verify concurrent commits from different hosts are tracked."""
         # Simulate concurrent commits by interleaving
         hosts = ["alpha", "beta", "gamma"]
@@ -393,9 +377,7 @@ class TestDistributedMockScanning:
         from thegent.governance.native_secret_scan import SecretMatch
 
         # Mock finding a secret on line 1
-        mock_scan.return_value = [
-            SecretMatch(kind="test_secret", line=1, masked="TEST****")
-        ]
+        mock_scan.return_value = [SecretMatch(kind="test_secret", line=1, masked="TEST****")]
 
         file_path = tmp_path / "workdir" / "secret.txt"
         file_path.parent.mkdir(parents=True, exist_ok=True)

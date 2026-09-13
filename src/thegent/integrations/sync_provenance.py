@@ -89,9 +89,7 @@ def verify_provenance_signature(stamp: SyncProvenanceStamp, secret: str) -> bool
     return sign_provenance_stamp(stamp, secret) == stamp.signature
 
 
-def chain_provenance_stamps(
-    stamps: list[SyncProvenanceStamp], secret: str
-) -> list[SyncProvenanceStamp]:
+def chain_provenance_stamps(stamps: list[SyncProvenanceStamp], secret: str) -> list[SyncProvenanceStamp]:
     """Attach deterministic hash chain fields and signatures to stamps."""
     import hashlib
 
@@ -107,9 +105,7 @@ def chain_provenance_stamps(
             prev_hash=prev_hash,
             signature="",
         )
-        digest = hashlib.sha256(
-            with_prev.canonical_payload().encode("utf-8")
-        ).hexdigest()
+        digest = hashlib.sha256(with_prev.canonical_payload().encode("utf-8")).hexdigest()
         signed = SyncProvenanceStamp(
             sync_id=with_prev.sync_id,
             timestamp=with_prev.timestamp,
@@ -124,9 +120,7 @@ def chain_provenance_stamps(
     return chained
 
 
-def verify_provenance_chain(
-    stamps: list[SyncProvenanceStamp], secret: str
-) -> tuple[bool, str]:
+def verify_provenance_chain(stamps: list[SyncProvenanceStamp], secret: str) -> tuple[bool, str]:
     """Verify prev-hash continuity and signatures for a chain of stamps."""
     import hashlib
 
@@ -139,9 +133,7 @@ def verify_provenance_chain(
             )
         if not verify_provenance_signature(stamp, secret):
             return False, f"signature verification failed at index {index}"
-        expected_prev = hashlib.sha256(
-            stamp.canonical_payload().encode("utf-8")
-        ).hexdigest()
+        expected_prev = hashlib.sha256(stamp.canonical_payload().encode("utf-8")).hexdigest()
     return True, ""
 
 

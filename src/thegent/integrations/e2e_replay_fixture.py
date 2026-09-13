@@ -58,9 +58,7 @@ class E2EReplayFixture:
 
         self._event_counter += 1
         event_id = f"event_{self._event_counter}"
-        event = ReplayEvent(
-            event_id=event_id, event_type=event_type, payload=payload or {}
-        )
+        event = ReplayEvent(event_id=event_id, event_type=event_type, payload=payload or {})
         self._events.append(event)
 
         logger.debug(f"Recorded event: {event_id} ({event_type})")

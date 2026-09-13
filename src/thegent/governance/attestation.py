@@ -46,9 +46,7 @@ class AttestationGenerator:
         }
 
         # In a real impl, we'd sign this with a key
-        attestation["signature"] = "att_sig_" + datetime.now(UTC).strftime(
-            "%Y%m%d%H%M%S"
-        )
+        attestation["signature"] = "att_sig_" + datetime.now(UTC).strftime("%Y%m%d%H%M%S")
 
         att_path = self.settings.session_dir / "attestations" / f"{run_id}.json"
         att_path.parent.mkdir(parents=True, exist_ok=True)
@@ -79,9 +77,7 @@ class AuditReportGenerator:
                 except Exception:
                     continue
 
-        compliance_pct = (
-            (compliant_runs / total_runs * 100) if total_runs > 0 else 100.0
-        )
+        compliance_pct = (compliant_runs / total_runs * 100) if total_runs > 0 else 100.0
 
         report = "--- Monthly Compliance Audit Report ---\n"
         report += f"Period: {datetime.now(UTC).strftime('%Y-%m')}\n"

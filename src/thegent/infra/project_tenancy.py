@@ -159,9 +159,7 @@ class ProjectTenancy:
             or not updates["template"]
             or not updates["template_version"]
         ):
-            raise ValueError(
-                "Cannot sync project with blank name/tenant/template/template_version."
-            )
+            raise ValueError("Cannot sync project with blank name/tenant/template/template_version.")
 
         conflict = self._find_conflict(
             payload.projects,
@@ -210,9 +208,7 @@ class ProjectTenancy:
         }
         selected = [key for key, value in selectors.items() if value is not None]
         if not selected:
-            raise ValueError(
-                "At least one selector is required: project_id, name, tenant_id, or path."
-            )
+            raise ValueError("At least one selector is required: project_id, name, tenant_id, or path.")
 
         projects = self._load_registry().projects
         matches = projects
@@ -230,9 +226,7 @@ class ProjectTenancy:
         if not matches:
             return None
         if len(matches) > 1:
-            raise ValueError(
-                "Project selector is ambiguous; refine query with additional selectors."
-            )
+            raise ValueError("Project selector is ambiguous; refine query with additional selectors.")
         return matches[0]
 
     def install_project_assets(self, path: Path | str) -> AssetInstallResult:
@@ -241,9 +235,7 @@ class ProjectTenancy:
             raise KeyError(f"Project is not registered for tenancy: {normalized_path}")
         return self.spawn_template_agdd(normalized_path, mode="smart")
 
-    def spawn_template_agdd(
-        self, path: Path | str, mode: TemplateMode = "smart"
-    ) -> AssetInstallResult:
+    def spawn_template_agdd(self, path: Path | str, mode: TemplateMode = "smart") -> AssetInstallResult:
         if mode not in {"smart", "overwrite", "skip"}:
             raise ValueError("mode must be one of: smart, overwrite, skip")
 
@@ -287,9 +279,7 @@ class ProjectTenancy:
 
             conflict_copy = destination.with_name(f"{destination.name}.thegent.new")
             if conflict_copy.exists() and conflict_copy.read_bytes() != source_bytes:
-                raise FileExistsError(
-                    f"Conflict sidecar already exists with different content: {conflict_copy}"
-                )
+                raise FileExistsError(f"Conflict sidecar already exists with different content: {conflict_copy}")
             if not conflict_copy.exists():
                 conflict_copy.write_bytes(source_bytes)
             result.conflicts.append(relative_str)
@@ -363,13 +353,9 @@ class ProjectTenancy:
             if core_project.path == project.path and core_project.name == project.name
         ]
         if len(matches) > 1:
-            raise ValueError(
-                f"Ambiguous ProjectRegistry linkage for path={project.path} name={project.name}"
-            )
+            raise ValueError(f"Ambiguous ProjectRegistry linkage for path={project.path} name={project.name}")
         if not matches:
-            registry.register_project(
-                name=project.name, path=project.path, metadata=metadata
-            )
+            registry.register_project(name=project.name, path=project.path, metadata=metadata)
             return
         registry.update_project_metadata(matches[0].id, metadata=metadata)
 
@@ -439,7 +425,5 @@ def install_project_assets(path: Path | str) -> AssetInstallResult:
     return _DEFAULT_TENANCY.install_project_assets(path)
 
 
-def spawn_template_agdd(
-    path: Path | str, mode: TemplateMode = "smart"
-) -> AssetInstallResult:
+def spawn_template_agdd(path: Path | str, mode: TemplateMode = "smart") -> AssetInstallResult:
     return _DEFAULT_TENANCY.spawn_template_agdd(path=path, mode=mode)

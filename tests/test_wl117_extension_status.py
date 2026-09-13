@@ -18,9 +18,7 @@ def test_extension_status_doc_exists() -> None:
 def test_extension_status_doc_references_wl104() -> None:
     """Status doc must reference WL-104 dependency."""
     content = STATUS_DOC.read_text(encoding="utf-8")
-    assert "WL-104" in content or "WL104" in content, (
-        "Expected 'WL-104' or 'WL104' reference in extension status doc"
-    )
+    assert "WL-104" in content or "WL104" in content, "Expected 'WL-104' or 'WL104' reference in extension status doc"
 
 
 def test_extension_status_doc_mentions_decision() -> None:

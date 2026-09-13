@@ -13,9 +13,7 @@ from thegent.agents.direct_agents import DirectAgentRunner
 class TestDirectAgentRunnerComprehensive:
     """Comprehensive tests for DirectAgentRunner."""
 
-    @pytest.mark.parametrize(
-        "agent", ["cursor-agent", "gemini", "claude", "copilot", "codex"]
-    )
+    @pytest.mark.parametrize("agent", ["cursor-agent", "gemini", "claude", "copilot", "codex"])
     @patch("thegent.agents.direct_agents.subprocess.run")
     def test_run_basic(self, mock_run, agent, project_root) -> None:
         mock_run.return_value = MagicMock(returncode=0, stdout="ok", stderr="")
@@ -113,9 +111,7 @@ class TestDirectAgentRunnerComprehensive:
 
         on_stdout = MagicMock()
         runner = DirectAgentRunner("gemini")
-        result = runner.run(
-            "test", project_root, "read-only", 30, live_output=True, on_stdout=on_stdout
-        )
+        result = runner.run("test", project_root, "read-only", 30, live_output=True, on_stdout=on_stdout)
 
         assert result.exit_code == 0
         assert result.stdout == "line1\nline2\n"
@@ -127,14 +123,10 @@ class TestDirectAgentRunnerComprehensive:
 class TestCodexProxyRunnerComprehensive:
     """Comprehensive tests for CodexProxyRunner."""
 
-    @pytest.mark.parametrize(
-        "agent", ["antigravity", "minimax", "glm", "cliproxy", "roo", "kilo"]
-    )
+    @pytest.mark.parametrize("agent", ["antigravity", "minimax", "glm", "cliproxy", "roo", "kilo"])
     @patch("thegent.agents.codex_proxy.ensure_proxy_running")
     @patch("thegent.agents.codex_proxy.subprocess.run")
-    def test_proxy_agents_basic(
-        self, mock_run, mock_ensure, agent, project_root
-    ) -> None:
+    def test_proxy_agents_basic(self, mock_run, mock_ensure, agent, project_root) -> None:
         mock_ensure.return_value = "http://localhost:8317"
         mock_run.return_value = MagicMock(returncode=0, stdout="ok", stderr="")
 

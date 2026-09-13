@@ -98,9 +98,7 @@ def test_result_fields_populated():
 
 def test_result_failure_fields():
     """FR-AGT-020: FlashAgentResult stores failure state correctly."""
-    result = FlashAgentResult(
-        output="", success=False, elapsed_s=30.1, agent_id="dead0000"
-    )
+    result = FlashAgentResult(output="", success=False, elapsed_s=30.1, agent_id="dead0000")
     assert result.success is False
     assert result.output == ""
     assert result.elapsed_s > 30.0

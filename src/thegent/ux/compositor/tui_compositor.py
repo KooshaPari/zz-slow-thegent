@@ -31,9 +31,7 @@ from thegent.i18n.aria import annotate
 # Constants & defaults
 # ---------------------------------------------------------------------------
 
-_SUPPORTED_LAYOUTS: Final[frozenset[str]] = frozenset(
-    {"balanced", "stacked", "preview", "compact"}
-)
+_SUPPORTED_LAYOUTS: Final[frozenset[str]] = frozenset({"balanced", "stacked", "preview", "compact"})
 
 _DEFAULT_CONFIG: Final[Mapping[str, object]] = {
     "layout": "balanced",
@@ -122,10 +120,7 @@ def _tiny_yaml(text: str) -> dict[str, object]:
 def _coerce_config(loaded: Mapping[str, object]) -> dict[str, object]:
     """Merge ``loaded`` over the default config and validate layout name."""
     merged: dict[str, object] = {
-        key: value
-        for src in (dict(_DEFAULT_CONFIG), loaded)
-        for key, value in src.items()
-        if value is not None
+        key: value for src in (dict(_DEFAULT_CONFIG), loaded) for key, value in src.items() if value is not None
     }
     layout = str(merged.get("layout", "balanced"))
     if layout not in _SUPPORTED_LAYOUTS:
@@ -159,9 +154,7 @@ def _compose_stacked(panes: Sequence[PaneSnapshot], preview: str) -> dict[str, s
     top = "\n".join(f"[{p.pane_id}] {p.cwd}" for p in panes) or "(none)"
     return {
         "left": annotate(top, role="list", aria_label="pane list"),
-        "right": annotate(
-            preview or "(no preview)", role="region", aria_label="pane preview"
-        ),
+        "right": annotate(preview or "(no preview)", role="region", aria_label="pane preview"),
     }
 
 
@@ -170,9 +163,7 @@ def _compose_preview(panes: Sequence[PaneSnapshot], preview: str) -> dict[str, s
     summary = f"{len(panes)} pane(s) selected"
     return {
         "left": annotate(summary, role="status", aria_live="polite", aria_atomic=True),
-        "right": annotate(
-            preview or "(no preview)", role="region", aria_label="pane preview"
-        ),
+        "right": annotate(preview or "(no preview)", role="region", aria_label="pane preview"),
     }
 
 
@@ -181,15 +172,11 @@ def _compose_compact(panes: Sequence[PaneSnapshot], preview: str) -> dict[str, s
     left = " | ".join(p.pane_id for p in panes) or "(none)"
     return {
         "left": annotate(left, role="group", aria_label="pane list"),
-        "right": annotate(
-            preview or "(no preview)", role="region", aria_label="pane preview"
-        ),
+        "right": annotate(preview or "(no preview)", role="region", aria_label="pane preview"),
     }
 
 
-_LAYOUT_COMPOSERS: Final[
-    dict[str, Callable[[Sequence[PaneSnapshot], str], dict[str, str]]]
-] = {
+_LAYOUT_COMPOSERS: Final[dict[str, Callable[[Sequence[PaneSnapshot], str], dict[str, str]]]] = {
     "balanced": _compose_balanced,
     "stacked": _compose_stacked,
     "preview": _compose_preview,

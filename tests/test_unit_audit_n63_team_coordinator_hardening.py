@@ -190,9 +190,7 @@ class TestFRGOVTW008:
             rel_type=RelationshipType.CROSS_TEAM_COLLABORATION,
         )
         mgr.create_relationship.return_value = expected
-        result = tc.delegate_cross_team(
-            "a", "b", "task", context={"x": 1}, mediator_id="med-1"
-        )
+        result = tc.delegate_cross_team("a", "b", "task", context={"x": 1}, mediator_id="med-1")
         mgr.create_relationship.assert_called_once_with(
             parent_id="a",
             child_id="b",
@@ -285,9 +283,7 @@ class TestFRGOVTW013:
 
     def test_many_artifacts(self) -> None:
         tc, _ = _coordinator()
-        score = tc._evaluate_task_complexity(
-            "task", context={"required_artifacts": [1, 2, 3, 4, 5, 6, 7]}
-        )
+        score = tc._evaluate_task_complexity("task", context={"required_artifacts": [1, 2, 3, 4, 5, 6, 7]})
         assert 0.0 <= score <= 1.0
 
 
@@ -308,9 +304,7 @@ class TestFRGOVTW014:
 
     def test_returns_none_when_executive_has_parent(self) -> None:
         tc, mgr = _coordinator()
-        exec_agent = _make_agent(
-            "exec-1", role=AgentRole.EXECUTIVE, parent_id="some-parent"
-        )
+        exec_agent = _make_agent("exec-1", role=AgentRole.EXECUTIVE, parent_id="some-parent")
         mgr.list_all_agents.return_value = [exec_agent]
         assert tc._find_orchestrator() is None
 

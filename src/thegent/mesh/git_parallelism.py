@@ -63,9 +63,7 @@ def tempfile_mkstemp(**kwargs: object) -> tuple[int, str]:
     return tempfile.mkstemp(**kwargs)
 
 
-def _run(
-    cmd: list[str], cwd: Path | str, check: bool = True
-) -> subprocess.CompletedProcess:
+def _run(cmd: list[str], cwd: Path | str, check: bool = True) -> subprocess.CompletedProcess:
     """Run a subprocess command and return `CompletedProcess`."""
     return shim_run([*cmd], cwd=str(cwd), check=check, capture_output=True, text=True)
 
@@ -118,9 +116,7 @@ class WorktreeContext:
             if proc.returncode not in (0, 1):
                 _log.warning("commit failed in worktree %s: %s", self.path, proc.stderr)
                 return None
-            result = subprocess.check_output(
-                ["git", "rev-parse", "HEAD"], cwd=str(self.path), text=True
-            ).strip()
+            result = subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=str(self.path), text=True).strip()
             return result
         except Exception as exc:
             _log.warning("commit_all failed for agent %s: %s", self.agent_id, exc)
@@ -228,11 +224,7 @@ class WorktreePool:
                     _pool_ref=self,
                 )
 
-            ctx = (
-                self._create_worktree(agent_id)
-                if self._worktrees_ok
-                else self._acquire_shared_fallback(agent_id)
-            )
+            ctx = self._create_worktree(agent_id) if self._worktrees_ok else self._acquire_shared_fallback(agent_id)
             state[agent_id] = str(ctx.path)
             lock.write(state)
             return ctx
@@ -312,9 +304,7 @@ class WorktreePool:
             _pool_ref=self,
         )
 
-    def _merge_and_remove(
-        self, agent_id: str, worktree_path: Path, branch: str
-    ) -> bool:
+    def _merge_and_remove(self, agent_id: str, worktree_path: Path, branch: str) -> bool:
         """Merge branch into target and remove worktree."""
         target = self._resolve_target_branch()
 
@@ -364,9 +354,7 @@ class WorktreePool:
         if self.target_branch != "HEAD":
             return self.target_branch
         try:
-            result = _run(
-                ["git", "rev-parse", "--abbrev-ref", "HEAD"], self.project_root
-            )
+            result = _run(["git", "rev-parse", "--abbrev-ref", "HEAD"], self.project_root)
             return result.stdout.strip() or "main"
         except subprocess.CalledProcessError:
             return "main"

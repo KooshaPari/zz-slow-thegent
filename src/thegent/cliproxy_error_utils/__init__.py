@@ -35,15 +35,10 @@ class InsufficientCreditsError(Exception):
     """Error raised when there are insufficient credits for an operation."""
 
     def __init__(self, message: str | None = None) -> None:
-        super().__init__(
-            message
-            or _ERROR_MESSAGES.get("insufficient_credits", "Insufficient credits.")
-        )
+        super().__init__(message or _ERROR_MESSAGES.get("insufficient_credits", "Insufficient credits."))
 
 
-def _make_error_body(
-    error: Exception, status_code: int | None = None
-) -> dict[str, Any]:
+def _make_error_body(error: Exception, status_code: int | None = None) -> dict[str, Any]:
     """Create a standardized error response body.
 
     Args:

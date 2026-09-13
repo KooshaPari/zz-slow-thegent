@@ -425,9 +425,7 @@ class TestWasmPluginLoading:
 
             # Second unload (already unloaded)
             result2 = plugin.unload()
-            assert (
-                result2 is True
-            )  # Most implementations return True for idempotent operation
+            assert result2 is True  # Most implementations return True for idempotent operation
         finally:
             wasm_path.unlink(missing_ok=True)
 

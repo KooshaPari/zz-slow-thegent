@@ -44,9 +44,7 @@ def list_providers(include_credentials: bool = False) -> list[dict[str, Any]]:
             # Remove sensitive info
             entry.pop("api_key", None)
             if "login" in entry:
-                entry["login"] = {
-                    k: v for k, v in entry["login"].items() if k != "credentials"
-                }
+                entry["login"] = {k: v for k, v in entry["login"].items() if k != "credentials"}
         result.append(entry)
     return result
 
@@ -265,9 +263,7 @@ def delete_provider(name: str, remove_credentials: bool = True) -> tuple[bool, s
     return True, f"Provider '{name}' deleted successfully"
 
 
-def _update_provider_mapping(
-    name: str, is_openai_compat: bool = False, remove: bool = False
-) -> None:
+def _update_provider_mapping(name: str, is_openai_compat: bool = False, remove: bool = False) -> None:
     """Update provider_mapping.json.
 
     Args:

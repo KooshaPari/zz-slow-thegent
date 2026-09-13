@@ -45,9 +45,7 @@ class AutopoiesisManager:
         result = self.synthesizer.synthesize(prompt, formal_spec)
 
         if result.verified:
-            _log.info(
-                "Autopoiesis successful. New persona architecture synthesized and verified."
-            )
+            _log.info("Autopoiesis successful. New persona architecture synthesized and verified.")
         else:
             _log.error("Autopoiesis failed verification. Retrying synthesis...")
 

@@ -14,9 +14,7 @@ def test_mesh_status_cmd_prints_no_agents(capsys, tmp_path: Path) -> None:
 def test_mesh_status_cmd_prints_agent_rows(capsys, tmp_path: Path) -> None:
     agents_dir = tmp_path / "agents"
     agents_dir.mkdir(parents=True)
-    (agents_dir / "agent-100.yaml").write_text(
-        "pid: 100\ntype: codex\nsource: auto-detect\n", encoding="utf-8"
-    )
+    (agents_dir / "agent-100.yaml").write_text("pid: 100\ntype: codex\nsource: auto-detect\n", encoding="utf-8")
 
     mesh_status_cmd(tmp_path)
     captured = capsys.readouterr()

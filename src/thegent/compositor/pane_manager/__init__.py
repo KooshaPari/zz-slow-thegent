@@ -205,9 +205,7 @@ class PaneManager:
         if parent is None:
             return False
 
-        parent.children = [
-            child for child in parent.children if child.pane_id != target.pane_id
-        ]
+        parent.children = [child for child in parent.children if child.pane_id != target.pane_id]
         self._collapse_from(parent)
         self._set_focus_to_first_leaf()
         return True
@@ -290,9 +288,7 @@ class PaneManager:
             is_leaf=False,
             direction=data.get("direction", "H"),
         )
-        children = [
-            self._build_restored_node(child, node) for child in data.get("children", [])
-        ]
+        children = [self._build_restored_node(child, node) for child in data.get("children", [])]
         self._attach_children(node, children or [PaneNode(self._new_pane_id())])
         node.parent = parent
         return node

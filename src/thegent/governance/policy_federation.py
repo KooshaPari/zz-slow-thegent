@@ -28,9 +28,7 @@ class PolicyCache:
         Args:
             ttl_seconds: Cache TTL in seconds (default: 300 = 5 minutes)
         """
-        self.cache: TTLCache[str, dict[str, Any]] = TTLCache(
-            maxsize=1000, ttl=ttl_seconds
-        )
+        self.cache: TTLCache[str, dict[str, Any]] = TTLCache(maxsize=1000, ttl=ttl_seconds)
 
     def get(self, namespace: str, policy_key: str) -> dict[str, Any] | None:
         """Get cached policy.
@@ -108,16 +106,12 @@ class GovernanceConflictResolver:
             # Merge with precedence
             rules = policy.get("rules", {})
             for key, value in rules.items():
-                if key not in resolved or self._is_more_restrictive(
-                    key, value, resolved[key]
-                ):
+                if key not in resolved or self._is_more_restrictive(key, value, resolved[key]):
                     resolved[key] = value
 
         return resolved
 
-    def _is_more_restrictive(
-        self, key: str, new_value: Any, current_value: Any
-    ) -> bool:
+    def _is_more_restrictive(self, key: str, new_value: Any, current_value: Any) -> bool:
         """Check if new value is more restrictive.
 
         Args:
@@ -157,9 +151,7 @@ class GovernancePolicyFederation:
             federated_engine: Federated policy engine (creates new if None)
             cache_ttl: Cache TTL in seconds (default: 300)
         """
-        self.federated_engine = federated_engine or FederatedPolicyEngine(
-            namespace="default"
-        )
+        self.federated_engine = federated_engine or FederatedPolicyEngine(namespace="default")
         self.escalation_queue = EscalationQueue()
         self.cache = PolicyCache(ttl_seconds=cache_ttl)
         self.conflict_resolver = GovernanceConflictResolver()
@@ -197,9 +189,7 @@ class GovernancePolicyFederation:
                 # Cache resolved policy
                 self.cache.set(namespace, policy_key, policy)
             except Exception as e:
-                _log.warning(
-                    "Failed to resolve policy %s:%s: %s", namespace, policy_key, e
-                )
+                _log.warning("Failed to resolve policy %s:%s: %s", namespace, policy_key, e)
                 # Default: allow if policy resolution fails (fail-open)
                 return True
 

@@ -64,9 +64,7 @@ def test_wl9742_parse_turn_cancel_request_separates_parse_path() -> None:
     # @trace WL-9742
     _reset_state()
     turn = _seed_in_progress_turn()
-    turn_id, resolved_turn, error = _parse_turn_cancel_request(
-        "turn/cancel", "req-9742", {"turn_id": turn["id"]}
-    )
+    turn_id, resolved_turn, error = _parse_turn_cancel_request("turn/cancel", "req-9742", {"turn_id": turn["id"]})
     assert error is None
     assert turn_id == turn["id"]
     assert resolved_turn is turn
@@ -77,18 +75,14 @@ def test_wl9743_resolve_turn_cancel_context_preserves_terminal_error_contract() 
     _reset_state()
     turn = _seed_in_progress_turn()
     turn["status"] = "completed"
-    turn_id, resolved_turn, error = _resolve_turn_cancel_context(
-        "req-9743", {"turn_id": turn["id"]}
-    )
+    turn_id, resolved_turn, error = _resolve_turn_cancel_context("req-9743", {"turn_id": turn["id"]})
     assert turn_id is None
     assert resolved_turn is None
     assert error is not None
     assert error["error"]["code"] == -32003
 
 
-def test_wl9744_validate_turn_cancel_turn_state_handles_happy_and_failure_paths() -> (
-    None
-):
+def test_wl9744_validate_turn_cancel_turn_state_handles_happy_and_failure_paths() -> None:
     # @trace WL-9744
     _reset_state()
     turn = _seed_in_progress_turn()
@@ -120,31 +114,23 @@ def test_wl9746_project_turn_cancel_response_separates_projection_phase() -> Non
 def test_wl9747_validate_turn_cancel_projection_turn_id_detects_mismatch() -> None:
     # @trace WL-9747
     with pytest.raises(ValueError, match="Turn id mismatch"):
-        _validate_turn_cancel_projection_turn_id(
-            "turn-expected", {"turn": {"id": "turn-actual"}}
-        )
+        _validate_turn_cancel_projection_turn_id("turn-expected", {"turn": {"id": "turn-actual"}})
 
 
 def test_wl9748_resolve_turn_cancel_turn_boundary_missing_turn() -> None:
     # @trace WL-9748
     _reset_state()
-    turn_id, turn, error = _resolve_turn_cancel_turn(
-        "req-9748", {"turn_id": "turn-404"}
-    )
+    turn_id, turn, error = _resolve_turn_cancel_turn("req-9748", {"turn_id": "turn-404"})
     assert turn_id is None
     assert turn is None
     assert error is not None
     assert error["error"]["code"] == -32002
 
 
-def test_wl9749_handle_turn_cancel_request_notification_has_side_effect_without_response() -> (
-    None
-):
+def test_wl9749_handle_turn_cancel_request_notification_has_side_effect_without_response() -> None:
     # @trace WL-9749
     _reset_state()
     turn = _seed_in_progress_turn()
-    response = _handle_turn_cancel_request(
-        "turn/cancel", False, None, {"turn_id": turn["id"]}
-    )
+    response = _handle_turn_cancel_request("turn/cancel", False, None, {"turn_id": turn["id"]})
     assert response is None
     assert turn["status"] == "cancelled"

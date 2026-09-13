@@ -13,9 +13,7 @@ def test_infer_actor_profile_prefers_human_tokens() -> None:
     assert identity.infer_actor_profile("default-agent") == "agent"
 
 
-def test_resolve_author_env_supports_identity_map(
-    monkeypatch: pytest.MonkeyPatch, tmp_path: Path
-) -> None:
+def test_resolve_author_env_supports_identity_map(monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> None:
     profile_map = '{"codex": {"name": "Claude Bot", "email": "claude-bot@example.com"}, "agent": "Agent Fallback"}'
     monkeypatch.setattr(
         identity,
@@ -28,18 +26,14 @@ def test_resolve_author_env_supports_identity_map(
     monkeypatch.setenv("THGENT_GIT_IDENTITY_MAP", profile_map)
     monkeypatch.setenv("GIT_AUTHOR_NAME", "from-git-env-name")
     monkeypatch.setenv("GIT_AUTHOR_EMAIL", "from-git-env-email@example.com")
-    resolved = identity.resolve_author_env(
-        project_root=tmp_path, actor_profile="codex", agent_id="agent-codex"
-    )
+    resolved = identity.resolve_author_env(project_root=tmp_path, actor_profile="codex", agent_id="agent-codex")
     assert resolved["GIT_AUTHOR_NAME"] == "Claude Bot"
     assert resolved["GIT_AUTHOR_EMAIL"] == "claude-bot@example.com"
     assert resolved["GIT_COMMITTER_NAME"] == "Claude Bot"
     assert resolved["GIT_COMMITTER_EMAIL"] == "claude-bot@example.com"
 
 
-def test_resolve_author_env_uses_non_human_suffix(
-    monkeypatch: pytest.MonkeyPatch, tmp_path: Path
-) -> None:
+def test_resolve_author_env_uses_non_human_suffix(monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> None:
     for key in [
         "THGENT_GIT_IDENTITY_MAP",
         "THGENT_GIT_AUTHOR_NAME",
@@ -63,18 +57,14 @@ def test_resolve_author_env_uses_non_human_suffix(
     )
     monkeypatch.setenv("GIT_AUTHOR_NAME", "Koosha Parikh")
     monkeypatch.setenv("GIT_AUTHOR_EMAIL", "koosh+thegent@example.com")
-    resolved = identity.resolve_author_env(
-        project_root=tmp_path, actor_profile=None, agent_id="agent-claude"
-    )
+    resolved = identity.resolve_author_env(project_root=tmp_path, actor_profile=None, agent_id="agent-claude")
     assert resolved["GIT_AUTHOR_NAME"] == "Koosha Paridehpour (claude)"
     assert resolved["GIT_AUTHOR_EMAIL"] == "koosh+thegent+claude@example.com"
     assert resolved["GIT_COMMITTER_NAME"] == "Koosha Paridehpour (claude)"
     assert resolved["GIT_COMMITTER_EMAIL"] == "koosh+thegent+claude@example.com"
 
 
-def test_resolve_author_env_allows_direct_overrides(
-    monkeypatch: pytest.MonkeyPatch, tmp_path: Path
-) -> None:
+def test_resolve_author_env_allows_direct_overrides(monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> None:
     monkeypatch.setattr(
         identity,
         "_git_config_get",
@@ -87,8 +77,6 @@ def test_resolve_author_env_allows_direct_overrides(
     monkeypatch.setenv("GIT_AUTHOR_EMAIL", "ignore-me@example.com")
     monkeypatch.setenv("THGENT_GIT_AUTHOR_NAME", "override-name")
     monkeypatch.setenv("THGENT_GIT_COMMITTER_NAME", "override-committer-name")
-    resolved = identity.resolve_author_env(
-        project_root=tmp_path, actor_profile="human", agent_id="kooshapari"
-    )
+    resolved = identity.resolve_author_env(project_root=tmp_path, actor_profile="human", agent_id="kooshapari")
     assert resolved["GIT_AUTHOR_NAME"] == "override-name"
     assert resolved["GIT_COMMITTER_NAME"] == "override-committer-name"

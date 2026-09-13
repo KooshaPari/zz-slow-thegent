@@ -35,9 +35,7 @@ def test_rejects_blank_tool_description() -> None:
     with pytest.raises(ValueError, match=r"tool_spec.description must be non-empty"):
         registry.register_dynamic_tool(
             "s1",
-            DynamicToolSpec(
-                name="alpha", description="   ", input_schema={"type": "object"}
-            ),
+            DynamicToolSpec(name="alpha", description="   ", input_schema={"type": "object"}),
         )
 
 
@@ -89,13 +87,9 @@ def test_resolve_tool_call_for_session_enforces_ownership() -> None:
     call = registry.create_tool_call("s1", "alpha", {"x": "a"})
 
     with pytest.raises(KeyError, match="does not belong"):
-        registry.resolve_tool_call_for_session(
-            "s2", call.call_id, {"ok": True}, success=True
-        )
+        registry.resolve_tool_call_for_session("s2", call.call_id, {"ok": True}, success=True)
 
-    result = registry.resolve_tool_call_for_session(
-        "s1", call.call_id, {"ok": True}, success=True
-    )
+    result = registry.resolve_tool_call_for_session("s1", call.call_id, {"ok": True}, success=True)
     assert result.success is True
 
 
@@ -104,9 +98,7 @@ def test_resolve_tool_call_for_session_normalizes_session_id() -> None:
     registry.register_dynamic_tool("s1", _spec("alpha"))
     call = registry.create_tool_call("s1", "alpha", {"x": "a"})
 
-    result = registry.resolve_tool_call_for_session(
-        "  s1  ", call.call_id, {"ok": True}, success=True
-    )
+    result = registry.resolve_tool_call_for_session("  s1  ", call.call_id, {"ok": True}, success=True)
     assert result.success is True
 
 
@@ -207,9 +199,7 @@ def test_expired_call_is_removed_and_raises_timeout(
     registry.register_dynamic_tool("s1", _spec("alpha"))
 
     monotonic_values = iter([100.0, 100.2, 100.2])
-    monkeypatch.setattr(
-        "thegent.mcp.dynamic_tools.time.monotonic", lambda: next(monotonic_values)
-    )
+    monkeypatch.setattr("thegent.mcp.dynamic_tools.time.monotonic", lambda: next(monotonic_values))
     call = registry.create_tool_call("s1", "alpha", {"x": "v1"})
 
     with pytest.raises(TimeoutError, match="expired"):

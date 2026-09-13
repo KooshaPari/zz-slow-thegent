@@ -78,9 +78,7 @@ class TestCommandBuilding:
     )
     @patch("thegent.agents.codex_proxy._resolve_codex", return_value="/usr/bin/codex")
     @patch("thegent.agents.codex_proxy._run_with_retry")
-    def test_basic_command_structure(
-        self, mock_retry, mock_resolve, mock_proxy
-    ) -> None:
+    def test_basic_command_structure(self, mock_retry, mock_resolve, mock_proxy) -> None:
         # @trace FR-AGT-004
         mock_retry.return_value = make_run_result(exit_code=0, stdout="ok")
 
@@ -101,9 +99,7 @@ class TestCommandBuilding:
     )
     @patch("thegent.agents.codex_proxy._resolve_codex", return_value="/usr/bin/codex")
     @patch("thegent.agents.codex_proxy._run_with_retry")
-    def test_write_mode_adds_sandbox(
-        self, mock_retry, mock_resolve, mock_proxy
-    ) -> None:
+    def test_write_mode_adds_sandbox(self, mock_retry, mock_resolve, mock_proxy) -> None:
         # @trace FR-AGT-004
         mock_retry.return_value = make_run_result(exit_code=0, stdout="ok")
 
@@ -120,9 +116,7 @@ class TestCommandBuilding:
     )
     @patch("thegent.agents.codex_proxy._resolve_codex", return_value="/usr/bin/codex")
     @patch("thegent.agents.codex_proxy._run_with_retry")
-    def test_full_mode_adds_full_auto(
-        self, mock_retry, mock_resolve, mock_proxy
-    ) -> None:
+    def test_full_mode_adds_full_auto(self, mock_retry, mock_resolve, mock_proxy) -> None:
         # @trace FR-AGT-004
         mock_retry.return_value = make_run_result(exit_code=0, stdout="ok")
 
@@ -138,9 +132,7 @@ class TestCommandBuilding:
     )
     @patch("thegent.agents.codex_proxy._resolve_codex", return_value="/usr/bin/codex")
     @patch("thegent.agents.codex_proxy._run_with_retry")
-    def test_cwd_adds_cd_flag(
-        self, mock_retry, mock_resolve, mock_proxy, tmp_path: Path
-    ) -> None:
+    def test_cwd_adds_cd_flag(self, mock_retry, mock_resolve, mock_proxy, tmp_path: Path) -> None:
         # @trace FR-AGT-004
         mock_retry.return_value = make_run_result(exit_code=0, stdout="ok")
 
@@ -157,9 +149,7 @@ class TestCommandBuilding:
     )
     @patch("thegent.agents.codex_proxy._resolve_codex", return_value="/usr/bin/codex")
     @patch("thegent.agents.codex_proxy._run_with_retry")
-    def test_image_paths_add_repeatable_image_flags(
-        self, mock_retry, mock_resolve, mock_proxy
-    ) -> None:
+    def test_image_paths_add_repeatable_image_flags(self, mock_retry, mock_resolve, mock_proxy) -> None:
         """WL-114: codex proxy runner forwards repeatable --image flags."""
         mock_retry.return_value = make_run_result(exit_code=0, stdout="ok")
 
@@ -204,9 +194,7 @@ class TestRunMethod:
     )
     @patch("thegent.agents.codex_proxy._resolve_codex", return_value="/usr/bin/codex")
     @patch("thegent.agents.codex_proxy._run_with_retry")
-    def test_env_sets_openai_base_url(
-        self, mock_retry, mock_resolve, mock_proxy
-    ) -> None:
+    def test_env_sets_openai_base_url(self, mock_retry, mock_resolve, mock_proxy) -> None:
         # @trace FR-AGT-004
         mock_retry.return_value = make_run_result(exit_code=0, stdout="ok")
 
@@ -231,9 +219,7 @@ class TestTimeoutHandling:
     )
     @patch("thegent.agents.codex_proxy._resolve_codex", return_value="/usr/bin/codex")
     @patch("thegent.agents.codex_proxy._run_with_retry")
-    def test_timeout_expired_returns_timed_out_result(
-        self, mock_retry, mock_resolve, mock_proxy
-    ) -> None:
+    def test_timeout_expired_returns_timed_out_result(self, mock_retry, mock_resolve, mock_proxy) -> None:
         # @trace FR-AGT-004
         import subprocess
 
@@ -252,9 +238,7 @@ class TestTimeoutHandling:
     )
     @patch("thegent.agents.codex_proxy._resolve_codex", return_value="/usr/bin/codex")
     @patch("thegent.agents.codex_proxy._run_with_retry")
-    def test_codex_not_found_returns_install_message(
-        self, mock_retry, mock_resolve, mock_proxy
-    ) -> None:
+    def test_codex_not_found_returns_install_message(self, mock_retry, mock_resolve, mock_proxy) -> None:
         # @trace FR-AGT-004
         mock_retry.side_effect = FileNotFoundError("codex")
 
@@ -270,9 +254,7 @@ class TestTimeoutHandling:
     )
     @patch("thegent.agents.codex_proxy._resolve_codex", return_value="/usr/bin/codex")
     @patch("thegent.agents.codex_proxy._run_with_retry")
-    def test_transient_error_returns_result(
-        self, mock_retry, mock_resolve, mock_proxy
-    ) -> None:
+    def test_transient_error_returns_result(self, mock_retry, mock_resolve, mock_proxy) -> None:
         # @trace FR-AGT-004
         from thegent.agents.resilience import TransientAgentError
 
@@ -293,9 +275,7 @@ class TestTimeoutHandling:
 
 @pytest.mark.unit
 class TestResolveCodexWhichFound:
-    @patch(
-        "thegent.agents.codex_proxy.shutil.which", return_value="/usr/local/bin/codex"
-    )
+    @patch("thegent.agents.codex_proxy.shutil.which", return_value="/usr/local/bin/codex")
     def test_which_found_returns_path(self, mock_which) -> None:
         # @trace FR-AGT-004
         """_resolve_codex returns path from shutil.which when codex is on PATH (line 38)."""

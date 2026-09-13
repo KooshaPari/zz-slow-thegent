@@ -106,9 +106,7 @@ class OrgRegistry:
         payload = self._load()
         return sorted(payload.orgs, key=lambda o: o.created_at)
 
-    def get_org(
-        self, *, org_id: str | None = None, org_name: str | None = None
-    ) -> OrgNamespace:
+    def get_org(self, *, org_id: str | None = None, org_name: str | None = None) -> OrgNamespace:
         """Return an org by id or name.
 
         Raises KeyError if not found.  Raises ValueError if selector is ambiguous.
@@ -128,9 +126,7 @@ class OrgRegistry:
             selector = org_id or org_name
             raise KeyError(f"OrgNamespace not found: {selector!r}")
         if len(matches) > 1:
-            raise ValueError(
-                "OrgNamespace selector is ambiguous; use both org_id and org_name."
-            )
+            raise ValueError("OrgNamespace selector is ambiguous; use both org_id and org_name.")
         return matches[0]
 
     # -- Tenant management ---------------------------------------------------
@@ -144,9 +140,7 @@ class OrgRegistry:
         for org in payload.orgs:
             if org.org_id == org_id:
                 if tenant_id in org.tenants:
-                    raise ValueError(
-                        f"tenant_id {tenant_id!r} already in org {org_id!r}"
-                    )
+                    raise ValueError(f"tenant_id {tenant_id!r} already in org {org_id!r}")
                 new_tenants = list(org.tenants) + [tenant_id]
                 org = OrgNamespace(
                     org_id=org.org_id,

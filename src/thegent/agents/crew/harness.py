@@ -91,9 +91,7 @@ def _parse_cost_from_output(output: str) -> float:
         return float(match.group(1))
 
     # Pattern 2: "Cost: $X.XX" or "cost: $X.XX" or "Total cost: $X.XX"
-    match = re.search(
-        r"(?:total\s+)?cost[\s:]*(?:\$)?(\d+\.?\d*)", output, re.IGNORECASE
-    )
+    match = re.search(r"(?:total\s+)?cost[\s:]*(?:\$)?(\d+\.?\d*)", output, re.IGNORECASE)
     if match:
         return float(match.group(1))
 
@@ -119,9 +117,7 @@ def create_agent_executor(
         Callable (agent_id, prompt, context) -> ExecutionResult
     """
 
-    def agent_executor(
-        agent_id: str, prompt: str, context: dict[str, Any]
-    ) -> ExecutionResult:
+    def agent_executor(agent_id: str, prompt: str, context: dict[str, Any]) -> ExecutionResult:
         """
         Execute agent via thegent harness.
 
@@ -178,9 +174,7 @@ def create_agent_executor(
             # Extract tokens/cost from result if available
             # Combine stdout and stderr for parsing
             combined_output = f"{result.stdout}\n{result.stderr}"
-            prompt_tokens, completion_tokens = _parse_tokens_from_output(
-                combined_output
-            )
+            prompt_tokens, completion_tokens = _parse_tokens_from_output(combined_output)
             tokens_used = prompt_tokens + completion_tokens
             cost_usd = _parse_cost_from_output(combined_output)
 

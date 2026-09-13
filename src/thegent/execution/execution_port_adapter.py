@@ -31,8 +31,7 @@ class ExecutionPortAdapter:
             except ImportError as e:
                 _logger.error("Failed to load run_impl from CLI: %s", e)
                 raise RuntimeError(
-                    "ExecutionPort requires CLI to be installed; "
-                    "ensure thegent.cli.commands.impl is available"
+                    "ExecutionPort requires CLI to be installed; ensure thegent.cli.commands.impl is available"
                 ) from e
         return self._run_impl
 
@@ -48,8 +47,7 @@ class ExecutionPortAdapter:
             except ImportError as e:
                 _logger.error("Failed to load dag_status_impl from CLI: %s", e)
                 raise RuntimeError(
-                    "ExecutionPort requires CLI to be installed; "
-                    "ensure thegent.cli.commands.impl is available"
+                    "ExecutionPort requires CLI to be installed; ensure thegent.cli.commands.impl is available"
                 ) from e
         return self._dag_status_impl
 

@@ -140,9 +140,7 @@ class CostTracker:
 
         # Track by model and provider
         self._requests_by_model[model] = self._requests_by_model.get(model, 0) + 1
-        self._requests_by_provider[provider] = (
-            self._requests_by_provider.get(provider, 0) + 1
-        )
+        self._requests_by_provider[provider] = self._requests_by_provider.get(provider, 0) + 1
 
         if is_error:
             self._errors += 1
@@ -194,9 +192,7 @@ class CostTracker:
     def get_stats(self) -> RoutingStats:
         """Get cost statistics summary."""
         total_tokens = sum(e.input_tokens + e.output_tokens for e in self._entries)
-        avg_latency = (
-            (self._total_latency_ms / len(self._entries)) if self._entries else 0.0
-        )
+        avg_latency = (self._total_latency_ms / len(self._entries)) if self._entries else 0.0
 
         return RoutingStats(
             total_calls=len(self._entries),

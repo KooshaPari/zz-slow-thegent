@@ -120,9 +120,7 @@ def test_validate_zig_abi_contract_fails_on_missing_readiness_gates(
     bad_contract = tmp_path / "zig_abi_contract_missing_readiness.json"
     contract_payload = _valid_contract_payload()
     contract_payload["validation"] = {"required_tests": ["abi_symbol_presence"]}
-    bad_contract.write_text(
-        json.dumps(contract_payload).decode("utf-8"), encoding="utf-8"
-    )
+    bad_contract.write_text(json.dumps(contract_payload).decode("utf-8"), encoding="utf-8")
 
     result = subprocess.run(
         [sys.executable, str(script), "--contract", str(bad_contract)],
@@ -153,9 +151,7 @@ def test_validate_zig_abi_contract_fails_on_duplicate_required_tests(
             "wasm_target_build",
         ]
     }
-    bad_contract.write_text(
-        json.dumps(contract_payload).decode("utf-8"), encoding="utf-8"
-    )
+    bad_contract.write_text(json.dumps(contract_payload).decode("utf-8"), encoding="utf-8")
 
     result = subprocess.run(
         [sys.executable, str(script), "--contract", str(bad_contract)],

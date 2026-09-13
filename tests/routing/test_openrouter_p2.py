@@ -43,9 +43,7 @@ class _AsyncGenFromChunks:
 # ---------------------------------------------------------------------------
 
 
-def _make_chat_chunk(
-    content: str | None, finish_reason: str | None = None
-) -> dict[str, Any]:
+def _make_chat_chunk(content: str | None, finish_reason: str | None = None) -> dict[str, Any]:
     delta: dict[str, Any] = {}
     if content is not None:
         delta["content"] = content
@@ -191,9 +189,7 @@ class TestExtractForwardHeaders:
 
         app = Starlette(routes=[Route("/", endpoint)])
         client = TestClient(app)
-        client.get(
-            "/", headers={"Authorization": "Bearer sk-secret", "x-custom-thing": "val"}
-        )
+        client.get("/", headers={"Authorization": "Bearer sk-secret", "x-custom-thing": "val"})
         assert captured == {}
 
     def test_empty_headers_returns_empty_dict(self) -> None:
@@ -255,11 +251,7 @@ class TestOR17HeadersForwardedToRouter:
             from starlette.applications import Starlette
             from starlette.routing import Route
 
-            app = Starlette(
-                routes=[
-                    Route("/v1/responses", handle_responses_request, methods=["POST"])
-                ]
-            )
+            app = Starlette(routes=[Route("/v1/responses", handle_responses_request, methods=["POST"])])
             client = TestClient(app, raise_server_exceptions=False)
             client.post(
                 "/v1/responses",
@@ -304,11 +296,7 @@ class TestOR17HeadersForwardedToRouter:
             from starlette.applications import Starlette
             from starlette.routing import Route
 
-            app = Starlette(
-                routes=[
-                    Route("/v1/responses", handle_responses_request, methods=["POST"])
-                ]
-            )
+            app = Starlette(routes=[Route("/v1/responses", handle_responses_request, methods=["POST"])])
             client = TestClient(app, raise_server_exceptions=False)
             client.post(
                 "/v1/responses",
@@ -350,11 +338,7 @@ class TestOR17HeadersForwardedToRouter:
             from starlette.applications import Starlette
             from starlette.routing import Route
 
-            app = Starlette(
-                routes=[
-                    Route("/v1/responses", handle_responses_request, methods=["POST"])
-                ]
-            )
+            app = Starlette(routes=[Route("/v1/responses", handle_responses_request, methods=["POST"])])
             client = TestClient(app, raise_server_exceptions=False)
             client.post(
                 "/v1/responses",
@@ -397,11 +381,7 @@ class TestOR17HeadersForwardedToRouter:
             from starlette.applications import Starlette
             from starlette.routing import Route
 
-            app = Starlette(
-                routes=[
-                    Route("/v1/responses", handle_responses_request, methods=["POST"])
-                ]
-            )
+            app = Starlette(routes=[Route("/v1/responses", handle_responses_request, methods=["POST"])])
             client = TestClient(app, raise_server_exceptions=False)
             client.post(
                 "/v1/responses",
@@ -441,9 +421,7 @@ class TestIsNativeResponsesCapable:
         )
 
         for provider in ("gpt-4o", "anthropic", "cursor", "gemini", "litellm", ""):
-            assert _is_native_responses_capable(provider) is False, (
-                f"Expected False for provider={provider!r}"
-            )
+            assert _is_native_responses_capable(provider) is False, f"Expected False for provider={provider!r}"
 
 
 # ---------------------------------------------------------------------------
@@ -466,10 +444,7 @@ class TestExtractProviderFromModel:
             _extract_provider_from_model,
         )
 
-        assert (
-            _extract_provider_from_model("openrouter/anthropic/claude-opus-4-6")
-            == "openrouter"
-        )
+        assert _extract_provider_from_model("openrouter/anthropic/claude-opus-4-6") == "openrouter"
 
     def test_no_slash_returns_empty_string(self) -> None:
         from thegent.utils.routing_impl.litellm_responses_handler import (
@@ -506,9 +481,7 @@ class TestOR18NativeResponsesForwarding:
         mock_router = MagicMock()
         mock_router.acompletion = AsyncMock()
 
-        fake_response_content = json.dumps(
-            {"id": "r-native", "object": "response", "status": "completed"}
-        )
+        fake_response_content = json.dumps({"id": "r-native", "object": "response", "status": "completed"})
 
         mock_httpx_resp = MagicMock()
         mock_httpx_resp.content = fake_response_content
@@ -542,11 +515,7 @@ class TestOR18NativeResponsesForwarding:
             from starlette.applications import Starlette
             from starlette.routing import Route
 
-            app = Starlette(
-                routes=[
-                    Route("/v1/responses", handle_responses_request, methods=["POST"])
-                ]
-            )
+            app = Starlette(routes=[Route("/v1/responses", handle_responses_request, methods=["POST"])])
             client = TestClient(app, raise_server_exceptions=False)
             resp = client.post(
                 "/v1/responses",
@@ -602,11 +571,7 @@ class TestOR18NativeResponsesForwarding:
             from starlette.applications import Starlette
             from starlette.routing import Route
 
-            app = Starlette(
-                routes=[
-                    Route("/v1/responses", handle_responses_request, methods=["POST"])
-                ]
-            )
+            app = Starlette(routes=[Route("/v1/responses", handle_responses_request, methods=["POST"])])
             client = TestClient(app, raise_server_exceptions=False)
             client.post(
                 "/v1/responses",
@@ -658,11 +623,7 @@ class TestOR18NativeResponsesForwarding:
                 return_value=mock_client_instance,
             ),
         ):
-            app = Starlette(
-                routes=[
-                    Route("/v1/responses", handle_responses_request, methods=["POST"])
-                ]
-            )
+            app = Starlette(routes=[Route("/v1/responses", handle_responses_request, methods=["POST"])])
             client = TestClient(app, raise_server_exceptions=False)
             client.post(
                 "/v1/responses",
@@ -708,11 +669,7 @@ class TestOR18NativeResponsesForwarding:
             from starlette.applications import Starlette
             from starlette.routing import Route
 
-            app = Starlette(
-                routes=[
-                    Route("/v1/responses", handle_responses_request, methods=["POST"])
-                ]
-            )
+            app = Starlette(routes=[Route("/v1/responses", handle_responses_request, methods=["POST"])])
             client = TestClient(app, raise_server_exceptions=False)
             client.post(
                 "/v1/responses",
@@ -815,9 +772,7 @@ class TestOR19GenerationIdCaptureFromStream:
     """@trace OR-19"""
 
     @pytest.mark.asyncio
-    async def test_generation_id_written_when_chunk_contains_openrouter_field(
-        self, tmp_path
-    ) -> None:
+    async def test_generation_id_written_when_chunk_contains_openrouter_field(self, tmp_path) -> None:
         """When a chunk contains openrouter-generation-id, it must be appended to the store."""
         from starlette.testclient import TestClient
 
@@ -852,11 +807,7 @@ class TestOR19GenerationIdCaptureFromStream:
             from starlette.applications import Starlette
             from starlette.routing import Route
 
-            app = Starlette(
-                routes=[
-                    Route("/v1/responses", handle_responses_request, methods=["POST"])
-                ]
-            )
+            app = Starlette(routes=[Route("/v1/responses", handle_responses_request, methods=["POST"])])
             client = TestClient(app, raise_server_exceptions=False)
             client.post(
                 "/v1/responses",
@@ -870,9 +821,7 @@ class TestOR19GenerationIdCaptureFromStream:
         assert records[0]["generation_id"] == "gen-12345"
 
     @pytest.mark.asyncio
-    async def test_generation_id_written_when_chunk_contains_x_generation_id_field(
-        self, tmp_path
-    ) -> None:
+    async def test_generation_id_written_when_chunk_contains_x_generation_id_field(self, tmp_path) -> None:
         """When a chunk contains x-generation-id, it must also be appended to the store."""
         from starlette.testclient import TestClient
 
@@ -906,11 +855,7 @@ class TestOR19GenerationIdCaptureFromStream:
             from starlette.applications import Starlette
             from starlette.routing import Route
 
-            app = Starlette(
-                routes=[
-                    Route("/v1/responses", handle_responses_request, methods=["POST"])
-                ]
-            )
+            app = Starlette(routes=[Route("/v1/responses", handle_responses_request, methods=["POST"])])
             client = TestClient(app, raise_server_exceptions=False)
             client.post(
                 "/v1/responses",
@@ -923,9 +868,7 @@ class TestOR19GenerationIdCaptureFromStream:
         assert any(r["generation_id"] == "xgen-99" for r in records)
 
     @pytest.mark.asyncio
-    async def test_no_generation_id_in_chunks_means_no_store_write(
-        self, tmp_path
-    ) -> None:
+    async def test_no_generation_id_in_chunks_means_no_store_write(self, tmp_path) -> None:
         """When chunks contain no generation_id fields, the store file must not be written."""
         from starlette.testclient import TestClient
 
@@ -957,11 +900,7 @@ class TestOR19GenerationIdCaptureFromStream:
             from starlette.applications import Starlette
             from starlette.routing import Route
 
-            app = Starlette(
-                routes=[
-                    Route("/v1/responses", handle_responses_request, methods=["POST"])
-                ]
-            )
+            app = Starlette(routes=[Route("/v1/responses", handle_responses_request, methods=["POST"])])
             client = TestClient(app, raise_server_exceptions=False)
             client.post(
                 "/v1/responses",
@@ -969,6 +908,4 @@ class TestOR19GenerationIdCaptureFromStream:
                 headers={"Content-Type": "application/json"},
             )
 
-        assert not store.exists(), (
-            "store should not be created when no generation_id is present"
-        )
+        assert not store.exists(), "store should not be created when no generation_id is present"

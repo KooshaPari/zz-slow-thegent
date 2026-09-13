@@ -12,9 +12,7 @@ from __future__ import annotations
 from pathlib import Path
 
 _ROOT = Path(__file__).parent.parent
-_SIGNOFF_DOC = (
-    _ROOT / "docs" / "reports" / "2026-02-21-B90-W3-A5-decomposition-signoff.md"
-)
+_SIGNOFF_DOC = _ROOT / "docs" / "reports" / "2026-02-21-B90-W3-A5-decomposition-signoff.md"
 
 
 def test_signoff_doc_exists() -> None:

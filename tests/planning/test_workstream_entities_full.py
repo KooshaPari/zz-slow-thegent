@@ -16,9 +16,7 @@ class TestWorkstreamDBInit:
         db = WorkstreamDB(db_path)
         assert db_path.exists()
         conn = db._get_conn()
-        cursor = conn.execute(
-            "SELECT name FROM sqlite_master WHERE type='table' AND name='workstream_items'"
-        )
+        cursor = conn.execute("SELECT name FROM sqlite_master WHERE type='table' AND name='workstream_items'")
         assert cursor.fetchone() is not None
 
 
@@ -239,9 +237,7 @@ class TestEntityOperation:
             properties={"title": "UniqueTitle"},
             db_path=db_path,
         )
-        result = entity_operation(
-            "search", "workstream_items", query="Unique", db_path=db_path
-        )
+        result = entity_operation("search", "workstream_items", query="Unique", db_path=db_path)
         assert result["count"] == 1
 
     def test_search_missing_query(self, tmp_path: Path) -> None:
@@ -264,9 +260,7 @@ class TestEntityOperation:
             properties={"title": "Task"},
             db_path=db_path,
         )
-        result = entity_operation(
-            "delete", "workstream_items", entity_id="WL-001", db_path=db_path
-        )
+        result = entity_operation("delete", "workstream_items", entity_id="WL-001", db_path=db_path)
         assert result["deleted"] is True
 
     def test_import_operation(self, tmp_path: Path) -> None:
@@ -290,9 +284,7 @@ class TestEntityOperation:
         from thegent.planning.workstream_entities import entity_operation
 
         db_path = tmp_path / "test.db"
-        result = entity_operation(
-            "sync", "sessions", source="all", cd=tmp_path, db_path=db_path
-        )
+        result = entity_operation("sync", "sessions", source="all", cd=tmp_path, db_path=db_path)
         assert result["operation"] == "sync"
         assert "total" in result
 

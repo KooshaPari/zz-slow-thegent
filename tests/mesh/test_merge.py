@@ -207,9 +207,7 @@ class TestMergeStructuralYAML:
         mock_ruamel = mock.MagicMock()
         mock_ruamel.yaml.YAML = mock_yaml_cls
 
-        with mock.patch.dict(
-            "sys.modules", {"ruamel": mock_ruamel, "ruamel.yaml": mock_ruamel.yaml}
-        ):
+        with mock.patch.dict("sys.modules", {"ruamel": mock_ruamel, "ruamel.yaml": mock_ruamel.yaml}):
             result = sm.merge_structural(a, b, out)
 
         assert result is True
@@ -244,9 +242,7 @@ class TestMergeStructuralYAML:
         mock_ruamel = mock.MagicMock()
         mock_ruamel.yaml.YAML = mock_yaml_cls
 
-        with mock.patch.dict(
-            "sys.modules", {"ruamel": mock_ruamel, "ruamel.yaml": mock_ruamel.yaml}
-        ):
+        with mock.patch.dict("sys.modules", {"ruamel": mock_ruamel, "ruamel.yaml": mock_ruamel.yaml}):
             result = sm.merge_structural(a, b, out)
 
         assert result is True

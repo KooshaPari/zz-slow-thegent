@@ -150,9 +150,7 @@ class TestFRGOVPF006FederationInitDefaults:
 
     @patch("thegent.governance.policy_federation.EscalationQueue")
     @patch("thegent.governance.policy_federation.FederatedPolicyEngine")
-    def test_init_creates_all_components(
-        self, mock_engine_cls: MagicMock, mock_eq_cls: MagicMock
-    ) -> None:
+    def test_init_creates_all_components(self, mock_engine_cls: MagicMock, mock_eq_cls: MagicMock) -> None:
         fed = GovernancePolicyFederation()
         mock_engine_cls.assert_called_once_with(namespace="default")
         mock_eq_cls.assert_called_once()
@@ -161,9 +159,7 @@ class TestFRGOVPF006FederationInitDefaults:
 
     @patch("thegent.governance.policy_federation.EscalationQueue")
     @patch("thegent.governance.policy_federation.FederatedPolicyEngine")
-    def test_init_uses_provided_engine(
-        self, mock_engine_cls: MagicMock, mock_eq_cls: MagicMock
-    ) -> None:
+    def test_init_uses_provided_engine(self, mock_engine_cls: MagicMock, mock_eq_cls: MagicMock) -> None:
         custom_engine = MagicMock()
         fed = GovernancePolicyFederation(federated_engine=custom_engine)
         mock_engine_cls.assert_not_called()
@@ -180,9 +176,7 @@ class TestFRGOVPF007EvaluateCacheMissResolves:
 
     @patch("thegent.governance.policy_federation.EscalationQueue")
     @patch("thegent.governance.policy_federation.FederatedPolicyEngine")
-    def test_cache_miss_calls_resolve(
-        self, mock_engine_cls: MagicMock, mock_eq_cls: MagicMock
-    ) -> None:
+    def test_cache_miss_calls_resolve(self, mock_engine_cls: MagicMock, mock_eq_cls: MagicMock) -> None:
         mock_engine = MagicMock()
         mock_engine.resolve_policy.return_value = {"allow": True}
         mock_engine_cls.return_value = mock_engine
@@ -191,9 +185,7 @@ class TestFRGOVPF007EvaluateCacheMissResolves:
         result = fed.evaluate_governance_policy("ns", "cost_exceeded", {"run_id": "r1"})
 
         assert result is True
-        mock_engine.resolve_policy.assert_called_once_with(
-            namespace="ns", policy_key="governance.cost_exceeded"
-        )
+        mock_engine.resolve_policy.assert_called_once_with(namespace="ns", policy_key="governance.cost_exceeded")
 
 
 # ---------------------------------------------------------------------------
@@ -206,9 +198,7 @@ class TestFRGOVPF008EvaluateCacheHitSkipsResolution:
 
     @patch("thegent.governance.policy_federation.EscalationQueue")
     @patch("thegent.governance.policy_federation.FederatedPolicyEngine")
-    def test_cache_hit_skips_resolve(
-        self, mock_engine_cls: MagicMock, mock_eq_cls: MagicMock
-    ) -> None:
+    def test_cache_hit_skips_resolve(self, mock_engine_cls: MagicMock, mock_eq_cls: MagicMock) -> None:
         mock_engine = MagicMock()
         mock_engine_cls.return_value = mock_engine
 
@@ -232,9 +222,7 @@ class TestFRGOVPF009EvaluateDeniedAddsToEscalation:
 
     @patch("thegent.governance.policy_federation.EscalationQueue")
     @patch("thegent.governance.policy_federation.FederatedPolicyEngine")
-    def test_denied_adds_escalation(
-        self, mock_engine_cls: MagicMock, mock_eq_cls: MagicMock
-    ) -> None:
+    def test_denied_adds_escalation(self, mock_engine_cls: MagicMock, mock_eq_cls: MagicMock) -> None:
         mock_engine = MagicMock()
         mock_engine.resolve_policy.return_value = {"allow": False}
         mock_engine_cls.return_value = mock_engine
@@ -243,9 +231,7 @@ class TestFRGOVPF009EvaluateDeniedAddsToEscalation:
         mock_eq_cls.return_value = mock_eq
 
         fed = GovernancePolicyFederation()
-        result = fed.evaluate_governance_policy(
-            "ns", "cost_exceeded", {"run_id": "r-abc"}
-        )
+        result = fed.evaluate_governance_policy("ns", "cost_exceeded", {"run_id": "r-abc"})
 
         assert result is False
         mock_eq.add.assert_called_once()
@@ -264,9 +250,7 @@ class TestFRGOVPF010EvaluateFailOpenOnException:
 
     @patch("thegent.governance.policy_federation.EscalationQueue")
     @patch("thegent.governance.policy_federation.FederatedPolicyEngine")
-    def test_exception_returns_true(
-        self, mock_engine_cls: MagicMock, mock_eq_cls: MagicMock
-    ) -> None:
+    def test_exception_returns_true(self, mock_engine_cls: MagicMock, mock_eq_cls: MagicMock) -> None:
         mock_engine = MagicMock()
         mock_engine.resolve_policy.side_effect = RuntimeError("boom")
         mock_engine_cls.return_value = mock_engine
@@ -287,9 +271,7 @@ class TestFRGOVPF011InvalidateCacheDelegates:
 
     @patch("thegent.governance.policy_federation.EscalationQueue")
     @patch("thegent.governance.policy_federation.FederatedPolicyEngine")
-    def test_delegates_to_cache(
-        self, mock_engine_cls: MagicMock, mock_eq_cls: MagicMock
-    ) -> None:
+    def test_delegates_to_cache(self, mock_engine_cls: MagicMock, mock_eq_cls: MagicMock) -> None:
         fed = GovernancePolicyFederation()
         fed.cache.set("ns", "governance.x", {"allow": True})
         fed.invalidate_cache("ns", "governance.x")
@@ -297,9 +279,7 @@ class TestFRGOVPF011InvalidateCacheDelegates:
 
     @patch("thegent.governance.policy_federation.EscalationQueue")
     @patch("thegent.governance.policy_federation.FederatedPolicyEngine")
-    def test_delegates_namespace_sweep(
-        self, mock_engine_cls: MagicMock, mock_eq_cls: MagicMock
-    ) -> None:
+    def test_delegates_namespace_sweep(self, mock_engine_cls: MagicMock, mock_eq_cls: MagicMock) -> None:
         fed = GovernancePolicyFederation()
         fed.cache.set("ns", "a", {"v": 1})
         fed.cache.set("ns", "b", {"v": 2})
@@ -318,9 +298,7 @@ class TestFRGOVPF012SLAMinutePriorityMapping:
 
     @patch("thegent.governance.policy_federation.EscalationQueue")
     @patch("thegent.governance.policy_federation.FederatedPolicyEngine")
-    def test_urgent_priority_for_sla_15(
-        self, mock_engine_cls: MagicMock, mock_eq_cls: MagicMock
-    ) -> None:
+    def test_urgent_priority_for_sla_15(self, mock_engine_cls: MagicMock, mock_eq_cls: MagicMock) -> None:
         mock_engine = MagicMock()
         mock_engine.resolve_policy.return_value = {"allow": False, "sla_minutes": 10}
         mock_engine_cls.return_value = mock_engine
@@ -333,9 +311,7 @@ class TestFRGOVPF012SLAMinutePriorityMapping:
 
     @patch("thegent.governance.policy_federation.EscalationQueue")
     @patch("thegent.governance.policy_federation.FederatedPolicyEngine")
-    def test_high_priority_for_sla_60(
-        self, mock_engine_cls: MagicMock, mock_eq_cls: MagicMock
-    ) -> None:
+    def test_high_priority_for_sla_60(self, mock_engine_cls: MagicMock, mock_eq_cls: MagicMock) -> None:
         mock_engine = MagicMock()
         mock_engine.resolve_policy.return_value = {"allow": False, "sla_minutes": 30}
         mock_engine_cls.return_value = mock_engine
@@ -348,9 +324,7 @@ class TestFRGOVPF012SLAMinutePriorityMapping:
 
     @patch("thegent.governance.policy_federation.EscalationQueue")
     @patch("thegent.governance.policy_federation.FederatedPolicyEngine")
-    def test_normal_priority_for_sla_240(
-        self, mock_engine_cls: MagicMock, mock_eq_cls: MagicMock
-    ) -> None:
+    def test_normal_priority_for_sla_240(self, mock_engine_cls: MagicMock, mock_eq_cls: MagicMock) -> None:
         mock_engine = MagicMock()
         mock_engine.resolve_policy.return_value = {"allow": False, "sla_minutes": 120}
         mock_engine_cls.return_value = mock_engine
@@ -363,9 +337,7 @@ class TestFRGOVPF012SLAMinutePriorityMapping:
 
     @patch("thegent.governance.policy_federation.EscalationQueue")
     @patch("thegent.governance.policy_federation.FederatedPolicyEngine")
-    def test_low_priority_for_sla_gt_240(
-        self, mock_engine_cls: MagicMock, mock_eq_cls: MagicMock
-    ) -> None:
+    def test_low_priority_for_sla_gt_240(self, mock_engine_cls: MagicMock, mock_eq_cls: MagicMock) -> None:
         mock_engine = MagicMock()
         mock_engine.resolve_policy.return_value = {"allow": False, "sla_minutes": 480}
         mock_engine_cls.return_value = mock_engine
@@ -387,17 +359,13 @@ class TestFRGOVPF013PolicyAllowsExplicitAllow:
 
     @patch("thegent.governance.policy_federation.EscalationQueue")
     @patch("thegent.governance.policy_federation.FederatedPolicyEngine")
-    def test_explicit_allow_true(
-        self, mock_engine_cls: MagicMock, mock_eq_cls: MagicMock
-    ) -> None:
+    def test_explicit_allow_true(self, mock_engine_cls: MagicMock, mock_eq_cls: MagicMock) -> None:
         fed = GovernancePolicyFederation()
         assert fed._policy_allows({"allow": True}, {}) is True
 
     @patch("thegent.governance.policy_federation.EscalationQueue")
     @patch("thegent.governance.policy_federation.FederatedPolicyEngine")
-    def test_explicit_allow_false(
-        self, mock_engine_cls: MagicMock, mock_eq_cls: MagicMock
-    ) -> None:
+    def test_explicit_allow_false(self, mock_engine_cls: MagicMock, mock_eq_cls: MagicMock) -> None:
         fed = GovernancePolicyFederation()
         assert fed._policy_allows({"allow": False}, {}) is False
 
@@ -412,9 +380,7 @@ class TestFRGOVPF014PolicyAllowsDefaultAllow:
 
     @patch("thegent.governance.policy_federation.EscalationQueue")
     @patch("thegent.governance.policy_federation.FederatedPolicyEngine")
-    def test_no_allow_key_defaults_true(
-        self, mock_engine_cls: MagicMock, mock_eq_cls: MagicMock
-    ) -> None:
+    def test_no_allow_key_defaults_true(self, mock_engine_cls: MagicMock, mock_eq_cls: MagicMock) -> None:
         fed = GovernancePolicyFederation()
         assert fed._policy_allows({"cost_cap": 50}, {}) is True
 

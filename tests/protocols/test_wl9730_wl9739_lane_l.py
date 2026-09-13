@@ -52,9 +52,7 @@ def test_wl9730_parse_phase_rejects_missing_turn_id() -> None:
     _reset_state()
 
     response, notifications = process_jsonrpc_line_full(
-        json.dumps(
-            {"jsonrpc": "2.0", "id": "c1", "method": "turn/cancel", "params": {}}
-        )
+        json.dumps({"jsonrpc": "2.0", "id": "c1", "method": "turn/cancel", "params": {}})
     )
 
     assert response is not None
@@ -172,9 +170,7 @@ def test_wl9735_notification_cancel_avoids_response_but_applies_effect() -> None
     turn_id = _submit_turn(session_id, requires_approval=True)
 
     response, notifications = process_jsonrpc_line_full(
-        json.dumps(
-            {"jsonrpc": "2.0", "method": "turn/cancel", "params": {"turn_id": turn_id}}
-        )
+        json.dumps({"jsonrpc": "2.0", "method": "turn/cancel", "params": {"turn_id": turn_id}})
     )
 
     assert response is None
@@ -263,9 +259,7 @@ def test_wl9739_invalid_params_type_fails_before_cancel_execution() -> None:
     _reset_state()
 
     response, notifications = process_jsonrpc_line_full(
-        json.dumps(
-            {"jsonrpc": "2.0", "id": "c10", "method": "turn/cancel", "params": []}
-        )
+        json.dumps({"jsonrpc": "2.0", "id": "c10", "method": "turn/cancel", "params": []})
     )
 
     assert response is not None

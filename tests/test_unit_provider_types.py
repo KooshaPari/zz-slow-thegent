@@ -51,9 +51,7 @@ class TestProviderClassification:
         assert normalize_provider_name("ollama-local") == "ollama"
         assert get_execution_path("ollama-local") == ExecutionPath.LITELLM_API
 
-    @pytest.mark.parametrize(
-        "alias", ["local-ollama", "ollama-localhost", "ollama@localhost"]
-    )
+    @pytest.mark.parametrize("alias", ["local-ollama", "ollama-localhost", "ollama@localhost"])
     def test_additional_ollama_aliases_normalize(self, alias: str):
         """WL-118: additional local aliases normalize to canonical provider."""
         assert normalize_provider_name(alias) == "ollama"
@@ -67,9 +65,7 @@ class TestProviderClassification:
             ("\tollama@localhost\n", "ollama"),
         ],
     )
-    def test_ollama_alias_normalization_handles_case_and_whitespace(
-        self, raw: str, expected: str
-    ):
+    def test_ollama_alias_normalization_handles_case_and_whitespace(self, raw: str, expected: str):
         """WL-118: alias normalization should be deterministic for shell/user inputs."""
         assert normalize_provider_name(raw) == expected
 

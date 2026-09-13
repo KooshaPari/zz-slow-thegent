@@ -173,9 +173,7 @@ def _tokenize(text: str) -> list[_Token]:
             i = j
             continue
 
-        raise ValueError(
-            f"Unexpected character {ch!r} at position {i} in expression: {text!r}"
-        )
+        raise ValueError(f"Unexpected character {ch!r} at position {i} in expression: {text!r}")
 
     tokens.append(_Token(_TK_EOF, None))
     return tokens
@@ -331,11 +329,7 @@ class _Parser:
                 if self._peek().kind != _TK_RPAREN:
                     raise ValueError(f"Expected ')' after {method}() argument")
                 self._consume()  # ')'
-                haystack: dict = (
-                    {"op": "attr", "path": base_path}
-                    if base_path
-                    else {"op": "literal", "value": ident}
-                )
+                haystack: dict = {"op": "attr", "path": base_path} if base_path else {"op": "literal", "value": ident}
                 return {"op": method, "haystack": haystack, "needle": arg}
 
             # Plain attribute path
@@ -424,14 +418,10 @@ def _eval_node(node: dict, context: dict) -> Any:
         return left >= right
 
     if op == "and":
-        return bool(_eval_node(node["left"], context)) and bool(
-            _eval_node(node["right"], context)
-        )
+        return bool(_eval_node(node["left"], context)) and bool(_eval_node(node["right"], context))
 
     if op == "or":
-        return bool(_eval_node(node["left"], context)) or bool(
-            _eval_node(node["right"], context)
-        )
+        return bool(_eval_node(node["left"], context)) or bool(_eval_node(node["right"], context))
 
     if op == "not":
         return not bool(_eval_node(node["expr"], context))
@@ -544,9 +534,7 @@ class CelEvaluator:
                             route_name=route.name,
                             error="",
                         )
-                    _log.debug(
-                        "CEL route matched: name=%r target=%r", route.name, route.target
-                    )
+                    _log.debug("CEL route matched: name=%r target=%r", route.name, route.target)
                     return CelEvalResult(
                         matched=True,
                         target=route.target,

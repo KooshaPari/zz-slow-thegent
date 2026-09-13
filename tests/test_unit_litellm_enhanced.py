@@ -165,9 +165,7 @@ class TestAlertManager:
         """Test that low severity alerts are filtered."""
         from thegent.utils.routing_impl.alerting import AlertManager
 
-        manager = AlertManager(
-            webhook_url="http://example.com/webhook", min_severity="warning"
-        )
+        manager = AlertManager(webhook_url="http://example.com/webhook", min_severity="warning")
 
         # Info alert should be filtered
         assert not manager._should_send("info")
@@ -487,9 +485,7 @@ class TestEnhancedRouterGlobals:
             }
         ]
 
-        with patch.object(
-            litellm_router, "build_litellm_model_list", return_value=mock_model_list
-        ):
+        with patch.object(litellm_router, "build_litellm_model_list", return_value=mock_model_list):
             litellm_router.reset_enhanced_router()
             router1 = litellm_router.get_enhanced_router()
             router2 = litellm_router.get_enhanced_router()

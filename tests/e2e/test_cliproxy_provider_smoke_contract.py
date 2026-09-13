@@ -35,8 +35,6 @@ def test_strict_harness_contract_chain_uses_required_provider_gate() -> None:
     text = TASKFILE.read_text(encoding="utf-8")
     pattern = r"(?ms)^  quality:harness-contracts:strict:\n(.*?)(?=^  [^ \n].*:\n|\Z)"
     match = re.search(pattern, text)
-    assert match is not None, (
-        "Task 'quality:harness-contracts:strict' must exist in Taskfile.yml"
-    )
+    assert match is not None, "Task 'quality:harness-contracts:strict' must exist in Taskfile.yml"
     block = match.group(1)
     assert "task: quality:providers:required-gate" in block

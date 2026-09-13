@@ -126,9 +126,7 @@ async def record_health_scoring_demo() -> None:
         )
 
         if result.success:
-            logger.info(
-                f"Flow recording succeeded with {len(result.screenshot_paths)} screenshots"
-            )
+            logger.info(f"Flow recording succeeded with {len(result.screenshot_paths)} screenshots")
             metadata_path = config.output_dir / "health-scoring-metadata.json"
             result.to_json(metadata_path)
         else:

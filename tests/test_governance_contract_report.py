@@ -16,14 +16,7 @@ def _repo_root() -> Path:
 
 @pytest.mark.unit
 def test_governance_contract_report_generates_outputs(tmp_path: Path) -> None:
-    dispatcher = (
-        _repo_root()
-        / "hooks"
-        / "hook-dispatcher"
-        / "target"
-        / "debug"
-        / "hook-dispatcher"
-    )
+    dispatcher = _repo_root() / "hooks" / "hook-dispatcher" / "target" / "debug" / "hook-dispatcher"
     if not dispatcher.exists():
         pytest.skip("hook-dispatcher binary not built")
 

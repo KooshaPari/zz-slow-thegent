@@ -140,9 +140,7 @@ class MultiKeyRateLimiter:
     def __init__(self, limiter: SlidingWindowRateLimiter | None = None) -> None:
         self._limiter = limiter if limiter is not None else SlidingWindowRateLimiter()
 
-    def allow_all(
-        self, configs: list[RateLimitConfig]
-    ) -> tuple[bool, list[RateLimitResult]]:
+    def allow_all(self, configs: list[RateLimitConfig]) -> tuple[bool, list[RateLimitResult]]:
         """Check all configs. Returns (all_allowed, results_list).
 
         If any limit is exceeded, returns (False, results) without consuming

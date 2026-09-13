@@ -323,9 +323,7 @@ class TestCanonicalLadderPlaybooks:
     """@trace FR-ORC-PB-007"""
 
     def test_state_corruption_playbook(self) -> None:
-        result = get_playbook_for_failure(
-            "State corruption detected: checksum mismatch"
-        )
+        result = get_playbook_for_failure("State corruption detected: checksum mismatch")
         assert result == ["rollback_checkpoint", "escalate"]
 
     def test_budget_exceeded_playbook(self) -> None:
@@ -432,9 +430,7 @@ class TestEveryPlaybookEndsWithEscalationSentinel:
     def test_every_result_matches_dormant_corpus(self) -> None:
         for message, expected in self._ESCALATION_CASES:
             result = get_playbook_for_failure(message)
-            assert tuple(result) == expected, (
-                f"{message!r} → {result!r} != {expected!r}"
-            )
+            assert tuple(result) == expected, f"{message!r} → {result!r} != {expected!r}"
 
 
 # ---------------------------------------------------------------------------
@@ -489,9 +485,7 @@ class TestExecutePlaybookStepSignature:
 class TestExecutePlaybookStepEscalate:
     """@trace FR-ORC-PB-012 / FR-ORC-PB-013"""
 
-    def test_escalate_step_calls_escalation_queue_with_context(
-        self, tmp_path: Any
-    ) -> None:
+    def test_escalate_step_calls_escalation_queue_with_context(self, tmp_path: Any) -> None:
         session_dir = tmp_path / "session"
         with patch("thegent.execution.EscalationQueue") as mock_eq:
             mock_instance = MagicMock()
@@ -512,9 +506,7 @@ class TestExecutePlaybookStepEscalate:
             )
             assert result == {"step": "escalate", "status": "escalated"}
 
-    def test_escalate_step_with_none_context_falls_back_to_safe_defaults(
-        self, tmp_path: Any
-    ) -> None:
+    def test_escalate_step_with_none_context_falls_back_to_safe_defaults(self, tmp_path: Any) -> None:
         session_dir = tmp_path / "session"
         with patch("thegent.execution.EscalationQueue") as mock_eq:
             mock_instance = MagicMock()
@@ -594,9 +586,7 @@ class TestExecutePlaybookStepDlqEnqueue:
                 mock_instance.enqueue.assert_called_once()
                 assert result == {"step": "dlq_enqueue", "status": "enqueued"}
 
-    def test_dlq_enqueue_uses_safe_defaults_for_missing_context(
-        self, tmp_path: Any
-    ) -> None:
+    def test_dlq_enqueue_uses_safe_defaults_for_missing_context(self, tmp_path: Any) -> None:
         session_dir = tmp_path / "session"
         with patch("thegent.execution.DLQManager") as mock_dlq:
             with patch("thegent.execution.RunMeta") as mock_meta:
@@ -619,9 +609,7 @@ class TestExecutePlaybookStepDlqEnqueue:
                 )
                 assert result == {"step": "dlq_enqueue", "status": "enqueued"}
 
-    def test_dlq_enqueue_with_none_context_uses_safe_defaults(
-        self, tmp_path: Any
-    ) -> None:
+    def test_dlq_enqueue_with_none_context_uses_safe_defaults(self, tmp_path: Any) -> None:
         session_dir = tmp_path / "session"
         with patch("thegent.execution.DLQManager") as mock_dlq:
             with patch("thegent.execution.RunMeta") as mock_meta:
@@ -719,9 +707,7 @@ class TestExecutePlaybookStepPendingAndAll:
 
     def test_module_all_exposes_canonical_surface(self) -> None:
         """``playbooks.__all__`` exposes the three public symbols."""
-        assert sorted(_mod.__all__) == sorted(
-            ["Playbook", "execute_playbook_step", "get_playbook_for_failure"]
-        )
+        assert sorted(_mod.__all__) == sorted(["Playbook", "execute_playbook_step", "get_playbook_for_failure"])
 
     def test_playbook_class_is_dataclass_like(self) -> None:
         """``Playbook`` carries ``name`` and ``steps`` attributes and

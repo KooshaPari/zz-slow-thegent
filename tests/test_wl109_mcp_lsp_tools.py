@@ -21,14 +21,10 @@ class _FakeAdapter:
             }
         ]
 
-    def symbol_lookup(
-        self, *, symbol_name: str, file_path: str | None
-    ) -> list[dict[str, object]]:
+    def symbol_lookup(self, *, symbol_name: str, file_path: str | None) -> list[dict[str, object]]:
         return [{"name": symbol_name, "kind": "function", "file_path": file_path}]
 
-    def hover(
-        self, *, file_path: str, line: int, character: int
-    ) -> dict[str, object] | None:
+    def hover(self, *, file_path: str, line: int, character: int) -> dict[str, object] | None:
         return {
             "contents": "hover text",
             "line": line,
@@ -111,9 +107,7 @@ def test_lsp_diagnostics_rejects_non_integer_like_line_value(tmp_path: Path) -> 
     file_path = tmp_path / "a.py"
     file_path.write_text("x = 1\n", encoding="utf-8")
 
-    with pytest.raises(
-        ValueError, match=r"diagnostics\[0\]\.line must be integer-like"
-    ):
+    with pytest.raises(ValueError, match=r"diagnostics\[0\]\.line must be integer-like"):
         lsp_diagnostics(str(file_path), adapter=_BadLineAdapter())
 
 
@@ -124,9 +118,7 @@ def test_lsp_symbol_lookup_rejects_empty_symbol() -> None:
 
 def test_lsp_symbol_lookup_normalizes_match_shape(tmp_path: Path) -> None:
     class _ShapeAdapter:
-        def symbol_lookup(
-            self, *, symbol_name: str, file_path: str | None
-        ) -> list[dict[str, object]]:
+        def symbol_lookup(self, *, symbol_name: str, file_path: str | None) -> list[dict[str, object]]:
             return [
                 {
                     "name": symbol_name,
@@ -152,9 +144,7 @@ def test_lsp_symbol_lookup_normalizes_match_shape(tmp_path: Path) -> None:
 
 def test_lsp_symbol_lookup_strips_file_path_whitespace(tmp_path: Path) -> None:
     class _ShapeAdapter:
-        def symbol_lookup(
-            self, *, symbol_name: str, file_path: str | None
-        ) -> list[dict[str, object]]:
+        def symbol_lookup(self, *, symbol_name: str, file_path: str | None) -> list[dict[str, object]]:
             return [
                 {
                     "name": symbol_name,
@@ -172,9 +162,7 @@ def test_lsp_symbol_lookup_strips_file_path_whitespace(tmp_path: Path) -> None:
 
 def test_lsp_symbol_lookup_rejects_non_object_match(tmp_path: Path) -> None:
     class _BadAdapter:
-        def symbol_lookup(
-            self, *, symbol_name: str, file_path: str | None
-        ) -> list[object]:
+        def symbol_lookup(self, *, symbol_name: str, file_path: str | None) -> list[object]:
             return ["bad"]
 
     file_path = tmp_path / "a.py"
@@ -185,9 +173,7 @@ def test_lsp_symbol_lookup_rejects_non_object_match(tmp_path: Path) -> None:
 
 def test_lsp_symbol_lookup_rejects_match_without_name(tmp_path: Path) -> None:
     class _BadAdapter:
-        def symbol_lookup(
-            self, *, symbol_name: str, file_path: str | None
-        ) -> list[dict[str, object]]:
+        def symbol_lookup(self, *, symbol_name: str, file_path: str | None) -> list[dict[str, object]]:
             return [{"kind": "function", "file_path": file_path}]
 
     file_path = tmp_path / "a.py"
@@ -198,9 +184,7 @@ def test_lsp_symbol_lookup_rejects_match_without_name(tmp_path: Path) -> None:
 
 def test_lsp_symbol_lookup_rejects_fractional_float_positions(tmp_path: Path) -> None:
     class _BadAdapter:
-        def symbol_lookup(
-            self, *, symbol_name: str, file_path: str | None
-        ) -> list[dict[str, object]]:
+        def symbol_lookup(self, *, symbol_name: str, file_path: str | None) -> list[dict[str, object]]:
             return [
                 {
                     "name": symbol_name,
@@ -249,9 +233,7 @@ def test_python_default_adapter_returns_syntax_diagnostic(tmp_path: Path) -> Non
 
 def test_python_default_adapter_symbol_and_hover(tmp_path: Path) -> None:
     file_path = tmp_path / "ok.py"
-    file_path.write_text(
-        "def greet(name):\n    return name\n\nx = greet('hi')\n", encoding="utf-8"
-    )
+    file_path.write_text("def greet(name):\n    return name\n\nx = greet('hi')\n", encoding="utf-8")
 
     symbols = lsp_symbol_lookup("greet", file_path=str(file_path))
     hover = lsp_hover(str(file_path), line=3, character=4)

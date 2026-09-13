@@ -19,9 +19,7 @@ logger = logging.getLogger(__name__)
 class Alert:
     """Routing alert."""
 
-    alert_type: (
-        str  # "budget_exceeded", "high_latency", "provider_error", "cooldown_triggered"
-    )
+    alert_type: str  # "budget_exceeded", "high_latency", "provider_error", "cooldown_triggered"
     severity: str  # "warning", "critical", "info"
     message: str
     data: dict[str, Any] = field(default_factory=dict)

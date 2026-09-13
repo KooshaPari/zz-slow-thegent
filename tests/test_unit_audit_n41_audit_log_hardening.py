@@ -212,22 +212,16 @@ class TestShadowAuditGitPublicSurface:
 class TestInitShadowRepo:
     """@trace FR-ORC-AL-002 / FR-ORC-AL-003"""
 
-    def test_init_creates_git_directory(
-        self, audit_git: ShadowAuditGit, audit_dir: Path
-    ) -> None:
+    def test_init_creates_git_directory(self, audit_git: ShadowAuditGit, audit_dir: Path) -> None:
         audit_git.init_shadow_repo()
         assert (audit_dir / ".git").is_dir()
 
-    def test_init_is_idempotent(
-        self, audit_git: ShadowAuditGit, audit_dir: Path
-    ) -> None:
+    def test_init_is_idempotent(self, audit_git: ShadowAuditGit, audit_dir: Path) -> None:
         audit_git.init_shadow_repo()
         audit_git.init_shadow_repo()
         assert (audit_dir / ".git").is_dir()
 
-    def test_init_creates_initial_commit_subject(
-        self, audit_git: ShadowAuditGit, audit_dir: Path
-    ) -> None:
+    def test_init_creates_initial_commit_subject(self, audit_git: ShadowAuditGit, audit_dir: Path) -> None:
         audit_git.init_shadow_repo()
         stdout = _git_log_subjects(audit_dir)
         assert "init" in stdout.lower()
@@ -423,9 +417,7 @@ class TestSecretScrubbing:
 class TestCommitTransactionEdgeCases:
     """@trace FR-ORC-AL-010 / FR-ORC-AL-011"""
 
-    def test_empty_changed_files_with_remote_host_does_not_raise(
-        self, initialized_audit: ShadowAuditGit
-    ) -> None:
+    def test_empty_changed_files_with_remote_host_does_not_raise(self, initialized_audit: ShadowAuditGit) -> None:
         """Empty ``changed_files`` is a legal no-op commit."""
         initialized_audit.commit_transaction(
             episode_id="ep-empty-remote",
@@ -434,9 +426,7 @@ class TestCommitTransactionEdgeCases:
             remote_host="empty-host",
         )
 
-    def test_nonexistent_file_with_remote_host_raises(
-        self, initialized_audit: ShadowAuditGit
-    ) -> None:
+    def test_nonexistent_file_with_remote_host_raises(self, initialized_audit: ShadowAuditGit) -> None:
         """Missing source file aborts with ``FileNotFoundError``."""
         with pytest.raises(FileNotFoundError):
             initialized_audit.commit_transaction(

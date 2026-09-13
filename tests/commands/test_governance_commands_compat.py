@@ -9,16 +9,12 @@ from thegent.cli.commands import cli
 def test_guardrails_check_cmd_wrapper_delegates(monkeypatch) -> None:
     captured: dict[str, object] = {}
 
-    def _fake(
-        *, prompt: str, agent: str | None = None, model: str | None = None
-    ) -> None:
+    def _fake(*, prompt: str, agent: str | None = None, model: str | None = None) -> None:
         captured["prompt"] = prompt
         captured["agent"] = agent
         captured["model"] = model
 
-    monkeypatch.setattr(
-        "thegent.cli.commands.governance_cmds.guardrails_check_cmd", _fake
-    )
+    monkeypatch.setattr("thegent.cli.commands.governance_cmds.guardrails_check_cmd", _fake)
 
     cli.guardrails_check_cmd("hello", agent="coder", model="gpt-5")
 
@@ -32,9 +28,7 @@ def test_guardrails_show_cmd_wrapper_delegates(monkeypatch) -> None:
     def _fake() -> None:
         called["value"] = True
 
-    monkeypatch.setattr(
-        "thegent.cli.commands.governance_cmds.guardrails_show_cmd", _fake
-    )
+    monkeypatch.setattr("thegent.cli.commands.governance_cmds.guardrails_show_cmd", _fake)
 
     cli.guardrails_show_cmd()
 

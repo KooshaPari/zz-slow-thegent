@@ -205,9 +205,7 @@ class QueueNotifier:
         except OSError:
             return 0
 
-    def wait_for_message(
-        self, timeout: float = 5.0
-    ) -> tuple[QueueEvent, ...] | tuple[()]:
+    def wait_for_message(self, timeout: float = 5.0) -> tuple[QueueEvent, ...] | tuple[()]:
         """Wait for queue activity.
 
         Uses watchfiles/inotify when available with a /proc-backed polling
@@ -235,11 +233,7 @@ class QueueNotifier:
             ):
                 for change in changes:
                     event_type, path = change
-                    events.append(
-                        QueueEvent(
-                            str(path), bool(Path(path).is_file()), str(event_type)
-                        )
-                    )
+                    events.append(QueueEvent(str(path), bool(Path(path).is_file()), str(event_type)))
                 if events:
                     break
                 if not stop.is_set():
@@ -324,22 +318,16 @@ class IntentConflictDetector:
         return "write"
 
     @staticmethod
-    def detect(
-        intent: dict[str, Any], others: list[dict[str, Any]]
-    ) -> list[dict[str, str]]:
+    def detect(intent: dict[str, Any], others: list[dict[str, Any]]) -> list[dict[str, str]]:
         """Return conflicting intents for ``intent`` against ``others``."""
         conflict_pairs: list[dict[str, str]] = []
         intent_target = intent.get("target")
-        intent_op = IntentConflictDetector._normalize_operation(
-            str(intent.get("operation", "read"))
-        )
+        intent_op = IntentConflictDetector._normalize_operation(str(intent.get("operation", "read")))
         for other in others:
             if other.get("target") != intent_target:
                 continue
             other_id = str(other.get("id", ""))
-            other_op = IntentConflictDetector._normalize_operation(
-                str(other.get("operation", "read"))
-            )
+            other_op = IntentConflictDetector._normalize_operation(str(other.get("operation", "read")))
             if (
                 (intent_op == "write" and other_op == "write")
                 or (intent_op == "write" and other_op == "read")

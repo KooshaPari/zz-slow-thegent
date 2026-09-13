@@ -170,8 +170,5 @@ class TestInputGuardrailsIntegration:
                 cd=tmp_path,
             )
         assert "error" in result
-        assert (
-            "guardrail" in result["error"].lower()
-            or "allowlist" in result["error"].lower()
-        )
+        assert "guardrail" in result["error"].lower() or "allowlist" in result["error"].lower()
         assert result.get("exit_code") == 1

@@ -40,16 +40,12 @@ class ReleasePackager:
             if path.exists():
                 content = path.read_text(encoding="utf-8")
                 checksum = hashlib.sha256(content.encode()).hexdigest()
-                manifest["artifacts"].append(
-                    {"path": path_str, "checksum": checksum, "size_bytes": len(content)}
-                )
+                manifest["artifacts"].append({"path": path_str, "checksum": checksum, "size_bytes": len(content)})
             else:
                 manifest["artifacts"].append({"path": path_str, "status": "missing"})
 
         # Deterministic checksum for the entire package
         manifest_json = json.dumps(manifest, sort_keys=True)
-        manifest["package_checksum"] = hashlib.sha256(
-            manifest_json.encode()
-        ).hexdigest()
+        manifest["package_checksum"] = hashlib.sha256(manifest_json.encode()).hexdigest()
 
         return manifest

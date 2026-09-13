@@ -37,9 +37,7 @@ class ConnectorCapabilityRegistry:
         """Initialize the registry with empty state."""
         self._registry: dict[str, list[str]] = {}
 
-    def register(
-        self, connector_id: str, capabilities: list[str]
-    ) -> ConnectorCapability:
+    def register(self, connector_id: str, capabilities: list[str]) -> ConnectorCapability:
         """Register a connector with its capabilities.
 
         Args:
@@ -56,9 +54,7 @@ class ConnectorCapabilityRegistry:
             raise ValueError(f"Connector {connector_id} is already registered")
 
         self._registry[connector_id] = capabilities
-        logger.debug(
-            f"Registered connector {connector_id} with capabilities {capabilities}"
-        )
+        logger.debug(f"Registered connector {connector_id} with capabilities {capabilities}")
         return ConnectorCapability(connector_id=connector_id, capabilities=capabilities)
 
     def has_capability(self, connector_id: str, capability: str) -> bool:
@@ -82,11 +78,7 @@ class ConnectorCapabilityRegistry:
         Returns:
             List of connector IDs that have the capability.
         """
-        return [
-            connector_id
-            for connector_id, capabilities in self._registry.items()
-            if capability in capabilities
-        ]
+        return [connector_id for connector_id, capabilities in self._registry.items() if capability in capabilities]
 
     def get(self, connector_id: str) -> ConnectorCapability:
         """Get capabilities for a connector.
@@ -103,6 +95,4 @@ class ConnectorCapabilityRegistry:
         if connector_id not in self._registry:
             raise KeyError(f"Connector {connector_id} not found in registry")
 
-        return ConnectorCapability(
-            connector_id=connector_id, capabilities=self._registry[connector_id]
-        )
+        return ConnectorCapability(connector_id=connector_id, capabilities=self._registry[connector_id])

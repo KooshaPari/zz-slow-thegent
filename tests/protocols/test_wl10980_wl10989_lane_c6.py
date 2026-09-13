@@ -64,9 +64,7 @@ def test_wl10982_resolve_turn_submit_execution_target_rejects_bad_shape() -> Non
         )
 
 
-def test_wl10983_execute_turn_submit_with_approval_stores_payload_and_notifications() -> (
-    None
-):
+def test_wl10983_execute_turn_submit_with_approval_stores_payload_and_notifications() -> None:
     # @trace WL-10983
     _reset_state()
     session_id = _start_session()
@@ -106,9 +104,7 @@ def test_wl10984_execute_turn_submit_without_approval_fires_no_approval_path() -
         "approval_id": None,
         "tool_call_id": None,
     }
-    server._execute_turn_submit_without_approval(
-        "session-1", "turn-1", "b6", turn, notifications
-    )
+    server._execute_turn_submit_without_approval("session-1", "turn-1", "b6", turn, notifications)
     assert turn["status"] == "completed"
     assert turn["tool_call_id"] == "toolcall-0001"
     assert notifications[0]["method"] == "item/toolCall/started"
@@ -116,9 +112,7 @@ def test_wl10984_execute_turn_submit_without_approval_fires_no_approval_path() -
     assert notifications[2]["method"] == "turn/completed"
 
 
-def test_wl10985_apply_turn_submit_side_effects_without_approval_returns_none_and_mutates_turn() -> (
-    None
-):
+def test_wl10985_apply_turn_submit_side_effects_without_approval_returns_none_and_mutates_turn() -> None:
     # @trace WL-10985
     _reset_state()
     notifications: list[dict[str, object]] = []
@@ -143,9 +137,7 @@ def test_wl10985_apply_turn_submit_side_effects_without_approval_returns_none_an
     assert notifications[4]["method"] == "turn/completed"
 
 
-def test_wl10986_apply_turn_submit_side_effects_with_approval_keeps_approval_payload_shape() -> (
-    None
-):
+def test_wl10986_apply_turn_submit_side_effects_with_approval_keeps_approval_payload_shape() -> None:
     # @trace WL-10986
     _reset_state()
     notifications: list[dict[str, object]] = []
@@ -172,9 +164,7 @@ def test_wl10986_apply_turn_submit_side_effects_with_approval_keeps_approval_pay
     assert notifications[2]["method"] == "approval/requested"
 
 
-def test_wl10987_resolve_turn_submit_side_effects_target_rejects_non_bool_requires_approval() -> (
-    None
-):
+def test_wl10987_resolve_turn_submit_side_effects_target_rejects_non_bool_requires_approval() -> None:
     # @trace WL-10987
     with pytest.raises(ValueError, match="Turn submit side-effects target unresolved"):
         server._resolve_turn_submit_side_effects_target(
@@ -193,9 +183,7 @@ def test_wl10988_build_turn_submit_response_phase_rehydrates_request_route() -> 
     # @trace WL-10988
     turn = {"id": "turn-1", "session_id": "session-1", "status": "completed"}
     approval_payload = {"id": "approval-1", "status": "requested", "diff": "diff"}
-    phase = server._build_turn_submit_response_phase(
-        True, "req-1", turn, approval_payload
-    )
+    phase = server._build_turn_submit_response_phase(True, "req-1", turn, approval_payload)
     assert phase == {
         "request_has_id": True,
         "request_id": "req-1",
@@ -208,9 +196,5 @@ def test_wl10989_validate_turn_submit_approval_payload_rejects_missing_fields() 
     # @trace WL-10989
     with pytest.raises(ValueError, match="Turn submit response target unresolved"):
         server._validate_turn_submit_approval_payload({"id": "approval-1"})
-    server._validate_turn_submit_approval_payload(
-        {"id": "approval-1", "status": "requested"}
-    )
-    server._validate_turn_submit_approval_payload(
-        {"id": "approval-1", "status": "requested", "diff": None}
-    )
+    server._validate_turn_submit_approval_payload({"id": "approval-1", "status": "requested"})
+    server._validate_turn_submit_approval_payload({"id": "approval-1", "status": "requested", "diff": None})

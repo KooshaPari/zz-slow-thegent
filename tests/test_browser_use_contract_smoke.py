@@ -11,9 +11,7 @@ def test_missing_enabled_fails():
     with patch.dict(os.environ, {"THEGENT_BROWSER_USE_ENABLED": ""}):
         import browser_use_contract_smoke as smoke
 
-        with pytest.raises(
-            RuntimeError, match="THEGENT_BROWSER_USE_ENABLED is not set"
-        ):
+        with pytest.raises(RuntimeError, match="THEGENT_BROWSER_USE_ENABLED is not set"):
             smoke.main()
 
 

@@ -99,9 +99,7 @@ class TestMilestoneComplete:
 
 class TestSprintCreate:
     def test_create_sprint(self, _patch_registry: ProjectRegistry) -> None:
-        result = runner.invoke(
-            app, ["sprint", "create", "s-2026-W08", "--label", "Sprint Week 8"]
-        )
+        result = runner.invoke(app, ["sprint", "create", "s-2026-W08", "--label", "Sprint Week 8"])
         assert result.exit_code == 0
         assert "s-2026-W08" in result.output
 

@@ -46,17 +46,13 @@ def _benchmark(name: str, iterations: int, func, threshold_ms: float) -> dict:
         "per_iter_us": per_iter_us,
         "threshold_ms": threshold_ms,
     }
-    print(
-        f"  {name}: {elapsed * 1000:.2f}ms total, {per_iter_us:.1f}us/iter ({iterations} iterations)"
-    )
+    print(f"  {name}: {elapsed * 1000:.2f}ms total, {per_iter_us:.1f}us/iter ({iterations} iterations)")
     return result
 
 
 def _assert_within_threshold(name: str, elapsed_s: float, threshold_ms: float) -> None:
     elapsed_ms = elapsed_s * 1000
-    assert elapsed_ms < threshold_ms, (
-        f"{name} exceeded threshold: {elapsed_ms:.2f}ms > {threshold_ms}ms"
-    )
+    assert elapsed_ms < threshold_ms, f"{name} exceeded threshold: {elapsed_ms:.2f}ms > {threshold_ms}ms"
 
 
 # ---------------------------------------------------------------------------
@@ -71,13 +67,9 @@ class TestBenchmarkDispatchResult:
         iterations = 1000
 
         def build():
-            DispatchResult(
-                node_id="node_1", output="result data", success=True, error=""
-            )
+            DispatchResult(node_id="node_1", output="result data", success=True, error="")
 
-        result = _benchmark(
-            "DispatchResult construction", iterations, build, threshold_ms=100
-        )
+        result = _benchmark("DispatchResult construction", iterations, build, threshold_ms=100)
         _assert_within_threshold(result["name"], result["elapsed_s"], 100)
 
 
@@ -103,9 +95,7 @@ class TestBenchmarkTopologicalSort:
         def sort_plan():
             topological_order(plan_50_nodes)
 
-        result = _benchmark(
-            "topological_order (50-node DAG)", iterations, sort_plan, threshold_ms=500
-        )
+        result = _benchmark("topological_order (50-node DAG)", iterations, sort_plan, threshold_ms=500)
         _assert_within_threshold(result["name"], result["elapsed_s"], 500)
 
 
@@ -130,9 +120,7 @@ class TestBenchmarkCapabilityRegistry:
         def lookup():
             registry.get_capability("bench.cap.15")
 
-        result = _benchmark(
-            "CapabilityRegistry.get_capability", iterations, lookup, threshold_ms=50
-        )
+        result = _benchmark("CapabilityRegistry.get_capability", iterations, lookup, threshold_ms=50)
         _assert_within_threshold(result["name"], result["elapsed_s"], 50)
 
 
@@ -155,9 +143,7 @@ class TestBenchmarkPolicyLearningCycle:
             pm.update({"cost_cap": 10.0})
             assert session.is_valid() is True
 
-        result = _benchmark(
-            "PolicyManager + LearningSession cycle", iterations, cycle, threshold_ms=100
-        )
+        result = _benchmark("PolicyManager + LearningSession cycle", iterations, cycle, threshold_ms=100)
         _assert_within_threshold(result["name"], result["elapsed_s"], 100)
 
 
@@ -189,9 +175,7 @@ class TestBenchmarkPIIRedactor:
         def redact():
             redactor.redact(text_1kb)
 
-        result = _benchmark(
-            "PIIRedactor.redact (1KB)", iterations, redact, threshold_ms=5000
-        )
+        result = _benchmark("PIIRedactor.redact (1KB)", iterations, redact, threshold_ms=5000)
         _assert_within_threshold(result["name"], result["elapsed_s"], 5000)
 
 
@@ -258,9 +242,7 @@ class TestBenchmarkCostTracker:
             assert total == 3.8
             assert tracker.is_within_budget("bench_session", 10.0)
 
-        result = _benchmark(
-            "CostTracker lifecycle", iterations, lifecycle, threshold_ms=100
-        )
+        result = _benchmark("CostTracker lifecycle", iterations, lifecycle, threshold_ms=100)
         _assert_within_threshold(result["name"], result["elapsed_s"], 100)
 
     def test_cost_tracker_heavy_recording(self) -> None:
@@ -274,9 +256,7 @@ class TestBenchmarkCostTracker:
             total = tracker.get_session_cost("heavy")
             assert total > 0
 
-        result = _benchmark(
-            "CostTracker (100 records)", iterations, heavy, threshold_ms=200
-        )
+        result = _benchmark("CostTracker (100 records)", iterations, heavy, threshold_ms=200)
         _assert_within_threshold(result["name"], result["elapsed_s"], 200)
 
 
@@ -297,7 +277,5 @@ class TestBenchmarkTEEChecker:
             att = checker.check()
             assert att.is_attested is True
 
-        result = _benchmark(
-            "TEEChecker.check (mock)", iterations, check, threshold_ms=5000
-        )
+        result = _benchmark("TEEChecker.check (mock)", iterations, check, threshold_ms=5000)
         _assert_within_threshold(result["name"], result["elapsed_s"], 5000)

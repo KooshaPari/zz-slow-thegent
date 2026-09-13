@@ -32,15 +32,12 @@ def _normalize_whitespace(command: str) -> str:
 
 def test_no_normalized_duplicate_backticked_pytest_or_task_command_snippets() -> None:
     snippets = _backticked_pytest_or_task_snippets(_readme_text())
-    assert snippets, (
-        "README should include at least one backticked pytest/task command snippet"
-    )
+    assert snippets, "README should include at least one backticked pytest/task command snippet"
 
     normalized_commands = [_normalize_whitespace(snippet) for snippet in snippets]
     counts = Counter(normalized_commands)
     duplicates = [command for command, count in counts.items() if count > 1]
 
     assert not duplicates, (
-        "README should not duplicate pytest/task snippets after whitespace normalization: "
-        + "; ".join(duplicates)
+        "README should not duplicate pytest/task snippets after whitespace normalization: " + "; ".join(duplicates)
     )

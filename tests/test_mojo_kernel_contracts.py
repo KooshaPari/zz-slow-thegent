@@ -57,9 +57,7 @@ def test_harness_definition_matches_fixture_spec_and_contract() -> None:
     assert harness["harness_id"] == contract["benchmark_contract"]["harness_id"]
     assert harness["contract_ref"] == str(CONTRACT_PATH)
     assert harness["fixture_spec_ref"] == str(FIXTURE_SPEC_PATH)
-    assert set(fixture_spec["dataset_sizes"].keys()) == set(
-        contract["benchmark_contract"]["datasets"]
-    )
+    assert set(fixture_spec["dataset_sizes"].keys()) == set(contract["benchmark_contract"]["datasets"])
 
 
 def test_contract_promotion_gate_fields_are_present() -> None:

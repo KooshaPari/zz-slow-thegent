@@ -112,9 +112,7 @@ class TestTrafficDashboardBudget:
         from thegent.ux.kpis.traffic import TrafficDashboard, TrafficEvent
 
         dash = TrafficDashboard()
-        event = TrafficEvent(
-            ts=time.time(), lane="standard", agent="test-agent", status="ok"
-        )
+        event = TrafficEvent(ts=time.time(), lane="standard", agent="test-agent", status="ok")
         dash.record(event)
         # Warm-up
         dash.summary()

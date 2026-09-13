@@ -54,9 +54,7 @@ pytestmark = pytest.mark.unit
 # ---------------------------------------------------------------------------
 
 
-def _make_notice(
-    *, verdict: str = "allow", reason_code: str = "ok", ts: float = 0.0
-) -> DecisionNotice:
+def _make_notice(*, verdict: str = "allow", reason_code: str = "ok", ts: float = 0.0) -> DecisionNotice:
     """Build a DecisionNotice with the minimum required fields."""
     return DecisionNotice(
         verdict=verdict,
@@ -127,9 +125,7 @@ class TestAtomicRotation:
             assert ino not in seen_inodes, f"duplicate inode under {p.name}"
             seen_inodes.add(ino)
 
-    def test_rotate_locked_iterates_high_to_low(
-        self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
-    ) -> None:
+    def test_rotate_locked_iterates_high_to_low(self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
         """AUDIT-22: the shift loop iterates ``max_backups - 1`` down to
         ``1`` (highest index first). Pin the iteration order via a
         monkeypatched ``os.rename`` spy."""
@@ -141,12 +137,8 @@ class TestAtomicRotation:
         captured: list[tuple[str, str]] = []
         original_rename = os.rename
 
-        def spy_rename(
-            src: os.PathLike[str] | str, dst: os.PathLike[str] | str
-        ) -> None:
-            captured.append(
-                (os.path.basename(os.fspath(src)), os.path.basename(os.fspath(dst)))
-            )
+        def spy_rename(src: os.PathLike[str] | str, dst: os.PathLike[str] | str) -> None:
+            captured.append((os.path.basename(os.fspath(src)), os.path.basename(os.fspath(dst))))
             original_rename(src, dst)
 
         monkeypatch.setattr(os, "rename", spy_rename)
@@ -170,14 +162,10 @@ class TestTailerObservabilityAndBackoff:
     """Pin the AUDIT-24 contract: drain stats surface + capped
     exponential back-off on repeated failures."""
 
-    def _make_tailer(
-        self, tmp_path: Path
-    ) -> tuple[DecisionAuditTailer, OperatorCockpit, DecisionAuditAppender]:
+    def _make_tailer(self, tmp_path: Path) -> tuple[DecisionAuditTailer, OperatorCockpit, DecisionAuditAppender]:
         cockpit = OperatorCockpit()
         appender = DecisionAuditAppender(audit_path=tmp_path / "tailer.jsonl")
-        tailer = DecisionAuditTailer(
-            cockpit, appender, interval_s=0.05, max_backoff_s=4.0
-        )
+        tailer = DecisionAuditTailer(cockpit, appender, interval_s=0.05, max_backoff_s=4.0)
         return tailer, cockpit, appender
 
     def test_stats_initial_state(self, tmp_path: Path) -> None:
@@ -264,9 +252,7 @@ class TestTailerObservabilityAndBackoff:
         assert snap["dlq_size"] == 64
         assert snap["drain_errors_total"] == 100
 
-    def test_background_loop_records_failure_via_run(
-        self, tmp_path: Path, caplog: pytest.LogCaptureFixture
-    ) -> None:
+    def test_background_loop_records_failure_via_run(self, tmp_path: Path, caplog: pytest.LogCaptureFixture) -> None:
         """End-to-end: the background _run loop catches the failure,
         records it, applies the back-off, and warns."""
         cockpit = OperatorCockpit()
@@ -492,9 +478,7 @@ class TestEvictSafetyCounter:
         w._evict(now=0.0)
         assert len(w._events) == 0
 
-    def test_safety_canary_logs_when_counter_exhausted(
-        self, caplog: pytest.LogCaptureFixture
-    ) -> None:
+    def test_safety_canary_logs_when_counter_exhausted(self, caplog: pytest.LogCaptureFixture) -> None:
         """Force the safety counter to exhaust while the deque still
         holds future-ts events; assert the WARNING fires.
 
@@ -574,9 +558,7 @@ class TestTrafficDashboardFreeThreaded:
             except BaseException as exc:  # noqa: BLE001
                 errors.append(exc)
 
-        threads = [
-            threading.Thread(target=worker, args=(i * 100, 100)) for i in range(8)
-        ]
+        threads = [threading.Thread(target=worker, args=(i * 100, 100)) for i in range(8)]
         for t in threads:
             t.start()
         # Read summary concurrently with the writers.

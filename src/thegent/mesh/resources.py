@@ -12,9 +12,7 @@ class ResourceManager:
     def __init__(self, agent_id: str) -> None:
         self.agent_id = agent_id
 
-    def set_limits(
-        self, memory_mb: int = 512, proc_limit: int = 50, fd_limit: int = 1024
-    ):
+    def set_limits(self, memory_mb: int = 512, proc_limit: int = 50, fd_limit: int = 1024):
         """Set resource limits for the current process (SCLI-P12.1–P12.3)."""
 
         # Memory limit (RSS) (SCLI-P12.1)

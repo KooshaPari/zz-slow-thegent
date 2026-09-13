@@ -50,9 +50,7 @@ def test_find_lock_files_scans_gitdir_and_worktrees(tmp_path: Path) -> None:
     assert tmp_path / "simple" / ".git" / "index.lock" in locks
 
 
-def test_run_lock_cleanup_skips_when_lsof_unavailable(
-    tmp_path: Path, monkeypatch
-) -> None:
+def test_run_lock_cleanup_skips_when_lsof_unavailable(tmp_path: Path, monkeypatch) -> None:
     """Skip deletion when lsof is unavailable (avoid unsafe stale assumptions)."""
     lock_path = tmp_path / ".git" / "index.lock"
     lock_path.parent.mkdir(parents=True)
@@ -60,9 +58,7 @@ def test_run_lock_cleanup_skips_when_lsof_unavailable(
     old = time.time() - 120
     os.utime(lock_path, (old, old))
 
-    monkeypatch.setattr(
-        glm, "run_subprocess_optimized", Mock(side_effect=FileNotFoundError("lsof"))
-    )
+    monkeypatch.setattr(glm, "run_subprocess_optimized", Mock(side_effect=FileNotFoundError("lsof")))
     removed, skipped = glm.run_lock_cleanup(paths=[tmp_path], max_age=60)
 
     assert removed == 0
@@ -70,9 +66,7 @@ def test_run_lock_cleanup_skips_when_lsof_unavailable(
     assert lock_path.exists()
 
 
-def test_run_lock_cleanup_skips_on_uncertain_lsof_error(
-    tmp_path: Path, monkeypatch
-) -> None:
+def test_run_lock_cleanup_skips_on_uncertain_lsof_error(tmp_path: Path, monkeypatch) -> None:
     """Skip deletion when lsof returns an uncertain non-zero state."""
     lock_path = tmp_path / ".git" / "index.lock"
     lock_path.parent.mkdir(parents=True)
@@ -89,9 +83,7 @@ def test_run_lock_cleanup_skips_on_uncertain_lsof_error(
     assert lock_path.exists()
 
 
-def test_find_lock_files_handles_unreadable_worktree_dir(
-    tmp_path: Path, monkeypatch
-) -> None:
+def test_find_lock_files_handles_unreadable_worktree_dir(tmp_path: Path, monkeypatch) -> None:
     """Ignore worktree metadata directory read failures and still discover repo lock."""
     project = tmp_path / "project"
     project.mkdir()

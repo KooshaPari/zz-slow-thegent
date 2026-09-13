@@ -14,9 +14,7 @@ class _Pane:
         self.pane_id = pane_id
 
 
-def test_collect_snapshot_extracts_structured_fields(
-    monkeypatch, tmp_path: Path
-) -> None:
+def test_collect_snapshot_extracts_structured_fields(monkeypatch, tmp_path: Path) -> None:
     scraper = SessionScraper(project_root=tmp_path)
 
     sample_capture = """
@@ -65,9 +63,7 @@ tracking #wl155 #session-memory
 def test_persist_snapshot_writes_json(monkeypatch, tmp_path: Path) -> None:
     scraper = SessionScraper(project_root=tmp_path)
 
-    monkeypatch.setattr(
-        "thegent.orchestration.state.session_scraper.list_tmux_panes", list
-    )
+    monkeypatch.setattr("thegent.orchestration.state.session_scraper.list_tmux_panes", list)
     monkeypatch.setattr(
         "thegent.orchestration.state.session_scraper.SessionScraper.scrape_claude_history",
         lambda self: ["p1"],
@@ -91,9 +87,7 @@ def test_persist_snapshot_emits_created_event(monkeypatch, tmp_path: Path) -> No
     scraper = SessionScraper(project_root=tmp_path)
     event_log = tmp_path / "events.jsonl"
 
-    monkeypatch.setattr(
-        "thegent.orchestration.state.session_scraper.list_tmux_panes", list
-    )
+    monkeypatch.setattr("thegent.orchestration.state.session_scraper.list_tmux_panes", list)
     monkeypatch.setattr(
         "thegent.orchestration.state.session_scraper.SessionScraper.scrape_claude_history",
         lambda self: ["p1"],
@@ -112,11 +106,7 @@ def test_persist_snapshot_emits_created_event(monkeypatch, tmp_path: Path) -> No
     )
 
     assert snapshot_path.exists()
-    events = [
-        json.loads(line)
-        for line in event_log.read_text(encoding="utf-8").splitlines()
-        if line.strip()
-    ]
+    events = [json.loads(line) for line in event_log.read_text(encoding="utf-8").splitlines() if line.strip()]
     assert len(events) == 1
     event = events[0]
     assert event["event_name"] == "session.scraper.snapshot.created"
@@ -147,11 +137,7 @@ def test_persist_snapshot_emits_failed_event(monkeypatch, tmp_path: Path) -> Non
             event_log=event_log,
         )
 
-    events = [
-        json.loads(line)
-        for line in event_log.read_text(encoding="utf-8").splitlines()
-        if line.strip()
-    ]
+    events = [json.loads(line) for line in event_log.read_text(encoding="utf-8").splitlines() if line.strip()]
     assert len(events) == 1
     event = events[0]
     assert event["event_name"] == "session.scraper.snapshot.failed"
@@ -263,12 +249,8 @@ def test_summarize_snapshots_and_index_exports(tmp_path: Path) -> None:
         "tags": ["wl156"],
         "sources": [],
     }
-    (snapshots_dir / "snapshot-1.json").write_text(
-        json.dumps(payload_a).decode(), encoding="utf-8"
-    )
-    (snapshots_dir / "snapshot-2.json").write_text(
-        json.dumps(payload_b).decode(), encoding="utf-8"
-    )
+    (snapshots_dir / "snapshot-1.json").write_text(json.dumps(payload_a).decode(), encoding="utf-8")
+    (snapshots_dir / "snapshot-2.json").write_text(json.dumps(payload_b).decode(), encoding="utf-8")
 
     summary = scraper.summarize_snapshots(root_dir=snapshots_dir)
     assert summary["total_snapshots"] == 2
@@ -280,16 +262,12 @@ def test_summarize_snapshots_and_index_exports(tmp_path: Path) -> None:
     assert summary["tag_counts"]["wl155"] == 1
     assert summary["tag_counts"]["wl156"] == 1
 
-    index_json = scraper.persist_snapshot_index(
-        root_dir=snapshots_dir, out_path=tmp_path / "snapshot-index.json"
-    )
+    index_json = scraper.persist_snapshot_index(root_dir=snapshots_dir, out_path=tmp_path / "snapshot-index.json")
     assert index_json.exists()
     index_data = json.loads(index_json.read_text(encoding="utf-8"))
     assert index_data["total_snapshots"] == 2
 
-    index_md = scraper.export_snapshot_index_markdown(
-        root_dir=snapshots_dir, out_path=tmp_path / "snapshot-index.md"
-    )
+    index_md = scraper.export_snapshot_index_markdown(root_dir=snapshots_dir, out_path=tmp_path / "snapshot-index.md")
     assert index_md.exists()
     md_content = index_md.read_text(encoding="utf-8")
     assert "# Snapshot Index" in md_content
@@ -297,16 +275,12 @@ def test_summarize_snapshots_and_index_exports(tmp_path: Path) -> None:
     assert "tool_use: 1" in md_content
 
 
-def test_snapshot_created_event_payload_schema_validation(
-    monkeypatch, tmp_path: Path
-) -> None:
+def test_snapshot_created_event_payload_schema_validation(monkeypatch, tmp_path: Path) -> None:
     """Validate that emitted snapshot.created event conforms to the schema."""
     scraper = SessionScraper(project_root=tmp_path)
     event_log = tmp_path / "events.jsonl"
 
-    monkeypatch.setattr(
-        "thegent.orchestration.state.session_scraper.list_tmux_panes", list
-    )
+    monkeypatch.setattr("thegent.orchestration.state.session_scraper.list_tmux_panes", list)
     monkeypatch.setattr(
         "thegent.orchestration.state.session_scraper.SessionScraper.scrape_claude_history",
         lambda self: ["prompt1"],
@@ -324,11 +298,7 @@ def test_snapshot_created_event_payload_schema_validation(
         event_log=event_log,
     )
 
-    events = [
-        json.loads(line)
-        for line in event_log.read_text(encoding="utf-8").splitlines()
-        if line.strip()
-    ]
+    events = [json.loads(line) for line in event_log.read_text(encoding="utf-8").splitlines() if line.strip()]
     assert len(events) == 1
     event = events[0]
 
@@ -352,9 +322,7 @@ def test_snapshot_created_event_payload_schema_validation(
     assert isinstance(summary["sources"], list)
 
 
-def test_snapshot_failed_event_payload_schema_validation(
-    monkeypatch, tmp_path: Path
-) -> None:
+def test_snapshot_failed_event_payload_schema_validation(monkeypatch, tmp_path: Path) -> None:
     """Validate that emitted snapshot.failed event conforms to the schema."""
     scraper = SessionScraper(project_root=tmp_path)
     event_log = tmp_path / "events.jsonl"
@@ -376,11 +344,7 @@ def test_snapshot_failed_event_payload_schema_validation(
             event_log=event_log,
         )
 
-    events = [
-        json.loads(line)
-        for line in event_log.read_text(encoding="utf-8").splitlines()
-        if line.strip()
-    ]
+    events = [json.loads(line) for line in event_log.read_text(encoding="utf-8").splitlines() if line.strip()]
     assert len(events) == 1
     event = events[0]
 
@@ -391,22 +355,15 @@ def test_snapshot_failed_event_payload_schema_validation(
     assert event["request_event_id"] == request_id
     assert "occurred_at" in event and isinstance(event["occurred_at"], str)
     assert event["error_code"] in ("SCRAPER_IO", "SCRAPER_PARSE", "SCRAPER_RUNTIME")
-    assert (
-        isinstance(event["error_message"], str)
-        and "test failure message" in event["error_message"]
-    )
+    assert isinstance(event["error_message"], str) and "test failure message" in event["error_message"]
 
 
-def test_trigger_normalization_applied_to_persisted_snapshot(
-    monkeypatch, tmp_path: Path
-) -> None:
+def test_trigger_normalization_applied_to_persisted_snapshot(monkeypatch, tmp_path: Path) -> None:
     """Validate that trigger values are normalized in collect_snapshot."""
     scraper = SessionScraper(project_root=tmp_path)
     out_dir = tmp_path / "snapshots"
 
-    monkeypatch.setattr(
-        "thegent.orchestration.state.session_scraper.list_tmux_panes", list
-    )
+    monkeypatch.setattr("thegent.orchestration.state.session_scraper.list_tmux_panes", list)
     monkeypatch.setattr(
         "thegent.orchestration.state.session_scraper.SessionScraper.scrape_claude_history",
         lambda self: [],
@@ -427,9 +384,7 @@ def test_trigger_normalization_applied_to_persisted_snapshot(
         path = scraper.persist_snapshot(trigger=trigger, out_dir=out_dir)
         snapshot = scraper.load_snapshot(path)
         assert snapshot is not None
-        assert snapshot.trigger == trigger, (
-            f"Expected {trigger}, got {snapshot.trigger}"
-        )
+        assert snapshot.trigger == trigger, f"Expected {trigger}, got {snapshot.trigger}"
 
 
 # noqa: PT018

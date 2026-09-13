@@ -61,9 +61,7 @@ class TestPipelinePercentileTracker:
         assert tracker.all_stages() == ["validate"]
 
     @pytest.mark.requirement("WL-303")
-    def test_record_multiple_executions_same_stage(
-        self, tracker: PipelinePercentileTracker
-    ) -> None:
+    def test_record_multiple_executions_same_stage(self, tracker: PipelinePercentileTracker) -> None:
         """Can record multiple executions of the same stage."""
         tracker.record("validate", 100.0, "cycle-1")
         tracker.record("validate", 150.0, "cycle-2")
@@ -74,9 +72,7 @@ class TestPipelinePercentileTracker:
         assert summary["stage"] == "validate"
 
     @pytest.mark.requirement("WL-303")
-    def test_record_negative_duration_raises_error(
-        self, tracker: PipelinePercentileTracker
-    ) -> None:
+    def test_record_negative_duration_raises_error(self, tracker: PipelinePercentileTracker) -> None:
         """Recording negative duration raises ValueError."""
         with pytest.raises(ValueError, match="duration_ms must be non-negative"):
             tracker.record("validate", -1.0, "cycle-1")
@@ -88,18 +84,14 @@ class TestPipelinePercentileTracker:
         assert result is None
 
     @pytest.mark.requirement("WL-303")
-    def test_percentile_p50_single_value(
-        self, tracker: PipelinePercentileTracker
-    ) -> None:
+    def test_percentile_p50_single_value(self, tracker: PipelinePercentileTracker) -> None:
         """p50 of single value equals that value."""
         tracker.record("validate", 100.0, "cycle-1")
         result = tracker.percentile("validate", 50)
         assert result == 100.0
 
     @pytest.mark.requirement("WL-303")
-    def test_percentile_p50_multiple_values(
-        self, tracker: PipelinePercentileTracker
-    ) -> None:
+    def test_percentile_p50_multiple_values(self, tracker: PipelinePercentileTracker) -> None:
         """p50 of multiple values is computed correctly."""
         # Record: 10, 20, 30, 40, 50
         for i, duration in enumerate([10, 20, 30, 40, 50]):
@@ -135,9 +127,7 @@ class TestPipelinePercentileTracker:
         assert 95 <= result <= 100
 
     @pytest.mark.requirement("WL-303")
-    def test_percentile_invalid_p_raises_error(
-        self, tracker: PipelinePercentileTracker
-    ) -> None:
+    def test_percentile_invalid_p_raises_error(self, tracker: PipelinePercentileTracker) -> None:
         """Invalid percentile values raise ValueError."""
         tracker.record("validate", 100.0, "cycle-1")
 
@@ -186,9 +176,7 @@ class TestPipelinePercentileTracker:
         assert result == ["validate"]
 
     @pytest.mark.requirement("WL-303")
-    def test_all_stages_multiple_sorted(
-        self, tracker: PipelinePercentileTracker
-    ) -> None:
+    def test_all_stages_multiple_sorted(self, tracker: PipelinePercentileTracker) -> None:
         """all_stages returns sorted list of unique stages."""
         tracker.record("zebra", 100.0, "cycle-1")
         tracker.record("apple", 100.0, "cycle-2")

@@ -57,9 +57,7 @@ class ContextHistory:
             # Create indices for common search fields
             conn.execute("CREATE INDEX IF NOT EXISTS idx_task_id ON history(task_id)")
             conn.execute("CREATE INDEX IF NOT EXISTS idx_cwd ON history(cwd)")
-            conn.execute(
-                "CREATE INDEX IF NOT EXISTS idx_timestamp ON history(timestamp)"
-            )
+            conn.execute("CREATE INDEX IF NOT EXISTS idx_timestamp ON history(timestamp)")
 
     def record(self, entry: HistoryEntry) -> int:
         """Record a new command in history."""

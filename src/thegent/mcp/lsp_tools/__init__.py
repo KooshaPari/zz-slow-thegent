@@ -140,9 +140,7 @@ def _validate_existing_file(uri: str) -> bool:
     return os.path.exists(path)
 
 
-def lsp_symbol_lookup_impl(
-    symbol_name: str, uri: str | None = None
-) -> list[SymbolInfo]:
+def lsp_symbol_lookup_impl(symbol_name: str, uri: str | None = None) -> list[SymbolInfo]:
     """Implementation for LSP symbol lookup.
 
     Args:

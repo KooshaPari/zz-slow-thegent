@@ -50,13 +50,9 @@ class EvidenceLedger:
 
     SCHEMA_VERSION = 1
 
-    def __init__(
-        self, session_dir: Path
-    ) -> None:  # @trace AUDIT-N+51 FR-GOV-EL-001, FR-GOV-EL-002
+    def __init__(self, session_dir: Path) -> None:  # @trace AUDIT-N+51 FR-GOV-EL-001, FR-GOV-EL-002
         if not session_dir.is_absolute():
-            raise ValueError(
-                f"session_dir must be an absolute path, got: {session_dir!r}"
-            )
+            raise ValueError(f"session_dir must be an absolute path, got: {session_dir!r}")
         self.session_dir = session_dir
         self._lock = threading.RLock()
         self._ensure_dir()
@@ -104,9 +100,7 @@ class EvidenceLedger:
                         try:
                             json.loads(stripped)
                         except json.JSONDecodeError:
-                            _log.warning(
-                                "Skipping corrupt JSONL line in _get_last_hash"
-                            )
+                            _log.warning("Skipping corrupt JSONL line in _get_last_hash")
                             continue
                         last_line = stripped
                     if last_line:
@@ -241,8 +235,6 @@ class EvidenceLedger:
                     prev_hash = recorded_hash
             return True
 
-    def link_to_graph(
-        self, graph: EvidenceGraph, event_hash: str, artifact_id: str
-    ) -> None:
+    def link_to_graph(self, graph: EvidenceGraph, event_hash: str, artifact_id: str) -> None:
         """Link an evidence event to an artifact in the EvidenceGraph."""
         graph.add_link(event_hash, artifact_id)

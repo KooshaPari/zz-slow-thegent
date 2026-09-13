@@ -15,14 +15,8 @@ def test_help_worktree_examples_are_registered() -> None:
     from thegent.cli.help_examples import COMMAND_EXAMPLES
 
     assert "worktree" in COMMAND_EXAMPLES
-    assert (
-        "thegent worktree migrate-legacy /tmp/legacy-cache infra m migrate-cache"
-        in COMMAND_EXAMPLES["worktree"]
-    )
-    assert (
-        "thegent worktree refresh <change-anchor> --remote origin --strategy merge"
-        in COMMAND_EXAMPLES["worktree"]
-    )
+    assert "thegent worktree migrate-legacy /tmp/legacy-cache infra m migrate-cache" in COMMAND_EXAMPLES["worktree"]
+    assert "thegent worktree refresh <change-anchor> --remote origin --strategy merge" in COMMAND_EXAMPLES["worktree"]
 
     runner = CliRunner()
     result = runner.invoke(main_app, ["help", "worktree"])

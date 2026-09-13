@@ -29,15 +29,9 @@ def create_request(command: str, payload: dict, source: str = "cli") -> IPCReque
     """Create an IPC request."""
     import uuid
 
-    return IPCRequest(
-        request_id=str(uuid.uuid4()), command=command, payload=payload, source=source
-    )
+    return IPCRequest(request_id=str(uuid.uuid4()), command=command, payload=payload, source=source)
 
 
-def create_response(
-    request_id: str, success: bool, result: Any = None, error: str | None = None
-) -> IPCResponse:
+def create_response(request_id: str, success: bool, result: Any = None, error: str | None = None) -> IPCResponse:
     """Create an IPC response."""
-    return IPCResponse(
-        request_id=request_id, success=success, result=result, error=error
-    )
+    return IPCResponse(request_id=request_id, success=success, result=result, error=error)

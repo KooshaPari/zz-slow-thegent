@@ -144,9 +144,7 @@ def _init_repo(tmp_path: Path) -> Path:
     return repo_root
 
 
-def _run_policy_check(
-    repo_root: Path, *, branch: str | None = None
-) -> subprocess.CompletedProcess[str]:
+def _run_policy_check(repo_root: Path, *, branch: str | None = None) -> subprocess.CompletedProcess[str]:
     if branch is not None:
         subprocess.run(
             ["git", "checkout", "-q", "-b", branch],

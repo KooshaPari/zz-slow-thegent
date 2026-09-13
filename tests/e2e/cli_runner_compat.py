@@ -10,9 +10,7 @@ from typer.testing import CliRunner
 
 from tests.e2e.command_surface import command_path_exists
 
-COMMAND_SURFACE_DRIFT_SKIP_MESSAGE = (
-    "Command surface drift: CLI command alias is unavailable in current app wiring."
-)
+COMMAND_SURFACE_DRIFT_SKIP_MESSAGE = "Command surface drift: CLI command alias is unavailable in current app wiring."
 ATTEMPTED_ARGV_COMMAND_PATH_PREFIX = "Attempted argv command path:"
 
 

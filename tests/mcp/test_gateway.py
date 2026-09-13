@@ -155,9 +155,7 @@ def test_gateway_thread_safe_register() -> None:
         except Exception as exc:
             errors.append(exc)
 
-    threads = [
-        threading.Thread(target=register_many, args=(f"t{j}",)) for j in range(4)
-    ]
+    threads = [threading.Thread(target=register_many, args=(f"t{j}",)) for j in range(4)]
     for t in threads:
         t.start()
     for t in threads:

@@ -119,20 +119,13 @@ def _class_node(name: str) -> ast.ClassDef:
 
 def _method_names(cls: ast.ClassDef) -> list[str]:
     """Return all method names defined directly on *cls*."""
-    return [
-        node.name
-        for node in cls.body
-        if isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef))
-    ]
+    return [node.name for node in cls.body if isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef))]
 
 
 def _method_node(cls: ast.ClassDef, name: str) -> ast.FunctionDef:
     """Return the ``FunctionDef`` for *name* inside *cls*."""
     for node in cls.body:
-        if (
-            isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef))
-            and node.name == name
-        ):
+        if isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef)) and node.name == name:
             return node
     raise AssertionError(f"Method {name!r} not found in class {cls.name!r}")
 
@@ -222,9 +215,7 @@ class TestPromotionGateEvidenceDir:
             or 'Path("evidence")' in _EVIDENCE_TEXT
             or "Path('evidence')" in _EVIDENCE_TEXT
         )
-        assert has_division, (
-            "evidence_dir must be derived via Path division or Path('evidence')"
-        )
+        assert has_division, "evidence_dir must be derived via Path division or Path('evidence')"
 
 
 # ---------------------------------------------------------------------------
@@ -362,11 +353,7 @@ class TestCaptureEvidenceAuditTrail:
         """Source appends to ``audit_path`` (not overwrite)."""
         assert "audit_path" in _EVIDENCE_TEXT
         # Should open in append mode or use a模式 that appends
-        assert (
-            '"a"' in _EVIDENCE_TEXT
-            or "'a'" in _EVIDENCE_TEXT
-            or "append" in _EVIDENCE_TEXT.lower()
-        )
+        assert '"a"' in _EVIDENCE_TEXT or "'a'" in _EVIDENCE_TEXT or "append" in _EVIDENCE_TEXT.lower()
 
     def test_audit_entry_references_run_id(self) -> None:
         """Audit entry dict includes ``run_id`` field."""
@@ -406,14 +393,8 @@ class TestCaptureEvidencePhaseHandling:
         """Source uses ``str()`` as fallback when ``.value`` is absent."""
         # The pattern should be: phase.value if hasattr else str(phase)
         # or a try/except or getattr-based pattern
-        has_fallback = (
-            "getattr" in _EVIDENCE_TEXT
-            or "hasattr" in _EVIDENCE_TEXT
-            or "str(" in _EVIDENCE_TEXT
-        )
-        assert has_fallback, (
-            "Phase handling must have a str() fallback for non-enum phases"
-        )
+        has_fallback = "getattr" in _EVIDENCE_TEXT or "hasattr" in _EVIDENCE_TEXT or "str(" in _EVIDENCE_TEXT
+        assert has_fallback, "Phase handling must have a str() fallback for non-enum phases"
 
 
 # ---------------------------------------------------------------------------

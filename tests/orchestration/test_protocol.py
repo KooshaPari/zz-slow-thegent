@@ -495,18 +495,10 @@ class TestSubAgentProtocolSerializer:
     def test_filter_events_by_request(self) -> None:
         """Test filtering events by request ID."""
         events = [
-            SubAgentEvent(
-                request_id="req_1", event_type=SubAgentEventType.STARTED, sequence=1
-            ),
-            SubAgentEvent(
-                request_id="req_2", event_type=SubAgentEventType.STARTED, sequence=1
-            ),
-            SubAgentEvent(
-                request_id="req_1", event_type=SubAgentEventType.PROGRESS, sequence=2
-            ),
-            SubAgentEvent(
-                request_id="req_1", event_type=SubAgentEventType.COMPLETED, sequence=3
-            ),
+            SubAgentEvent(request_id="req_1", event_type=SubAgentEventType.STARTED, sequence=1),
+            SubAgentEvent(request_id="req_2", event_type=SubAgentEventType.STARTED, sequence=1),
+            SubAgentEvent(request_id="req_1", event_type=SubAgentEventType.PROGRESS, sequence=2),
+            SubAgentEvent(request_id="req_1", event_type=SubAgentEventType.COMPLETED, sequence=3),
         ]
         filtered = SubAgentProtocolSerializer.filter_events_by_request(events, "req_1")
         assert len(filtered) == 3
@@ -518,15 +510,9 @@ class TestSubAgentProtocolSerializer:
     def test_filter_events_preserves_order(self) -> None:
         """Test that filter maintains sequence order."""
         events = [
-            SubAgentEvent(
-                request_id="req_x", event_type=SubAgentEventType.STARTED, sequence=10
-            ),
-            SubAgentEvent(
-                request_id="req_x", event_type=SubAgentEventType.PROGRESS, sequence=5
-            ),
-            SubAgentEvent(
-                request_id="req_x", event_type=SubAgentEventType.COMPLETED, sequence=20
-            ),
+            SubAgentEvent(request_id="req_x", event_type=SubAgentEventType.STARTED, sequence=10),
+            SubAgentEvent(request_id="req_x", event_type=SubAgentEventType.PROGRESS, sequence=5),
+            SubAgentEvent(request_id="req_x", event_type=SubAgentEventType.COMPLETED, sequence=20),
         ]
         filtered = SubAgentProtocolSerializer.filter_events_by_request(events, "req_x")
         # Should be sorted by sequence

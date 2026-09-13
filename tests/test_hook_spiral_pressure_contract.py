@@ -15,9 +15,7 @@ def _repo_root() -> Path:
     return Path(__file__).resolve().parents[1]
 
 
-def _load_json_artifact(
-    path: Path, *, proc: subprocess.CompletedProcess[str], verify_dir: Path
-) -> dict:
+def _load_json_artifact(path: Path, *, proc: subprocess.CompletedProcess[str], verify_dir: Path) -> dict:
     if not path.exists():
         files = sorted(p.name for p in verify_dir.glob("*"))
         pytest.fail(
@@ -70,9 +68,7 @@ def _run_governance(
     cache_dir.mkdir(parents=True, exist_ok=True)
 
     source_cfg = _repo_root() / "hooks" / "hook-config.yaml"
-    (hooks_dir / "hook-config.yaml").write_text(
-        source_cfg.read_text(encoding="utf-8"), encoding="utf-8"
-    )
+    (hooks_dir / "hook-config.yaml").write_text(source_cfg.read_text(encoding="utf-8"), encoding="utf-8")
     (project / ".claude" / "quality.json").write_text("{}", encoding="utf-8")
 
     state = {
@@ -90,9 +86,7 @@ def _run_governance(
         "last_policy_band": "green",
         "last_directive": "seed_directive",
     }
-    (verify_dir / "regression-spiral-state.json").write_text(
-        json.dumps(state).decode() + "\n", encoding="utf-8"
-    )
+    (verify_dir / "regression-spiral-state.json").write_text(json.dumps(state).decode() + "\n", encoding="utf-8")
 
     if async_results_payload is not None:
         (home_dir / ".claude" / ".async-test-results.json").write_text(
@@ -116,9 +110,7 @@ def _run_governance(
                 "slsa_provenance_present": True,
             },
         }
-        (verify_dir / "qa-attestation.json").write_text(
-            json.dumps(attestation).decode() + "\n", encoding="utf-8"
-        )
+        (verify_dir / "qa-attestation.json").write_text(json.dumps(attestation).decode() + "\n", encoding="utf-8")
 
     subprocess.run(["git", "init", "-q"], cwd=project, check=True)
     subprocess.run(["git", "config", "user.email", "a@b.c"], cwd=project, check=True)
@@ -163,9 +155,7 @@ def _run_governance(
         check=False,
     )
 
-    report = _load_json_artifact(
-        verify_dir / "regression-spiral-guard.json", proc=proc, verify_dir=verify_dir
-    )
+    report = _load_json_artifact(verify_dir / "regression-spiral-guard.json", proc=proc, verify_dir=verify_dir)
 
     metrics_path = verify_dir / "regression-spiral-metrics.jsonl"
     if not metrics_path.exists():
@@ -179,11 +169,7 @@ def _run_governance(
                 ]
             )
         )
-    metric_lines = [
-        line
-        for line in metrics_path.read_text(encoding="utf-8").splitlines()
-        if line.strip()
-    ]
+    metric_lines = [line for line in metrics_path.read_text(encoding="utf-8").splitlines() if line.strip()]
     if not metric_lines:
         pytest.fail(
             "\n".join(
@@ -197,15 +183,9 @@ def _run_governance(
         )
     metric = json.loads(metric_lines[-1])
 
-    state_after = _load_json_artifact(
-        verify_dir / "regression-spiral-state.json", proc=proc, verify_dir=verify_dir
-    )
+    state_after = _load_json_artifact(verify_dir / "regression-spiral-state.json", proc=proc, verify_dir=verify_dir)
     alert_path = verify_dir / "regression-spiral-alert.json"
-    alert = (
-        json.loads(alert_path.read_text(encoding="utf-8"))
-        if alert_path.exists()
-        else None
-    )
+    alert = json.loads(alert_path.read_text(encoding="utf-8")) if alert_path.exists() else None
     return proc.returncode, report, metric, state_after, alert
 
 

@@ -32,9 +32,7 @@ class UniquenesEnforcer:
         self.policy = policy or BoardIdUniquenessPolicy()
         self._registry: set[str] = set()
 
-    def register_id(
-        self, board_id: str, _context: dict[str, Any] | None = None
-    ) -> None:
+    def register_id(self, board_id: str, _context: dict[str, Any] | None = None) -> None:
         """Register a board ID and enforce uniqueness.
 
         Args:

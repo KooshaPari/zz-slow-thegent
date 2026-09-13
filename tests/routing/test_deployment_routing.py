@@ -207,15 +207,9 @@ def test_session_sticky_consistent() -> None:
     pool = DeploymentPool(
         name="gpt-4o",
         deployments=[
-            DeploymentConfig(
-                provider="openai", model="gpt-4o", api_base="https://ep1.openai.com/v1"
-            ),
-            DeploymentConfig(
-                provider="openai", model="gpt-4o", api_base="https://ep2.openai.com/v1"
-            ),
-            DeploymentConfig(
-                provider="openai", model="gpt-4o", api_base="https://ep3.openai.com/v1"
-            ),
+            DeploymentConfig(provider="openai", model="gpt-4o", api_base="https://ep1.openai.com/v1"),
+            DeploymentConfig(provider="openai", model="gpt-4o", api_base="https://ep2.openai.com/v1"),
+            DeploymentConfig(provider="openai", model="gpt-4o", api_base="https://ep3.openai.com/v1"),
         ],
     )
     manager = DeploymentPoolManager([pool])
@@ -235,19 +229,14 @@ def test_session_sticky_consistent() -> None:
 def test_session_sticky_different_sessions() -> None:
     """Different session_ids can map to different deployments."""
     deployments = [
-        DeploymentConfig(
-            provider="openai", model="gpt-4o", api_base=f"https://ep{i}.openai.com/v1"
-        )
-        for i in range(5)
+        DeploymentConfig(provider="openai", model="gpt-4o", api_base=f"https://ep{i}.openai.com/v1") for i in range(5)
     ]
     pool = DeploymentPool(name="gpt-4o", deployments=deployments)
     manager = DeploymentPoolManager([pool])
     sticky = SessionStickyRouter(manager)
 
     session_ids = [f"session-{i}" for i in range(20)]
-    endpoints = {
-        sticky.get_deployment_for_session("gpt-4o", sid).api_base for sid in session_ids
-    }  # type: ignore[union-attr]
+    endpoints = {sticky.get_deployment_for_session("gpt-4o", sid).api_base for sid in session_ids}  # type: ignore[union-attr]
 
     # With 20 sessions and 5 endpoints, at least 2 distinct endpoints should be chosen
     assert len(endpoints) >= 2
@@ -313,7 +302,5 @@ def test_get_session_sticky_extra_no_pool_manager() -> None:
 def test_get_session_sticky_extra_unknown_model() -> None:
     """get_session_sticky_extra returns empty dict when model has no pool."""
     manager = DeploymentPoolManager([])
-    extra = get_session_sticky_extra(
-        "no-such-model", "session-xyz", pool_manager=manager
-    )
+    extra = get_session_sticky_extra("no-such-model", "session-xyz", pool_manager=manager)
     assert extra == {}

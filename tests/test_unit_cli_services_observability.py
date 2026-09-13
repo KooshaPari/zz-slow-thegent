@@ -64,9 +64,7 @@ def test_build_observe_summary_trend_builds_summary_and_deltas() -> None:
         assert scope["payload_type"] == "observe_summary"
         return "sig-123"
 
-    def load_snapshots_fn(
-        signature: str, key_json: str, limit: int
-    ) -> list[dict[str, Any]]:
+    def load_snapshots_fn(signature: str, key_json: str, limit: int) -> list[dict[str, Any]]:
         assert signature == "sig-123"
         assert '"payload_type":"observe_summary"' in key_json
         assert limit == 2

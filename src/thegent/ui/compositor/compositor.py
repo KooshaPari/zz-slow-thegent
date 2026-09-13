@@ -35,14 +35,10 @@ class CompositorProfiler:
         self._records.append(profile)
 
     def get_slowest(self, n: int = 5) -> list[RenderProfile]:
-        return sorted(
-            self._records, key=lambda profile: profile.render_time_ms, reverse=True
-        )[:n]
+        return sorted(self._records, key=lambda profile: profile.render_time_ms, reverse=True)[:n]
 
     def get_average(self, panel_id: str | None = None) -> float:
-        records = [
-            r for r in self._records if panel_id is None or r.panel_id == panel_id
-        ]
+        records = [r for r in self._records if panel_id is None or r.panel_id == panel_id]
         if not records:
             return 0.0
         return sum(r.render_time_ms for r in records) / len(records)
@@ -53,9 +49,7 @@ class CompositorProfiler:
         lines = [f"{self.record_count} render records"]
         for profile in self.get_slowest():
             state = "HIT" if profile.cache_hit else "MISS"
-            lines.append(
-                f"{profile.panel_id}: {profile.render_time_ms:.2f} ms [{state}]"
-            )
+            lines.append(f"{profile.panel_id}: {profile.render_time_ms:.2f} ms [{state}]")
         return "\n".join(lines)
 
     def clear(self) -> None:
@@ -97,9 +91,7 @@ class Panel:
 
 
 class Compositor:
-    def __init__(
-        self, ttl: float = 60.0, error_ttl: float = 5.0, maxsize: int = 128
-    ) -> None:
+    def __init__(self, ttl: float = 60.0, error_ttl: float = 5.0, maxsize: int = 128) -> None:
         self.ttl = ttl
         self.error_ttl = error_ttl
         self.maxsize = maxsize
@@ -169,9 +161,7 @@ class Compositor:
         duration = max((perf_counter() - start) * 1000.0, 0.0)
         self._store_rendered_panel(name, panel, rendered, rendered_at)
         self._misses += 1
-        self.profiler.record(
-            RenderProfile(name, duration, rendered_at, cache_hit=False)
-        )
+        self.profiler.record(RenderProfile(name, duration, rendered_at, cache_hit=False))
         return rendered
 
     def _record_cache_hit(self, name: str, rendered: str, now: float) -> str:

@@ -75,9 +75,7 @@ class TestEvaluateFallback:
         # @trace FR-CTR-008
         policy = make_fallback_policy(max_fallback_rate=0.2)
         stats = {"fallback_rate": 0.5}
-        issues = evaluate_fallback(
-            "copilot", 0.9, is_fallback=False, policy=policy, stats=stats
-        )
+        issues = evaluate_fallback("copilot", 0.9, is_fallback=False, policy=policy, stats=stats)
         assert any("fallback rate" in i.lower() for i in issues)
 
     def test_fallback_disabled_violation(self) -> None:
@@ -105,7 +103,5 @@ class TestEvaluateFallback:
     def test_no_stats_skips_rate_check(self) -> None:
         # @trace FR-CTR-008
         policy = make_fallback_policy(max_fallback_rate=0.1)
-        issues = evaluate_fallback(
-            "copilot", 0.9, is_fallback=False, policy=policy, stats=None
-        )
+        issues = evaluate_fallback("copilot", 0.9, is_fallback=False, policy=policy, stats=None)
         assert not any("fallback rate" in i.lower() for i in issues)

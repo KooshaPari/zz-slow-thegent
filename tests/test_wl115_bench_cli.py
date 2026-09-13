@@ -408,8 +408,6 @@ def test_bench_compare_requires_two_harness_rows(tmp_path: Path) -> None:
     )
     assert run_one.exit_code == 0
 
-    compare = runner.invoke(
-        app, ["bench", "compare", "--suite", "smoke", "--results-path", str(target)]
-    )
+    compare = runner.invoke(app, ["bench", "compare", "--suite", "smoke", "--results-path", str(target)])
     assert compare.exit_code == 1
     assert "Need at least two harness results" in compare.stdout

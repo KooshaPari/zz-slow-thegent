@@ -26,9 +26,7 @@ from thegent.memory.supermemory_client import MemoryEntry, SupermemoryConfigErro
 
 
 def _make_entry(entry_id: str, content: str, score: float = 0.9) -> MemoryEntry:
-    return MemoryEntry(
-        id=entry_id, content=content, tags=[], created_at="", score=score
-    )
+    return MemoryEntry(id=entry_id, content=content, tags=[], created_at="", score=score)
 
 
 def _make_client_mock(
@@ -81,9 +79,7 @@ class TestMemoryManagerNoOp:
         await mgr.save_discovery("claude", "some discovery")
 
     @pytest.mark.asyncio
-    async def test_get_session_context_returns_empty_string_without_key(
-        self, monkeypatch
-    ):
+    async def test_get_session_context_returns_empty_string_without_key(self, monkeypatch):
         """get_session_context returns '' in no-op mode."""
         monkeypatch.delenv("THGENT_SUPERMEMORY_API_KEY", raising=False)
         mgr = MemoryManager()
@@ -228,9 +224,7 @@ class TestSaveDiscovery:
         """save_discovery calls client.add(content, tags=[agent_id])."""
         mgr, client_mock = mgr_with_mock
         await mgr.save_discovery("claude", "Agent discovered X causes Y")
-        client_mock.add.assert_awaited_once_with(
-            "Agent discovered X causes Y", tags=["claude"]
-        )
+        client_mock.add.assert_awaited_once_with("Agent discovered X causes Y", tags=["claude"])
 
     @pytest.mark.asyncio
     async def test_save_discovery_skips_empty_content(self, mgr_with_mock):
@@ -290,9 +284,7 @@ class TestGetSessionContext:
         return mgr, client_mock
 
     @pytest.mark.asyncio
-    async def test_get_session_context_calls_search_with_session_id(
-        self, mgr_with_mock
-    ):
+    async def test_get_session_context_calls_search_with_session_id(self, mgr_with_mock):
         """get_session_context calls client.search with session_id."""
         mgr, client_mock = mgr_with_mock
         await mgr.get_session_context("sess-xyz")
@@ -306,9 +298,7 @@ class TestGetSessionContext:
         assert result == "session fact one\nsession fact two"
 
     @pytest.mark.asyncio
-    async def test_get_session_context_returns_empty_string_on_no_results(
-        self, monkeypatch
-    ):
+    async def test_get_session_context_returns_empty_string_on_no_results(self, monkeypatch):
         """get_session_context returns '' when search yields nothing."""
         monkeypatch.delenv("THGENT_SUPERMEMORY_API_KEY", raising=False)
         with patch("thegent.memory.memory_manager.SupermemoryClient"):
@@ -354,9 +344,7 @@ class TestRunImplMemoryIntegration:
 
         src = inspect.getsource(cli_impl.run_impl)
         assert "MemoryManager" in src, "run_impl must instantiate MemoryManager"
-        assert "memory_manager" in src, (
-            "run_impl must import from memory_manager module"
-        )
+        assert "memory_manager" in src, "run_impl must import from memory_manager module"
 
     def test_run_impl_source_calls_load_context(self):
         """run_impl body calls load_context on the MemoryManager instance."""
@@ -410,6 +398,4 @@ class TestRunImplMemoryIntegration:
         ctx = await mgr.load_context("codex")
         assert ctx == ["prior result A", "prior result B"]
         await mgr.save_discovery("codex", "Discovered that Y implies Z")
-        client_mock.add.assert_awaited_once_with(
-            "Discovered that Y implies Z", tags=["codex"]
-        )
+        client_mock.add.assert_awaited_once_with("Discovered that Y implies Z", tags=["codex"])

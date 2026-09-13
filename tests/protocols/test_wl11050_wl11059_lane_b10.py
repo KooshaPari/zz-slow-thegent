@@ -16,54 +16,36 @@ def test_wl11050_validate_turn_submit_approval_payload_accepts_valid_payload() -
 def test_wl11051_validate_turn_submit_approval_payload_rejects_missing_id() -> None:
     # @trace WL-11051
     with pytest.raises(ValueError, match="Turn submit response target unresolved"):
-        server._validate_turn_submit_approval_payload(
-            {"status": "requested", "diff": "---"}
-        )
+        server._validate_turn_submit_approval_payload({"status": "requested", "diff": "---"})
 
 
 def test_wl11052_validate_turn_submit_approval_payload_rejects_missing_status() -> None:
     # @trace WL-11052
     with pytest.raises(ValueError, match="Turn submit response target unresolved"):
-        server._validate_turn_submit_approval_payload(
-            {"id": "approval-1", "diff": "---"}
-        )
+        server._validate_turn_submit_approval_payload({"id": "approval-1", "diff": "---"})
 
 
 def test_wl11053_validate_turn_submit_approval_payload_rejects_bad_diff_type() -> None:
     # @trace WL-11053
     with pytest.raises(ValueError, match="Turn submit response target unresolved"):
-        server._validate_turn_submit_approval_payload(
-            {"id": "approval-1", "status": "requested", "diff": []}
-        )
+        server._validate_turn_submit_approval_payload({"id": "approval-1", "status": "requested", "diff": []})
 
 
-def test_wl11054_extract_turn_submit_response_request_id_returns_request_id_for_id_path() -> (
-    None
-):
+def test_wl11054_extract_turn_submit_response_request_id_returns_request_id_for_id_path() -> None:
     # @trace WL-11054
-    phase = server._build_turn_submit_response_phase(
-        True, "req-11054", {"id": "turn-1"}, None
-    )
+    phase = server._build_turn_submit_response_phase(True, "req-11054", {"id": "turn-1"}, None)
     assert server._extract_turn_submit_response_request_id(phase, True) == "req-11054"
 
 
-def test_wl11055_extract_turn_submit_response_request_id_allows_none_when_not_required() -> (
-    None
-):
+def test_wl11055_extract_turn_submit_response_request_id_allows_none_when_not_required() -> None:
     # @trace WL-11055
-    phase = server._build_turn_submit_response_phase(
-        False, None, {"id": "turn-1"}, None
-    )
+    phase = server._build_turn_submit_response_phase(False, None, {"id": "turn-1"}, None)
     assert server._extract_turn_submit_response_request_id(phase, False) is None
 
 
-def test_wl11056_extract_turn_submit_response_request_id_rejects_non_request_id_when_required() -> (
-    None
-):
+def test_wl11056_extract_turn_submit_response_request_id_rejects_non_request_id_when_required() -> None:
     # @trace WL-11056
-    phase = server._build_turn_submit_response_phase(
-        True, ["bad"], {"id": "turn-1"}, None
-    )
+    phase = server._build_turn_submit_response_phase(True, ["bad"], {"id": "turn-1"}, None)
     with pytest.raises(ValueError, match="Turn submit response target unresolved"):
         server._extract_turn_submit_response_request_id(phase, True)
 
@@ -94,9 +76,7 @@ def test_wl11058_build_turn_submit_success_response_includes_approval_payload() 
     assert response["result"]["approval"] == approval_payload
 
 
-def test_wl11059_build_turn_submit_response_resolution_phase_preserves_turn_submit_payloads() -> (
-    None
-):
+def test_wl11059_build_turn_submit_response_resolution_phase_preserves_turn_submit_payloads() -> None:
     # @trace WL-11059
     phase = server._build_turn_submit_response_phase(
         True,
@@ -111,9 +91,7 @@ def test_wl11059_build_turn_submit_response_resolution_phase_preserves_turn_subm
         },
         {"id": "approval-1", "status": "requested", "diff": None},
     )
-    request_has_id, request_id, turn, approval_payload = (
-        server._build_turn_submit_response_resolution_phase(phase)
-    )
+    request_has_id, request_id, turn, approval_payload = server._build_turn_submit_response_resolution_phase(phase)
     assert request_has_id is True
     assert request_id == "req-11059"
     assert turn["id"] == "turn-1"

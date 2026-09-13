@@ -113,10 +113,7 @@ class TestHealthTrendCLI:
         payload = json.loads(out.read_text(encoding="utf-8"))
         assert payload["payload_type"] == "session_contract_health_trend"
         assert payload["compat"]["mode"] == "compat"
-        assert (
-            payload["compat"]["aliases"]["scope.policy_profile"]
-            == "scope_policy_profile"
-        )
+        assert payload["compat"]["aliases"]["scope.policy_profile"] == "scope_policy_profile"
 
     def test_health_trend_export_csv(self, tmp_path) -> None:
         # @trace FR-CLI-001
@@ -204,11 +201,7 @@ class TestHealthTrendCLI:
         )
         assert result.exit_code == 0
         assert out.exists()
-        lines = [
-            line
-            for line in out.read_text(encoding="utf-8").splitlines()
-            if line.strip()
-        ]
+        lines = [line for line in out.read_text(encoding="utf-8").splitlines() if line.strip()]
         assert len(lines) >= 1
         first = json.loads(lines[0])
         assert first["record_type"] == "summary"

@@ -43,15 +43,9 @@ def test_prune_snapshots_deletes_oldest_and_returns_count(tmp_path: Path) -> Non
     root = tmp_path / "snapshots"
     root.mkdir()
 
-    p1 = _snapshot_payload(
-        tmp_path, "snapshot-1", "manual", "2026-02-22T00:00:00+00:00"
-    )
-    p2 = _snapshot_payload(
-        tmp_path, "snapshot-2", "manual", "2026-02-22T01:00:00+00:00"
-    )
-    p3 = _snapshot_payload(
-        tmp_path, "snapshot-3", "manual", "2026-02-22T02:00:00+00:00"
-    )
+    p1 = _snapshot_payload(tmp_path, "snapshot-1", "manual", "2026-02-22T00:00:00+00:00")
+    p2 = _snapshot_payload(tmp_path, "snapshot-2", "manual", "2026-02-22T01:00:00+00:00")
+    p3 = _snapshot_payload(tmp_path, "snapshot-3", "manual", "2026-02-22T02:00:00+00:00")
 
     f1 = root / "snapshot-1.json"
     f2 = root / "snapshot-2.json"
@@ -82,9 +76,7 @@ def test_list_triggers_returns_unique_triggers(tmp_path: Path) -> None:
     ]
 
     for filename, trigger, captured_at, mtime in snapshots:
-        payload = _snapshot_payload(
-            tmp_path, filename.replace(".json", ""), trigger, captured_at
-        )
+        payload = _snapshot_payload(tmp_path, filename.replace(".json", ""), trigger, captured_at)
         _write_snapshot_json(root / filename, payload, mtime=mtime)
 
     assert scraper.list_triggers(root_dir=root) == ["error", "tool_use", "manual"]

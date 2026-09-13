@@ -33,9 +33,7 @@ def _write_policy(path: Path) -> None:
     )
 
 
-def _run(
-    summary: Path, policy: Path, mode: str = "pr", strict: bool = False
-) -> subprocess.CompletedProcess[str]:
+def _run(summary: Path, policy: Path, mode: str = "pr", strict: bool = False) -> subprocess.CompletedProcess[str]:
     cmd = [
         sys.executable,
         "scripts/evaluate_unified_quality_gate.py",

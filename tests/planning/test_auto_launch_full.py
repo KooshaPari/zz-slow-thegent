@@ -50,27 +50,21 @@ class TestCheckAgentThrottle:
         """Count above throttle but below hard_stop returns throttle."""
         from thegent.planning.auto_launch import check_agent_throttle
 
-        result = check_agent_throttle(
-            count=60, warn_at=20, throttle_at=50, hard_stop_at=80
-        )
+        result = check_agent_throttle(count=60, warn_at=20, throttle_at=50, hard_stop_at=80)
         assert result.action == "throttle"
 
     def test_hard_stop_at_threshold(self) -> None:
         """Count at hard_stop threshold returns hard_stop."""
         from thegent.planning.auto_launch import check_agent_throttle
 
-        result = check_agent_throttle(
-            count=80, warn_at=20, throttle_at=50, hard_stop_at=80
-        )
+        result = check_agent_throttle(count=80, warn_at=20, throttle_at=50, hard_stop_at=80)
         assert result.action == "hard_stop"
 
     def test_hard_stop_above_threshold(self) -> None:
         """Count above hard_stop returns hard_stop."""
         from thegent.planning.auto_launch import check_agent_throttle
 
-        result = check_agent_throttle(
-            count=100, warn_at=20, throttle_at=50, hard_stop_at=80
-        )
+        result = check_agent_throttle(count=100, warn_at=20, throttle_at=50, hard_stop_at=80)
         assert result.action == "hard_stop"
 
     def test_message_in_result(self) -> None:
@@ -120,9 +114,7 @@ class TestGetActiveAgentCount:
         fake_proc.pid = 1234
         fake_proc.info = {"pid": 1234, "name": "claude", "cmdline": ["claude"]}
 
-        with patch(
-            "thegent.cli.commands.impl.ps_impl", side_effect=RuntimeError("error")
-        ):
+        with patch("thegent.cli.commands.impl.ps_impl", side_effect=RuntimeError("error")):
             with patch("psutil.process_iter", return_value=[fake_proc]):
                 count = get_active_agent_count()
         assert count == 1
@@ -323,9 +315,7 @@ class TestAutoLaunchSystemLaunchBatch:
             return_value=_ThrottleResult("hard_stop", 80, 80, "hard stop"),
         ):
             with pytest.raises(RuntimeError, match="HARD STOP"):
-                asyncio.get_event_loop().run_until_complete(
-                    system.launch_batch([{"item_id": "x", "prompt": "p"}])
-                )
+                asyncio.get_event_loop().run_until_complete(system.launch_batch([{"item_id": "x", "prompt": "p"}]))
 
     def test_throttle_raises_runtime_error(self) -> None:
         """Throttle raises RuntimeError."""
@@ -341,9 +331,7 @@ class TestAutoLaunchSystemLaunchBatch:
             return_value=_ThrottleResult("throttle", 55, 50, "throttle"),
         ):
             with pytest.raises(RuntimeError, match="throttle limit"):
-                asyncio.get_event_loop().run_until_complete(
-                    system.launch_batch([{"item_id": "x", "prompt": "p"}])
-                )
+                asyncio.get_event_loop().run_until_complete(system.launch_batch([{"item_id": "x", "prompt": "p"}]))
 
     def test_rbac_denied_does_not_launch(self) -> None:
         """RBAC denial blocks launch."""
@@ -360,8 +348,6 @@ class TestAutoLaunchSystemLaunchBatch:
             "thegent.planning.auto_launch.check_agent_throttle",
             return_value=_ThrottleResult("ok", 5, 20, "ok"),
         ):
-            asyncio.get_event_loop().run_until_complete(
-                system.launch_batch([{"item_id": "x", "prompt": "p"}])
-            )
+            asyncio.get_event_loop().run_until_complete(system.launch_batch([{"item_id": "x", "prompt": "p"}]))
 
         system._launch_item.assert_not_called()

@@ -111,19 +111,11 @@ class SyncAuditor:
         self, *, project_root: Path | None = None, explicit_path: Path | None = None
     ) -> SyncPolicyContract:
         """Load `.thegent/sync-policy.yaml` and map it into audit surfaces."""
-        contract = load_sync_policy_contract(
-            project_root=project_root, explicit_path=explicit_path
-        )
+        contract = load_sync_policy_contract(project_root=project_root, explicit_path=explicit_path)
         connector_policies = contract.connectors or {}
-        enabled = [
-            name for name, policy in connector_policies.items() if policy.enabled
-        ]
-        quota_budgets = {
-            name: policy.quota_daily for name, policy in connector_policies.items()
-        }
-        policy_modes = {
-            name: policy.mode for name, policy in connector_policies.items()
-        }
+        enabled = [name for name, policy in connector_policies.items() if policy.enabled]
+        quota_budgets = {name: policy.quota_daily for name, policy in connector_policies.items()}
+        policy_modes = {name: policy.mode for name, policy in connector_policies.items()}
         self.set_enabled_connectors(enabled)
         self.set_quota_budgets(quota_budgets)
         self.set_policy_modes(policy_modes)
@@ -161,20 +153,14 @@ class SyncAuditor:
         # Check for quota budgets without corresponding enabled connectors
         for connector, budget in self._quota_budgets.items():
             if connector not in self._enabled_connectors:
-                issues.append(
-                    f"Quota budget defined for disabled connector: {connector}"
-                )
+                issues.append(f"Quota budget defined for disabled connector: {connector}")
             if budget <= 0:
-                issues.append(
-                    f"Invalid quota budget for {connector}: {budget} (must be > 0)"
-                )
+                issues.append(f"Invalid quota budget for {connector}: {budget} (must be > 0)")
 
         # Check for policy modes without corresponding enabled connectors
         for connector in self._policy_modes:
             if connector not in self._enabled_connectors:
-                issues.append(
-                    f"Policy mode defined for disabled connector: {connector}"
-                )
+                issues.append(f"Policy mode defined for disabled connector: {connector}")
 
         # Check for missing policy modes
         for connector in self._enabled_connectors:
@@ -190,12 +176,8 @@ class SyncAuditor:
     ) -> Path:
         """Generate deterministic side-by-side HTML diff artifact."""
         json_options = orjson.OPT_INDENT_2 | orjson.OPT_SORT_KEYS
-        local_lines = (
-            orjson.dumps(local_snapshot, option=json_options).decode().splitlines()
-        )
-        remote_lines = (
-            orjson.dumps(remote_snapshot, option=json_options).decode().splitlines()
-        )
+        local_lines = orjson.dumps(local_snapshot, option=json_options).decode().splitlines()
+        remote_lines = orjson.dumps(remote_snapshot, option=json_options).decode().splitlines()
         html = HtmlDiff(tabsize=2, wrapcolumn=120).make_file(
             fromlines=local_lines,
             tolines=remote_lines,
@@ -209,14 +191,10 @@ class SyncAuditor:
         return out_path
 
     @staticmethod
-    def detect_remote_orphans(
-        remote_ids: list[str], local_ids: list[str]
-    ) -> RemoteOrphanReport:
+    def detect_remote_orphans(remote_ids: list[str], local_ids: list[str]) -> RemoteOrphanReport:
         """Return remote IDs that are missing from local WORK_STREAM IDs."""
         local_set = set(local_ids)
-        orphan_ids = sorted(
-            {item_id for item_id in remote_ids if item_id not in local_set}
-        )
+        orphan_ids = sorted({item_id for item_id in remote_ids if item_id not in local_set})
         return RemoteOrphanReport(
             remote_ids=sorted(remote_ids),
             local_ids=sorted(local_ids),
@@ -224,9 +202,7 @@ class SyncAuditor:
         )
 
     @staticmethod
-    def detect_local_orphans(
-        local_ids: list[str], mapped_remote_ids: list[str]
-    ) -> LocalOrphanReport:
+    def detect_local_orphans(local_ids: list[str], mapped_remote_ids: list[str]) -> LocalOrphanReport:
         """Return local IDs that are not present in remote tracker mappings."""
         local_set = set(local_ids)
         remote_set = set(mapped_remote_ids)

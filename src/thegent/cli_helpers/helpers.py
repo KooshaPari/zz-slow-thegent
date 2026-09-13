@@ -78,9 +78,7 @@ def atomic_write(path: Path | str, content: str) -> None:
     os.rename(temp_path, path_str)
 
 
-def spawn_with_eagain_retry(
-    cmd: list[str], **kwargs: Any
-) -> subprocess.CompletedProcess:
+def spawn_with_eagain_retry(cmd: list[str], **kwargs: Any) -> subprocess.CompletedProcess:
     """Spawn process with EAGAIN retry logic.
 
     Runs a subprocess with retry logic for EAGAIN errors,

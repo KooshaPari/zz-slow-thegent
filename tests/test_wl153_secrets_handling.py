@@ -74,9 +74,7 @@ class TestSecretFieldTypes:
                 f"{name} must be None or SecretStr, got {type(value).__name__}"
             )
         else:
-            assert isinstance(value, SecretStr), (
-                f"{name} must be a SecretStr instance, got {type(value).__name__}"
-            )
+            assert isinstance(value, SecretStr), f"{name} must be a SecretStr instance, got {type(value).__name__}"
 
     @pytest.mark.parametrize("name", CANONICAL_SECRETS)
     def test_secret_field_declared_type_is_secretstr(self, name: str) -> None:
@@ -84,18 +82,14 @@ class TestSecretFieldTypes:
         hints = get_type_hints(ThegentSettings)
         annotation = hints[name]
         annotation_str = str(annotation)
-        assert "SecretStr" in annotation_str, (
-            f"{name} annotation must reference SecretStr; got {annotation}"
-        )
+        assert "SecretStr" in annotation_str, f"{name} annotation must reference SecretStr; got {annotation}"
 
     def test_nullable_secrets_annotation_accepts_none(self) -> None:
         """The two nullable secrets must declare Optional/SecretStr | None."""
         hints = get_type_hints(ThegentSettings)
         for name in NULLABLE_SECRETS:
             annotation_str = str(hints[name])
-            assert "None" in annotation_str, (
-                f"{name} must allow None; got annotation {annotation_str}"
-            )
+            assert "None" in annotation_str, f"{name} must allow None; got annotation {annotation_str}"
 
     def test_non_nullable_secrets_default_to_secretstr(self) -> None:
         """The four non-nullable secrets default to an empty SecretStr, not None."""
@@ -134,18 +128,14 @@ class TestSecretMaskingSemantics:
     """repr/str of any SECRET_FIELDS must NOT leak the underlying value."""
 
     @pytest.mark.parametrize("name", CANONICAL_SECRETS)
-    def test_repr_masks_secret(
-        self, populated_settings: ThegentSettings, name: str
-    ) -> None:
+    def test_repr_masks_secret(self, populated_settings: ThegentSettings, name: str) -> None:
         secret_obj = getattr(populated_settings, name)
         rendered = repr(secret_obj)
         assert NON_EMPTY_SECRET not in rendered
         assert ANOTHER_SECRET not in rendered
 
     @pytest.mark.parametrize("name", CANONICAL_SECRETS)
-    def test_str_masks_secret(
-        self, populated_settings: ThegentSettings, name: str
-    ) -> None:
+    def test_str_masks_secret(self, populated_settings: ThegentSettings, name: str) -> None:
         secret_obj = getattr(populated_settings, name)
         rendered = str(secret_obj)
         assert NON_EMPTY_SECRET not in rendered
@@ -242,9 +232,7 @@ class TestSecretEnvRoundTrip:
             # nullable + not provided via env should still be None
             assert secret_obj is None
 
-    def test_env_unset_nullable_secret_stays_none(
-        self, monkeypatch: pytest.MonkeyPatch
-    ) -> None:
+    def test_env_unset_nullable_secret_stays_none(self, monkeypatch: pytest.MonkeyPatch) -> None:
         monkeypatch.delenv("THGENT_SUPERMEMORY_API_KEY", raising=False)
         monkeypatch.delenv("THGENT_REDIS_PASSWORD", raising=False)
         settings = ThegentSettings()
@@ -261,9 +249,7 @@ class TestSecretEnvRoundTrip:
 class TestSecretSerialization:
     """model_dump / model_dump_json mask SecretStr fields by default."""
 
-    def test_model_dump_masks_secrets(
-        self, populated_settings: ThegentSettings
-    ) -> None:
+    def test_model_dump_masks_secrets(self, populated_settings: ThegentSettings) -> None:
         dumped = populated_settings.model_dump()
         for name in CANONICAL_SECRETS:
             dumped_value = dumped[name]
@@ -279,9 +265,7 @@ class TestSecretSerialization:
             assert expected not in repr(dumped_value)
             assert expected not in str(dumped_value)
 
-    def test_model_dump_json_masks_secrets(
-        self, populated_settings: ThegentSettings
-    ) -> None:
+    def test_model_dump_json_masks_secrets(self, populated_settings: ThegentSettings) -> None:
         rendered = populated_settings.model_dump_json()
         assert NON_EMPTY_SECRET not in rendered
         assert ANOTHER_SECRET not in rendered

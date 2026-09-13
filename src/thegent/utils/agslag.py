@@ -118,20 +118,9 @@ def update_research_queue(results: dict[str, Any], queue_file: Path):
         # Insert after the header or at the end
         if "## Agslag Project Research" in content:
             parts = content.split("## Agslag Project Research")
-            new_content = (
-                parts[0]
-                + "## Agslag Project Research\n\n"
-                + "\n".join(new_links)
-                + "\n"
-                + parts[1]
-            )
+            new_content = parts[0] + "## Agslag Project Research\n\n" + "\n".join(new_links) + "\n" + parts[1]
         else:
-            new_content = (
-                content
-                + "\n\n## Agslag Project Research\n\n"
-                + "\n".join(new_links)
-                + "\n"
-            )
+            new_content = content + "\n\n## Agslag Project Research\n\n" + "\n".join(new_links) + "\n"
 
         with open(queue_file, "w") as f:
             f.write(new_content)

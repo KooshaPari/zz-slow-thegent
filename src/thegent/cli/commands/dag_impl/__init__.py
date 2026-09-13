@@ -112,9 +112,7 @@ def _parse_dag_full(path: Path) -> DagDocument:
     headers: list[str] = []
     rows = [row for row in table_block.splitlines() if row.strip().startswith("|")]
     if rows:
-        headers = [
-            cell.strip().lower() for cell in rows[0].strip().strip("|").split("|")
-        ]
+        headers = [cell.strip().lower() for cell in rows[0].strip().strip("|").split("|")]
         data_rows = [r for r in rows[1:] if not re.match(r"^\|\s*-+", r.strip())]
         for row in data_rows:
             cells = [cell.strip() for cell in row.strip().strip("|").split("|")]
@@ -228,12 +226,7 @@ def _parse_depends_on(depends_on: Any) -> list[str]:
     if isinstance(depends_on, str):
         # Strip em/en-dashes and "-" sentinel so legacy "-", "—", "—"
         # all normalize to an empty list.
-        cleaned = (
-            depends_on.replace("\u2014", "")
-            .replace("\u2013", "")
-            .replace("—", "")
-            .replace("-", "")
-        )
+        cleaned = depends_on.replace("\u2014", "").replace("\u2013", "").replace("—", "").replace("-", "")
         return [d.strip() for d in cleaned.split(",") if d.strip()]
     if isinstance(depends_on, list):
         return [str(d) for d in depends_on if d]
@@ -283,18 +276,14 @@ def _validate_dag(doc: DagDocument) -> list[str]:
         deps = _parse_depends_on(task.get("depends_on"))
         for dep in deps:
             if dep not in task_ids:
-                errors.append(
-                    f"Task {task.get('id')!r} depends on unknown task {dep!r}"
-                )
+                errors.append(f"Task {task.get('id')!r} depends on unknown task {dep!r}")
         agent = task.get("agent", "")
         agent_err = _validate_agent(agent) if agent else None
         if agent_err:
             errors.append(agent_err)
         status = task.get("status", "")
         if status == "done" and not (task.get("evidence") or task.get("session_id")):
-            errors.append(
-                f"Task {task.get('id')!r} has status 'done' but is missing evidence / session_id"
-            )
+            errors.append(f"Task {task.get('id')!r} has status 'done' but is missing evidence / session_id")
     return errors
 
 
@@ -444,9 +433,7 @@ def _atomic_write(path: Path, content: str, *, backup: bool = False) -> None:
         backup_path = target.with_suffix(target.suffix + ".bak")
         backup_path.write_text(target.read_text(encoding="utf-8"), encoding="utf-8")
     target.parent.mkdir(parents=True, exist_ok=True)
-    fd, tmp_name = tempfile.mkstemp(
-        prefix=target.name + ".", dir=str(target.parent or ".")
-    )
+    fd, tmp_name = tempfile.mkstemp(prefix=target.name + ".", dir=str(target.parent or "."))
     try:
         with os.fdopen(fd, "w", encoding="utf-8") as f:
             f.write(content)

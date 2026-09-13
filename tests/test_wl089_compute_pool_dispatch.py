@@ -70,9 +70,7 @@ def _make_queue() -> SubAgentEventQueue:
     return SubAgentEventQueue()
 
 
-def _make_request(
-    agent_type: str = "python-worker", task: str = "run tests"
-) -> SubAgentRequest:
+def _make_request(agent_type: str = "python-worker", task: str = "run tests") -> SubAgentRequest:
     """Build a minimal SubAgentRequest for testing."""
     return SubAgentRequest(agent_type=agent_type, task=task)
 
@@ -534,9 +532,7 @@ def test_dispatch_via_compute_pool_constructs_backend_with_pool() -> None:
 )
 def test_non_harness_agent_types_route_to_pool(agent_type: str) -> None:
     """Each non-harness agent_type is correctly identified and routed to pool. # @trace WL-089"""
-    assert is_cli_harness(agent_type) is False, (
-        f"{agent_type!r} should NOT be a CLI harness"
-    )
+    assert is_cli_harness(agent_type) is False, f"{agent_type!r} should NOT be a CLI harness"
 
     with patch(
         "thegent.orchestration.remote_dispatch.RemoteDispatchBackend.dispatch",
@@ -588,6 +584,4 @@ def test_remote_dispatch_backend_not_constructed_for_cli_harness() -> None:
         )
         d.dispatch(_make_request(agent_type="claude"))
 
-    assert len(constructed) == 0, (
-        "RemoteDispatchBackend must NOT be constructed for CLI harness"
-    )
+    assert len(constructed) == 0, "RemoteDispatchBackend must NOT be constructed for CLI harness"

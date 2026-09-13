@@ -114,14 +114,8 @@ def _run_gh_command(args: list[str], capture: bool = True) -> tuple[int, str, st
         # Check for auth-related errors
         if result.returncode == 1:
             stderr_lower = result.stderr.lower()
-            if (
-                "auth" in stderr_lower
-                or "permission" in stderr_lower
-                or "project" in stderr_lower
-            ):
-                raise GHProjectAuthError(
-                    f"GitHub authentication issue: {result.stderr[:200]}"
-                )
+            if "auth" in stderr_lower or "permission" in stderr_lower or "project" in stderr_lower:
+                raise GHProjectAuthError(f"GitHub authentication issue: {result.stderr[:200]}")
 
         if result.returncode != 0:
             raise GHProjectSyncError(f"gh command failed: {result.stderr[:200]}")
@@ -190,9 +184,7 @@ def _priority_option_candidates(priority: str) -> list[str]:
     return mapping.get(normalized, [normalized.lower()])
 
 
-def _resolve_single_select_option_id(
-    option_map: dict[str, str], candidates: list[str]
-) -> str | None:
+def _resolve_single_select_option_id(option_map: dict[str, str], candidates: list[str]) -> str | None:
     for candidate in candidates:
         option_id = option_map.get(candidate.strip().lower())
         if option_id:
@@ -211,9 +203,7 @@ def _status_from_github(item: dict[str, Any]) -> str:
                 continue
             if isinstance(field.get("name"), str):
                 value = field["name"]
-            elif isinstance(field.get("option"), dict) and isinstance(
-                field["option"].get("name"), str
-            ):
+            elif isinstance(field.get("option"), dict) and isinstance(field["option"].get("name"), str):
                 value = field["option"]["name"]
             else:
                 continue
@@ -238,9 +228,7 @@ def _parse_github_issue_references(raw: str) -> list[str]:
     for owner, repo, issue in matches:
         references.add(f"{owner}/{repo}#{issue}")
 
-    for owner_repo, issue in re.findall(
-        r"\b([A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+)#(\d+)\b", raw
-    ):
+    for owner_repo, issue in re.findall(r"\b([A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+)#(\d+)\b", raw):
         references.add(f"{owner_repo}#{issue}")
 
     for issue in re.findall(r"(?<!/)#(\d+)\b", raw):
@@ -359,9 +347,7 @@ def close_or_comment_github_issue_refs(
     errors: list[str] = []
     for issue_ref in requested_refs:
         try:
-            issues.append(
-                _run_issue_close_and_comment(issue_ref, close_comment=close_comment)
-            )
+            issues.append(_run_issue_close_and_comment(issue_ref, close_comment=close_comment))
         except GHProjectAuthError as exc:
             errors.append(f"{issue_ref}:{exc}")
         except GHProjectSyncError as exc:
@@ -517,12 +503,8 @@ def _prepare_github_status_mapping(
         item_id = str(item.get("item_id") or item.get("id") or "").strip()
         if not item_id:
             continue
-        status_name = _status_to_github_option(
-            str(item.get("status") or "BACKLOG")
-        ).lower()
-        status_option_id = _resolve_single_select_option_id(
-            status_options, [status_name]
-        )
+        status_name = _status_to_github_option(str(item.get("status") or "BACKLOG")).lower()
+        status_option_id = _resolve_single_select_option_id(status_options, [status_name])
         if status_option_id is None:
             missing_statuses.add(status_name)
             continue
@@ -530,9 +512,7 @@ def _prepare_github_status_mapping(
 
     if missing_statuses and enforce_mapping:
         missing = ", ".join(sorted(missing_statuses))
-        raise GHProjectSyncError(
-            f"GitHub schema drift: missing required status option mappings for [{missing}]"
-        )
+        raise GHProjectSyncError(f"GitHub schema drift: missing required status option mappings for [{missing}]")
 
     return status_option_by_id
 
@@ -622,17 +602,13 @@ def sync_to_github(
     """
     if not config.is_valid() or not config.can_write():
         if config.standalone_mode:
-            logger.debug(
-                "GH Project sync not configured or read-only; skipping write sync"
-            )
+            logger.debug("GH Project sync not configured or read-only; skipping write sync")
             return {"items_synced": 0, "reason": "not_writable"}
         raise GHProjectSyncError("GitHub project not writable")
 
     try:
         _, view_stdout, _ = _coerce_gh_result(
-            _run_gh_command(
-                ["project", "view", *_project_args(config), "--format", "json"]
-            )
+            _run_gh_command(["project", "view", *_project_args(config), "--format", "json"])
         )
         project_id = ""
         if isinstance(view_stdout, str) and view_stdout.strip():
@@ -642,24 +618,17 @@ def sync_to_github(
                 project_id = ""
         existing_items = _load_project_items(config)
         existing_by_id = {
-            item_id: item
-            for item in existing_items
-            for item_id in [_extract_workstream_id(item)]
-            if item_id
+            item_id: item for item in existing_items for item_id in [_extract_workstream_id(item)] if item_id
         }
         status_field_id, status_options = _load_status_field(config)
         priority_field_id, priority_options = _load_priority_field(config)
         if not status_field_id:
-            raise GHProjectSyncError(
-                "GitHub schema drift: required single-select field 'status' is missing"
-            )
+            raise GHProjectSyncError("GitHub schema drift: required single-select field 'status' is missing")
         if not status_options:
             raise GHProjectSyncError(
                 "GitHub schema drift: required status option mappings for field 'status' are missing"
             )
-        status_option_by_id = _prepare_github_status_mapping(
-            workstream_data, status_options
-        )
+        status_option_by_id = _prepare_github_status_mapping(workstream_data, status_options)
 
         items_created = 0
         items_updated = 0
@@ -691,17 +660,10 @@ def sync_to_github(
                         "--format",
                         "json",
                     ]
-                    _, create_stdout, _ = _coerce_gh_result(
-                        _run_gh_command(create_args)
-                    )
+                    _, create_stdout, _ = _coerce_gh_result(_run_gh_command(create_args))
                     created_item = json.loads(create_stdout or "{}")
                     created_item_id = str(created_item.get("id") or "")
-                    if (
-                        status_field_id
-                        and status_option_id
-                        and project_id
-                        and created_item_id
-                    ):
+                    if status_field_id and status_option_id and project_id and created_item_id:
                         _run_gh_command(
                             [
                                 "project",
@@ -716,12 +678,7 @@ def sync_to_github(
                                 status_option_id,
                             ]
                         )
-                    if (
-                        priority_field_id
-                        and priority_option_id
-                        and project_id
-                        and created_item_id
-                    ):
+                    if priority_field_id and priority_option_id and project_id and created_item_id:
                         _run_gh_command(
                             [
                                 "project",
@@ -828,9 +785,7 @@ def sync_from_github(config: GHProjectConfig) -> dict[str, Any]:
     """
     if not config.is_valid() or not config.can_read():
         if config.standalone_mode:
-            logger.debug(
-                "GH Project sync not configured or write-only; skipping read sync"
-            )
+            logger.debug("GH Project sync not configured or write-only; skipping read sync")
             return {"items_imported": 0, "reason": "not_readable"}
         raise GHProjectSyncError("GitHub project not readable")
 
@@ -884,9 +839,7 @@ def export_to_csv(
     """
     if not config.is_valid() or not config.can_read():
         if config.standalone_mode:
-            logger.debug(
-                "GH Project sync not configured or write-only; skipping export"
-            )
+            logger.debug("GH Project sync not configured or write-only; skipping export")
             return {"items_exported": 0, "reason": "not_readable"}
         raise GHProjectSyncError("GitHub project not readable")
 
@@ -947,9 +900,7 @@ def import_from_csv(
 
     try:
         _, view_stdout, _ = _coerce_gh_result(
-            _run_gh_command(
-                ["project", "view", *_project_args(config), "--format", "json"]
-            )
+            _run_gh_command(["project", "view", *_project_args(config), "--format", "json"])
         )
         project_id = ""
         if isinstance(view_stdout, str) and view_stdout.strip():
@@ -960,9 +911,7 @@ def import_from_csv(
         status_field_id, status_options = _load_status_field(config)
         priority_field_id, priority_options = _load_priority_field(config)
         if not status_field_id:
-            raise GHProjectSyncError(
-                "GitHub schema drift: required single-select field 'status' is missing"
-            )
+            raise GHProjectSyncError("GitHub schema drift: required single-select field 'status' is missing")
 
         rows = list(csv.DictReader(io.StringIO(csv_path.read_text(encoding="utf-8"))))
         status_option_by_id = _prepare_github_status_mapping(rows, status_options)
@@ -1004,12 +953,7 @@ def import_from_csv(
                 )
                 created_item = json.loads(create_stdout or "{}")
                 created_item_id = str(created_item.get("id") or "")
-                if (
-                    status_field_id
-                    and status_option_id
-                    and project_id
-                    and created_item_id
-                ):
+                if status_field_id and status_option_id and project_id and created_item_id:
                     _run_gh_command(
                         [
                             "project",
@@ -1024,12 +968,7 @@ def import_from_csv(
                             status_option_id,
                         ]
                     )
-                if (
-                    priority_field_id
-                    and priority_option_id
-                    and project_id
-                    and created_item_id
-                ):
+                if priority_field_id and priority_option_id and project_id and created_item_id:
                     _run_gh_command(
                         [
                             "project",

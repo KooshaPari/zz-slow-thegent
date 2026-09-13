@@ -17,9 +17,7 @@ def test_github_adapter_sync_payload_mapping(monkeypatch: pytest.MonkeyPatch) ->
         captured["payload"] = payload
         return {"synced": 1, "failed": 0, "errors": []}
 
-    monkeypatch.setattr(
-        "thegent.integrations.gh_project_sync.sync_to_github", fake_sync_to_github
-    )
+    monkeypatch.setattr("thegent.integrations.gh_project_sync.sync_to_github", fake_sync_to_github)
     adapter = GitHubBoardAdapter()
 
     result = adapter.sync(
@@ -59,9 +57,7 @@ def test_github_adapter_fetch_remote_status_filters_and_maps(
             ]
         }
 
-    monkeypatch.setattr(
-        "thegent.integrations.gh_project_sync.sync_from_github", fake_sync_from_github
-    )
+    monkeypatch.setattr("thegent.integrations.gh_project_sync.sync_from_github", fake_sync_from_github)
     adapter = GitHubBoardAdapter()
 
     status_map = adapter.fetch_remote_status(
@@ -88,9 +84,7 @@ def test_github_adapter_fetch_remote_status_retries(
             raise RuntimeError("transient")
         return {"items": [{"item_id": "WL-159", "status": "IN PROGRESS"}]}
 
-    monkeypatch.setattr(
-        "thegent.integrations.gh_project_sync.sync_from_github", fake_sync_from_github
-    )
+    monkeypatch.setattr("thegent.integrations.gh_project_sync.sync_from_github", fake_sync_from_github)
     adapter = GitHubBoardAdapter()
 
     status_map = adapter.fetch_remote_status(
@@ -125,9 +119,7 @@ def test_linear_adapter_sync_payload_mapping(monkeypatch: pytest.MonkeyPatch) ->
         lambda self, token, team_key: "team-id",
     )
 
-    def fake_find_issue_id(
-        _self: LinearBoardAdapter, token: str, team_key: str, title: str
-    ) -> str | None:
+    def fake_find_issue_id(_self: LinearBoardAdapter, token: str, team_key: str, title: str) -> str | None:
         assert token == "token"
         assert team_key == "OPS"
         if title.startswith("[WL-160]"):
@@ -219,9 +211,7 @@ def test_linear_adapter_fetch_remote_status_retries(
         return {"items": [{"item_id": "WL-160", "status": "IN PROGRESS"}]}
 
     monkeypatch.setenv("THGENT_LINEAR_API_KEY", "token")
-    monkeypatch.setattr(
-        "thegent.integrations.linear_graphql.sync_from_linear", fake_sync_from_linear
-    )
+    monkeypatch.setattr("thegent.integrations.linear_graphql.sync_from_linear", fake_sync_from_linear)
 
     adapter = LinearBoardAdapter()
     status_map = adapter.fetch_remote_status(
@@ -241,7 +231,5 @@ def test_linear_adapter_sync_requires_api_token(
     monkeypatch.delenv("LINEAR_API_KEY", raising=False)
     adapter = LinearBoardAdapter()
 
-    with pytest.raises(
-        RuntimeError, match="Linear sync requires THGENT_LINEAR_API_KEY"
-    ):
+    with pytest.raises(RuntimeError, match="Linear sync requires THGENT_LINEAR_API_KEY"):
         adapter.sync(board_id="OPS", work_stream_items=[])

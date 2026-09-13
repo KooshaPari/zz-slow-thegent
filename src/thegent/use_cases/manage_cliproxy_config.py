@@ -66,13 +66,9 @@ def _load_json(name: str) -> dict[str, Any]:
     try:
         data = json.loads(path.read_text())
     except json.JSONDecodeError as exc:
-        raise ProviderDefinitionsLoadError(
-            name, "invalid_json", path=path, cause=exc
-        ) from exc
+        raise ProviderDefinitionsLoadError(name, "invalid_json", path=path, cause=exc) from exc
     except OSError as exc:
-        raise ProviderDefinitionsLoadError(
-            name, "read_error", path=path, cause=exc
-        ) from exc
+        raise ProviderDefinitionsLoadError(name, "read_error", path=path, cause=exc) from exc
 
     if not isinstance(data, dict):
         raise ProviderDefinitionsLoadError(name, "invalid_shape", path=path)
@@ -179,9 +175,7 @@ def _matches_factory_entry(
     """Return True when ``entry`` is a live provider row matching the patterns."""
     base_url = (entry.get("base_url") or "").lower()
     model = (entry.get("model") or "").lower()
-    if not any(p in base_url for p in base_patterns) and not any(
-        p in model for p in model_patterns
-    ):
+    if not any(p in base_url for p in base_patterns) and not any(p in model for p in model_patterns):
         return False
     if entry.get("enabled", True) is False:
         return False
@@ -203,16 +197,10 @@ def _extract_factory_api_key(
         if not isinstance(entry, dict):
             continue
         for api_key in ("api_key", "apiKey", "key"):
-            if not _matches_factory_entry(
-                entry, base_patterns, model_patterns, api_key
-            ):
+            if not _matches_factory_entry(entry, base_patterns, model_patterns, api_key):
                 continue
             raw = entry.get(api_key)
-            if (
-                isinstance(raw, str)
-                and raw.strip()
-                and raw.strip().lower() not in _DUMMY_KEYS
-            ):
+            if isinstance(raw, str) and raw.strip() and raw.strip().lower() not in _DUMMY_KEYS:
                 return raw.strip()
     return None
 
@@ -262,9 +250,7 @@ def _has_provider_credentials(config: dict[str, Any], provider: str) -> bool:
             continue
         keys = entry.get("api-key-entries") or entry.get("api-key")
         if keys and isinstance(keys, list) and keys:
-            return any(
-                (k.get("api-key") or "").strip() for k in keys if isinstance(k, dict)
-            )
+            return any((k.get("api-key") or "").strip() for k in keys if isinstance(k, dict))
         if isinstance(keys, str) and keys.strip():
             return True
     return False
@@ -331,9 +317,7 @@ def _has_oauth_credentials(settings: ThegentSettings, provider: str) -> bool:
 OAUTH_ONLY_PROVIDERS = frozenset({"claude", "codex"})
 
 
-def _build_alias_list(
-    provider: str, model: str, defs_: dict[str, Any]
-) -> list[dict[str, str]]:
+def _build_alias_list(provider: str, model: str, defs_: dict[str, Any]) -> list[dict[str, str]]:
     """Return the canonical alias list for ``provider`` at ``model``."""
     provider_def = defs_.get(provider) if isinstance(defs_.get(provider), dict) else {}
     extra_aliases = provider_def.get(
@@ -346,9 +330,7 @@ def _build_alias_list(
             {"name": "MiniMax-M2.5", "alias": "MiniMax-M2.5"},
             {"name": "MiniMax-M2.5", "alias": "minimax-m2.5"},
         ]
-    elif provider.lower() in ("glm", "kilo") and (
-        "GLM" in model or "glm" in model.lower()
-    ):
+    elif provider.lower() in ("glm", "kilo") and ("GLM" in model or "glm" in model.lower()):
         models = [
             {"name": model, "alias": model},
             {"name": model, "alias": model.lower()},
@@ -360,15 +342,9 @@ def _build_alias_list(
     return models
 
 
-def _replace_provider_in_compat(
-    compat: list[Any], provider: str
-) -> list[dict[str, Any]]:
+def _replace_provider_in_compat(compat: list[Any], provider: str) -> list[dict[str, Any]]:
     """Strip any prior entries for ``provider``; return the surviving dicts."""
-    return [
-        c
-        for c in compat
-        if isinstance(c, dict) and c.get("name", "").lower() != provider.lower()
-    ]
+    return [c for c in compat if isinstance(c, dict) and c.get("name", "").lower() != provider.lower()]
 
 
 def _inject_api_key_into_cliproxy(
@@ -437,9 +413,7 @@ def _build_cursor_entry(token: str, settings: ThegentSettings) -> dict[str, Any]
     return entry
 
 
-def _inject_cursor_into_cliproxy(
-    config: dict[str, Any], settings: ThegentSettings
-) -> None:
+def _inject_cursor_into_cliproxy(config: dict[str, Any], settings: ThegentSettings) -> None:
     """Inject cursor block when ``THGENT_CURSOR_API_URL`` and token are set."""
     if config.get("cursor"):
         return
@@ -453,9 +427,7 @@ def _inject_cursor_into_cliproxy(
     config["cursor"] = [entry]
 
 
-def _inject_kiro_into_cliproxy(
-    config: dict[str, Any], settings: ThegentSettings
-) -> None:
+def _inject_kiro_into_cliproxy(config: dict[str, Any], settings: ThegentSettings) -> None:
     """Inject kiro block when ``~/.kiro/kiro-auth-token.json`` exists."""
     if config.get("kiro"):
         return
@@ -485,9 +457,7 @@ def _patch_minimax_provider(p: dict[str, Any]) -> None:
 def _patch_glm_provider(p: dict[str, Any]) -> None:
     """Ensure the GLM-5 alias pair is registered for WP-Y16 compatibility."""
     models_list = p.get("models", [])
-    if not any(
-        m.get("name") == "GLM-5" or m.get("alias") == "glm-5" for m in models_list
-    ):
+    if not any(m.get("name") == "GLM-5" or m.get("alias") == "glm-5" for m in models_list):
         models_list.append({"name": "GLM-5", "alias": "GLM-5"})
         models_list.append({"name": "GLM-5", "alias": "glm-5"})
         models_list.append({"name": "GLM-5", "alias": "z-ai/glm-5"})
@@ -532,11 +502,7 @@ def _resolve_claude_aliases(p: dict[str, Any], name: str) -> None:
             {"name": "MiniMax-M2.5", "alias": "MiniMax-M2.5"},
             {"name": "MiniMax-M2.5", "alias": "minimax-m2.5"},
         ]
-    elif (
-        name in ("glm", "kilo")
-        and ("GLM" in model or "glm" in model.lower())
-        and not p.get("models")
-    ):
+    elif name in ("glm", "kilo") and ("GLM" in model or "glm" in model.lower()) and not p.get("models"):
         p["models"] = [
             {"name": model, "alias": model},
             {"name": model, "alias": model.lower()},
@@ -580,11 +546,7 @@ def _ensure_config(settings: ThegentSettings) -> Path:
     config_path = settings.cliproxy_config_path.expanduser().resolve()
     config_path.parent.mkdir(parents=True, exist_ok=True)
     auth_dir = (
-        (
-            settings.cliproxy_auth_dir
-            if hasattr(settings, "cliproxy_auth_dir")
-            else auth_dir_default
-        )
+        (settings.cliproxy_auth_dir if hasattr(settings, "cliproxy_auth_dir") else auth_dir_default)
         .expanduser()
         .resolve()
     )

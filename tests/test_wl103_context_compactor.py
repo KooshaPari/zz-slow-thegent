@@ -108,17 +108,13 @@ def test_estimate_tokens_alias_matches_count_tokens() -> None:  # @trace WL-103
 
 
 @pytest.mark.requirement("WL-103")
-def test_count_tokens_tiktoken_mode_returns_positive_for_nonempty() -> (
-    None
-):  # @trace WL-103
+def test_count_tokens_tiktoken_mode_returns_positive_for_nonempty() -> None:  # @trace WL-103
     compactor = ContextCompactor(model="gpt-4")
     assert compactor.count_tokens("hello world") > 0
 
 
 @pytest.mark.requirement("WL-103")
-def test_count_tokens_tiktoken_mode_empty_string_returns_zero() -> (
-    None
-):  # @trace WL-103
+def test_count_tokens_tiktoken_mode_empty_string_returns_zero() -> None:  # @trace WL-103
     compactor = ContextCompactor(model="gpt-4")
     assert compactor.count_tokens("") == 0
 
@@ -158,9 +154,7 @@ def test_should_compact_returns_false_when_below_threshold() -> None:  # @trace 
 
 
 @pytest.mark.requirement("WL-103")
-def test_should_compact_returns_false_when_exactly_at_threshold() -> (
-    None
-):  # @trace WL-103
+def test_should_compact_returns_false_when_exactly_at_threshold() -> None:  # @trace WL-103
     compactor = ContextCompactor(threshold_ratio=0.8)
     # 80 / 100 == 0.80, which is NOT > 0.80
     assert compactor.should_compact(80, 100) is False
@@ -187,9 +181,7 @@ def test_should_compact_raises_on_zero_context_max() -> None:  # @trace WL-103
 @pytest.mark.requirement("WL-103")
 def test_usage_ratio_is_deterministic() -> None:  # @trace WL-103
     compactor = ContextCompactor(chars_per_token=4.0)
-    ratio = compactor.usage_ratio(
-        [_turn("user", "abcd"), _turn("assistant", "efgh")], 100
-    )
+    ratio = compactor.usage_ratio([_turn("user", "abcd"), _turn("assistant", "efgh")], 100)
     assert ratio > 0.0
     assert ratio < 1.0
 
@@ -211,9 +203,7 @@ def test_usage_ratio_empty_turns_is_zero() -> None:  # @trace WL-103
 def test_usage_ratio_increases_with_more_turns() -> None:  # @trace WL-103
     compactor = ContextCompactor(chars_per_token=1.0)
     few = compactor.usage_ratio([_turn("user", "a")], 100)
-    many = compactor.usage_ratio(
-        [_turn("user", "a" * 50), _turn("assistant", "b" * 50)], 100
-    )
+    many = compactor.usage_ratio([_turn("user", "a" * 50), _turn("assistant", "b" * 50)], 100)
     assert many > few
 
 
@@ -296,9 +286,7 @@ def test_compact_result_usage_ratio_is_post_compaction_ratio() -> None:  # @trac
 
 
 @pytest.mark.requirement("WL-103")
-def test_compact_summary_turn_mentions_each_compacted_turn_role() -> (
-    None
-):  # @trace WL-103
+def test_compact_summary_turn_mentions_each_compacted_turn_role() -> None:  # @trace WL-103
     compactor = ContextCompactor(threshold_ratio=0.1, chars_per_token=1.0)
     turns = [
         _turn("system", "sys content"),
@@ -405,9 +393,7 @@ def test_count_turns_tokens_is_sum_of_individual_turns() -> None:  # @trace WL-1
 
 
 @pytest.mark.requirement("WL-103")
-def test_compact_with_tiktoken_model_triggers_on_accurate_token_count() -> (
-    None
-):  # @trace WL-103
+def test_compact_with_tiktoken_model_triggers_on_accurate_token_count() -> None:  # @trace WL-103
     # 6 turns of 50 chars ≈ 48 tiktoken tokens; use context_window_max=50 so ratio > 0.80 default
     compactor = ContextCompactor(threshold_ratio=0.8, model="gpt-4")
     turns = _many_turns(6, chars_each=50)
@@ -417,9 +403,7 @@ def test_compact_with_tiktoken_model_triggers_on_accurate_token_count() -> (
 
 
 @pytest.mark.requirement("WL-103")
-def test_compact_with_tiktoken_model_preserves_last_two_turns() -> (
-    None
-):  # @trace WL-103
+def test_compact_with_tiktoken_model_preserves_last_two_turns() -> None:  # @trace WL-103
     compactor = ContextCompactor(threshold_ratio=0.8, model="gpt-4")
     turns = _many_turns(6, chars_each=50)
     result = compactor.compact(turns, 50)

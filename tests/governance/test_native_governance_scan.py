@@ -46,12 +46,7 @@ pytestmark = pytest.mark.unit
 # ---------------------------------------------------------------------------
 
 BINARY_PATH = str(
-    Path(__file__).parent.parent.parent
-    / "hooks"
-    / "hook-dispatcher"
-    / "target"
-    / "release"
-    / "hook-dispatcher"
+    Path(__file__).parent.parent.parent / "hooks" / "hook-dispatcher" / "target" / "release" / "hook-dispatcher"
 )
 
 _binary_available = pytest.mark.skipif(
@@ -76,9 +71,7 @@ def test_governance_violation_fields() -> None:
 
     Traces to: FR-GOV-007
     """
-    v = GovernanceViolation(
-        rule="noqa-no-justification", severity="error", line=3, message="msg"
-    )
+    v = GovernanceViolation(rule="noqa-no-justification", severity="error", line=3, message="msg")
     assert v.rule == "noqa-no-justification"
     assert v.severity == "error"
     assert v.line == 3
@@ -484,11 +477,7 @@ def test_scanner_scan_content_uses_binary_when_found() -> None:
 
     Traces to: FR-GOV-006
     """
-    expected = [
-        GovernanceViolation(
-            rule="hardcoded-credential", severity="error", line=1, message="cred"
-        )
-    ]
+    expected = [GovernanceViolation(rule="hardcoded-credential", severity="error", line=1, message="cred")]
     scanner = NativeGovernanceScanner()
     with (
         patch(
@@ -568,11 +557,7 @@ def test_scanner_check_contract_uses_binary_when_found() -> None:
 
     Traces to: FR-GOV-006
     """
-    expected = [
-        GovernanceViolation(
-            rule="hardcoded-credential", severity="error", line=1, message="cred"
-        )
-    ]
+    expected = [GovernanceViolation(rule="hardcoded-credential", severity="error", line=1, message="cred")]
     scanner = NativeGovernanceScanner()
     with (
         patch(
@@ -599,9 +584,7 @@ def test_scanner_check_contract_falls_back_when_no_binary() -> None:
         "thegent.governance.native_governance_scan._find_binary",
         return_value=None,
     ):
-        violations = scanner.check_contract_content(
-            "P2-PRIVACY", 'password = "abc123"\n'
-        )
+        violations = scanner.check_contract_content("P2-PRIVACY", 'password = "abc123"\n')
     assert any(v.rule == "hardcoded-credential" for v in violations)
 
 
@@ -698,9 +681,7 @@ def test_binary_governance_check_contract_p2_privacy() -> None:
 
     Traces to: FR-GOV-006
     """
-    violations = _run_binary_check_contract(
-        BINARY_PATH, "P2-PRIVACY", 'password = "mysupersecret"\n'
-    )
+    violations = _run_binary_check_contract(BINARY_PATH, "P2-PRIVACY", 'password = "mysupersecret"\n')
     rules = {v.rule for v in violations}
     assert "hardcoded-credential" in rules
 

@@ -36,9 +36,7 @@ def test_parse_cliproxyctl_envelope_rejects_command_mismatch() -> None:
 def test_run_cliproxyctl_machine_command_fails_on_nonzero_exit(
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
-    monkeypatch.setattr(
-        model_cmds, "_resolve_cliproxyctl_binary", lambda: "/tmp/cliproxyctl"
-    )
+    monkeypatch.setattr(model_cmds, "_resolve_cliproxyctl_binary", lambda: "/tmp/cliproxyctl")
     monkeypatch.setattr(model_cmds, "_binary_exists", lambda binary: True)
 
     def _fake_runner(*_args, **_kwargs):
@@ -49,30 +47,22 @@ def test_run_cliproxyctl_machine_command_fails_on_nonzero_exit(
             stderr="",
         )
 
-    monkeypatch.setattr(
-        model_cmds, "_get_run_subprocess_optimized", lambda: _fake_runner
-    )
+    monkeypatch.setattr(model_cmds, "_get_run_subprocess_optimized", lambda: _fake_runner)
 
-    with pytest.raises(
-        RuntimeError, match="cliproxyctl login failed with exit code 12"
-    ):
+    with pytest.raises(RuntimeError, match="cliproxyctl login failed with exit code 12"):
         model_cmds._run_cliproxyctl_machine_command("login", args=["claude"])
 
 
 def test_run_cliproxyctl_machine_command_fails_on_invalid_json(
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
-    monkeypatch.setattr(
-        model_cmds, "_resolve_cliproxyctl_binary", lambda: "/tmp/cliproxyctl"
-    )
+    monkeypatch.setattr(model_cmds, "_resolve_cliproxyctl_binary", lambda: "/tmp/cliproxyctl")
     monkeypatch.setattr(model_cmds, "_binary_exists", lambda binary: True)
 
     def _fake_runner(*_args, **_kwargs):
         return SimpleNamespace(returncode=0, stdout="{oops", stderr="")
 
-    monkeypatch.setattr(
-        model_cmds, "_get_run_subprocess_optimized", lambda: _fake_runner
-    )
+    monkeypatch.setattr(model_cmds, "_get_run_subprocess_optimized", lambda: _fake_runner)
 
     with pytest.raises(ValueError, match="Invalid cliproxyctl JSON envelope"):
         model_cmds._run_cliproxyctl_machine_command("setup")

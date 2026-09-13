@@ -56,15 +56,11 @@ class DynamicToolRegistry:
 
     def __init__(self, default_timeout_seconds: float = 30.0) -> None:
         self.default_timeout_seconds = default_timeout_seconds
-        self.tools: dict[
-            str, dict[str, DynamicToolSpec]
-        ] = {}  # session -> tool_name -> spec
+        self.tools: dict[str, dict[str, DynamicToolSpec]] = {}  # session -> tool_name -> spec
         self.pending_calls: dict[str, DynamicToolCall] = {}
         self._call_counter = 0
 
-    def register_dynamic_tool(
-        self, session_id: str, tool_spec: DynamicToolSpec
-    ) -> DynamicToolSpec:
+    def register_dynamic_tool(self, session_id: str, tool_spec: DynamicToolSpec) -> DynamicToolSpec:
         """Register a dynamic tool for a session."""
         if not session_id or not session_id.strip():
             raise ValueError("session_id must be non-empty")
@@ -83,9 +79,7 @@ class DynamicToolRegistry:
 
         session_tools = self.tools.setdefault(normalized_session, {})
         if normalized_name in session_tools:
-            raise ValueError(
-                f"Tool '{normalized_name}' already registered for session '{normalized_session}'"
-            )
+            raise ValueError(f"Tool '{normalized_name}' already registered for session '{normalized_session}'")
 
         session_tools[normalized_name] = tool_spec
         return tool_spec
@@ -216,9 +210,7 @@ class DynamicToolRegistry:
             del self.tools[normalized]
 
         # Remove pending calls for this session
-        self.pending_calls = {
-            k: v for k, v in self.pending_calls.items() if v.session_id != normalized
-        }
+        self.pending_calls = {k: v for k, v in self.pending_calls.items() if v.session_id != normalized}
 
 
 # Global registry for tools sessions
@@ -260,27 +252,19 @@ class _ToolsSessions:
                 {
                     "success": True,
                     "session_id": session_id,
-                    "tools": [
-                        {"name": t.name, "description": t.description} for t in tools
-                    ],
+                    "tools": [{"name": t.name, "description": t.description} for t in tools],
                 }
             )
 
         elif msg_type == "dynamic_tool_invoke":
-            call = reg.create_tool_call(
-                session_id, data["name"], data.get("arguments", {})
-            )
+            call = reg.create_tool_call(session_id, data["name"], data.get("arguments", {}))
             event = reg.tool_call_requested_event(call)
             return json_lib.dumps({"success": True, "event": event})
 
         elif msg_type == "dynamic_tool_complete":
             if not data.get("callId"):
                 raise ValueError("callId must be non-empty")
-            if (
-                data.get("success") is False
-                and not data.get("output")
-                and not data.get("error")
-            ):
+            if data.get("success") is False and not data.get("output") and not data.get("error"):
                 raise ValueError("Must provide output or error when success is False")
             result = reg.resolve_tool_call(
                 data["callId"],
@@ -307,9 +291,7 @@ async def thegent_register_tool(
     """MCP tool: register a dynamic tool."""
     import json as json_lib
 
-    spec = DynamicToolSpec(
-        name=name, description=description, input_schema=input_schema
-    )
+    spec = DynamicToolSpec(name=name, description=description, input_schema=input_schema)
     _tools_sessions._dynamic_registry.register_dynamic_tool(session_id, spec)
     return json_lib.dumps({"success": True, "registered": {"name": name}})
 
@@ -337,9 +319,7 @@ async def thegent_complete_tool_call(
     """MCP tool: complete a dynamic tool call."""
     import json as json_lib
 
-    result = _tools_sessions._dynamic_registry.resolve_tool_call(
-        call_id, output=output, success=success
-    )
+    result = _tools_sessions._dynamic_registry.resolve_tool_call(call_id, output=output, success=success)
     event = _tools_sessions._dynamic_registry.tool_call_completed_event(result)
     return json_lib.dumps({"success": True, "event": event})
 

@@ -11,12 +11,8 @@ import pytest
 def _run_loader(config_path: Path) -> dict[str, str]:
     repo_root = Path(__file__).resolve().parents[1]
     lib_path = repo_root / "hooks" / "lib" / "spiral-config.sh"
-    dispatcher_bin = (
-        repo_root / "hooks" / "hook-dispatcher" / "target" / "debug" / "hook-dispatcher"
-    )
-    assert dispatcher_bin.exists(), (
-        f"hook-dispatcher binary missing at {dispatcher_bin}"
-    )
+    dispatcher_bin = repo_root / "hooks" / "hook-dispatcher" / "target" / "debug" / "hook-dispatcher"
+    assert dispatcher_bin.exists(), f"hook-dispatcher binary missing at {dispatcher_bin}"
     cmd = f"""
       set -euo pipefail
       export HOOK_DISPATCHER_BIN="{dispatcher_bin}"

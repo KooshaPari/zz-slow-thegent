@@ -34,56 +34,46 @@ def test_evidence_bundle_mentions_agent_a_artifact() -> None:
     """Evidence bundle must mention at least one agent-a artifact."""
     content = EVIDENCE_BUNDLE.read_text(encoding="utf-8")
     # check_slo_gate.py or test_wl120_extraction_hardening.py are agent-a artifacts
-    assert (
-        "check_slo_gate.py" in content
-        or "extraction_hardening" in content
-        or "two-surface" in content
-    ), "Expected at least one agent-a artifact mentioned in evidence bundle"
+    assert "check_slo_gate.py" in content or "extraction_hardening" in content or "two-surface" in content, (
+        "Expected at least one agent-a artifact mentioned in evidence bundle"
+    )
 
 
 def test_evidence_bundle_mentions_agent_b_artifact() -> None:
     """Evidence bundle must mention at least one agent-b artifact."""
     content = EVIDENCE_BUNDLE.read_text(encoding="utf-8")
-    assert (
-        "runtime-modularization-matrix-v2" in content
-        or "parity-gap-report" in content
-        or "agent-b" in content
-    ), "Expected at least one agent-b artifact or reference in evidence bundle"
+    assert "runtime-modularization-matrix-v2" in content or "parity-gap-report" in content or "agent-b" in content, (
+        "Expected at least one agent-b artifact or reference in evidence bundle"
+    )
 
 
 def test_evidence_bundle_mentions_agent_c_artifact() -> None:
     """Evidence bundle must mention at least one agent-c artifact."""
     content = EVIDENCE_BUNDLE.read_text(encoding="utf-8")
-    assert (
-        "audit_boundary_compliance" in content
-        or "retrospective" in content
-        or "agent-c" in content
-    ), "Expected at least one agent-c artifact or reference in evidence bundle"
+    assert "audit_boundary_compliance" in content or "retrospective" in content or "agent-c" in content, (
+        "Expected at least one agent-c artifact or reference in evidence bundle"
+    )
 
 
 def test_evidence_bundle_mentions_agent_d_artifact() -> None:
     """Evidence bundle must mention at least one agent-d artifact."""
     content = EVIDENCE_BUNDLE.read_text(encoding="utf-8")
-    assert (
-        "zig-gate" in content or "mojo-fallback" in content or "agent-d" in content
-    ), "Expected at least one agent-d artifact or reference in evidence bundle"
+    assert "zig-gate" in content or "mojo-fallback" in content or "agent-d" in content, (
+        "Expected at least one agent-d artifact or reference in evidence bundle"
+    )
 
 
 def test_evidence_bundle_mentions_agent_e_artifact() -> None:
     """Evidence bundle must mention at least one agent-e artifact."""
     content = EVIDENCE_BUNDLE.read_text(encoding="utf-8")
-    assert (
-        "lane-split-tuning" in content
-        or "GOVERNANCE_SUMMARY" in content
-        or "agent-e" in content
-    ), "Expected at least one agent-e artifact or reference in evidence bundle"
+    assert "lane-split-tuning" in content or "GOVERNANCE_SUMMARY" in content or "agent-e" in content, (
+        "Expected at least one agent-e artifact or reference in evidence bundle"
+    )
 
 
 def test_evidence_bundle_mentions_agent_f_artifact() -> None:
     """Evidence bundle must mention at least one agent-f artifact."""
     content = EVIDENCE_BUNDLE.read_text(encoding="utf-8")
-    assert (
-        "migration-benchmark" in content
-        or "closeout" in content
-        or "agent-f" in content
-    ), "Expected at least one agent-f artifact or reference in evidence bundle"
+    assert "migration-benchmark" in content or "closeout" in content or "agent-f" in content, (
+        "Expected at least one agent-f artifact or reference in evidence bundle"
+    )

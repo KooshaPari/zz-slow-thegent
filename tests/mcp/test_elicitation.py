@@ -18,9 +18,7 @@ from unittest.mock import AsyncMock, MagicMock
 import orjson as json
 import pytest
 
-fastmcp = pytest.importorskip(
-    "fastmcp", reason="fastmcp required for elicitation tests"
-)
+fastmcp = pytest.importorskip("fastmcp", reason="fastmcp required for elicitation tests")
 
 
 # ---------------------------------------------------------------------------
@@ -210,9 +208,7 @@ class TestElicitChoice:
         ctx = _make_ctx()
 
         with pytest.raises(ValueError, match="options list must not be empty"):
-            asyncio.get_event_loop().run_until_complete(
-                elicit_choice(ctx, "Choose:", [])
-            )
+            asyncio.get_event_loop().run_until_complete(elicit_choice(ctx, "Choose:", []))
 
     @pytest.mark.asyncio
     async def test_no_elicit_method_returns_none_with_warning(self) -> None:
@@ -350,9 +346,7 @@ class TestMCPToolConfirmation:
         accepted.data = True
         ctx = _make_ctx(elicit_return=accepted)
 
-        result = await tool_fns["thegent_elicit_confirmation"](
-            message="Deploy?", ctx=ctx
-        )
+        result = await tool_fns["thegent_elicit_confirmation"](message="Deploy?", ctx=ctx)
         data = _json_content(result)
         assert data["confirmed"] is True
         assert data["status"] == "accepted"
@@ -380,9 +374,7 @@ class TestMCPToolConfirmation:
         declined.action = "decline"
         ctx = _make_ctx(elicit_return=declined)
 
-        result = await tool_fns["thegent_elicit_confirmation"](
-            message="Deploy?", ctx=ctx
-        )
+        result = await tool_fns["thegent_elicit_confirmation"](message="Deploy?", ctx=ctx)
         data = _json_content(result)
         assert data["confirmed"] is None
         assert data["status"] == "declined_or_cancelled"
@@ -405,9 +397,7 @@ class TestMCPToolConfirmation:
         mock_mcp.tool = capture_tool
         register_elicitation_tools(mock_mcp)
 
-        result = await tool_fns["thegent_elicit_confirmation"](
-            message="Proceed?", ctx=None
-        )
+        result = await tool_fns["thegent_elicit_confirmation"](message="Proceed?", ctx=None)
         data = _json_content(result)
         assert data["confirmed"] is None
         assert data["status"] == "unavailable"
@@ -441,9 +431,7 @@ class TestMCPToolChoice:
         accepted.data = "gemini"
         ctx = _make_ctx(elicit_return=accepted)
 
-        result = await tool_fns["thegent_elicit_choice"](
-            message="Select model:", options=["gpt-4", "gemini"], ctx=ctx
-        )
+        result = await tool_fns["thegent_elicit_choice"](message="Select model:", options=["gpt-4", "gemini"], ctx=ctx)
         data = _json_content(result)
         assert data["choice"] == "gemini"
         assert data["status"] == "accepted"
@@ -467,9 +455,7 @@ class TestMCPToolChoice:
         register_elicitation_tools(mock_mcp)
 
         ctx = _make_ctx()
-        result = await tool_fns["thegent_elicit_choice"](
-            message="Pick:", options=[], ctx=ctx
-        )
+        result = await tool_fns["thegent_elicit_choice"](message="Pick:", options=[], ctx=ctx)
         data = _json_content(result)
         assert "error" in data
         assert data["choice"] is None
@@ -492,9 +478,7 @@ class TestMCPToolChoice:
         mock_mcp.tool = capture_tool
         register_elicitation_tools(mock_mcp)
 
-        result = await tool_fns["thegent_elicit_choice"](
-            message="Pick:", options=["a", "b"], ctx=None
-        )
+        result = await tool_fns["thegent_elicit_choice"](message="Pick:", options=["a", "b"], ctx=None)
         data = _json_content(result)
         assert data["choice"] is None
         assert data["status"] == "unavailable"
@@ -528,9 +512,7 @@ class TestMCPToolText:
         accepted.data = "my-project"
         ctx = _make_ctx(elicit_return=accepted)
 
-        result = await tool_fns["thegent_elicit_text"](
-            message="Enter project name:", ctx=ctx
-        )
+        result = await tool_fns["thegent_elicit_text"](message="Enter project name:", ctx=ctx)
         data = _json_content(result)
         assert data["text"] == "my-project"
         assert data["status"] == "accepted"
@@ -559,9 +541,7 @@ class TestMCPToolText:
         accepted.data = "/tmp/result"
         ctx = _make_ctx(elicit_return=accepted)
 
-        result = await tool_fns["thegent_elicit_text"](
-            message="Enter path:", placeholder="/tmp/example", ctx=ctx
-        )
+        result = await tool_fns["thegent_elicit_text"](message="Enter path:", placeholder="/tmp/example", ctx=ctx)
         data = _json_content(result)
         assert data["text"] == "/tmp/result"
         assert data["status"] == "accepted"

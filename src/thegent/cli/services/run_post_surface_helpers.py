@@ -85,9 +85,7 @@ def resume_impl(
         }
     if payload_session_id != sid:
         return {
-            "error": (
-                f"Invalid state contract for session {sid}: session_id mismatch (found {payload_session_id!r})"
-            ),
+            "error": (f"Invalid state contract for session {sid}: session_id mismatch (found {payload_session_id!r})"),
             "exit_code": 1,
             "session_id": sid,
         }
@@ -140,10 +138,7 @@ def resume_impl(
     state_payload["status"] = "running"
     state_payload["updated_at_utc"] = datetime.now(UTC).isoformat()
     state_path.write_text(
-        json.dumps(
-            state_payload, option=json.OPT_INDENT_2 | json.OPT_SORT_KEYS
-        ).decode()
-        + "\n",
+        json.dumps(state_payload, option=json.OPT_INDENT_2 | json.OPT_SORT_KEYS).decode() + "\n",
         encoding="utf-8",
     )
 
@@ -215,10 +210,7 @@ def list_agents_impl() -> list[dict[str, str]]:
         "cursor-agent": "Direct",
         "cursor-api": "cursor-api",
     }
-    return [
-        {"name": AGENT_LABELS.get(n, n), "backend": backends.get(n, "Direct")}
-        for n in agents
-    ]
+    return [{"name": AGENT_LABELS.get(n, n), "backend": backends.get(n, "Direct")} for n in agents]
 
 
 def list_droids_impl(
@@ -431,9 +423,7 @@ def inbox_list_impl(
                     "owner": run.get("owner"),
                     "agent": run.get("agent"),
                     "status": run_status,
-                    "timestamp": run.get("started_at_utc")
-                    or run.get("ended_at_utc")
-                    or "",
+                    "timestamp": run.get("started_at_utc") or run.get("ended_at_utc") or "",
                 }
             )
 

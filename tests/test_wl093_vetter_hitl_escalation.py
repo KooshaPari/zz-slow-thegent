@@ -42,9 +42,7 @@ def _failing_check(name: str, message: str = "failed") -> Any:
     """Return an async VetterCheck mock that always fails. # @trace WL-093"""
     check = MagicMock()
     check.name = name
-    check.check = AsyncMock(
-        return_value=VetterCheckResult(check_name=name, passed=False, message=message)
-    )
+    check.check = AsyncMock(return_value=VetterCheckResult(check_name=name, passed=False, message=message))
     return check
 
 
@@ -52,18 +50,14 @@ def _passing_check(name: str) -> Any:
     """Return an async VetterCheck mock that always passes. # @trace WL-093"""
     check = MagicMock()
     check.name = name
-    check.check = AsyncMock(
-        return_value=VetterCheckResult(check_name=name, passed=True)
-    )
+    check.check = AsyncMock(return_value=VetterCheckResult(check_name=name, passed=True))
     return check
 
 
 def _make_hitl_mock() -> MagicMock:
     """Return a MagicMock hitl_workflow that records await_approval calls. # @trace WL-093"""
     hitl = MagicMock()
-    hitl.await_approval = MagicMock(
-        return_value={"success": True, "event_id": "hitl_test"}
-    )
+    hitl.await_approval = MagicMock(return_value={"success": True, "event_id": "hitl_test"})
     return hitl
 
 
@@ -72,18 +66,12 @@ def _load_events(session_dir: Path) -> list[dict[str, Any]]:
     path = session_dir / "governance_events.jsonl"
     if not path.exists():
         return []
-    return [
-        json.loads(line)
-        for line in path.read_text(encoding="utf-8").splitlines()
-        if line.strip()
-    ]
+    return [json.loads(line) for line in path.read_text(encoding="utf-8").splitlines() if line.strip()]
 
 
 def _events_of_type(session_dir: Path, event_type: str) -> list[dict[str, Any]]:
     """Return all events of a given event_type. # @trace WL-093"""
-    return [
-        ev for ev in _load_events(session_dir) if ev.get("event_type") == event_type
-    ]
+    return [ev for ev in _load_events(session_dir) if ev.get("event_type") == event_type]
 
 
 # ---------------------------------------------------------------------------
@@ -210,9 +198,7 @@ async def test_escalation_event_has_escalation_lane_from_policy(tmp_path: Path) 
         check_registry={"safety": bad},
         hitl_workflow=hitl,
     )
-    policy = VetterPolicy(
-        checks=["safety"], escalate_on=["safety"], escalation_lane="critical"
-    )
+    policy = VetterPolicy(checks=["safety"], escalate_on=["safety"], escalation_lane="critical")
     await orch.evaluate(
         result=MagicMock(output=""),
         policy=policy,
@@ -282,18 +268,14 @@ async def test_escalation_event_is_forwarded_to_optional_event_log(
         hitl_workflow=hitl,
         event_log=event_log,
     )
-    policy = VetterPolicy(
-        checks=["safety"], escalate_on=["safety"], escalation_lane="critical"
-    )
+    policy = VetterPolicy(checks=["safety"], escalate_on=["safety"], escalation_lane="critical")
     await orch.evaluate(
         result=MagicMock(output=""),
         policy=policy,
         run_context={"run_id": "run-esc-event-log"},
     )
 
-    emitted_types = [
-        call_args.args[0]["event_type"] for call_args in event_log.emit.call_args_list
-    ]
+    emitted_types = [call_args.args[0]["event_type"] for call_args in event_log.emit.call_args_list]
     assert "vetter_decision" in emitted_types
     assert "vetter_escalation" in emitted_types
 
@@ -510,9 +492,7 @@ async def test_escalation_emits_await_approval_event_surfaced_by_govern_list(
     # govern list surfaces await_approval events with status=pending
     pending = real_hitl.list_pending()
     run_ids = {p["run_id"] for p in pending}
-    assert "run-esc-017" in run_ids, (
-        "Escalation must appear in govern list pending output"
-    )
+    assert "run-esc-017" in run_ids, "Escalation must appear in govern list pending output"
 
 
 @pytest.mark.asyncio
@@ -641,9 +621,7 @@ async def test_escalation_decision_event_emitted_before_escalation_event(
     types_in_order = [ev["event_type"] for ev in all_events]
     decision_idx = types_in_order.index("vetter_decision")
     escalation_idx = types_in_order.index("vetter_escalation")
-    assert decision_idx < escalation_idx, (
-        "vetter_decision must precede vetter_escalation"
-    )
+    assert decision_idx < escalation_idx, "vetter_decision must precede vetter_escalation"
 
 
 # ---------------------------------------------------------------------------
@@ -888,9 +866,7 @@ async def test_escalated_decision_is_queryable_via_govern_list_pending_path(
         check_registry={"safety": bad},
         hitl_workflow=hitl,
     )
-    policy = VetterPolicy(
-        checks=["safety"], escalate_on=["safety"], escalation_lane="critical"
-    )
+    policy = VetterPolicy(checks=["safety"], escalate_on=["safety"], escalation_lane="critical")
 
     await orch.evaluate(
         result=MagicMock(output="diff --git a/x b/x\n+danger"),
@@ -924,9 +900,7 @@ async def test_escalation_event_payload_shape_is_json_serializable_for_audit_log
         hitl_workflow=hitl,
         event_log=event_log,
     )
-    policy = VetterPolicy(
-        checks=["safety"], escalate_on=["safety"], escalation_lane="critical"
-    )
+    policy = VetterPolicy(checks=["safety"], escalate_on=["safety"], escalation_lane="critical")
 
     await orch.evaluate(
         result=MagicMock(output="diff --git a/a.py b/a.py\n+unsafe"),

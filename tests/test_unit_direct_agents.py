@@ -125,9 +125,7 @@ class TestRunLiveStreaming:
         mock_popen.return_value = mock_proc
 
         runner = DirectAgentRunner("claude")
-        result = runner._run_live(
-            ["claude", "--print"], Path("/tmp"), 60, "prompt", None, None
-        )
+        result = runner._run_live(["claude", "--print"], Path("/tmp"), 60, "prompt", None, None)
         assert result.exit_code == 0
         assert "line1" in result.stdout
 
@@ -144,9 +142,7 @@ class TestRunLiveStreaming:
         mock_popen.return_value = mock_proc
 
         runner = DirectAgentRunner("claude")
-        result = runner._run_live(
-            ["claude", "--print"], Path("/tmp"), 60, None, None, None
-        )
+        result = runner._run_live(["claude", "--print"], Path("/tmp"), 60, None, None, None)
         assert result.exit_code == 124
         assert result.timed_out is True
         mock_proc.kill.assert_called_once()
@@ -382,9 +378,7 @@ class TestResolveCli:
         from thegent.agents.direct_agents import _resolve_cli
 
         # which returns None for cursor-agent, /usr/bin/cursor for cursor
-        mock_which.side_effect = lambda cmd: (
-            "/usr/bin/cursor" if cmd == "cursor" else None
-        )
+        mock_which.side_effect = lambda cmd: "/usr/bin/cursor" if cmd == "cursor" else None
         with patch.dict("os.environ", {}, clear=False):
             import os
 
@@ -493,9 +487,7 @@ class TestRunLiveExtended:
         mock_popen.return_value = mock_proc
 
         runner = DirectAgentRunner("claude")
-        runner._run_live(
-            ["claude", "--print"], Path("/tmp"), 60, "my prompt", None, None
-        )
+        runner._run_live(["claude", "--print"], Path("/tmp"), 60, "my prompt", None, None)
 
         mock_stdin.write.assert_called_once_with("my prompt")
         mock_stdin.close.assert_called_once()
@@ -562,9 +554,7 @@ class TestResolveCliCursorAgentLocalBinFallback:
     """Tests for cursor-agent ~/.local/bin/cursor fallback (lines 74-78)."""
 
     @patch("thegent.agents.direct_agents.shutil.which", return_value=None)
-    def test_cursor_agent_local_bin_cursor_fallback(
-        self, mock_which: MagicMock, tmp_path: Path
-    ) -> None:
+    def test_cursor_agent_local_bin_cursor_fallback(self, mock_which: MagicMock, tmp_path: Path) -> None:
         # @trace FR-AGT-002
         """cursor-agent falls back to ~/.local/bin/cursor when cursor-agent not found (lines 74-78)."""
         from thegent.agents.direct_agents import _resolve_cli
@@ -651,9 +641,7 @@ class TestRunCaptureTransientError:
     """Tests for _run_capture TransientAgentError catch (line 233) and _run_capture_attempt raise (line 261)."""
 
     @patch("thegent.agents.direct_agents.subprocess.run")
-    def test_run_capture_transient_error_returns_result(
-        self, mock_run: MagicMock
-    ) -> None:
+    def test_run_capture_transient_error_returns_result(self, mock_run: MagicMock) -> None:
         # @trace FR-AGT-003
         """_run_capture catches TransientAgentError and returns its result (line 233)."""
 

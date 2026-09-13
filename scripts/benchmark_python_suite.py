@@ -83,9 +83,7 @@ def main() -> int:
     parser = argparse.ArgumentParser(description="Run WL-078 Python benchmark suite.")
     parser.add_argument("--iterations", type=int, default=100_000)
     parser.add_argument("--mode", choices=("cold", "warm"), default="warm")
-    parser.add_argument(
-        "--output", type=Path, default=Path("benchmarks/results/python/latest.json")
-    )
+    parser.add_argument("--output", type=Path, default=Path("benchmarks/results/python/latest.json"))
     parser.add_argument(
         "--overwrite",
         action="store_true",
@@ -98,9 +96,7 @@ def main() -> int:
     payload = run_suite(iterations=max(1, int(args.iterations)), mode=args.mode)
     args.output.parent.mkdir(parents=True, exist_ok=True)
     if args.output.exists() and not args.overwrite:
-        raise FileExistsError(
-            f"Refusing to overwrite existing benchmark output: {args.output} (use --overwrite)"
-        )
+        raise FileExistsError(f"Refusing to overwrite existing benchmark output: {args.output} (use --overwrite)")
     args.output.write_text(json.dumps(payload, indent=2), encoding="utf-8")
     print(f"Wrote benchmark report: {args.output}")
     return 0

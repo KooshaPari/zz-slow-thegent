@@ -61,11 +61,7 @@ class CacheV2:
     async def clear_expired(self) -> None:
         now = time.time()
         with self._lock:
-            expired_keys = [
-                k
-                for k, (exp, _) in self._store.items()
-                if exp is not None and exp <= now
-            ]
+            expired_keys = [k for k, (exp, _) in self._store.items() if exp is not None and exp <= now]
             for key in expired_keys:
                 del self._store[key]
 
@@ -169,9 +165,7 @@ class CrossProcessSingleflight:
         # 3. We have the lock, execute func
         try:
             result = func()
-            result_file.write_text(
-                json.dumps({"result": result, "timestamp": time.time()})
-            )
+            result_file.write_text(json.dumps({"result": result, "timestamp": time.time()}))
             return result
         finally:
             if lock_file.exists():
@@ -381,9 +375,7 @@ class MultiTierCache:
             stats["l3_volume"] = 0
         return stats
 
-    def get_with_fetch(
-        self, key: str, fetch_func: Any, ttl: float | None = None
-    ) -> Any:
+    def get_with_fetch(self, key: str, fetch_func: Any, ttl: float | None = None) -> Any:
         """Get value from cache, or fetch and store if missing (Singleflight coalescing)."""
         value = self.get(key)
         if value is not None:
@@ -418,7 +410,5 @@ def get_cache(
     """Get global multi-tier cache instance."""
     global _global_cache
     if _global_cache is None:
-        _global_cache = MultiTierCache(
-            l1_size=l1_size, l2_size=l2_size, l3_path=l3_path, default_ttl=default_ttl
-        )
+        _global_cache = MultiTierCache(l1_size=l1_size, l2_size=l2_size, l3_path=l3_path, default_ttl=default_ttl)
     return _global_cache

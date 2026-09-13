@@ -125,6 +125,4 @@ def test_governance_contract_history_diff_reports_changed_checks(
     payload = json.loads(diff_json.read_text(encoding="utf-8"))
     assert payload["previous_available"] is True
     assert payload["failed_delta"] == 1
-    assert payload["changed_checks"] == [
-        {"name": "a", "prev_ok": True, "curr_ok": False}
-    ]
+    assert payload["changed_checks"] == [{"name": "a", "prev_ok": True, "curr_ok": False}]

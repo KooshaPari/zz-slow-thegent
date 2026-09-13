@@ -22,9 +22,7 @@ from thegent.cli.commands._cli_shared import (
 def policy_show_cmd() -> None:
     """Show active governance policies and thresholds."""
     settings = ThegentSettings()
-    console.print(
-        f"[bold]Active Governance Policies[/bold] (Environment: [cyan]{settings.environment}[/cyan])"
-    )
+    console.print(f"[bold]Active Governance Policies[/bold] (Environment: [cyan]{settings.environment}[/cyan])")
 
     table = Table(show_header=True)
     table.add_column("Policy Name")
@@ -35,13 +33,9 @@ def policy_show_cmd() -> None:
     table.add_row(
         "Production Trust",
         f">= {settings.trust_score_threshold}",
-        "[green]Active[/green]"
-        if settings.environment == "production"
-        else "[dim]Inactive[/dim]",
+        "[green]Active[/green]" if settings.environment == "production" else "[dim]Inactive[/dim]",
     )
-    table.add_row(
-        "Agent Restriction", "Block 'unknown' in Prod/Critical", "[green]Active[/green]"
-    )
+    table.add_row("Agent Restriction", "Block 'unknown' in Prod/Critical", "[green]Active[/green]")
     table.add_row("Audit Signing", "SHA-256 Run Signatures", "[green]Active[/green]")
     table.add_row(
         "Override TTL (WP-3003)",
@@ -64,13 +58,9 @@ def policy_purge_cmd(dry_run: bool = True) -> None:
         dry_run=dry_run,
     )
     if dry_run:
-        console.print(
-            f"[yellow]Dry run: would purge {res['purged']} records (kept {res['kept']}).[/yellow]"
-        )
+        console.print(f"[yellow]Dry run: would purge {res['purged']} records (kept {res['kept']}).[/yellow]")
     else:
-        console.print(
-            f"[green]Purged {res['purged']} records (kept {res['kept']}).[/green]"
-        )
+        console.print(f"[green]Purged {res['purged']} records (kept {res['kept']}).[/green]")
 
 
 def contracts_registry_cmd(format: str | None = None) -> None:
@@ -203,9 +193,7 @@ def contracts_conformance_cmd(
             raise typer.Exit(1)
         return
 
-    table = Table(
-        title=f"Adapter Conformance (Passed: {report['passed']}/{report['total']})"
-    )
+    table = Table(title=f"Adapter Conformance (Passed: {report['passed']}/{report['total']})")
     table.add_column("Test")
     table.add_column("Provider")
     table.add_column("Result")
@@ -215,9 +203,7 @@ def contracts_conformance_cmd(
     for r in report["results"]:
         status = "[green]PASS[/green]" if r["success"] else "[red]FAIL[/red]"
         issues = ", ".join(r["issues"]) if r["issues"] else "-"
-        table.add_row(
-            r["name"], r["provider"], status, f"{r['confidence']:.2f}", issues
-        )
+        table.add_row(r["name"], r["provider"], status, f"{r['confidence']:.2f}", issues)
 
     console_inst.print(table)
 
@@ -260,9 +246,7 @@ def trust_status_cmd(format: str | None = None) -> None:
     console.print(f"Last Env:    [cyan]{last_env or 'None'}[/cyan]")
 
     if last_env:
-        allowed, reason = trust_boundary.validate_transition(
-            last_env, settings.environment
-        )
+        allowed, reason = trust_boundary.validate_transition(last_env, settings.environment)
         status_color = "green" if allowed else "red"
         console.print(f"Transition:  [{status_color}]{reason}[/{status_color}]")
 

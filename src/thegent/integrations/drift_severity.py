@@ -47,9 +47,7 @@ class DriftEscalationThresholds:
         Raises:
             ValueError: If thresholds are not in ascending order.
         """
-        if not (
-            self.medium_age_hours <= self.high_age_hours <= self.critical_age_hours
-        ):
+        if not (self.medium_age_hours <= self.high_age_hours <= self.critical_age_hours):
             raise ValueError(
                 "Thresholds must be in ascending order: "
                 f"medium({self.medium_age_hours}) <= high({self.high_age_hours}) "
@@ -113,6 +111,4 @@ def get_default_thresholds() -> DriftEscalationThresholds:
     Returns:
         Default thresholds: 6h (MEDIUM), 24h (HIGH), 72h (CRITICAL).
     """
-    return DriftEscalationThresholds(
-        medium_age_hours=6, high_age_hours=24, critical_age_hours=72
-    )
+    return DriftEscalationThresholds(medium_age_hours=6, high_age_hours=24, critical_age_hours=72)

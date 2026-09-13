@@ -171,17 +171,12 @@ class TestBoardArtifactIntegrator:
         artifacts = integrator.find_board_artifacts()
 
         assert "execution_board_csv" in artifacts
-        assert (
-            artifacts["execution_board_csv"].name
-            == "CLIPPROXYAPI_2000_ITEM_EXECUTION_BOARD_2026-02-22.csv"
-        )
+        assert artifacts["execution_board_csv"].name == "CLIPPROXYAPI_2000_ITEM_EXECUTION_BOARD_2026-02-22.csv"
 
     def test_find_board_artifacts_json(self, board_dir: Path) -> None:
         """Test finding board artifacts (JSON takes priority)."""
         json_file = board_dir / "CLIPPROXYAPI_2000_ITEM_EXECUTION_BOARD_2026-02-22.json"
-        json_file.write_text(
-            json.dumps([{"id": "J-001", "title": "JSON task"}]).decode()
-        )
+        json_file.write_text(json.dumps([{"id": "J-001", "title": "JSON task"}]).decode())
 
         integrator = BoardArtifactIntegrator(board_artifacts_dir=board_dir)
         artifacts = integrator.find_board_artifacts()
@@ -191,9 +186,7 @@ class TestBoardArtifactIntegrator:
 
     def test_find_board_artifacts_github_import(self, board_dir: Path) -> None:
         """Test finding GitHub import CSV."""
-        import_file = (
-            board_dir / "GITHUB_PROJECT_IMPORT_CLIPPROXYAPI_2000_2026-02-22.csv"
-        )
+        import_file = board_dir / "GITHUB_PROJECT_IMPORT_CLIPPROXYAPI_2000_2026-02-22.csv"
         import_file.write_text("id,title\nGH-001,GitHub task\n")
 
         integrator = BoardArtifactIntegrator(board_artifacts_dir=board_dir)
@@ -215,11 +208,7 @@ class TestBoardArtifactIntegrator:
         """Test that JSON takes precedence over CSV."""
         # Create JSON with different content
         json_file = board_dir / "CLIPPROXYAPI_2000_ITEM_EXECUTION_BOARD_2026-02-22.json"
-        json_file.write_text(
-            json.dumps(
-                [{"id": "JSON-001", "title": "JSON task", "status": "BACKLOG"}]
-            ).decode()
-        )
+        json_file.write_text(json.dumps([{"id": "JSON-001", "title": "JSON task", "status": "BACKLOG"}]).decode())
 
         integrator = BoardArtifactIntegrator(board_artifacts_dir=board_dir)
         items = integrator.ingest_artifacts()
@@ -284,9 +273,7 @@ class TestBoardArtifactIntegrator:
         cliproxy_dir.mkdir(parents=True)
 
         # Create CSV file
-        csv_file = (
-            cliproxy_dir / "CLIPPROXYAPI_2000_ITEM_EXECUTION_BOARD_2026-02-22.csv"
-        )
+        csv_file = cliproxy_dir / "CLIPPROXYAPI_2000_ITEM_EXECUTION_BOARD_2026-02-22.csv"
         csv_file.write_text(
             "id,title,status,priority,source,effort,depends_on,evidence\n"
             "AUTO-001,Auto-discovered,BACKLOG,P1,BOARD,M,-,doc.md\n"
@@ -351,9 +338,7 @@ class TestWL158Integration:
             "| MAB-001 | MD artifact task | BACKLOG | P2 | BOARD | S | - | ref3.md |\n"
         )
 
-        import_file = (
-            board_dir / "GITHUB_PROJECT_IMPORT_CLIPPROXYAPI_2000_2026-02-22.csv"
-        )
+        import_file = board_dir / "GITHUB_PROJECT_IMPORT_CLIPPROXYAPI_2000_2026-02-22.csv"
         import_file.write_text("id,title\nGHI-001,GitHub import task\n")
 
         # Test ingestion of each format
@@ -395,8 +380,6 @@ class TestWL158Integration:
 
         # Test MD parsing (with minimum required columns for board table)
         md_file = tmp_path / "test.md"
-        md_file.write_text(
-            "| ID | Title | Status |\n|-----|-------|--------|\n| M-1 | Task | BACKLOG |\n"
-        )
+        md_file.write_text("| ID | Title | Status |\n|-----|-------|--------|\n| M-1 | Task | BACKLOG |\n")
         md_items = parser.parse_markdown(md_file)
         assert len(md_items) == 1

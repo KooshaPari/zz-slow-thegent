@@ -60,9 +60,7 @@ def _normalize_candidate_module_name(value: str) -> str:
     return slug or "module"
 
 
-def _truncate_module_name(
-    value: str, *, max_length: int = SCAN_SHARED_REPOS_MAX_NAME_LENGTH
-) -> str:
+def _truncate_module_name(value: str, *, max_length: int = SCAN_SHARED_REPOS_MAX_NAME_LENGTH) -> str:
     return value[:max_length] if len(value) > max_length else value
 
 
@@ -79,18 +77,14 @@ def _build_candidate_name(base: str, *, suffix: str | None = None) -> str:
     return _truncate_module_name(base)
 
 
-def _build_scannable_candidate_name(
-    base: str, used_names: set[str], *, max_attempts: int = 25
-) -> str:
+def _build_scannable_candidate_name(base: str, used_names: set[str], *, max_attempts: int = 25) -> str:
     attempt = 0
     candidate_name = _build_candidate_name(base)
     while candidate_name in used_names:
         attempt += 1
         if attempt > max_attempts:
             raise RuntimeError(f"unable to resolve unique candidate name for: {base}")
-        candidate_name = _build_candidate_name(
-            base, suffix=_candidate_conflict_suffix(f"{base}:{attempt}")
-        )
+        candidate_name = _build_candidate_name(base, suffix=_candidate_conflict_suffix(f"{base}:{attempt}"))
     return candidate_name
 
 
@@ -102,11 +96,7 @@ def _build_recommended_modules(
     for module_name, repos in shared_modules.items():
         if not repos:
             continue
-        depends_on = (
-            sorted(depends_on_by_module.get(module_name, set()))
-            if depends_on_by_module
-            else []
-        )
+        depends_on = sorted(depends_on_by_module.get(module_name, set())) if depends_on_by_module else []
         recommendations.append(
             {
                 "module": module_name,
@@ -150,9 +140,7 @@ def _write_json_lines(path: Path, payload: dict[str, Any]) -> None:
 def _build_candidate_manifest_index_summary(
     entries: list[dict[str, Any]],
 ) -> dict[str, Any]:
-    module_names = sorted(
-        {str(item.get("module_name", "")) for item in entries if isinstance(item, dict)}
-    )
+    module_names = sorted({str(item.get("module_name", "")) for item in entries if isinstance(item, dict)})
     module_manifest_paths = {
         item.get("module_name", ""): str(item.get("manifest_path", ""))
         for item in entries
@@ -219,24 +207,12 @@ def _collect_candidate_repos(root: Path) -> list[Path]:
         return []
     if not root.is_dir():
         return []
-    return sorted(
-        [
-            entry
-            for entry in root.iterdir()
-            if entry.is_dir() and not entry.name.startswith(".")
-        ]
-    )
+    return sorted([entry for entry in root.iterdir() if entry.is_dir() and not entry.name.startswith(".")])
 
 
 def _resolve_worktree_roots() -> list[Path]:
     base_root = phenotype_root()
-    return sorted(
-        [
-            entry
-            for entry in base_root.iterdir()
-            if entry.is_dir() and entry.name.endswith("-wtrees")
-        ]
-    )
+    return sorted([entry for entry in base_root.iterdir() if entry.is_dir() and entry.name.endswith("-wtrees")])
 
 
 def _collect_worktree_repos(root: Path) -> list[Path]:
@@ -267,7 +243,9 @@ def _repos_root_metadata(
     if base_root is None:
         if root_mode == SCAN_SHARED_REPOS_ROOT_MODE_REPOS:
             base_root = phenotype / "repos"
-            hint = f"defaulted repos_root to {base_root} using repos_root_mode={root_mode}; pass --repos-root to override"
+            hint = (
+                f"defaulted repos_root to {base_root} using repos_root_mode={root_mode}; pass --repos-root to override"
+            )
             return base_root, _collect_candidate_repos(base_root), hint, []
 
         worktree_roots = _resolve_worktree_roots()
@@ -302,9 +280,7 @@ def _repos_root_metadata(
 
     hint = f"scanning worktrees from explicit root: {explicit_root}"
     if explicit_root.name.endswith("-wtrees"):
-        _append_warning(
-            warnings, "scanning nested worktree directory with -wtrees suffix"
-        )
+        _append_warning(warnings, "scanning nested worktree directory with -wtrees suffix")
     if (explicit_root / "src").exists() and explicit_root.name != "src":
         hint = f"explicit worktree-style repo root provided: {explicit_root}"
     return explicit_root, _collect_worktree_repos(explicit_root), hint, warnings
@@ -329,11 +305,7 @@ def _collect_shared_modules(
     *,
     min_repo_count: int = 2,
 ) -> dict[str, list[str]]:
-    return {
-        module_name: sorted(repos)
-        for module_name, repos in repo_modules.items()
-        if len(repos) >= min_repo_count
-    }
+    return {module_name: sorted(repos) for module_name, repos in repo_modules.items() if len(repos) >= min_repo_count}
 
 
 def _iter_repo_python_files(repo_path: Path) -> list[Path]:
@@ -435,16 +407,10 @@ def build_scan_candidates(
         sorted_repos = sorted(repos)
         prefix = _normalize_candidate_module_name(module_prefix)
         base = _normalize_candidate_module_name(module_name)
-        candidate_name = _build_scannable_candidate_name(
-            f"{prefix}-{base}-{len(sorted_repos)}", used_names
-        )
+        candidate_name = _build_scannable_candidate_name(f"{prefix}-{base}-{len(sorted_repos)}", used_names)
         used_names.add(candidate_name)
 
-        depends_on = (
-            sorted(depends_on_by_module.get(module_name, set()))
-            if depends_on_by_module
-            else []
-        )
+        depends_on = sorted(depends_on_by_module.get(module_name, set())) if depends_on_by_module else []
 
         manifest_template = build_module_manifest_payload(module_name, sorted_repos)
         candidates.append(
@@ -483,12 +449,7 @@ def materialize_scan_candidate_manifest(
         raise ValueError("candidate module_name cannot be empty")
     if not isinstance(repo_ids, list):
         raise ValueError("candidate repo_ids must be a list")
-    if (
-        not isinstance(module_name, str)
-        or "/" in module_name
-        or "\\" in module_name
-        or ".." in module_name
-    ):
+    if not isinstance(module_name, str) or "/" in module_name or "\\" in module_name or ".." in module_name:
         raise ValueError(f"invalid module_name: {module_name}")
 
     manifest_path = _candidate_manifest_path(output_dir, module_name)
@@ -503,9 +464,7 @@ def materialize_scan_candidate_manifest(
 
     if not dry_run and manifest_before is not None:
         if manifest_before != manifest_payload:
-            raise ValueError(
-                f"manifest conflict for {module_name}; existing file differs: {manifest_path}"
-            )
+            raise ValueError(f"manifest conflict for {module_name}; existing file differs: {manifest_path}")
 
     if not dry_run:
         _write_manifest(manifest_path, manifest_payload)
@@ -533,9 +492,7 @@ def materialize_scan_candidate_manifest(
         next_index = sorted(next_index, key=lambda item: str(item.get("module_name")))
 
     index_summary_path = output_dir / SCAN_SHARED_REPOS_MANIFEST_INDEX_SUMMARY_FILENAME
-    index_summary_payload = _build_candidate_manifest_index_summary(
-        next_index if update_index else existing_index
-    )
+    index_summary_payload = _build_candidate_manifest_index_summary(next_index if update_index else existing_index)
 
     audit_path = output_dir / SCAN_SHARED_REPOS_MANIFEST_AUDIT_FILENAME
     _ensure_non_symlink_path(manifest_path)
@@ -555,9 +512,7 @@ def materialize_scan_candidate_manifest(
 
     if not dry_run and update_index:
         index_path.write_text(json.dumps(next_index, indent=2) + "\n", encoding="utf-8")
-        index_summary_path.write_text(
-            json.dumps(index_summary_payload, indent=2) + "\n", encoding="utf-8"
-        )
+        index_summary_path.write_text(json.dumps(index_summary_payload, indent=2) + "\n", encoding="utf-8")
         _write_json_lines(audit_path, audit_entry)
 
     result = {
@@ -592,9 +547,7 @@ def scan_shared_modules_across_repos(
         raise ValueError("min_repo_count must be at least 2")
 
     root_mode = repos_root_mode or SCAN_SHARED_REPOS_ROOT_MODE_REPOS
-    root, candidate_paths, root_mode_hint, warnings = _repos_root_metadata(
-        repos_root, root_mode
-    )
+    root, candidate_paths, root_mode_hint, warnings = _repos_root_metadata(repos_root, root_mode)
     if not candidate_paths:
         return {
             "scan_schema_version": SCAN_SHARED_REPOS_SCHEMA_VERSION,
@@ -641,39 +594,25 @@ def scan_shared_modules_across_repos(
         for dep_module, deps in module_dependencies.items():
             repo_dependencies.setdefault(dep_module, set()).update(deps)
         for dep_warning in dep_warnings:
-            _append_warning(
-                warnings, f"{dep_warning['repo_file']}: {dep_warning['reason']}"
-            )
+            _append_warning(warnings, f"{dep_warning['repo_file']}: {dep_warning['reason']}")
 
-    shared_modules = _collect_shared_modules(
-        repo_modules, min_repo_count=min_repo_count
-    )
+    shared_modules = _collect_shared_modules(repo_modules, min_repo_count=min_repo_count)
     include_candidates = _resolve_candidate_inclusion(
         candidates=candidates,
         omit_candidates=omit_candidates,
     )
     candidates = (
-        []
-        if not include_candidates
-        else build_scan_candidates(
-            shared_modules, depends_on_by_module=repo_dependencies
-        )
+        [] if not include_candidates else build_scan_candidates(shared_modules, depends_on_by_module=repo_dependencies)
     )
     if compiled_name_regex is not None:
         if not include_candidates:
-            _append_warning(
-                warnings, "candidate-name-regex ignored when candidates are omitted"
-            )
+            _append_warning(warnings, "candidate-name-regex ignored when candidates are omitted")
         else:
-            candidates = [
-                item
-                for item in candidates
-                if compiled_name_regex.search(str(item.get("module", "")))
-            ]
+            candidates = [item for item in candidates if compiled_name_regex.search(str(item.get("module", "")))]
 
-    recommendations = _build_recommended_modules(
-        shared_modules, depends_on_by_module=repo_dependencies
-    )[:SCAN_SHARED_REPOS_RECOMMENDED_MODULE_COUNT_LIMIT]
+    recommendations = _build_recommended_modules(shared_modules, depends_on_by_module=repo_dependencies)[
+        :SCAN_SHARED_REPOS_RECOMMENDED_MODULE_COUNT_LIMIT
+    ]
 
     return {
         "scan_schema_version": SCAN_SHARED_REPOS_SCHEMA_VERSION,
@@ -718,9 +657,7 @@ def materialize_module_candidate_manifest(
     )
     shared_modules = state.get("shared_modules")
     if not isinstance(shared_modules, dict) or module not in shared_modules:
-        raise ValueError(
-            f"module {module} is not shared at min_repo_count={min_repo_count}"
-        )
+        raise ValueError(f"module {module} is not shared at min_repo_count={min_repo_count}")
 
     selected_repos = sorted(shared_modules[module])
     if repos:
@@ -730,9 +667,7 @@ def materialize_module_candidate_manifest(
                 f"module {module} has insufficient pinned repos after filtering: {len(selected_repos)} < {min_repo_count}"
             )
 
-    candidates = build_scan_candidates(
-        {module: selected_repos}, module_prefix=module_prefix
-    )
+    candidates = build_scan_candidates({module: selected_repos}, module_prefix=module_prefix)
     if not candidates:
         raise ValueError(f"module {module} has no qualifying repos")
     candidate = candidates[0]

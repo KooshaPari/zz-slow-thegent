@@ -188,11 +188,7 @@ class XMLOutputAdapter(OutputAdapter):
         # 1. Detect truncated payload before attempting extraction.
         parser = IncrementalXMLParser()
         partial = parser.get_partial_state(text)
-        if (
-            partial.get("open_tag")
-            or partial.get("incomplete_tag")
-            or partial.get("is_truncated")
-        ):
+        if partial.get("open_tag") or partial.get("incomplete_tag") or partial.get("is_truncated"):
             return AdapterResult(
                 csm=CanonicalStructuredMessage(
                     status=CSMStatus.PENDING,
@@ -343,13 +339,7 @@ class GenericOutputAdapter(OutputAdapter):
         chunk_id = str(context.get("chunk_id", "") or "")
 
         if isinstance(raw, dict):
-            text = (
-                raw.get("content")
-                or raw.get("text")
-                or raw.get("message")
-                or raw.get("stdout")
-                or ""
-            )
+            text = raw.get("content") or raw.get("text") or raw.get("message") or raw.get("stdout") or ""
             if not isinstance(text, str):
                 text = str(text)
         elif raw is None:
@@ -576,9 +566,7 @@ def normalize_output(
             result = adapter.normalize(raw, context=context)
         except Exception:
             if not allow_fallback:
-                raise SemanticValidationError(
-                    f"Adapter for {provider} raised and fallback is disabled"
-                ) from None
+                raise SemanticValidationError(f"Adapter for {provider} raised and fallback is disabled") from None
             return _fallback_result(provider, raw, context)
         # If the adapter reports a no-xml-tags failure (plain text
         # payload), downgrade to a plain-text fallback rather than
@@ -595,15 +583,11 @@ def normalize_output(
         # can react explicitly (matches the contract pinned by
         # ``tests/test_unit_contracts_adapters.py``).
         if not allow_fallback and result.parse_errors:
-            raise SemanticValidationError(
-                f"Adapter for {provider} failed validation: {', '.join(result.parse_errors)}"
-            )
+            raise SemanticValidationError(f"Adapter for {provider} failed validation: {', '.join(result.parse_errors)}")
         return result
 
     if not allow_fallback:
-        raise SemanticValidationError(
-            f"No adapter registered for {provider!r} and fallback is disabled"
-        )
+        raise SemanticValidationError(f"No adapter registered for {provider!r} and fallback is disabled")
     return _fallback_result(provider, raw, context)
 
 

@@ -116,9 +116,7 @@ class KeywordCoverageEvaluator:
         self.keywords = [k.lower() for k in keywords]
         self.threshold = threshold
 
-    def evaluate(
-        self, actual: str, expected: str, case: EvalCase
-    ) -> KeywordCoverageResult:
+    def evaluate(self, actual: str, expected: str, case: EvalCase) -> KeywordCoverageResult:
         """Evaluate keyword coverage."""
         actual_lower = actual.lower()
         found = [k for k in self.keywords if k in actual_lower]

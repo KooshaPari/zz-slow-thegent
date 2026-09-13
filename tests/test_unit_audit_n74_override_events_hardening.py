@@ -259,9 +259,7 @@ class TestFRGOVOE012RegisterAddsRegistration:
             pass
 
         monitor = OverrideExpiryMonitor()
-        monitor.register(
-            "ovr-100", time.time() + 999, _noop, policy_id="p1", owner="u1"
-        )
+        monitor.register("ovr-100", time.time() + 999, _noop, policy_id="p1", owner="u1")
         assert "ovr-100" in monitor._registrations
         reg = monitor._registrations["ovr-100"]
         assert reg.override_id == "ovr-100"
@@ -299,9 +297,7 @@ class TestFRGOVOE014CheckExpirationsFiresCallback:
         emitter = OverrideEventEmitter(events_path=tmp_path / "ev.jsonl")
         monitor = OverrideExpiryMonitor(emitter=emitter)
         # Register an already-expired override
-        monitor.register(
-            "ovr-exp", time.time() - 10, lambda: fired.set(), policy_id="p", owner="o"
-        )
+        monitor.register("ovr-exp", time.time() - 10, lambda: fired.set(), policy_id="p", owner="o")
         monitor._check_expirations()
         assert fired.is_set()
         assert "ovr-exp" not in monitor._registrations

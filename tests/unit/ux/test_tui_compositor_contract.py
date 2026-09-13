@@ -84,9 +84,7 @@ class TestConstructorAndConfig:
         comp = TUICompositor(config_path=config_path)
         assert comp.config["layout"] == "balanced"
 
-    def test_tiny_yaml_fallback_works_without_pyyaml(
-        self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
-    ) -> None:
+    def test_tiny_yaml_fallback_works_without_pyyaml(self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
         """When pyyaml is missing, the built-in parser still works."""
         import builtins
 
@@ -115,17 +113,13 @@ class TestConstructorAndConfig:
 
 
 class TestCollectPanes:
-    def test_filters_non_claude_by_default(
-        self, claude_pane: PaneSnapshot, zsh_pane: PaneSnapshot
-    ) -> None:
+    def test_filters_non_claude_by_default(self, claude_pane: PaneSnapshot, zsh_pane: PaneSnapshot) -> None:
         comp = TUICompositor()
         comp.set_panes([claude_pane, zsh_pane])
         selected = comp.collect_panes()
         assert [p.pane_id for p in selected] == ["%1"]
 
-    def test_includes_non_claude_when_requested(
-        self, claude_pane: PaneSnapshot, zsh_pane: PaneSnapshot
-    ) -> None:
+    def test_includes_non_claude_when_requested(self, claude_pane: PaneSnapshot, zsh_pane: PaneSnapshot) -> None:
         comp = TUICompositor(include_non_claude=True)
         comp.set_panes([claude_pane, zsh_pane])
         selected = comp.collect_panes()
@@ -157,9 +151,7 @@ class TestCollectPanes:
 
 
 class TestRender:
-    def test_renders_balanced_layout_with_preview(
-        self, claude_pane: PaneSnapshot
-    ) -> None:
+    def test_renders_balanced_layout_with_preview(self, claude_pane: PaneSnapshot) -> None:
         comp = TUICompositor(include_non_claude=True)
         comp.set_panes([claude_pane])
         layout = comp.render(layout_name="balanced", preview="hello world")
@@ -175,9 +167,7 @@ class TestRender:
             layout = comp.render(layout_name=layout_name, preview="x")
             assert set(layout) == {"header", "footer", "left", "right"}
 
-    def test_unknown_layout_falls_back_to_balanced(
-        self, claude_pane: PaneSnapshot
-    ) -> None:
+    def test_unknown_layout_falls_back_to_balanced(self, claude_pane: PaneSnapshot) -> None:
         comp = TUICompositor(include_non_claude=True)
         comp.set_panes([claude_pane])
         layout = comp.render(layout_name="totally-bogus", preview="")
@@ -204,9 +194,7 @@ class TestARIAOnAllRegions:
         comp.set_panes([claude_pane])
         layout = comp.render(layout_name="balanced", preview="preview-text")
         for region, value in layout.items():
-            assert "[role=" in value, (
-                f"region '{region}' missing ARIA role trailer: {value!r}"
-            )
+            assert "[role=" in value, f"region '{region}' missing ARIA role trailer: {value!r}"
 
 
 # ---------------------------------------------------------------------------

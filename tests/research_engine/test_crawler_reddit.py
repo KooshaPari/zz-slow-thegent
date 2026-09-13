@@ -20,9 +20,7 @@ def test_reddit_crawler_fetch() -> None:
     """Fetch returns list of ResearchItem from Reddit."""
     from research_engine.crawlers.reddit import RedditCrawler
 
-    sub = _make_submission(
-        "Python AI agents discussion", "https://reddit.com/r/python/abc", 300
-    )
+    sub = _make_submission("Python AI agents discussion", "https://reddit.com/r/python/abc", 300)
 
     mock_reddit = MagicMock()
     mock_reddit.subreddit.return_value.search.return_value = [sub]
@@ -106,9 +104,7 @@ def test_reddit_crawler_tags() -> None:
     """Fetch populates tags from topic matches."""
     from research_engine.crawlers.reddit import RedditCrawler
 
-    sub = _make_submission(
-        "Python and machine learning", "https://reddit.com/r/1", 100, ""
-    )
+    sub = _make_submission("Python and machine learning", "https://reddit.com/r/1", 100, "")
 
     mock_reddit = MagicMock()
     mock_reddit.subreddit.return_value.search.return_value = [sub]

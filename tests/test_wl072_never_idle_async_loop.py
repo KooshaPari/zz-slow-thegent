@@ -247,9 +247,7 @@ class TestNeverIdleLoopPersistentEventLoop:
                 return_value=mock_gardening,
             ),
         ):
-            nil = NeverIdleLoop(
-                session_dir=Path("/tmp/s"), project_root=Path("/tmp"), sleep_interval=1
-            )
+            nil = NeverIdleLoop(session_dir=Path("/tmp/s"), project_root=Path("/tmp"), sleep_interval=1)
             nil.start()
             nil.stop()
 

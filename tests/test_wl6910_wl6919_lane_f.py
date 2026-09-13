@@ -41,46 +41,33 @@ def _bootstrap_shared_mcp(monkeypatch: pytest.MonkeyPatch) -> None:
     monkeypatch.setattr(
         subprocess,
         "run",
-        lambda *args, **kwargs: subprocess.CompletedProcess(
-            args[0], 0, stdout="12345\n", stderr=""
-        ),
+        lambda *args, **kwargs: subprocess.CompletedProcess(args[0], 0, stdout="12345\n", stderr=""),
     )
 
 
-def test_wl6910_shell_doctor_alias_probe_success(
-    monkeypatch: pytest.MonkeyPatch, tmp_path: Path
-) -> None:
+def test_wl6910_shell_doctor_alias_probe_success(monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> None:
     _touch(tmp_path / ".zshenv")
     _touch(tmp_path / ".zsh_bundle.zsh")
     monkeypatch.setattr(shell_cli.Path, "home", lambda: tmp_path)
     monkeypatch.setattr(
         shell_cli.subprocess,
         "run",
-        lambda *args, **kwargs: subprocess.CompletedProcess(
-            args[0], 0, stdout="alias ls='tree -a'\n", stderr=""
-        ),
+        lambda *args, **kwargs: subprocess.CompletedProcess(args[0], 0, stdout="alias ls='tree -a'\n", stderr=""),
     )
     collector = _PrintCollector()
     monkeypatch.setattr(shell_cli, "console", collector)
 
     shell_cli.shell_doctor(fix=False)
 
-    assert any(
-        "ls is aliased to tree/recursive output" in message
-        for message in collector.messages
-    )
+    assert any("ls is aliased to tree/recursive output" in message for message in collector.messages)
 
 
-def test_wl6910_shell_doctor_alias_probe_subprocess_failure(
-    monkeypatch: pytest.MonkeyPatch, tmp_path: Path
-) -> None:
+def test_wl6910_shell_doctor_alias_probe_subprocess_failure(monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> None:
     _touch(tmp_path / ".zshenv")
     _touch(tmp_path / ".zsh_bundle.zsh")
     monkeypatch.setattr(shell_cli.Path, "home", lambda: tmp_path)
 
-    def _raise_subprocess_error(
-        *_args: object, **_kwargs: object
-    ) -> subprocess.CompletedProcess[str]:
+    def _raise_subprocess_error(*_args: object, **_kwargs: object) -> subprocess.CompletedProcess[str]:
         raise subprocess.SubprocessError("bad alias command")
 
     monkeypatch.setattr(shell_cli.subprocess, "run", _raise_subprocess_error)
@@ -89,22 +76,15 @@ def test_wl6910_shell_doctor_alias_probe_subprocess_failure(
 
     shell_cli.shell_doctor(fix=False)
 
-    assert any(
-        "Alias probe unavailable" in message and "subprocess error" in message
-        for message in collector.messages
-    )
+    assert any("Alias probe unavailable" in message and "subprocess error" in message for message in collector.messages)
 
 
-def test_wl6910_shell_doctor_alias_probe_timeout(
-    monkeypatch: pytest.MonkeyPatch, tmp_path: Path
-) -> None:
+def test_wl6910_shell_doctor_alias_probe_timeout(monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> None:
     _touch(tmp_path / ".zshenv")
     _touch(tmp_path / ".zsh_bundle.zsh")
     monkeypatch.setattr(shell_cli.Path, "home", lambda: tmp_path)
 
-    def _raise_timeout(
-        *_args: object, **_kwargs: object
-    ) -> subprocess.CompletedProcess[str]:
+    def _raise_timeout(*_args: object, **_kwargs: object) -> subprocess.CompletedProcess[str]:
         raise subprocess.TimeoutExpired(cmd=["zsh"], timeout=2)
 
     monkeypatch.setattr(shell_cli.subprocess, "run", _raise_timeout)
@@ -113,10 +93,7 @@ def test_wl6910_shell_doctor_alias_probe_timeout(
 
     shell_cli.shell_doctor(fix=False)
 
-    assert any(
-        "Alias probe timed out" in message and "timeout" in message
-        for message in collector.messages
-    )
+    assert any("Alias probe timed out" in message and "timeout" in message for message in collector.messages)
 
 
 def test_wl6911_parse_log_entry_valid_payload() -> None:
@@ -153,9 +130,7 @@ def test_wl6911_parse_log_entry_invalid_timestamp() -> None:
     end = datetime(2026, 1, 31, tzinfo=UTC)
     stats = summary.LogParseStats()
 
-    row = json.dumps(
-        {"type": "assistant", "timestamp": "not-a-time", "message": {"content": "bad"}}
-    ).decode()
+    row = json.dumps({"type": "assistant", "timestamp": "not-a-time", "message": {"content": "bad"}}).decode()
     parsed = summary._parse_log_entry(row, start, end, stats)
 
     assert parsed is None
@@ -228,26 +203,20 @@ def test_wl6912_read_log_file_with_malformed_and_valid_records(tmp_path: Path) -
     assert parse_counts["invalid_timestamp"] == 1
     assert parse_counts["unsupported_type"] == 1
     assert any("malformed_json" in sample for sample in parse_counts["sampled_errors"])
-    assert any(
-        "unsupported_type" in sample for sample in parse_counts["sampled_errors"]
-    )
+    assert any("unsupported_type" in sample for sample in parse_counts["sampled_errors"])
 
 
 def test_wl6912_read_log_file_missing_file(tmp_path: Path) -> None:
     start = datetime(2026, 1, 1, tzinfo=UTC)
     end = datetime(2026, 1, 31, tzinfo=UTC)
 
-    payload = summary._read_log_file(
-        tmp_path / "missing.jsonl", start, end, include_diagnostics=True
-    )
+    payload = summary._read_log_file(tmp_path / "missing.jsonl", start, end, include_diagnostics=True)
 
     assert payload["status"] == "missing"
     assert payload["error"]["type"] == "FileNotFoundError"
 
 
-def test_wl6912_read_log_file_permission_denied(
-    monkeypatch: pytest.MonkeyPatch, tmp_path: Path
-) -> None:
+def test_wl6912_read_log_file_permission_denied(monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> None:
     start = datetime(2026, 1, 1, tzinfo=UTC)
     end = datetime(2026, 1, 31, tzinfo=UTC)
     path = tmp_path / "denied.jsonl"
@@ -267,9 +236,7 @@ def test_wl6912_read_log_file_permission_denied(
     assert payload["error"]["type"] == "PermissionError"
 
 
-def test_wl6913_get_thegent_root_installed_package_success(
-    monkeypatch: pytest.MonkeyPatch, tmp_path: Path
-) -> None:
+def test_wl6913_get_thegent_root_installed_package_success(monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> None:
     pkg_dir = tmp_path / "site-packages" / "thegent"
     (pkg_dir / "hooks").mkdir(parents=True)
     module = SimpleNamespace(__file__=str(pkg_dir / "__init__.py"))
@@ -305,14 +272,10 @@ def test_wl6913_get_thegent_root_path_failure_falls_back(
     assert root == Path(install_module.__file__).resolve().parent.parent.parent
 
 
-def test_wl6914_shared_mcp_stale_lockfile_cleanup_success(
-    monkeypatch: pytest.MonkeyPatch, tmp_path: Path
-) -> None:
+def test_wl6914_shared_mcp_stale_lockfile_cleanup_success(monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> None:
     monkeypatch.setattr(shared_mcp_manager.Path, "home", lambda: tmp_path)
     _scope, lockfile = shared_mcp_manager.get_server_scope()
-    lockfile.write_text(
-        json.dumps({"pid": 424242, "port": 3847}).decode(), encoding="utf-8"
-    )
+    lockfile.write_text(json.dumps({"pid": 424242, "port": 3847}).decode(), encoding="utf-8")
     monkeypatch.setattr(
         shared_mcp_manager.os,
         "kill",
@@ -342,9 +305,7 @@ def test_wl6914_shared_mcp_invalid_lockfile_content_cleanup_then_start(
     assert data["port"] == 3847
 
 
-def test_wl6914_shared_mcp_unlink_failure_is_explicit(
-    monkeypatch: pytest.MonkeyPatch, tmp_path: Path
-) -> None:
+def test_wl6914_shared_mcp_unlink_failure_is_explicit(monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> None:
     monkeypatch.setattr(shared_mcp_manager.Path, "home", lambda: tmp_path)
     _scope, lockfile = shared_mcp_manager.get_server_scope()
     lockfile.write_text("{ bad json", encoding="utf-8")
@@ -364,9 +325,7 @@ def test_wl6914_shared_mcp_unlink_failure_is_explicit(
 
 
 def test_wl6915_extract_dex_command_args_normal() -> None:
-    args = dex_cli_helpers.extract_dex_command_args(
-        ["python", "-m", "thegent", "dex", "--model", "x"]
-    )
+    args = dex_cli_helpers.extract_dex_command_args(["python", "-m", "thegent", "dex", "--model", "x"])
     assert args == ["--model", "x"]
 
 
@@ -380,9 +339,7 @@ def test_wl6915_extract_dex_command_args_invalid_entry() -> None:
         dex_cli_helpers.extract_dex_command_args(["python", 42, "dex"])  # type: ignore[list-item]
 
 
-def test_wl6917_session_tui_valid_meta_lookup(
-    monkeypatch: pytest.MonkeyPatch, tmp_path: Path
-) -> None:
+def test_wl6917_session_tui_valid_meta_lookup(monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> None:
     tui = SessionTUI()
     meta_path = tmp_path / "session.meta.json"
 
@@ -443,14 +400,10 @@ def test_wl6917_session_tui_path_error_sets_diagnostic() -> None:
         details = tui._get_session_details("sess-path")
 
     assert details.get("degraded") is True
-    assert (
-        details["diagnostics"]["log_paths"]["failure_type"] == "path_resolution_error"
-    )
+    assert details["diagnostics"]["log_paths"]["failure_type"] == "path_resolution_error"
 
 
-def test_wl6918_get_resource_path_dev_tree_discovery(
-    monkeypatch: pytest.MonkeyPatch, tmp_path: Path
-) -> None:
+def test_wl6918_get_resource_path_dev_tree_discovery(monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> None:
     import thegent.config as config_module
 
     dev_file = tmp_path / "src" / "thegent" / "resources" / "__init__.py"
@@ -462,23 +415,17 @@ def test_wl6918_get_resource_path_dev_tree_discovery(
     target.write_text("{}", encoding="utf-8")
 
     monkeypatch.setattr(resources, "__file__", str(dev_file))
-    monkeypatch.setattr(
-        config_module, "ThegentSettings", lambda: SimpleNamespace(dev=False)
-    )
+    monkeypatch.setattr(config_module, "ThegentSettings", lambda: SimpleNamespace(dev=False))
 
     path = resources.get_resource_path("contracts/dag.json")
 
     assert path == target
 
 
-def test_wl6918_get_resource_path_non_dev_uses_package(
-    monkeypatch: pytest.MonkeyPatch, tmp_path: Path
-) -> None:
+def test_wl6918_get_resource_path_non_dev_uses_package(monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> None:
     import thegent.config as config_module
 
-    installed_file = (
-        tmp_path / "venv" / "site-packages" / "thegent" / "resources" / "__init__.py"
-    )
+    installed_file = tmp_path / "venv" / "site-packages" / "thegent" / "resources" / "__init__.py"
     installed_file.parent.mkdir(parents=True, exist_ok=True)
     installed_file.write_text("# stub", encoding="utf-8")
     packaged = tmp_path / "pkg" / "contracts" / "dag.json"
@@ -490,9 +437,7 @@ def test_wl6918_get_resource_path_non_dev_uses_package(
         yield packaged
 
     monkeypatch.setattr(resources, "__file__", str(installed_file))
-    monkeypatch.setattr(
-        config_module, "ThegentSettings", lambda: SimpleNamespace(dev=False)
-    )
+    monkeypatch.setattr(config_module, "ThegentSettings", lambda: SimpleNamespace(dev=False))
     monkeypatch.setattr(resources.pkg_resources, "path", _fake_pkg_path)
 
     path = resources.get_resource_path("contracts/dag.json")
@@ -509,9 +454,7 @@ def test_wl6918_get_resource_path_path_detection_error_falls_back(
         raise RuntimeError("resolve failed")
 
     monkeypatch.setattr(resources.Path, "resolve", _boom_resolve)
-    monkeypatch.setattr(
-        config_module, "ThegentSettings", lambda: SimpleNamespace(dev=False)
-    )
+    monkeypatch.setattr(config_module, "ThegentSettings", lambda: SimpleNamespace(dev=False))
     monkeypatch.setattr(
         resources.pkg_resources,
         "path",

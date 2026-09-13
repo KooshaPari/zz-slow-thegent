@@ -297,16 +297,12 @@ class _CockpitState:
     runs: dict[str, RunEvent] = field(default_factory=dict)
     overrides: dict[str, OverrideEvent] = field(default_factory=dict)
     confidence_history: deque[float] = field(default_factory=lambda: deque(maxlen=1024))
-    override_notices: deque[OverrideExpiryNotice] = field(
-        default_factory=lambda: deque(maxlen=32)
-    )
+    override_notices: deque[OverrideExpiryNotice] = field(default_factory=lambda: deque(maxlen=32))
     decision_notices: deque[DecisionNotice] = field(
         default_factory=lambda: deque(maxlen=MAX_DECISION_NOTICES),
     )
     last_progress: tuple[int, int] = (0, 0)  # (done, total)
-    traffic_dashboard: Any = (
-        None  # TrafficDashboard | None — imported lazily to avoid cycle
-    )
+    traffic_dashboard: Any = None  # TrafficDashboard | None — imported lazily to avoid cycle
     # AUDIT-N+18: dormant-core envelope source. Accepts any callable
     # returning a dict (the AUDIT-N+13 ``_build_observe_trend_payload``
     # output shape) or any object exposing ``.summary()`` like
@@ -637,12 +633,8 @@ class OperatorCockpit:
         current wall clock on every render so the banner naturally
         fades.
         """
-        if not isinstance(
-            notice, OverrideExpiryNotice
-        ):  # defensive — surface config drift
-            raise TypeError(
-                f"record_override_event expects OverrideExpiryNotice, got {type(notice).__name__}"
-            )
+        if not isinstance(notice, OverrideExpiryNotice):  # defensive — surface config drift
+            raise TypeError(f"record_override_event expects OverrideExpiryNotice, got {type(notice).__name__}")
         with self._lock:
             self._state.override_notices.append(notice)
 
@@ -662,9 +654,7 @@ class OperatorCockpit:
         with the cockpit's clock for ergonomic zero-init.
         """
         if not isinstance(notice, DecisionNotice):
-            raise TypeError(
-                f"record_decision expects DecisionNotice, got {type(notice).__name__}"
-            )
+            raise TypeError(f"record_decision expects DecisionNotice, got {type(notice).__name__}")
         with self._lock:
             payload = notice
             if payload.evaluated_at <= 0.0:
@@ -703,9 +693,7 @@ class OperatorCockpit:
             from .kpis.traffic import TrafficDashboard
 
             if not isinstance(dashboard, TrafficDashboard):
-                raise TypeError(
-                    f"attach_traffic expects TrafficDashboard, got {type(dashboard).__name__}"
-                )
+                raise TypeError(f"attach_traffic expects TrafficDashboard, got {type(dashboard).__name__}")
         with self._lock:
             self._state.traffic_dashboard = dashboard
         return self
@@ -913,18 +901,14 @@ class OperatorCockpit:
                         "agent": d.agent,
                         "lane": d.lane,
                         "evaluated_at": d.evaluated_at,
-                        "age_s": max(0.0, now - d.evaluated_at)
-                        if d.evaluated_at > 0
-                        else 0.0,
+                        "age_s": max(0.0, now - d.evaluated_at) if d.evaluated_at > 0 else 0.0,
                         "reason": d.reason,
                     }
                     for d in self._state.decision_notices
                 ],
                 "last_render_ms": self._last_render_ms,
                 "traffic": (
-                    dict(self._state.traffic_dashboard.summary())
-                    if self._state.traffic_dashboard is not None
-                    else None
+                    dict(self._state.traffic_dashboard.summary()) if self._state.traffic_dashboard is not None else None
                 ),
                 # AUDIT-N+18: dormant-core envelope (dict shape from
                 # ``thegent.cli.commands.observability_impl._build_observe_trend_payload``)
@@ -1022,9 +1006,7 @@ class OperatorCockpit:
         # never missing.
         runs_label = cfg.pane_labels.get(CockpitPane.RUNS, "Live Runs")
         lanes_label = cfg.pane_labels.get(CockpitPane.LANES, "Lane Distribution")
-        confidence_label = cfg.pane_labels.get(
-            CockpitPane.CONFIDENCE, "Confidence (P50/P95)"
-        )
+        confidence_label = cfg.pane_labels.get(CockpitPane.CONFIDENCE, "Confidence (P50/P95)")
         overrides_label = cfg.pane_labels.get(CockpitPane.OVERRIDES, "Active Overrides")
         traffic_label = cfg.pane_labels.get(CockpitPane.TRAFFIC, "Traffic")
         dormant_label = cfg.pane_labels.get(CockpitPane.DORMANT_CORE, "Dormant Core")
@@ -1111,9 +1093,7 @@ class OperatorCockpit:
         with self._lock:
             now = self._clock()
             last_override: OverrideExpiryNotice | None = (
-                self._state.override_notices[-1]
-                if self._state.override_notices
-                else None
+                self._state.override_notices[-1] if self._state.override_notices else None
             )
             last_deny: DecisionNotice | None = None
             for n in reversed(self._state.decision_notices):
@@ -1204,9 +1184,7 @@ class OperatorCockpit:
             for ev in runs[:MAX_RUNS_PANE_ROWS]:
                 lines.append(f"│ {_format_run_row(ev):<38} │")
             if total_runs > MAX_RUNS_PANE_ROWS:
-                lines.append(
-                    f"│  … {total_runs - MAX_RUNS_PANE_ROWS} more            │"
-                )
+                lines.append(f"│  … {total_runs - MAX_RUNS_PANE_ROWS} more            │")
         closing = "└──────────────────────────────────────┘"
         if aria_label is not None:
             closing = _annotate_pane_close(closing, label=aria_label)
@@ -1313,9 +1291,7 @@ class OperatorCockpit:
             for ev in ovrs[:MAX_OVERRIDE_PANE_ROWS]:
                 lines.append(f"│ {_format_override_row(ev):<38} │")
             if total_ovrs > MAX_OVERRIDE_PANE_ROWS:
-                lines.append(
-                    f"│  … {total_ovrs - MAX_OVERRIDE_PANE_ROWS} more            │"
-                )
+                lines.append(f"│  … {total_ovrs - MAX_OVERRIDE_PANE_ROWS} more            │")
         closing = "└──────────────────────────────────────┘"
         if aria_label is not None:
             closing = _annotate_pane_close(closing, label=aria_label)
@@ -1352,9 +1328,7 @@ class OperatorCockpit:
         lines = self._render_dormant_core_pane_lines()
         return "\n".join(lines)
 
-    def _render_dormant_core_pane_lines(
-        self, *, aria_label: str | None = None
-    ) -> list[str]:
+    def _render_dormant_core_pane_lines(self, *, aria_label: str | None = None) -> list[str]:
         """Render the AUDIT-N+18 DORMANT_CORE pane rows as a list of strings.
 
         Internal helper used by :meth:`_render_grid_locked` to splice
@@ -1405,33 +1379,19 @@ class OperatorCockpit:
         # for the canonical names). Nested ``trend_summary`` /
         # ``escalation_breakdown`` dicts are flattened one level deep
         # so a single-line summary is readable on an 80-col console.
-        trend_summary = (
-            payload.get("trend_summary")
-            if isinstance(payload.get("trend_summary"), dict)
-            else {}
-        )
+        trend_summary = payload.get("trend_summary") if isinstance(payload.get("trend_summary"), dict) else {}
         escalation_breakdown = (
-            payload.get("escalation_breakdown")
-            if isinstance(payload.get("escalation_breakdown"), dict)
-            else {}
+            payload.get("escalation_breakdown") if isinstance(payload.get("escalation_breakdown"), dict) else {}
         )
-        backlog = escalation_breakdown.get(
-            "backlog_count", escalation_breakdown.get("rows_count", "-")
-        )
+        backlog = escalation_breakdown.get("backlog_count", escalation_breakdown.get("rows_count", "-"))
         past_sla = escalation_breakdown.get("past_sla_count", "-")
-        freshness = trend_summary.get(
-            "freshness_bucket", trend_summary.get("trend_snapshot_health", "-")
-        )
+        freshness = trend_summary.get("freshness_bucket", trend_summary.get("trend_snapshot_health", "-"))
         health = trend_summary.get("trend_snapshot_health", "-")
         # Side-channel flag from AUDIT-N+12/13: True iff the dormant-core
         # round-trip produced dict-shaped output for both halves.
         round_trip = payload.get("wl120_dormant_round_trip")
         scope_sig = payload.get("trend_scope_signature", "")
-        sig_short = (
-            (scope_sig[:8] + "…")
-            if scope_sig and len(scope_sig) > 8
-            else (scope_sig or "-")
-        )
+        sig_short = (scope_sig[:8] + "…") if scope_sig and len(scope_sig) > 8 else (scope_sig or "-")
         fresh_txt = _sanitize_console_text(str(freshness), max_len=6)
         health_txt = _sanitize_console_text(str(health), max_len=6)
         sig_txt = _sanitize_console_text(sig_short, max_len=12)
@@ -1516,9 +1476,7 @@ class OperatorCockpit:
         err = float(snap.get("error_rate", 0.0)) * 100.0
         p50 = float(snap.get("p50_ms", 0.0))
         p95 = float(snap.get("p95_ms", 0.0))
-        by_status = ", ".join(
-            f"{k}={int(v)}" for k, v in sorted(snap.get("by_status", {}).items())
-        )
+        by_status = ", ".join(f"{k}={int(v)}" for k, v in sorted(snap.get("by_status", {}).items()))
         lines.append(f"│ count={count:<5d} rps={rps:<4.2f} err={err:>5.2f}% │")
         lines.append(f"│ p50={p50:<6.0f}ms p95={p95:<6.0f}ms        │")
         if by_status:
@@ -1573,9 +1531,7 @@ class OperatorCockpit:
                 lines.append(f"│ {glyph} {_format_decision_row(d, age):<47} │")
             total = len(decisions)
             if total > MAX_DECISION_PANE_ROWS:
-                lines.append(
-                    f"│  … {total - MAX_DECISION_PANE_ROWS} older decisions hidden       │"
-                )
+                lines.append(f"│  … {total - MAX_DECISION_PANE_ROWS} older decisions hidden       │")
         closing = "└─────────────────────────────────────────────────┘"
         if aria_label is not None:
             closing = _annotate_pane_close(closing, label=aria_label, role="log")

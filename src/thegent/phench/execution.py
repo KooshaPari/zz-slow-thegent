@@ -33,9 +33,7 @@ def _normalize_repo_map(values: dict[str, str] | None, *, label: str) -> dict[st
             raise ValueError(f"{label} values must be strings")
         normalized_value = value.strip()
         if not normalized_value:
-            raise ValueError(
-                f"{label} value for repo '{normalized_key}' cannot be empty"
-            )
+            raise ValueError(f"{label} value for repo '{normalized_key}' cannot be empty")
         normalized[normalized_key] = normalized_value
     return normalized
 
@@ -46,19 +44,14 @@ def _materialization_entry(item: dict[str, Any]) -> tuple[str, Path]:
     if not isinstance(repo_id, str) or not repo_id.strip():
         raise ValueError("invalid runtime materialization entry: missing repo_id")
     if not isinstance(checkout_path, str) or not checkout_path.strip():
-        raise ValueError(
-            f"invalid runtime materialization entry for {repo_id}: missing checkout_path"
-        )
+        raise ValueError(f"invalid runtime materialization entry for {repo_id}: missing checkout_path")
     return repo_id, Path(checkout_path).resolve()
 
 
 def _materialization_checkouts(
     materializations: list[dict[str, Any]],
 ) -> list[Path]:
-    return [
-        checkout
-        for _, checkout in (_materialization_entry(item) for item in materializations)
-    ]
+    return [checkout for _, checkout in (_materialization_entry(item) for item in materializations)]
 
 
 def _run_env_doctor_for_materializations(
@@ -79,32 +72,23 @@ def _materialization_lookup(
     materializations: list[dict[str, Any]],
 ) -> list[dict[str, Any]]:
     if not materializations:
-        raise ValueError(
-            "target has no runtime materialization; run target materialize"
-        )
+        raise ValueError("target has no runtime materialization; run target materialize")
 
     if all_repos:
         return [dict(item) for item in materializations]
 
     if repo_id is not None:
-        selected = next(
-            (item for item in materializations if item.get("repo_id") == repo_id), None
-        )
+        selected = next((item for item in materializations if item.get("repo_id") == repo_id), None)
         if selected is None:
             raise ValueError(f"repo_id not materialized: {repo_id}")
         return [dict(selected)]
 
     if repo_ids is not None:
         index = {
-            repo_id: item
-            for item in materializations
-            for repo_id in [item.get("repo_id")]
-            if isinstance(repo_id, str)
+            repo_id: item for item in materializations for repo_id in [item.get("repo_id")] if isinstance(repo_id, str)
         }
         if not index:
-            raise ValueError(
-                "target has no runtime materialization; run target materialize"
-            )
+            raise ValueError("target has no runtime materialization; run target materialize")
         requested: list[str] = []
         seen: set[str] = set()
         for requested_repo_id in repo_ids:
@@ -132,17 +116,13 @@ def _run_single_repo_target(
     if command_name and not runner:
         raise ValueError("--command requires --runner")
     if runner and command_name:
-        return run_command(
-            checkout_path, runner, command_name, env_overrides=env_overrides
-        )
+        return run_command(checkout_path, runner, command_name, env_overrides=env_overrides)
 
     if runner and not command_name:
         options = [command for command in catalog.commands if command.runner == runner]
         if not options:
             raise ValueError(f"runner has no discovered commands: {runner}")
-        return run_command(
-            checkout_path, runner, options[0].name, env_overrides=env_overrides
-        )
+        return run_command(checkout_path, runner, options[0].name, env_overrides=env_overrides)
 
     if non_interactive:
         raise ValueError(
@@ -150,9 +130,7 @@ def _run_single_repo_target(
         )
 
     selected = pick_command_interactive(catalog)
-    return run_command(
-        checkout_path, selected.runner, selected.name, env_overrides=env_overrides
-    )
+    return run_command(checkout_path, selected.runner, selected.name, env_overrides=env_overrides)
 
 
 def _resolve_repo_runner_and_command(
@@ -169,9 +147,7 @@ def _resolve_repo_runner_and_command(
     command_name = repo_command_override or cli_command or repo.preferred_command
 
     if command_name and not runner:
-        raise ValueError(
-            f"repo '{repo_id}' requires a runner for command '{command_name}'"
-        )
+        raise ValueError(f"repo '{repo_id}' requires a runner for command '{command_name}'")
 
     if not runner:
         if enforce_no_interactive:
@@ -186,9 +162,7 @@ def _resolve_repo_runner_and_command(
 
     available = [command for command in catalog.commands if command.runner == runner]
     if not available:
-        raise ValueError(
-            f"runner '{runner}' has no discovered commands in repo '{repo_id}'"
-        )
+        raise ValueError(f"runner '{runner}' has no discovered commands in repo '{repo_id}'")
     if enforce_no_interactive and len(available) > 1:
         raise ValueError(
             f"repo '{repo_id}' with runner '{runner}' requires explicit command "
@@ -248,9 +222,7 @@ def build_project_execution_matrix(
         if not isinstance(snapshot_lock, dict):
             raise ValueError(f"snapshot '{snapshot_id}' has invalid lock payload")
         lock = _parse_lock(snapshot_lock)
-        report = _run_env_doctor_for_materializations(
-            target, materializations, family=family
-        )
+        report = _run_env_doctor_for_materializations(target, materializations, family=family)
         lock_hash = str((snapshot_lock or {}).get("lock_hash", ""))
         snapshot_hash = str(snapshot.get("snapshot_hash", ""))
         runtime_hash = str(snapshot.get("runtime_hash", ""))
@@ -277,9 +249,7 @@ def build_project_execution_matrix(
     if repo_ref_overrides is None:
         repo_ref_overrides_normalized = {}
     else:
-        repo_ref_overrides_normalized = _normalize_repo_map(
-            repo_ref_overrides, label="repo_ref_overrides"
-        )
+        repo_ref_overrides_normalized = _normalize_repo_map(repo_ref_overrides, label="repo_ref_overrides")
 
     repo_runner_overrides_normalized = _normalize_repo_map(
         repo_runner_overrides,
@@ -303,35 +273,23 @@ def build_project_execution_matrix(
     if repo_ids is not None:
         repo_index = {item.strip(): item.strip() for item in repo_ids}
         repo_ids = list(repo_index.values())
-        unknown_override = [
-            item for item in repo_ref_overrides_normalized if item not in repo_index
-        ]
+        unknown_override = [item for item in repo_ref_overrides_normalized if item not in repo_index]
         if unknown_override:
             raise ValueError(f"repo_id not materialized: {unknown_override[0]}")
-        unknown_runner_override = [
-            item for item in repo_runner_overrides_normalized if item not in repo_index
-        ]
+        unknown_runner_override = [item for item in repo_runner_overrides_normalized if item not in repo_index]
         if unknown_runner_override:
             raise ValueError(f"repo_id not materialized: {unknown_runner_override[0]}")
-        unknown_command_override = [
-            item for item in repo_command_overrides_normalized if item not in repo_index
-        ]
+        unknown_command_override = [item for item in repo_command_overrides_normalized if item not in repo_index]
         if unknown_command_override:
             raise ValueError(f"repo_id not materialized: {unknown_command_override[0]}")
         unknown_env_profile_override = [
-            item
-            for item in repo_env_profile_overrides_normalized
-            if item not in repo_index
+            item for item in repo_env_profile_overrides_normalized if item not in repo_index
         ]
         if unknown_env_profile_override:
-            raise ValueError(
-                f"repo_id not materialized: {unknown_env_profile_override[0]}"
-            )
+            raise ValueError(f"repo_id not materialized: {unknown_env_profile_override[0]}")
 
     if not isinstance(materializations, list) or not materializations:
-        raise ValueError(
-            "target has no runtime materialization; run target materialize"
-        )
+        raise ValueError("target has no runtime materialization; run target materialize")
 
     if all_repos:
         selected_items = [dict(item) for item in materializations]
@@ -373,18 +331,14 @@ def build_project_execution_matrix(
 
         if repo_ref is not None:
             resolved = resolve_ref_to_sha(Path(lock_repo.repo_path), repo_ref)
-            materialize_repo_checkout(
-                Path(lock_repo.repo_path), item_checkout, resolved
-            )
+            materialize_repo_checkout(Path(lock_repo.repo_path), item_checkout, resolved)
             item["resolved_sha"] = resolved
         else:
             resolved = item.get("resolved_sha")
 
         repo_runner_override = repo_runner_overrides_normalized.get(item_repo_id)
         repo_command_override = repo_command_overrides_normalized.get(item_repo_id)
-        repo_env_profile = repo_env_profile_overrides_normalized.get(
-            item_repo_id, env_profile
-        )
+        repo_env_profile = repo_env_profile_overrides_normalized.get(item_repo_id, env_profile)
         env_overrides = get_env_profile(target, profile=repo_env_profile, family=family)
 
         if validate_commands:
@@ -401,13 +355,9 @@ def build_project_execution_matrix(
             )
         else:
             repo_runner = repo_runner_override or runner or lock_repo.preferred_runner
-            repo_command = (
-                repo_command_override or command_name or lock_repo.preferred_command
-            )
+            repo_command = repo_command_override or command_name or lock_repo.preferred_command
             if repo_command and not repo_runner:
-                raise ValueError(
-                    f"repo '{item_repo_id}' requires a runner for command '{repo_command}'"
-                )
+                raise ValueError(f"repo '{item_repo_id}' requires a runner for command '{repo_command}'")
 
         plans.append(
             {
@@ -489,9 +439,7 @@ def run_target(
     if command_name is not None and command_name.startswith("-"):
         raise ValueError("command names cannot start with '-'")
 
-    runs: list[
-        tuple[Path, RunnerCatalog, str | None, str | None, dict[str, str] | None]
-    ] = []
+    runs: list[tuple[Path, RunnerCatalog, str | None, str | None, dict[str, str] | None]] = []
     for item in matrix["repos"]:
         checkout_path = Path(item["checkout_path"])
         catalog = build_runner_catalog(target, checkout_path)

@@ -53,9 +53,7 @@ def _failing_check(name: str, message: str = "fix this") -> Any:
     """Async VetterCheck mock that always fails. # @trace WL-096"""
     check = MagicMock()
     check.name = name
-    check.check = AsyncMock(
-        return_value=VetterCheckResult(check_name=name, passed=False, message=message)
-    )
+    check.check = AsyncMock(return_value=VetterCheckResult(check_name=name, passed=False, message=message))
     return check
 
 
@@ -63,9 +61,7 @@ def _passing_check(name: str) -> Any:
     """Async VetterCheck mock that always passes. # @trace WL-096"""
     check = MagicMock()
     check.name = name
-    check.check = AsyncMock(
-        return_value=VetterCheckResult(check_name=name, passed=True)
-    )
+    check.check = AsyncMock(return_value=VetterCheckResult(check_name=name, passed=True))
     return check
 
 
@@ -208,9 +204,7 @@ async def test_enqueued_prompt_contains_hint_text(tmp_path: Path) -> None:
     """Enqueued prompt contains the revision hint from the check message. # @trace WL-096"""
     queue = _make_queue()
     hint = "Please split into smaller functions"
-    orch = _make_orch(
-        tmp_path, {"style": _failing_check("style", hint)}, prompt_queue=queue
-    )
+    orch = _make_orch(tmp_path, {"style": _failing_check("style", hint)}, prompt_queue=queue)
     policy = VetterPolicy(checks=["style"], max_revision_rounds=3)
 
     await orch.evaluate(
@@ -329,9 +323,7 @@ async def test_enqueue_receives_project_path_from_run_context(tmp_path: Path) ->
         },
     )
 
-    assert (
-        queue.enqueue.call_args.kwargs["project_path"] == "/projects/myapp"
-    )  # @trace WL-096
+    assert queue.enqueue.call_args.kwargs["project_path"] == "/projects/myapp"  # @trace WL-096
 
 
 # ---------------------------------------------------------------------------
@@ -417,12 +409,8 @@ async def test_repeated_revision_requested_for_same_run_is_guarded_by_tracker_ro
         "vetter_revision_round": 0,
     }
 
-    first = await orch.evaluate(
-        result=MagicMock(), policy=policy, run_context=run_context
-    )
-    second = await orch.evaluate(
-        result=MagicMock(), policy=policy, run_context=run_context
-    )
+    first = await orch.evaluate(result=MagicMock(), policy=policy, run_context=run_context)
+    second = await orch.evaluate(result=MagicMock(), policy=policy, run_context=run_context)
 
     assert first.verdict == VetterVerdict.REVISION_REQUESTED
     assert second.verdict == VetterVerdict.REJECTED
@@ -568,12 +556,7 @@ async def test_exhausted_rounds_escalation_event_written_to_jsonl(
         },
     )
 
-    lines = (
-        (tmp_path / "governance_events.jsonl")
-        .read_text(encoding="utf-8")
-        .strip()
-        .splitlines()
-    )
+    lines = (tmp_path / "governance_events.jsonl").read_text(encoding="utf-8").strip().splitlines()
     event_types = [json.loads(line)["event_type"] for line in lines]
     assert "vetter_escalation" in event_types  # @trace WL-096
 
@@ -815,9 +798,7 @@ async def test_revision_prompt_on_result_contains_hint(tmp_path: Path) -> None:
     """VetterResult.revision_prompt contains the hint message from the failing check. # @trace WL-096"""
     queue = _make_queue()
     hint = "Use environment variables instead of literals"
-    orch = _make_orch(
-        tmp_path, {"secrets": _failing_check("secrets", hint)}, prompt_queue=queue
-    )
+    orch = _make_orch(tmp_path, {"secrets": _failing_check("secrets", hint)}, prompt_queue=queue)
     policy = VetterPolicy(checks=["secrets"], max_revision_rounds=3)
 
     result = await orch.evaluate(
@@ -1015,12 +996,8 @@ async def test_exhausted_revision_path_does_not_requeue_without_new_round(
         "vetter_revision_round": 1,
     }
 
-    first = await orch.evaluate(
-        result=MagicMock(), policy=policy, run_context=exhausted_context
-    )
-    second = await orch.evaluate(
-        result=MagicMock(), policy=policy, run_context=exhausted_context
-    )
+    first = await orch.evaluate(result=MagicMock(), policy=policy, run_context=exhausted_context)
+    second = await orch.evaluate(result=MagicMock(), policy=policy, run_context=exhausted_context)
 
     assert first.verdict == VetterVerdict.REJECTED
     assert second.verdict == VetterVerdict.REJECTED

@@ -39,9 +39,7 @@ def init_repo(tmp_path: Path) -> Path:
     )
 
     (repo_root / "README.md").write_text("seed\n", encoding="utf-8")
-    subprocess.run(
-        ["git", "add", "README.md"], cwd=repo_root, check=True, capture_output=True
-    )
+    subprocess.run(["git", "add", "README.md"], cwd=repo_root, check=True, capture_output=True)
     subprocess.run(
         ["git", "commit", "-q", "-m", "seed"],
         cwd=repo_root,
@@ -89,9 +87,7 @@ def setup_canary_remote(repo_root: Path) -> Path:
         capture_output=True,
     )
     (repo_root / "README.md").write_text("seed\ncanary\n", encoding="utf-8")
-    subprocess.run(
-        ["git", "add", "README.md"], cwd=repo_root, check=True, capture_output=True
-    )
+    subprocess.run(["git", "add", "README.md"], cwd=repo_root, check=True, capture_output=True)
     subprocess.run(
         ["git", "commit", "-q", "-m", "canary"],
         cwd=repo_root,
@@ -128,9 +124,7 @@ def push_remote_branch(
         capture_output=True,
     )
     (repo_root / file_name).write_text(content, encoding="utf-8")
-    subprocess.run(
-        ["git", "add", file_name], cwd=repo_root, check=True, capture_output=True
-    )
+    subprocess.run(["git", "add", file_name], cwd=repo_root, check=True, capture_output=True)
     subprocess.run(
         ["git", "commit", "-q", "-m", commit_msg],
         cwd=repo_root,

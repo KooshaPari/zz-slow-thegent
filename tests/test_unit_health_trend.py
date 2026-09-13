@@ -55,9 +55,7 @@ def _build_audit(total: int, healthy: int, *, owner: str = "alice") -> dict:
 
 @pytest.mark.unit
 class TestHealthPolicyAndTrend:
-    def test_gate_policy_profile_overrides_threshold(
-        self, monkeypatch: pytest.MonkeyPatch
-    ) -> None:
+    def test_gate_policy_profile_overrides_threshold(self, monkeypatch: pytest.MonkeyPatch) -> None:
         # @trace FR-GOV-002
         monkeypatch.setattr(
             cli_impl,
@@ -75,9 +73,7 @@ class TestHealthPolicyAndTrend:
         assert payload["pass"] is False
         assert "ratio_below_threshold" in payload["decision_reasons"]
 
-    def test_gate_baseline_regression_triggers_block(
-        self, monkeypatch: pytest.MonkeyPatch, tmp_path: Path
-    ) -> None:
+    def test_gate_baseline_regression_triggers_block(self, monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> None:
         # @trace FR-GOV-002
         snapshot_path = tmp_path / "health-snapshots.jsonl"
         monkeypatch.setenv("THGENT_HEALTH_SNAPSHOT_PATH", str(snapshot_path))
@@ -107,9 +103,7 @@ class TestHealthPolicyAndTrend:
         assert second["trend_summary"]["baseline_available"] is True
         assert second["trend_summary"]["blocked_count_delta"] == 1
 
-    def test_report_profile_rule_and_compat_aliases(
-        self, monkeypatch: pytest.MonkeyPatch
-    ) -> None:
+    def test_report_profile_rule_and_compat_aliases(self, monkeypatch: pytest.MonkeyPatch) -> None:
         # @trace FR-GOV-002
         monkeypatch.setattr(
             cli_impl,
@@ -125,9 +119,7 @@ class TestHealthPolicyAndTrend:
         assert payload["compat"]["aliases"]["total_sessions"] == "total"
         assert payload["compat"]["aliases"]["blocked_sessions_count"] == "blocked_count"
 
-    def test_health_trend_impl_returns_deltas(
-        self, monkeypatch: pytest.MonkeyPatch, tmp_path: Path
-    ) -> None:
+    def test_health_trend_impl_returns_deltas(self, monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> None:
         # @trace FR-GOV-002
         snapshot_path = tmp_path / "health-snapshots.jsonl"
         monkeypatch.setenv("THGENT_HEALTH_SNAPSHOT_PATH", str(snapshot_path))
@@ -169,10 +161,7 @@ class TestHealthPolicyAndTrend:
         assert trend["payload_type"] == "session_contract_health_trend"
         assert trend["trend_payload_type"] == "session_contract_health_gate"
         assert trend["scope_payload_type"] == "session_contract_health_gate"
-        assert (
-            trend["scope_key_json"]
-            == json.dumps(trend["scope_key"], sort_keys=True).decode()
-        )
+        assert trend["scope_key_json"] == json.dumps(trend["scope_key"], sort_keys=True).decode()
         assert trend["scope_policy_profile"] == "warn_only"
         assert trend["scope_min_healthy_ratio"] == 0.0
         assert trend["scope_top_blocked"] is None
@@ -181,26 +170,16 @@ class TestHealthPolicyAndTrend:
         assert trend["compat_aliases_count"] == len(trend["compat"]["aliases"])
         assert trend["latest_status"] == (trend.get("latest") or {}).get("status", "")
         assert trend["latest_pass"] == (trend.get("latest") or {}).get("pass", None)
-        assert trend["latest_captured_at_utc"] == (trend.get("latest") or {}).get(
-            "captured_at_utc", ""
-        )
-        assert trend["latest_blocked_ratio"] == (trend.get("latest") or {}).get(
-            "blocked_ratio", None
-        )
-        assert trend["latest_blocked_count"] == (trend.get("latest") or {}).get(
-            "blocked_count", None
-        )
-        assert trend["latest_issue_types_count"] == len(
-            (trend.get("latest") or {}).get("issue_types", []) or []
-        )
+        assert trend["latest_captured_at_utc"] == (trend.get("latest") or {}).get("captured_at_utc", "")
+        assert trend["latest_blocked_ratio"] == (trend.get("latest") or {}).get("blocked_ratio", None)
+        assert trend["latest_blocked_count"] == (trend.get("latest") or {}).get("blocked_count", None)
+        assert trend["latest_issue_types_count"] == len((trend.get("latest") or {}).get("issue_types", []) or [])
         assert trend["latest_issue_types_json"] == json.dumps(
             (trend.get("latest").decode() or {}).get("issue_types", []) or []
         )
         assert (
             trend["latest_issue_types_hash"]
-            == hashlib.sha256(
-                trend["latest_issue_types_json"].encode("utf-8")
-            ).hexdigest()
+            == hashlib.sha256(trend["latest_issue_types_json"].encode("utf-8")).hexdigest()
         )
         expected_snapshot_ids_csv = ", ".join(
             [
@@ -210,50 +189,35 @@ class TestHealthPolicyAndTrend:
             ]
         )
         assert trend["snapshot_ids_csv"] == expected_snapshot_ids_csv
-        assert (
-            trend["snapshot_ids_hash"]
-            == hashlib.sha256(expected_snapshot_ids_csv.encode("utf-8")).hexdigest()
-        )
+        assert trend["snapshot_ids_hash"] == hashlib.sha256(expected_snapshot_ids_csv.encode("utf-8")).hexdigest()
         assert trend["snapshot_window_seconds"] == 600
         assert (
             trend["snapshot_window_hash"]
-            == hashlib.sha256(
-                str(trend["snapshot_window_seconds"]).encode("utf-8")
-            ).hexdigest()
+            == hashlib.sha256(str(trend["snapshot_window_seconds"]).encode("utf-8")).hexdigest()
         )
         assert trend["snapshot_interval_seconds_avg"] == 600
         assert (
             trend["snapshot_interval_hash"]
-            == hashlib.sha256(
-                str(trend["snapshot_interval_seconds_avg"]).encode("utf-8")
-            ).hexdigest()
+            == hashlib.sha256(str(trend["snapshot_interval_seconds_avg"]).encode("utf-8")).hexdigest()
         )
         assert trend["snapshot_density_per_hour"] == pytest.approx(12.0)
         assert (
             trend["snapshot_density_hash"]
-            == hashlib.sha256(
-                str(trend["snapshot_density_per_hour"]).encode("utf-8")
-            ).hexdigest()
+            == hashlib.sha256(str(trend["snapshot_density_per_hour"]).encode("utf-8")).hexdigest()
         )
         assert trend["snapshot_issue_churn_count"] == 1
         assert (
             trend["snapshot_issue_churn_hash"]
-            == hashlib.sha256(
-                str(trend["snapshot_issue_churn_count"]).encode("utf-8")
-            ).hexdigest()
+            == hashlib.sha256(str(trend["snapshot_issue_churn_count"]).encode("utf-8")).hexdigest()
         )
         assert trend["snapshot_health_volatility"] == pytest.approx(0.1)
         assert (
             trend["snapshot_health_volatility_hash"]
-            == hashlib.sha256(
-                str(trend["snapshot_health_volatility"]).encode("utf-8")
-            ).hexdigest()
+            == hashlib.sha256(str(trend["snapshot_health_volatility"]).encode("utf-8")).hexdigest()
         )
         assert (
             trend["snapshot_freshness_hash"]
-            == hashlib.sha256(
-                str(trend["snapshot_freshness_seconds"]).encode("utf-8")
-            ).hexdigest()
+            == hashlib.sha256(str(trend["snapshot_freshness_seconds"]).encode("utf-8")).hexdigest()
         )
         if trend["snapshot_freshness_seconds"] is not None:
             assert isinstance(trend["snapshot_freshness_seconds"], int)
@@ -263,18 +227,9 @@ class TestHealthPolicyAndTrend:
         assert trend["snapshot_count"] >= 2
         assert trend["delta_summary"]["blocked_count_delta"] == 2
         assert trend["delta_summary"]["blocked_ratio_delta"] == pytest.approx(0.2)
-        assert (
-            trend["blocked_count_delta"]
-            == trend["delta_summary"]["blocked_count_delta"]
-        )
-        assert (
-            trend["blocked_ratio_delta"]
-            == trend["delta_summary"]["blocked_ratio_delta"]
-        )
-        assert (
-            trend["delta_summary_json"]
-            == json.dumps(trend["delta_summary"], sort_keys=True).decode()
-        )
+        assert trend["blocked_count_delta"] == trend["delta_summary"]["blocked_count_delta"]
+        assert trend["blocked_ratio_delta"] == trend["delta_summary"]["blocked_ratio_delta"]
+        assert trend["delta_summary_json"] == json.dumps(trend["delta_summary"], sort_keys=True).decode()
         assert trend["snapshot_retention_max_lines"] >= 100
 
         lines = snapshot_path.read_text(encoding="utf-8").splitlines()
@@ -347,10 +302,7 @@ class TestHealthPolicyAndTrend:
         )
         assert trend["snapshot_count"] == 1
         assert trend["snapshot_health_volatility"] is None
-        assert (
-            trend["snapshot_health_volatility_hash"]
-            == hashlib.sha256(str(None).encode("utf-8")).hexdigest()
-        )
+        assert trend["snapshot_health_volatility_hash"] == hashlib.sha256(str(None).encode("utf-8")).hexdigest()
 
     def test_health_trend_impl_normalizes_malformed_issue_types_in_snapshots(
         # @trace FR-GOV-002
@@ -405,8 +357,7 @@ class TestHealthPolicyAndTrend:
             "issue_counts": {"left": 3, "right": 3},
         }
         snapshot_path.write_text(
-            "\n".join([json.dumps(oldest).decode(), json.dumps(latest).decode()])
-            + "\n",
+            "\n".join([json.dumps(oldest).decode(), json.dumps(latest).decode()]) + "\n",
             encoding="utf-8",
         )
 
@@ -418,14 +369,10 @@ class TestHealthPolicyAndTrend:
         assert trend["snapshot_count"] == 2
         assert trend["latest_issue_types_count"] == 2
         assert trend["latest_issue_types_csv"] == "left, right"
-        assert (
-            trend["latest_issue_types_json"] == json.dumps(["left", "right"]).decode()
-        )
+        assert trend["latest_issue_types_json"] == json.dumps(["left", "right"]).decode()
         assert (
             trend["latest_issue_types_hash"]
-            == hashlib.sha256(
-                trend["latest_issue_types_json"].encode("utf-8")
-            ).hexdigest()
+            == hashlib.sha256(trend["latest_issue_types_json"].encode("utf-8")).hexdigest()
         )
         assert trend["snapshot_issue_churn_count"] == 3
 
@@ -574,9 +521,7 @@ class TestHealthPolicyAndTrend:
 
 @pytest.mark.unit
 class TestHealthSnapshotRetention:
-    def test_snapshot_max_lines_default_and_min_floor(
-        self, monkeypatch: pytest.MonkeyPatch
-    ) -> None:
+    def test_snapshot_max_lines_default_and_min_floor(self, monkeypatch: pytest.MonkeyPatch) -> None:
         # @trace FR-GOV-002
         monkeypatch.delenv("THGENT_HEALTH_SNAPSHOT_MAX_LINES", raising=False)
         assert cli_impl._health_snapshot_max_lines() == 5000
@@ -587,9 +532,7 @@ class TestHealthSnapshotRetention:
         monkeypatch.setenv("THGENT_HEALTH_SNAPSHOT_MAX_LINES", "250")
         assert cli_impl._health_snapshot_max_lines() == 250
 
-    def test_snapshot_compaction_trims_to_limit(
-        self, monkeypatch: pytest.MonkeyPatch, tmp_path: Path
-    ) -> None:
+    def test_snapshot_compaction_trims_to_limit(self, monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> None:
         # @trace FR-GOV-002
         snapshot_path = tmp_path / "health-snapshots.jsonl"
         monkeypatch.setenv("THGENT_HEALTH_SNAPSHOT_PATH", str(snapshot_path))
@@ -597,9 +540,7 @@ class TestHealthSnapshotRetention:
 
         lines = []
         for i in range(160):
-            lines.append(
-                json.dumps({"record_type": "health_snapshot", "i": i}).decode()
-            )
+            lines.append(json.dumps({"record_type": "health_snapshot", "i": i}).decode())
         snapshot_path.write_text("\n".join(lines) + "\n", encoding="utf-8")
 
         cli_impl._compact_health_snapshot_log()

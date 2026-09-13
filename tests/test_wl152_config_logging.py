@@ -163,9 +163,7 @@ class TestConfigureLogging:
         assert record["level"] == "INFO"
         assert record["name"] == "wl152.json"
 
-    def test_configure_logging_default_uses_loggingconfig_defaults(
-        self, stream: io.StringIO
-    ) -> None:
+    def test_configure_logging_default_uses_loggingconfig_defaults(self, stream: io.StringIO) -> None:
         """configure_logging() with no arg uses LoggingConfig defaults."""
         with patch("sys.stderr", stream):
             configure_logging()
@@ -305,9 +303,7 @@ class TestThegentSettingsLoggingHook:
             "linear_api_key",
         }
 
-    def test_env_does_not_break_log_config_field(
-        self, monkeypatch: pytest.MonkeyPatch
-    ) -> None:
+    def test_env_does_not_break_log_config_field(self, monkeypatch: pytest.MonkeyPatch) -> None:
         """Setting THGENT_LOG_* env vars is reflected on settings.log_config."""
         monkeypatch.setenv("THGENT_LOG_LEVEL", "WARNING")
         s = ThegentSettings()

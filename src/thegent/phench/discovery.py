@@ -34,11 +34,7 @@ def discover_local_git_repos(
         git_dir = child / ".git"
         if not git_dir.exists():
             continue
-        if not should_include_repo(
-            child.name, include_patterns=include, exclude_patterns=exclude
-        ):
+        if not should_include_repo(child.name, include_patterns=include, exclude_patterns=exclude):
             continue
-        candidates.append(
-            RepoCandidate(repo_id=sanitize_repo_id(child.name), path=child)
-        )
+        candidates.append(RepoCandidate(repo_id=sanitize_repo_id(child.name), path=child))
     return candidates

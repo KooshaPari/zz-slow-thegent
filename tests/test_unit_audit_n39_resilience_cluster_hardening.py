@@ -335,9 +335,7 @@ class TestGetOversightAction:
         assert get_oversight_action(10) == "escalate"
 
     def test_forced_action_from_context(self) -> None:
-        assert (
-            get_oversight_action(1, context={"forced_action": "escalate"}) == "escalate"
-        )
+        assert get_oversight_action(1, context={"forced_action": "escalate"}) == "escalate"
 
 
 # ---------------------------------------------------------------------------
@@ -500,9 +498,7 @@ class TestSmartPrunerTripleLock:
             last_check_time=time.time(),
             idle_count=IDLE_COUNT_THRESHOLD,
         )
-        is_idle, is_complete, docs = pruner.check_triple_lock(
-            snap, "Task finished\n", time.time() - 10, time.time()
-        )
+        is_idle, is_complete, docs = pruner.check_triple_lock(snap, "Task finished\n", time.time() - 10, time.time())
         assert is_idle is True
         assert is_complete is True
         assert docs is True
@@ -614,9 +610,7 @@ class TestSmartPrunerRunCycle:
         mock_prune.assert_called_once()
         assert results["pruned"] == 1
 
-    @pytest.mark.parametrize(
-        "agent", ["cursor-agent", "claude", "codex", "droid", "thegent", "bash"]
-    )
+    @pytest.mark.parametrize("agent", ["cursor-agent", "claude", "codex", "droid", "thegent", "bash"])
     def test_protected_agent_skipped(self, agent: str, tmp_path: Path) -> None:
         pruner, session = self._make_pruner_with_session(tmp_path, agent=agent)
         with (

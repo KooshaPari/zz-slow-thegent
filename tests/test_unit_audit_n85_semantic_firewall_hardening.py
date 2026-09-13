@@ -56,9 +56,7 @@ class TestInspectOutput:
 
 class TestFirewallRule:
     def test_rule_fields(self):
-        rule = FirewallRule(
-            rule_id="R1", pattern="test", action="warn", reason="testing"
-        )
+        rule = FirewallRule(rule_id="R1", pattern="test", action="warn", reason="testing")
         assert rule.rule_id == "R1"
         assert rule.action == "warn"
 

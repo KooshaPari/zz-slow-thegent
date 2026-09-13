@@ -122,9 +122,7 @@ def safe_join(base: str | Path, *parts: str | Path) -> Path:
     resolved_candidate = _resolve(candidate)
 
     if not is_within(resolved_candidate, resolved_base):
-        raise ValueError(
-            f"Path escapes base '{resolved_base}': resolved to '{resolved_candidate}'"
-        )
+        raise ValueError(f"Path escapes base '{resolved_base}': resolved to '{resolved_candidate}'")
 
     return resolved_candidate
 

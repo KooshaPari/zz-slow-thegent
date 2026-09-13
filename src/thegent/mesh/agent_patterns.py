@@ -45,9 +45,7 @@ def load_agent_patterns() -> dict[str, str]:
     config = configparser.ConfigParser()
     config.read(config_path)
     if "agents" not in config:
-        raise RuntimeError(
-            f"agents.conf at {config_path} is missing required [agents] section"
-        )
+        raise RuntimeError(f"agents.conf at {config_path} is missing required [agents] section")
     return dict(config["agents"])
 
 

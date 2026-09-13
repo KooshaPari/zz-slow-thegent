@@ -134,9 +134,7 @@ def test_daily_export_markdown_includes_total_prompts_commands_files(
         files=["f1"],
     )
 
-    payload = snapshot_daily_export_payload(
-        scraper, out_path=str(tmp_path / "daily-index"), limit=1000
-    )
+    payload = snapshot_daily_export_payload(scraper, out_path=str(tmp_path / "daily-index"), limit=1000)
     markdown_text = Path(payload["source_md"]).read_text(encoding="utf-8")
 
     assert "- Total prompts:" in markdown_text

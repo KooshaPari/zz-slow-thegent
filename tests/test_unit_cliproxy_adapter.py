@@ -175,18 +175,14 @@ class TestResponsesToChatCompletions:
             ],
         }
         out = _responses_to_chat_completions(body)
-        assert out["messages"] == [
-            {"role": "user", "content": [{"type": "text", "text": "Hello"}]}
-        ]
+        assert out["messages"] == [{"role": "user", "content": [{"type": "text", "text": "Hello"}]}]
 
     def test_preserves_messages_payload_when_input_is_missing(self) -> None:
         """CLIP-BUG-11: keep explicit messages payloads verbatim."""
         messages = [
             {
                 "role": "assistant",
-                "content": [
-                    {"type": "thinking", "thinking": "t", "signature": "sig-1"}
-                ],
+                "content": [{"type": "thinking", "thinking": "t", "signature": "sig-1"}],
             },
             {"role": "user", "content": "continue"},
         ]

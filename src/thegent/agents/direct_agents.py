@@ -65,11 +65,7 @@ def _resolve_cli(cmd: str, name: str, settings: "ThegentSettings | None" = None)
         return cmd_from_settings
 
     # Fallback to environment variable override
-    env_key = (
-        "THGENT_CURSOR_AGENT_CMD"
-        if name == "cursor-agent"
-        else f"THGENT_{name.upper().replace('-', '_')}_CMD"
-    )
+    env_key = "THGENT_CURSOR_AGENT_CMD" if name == "cursor-agent" else f"THGENT_{name.upper().replace('-', '_')}_CMD"
     env_val = os.environ.get(env_key)
     if env_val:
         expanded = str(Path(env_val).expanduser())
@@ -140,12 +136,7 @@ def _wrap_with_harness(cmd: list[str], agent_name: str | None = None) -> list[st
         else:
             # Check workspace root
             settings = ThegentSettings()
-            potential = (
-                settings.factory_skills_dir.parent.parent
-                / "heliosShield"
-                / "bin"
-                / "harness"
-            )
+            potential = settings.factory_skills_dir.parent.parent / "heliosShield" / "bin" / "harness"
             if potential.exists():
                 harness_bin = str(potential)
 
@@ -175,15 +166,9 @@ class DirectAgentRunner(AgentRunner):
         from thegent.config import ThegentSettings
 
         settings = ThegentSettings()
-        self._cli_cmd = _resolve_cli(
-            cli_cmd or self._cli_name, self._cli_name, settings
-        )
+        self._cli_cmd = _resolve_cli(cli_cmd or self._cli_name, self._cli_name, settings)
         self._default_model = default_model
-        self._use_litellm_router = (
-            use_litellm_router
-            if use_litellm_router is not None
-            else settings.use_litellm_router
-        )
+        self._use_litellm_router = use_litellm_router if use_litellm_router is not None else settings.use_litellm_router
 
     def run(
         self,
@@ -266,18 +251,14 @@ class DirectAgentRunner(AgentRunner):
             if self._uses_stdin and self.agent_name == "claude" and image_paths:
                 from thegent.agents.image_inputs import build_claude_stdin_with_images
 
-                stdin_input: str | None = build_claude_stdin_with_images(
-                    prompt, image_paths
-                )
+                stdin_input: str | None = build_claude_stdin_with_images(prompt, image_paths)
             else:
                 stdin_input = prompt if self._uses_stdin else None
             if not self._uses_stdin:
                 if self.agent_name == "gemini":
                     cmd.extend(["-p", prompt])
                 elif self.agent_name == "copilot":
-                    cmd.extend(
-                        ["-p", prompt]
-                    )  # copilot requires -p for non-interactive
+                    cmd.extend(["-p", prompt])  # copilot requires -p for non-interactive
                 else:
                     cmd.append(prompt)
 
@@ -290,9 +271,7 @@ class DirectAgentRunner(AgentRunner):
             _dr: RunResult
             try:
                 if live_output:
-                    _dr = self._run_live(
-                        cmd, cwd, timeout, stdin_input, on_stdout, on_stderr, env=env
-                    )
+                    _dr = self._run_live(cmd, cwd, timeout, stdin_input, on_stdout, on_stderr, env=env)
                 else:
                     _dr = self._run_capture(cmd, cwd, timeout, stdin_input, env=env)
 
@@ -362,9 +341,7 @@ class DirectAgentRunner(AgentRunner):
             # If model already has provider/ prefix, use it
             model_to_use = model if "/" in model else f"{provider}/{model}"
 
-            result = router.route(
-                prompt, model=model_to_use, stream=use_stream, timeout=timeout
-            )
+            result = router.route(prompt, model=model_to_use, stream=use_stream, timeout=timeout)
 
             if not result.success:
                 return RunResult(
@@ -550,9 +527,7 @@ class DirectAgentRunner(AgentRunner):
             "env": env,
         }
         if stdin_input is not None:
-            kwargs["input"] = (
-                stdin_input.encode() if isinstance(stdin_input, str) else stdin_input
-            )
+            kwargs["input"] = stdin_input.encode() if isinstance(stdin_input, str) else stdin_input
         else:
             kwargs["stdin"] = subprocess.DEVNULL
         proc = run_subprocess_optimized(cmd, check=False, **cast("Any", kwargs))
@@ -602,21 +577,15 @@ class DirectAgentRunner(AgentRunner):
         out_lines: list[str] = []
         err_lines: list[str] = []
 
-        def _drain(
-            stream, collector: list[str], cb: Callable[[str], None] | None
-        ) -> None:
+        def _drain(stream, collector: list[str], cb: Callable[[str], None] | None) -> None:
             for line in stream:
                 clean = strip_ansi(line)
                 collector.append(clean)
                 if cb:
                     cb(clean.rstrip("\n"))
 
-        t_out = threading.Thread(
-            target=_drain, args=(proc.stdout, out_lines, on_stdout), daemon=True
-        )
-        t_err = threading.Thread(
-            target=_drain, args=(proc.stderr, err_lines, on_stderr), daemon=True
-        )
+        t_out = threading.Thread(target=_drain, args=(proc.stdout, out_lines, on_stdout), daemon=True)
+        t_err = threading.Thread(target=_drain, args=(proc.stderr, err_lines, on_stderr), daemon=True)
         t_out.start()
         t_err.start()
         try:

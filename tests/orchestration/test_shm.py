@@ -60,9 +60,7 @@ class TestSHMSystemInit:
         assert shm.shm_path == session_dir / "state.shm"
 
     @patch("thegent.config.ThegentSettings")
-    def test_native_disabled_by_default(
-        self, mock_settings: MagicMock, session_dir: Path
-    ) -> None:
+    def test_native_disabled_by_default(self, mock_settings: MagicMock, session_dir: Path) -> None:
         """Verify native SHM is disabled when settings say so."""
         mock_settings.return_value.use_native_shm = False
         shm = SHMSystem(session_dir)
@@ -71,9 +69,7 @@ class TestSHMSystemInit:
         assert shm._interface is None
 
     @patch("thegent.config.ThegentSettings")
-    def test_native_enabled_but_no_extension(
-        self, mock_settings: MagicMock, session_dir: Path
-    ) -> None:
+    def test_native_enabled_but_no_extension(self, mock_settings: MagicMock, session_dir: Path) -> None:
         """Verify fallback when native extension is not installed (ImportError)."""
         mock_settings.return_value.use_native_shm = True
 
@@ -89,9 +85,7 @@ class TestSHMSystemInit:
                 sys.modules["thegent_shm"] = original
 
     @patch("thegent.config.ThegentSettings")
-    def test_native_enabled_with_exception(
-        self, mock_settings: MagicMock, session_dir: Path
-    ) -> None:
+    def test_native_enabled_with_exception(self, mock_settings: MagicMock, session_dir: Path) -> None:
         """Verify exception during native init is caught."""
         mock_settings.return_value.use_native_shm = True
 
@@ -111,9 +105,7 @@ class TestSHMSystemInit:
                 sys.modules.pop("thegent_shm", None)
 
     @patch("thegent.config.ThegentSettings")
-    def test_native_enabled_success_path(
-        self, mock_settings: MagicMock, session_dir: Path
-    ) -> None:
+    def test_native_enabled_success_path(self, mock_settings: MagicMock, session_dir: Path) -> None:
         """Verify native SHM is initialized when extension is available."""
         mock_settings.return_value.use_native_shm = True
 

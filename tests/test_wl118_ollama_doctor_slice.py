@@ -21,9 +21,7 @@ class _Resp:
 
 
 def test_runtime_infrastructure_includes_ollama_check(monkeypatch) -> None:
-    monkeypatch.setattr(
-        "thegent.doctor.shutil.which", lambda _bin: "/usr/local/bin/ollama"
-    )
+    monkeypatch.setattr("thegent.doctor.shutil.which", lambda _bin: "/usr/local/bin/ollama")
 
     def fake_get(_url: str, timeout: float):
         return _Resp(200, {"models": [{"name": "llama3.3"}]})
@@ -51,9 +49,7 @@ def test_runtime_infrastructure_ollama_missing_binary(monkeypatch) -> None:
 
 
 def test_runtime_infrastructure_ollama_timeout_sets_error_severity(monkeypatch) -> None:
-    monkeypatch.setattr(
-        "thegent.doctor.shutil.which", lambda _bin: "/usr/local/bin/ollama"
-    )
+    monkeypatch.setattr("thegent.doctor.shutil.which", lambda _bin: "/usr/local/bin/ollama")
 
     def fake_get(_url: str, timeout: float):
         raise httpx.TimeoutException("timeout")

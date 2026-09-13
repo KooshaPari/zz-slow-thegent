@@ -12,9 +12,7 @@ logger = logging.getLogger(__name__)
 class ConfigLoadError(ValueError):
     """Typed config load error captured during non-fatal startup parsing."""
 
-    def __init__(
-        self, path: Path, reason: str, *, cause: Exception | None = None
-    ) -> None:
+    def __init__(self, path: Path, reason: str, *, cause: Exception | None = None) -> None:
         self.path = path
         self.reason = reason
         self.cause = cause
@@ -45,9 +43,7 @@ class ConfigManager:
             try:
                 data = orjson.loads(self.config_path.read_bytes())
             except orjson.JSONDecodeError as exc:
-                self.last_load_error = ConfigLoadError(
-                    self.config_path, "invalid_json", cause=exc
-                )
+                self.last_load_error = ConfigLoadError(self.config_path, "invalid_json", cause=exc)
                 logger.error(
                     "config_load_failed_invalid_json path=%s error=%s",
                     self.config_path,
@@ -55,21 +51,13 @@ class ConfigManager:
                 )
                 return {}
             except OSError as exc:
-                self.last_load_error = ConfigLoadError(
-                    self.config_path, "read_error", cause=exc
-                )
-                logger.error(
-                    "config_load_failed_io path=%s error=%s", self.config_path, exc
-                )
+                self.last_load_error = ConfigLoadError(self.config_path, "read_error", cause=exc)
+                logger.error("config_load_failed_io path=%s error=%s", self.config_path, exc)
                 return {}
 
             if not isinstance(data, dict):
-                self.last_load_error = ConfigLoadError(
-                    self.config_path, "invalid_shape"
-                )
-                logger.error(
-                    "config_load_failed_invalid_shape path=%s", self.config_path
-                )
+                self.last_load_error = ConfigLoadError(self.config_path, "invalid_shape")
+                logger.error("config_load_failed_invalid_shape path=%s", self.config_path)
                 return {}
             self.last_load_error = None
             return data

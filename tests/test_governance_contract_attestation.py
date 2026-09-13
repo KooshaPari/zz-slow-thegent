@@ -24,9 +24,7 @@ def test_governance_contract_attestation_roundtrip(tmp_path: Path) -> None:
     attestation = tmp_path / "attestation.json"
 
     gen_script = _repo_root() / "scripts" / "attest_governance_contract_report.py"
-    verify_script = (
-        _repo_root() / "scripts" / "verify_governance_contract_attestation.py"
-    )
+    verify_script = _repo_root() / "scripts" / "verify_governance_contract_attestation.py"
 
     gen = subprocess.run(
         [
@@ -75,9 +73,7 @@ def test_governance_contract_attestation_detects_tampered_report(
     attestation = tmp_path / "attestation.json"
 
     gen_script = _repo_root() / "scripts" / "attest_governance_contract_report.py"
-    verify_script = (
-        _repo_root() / "scripts" / "verify_governance_contract_attestation.py"
-    )
+    verify_script = _repo_root() / "scripts" / "verify_governance_contract_attestation.py"
 
     subprocess.run(
         [

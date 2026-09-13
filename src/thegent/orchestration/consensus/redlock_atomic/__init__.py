@@ -147,11 +147,7 @@ class _InMemoryLockState:
         """Extend the active lock's TTL if ``lock_id`` matches the owner."""
         with self._lock:
             now = time.monotonic()
-            if (
-                self._lock_id is None
-                or now >= self._expires_at
-                or self._lock_id != lock_id
-            ):
+            if self._lock_id is None or now >= self._expires_at or self._lock_id != lock_id:
                 return False
             self._expires_at = now + ttl_ms / 1000.0
             return True
@@ -233,14 +229,10 @@ class RedlockController:
             ``None`` when no lock is held.
     """
 
-    def __init__(
-        self, key: str, ttl_ms: int = 30000, redis_nodes: list[str] | None = None
-    ) -> None:
+    def __init__(self, key: str, ttl_ms: int = 30000, redis_nodes: list[str] | None = None) -> None:
         self._key = key
         self._ttl_ms = ttl_ms
-        self._nodes_urls = (
-            list(redis_nodes) if redis_nodes else _parse_node_urls_from_env()
-        )
+        self._nodes_urls = list(redis_nodes) if redis_nodes else _parse_node_urls_from_env()
         self._fallback: _InMemoryLockState | None = None
         self._clients: list[Any] = []
         self._redis_available = False

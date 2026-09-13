@@ -83,12 +83,8 @@ async def test_wl332_cycle_metrics_capture_retry_wait_and_attempt_bounds(
     async def _skip_sleep(_: float) -> None:
         return None
 
-    monkeypatch.setattr(
-        "thegent.integrations.rate_limit_backoff.random.uniform", lambda _a, _b: 0.0
-    )
-    monkeypatch.setattr(
-        "thegent.integrations.workstream_autosync.asyncio.sleep", _skip_sleep
-    )
+    monkeypatch.setattr("thegent.integrations.rate_limit_backoff.random.uniform", lambda _a, _b: 0.0)
+    monkeypatch.setattr("thegent.integrations.workstream_autosync.asyncio.sleep", _skip_sleep)
 
     await runner._sync_in_partitions(
         connector="github",
@@ -113,6 +109,4 @@ async def test_wl332_cycle_metrics_capture_retry_wait_and_attempt_bounds(
     assert payload["throttle_retry_attempts"] == 2
     assert payload["throttle_retry_attempts"] <= runner.config.rate_limit_max_retries
     assert payload["throttle_wait_seconds"] >= 0.0
-    assert payload["throttle_wait_seconds"] <= (
-        runner.config.rate_limit_max_wait * payload["throttle_retry_attempts"]
-    )
+    assert payload["throttle_wait_seconds"] <= (runner.config.rate_limit_max_wait * payload["throttle_retry_attempts"])

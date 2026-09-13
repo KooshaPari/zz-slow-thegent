@@ -63,9 +63,7 @@ def mask_pii(text: str, entity_types: list[str] | None = None) -> PiiMaskResult:
     active_types = entity_types if entity_types is not None else _ALL_ENTITY_TYPES
 
     # Collect all matches across all active entity types with their positions
-    all_matches: list[
-        tuple[int, int, str, str]
-    ] = []  # (start, end, entity_type, original)
+    all_matches: list[tuple[int, int, str, str]] = []  # (start, end, entity_type, original)
     for etype in active_types:
         pattern = _PATTERNS.get(etype)
         if pattern is None:
@@ -89,11 +87,7 @@ def mask_pii(text: str, entity_types: list[str] | None = None) -> PiiMaskResult:
     for start, end, etype, original in non_overlapping:
         type_counters[etype] = type_counters.get(etype, 0) + 1
         token = f"[{etype}_{type_counters[etype]}]"
-        entities.append(
-            PiiEntity(
-                entity_type=etype, original=original, token=token, start=start, end=end
-            )
-        )
+        entities.append(PiiEntity(entity_type=etype, original=original, token=token, start=start, end=end))
 
     # Build masked text by replacing matches back-to-front (preserves offsets)
     masked = text

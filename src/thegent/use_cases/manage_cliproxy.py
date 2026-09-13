@@ -168,9 +168,7 @@ class ProxyHealthChecker:
     def is_reachable(base_url: str, timeout: float = 2.0) -> bool:
         """Check if proxy is reachable at base_url."""
         base = base_url.rstrip("/")
-        paths = (
-            ("/models", "/") if base.endswith("/v1") else ("/v1/models", "/models", "/")
-        )
+        paths = ("/models", "/") if base.endswith("/v1") else ("/v1/models", "/models", "/")
 
         for path in paths:
             try:

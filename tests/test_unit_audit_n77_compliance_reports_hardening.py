@@ -128,9 +128,7 @@ class TestGovernanceTelemetry:
 
     def test_coerces_total_records_to_int(self):
         r = ComplianceReporter()
-        result = r.generate_governance_telemetry(
-            rollup={"total_records": "10"}, queue=[]
-        )
+        result = r.generate_governance_telemetry(rollup={"total_records": "10"}, queue=[])
         assert result["total_records"] == 10
 
 
@@ -143,16 +141,12 @@ class TestExportReport:
 
     def test_exports_markdown(self, tmp_path):
         r = ComplianceReporter()
-        out = r.export_report(
-            {"findings": []}, tmp_path / "report.md", format="markdown"
-        )
+        out = r.export_report({"findings": []}, tmp_path / "report.md", format="markdown")
         assert out.exists()
 
     def test_creates_parent_dirs(self, tmp_path):
         r = ComplianceReporter()
-        out = r.export_report(
-            {"findings": []}, tmp_path / "sub" / "dir" / "report.json"
-        )
+        out = r.export_report({"findings": []}, tmp_path / "sub" / "dir" / "report.json")
         assert out.exists()
 
 

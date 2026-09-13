@@ -102,9 +102,7 @@ def test_daily_totals_payload_includes_filters_when_provided(tmp_path: Path) -> 
         captured_at="2026-02-24T02:00:00+00:00",
     )
 
-    totals = snapshot_daily_totals_payload(
-        scraper, trigger="tool_use", tag="t", since="2026-02-24T00:00:00Z"
-    )
+    totals = snapshot_daily_totals_payload(scraper, trigger="tool_use", tag="t", since="2026-02-24T00:00:00Z")
 
     assert totals["total_snapshots"] == 1
     assert totals["filters"] == {

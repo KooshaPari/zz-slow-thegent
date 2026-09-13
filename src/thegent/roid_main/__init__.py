@@ -35,9 +35,7 @@ default_roid = {
 }
 
 
-async def _run_droid_with_alias(
-    alias: str, prompt: str, **kwargs: Any
-) -> dict[str, Any]:
+async def _run_droid_with_alias(alias: str, prompt: str, **kwargs: Any) -> dict[str, Any]:
     """Run droid with a model alias.
 
     Args:

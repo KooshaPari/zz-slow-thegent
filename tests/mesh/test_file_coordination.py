@@ -188,9 +188,7 @@ class TestOCC:
         assert v == "empty"
 
     # @trace TGNT-P8.1
-    def test_get_version_deterministic(
-        self, occ: OptimisticConcurrencyControl, tmp_path: Path
-    ) -> None:
+    def test_get_version_deterministic(self, occ: OptimisticConcurrencyControl, tmp_path: Path) -> None:
         """Same content produces same version hash."""
         f = tmp_path / "test.txt"
         f.write_text("hello")
@@ -199,9 +197,7 @@ class TestOCC:
         assert v1 == v2
 
     # @trace TGNT-P8.1
-    def test_version_changes_on_write(
-        self, occ: OptimisticConcurrencyControl, tmp_path: Path
-    ) -> None:
+    def test_version_changes_on_write(self, occ: OptimisticConcurrencyControl, tmp_path: Path) -> None:
         """Modifying file content changes the version."""
         f = tmp_path / "test.txt"
         f.write_text("v1")
@@ -211,9 +207,7 @@ class TestOCC:
         assert v1 != v2
 
     # @trace TGNT-P8.1
-    def test_claim_and_verify_success(
-        self, occ: OptimisticConcurrencyControl, tmp_path: Path
-    ) -> None:
+    def test_claim_and_verify_success(self, occ: OptimisticConcurrencyControl, tmp_path: Path) -> None:
         """Claim then verify succeeds when file unchanged."""
         f = tmp_path / "test.txt"
         f.write_text("content")
@@ -221,9 +215,7 @@ class TestOCC:
         assert occ.verify_version(f, "agent-1") is True
 
     # @trace TGNT-P8.1
-    def test_claim_and_verify_conflict(
-        self, occ: OptimisticConcurrencyControl, tmp_path: Path
-    ) -> None:
+    def test_claim_and_verify_conflict(self, occ: OptimisticConcurrencyControl, tmp_path: Path) -> None:
         """Verify fails when file changed after claim."""
         f = tmp_path / "test.txt"
         f.write_text("original")
@@ -232,9 +224,7 @@ class TestOCC:
         assert occ.verify_version(f, "agent-1") is False
 
     # @trace TGNT-P8.1
-    def test_verify_no_claim_returns_true(
-        self, occ: OptimisticConcurrencyControl, tmp_path: Path
-    ) -> None:
+    def test_verify_no_claim_returns_true(self, occ: OptimisticConcurrencyControl, tmp_path: Path) -> None:
         """verify_version with no prior claim returns True (no-claim case)."""
         f = tmp_path / "test.txt"
         f.write_text("whatever")
@@ -255,9 +245,7 @@ class TestOCCManager:
         assert occ_manager.get_version(Path("/no/such/file")) == "none"
 
     # @trace TGNT-P8.1
-    def test_verify_and_commit_success(
-        self, occ_manager: OCCManager, tmp_path: Path
-    ) -> None:
+    def test_verify_and_commit_success(self, occ_manager: OCCManager, tmp_path: Path) -> None:
         """Commit succeeds when base version matches."""
         f = tmp_path / "data.txt"
         f.write_bytes(b"original")
@@ -266,9 +254,7 @@ class TestOCCManager:
         assert f.read_bytes() == b"updated"
 
     # @trace TGNT-P8.1
-    def test_verify_and_commit_conflict(
-        self, occ_manager: OCCManager, tmp_path: Path
-    ) -> None:
+    def test_verify_and_commit_conflict(self, occ_manager: OCCManager, tmp_path: Path) -> None:
         """Commit fails when base version is stale."""
         f = tmp_path / "data.txt"
         f.write_bytes(b"original")
@@ -287,26 +273,20 @@ class TestFileClaimsRegistry:
     """Lease-based file claims with TTL and cleanup."""
 
     # @trace TGNT-P8.3
-    def test_acquire_lease_success(
-        self, claims: FileClaimsRegistry, tmp_path: Path
-    ) -> None:
+    def test_acquire_lease_success(self, claims: FileClaimsRegistry, tmp_path: Path) -> None:
         """First acquire on an unclaimed file succeeds."""
         f = tmp_path / "file.txt"
         assert claims.acquire_lease(f, "agent-1") is True
 
     # @trace TGNT-P8.3
-    def test_acquire_lease_blocked_by_other(
-        self, claims: FileClaimsRegistry, tmp_path: Path
-    ) -> None:
+    def test_acquire_lease_blocked_by_other(self, claims: FileClaimsRegistry, tmp_path: Path) -> None:
         """Another agent cannot acquire a live lease."""
         f = tmp_path / "file.txt"
         claims.acquire_lease(f, "agent-1", ttl=60)
         assert claims.acquire_lease(f, "agent-2") is False
 
     # @trace TGNT-P8.3
-    def test_acquire_same_agent_renews(
-        self, claims: FileClaimsRegistry, tmp_path: Path
-    ) -> None:
+    def test_acquire_same_agent_renews(self, claims: FileClaimsRegistry, tmp_path: Path) -> None:
         """Same agent can re-acquire (renew) its own lease."""
         f = tmp_path / "file.txt"
         claims.acquire_lease(f, "agent-1", ttl=60)
@@ -321,18 +301,14 @@ class TestFileClaimsRegistry:
         assert claims.acquire_lease(f, "agent-2") is True
 
     # @trace TGNT-P8.3
-    def test_release_wrong_agent_fails(
-        self, claims: FileClaimsRegistry, tmp_path: Path
-    ) -> None:
+    def test_release_wrong_agent_fails(self, claims: FileClaimsRegistry, tmp_path: Path) -> None:
         """Another agent cannot release someone else's lease."""
         f = tmp_path / "file.txt"
         claims.acquire_lease(f, "agent-1")
         assert claims.release_lease(f, "agent-2") is False
 
     # @trace TGNT-P8.4
-    def test_expired_lease_allows_new_acquire(
-        self, claims: FileClaimsRegistry, tmp_path: Path
-    ) -> None:
+    def test_expired_lease_allows_new_acquire(self, claims: FileClaimsRegistry, tmp_path: Path) -> None:
         """Expired lease does not block a new acquire."""
         f = tmp_path / "file.txt"
         claims.acquire_lease(f, "agent-1", ttl=1)
@@ -340,9 +316,7 @@ class TestFileClaimsRegistry:
         assert claims.acquire_lease(f, "agent-2") is True
 
     # @trace TGNT-P8.4
-    def test_cleanup_expired_removes_stale(
-        self, claims: FileClaimsRegistry, tmp_path: Path
-    ) -> None:
+    def test_cleanup_expired_removes_stale(self, claims: FileClaimsRegistry, tmp_path: Path) -> None:
         """cleanup_expired() removes expired lock files."""
         f1 = tmp_path / "a.txt"
         f2 = tmp_path / "b.txt"
@@ -353,9 +327,7 @@ class TestFileClaimsRegistry:
         assert removed >= 1
 
     # @trace TGNT-P8.4
-    def test_cleanup_expired_keeps_live(
-        self, claims: FileClaimsRegistry, tmp_path: Path
-    ) -> None:
+    def test_cleanup_expired_keeps_live(self, claims: FileClaimsRegistry, tmp_path: Path) -> None:
         """cleanup_expired() does not remove live leases."""
         f = tmp_path / "live.txt"
         claims.acquire_lease(f, "agent-1", ttl=60)
@@ -374,9 +346,7 @@ class TestFileLeaseRegistry:
     """FileLeaseRegistry claim/renew/release with HLC tokens."""
 
     # @trace TGNT-P8.3
-    def test_claim_returns_token(
-        self, lease_registry: FileLeaseRegistry, tmp_path: Path
-    ) -> None:
+    def test_claim_returns_token(self, lease_registry: FileLeaseRegistry, tmp_path: Path) -> None:
         """Successful claim returns an HLC token string."""
         f = tmp_path / "x.txt"
         token = lease_registry.claim_lease(f, "agent-1")
@@ -384,18 +354,14 @@ class TestFileLeaseRegistry:
         assert ":" in token
 
     # @trace TGNT-P8.3
-    def test_claim_blocked(
-        self, lease_registry: FileLeaseRegistry, tmp_path: Path
-    ) -> None:
+    def test_claim_blocked(self, lease_registry: FileLeaseRegistry, tmp_path: Path) -> None:
         """Claiming a file already leased returns None."""
         f = tmp_path / "x.txt"
         lease_registry.claim_lease(f, "agent-1", ttl=60)
         assert lease_registry.claim_lease(f, "agent-2") is None
 
     # @trace TGNT-P8.4
-    def test_renew_success(
-        self, lease_registry: FileLeaseRegistry, tmp_path: Path
-    ) -> None:
+    def test_renew_success(self, lease_registry: FileLeaseRegistry, tmp_path: Path) -> None:
         """Owner can renew with the correct token."""
         f = tmp_path / "x.txt"
         token = lease_registry.claim_lease(f, "agent-1", ttl=10)
@@ -403,18 +369,14 @@ class TestFileLeaseRegistry:
         assert lease_registry.renew_lease(f, "agent-1", token) is True
 
     # @trace TGNT-P8.4
-    def test_renew_wrong_token_fails(
-        self, lease_registry: FileLeaseRegistry, tmp_path: Path
-    ) -> None:
+    def test_renew_wrong_token_fails(self, lease_registry: FileLeaseRegistry, tmp_path: Path) -> None:
         """Renew with wrong token fails."""
         f = tmp_path / "x.txt"
         lease_registry.claim_lease(f, "agent-1", ttl=10)
         assert lease_registry.renew_lease(f, "agent-1", "fake:token") is False
 
     # @trace TGNT-P8.3
-    def test_release_and_reclaim(
-        self, lease_registry: FileLeaseRegistry, tmp_path: Path
-    ) -> None:
+    def test_release_and_reclaim(self, lease_registry: FileLeaseRegistry, tmp_path: Path) -> None:
         """After release, another agent can claim."""
         f = tmp_path / "x.txt"
         token = lease_registry.claim_lease(f, "agent-1")
@@ -424,9 +386,7 @@ class TestFileLeaseRegistry:
         assert new_token is not None
 
     # @trace TGNT-P8.4
-    def test_expired_lease_reclaimable(
-        self, lease_registry: FileLeaseRegistry, tmp_path: Path
-    ) -> None:
+    def test_expired_lease_reclaimable(self, lease_registry: FileLeaseRegistry, tmp_path: Path) -> None:
         """Expired lease allows a new agent to claim."""
         f = tmp_path / "x.txt"
         lease_registry.claim_lease(f, "agent-1", ttl=1)

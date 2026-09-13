@@ -12,12 +12,7 @@ from __future__ import annotations
 
 from pathlib import Path
 
-REPORT_PATH = (
-    Path(__file__).parent.parent
-    / "docs"
-    / "reports"
-    / "2026-02-21-B90-W3-B2-parity-gap-report.md"
-)
+REPORT_PATH = Path(__file__).parent.parent / "docs" / "reports" / "2026-02-21-B90-W3-B2-parity-gap-report.md"
 
 PARITY_FILE_1 = Path(__file__).parent / "routing" / "test_wl131_parser_parity.py"
 
@@ -32,9 +27,7 @@ def test_parity_gap_report_exists() -> None:
 def test_parity_gap_report_mentions_parity() -> None:
     """The report must mention 'parity' to confirm it is the right document."""
     content = REPORT_PATH.read_text()
-    assert "parity" in content.lower(), (
-        "Parity gap report must contain the word 'parity'"
-    )
+    assert "parity" in content.lower(), "Parity gap report must contain the word 'parity'"
 
 
 def test_parity_gap_report_mentions_maturin_or_pyo3() -> None:
@@ -59,12 +52,8 @@ def test_parity_file_1_importable() -> None:
     """test_wl131_parser_parity.py must be importable without raising at import time."""
     import importlib.util
 
-    spec = importlib.util.spec_from_file_location(
-        "test_wl131_parser_parity", str(PARITY_FILE_1)
-    )
-    assert spec is not None and spec.loader is not None, (
-        f"Could not create module spec for {PARITY_FILE_1}"
-    )
+    spec = importlib.util.spec_from_file_location("test_wl131_parser_parity", str(PARITY_FILE_1))
+    assert spec is not None and spec.loader is not None, f"Could not create module spec for {PARITY_FILE_1}"
     module = importlib.util.module_from_spec(spec)
     # Import the module — this must not raise at the module level
     spec.loader.exec_module(module)  # type: ignore[union-attr]
@@ -74,12 +63,8 @@ def test_parity_file_2_importable() -> None:
     """test_wl131_rust_python_parity.py must be importable without raising at import time."""
     import importlib.util
 
-    spec = importlib.util.spec_from_file_location(
-        "test_wl131_rust_python_parity", str(PARITY_FILE_2)
-    )
-    assert spec is not None and spec.loader is not None, (
-        f"Could not create module spec for {PARITY_FILE_2}"
-    )
+    spec = importlib.util.spec_from_file_location("test_wl131_rust_python_parity", str(PARITY_FILE_2))
+    assert spec is not None and spec.loader is not None, f"Could not create module spec for {PARITY_FILE_2}"
     module = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(module)  # type: ignore[union-attr]
 

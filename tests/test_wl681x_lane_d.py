@@ -69,9 +69,7 @@ def test_wl6811_sync_loop_collects_real_state_and_validates_payload(
     loop = SyncLoop(registry=_Registry(), sync_dir=tmp_path / "sync")
     (tmp_path / ".thegent").mkdir()
     (tmp_path / ".thegent" / "team_registry.json").write_text(
-        json.dumps(
-            {"teams": [{"id": "a", "active": True}, {"id": "b", "active": False}]}
-        ).decode(),
+        json.dumps({"teams": [{"id": "a", "active": True}, {"id": "b", "active": False}]}).decode(),
         encoding="utf-8",
     )
     (tmp_path / ".thegent" / "handoff_registry.jsonl").write_text(
@@ -121,9 +119,7 @@ def test_wl6812_zk_verify_valid_stale_mismatch_and_tamper() -> None:
     assert gov.verify_proof(tampered, tampered.commitment) is False
 
 
-def test_wl6813_push_success_partial_failure_and_unreachable(
-    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
-) -> None:
+def test_wl6813_push_success_partial_failure_and_unreachable(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
     (tmp_path / "agents").mkdir()
     (tmp_path / "hooks").mkdir()
     (tmp_path / "agents" / "a.md").write_text("# a\n", encoding="utf-8")
@@ -160,9 +156,7 @@ def test_wl6814_gateway_exec_success_unknown_server_tool_and_transport_failure(
         return _Proc('{"jsonrpc":"2.0","id":"thegent-gateway","result":{"ok":true}}\n')
 
     monkeypatch.setattr("thegent.mcp.gateway.subprocess.run", _ok_run)
-    ok = gw.execute(
-        McpToolCall(server_id="fs", tool="read_file", arguments={"path": "/tmp/a"})
-    )
+    ok = gw.execute(McpToolCall(server_id="fs", tool="read_file", arguments={"path": "/tmp/a"}))
     assert ok.error == ""
     assert ok.result == {"ok": True}
 
@@ -170,14 +164,10 @@ def test_wl6814_gateway_exec_success_unknown_server_tool_and_transport_failure(
     assert "Unknown server_id" in unknown_server.error
 
     def _unknown_tool(*args, **kwargs):
-        return _Proc(
-            '{"jsonrpc":"2.0","id":"thegent-gateway","error":{"code":-32601,"message":"method not found"}}\n'
-        )
+        return _Proc('{"jsonrpc":"2.0","id":"thegent-gateway","error":{"code":-32601,"message":"method not found"}}\n')
 
     monkeypatch.setattr("thegent.mcp.gateway.subprocess.run", _unknown_tool)
-    unknown_tool = gw.execute(
-        McpToolCall(server_id="fs", tool="bad_tool", arguments={})
-    )
+    unknown_tool = gw.execute(McpToolCall(server_id="fs", tool="bad_tool", arguments={}))
     assert "Unknown tool 'bad_tool'" in unknown_tool.error
 
     def _transport_fail(*args, **kwargs):
@@ -215,9 +205,7 @@ def test_wl6897_gateway_exec_accepts_transport_and_invalid_response(
         )
     )
 
-    ok = gw.execute(
-        McpToolCall(server_id="fs", tool="read_file", arguments={"path": "/tmp/a"})
-    )
+    ok = gw.execute(McpToolCall(server_id="fs", tool="read_file", arguments={"path": "/tmp/a"}))
     assert ok.error == ""
     assert ok.result == {"ok": True}
     assert captured["command"] == ["fake-cmd"]
@@ -240,9 +228,7 @@ def test_wl6897_gateway_exec_accepts_transport_and_invalid_response(
             transport=_invalid_transport,
         )
     )
-    bad = gw.execute(
-        McpToolCall(server_id="invalid", tool="read_file", arguments={"path": "/tmp/a"})
-    )
+    bad = gw.execute(McpToolCall(server_id="invalid", tool="read_file", arguments={"path": "/tmp/a"}))
     assert "transport_error: invalid or empty MCP response" in bad.error
 
     def _transport_exception(
@@ -277,10 +263,7 @@ def test_wl6815_dispatcher_execute_task_success_failure_and_approval_block() -> 
 
     class _ApprovalRunner:
         def run(self, **kwargs: object) -> None:
-            if (
-                kwargs.get("require_hitl") is True
-                and kwargs.get("approval_granted") is not True
-            ):
+            if kwargs.get("require_hitl") is True and kwargs.get("approval_granted") is not True:
                 raise RuntimeError("approval required")
 
     plan = OrchestrationPlan(goal="exercise runner result handling")
@@ -320,9 +303,7 @@ def test_wl6815_dispatcher_execute_task_success_failure_and_approval_block() -> 
         runner=_ApprovalRunner(),
         config=DispatchConfig(hitl_enabled=True),
     )
-    blocked_result = asyncio.run(approval_dispatcher.dispatch_plan(approval_plan))[
-        blocked.id
-    ]
+    blocked_result = asyncio.run(approval_dispatcher.dispatch_plan(approval_plan))[blocked.id]
     assert blocked_result.success is False
     assert blocked_result.error == "RuntimeError: approval required"
 
@@ -334,13 +315,8 @@ def test_wl6898_dispatcher_execute_task_respects_hitl_policy_on_execution() -> N
 
         def run(self, **kwargs: object) -> SimpleNamespace:
             self.calls.append(kwargs)
-            if (
-                kwargs.get("require_hitl") is True
-                and kwargs.get("approval_granted") is not True
-            ):
-                return SimpleNamespace(
-                    exit_code=1, stdout="", stderr="approval required"
-                )
+            if kwargs.get("require_hitl") is True and kwargs.get("approval_granted") is not True:
+                return SimpleNamespace(exit_code=1, stdout="", stderr="approval required")
             return SimpleNamespace(exit_code=0, stdout="approved", stderr="")
 
     plan = OrchestrationPlan(goal="route a HITL-gated task")
@@ -431,9 +407,7 @@ def test_wl6816_design_language_apply_to_cli_success() -> None:
     assert "info" in design.cli_theme.styles
 
 
-def test_wl6817_kpis_from_telemetry_and_sparse_behavior(
-    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
-) -> None:
+def test_wl6817_kpis_from_telemetry_and_sparse_behavior(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
     from thegent.execution import KPIManager
 
     class _Registry:
@@ -510,9 +484,7 @@ def test_wl6818_model_promotion_persists_with_audit_and_idempotency(
         promoter._update_model_tier("unknown-model", "production")
 
 
-def test_wl6819_tier2_bwrap_has_worktree_bind_and_no_root_bind(
-    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
-) -> None:
+def test_wl6819_tier2_bwrap_has_worktree_bind_and_no_root_bind(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
     worktree = tmp_path / "wt"
     worktree.mkdir()
     monkeypatch.setenv("THGENT_SANDBOX_WORKTREE", str(worktree))

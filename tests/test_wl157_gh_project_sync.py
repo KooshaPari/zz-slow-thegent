@@ -209,9 +209,7 @@ class TestGetProjectStatus:
     @patch("thegent.integrations.gh_project_sync._run_gh_command")
     def test_query_failure_with_auth_in_stderr(self, mock_run, valid_config):
         """Query failure mentioning 'auth' raises GHProjectAuthError."""
-        mock_run.side_effect = GHProjectAuthError(
-            "permission denied: project scope required"
-        )
+        mock_run.side_effect = GHProjectAuthError("permission denied: project scope required")
         result = get_project_status(valid_config)
         assert result["status"] == "auth_required"
 
@@ -379,16 +377,11 @@ class TestSyncToGithub:
         assert result["items_synced"] == 2
         assert result["errors"] == []
         assert any(cmd[:3] == ["project", "item-create", "1"] for cmd in calls)
-        assert any(
-            cmd[:3] == ["project", "item-edit", "--id"] and "--field-id" in cmd
-            for cmd in calls
-        )
+        assert any(cmd[:3] == ["project", "item-edit", "--id"] and "--field-id" in cmd for cmd in calls)
         assert mock_run.call_count > 0
 
     @patch("thegent.integrations.gh_project_sync._run_gh_command")
-    def test_missing_status_options_fails_before_item_mutations(
-        self, mock_run, valid_config
-    ):
+    def test_missing_status_options_fails_before_item_mutations(self, mock_run, valid_config):
         """Missing status option mapping should fail before attempting item create/update."""
         calls: list[list[str]] = []
 
@@ -402,9 +395,7 @@ class TestSyncToGithub:
             if args[:3] == ["project", "field-list", "1"]:
                 return (
                     0,
-                    json.dumps(
-                        [{"id": "F_STATUS", "name": "Status", "options": []}]
-                    ).decode(),
+                    json.dumps([{"id": "F_STATUS", "name": "Status", "options": []}]).decode(),
                     "",
                 )
             raise AssertionError(f"Unexpected gh args: {args}")
@@ -426,9 +417,7 @@ class TestSyncToGithub:
         assert not any(cmd[:3] == ["project", "item-edit", "--id"] for cmd in calls)
 
     @patch("thegent.integrations.gh_project_sync._run_gh_command")
-    def test_api_failure_during_upsert_is_propagated_in_strict_mode(
-        self, mock_run, valid_config
-    ):
+    def test_api_failure_during_upsert_is_propagated_in_strict_mode(self, mock_run, valid_config):
         """A downstream gh API error should surface to callers in strict mode."""
         call_count = 0
 

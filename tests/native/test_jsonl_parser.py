@@ -197,87 +197,63 @@ class TestJsonlParserFallback:
         with patch("thegent.native.jsonl_parser._find_binary", return_value=None):
             yield
 
-    def test_stream_via_fallback(
-        self, parser: JsonlParser, no_binary, tmp_path: Path
-    ) -> None:
+    def test_stream_via_fallback(self, parser: JsonlParser, no_binary, tmp_path: Path) -> None:
         p = _write_jsonl([{"a": 1}, {"b": 2}], tmp_path)
         records = list(parser.stream(p))
         assert len(records) == 2
 
-    def test_count_via_fallback(
-        self, parser: JsonlParser, no_binary, tmp_path: Path
-    ) -> None:
+    def test_count_via_fallback(self, parser: JsonlParser, no_binary, tmp_path: Path) -> None:
         p = _write_jsonl([{"a": 1}, {"b": 2}, {"c": 3}], tmp_path)
         assert parser.count(p) == 3
 
-    def test_filter_via_fallback(
-        self, parser: JsonlParser, no_binary, tmp_path: Path
-    ) -> None:
+    def test_filter_via_fallback(self, parser: JsonlParser, no_binary, tmp_path: Path) -> None:
         p = _write_jsonl([{"t": "a"}, {"t": "b"}, {"t": "a"}], tmp_path)
         results = list(parser.filter(p, "t", "a"))
         assert len(results) == 2
 
-    def test_sample_via_fallback(
-        self, parser: JsonlParser, no_binary, tmp_path: Path
-    ) -> None:
+    def test_sample_via_fallback(self, parser: JsonlParser, no_binary, tmp_path: Path) -> None:
         p = _write_jsonl([{"n": i} for i in range(5)], tmp_path)
         sample = parser.sample(p, 2)
         assert len(sample) == 2
 
-    def test_stream_empty_file_via_fallback(
-        self, parser: JsonlParser, no_binary, tmp_path: Path
-    ) -> None:
+    def test_stream_empty_file_via_fallback(self, parser: JsonlParser, no_binary, tmp_path: Path) -> None:
         p = tmp_path / "empty.jsonl"
         p.write_text("", encoding="utf-8")
         records = list(parser.stream(p))
         assert records == []
 
-    def test_count_empty_file_via_fallback(
-        self, parser: JsonlParser, no_binary, tmp_path: Path
-    ) -> None:
+    def test_count_empty_file_via_fallback(self, parser: JsonlParser, no_binary, tmp_path: Path) -> None:
         p = tmp_path / "empty.jsonl"
         p.write_text("", encoding="utf-8")
         assert parser.count(p) == 0
 
-    def test_sample_returns_list(
-        self, parser: JsonlParser, no_binary, tmp_path: Path
-    ) -> None:
+    def test_sample_returns_list(self, parser: JsonlParser, no_binary, tmp_path: Path) -> None:
         p = _write_jsonl([{"k": "v"}], tmp_path)
         result = parser.sample(p, 10)
         assert isinstance(result, list)
 
-    def test_filter_no_matches_via_fallback(
-        self, parser: JsonlParser, no_binary, tmp_path: Path
-    ) -> None:
+    def test_filter_no_matches_via_fallback(self, parser: JsonlParser, no_binary, tmp_path: Path) -> None:
         p = _write_jsonl([{"type": "info"}], tmp_path)
         results = list(parser.filter(p, "type", "error"))
         assert results == []
 
-    def test_stream_invalid_lines_skipped(
-        self, parser: JsonlParser, no_binary, tmp_path: Path
-    ) -> None:
+    def test_stream_invalid_lines_skipped(self, parser: JsonlParser, no_binary, tmp_path: Path) -> None:
         p = _write_jsonl(["INVALID", {"valid": True}], tmp_path)
         records = list(parser.stream(p))
         assert len(records) == 1
         assert records[0]["valid"] is True
 
-    def test_count_handles_invalid_lines(
-        self, parser: JsonlParser, no_binary, tmp_path: Path
-    ) -> None:
+    def test_count_handles_invalid_lines(self, parser: JsonlParser, no_binary, tmp_path: Path) -> None:
         # count counts lines regardless of JSON validity
         p = _write_jsonl(["INVALID", {"valid": True}], tmp_path)
         assert parser.count(p) == 2
 
-    def test_stream_accepts_str_path(
-        self, parser: JsonlParser, no_binary, tmp_path: Path
-    ) -> None:
+    def test_stream_accepts_str_path(self, parser: JsonlParser, no_binary, tmp_path: Path) -> None:
         p = _write_jsonl([{"x": 1}], tmp_path)
         records = list(parser.stream(str(p)))
         assert len(records) == 1
 
-    def test_count_accepts_str_path(
-        self, parser: JsonlParser, no_binary, tmp_path: Path
-    ) -> None:
+    def test_count_accepts_str_path(self, parser: JsonlParser, no_binary, tmp_path: Path) -> None:
         p = _write_jsonl([{"x": 1}], tmp_path)
         assert parser.count(str(p)) == 1
 

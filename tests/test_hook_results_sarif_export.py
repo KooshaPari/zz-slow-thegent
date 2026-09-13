@@ -33,9 +33,7 @@ def test_export_hook_results_to_sarif(tmp_path: Path) -> None:
                 "status": "done",
                 "exit_code": 0,
                 "summary": {"total_findings": 1},
-                "checks": [
-                    {"name": "Layer 1 - Secrets", "status": "warn", "findings": 1}
-                ],
+                "checks": [{"name": "Layer 1 - Secrets", "status": "warn", "findings": 1}],
             }
         ).decode(),
         encoding="utf-8",

@@ -104,9 +104,7 @@ class McpGateway:
             if transport:
                 # Use custom transport if provided
                 result = transport(
-                    command=server_config.command.split()
-                    if server_config.command
-                    else [],
+                    command=server_config.command.split() if server_config.command else [],
                     request_payload=json.dumps(
                         {
                             "jsonrpc": "2.0",
@@ -132,9 +130,7 @@ class McpGateway:
             else:
                 # Use subprocess
                 result = subprocess.run(
-                    command=server_config.command.split()
-                    if server_config.command
-                    else [],
+                    command=server_config.command.split() if server_config.command else [],
                     request_payload=json.dumps(
                         {
                             "jsonrpc": "2.0",
@@ -196,13 +192,9 @@ class McpGateway:
                 error=f"transport_error: {type(e).__name__}: {str(e)}",
             )
 
-    def exec_tool(
-        self, server_id: str, tool_name: str, arguments: dict[str, Any]
-    ) -> Any:
+    def exec_tool(self, server_id: str, tool_name: str, arguments: dict[str, Any]) -> Any:
         """Execute a tool on a registered server."""
-        return self.execute(
-            McpToolCall(server_id=server_id, tool=tool_name, arguments=arguments)
-        )
+        return self.execute(McpToolCall(server_id=server_id, tool=tool_name, arguments=arguments))
 
 
 __all__ = [
@@ -267,11 +259,7 @@ class GatewayClient:
         )
         if result.success:
             return json.dumps(result.result)
-        return (
-            f"transport_error: {result.error}"
-            if result.error
-            else "transport_error: invalid or empty MCP response"
-        )
+        return f"transport_error: {result.error}" if result.error else "transport_error: invalid or empty MCP response"
 
 
 __all__ = [

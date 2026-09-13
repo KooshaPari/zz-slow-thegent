@@ -55,9 +55,7 @@ def trust_status_cmd(format: str | None = None) -> None:
     console.print(f"Last Env:    [cyan]{last_env or 'None'}[/cyan]")
 
     if last_env:
-        allowed, reason = trust_boundary.validate_transition(
-            last_env, settings.environment
-        )
+        allowed, reason = trust_boundary.validate_transition(last_env, settings.environment)
         status_color = "green" if allowed else "red"
         console.print(f"Transition:  [{status_color}]{reason}[/{status_color}]")
 
@@ -118,9 +116,7 @@ def signatures_verify_cmd(run_id: str) -> None:
         blocks = artifact_data.get("blocks", [])
         chain = artifact_data.get("provenance_chain", [])
 
-        console.print(
-            f"[bold cyan]Verifying MAIF Artifact: {header.get('artifact_id')}[/bold cyan]"
-        )
+        console.print(f"[bold cyan]Verifying MAIF Artifact: {header.get('artifact_id')}[/bold cyan]")
 
         # 1. Verify Blocks
         all_blocks_valid = True
@@ -131,14 +127,10 @@ def signatures_verify_cmd(run_id: str) -> None:
             actual_hash = hashlib.sha256(body.encode()).hexdigest()
 
             if actual_hash != block.get("payload_hash"):
-                console.print(
-                    f"  [red]✗ Block {block.get('block_id')} payload hash mismatch![/red]"
-                )
+                console.print(f"  [red]✗ Block {block.get('block_id')} payload hash mismatch![/red]")
                 all_blocks_valid = False
             else:
-                console.print(
-                    f"  [green]✓ Block {block.get('block_id')} verified.[/green]"
-                )
+                console.print(f"  [green]✓ Block {block.get('block_id')} verified.[/green]")
 
         # 2. Verify Chain
         chain_valid = True
@@ -148,9 +140,7 @@ def signatures_verify_cmd(run_id: str) -> None:
                 link_data = f"{prev_hash}|{block.get('payload_hash')}"
                 expected_link_hash = hashlib.sha256(link_data.encode()).hexdigest()
                 if chain[i] != expected_link_hash:
-                    console.print(
-                        f"  [red]✗ Provenance chain broken at block {i}![/red]"
-                    )
+                    console.print(f"  [red]✗ Provenance chain broken at block {i}![/red]")
                     chain_valid = False
                     break
                 prev_hash = expected_link_hash
@@ -159,20 +149,14 @@ def signatures_verify_cmd(run_id: str) -> None:
         root_valid = False
         if chain and chain[-1] == header.get("root_hash"):
             root_valid = True
-            console.print(
-                f"  [green]✓ Root hash {header.get('root_hash')[:12]}... matches chain.[/green]"
-            )
+            console.print(f"  [green]✓ Root hash {header.get('root_hash')[:12]}... matches chain.[/green]")
         else:
             console.print("  [red]✗ Root hash mismatch![/red]")
 
         if all_blocks_valid and chain_valid and root_valid:
-            console.print(
-                f"\n[bold green]RESULT: Artifact for {run_id} is VALID.[/bold green]"
-            )
+            console.print(f"\n[bold green]RESULT: Artifact for {run_id} is VALID.[/bold green]")
         else:
-            console.print(
-                f"\n[bold red]RESULT: Artifact for {run_id} is INVALID.[/bold red]"
-            )
+            console.print(f"\n[bold red]RESULT: Artifact for {run_id} is INVALID.[/bold red]")
             raise typer.Exit(1)
 
     except Exception as e:

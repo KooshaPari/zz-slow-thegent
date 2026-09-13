@@ -66,8 +66,6 @@ def test_result_mentions_no_such_command_true_for_stderr_mixed_case() -> None:
 
 
 def test_result_mentions_no_such_command_false_when_absent_or_empty_attrs() -> None:
-    assert not _result_mentions_no_such_command(
-        DummyResult(stdout="all good", stderr="still fine")
-    )
+    assert not _result_mentions_no_such_command(DummyResult(stdout="all good", stderr="still fine"))
     assert not _result_mentions_no_such_command(DummyResult(stdout=None, stderr=None))
     assert not _result_mentions_no_such_command(NoStreamsResult())

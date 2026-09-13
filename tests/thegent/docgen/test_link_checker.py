@@ -72,9 +72,7 @@ async def test_check_external_link(temp_docs):
 @pytest.mark.asyncio
 async def test_ignore_patterns(temp_docs):
     """Test ignoring links based on patterns."""
-    async with DocLinkChecker(
-        base_dir=temp_docs, ignore_patterns=[r"http://localhost.*"]
-    ) as checker:
+    async with DocLinkChecker(base_dir=temp_docs, ignore_patterns=[r"http://localhost.*"]) as checker:
         links = checker.find_links(temp_docs / "page1.md")
         # Add a local link
         (temp_docs / "local.md").write_text("[Local](http://localhost:8080)")

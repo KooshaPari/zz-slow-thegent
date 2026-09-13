@@ -19,9 +19,7 @@ def test_wp_14001_objective_selector():
     assert best == "gemini-2.0-flash"
 
     selector_best = ObjectiveSelector(get_objective_profile("best"))
-    best_high_qual = selector_best.select_best_model(
-        ["claude-opus-4.6", "gemini-2.0-flash"]
-    )
+    best_high_qual = selector_best.select_best_model(["claude-opus-4.6", "gemini-2.0-flash"])
     assert best_high_qual == "claude-opus-4.6"
 
 
@@ -51,9 +49,7 @@ def test_wp_14003_promotion_flow(tmp_path):
 
     # Simulate 50 successful runs
     for _ in range(50):
-        mgr.record_outcome(
-            "candidate-model", success=True, latency_ms=100, cost_usd=0.001
-        )
+        mgr.record_outcome("candidate-model", success=True, latency_ms=100, cost_usd=0.001)
 
     assert mgr.promote_to_candidate("candidate-model") is True
     assert mgr.finalize_promotion("candidate-model", approver="admin-1") is True

@@ -406,9 +406,7 @@ def _render_summary(exp: DecisionExplanation, *, width: int) -> str:
     the column-padding contract is shared with DETAILED and DEEPDIVE.
     """
     lines = _header_lines(exp, width=width)
-    lines.extend(
-        _core_attribute_lines(exp, label_width=0, align=False, include_source=False)
-    )
+    lines.extend(_core_attribute_lines(exp, label_width=0, align=False, include_source=False))
     lines.extend(_actions_lines(exp))
     return "\n".join(lines)
 

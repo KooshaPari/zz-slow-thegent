@@ -120,9 +120,7 @@ class TestFederatedPolicyEngineThreadSafety:
             except BaseException as exc:  # pragma: no cover - diagnostic
                 errors.append(exc)
 
-        threads = [
-            threading.Thread(target=worker, args=(i,)) for i in range(thread_count)
-        ]
+        threads = [threading.Thread(target=worker, args=(i,)) for i in range(thread_count)]
         for t in threads:
             t.start()
         for t in threads:
@@ -205,9 +203,7 @@ class TestFederatedPolicyEngineThreadSafety:
 class TestRegisterOverridePathTraversalGuard:
     """``register_override`` rejects path-traversal-shaped ``rule_id``s."""
 
-    def test_forward_slash_rejected(
-        self, federated_engine: PolicyEngine, tmp_path: Path
-    ) -> None:
+    def test_forward_slash_rejected(self, federated_engine: PolicyEngine, tmp_path: Path) -> None:
         with pytest.raises(PolicyEngineConfigError) as exc_info:
             federated_engine.register_override(
                 "../etc/passwd",
@@ -250,9 +246,7 @@ class TestRegisterOverridePathTraversalGuard:
             verdict="deny",
             reason="r1",
         )
-        d = federated_engine.evaluate(
-            PolicyContext(agent="cursor", environment="production", confidence=0.95)
-        )
+        d = federated_engine.evaluate(PolicyContext(agent="cursor", environment="production", confidence=0.95))
         assert d.override_applied is True
         assert d.verdict.value == "allow"
 

@@ -110,9 +110,7 @@ class GovernanceEventLog:
                     continue
         return items
 
-    def update_status(
-        self, run_id: str, new_status: str, reason: str | None = None
-    ) -> bool:
+    def update_status(self, run_id: str, new_status: str, reason: str | None = None) -> bool:
         """Update the status of a pending await_approval event. Returns True on success."""
         if not self.events_path.exists():
             return False
@@ -154,14 +152,10 @@ class PolicyEngine:
     def __init__(self, settings: Any, session_dir: Path | None = None) -> None:
         self.settings = settings
         _raw_dir = session_dir or getattr(settings, "session_dir", None)
-        self.session_dir = (
-            Path(_raw_dir).expanduser().resolve() if _raw_dir else Path.cwd()
-        )
+        self.session_dir = Path(_raw_dir).expanduser().resolve() if _raw_dir else Path.cwd()
         # FR-GOV-HL-004 — absolute path required.
         if not self.session_dir.is_absolute():
-            raise ValueError(
-                f"session_dir must be an absolute path (got {self.session_dir!s})"
-            )
+            raise ValueError(f"session_dir must be an absolute path (got {self.session_dir!s})")
         self._event_log = GovernanceEventLog(self.session_dir)
 
     def evaluate_hitl(self, run_context: RunContext) -> HITLDecision:
@@ -176,9 +170,7 @@ class PolicyEngine:
         if not run_context.run_id or not run_context.run_id.strip():
             raise ValueError("run_context.run_id must be a non-empty string")
         hitl_enabled: bool = bool(getattr(self.settings, "hitl_enabled", False))
-        checkpoints: list[str] = list(
-            getattr(self.settings, "hitl_checkpoints", ["pre_execution"])
-        )
+        checkpoints: list[str] = list(getattr(self.settings, "hitl_checkpoints", ["pre_execution"]))
 
         if not hitl_enabled or "pre_execution" not in checkpoints:
             return HITLDecision(
@@ -341,13 +333,9 @@ class HITLApprovalWorkflow:
         if not pending:
             raise ValueError(f"No pending HITL approval found for run_id={run_id!r}")
 
-        updated = self._event_log.update_status(
-            run_id=run_id, new_status="approved", reason=reason
-        )
+        updated = self._event_log.update_status(run_id=run_id, new_status="approved", reason=reason)
         if not updated:
-            raise RuntimeError(
-                f"Failed to update governance_events.jsonl for run_id={run_id!r}"
-            )
+            raise RuntimeError(f"Failed to update governance_events.jsonl for run_id={run_id!r}")
 
         self._emit_resolution_event(run_id=run_id, resolution="approved", reason=reason)
         logger.info("HITL run_id=%s APPROVED (reason=%s)", run_id, reason)
@@ -371,13 +359,9 @@ class HITLApprovalWorkflow:
         if not pending:
             raise ValueError(f"No pending HITL approval found for run_id={run_id!r}")
 
-        updated = self._event_log.update_status(
-            run_id=run_id, new_status="rejected", reason=reason
-        )
+        updated = self._event_log.update_status(run_id=run_id, new_status="rejected", reason=reason)
         if not updated:
-            raise RuntimeError(
-                f"Failed to update governance_events.jsonl for run_id={run_id!r}"
-            )
+            raise RuntimeError(f"Failed to update governance_events.jsonl for run_id={run_id!r}")
 
         self._emit_resolution_event(run_id=run_id, resolution="rejected", reason=reason)
         logger.info("HITL run_id=%s REJECTED (reason=%s)", run_id, reason)
@@ -457,12 +441,8 @@ class HITLApprovalWorkflow:
             "emitted_at_utc": event["emitted_at_utc"],
         }
 
-    def _emit_resolution_event(
-        self, run_id: str, resolution: str, reason: str | None
-    ) -> None:
-        payload = (
-            f"{run_id}:{resolution}:{reason or ''}:{datetime.now(UTC).isoformat()}"
-        )
+    def _emit_resolution_event(self, run_id: str, resolution: str, reason: str | None) -> None:
+        payload = f"{run_id}:{resolution}:{reason or ''}:{datetime.now(UTC).isoformat()}"
         signature = hashlib.sha256(payload.encode()).hexdigest()
         event: dict[str, Any] = {
             "event_type": "hitl_resolution",
@@ -481,9 +461,7 @@ class HITLManager:
     def __init__(self) -> None:
         self._approvals: dict[str, bool] = {}
 
-    def request_approval(
-        self, request_id: str, action: str, context: dict[str, Any]
-    ) -> str:
+    def request_approval(self, request_id: str, action: str, context: dict[str, Any]) -> str:
         """Issue an approval request and return its ID."""
         logger.info("HITL approval requested for action: %s", action)
         self._approvals[request_id] = False

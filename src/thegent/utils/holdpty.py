@@ -73,9 +73,7 @@ class PTYHolder:
     def _handle_connection(self, conn: socket.socket):
         """Proxy between the socket and the PTY master."""
         conn.setblocking(False)
-        assert self.master_fd is not None, (
-            "PTY master_fd must be set before handling connections"
-        )
+        assert self.master_fd is not None, "PTY master_fd must be set before handling connections"
         master_fd: int = cast("int", self.master_fd)
 
         while not self._stop_event.is_set():
@@ -105,9 +103,7 @@ class PTYHolder:
         """Mirror PTY output to the holder's stdout (so thegent logs work)."""
         import sys
 
-        assert self.master_fd is not None, (
-            "PTY master_fd must be set before mirroring stdout"
-        )
+        assert self.master_fd is not None, "PTY master_fd must be set before mirroring stdout"
         master_fd: int = cast("int", self.master_fd)
 
         while not self._stop_event.is_set():

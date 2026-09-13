@@ -75,10 +75,7 @@ def _relative_path(path: Path, root: Path) -> str:
 
 
 def _is_ignored(relative_path: str) -> bool:
-    return any(
-        relative_path == prefix.rstrip("/") or relative_path.startswith(prefix)
-        for prefix in IGNORED_PREFIXES
-    )
+    return any(relative_path == prefix.rstrip("/") or relative_path.startswith(prefix) for prefix in IGNORED_PREFIXES)
 
 
 def _load_config(config_path: Path) -> tuple[list[AllowEntry], set[str]]:
@@ -107,9 +104,7 @@ def _import_matches(import_name: str, pattern: str) -> bool:
     return import_name == pattern or import_name.startswith(pattern + ".")
 
 
-def _allow_matches(
-    entry: AllowEntry, relative_path: str, import_name: str, lane: str
-) -> bool:
+def _allow_matches(entry: AllowEntry, relative_path: str, import_name: str, lane: str) -> bool:
     return (
         entry.path == relative_path
         and entry.lane == lane
@@ -161,11 +156,7 @@ def _finding_for_import(
     enforced_lanes: set[str],
 ) -> Finding:
     matched_entry = next(
-        (
-            entry
-            for entry in allowlist
-            if _allow_matches(entry, relative_path, import_name, lane)
-        ),
+        (entry for entry in allowlist if _allow_matches(entry, relative_path, import_name, lane)),
         None,
     )
     allowlisted = matched_entry is not None
@@ -181,9 +172,7 @@ def _finding_for_import(
     )
 
 
-def _scan_python_imports(
-    root: Path, allowlist: list[AllowEntry], enforced_lanes: set[str]
-) -> list[Finding]:
+def _scan_python_imports(root: Path, allowlist: list[AllowEntry], enforced_lanes: set[str]) -> list[Finding]:
     findings: list[Finding] = []
     for path in _scan_roots(root):
         relative_path = _relative_path(path, root)
@@ -230,9 +219,7 @@ def _scan_native_harness(root: Path, enforced_lanes: set[str]) -> list[Finding]:
     return findings
 
 
-def collect_findings(
-    root: Path, config_path: Path, enforce_lanes: set[str] | None = None
-) -> list[Finding]:
+def collect_findings(root: Path, config_path: Path, enforce_lanes: set[str] | None = None) -> list[Finding]:
     allowlist, configured_lanes = _load_config(config_path)
     enforced_lanes = configured_lanes | (enforce_lanes or set())
     findings = _scan_python_imports(root, allowlist, enforced_lanes)
@@ -282,9 +269,7 @@ def _print_text(findings: list[Finding], mode: str) -> None:
     print(f"findings: {summary['finding_count']}")
     print(f"failures: {summary['fail_count']}")
     print(f"counts_by_lane: {json.dumps(summary['counts_by_lane'], sort_keys=True)}")
-    print(
-        f"counts_by_severity: {json.dumps(summary['counts_by_severity'], sort_keys=True)}"
-    )
+    print(f"counts_by_severity: {json.dumps(summary['counts_by_severity'], sort_keys=True)}")
     print(f"spec: {DRIFT_SPEC}")
     print(f"contract: {CONTRACT_SPEC}")
 
@@ -296,15 +281,9 @@ def _print_text(findings: list[Finding], mode: str) -> None:
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--root", default=".", help="Repository root to scan.")
-    parser.add_argument(
-        "--config", default=DEFAULT_CONFIG, help="Boundary allowlist config."
-    )
-    parser.add_argument(
-        "--format", choices=("text", "json", "summary-json"), default="text"
-    )
-    parser.add_argument(
-        "--strict", action="store_true", help="Return nonzero when fail findings exist."
-    )
+    parser.add_argument("--config", default=DEFAULT_CONFIG, help="Boundary allowlist config.")
+    parser.add_argument("--format", choices=("text", "json", "summary-json"), default="text")
+    parser.add_argument("--strict", action="store_true", help="Return nonzero when fail findings exist.")
     parser.add_argument(
         "--enforce-lane",
         action="append",
@@ -314,11 +293,7 @@ def main(argv: list[str] | None = None) -> int:
     args = parser.parse_args(argv)
 
     root = Path(args.root).resolve()
-    config_path = (
-        (root / args.config).resolve()
-        if not Path(args.config).is_absolute()
-        else Path(args.config)
-    )
+    config_path = (root / args.config).resolve() if not Path(args.config).is_absolute() else Path(args.config)
     mode = "strict" if args.strict else "reporter"
     findings = collect_findings(root, config_path, set(args.enforce_lane))
 

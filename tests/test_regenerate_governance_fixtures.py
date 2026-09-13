@@ -44,9 +44,7 @@ def test_regenerate_governance_fixtures_requires_bump_when_manifest_drifted(
     manifest_path = dst / "spiral_trend_replay_manifest.json"
     manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
     manifest["cases"] = list(reversed(manifest["cases"]))
-    manifest_path.write_text(
-        json.dumps(manifest, indent=2).decode() + "\n", encoding="utf-8"
-    )
+    manifest_path.write_text(json.dumps(manifest, indent=2).decode() + "\n", encoding="utf-8")
 
     script = _repo_root() / "scripts" / "regenerate_governance_fixtures.py"
     proc = subprocess.run(

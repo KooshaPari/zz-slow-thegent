@@ -5,10 +5,7 @@ import pytest
 # scripts.check_python_benchmark_regression module was removed.
 pytest.importorskip(
     "scripts.check_python_benchmark_regression",
-    reason=(
-        "scripts.check_python_benchmark_regression module removed; "
-        "benchmark regression tests skipped"
-    ),
+    reason=("scripts.check_python_benchmark_regression module removed; benchmark regression tests skipped"),
 )
 from scripts.check_python_benchmark_regression import (  # noqa: E402
     find_regressions,

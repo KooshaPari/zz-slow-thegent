@@ -91,19 +91,16 @@ class ReflectionEventLog:
         # Append to JSONL file
         with open(self.log_path, "a") as f:
             event_dict = asdict(decision)
-            event_dict["annotation"] = (
-                self._annotation_generator.format_reflection_annotation(
-                    {
-                        "schema": "reflection-annotation-v1",
-                        "wl_id": decision.wl_id,
-                        "connector": decision.connector,
-                        "direction": decision.direction,
-                        "decision": decision.decision_type,
-                        "mutation_id": decision.mutation_id
-                        or f"{decision.wl_id}:{decision.cycle_id}",
-                        "timestamp": decision.timestamp,
-                    }
-                )
+            event_dict["annotation"] = self._annotation_generator.format_reflection_annotation(
+                {
+                    "schema": "reflection-annotation-v1",
+                    "wl_id": decision.wl_id,
+                    "connector": decision.connector,
+                    "direction": decision.direction,
+                    "decision": decision.decision_type,
+                    "mutation_id": decision.mutation_id or f"{decision.wl_id}:{decision.cycle_id}",
+                    "timestamp": decision.timestamp,
+                }
             )
             f.write(json.dumps(event_dict).decode() + "\n")
 

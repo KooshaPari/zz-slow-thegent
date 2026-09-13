@@ -111,9 +111,7 @@ class TestAdaptRequestToAgentTask:
 class TestAdaptResultToSubAgentResult:
     """# @trace FR-ORC-089"""
 
-    def _make_agent_result(
-        self, exit_code: int = 0, stdout: str = "ok", timed_out: bool = False
-    ) -> MagicMock:
+    def _make_agent_result(self, exit_code: int = 0, stdout: str = "ok", timed_out: bool = False) -> MagicMock:
         r = MagicMock()
         r.task_id = "req-001"
         r.exit_code = exit_code
@@ -177,9 +175,7 @@ class TestRemoteDispatchConfig:
         assert cfg.sync_workspace is False
 
     def test_custom_values(self) -> None:
-        cfg = RemoteDispatchConfig(
-            enable_remote=True, fallback_to_local=False, sync_workspace=True
-        )
+        cfg = RemoteDispatchConfig(enable_remote=True, fallback_to_local=False, sync_workspace=True)
         assert cfg.enable_remote is True
         assert cfg.fallback_to_local is False
         assert cfg.sync_workspace is True
@@ -289,10 +285,7 @@ class TestSubAgentDispatcherRemoteBackend:
         index = CapabilityIndex()
         dispatcher = SubAgentDispatcher(capability_index=index, remote_backend=backend)
 
-        requests = [
-            _make_request(request_id=f"req-{i}", agent_type="batch-agent")
-            for i in range(3)
-        ]
+        requests = [_make_request(request_id=f"req-{i}", agent_type="batch-agent") for i in range(3)]
         results = dispatcher.dispatch_concurrent(requests)
         assert len(results) == 3
         assert all(r.status == SubAgentStatus.COMPLETED for r in results)

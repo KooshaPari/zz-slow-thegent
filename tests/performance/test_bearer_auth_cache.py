@@ -11,20 +11,11 @@ import pytest
 # The auth module lives at src/thegent/mcp/server/auth.py but is NOT importable
 # as `thegent.mcp.server.auth` because `thegent.mcp.server` resolves to server.py.
 # Load it the same way the production code does: via importlib.
-_AUTH_MODULE_PATH = (
-    Path(__file__).resolve().parents[2]
-    / "src"
-    / "thegent"
-    / "mcp"
-    / "server"
-    / "auth.py"
-)
+_AUTH_MODULE_PATH = Path(__file__).resolve().parents[2] / "src" / "thegent" / "mcp" / "server" / "auth.py"
 
 
 def _load_auth_module():
-    spec = importlib.util.spec_from_file_location(
-        "thegent.mcp._server_auth", _AUTH_MODULE_PATH
-    )
+    spec = importlib.util.spec_from_file_location("thegent.mcp._server_auth", _AUTH_MODULE_PATH)
     if spec is None or spec.loader is None:
         raise RuntimeError(f"Unable to load auth module from: {_AUTH_MODULE_PATH}")
     module = importlib.util.module_from_spec(spec)
@@ -61,9 +52,7 @@ class TestBearerAuthSettingsCache:
         fake_settings = MagicMock()
         fake_settings.mcp_auth_mode = "none"
 
-        with patch.object(
-            _auth, "get_settings", return_value=fake_settings
-        ) as mock_get:
+        with patch.object(_auth, "get_settings", return_value=fake_settings) as mock_get:
             middleware = BearerAuthMiddleware(app=MagicMock())
             call_next = AsyncMock(return_value=MagicMock())
 
@@ -85,9 +74,7 @@ class TestBearerAuthSettingsCache:
         fake_b = MagicMock()
         fake_b.mcp_auth_mode = "none"
 
-        with patch.object(
-            _auth, "get_settings", side_effect=[fake_a, fake_b]
-        ) as mock_get:
+        with patch.object(_auth, "get_settings", side_effect=[fake_a, fake_b]) as mock_get:
             middleware = BearerAuthMiddleware(app=MagicMock())
             call_next = AsyncMock(return_value=MagicMock())
 

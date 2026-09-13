@@ -197,9 +197,7 @@ def _get_health_targets_path() -> Path:
 
     WL-124 stable import surface.
     """
-    return Path(
-        os.environ.get("THGENT_HEALTH_TARGETS", "/tmp/thegent/health_targets.yaml")
-    )
+    return Path(os.environ.get("THGENT_HEALTH_TARGETS", "/tmp/thegent/health_targets.yaml"))
 
 
 def _health_targets_exists() -> bool:

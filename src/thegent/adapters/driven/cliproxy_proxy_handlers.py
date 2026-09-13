@@ -65,11 +65,7 @@ async def _proxy_request(
     body = b""
     if request.method in ("POST", "PUT", "PATCH"):
         body = await request.body()
-    url = (
-        f"{backend_url.rstrip('/')}{path}"
-        if path.startswith("/")
-        else f"{backend_url.rstrip('/')}/{path}"
-    )
+    url = f"{backend_url.rstrip('/')}{path}" if path.startswith("/") else f"{backend_url.rstrip('/')}/{path}"
     if request.url.query:
         url = f"{url}?{request.url.query}"
 
@@ -97,9 +93,7 @@ async def _proxy_request(
                     headers=headers,
                 )
                 is_openrouter = _is_openrouter_backend(backend_url)
-                max_attempts = (
-                    _RETRY_MAX_ATTEMPTS.get(resp.status_code, 0) if is_openrouter else 0
-                )
+                max_attempts = _RETRY_MAX_ATTEMPTS.get(resp.status_code, 0) if is_openrouter else 0
                 if max_attempts and attempts < max_attempts:
                     attempts += 1
                     delay = 2.0**attempts
@@ -135,11 +129,7 @@ async def _proxy_request(
         _log.error("Backend proxy (%s) unreachable: %s", backend_url, e)
         return Response(
             content=json.dumps(
-                {
-                    "error": {
-                        "message": f"Backend proxy ({backend_url}) unreachable. Restart with: thegent mcp restart"
-                    }
-                }
+                {"error": {"message": f"Backend proxy ({backend_url}) unreachable. Restart with: thegent mcp restart"}}
             ),
             status_code=503,
             headers={"Content-Type": "application/json"},
@@ -172,9 +162,7 @@ async def _proxy_stream(
 
         async def stream_response(self, send: Send) -> None:  # noqa: PLR0912 -- stream startup state machine
             try:
-                iterator = cast(
-                    "AsyncIterator[bytes | memoryview | str]", self.body_iterator
-                )
+                iterator = cast("AsyncIterator[bytes | memoryview | str]", self.body_iterator)
                 first_chunk = await iterator.__anext__()
             except StopAsyncIteration:
                 await send(
@@ -184,9 +172,7 @@ async def _proxy_stream(
                         "headers": self.raw_headers,
                     }
                 )
-                await send(
-                    {"type": "http.response.body", "body": b"", "more_body": False}
-                )
+                await send({"type": "http.response.body", "body": b"", "more_body": False})
                 return
 
             self.headers["openai-model"] = routed_model
@@ -199,15 +185,11 @@ async def _proxy_stream(
             )
             if not isinstance(first_chunk, bytes | memoryview):
                 first_chunk = first_chunk.encode(self.charset)
-            await send(
-                {"type": "http.response.body", "body": first_chunk, "more_body": True}
-            )
+            await send({"type": "http.response.body", "body": first_chunk, "more_body": True})
             async for chunk in self.body_iterator:
                 if not isinstance(chunk, bytes | memoryview):
                     chunk = chunk.encode(self.charset)
-                await send(
-                    {"type": "http.response.body", "body": chunk, "more_body": True}
-                )
+                await send({"type": "http.response.body", "body": chunk, "more_body": True})
             await send({"type": "http.response.body", "body": b"", "more_body": False})
 
     if transform_responses:
@@ -220,11 +202,7 @@ async def _proxy_stream(
             pass
         url = f"{backend_url.rstrip('/')}/chat/completions"
     else:
-        url = (
-            f"{backend_url.rstrip('/')}{path}"
-            if path.startswith("/")
-            else f"{backend_url.rstrip('/')}/{path}"
-        )
+        url = f"{backend_url.rstrip('/')}{path}" if path.startswith("/") else f"{backend_url.rstrip('/')}/{path}"
 
     # OR-08: inject OpenRouter attribution headers before streaming begins
     _inject_openrouter_headers(headers, backend_url)
@@ -237,21 +215,15 @@ async def _proxy_stream(
         preamble_emitted = False
         done_received = False
         async with httpx.AsyncClient(timeout=120.0) as client:
-            async with client.stream(
-                "POST", url, content=body, headers=headers
-            ) as resp:
+            async with client.stream("POST", url, content=body, headers=headers) as resp:
                 if resp.status_code != 200:
                     # GW-05 + GW-06: preserve backend error body with semantic code context
                     err_body = await resp.aread()
-                    _log.warning(
-                        "backend stream error %s: %s", resp.status_code, err_body[:200]
-                    )
+                    _log.warning("backend stream error %s: %s", resp.status_code, err_body[:200])
 
                     # OR-13: 402 = InsufficientCredits — hard-stop, never retry
                     if resp.status_code == 402:
-                        raise InsufficientCreditsError(
-                            _ERROR_MESSAGES.get(402, "Payment required")
-                        )
+                        raise InsufficientCreditsError(_ERROR_MESSAGES.get(402, "Payment required"))
 
                     # OR-13: transient errors — signal caller to retry
                     max_attempts = _RETRY_MAX_ATTEMPTS.get(resp.status_code, 0)

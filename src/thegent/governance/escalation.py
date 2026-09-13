@@ -117,9 +117,7 @@ class EscalationQueue:
         _log.info("Escalated task %s to queue id=%s", run_id, esc_id)
         return esc_id
 
-    def list_items(
-        self, status: EscalationStatus | None = None
-    ) -> list[EscalationItem]:
+    def list_items(self, status: EscalationStatus | None = None) -> list[EscalationItem]:
         """List items in the queue, optionally filtered by status."""
         items = []
         for p in self.queue_dir.glob("*.json"):
@@ -174,11 +172,7 @@ class EscalationQueue:
             item = cast("EscalationItem", EscalationItem.from_dict(data))
 
             # Auto-expire if deadline passed
-            if (
-                item.status == EscalationStatus.PENDING
-                and item.deadline
-                and time.time() > item.deadline
-            ):
+            if item.status == EscalationStatus.PENDING and item.deadline and time.time() > item.deadline:
                 item.status = EscalationStatus.EXPIRED
                 self._save_item(item)
 
@@ -198,9 +192,7 @@ class EscalationQueue:
                     dlq.enqueue(meta, f"Escalation EXPIRED: {item.reason}")
                     _log.warning("Moved expired escalation %s to DLQ", item.id)
                 except Exception as e:
-                    _log.error(
-                        "Failed to move expired escalation %s to DLQ: %s", item.id, e
-                    )
+                    _log.error("Failed to move expired escalation %s to DLQ: %s", item.id, e)
             return item
         except Exception as e:
             _log.error("Failed to load escalation item %s: %s", p, e)

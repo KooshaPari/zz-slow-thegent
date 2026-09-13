@@ -87,9 +87,7 @@ class TestIsProtectedProcess:
         ],
     )
     def test_non_protected_names_are_allowed(self, name: str) -> None:
-        assert _is_protected_process(name) is False, (
-            f"Expected {name!r} to NOT be protected"
-        )
+        assert _is_protected_process(name) is False, f"Expected {name!r} to NOT be protected"
 
     def test_empty_string_not_protected(self) -> None:
         assert _is_protected_process("") is False
@@ -101,10 +99,7 @@ class TestIsProtectedProcess:
 
     def test_partial_path_with_protected_name(self) -> None:
         assert _is_protected_process("/usr/bin/zsh") is True
-        assert (
-            _is_protected_process("/Applications/Ghostty.app/Contents/MacOS/ghostty")
-            is True
-        )
+        assert _is_protected_process("/Applications/Ghostty.app/Contents/MacOS/ghostty") is True
 
 
 # ---------------------------------------------------------------------------
@@ -246,27 +241,21 @@ class TestCheckTripleLock:
         pruner = self._make_pruner(tmp_path)
         snap = self._make_snap(idle_count=IDLE_COUNT_THRESHOLD - 1)
         output = "Task finished\n"
-        is_idle, _is_complete, _ = pruner.check_triple_lock(
-            snap, output, time.time() - 10, time.time()
-        )
+        is_idle, _is_complete, _ = pruner.check_triple_lock(snap, output, time.time() - 10, time.time())
         assert is_idle is False
 
     def test_completion_lock_fails_when_no_marker(self, tmp_path: Path) -> None:
         pruner = self._make_pruner(tmp_path)
         snap = self._make_snap(idle_count=IDLE_COUNT_THRESHOLD)
         output = "Still working..."
-        _, is_complete, _ = pruner.check_triple_lock(
-            snap, output, time.time() - 10, time.time()
-        )
+        _, is_complete, _ = pruner.check_triple_lock(snap, output, time.time() - 10, time.time())
         assert is_complete is False
 
     def test_docs_lock_fails_when_no_docs(self, tmp_path: Path) -> None:
         pruner = self._make_pruner(tmp_path)
         snap = self._make_snap(idle_count=IDLE_COUNT_THRESHOLD)
         output = "Task finished\n"
-        _, _, docs = pruner.check_triple_lock(
-            snap, output, time.time() + 9999, time.time()
-        )
+        _, _, docs = pruner.check_triple_lock(snap, output, time.time() + 9999, time.time())
         assert docs is False
 
 
@@ -278,9 +267,7 @@ class TestCheckTripleLock:
 class TestRunCycleDryRun:
     """Tests that run_cycle never kills without explicit confirmation."""
 
-    def _make_pruner_with_eligible_session(
-        self, tmp_path: Path
-    ) -> tuple[SmartPruner, dict[str, Any]]:
+    def _make_pruner_with_eligible_session(self, tmp_path: Path) -> tuple[SmartPruner, dict[str, Any]]:
         """Return a pruner and a fake session that passes all Triple-Lock criteria."""
         research = tmp_path / "docs" / "research"
         research.mkdir(parents=True)
@@ -289,12 +276,8 @@ class TestRunCycleDryRun:
         with (
             patch("thegent.orchestration.pruning.smart_prune.ThegentSettings"),
             patch("thegent.orchestration.pruning.smart_prune.ps_impl") as mock_ps,
-            patch(
-                "thegent.orchestration.pruning.smart_prune.list_tmux_panes"
-            ) as mock_panes,
-            patch(
-                "thegent.orchestration.pruning.smart_prune.capture_tmux_pane"
-            ) as mock_cap,
+            patch("thegent.orchestration.pruning.smart_prune.list_tmux_panes") as mock_panes,
+            patch("thegent.orchestration.pruning.smart_prune.capture_tmux_pane") as mock_cap,
         ):
             pruner = SmartPruner.__new__(SmartPruner)
             pruner.settings = MagicMock(platform="linux")
@@ -398,9 +381,7 @@ class TestRunCycleDryRun:
         mock_prune.assert_called_once()
         assert results["pruned"] == 1
 
-    def _make_eligible_pruner(
-        self, tmp_path: Path
-    ) -> tuple[SmartPruner, dict[str, Any]]:
+    def _make_eligible_pruner(self, tmp_path: Path) -> tuple[SmartPruner, dict[str, Any]]:
         research = tmp_path / "docs" / "research"
         research.mkdir(parents=True)
         (research / "dump.md").write_text("done")
@@ -536,9 +517,7 @@ class TestSmartPruneMain:
                 return_value=[],
             ),
         ):
-            results = smart_prune_main(
-                force=False, reprompt=False, dry_run=True, yes=False
-            )
+            results = smart_prune_main(force=False, reprompt=False, dry_run=True, yes=False)
 
         assert "pruned" in results
         assert "kept" in results
@@ -553,8 +532,6 @@ class TestSmartPruneMain:
                 return_value=[],
             ),
         ):
-            results = smart_prune_main(
-                force=True, reprompt=False, dry_run=False, yes=True
-            )
+            results = smart_prune_main(force=True, reprompt=False, dry_run=False, yes=True)
 
         assert results["pruned"] == 0

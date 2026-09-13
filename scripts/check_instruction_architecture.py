@@ -22,9 +22,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 CLAUDE_PATH = ROOT / "CLAUDE.md"
 OVERLAY_TEMPLATE = ROOT / "templates" / "claude" / "CLAUDE.md.template"
-PROJECT_TEMPLATE = (
-    ROOT / "templates" / "initialize-project" / "{{ project_name }}" / "CLAUDE.md"
-)
+PROJECT_TEMPLATE = ROOT / "templates" / "initialize-project" / "{{ project_name }}" / "CLAUDE.md"
 
 SECTION_RE = re.compile(r"^#{1,6}\s+(.+?)\s*$")
 MAP_ENTRY_RE = re.compile(r"`(?P<link>[^`]+\.md(?:#[A-Za-z0-9_-]+)?)`")
@@ -101,9 +99,7 @@ MCP_SERVER_MAX_MCP_TOOL_DECORATORS = 2
 
 WL125_IMPL_PATH = ROOT / "src" / "thegent" / "cli" / "commands" / "impl.py"
 WL125_IMPL_MAX_LINES = 1300
-WL125_TREND_METADATA_SOURCE_PATH = (
-    ROOT / "src" / "thegent" / "cli" / "services" / "run_observe_helpers.py"
-)
+WL125_TREND_METADATA_SOURCE_PATH = ROOT / "src" / "thegent" / "cli" / "services" / "run_observe_helpers.py"
 WL125_IMPL_REQUIRED_TREND_METADATA_KEY = "trend_snapshot_health"
 
 
@@ -125,11 +121,7 @@ def _strip_docstring(body: list[ast.stmt]) -> list[ast.stmt]:
     if not body:
         return body
     first = body[0]
-    if (
-        isinstance(first, ast.Expr)
-        and isinstance(first.value, ast.Constant)
-        and isinstance(first.value.value, str)
-    ):
+    if isinstance(first, ast.Expr) and isinstance(first.value, ast.Constant) and isinstance(first.value.value, str):
         return body[1:]
     return body
 
@@ -209,16 +201,10 @@ def _validate_wrapper_delegation(
         return Finding(
             kind="pre_work_gate_wrapper_logic_leak",
             path=_display_path(module_path),
-            message=(
-                f"Wrapper `{wrapper_name}` must delegate to "
-                f"`pre_work_gate_helpers.{helper_name}`."
-            ),
+            message=(f"Wrapper `{wrapper_name}` must delegate to `pre_work_gate_helpers.{helper_name}`."),
         )
 
-    expected_params = [
-        arg.arg
-        for arg in target.args.posonlyargs + target.args.args + target.args.kwonlyargs
-    ]
+    expected_params = [arg.arg for arg in target.args.posonlyargs + target.args.args + target.args.kwonlyargs]
     passed_params: list[str] = []
     for arg in call_expr.args:
         arg_name = _extract_name(arg)
@@ -293,11 +279,9 @@ def _validate_orchestration_wrapper_delegation(
 
     call_expr: ast.Call | None = None
     stmt = body[0]
-    if (
-        isinstance(stmt, ast.Return)
-        and stmt.value is not None
-        and isinstance(stmt.value, ast.Call)
-    ) or (isinstance(stmt, ast.Expr) and isinstance(stmt.value, ast.Call)):
+    if (isinstance(stmt, ast.Return) and stmt.value is not None and isinstance(stmt.value, ast.Call)) or (
+        isinstance(stmt, ast.Expr) and isinstance(stmt.value, ast.Call)
+    ):
         call_expr = stmt.value
 
     if call_expr is None:
@@ -316,16 +300,10 @@ def _validate_orchestration_wrapper_delegation(
         return Finding(
             kind="orchestration_wrapper_logic_leak",
             path=_display_path(module_path),
-            message=(
-                f"Wrapper `{wrapper_name}` must delegate directly to "
-                f"`work_stream_orchestration.{helper_name}`."
-            ),
+            message=(f"Wrapper `{wrapper_name}` must delegate directly to `work_stream_orchestration.{helper_name}`."),
         )
 
-    expected_params = [
-        arg.arg
-        for arg in target.args.posonlyargs + target.args.args + target.args.kwonlyargs
-    ]
+    expected_params = [arg.arg for arg in target.args.posonlyargs + target.args.args + target.args.kwonlyargs]
     passed_params: list[str] = []
     for arg in call_expr.args:
         arg_name = _extract_name(arg)
@@ -448,9 +426,7 @@ def validate_orchestration_wrapper_governance(
 ) -> list[Finding]:
     findings: list[Finding] = []
     for module_path in command_modules:
-        findings.extend(
-            validate_orchestration_wrapper_command_module(module_path=module_path)
-        )
+        findings.extend(validate_orchestration_wrapper_command_module(module_path=module_path))
     return findings
 
 
@@ -500,9 +476,7 @@ def validate_mcp_server_boundary(
         return findings
 
     top_level_functions = [
-        node
-        for node in module_ast.body
-        if isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef))
+        node for node in module_ast.body if isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef))
     ]
     if len(top_level_functions) > max_top_level_functions:
         findings.append(
@@ -725,18 +699,13 @@ def build_summary(findings: list[Finding]) -> dict[str, object]:
         "checked": {
             "doc_map_source": str(CLAUDE_PATH.relative_to(ROOT)),
             "templates": [str(path.relative_to(ROOT)) for path in REQUIRED_SECTIONS],
-            "pre_work_gate_command_modules": [
-                str(path.relative_to(ROOT)) for path in PRE_WORK_GATE_COMMAND_MODULES
-            ],
+            "pre_work_gate_command_modules": [str(path.relative_to(ROOT)) for path in PRE_WORK_GATE_COMMAND_MODULES],
             "orchestration_wrapper_command_modules": [
-                str(path.relative_to(ROOT))
-                for path in ORCHESTRATION_WRAPPER_COMMAND_MODULES
+                str(path.relative_to(ROOT)) for path in ORCHESTRATION_WRAPPER_COMMAND_MODULES
             ],
             "mcp_server_boundary_target": str(MCP_SERVER_PATH.relative_to(ROOT)),
             "wl125_impl_boundary_target": str(WL125_IMPL_PATH.relative_to(ROOT)),
-            "wl125_trend_metadata_source": str(
-                WL125_TREND_METADATA_SOURCE_PATH.relative_to(ROOT)
-            ),
+            "wl125_trend_metadata_source": str(WL125_TREND_METADATA_SOURCE_PATH.relative_to(ROOT)),
             "wl125_trend_warning_metadata_key": WL125_IMPL_REQUIRED_TREND_METADATA_KEY,
         },
     }
@@ -744,9 +713,7 @@ def build_summary(findings: list[Finding]) -> dict[str, object]:
 
 def parse_args(argv: list[str]) -> argparse.Namespace:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument(
-        "--strict", action="store_true", help="Exit non-zero when findings exist."
-    )
+    parser.add_argument("--strict", action="store_true", help="Exit non-zero when findings exist.")
     parser.add_argument(
         "--summary-json",
         type=Path,
@@ -763,9 +730,7 @@ def main(argv: list[str] | None = None) -> int:
     summary = build_summary(findings)
 
     args.summary_json.parent.mkdir(parents=True, exist_ok=True)
-    args.summary_json.write_text(
-        json.dumps(summary, indent=2, sort_keys=True), encoding="utf-8"
-    )
+    args.summary_json.write_text(json.dumps(summary, indent=2, sort_keys=True), encoding="utf-8")
 
     if args.format == "json":
         payload = {

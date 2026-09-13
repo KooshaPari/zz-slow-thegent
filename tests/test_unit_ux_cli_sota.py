@@ -199,10 +199,7 @@ class TestSotaReplaySnapshotFormats:
         expected = _harvest_pre_check_decisions(runner, corpus)
         # TOML top level is always a table; use the ``decisions`` key form.
         snapshot = tmp_path / "snap.toml"
-        snapshot.write_text(
-            "decisions = "
-            + json.dumps(expected).replace('"', '\\"').replace("'", "\\'")
-        )
+        snapshot.write_text("decisions = " + json.dumps(expected).replace('"', '\\"').replace("'", "\\'"))
         # The above escape is brittle — write TOML via tomllib instead:
         import tomllib  # noqa: F401  (presence check)
 
@@ -213,9 +210,7 @@ class TestSotaReplaySnapshotFormats:
             toml_body += ", reason = " + json.dumps(d["reason"])
             toml_body += ", reason_code = " + json.dumps(d["reason_code"])
             toml_body += ", rule_id = " + json.dumps(d.get("rule_id") or "")
-            toml_body += ", override_applied = " + (
-                "true" if d["override_applied"] else "false"
-            )
+            toml_body += ", override_applied = " + ("true" if d["override_applied"] else "false")
             toml_body += " },\n"
         toml_body += "]\n"
         snapshot.write_text(toml_body)

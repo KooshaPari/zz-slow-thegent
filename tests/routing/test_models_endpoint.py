@@ -99,9 +99,7 @@ class TestComputeModelsEtag:
 
     def test_matches_manual_sha256(self) -> None:
         models = [{"id": "gpt-5.3-codex"}, {"id": "claude-haiku-4.5"}]
-        expected = hashlib.sha256(
-            ",".join(sorted(["gpt-5.3-codex", "claude-haiku-4.5"])).encode()
-        ).hexdigest()
+        expected = hashlib.sha256(",".join(sorted(["gpt-5.3-codex", "claude-haiku-4.5"])).encode()).hexdigest()
         assert _compute_models_etag(models) == expected
 
     def test_skips_non_dict_entries(self) -> None:
@@ -131,12 +129,8 @@ class TestTransformModelsResponseFormat:
         assert result is not None
         body, _ = result
         parsed = json.loads(body)
-        assert "models" in parsed, (
-            "Response must contain 'models' key for Codex 0.104.0"
-        )
-        assert "data" not in parsed, (
-            "'data' key must NOT be present; Codex 0.104.0 uses 'models'"
-        )
+        assert "models" in parsed, "Response must contain 'models' key for Codex 0.104.0"
+        assert "data" not in parsed, "'data' key must NOT be present; Codex 0.104.0 uses 'models'"
 
     def test_input_with_models_key_is_preserved(self) -> None:
         """CLIProxy native format uses 'models' key; adapter preserves it."""

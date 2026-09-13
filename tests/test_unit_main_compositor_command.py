@@ -26,9 +26,7 @@ def test_compositor_top_level_routes_to_handler() -> None:
         )
 
     assert result.exit_code == 0
-    mock_cmd.assert_called_once_with(
-        layout_name="stacked", include_non_claude=True, once=True, refresh_interval=0.5
-    )
+    mock_cmd.assert_called_once_with(layout_name="stacked", include_non_claude=True, once=True, refresh_interval=0.5)
 
 
 @pytest.mark.unit

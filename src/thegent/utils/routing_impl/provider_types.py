@@ -16,12 +16,8 @@ class ExecutionPath(Enum):
 
 # Immutable provider classifications
 NATIVE_CLI_PROVIDERS: Final[frozenset[str]] = frozenset({"codex", "claude", "opencode"})
-API_KEY_PROVIDERS: Final[frozenset[str]] = frozenset(
-    {"minimax", "nim", "glm", "kilo", "zen", "openrouter", "ollama"}
-)
-LOGIN_AUTH_PROVIDERS: Final[frozenset[str]] = frozenset(
-    {"antigravity", "cursor", "kiro", "gemini", "copilot"}
-)
+API_KEY_PROVIDERS: Final[frozenset[str]] = frozenset({"minimax", "nim", "glm", "kilo", "zen", "openrouter", "ollama"})
+LOGIN_AUTH_PROVIDERS: Final[frozenset[str]] = frozenset({"antigravity", "cursor", "kiro", "gemini", "copilot"})
 
 
 def get_execution_path(provider: str) -> ExecutionPath:

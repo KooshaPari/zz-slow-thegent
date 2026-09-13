@@ -20,40 +20,19 @@ class TestResilience:
 
     def test_classify_usage_limit(self) -> None:
         # @trace FR-AGT-009
-        assert (
-            classify_failure(RunResult(1, "", "quota exceeded"))
-            == FailureKind.USAGE_LIMIT
-        )
-        assert (
-            classify_failure(RunResult(1, "", "usage limit reached"))
-            == FailureKind.USAGE_LIMIT
-        )
-        assert (
-            classify_failure(RunResult(1, "", "monthly limit exceeded"))
-            == FailureKind.USAGE_LIMIT
-        )
+        assert classify_failure(RunResult(1, "", "quota exceeded")) == FailureKind.USAGE_LIMIT
+        assert classify_failure(RunResult(1, "", "usage limit reached")) == FailureKind.USAGE_LIMIT
+        assert classify_failure(RunResult(1, "", "monthly limit exceeded")) == FailureKind.USAGE_LIMIT
 
     def test_classify_rate_limit(self) -> None:
         # @trace FR-AGT-009
-        assert (
-            classify_failure(RunResult(1, "", "429 Too Many Requests"))
-            == FailureKind.RATE_LIMIT
-        )
-        assert (
-            classify_failure(RunResult(1, "", "rate limit exceeded"))
-            == FailureKind.RATE_LIMIT
-        )
+        assert classify_failure(RunResult(1, "", "429 Too Many Requests")) == FailureKind.RATE_LIMIT
+        assert classify_failure(RunResult(1, "", "rate limit exceeded")) == FailureKind.RATE_LIMIT
 
     def test_classify_transient(self) -> None:
         # @trace FR-AGT-009
-        assert (
-            classify_failure(RunResult(1, "", "502 Bad Gateway"))
-            == FailureKind.TRANSIENT
-        )
-        assert (
-            classify_failure(RunResult(1, "", "503 Service Unavailable"))
-            == FailureKind.TRANSIENT
-        )
+        assert classify_failure(RunResult(1, "", "502 Bad Gateway")) == FailureKind.TRANSIENT
+        assert classify_failure(RunResult(1, "", "503 Service Unavailable")) == FailureKind.TRANSIENT
 
     def test_is_usage_limit(self) -> None:
         # @trace FR-AGT-009

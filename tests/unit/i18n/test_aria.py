@@ -70,10 +70,7 @@ def test_aria_attributes_includes_atomic_when_true() -> None:
 
 
 def test_aria_attributes_quotes_label_with_spaces() -> None:
-    assert (
-        aria_attributes(aria_label="Build status")
-        == '[role=group aria-label="Build status"]'
-    )
+    assert aria_attributes(aria_label="Build status") == '[role=group aria-label="Build status"]'
 
 
 def test_aria_attributes_includes_label_references() -> None:
@@ -83,16 +80,11 @@ def test_aria_attributes_includes_label_references() -> None:
         aria_describedby="help text",
     )
 
-    assert (
-        annotation
-        == '[role=region aria-labelledby=heading-id aria-describedby="help text"]'
-    )
+    assert annotation == '[role=region aria-labelledby=heading-id aria-describedby="help text"]'
 
 
 def test_aria_attributes_includes_extra_mapping_in_order() -> None:
-    annotation = aria_attributes(
-        extra={"aria-busy": "true", "data-state": "in progress"}
-    )
+    annotation = aria_attributes(extra={"aria-busy": "true", "data-state": "in progress"})
 
     assert annotation == '[role=group aria-busy=true data-state="in progress"]'
 
@@ -190,9 +182,9 @@ def test_parse_aria_round_trip_preserves_attributes() -> None:
 
 
 def test_annotate_appends_attribute_trailer() -> None:
-    assert annotate(
-        "Live runs", role="status", aria_live="polite", aria_atomic=True
-    ) == ("Live runs [role=status aria-live=polite aria-atomic=true]")
+    assert annotate("Live runs", role="status", aria_live="polite", aria_atomic=True) == (
+        "Live runs [role=status aria-live=polite aria-atomic=true]"
+    )
 
 
 def test_annotate_uses_default_arguments() -> None:

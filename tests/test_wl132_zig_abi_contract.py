@@ -14,9 +14,7 @@ from pathlib import Path
 import orjson as json
 import pytest
 
-CONTRACT_PATH = (
-    Path(__file__).parent.parent / "contracts" / "runtime" / "zig_abi_contract_v1.json"
-)
+CONTRACT_PATH = Path(__file__).parent.parent / "contracts" / "runtime" / "zig_abi_contract_v1.json"
 
 # The Cargo workspace root is at crates/ inside the repo root.
 REPO_ROOT = Path(__file__).parent.parent
@@ -49,9 +47,7 @@ def test_zig_abi_contract_version_is_semver(zig_abi_contract: dict):
     parts = version.split(".")
     assert len(parts) == 3, f"Version must be X.Y.Z; got {version!r}"
     for part in parts:
-        assert part.isdigit(), (
-            f"Each version part must be an integer; got {part!r} in {version!r}"
-        )
+        assert part.isdigit(), f"Each version part must be an integer; got {part!r} in {version!r}"
 
 
 def test_zig_abi_contract_version_matches_expected(zig_abi_contract: dict):
@@ -86,6 +82,4 @@ def test_zmx_interop_crate_builds():
         timeout=120,
     )
     if result.returncode != 0:
-        pytest.fail(
-            f"cargo build -p thegent-zmx-interop failed:\nSTDOUT:\n{result.stdout}\nSTDERR:\n{result.stderr}"
-        )
+        pytest.fail(f"cargo build -p thegent-zmx-interop failed:\nSTDOUT:\n{result.stdout}\nSTDERR:\n{result.stderr}")

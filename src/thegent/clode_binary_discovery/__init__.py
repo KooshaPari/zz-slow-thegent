@@ -46,9 +46,7 @@ def is_thegent_shim(binary_path: str) -> bool:
                 return True
     except PermissionError as e:
         # Log permission error and return False
-        logger.warning(
-            f"shim_resolution_failed: PermissionError accessing {binary_path}: {e}"
-        )
+        logger.warning(f"shim_resolution_failed: PermissionError accessing {binary_path}: {e}")
         return False
     except (OSError, Exception) as e:
         logger.warning(f"shim_resolution_failed: Error accessing {binary_path}: {e}")

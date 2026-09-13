@@ -51,9 +51,7 @@ class GhosttyConfig:
     # Internal: raw key->value pairs parsed from the config file.
     # Named without leading underscore so external code (e.g. get_config)
     # can access it without triggering SLF001.
-    raw: dict[str, str] = field(
-        default_factory=dict, init=False, repr=False, compare=False
-    )
+    raw: dict[str, str] = field(default_factory=dict, init=False, repr=False, compare=False)
 
 
 # ---------------------------------------------------------------------------
@@ -169,9 +167,7 @@ def _run_ghostty_open_tab(command: str | None) -> subprocess.CompletedProcess[st
     return shim_run(cmd, check=False, capture_output=True, text=True, timeout=10)
 
 
-def _run_osascript_notification(
-    title: str, body: str
-) -> subprocess.CompletedProcess[str]:
+def _run_osascript_notification(title: str, body: str) -> subprocess.CompletedProcess[str]:
     """Run ``osascript`` to display a macOS notification.
 
     Extracted from GhosttyIntegration.send_notification to keep the public
@@ -260,9 +256,7 @@ class GhosttyIntegration:
             try:
                 cfg.font_size = int(raw[_KEY_FONT_SIZE])
             except ValueError:
-                logger.debug(
-                    "Invalid font-size value in Ghostty config: %r", raw[_KEY_FONT_SIZE]
-                )
+                logger.debug("Invalid font-size value in Ghostty config: %r", raw[_KEY_FONT_SIZE])
 
         if _KEY_SOCKET_PATH in raw:
             cfg.socket_path = raw[_KEY_SOCKET_PATH] or None
@@ -288,9 +282,7 @@ class GhosttyIntegration:
             logger.debug("Ghostty theme set to %r in %s", theme, self._config_path)
             return True
         except OSError as exc:
-            logger.error(
-                "Failed to write Ghostty theme to %s: %s", self._config_path, exc
-            )
+            logger.error("Failed to write Ghostty theme to %s: %s", self._config_path, exc)
             return False
 
     # ------------------------------------------------------------------
@@ -357,9 +349,7 @@ class GhosttyIntegration:
                 return False
             return True
         except FileNotFoundError:
-            logger.debug(
-                "'osascript' not found; notifications unavailable on this platform"
-            )
+            logger.debug("'osascript' not found; notifications unavailable on this platform")
             return False
         except subprocess.TimeoutExpired:
             logger.warning("osascript timed out sending notification")

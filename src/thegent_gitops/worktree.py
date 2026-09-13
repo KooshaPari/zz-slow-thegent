@@ -63,9 +63,7 @@ def _atomic_write(path: Path, content: str) -> None:
         raise
 
 
-def _run(
-    cmd: list[str], cwd: Path, env: dict | None = None, check: bool = True
-) -> subprocess.CompletedProcess:
+def _run(cmd: list[str], cwd: Path, env: dict | None = None, check: bool = True) -> subprocess.CompletedProcess:
     """Run a subprocess, returning the CompletedProcess."""
     return shim_run(
         cmd,
@@ -125,9 +123,7 @@ class WorktreeContext:
             if proc.returncode not in (0, 1):
                 _log.warning("commit failed in worktree %s: %s", self.path, proc.stderr)
                 return None
-            result = subprocess.check_output(
-                ["git", "rev-parse", "HEAD"], cwd=str(self.path), text=True
-            ).strip()
+            result = subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=str(self.path), text=True).strip()
             return result
         except Exception as exc:
             _log.warning("commit_all failed for agent %s: %s", self.agent_id, exc)
@@ -162,9 +158,7 @@ class _PoolStateLock:
         if fcntl is not None:
             fcntl.flock(self._fh.fileno(), fcntl.LOCK_EX)
         else:
-            _log.debug(
-                "WorktreePool: advisory flock unavailable; running without file lock."
-            )
+            _log.debug("WorktreePool: advisory flock unavailable; running without file lock.")
         return self
 
     def __exit__(self, *_: object) -> None:
@@ -271,9 +265,7 @@ class WorktreePool:
             if agent_id in state:
                 existing_path = Path(state[agent_id])
                 branch = f"agent/{agent_id}"
-                _log.debug(
-                    "WorktreePool: agent %s already holds %s", agent_id, existing_path
-                )
+                _log.debug("WorktreePool: agent %s already holds %s", agent_id, existing_path)
                 return WorktreeContext(
                     agent_id=agent_id,
                     path=existing_path,
@@ -282,11 +274,7 @@ class WorktreePool:
                     _pool_ref=self,
                 )
 
-            ctx = (
-                self._create_worktree(agent_id)
-                if self._worktrees_ok
-                else self._acquire_shared_fallback(agent_id)
-            )
+            ctx = self._create_worktree(agent_id) if self._worktrees_ok else self._acquire_shared_fallback(agent_id)
 
             state[agent_id] = str(ctx.path)
             lock.write(state)
@@ -304,9 +292,7 @@ class WorktreePool:
         with _PoolStateLock(self._state_path) as lock:
             state = lock.read()
             if agent_id not in state:
-                _log.warning(
-                    "WorktreePool: agent %s has no worktree to release", agent_id
-                )
+                _log.warning("WorktreePool: agent %s has no worktree to release", agent_id)
                 return False
 
             worktree_path = Path(state[agent_id])
@@ -384,9 +370,7 @@ class WorktreePool:
             try:
                 _run(["git", "branch", branch], self.project_root)
             except subprocess.CalledProcessError as exc:
-                raise RuntimeError(
-                    f"WorktreePool: failed to create branch {branch!r}: {exc.stderr}"
-                ) from exc
+                raise RuntimeError(f"WorktreePool: failed to create branch {branch!r}: {exc.stderr}") from exc
 
         # Remove stale worktree registration if directory was orphaned.
         if worktree_path.exists() and any(worktree_path.iterdir()):
@@ -400,9 +384,7 @@ class WorktreePool:
                 self.project_root,
             )
         except subprocess.CalledProcessError as exc:
-            raise RuntimeError(
-                f"WorktreePool: git worktree add failed for agent {agent_id!r}: {exc.stderr}"
-            ) from exc
+            raise RuntimeError(f"WorktreePool: git worktree add failed for agent {agent_id!r}: {exc.stderr}") from exc
 
         _log.info(
             "WorktreePool: created worktree for %s at %s (branch %s)",
@@ -418,9 +400,7 @@ class WorktreePool:
             _pool_ref=self,
         )
 
-    def _merge_and_remove(
-        self, agent_id: str, worktree_path: Path, branch: str
-    ) -> bool:
+    def _merge_and_remove(self, agent_id: str, worktree_path: Path, branch: str) -> bool:
         """Merge *branch* into target and remove the worktree.
 
         Uses SmartMerger when one is configured; falls back to plain
@@ -553,7 +533,5 @@ class WorktreePool:
             _log.info("WorktreePool: fallback advisory lock released for %s", agent_id)
             return True
         except OSError as exc:
-            _log.warning(
-                "WorktreePool: could not remove fallback lock for %s: %s", agent_id, exc
-            )
+            _log.warning("WorktreePool: could not remove fallback lock for %s: %s", agent_id, exc)
             return False

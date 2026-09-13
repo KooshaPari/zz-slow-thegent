@@ -251,8 +251,7 @@ class TestCliAppsEnvelopeStaticAudit:
 
         assert not offenders, (
             "Unsafe {exc} interpolation found in cli/apps/ — must "
-            "route through print_exc/exc_text:\n"
-            + "\n".join(f"{p}:{ln} {s}" for p, ln, s in offenders)
+            "route through print_exc/exc_text:\n" + "\n".join(f"{p}:{ln} {s}" for p, ln, s in offenders)
         )
 
 

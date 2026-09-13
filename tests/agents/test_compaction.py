@@ -90,24 +90,18 @@ class TestContextWindow:
 @pytest.mark.requirement("FR-CTX-103")
 class TestContextCompactor:
     def test_should_compact_never_returns_false(self) -> None:
-        compactor = ContextCompactor(
-            config=CompactionConfig(trigger=CompactionTrigger.NEVER)
-        )
+        compactor = ContextCompactor(config=CompactionConfig(trigger=CompactionTrigger.NEVER))
         window = ContextWindow(token_count=999_999, turn_count=999)
         assert compactor.should_compact(window) is False
 
     def test_should_compact_token_threshold_below(self) -> None:
-        cfg = CompactionConfig(
-            trigger=CompactionTrigger.TOKEN_THRESHOLD, token_threshold=100_000
-        )
+        cfg = CompactionConfig(trigger=CompactionTrigger.TOKEN_THRESHOLD, token_threshold=100_000)
         compactor = ContextCompactor(config=cfg)
         window = ContextWindow(token_count=50_000)
         assert compactor.should_compact(window) is False
 
     def test_should_compact_token_threshold_above(self) -> None:
-        cfg = CompactionConfig(
-            trigger=CompactionTrigger.TOKEN_THRESHOLD, token_threshold=100_000
-        )
+        cfg = CompactionConfig(trigger=CompactionTrigger.TOKEN_THRESHOLD, token_threshold=100_000)
         compactor = ContextCompactor(config=cfg)
         window = ContextWindow(token_count=150_000)
         assert compactor.should_compact(window) is True
@@ -125,9 +119,7 @@ class TestContextCompactor:
         assert compactor.should_compact(window) is True
 
     def test_compact_replaces_messages_with_summary(self) -> None:
-        cfg = CompactionConfig(
-            trigger=CompactionTrigger.TOKEN_THRESHOLD, token_threshold=100
-        )
+        cfg = CompactionConfig(trigger=CompactionTrigger.TOKEN_THRESHOLD, token_threshold=100)
         compactor = ContextCompactor(config=cfg)
         window = ContextWindow(
             messages=[
@@ -144,9 +136,7 @@ class TestContextCompactor:
         assert window.messages[0]["content"] == "Key points: greeting exchange."
 
     def test_compact_returns_result_with_counts(self) -> None:
-        cfg = CompactionConfig(
-            trigger=CompactionTrigger.TOKEN_THRESHOLD, token_threshold=100
-        )
+        cfg = CompactionConfig(trigger=CompactionTrigger.TOKEN_THRESHOLD, token_threshold=100)
         compactor = ContextCompactor(config=cfg)
         window = ContextWindow(
             messages=[
@@ -162,9 +152,7 @@ class TestContextCompactor:
         assert result.turns_compacted == 2
 
     def test_compact_sets_compacted_at_turn(self) -> None:
-        cfg = CompactionConfig(
-            trigger=CompactionTrigger.TOKEN_THRESHOLD, token_threshold=100
-        )
+        cfg = CompactionConfig(trigger=CompactionTrigger.TOKEN_THRESHOLD, token_threshold=100)
         compactor = ContextCompactor(config=cfg)
         window = ContextWindow(
             messages=[{"role": "user", "content": "x"}],
@@ -196,9 +184,7 @@ class TestContextCompactor:
         assert "100" in prompt  # token count reference
 
     def test_compact_resets_token_count(self) -> None:
-        cfg = CompactionConfig(
-            trigger=CompactionTrigger.TOKEN_THRESHOLD, token_threshold=100
-        )
+        cfg = CompactionConfig(trigger=CompactionTrigger.TOKEN_THRESHOLD, token_threshold=100)
         compactor = ContextCompactor(config=cfg)
         window = ContextWindow(
             messages=[

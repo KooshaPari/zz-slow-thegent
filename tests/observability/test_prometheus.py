@@ -52,10 +52,7 @@ def test_metrics_collector_increment_counter(collector: MetricsCollector) -> Non
     )
 
     text = collector.render_text()
-    assert (
-        'thegent_requests_total{model="gpt-4o",provider="openai",status="success"} 2'
-        in text
-    )
+    assert 'thegent_requests_total{model="gpt-4o",provider="openai",status="success"} 2' in text
 
 
 # ---------------------------------------------------------------------------
@@ -119,20 +116,11 @@ def test_record_request_success(collector: MetricsCollector) -> None:
     text = collector.render_text()
 
     # requests_total
-    assert (
-        'thegent_requests_total{model="gpt-4o",provider="openai",status="success"} 1'
-        in text
-    )
+    assert 'thegent_requests_total{model="gpt-4o",provider="openai",status="success"} 1' in text
     # prompt tokens
-    assert (
-        'thegent_tokens_total{model="gpt-4o",provider="openai",type="prompt"} 100'
-        in text
-    )
+    assert 'thegent_tokens_total{model="gpt-4o",provider="openai",type="prompt"} 100' in text
     # completion tokens
-    assert (
-        'thegent_tokens_total{model="gpt-4o",provider="openai",type="completion"} 50'
-        in text
-    )
+    assert 'thegent_tokens_total{model="gpt-4o",provider="openai",type="completion"} 50' in text
     # cost
     assert 'thegent_cost_usd_total{model="gpt-4o",provider="openai"} 0.002' in text
     # duration histogram present
@@ -159,14 +147,8 @@ def test_record_request_error(collector: MetricsCollector) -> None:
 
     text = collector.render_text()
 
-    assert (
-        'thegent_requests_total{model="gpt-4o",provider="openai",status="error"} 1'
-        in text
-    )
-    assert (
-        'thegent_errors_total{error_type="RateLimitError",model="gpt-4o",provider="openai"} 1'
-        in text
-    )
+    assert 'thegent_requests_total{model="gpt-4o",provider="openai",status="error"} 1' in text
+    assert 'thegent_errors_total{error_type="RateLimitError",model="gpt-4o",provider="openai"} 1' in text
 
 
 # ---------------------------------------------------------------------------
@@ -185,10 +167,7 @@ def test_record_request_circuit_open(collector: MetricsCollector) -> None:
     )
 
     text = collector.render_text()
-    assert (
-        'thegent_requests_total{model="claude-opus-4-6",provider="anthropic",status="circuit_open"} 1'
-        in text
-    )
+    assert 'thegent_requests_total{model="claude-opus-4-6",provider="anthropic",status="circuit_open"} 1' in text
 
 
 # ---------------------------------------------------------------------------
@@ -247,9 +226,7 @@ def test_set_circuit_breaker_closed(collector: MetricsCollector) -> None:
 @pytest.mark.requirement("FR-OBS-034")
 def test_render_text_counter_format(collector: MetricsCollector) -> None:
     """Counter output must have '# HELP', '# TYPE counter', and a metric line."""
-    collector.inc(
-        "thegent_requests_total", {"model": "m", "provider": "p", "status": "success"}
-    )
+    collector.inc("thegent_requests_total", {"model": "m", "provider": "p", "status": "success"})
 
     text = collector.render_text()
     assert "# HELP thegent_requests_total" in text
@@ -271,9 +248,7 @@ def test_render_text_gauge_format(collector: MetricsCollector) -> None:
 @pytest.mark.requirement("FR-OBS-034")
 def test_render_text_histogram_format(collector: MetricsCollector) -> None:
     """Histogram output must include _bucket, _count, and _sum lines."""
-    collector.observe(
-        "thegent_request_duration_seconds", {"model": "m", "provider": "p"}, 0.1
-    )
+    collector.observe("thegent_request_duration_seconds", {"model": "m", "provider": "p"}, 0.1)
 
     text = collector.render_text()
     assert "thegent_request_duration_seconds_bucket{" in text
@@ -295,16 +270,11 @@ def test_render_text_label_sorting(collector: MetricsCollector) -> None:
 
     text = collector.render_text()
     # model < provider < status alphabetically
-    assert (
-        'thegent_requests_total{model="gpt-4o",provider="openai",status="success"}'
-        in text
-    )
+    assert 'thegent_requests_total{model="gpt-4o",provider="openai",status="success"}' in text
 
 
 @pytest.mark.requirement("WL-196")
-def test_record_autosync_cycle_and_export_file(
-    collector: MetricsCollector, tmp_path: Path
-) -> None:
+def test_record_autosync_cycle_and_export_file(collector: MetricsCollector, tmp_path: Path) -> None:
     """Autosync metrics are emitted and can be exported to a text file."""
     collector.record_autosync_cycle(items_count=5, ignored_count=2, had_error=False)
     collector.record_autosync_connector_operation(
@@ -322,13 +292,9 @@ def test_record_autosync_cycle_and_export_file(
     assert "thegent_autosync_cycles_total 1" in text
     assert 'thegent_autosync_items_total{kind="ignored"} 2' in text
     assert (
-        'thegent_autosync_connector_operations_total{connector="github",direction="write",result="success"} 1'
-        in text
+        'thegent_autosync_connector_operations_total{connector="github",direction="write",result="success"} 1' in text
     )
-    assert (
-        'thegent_autosync_circuit_open_total{connector="linear",direction="read"} 1'
-        in text
-    )
+    assert 'thegent_autosync_circuit_open_total{connector="linear",direction="read"} 1' in text
 
 
 @pytest.mark.requirement("WL-159")

@@ -51,9 +51,7 @@ class RunHarness:
             if not prompt:
                 self.console.print("[red]Error: --print requires a prompt.[/red]")
                 raise SystemExit(1)
-            self._run_exec_impl(
-                canonical, prompt, cd=cd, add_dir=add_dir, sandbox=sandbox
-            )
+            self._run_exec_impl(canonical, prompt, cd=cd, add_dir=add_dir, sandbox=sandbox)
             return
 
         extra: list[str] = self._build_passthrough_args(
@@ -125,9 +123,7 @@ class RunHarness:
         """Bypass proxy and run native binary directly."""
         binary_path = self.harness.find_binary(require_native=True)
         if not binary_path:
-            self.console.print(
-                f"[red]Error: native '{self.harness.get_binary_name()}' CLI not found.[/red]"
-            )
+            self.console.print(f"[red]Error: native '{self.harness.get_binary_name()}' CLI not found.[/red]")
             raise SystemExit(1)
 
         cmd = [binary_path]

@@ -56,9 +56,7 @@ def _touch(path: Path) -> None:
 
 
 def _check_result(name: str, category: str) -> SimpleNamespace:
-    return SimpleNamespace(
-        name=name, category=category, status="", message="", details="", fix_hint=""
-    )
+    return SimpleNamespace(name=name, category=category, status="", message="", details="", fix_hint="")
 
 
 def test_wl6750_shell_doctor_alias_probe_success_and_probe_failure_visibility(
@@ -73,28 +71,18 @@ def test_wl6750_shell_doctor_alias_probe_success_and_probe_failure_visibility(
     monkeypatch.setattr(
         shell_cli.subprocess,
         "run",
-        lambda *args, **kwargs: subprocess.CompletedProcess(
-            args[0], 0, stdout="alias ls='tree -a'\n", stderr=""
-        ),
+        lambda *args, **kwargs: subprocess.CompletedProcess(args[0], 0, stdout="alias ls='tree -a'\n", stderr=""),
     )
     shell_cli.shell_doctor(fix=False)
-    assert any(
-        "ls is aliased to tree/recursive output" in message
-        for message in collector.messages
-    )
+    assert any("ls is aliased to tree/recursive output" in message for message in collector.messages)
 
-    def _raise_timeout(
-        *_args: object, **_kwargs: object
-    ) -> subprocess.CompletedProcess[str]:
+    def _raise_timeout(*_args: object, **_kwargs: object) -> subprocess.CompletedProcess[str]:
         raise subprocess.TimeoutExpired(cmd=["zsh"], timeout=2)
 
     collector.messages.clear()
     monkeypatch.setattr(shell_cli.subprocess, "run", _raise_timeout)
     shell_cli.shell_doctor(fix=False)
-    assert any(
-        "Alias probe timed out" in message and "timeout" in message
-        for message in collector.messages
-    )
+    assert any("Alias probe timed out" in message and "timeout" in message for message in collector.messages)
     assert any("Warnings:" in message for message in collector.messages)
 
 
@@ -122,9 +110,7 @@ def test_wl6751_shell_platform_reports_actionable_statuses(
     def _fake_run(*args: object, **kwargs: object) -> subprocess.CompletedProcess[str]:
         if args and args[0] == ["zsh", "--version"]:
             if side_effect is None:
-                return subprocess.CompletedProcess(
-                    args[0], 0, stdout="zsh 5.9 (x86_64)\n", stderr=""
-                )
+                return subprocess.CompletedProcess(args[0], 0, stdout="zsh 5.9 (x86_64)\n", stderr="")
             raise side_effect
         return original_run(*args, **kwargs)
 
@@ -153,9 +139,7 @@ def test_wl6752_check_nix_typed_failure_branches(
         "which",
         lambda name: "/usr/bin/nix" if name == "nix" else None,
     )
-    monkeypatch.setattr(
-        doctor_shell_nix, "check_nix_daemon_status", lambda: (False, "Not running")
-    )
+    monkeypatch.setattr(doctor_shell_nix, "check_nix_daemon_status", lambda: (False, "Not running"))
 
     def _probe(*_args: object, **_kwargs: object) -> subprocess.CompletedProcess[str]:
         if isinstance(probe_outcome, subprocess.CompletedProcess):
@@ -163,9 +147,7 @@ def test_wl6752_check_nix_typed_failure_branches(
         raise probe_outcome
 
     monkeypatch.setattr(doctor_shell_nix, "run_subprocess_optimized", _probe)
-    result = doctor_shell_nix.check_nix(
-        check_result_cls=_check_result, project_root=tmp_path
-    )[0]
+    result = doctor_shell_nix.check_nix(check_result_cls=_check_result, project_root=tmp_path)[0]
     assert result.status in {"warn", "fail"}
     assert result.status != "ok"
 
@@ -174,22 +156,16 @@ def test_wl6752_check_nix_typed_failure_branches(
     ("exc", "expected"),
     [
         (
-            httpx.ConnectError(
-                "refused", request=httpx.Request("GET", "http://127.0.0.1:3847/health")
-            ),
+            httpx.ConnectError("refused", request=httpx.Request("GET", "http://127.0.0.1:3847/health")),
             "connection",
         ),
         (
-            httpx.ReadTimeout(
-                "timeout", request=httpx.Request("GET", "http://127.0.0.1:3847/health")
-            ),
+            httpx.ReadTimeout("timeout", request=httpx.Request("GET", "http://127.0.0.1:3847/health")),
             "timed out",
         ),
     ],
 )
-def test_wl6753_mcp_health_warnings_include_failure_cause(
-    exc: Exception, expected: str
-) -> None:
+def test_wl6753_mcp_health_warnings_include_failure_cause(exc: Exception, expected: str) -> None:
     with patch("thegent.doctor.httpx.get", side_effect=exc):
         result = _check_mcp_tools()[0]
     assert result.status == "warn"
@@ -207,9 +183,7 @@ def test_wl6754_git_commit_query_failure_is_distinct_from_empty_window(
     monkeypatch.setattr(
         summary.subprocess,
         "run",
-        lambda *args, **kwargs: subprocess.CompletedProcess(
-            args[0], 0, stdout="", stderr=""
-        ),
+        lambda *args, **kwargs: subprocess.CompletedProcess(args[0], 0, stdout="", stderr=""),
     )
     empty_result = summary.get_git_commits(tmp_path, start, end)
     assert empty_result.status == "empty"
@@ -218,9 +192,7 @@ def test_wl6754_git_commit_query_failure_is_distinct_from_empty_window(
     monkeypatch.setattr(
         summary.subprocess,
         "run",
-        lambda *args, **kwargs: subprocess.CompletedProcess(
-            args[0], 128, stdout="", stderr="fatal: bad revision"
-        ),
+        lambda *args, **kwargs: subprocess.CompletedProcess(args[0], 128, stdout="", stderr="fatal: bad revision"),
     )
     error_result = summary.get_git_commits(tmp_path, start, end)
     assert error_result.status == "error"
@@ -245,10 +217,7 @@ def test_wl6755_read_log_file_tracks_malformed_json_and_timestamp_errors(
         "message": {"content": "bad"},
     }
     path.write_text(
-        json.dumps(valid).decode()
-        + "\nnot-json\n"
-        + json.dumps(bad_ts).decode()
-        + "\n",
+        json.dumps(valid).decode() + "\nnot-json\n" + json.dumps(bad_ts).decode() + "\n",
         encoding="utf-8",
     )
 
@@ -290,9 +259,7 @@ def test_wl6757_discover_models_transport_failure_and_provider_context(
     caplog.set_level("WARNING", logger="thegent.provider_model_manager")
 
     with (
-        patch(
-            "thegent.provider_model_manager._ensure_config", return_value=config_path
-        ),
+        patch("thegent.provider_model_manager._ensure_config", return_value=config_path),
         patch("thegent.provider_model_manager._load_yaml", return_value={}),
         patch("thegent.provider_model_manager._load_json", return_value={}),
         patch(
@@ -320,9 +287,7 @@ def test_wl6757_discover_models_invalid_payload_status(tmp_path: Path) -> None:
             return []
 
     with (
-        patch(
-            "thegent.provider_model_manager._ensure_config", return_value=config_path
-        ),
+        patch("thegent.provider_model_manager._ensure_config", return_value=config_path),
         patch("thegent.provider_model_manager._load_yaml", return_value={}),
         patch("thegent.provider_model_manager._load_json", return_value={}),
         patch("thegent.provider_model_manager.httpx.get", return_value=FakeResp()),
@@ -354,10 +319,7 @@ def test_wl6758_session_tui_surfaces_subagent_enumeration_failures() -> None:
         details = tui._get_session_details("sess-1")
 
     assert details.get("degraded") is True
-    assert (
-        details.get("diagnostics", {}).get("subagents", {}).get("component")
-        == "subagents"
-    )
+    assert details.get("diagnostics", {}).get("subagents", {}).get("component") == "subagents"
 
 
 def test_wl6759_network_interfaces_distinguish_empty_from_error(

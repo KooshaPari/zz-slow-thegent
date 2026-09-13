@@ -21,10 +21,7 @@ class AggregatedResult:
 
     def is_complete(self) -> bool:
         """Check if all runs are complete."""
-        return all(
-            r.get("status") in ("completed", "failed", "cancelled")
-            for r in self.summary.get("runs", [])
-        )
+        return all(r.get("status") in ("completed", "failed", "cancelled") for r in self.summary.get("runs", []))
 
     def get_error_count(self) -> int:
         """Get the count of errors."""

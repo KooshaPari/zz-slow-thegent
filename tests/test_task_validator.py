@@ -78,9 +78,7 @@ class TestValidateTask:
         }
         result = validate_task(task)
         assert not result.valid
-        assert any(
-            "id" in e.field.lower() and "format" in e.code for e in result.errors
-        )
+        assert any("id" in e.field.lower() and "format" in e.code for e in result.errors)
 
     def test_validate_task_id_with_underscores(self):
         """Test validation of task with underscores in ID."""
@@ -164,9 +162,7 @@ class TestValidateTask:
         }
         result = validate_task(task)
         assert not result.valid
-        assert any(
-            "title" in e.field.lower() and "type" in e.code for e in result.errors
-        )
+        assert any("title" in e.field.lower() and "type" in e.code for e in result.errors)
 
     def test_validate_task_title_too_long(self):
         """Test validation of task with too long title."""
@@ -178,9 +174,7 @@ class TestValidateTask:
         }
         result = validate_task(task)
         assert not result.valid
-        assert any(
-            "title" in e.field.lower() and "max" in e.code for e in result.errors
-        )
+        assert any("title" in e.field.lower() and "max" in e.code for e in result.errors)
 
     def test_validate_task_priority_p1(self):
         """Test validation of task with P1 priority."""
@@ -225,9 +219,7 @@ class TestValidateTask:
         }
         result = validate_task(task)
         assert not result.valid
-        assert any(
-            "priority" in e.field.lower() and "enum" in e.code for e in result.errors
-        )
+        assert any("priority" in e.field.lower() and "enum" in e.code for e in result.errors)
 
     def test_validate_task_priority_invalid_zero(self):
         """Test validation of task with P0 priority."""
@@ -305,10 +297,7 @@ class TestValidateTask:
         }
         result = validate_task(task)
         assert not result.valid
-        assert any(
-            "subagent_type" in e.field.lower() and "enum" in e.code
-            for e in result.errors
-        )
+        assert any("subagent_type" in e.field.lower() and "enum" in e.code for e in result.errors)
 
     def test_validate_task_depends_empty_list(self):
         """Test validation of task with empty depends list."""
@@ -358,9 +347,7 @@ class TestValidateTask:
         }
         result = validate_task(task)
         assert not result.valid
-        assert any(
-            "depends" in e.field.lower() and "type" in e.code for e in result.errors
-        )
+        assert any("depends" in e.field.lower() and "type" in e.code for e in result.errors)
 
     def test_validate_task_depends_item_not_string(self):
         """Test validation of task with non-string dependency item."""

@@ -71,9 +71,7 @@ class TestApplyParetoRouting:
             return_value=_FAKE_CANDIDATE,
         ) as mock_select:
             self._call()
-        assert mock_select.called, (
-            "ParetoRouter.select() was not called for routing='pareto'"
-        )
+        assert mock_select.called, "ParetoRouter.select() was not called for routing='pareto'"
 
     def test_selected_provider_and_model_returned(self):
         """The provider and model from ParetoRouter.select() are returned as agent and model."""
@@ -296,15 +294,9 @@ class TestParetoRouterUnit:
         # m1 dominates m2 (lower cost, higher quality)
         # Frontier: m1 and m3.  m1 ratio=0.9, m3 ratio=0.7/0.5=1.4 → m3 wins
         candidates = [
-            RouteCandidate(
-                model="m1", provider="p1", cost_per_1k=1.0, quality_score=0.9
-            ),
-            RouteCandidate(
-                model="m2", provider="p2", cost_per_1k=2.0, quality_score=0.8
-            ),
-            RouteCandidate(
-                model="m3", provider="p3", cost_per_1k=0.5, quality_score=0.7
-            ),
+            RouteCandidate(model="m1", provider="p1", cost_per_1k=1.0, quality_score=0.9),
+            RouteCandidate(model="m2", provider="p2", cost_per_1k=2.0, quality_score=0.8),
+            RouteCandidate(model="m3", provider="p3", cost_per_1k=0.5, quality_score=0.7),
         ]
         result = ParetoRouter().select(candidates)
         assert result.model in ("m1", "m3"), f"Unexpected selection: {result.model}"
@@ -316,21 +308,15 @@ class TestParetoRouterUnit:
 
     def test_select_single_candidate_returns_it(self):
         """ParetoRouter.select() returns the only candidate when list has one element."""
-        candidate = RouteCandidate(
-            model="solo", provider="x", cost_per_1k=1.0, quality_score=0.8
-        )
+        candidate = RouteCandidate(model="solo", provider="x", cost_per_1k=1.0, quality_score=0.8)
         result = ParetoRouter().select([candidate])
         assert result is candidate
 
     def test_select_zero_cost_uses_quality_fallback(self):
         """ParetoRouter falls back to highest quality when all costs are zero."""
         candidates = [
-            RouteCandidate(
-                model="m1", provider="p1", cost_per_1k=0.0, quality_score=0.9
-            ),
-            RouteCandidate(
-                model="m2", provider="p2", cost_per_1k=0.0, quality_score=0.7
-            ),
+            RouteCandidate(model="m1", provider="p1", cost_per_1k=0.0, quality_score=0.9),
+            RouteCandidate(model="m2", provider="p2", cost_per_1k=0.0, quality_score=0.7),
         ]
         result = ParetoRouter().select(candidates)
         assert result.model == "m1"
@@ -363,11 +349,7 @@ class TestParetoRouterUnit:
 
     def test_dominated_candidates_excluded(self):
         """Dominated candidates (higher cost, lower quality) are excluded from selection."""
-        dominated = RouteCandidate(
-            model="bad", provider="x", cost_per_1k=5.0, quality_score=0.1
-        )
-        dominator = RouteCandidate(
-            model="good", provider="y", cost_per_1k=1.0, quality_score=0.9
-        )
+        dominated = RouteCandidate(model="bad", provider="x", cost_per_1k=5.0, quality_score=0.1)
+        dominator = RouteCandidate(model="good", provider="y", cost_per_1k=1.0, quality_score=0.9)
         result = ParetoRouter().select([dominated, dominator])
         assert result.model == "good", f"Expected 'good', got '{result.model}'"

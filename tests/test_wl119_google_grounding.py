@@ -142,10 +142,7 @@ def test_extract_grounding_metadata_sources_preserves_order() -> None:
 
 def test_resolve_gemini_model_returns_provided_model() -> None:
     # @trace WL-119
-    assert (
-        _resolve_gemini_model("gemini/gemini-2.0-flash-exp")
-        == "gemini/gemini-2.0-flash-exp"
-    )
+    assert _resolve_gemini_model("gemini/gemini-2.0-flash-exp") == "gemini/gemini-2.0-flash-exp"
 
 
 def test_resolve_gemini_model_defaults_when_none() -> None:
@@ -226,9 +223,7 @@ def test_run_gemini_with_grounding_rejects_openai_model(
 # ---------------------------------------------------------------------------
 
 
-def _make_mock_completion_response(
-    content: str, grounding_chunks: list[dict] | None = None
-) -> MagicMock:
+def _make_mock_completion_response(content: str, grounding_chunks: list[dict] | None = None) -> MagicMock:
     """Build a mock litellm completion response object."""
     choice = MagicMock()
     choice.message.content = content
@@ -239,9 +234,7 @@ def _make_mock_completion_response(
     if grounding_chunks is not None:
         grounding_meta = {"groundingChunks": grounding_chunks}
 
-    response._hidden_params = (
-        {"groundingMetadata": grounding_meta} if grounding_chunks else {}
-    )
+    response._hidden_params = {"groundingMetadata": grounding_meta} if grounding_chunks else {}
     response.model_extra = {}
     response.additional_kwargs = {}
     return response
@@ -255,9 +248,7 @@ def test_run_gemini_with_grounding_returns_run_result(
     mock_response = _make_mock_completion_response("Test response text")
 
     with patch("litellm.completion", return_value=mock_response):
-        result = run_gemini_with_grounding(
-            "What is 2+2?", model="gemini/gemini-2.0-flash"
-        )
+        result = run_gemini_with_grounding("What is 2+2?", model="gemini/gemini-2.0-flash")
 
     assert isinstance(result, RunResult)
     assert result.exit_code == 0
@@ -274,14 +265,10 @@ def test_run_gemini_with_grounding_extracts_grounding_sources(
         {"web": {"uri": "https://source1.example/", "title": "Source 1"}},
         {"web": {"uri": "https://source2.example/", "title": "Source 2"}},
     ]
-    mock_response = _make_mock_completion_response(
-        "Grounded response", grounding_chunks=chunks
-    )
+    mock_response = _make_mock_completion_response("Grounded response", grounding_chunks=chunks)
 
     with patch("litellm.completion", return_value=mock_response):
-        result = run_gemini_with_grounding(
-            "Search query", model="gemini/gemini-2.0-flash"
-        )
+        result = run_gemini_with_grounding("Search query", model="gemini/gemini-2.0-flash")
 
     assert result.grounding_sources == [
         "https://source1.example/",
@@ -297,9 +284,7 @@ def test_run_gemini_with_grounding_grounding_sources_none_when_no_metadata(
     mock_response = _make_mock_completion_response("Response without grounding")
 
     with patch("litellm.completion", return_value=mock_response):
-        result = run_gemini_with_grounding(
-            "Plain prompt", model="gemini/gemini-2.0-flash"
-        )
+        result = run_gemini_with_grounding("Plain prompt", model="gemini/gemini-2.0-flash")
 
     assert result.grounding_sources is None
 

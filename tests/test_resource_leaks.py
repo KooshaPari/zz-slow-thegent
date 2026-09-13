@@ -336,9 +336,7 @@ class TestReferenceLeaks:
 
             except ImportError:
                 # Skip test if no way to count FDs
-                pytest.skip(
-                    "Cannot count file descriptors (no test.support.os_helper or psutil)"
-                )
+                pytest.skip("Cannot count file descriptors (no test.support.os_helper or psutil)")
 
         for _ in range(runs):
             gc.collect()

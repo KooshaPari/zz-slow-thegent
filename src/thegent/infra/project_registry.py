@@ -260,9 +260,7 @@ class ProjectRegistry:
             "SELECT id, task_id, status, created_at FROM episodes WHERE task_id = ? ORDER BY created_at",
             (task_id,),
         ).fetchall()
-        return [
-            Episode(id=r[0], task_id=r[1], status=r[2], created_at=r[3]) for r in rows
-        ]
+        return [Episode(id=r[0], task_id=r[1], status=r[2], created_at=r[3]) for r in rows]
 
     # -- Listing methods ----------------------------------------------------
 
@@ -285,19 +283,14 @@ class ProjectRegistry:
         rows = self._conn.execute(
             "SELECT id, product_id, name, created_at FROM milestones ORDER BY created_at",
         ).fetchall()
-        return [
-            Milestone(id=r[0], product_id=r[1], name=r[2], created_at=r[3])
-            for r in rows
-        ]
+        return [Milestone(id=r[0], product_id=r[1], name=r[2], created_at=r[3]) for r in rows]
 
     def list_sprints(self) -> list[Sprint]:
         """List all sprints ordered by creation time."""
         rows = self._conn.execute(
             "SELECT id, milestone_id, name, created_at FROM sprints ORDER BY created_at",
         ).fetchall()
-        return [
-            Sprint(id=r[0], milestone_id=r[1], name=r[2], created_at=r[3]) for r in rows
-        ]
+        return [Sprint(id=r[0], milestone_id=r[1], name=r[2], created_at=r[3]) for r in rows]
 
     # -- Helpers ------------------------------------------------------------
 

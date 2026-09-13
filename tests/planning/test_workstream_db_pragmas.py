@@ -163,9 +163,7 @@ def test_existing_db_is_upgraded_in_place(tmp_path: Path) -> None:
     """A pre-existing rollback-journal DB must be upgraded on first open."""
     db_path = tmp_path / "workstream.db"
     legacy = sqlite3.connect(str(db_path))
-    legacy.execute(
-        "CREATE TABLE workstream_items (item_id TEXT PRIMARY KEY, title TEXT)"
-    )
+    legacy.execute("CREATE TABLE workstream_items (item_id TEXT PRIMARY KEY, title TEXT)")
     legacy.execute("INSERT INTO workstream_items(item_id, title) VALUES ('x', 'y')")
     legacy.commit()
     legacy.close()

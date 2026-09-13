@@ -18,9 +18,7 @@ from thegent.cli.commands._cli_shared import (
 )
 
 
-def guardrails_check_cmd(
-    prompt: str, agent: str | None = None, model: str | None = None
-) -> None:
+def guardrails_check_cmd(prompt: str, agent: str | None = None, model: str | None = None) -> None:
     """Check a prompt against active guardrails (FR-GOV-003..006)."""
     from thegent.governance.input_guardrails import InputGuardrails
 
@@ -72,15 +70,9 @@ def discovery_register_cmd(
     cwd: str = typer.Option(".", "--cwd", help="Current working directory"),
     command: str | None = typer.Option(None, "--cmd", help="Command name being run"),
     args: str | None = typer.Option(None, "--args", help="Arguments preview"),
-    session_id: str | None = typer.Option(
-        None, "--session-id", help="Parsed session ID"
-    ),
-    token_usage_json: str | None = typer.Option(
-        None, "--token-usage", help="Token usage JSON"
-    ),
-    mcp_errors: list[str] | None = typer.Option(
-        None, "--mcp-error", help="MCP startup error(s)"
-    ),
+    session_id: str | None = typer.Option(None, "--session-id", help="Parsed session ID"),
+    token_usage_json: str | None = typer.Option(None, "--token-usage", help="Token usage JSON"),
+    mcp_errors: list[str] | None = typer.Option(None, "--mcp-error", help="MCP startup error(s)"),
 ) -> None:
     """Register or update a discovered external agent (WP-4008)."""
     import json
@@ -109,12 +101,8 @@ def discovery_register_cmd(
 
 def discovery_parse_cmd(
     text: str = typer.Argument(None, help="Text to parse (defaults to stdin)"),
-    register: bool = typer.Option(
-        True, "--register/--no-register", help="Register discovered sessions"
-    ),
-    ppid: int = typer.Option(
-        0, "--ppid", help="Force PPID for all discovered sessions"
-    ),
+    register: bool = typer.Option(True, "--register/--no-register", help="Register discovered sessions"),
+    ppid: int = typer.Option(0, "--ppid", help="Force PPID for all discovered sessions"),
 ) -> None:
     """Parse CLI output for session information and register them."""
     import sys
@@ -128,9 +116,7 @@ def discovery_parse_cmd(
     console = Console()
     if text is None:
         if sys.stdin.isatty():
-            console.print(
-                "[yellow]Waiting for input on stdin (Ctrl+D to finish)...[/yellow]"
-            )
+            console.print("[yellow]Waiting for input on stdin (Ctrl+D to finish)...[/yellow]")
         text = sys.stdin.read()
 
     sessions = parse_cli_output(text)
@@ -170,9 +156,7 @@ def discovery_parse_cmd(
 
 
 def discovery_scan_cmd(
-    format: str | None = typer.Option(
-        None, "--format", "-f", help="Output: json | rich (default)"
-    ),
+    format: str | None = typer.Option(None, "--format", "-f", help="Output: json | rich (default)"),
 ) -> None:
     """Scan process tree for agent CLI sessions and auto-register them.
 
@@ -203,13 +187,9 @@ def discovery_scan_cmd(
                     r.get("cwd", "?")[:50],
                 )
             console.print(table)
-            console.print(
-                f"[green]Registered {len(registered)} agent session(s).[/green]"
-            )
+            console.print(f"[green]Registered {len(registered)} agent session(s).[/green]")
         else:
-            console.print(
-                "[dim]No cursor-agent, claude-code, or codex processes found.[/dim]"
-            )
+            console.print("[dim]No cursor-agent, claude-code, or codex processes found.[/dim]")
         # Also show existing discovered agents
         existing = list_discovered_agents()
         if existing:

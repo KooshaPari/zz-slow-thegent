@@ -67,10 +67,7 @@ def test_list_payload_shape_count(tmp_path: Path) -> None:
     assert set(payload.keys()) == {"count", "items"}
     assert payload["count"] == 2
     assert isinstance(payload["items"], list)
-    assert all(
-        set(item.keys()) == {"path", "trigger", "captured_at", "tags"}
-        for item in payload["items"]
-    )
+    assert all(set(item.keys()) == {"path", "trigger", "captured_at", "tags"} for item in payload["items"])
 
 
 def test_index_payload_includes_top_tags_max_10(tmp_path: Path) -> None:
@@ -107,9 +104,7 @@ def test_export_payload_writes_markdown_and_returns_paths(tmp_path: Path) -> Non
     output = tmp_path / "exports" / "snapshot-export.md"
     output.parent.mkdir(parents=True, exist_ok=True)
 
-    payload = snapshot_export_payload(
-        scraper, snapshot_path=str(source), out_path=str(output)
-    )
+    payload = snapshot_export_payload(scraper, snapshot_path=str(source), out_path=str(output))
 
     assert payload == {"source": str(source), "output": str(output)}
     assert output.exists()

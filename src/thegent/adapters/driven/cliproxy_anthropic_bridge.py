@@ -128,8 +128,4 @@ def extract_special_headers(request_headers: dict) -> dict[str, str]:
 
     # @trace FR-REQEXT-045
     """
-    return {
-        k: v
-        for k, v in request_headers.items()
-        if k.lower() in _SPECIAL_FORWARD_HEADERS
-    }
+    return {k: v for k, v in request_headers.items() if k.lower() in _SPECIAL_FORWARD_HEADERS}

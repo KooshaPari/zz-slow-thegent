@@ -51,9 +51,7 @@ class _FakeAdapter:
             }
         ]
 
-    def symbol_lookup(
-        self, *, symbol_name: str, file_path: str | None
-    ) -> list[dict[str, Any]]:
+    def symbol_lookup(self, *, symbol_name: str, file_path: str | None) -> list[dict[str, Any]]:
         return [
             {
                 "name": symbol_name,
@@ -64,9 +62,7 @@ class _FakeAdapter:
             }
         ]
 
-    def hover(
-        self, *, file_path: str, line: int, character: int
-    ) -> dict[str, Any] | None:
+    def hover(self, *, file_path: str, line: int, character: int) -> dict[str, Any] | None:
         return {
             "symbol": "my_func",
             "line": line,
@@ -81,14 +77,10 @@ class _HoverNoneAdapter:
     def diagnostics(self, *, file_path: str) -> list[dict[str, Any]]:
         return []
 
-    def symbol_lookup(
-        self, *, symbol_name: str, file_path: str | None
-    ) -> list[dict[str, Any]]:
+    def symbol_lookup(self, *, symbol_name: str, file_path: str | None) -> list[dict[str, Any]]:
         return []
 
-    def hover(
-        self, *, file_path: str, line: int, character: int
-    ) -> dict[str, Any] | None:
+    def hover(self, *, file_path: str, line: int, character: int) -> dict[str, Any] | None:
         return None
 
 
@@ -98,14 +90,10 @@ class _EmptyAdapter:
     def diagnostics(self, *, file_path: str) -> list[dict[str, Any]]:
         return []
 
-    def symbol_lookup(
-        self, *, symbol_name: str, file_path: str | None
-    ) -> list[dict[str, Any]]:
+    def symbol_lookup(self, *, symbol_name: str, file_path: str | None) -> list[dict[str, Any]]:
         return []
 
-    def hover(
-        self, *, file_path: str, line: int, character: int
-    ) -> dict[str, Any] | None:
+    def hover(self, *, file_path: str, line: int, character: int) -> dict[str, Any] | None:
         return {"symbol": "x", "detail": "variable x"}
 
 
@@ -131,9 +119,7 @@ def test_diagnostic_dataclass_fields() -> None:
 
 def test_diagnostic_dataclass_source_defaults_to_none() -> None:
     # @trace WL-109
-    d = Diagnostic(
-        file_path="/tmp/foo.py", line=1, character=0, severity="warning", message="lint"
-    )
+    d = Diagnostic(file_path="/tmp/foo.py", line=1, character=0, severity="warning", message="lint")
     assert d.source is None
 
 
@@ -147,9 +133,7 @@ def test_symbol_info_dataclass_fields() -> None:
 
 def test_hover_info_dataclass_fields() -> None:
     # @trace WL-109
-    h = HoverInfo(
-        contents="int x = 1", range={"start": {"line": 0}, "end": {"line": 0}}
-    )
+    h = HoverInfo(contents="int x = 1", range={"start": {"line": 0}, "end": {"line": 0}})
     assert h.contents == "int x = 1"
     assert h.range is not None
 
@@ -320,9 +304,7 @@ async def test_lsp_symbol_lookup_impl_none_file_path_allowed() -> None:
 async def test_lsp_symbol_lookup_impl_file_not_found(tmp_path: Path) -> None:
     # @trace WL-109
     with pytest.raises(ValueError, match="File not found"):
-        await lsp_symbol_lookup_impl(
-            "func", str(tmp_path / "ghost.py"), adapter=_FakeAdapter()
-        )
+        await lsp_symbol_lookup_impl("func", str(tmp_path / "ghost.py"), adapter=_FakeAdapter())
 
 
 @pytest.mark.asyncio
@@ -352,9 +334,7 @@ async def test_lsp_symbol_lookup_impl_empty_result_for_unknown_symbol(
     # @trace WL-109
     f = tmp_path / "c.py"
     f.write_text("x = 1\n")
-    result = await lsp_symbol_lookup_impl(
-        "NonExistentFn", str(f), adapter=_EmptyAdapter()
-    )
+    result = await lsp_symbol_lookup_impl("NonExistentFn", str(f), adapter=_EmptyAdapter())
     assert result == []
 
 

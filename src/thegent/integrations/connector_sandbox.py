@@ -31,9 +31,7 @@ class ConnectorSandboxRegistry:
         self._connectors: dict[str, SandboxConnector] = {}
         logger.debug("Initialized connector sandbox registry")
 
-    def register(
-        self, connector_id: str, project_id: str, sandbox: bool = True
-    ) -> SandboxConnector:
+    def register(self, connector_id: str, project_id: str, sandbox: bool = True) -> SandboxConnector:
         """Register a connector with sandbox mode status.
 
         Args:

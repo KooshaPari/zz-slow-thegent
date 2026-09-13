@@ -54,24 +54,18 @@ def _read_contract(contract_name: str) -> dict[str, Any]:
 def _failing_check(name: str) -> Any:
     check = MagicMock()
     check.name = name
-    check.check = AsyncMock(
-        return_value=VetterCheckResult(check_name=name, passed=False, message="failed")
-    )
+    check.check = AsyncMock(return_value=VetterCheckResult(check_name=name, passed=False, message="failed"))
     return check
 
 
 def _passing_check(name: str) -> Any:
     check = MagicMock()
     check.name = name
-    check.check = AsyncMock(
-        return_value=VetterCheckResult(check_name=name, passed=True)
-    )
+    check.check = AsyncMock(return_value=VetterCheckResult(check_name=name, passed=True))
     return check
 
 
-def test_contracts_default_and_production_strict_parse_and_use_known_check_names() -> (
-    None
-):
+def test_contracts_default_and_production_strict_parse_and_use_known_check_names() -> None:
     allowed_names = _check_name_catalog()
     default_contract = _read_contract("default.json")
     strict_contract = _read_contract("production-strict.json")

@@ -21,9 +21,7 @@ def test_missing_nats_servers_fails():
         env.pop("NATS_SERVERS", None)
 
         with patch.dict(os.environ, env, clear=True):
-            with pytest.raises(
-                RuntimeError, match="Missing required environment variable"
-            ):
+            with pytest.raises(RuntimeError, match="Missing required environment variable"):
                 _require_nats_servers()
 
 

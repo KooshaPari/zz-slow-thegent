@@ -34,12 +34,8 @@ from thegent.planning.auto_launch import (
 # ---------------------------------------------------------------------------
 
 
-def _make_throttle_result(
-    action: str, count: int = 0, limit: int = 20
-) -> _ThrottleResult:
-    return _ThrottleResult(
-        action=action, count=count, limit=limit, message=f"test {action}"
-    )
+def _make_throttle_result(action: str, count: int = 0, limit: int = 20) -> _ThrottleResult:
+    return _ThrottleResult(action=action, count=count, limit=limit, message=f"test {action}")
 
 
 def _non_blocked_do_next() -> dict[str, object]:
@@ -143,9 +139,7 @@ class TestGetActiveAgentCount:
         fake_proc.info = {"pid": 3333, "name": "codex", "cmdline": ["codex"]}
 
         with (
-            patch(
-                "thegent.cli.commands.impl.ps_impl", side_effect=RuntimeError("db gone")
-            ),
+            patch("thegent.cli.commands.impl.ps_impl", side_effect=RuntimeError("db gone")),
             patch("psutil.process_iter", return_value=[fake_proc]),
         ):
             count = get_active_agent_count()
@@ -160,13 +154,9 @@ class TestGetActiveAgentCount:
 class TestCheckAgentThrottle:
     """Unit tests for check_agent_throttle. @trace FR-ALS-THROTTLE-002--005,012"""
 
-    def _call(
-        self, count: int, warn: int = 20, throttle: int = 50, hard_stop: int = 80
-    ) -> _ThrottleResult:
+    def _call(self, count: int, warn: int = 20, throttle: int = 50, hard_stop: int = 80) -> _ThrottleResult:
         """Helper: call check_agent_throttle with explicit count (no psutil)."""
-        return check_agent_throttle(
-            count=count, warn_at=warn, throttle_at=throttle, hard_stop_at=hard_stop
-        )
+        return check_agent_throttle(count=count, warn_at=warn, throttle_at=throttle, hard_stop_at=hard_stop)
 
     def test_below_warn_is_ok(self) -> None:  # @trace FR-ALS-THROTTLE-002
         result = self._call(count=0)
@@ -215,9 +205,7 @@ class TestCheckAgentThrottle:
     def test_explicit_count_skips_psutil(self) -> None:  # @trace FR-ALS-THROTTLE-012
         """Passing count= must not trigger psutil or registry calls."""
         with patch("thegent.planning.auto_launch.get_active_agent_count") as mock_count:
-            result = check_agent_throttle(
-                count=5, warn_at=20, throttle_at=50, hard_stop_at=80
-            )
+            result = check_agent_throttle(count=5, warn_at=20, throttle_at=50, hard_stop_at=80)
         mock_count.assert_not_called()
         assert result.action == "ok"
 
@@ -234,13 +222,9 @@ class TestCheckAgentThrottle:
 
     def test_custom_thresholds(self) -> None:  # @trace FR-ALS-THROTTLE-003
         """Non-default thresholds are respected."""
-        result = check_agent_throttle(
-            count=5, warn_at=3, throttle_at=7, hard_stop_at=10
-        )
+        result = check_agent_throttle(count=5, warn_at=3, throttle_at=7, hard_stop_at=10)
         assert result.action == "warn"
-        result2 = check_agent_throttle(
-            count=2, warn_at=3, throttle_at=7, hard_stop_at=10
-        )
+        result2 = check_agent_throttle(count=2, warn_at=3, throttle_at=7, hard_stop_at=10)
         assert result2.action == "ok"
 
 
@@ -314,9 +298,7 @@ class TestTryLaunchNextThrottle:
     ) -> None:  # @trace FR-ALS-THROTTLE-013
         """_try_launch_next proceeds to launch_batch when throttle clears after sleep."""
         system = self._make_system()
-        system.db.get_ready_items.return_value = [
-            {"item_id": "ws-001", "prompt": "do stuff"}
-        ]
+        system.db.get_ready_items.return_value = [{"item_id": "ws-001", "prompt": "do stuff"}]
         system.db.get_running_count.return_value = 0
 
         with (
@@ -357,9 +339,7 @@ class TestTryLaunchNextThrottle:
     ) -> None:  # @trace FR-ALS-THROTTLE-008
         """_try_launch_next logs a warning but does not sleep or abort on warn."""
         system = self._make_system()
-        system.db.get_ready_items.return_value = [
-            {"item_id": "ws-002", "prompt": "do more"}
-        ]
+        system.db.get_ready_items.return_value = [{"item_id": "ws-002", "prompt": "do more"}]
         system.db.get_running_count.return_value = 0
 
         with (
@@ -430,9 +410,7 @@ class TestLaunchBatchThrottle:
         async def _run():
             with patch(
                 "thegent.planning.auto_launch.check_agent_throttle",
-                return_value=check_agent_throttle(
-                    count=80, warn_at=20, throttle_at=50, hard_stop_at=80
-                ),
+                return_value=check_agent_throttle(count=80, warn_at=20, throttle_at=50, hard_stop_at=80),
             ):
                 await system.launch_batch([{"item_id": "x", "prompt": "p"}])
 

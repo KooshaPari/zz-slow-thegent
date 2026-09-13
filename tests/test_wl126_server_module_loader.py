@@ -67,9 +67,7 @@ def test_wl126_server_loader_wrapper_delegates_for_prompt_and_handoff(
 
     assert result == {"ok": True}
     assert captured["module_filename"] == "tools_prompt_and_handoff.py"
-    assert (
-        captured["module_import_name"] == "thegent.mcp._server_tools_prompt_and_handoff"
-    )
+    assert captured["module_import_name"] == "thegent.mcp._server_tools_prompt_and_handoff"
     assert captured["failure_message"] == "Unable to load prompt/handoff tool wrappers"
 
 
@@ -97,9 +95,7 @@ def test_wl126_server_loader_wrapper_delegates_for_locking_planning(
 
     assert result == {"ok": True}
     assert captured["module_filename"] == "tools_locking_planning.py"
-    assert (
-        captured["module_import_name"] == "thegent.mcp._server_tools_locking_planning"
-    )
+    assert captured["module_import_name"] == "thegent.mcp._server_tools_locking_planning"
     assert captured["failure_message"] == "Unable to load locking/planning tool helpers"
 
 

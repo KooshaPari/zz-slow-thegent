@@ -58,8 +58,7 @@ def test_audit_n5_execution_io_exports(symbol_name: str) -> None:
     plus the supporting ``LeaseToken`` / ``SpawnResult`` dataclasses."""
     execution_io = importlib.import_module("thegent.adapters.execution_io")
     assert hasattr(execution_io, symbol_name), (
-        f"thegent.adapters.execution_io.{symbol_name} is missing — "
-        f"AUDIT-N+5 shim contract broken."
+        f"thegent.adapters.execution_io.{symbol_name} is missing — AUDIT-N+5 shim contract broken."
     )
 
 
@@ -115,9 +114,7 @@ def test_audit_n5_observability_impl_exposes_envelope_parity() -> None:
     ``print_exc`` so the AUDIT-N+2 envelope-parity contract holds."""
     from thegent.ux import cli_errors
 
-    observability_impl = importlib.import_module(
-        "thegent.cli.commands.observability_impl"
-    )
+    observability_impl = importlib.import_module("thegent.cli.commands.observability_impl")
     assert hasattr(observability_impl, "err_console")
     assert observability_impl.err_console.stderr is True
     assert observability_impl.print_exc is cli_errors.print_exc
@@ -175,9 +172,7 @@ def test_audit_n5_session_meta_impl_exposes_envelope_parity() -> None:
     ``print_exc`` so the AUDIT-N+2 envelope-parity contract holds."""
     from thegent.ux import cli_errors
 
-    session_meta_impl = importlib.import_module(
-        "thegent.cli.commands.session_meta_impl"
-    )
+    session_meta_impl = importlib.import_module("thegent.cli.commands.session_meta_impl")
     assert hasattr(session_meta_impl, "err_console")
     assert session_meta_impl.err_console.stderr is True
     assert session_meta_impl.print_exc is cli_errors.print_exc
@@ -237,8 +232,7 @@ def test_audit_n5_execution_module_exports(symbol_name: str) -> None:
     that ``run_execution_core_helpers`` references."""
     execution = importlib.import_module("thegent.execution")
     assert hasattr(execution, symbol_name), (
-        f"thegent.execution.{symbol_name} is missing — AUDIT-N+5 "
-        f"extension contract broken."
+        f"thegent.execution.{symbol_name} is missing — AUDIT-N+5 extension contract broken."
     )
 
 

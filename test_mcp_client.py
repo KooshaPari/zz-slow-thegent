@@ -6,14 +6,10 @@ import httpx
 import orjson as json
 
 
-async def _get_mcp_response(
-    url: str, payload: dict, headers: dict, timeout: float = 15.0
-):
+async def _get_mcp_response(url: str, payload: dict, headers: dict, timeout: float = 15.0):
     """Wait for final result message in SSE stream."""
     async with httpx.AsyncClient() as client:
-        async with client.stream(
-            "POST", url, json=payload, headers=headers, timeout=timeout
-        ) as response:
+        async with client.stream("POST", url, json=payload, headers=headers, timeout=timeout) as response:
             if response.status_code != 200:
                 try:
                     return await response.json()

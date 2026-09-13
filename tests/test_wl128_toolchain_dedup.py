@@ -28,24 +28,18 @@ class TestPyprojectToolConfig:
         """pyproject.toml must contain exactly one [tool.ruff] header."""
         text = PYPROJECT.read_text()
         occurrences = text.count("[tool.ruff]")
-        assert occurrences == 1, (
-            f"Expected exactly 1 [tool.ruff] section in pyproject.toml, found {occurrences}"
-        )
+        assert occurrences == 1, f"Expected exactly 1 [tool.ruff] section in pyproject.toml, found {occurrences}"
 
     def test_single_tool_ruff_lint_section(self) -> None:
         """pyproject.toml must contain exactly one [tool.ruff.lint] header."""
         text = PYPROJECT.read_text()
         occurrences = text.count("[tool.ruff.lint]")
-        assert occurrences == 1, (
-            f"Expected exactly 1 [tool.ruff.lint] section in pyproject.toml, found {occurrences}"
-        )
+        assert occurrences == 1, f"Expected exactly 1 [tool.ruff.lint] section in pyproject.toml, found {occurrences}"
 
     def test_pyproject_has_pytest_ini_options(self) -> None:
         """pyproject.toml must contain [tool.pytest.ini_options] section."""
         text = PYPROJECT.read_text()
-        assert "[tool.pytest.ini_options]" in text, (
-            "pyproject.toml must have [tool.pytest.ini_options] section"
-        )
+        assert "[tool.pytest.ini_options]" in text, "pyproject.toml must have [tool.pytest.ini_options] section"
 
 
 class TestTaskfileCanonicalEntrypoints:
@@ -76,30 +70,22 @@ class TestTaskfileCanonicalEntrypoints:
     def test_no_duplicate_test_cov(self) -> None:
         """test:cov must not exist (it was a duplicate of test:)."""
         text = TASKFILE.read_text()
-        assert "  test:cov:" not in text, (
-            "test:cov must be removed (duplicate of test:) - WL-128 dedup"
-        )
+        assert "  test:cov:" not in text, "test:cov must be removed (duplicate of test:) - WL-128 dedup"
 
     def test_typecheck_is_canonical_wrapper_and_lint_type_alias_is_removed(
         self,
     ) -> None:
         """typecheck must exist as canonical task and lint:type alias must be removed."""
         text = TASKFILE.read_text()
-        assert "\n  typecheck:\n" in text, (
-            "Taskfile.yml must keep canonical 'typecheck' task"
-        )
-        assert "  lint:type:" not in text, (
-            "Taskfile.yml must not define deprecated 'lint:type' alias"
-        )
+        assert "\n  typecheck:\n" in text, "Taskfile.yml must keep canonical 'typecheck' task"
+        assert "  lint:type:" not in text, "Taskfile.yml must not define deprecated 'lint:type' alias"
 
     def test_quality_task_is_canonical_and_quality_project_alias_is_removed(
         self,
     ) -> None:
         """quality must be the canonical quality chain and quality_project alias removed."""
         text = TASKFILE.read_text()
-        assert "\n  quality:\n" in text, (
-            "Taskfile.yml must keep canonical 'quality' task"
-        )
+        assert "\n  quality:\n" in text, "Taskfile.yml must keep canonical 'quality' task"
         assert "  quality_project:" not in text, (
             "Taskfile.yml must remove duplicate 'quality_project' alias in WL-128 closeout"
         )

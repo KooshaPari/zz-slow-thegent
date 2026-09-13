@@ -35,9 +35,7 @@ class TestTeammateManagerheliosShieldIntegration:
         monkeypatch.setenv("HARNESS_ROOT", str(harness_root))
         return heliosShieldBridge()
 
-    def test_delegation_creates_heliosShield_task(
-        self, teammate_manager, helios_shield_bridge, harness_root
-    ):
+    def test_delegation_creates_heliosShield_task(self, teammate_manager, helios_shield_bridge, harness_root):
         """WP-16003: Delegation should create a task in heliosShield when available."""
         # Verify heliosShield is available
         assert helios_shield_bridge.is_available() is True
@@ -61,9 +59,7 @@ class TestTeammateManagerheliosShieldIntegration:
         assert "RUN-123" in content
         assert "Refactor the parser" in content
 
-    def test_delegation_broadcasts_intent(
-        self, teammate_manager, helios_shield_bridge, harness_root
-    ):
+    def test_delegation_broadcasts_intent(self, teammate_manager, helios_shield_bridge, harness_root):
         """WP-16003: Delegation should broadcast intent to heliosShield mesh."""
         # Create a delegation
         teammate_manager.delegate(
@@ -91,9 +87,7 @@ class TestTeammateManagerheliosShieldIntegration:
         assert "target=reviewer-beta" in intent_content
         assert "status=active" in intent_content
 
-    def test_get_session_state_finds_delegations(
-        self, teammate_manager, helios_shield_bridge, harness_root
-    ):
+    def test_get_session_state_finds_delegations(self, teammate_manager, helios_shield_bridge, harness_root):
         """WP-16003: get_session_state should find tasks and intents for a session."""
         session_id = "SESSION-789"
 
@@ -120,9 +114,7 @@ class TestTeammateManagerheliosShieldIntegration:
         assert req1.id in task_ids
         assert req2.id in task_ids
 
-    def test_delegation_works_without_heliosShield(
-        self, teammate_manager, tmp_path, monkeypatch
-    ):
+    def test_delegation_works_without_heliosShield(self, teammate_manager, tmp_path, monkeypatch):
         """WP-16003: Delegation should work gracefully when heliosShield is not available."""
         # Set non-existent harness root
         monkeypatch.setenv("HARNESS_ROOT", str(tmp_path / "nonexistent"))
@@ -138,9 +130,7 @@ class TestTeammateManagerheliosShieldIntegration:
         assert req.parent_run_id == "RUN-999"
         assert req.status == "pending"
 
-    def test_multiple_delegations_create_multiple_tasks(
-        self, teammate_manager, helios_shield_bridge, harness_root
-    ):
+    def test_multiple_delegations_create_multiple_tasks(self, teammate_manager, helios_shield_bridge, harness_root):
         """WP-16003: Multiple delegations should create multiple tasks."""
         parent_run = "RUN-MULTI"
 
@@ -166,9 +156,7 @@ class TestTeammateManagerheliosShieldIntegration:
             content = task_file.read_text()
             assert parent_run in content
 
-    def test_delegation_task_includes_dependencies(
-        self, teammate_manager, helios_shield_bridge, harness_root
-    ):
+    def test_delegation_task_includes_dependencies(self, teammate_manager, helios_shield_bridge, harness_root):
         """WP-16003: Task creation should handle dependencies correctly."""
         # Create first delegation
         req1 = teammate_manager.delegate("coder-alpha", "RUN-DEP", "First task")
@@ -193,9 +181,7 @@ class TestTeammateManagerheliosShieldIntegration:
 
         assert state == {"claims": [], "intents": [], "tasks": []}
 
-    def test_intent_file_format(
-        self, teammate_manager, helios_shield_bridge, harness_root
-    ):
+    def test_intent_file_format(self, teammate_manager, helios_shield_bridge, harness_root):
         """WP-16003: Intent files should have correct format."""
         teammate_manager.delegate("coder-alpha", "RUN-FORMAT", "Test format")
 
@@ -219,9 +205,7 @@ class TestTeammateManagerheliosShieldIntegration:
         assert "started=" in content
         assert "status=" in content
 
-    def test_task_file_format(
-        self, teammate_manager, helios_shield_bridge, harness_root
-    ):
+    def test_task_file_format(self, teammate_manager, helios_shield_bridge, harness_root):
         """WP-16003: Task files should have correct format."""
         req = teammate_manager.delegate("coder-alpha", "RUN-FORMAT", "Test task format")
 

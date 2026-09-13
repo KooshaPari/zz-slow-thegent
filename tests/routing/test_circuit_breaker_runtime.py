@@ -78,9 +78,7 @@ class TestGetHealthyDeployments:
         healthy = get_healthy_deployments(model_list, registry=registry)
 
         model_names = [e["model_name"] for e in healthy]
-        assert "gpt-4o" not in model_names, (
-            "openai deployment must be excluded when circuit is OPEN"
-        )
+        assert "gpt-4o" not in model_names, "openai deployment must be excluded when circuit is OPEN"
         assert "claude-opus-4.6" in model_names
         assert "gemini-3-flash" in model_names
 
@@ -97,9 +95,7 @@ class TestGetHealthyDeployments:
         model_list = _make_model_list()
         result = get_healthy_deployments(model_list, registry=registry)
 
-        assert result == model_list, (
-            "Full list must be returned when all circuits are open"
-        )
+        assert result == model_list, "Full list must be returned when all circuits are open"
 
     def test_get_healthy_deployments_no_open_circuits_returns_full_list(self) -> None:
         """When no circuits are open, the full list is returned unchanged."""
@@ -215,9 +211,7 @@ class TestGetCircuitBreakerStatus:
         for provider, state in status.items():
             assert isinstance(provider, str)
             assert isinstance(state, str)
-            assert state in {"closed", "open", "half-open"}, (
-                f"Unexpected state {state!r} for provider {provider!r}"
-            )
+            assert state in {"closed", "open", "half-open"}, f"Unexpected state {state!r} for provider {provider!r}"
 
     def test_get_circuit_breaker_status_reflects_open_state(self) -> None:
         """An open provider shows as 'open' in the status dict."""

@@ -50,9 +50,7 @@ MessageType = Literal[
     "error",
     "heartbeat",
 ]
-_VALID_MESSAGE_TYPES: frozenset[str] = frozenset(
-    {"task_request", "status_update", "result", "error", "heartbeat"}
-)
+_VALID_MESSAGE_TYPES: frozenset[str] = frozenset({"task_request", "status_update", "result", "error", "heartbeat"})
 
 
 @dataclass(frozen=True)
@@ -104,33 +102,19 @@ class InterAgentMessage:
         if not isinstance(self.recipient_id, str) or not self.recipient_id:
             raise ValueError("recipient_id must be a non-empty string")
         if not isinstance(self.message_type, str):
-            raise ValueError(
-                f"message_type must be a string, got {type(self.message_type).__name__}"
-            )
+            raise ValueError(f"message_type must be a string, got {type(self.message_type).__name__}")
         if self.message_type not in _VALID_MESSAGE_TYPES:
-            raise ValueError(
-                f"message_type must be one of {sorted(_VALID_MESSAGE_TYPES)}, got {self.message_type!r}"
-            )
+            raise ValueError(f"message_type must be one of {sorted(_VALID_MESSAGE_TYPES)}, got {self.message_type!r}")
         if not isinstance(self.payload, Mapping):
-            raise ValueError(
-                f"payload must be a Mapping, got {type(self.payload).__name__}"
-            )
+            raise ValueError(f"payload must be a Mapping, got {type(self.payload).__name__}")
         if self.correlation_id is not None and not isinstance(self.correlation_id, str):
-            raise ValueError(
-                f"correlation_id must be a string or None, got {type(self.correlation_id).__name__}"
-            )
-        if (
-            not isinstance(self.ttl_s, int)
-            or isinstance(self.ttl_s, bool)
-            or self.ttl_s < 0
-        ):
+            raise ValueError(f"correlation_id must be a string or None, got {type(self.correlation_id).__name__}")
+        if not isinstance(self.ttl_s, int) or isinstance(self.ttl_s, bool) or self.ttl_s < 0:
             raise ValueError(f"ttl_s must be a non-negative int, got {self.ttl_s!r}")
         if not isinstance(self.id, str) or not self.id:
             raise ValueError("id must be a non-empty string")
         if not isinstance(self.created_at, datetime):
-            raise ValueError(
-                f"created_at must be a datetime, got {type(self.created_at).__name__}"
-            )
+            raise ValueError(f"created_at must be a datetime, got {type(self.created_at).__name__}")
 
     # ------------------------------------------------------------------
     # Convenience helpers
@@ -222,20 +206,14 @@ class MessageBus:
         subscribed — silent drop is not supported.
         """
         if not isinstance(message, InterAgentMessage):
-            raise TypeError(
-                f"message must be InterAgentMessage, got {type(message).__name__}"
-            )
+            raise TypeError(f"message must be InterAgentMessage, got {type(message).__name__}")
         with self._lock:
             queue = self._queues.get(message.recipient_id)
             if queue is None:
-                raise KeyError(
-                    f"recipient_id {message.recipient_id!r} is not subscribed"
-                )
+                raise KeyError(f"recipient_id {message.recipient_id!r} is not subscribed")
             queue.put_nowait(message)
 
-    def drain(
-        self, agent_id: str, *, timeout_s: float = 0.0
-    ) -> list[InterAgentMessage]:
+    def drain(self, agent_id: str, *, timeout_s: float = 0.0) -> list[InterAgentMessage]:
         """Drain all currently-queued messages for ``agent_id``.
 
         Parameters

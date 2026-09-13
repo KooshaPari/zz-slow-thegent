@@ -36,44 +36,31 @@ def _touch(path: Path) -> None:
     path.write_text("", encoding="utf-8")
 
 
-def test_wl6880_shell_doctor_alias_probe_success(
-    monkeypatch: pytest.MonkeyPatch, tmp_path: Path
-) -> None:
+def test_wl6880_shell_doctor_alias_probe_success(monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> None:
     _touch(tmp_path / ".zshenv")
     _touch(tmp_path / ".zsh_bundle.zsh")
     monkeypatch.setattr(shell_cli.Path, "home", lambda: tmp_path)
     monkeypatch.setattr(
         shell_cli.subprocess,
         "run",
-        lambda *args, **kwargs: subprocess.CompletedProcess(
-            args[0], 0, stdout="alias ls='tree -a'\n", stderr=""
-        ),
+        lambda *args, **kwargs: subprocess.CompletedProcess(args[0], 0, stdout="alias ls='tree -a'\n", stderr=""),
     )
     collector = _PrintCollector()
     monkeypatch.setattr(shell_cli, "console", collector)
 
     shell_cli.shell_doctor(fix=False)
 
-    assert any(
-        "ls is aliased to tree/recursive output" in message
-        for message in collector.messages
-    )
-    assert not any(
-        "Alias probe execution failed" in message for message in collector.messages
-    )
+    assert any("ls is aliased to tree/recursive output" in message for message in collector.messages)
+    assert not any("Alias probe execution failed" in message for message in collector.messages)
     assert not any("Alias probe timed out" in message for message in collector.messages)
 
 
-def test_wl6880_shell_doctor_alias_probe_timeout(
-    monkeypatch: pytest.MonkeyPatch, tmp_path: Path
-) -> None:
+def test_wl6880_shell_doctor_alias_probe_timeout(monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> None:
     _touch(tmp_path / ".zshenv")
     _touch(tmp_path / ".zsh_bundle.zsh")
     monkeypatch.setattr(shell_cli.Path, "home", lambda: tmp_path)
 
-    def _raise_timeout(
-        *_args: object, **_kwargs: object
-    ) -> subprocess.CompletedProcess[str]:
+    def _raise_timeout(*_args: object, **_kwargs: object) -> subprocess.CompletedProcess[str]:
         raise subprocess.TimeoutExpired(cmd=["zsh"], timeout=2)
 
     monkeypatch.setattr(shell_cli.subprocess, "run", _raise_timeout)
@@ -82,24 +69,17 @@ def test_wl6880_shell_doctor_alias_probe_timeout(
 
     shell_cli.shell_doctor(fix=False)
 
-    assert any(
-        "Alias probe timed out: timeout after 2s." in message
-        for message in collector.messages
-    )
+    assert any("Alias probe timed out: timeout after 2s." in message for message in collector.messages)
 
 
-def test_wl6880_shell_doctor_alias_probe_execution_failure(
-    monkeypatch: pytest.MonkeyPatch, tmp_path: Path
-) -> None:
+def test_wl6880_shell_doctor_alias_probe_execution_failure(monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> None:
     _touch(tmp_path / ".zshenv")
     _touch(tmp_path / ".zsh_bundle.zsh")
     monkeypatch.setattr(shell_cli.Path, "home", lambda: tmp_path)
     monkeypatch.setattr(
         shell_cli.subprocess,
         "run",
-        lambda *args, **kwargs: subprocess.CompletedProcess(
-            args[0], 1, stdout="", stderr="rc=1 during startup"
-        ),
+        lambda *args, **kwargs: subprocess.CompletedProcess(args[0], 1, stdout="", stderr="rc=1 during startup"),
     )
     collector = _PrintCollector()
     monkeypatch.setattr(shell_cli, "console", collector)
@@ -107,8 +87,7 @@ def test_wl6880_shell_doctor_alias_probe_execution_failure(
     shell_cli.shell_doctor(fix=False)
 
     assert any(
-        "Alias probe execution failed (execution failed (exit 1): rc=1 during startup)."
-        in message
+        "Alias probe execution failed (execution failed (exit 1): rc=1 during startup)." in message
         for message in collector.messages
     )
 
@@ -151,9 +130,7 @@ def test_wl6881_shell_platform_probe_execution_failure(
     monkeypatch.setattr(
         shell_cli.subprocess,
         "run",
-        lambda *args, **kwargs: subprocess.CompletedProcess(
-            args[0], 1, stdout="noop", stderr="bad version output"
-        ),
+        lambda *args, **kwargs: subprocess.CompletedProcess(args[0], 1, stdout="noop", stderr="bad version output"),
     )
 
     shell_cli.shell_platform()

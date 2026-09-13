@@ -386,15 +386,9 @@ class TestResourceManagerLimitEnforcement:
             set_calls.append((kind, value))
             limits[_kind_name(kind)] = value
 
-        monkeypatch.setattr(
-            "thegent.infra.resource_management.resource.getrlimit", _fake_getrlimit
-        )
-        monkeypatch.setattr(
-            "thegent.infra.resource_management.resource.setrlimit", _fake_setrlimit
-        )
-        monkeypatch.setattr(
-            "thegent.infra.resource_management.resource.RLIM_INFINITY", -1
-        )
+        monkeypatch.setattr("thegent.infra.resource_management.resource.getrlimit", _fake_getrlimit)
+        monkeypatch.setattr("thegent.infra.resource_management.resource.setrlimit", _fake_setrlimit)
+        monkeypatch.setattr("thegent.infra.resource_management.resource.RLIM_INFINITY", -1)
 
         applied = manager.apply_limits(memory_mb=512, proc_limit=200)
         assert applied["memory"][0] == 512 * 1024 * 1024
@@ -429,9 +423,7 @@ class TestResourceManagerLimitEnforcement:
             "thegent.infra.resource_management.resource.setrlimit",
             lambda kind, value: limits.__setitem__(_kind_name(kind), value),
         )
-        monkeypatch.setattr(
-            "thegent.infra.resource_management.resource.RLIM_INFINITY", -1
-        )
+        monkeypatch.setattr("thegent.infra.resource_management.resource.RLIM_INFINITY", -1)
 
         applied = manager.apply_limits(memory_mb=1024, proc_limit=1000)
         assert applied["memory"][0] == as_hard
@@ -469,9 +461,7 @@ class TestResourceManagerApplyLimitsSuccess:
             "thegent.infra.resource_management.resource.setrlimit",
             lambda kind, value: limits.__setitem__(_kind_name(kind), value),
         )
-        monkeypatch.setattr(
-            "thegent.infra.resource_management.resource.RLIM_INFINITY", -1
-        )
+        monkeypatch.setattr("thegent.infra.resource_management.resource.RLIM_INFINITY", -1)
 
         result = manager.apply_limits(memory_mb=512, proc_limit=100)
 

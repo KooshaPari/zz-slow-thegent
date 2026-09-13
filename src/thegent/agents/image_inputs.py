@@ -10,9 +10,7 @@ import json
 import mimetypes
 from pathlib import Path
 
-SUPPORTED_FORMATS: frozenset[str] = frozenset(
-    {".png", ".jpg", ".jpeg", ".webp", ".gif"}
-)
+SUPPORTED_FORMATS: frozenset[str] = frozenset({".png", ".jpg", ".jpeg", ".webp", ".gif"})
 
 _SUFFIX_TO_MEDIA_TYPE: dict[str, str] = {
     ".png": "image/png",

@@ -13,9 +13,7 @@ def test_f2_report_exists():
 
 def test_f2_report_mentions_pass():
     text = REPORT.read_text()
-    assert "PASS" in text or "pass" in text.lower(), (
-        "Report must mention PASS or pass verdict"
-    )
+    assert "PASS" in text or "pass" in text.lower(), "Report must mention PASS or pass verdict"
 
 
 def test_f2_report_mentions_taskfile():

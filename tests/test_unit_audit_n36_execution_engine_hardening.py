@@ -145,9 +145,7 @@ class TestSettingsConstructor:
         engine = ExecutionEngine(settings=settings)
         assert engine.session_dir == session_dir
 
-    def test_session_dir_fallback_when_settings_none(
-        self, tmp_path: Path, monkeypatch
-    ) -> None:
+    def test_session_dir_fallback_when_settings_none(self, tmp_path: Path, monkeypatch) -> None:
         engine = ExecutionEngine()
         monkeypatch.chdir(tmp_path)
         # ``session_dir`` should not crash even when ``settings is None``.
@@ -509,9 +507,7 @@ class TestRunMetaCwdResolution:
 class TestSettingsSessionDirDefensive:
     """@trace FR-ORC-050"""
 
-    def test_settings_without_session_dir_attribute_does_not_crash(
-        self, tmp_path: Path
-    ) -> None:
+    def test_settings_without_session_dir_attribute_does_not_crash(self, tmp_path: Path) -> None:
         """A partial settings object without ``session_dir`` must not
         raise — the engine falls back to ``Path.cwd()``.
         """
@@ -520,9 +516,7 @@ class TestSettingsSessionDirDefensive:
         assert engine.session_dir is not None
         assert isinstance(engine.session_dir, Path)
 
-    def test_settings_none_returns_cwd_fallback(
-        self, tmp_path: Path, monkeypatch
-    ) -> None:
+    def test_settings_none_returns_cwd_fallback(self, tmp_path: Path, monkeypatch) -> None:
         engine = ExecutionEngine(settings=None)
         monkeypatch.chdir(tmp_path)
         assert engine.session_dir == tmp_path

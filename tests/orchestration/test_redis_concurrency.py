@@ -86,44 +86,30 @@ class TestInMemoryStore:
     def store(self) -> _InMemoryStore:
         return _InMemoryStore()
 
-    def test_get_missing_key_returns_none(
-        self, store: _InMemoryStore
-    ) -> None:  # @trace FR-ORC-002
+    def test_get_missing_key_returns_none(self, store: _InMemoryStore) -> None:  # @trace FR-ORC-002
         assert store.get("nope") is None
 
-    def test_set_then_get_round_trips(
-        self, store: _InMemoryStore
-    ) -> None:  # @trace FR-ORC-002
+    def test_set_then_get_round_trips(self, store: _InMemoryStore) -> None:  # @trace FR-ORC-002
         store.set("k", "v")
         assert store.get("k") == "v"
 
-    def test_set_with_ex_does_not_raise(
-        self, store: _InMemoryStore
-    ) -> None:  # @trace FR-ORC-002
+    def test_set_with_ex_does_not_raise(self, store: _InMemoryStore) -> None:  # @trace FR-ORC-002
         store.set("k", "v", ex=60)  # stub ignores ex
         assert store.get("k") == "v"
 
-    def test_delete_existing_key_returns_one(
-        self, store: _InMemoryStore
-    ) -> None:  # @trace FR-ORC-002
+    def test_delete_existing_key_returns_one(self, store: _InMemoryStore) -> None:  # @trace FR-ORC-002
         store.set("k", "v")
         assert store.delete("k") == 1
         assert store.get("k") is None
 
-    def test_delete_missing_key_returns_zero(
-        self, store: _InMemoryStore
-    ) -> None:  # @trace FR-ORC-002
+    def test_delete_missing_key_returns_zero(self, store: _InMemoryStore) -> None:  # @trace FR-ORC-002
         assert store.delete("nope") == 0
 
-    def test_exists_returns_one(
-        self, store: _InMemoryStore
-    ) -> None:  # @trace FR-ORC-002
+    def test_exists_returns_one(self, store: _InMemoryStore) -> None:  # @trace FR-ORC-002
         store.set("k", "v")
         assert store.exists("k") == 1
 
-    def test_exists_returns_zero(
-        self, store: _InMemoryStore
-    ) -> None:  # @trace FR-ORC-002
+    def test_exists_returns_zero(self, store: _InMemoryStore) -> None:  # @trace FR-ORC-002
         assert store.exists("nope") == 0
 
 
@@ -144,17 +130,13 @@ class TestController:
         assert c.max_concurrent == 10
         assert c.current == 0
 
-    def test_acquire_under_limit_returns_true(
-        self, config: RedisConfig
-    ) -> None:  # @trace FR-ORC-002
+    def test_acquire_under_limit_returns_true(self, config: RedisConfig) -> None:  # @trace FR-ORC-002
         c = RedisConcurrencyController()
         c.max_concurrent = config.max_concurrent
         assert c.acquire() is True
         assert c.current == 1
 
-    def test_acquire_at_limit_returns_false(
-        self, config: RedisConfig
-    ) -> None:  # @trace FR-ORC-002
+    def test_acquire_at_limit_returns_false(self, config: RedisConfig) -> None:  # @trace FR-ORC-002
         c = RedisConcurrencyController()
         c.max_concurrent = config.max_concurrent
         for _ in range(3):
@@ -162,9 +144,7 @@ class TestController:
         assert c.acquire() is False
         assert c.current == 3
 
-    def test_release_decrements_current(
-        self, config: RedisConfig
-    ) -> None:  # @trace FR-ORC-002
+    def test_release_decrements_current(self, config: RedisConfig) -> None:  # @trace FR-ORC-002
         c = RedisConcurrencyController()
         c.max_concurrent = config.max_concurrent
         c.acquire()

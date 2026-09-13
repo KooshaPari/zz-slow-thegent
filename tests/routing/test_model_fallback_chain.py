@@ -229,9 +229,7 @@ class TestBuildDynamicFallbackRouter:
             "thegent.utils.routing_impl.litellm_router.build_litellm_model_list",
             return_value=minimal_model_list,
         ):
-            router = build_dynamic_fallback_router(
-                ["gpt-4o", "claude-sonnet-4.6", "deepseek-v3.2"]
-            )
+            router = build_dynamic_fallback_router(["gpt-4o", "claude-sonnet-4.6", "deepseek-v3.2"])
 
         assert isinstance(router, Router)
         # Verify fallback configuration is present
@@ -264,9 +262,7 @@ class TestBuildDynamicFallbackRouter:
             "thegent.utils.routing_impl.litellm_router.build_litellm_model_list",
             return_value=[],
         ):
-            router = build_dynamic_fallback_router(
-                ["unknown-model-x", "unknown-model-y"]
-            )
+            router = build_dynamic_fallback_router(["unknown-model-x", "unknown-model-y"])
 
         assert isinstance(router, Router)
         # Both unknown models should appear in model_list with passthrough config
@@ -307,9 +303,7 @@ class TestSingleModelUsesDefaultRouter:
         mock_router = MagicMock()
         mock_router.acompletion = AsyncMock(return_value=mock_response)
 
-        body = json.dumps(
-            _make_responses_body(model="gpt-4o", models=["gpt-4o"]).decode()
-        ).encode()
+        body = json.dumps(_make_responses_body(model="gpt-4o", models=["gpt-4o"]).decode()).encode()
 
         dynamic_router_call_count = 0
 
@@ -331,11 +325,7 @@ class TestSingleModelUsesDefaultRouter:
             from starlette.applications import Starlette
             from starlette.routing import Route
 
-            app = Starlette(
-                routes=[
-                    Route("/v1/responses", handle_responses_request, methods=["POST"])
-                ]
-            )
+            app = Starlette(routes=[Route("/v1/responses", handle_responses_request, methods=["POST"])])
             client = TestClient(app, raise_server_exceptions=False)
             resp = client.post(
                 "/v1/responses",
@@ -390,11 +380,7 @@ class TestSingleModelUsesDefaultRouter:
             from starlette.applications import Starlette
             from starlette.routing import Route
 
-            app = Starlette(
-                routes=[
-                    Route("/v1/responses", handle_responses_request, methods=["POST"])
-                ]
-            )
+            app = Starlette(routes=[Route("/v1/responses", handle_responses_request, methods=["POST"])])
             client = TestClient(app, raise_server_exceptions=False)
             resp = client.post(
                 "/v1/responses",
@@ -468,11 +454,7 @@ class TestMultiModelUsesDynamicRouter:
             from starlette.applications import Starlette
             from starlette.routing import Route
 
-            app = Starlette(
-                routes=[
-                    Route("/v1/responses", handle_responses_request, methods=["POST"])
-                ]
-            )
+            app = Starlette(routes=[Route("/v1/responses", handle_responses_request, methods=["POST"])])
             client = TestClient(app, raise_server_exceptions=False)
             resp = client.post(
                 "/v1/responses",
@@ -529,11 +511,7 @@ class TestMultiModelUsesDynamicRouter:
             from starlette.applications import Starlette
             from starlette.routing import Route
 
-            app = Starlette(
-                routes=[
-                    Route("/v1/responses", handle_responses_request, methods=["POST"])
-                ]
-            )
+            app = Starlette(routes=[Route("/v1/responses", handle_responses_request, methods=["POST"])])
             client = TestClient(app, raise_server_exceptions=False)
             resp = client.post(
                 "/v1/responses",
@@ -574,12 +552,8 @@ class TestBuildFallbackChainExtra:
             _build_fallback_chain_extra,
         )
 
-        result = _build_fallback_chain_extra(
-            ["gpt-4o", "claude-sonnet-4.6", "deepseek-v3.2"], "gpt-4o"
-        )
-        assert result == {
-            "fallbacks": [{"gpt-4o": ["claude-sonnet-4.6", "deepseek-v3.2"]}]
-        }
+        result = _build_fallback_chain_extra(["gpt-4o", "claude-sonnet-4.6", "deepseek-v3.2"], "gpt-4o")
+        assert result == {"fallbacks": [{"gpt-4o": ["claude-sonnet-4.6", "deepseek-v3.2"]}]}
 
     @pytest.mark.requirement("FR-ROUTE-012")
     def test_single_model_returns_empty_dict(self) -> None:

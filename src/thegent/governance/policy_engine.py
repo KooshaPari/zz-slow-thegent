@@ -182,17 +182,13 @@ class PolicyEngine:
         # federated registry's default without having to mutate ``settings``.
         self.default_namespace = default_namespace
         self.override_manager = OverrideManager(settings=self.settings)
-        self.trust_checker = TrustBoundaryChecker(
-            self.settings, cache_ttl_sec=cache_ttl_sec
-        )
+        self.trust_checker = TrustBoundaryChecker(self.settings, cache_ttl_sec=cache_ttl_sec)
         if use_federation:
             # Use the explicit ``default_namespace`` kwarg (rather than the
             # historical ``getattr(settings, ...)`` fallback) so the CLI can
             # pin the federated default per-invocation. ``global`` is the
             # registry's default; we mirror it here for backward compat.
-            self.federated: FederatedPolicyEngine | None = FederatedPolicyEngine(
-                default_namespace=default_namespace
-            )
+            self.federated: FederatedPolicyEngine | None = FederatedPolicyEngine(default_namespace=default_namespace)
         else:
             self.federated = None
         # OPT-008: LRU + TTL decision cache (sub-50ms repeated evaluations)
@@ -200,9 +196,7 @@ class PolicyEngine:
         # mutations and reads are serialised through ``self._lock`` (RLock so
         # evaluate() can re-enter via _apply_override safely).
         self._lock = threading.RLock()
-        self._cache: TTLCache[str, PolicyDecision] = TTLCache(
-            maxsize=cache_maxsize, ttl=cache_ttl_sec
-        )
+        self._cache: TTLCache[str, PolicyDecision] = TTLCache(maxsize=cache_maxsize, ttl=cache_ttl_sec)
         # OPT-008 observability: hit / miss counters incremented under
         # ``_lock`` so SOTA tooling and operator dashboards can assert
         # cache wiring without reaching into the underlying TTLCache.
@@ -253,9 +247,7 @@ class PolicyEngine:
                 self._cache.clear()
             return
         if rule_id is None:
-            raise PolicyEngineConfigError(
-                "register_rule requires rule_id when no PolicyRule is passed"
-            )
+            raise PolicyEngineConfigError("register_rule requires rule_id when no PolicyRule is passed")
         if not when:
             raise PolicyEngineConfigError(
                 f"register_rule({rule_id}): 'when' must be a non-empty mapping; "
@@ -347,19 +339,13 @@ class PolicyEngine:
         if not isinstance(rule_id, str):
             # Defensive: surface config drift as PolicyEngineConfigError so
             # callers get one consistent exception type at this boundary.
-            raise PolicyEngineConfigError(
-                f"rule_id must be a string, got {type(rule_id).__name__}"
-            )
+            raise PolicyEngineConfigError(f"rule_id must be a string, got {type(rule_id).__name__}")
         if not rule_id:
             raise PolicyEngineConfigError("rule_id must be a non-empty string")
         if "/" in rule_id or "\\" in rule_id:
-            raise PolicyEngineConfigError(
-                f"rule_id contains path separator: {rule_id!r}"
-            )
+            raise PolicyEngineConfigError(f"rule_id contains path separator: {rule_id!r}")
         if ".." in rule_id:
-            raise PolicyEngineConfigError(
-                f"rule_id contains '..' sequence: {rule_id!r}"
-            )
+            raise PolicyEngineConfigError(f"rule_id contains '..' sequence: {rule_id!r}")
         if "\x00" in rule_id:
             raise PolicyEngineConfigError(f"rule_id contains NUL byte: {rule_id!r}")
         with self._lock:
@@ -395,9 +381,7 @@ class PolicyEngine:
         5. Active override for the matched rule_id (override path, WP-3003).
         """
         if not isinstance(ctx, PolicyContext):  # type: ignore[unreachable]
-            raise TypeError(
-                f"PolicyEngine.evaluate expects PolicyContext, got {type(ctx).__name__}"
-            )
+            raise TypeError(f"PolicyEngine.evaluate expects PolicyContext, got {type(ctx).__name__}")
 
         key = _cache_key(ctx)
         with self._lock:
@@ -434,9 +418,7 @@ class PolicyEngine:
             fed_decision = self._evaluate_federated(ctx)
             if fed_decision is not None and fed_decision.verdict != Verdict.ALLOW:
                 if fed_decision.verdict == Verdict.DENY:
-                    return self._apply_override(
-                        ctx, fed_decision, rule_id=fed_decision.rule_id
-                    )
+                    return self._apply_override(ctx, fed_decision, rule_id=fed_decision.rule_id)
                 return fed_decision
 
         # 2. Trust boundary (fail-closed if checker is misbehaving)
@@ -555,14 +537,8 @@ class PolicyEngine:
             )
         return None
 
-    def _check_critical_low_confidence(
-        self, ctx: PolicyContext
-    ) -> PolicyDecision | None:
-        if (
-            ctx.lane == "critical"
-            and ctx.confidence is not None
-            and ctx.confidence < self.CRITICAL_LANE_CONFIDENCE_MIN
-        ):
+    def _check_critical_low_confidence(self, ctx: PolicyContext) -> PolicyDecision | None:
+        if ctx.lane == "critical" and ctx.confidence is not None and ctx.confidence < self.CRITICAL_LANE_CONFIDENCE_MIN:
             return PolicyDecision(
                 verdict=Verdict.DENY,
                 reason=(
@@ -573,9 +549,7 @@ class PolicyEngine:
             )
         return None
 
-    def _check_unknown_agent_production(
-        self, ctx: PolicyContext, is_unknown: bool
-    ) -> PolicyDecision | None:
+    def _check_unknown_agent_production(self, ctx: PolicyContext, is_unknown: bool) -> PolicyDecision | None:
         if ctx.environment == "production" and is_unknown:
             return PolicyDecision(
                 verdict=Verdict.DENY,
@@ -585,9 +559,7 @@ class PolicyEngine:
             )
         return None
 
-    def _check_unknown_agent_critical(
-        self, ctx: PolicyContext, is_unknown: bool
-    ) -> PolicyDecision | None:
+    def _check_unknown_agent_critical(self, ctx: PolicyContext, is_unknown: bool) -> PolicyDecision | None:
         if ctx.lane == "critical" and is_unknown:
             return PolicyDecision(
                 verdict=Verdict.DENY,
@@ -597,9 +569,7 @@ class PolicyEngine:
             )
         return None
 
-    def _check_recovery_no_confidence(
-        self, ctx: PolicyContext
-    ) -> PolicyDecision | None:
+    def _check_recovery_no_confidence(self, ctx: PolicyContext) -> PolicyDecision | None:
         if ctx.lane == "recovery" and ctx.confidence is None:
             return PolicyDecision(
                 verdict=Verdict.WARN,
@@ -609,14 +579,8 @@ class PolicyEngine:
             )
         return None
 
-    def _check_production_low_confidence(
-        self, ctx: PolicyContext, threshold: float
-    ) -> PolicyDecision | None:
-        if (
-            ctx.environment == "production"
-            and ctx.confidence is not None
-            and ctx.confidence < threshold
-        ):
+    def _check_production_low_confidence(self, ctx: PolicyContext, threshold: float) -> PolicyDecision | None:
+        if ctx.environment == "production" and ctx.confidence is not None and ctx.confidence < threshold:
             return PolicyDecision(
                 verdict=Verdict.DENY,
                 reason=f"confidence {ctx.confidence:.3f} below production floor {threshold:.3f}",
@@ -652,9 +616,7 @@ class PolicyEngine:
             rule_id="local.default.allow",
         )
 
-    def _apply_override(
-        self, ctx: PolicyContext, decision: PolicyDecision, *, rule_id: str | None
-    ) -> PolicyDecision:
+    def _apply_override(self, ctx: PolicyContext, decision: PolicyDecision, *, rule_id: str | None) -> PolicyDecision:
         """Apply a TTL-based override if one is active for ``rule_id``.
 
         WP-3003: overrides carry a reason and operator; they are logged

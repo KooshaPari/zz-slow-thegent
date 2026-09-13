@@ -61,9 +61,7 @@ class SSHIdentityProxy:
             while self._running:
                 try:
                     conn, _addr = s.accept()
-                    threading.Thread(
-                        target=self._handle_client, args=(conn,), daemon=True
-                    ).start()
+                    threading.Thread(target=self._handle_client, args=(conn,), daemon=True).start()
                 except TimeoutError:  # noqa: PERF203 -- socket accept loop, timeout handling required
                     continue
                 except Exception as e:
@@ -98,11 +96,7 @@ class SSHIdentityProxy:
                     if exceptional:
                         break
                     for sock in readable:
-                        src, dst = (
-                            (client_conn, host_conn)
-                            if sock is client_conn
-                            else (host_conn, client_conn)
-                        )
+                        src, dst = (client_conn, host_conn) if sock is client_conn else (host_conn, client_conn)
                         if not _forward_recv(src, dst):
                             return
         except Exception as e:

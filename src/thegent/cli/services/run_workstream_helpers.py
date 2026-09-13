@@ -86,11 +86,7 @@ def parse_work_stream_md(work_stream_path: Path) -> dict[str, Any]:
                         title = parts[1] if len(parts) > 1 else ""
                         task_type = parts[2] if len(parts) > 2 else "feature"
                         depends_str = parts[3] if len(parts) > 3 else ""
-                        depends = (
-                            [d.strip() for d in depends_str.split(",") if d.strip()]
-                            if depends_str
-                            else []
-                        )
+                        depends = [d.strip() for d in depends_str.split(",") if d.strip()] if depends_str else []
 
                         backlog.append(
                             {
@@ -102,11 +98,7 @@ def parse_work_stream_md(work_stream_path: Path) -> dict[str, Any]:
                                 "depends": depends,
                             }
                         )
-                    elif (
-                        current_section == "claimed"
-                        or "CLAIMED" in row_status
-                        or "IN_PROGRESS" in row_status
-                    ):
+                    elif current_section == "claimed" or "CLAIMED" in row_status or "IN_PROGRESS" in row_status:
                         claimed.add(item_id)
                     elif current_section == "completed" or "COMPLETED" in row_status:
                         completed.add(item_id)
@@ -114,9 +106,7 @@ def parse_work_stream_md(work_stream_path: Path) -> dict[str, Any]:
     return {"backlog": backlog, "claimed": claimed, "completed": completed}
 
 
-def check_dependencies_satisfied(
-    item: dict[str, Any], completed: set[str], claimed: set[str]
-) -> bool:
+def check_dependencies_satisfied(item: dict[str, Any], completed: set[str], claimed: set[str]) -> bool:
     """Check if all dependencies for an item are satisfied (completed or claimed)."""
     depends = item.get("depends", [])
     if not depends:
@@ -145,16 +135,12 @@ def priority_sort_key(priority: str) -> int:
         try:
             return int(priority[1:])
         except ValueError:
-            _log.debug(
-                "Invalid priority '%s'; defaulting sort priority to 999.", priority
-            )
+            _log.debug("Invalid priority '%s'; defaulting sort priority to 999.", priority)
             return 999
     return 999
 
 
-def collect_work_stream_items(
-    work_stream_path: Path, limit: int
-) -> tuple[list[dict[str, Any]], list[str]]:
+def collect_work_stream_items(work_stream_path: Path, limit: int) -> tuple[list[dict[str, Any]], list[str]]:
     """Collect available items from WORK_STREAM.md. Returns (items, sources_checked)."""
     if not work_stream_path.exists():
         return [], []
@@ -187,9 +173,7 @@ def collect_work_stream_items(
     return items, ["WORK_STREAM.md"]
 
 
-def collect_queued_items(
-    settings: Any, limit: int
-) -> tuple[list[dict[str, Any]], list[str]]:
+def collect_queued_items(settings: Any, limit: int) -> tuple[list[dict[str, Any]], list[str]]:
     """Collect defers and other queued work from PromptQueue, EscalationQueue, DeferralQueue, BacklogManager."""
     items: list[dict[str, Any]] = []
     sources: list[str] = []
@@ -200,9 +184,7 @@ def collect_queued_items(
 
         pq = PromptQueue(session_dir)
         all_items = pq.list_all(include_done=False, include_expired=True, limit=limit)
-        pending_items = [
-            (it["id"], it) for it in all_items if it.get("status") == "pending"
-        ]
+        pending_items = [(it["id"], it) for it in all_items if it.get("status") == "pending"]
         for queue_item_id, p in pending_items:
             prompt = p.get("prompt", "")
             project = p.get("project", "")
@@ -289,10 +271,7 @@ def collect_queued_items(
                                 "_sort_order": 2,
                             }
                         )
-                        if (
-                            len([i for i in items if i.get("source") == "DEFERRAL"])
-                            >= limit
-                        ):
+                        if len([i for i in items if i.get("source") == "DEFERRAL"]) >= limit:
                             break
                     except Exception:
                         continue

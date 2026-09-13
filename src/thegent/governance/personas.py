@@ -23,9 +23,7 @@ class PersonaManager:
     """Manages role-based constraints for operator personas."""
 
     def __init__(self, agents_dir: Path | None = None) -> None:
-        self.agents_dir = agents_dir or (
-            Path(__file__).parent.parent.parent.parent / "agents"
-        )
+        self.agents_dir = agents_dir or (Path(__file__).parent.parent.parent.parent / "agents")
         self._personas = {
             "operator": {"max_lane": "standard", "can_override": False},
             "incident_commander": {"max_lane": "critical", "can_override": True},

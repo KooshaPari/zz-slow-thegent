@@ -7,30 +7,22 @@ import pytest
 from thegent.protocols import jsonrpc_agent_server as server
 
 
-def test_wl11070_extract_turn_submit_response_approval_id_returns_none_for_absent_payload() -> (
-    None
-):
+def test_wl11070_extract_turn_submit_response_approval_id_returns_none_for_absent_payload() -> None:
     # @trace WL-11070
     assert server._extract_turn_submit_response_approval_id(None) is None
 
 
-def test_wl11071_extract_turn_submit_response_approval_status_returns_none_for_absent_payload() -> (
-    None
-):
+def test_wl11071_extract_turn_submit_response_approval_status_returns_none_for_absent_payload() -> None:
     # @trace WL-11071
     assert server._extract_turn_submit_response_approval_status(None) is None
 
 
-def test_wl11072_extract_turn_submit_response_approval_diff_returns_none_for_absent_payload() -> (
-    None
-):
+def test_wl11072_extract_turn_submit_response_approval_diff_returns_none_for_absent_payload() -> None:
     # @trace WL-11072
     assert server._extract_turn_submit_response_approval_diff(None) is None
 
 
-def test_wl11073_resolve_turn_submit_response_approval_fields_returns_none_tuple_for_absent_payload() -> (
-    None
-):
+def test_wl11073_resolve_turn_submit_response_approval_fields_returns_none_tuple_for_absent_payload() -> None:
     # @trace WL-11073
     assert server._resolve_turn_submit_response_approval_fields(None) == (
         None,
@@ -39,29 +31,19 @@ def test_wl11073_resolve_turn_submit_response_approval_fields_returns_none_tuple
     )
 
 
-def test_wl11074_extract_turn_submit_response_request_id_accepts_string_when_required() -> (
-    None
-):
+def test_wl11074_extract_turn_submit_response_request_id_accepts_string_when_required() -> None:
     # @trace WL-11074
-    phase = server._build_turn_submit_response_phase(
-        True, "req-11074", {"id": "turn-1"}, None
-    )
+    phase = server._build_turn_submit_response_phase(True, "req-11074", {"id": "turn-1"}, None)
     assert server._extract_turn_submit_response_request_id(phase, True) == "req-11074"
 
 
-def test_wl11075_extract_turn_submit_response_request_id_accepts_integer_when_required() -> (
-    None
-):
+def test_wl11075_extract_turn_submit_response_request_id_accepts_integer_when_required() -> None:
     # @trace WL-11075
-    phase = server._build_turn_submit_response_phase(
-        True, 11075, {"id": "turn-1"}, None
-    )
+    phase = server._build_turn_submit_response_phase(True, 11075, {"id": "turn-1"}, None)
     assert server._extract_turn_submit_response_request_id(phase, True) == 11075
 
 
-def test_wl11076_build_turn_submit_success_response_returns_none_for_notification_path() -> (
-    None
-):
+def test_wl11076_build_turn_submit_success_response_returns_none_for_notification_path() -> None:
     # @trace WL-11076
     response = server._build_turn_submit_success_response(
         False,
@@ -79,19 +61,13 @@ def test_wl11076_build_turn_submit_success_response_returns_none_for_notificatio
     assert response is None
 
 
-def test_wl11077_resolve_turn_submit_response_target_rejects_missing_request_has_id() -> (
-    None
-):
+def test_wl11077_resolve_turn_submit_response_target_rejects_missing_request_has_id() -> None:
     # @trace WL-11077
     with pytest.raises(ValueError, match="Turn submit response target unresolved"):
-        server._resolve_turn_submit_response_target(
-            {"request_id": "req-11077", "turn": {"id": "turn-1"}}
-        )
+        server._resolve_turn_submit_response_target({"request_id": "req-11077", "turn": {"id": "turn-1"}})
 
 
-def test_wl11078_build_turn_submit_response_resolution_phase_rejects_missing_turn() -> (
-    None
-):
+def test_wl11078_build_turn_submit_response_resolution_phase_rejects_missing_turn() -> None:
     # @trace WL-11078
     with pytest.raises(ValueError, match="Turn submit response target unresolved"):
         server._build_turn_submit_response_resolution_phase(

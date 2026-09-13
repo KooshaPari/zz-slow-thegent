@@ -14,9 +14,7 @@ def test_wl125_resume_wrapper_delegates_with_reprompt_callback(monkeypatch) -> N
         forwarded["send_result"] = (ok, message)
         return {"delegated": True}
 
-    def _fake_session_send_impl(
-        session_id: str, message: str, msg_type: str = "reprompt"
-    ):
+    def _fake_session_send_impl(session_id: str, message: str, msg_type: str = "reprompt"):
         send_calls["session_id"] = session_id
         send_calls["message"] = message
         send_calls["msg_type"] = msg_type
@@ -26,9 +24,7 @@ def test_wl125_resume_wrapper_delegates_with_reprompt_callback(monkeypatch) -> N
         "thegent.cli.commands.impl.run_post_surface_helpers.resume_impl",
         _fake_resume_impl,
     )
-    monkeypatch.setattr(
-        "thegent.cli.commands.impl.session_send_impl", _fake_session_send_impl
-    )
+    monkeypatch.setattr("thegent.cli.commands.impl.session_send_impl", _fake_session_send_impl)
 
     result = impl.resume_impl(session_id="s-1", prompt="continue", skills=["alpha"])
 
@@ -55,9 +51,7 @@ def test_wl125_run_post_surface_list_agents_functional_backend_mapping(
         "list_agent_names",
         lambda: ["cursor-agent", "codex", "custom"],
     )
-    monkeypatch.setattr(
-        run_post_surface_helpers, "AGENT_LABELS", {"cursor-agent": "cursor"}
-    )
+    monkeypatch.setattr(run_post_surface_helpers, "AGENT_LABELS", {"cursor-agent": "cursor"})
 
     result = run_post_surface_helpers.list_agents_impl()
 

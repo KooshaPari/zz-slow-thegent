@@ -108,15 +108,9 @@ class TestSessionAgentRegistry:
         """Test active agent counting."""
         session = SessionAgentRegistry(session_cap=10)
 
-        session.agents["a1"] = HierarchicalAgent(
-            agent_id="a1", session_id="s1", state=AgentLifecycleState.RUNNING
-        )
-        session.agents["a2"] = HierarchicalAgent(
-            agent_id="a2", session_id="s1", state=AgentLifecycleState.COMPLETED
-        )
-        session.agents["a3"] = HierarchicalAgent(
-            agent_id="a3", session_id="s1", state=AgentLifecycleState.PRUNED
-        )
+        session.agents["a1"] = HierarchicalAgent(agent_id="a1", session_id="s1", state=AgentLifecycleState.RUNNING)
+        session.agents["a2"] = HierarchicalAgent(agent_id="a2", session_id="s1", state=AgentLifecycleState.COMPLETED)
+        session.agents["a3"] = HierarchicalAgent(agent_id="a3", session_id="s1", state=AgentLifecycleState.PRUNED)
 
         assert session.active_count() == 2  # RUNNING + COMPLETED
         assert session.running_count() == 1
@@ -272,18 +266,12 @@ class TestHierarchicalAgentRegistry:
         root = HierarchicalAgent(agent_id="root", session_id="s1", depth=0)
         registry.register_agent(root)
 
-        child1 = HierarchicalAgent(
-            agent_id="child1", session_id="s1", parent_id="root", depth=1
-        )
-        child2 = HierarchicalAgent(
-            agent_id="child2", session_id="s1", parent_id="root", depth=1
-        )
+        child1 = HierarchicalAgent(agent_id="child1", session_id="s1", parent_id="root", depth=1)
+        child2 = HierarchicalAgent(agent_id="child2", session_id="s1", parent_id="root", depth=1)
         registry.register_agent(child1)
         registry.register_agent(child2)
 
-        grandchild = HierarchicalAgent(
-            agent_id="grandchild", session_id="s1", parent_id="child1", depth=2
-        )
+        grandchild = HierarchicalAgent(agent_id="grandchild", session_id="s1", parent_id="child1", depth=2)
         registry.register_agent(grandchild)
 
         descendants = registry.get_descendants("root")
@@ -319,9 +307,7 @@ class TestHierarchicalDispatcher:
 
         result = await dispatcher.dispatch_hierarchical(request)
 
-        assert (
-            result.state == AgentLifecycleState.PENDING
-        )  # Dispatch creates agent in PENDING
+        assert result.state == AgentLifecycleState.PENDING  # Dispatch creates agent in PENDING
         assert result.depth == 0
         assert result.task_prompt == "Test task"
         assert registry.total_active_count() == 1
@@ -375,12 +361,8 @@ class TestHierarchicalDispatcher:
     def test_get_agent_tree(self, registry):
         """Test getting agent tree structure."""
         root = HierarchicalAgent(agent_id="root", session_id="s1", depth=0)
-        child1 = HierarchicalAgent(
-            agent_id="child1", session_id="s1", parent_id="root", depth=1
-        )
-        child2 = HierarchicalAgent(
-            agent_id="child2", session_id="s1", parent_id="root", depth=1
-        )
+        child1 = HierarchicalAgent(agent_id="child1", session_id="s1", parent_id="root", depth=1)
+        child2 = HierarchicalAgent(agent_id="child2", session_id="s1", parent_id="root", depth=1)
         registry.register_agent(root)
         registry.register_agent(child1)
         registry.register_agent(child2)

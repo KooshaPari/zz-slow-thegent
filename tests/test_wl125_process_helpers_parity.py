@@ -10,9 +10,7 @@ def test_wl125_is_pid_running_wrapper_delegates(monkeypatch) -> None:
         captured["pid"] = pid
         return True
 
-    monkeypatch.setattr(
-        "thegent.cli.commands.impl.process_helpers.is_pid_running", _fake
-    )
+    monkeypatch.setattr("thegent.cli.commands.impl.process_helpers.is_pid_running", _fake)
 
     running = impl._is_pid_running(4242)
 

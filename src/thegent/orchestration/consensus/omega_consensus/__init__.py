@@ -64,9 +64,7 @@ class OmegaConsensus:
 
     def __init__(self, swarm_size: int, threshold: float = 0.5) -> None:
         if not isinstance(swarm_size, int) or swarm_size <= 0:
-            raise ValueError(
-                f"swarm_size must be a positive integer, got {swarm_size!r}"
-            )
+            raise ValueError(f"swarm_size must be a positive integer, got {swarm_size!r}")
         if threshold < 0.0 or threshold > 1.0:
             raise ValueError(f"threshold must be in [0, 1], got {threshold!r}")
         self.swarm_size = swarm_size
@@ -96,9 +94,7 @@ class OmegaConsensus:
 
     # -- voting --------------------------------------------------------------
 
-    def cast_vote(
-        self, proposal_id: str, voter_id: str, vote: bool, signature: str
-    ) -> bool:
+    def cast_vote(self, proposal_id: str, voter_id: str, vote: bool, signature: str) -> bool:
         """Record ``voter_id``'s ``vote`` on ``proposal_id``.
 
         Returns ``False`` for unknown ``proposal_id``.  Duplicate votes

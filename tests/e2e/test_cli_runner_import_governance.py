@@ -24,9 +24,7 @@ HELPER_TO_REQUIRED_MODULE = {
 
 def _target_test_files() -> list[Path]:
     current_file = Path(__file__).name
-    return sorted(
-        path for path in E2E_TEST_DIR.glob("test_*.py") if path.name != current_file
-    )
+    return sorted(path for path in E2E_TEST_DIR.glob("test_*.py") if path.name != current_file)
 
 
 def _parse_module(path: Path) -> ast.Module:
@@ -80,13 +78,11 @@ def test_no_local_helper_function_redefinitions() -> None:
         local_redefinitions = sorted(
             node.name
             for node in ast.walk(module)
-            if isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef))
-            and node.name in FORBIDDEN_LOCAL_HELPERS
+            if isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef)) and node.name in FORBIDDEN_LOCAL_HELPERS
         )
 
-        assert not local_redefinitions, (
-            f"{path} defines forbidden local helper functions: "
-            + ", ".join(local_redefinitions)
+        assert not local_redefinitions, f"{path} defines forbidden local helper functions: " + ", ".join(
+            local_redefinitions
         )
 
 
@@ -102,9 +98,8 @@ def test_helper_usage_requires_shared_helper_module_import() -> None:
             if required_module not in imported_modules:
                 missing_imports.append(f"{helper_name} -> {required_module}")
 
-        assert not missing_imports, (
-            f"{path} uses helpers without required shared module import: "
-            + ", ".join(missing_imports)
+        assert not missing_imports, f"{path} uses helpers without required shared module import: " + ", ".join(
+            missing_imports
         )
 
 
@@ -121,13 +116,10 @@ def test_helper_symbols_are_imported_only_from_required_modules() -> None:
                     continue
                 required_module = HELPER_TO_REQUIRED_MODULE[alias.name]
                 if node.module != required_module:
-                    invalid_helper_imports.append(
-                        f"{alias.name} from {node.module} (expected {required_module})"
-                    )
+                    invalid_helper_imports.append(f"{alias.name} from {node.module} (expected {required_module})")
 
-        assert not invalid_helper_imports, (
-            f"{path} imports helper symbols from non-governed modules: "
-            + ", ".join(sorted(invalid_helper_imports))
+        assert not invalid_helper_imports, f"{path} imports helper symbols from non-governed modules: " + ", ".join(
+            sorted(invalid_helper_imports)
         )
 
 
@@ -172,7 +164,6 @@ def test_helper_names_are_not_shadowed_by_local_bindings() -> None:
 
             shadowed_names.update(bound_names & FORBIDDEN_LOCAL_HELPERS)
 
-        assert not shadowed_names, (
-            f"{path} shadows governed helper names with local bindings: "
-            + ", ".join(sorted(shadowed_names))
+        assert not shadowed_names, f"{path} shadows governed helper names with local bindings: " + ", ".join(
+            sorted(shadowed_names)
         )

@@ -52,9 +52,7 @@ class TestGetLitellmRouterCaching:
             for _ in range(10):
                 get_litellm_router("latency-based-routing")
 
-        assert mock_build.call_count == 1, (
-            "Builder must not be called more than once within TTL"
-        )
+        assert mock_build.call_count == 1, "Builder must not be called more than once within TTL"
 
     def test_different_policies_get_separate_cache_entries(self):
         """# @trace WL-070 — distinct policy strings produce distinct cached Router instances."""
@@ -83,9 +81,7 @@ class TestGetLitellmRouterCaching:
         assert r2 is router_b
         assert r3 is router_a
         assert r4 is router_b
-        assert call_count["n"] == 2, (
-            "Builder should be called once per unique policy, not more"
-        )
+        assert call_count["n"] == 2, "Builder should be called once per unique policy, not more"
 
     def test_cache_expiry_triggers_rebuild(self):
         """# @trace WL-070 — after TTL expires the builder is invoked again."""
@@ -110,9 +106,7 @@ class TestGetLitellmRouterCaching:
 
         assert r1 is first
         assert r2 is second
-        assert mock_build.call_count == 2, (
-            "Builder must be called again after cache is cleared/expired"
-        )
+        assert mock_build.call_count == 2, "Builder must be called again after cache is cleared/expired"
 
     def test_thread_safety_single_build_under_concurrency(self):
         """# @trace WL-070 — concurrent goroutines only trigger one build per policy."""
@@ -142,12 +136,8 @@ class TestGetLitellmRouterCaching:
 
         # All threads must receive the same cached instance
         first_result = results[0]
-        assert all(r is first_result for r in results), (
-            "All threads must get the same cached Router"
-        )
-        assert build_count["n"] == 1, (
-            "Builder must be called exactly once despite concurrent access"
-        )
+        assert all(r is first_result for r in results), "All threads must get the same cached Router"
+        assert build_count["n"] == 1, "Builder must be called exactly once despite concurrent access"
 
     def test_build_litellm_router_private_function_exists(self):
         """# @trace WL-070 — _build_litellm_router is a callable private function."""

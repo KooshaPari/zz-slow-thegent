@@ -253,8 +253,7 @@ class ConstraintValidator:
         estimator = CostEstimator()
         actual_est_cost = estimator.estimate(
             model=model,
-            prompt_length=task_metadata.signals.get("word_count", 0)
-            * 5,  # proxy for chars
+            prompt_length=task_metadata.signals.get("word_count", 0) * 5,  # proxy for chars
         )
 
         max_cost = {
@@ -265,9 +264,7 @@ class ConstraintValidator:
         }.get(category, 1.0)
 
         if actual_est_cost > max_cost:
-            violations.append(
-                f"Cost: Estimated ${actual_est_cost:.3f} exceeds max ${max_cost:.3f} for {category}"
-            )
+            violations.append(f"Cost: Estimated ${actual_est_cost:.3f} exceeds max ${max_cost:.3f} for {category}")
 
         # 2. Cumulative budget check (if registry provided)
         if registry:
@@ -277,9 +274,7 @@ class ConstraintValidator:
             mtd_total = agg.get_mtd_total()
             cost_budget = float(getattr(self.config, "cost_budget_mtd", 100.0))
             if mtd_total >= cost_budget:
-                violations.append(
-                    f"Budget: Monthly total ${mtd_total:.2f} exceeds budget ${cost_budget:.2f}"
-                )
+                violations.append(f"Budget: Monthly total ${mtd_total:.2f} exceeds budget ${cost_budget:.2f}")
 
         # 3. Speed SLA check
         sla = {
@@ -403,9 +398,7 @@ class TaskRouter:
         char_scores = scores.get(characteristic, {})
         if char_scores:
             # Sort providers by score desc
-            sorted_providers = sorted(
-                char_scores.items(), key=lambda x: x[1], reverse=True
-            )
+            sorted_providers = sorted(char_scores.items(), key=lambda x: x[1], reverse=True)
             # Map top providers back to known model IDs (simplified)
             mapping = {
                 "codex": "gpt-5.3-codex",

@@ -59,9 +59,7 @@ class TestClassifyTask:
 class TestSelectModel:
     def test_select_model_for_coding(self) -> None:
         """Coding task selects claude-opus-4-6 as priority-1 model."""
-        classification = TaskClassification(
-            task_type="coding", confidence=0.9, signals=["implement"]
-        )
+        classification = TaskClassification(task_type="coding", confidence=0.9, signals=["implement"])
         result = select_model(classification)
         assert result is not None
         assert result.model == "claude-opus-4-6"
@@ -69,37 +67,27 @@ class TestSelectModel:
 
     def test_select_model_available_filter(self) -> None:
         """available_models filter restricts returned model."""
-        classification = TaskClassification(
-            task_type="coding", confidence=0.8, signals=["code"]
-        )
+        classification = TaskClassification(task_type="coding", confidence=0.8, signals=["code"])
         # Exclude claude-opus-4-6 (priority 1), gpt-4o should be next for coding
-        result = select_model(
-            classification, available_models=["gpt-4o", "gpt-4o-mini"]
-        )
+        result = select_model(classification, available_models=["gpt-4o", "gpt-4o-mini"])
         assert result is not None
         assert result.model == "gpt-4o"
 
     def test_select_model_no_match_returns_none(self) -> None:
         """Empty preferences list -> None."""
-        classification = TaskClassification(
-            task_type="coding", confidence=0.8, signals=[]
-        )
+        classification = TaskClassification(task_type="coding", confidence=0.8, signals=[])
         result = select_model(classification, preferences=[])
         assert result is None
 
     def test_select_model_no_available_match_returns_none(self) -> None:
         """available_models with no overlap -> None."""
-        classification = TaskClassification(
-            task_type="coding", confidence=0.8, signals=[]
-        )
+        classification = TaskClassification(task_type="coding", confidence=0.8, signals=[])
         result = select_model(classification, available_models=["some-unknown-model"])
         assert result is None
 
     def test_select_model_general_task(self) -> None:
         """General task selects a model that covers 'general' task type."""
-        classification = TaskClassification(
-            task_type="general", confidence=0.5, signals=[]
-        )
+        classification = TaskClassification(task_type="general", confidence=0.5, signals=[])
         result = select_model(classification)
         assert result is not None
         assert "general" in result.task_types

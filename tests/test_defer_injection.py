@@ -47,9 +47,7 @@ class TestExtractDeferredTasks:
     def test_multiple_defer_lines(self) -> None:
         """Multiple $defer lines are all extracted in order."""
         # @trace WL-038
-        output = (
-            "$defer Task one\nintermediate line\n$defer Task two\n$defer Task three"
-        )
+        output = "$defer Task one\nintermediate line\n$defer Task two\n$defer Task three"
         tasks = extract_deferred_tasks(output)
         assert tasks == ["Task one", "Task two", "Task three"]
 
@@ -218,9 +216,7 @@ class TestProcessOutputForDeferrals:
         """process_output_for_deferrals returns [] when no $defer lines."""
         # @trace WL-038
         queue_path = tmp_path / "prompt_queue.jsonl"
-        tasks = process_output_for_deferrals(
-            "no directives here", queue_path, project="proj"
-        )
+        tasks = process_output_for_deferrals("no directives here", queue_path, project="proj")
         assert tasks == []
         assert not queue_path.exists() or queue_path.read_text().strip() == ""
 
@@ -260,9 +256,7 @@ class TestAgentRunnerProcessDeferrals:
             mock_settings = MagicMock()
             mock_settings.session_dir = tmp_path
             mock_settings_cls.return_value = mock_settings
-            returned = runner._process_output_deferrals(
-                result, cwd=tmp_path, project="p"
-            )
+            returned = runner._process_output_deferrals(result, cwd=tmp_path, project="p")
         assert returned is result
 
     def test_injects_defer_from_stdout(self, tmp_path: Path) -> None:
@@ -345,14 +339,10 @@ class TestCodexProxyRunnerDeferral:
 
         runner = CodexProxyRunner("claude")
         fake_result = RunResult(exit_code=0, stdout="$defer injected", stderr="")
-        with patch.object(
-            runner, "_process_output_deferrals", return_value=fake_result
-        ):
+        with patch.object(runner, "_process_output_deferrals", return_value=fake_result):
             # We need run() to reach the _process_output_deferrals call.
             # Mock LiteLLM router path to avoid subprocess invocations.
-            with patch.object(
-                runner, "_run_via_litellm_router", return_value=fake_result
-            ):
+            with patch.object(runner, "_run_via_litellm_router", return_value=fake_result):
                 runner._use_litellm_router = True
                 runner.run(
                     prompt="do work",
@@ -393,9 +383,7 @@ class TestCursorApiRunnerDeferral:
 
         runner = CursorApiRunner()
         captured_result = RunResult(exit_code=0, stdout="$defer cursor task", stderr="")
-        with patch.object(
-            runner, "_process_output_deferrals", return_value=captured_result
-        ):
+        with patch.object(runner, "_process_output_deferrals", return_value=captured_result):
             with patch(
                 "thegent.agents.cursor_api_runner._is_cursor_api_reachable",
                 return_value=False,
@@ -439,9 +427,7 @@ class TestDirectAgentRunnerDeferral:
         runner = DirectAgentRunner("claude")
         captured_result = RunResult(exit_code=0, stdout="$defer direct task", stderr="")
 
-        with patch.object(
-            runner, "_process_output_deferrals", return_value=captured_result
-        ) as mock_pd:
+        with patch.object(runner, "_process_output_deferrals", return_value=captured_result) as mock_pd:
             with patch.object(runner, "_run_capture", return_value=captured_result):
                 with patch(
                     "thegent.agents.direct_agents._wrap_with_harness",
@@ -453,16 +439,10 @@ class TestDirectAgentRunnerDeferral:
                     ):
                         # Bypass LiteLLM router
                         runner._use_litellm_router = False
-                        with patch(
-                            "thegent.observability.otel_instrumentation.instrument_genai_call"
-                        ) as mock_instr:
+                        with patch("thegent.observability.otel_instrumentation.instrument_genai_call") as mock_instr:
                             mock_span = MagicMock()
-                            mock_instr.return_value.__enter__ = MagicMock(
-                                return_value=mock_span
-                            )
-                            mock_instr.return_value.__exit__ = MagicMock(
-                                return_value=False
-                            )
+                            mock_instr.return_value.__enter__ = MagicMock(return_value=mock_span)
+                            mock_instr.return_value.__exit__ = MagicMock(return_value=False)
                             result = runner.run(
                                 prompt="do work",
                                 cwd=tmp_path,

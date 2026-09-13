@@ -106,9 +106,7 @@ class TestA2AMessage:
             message_type="request",
             payload={"question": "What is 2+2?"},
         )
-        response = create_response(
-            request, source_agent="agent-B", payload={"answer": 4}
-        )
+        response = create_response(request, source_agent="agent-B", payload={"answer": 4})
         assert response.correlation_id == request.id
         assert response.target_agent == request.source_agent
         assert response.source_agent == "agent-B"
@@ -124,9 +122,7 @@ class TestA2AMessage:
         ok_response = create_response(request, source_agent="agent-B", payload={})
         assert ok_response.message_type == "response"
 
-        err_response = create_response(
-            request, source_agent="agent-B", payload={}, error="something went wrong"
-        )
+        err_response = create_response(request, source_agent="agent-B", payload={}, error="something went wrong")
         assert err_response.message_type == "error"
         assert "error" in err_response.payload
 

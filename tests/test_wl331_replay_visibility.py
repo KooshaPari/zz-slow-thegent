@@ -18,9 +18,7 @@ from thegent.sync.dead_letter_queue import (
 
 
 def _seed_dead_letter_queue(tmp_path) -> None:
-    queue_path = (
-        tmp_path / "docs" / "reference" / "workstream_remote_writes_dead_letter.jsonl"
-    )
+    queue_path = tmp_path / "docs" / "reference" / "workstream_remote_writes_dead_letter.jsonl"
     queue = RemoteWriteDeadLetterQueue(queue_path)
     now = datetime.now(UTC)
 

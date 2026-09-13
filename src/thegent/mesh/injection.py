@@ -38,9 +38,7 @@ class ShellInjection:
                 check=True,
             )
             time.sleep(wait)
-            shim_run(
-                ["tmux", "send-keys", "-t", self.session_name, "Enter"], check=True
-            )
+            shim_run(["tmux", "send-keys", "-t", self.session_name, "Enter"], check=True)
             return True
         except subprocess.CalledProcessError:
             return False
@@ -49,9 +47,7 @@ class ShellInjection:
         """Detect if agent shell is ready for input (SCLI-P9.3)."""
         try:
             # Capture last few lines of tmux session
-            output = subprocess.check_output(
-                ["tmux", "capture-pane", "-p", "-t", self.session_name], text=True
-            )
+            output = subprocess.check_output(["tmux", "capture-pane", "-p", "-t", self.session_name], text=True)
             lines = output.splitlines()
             if not lines:
                 return False

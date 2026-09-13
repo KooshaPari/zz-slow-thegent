@@ -65,9 +65,7 @@ class TeammateManager:
                             expertise.append("testing")
                         if not expertise and "security" in description.lower():
                             expertise.append("security")
-                        if (
-                            not expertise and "ui" in description.lower()
-                        ) or "ux" in description.lower():
+                        if (not expertise and "ui" in description.lower()) or "ux" in description.lower():
                             expertise.append("ui")
 
                         role = frontmatter.get("role", "teammate")
@@ -92,9 +90,7 @@ class TeammateManager:
                 return t
         return None
 
-    def delegate(
-        self, teammate_id: str, prompt: str, parent_run_id: str | None = None
-    ) -> str:
+    def delegate(self, teammate_id: str, prompt: str, parent_run_id: str | None = None) -> str:
         """Delegate a task to a teammate."""
         _log.info("Delegating to %s: %s", teammate_id, prompt)
         # WP-16002: This would spawn a new AgentRunner or call an external service

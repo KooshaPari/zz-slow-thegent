@@ -134,9 +134,7 @@ class ReflectionRollbackManager:
         """Generate stable-length snapshot IDs."""
         return uuid4().hex[: ReflectionRollbackManager._SNAPSHOT_ID_LENGTH]
 
-    def take_snapshot(
-        self, work_stream_path: Path, cycle_id: str | None = None
-    ) -> RollbackSnapshot:
+    def take_snapshot(self, work_stream_path: Path, cycle_id: str | None = None) -> RollbackSnapshot:
         """Read a work stream file, persist a snapshot, and return the in-memory snapshot."""
         content = work_stream_path.read_text(encoding="utf-8")
         snapshot = RollbackSnapshot(
@@ -176,9 +174,7 @@ class ReflectionRollbackManager:
             return
 
         for snapshot in snapshots[keep_last_n:]:
-            (self._snapshots_dir / f"{snapshot.snapshot_id}.json").unlink(
-                missing_ok=True
-            )
+            (self._snapshots_dir / f"{snapshot.snapshot_id}.json").unlink(missing_ok=True)
 
     def _load_snapshot_by_id(self, snapshot_id: str) -> RollbackSnapshot:
         """Load a snapshot by identifier and fail loudly when missing."""

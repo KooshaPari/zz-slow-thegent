@@ -43,9 +43,7 @@ def validate_extension_package(extension_dir: Path) -> list[str]:
         package = _load_package_json(package_path)
     except Exception as exc:
         return [f"{package_path}: failed to parse JSON ({exc})"]
-    scripts = (
-        package.get("scripts", {}) if isinstance(package.get("scripts"), dict) else {}
-    )
+    scripts = package.get("scripts", {}) if isinstance(package.get("scripts"), dict) else {}
 
     for key in ("name", "displayName", "description"):
         if not _is_non_empty_string(package.get(key)):
@@ -65,34 +63,22 @@ def validate_extension_package(extension_dir: Path) -> list[str]:
     else:
         main_path = extension_dir / str(main_entry)
         if not main_path.exists():
-            errors.append(
-                f"{package_path}: `main` points to missing file: {main_entry}"
-            )
+            errors.append(f"{package_path}: `main` points to missing file: {main_entry}")
 
     activation_events = package.get("activationEvents")
     if not isinstance(activation_events, list) or not activation_events:
         errors.append(f"{package_path}: `activationEvents` must be a non-empty list")
         normalized_events: set[str] = set()
     else:
-        normalized_events = {
-            str(item).strip()
-            for item in activation_events
-            if _is_non_empty_string(item)
-        }
+        normalized_events = {str(item).strip() for item in activation_events if _is_non_empty_string(item)}
         if len(normalized_events) != len(activation_events):
-            errors.append(
-                f"{package_path}: `activationEvents` entries must be unique non-empty strings"
-            )
+            errors.append(f"{package_path}: `activationEvents` entries must be unique non-empty strings")
 
     commands = (
-        ((package.get("contributes") or {}).get("commands"))
-        if isinstance(package.get("contributes"), dict)
-        else None
+        ((package.get("contributes") or {}).get("commands")) if isinstance(package.get("contributes"), dict) else None
     )
     if not isinstance(commands, list) or not commands:
-        errors.append(
-            f"{package_path}: `contributes.commands` must be a non-empty list"
-        )
+        errors.append(f"{package_path}: `contributes.commands` must be a non-empty list")
     else:
         seen_command_ids: set[str] = set()
         for index, command in enumerate(commands):
@@ -102,18 +88,12 @@ def validate_extension_package(extension_dir: Path) -> list[str]:
             command_id = command.get("command")
             title = command.get("title")
             if not _is_non_empty_string(command_id):
-                errors.append(
-                    f"{package_path}: command[{index}].command must be non-empty"
-                )
+                errors.append(f"{package_path}: command[{index}].command must be non-empty")
                 continue
             if not _is_non_empty_string(title):
-                errors.append(
-                    f"{package_path}: command[{index}].title must be non-empty"
-                )
+                errors.append(f"{package_path}: command[{index}].title must be non-empty")
             if command_id in seen_command_ids:
-                errors.append(
-                    f"{package_path}: duplicate contributes.commands command id `{command_id}`"
-                )
+                errors.append(f"{package_path}: duplicate contributes.commands command id `{command_id}`")
             else:
                 seen_command_ids.add(command_id)
             activation_name = f"onCommand:{command_id}"
@@ -129,32 +109,18 @@ def validate_extension_package(extension_dir: Path) -> list[str]:
         readme_text = readme_path.read_text(encoding="utf-8")
         run_commands = _extract_quickstart_commands(readme_text)
         if not run_commands:
-            errors.append(
-                f"{readme_path}: must include `## Run Steps` with at least one `npm run <script>` command"
-            )
+            errors.append(f"{readme_path}: must include `## Run Steps` with at least one `npm run <script>` command")
         if len(run_commands) != len(set(run_commands)):
-            errors.append(
-                f"{readme_path}: Run Steps must not repeat the same `npm run <script>` command"
-            )
+            errors.append(f"{readme_path}: Run Steps must not repeat the same `npm run <script>` command")
         run_set = set(run_commands)
         for mandatory_step in MANDATORY_RUN_STEPS:
             if mandatory_step not in run_set:
-                errors.append(
-                    f"{readme_path}: Run Steps must include `npm run {mandatory_step}`"
-                )
-        if (
-            "lint" in run_set
-            and "test" in run_set
-            and run_commands.index("lint") > run_commands.index("test")
-        ):
-            errors.append(
-                f"{readme_path}: Run Steps must list `npm run lint` before `npm run test`"
-            )
+                errors.append(f"{readme_path}: Run Steps must include `npm run {mandatory_step}`")
+        if "lint" in run_set and "test" in run_set and run_commands.index("lint") > run_commands.index("test"):
+            errors.append(f"{readme_path}: Run Steps must list `npm run lint` before `npm run test`")
         for command in run_commands:
             if command not in scripts:
-                errors.append(
-                    f"{readme_path}: references `npm run {command}` but package.json lacks scripts.{command}"
-                )
+                errors.append(f"{readme_path}: references `npm run {command}` but package.json lacks scripts.{command}")
 
     return errors
 
@@ -163,9 +129,7 @@ def build_report(extensions_root: Path) -> dict[str, Any]:
     errors: list[str] = []
     checked_extensions: list[str] = []
     extension_dirs = (
-        sorted(path for path in extensions_root.iterdir() if path.is_dir())
-        if extensions_root.exists()
-        else []
+        sorted(path for path in extensions_root.iterdir() if path.is_dir()) if extensions_root.exists() else []
     )
     if not extension_dirs:
         errors.append(f"No extension directories found in {extensions_root}")
@@ -191,9 +155,7 @@ def _parse_args(argv: list[str]) -> argparse.Namespace:
         help="Root directory containing extension packages.",
     )
     parser.add_argument("--format", choices=["text", "json"], default="text")
-    parser.add_argument(
-        "--strict", action="store_true", help="Exit non-zero if metadata checks fail."
-    )
+    parser.add_argument("--strict", action="store_true", help="Exit non-zero if metadata checks fail.")
     return parser.parse_args(argv)
 
 

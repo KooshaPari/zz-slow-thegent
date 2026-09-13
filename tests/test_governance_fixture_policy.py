@@ -20,33 +20,21 @@ def _repo_root() -> Path:
 def _validate_schema_changelog_contract(doc: dict, label: str) -> None:
     schema_version = doc.get("schema_version")
     changelog = doc.get("changelog")
-    assert isinstance(schema_version, int) and schema_version >= 1, (
-        f"{label}: invalid schema_version"
-    )
+    assert isinstance(schema_version, int) and schema_version >= 1, f"{label}: invalid schema_version"
     assert isinstance(changelog, list) and changelog, f"{label}: changelog is required"
 
     versions = [entry.get("version") for entry in changelog]
-    assert all(isinstance(v, int) and v >= 1 for v in versions), (
-        f"{label}: changelog versions must be positive ints"
-    )
-    assert versions == sorted(versions), (
-        f"{label}: changelog versions must be monotonic non-decreasing"
-    )
-    assert len(set(versions)) == len(versions), (
-        f"{label}: changelog versions must be unique"
-    )
+    assert all(isinstance(v, int) and v >= 1 for v in versions), f"{label}: changelog versions must be positive ints"
+    assert versions == sorted(versions), f"{label}: changelog versions must be monotonic non-decreasing"
+    assert len(set(versions)) == len(versions), f"{label}: changelog versions must be unique"
     assert versions[-1] == schema_version, (
         f"{label}: latest changelog version ({versions[-1]}) must equal schema_version ({schema_version})"
     )
 
     for entry in changelog:
-        assert isinstance(entry.get("note"), str) and entry["note"].strip(), (
-            f"{label}: changelog note is required"
-        )
+        assert isinstance(entry.get("note"), str) and entry["note"].strip(), f"{label}: changelog note is required"
         date = entry.get("date")
-        assert isinstance(date, str) and _DATE_RE.match(date), (
-            f"{label}: changelog date must be YYYY-MM-DD"
-        )
+        assert isinstance(date, str) and _DATE_RE.match(date), f"{label}: changelog date must be YYYY-MM-DD"
 
 
 @pytest.mark.unit

@@ -40,9 +40,7 @@ def _passing_check(name: str) -> Any:
     """Async VetterCheck mock that always passes. # @trace WL-094"""
     check = MagicMock()
     check.name = name
-    check.check = AsyncMock(
-        return_value=VetterCheckResult(check_name=name, passed=True)
-    )
+    check.check = AsyncMock(return_value=VetterCheckResult(check_name=name, passed=True))
     return check
 
 
@@ -50,9 +48,7 @@ def _failing_check(name: str, message: str = "failed") -> Any:
     """Async VetterCheck mock that always fails. # @trace WL-094"""
     check = MagicMock()
     check.name = name
-    check.check = AsyncMock(
-        return_value=VetterCheckResult(check_name=name, passed=False, message=message)
-    )
+    check.check = AsyncMock(return_value=VetterCheckResult(check_name=name, passed=False, message=message))
     return check
 
 
@@ -784,9 +780,7 @@ async def test_evidence_appended_for_revision_requested_verdict(tmp_path: Path) 
             False,
         ),
         (
-            VetterPolicy(
-                checks=["esc"], escalate_on=["esc"], escalation_lane="critical"
-            ),
+            VetterPolicy(checks=["esc"], escalate_on=["esc"], escalation_lane="critical"),
             {"esc": _failing_check("esc")},
             {"run_id": "payload-escalated", "session_id": "sess-v", "owner": "alice"},
             VetterVerdict.ESCALATED,
@@ -826,9 +820,7 @@ async def test_evidence_payload_contains_verdict_and_duration_for_all_verdicts(
         hitl_workflow=hitl,
     )
 
-    result = await orch.evaluate(
-        result=MagicMock(output="diff"), policy=policy, run_context=run_context
-    )
+    result = await orch.evaluate(result=MagicMock(output="diff"), policy=policy, run_context=run_context)
     assert result.verdict == expected_verdict
 
     record = store.list_all()[0]

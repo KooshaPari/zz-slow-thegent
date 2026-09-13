@@ -38,8 +38,7 @@ class TaskExecutor:
         self,
         max_retries: int = 2,
         timeout_seconds: int = 300,
-        agent_executor: Callable[[str, str, dict[str, Any]], ExecutionResult]
-        | None = None,
+        agent_executor: Callable[[str, str, dict[str, Any]], ExecutionResult] | None = None,
     ) -> None:
         """
         Initialize TaskExecutor.
@@ -89,9 +88,7 @@ class TaskExecutor:
 
         return result
 
-    def get_task_input(
-        self, task: Task, completed_tasks: dict[str, ExecutionResult]
-    ) -> dict[str, Any]:
+    def get_task_input(self, task: Task, completed_tasks: dict[str, ExecutionResult]) -> dict[str, Any]:
         """
         Get input for task based on dependency results.
 
@@ -289,9 +286,7 @@ class HierarchicalAssigner(AgentAssigner):
     def assign(self, tasks: list[Task], agents: list[CrewAgent]) -> dict[str, str]:
         """Assign priority tasks to managers/leads, rest to workers."""
         # Sort agents: managers/leads first
-        managers = [
-            a for a in agents if "manager" in a.role.lower() or "lead" in a.role.lower()
-        ]
+        managers = [a for a in agents if "manager" in a.role.lower() or "lead" in a.role.lower()]
         workers = [a for a in agents if a not in managers]
 
         # If no managers, use all agents as workers

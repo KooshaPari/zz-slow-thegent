@@ -113,9 +113,7 @@ class IdempotencyCache:
                 "records": [record.to_dict() for record in self._records.values()],
             }
             self.cache_path.write_text(
-                orjson.dumps(
-                    data, option=orjson.OPT_INDENT_2 | orjson.OPT_SORT_KEYS
-                ).decode("utf-8"),
+                orjson.dumps(data, option=orjson.OPT_INDENT_2 | orjson.OPT_SORT_KEYS).decode("utf-8"),
                 encoding="utf-8",
             )
         except Exception as e:
@@ -175,9 +173,7 @@ class IdempotencyCache:
         self._records[operation_id] = record
         self._index_record(record)
         self._save()
-        logger.debug(
-            "Recorded operation %s for %s via %s", operation_id, wl_id, connector
-        )
+        logger.debug("Recorded operation %s for %s via %s", operation_id, wl_id, connector)
 
     def invalidate(self, operation_id: str) -> None:
         """Remove a record from the cache.

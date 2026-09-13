@@ -16,18 +16,12 @@ def test_check_boundaries_passes() -> None:
         text=True,
         cwd=script.parent.parent,
     )
-    assert result.returncode == 0, (
-        f"Boundary check failed:\n{result.stdout}\n{result.stderr}"
-    )
+    assert result.returncode == 0, f"Boundary check failed:\n{result.stdout}\n{result.stderr}"
 
 
 def test_contract_authority_sync() -> None:
     """Verify that docset/contracts/CONTRACT_AUTHORITY.md is in sync with implementation (XK3)."""
-    script = (
-        Path(__file__).resolve().parent.parent
-        / "scripts"
-        / "verify_contract_authority.py"
-    )
+    script = Path(__file__).resolve().parent.parent / "scripts" / "verify_contract_authority.py"
     # Ensure src is in PYTHONPATH
     import os
 
@@ -43,6 +37,4 @@ def test_contract_authority_sync() -> None:
         cwd=script.parent.parent,
         env=env,
     )
-    assert result.returncode == 0, (
-        f"Contract authority sync check failed:\n{result.stdout}\n{result.stderr}"
-    )
+    assert result.returncode == 0, f"Contract authority sync check failed:\n{result.stdout}\n{result.stderr}"

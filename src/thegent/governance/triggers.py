@@ -128,9 +128,7 @@ class WatchdogTrigger:
 
         if self._use_watchfiles:
             # Use watchfiles (fast, Rust-based)
-            self._watch_thread = threading.Thread(
-                target=self._watchfiles_loop, daemon=True
-            )
+            self._watch_thread = threading.Thread(target=self._watchfiles_loop, daemon=True)
             self._watch_thread.start()
         elif WATCHDOG_AVAILABLE:
             # Fallback to watchdog
@@ -147,9 +145,7 @@ class WatchdogTrigger:
                     _log.debug("Watching: %s", path)
             self._observer.start()
         else:
-            raise ImportError(
-                "No file watcher available. Install watchfiles or watchdog"
-            )
+            raise ImportError("No file watcher available. Install watchfiles or watchdog")
 
     def stop(self) -> None:
         """Stop the watchdog trigger."""
@@ -606,47 +602,29 @@ def main(
 @app.callback(invoke_without_command=True)
 def cli(
     mode: str = typer.Option("manual", "--mode", help="Trigger mode"),
-    interval: int = typer.Option(
-        300, "--interval", help="Interval in seconds for timer mode"
-    ),
+    interval: int = typer.Option(300, "--interval", help="Interval in seconds for timer mode"),
     debounce: int = typer.Option(
         DEFAULT_DEBOUNCE_SECONDS,
         "--debounce",
         help="Debounce seconds for watchdog mode",
     ),
-    max_cycles: int | None = typer.Option(
-        None, "--max-cycles", help="Maximum cycles to run (timer/watchdog only)"
-    ),
-    force: bool = typer.Option(
-        False, "--force", help="Run even if health >= threshold"
-    ),
-    watch: list[str] | None = typer.Option(
-        None, "--watch", help="Paths to watch (repeat --watch for multiple paths)"
-    ),
-    project_dir: Path = typer.Option(
-        Path.cwd(), "--project-dir", help="Project directory"
-    ),
-    health_targets: Path | None = typer.Option(
-        None, "--health-targets", help="Path to health-targets.json"
-    ),
+    max_cycles: int | None = typer.Option(None, "--max-cycles", help="Maximum cycles to run (timer/watchdog only)"),
+    force: bool = typer.Option(False, "--force", help="Run even if health >= threshold"),
+    watch: list[str] | None = typer.Option(None, "--watch", help="Paths to watch (repeat --watch for multiple paths)"),
+    project_dir: Path = typer.Option(Path.cwd(), "--project-dir", help="Project directory"),
+    health_targets: Path | None = typer.Option(None, "--health-targets", help="Path to health-targets.json"),
     threshold: float = typer.Option(90.0, "--threshold", help="Health threshold"),
-    lifecycle_mode: str = typer.Option(
-        "soft", "--lifecycle-mode", help="Lifecycle execution mode: soft or hard"
-    ),
+    lifecycle_mode: str = typer.Option("soft", "--lifecycle-mode", help="Lifecycle execution mode: soft or hard"),
     watch_health: float = typer.Option(
         90.0,
         "--watch-health",
         help="Trigger cycle when health drops below this threshold",
     ),
-    watch_health_interval: int = typer.Option(
-        60, "--watch-health-interval", help="Health check interval in seconds"
-    ),
+    watch_health_interval: int = typer.Option(60, "--watch-health-interval", help="Health check interval in seconds"),
 ) -> None:
     """Run AgilePlus trigger modes."""
     if mode not in {"watchdog", "timer", "manual", "watch-health"}:
-        raise typer.BadParameter(
-            "mode must be one of: watchdog, timer, manual, watch-health"
-        )
+        raise typer.BadParameter("mode must be one of: watchdog, timer, manual, watch-health")
     if lifecycle_mode not in {"soft", "hard"}:
         raise typer.BadParameter("lifecycle-mode must be one of: soft, hard")
 

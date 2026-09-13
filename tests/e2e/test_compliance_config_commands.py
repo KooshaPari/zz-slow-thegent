@@ -11,9 +11,7 @@ from typer.testing import CliRunner
 from thegent.main import app
 
 # Skip all tests in this file - CLI commands do not exist
-pytestmark = pytest.mark.skip(
-    reason="CLI commands 'compliance', 'config' do not exist in current implementation"
-)
+pytestmark = pytest.mark.skip(reason="CLI commands 'compliance', 'config' do not exist in current implementation")
 
 runner = CliRunner()
 

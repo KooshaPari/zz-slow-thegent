@@ -11,9 +11,7 @@ def test_wl125_normalize_image_paths_wrapper_delegates(monkeypatch) -> None:
         called["suffixes"] = supported_image_suffixes
         return ["ok"]
 
-    monkeypatch.setattr(
-        "thegent.cli.commands.impl.run_input_helpers.normalize_image_paths", _fake
-    )
+    monkeypatch.setattr("thegent.cli.commands.impl.run_input_helpers.normalize_image_paths", _fake)
 
     result = impl._normalize_image_paths(["https://example.com/a.png"])
 
@@ -30,9 +28,7 @@ def test_wl125_validate_image_capability_wrapper_delegates(monkeypatch) -> None:
         called["model"] = model
         called["impl"] = model_supports_vision_impl
 
-    monkeypatch.setattr(
-        "thegent.cli.commands.impl.run_input_helpers.validate_image_capability", _fake
-    )
+    monkeypatch.setattr("thegent.cli.commands.impl.run_input_helpers.validate_image_capability", _fake)
 
     impl._validate_image_capability("codex", "model-x")
 

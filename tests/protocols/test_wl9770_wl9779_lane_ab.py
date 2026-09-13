@@ -73,9 +73,7 @@ def test_wl9770_parse_phase_builder_carries_parse_and_execution_fields() -> None
 
 def test_wl9771_parse_phase_builder_preserves_parse_error_contract() -> None:
     # @trace WL-9771
-    parse_error = server._error_response(
-        "req", server.JsonRpcError(-32602, "invalid params")
-    )
+    parse_error = server._error_response("req", server.JsonRpcError(-32602, "invalid params"))
     plan = {
         "parse_error": parse_error,
         "approval_id": None,
@@ -103,9 +101,7 @@ def test_wl9772_execution_phase_builder_resolves_typed_target_tuple() -> None:
         "route": "grant",
         "binding": server._bind_approval_resolution_phases("grant"),
     }
-    approval_id, approval, turn, route, binding = (
-        server._build_approval_resolution_execution_phase(parse_phase)
-    )
+    approval_id, approval, turn, route, binding = server._build_approval_resolution_execution_phase(parse_phase)
     assert approval_id == "approval-1"
     assert approval["id"] == "approval-1"
     assert turn["id"] == "turn-1"
@@ -115,9 +111,7 @@ def test_wl9772_execution_phase_builder_resolves_typed_target_tuple() -> None:
 
 def test_wl9773_execution_phase_builder_fails_on_unresolved_payload() -> None:
     # @trace WL-9773
-    with pytest.raises(
-        ValueError, match="Approval resolution execution target unresolved"
-    ):
+    with pytest.raises(ValueError, match="Approval resolution execution target unresolved"):
         server._build_approval_resolution_execution_phase(
             {
                 "parse_error": None,

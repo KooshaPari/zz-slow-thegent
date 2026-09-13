@@ -47,18 +47,10 @@ def test_quality_for_role_respects_task_type_weighting(tmp_path):
     bench_path = tmp_path / "benchmarks.json"
     _write_benchmarks(bench_path)
 
-    reasoning_m1 = get_model_quality_for_role(
-        "m1", {"reasoning": 1.0}, benchmarks_path=bench_path
-    )
-    reasoning_m2 = get_model_quality_for_role(
-        "m2", {"reasoning": 1.0}, benchmarks_path=bench_path
-    )
-    coding_m1 = get_model_quality_for_role(
-        "m1", {"coding": 1.0}, benchmarks_path=bench_path
-    )
-    coding_m2 = get_model_quality_for_role(
-        "m2", {"coding": 1.0}, benchmarks_path=bench_path
-    )
+    reasoning_m1 = get_model_quality_for_role("m1", {"reasoning": 1.0}, benchmarks_path=bench_path)
+    reasoning_m2 = get_model_quality_for_role("m2", {"reasoning": 1.0}, benchmarks_path=bench_path)
+    coding_m1 = get_model_quality_for_role("m1", {"coding": 1.0}, benchmarks_path=bench_path)
+    coding_m2 = get_model_quality_for_role("m2", {"coding": 1.0}, benchmarks_path=bench_path)
 
     assert reasoning_m1 > reasoning_m2
     assert coding_m2 > coding_m1

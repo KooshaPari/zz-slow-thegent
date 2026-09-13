@@ -156,9 +156,7 @@ class Attestation:
 class ContractRegistry:
     """Registry for managing contracts."""
 
-    contracts: dict[str, SLAAgreement | ComplianceContract] = field(
-        default_factory=dict
-    )
+    contracts: dict[str, SLAAgreement | ComplianceContract] = field(default_factory=dict)
 
     def register(self, contract: SLAAgreement | ComplianceContract) -> None:
         """Register a contract."""
@@ -173,18 +171,12 @@ class ContractRegistry:
         if contract_type == ContractType.SLA:
             return [c for c in self.contracts.values() if isinstance(c, SLAAgreement)]
         elif contract_type == ContractType.COMPLIANCE:
-            return [
-                c for c in self.contracts.values() if isinstance(c, ComplianceContract)
-            ]
+            return [c for c in self.contracts.values() if isinstance(c, ComplianceContract)]
         return []
 
     def active_slas(self) -> list[SLAAgreement]:
         """Get all active SLAs."""
-        return [
-            c
-            for c in self.contracts.values()
-            if isinstance(c, SLAAgreement) and c.is_active()
-        ]
+        return [c for c in self.contracts.values() if isinstance(c, SLAAgreement) and c.is_active()]
 
 
 @dataclass

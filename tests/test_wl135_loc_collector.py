@@ -83,9 +83,7 @@ class TestLocCollectorOutput:
         """Collector output must include 'top5_largest_files' list."""
         mod = _import_collect_module()
         result = mod.collect_metrics()
-        assert "top5_largest_files" in result, (
-            "Missing 'top5_largest_files' in collector output"
-        )
+        assert "top5_largest_files" in result, "Missing 'top5_largest_files' in collector output"
         assert isinstance(result["top5_largest_files"], list)
 
     def test_output_json_is_serializable(self) -> None:

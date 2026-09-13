@@ -43,12 +43,8 @@ class TestMCPPackageBoundary:
         init_file = mcp_source / "__init__.py"
         if init_file.exists():
             content = init_file.read_text()
-            assert "from thegent.execution" not in content, (
-                "thegent-mcp should not import thegent.execution internals"
-            )
-            assert "from thegent.cli" not in content, (
-                "thegent-mcp should not import thegent.cli internals"
-            )
+            assert "from thegent.execution" not in content, "thegent-mcp should not import thegent.execution internals"
+            assert "from thegent.cli" not in content, "thegent-mcp should not import thegent.cli internals"
 
     def test_mcp_public_api_stable(self):
         """thegent-mcp public API should match expected exports."""
@@ -68,9 +64,7 @@ class TestMCPPackageBoundary:
             "server_resolve_owner_elicitation",
             "server_stable_json",
         }
-        assert set(__all__) == expected_exports, (
-            "thegent-mcp public API should match expected exports"
-        )
+        assert set(__all__) == expected_exports, "thegent-mcp public API should match expected exports"
 
 
 class TestAgentsPackageBoundary:
@@ -92,12 +86,8 @@ class TestAgentsPackageBoundary:
         if init_file.exists():
             content = init_file.read_text()
             # Agents should not import CLI or execution internals
-            assert "from thegent.cli" not in content, (
-                "thegent-agents should not import thegent.cli"
-            )
-            assert "from thegent.execution" not in content, (
-                "thegent-agents should not import thegent.execution"
-            )
+            assert "from thegent.cli" not in content, "thegent-agents should not import thegent.cli"
+            assert "from thegent.execution" not in content, "thegent-agents should not import thegent.execution"
 
 
 class TestCorePackageBoundary:
@@ -113,15 +103,9 @@ class TestCorePackageBoundary:
         if init_file.exists():
             content = init_file.read_text()
             # SDK should not import agent or MCP modules
-            assert "from thegent_agents" not in content, (
-                "thegent-sdk should not import agents"
-            )
-            assert "from thegent_mcp" not in content, (
-                "thegent-sdk should not import MCP"
-            )
-            assert "from thegent.mcp" not in content, (
-                "thegent-sdk should not import monolith MCP"
-            )
+            assert "from thegent_agents" not in content, "thegent-sdk should not import agents"
+            assert "from thegent_mcp" not in content, "thegent-sdk should not import MCP"
+            assert "from thegent.mcp" not in content, "thegent-sdk should not import monolith MCP"
 
 
 class TestPackageDependencyGraph:

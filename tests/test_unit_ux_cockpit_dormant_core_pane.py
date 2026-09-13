@@ -243,10 +243,7 @@ class TestRenderDormantCorePane:
             env = _envelope(backlog=5, past_sla=1)
             cockpit1.attach_dormant_core(lambda: env)
             cockpit2.attach_dormant_core(lambda: env)
-            assert (
-                cockpit1._render_dormant_core_pane()
-                == cockpit2._render_dormant_core_pane()
-            )
+            assert cockpit1._render_dormant_core_pane() == cockpit2._render_dormant_core_pane()
         finally:
             cockpit1.shutdown()
             cockpit2.shutdown()
@@ -257,9 +254,7 @@ class TestRenderDormantCorePane:
             cockpit.attach_dormant_core(lambda: _envelope())
             text = cockpit._render_dormant_core_pane()
             widths = {len(line) for line in text.splitlines()}
-            assert len(widths) == 1, (
-                f"DORMANT_CORE box rows have inconsistent widths: {widths}"
-            )
+            assert len(widths) == 1, f"DORMANT_CORE box rows have inconsistent widths: {widths}"
         finally:
             cockpit.shutdown()
 

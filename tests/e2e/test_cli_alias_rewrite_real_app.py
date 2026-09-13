@@ -32,9 +32,7 @@ def test_every_canonical_new_prefix_resolves_on_real_app() -> None:
     assert canonical_new_prefixes
 
     unresolved_prefixes = {
-        new_prefix
-        for new_prefix in canonical_new_prefixes
-        if not command_path_exists(app, list(new_prefix))
+        new_prefix for new_prefix in canonical_new_prefixes if not command_path_exists(app, list(new_prefix))
     }
     assert unresolved_prefixes <= _DELIBERATELY_UNSUPPORTED_CANONICAL_PREFIXES, (
         "Unexpected unresolved canonical alias targets on real app: "
@@ -43,14 +41,8 @@ def test_every_canonical_new_prefix_resolves_on_real_app() -> None:
 
 
 def test_required_canonical_families_have_at_least_one_mapping() -> None:
-    canonical_target_counts = Counter(
-        new_prefix for _, new_prefix in _ALIAS_REWRITE_PREFIXES
-    )
-    missing_families = sorted(
-        family
-        for family in _REQUIRED_CANONICAL_FAMILIES
-        if canonical_target_counts[family] < 1
-    )
+    canonical_target_counts = Counter(new_prefix for _, new_prefix in _ALIAS_REWRITE_PREFIXES)
+    missing_families = sorted(family for family in _REQUIRED_CANONICAL_FAMILIES if canonical_target_counts[family] < 1)
     assert not missing_families, (
         f"Each required canonical family must have at least one alias mapping; missing: {missing_families!r}"
     )

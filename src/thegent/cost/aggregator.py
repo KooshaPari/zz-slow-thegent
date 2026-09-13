@@ -43,9 +43,7 @@ _DEFAULT_PRICING_MTOK: dict[str, float] = {
 class CostEstimator:
     """Estimate run cost from metadata. WP-5003: Cost-aware routing integration."""
 
-    pricing_mtok: dict[str, float] = field(
-        default_factory=lambda: dict(_DEFAULT_PRICING_MTOK)
-    )
+    pricing_mtok: dict[str, float] = field(default_factory=lambda: dict(_DEFAULT_PRICING_MTOK))
 
     def estimate(
         self,
@@ -65,9 +63,7 @@ class CostEstimator:
                 if metadata and "cost_per_mtok" in metadata:
                     price_per_m = metadata["cost_per_mtok"]
             except Exception as exc:
-                logger.warning(
-                    "Failed to read model metadata for pricing (%s): %s", model, exc
-                )
+                logger.warning("Failed to read model metadata for pricing (%s): %s", model, exc)
 
         # Fallback to local pricing table
         if price_per_m is None and model and model in self.pricing_mtok:
@@ -109,16 +105,11 @@ class CostAggregator:
                         continue
                     try:
                         data = json.loads(line)
-                        if (
-                            data.get("event") == "finish"
-                            and data.get("cost_usd") is not None
-                        ):
+                        if data.get("event") == "finish" and data.get("cost_usd") is not None:
                             ts_str = data.get("ended_at_utc", data.get("timestamp", ""))
                             if ts_str:
                                 try:
-                                    ts = datetime.fromisoformat(
-                                        ts_str.replace("Z", "+00:00")
-                                    )
+                                    ts = datetime.fromisoformat(ts_str.replace("Z", "+00:00"))
                                     if ts >= cutoff:
                                         total += float(data["cost_usd"])
                                 except ValueError:
@@ -126,9 +117,7 @@ class CostAggregator:
                     except Exception:
                         continue
         except Exception as exc:
-            logger.warning(
-                "Failed to read monthly total from %s: %s", registry_path, exc
-            )
+            logger.warning("Failed to read monthly total from %s: %s", registry_path, exc)
         return total
 
     def get_mtd_total(self) -> float:
@@ -147,19 +136,14 @@ class CostAggregator:
                         continue
                     try:
                         data = json.loads(line)
-                        if (
-                            data.get("event") == "finish"
-                            and data.get("cost_usd") is not None
-                        ):
+                        if data.get("event") == "finish" and data.get("cost_usd") is not None:
                             ts = data.get("ended_at_utc", data.get("timestamp", ""))
                             if ts and ts.startswith(current_month):
                                 total += float(data["cost_usd"])
                     except Exception:
                         continue
         except Exception as exc:
-            logger.warning(
-                "Failed to read category monthly total from %s: %s", registry_path, exc
-            )
+            logger.warning("Failed to read category monthly total from %s: %s", registry_path, exc)
         return total
 
     def get_category_mtd_total(self, category: str) -> float:
@@ -188,8 +172,7 @@ class CostAggregator:
                         if (
                             data.get("event") == "finish"
                             and data.get("cost_usd") is not None
-                            and data.get("task_category", "").lower()
-                            == category.lower()
+                            and data.get("task_category", "").lower() == category.lower()
                         ):
                             ts = data.get("ended_at_utc", data.get("timestamp", ""))
                             if ts and ts.startswith(current_month):
@@ -197,9 +180,7 @@ class CostAggregator:
                     except Exception:
                         continue
         except Exception as exc:
-            logger.warning(
-                "Failed to read category monthly total from %s: %s", registry_path, exc
-            )
+            logger.warning("Failed to read category monthly total from %s: %s", registry_path, exc)
         return total
 
     def get_all_categories_mtd(self) -> dict[str, float]:

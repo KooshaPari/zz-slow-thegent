@@ -24,10 +24,7 @@ from thegent.mesh.smart_merge import (
     merge_files,
 )
 
-if (
-    os.environ.get("THGENT_ENFORCE_MERGIRAF_TESTS", "0") == "1"
-    and not is_mergiraf_available()
-):
+if os.environ.get("THGENT_ENFORCE_MERGIRAF_TESTS", "0") == "1" and not is_mergiraf_available():
     pytest.fail(
         "THGENT_ENFORCE_MERGIRAF_TESTS=1 but mergiraf binary is unavailable",
         pytrace=False,
@@ -98,9 +95,7 @@ class TestMergeFilesCleanMerge:
 
         with mock.patch("shutil.which", return_value="/usr/bin/mergiraf"):
             with mock.patch("subprocess.run") as mock_run:
-                mock_run.return_value = mock.Mock(
-                    returncode=1, stdout="", stderr="conflicts"
-                )
+                mock_run.return_value = mock.Mock(returncode=1, stdout="", stderr="conflicts")
                 output.write_text("<<<", encoding="utf-8")
                 result = merge_files(base, ours, theirs, output)
 
@@ -372,15 +367,9 @@ class TestMergirafIntegrationLive:
         theirs = tmp_path / "theirs.py"
         output = tmp_path / "out.py"
 
-        base.write_text(
-            "def foo():\n    return 1\n\ndef bar():\n    return 2\n", encoding="utf-8"
-        )
-        ours.write_text(
-            "def foo():\n    return 10\n\ndef bar():\n    return 2\n", encoding="utf-8"
-        )
-        theirs.write_text(
-            "def foo():\n    return 1\n\ndef bar():\n    return 20\n", encoding="utf-8"
-        )
+        base.write_text("def foo():\n    return 1\n\ndef bar():\n    return 2\n", encoding="utf-8")
+        ours.write_text("def foo():\n    return 10\n\ndef bar():\n    return 2\n", encoding="utf-8")
+        theirs.write_text("def foo():\n    return 1\n\ndef bar():\n    return 20\n", encoding="utf-8")
 
         result = merge_files(base, ours, theirs, output)
 
@@ -634,9 +623,7 @@ class TestSmartMergerMergeWorktreeChanges:
 
     def test_success_on_clean_git_merge(self, tmp_path):
         """merge_worktree_changes returns success when git merge exits 0. @trace FR-MESH-007"""
-        merger = SmartMerger(
-            SmartMergeConfig(mergiraf_binary=None, fallback_to_git=True)
-        )
+        merger = SmartMerger(SmartMergeConfig(mergiraf_binary=None, fallback_to_git=True))
 
         def fake_run(cmd, **kwargs):
             if "rev-parse" in cmd:
@@ -652,9 +639,7 @@ class TestSmartMergerMergeWorktreeChanges:
     def test_failure_when_git_not_found(self, tmp_path):
         """merge_worktree_changes returns failure if git binary is missing. @trace FR-MESH-007"""
         merger = SmartMerger(SmartMergeConfig())
-        with mock.patch(
-            "subprocess.run", side_effect=FileNotFoundError("git not found")
-        ):
+        with mock.patch("subprocess.run", side_effect=FileNotFoundError("git not found")):
             result = merger.merge_worktree_changes(tmp_path, "main")
         assert result.success is False
 
@@ -678,9 +663,7 @@ class TestSmartMergerMergeWorktreeChanges:
     def test_used_mergiraf_true_when_binary_available(self, tmp_path):
         """merge_worktree_changes sets used_mergiraf=True when mergiraf binary present.
         @trace FR-MESH-007"""
-        cfg = SmartMergeConfig(
-            mergiraf_binary="/usr/bin/mergiraf", fallback_to_git=True
-        )
+        cfg = SmartMergeConfig(mergiraf_binary="/usr/bin/mergiraf", fallback_to_git=True)
         merger = SmartMerger(cfg)
 
         def fake_run(cmd, **kwargs):
@@ -789,9 +772,7 @@ class TestWorktreePoolSmartMergerIntegration:
         from thegent.mesh.git_parallelism import WorktreePool
 
         mock_merger = mock.Mock(spec=SmartMerger)
-        mock_merger.merge_worktree_changes.return_value = MergeResult(
-            success=True, used_mergiraf=True
-        )
+        mock_merger.merge_worktree_changes.return_value = MergeResult(success=True, used_mergiraf=True)
 
         pool = WorktreePool(tmp_path, pool_root=tmp_path / ".pool", merger=mock_merger)
         pool._worktrees_ok = True
@@ -802,9 +783,7 @@ class TestWorktreePoolSmartMergerIntegration:
                     import shutil as _shutil
 
                     with mock.patch.object(_shutil, "rmtree"):
-                        pool._merge_and_remove(
-                            "agent-x", tmp_path / "wt", "agent/agent-x"
-                        )
+                        pool._merge_and_remove("agent-x", tmp_path / "wt", "agent/agent-x")
 
         mock_merger.merge_worktree_changes.assert_called_once()
 
@@ -824,9 +803,7 @@ class TestWorktreePoolSmartMergerIntegration:
                         import shutil as _shutil
 
                         with mock.patch.object(_shutil, "rmtree"):
-                            result = pool._merge_and_remove(
-                                "agent-y", tmp_path / "wt", "agent/agent-y"
-                            )
+                            result = pool._merge_and_remove("agent-y", tmp_path / "wt", "agent/agent-y")
 
         # Plain git merge path: should have called subprocess.run with git merge
         assert result is True
@@ -838,24 +815,18 @@ class TestWorktreePoolSmartMergerIntegration:
         from thegent.mesh.git_parallelism import WorktreePool
 
         mock_merger = mock.Mock(spec=SmartMerger)
-        mock_merger.merge_worktree_changes.return_value = MergeResult(
-            success=False, conflicts=["foo.py"]
-        )
+        mock_merger.merge_worktree_changes.return_value = MergeResult(success=False, conflicts=["foo.py"])
 
         pool = WorktreePool(tmp_path, pool_root=tmp_path / ".pool", merger=mock_merger)
         pool._worktrees_ok = True
 
         with mock.patch.object(pool, "_resolve_target_branch", return_value="main"):
-            with mock.patch.object(
-                pool, "_git_worktree_remove", return_value=True
-            ) as mock_rm:
+            with mock.patch.object(pool, "_git_worktree_remove", return_value=True) as mock_rm:
                 with mock.patch.object(pool, "_try_delete_branch"):
                     import shutil as _shutil
 
                     with mock.patch.object(_shutil, "rmtree"):
-                        result = pool._merge_and_remove(
-                            "agent-z", tmp_path / "wt", "agent/agent-z"
-                        )
+                        result = pool._merge_and_remove("agent-z", tmp_path / "wt", "agent/agent-z")
 
         # Cleanup should still be attempted
         mock_rm.assert_called_once()

@@ -69,9 +69,7 @@ def test_contract_schema_version_is_same_string_via_both_paths():
         CONTRACT_SCHEMA_VERSION as mod_csv,  # noqa: N811
     )
 
-    assert pkg_csv == mod_csv == "csm-v1", (
-        f"L9 REGRESSION: schema version drift — pkg={pkg_csv!r} mod={mod_csv!r}"
-    )
+    assert pkg_csv == mod_csv == "csm-v1", f"L9 REGRESSION: schema version drift — pkg={pkg_csv!r} mod={mod_csv!r}"
 
 
 def test_contract_registry_class_is_same_via_both_paths():
@@ -119,9 +117,7 @@ def test_is_compatible_is_method_not_free_function():
     import thegent.contracts as pkg
 
     # Must NOT be a module-level free function (we removed it intentionally).
-    assert "is_compatible" not in vars(pkg), (
-        "is_compatible leaked to module scope — it must remain a method only."
-    )
+    assert "is_compatible" not in vars(pkg), "is_compatible leaked to module scope — it must remain a method only."
     # Must be a method on the class and the instance.
     from thegent.contracts import ContractRegistry, get_registry
 
@@ -256,16 +252,10 @@ def test_dunder_all_lists_canonical_surface():
     declared = set(pkg.__all__)
     missing_canonical = canonical - declared
     missing_backcompat = backcompat - declared
-    assert not missing_canonical, (
-        f"Missing canonical exports in __all__: {missing_canonical}"
-    )
-    assert not missing_backcompat, (
-        f"Missing back-compat exports in __all__: {missing_backcompat}"
-    )
+    assert not missing_canonical, f"Missing canonical exports in __all__: {missing_canonical}"
+    assert not missing_backcompat, f"Missing back-compat exports in __all__: {missing_backcompat}"
     # ``is_compatible`` must NOT be in __all__ — it is a method, not a free function.
-    assert "is_compatible" not in declared, (
-        "is_compatible leaked into __all__ — must remain method-only."
-    )
+    assert "is_compatible" not in declared, "is_compatible leaked into __all__ — must remain method-only."
 
 
 # ---------------------------------------------------------------------------

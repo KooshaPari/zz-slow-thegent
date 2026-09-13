@@ -150,9 +150,7 @@ class LLMRouter:
     def estimate_cost(self, model: str, input_tokens: int, output_tokens: int) -> float:
         """Estimate cost for a request using LiteLLM's cost calculator."""
         try:
-            return completion_cost(
-                model=model, prompt=str(input_tokens), completion=str(output_tokens)
-            )
+            return completion_cost(model=model, prompt=str(input_tokens), completion=str(output_tokens))
         except Exception:
             return 0.0  # Fallback if cost data unavailable
 

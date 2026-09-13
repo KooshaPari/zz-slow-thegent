@@ -188,9 +188,7 @@ class MemoryMeshV2:
             # access_counts entries for absent keys are advisory and
             # do not represent archivable state.
             hot = sorted(
-                key
-                for key, count in access_counts.items()
-                if count >= threshold and key in self.working_memory
+                key for key, count in access_counts.items() if count >= threshold and key in self.working_memory
             )
         for key in hot:
             value = self.working_memory.get(key)
@@ -215,9 +213,7 @@ class MemoryMeshV2:
 
     # --- Tier 3: Semantic Memory (Knowledge Graph) ---
 
-    def add_knowledge(
-        self, node: MemoryNode, relations: list[MemoryEdge] | None = None
-    ) -> None:
+    def add_knowledge(self, node: MemoryNode, relations: list[MemoryEdge] | None = None) -> None:
         """Add a node and its relations to the knowledge graph."""
         if relations is None:
             relations = []

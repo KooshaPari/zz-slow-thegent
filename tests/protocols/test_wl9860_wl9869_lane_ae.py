@@ -55,9 +55,7 @@ def test_wl9862_resolve_approval_payload_requires_diff() -> None:
     # @trace WL-9862
     _reset_state()
     with pytest.raises(ValueError, match="Turn submit approval diff unresolved"):
-        server._resolve_turn_submit_approval_payload(
-            "session-1", "turn-1", {"id": "turn-1"}, None, []
-        )
+        server._resolve_turn_submit_approval_payload("session-1", "turn-1", {"id": "turn-1"}, None, [])
 
 
 def test_wl9863_resolve_completion_marks_turn_completed_and_sets_tool_call() -> None:
@@ -72,9 +70,7 @@ def test_wl9863_resolve_completion_marks_turn_completed_and_sets_tool_call() -> 
         "tool_call_id": None,
     }
     notifications: list[dict[str, object]] = []
-    server._resolve_turn_submit_completion(
-        "session-1", "turn-1", "x", turn, notifications
-    )
+    server._resolve_turn_submit_completion("session-1", "turn-1", "x", turn, notifications)
     assert turn["status"] == "completed"
     assert turn["tool_call_id"] is not None
 
@@ -91,9 +87,7 @@ def test_wl9864_side_effects_route_to_approval_when_requested() -> None:
         "tool_call_id": None,
     }
     notifications: list[dict[str, object]] = []
-    payload = server._apply_turn_submit_side_effects(
-        "session-1", "turn-1", turn, "x", True, "diff", notifications
-    )
+    payload = server._apply_turn_submit_side_effects("session-1", "turn-1", turn, "x", True, "diff", notifications)
     assert payload is not None
     assert turn["status"] == "awaiting_approval"
     assert any(item["method"] == "approval/requested" for item in notifications)
@@ -111,9 +105,7 @@ def test_wl9865_side_effects_route_to_completion_when_no_approval() -> None:
         "tool_call_id": None,
     }
     notifications: list[dict[str, object]] = []
-    payload = server._apply_turn_submit_side_effects(
-        "session-1", "turn-1", turn, "x", False, None, notifications
-    )
+    payload = server._apply_turn_submit_side_effects("session-1", "turn-1", turn, "x", False, None, notifications)
     assert payload is None
     assert turn["status"] == "completed"
     assert any(item["method"] == "turn/completed" for item in notifications)

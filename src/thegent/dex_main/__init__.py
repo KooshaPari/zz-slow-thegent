@@ -160,13 +160,9 @@ def _run_codex_interactive(
     env = _get_codex_env()
 
     if provider == "codex":
-        env["OPENAI_BASE_URL"] = os.environ.get(
-            "OPENAI_BASE_URL", "http://127.0.0.1:8317"
-        )
+        env["OPENAI_BASE_URL"] = os.environ.get("OPENAI_BASE_URL", "http://127.0.0.1:8317")
     elif provider == "copilot":
-        env["GITHUB_COPILOT_API_URL"] = os.environ.get(
-            "GITHUB_COPILOT_API_URL", "http://127.0.0.1:8317"
-        )
+        env["GITHUB_COPILOT_API_URL"] = os.environ.get("GITHUB_COPILOT_API_URL", "http://127.0.0.1:8317")
 
     codex_path = resolve_codex_cli_path()
 
@@ -229,9 +225,7 @@ def default_dex(
     ctx: typer.Context,
     force: bool = False,
     native: bool = False,
-    extra_args: list[str] = typer.Option(
-        [], help="Extra arguments to pass to the command"
-    ),
+    extra_args: list[str] = typer.Option([], help="Extra arguments to pass to the command"),
 ) -> None:
     """Default command that runs flash model."""
     import sys

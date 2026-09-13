@@ -15,14 +15,7 @@ def _function_source(module_text: str, function_name: str) -> str:
 
 
 def test_main_app_defines_fork_and_rollback_shortcuts() -> None:
-    main_path = (
-        Path(__file__).resolve().parents[1]
-        / "src"
-        / "thegent"
-        / "cli"
-        / "apps"
-        / "main.py"
-    )
+    main_path = Path(__file__).resolve().parents[1] / "src" / "thegent" / "cli" / "apps" / "main.py"
     text = main_path.read_text(encoding="utf-8")
 
     fork_fn = _function_source(text, "fork_top_level")
@@ -30,10 +23,7 @@ def test_main_app_defines_fork_and_rollback_shortcuts() -> None:
 
     assert '@app.command("fork"' in text
     assert "from thegent.cli.apps.run import run_fork" in fork_fn
-    assert (
-        "run_fork(session_id=session_id, from_turn=from_turn, new_session_id=new_session_id)"
-        in fork_fn
-    )
+    assert "run_fork(session_id=session_id, from_turn=from_turn, new_session_id=new_session_id)" in fork_fn
 
     assert '@app.command("rollback"' in text
     assert "from thegent.cli.apps.run import run_rollback" in rollback_fn

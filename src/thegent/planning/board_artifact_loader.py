@@ -126,9 +126,7 @@ class BoardArtifactLoader:
                         )
                 loaded.append(str(json_file))
             except Exception as e:
-                errors.append(
-                    f"JSON load error for {json_file}: {type(e).__name__}: {e}"
-                )
+                errors.append(f"JSON load error for {json_file}: {type(e).__name__}: {e}")
 
         # Load CSV artifacts
         for csv_file in self.board_dir.glob("*.csv"):
@@ -141,9 +139,7 @@ class BoardArtifactLoader:
                     try:
                         completion_pct = int(row.get("completion_pct", 0) or 0)
                     except (ValueError, TypeError):
-                        raise ValueError(
-                            f"Invalid completion_pct: {row.get('completion_pct')}"
-                        )
+                        raise ValueError(f"Invalid completion_pct: {row.get('completion_pct')}")
 
                     csv_items.append(
                         BoardItem(
@@ -192,9 +188,7 @@ class BoardArtifactLoader:
                     "slice": {
                         "slice_id": item.slice_id,
                         "name": slice_obj.name if slice_obj else "",
-                        "mapped_wl_range": slice_obj.mapped_wl_range
-                        if slice_obj
-                        else "",
+                        "mapped_wl_range": slice_obj.mapped_wl_range if slice_obj else "",
                     }
                     if item.slice_id
                     else None,

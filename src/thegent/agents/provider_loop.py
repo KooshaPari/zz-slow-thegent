@@ -36,9 +36,7 @@ class ProviderLoopTimeout(Exception):
     def __init__(self, timeout_sec: int, context: str = "") -> None:
         self.timeout_sec = timeout_sec
         self.context = context
-        msg = f"Provider loop timed out after {timeout_sec}s" + (
-            f" [{context}]" if context else ""
-        )
+        msg = f"Provider loop timed out after {timeout_sec}s" + (f" [{context}]" if context else "")
         super().__init__(msg)
 
 

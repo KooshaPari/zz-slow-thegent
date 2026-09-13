@@ -60,9 +60,7 @@ def test_wl9691_resolve_turn_cancel_turn_finds_existing_turn() -> None:
         "approval_id": None,
     }
     SERVER_STATE.turns[turn["id"]] = turn
-    turn_id, resolved_turn, error = _resolve_turn_cancel_turn(
-        "req-9691", {"turn_id": turn["id"]}
-    )
+    turn_id, resolved_turn, error = _resolve_turn_cancel_turn("req-9691", {"turn_id": turn["id"]})
     assert error is None
     assert turn_id == turn["id"]
     assert resolved_turn is turn
@@ -181,9 +179,7 @@ def test_wl9699_resolve_turn_cancel_context_uses_split_parse_and_state_checks() 
         "approval_id": None,
     }
     SERVER_STATE.turns[turn["id"]] = turn
-    turn_id, resolved_turn, error = _resolve_turn_cancel_context(
-        "req-9699", {"turn_id": turn["id"]}
-    )
+    turn_id, resolved_turn, error = _resolve_turn_cancel_context("req-9699", {"turn_id": turn["id"]})
     assert error is None
     assert turn_id == turn["id"]
     assert resolved_turn is turn

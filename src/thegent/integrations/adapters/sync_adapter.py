@@ -16,14 +16,10 @@ class SyncAdapter:
         self.config = config
 
     # Operation ID helpers
-    def build_operation_id(
-        self, platform: str, direction: str, items: list[WorkstreamItem]
-    ) -> str:
+    def build_operation_id(self, platform: str, direction: str, items: list[WorkstreamItem]) -> str:
         """Build replay-safe deterministic operation IDs for sync batches."""
         item_key = ",".join(sorted(item.item_id for item in items))
-        digest = hashlib.sha1(
-            f"{platform}:{direction}:{item_key}".encode()
-        ).hexdigest()[:12]
+        digest = hashlib.sha1(f"{platform}:{direction}:{item_key}".encode()).hexdigest()[:12]
         return f"{platform}-{direction}-{digest}"
 
     def build_mutation_id(self, platform: str, item: WorkstreamItem) -> str:
@@ -33,9 +29,7 @@ class SyncAdapter:
         return f"{platform}-mutation-{item.item_id}-{digest}"
 
     # Checksum helpers
-    def normalize_for_checksum(
-        self, payload: list[dict[str, Any]]
-    ) -> list[dict[str, Any]]:
+    def normalize_for_checksum(self, payload: list[dict[str, Any]]) -> list[dict[str, Any]]:
         """Return a deterministic remote payload representation for checksum verification."""
         normalized = []
         for item in payload:
@@ -55,8 +49,7 @@ class SyncAdapter:
         """Compute a fingerprint for the current cycle."""
         canonical = ",".join(
             sorted(
-                f"{item.item_id}:{item.status}:{item.priority}:{item.area}:{item.blocked_by or ''}"
-                for item in items
+                f"{item.item_id}:{item.status}:{item.priority}:{item.area}:{item.blocked_by or ''}" for item in items
             )
         )
         return hashlib.sha1(canonical.encode("utf-8")).hexdigest()

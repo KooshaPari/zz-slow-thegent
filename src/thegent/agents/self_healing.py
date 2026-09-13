@@ -59,14 +59,10 @@ class RecoveryRouter:
             instruction_fix = " [Self-Correction: Add explicit instruction to batch API calls to avoid rate limits]"
             updated_prompt = prompt + instruction_fix
         elif "auth" in failure_type.lower():
-            instruction_fix = (
-                " [Self-Correction: Verify credentials before starting task]"
-            )
+            instruction_fix = " [Self-Correction: Verify credentials before starting task]"
             updated_prompt = prompt + instruction_fix
         else:
-            instruction_fix = (
-                " [Self-Correction: Add more granular logging for debugging]"
-            )
+            instruction_fix = " [Self-Correction: Add more granular logging for debugging]"
             updated_prompt = prompt + instruction_fix
 
         _log.info("Updated prompt for next run: %s", updated_prompt)

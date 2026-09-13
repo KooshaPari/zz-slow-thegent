@@ -109,9 +109,7 @@ class RemoteNodeClient:
 class RemoteNodeError(Exception):
     """Error raised when a remote node operation fails."""
 
-    def __init__(
-        self, message: str, node_id: str = "", cause: Exception | None = None
-    ) -> None:
+    def __init__(self, message: str, node_id: str = "", cause: Exception | None = None) -> None:
         super().__init__(message)
         self.node_id = node_id
         self.cause = cause

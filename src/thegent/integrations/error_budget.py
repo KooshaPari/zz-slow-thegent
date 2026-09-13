@@ -88,9 +88,7 @@ class ErrorBudgetTracker:
             total_operations, and current_failure_rate.
         """
         total_operations = self._success_count + self._failure_count
-        failure_rate = (
-            self._failure_count / total_operations if total_operations > 0 else 0.0
-        )
+        failure_rate = self._failure_count / total_operations if total_operations > 0 else 0.0
 
         return {
             "success_count": self._success_count,

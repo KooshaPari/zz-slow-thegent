@@ -38,19 +38,11 @@ def test_required_stable_top_level_subset_exists_on_real_app() -> None:
     command_names = set(_top_level_command_names())
     missing = sorted(set(_REQUIRED_STABLE_TOP_LEVEL_COMMANDS) - command_names)
 
-    assert not missing, (
-        f"Missing required stable top-level commands on real app: {missing!r}"
-    )
+    assert not missing, f"Missing required stable top-level commands on real app: {missing!r}"
 
 
 def test_stable_top_level_subset_snapshot_is_deterministic() -> None:
     command_names = set(_top_level_command_names())
-    stable_subset = tuple(
-        sorted(
-            name
-            for name in command_names
-            if name in _REQUIRED_STABLE_TOP_LEVEL_COMMANDS
-        )
-    )
+    stable_subset = tuple(sorted(name for name in command_names if name in _REQUIRED_STABLE_TOP_LEVEL_COMMANDS))
 
     assert stable_subset == _STABLE_TOP_LEVEL_COMMANDS_SNAPSHOT

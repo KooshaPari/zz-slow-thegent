@@ -94,15 +94,11 @@ def _read_catalog(path: Path) -> Mapping[str, str]:
     if loaded is None:
         return {}
     if not isinstance(loaded, Mapping):
-        raise LocaleParseError(
-            f"Locale catalog {path} must be a YAML mapping, got {type(loaded).__name__}"
-        )
+        raise LocaleParseError(f"Locale catalog {path} must be a YAML mapping, got {type(loaded).__name__}")
     catalog: dict[str, str] = {}
     for key, value in loaded.items():
         if not isinstance(key, str) or not isinstance(value, str):
-            raise LocaleParseError(
-                f"Locale catalog {path} keys/values must be strings (key={key!r} value={value!r})"
-            )
+            raise LocaleParseError(f"Locale catalog {path} keys/values must be strings (key={key!r} value={value!r})")
         catalog[key] = value
     return catalog
 
@@ -117,9 +113,7 @@ def load_catalog(locale: str, directory: Path | None = None) -> LocaleFile:
     for suffix in (".yaml", ".yml"):
         candidate = base / f"{locale}{suffix}"
         if candidate.exists():
-            return LocaleFile(
-                locale=locale, path=candidate, catalog=_read_catalog(candidate)
-            )
+            return LocaleFile(locale=locale, path=candidate, catalog=_read_catalog(candidate))
     raise LocaleNotFoundError(f"No locale catalog found for {locale!r} under {base}")
 
 

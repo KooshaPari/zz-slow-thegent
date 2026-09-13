@@ -110,9 +110,7 @@ def _make_event_queue(maxsize: int = 1024) -> SubAgentEventQueue:
     return SubAgentEventQueue(maxsize=maxsize)
 
 
-def _make_request(
-    agent_type: str = "test-agent", task: str = "do something"
-) -> SubAgentRequest:
+def _make_request(agent_type: str = "test-agent", task: str = "do something") -> SubAgentRequest:
     return SubAgentRequest(agent_type=agent_type, task=task)
 
 
@@ -136,9 +134,7 @@ class TestEventQueueConcurrency:
             for i in range(per_thread):
                 q.put(_make_event(request_id=f"t{thread_id}-i{i}"))
 
-        threads = [
-            threading.Thread(target=_worker, args=(t,)) for t in range(n_threads)
-        ]
+        threads = [threading.Thread(target=_worker, args=(t,)) for t in range(n_threads)]
         for t in threads:
             t.start()
         for t in threads:
@@ -322,9 +318,7 @@ class TestDispatcherEventPublishing:
         """@trace FR-ORC-068"""
 
         mock_budget = MagicMock()
-        mock_budget.check.side_effect = BudgetExceededError(
-            node_id="req_budget_test", budget=0, actual=1
-        )
+        mock_budget.check.side_effect = BudgetExceededError(node_id="req_budget_test", budget=0, actual=1)
 
         q = _make_event_queue()
         dispatcher = SubAgentDispatcher(
@@ -454,9 +448,7 @@ class TestUnifiedWorkerDaemonSurface:
         """COMPLETED event triggers _dispatch_post_agent_run_hook with run_id + extra_context."""
         q = _make_event_queue()
         daemon = UnifiedWorkerDaemon(event_queue=q)
-        with patch(
-            "thegent.orchestration.unified_worker._dispatch_post_agent_run_hook"
-        ) as mock_hook:
+        with patch("thegent.orchestration.unified_worker._dispatch_post_agent_run_hook") as mock_hook:
             task = asyncio.create_task(daemon._consume_events())
             q.put(
                 _make_event(
@@ -519,8 +511,6 @@ class TestDispatcherDispatchLock:
 
         events = q.drain_nowait()
         started = sum(1 for e in events if e.event_type == SubAgentEventType.STARTED)
-        completed = sum(
-            1 for e in events if e.event_type == SubAgentEventType.COMPLETED
-        )
+        completed = sum(1 for e in events if e.event_type == SubAgentEventType.COMPLETED)
         assert started == n_threads
         assert completed == n_threads

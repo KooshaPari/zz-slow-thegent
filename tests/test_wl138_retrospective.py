@@ -46,8 +46,6 @@ def test_retrospective_mentions_anti_patterns() -> None:
     """Retrospective must document anti-patterns encountered during the B90 waves."""
     text = RETRO_DOC.read_text(encoding="utf-8")
     # Accept either capitalisation
-    assert (
-        "anti-pattern" in text.lower()
-        or "Anti-pattern" in text
-        or "Anti-Pattern" in text
-    ), "Retrospective document does not mention anti-patterns."
+    assert "anti-pattern" in text.lower() or "Anti-pattern" in text or "Anti-Pattern" in text, (
+        "Retrospective document does not mention anti-patterns."
+    )

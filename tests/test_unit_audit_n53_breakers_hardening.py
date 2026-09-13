@@ -173,9 +173,7 @@ class TestCBCorruptResilience:
 
     def test_skips_corrupt_middle_keeps_last_valid(self, tmp_path: Path) -> None:
         cb = CircuitBreaker(tmp_path)
-        good = json.dumps(
-            {"event": "tripped", "reason": "ok", "value": 1.0, "timestamp": "t"}
-        )
+        good = json.dumps({"event": "tripped", "reason": "ok", "value": 1.0, "timestamp": "t"})
         cb.breaker_file.write_text(f"{{bad\n{good}\n", encoding="utf-8")
         assert cb.is_tripped() is True
 

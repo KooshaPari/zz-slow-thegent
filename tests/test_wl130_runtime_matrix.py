@@ -13,12 +13,7 @@ from pathlib import Path
 import orjson as json
 import pytest
 
-MATRIX_PATH = (
-    Path(__file__).parent.parent
-    / "contracts"
-    / "runtime"
-    / "runtime-modularization-matrix.json"
-)
+MATRIX_PATH = Path(__file__).parent.parent / "contracts" / "runtime" / "runtime-modularization-matrix.json"
 
 REQUIRED_TOP_LEVEL_FIELDS = {"version", "generated", "source", "workloads"}
 REQUIRED_WORKLOAD_FIELDS = {
@@ -73,9 +68,7 @@ def test_workloads_is_list(matrix: dict):
 
 
 def test_exactly_five_workloads(matrix: dict):
-    assert len(matrix["workloads"]) == 5, (
-        f"Expected 5 workloads, got {len(matrix['workloads'])}"
-    )
+    assert len(matrix["workloads"]) == 5, f"Expected 5 workloads, got {len(matrix['workloads'])}"
 
 
 def test_all_expected_workload_ids_present(matrix: dict):
@@ -112,9 +105,7 @@ def test_workload_benchmark_gate_non_empty(matrix: dict, workload_id: str):
 def test_workload_rollback_strategy_non_empty(matrix: dict, workload_id: str):
     workload = next(w for w in matrix["workloads"] if w["id"] == workload_id)
     strategy = workload.get("rollback_strategy", "")
-    assert strategy and strategy.strip(), (
-        f"Workload {workload_id!r} has empty rollback_strategy"
-    )
+    assert strategy and strategy.strip(), f"Workload {workload_id!r} has empty rollback_strategy"
 
 
 @pytest.mark.parametrize(
@@ -124,9 +115,7 @@ def test_workload_rollback_strategy_non_empty(matrix: dict, workload_id: str):
 def test_workload_priority_valid(matrix: dict, workload_id: str):
     workload = next(w for w in matrix["workloads"] if w["id"] == workload_id)
     priority = workload.get("priority", "")
-    assert priority in {"P0", "P1", "P2", "P3"}, (
-        f"Workload {workload_id!r} has invalid priority: {priority!r}"
-    )
+    assert priority in {"P0", "P1", "P2", "P3"}, f"Workload {workload_id!r} has invalid priority: {priority!r}"
 
 
 def test_workload_ids_are_unique(matrix: dict):
@@ -136,9 +125,7 @@ def test_workload_ids_are_unique(matrix: dict):
 
 def test_all_workloads_have_non_empty_description(matrix: dict):
     for w in matrix["workloads"]:
-        assert w.get("description", "").strip(), (
-            f"Workload {w['id']!r} has empty description"
-        )
+        assert w.get("description", "").strip(), f"Workload {w['id']!r} has empty description"
 
 
 def test_all_workloads_have_non_empty_owner(matrix: dict):

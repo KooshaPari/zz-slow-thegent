@@ -17,9 +17,7 @@ def test_build_linear_state_mapping_requires_todo_in_progress_done() -> None:
         {"id": "state_unstarted", "name": "Todo", "type": "unstarted"},
         {"id": "state_started", "name": "In Progress", "type": "started"},
     ]
-    with pytest.raises(
-        LinearGraphQLError, match="missing required state type mappings"
-    ):
+    with pytest.raises(LinearGraphQLError, match="missing required state type mappings"):
         build_linear_state_mapping(states)
 
 

@@ -77,9 +77,7 @@ class TestDiffRenderer:
         payload = self._make_payload()
         ansi = DiffRenderer.render_ansi(payload)
         # Lines with additions should be rendered in green (\033[32m)
-        green_lines = [
-            line for line in ansi.splitlines() if line.startswith("\033[32m")
-        ]
+        green_lines = [line for line in ansi.splitlines() if line.startswith("\033[32m")]
         assert len(green_lines) > 0
 
     def test_render_ansi_deletions_red(self) -> None:

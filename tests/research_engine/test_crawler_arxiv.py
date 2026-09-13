@@ -20,9 +20,7 @@ def test_arxiv_fetch() -> None:
     """Fetch returns list of ResearchItem from arXiv."""
     from research_engine.crawlers.arxiv_crawler import ArxivCrawler
 
-    result = _make_result(
-        "LLM Agent Governance", "https://arxiv.org/abs/2501.00001", "abstract text"
-    )
+    result = _make_result("LLM Agent Governance", "https://arxiv.org/abs/2501.00001", "abstract text")
 
     with patch("arxiv.Search") as mock_search:
         mock_search.return_value.results.return_value = iter([result])
@@ -80,11 +78,7 @@ def test_arxiv_fetch_tags() -> None:
         crawler = ArxivCrawler()
         items = crawler.fetch(["machine", "learning", "agents"])
 
-    assert (
-        "machine" in items[0].tags
-        or "learning" in items[0].tags
-        or "agents" in items[0].tags
-    )
+    assert "machine" in items[0].tags or "learning" in items[0].tags or "agents" in items[0].tags
 
 
 def test_arxiv_tier() -> None:

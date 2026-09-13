@@ -49,9 +49,7 @@ def generate(max_projects, max_files, base_path, output_dir):
         console=console,
     ) as progress:
         task1 = progress.add_task("Analyzing projects...", total=None)
-        generator.analyze_all_projects(
-            max_projects=max_projects, max_files_per_project=max_files
-        )
+        generator.analyze_all_projects(max_projects=max_projects, max_files_per_project=max_files)
         progress.update(task1, completed=True)
 
         if not generator.project_specs:
@@ -90,12 +88,8 @@ def generate(max_projects, max_files, base_path, output_dir):
     table.add_row("PRDs Generated", str(len(generator.results["prds_generated"])))
 
     if generator.cross_analyzer:
-        table.add_row(
-            "Relationships Found", str(len(generator.cross_analyzer.relationships))
-        )
-        table.add_row(
-            "Shared Features", str(len(generator.cross_analyzer.unified_features))
-        )
+        table.add_row("Relationships Found", str(len(generator.cross_analyzer.relationships)))
+        table.add_row("Shared Features", str(len(generator.cross_analyzer.unified_features)))
         table.add_row(
             "Unified Work Streams",
             str(len(generator.cross_analyzer.unified_work_streams)),

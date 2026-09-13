@@ -22,14 +22,8 @@ _APPROVED_STABLE_TOP_LEVEL_COMMANDS: tuple[str, ...] = _REQUIRED_ROOT_COMMANDS
 
 
 def test_required_root_command_paths_exist_on_real_app() -> None:
-    missing = [
-        command_name
-        for command_name in _REQUIRED_ROOT_COMMANDS
-        if not command_path_exists(app, [command_name])
-    ]
-    assert not missing, (
-        f"Missing required stable root commands on real app: {sorted(missing)!r}"
-    )
+    missing = [command_name for command_name in _REQUIRED_ROOT_COMMANDS if not command_path_exists(app, [command_name])]
+    assert not missing, f"Missing required stable root commands on real app: {sorted(missing)!r}"
 
 
 def test_run_and_plan_resolve_as_top_level_paths_on_real_app() -> None:
@@ -39,10 +33,6 @@ def test_run_and_plan_resolve_as_top_level_paths_on_real_app() -> None:
 
 def test_at_least_five_approved_stable_top_level_commands_exist() -> None:
     stable_count = sum(
-        1
-        for command_name in _APPROVED_STABLE_TOP_LEVEL_COMMANDS
-        if command_path_exists(app, [command_name])
+        1 for command_name in _APPROVED_STABLE_TOP_LEVEL_COMMANDS if command_path_exists(app, [command_name])
     )
-    assert stable_count >= 5, (
-        f"Expected at least 5 approved stable top-level command paths; found {stable_count}"
-    )
+    assert stable_count >= 5, f"Expected at least 5 approved stable top-level command paths; found {stable_count}"

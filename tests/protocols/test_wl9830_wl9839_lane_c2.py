@@ -34,9 +34,7 @@ def test_wl9830_parse_phase_separates_error_projection_from_execution_shape() ->
     # @trace WL-9830
     _reset_state()
     session_id = _start_session()
-    plan = server._build_turn_submit_phase_plan(
-        "req", {"session_id": session_id, "input": "c2"}
-    )
+    plan = server._build_turn_submit_phase_plan("req", {"session_id": session_id, "input": "c2"})
     parse_phase = server._build_turn_submit_parse_phase(plan)
     assert parse_phase["parse_error"] is None
     assert parse_phase["session_id"] == session_id
@@ -46,9 +44,7 @@ def test_wl9830_parse_phase_separates_error_projection_from_execution_shape() ->
 def test_wl9831_parse_phase_preserves_parse_error_contract() -> None:
     # @trace WL-9831
     _reset_state()
-    plan = server._build_turn_submit_phase_plan(
-        "req", {"session_id": "session-404", "input": "c2"}
-    )
+    plan = server._build_turn_submit_phase_plan("req", {"session_id": "session-404", "input": "c2"})
     parse_phase = server._build_turn_submit_parse_phase(plan)
     assert parse_phase["parse_error"] is not None
     assert parse_phase["parse_error"]["error"]["code"] == -32001
@@ -58,9 +54,7 @@ def test_wl9832_execution_phase_resolves_typed_tuple_from_parse_phase() -> None:
     # @trace WL-9832
     _reset_state()
     session_id = _start_session()
-    plan = server._build_turn_submit_phase_plan(
-        "req", {"session_id": session_id, "input": "c2"}
-    )
+    plan = server._build_turn_submit_phase_plan("req", {"session_id": session_id, "input": "c2"})
     parse_phase = server._build_turn_submit_parse_phase(plan)
     resolved = server._build_turn_submit_execution_phase(parse_phase)
     assert resolved[0] == session_id
@@ -90,9 +84,7 @@ def test_wl9834_commit_resolution_phase_preserves_commit_tuple_shape() -> None:
     session_id = _start_session()
     session = SERVER_STATE.sessions[session_id]
     commit_phase = server._build_turn_submit_commit_phase(session_id, session, "c2")
-    turn_id, turn, resolved_session = server._build_turn_submit_commit_resolution_phase(
-        commit_phase
-    )
+    turn_id, turn, resolved_session = server._build_turn_submit_commit_resolution_phase(commit_phase)
     assert turn_id == commit_phase["turn_id"]
     assert turn is commit_phase["turn"]
     assert resolved_session is session
@@ -101,9 +93,7 @@ def test_wl9834_commit_resolution_phase_preserves_commit_tuple_shape() -> None:
 def test_wl9835_commit_resolution_phase_fails_loudly_on_invalid_shape() -> None:
     # @trace WL-9835
     with pytest.raises(ValueError, match="Turn submit commit target unresolved"):
-        server._build_turn_submit_commit_resolution_phase(
-            {"turn_id": None, "turn": None, "session": None}
-        )
+        server._build_turn_submit_commit_resolution_phase({"turn_id": None, "turn": None, "session": None})
 
 
 def test_wl9836_side_effects_resolution_phase_preserves_execution_inputs() -> None:
@@ -111,9 +101,7 @@ def test_wl9836_side_effects_resolution_phase_preserves_execution_inputs() -> No
     _reset_state()
     session_id = _start_session()
     turn = {"id": "turn-1", "session_id": session_id, "status": "in_progress"}
-    phase = server._build_turn_submit_side_effects_phase(
-        session_id, "turn-1", turn, "c2", True, "diff"
-    )
+    phase = server._build_turn_submit_side_effects_phase(session_id, "turn-1", turn, "c2", True, "diff")
     resolved = server._build_turn_submit_side_effects_resolution_phase(phase)
     assert resolved[0] == session_id
     assert resolved[1] == "turn-1"
@@ -144,8 +132,8 @@ def test_wl9838_response_resolution_phase_preserves_typed_response_contract() ->
     response_phase = server._build_turn_submit_response_phase(
         True, "req", turn, {"id": "approval-1", "status": "requested"}
     )
-    request_has_id, request_id, resolved_turn, approval_payload = (
-        server._build_turn_submit_response_resolution_phase(response_phase)
+    request_has_id, request_id, resolved_turn, approval_payload = server._build_turn_submit_response_resolution_phase(
+        response_phase
     )
     assert request_has_id is True
     assert request_id == "req"
@@ -154,9 +142,7 @@ def test_wl9838_response_resolution_phase_preserves_typed_response_contract() ->
     assert approval_payload["id"] == "approval-1"
 
 
-def test_wl9839_handler_preserves_parse_failure_short_circuit_without_side_effects() -> (
-    None
-):
+def test_wl9839_handler_preserves_parse_failure_short_circuit_without_side_effects() -> None:
     # @trace WL-9839
     _reset_state()
     session_id = _start_session()

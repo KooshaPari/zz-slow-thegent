@@ -133,9 +133,7 @@ class TestWLSortNormalizer:
         from thegent.integrations.wl_sort_normalize import WLSortNormalizer
 
         normalizer = WLSortNormalizer()
-        items = [
-            {"id": "wl-001", "title": "Test", "priority": "HIGH", "owner": "alice"}
-        ]
+        items = [{"id": "wl-001", "title": "Test", "priority": "HIGH", "owner": "alice"}]
         normalized = normalizer.normalize_ids(items)
 
         assert normalized[0]["id"] == "WL-001"

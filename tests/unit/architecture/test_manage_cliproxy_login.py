@@ -67,9 +67,7 @@ def test_public_symbols_present(name):
     assert hasattr(mod, name), f"Login module missing {name!r}"
 
 
-@pytest.mark.parametrize(
-    "name", [("run_login",), ("run_login_unified",), ("_LOGIN_FLAGS",)]
-)
+@pytest.mark.parametrize("name", [("run_login",), ("run_login_unified",), ("_LOGIN_FLAGS",)])
 def test_shim_reexports_login_symbols(name):
     """The legacy shim must re-export every login-flow symbol."""
     shim = sys.modules[SHIM_MODULE]
@@ -184,11 +182,7 @@ def test_preflight_login_skips_when_credentials_present():
     """Preflight should return True when the config has credentials."""
     from thegent.use_cases.manage_cliproxy_login import _preflight_login
 
-    config = {
-        "openai-compatibility": [
-            {"name": "qwen", "api-key-entries": [{"api-key": "sk-test"}]}
-        ]
-    }
+    config = {"openai-compatibility": [{"name": "qwen", "api-key-entries": [{"api-key": "sk-test"}]}]}
     assert _preflight_login(config, "qwen", skip_if_configured=True) is True
     assert _preflight_login(config, "qwen", skip_if_configured=False) is False
 
@@ -203,9 +197,7 @@ def test_resolve_factory_key_auto_in_skip_mode():
         calls.append(_)
         return ""
 
-    key, declined = _resolve_factory_key(
-        "qwen", "Qwen", "/fake/path", "sk-factory", prompt, skip_if_configured=True
-    )
+    key, declined = _resolve_factory_key("qwen", "Qwen", "/fake/path", "sk-factory", prompt, skip_if_configured=True)
     assert key == "sk-factory"
     assert declined is False
     assert calls == []  # prompt never invoked
@@ -218,9 +210,7 @@ def test_resolve_factory_key_yes_in_confirm_mode():
     def prompt(_):
         return "y"
 
-    key, _ = _resolve_factory_key(
-        "qwen", "Qwen", "/fake/path", "sk-factory", prompt, skip_if_configured=False
-    )
+    key, _ = _resolve_factory_key("qwen", "Qwen", "/fake/path", "sk-factory", prompt, skip_if_configured=False)
     assert key == "sk-factory"
 
 
@@ -231,9 +221,7 @@ def test_resolve_factory_key_no_in_confirm_mode():
     def prompt(_):
         return "n"
 
-    key, _ = _resolve_factory_key(
-        "qwen", "Qwen", "/fake/path", "sk-factory", prompt, skip_if_configured=False
-    )
+    key, _ = _resolve_factory_key("qwen", "Qwen", "/fake/path", "sk-factory", prompt, skip_if_configured=False)
     assert key is None
 
 

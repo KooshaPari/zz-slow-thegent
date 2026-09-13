@@ -98,11 +98,7 @@ def test_resolve_provider_max_round_robins() -> None:
     for _ in range(8):
         p = _resolve_provider_for_model("max")
         providers_seen.add(p)
-    assert (
-        "nim" in providers_seen
-        or "kilo" in providers_seen
-        or "minimax" in providers_seen
-    )
+    assert "nim" in providers_seen or "kilo" in providers_seen or "minimax" in providers_seen
 
 
 def test_dex_uses_bypass_flag() -> None:
@@ -168,9 +164,7 @@ def test_dex_max_accepts_force_alias() -> None:
 
 def test_dex_max_accepts_legacy_bypass_alias() -> None:
     with patch("thegent.dex_main._run_codex_interactive") as run_interactive:
-        result = runner.invoke(
-            app, ["max", "--dangerously-bypass-approvals-and-sandbox"]
-        )
+        result = runner.invoke(app, ["max", "--dangerously-bypass-approvals-and-sandbox"])
         assert result.exit_code == 0
         run_interactive.assert_called_once_with(
             "max",
@@ -300,9 +294,7 @@ def test_dex_bg_dex_uses_codex_canonical_model() -> None:
 
 def test_dex_bg_global_forwards_remote_to_bg_cmd() -> None:
     with patch("thegent.cli.bg_cmd") as bg_cmd:
-        result = runner.invoke(
-            app, ["bg", "dex", "hello", "--remote", "node-77", "--owner", "qa"]
-        )
+        result = runner.invoke(app, ["bg", "dex", "hello", "--remote", "node-77", "--owner", "qa"])
     assert result.exit_code == 0
     bg_cmd.assert_called_once()
     assert bg_cmd.call_args.kwargs["remote"] == "node-77"
@@ -372,9 +364,7 @@ def test_default_dex_callback_uses_flash_table_driven(
     )
 
 
-def test_default_dex_direct_callback_explicit_flags_do_not_trigger_native_exec() -> (
-    None
-):
+def test_default_dex_direct_callback_explicit_flags_do_not_trigger_native_exec() -> None:
     """Regression: direct callback invocation should not hit native exec via OptionInfo defaults."""
     ctx = type("Ctx", (), {"invoked_subcommand": None})()
     with (
@@ -397,9 +387,7 @@ def test_default_dex_native_force_includes_force_yolo_for_native_path() -> None:
     ):
         default_dex(ctx, force=True, native=True)  # type: ignore[arg-type]
 
-    exec_native.assert_called_once_with(
-        ["--force-yolo", _DEX_YOLO_FLAG, _DEX_BYPASS_FLAG]
-    )
+    exec_native.assert_called_once_with(["--force-yolo", _DEX_YOLO_FLAG, _DEX_BYPASS_FLAG])
 
 
 def test_run_codex_interactive_includes_yolo_and_dangerously_bypass_flags() -> None:
@@ -430,9 +418,7 @@ def test_run_codex_interactive_deduplicates_bypass_flags() -> None:
         patch("thegent.dex_main.os.execvpe") as execvpe,
         patch("thegent.dex_main.wrap_with_caffeinate", side_effect=lambda cmd, _: cmd),
     ):
-        _run_codex_interactive(
-            "max", dangerously_bypass=True, extra_args=[_DEX_BYPASS_FLAG]
-        )
+        _run_codex_interactive("max", dangerously_bypass=True, extra_args=[_DEX_BYPASS_FLAG])
         command = execvpe.call_args.args[1]
         assert command.count(_DEX_YOLO_FLAG) == 1
         assert command.count(_DEX_BYPASS_FLAG) == 1
@@ -444,10 +430,7 @@ def test_dex_unknown_model_policy_rejects_for_run_and_bg(subcommand: str) -> Non
     normalized_output = _normalized_output(result.output)
     assert result.exit_code == 1
     assert "Unknown model 'unknown-model'" in normalized_output
-    assert (
-        "Allowed: dex, high, xhigh, max, glm, haiku, opus, sonnet, ultra, flash, mini"
-        in normalized_output
-    )
+    assert "Allowed: dex, high, xhigh, max, glm, haiku, opus, sonnet, ultra, flash, mini" in normalized_output
 
 
 def test_dex_bg_unknown_model_policy_rejects() -> None:
@@ -455,10 +438,7 @@ def test_dex_bg_unknown_model_policy_rejects() -> None:
     normalized_output = _normalized_output(result.output)
     assert result.exit_code == 1
     assert "Unknown model 'unknown-model'" in normalized_output
-    assert (
-        "Allowed: dex, high, xhigh, max, glm, haiku, opus, sonnet, ultra, flash, mini"
-        in normalized_output
-    )
+    assert "Allowed: dex, high, xhigh, max, glm, haiku, opus, sonnet, ultra, flash, mini" in normalized_output
 
 
 def test_dex_resume_passthrough_args() -> None:

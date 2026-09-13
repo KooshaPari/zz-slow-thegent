@@ -41,9 +41,7 @@ class GenerationResponse:
 class CodeGenerationProvider(Protocol):
     """Provider contract used by ProgramSynthesizer."""
 
-    def generate_code(
-        self, prompt: str, formal_spec: str | None = None
-    ) -> GenerationResponse:
+    def generate_code(self, prompt: str, formal_spec: str | None = None) -> GenerationResponse:
         """Generate source code for prompt + optional formal specification."""
         ...
 
@@ -51,37 +49,27 @@ class CodeGenerationProvider(Protocol):
 class ConfiguredCodeGenerationProvider:
     """Default provider that must be replaced by an injected runtime provider."""
 
-    def generate_code(
-        self, prompt: str, formal_spec: str | None = None
-    ) -> GenerationResponse:
-        raise RuntimeError(
-            "No synthesis provider configured. Inject a CodeGenerationProvider into ProgramSynthesizer."
-        )
+    def generate_code(self, prompt: str, formal_spec: str | None = None) -> GenerationResponse:
+        raise RuntimeError("No synthesis provider configured. Inject a CodeGenerationProvider into ProgramSynthesizer.")
 
 
 class ProgramSynthesizer:
     """Orchestrates neural-symbolic program generation."""
 
-    def __init__(
-        self, run_id: str, provider: CodeGenerationProvider | None = None
-    ) -> None:
+    def __init__(self, run_id: str, provider: CodeGenerationProvider | None = None) -> None:
         self.run_id = run_id
         self.executor = SymbolicRiskExplorer(dag={})
         self.safety_checker = ToolSafetyChecker()
         self.provider = provider or ConfiguredCodeGenerationProvider()
 
-    def synthesize(
-        self, prompt: str, formal_spec: str | None = None
-    ) -> SynthesisResult:
+    def synthesize(self, prompt: str, formal_spec: str | None = None) -> SynthesisResult:
         """Synthesize a program from a prompt and optional formal spec."""
         _log.info("Starting neural-symbolic synthesis for run: %s", self.run_id)
 
         # 1. Provider-backed neural generation
         generation_started = time.perf_counter()
         generated = self.provider.generate_code(prompt=prompt, formal_spec=formal_spec)
-        generation_latency_ms = round(
-            (time.perf_counter() - generation_started) * 1000, 2
-        )
+        generation_latency_ms = round((time.perf_counter() - generation_started) * 1000, 2)
         code = generated.source_code
 
         # 2. Symbolic Verification
@@ -94,18 +82,14 @@ class ProgramSynthesizer:
             is_correct = False
             verification_log.append("Symbolic check FAILED: Program may not terminate.")
         else:
-            verification_log.append(
-                "Symbolic check PASSED: Program satisfies base invariants."
-            )
+            verification_log.append("Symbolic check PASSED: Program satisfies base invariants.")
 
         # 3. Safety Check
         _log.info("Running safety invariant check...")
         violations = []
         # In a real system, we'd parse the code for tool calls
         if "rm -rf" in code:
-            violations.append(
-                "Destructive command 'rm -rf' detected in synthesized code."
-            )
+            violations.append("Destructive command 'rm -rf' detected in synthesized code.")
 
         return SynthesisResult(
             program_id=f"prog_{self.run_id}",

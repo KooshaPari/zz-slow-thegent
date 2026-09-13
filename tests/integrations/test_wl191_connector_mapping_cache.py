@@ -169,17 +169,13 @@ class TestConnectorMappingCache:
             cache.put("github", "status", "   ")
 
     @pytest.mark.requirement("WL-265")
-    def test_bootstrap_required_true_when_missing_required_fields(
-        self, cache: ConnectorMappingCache
-    ) -> None:
+    def test_bootstrap_required_true_when_missing_required_fields(self, cache: ConnectorMappingCache) -> None:
         """bootstrap_required returns True when required fields are missing."""
         cache.put("github", "status", "field_status")
         assert cache.bootstrap_required("github", ["status", "priority"]) is True
 
     @pytest.mark.requirement("WL-265")
-    def test_bootstrap_persists_required_mappings(
-        self, cache: ConnectorMappingCache
-    ) -> None:
+    def test_bootstrap_persists_required_mappings(self, cache: ConnectorMappingCache) -> None:
         """bootstrap writes mappings and satisfies bootstrap_required."""
         cache.bootstrap("github", {"status": "f1", "priority": "f2"})
         assert cache.bootstrap_required("github", ["status", "priority"]) is False
@@ -187,9 +183,7 @@ class TestConnectorMappingCache:
         assert cache.get("github", "priority") == "f2"
 
     @pytest.mark.requirement("WL-270")
-    def test_get_with_status_marks_stale_entries(
-        self, cache: ConnectorMappingCache
-    ) -> None:
+    def test_get_with_status_marks_stale_entries(self, cache: ConnectorMappingCache) -> None:
         """get_with_status returns explicit stale marker for expired entries."""
         cache.put("github", "status", "field_1", ttl_seconds=0)
         payload = cache.get_with_status("github", "status")

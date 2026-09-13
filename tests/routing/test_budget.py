@@ -32,27 +32,21 @@ from thegent.utils.routing_impl.budget import (
 @pytest.mark.requirement("FR-BUDGET-031")
 def test_budget_record_not_exhausted_when_under_limit() -> None:
     """A record with spend below budget must not be exhausted."""
-    record = BudgetRecord(
-        entity_id="u1", entity_type="user", budget_usd=10.0, spent_usd=5.0
-    )
+    record = BudgetRecord(entity_id="u1", entity_type="user", budget_usd=10.0, spent_usd=5.0)
     assert record.is_exhausted is False
 
 
 @pytest.mark.requirement("FR-BUDGET-031")
 def test_budget_record_exhausted_at_limit() -> None:
     """A record with spend equal to budget must be exhausted."""
-    record = BudgetRecord(
-        entity_id="u1", entity_type="user", budget_usd=10.0, spent_usd=10.0
-    )
+    record = BudgetRecord(entity_id="u1", entity_type="user", budget_usd=10.0, spent_usd=10.0)
     assert record.is_exhausted is True
 
 
 @pytest.mark.requirement("FR-BUDGET-031")
 def test_budget_record_exhausted_over_limit() -> None:
     """A record with spend exceeding budget must be exhausted."""
-    record = BudgetRecord(
-        entity_id="u1", entity_type="user", budget_usd=10.0, spent_usd=15.0
-    )
+    record = BudgetRecord(entity_id="u1", entity_type="user", budget_usd=10.0, spent_usd=15.0)
     assert record.is_exhausted is True
 
 
@@ -100,27 +94,21 @@ def test_budget_record_no_soft_alert_when_exhausted() -> None:
 @pytest.mark.requirement("FR-BUDGET-029")
 def test_budget_record_fraction_used() -> None:
     """fraction_used should equal spent_usd / budget_usd."""
-    record = BudgetRecord(
-        entity_id="u1", entity_type="user", budget_usd=20.0, spent_usd=5.0
-    )
+    record = BudgetRecord(entity_id="u1", entity_type="user", budget_usd=20.0, spent_usd=5.0)
     assert record.fraction_used == pytest.approx(0.25)
 
 
 @pytest.mark.requirement("FR-BUDGET-029")
 def test_budget_record_no_budget_fraction_is_zero() -> None:
     """When budget_usd=0 (unlimited), fraction_used must be 0.0."""
-    record = BudgetRecord(
-        entity_id="u1", entity_type="user", budget_usd=0.0, spent_usd=99.0
-    )
+    record = BudgetRecord(entity_id="u1", entity_type="user", budget_usd=0.0, spent_usd=99.0)
     assert record.fraction_used == 0.0
 
 
 @pytest.mark.requirement("FR-BUDGET-029")
 def test_budget_record_no_budget_not_exhausted() -> None:
     """When budget_usd=0 (unlimited), is_exhausted must be False."""
-    record = BudgetRecord(
-        entity_id="u1", entity_type="user", budget_usd=0.0, spent_usd=9999.0
-    )
+    record = BudgetRecord(entity_id="u1", entity_type="user", budget_usd=0.0, spent_usd=9999.0)
     assert record.is_exhausted is False
 
 
@@ -207,15 +195,9 @@ def test_budget_hierarchy_get_missing_returns_none() -> None:
 def test_budget_hierarchy_record_spend() -> None:
     """record_spend must add cost to all listed entity records."""
     hierarchy = BudgetHierarchy()
-    team = BudgetRecord(
-        entity_id="team-1", entity_type="team", budget_usd=100.0, spent_usd=0.0
-    )
-    user = BudgetRecord(
-        entity_id="user-1", entity_type="user", budget_usd=50.0, spent_usd=0.0
-    )
-    key = BudgetRecord(
-        entity_id="sk-tg-k1", entity_type="key", budget_usd=10.0, spent_usd=0.0
-    )
+    team = BudgetRecord(entity_id="team-1", entity_type="team", budget_usd=100.0, spent_usd=0.0)
+    user = BudgetRecord(entity_id="user-1", entity_type="user", budget_usd=50.0, spent_usd=0.0)
+    key = BudgetRecord(entity_id="sk-tg-k1", entity_type="key", budget_usd=10.0, spent_usd=0.0)
     hierarchy.register(team)
     hierarchy.register(user)
     hierarchy.register(key)
@@ -231,16 +213,8 @@ def test_budget_hierarchy_record_spend() -> None:
 def test_budget_hierarchy_check_budget_allowed() -> None:
     """When no entity is exhausted, check_budget must return allowed=True."""
     hierarchy = BudgetHierarchy()
-    hierarchy.register(
-        BudgetRecord(
-            entity_id="team-1", entity_type="team", budget_usd=100.0, spent_usd=10.0
-        )
-    )
-    hierarchy.register(
-        BudgetRecord(
-            entity_id="user-1", entity_type="user", budget_usd=50.0, spent_usd=5.0
-        )
-    )
+    hierarchy.register(BudgetRecord(entity_id="team-1", entity_type="team", budget_usd=100.0, spent_usd=10.0))
+    hierarchy.register(BudgetRecord(entity_id="user-1", entity_type="user", budget_usd=50.0, spent_usd=5.0))
     result = hierarchy.check_budget(["team-1", "user-1"])
     assert result.allowed is True
     assert result.blocking_entity is None
@@ -250,16 +224,8 @@ def test_budget_hierarchy_check_budget_allowed() -> None:
 def test_budget_hierarchy_check_budget_blocked() -> None:
     """When an entity is exhausted, check_budget must return allowed=False."""
     hierarchy = BudgetHierarchy()
-    hierarchy.register(
-        BudgetRecord(
-            entity_id="team-1", entity_type="team", budget_usd=100.0, spent_usd=10.0
-        )
-    )
-    hierarchy.register(
-        BudgetRecord(
-            entity_id="user-1", entity_type="user", budget_usd=5.0, spent_usd=5.0
-        )
-    )
+    hierarchy.register(BudgetRecord(entity_id="team-1", entity_type="team", budget_usd=100.0, spent_usd=10.0))
+    hierarchy.register(BudgetRecord(entity_id="user-1", entity_type="user", budget_usd=5.0, spent_usd=5.0))
     result = hierarchy.check_budget(["team-1", "user-1"])
     assert result.allowed is False
     assert result.blocking_entity == "user-1"
@@ -269,16 +235,8 @@ def test_budget_hierarchy_check_budget_blocked() -> None:
 def test_budget_hierarchy_check_soft_alert() -> None:
     """When an entity is at soft threshold, check_budget must return soft_alert=True."""
     hierarchy = BudgetHierarchy()
-    hierarchy.register(
-        BudgetRecord(
-            entity_id="team-1", entity_type="team", budget_usd=100.0, spent_usd=85.0
-        )
-    )
-    hierarchy.register(
-        BudgetRecord(
-            entity_id="user-1", entity_type="user", budget_usd=50.0, spent_usd=10.0
-        )
-    )
+    hierarchy.register(BudgetRecord(entity_id="team-1", entity_type="team", budget_usd=100.0, spent_usd=85.0))
+    hierarchy.register(BudgetRecord(entity_id="user-1", entity_type="user", budget_usd=50.0, spent_usd=10.0))
     result = hierarchy.check_budget(["team-1", "user-1"])
     assert result.allowed is True
     assert result.soft_alert is True
@@ -289,11 +247,7 @@ def test_budget_hierarchy_check_soft_alert() -> None:
 def test_budget_hierarchy_missing_entity_ignored() -> None:
     """Entity IDs not in the hierarchy are silently skipped without error."""
     hierarchy = BudgetHierarchy()
-    hierarchy.register(
-        BudgetRecord(
-            entity_id="team-1", entity_type="team", budget_usd=100.0, spent_usd=5.0
-        )
-    )
+    hierarchy.register(BudgetRecord(entity_id="team-1", entity_type="team", budget_usd=100.0, spent_usd=5.0))
     # "ghost-entity" is not registered
     result = hierarchy.check_budget(["team-1", "ghost-entity"])
     assert result.allowed is True

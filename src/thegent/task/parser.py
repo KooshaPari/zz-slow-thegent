@@ -97,9 +97,7 @@ def parse_legacy_task(content: str) -> dict[str, Any]:
         task["subagent_type"] = task_match.group(1).strip()
         task["description"] = task_match.group(2).strip()
 
-    input_match = re.search(
-        r"Task Input:\s*\n(.*?)(?=Task Output:|$)", content, re.DOTALL
-    )
+    input_match = re.search(r"Task Input:\s*\n(.*?)(?=Task Output:|$)", content, re.DOTALL)
     if input_match:
         input_content = input_match.group(1)
 
@@ -139,9 +137,7 @@ def parse_legacy_task(content: str) -> dict[str, Any]:
             if impl_match:
                 task["implementation_details"] = impl_match.group(1).strip()
 
-            steps_match = re.search(
-                r"### Steps to Complete\s*\n(.*?)(?=###|$)", prompt_content, re.DOTALL
-            )
+            steps_match = re.search(r"### Steps to Complete\s*\n(.*?)(?=###|$)", prompt_content, re.DOTALL)
             if steps_match:
                 steps_content = steps_match.group(1)
                 steps = []
@@ -156,15 +152,11 @@ def parse_legacy_task(content: str) -> dict[str, Any]:
                 if steps:
                     task["steps"] = steps
 
-            deliverables_match = re.search(
-                r"### Deliverables\s*\n(.*?)(?=###|$)", prompt_content, re.DOTALL
-            )
+            deliverables_match = re.search(r"### Deliverables\s*\n(.*?)(?=###|$)", prompt_content, re.DOTALL)
             if deliverables_match:
                 deliverables_content = deliverables_match.group(1)
                 task["deliverables"] = [
-                    d.strip()
-                    for d in deliverables_content.split("\n")
-                    if d.strip() and not d.strip().startswith("-")
+                    d.strip() for d in deliverables_content.split("\n") if d.strip() and not d.strip().startswith("-")
                 ]
 
     return task

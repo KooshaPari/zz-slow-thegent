@@ -32,9 +32,7 @@ class TestOrchestrateObserveRecoverStatusLogsWaitStopAlias:
         session_dir = tmp_path / "sessions"
         session_dir.mkdir(parents=True)
         monkeypatch.setenv("THGENT_SESSION_DIR", str(session_dir))
-        result = runner.invoke(
-            app, ["orchestrate", "status", "session_unknown_e2e_orch"]
-        )
+        result = runner.invoke(app, ["orchestrate", "status", "session_unknown_e2e_orch"])
         assert result.exit_code == 2
         assert "Session not found" in result.stderr
 
@@ -108,9 +106,7 @@ class TestOrchestrateObserveInspectAlias:
         session_dir = tmp_path / "sessions"
         session_dir.mkdir(parents=True)
         monkeypatch.setenv("THGENT_SESSION_DIR", str(session_dir))
-        result = runner.invoke(
-            app, ["orchestrate", "inspect", "--owner", "e2e_orch_inspect_xyz"]
-        )
+        result = runner.invoke(app, ["orchestrate", "inspect", "--owner", "e2e_orch_inspect_xyz"])
         assert result.exit_code == 0
         assert "No sessions" in result.stdout
 
@@ -124,9 +120,7 @@ class TestOrchestrateObserveInspectAlias:
         session_dir = tmp_path / "sessions"
         session_dir.mkdir(parents=True)
         monkeypatch.setenv("THGENT_SESSION_DIR", str(session_dir))
-        result = runner.invoke(
-            app, ["observe", "inspect", "--owner", "e2e_obs_inspect_xyz"]
-        )
+        result = runner.invoke(app, ["observe", "inspect", "--owner", "e2e_obs_inspect_xyz"])
         assert result.exit_code == 0
         assert "No sessions" in result.stdout
 
@@ -167,11 +161,7 @@ class TestGovernConformanceExecution:
         """govern conformance runs adapter conformance suite and exits 0 when all pass."""
         result = runner.invoke(app, ["govern", "conformance"])
         assert result.exit_code == 0
-        assert (
-            "PASS" in result.stdout
-            or "Passed" in result.stdout
-            or "passed" in result.stdout
-        )
+        assert "PASS" in result.stdout or "Passed" in result.stdout or "passed" in result.stdout
 
     def test_govern_conformance_format_json_exits_zero(self) -> None:
         # @trace FR-CLI-001
@@ -344,13 +334,9 @@ class TestOrchestratePauseResumeAlias:
         session_dir = tmp_path / "sessions"
         session_dir.mkdir(parents=True)
         monkeypatch.setenv("THGENT_SESSION_DIR", str(session_dir))
-        result = runner.invoke(
-            app, ["orchestrate", "pause", "session_unknown_e2e_pause"]
-        )
+        result = runner.invoke(app, ["orchestrate", "pause", "session_unknown_e2e_pause"])
         assert result.exit_code != 0
-        assert (
-            "Session not found" in result.stderr or "not found" in result.stderr.lower()
-        )
+        assert "Session not found" in result.stderr or "not found" in result.stderr.lower()
 
     def test_orchestrate_resume_unknown_session_exits_nonzero(
         # @trace FR-CLI-001
@@ -362,13 +348,9 @@ class TestOrchestratePauseResumeAlias:
         session_dir = tmp_path / "sessions"
         session_dir.mkdir(parents=True)
         monkeypatch.setenv("THGENT_SESSION_DIR", str(session_dir))
-        result = runner.invoke(
-            app, ["orchestrate", "resume", "session_unknown_e2e_resume"]
-        )
+        result = runner.invoke(app, ["orchestrate", "resume", "session_unknown_e2e_resume"])
         assert result.exit_code != 0
-        assert (
-            "Session not found" in result.stderr or "not found" in result.stderr.lower()
-        )
+        assert "Session not found" in result.stderr or "not found" in result.stderr.lower()
 
 
 @pytest.mark.e2e
@@ -398,9 +380,7 @@ class TestOrchestrateRunBgHelpAndUnknownAgent:
         project.mkdir()
         (project / ".git").mkdir()
         monkeypatch.chdir(project)
-        result = runner.invoke(
-            app, ["orchestrate", "run", "test prompt", "nonexistent_agent_xyz"]
-        )
+        result = runner.invoke(app, ["orchestrate", "run", "test prompt", "nonexistent_agent_xyz"])
         assert result.exit_code in (1, 2)
 
     def test_orchestrate_bg_unknown_agent_exits_nonzero_or_zero(
@@ -483,9 +463,7 @@ class TestPlanListFormatExecution:
             "# DAG\n\n## Tasks\n\n| id | agent | prompt | depends_on | status |\n"
             "|----|-------|--------|------------|--------|\n"
         )
-        result = runner.invoke(
-            app, ["plan", "list", "--format", "md", "--cd", str(project)]
-        )
+        result = runner.invoke(app, ["plan", "list", "--format", "md", "--cd", str(project)])
         assert result.exit_code == 0
 
     def test_plan_list_empty_dag_exits_zero(self, tmp_path: Path) -> None:
@@ -519,9 +497,7 @@ class TestHistoryEventsAliasExecution:
         session_dir = tmp_path / "sessions"
         session_dir.mkdir(parents=True)
         monkeypatch.setenv("THGENT_SESSION_DIR", str(session_dir))
-        result = runner.invoke(
-            app, ["history", "events", "--format", "json", "--limit", "3"]
-        )
+        result = runner.invoke(app, ["history", "events", "--format", "json", "--limit", "3"])
         assert result.exit_code == 0
 
     def test_observe_history_limit_exits_zero(
@@ -631,17 +607,10 @@ class TestPlanAnalyzeDeepOptions:
         # @trace FR-CLI-001
         """plan analyze --format json with DAG exits 0."""
         project = self._dag_project(tmp_path)
-        result = runner.invoke(
-            app, ["plan", "analyze", "--format", "json", "--cd", str(project)]
-        )
+        result = runner.invoke(app, ["plan", "analyze", "--format", "json", "--cd", str(project)])
         assert result.exit_code == 0
         data = load_cli_json(result.stdout)
-        assert (
-            "pert" in data
-            or "resources" in data
-            or "continuity" in data
-            or "tasks" in str(data).lower()
-        )
+        assert "pert" in data or "resources" in data or "continuity" in data or "tasks" in str(data).lower()
 
 
 @pytest.mark.e2e
@@ -658,9 +627,7 @@ class TestObserveDriftDeepOptions:
         session_dir = tmp_path / "sessions"
         session_dir.mkdir(parents=True)
         monkeypatch.setenv("THGENT_SESSION_DIR", str(session_dir))
-        result = runner.invoke(
-            app, ["observe", "drift", "--format", "json", "--window", "10"]
-        )
+        result = runner.invoke(app, ["observe", "drift", "--format", "json", "--window", "10"])
         assert result.exit_code == 0
         data = load_cli_json(result.stdout)
         assert "issues" in data or "budget" in data
@@ -705,9 +672,7 @@ class TestObserveSummaryCustom:
         session_dir = tmp_path / "sessions"
         session_dir.mkdir(parents=True)
         monkeypatch.setenv("THGENT_SESSION_DIR", str(session_dir))
-        result = runner.invoke(
-            app, ["observe", "summary", "--format", "json", "--limit", "20"]
-        )
+        result = runner.invoke(app, ["observe", "summary", "--format", "json", "--limit", "20"])
         assert result.exit_code == 0
         payload = load_cli_json(result.stdout)
         assert payload["payload_type"] == "observe_summary"
@@ -812,9 +777,7 @@ class TestObserveSummaryCustom:
         # @trace FR-CLI-001
         """observe summary treats --trend-samples 1 as disabled trend mode."""
         _, trend_health_signature = expected_trend_health_signature()
-        result = runner.invoke(
-            app, ["observe", "summary", "--format", "json", "--trend-samples", "1"]
-        )
+        result = runner.invoke(app, ["observe", "summary", "--format", "json", "--trend-samples", "1"])
         assert result.exit_code == 0
         payload = load_cli_json(result.stdout)
         trend = payload["trend_summary"]
@@ -825,22 +788,10 @@ class TestObserveSummaryCustom:
         assert payload["generated_query"]["trend_samples"] == 1
         assert trend["trend_snapshot_health"] == "disabled"
         assert trend["trend_snapshot_health_score"] is None
-        assert (
-            trend["trend_snapshot_health_breakdown"]["policy_signature"]
-            == trend_health_signature
-        )
-        assert (
-            trend["trend_snapshot_health_breakdown"]["policy"]["healthy_threshold"]
-            == 95
-        )
-        assert (
-            trend["trend_snapshot_health_breakdown"]["policy"]["warning_threshold"]
-            == 80
-        )
-        assert (
-            trend["trend_snapshot_health_breakdown"]["policy"]["degraded_threshold"]
-            == 50
-        )
+        assert trend["trend_snapshot_health_breakdown"]["policy_signature"] == trend_health_signature
+        assert trend["trend_snapshot_health_breakdown"]["policy"]["healthy_threshold"] == 95
+        assert trend["trend_snapshot_health_breakdown"]["policy"]["warning_threshold"] == 80
+        assert trend["trend_snapshot_health_breakdown"]["policy"]["degraded_threshold"] == 50
 
     def test_observe_summary_trend_samples_two_reports_effective(self) -> None:
         # @trace FR-CLI-001
@@ -861,9 +812,7 @@ class TestObserveSummaryCustom:
         # @trace FR-CLI-001
         """observe summary treats --trend-samples 0 as disabled trend mode."""
         _, trend_health_signature = expected_trend_health_signature()
-        result = runner.invoke(
-            app, ["observe", "summary", "--format", "json", "--trend-samples", "0"]
-        )
+        result = runner.invoke(app, ["observe", "summary", "--format", "json", "--trend-samples", "0"])
         assert result.exit_code == 0
         payload = load_cli_json(result.stdout)
         trend = payload["trend_summary"]
@@ -872,10 +821,7 @@ class TestObserveSummaryCustom:
         assert trend["trend_effective_samples"] == 0
         assert payload["generated_query"]["trend_samples"] == 0
         assert trend["trend_snapshot_health"] == "disabled"
-        assert (
-            trend["trend_snapshot_health_breakdown"]["policy_signature"]
-            == trend_health_signature
-        )
+        assert trend["trend_snapshot_health_breakdown"]["policy_signature"] == trend_health_signature
 
     def test_observe_summary_trend_samples_large_enables_and_tracks_effective_samples(
         self,
@@ -975,10 +921,7 @@ class TestObserveSummaryCustom:
         assert scope["limit"] == 25
         assert scope["top_escalations"] == 7
         assert trend["scope_signature"]
-        assert (
-            payload["generated_query"]["trend_scope_signature"]
-            == trend["scope_signature"]
-        )
+        assert payload["generated_query"]["trend_scope_signature"] == trend["scope_signature"]
         assert trend["trend_snapshot_ids"] == []
         assert trend["trend_snapshot_ids_csv"] == ""
         assert trend["trend_snapshot_window_seconds"] is None
@@ -1015,9 +958,7 @@ class TestObserveSummaryCustom:
             "missing_baseline_penalty": 45.0,
         }
         trend_health_signature = hashlib.sha256(
-            json.dumps(
-                trend_health_policy, sort_keys=True, separators=(",", ":").decode()
-            ).encode("utf-8")
+            json.dumps(trend_health_policy, sort_keys=True, separators=(",", ":").decode()).encode("utf-8")
         ).hexdigest()
         session_dir = tmp_path / "sessions"
         snapshot_file = tmp_path / "observe_summary_snapshots.jsonl"
@@ -1110,10 +1051,7 @@ class TestObserveSummaryCustom:
             },
         ]
         snapshot_file.write_text(
-            "".join(
-                json.dumps(record, sort_keys=True).decode() + "\n"
-                for record in snapshot_records
-            ),
+            "".join(json.dumps(record, sort_keys=True).decode() + "\n" for record in snapshot_records),
             encoding="utf-8",
         )
 
@@ -1150,30 +1088,12 @@ class TestObserveSummaryCustom:
             "degraded",
             "critical",
         }
-        assert (
-            trend["trend_snapshot_health_breakdown"]["policy_signature"]
-            == trend_health_signature
-        )
-        assert (
-            trend["trend_snapshot_health_breakdown"]["policy"]["healthy_threshold"]
-            == 95
-        )
-        assert (
-            trend["trend_snapshot_health_breakdown"]["policy"]["warning_threshold"]
-            == 80
-        )
-        assert (
-            trend["trend_snapshot_health_breakdown"]["policy"]["degraded_threshold"]
-            == 50
-        )
-        assert (
-            trend["trend_snapshot_health_breakdown"]["policy"]["min_coverage_pct"]
-            == 80.0
-        )
-        assert (
-            trend["trend_snapshot_health_breakdown"]["policy"]["max_invalid_timestamps"]
-            == 0
-        )
+        assert trend["trend_snapshot_health_breakdown"]["policy_signature"] == trend_health_signature
+        assert trend["trend_snapshot_health_breakdown"]["policy"]["healthy_threshold"] == 95
+        assert trend["trend_snapshot_health_breakdown"]["policy"]["warning_threshold"] == 80
+        assert trend["trend_snapshot_health_breakdown"]["policy"]["degraded_threshold"] == 50
+        assert trend["trend_snapshot_health_breakdown"]["policy"]["min_coverage_pct"] == 80.0
+        assert trend["trend_snapshot_health_breakdown"]["policy"]["max_invalid_timestamps"] == 0
         assert trend["trend_snapshot_health_score"] is not None
         assert isinstance(trend["trend_snapshot_health_score"], int)
         assert isinstance(trend["trend_snapshot_recommendations"], list)
@@ -1224,9 +1144,7 @@ class TestDagPlanReadyFormatJson:
         # @trace FR-CLI-001
         """dag ready --format json with DAG exits 0."""
         project = self._dag_project(tmp_path)
-        result = runner.invoke(
-            app, ["dag", "ready", "--format", "json", "--cd", str(project)]
-        )
+        result = runner.invoke(app, ["dag", "ready", "--format", "json", "--cd", str(project)])
         assert result.exit_code == 0
         data = load_cli_json(result.stdout)
         assert "ready_task_ids" in data
@@ -1235,9 +1153,7 @@ class TestDagPlanReadyFormatJson:
         # @trace FR-CLI-001
         """plan ready --format json with DAG exits 0 (alias for dag ready)."""
         project = self._dag_project(tmp_path)
-        result = runner.invoke(
-            app, ["plan", "ready", "--format", "json", "--cd", str(project)]
-        )
+        result = runner.invoke(app, ["plan", "ready", "--format", "json", "--cd", str(project)])
         assert result.exit_code == 0
         data = load_cli_json(result.stdout)
         assert "ready_task_ids" in data
@@ -1264,9 +1180,7 @@ class TestPlanDagListStatusFormatJson:
         # @trace FR-CLI-001
         """dag list --format json with DAG exits 0 and returns tasks array."""
         project = self._dag_project(tmp_path)
-        result = runner.invoke(
-            app, ["dag", "list", "--format", "json", "--cd", str(project)]
-        )
+        result = runner.invoke(app, ["dag", "list", "--format", "json", "--cd", str(project)])
         assert result.exit_code == 0
         data = load_cli_json(result.stdout)
         assert "tasks" in data
@@ -1277,9 +1191,7 @@ class TestPlanDagListStatusFormatJson:
         # @trace FR-CLI-001
         """plan list --format json with DAG exits 0 (alias for dag list)."""
         project = self._dag_project(tmp_path)
-        result = runner.invoke(
-            app, ["plan", "list", "--format", "json", "--cd", str(project)]
-        )
+        result = runner.invoke(app, ["plan", "list", "--format", "json", "--cd", str(project)])
         assert result.exit_code == 0
         data = load_cli_json(result.stdout)
         assert "tasks" in data
@@ -1289,17 +1201,13 @@ class TestPlanDagListStatusFormatJson:
         # @trace FR-CLI-001
         """dag status --format json with DAG exits 0 (tasks may be empty if no session_id)."""
         project = self._dag_project(tmp_path)
-        result = runner.invoke(
-            app, ["dag", "status", "--format", "json", "--cd", str(project)]
-        )
+        result = runner.invoke(app, ["dag", "status", "--format", "json", "--cd", str(project)])
         assert result.exit_code == 0
         data = load_cli_json(result.stdout)
         assert "tasks" in data
         assert isinstance(data["tasks"], list)
 
-    def test_plan_status_format_json_exits_zero(
-        self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
-    ) -> None:
+    def test_plan_status_format_json_exits_zero(self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
         # @trace FR-CLI-001
         """plan status --format json with DAG exits 0 (alias for dag status)."""
         project = self._dag_project(tmp_path)
@@ -1413,9 +1321,7 @@ class TestObserveTrendDeepOptions:
         snapshot_path = tmp_path / "health-snapshots.jsonl"
         monkeypatch.setenv("THGENT_SESSION_DIR", str(session_dir))
         monkeypatch.setenv("THGENT_HEALTH_SNAPSHOT_PATH", str(snapshot_path))
-        result = runner.invoke(
-            app, ["observe", "trend", "--format", "json", "--limit", "5"]
-        )
+        result = runner.invoke(app, ["observe", "trend", "--format", "json", "--limit", "5"])
         assert result.exit_code == 0
         # Output may have ANSI/control chars; assert JSON-like structure present
         assert "{" in result.stdout or "[" in result.stdout
@@ -1443,9 +1349,7 @@ class TestGovernMigrationAllContracts:
     def test_govern_migration_task_tool_exits_zero(self) -> None:
         # @trace FR-CLI-001
         """govern migration task-tool task-tool-18 exits 0."""
-        result = runner.invoke(
-            app, ["govern", "migration", "task-tool", "task-tool-18"]
-        )
+        result = runner.invoke(app, ["govern", "migration", "task-tool", "task-tool-18"])
         assert result.exit_code == 0
 
     def test_govern_migration_zen_exits_zero(self) -> None:
@@ -1488,9 +1392,7 @@ class TestGovernEscalateListExecution:
         session_dir = tmp_path / "sessions"
         session_dir.mkdir(parents=True)
         monkeypatch.setenv("THGENT_SESSION_DIR", str(session_dir))
-        result = runner.invoke(
-            app, ["govern", "escalate", "list", "--format", "json", "--limit", "5"]
-        )
+        result = runner.invoke(app, ["govern", "escalate", "list", "--format", "json", "--limit", "5"])
         assert result.exit_code == 0
         data = load_cli_json(result.stdout)
         assert isinstance(data, list) or "items" in str(data).lower()
@@ -1510,9 +1412,7 @@ class TestHistoryListFormatJson:
         session_dir = tmp_path / "sessions"
         session_dir.mkdir(parents=True)
         monkeypatch.setenv("THGENT_SESSION_DIR", str(session_dir))
-        result = runner.invoke(
-            app, ["history", "list", "--format", "json", "--limit", "5"]
-        )
+        result = runner.invoke(app, ["history", "list", "--format", "json", "--limit", "5"])
         assert result.exit_code == 0
         data = load_cli_json(result.stdout)
         assert isinstance(data, list)
@@ -1563,9 +1463,7 @@ class TestModesFormatJson:
     def test_modes_mode_filter_format_json_exits_zero(self) -> None:
         # @trace FR-CLI-001
         """modes --mode parallel_consensus --format json exits 0."""
-        result = runner.invoke(
-            app, ["modes", "--mode", "parallel_consensus", "--format", "json"]
-        )
+        result = runner.invoke(app, ["modes", "--mode", "parallel_consensus", "--format", "json"])
         assert result.exit_code == 0
         # Output may have ANSI/control chars; assert mode present
         assert "parallel_consensus" in result.stdout
@@ -1592,9 +1490,7 @@ class TestPlanAnalyzePertFormatJson:
         # @trace FR-CLI-001
         """plan analyze --pert --format json with DAG exits 0."""
         project = self._dag_project(tmp_path)
-        result = runner.invoke(
-            app, ["plan", "analyze", "--format", "json", "--cd", str(project)]
-        )
+        result = runner.invoke(app, ["plan", "analyze", "--format", "json", "--cd", str(project)])
         assert result.exit_code == 0
         data = load_cli_json(result.stdout)
         assert isinstance(data, dict)
@@ -1620,9 +1516,7 @@ class TestDagListEmptyFormatJson:
         # @trace FR-CLI-001
         """dag list --format json with empty DAG exits 0 and returns tasks: []."""
         project = self._empty_dag_project(tmp_path)
-        result = runner.invoke(
-            app, ["dag", "list", "--format", "json", "--cd", str(project)]
-        )
+        result = runner.invoke(app, ["dag", "list", "--format", "json", "--cd", str(project)])
         assert result.exit_code == 0
         data = load_cli_json(result.stdout)
         assert "tasks" in data
@@ -1643,9 +1537,7 @@ class TestGovernSweepFormatJson:
         session_dir = tmp_path / "sessions"
         session_dir.mkdir(parents=True)
         monkeypatch.setenv("THGENT_SESSION_DIR", str(session_dir))
-        result = runner.invoke(
-            app, ["govern", "sweep", "--format", "json", "--drift-window", "10"]
-        )
+        result = runner.invoke(app, ["govern", "sweep", "--format", "json", "--drift-window", "10"])
         assert result.exit_code == 0
         data = load_cli_json(result.stdout)
         assert isinstance(data, dict)
@@ -1658,9 +1550,7 @@ class TestOperationsOrchestrateFormatJson:
     def test_operations_orchestrate_format_json_exits_zero(self) -> None:
         # @trace FR-CLI-001
         """operations --operation orchestrate --format json exits 0."""
-        result = runner.invoke(
-            app, ["operations", "--operation", "orchestrate", "--format", "json"]
-        )
+        result = runner.invoke(app, ["operations", "--operation", "orchestrate", "--format", "json"])
         assert result.exit_code == 0
         # Output may have ANSI/control chars; assert JSON-like structure
         assert "{" in result.stdout or "[" in result.stdout
@@ -1738,9 +1628,7 @@ class TestGovernEscalateAddResolve:
             ],
         )
         assert add_result.exit_code == 0
-        resolve_result = runner.invoke(
-            app, ["govern", "escalate", "resolve", "e2e_escalate_run_xyz"]
-        )
+        resolve_result = runner.invoke(app, ["govern", "escalate", "resolve", "e2e_escalate_run_xyz"])
         assert resolve_result.exit_code == 0
 
     def test_govern_escalate_list_past_sla_exits_zero(
@@ -1753,9 +1641,7 @@ class TestGovernEscalateAddResolve:
         session_dir = tmp_path / "sessions"
         session_dir.mkdir(parents=True)
         monkeypatch.setenv("THGENT_SESSION_DIR", str(session_dir))
-        result = runner.invoke(
-            app, ["govern", "escalate", "list", "--past-sla", "--limit", "5"]
-        )
+        result = runner.invoke(app, ["govern", "escalate", "list", "--past-sla", "--limit", "5"])
         assert result.exit_code == 0
 
 
@@ -1783,15 +1669,11 @@ class TestPlanAnalyzeAllOverlays:
         result = runner.invoke(app, ["plan", "analyze", "--cd", str(project)])
         assert result.exit_code == 0
 
-    def test_plan_analyze_all_overlays_format_json_exits_zero(
-        self, tmp_path: Path
-    ) -> None:
+    def test_plan_analyze_all_overlays_format_json_exits_zero(self, tmp_path: Path) -> None:
         # @trace FR-CLI-001
         """plan analyze --pert --resources --continuity --format json exits 0."""
         project = self._dag_project(tmp_path)
-        result = runner.invoke(
-            app, ["plan", "analyze", "--format", "json", "--cd", str(project)]
-        )
+        result = runner.invoke(app, ["plan", "analyze", "--format", "json", "--cd", str(project)])
         assert result.exit_code == 0
         data = load_cli_json(result.stdout)
         assert isinstance(data, dict)
@@ -1811,9 +1693,7 @@ class TestGovernConformanceFormatJson:
         session_dir = tmp_path / "sessions"
         session_dir.mkdir(parents=True)
         monkeypatch.setenv("THGENT_SESSION_DIR", str(session_dir))
-        result = runner.invoke(
-            app, ["govern", "conformance", "--format", "json", "--drift-window", "10"]
-        )
+        result = runner.invoke(app, ["govern", "conformance", "--format", "json", "--drift-window", "10"])
         assert result.exit_code == 0
         # Output may have ANSI; assert JSON-like structure
         assert "{" in result.stdout or "[" in result.stdout

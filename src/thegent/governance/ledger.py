@@ -54,9 +54,7 @@ class LedgerVerifier:
 
         return report
 
-    def _process_ledger_line(
-        self, line: str, i: int, last_hash: str, report: dict[str, Any]
-    ) -> str:
+    def _process_ledger_line(self, line: str, i: int, last_hash: str, report: dict[str, Any]) -> str:
         """Helper to process a single ledger line."""
         try:
             entry = json.loads(line)
@@ -87,9 +85,7 @@ class IncidentLedger(LedgerVerifier):
         if self.ledger_path.exists():
             with self.ledger_path.open("r", encoding="utf-8") as f:
                 for line in f:
-                    self._last_hash = self._get_last_hash_from_line(
-                        line, self._last_hash
-                    )
+                    self._last_hash = self._get_last_hash_from_line(line, self._last_hash)
 
     def _get_last_hash_from_line(self, line: str, current_last_hash: str) -> str:
         """Helper to extract last hash from a line."""

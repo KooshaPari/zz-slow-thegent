@@ -44,9 +44,7 @@ def test_wl10931_resolve_turn_submit_response_target_without_approval() -> None:
     # @trace WL-10931
     turn = {"id": "turn-1"}
     phase = server._build_turn_submit_response_phase(False, None, turn, None)
-    request_has_id, request_id, resolved_turn, approval_payload = (
-        server._resolve_turn_submit_response_target(phase)
-    )
+    request_has_id, request_id, resolved_turn, approval_payload = server._resolve_turn_submit_response_target(phase)
     assert request_has_id is False
     assert request_id is None
     assert resolved_turn is turn
@@ -62,9 +60,7 @@ def test_wl10932_validate_turn_submit_approval_payload_accepts_valid_payload() -
 def test_wl10933_validate_turn_submit_approval_payload_rejects_missing_id() -> None:
     # @trace WL-10933
     with pytest.raises(ValueError, match="Turn submit response target unresolved"):
-        server._validate_turn_submit_approval_payload(
-            {"status": "requested", "diff": "x"}
-        )
+        server._validate_turn_submit_approval_payload({"status": "requested", "diff": "x"})
 
 
 def test_wl10934_validate_turn_submit_approval_payload_rejects_missing_status() -> None:
@@ -73,25 +69,17 @@ def test_wl10934_validate_turn_submit_approval_payload_rejects_missing_status() 
         server._validate_turn_submit_approval_payload({"id": "approval-1", "diff": "x"})
 
 
-def test_wl10935_validate_turn_submit_approval_payload_rejects_non_string_diff() -> (
-    None
-):
+def test_wl10935_validate_turn_submit_approval_payload_rejects_non_string_diff() -> None:
     # @trace WL-10935
     with pytest.raises(ValueError, match="Turn submit response target unresolved"):
-        server._validate_turn_submit_approval_payload(
-            {"id": "approval-1", "status": "requested", "diff": 123}
-        )
+        server._validate_turn_submit_approval_payload({"id": "approval-1", "status": "requested", "diff": 123})
 
 
-def test_wl10936_resolve_turn_submit_response_target_rejects_non_dict_approval_payload() -> (
-    None
-):
+def test_wl10936_resolve_turn_submit_response_target_rejects_non_dict_approval_payload() -> None:
     # @trace WL-10936
     with pytest.raises(ValueError, match="Turn submit response target unresolved"):
         server._resolve_turn_submit_response_target(
-            server._build_turn_submit_response_phase(
-                True, "req", {"id": "turn-1"}, "bad"
-            )
+            server._build_turn_submit_response_phase(True, "req", {"id": "turn-1"}, "bad")
         )
 
 
@@ -141,9 +129,7 @@ def test_wl10938_handle_turn_submit_request_returns_approval_when_required() -> 
     assert response["result"]["turn"]["status"] == "awaiting_approval"
 
 
-def test_wl10939_turn_submit_notification_only_path_emits_side_effects_without_response() -> (
-    None
-):
+def test_wl10939_turn_submit_notification_only_path_emits_side_effects_without_response() -> None:
     # @trace WL-10939
     _reset_state()
     session_id = _start_session()

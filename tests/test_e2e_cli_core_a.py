@@ -94,9 +94,7 @@ class TestClodeCommands:
         assert result.exit_code == 0
         assert calls == ["nim"]
 
-    def test_clode_install_links_force_rewrites_wrappers(
-        self, tmp_path: Path, monkeypatch
-    ) -> None:
+    def test_clode_install_links_force_rewrites_wrappers(self, tmp_path: Path, monkeypatch) -> None:
         """`thegent clode install-links --force` creates clode -> thegent-shims link."""
         (tmp_path / "thegent-shims").write_text("#!/bin/sh\nexit 0\n", encoding="utf-8")
         (tmp_path / "thegent-shims").chmod(0o755)
@@ -118,9 +116,7 @@ class TestClodeCommands:
         assert wrapper.is_symlink()
         assert wrapper.resolve() == (tmp_path / "thegent-shims").resolve()
 
-    def test_clode_glm_policy_round_robin_cycles_and_cheapest(
-        self, monkeypatch
-    ) -> None:
+    def test_clode_glm_policy_round_robin_cycles_and_cheapest(self, monkeypatch) -> None:
         """`thegent clode glm` routes through policy-defined backends."""
         calls: list[str] = []
 
@@ -251,9 +247,7 @@ class TestSessionContractHealthGate:
         session_dir = tmp_path / "sessions"
         session_dir.mkdir(parents=True)
         monkeypatch.setenv("THGENT_SESSION_DIR", str(session_dir))
-        result = runner.invoke(
-            app, ["session-contract-health-gate", "--format", "json"]
-        )
+        result = runner.invoke(app, ["session-contract-health-gate", "--format", "json"])
         assert result.exit_code == 0
         data = load_cli_json(result.stdout)
         assert data.get("schema_version") == "health-schema-v1"
@@ -309,9 +303,7 @@ class TestSessionContractHealthReport:
         session_dir = tmp_path / "sessions"
         session_dir.mkdir(parents=True)
         monkeypatch.setenv("THGENT_SESSION_DIR", str(session_dir))
-        result = runner.invoke(
-            app, ["session-contract-health-report", "--format", "json"]
-        )
+        result = runner.invoke(app, ["session-contract-health-report", "--format", "json"])
         assert result.exit_code == 0
         data = load_cli_json(result.stdout)
         assert data.get("schema_version") == "health-schema-v1"
@@ -512,9 +504,7 @@ class TestStatusLogsWaitStop:
         monkeypatch.setenv("THGENT_SESSION_DIR", str(session_dir))
         result = runner.invoke(app, ["logs", "session_unknown_e2e_456"])
         assert result.exit_code == 2
-        assert (
-            "Session not found" in result.stderr or "Log file missing" in result.stderr
-        )
+        assert "Session not found" in result.stderr or "Log file missing" in result.stderr
 
     def test_wait_unknown_session_exits_nonzero(
         # @trace FR-CLI-001
@@ -580,10 +570,7 @@ class TestDagList:
         (project / ".git").mkdir()  # project indicator
         result = runner.invoke(app, ["dag", "list", "--cd", str(project)])
         assert result.exit_code == 1
-        assert (
-            "DAG session not found" in result.stdout
-            or "DAG session not found" in result.stderr
-        )
+        assert "DAG session not found" in result.stdout or "DAG session not found" in result.stderr
 
     def test_dag_list_empty_dag_exits_zero(
         # @trace FR-CLI-001
@@ -634,10 +621,7 @@ class TestDagValidate:
         (project / ".git").mkdir()
         result = runner.invoke(app, ["dag", "validate", "--cd", str(project)])
         assert result.exit_code == 2
-        assert (
-            "DAG session not found" in result.stdout
-            or "DAG session not found" in result.stderr
-        )
+        assert "DAG session not found" in result.stdout or "DAG session not found" in result.stderr
 
     def test_dag_validate_valid_empty_exits_zero(
         # @trace FR-CLI-001
@@ -689,9 +673,7 @@ class TestSessionContractHealthTrend:
         snapshot_path = tmp_path / "health-snapshots.jsonl"
         monkeypatch.setenv("THGENT_SESSION_DIR", str(session_dir))
         monkeypatch.setenv("THGENT_HEALTH_SNAPSHOT_PATH", str(snapshot_path))
-        result = runner.invoke(
-            app, ["session-contract-health-trend", "--format", "json"]
-        )
+        result = runner.invoke(app, ["session-contract-health-trend", "--format", "json"])
         assert result.exit_code == 0
         data = load_cli_json(result.stdout)
         assert "schema_version" in data or "payload_type" in data
@@ -771,10 +753,7 @@ class TestDagStatusReadySync:
         (project / ".git").mkdir()
         result = runner.invoke(app, ["dag", "status", "--cd", str(project)])
         assert result.exit_code == 1
-        assert (
-            "DAG session not found" in result.stdout
-            or "DAG session not found" in result.stderr
-        )
+        assert "DAG session not found" in result.stdout or "DAG session not found" in result.stderr
 
     def test_dag_status_empty_dag_exits_zero(self, tmp_path: Path) -> None:
         # @trace FR-CLI-001
@@ -792,10 +771,7 @@ class TestDagStatusReadySync:
         (project / ".git").mkdir()
         result = runner.invoke(app, ["dag", "ready", "--cd", str(project)])
         assert result.exit_code == 1
-        assert (
-            "DAG session not found" in result.stdout
-            or "DAG session not found" in result.stderr
-        )
+        assert "DAG session not found" in result.stdout or "DAG session not found" in result.stderr
 
     def test_dag_ready_empty_dag_exits_zero(self, tmp_path: Path) -> None:
         # @trace FR-CLI-001
@@ -813,10 +789,7 @@ class TestDagStatusReadySync:
         (project / ".git").mkdir()
         result = runner.invoke(app, ["dag", "sync", "--cd", str(project)])
         assert result.exit_code == 1
-        assert (
-            "DAG session not found" in result.stdout
-            or "DAG session not found" in result.stderr
-        )
+        assert "DAG session not found" in result.stdout or "DAG session not found" in result.stderr
 
     def test_dag_sync_empty_dag_exits_zero(self, tmp_path: Path) -> None:
         # @trace FR-CLI-001
@@ -853,9 +826,7 @@ class TestResolveModelRoutePolicy:
     def test_resolve_model_route_policy_prefer_proxy(self) -> None:
         # @trace FR-CLI-001
         """resolve-model-route --policy prefer_proxy exits 0 with route."""
-        result = runner.invoke(
-            app, ["resolve-model-route", "gemini-3-flash", "--policy", "prefer_proxy"]
-        )
+        result = runner.invoke(app, ["resolve-model-route", "gemini-3-flash", "--policy", "prefer_proxy"])
         assert result.exit_code == 0
         data = load_cli_json(result.stdout)
         assert data.get("route_found") is True
@@ -864,9 +835,7 @@ class TestResolveModelRoutePolicy:
     def test_resolve_model_route_policy_failover(self) -> None:
         # @trace FR-CLI-001
         """resolve-model-route --policy failover exits 0 with available_routes."""
-        result = runner.invoke(
-            app, ["resolve-model-route", "gemini-3-flash", "--policy", "failover"]
-        )
+        result = runner.invoke(app, ["resolve-model-route", "gemini-3-flash", "--policy", "failover"])
         assert result.exit_code == 0
         data = load_cli_json(result.stdout)
         assert "available_routes" in data or data.get("route_found") is True
@@ -1006,9 +975,7 @@ class TestDagRemoveUpdateCancel:
         # @trace FR-CLI-001
         """dag update --status done updates task; dag list shows done."""
         project = self._project_with_task(tmp_path)
-        result = runner.invoke(
-            app, ["dag", "update", "T1", "--status", "done", "--cd", str(project)]
-        )
+        result = runner.invoke(app, ["dag", "update", "T1", "--status", "done", "--cd", str(project)])
         assert result.exit_code == 0
 
         list_result = runner.invoke(app, ["dag", "list", "--cd", str(project)])
@@ -1048,9 +1015,7 @@ class TestDagListFormat:
         )
         (factory / "dag-session.md").write_text(dag_content)
 
-        result = runner.invoke(
-            app, ["dag", "list", "--format", "md", "--cd", str(project)]
-        )
+        result = runner.invoke(app, ["dag", "list", "--format", "md", "--cd", str(project)])
         assert result.exit_code == 0
         assert "## DAG Session" in result.stdout
         assert "| id |" in result.stdout
@@ -1094,11 +1059,7 @@ class TestResolveModelRouteInvalidPolicy:
             ["resolve-model-route", "gemini-3-flash", "--policy", "invalid_policy_xyz"],
         )
         assert result.exit_code == 1
-        assert (
-            "Invalid" in result.stdout
-            or "policy" in result.stdout.lower()
-            or "prefer_direct" in result.stdout
-        )
+        assert "Invalid" in result.stdout or "policy" in result.stdout.lower() or "prefer_direct" in result.stdout
 
 
 @pytest.mark.e2e

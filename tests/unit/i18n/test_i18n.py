@@ -198,9 +198,7 @@ def test_concurrent_catalog_registration_preserves_every_translation() -> None:
     i18n.set_locale("fr")
 
     assert added_counts == [1] * 64
-    assert all(
-        i18n._(f"message-{index}") == f"traduction-{index}" for index in range(64)
-    )
+    assert all(i18n._(f"message-{index}") == f"traduction-{index}" for index in range(64))
 
 
 def test_concurrent_duplicate_registration_counts_message_once() -> None:

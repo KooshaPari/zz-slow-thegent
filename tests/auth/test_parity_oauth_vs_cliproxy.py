@@ -107,9 +107,7 @@ class OAuthTokenManager:
             # Check expiry
             if datetime.now(UTC) >= token.expires_at:
                 if self.provider is None:
-                    raise RuntimeError(
-                        "token expired and no provider available to refresh"
-                    )
+                    raise RuntimeError("token expired and no provider available to refresh")
 
                 # Refresh token
                 try:

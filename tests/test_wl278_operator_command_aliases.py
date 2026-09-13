@@ -36,12 +36,8 @@ def test_shell_aliases_delegate(monkeypatch) -> None:
     status_called: list[bool] = []
     doctor_called: list[bool] = []
 
-    monkeypatch.setattr(
-        shell_cli_module, "shell_status", lambda: status_called.append(True)
-    )
-    monkeypatch.setattr(
-        shell_cli_module, "shell_doctor", lambda *, fix=False: doctor_called.append(fix)
-    )
+    monkeypatch.setattr(shell_cli_module, "shell_status", lambda: status_called.append(True))
+    monkeypatch.setattr(shell_cli_module, "shell_doctor", lambda *, fix=False: doctor_called.append(fix))
 
     status_result = runner.invoke(shell_cli_module.shell_app, ["stat"])
     doctor_result = runner.invoke(shell_cli_module.shell_app, ["doc", "--fix"])

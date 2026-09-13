@@ -39,14 +39,10 @@ def _run_help(bin_name: str) -> subprocess.CompletedProcess[str]:
         )
     except subprocess.TimeoutExpired as exc:
         pytest.fail(f"{bin_name} --help timed out after {HELP_TIMEOUT_SECONDS}s: {exc}")
-        pytest.skip(
-            f"{bin_name} --help timed out after {HELP_TIMEOUT_SECONDS}s on this host: {exc}"
-        )
+        pytest.skip(f"{bin_name} --help timed out after {HELP_TIMEOUT_SECONDS}s on this host: {exc}")
 
 
-pytestmark = pytest.mark.skipif(
-    not _has_rust_toolchain(), reason="Rust toolchain (cargo + rustc) is required"
-)
+pytestmark = pytest.mark.skipif(not _has_rust_toolchain(), reason="Rust toolchain (cargo + rustc) is required")
 
 
 @pytest.mark.parametrize("bin_name", ["quality-gate", "security-pipeline"])

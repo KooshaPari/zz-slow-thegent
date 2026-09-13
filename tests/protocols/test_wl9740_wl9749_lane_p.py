@@ -69,9 +69,7 @@ def test_wl9741_lookup_helper_returns_existing_turn() -> None:
 def test_wl9742_resolve_target_returns_not_found_payload() -> None:
     # @trace WL-9742
     _reset_state()
-    turn_id, turn, error = server._resolve_turn_cancel_target(
-        "x", {"turn_id": "turn-404"}
-    )
+    turn_id, turn, error = server._resolve_turn_cancel_target("x", {"turn_id": "turn-404"})
     assert turn_id == "turn-404"
     assert turn is None
     assert error is not None
@@ -84,9 +82,7 @@ def test_wl9743_handler_respects_notification_mode() -> None:
     session_id = _start_session()
     turn_id = _submit_turn(session_id, requires_approval=True)
 
-    response, notifications = server._handle_turn_cancel(
-        False, "ignored", {"turn_id": turn_id}
-    )
+    response, notifications = server._handle_turn_cancel(False, "ignored", {"turn_id": turn_id})
     assert response is None
     assert notifications == []
     assert SERVER_STATE.turns[turn_id]["status"] == "cancelled"
@@ -148,18 +144,14 @@ def test_wl9748_build_response_projects_serialized_turn() -> None:
 def test_wl9749_full_handler_preserves_happy_and_failure_paths() -> None:
     # @trace WL-9749
     _reset_state()
-    bad_response, bad_notifications = server._handle_turn_cancel(
-        True, "req-a", {"turn_id": "turn-404"}
-    )
+    bad_response, bad_notifications = server._handle_turn_cancel(True, "req-a", {"turn_id": "turn-404"})
     assert bad_response is not None
     assert bad_response["error"]["code"] == -32002
     assert bad_notifications == []
 
     session_id = _start_session()
     turn_id = _submit_turn(session_id, requires_approval=True)
-    ok_response, ok_notifications = server._handle_turn_cancel(
-        True, "req-b", {"turn_id": turn_id}
-    )
+    ok_response, ok_notifications = server._handle_turn_cancel(True, "req-b", {"turn_id": turn_id})
     assert ok_response is not None
     assert ok_response["result"]["turn"]["status"] == "cancelled"
     assert ok_notifications == []

@@ -217,11 +217,7 @@ def dag_sync_cmd(
             except Exception:
                 meta_path = None
         meta: dict[str, Any] = {}
-        if (
-            meta_path is not None
-            and meta_path.exists()
-            and callable(_read_session_meta)
-        ):
+        if meta_path is not None and meta_path.exists() and callable(_read_session_meta):
             meta = _read_session_meta(meta_path)
         pid = int(meta.get("pid") or 0)
         is_running = bool(_is_pid_running(pid)) if callable(_is_pid_running) else False
@@ -230,9 +226,7 @@ def dag_sync_cmd(
             try:
                 session_status = _resolve_session_status(
                     meta,
-                    _session_paths(
-                        Path(getattr(settings, "session_dir", "/tmp")), session_id
-                    )["rc"],  # noqa: E501
+                    _session_paths(Path(getattr(settings, "session_dir", "/tmp")), session_id)["rc"],  # noqa: E501
                     running=is_running,
                 )
             except Exception:
@@ -278,11 +272,7 @@ def dag_reconcile_cmd(
         if not session_id:
             continue
         status = _session_status_for(session_id) or "unknown"
-        if (
-            "exited" in str(status)
-            or "completed" in str(status)
-            or str(status).startswith("failed")
-        ):
+        if "exited" in str(status) or "completed" in str(status) or str(status).startswith("failed"):
             task["status"] = "pending"
             reconciled.append(task.get("id") or "")
     if reconciled:
@@ -561,9 +551,7 @@ def _collect_work_stream_ids(rows: list[list[str]]) -> list[str]:
     id_col = _work_stream_id_column(rows)
     if id_col is None:
         id_col = 0
-    body = (
-        rows[1:] if len(rows) >= 1 and any(c.lower() == "id" for c in rows[0]) else rows
-    )
+    body = rows[1:] if len(rows) >= 1 and any(c.lower() == "id" for c in rows[0]) else rows
     ids: list[str] = []
     for row in body:
         if id_col < len(row):
@@ -585,9 +573,7 @@ def _lint_work_stream_text(text: str) -> tuple[list[str], list[str]]:
             if not work_id:
                 continue
             if work_id in seen_ids and seen_ids[work_id] != heading:
-                errors.append(
-                    f"id '{work_id}' appears in both '{seen_ids[work_id]}' and '{heading}'"
-                )
+                errors.append(f"id '{work_id}' appears in both '{seen_ids[work_id]}' and '{heading}'")
             seen_ids.setdefault(work_id, heading)
         if not rows:
             warnings.append(f"section '{heading}' has no rows")

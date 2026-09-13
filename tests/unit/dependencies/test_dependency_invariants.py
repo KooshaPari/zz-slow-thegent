@@ -126,9 +126,7 @@ def test_script_exits_zero_on_canonical_workspace() -> None:
         f"unexpected exit {result.returncode}\nstdout: {result.stdout}\nstderr: {result.stderr}"
     )
     # The script prints "[make dep-audit] OK" on success.
-    assert "[make dep-audit] OK" in result.stdout, (
-        f"expected OK marker in stdout: {result.stdout!r}"
-    )
+    assert "[make dep-audit] OK" in result.stdout, f"expected OK marker in stdout: {result.stdout!r}"
 
 
 def test_script_reports_all_five_canonical_checks() -> None:
@@ -157,9 +155,7 @@ def test_script_reports_all_five_canonical_checks() -> None:
 # ---------------------------------------------------------------------------
 
 
-def _run_script_with_env(
-    tmp: Path, monkeypatch: pytest.MonkeyPatch
-) -> subprocess.CompletedProcess[str]:
+def _run_script_with_env(tmp: Path, monkeypatch: pytest.MonkeyPatch) -> subprocess.CompletedProcess[str]:
     """Run the script in a sandbox where ROOT points at *tmp*.
 
     Patches the script's path so its `ROOT` derivation resolves to the
@@ -234,10 +230,7 @@ def test_script_fails_when_pyproject_unpinned(sandbox: Path) -> None:
     sandbox.joinpath("requirements.txt").write_text("httpx\n")
     result = _run_script_with_env(sandbox, pytest.MonkeyPatch())
     assert result.returncode != 0, result.stdout
-    assert (
-        "FAIL" in result.stdout
-        or "missing pinned runtime dependencies" in result.stdout
-    )
+    assert "FAIL" in result.stdout or "missing pinned runtime dependencies" in result.stdout
 
 
 def test_script_fails_when_requirements_missing(sandbox: Path) -> None:
@@ -273,9 +266,7 @@ def test_script_fails_when_lock_and_pyproject_drift(sandbox: Path) -> None:
         ).strip()
         + "\n"
     )
-    sandbox.joinpath("requirements.txt").write_text(
-        "httpx==0.27.0\nthis-package-is-not-in-the-lock==1.0\n"
-    )
+    sandbox.joinpath("requirements.txt").write_text("httpx==0.27.0\nthis-package-is-not-in-the-lock==1.0\n")
     # uv.lock is empty so neither name is present.
     sandbox.joinpath("uv.lock").write_text('version = 1\nrequires-python = ">=3.11"\n')
     result = _run_script_with_env(sandbox, pytest.MonkeyPatch())

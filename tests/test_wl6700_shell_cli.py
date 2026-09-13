@@ -12,9 +12,7 @@ runner = CliRunner()
 
 def test_shell_reload_reports_success_on_zero_exit(monkeypatch) -> None:
     def fake_run(*args, **kwargs):
-        return subprocess.CompletedProcess(
-            args=args[0], returncode=0, stdout="ok", stderr=""
-        )
+        return subprocess.CompletedProcess(args=args[0], returncode=0, stdout="ok", stderr="")
 
     monkeypatch.setattr("thegent.shell_cli.subprocess.run", fake_run)
 
@@ -26,9 +24,7 @@ def test_shell_reload_reports_success_on_zero_exit(monkeypatch) -> None:
 
 def test_shell_reload_reports_stdout_stderr_on_nonzero_exit(monkeypatch) -> None:
     def fake_run(*args, **kwargs):
-        return subprocess.CompletedProcess(
-            args=args[0], returncode=23, stdout="bad out", stderr="bad err"
-        )
+        return subprocess.CompletedProcess(args=args[0], returncode=23, stdout="bad out", stderr="bad err")
 
     monkeypatch.setattr("thegent.shell_cli.subprocess.run", fake_run)
 
@@ -42,9 +38,7 @@ def test_shell_reload_reports_stdout_stderr_on_nonzero_exit(monkeypatch) -> None
     assert "bad err" in result.output
 
 
-def test_shell_doctor_surfaces_alias_probe_failures_as_issues(
-    monkeypatch, tmp_path: Path
-) -> None:
+def test_shell_doctor_surfaces_alias_probe_failures_as_issues(monkeypatch, tmp_path: Path) -> None:
     home = tmp_path / "home"
     home.mkdir()
     (home / ".zshenv").write_text("", encoding="utf-8")

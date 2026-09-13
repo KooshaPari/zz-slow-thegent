@@ -20,18 +20,14 @@ def test_lane_tuning_report_exists() -> None:
 def test_lane_tuning_report_mentions_fast_lane() -> None:
     """The report must mention 'fast lane' (case-insensitive)."""
     content = REPORT.read_text(encoding="utf-8")
-    assert re.search(r"fast.?lane", content, re.IGNORECASE), (
-        "Expected 'fast lane' or 'Fast lane' in lane tuning report"
-    )
+    assert re.search(r"fast.?lane", content, re.IGNORECASE), "Expected 'fast lane' or 'Fast lane' in lane tuning report"
 
 
 def test_lane_tuning_report_mentions_test_count() -> None:
     """The report must mention a numeric test count."""
     content = REPORT.read_text(encoding="utf-8")
     # Look for any number >= 3 digits (at least hundreds) as a test count
-    assert re.search(r"\b\d{3,}\b", content), (
-        "Expected a numeric test count (3+ digits) in lane tuning report"
-    )
+    assert re.search(r"\b\d{3,}\b", content), "Expected a numeric test count (3+ digits) in lane tuning report"
 
 
 def test_pytest_fast_ini_exists() -> None:

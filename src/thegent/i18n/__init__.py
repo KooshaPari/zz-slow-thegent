@@ -29,9 +29,7 @@ from typing import Final
 # ---------------------------------------------------------------------------
 
 _DEFAULT_LOCALE: Final[str] = "en"
-_VALID_LOCALES: Final[frozenset[str]] = frozenset(
-    {"en", "en-US", "en-GB", "fr", "de", "es", "ja"}
-)
+_VALID_LOCALES: Final[frozenset[str]] = frozenset({"en", "en-US", "en-GB", "fr", "de", "es", "ja"})
 
 
 def _gettext_gettext(message: str) -> str:

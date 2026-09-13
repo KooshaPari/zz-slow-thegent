@@ -148,9 +148,7 @@ def parse_model_suffixes(model: str) -> ParsedModel:
     return ParsedModel(base_model=base_model, suffixes=suffixes, raw=model)
 
 
-def apply_suffix_to_request(
-    body: dict[str, Any], parsed: ParsedModel
-) -> dict[str, Any]:
+def apply_suffix_to_request(body: dict[str, Any], parsed: ParsedModel) -> dict[str, Any]:
     """Return a modified copy of body reflecting the parsed suffixes.
 
     Applies the following transformations based on suffixes present:

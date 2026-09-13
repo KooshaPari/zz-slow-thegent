@@ -62,9 +62,7 @@ _BINARY_SEARCH_PATHS: Final[tuple[str, ...]] = (
         / "release"
         / "hook-dispatcher"
     ),
-    str(
-        Path(__file__).parent.parent.parent.parent / "hooks" / "bin" / "hook-dispatcher"
-    ),
+    str(Path(__file__).parent.parent.parent.parent / "hooks" / "bin" / "hook-dispatcher"),
 )
 
 
@@ -83,9 +81,7 @@ def _find_binary() -> str | None:
 # Suppression annotation detection: bare suppression or suppression with code,
 # but without the required justification marker " -- reason".
 _SUPPRESSION_BARE_RE: Final = re.compile(r"#\s*noqa", re.IGNORECASE)
-_SUPPRESSION_JUSTIFIED_RE: Final = re.compile(
-    r"#\s*noqa(?::\s*\S+)?\s+--\s", re.IGNORECASE
-)
+_SUPPRESSION_JUSTIFIED_RE: Final = re.compile(r"#\s*noqa(?::\s*\S+)?\s+--\s", re.IGNORECASE)
 
 # TODO/FIXME/HACK/XXX keywords
 _TODO_KEYWORD_RE: Final = re.compile(r"\b(TODO|FIXME|HACK|XXX)\b", re.IGNORECASE)
@@ -110,17 +106,13 @@ def _python_scan_noqa(content: str) -> list[GovernanceViolation]:
     """Detect suppression annotations without inline justification."""
     violations: list[GovernanceViolation] = []
     for line_idx, line in enumerate(content.splitlines(), start=1):
-        if _SUPPRESSION_BARE_RE.search(line) and not _SUPPRESSION_JUSTIFIED_RE.search(
-            line
-        ):
+        if _SUPPRESSION_BARE_RE.search(line) and not _SUPPRESSION_JUSTIFIED_RE.search(line):
             violations.append(
                 GovernanceViolation(
                     rule="noqa-no-justification",
                     severity="error",
                     line=line_idx,
-                    message=(
-                        f"Suppression annotation at line {line_idx} lacks inline justification (`-- reason`)."
-                    ),
+                    message=(f"Suppression annotation at line {line_idx} lacks inline justification (`-- reason`)."),
                 )
             )
     return violations
@@ -138,9 +130,7 @@ def _python_scan_todo_no_ticket(content: str) -> list[GovernanceViolation]:
                     rule="todo-no-ticket",
                     severity="warning",
                     line=line_idx,
-                    message=(
-                        f"{keyword} at line {line_idx} has no ticket reference (e.g. #123 or PROJ-456)."
-                    ),
+                    message=(f"{keyword} at line {line_idx} has no ticket reference (e.g. #123 or PROJ-456)."),
                 )
             )
     return violations
@@ -182,9 +172,7 @@ def _python_scan_function_length(
                         rule="function-too-long",
                         severity="warning",
                         line=def_line_no,
-                        message=(
-                            f"Function at line {def_line_no} is {func_len} lines long (max {max_lines})."
-                        ),
+                        message=(f"Function at line {def_line_no} is {func_len} lines long (max {max_lines})."),
                     )
                 )
             i = j
@@ -375,9 +363,7 @@ class NativeGovernanceScanner:
         """
         binary = _find_binary()
         if binary is None:
-            _log.debug(
-                "hook-dispatcher binary not found; using Python fallback for governance scan"
-            )
+            _log.debug("hook-dispatcher binary not found; using Python fallback for governance scan")
             return _python_scan_all(content)
 
         try:
@@ -431,9 +417,7 @@ class NativeGovernanceScanner:
         """
         binary = _find_binary()
         if binary is None:
-            _log.debug(
-                "hook-dispatcher binary not found; using Python fallback for contract check"
-            )
+            _log.debug("hook-dispatcher binary not found; using Python fallback for contract check")
             return _python_check_contract(contract_id, content)
 
         try:

@@ -14,9 +14,7 @@ def test_f1_report_exists():
 
 def test_f1_report_mentions_regression():
     text = REPORT.read_text()
-    assert "regression" in text.lower() or "Regression" in text, (
-        "Report must mention 'regression' or 'Regression'"
-    )
+    assert "regression" in text.lower() or "Regression" in text, "Report must mention 'regression' or 'Regression'"
 
 
 def test_f1_report_mentions_cli_dag():

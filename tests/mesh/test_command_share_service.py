@@ -29,18 +29,14 @@ def test_service_release_and_merge_delegate(tmp_path: Path, monkeypatch):
     service.acquire_lock(key, "agent-a")
     assert service.release_lock(key, "agent-a") is True
     called = {}
-    monkeypatch.setattr(
-        service.merger, "merge", lambda *args, **kwargs: called.setdefault("args", args)
-    )
+    monkeypatch.setattr(service.merger, "merge", lambda *args, **kwargs: called.setdefault("args", args))
     result = service.merge(MergeCommand("base", "ours", "theirs"), "out")
     assert result == ("base", "ours", "theirs", "out")
 
 
 def test_events_redact_secrets_and_bound_payload(tmp_path: Path):
     service = CommandShareService(tmp_path / "mesh")
-    service.enqueue(
-        {"api_key": "secret", "nested": {"password": "pw", "ok": "x" * 500}}
-    )
+    service.enqueue({"api_key": "secret", "nested": {"password": "pw", "ok": "x" * 500}})
     event = service.events[-1]
     assert event.payload["payload"]["api_key"] == "[REDACTED]"
     assert event.payload["payload"]["nested"]["password"] == "[REDACTED]"
@@ -61,10 +57,7 @@ def test_queue_restart_and_reclaim(tmp_path: Path):
 
 def test_result_path_confined_to_mesh_root(tmp_path: Path):
     service = CommandShareService(tmp_path / "mesh")
-    assert (
-        service.confine_result_path("results/out.json").parent
-        == tmp_path / "mesh" / "results"
-    )
+    assert service.confine_result_path("results/out.json").parent == tmp_path / "mesh" / "results"
     with pytest.raises(ValueError):
         service.confine_result_path("../escape")
 

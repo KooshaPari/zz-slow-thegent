@@ -30,9 +30,7 @@ def wl178_config(tmp_path: Path) -> GHProjectConfig:
     )
 
 
-def test_wl178_push_upsert_path(
-    monkeypatch: pytest.MonkeyPatch, wl178_config: GHProjectConfig
-) -> None:
+def test_wl178_push_upsert_path(monkeypatch: pytest.MonkeyPatch, wl178_config: GHProjectConfig) -> None:
     """# @trace WL-178"""
     calls: list[list[str]] = []
 
@@ -83,9 +81,7 @@ def test_wl178_push_upsert_path(
             return 0, "{}", ""
         raise AssertionError(f"unexpected gh args: {args}")
 
-    monkeypatch.setattr(
-        "thegent.integrations.gh_project_sync._run_gh_command", fake_run
-    )
+    monkeypatch.setattr("thegent.integrations.gh_project_sync._run_gh_command", fake_run)
 
     result = sync_to_github(
         wl178_config,
@@ -99,18 +95,13 @@ def test_wl178_push_upsert_path(
     assert result["items_created"] == 1
     assert result["errors"] == []
     assert any(cmd[:2] == ["project", "item-create"] for cmd in calls)
-    assert any(
-        cmd[:2] == ["project", "item-edit"] and "--single-select-option-id" in cmd
-        for cmd in calls
-    )
+    assert any(cmd[:2] == ["project", "item-edit"] and "--single-select-option-id" in cmd for cmd in calls)
     cache = ConnectorMappingCache(cache_file=wl178_config.mapping_cache_path)
     assert cache.get("github", "field:status") == "F_STATUS"
     assert cache.get("github", "field:priority") == "F_PRIORITY"
 
 
-def test_wl178_pull_normalizes_status(
-    monkeypatch: pytest.MonkeyPatch, wl178_config: GHProjectConfig
-) -> None:
+def test_wl178_pull_normalizes_status(monkeypatch: pytest.MonkeyPatch, wl178_config: GHProjectConfig) -> None:
     """# @trace WL-178"""
     payload: list[dict[str, Any]] = [
         {
@@ -131,9 +122,7 @@ def test_wl178_pull_normalizes_status(
             return 0, json.dumps(payload).decode(), ""
         raise AssertionError(f"unexpected gh args: {args}")
 
-    monkeypatch.setattr(
-        "thegent.integrations.gh_project_sync._run_gh_command", fake_run
-    )
+    monkeypatch.setattr("thegent.integrations.gh_project_sync._run_gh_command", fake_run)
 
     result = sync_from_github(wl178_config)
     by_id = {entry["item_id"]: entry for entry in result["items"]}
@@ -180,13 +169,9 @@ def test_wl178_sync_to_github_fails_fast_on_missing_status_field(
             )
         raise AssertionError(f"unexpected gh args: {args}")
 
-    monkeypatch.setattr(
-        "thegent.integrations.gh_project_sync._run_gh_command", fake_run
-    )
+    monkeypatch.setattr("thegent.integrations.gh_project_sync._run_gh_command", fake_run)
 
-    with pytest.raises(
-        GHProjectSyncError, match="required single-select field 'status' is missing"
-    ):
+    with pytest.raises(GHProjectSyncError, match="required single-select field 'status' is missing"):
         sync_to_github(
             wl_config,
             [{"item_id": "WL-1784", "title": "Needs status", "status": "BACKLOG"}],

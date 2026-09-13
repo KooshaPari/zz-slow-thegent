@@ -17,21 +17,10 @@ import pytest
 # ---------------------------------------------------------------------------
 # Load quality_runner as a standalone module (it lives in templates/shared/scripts)
 # ---------------------------------------------------------------------------
-_RUNNER_PATH = (
-    Path(__file__).parent.parent
-    / "templates"
-    / "shared"
-    / "scripts"
-    / "quality"
-    / "quality_runner.py"
-)
-_QUALITY_GATE_SH = (
-    Path(__file__).parent.parent / "templates" / "shared" / "quality-gate.sh"
-)
+_RUNNER_PATH = Path(__file__).parent.parent / "templates" / "shared" / "scripts" / "quality" / "quality_runner.py"
+_QUALITY_GATE_SH = Path(__file__).parent.parent / "templates" / "shared" / "quality-gate.sh"
 _QUALITY_AGENT_SH = Path(__file__).parent.parent / "scripts" / "quality-agent.sh"
-_QUALITY_FIX_AGENT_SH = (
-    Path(__file__).parent.parent / "scripts" / "quality-fix-agent.sh"
-)
+_QUALITY_FIX_AGENT_SH = Path(__file__).parent.parent / "scripts" / "quality-fix-agent.sh"
 
 
 def _load_runner():
@@ -69,26 +58,20 @@ def tmp_project(tmp_path: Path) -> Path:
 class TestWorkerCap:
     """Verify that QUALITY_MAX_WORKERS caps concurrent workers in run_dag."""
 
-    def test_default_max_workers_is_four(
-        self, runner_mod, monkeypatch: pytest.MonkeyPatch, tmp_project: Path
-    ) -> None:
+    def test_default_max_workers_is_four(self, runner_mod, monkeypatch: pytest.MonkeyPatch, tmp_project: Path) -> None:
         """Default QUALITY_MAX_WORKERS=4 must be read when env var is absent."""
         monkeypatch.delenv("QUALITY_MAX_WORKERS", raising=False)
         # Read value directly (mirrors what run_dag does)
         cap = int(os.environ.get("QUALITY_MAX_WORKERS", "4"))
         assert cap == 4
 
-    def test_env_override_respected(
-        self, runner_mod, monkeypatch: pytest.MonkeyPatch
-    ) -> None:
+    def test_env_override_respected(self, runner_mod, monkeypatch: pytest.MonkeyPatch) -> None:
         """Setting QUALITY_MAX_WORKERS=2 must reduce the cap."""
         monkeypatch.setenv("QUALITY_MAX_WORKERS", "2")
         cap = int(os.environ.get("QUALITY_MAX_WORKERS", "4"))
         assert cap == 2
 
-    def test_run_dag_caps_concurrency(
-        self, runner_mod, monkeypatch: pytest.MonkeyPatch, tmp_project: Path
-    ) -> None:
+    def test_run_dag_caps_concurrency(self, runner_mod, monkeypatch: pytest.MonkeyPatch, tmp_project: Path) -> None:
         """run_dag must never exceed QUALITY_MAX_WORKERS concurrent workers."""
         monkeypatch.setenv("QUALITY_MAX_WORKERS", "2")
         monkeypatch.setenv("QUALITY_STEP_TIMEOUT_SEC", "10")
@@ -112,20 +95,13 @@ class TestWorkerCap:
         monkeypatch.setattr(runner_mod, "run_step", counting_run_step)
 
         # 6 independent steps (no deps) - should never have >2 concurrent
-        steps = {
-            f"step{i}": {"deps": [], "command": "echo ok", "display": f"Step {i}"}
-            for i in range(6)
-        }
+        steps = {f"step{i}": {"deps": [], "command": "echo ok", "display": f"Step {i}"} for i in range(6)}
         results: dict = {}
         durations: dict = {}
         runner_mod.run_dag(steps, results, durations, tmp_project)
 
-        assert all(v == 0 for v in results.values()), (
-            f"All steps should pass: {results}"
-        )
-        assert max(peak_concurrent) <= 2, (
-            f"Peak concurrent exceeded cap: {peak_concurrent}"
-        )
+        assert all(v == 0 for v in results.values()), f"All steps should pass: {results}"
+        assert max(peak_concurrent) <= 2, f"Peak concurrent exceeded cap: {peak_concurrent}"
 
     def test_thegent_settings_has_quality_max_workers_field(self) -> None:
         """ThegentSettings must expose quality_max_workers with default 4."""
@@ -135,9 +111,7 @@ class TestWorkerCap:
         assert hasattr(settings, "quality_max_workers")
         assert settings.quality_max_workers == 4
 
-    def test_thegent_settings_quality_max_workers_env_override(
-        self, monkeypatch: pytest.MonkeyPatch
-    ) -> None:
+    def test_thegent_settings_quality_max_workers_env_override(self, monkeypatch: pytest.MonkeyPatch) -> None:
         """THGENT_QUALITY_MAX_WORKERS env var must override ThegentSettings.quality_max_workers."""
         monkeypatch.setenv("THGENT_QUALITY_MAX_WORKERS", "8")
         from thegent.config.settings import ThegentSettings
@@ -167,9 +141,7 @@ class TestStepTimeout:
         timeout = int(os.environ.get("QUALITY_STEP_TIMEOUT_SEC", "600"))
         assert timeout == 30
 
-    def test_run_step_times_out(
-        self, runner_mod, monkeypatch: pytest.MonkeyPatch, tmp_project: Path
-    ) -> None:
+    def test_run_step_times_out(self, runner_mod, monkeypatch: pytest.MonkeyPatch, tmp_project: Path) -> None:
         """run_step must return exit code 124 when step exceeds timeout."""
         monkeypatch.setenv("QUALITY_STEP_TIMEOUT_SEC", "1")
         runner_mod._resolve_paths(root=tmp_project)
@@ -197,9 +169,7 @@ class TestStepTimeout:
         assert hasattr(settings, "quality_step_timeout_sec")
         assert settings.quality_step_timeout_sec == 600
 
-    def test_thegent_settings_step_timeout_env_override(
-        self, monkeypatch: pytest.MonkeyPatch
-    ) -> None:
+    def test_thegent_settings_step_timeout_env_override(self, monkeypatch: pytest.MonkeyPatch) -> None:
         """THGENT_QUALITY_STEP_TIMEOUT_SEC env var must override ThegentSettings.quality_step_timeout_sec."""
         monkeypatch.setenv("THGENT_QUALITY_STEP_TIMEOUT_SEC", "120")
         from thegent.config.settings import ThegentSettings
@@ -219,31 +189,21 @@ class TestStaleShadowCleanup:
 
     def test_quality_gate_sh_defines_shadow_cleanup_hours(self) -> None:
         """quality-gate.sh must read QUALITY_SHADOW_CLEANUP_HOURS with default 24."""
-        assert _QUALITY_GATE_SH.exists(), (
-            f"quality-gate.sh not found at {_QUALITY_GATE_SH}"
-        )
+        assert _QUALITY_GATE_SH.exists(), f"quality-gate.sh not found at {_QUALITY_GATE_SH}"
         content = _QUALITY_GATE_SH.read_text()
         assert "QUALITY_SHADOW_CLEANUP_HOURS" in content
-        assert (
-            ":-24}" in content
-            or '"${QUALITY_SHADOW_CLEANUP_HOURS:-24}"' in content
-            or ":-24}" in content
-        )
+        assert ":-24}" in content or '"${QUALITY_SHADOW_CLEANUP_HOURS:-24}"' in content or ":-24}" in content
 
     def test_quality_agent_uses_shadow_cleanup_hours(self) -> None:
         """quality-agent.sh must use QUALITY_SHADOW_CLEANUP_HOURS (with legacy fallback)."""
-        assert _QUALITY_AGENT_SH.exists(), (
-            f"quality-agent.sh not found at {_QUALITY_AGENT_SH}"
-        )
+        assert _QUALITY_AGENT_SH.exists(), f"quality-agent.sh not found at {_QUALITY_AGENT_SH}"
         content = _QUALITY_AGENT_SH.read_text()
         assert "QUALITY_SHADOW_CLEANUP_HOURS" in content
         assert "QUALITY_SHADOW_MAX_AGE_HOURS" in content
 
     def test_quality_fix_agent_uses_shadow_cleanup_hours(self) -> None:
         """quality-fix-agent.sh must use QUALITY_SHADOW_CLEANUP_HOURS (with legacy fallback)."""
-        assert _QUALITY_FIX_AGENT_SH.exists(), (
-            f"quality-fix-agent.sh not found at {_QUALITY_FIX_AGENT_SH}"
-        )
+        assert _QUALITY_FIX_AGENT_SH.exists(), f"quality-fix-agent.sh not found at {_QUALITY_FIX_AGENT_SH}"
         content = _QUALITY_FIX_AGENT_SH.read_text()
         assert "QUALITY_SHADOW_CLEANUP_HOURS" in content
         assert "QUALITY_SHADOW_MAX_AGE_HOURS" in content
@@ -252,11 +212,7 @@ class TestStaleShadowCleanup:
         """quality-gate.sh must read QUALITY_LOG_RETENTION_DAYS with default 7."""
         content = _QUALITY_GATE_SH.read_text()
         assert "QUALITY_LOG_RETENTION_DAYS" in content
-        assert (
-            ":-7}" in content
-            or '"${QUALITY_LOG_RETENTION_DAYS:-7}"' in content
-            or ":-7}" in content
-        )
+        assert ":-7}" in content or '"${QUALITY_LOG_RETENTION_DAYS:-7}"' in content or ":-7}" in content
 
     def test_cleanup_removes_old_shadow_dirs(self, tmp_path: Path) -> None:
         """cleanup_stale_artifacts must remove .shadow-* dirs older than the threshold."""
@@ -448,9 +404,7 @@ cleanup_stale_artifacts "$PROJECT_ROOT" "$QUALITY_SHADOW_CLEANUP_HOURS" "$QUALIT
         assert hasattr(settings, "quality_log_retention_days")
         assert settings.quality_log_retention_days == 7
 
-    def test_thegent_settings_shadow_cleanup_env_override(
-        self, monkeypatch: pytest.MonkeyPatch
-    ) -> None:
+    def test_thegent_settings_shadow_cleanup_env_override(self, monkeypatch: pytest.MonkeyPatch) -> None:
         """THGENT_QUALITY_SHADOW_MAX_AGE_HOURS env var must override quality_shadow_cleanup_hours."""
         monkeypatch.setenv("THGENT_QUALITY_SHADOW_MAX_AGE_HOURS", "48")
         from thegent.config.settings import ThegentSettings
@@ -458,9 +412,7 @@ cleanup_stale_artifacts "$PROJECT_ROOT" "$QUALITY_SHADOW_CLEANUP_HOURS" "$QUALIT
         settings = ThegentSettings()
         assert settings.quality_shadow_cleanup_hours == 48
 
-    def test_thegent_settings_log_retention_env_override(
-        self, monkeypatch: pytest.MonkeyPatch
-    ) -> None:
+    def test_thegent_settings_log_retention_env_override(self, monkeypatch: pytest.MonkeyPatch) -> None:
         """THGENT_QUALITY_LOG_RETENTION_DAYS env var must override quality_log_retention_days."""
         monkeypatch.setenv("THGENT_QUALITY_LOG_RETENTION_DAYS", "14")
         from thegent.config.settings import ThegentSettings

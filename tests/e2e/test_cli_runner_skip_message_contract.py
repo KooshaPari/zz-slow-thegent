@@ -15,9 +15,7 @@ class DummyResult:
     stderr: str = ""
 
 
-def test_build_command_surface_drift_skip_message_includes_prefix_constant_once() -> (
-    None
-):
+def test_build_command_surface_drift_skip_message_includes_prefix_constant_once() -> None:
     message = _build_command_surface_drift_skip_message(
         None,
         ["run", "logs"],
@@ -26,9 +24,7 @@ def test_build_command_surface_drift_skip_message_includes_prefix_constant_once(
     assert message.count(ATTEMPTED_ARGV_COMMAND_PATH_PREFIX) == 1
 
 
-def test_build_command_surface_drift_skip_message_preserves_list_argv_token_order() -> (
-    None
-):
+def test_build_command_surface_drift_skip_message_preserves_list_argv_token_order() -> None:
     argv = ["recover", "rollback", "--force", "session-42"]
     message = _build_command_surface_drift_skip_message(None, argv)
 
@@ -36,9 +32,7 @@ def test_build_command_surface_drift_skip_message_preserves_list_argv_token_orde
 
 
 def test_result_mentions_no_such_command_true_with_stderr_error_mix() -> None:
-    result = DummyResult(
-        stderr="Error: No such option: --json. No such command 'logs'."
-    )
+    result = DummyResult(stderr="Error: No such option: --json. No such command 'logs'.")
 
     assert _result_mentions_no_such_command(result)
 

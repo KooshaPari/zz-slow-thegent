@@ -18,7 +18,5 @@ def test_skip_message_contains_attempted_prefix_once() -> None:
 
 
 def test_skip_message_retains_exact_token_joining() -> None:
-    message = _build_command_surface_drift_skip_message(
-        None, ["run", "logs", "--tail", "10"]
-    )
+    message = _build_command_surface_drift_skip_message(None, ["run", "logs", "--tail", "10"])
     assert message.endswith("run logs --tail 10")

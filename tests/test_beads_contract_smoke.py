@@ -20,9 +20,7 @@ from scripts import (
 def test_main_fails_when_required_env_missing(monkeypatch: pytest.MonkeyPatch) -> None:
     monkeypatch.delenv("BEADS_BASE_URL", raising=False)
 
-    with pytest.raises(
-        RuntimeError, match="Missing required environment variable: BEADS_BASE_URL"
-    ):
+    with pytest.raises(RuntimeError, match="Missing required environment variable: BEADS_BASE_URL"):
         beads_contract_smoke.main()
 
 
@@ -35,18 +33,12 @@ def test_main_raises_on_non_200_status(monkeypatch: pytest.MonkeyPatch) -> None:
     mock_ctx.__enter__.return_value = mock_response
     mock_ctx.__exit__.return_value = False
 
-    with patch(
-        "scripts.beads_contract_smoke.urllib.request.urlopen", return_value=mock_ctx
-    ):
-        with pytest.raises(
-            RuntimeError, match="beads health check returned non-200 status: 500"
-        ):
+    with patch("scripts.beads_contract_smoke.urllib.request.urlopen", return_value=mock_ctx):
+        with pytest.raises(RuntimeError, match="beads health check returned non-200 status: 500"):
             beads_contract_smoke.main()
 
 
-def test_main_returns_success_on_200(
-    monkeypatch: pytest.MonkeyPatch, capsys: pytest.CaptureFixture[str]
-) -> None:
+def test_main_returns_success_on_200(monkeypatch: pytest.MonkeyPatch, capsys: pytest.CaptureFixture[str]) -> None:
     monkeypatch.setenv("BEADS_BASE_URL", "https://beads.example/")
     mock_response = MagicMock()
     mock_response.getcode.return_value = 200
@@ -55,9 +47,7 @@ def test_main_returns_success_on_200(
     mock_ctx.__enter__.return_value = mock_response
     mock_ctx.__exit__.return_value = False
 
-    with patch(
-        "scripts.beads_contract_smoke.urllib.request.urlopen", return_value=mock_ctx
-    ):
+    with patch("scripts.beads_contract_smoke.urllib.request.urlopen", return_value=mock_ctx):
         result = beads_contract_smoke.main()
 
     captured = capsys.readouterr().out

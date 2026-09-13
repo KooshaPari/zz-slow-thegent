@@ -57,9 +57,7 @@ def _probe_harness_status() -> dict[str, Any]:
     # Check for missing dependencies
     # Check for missing dependencies - use getattr with default to avoid AttributeError
     try:
-        terminal = __import__(
-            "thegent.skills.terminal", fromlist=["heliosShield_status"]
-        )
+        terminal = __import__("thegent.skills.terminal", fromlist=["heliosShield_status"])
         helios_func = getattr(terminal, "heliosShield_status", None)
         if helios_func is None:
             return {

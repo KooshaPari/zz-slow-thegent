@@ -91,9 +91,7 @@ class TestMojoBridge:
         # Mock is_available to return False (patch on the class since it's a property)
         from unittest.mock import PropertyMock
 
-        with patch.object(
-            type(bridge), "is_available", new_callable=PropertyMock, return_value=False
-        ):
+        with patch.object(type(bridge), "is_available", new_callable=PropertyMock, return_value=False):
             task = MojoTask(
                 task_id="test_001",
                 module="test",

@@ -95,10 +95,7 @@ class LifecycleController:
         stdout = result.get("stdout", "")
         stderr = result.get("stderr", "")
         combined = f"{stdout}\n{stderr}"
-        retryable = any(
-            kw in combined.lower()
-            for kw in ["rate limit", "timeout", "502", "503", "504", "transient"]
-        )
+        retryable = any(kw in combined.lower() for kw in ["rate limit", "timeout", "502", "503", "504", "transient"])
         if retryable:
             rr = RunResult(
                 exit_code=result.get("exit_code", 1),
@@ -206,9 +203,7 @@ class LifecycleController:
                         "warnings": [reason] if effect == "warn" else [],
                     }
                 except Exception as e:
-                    _log.error(
-                        "Governance pre-check failed: %s. Using default allow.", e
-                    )
+                    _log.error("Governance pre-check failed: %s. Using default allow.", e)
                     effect, reason = "allow", str(e)
                     gov_report = {"status": "ok", "denials": [], "warnings": []}
 
@@ -243,9 +238,7 @@ class LifecycleController:
                     result = self._run_worker_with_retry(current_prompt)
                     if result.get("exit_code") != 0:
                         self.state.stopped = True
-                        self.state.stop_reason = (
-                            f"Worker failed (code {result.get('exit_code')})"
-                        )
+                        self.state.stop_reason = f"Worker failed (code {result.get('exit_code')})"
                         break
                 except TransientAgentError as e:
                     _log.warning(
@@ -253,9 +246,7 @@ class LifecycleController:
                         e.result.stderr[:200] if e.result.stderr else str(e),
                     )
                     self.state.stopped = True
-                    self.state.stop_reason = (
-                        f"Worker failed after retries (code {e.result.exit_code})"
-                    )
+                    self.state.stop_reason = f"Worker failed after retries (code {e.result.exit_code})"
                     break
                 except Exception as e:
                     _log.error("Worker execution failed: %s", e)
@@ -317,9 +308,7 @@ class LifecycleController:
                     )
                 except Exception as e:
                     _log.error("Checker failed: %s. Using default CONTINUE.", e)
-                    decision_result = CheckerResult(
-                        decision=CheckerDecision.CONTINUE, reason=str(e)
-                    )
+                    decision_result = CheckerResult(decision=CheckerDecision.CONTINUE, reason=str(e))
 
                 _log.info(
                     "Checker decision: %s (reason: %s)",
@@ -335,13 +324,10 @@ class LifecycleController:
 
                 if decision_result.decision == CheckerDecision.KILL:
                     self.state.stopped = True
-                    self.state.stop_reason = (
-                        f"Checker terminated: {decision_result.reason}"
-                    )
+                    self.state.stop_reason = f"Checker terminated: {decision_result.reason}"
 
                     if any(
-                        kw in (decision_result.reason or "").lower()
-                        for kw in ["security", "cost", "risk", "policy"]
+                        kw in (decision_result.reason or "").lower() for kw in ["security", "cost", "risk", "policy"]
                     ):
                         from thegent.governance.escalation import (
                             EscalationPriority,
@@ -365,9 +351,7 @@ class LifecycleController:
                     current_prompt = decision_result.prompt or "Please continue."
 
             # Update progress to completed
-            progress.update(
-                task, status=f"done: {self.state.stop_reason or 'completed'}"
-            )
+            progress.update(task, status=f"done: {self.state.stop_reason or 'completed'}")
 
         if self.state.iteration >= self.max_iterations and not self.state.stopped:
             self.state.stop_reason = "Max iterations reached"

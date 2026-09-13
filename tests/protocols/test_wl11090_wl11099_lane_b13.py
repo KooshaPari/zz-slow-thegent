@@ -7,9 +7,7 @@ import pytest
 from thegent.protocols import jsonrpc_agent_server as server
 
 
-def test_wl11090_resolve_turn_submit_parse_error_returns_none_for_non_dict_payload() -> (
-    None
-):
+def test_wl11090_resolve_turn_submit_parse_error_returns_none_for_non_dict_payload() -> None:
     # @trace WL-11090
     assert server._resolve_turn_submit_parse_error({"parse_error": "bad"}) is None
 
@@ -47,9 +45,7 @@ def test_wl11092_resolve_turn_submit_execution_target_returns_expected_tuple() -
     assert target == ("session-1", {"id": "session-1"}, "hello", False, None)
 
 
-def test_wl11093_resolve_turn_submit_execution_target_rejects_non_bool_requires_approval() -> (
-    None
-):
+def test_wl11093_resolve_turn_submit_execution_target_rejects_non_bool_requires_approval() -> None:
     # @trace WL-11093
     with pytest.raises(ValueError, match="Turn submit execution target unresolved"):
         server._resolve_turn_submit_execution_target(
@@ -67,9 +63,7 @@ def test_wl11094_resolve_turn_submit_commit_target_returns_expected_tuple() -> N
     # @trace WL-11094
     turn = {"id": "turn-1"}
     session = {"id": "session-1", "turn_ids": []}
-    assert server._resolve_turn_submit_commit_target(
-        {"turn_id": "turn-1", "turn": turn, "session": session}
-    ) == (
+    assert server._resolve_turn_submit_commit_target({"turn_id": "turn-1", "turn": turn, "session": session}) == (
         "turn-1",
         turn,
         session,
@@ -79,14 +73,10 @@ def test_wl11094_resolve_turn_submit_commit_target_returns_expected_tuple() -> N
 def test_wl11095_resolve_turn_submit_commit_target_rejects_non_dict_session() -> None:
     # @trace WL-11095
     with pytest.raises(ValueError, match="Turn submit commit target unresolved"):
-        server._resolve_turn_submit_commit_target(
-            {"turn_id": "turn-1", "turn": {"id": "turn-1"}, "session": "bad"}
-        )
+        server._resolve_turn_submit_commit_target({"turn_id": "turn-1", "turn": {"id": "turn-1"}, "session": "bad"})
 
 
-def test_wl11096_resolve_turn_submit_side_effects_target_returns_expected_tuple() -> (
-    None
-):
+def test_wl11096_resolve_turn_submit_side_effects_target_returns_expected_tuple() -> None:
     # @trace WL-11096
     turn = {"id": "turn-1"}
     phase = {
@@ -107,9 +97,7 @@ def test_wl11096_resolve_turn_submit_side_effects_target_returns_expected_tuple(
     )
 
 
-def test_wl11097_resolve_turn_submit_side_effects_target_rejects_non_string_approval_diff() -> (
-    None
-):
+def test_wl11097_resolve_turn_submit_side_effects_target_rejects_non_string_approval_diff() -> None:
     # @trace WL-11097
     with pytest.raises(ValueError, match="Turn submit side-effects target unresolved"):
         server._resolve_turn_submit_side_effects_target(
@@ -136,9 +124,7 @@ def test_wl11098_resolve_turn_submit_approval_payload_rejects_non_string_diff() 
         )
 
 
-def test_wl11099_build_turn_submit_result_payload_flat_omits_approval_when_absent() -> (
-    None
-):
+def test_wl11099_build_turn_submit_result_payload_flat_omits_approval_when_absent() -> None:
     # @trace WL-11099
     result = server._build_turn_submit_result_payload_flat(
         {

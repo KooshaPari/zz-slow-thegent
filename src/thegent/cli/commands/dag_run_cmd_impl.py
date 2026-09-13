@@ -146,9 +146,7 @@ def dag_run_cmd(*, cd: Path | None = None, dry_run: bool = False) -> dict[str, A
         if isinstance(result, dict):
             session_id = str(result.get("session_id") or "")
         if session_id:
-            _dag_impl._dag_update_task(
-                doc, tid, status="running", session_id=session_id
-            )
+            _dag_impl._dag_update_task(doc, tid, status="running", session_id=session_id)
         spawned.append(tid)
 
     # 6) Persist the updated DAG document so the running-session

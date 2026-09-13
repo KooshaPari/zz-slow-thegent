@@ -107,9 +107,7 @@ class TestPolicyEngineOPA:
         settings.cost_tracking_enabled = False
         settings.session_dir = tmp_path
         engine = PolicyEngine(settings)
-        run = RunMeta(
-            agent="gemini", prompt="test", cwd="/tmp", owner="user", lane="standard"
-        )
+        run = RunMeta(agent="gemini", prompt="test", cwd="/tmp", owner="user", lane="standard")
         result, reason = engine.evaluate(run)
         assert result in ("allow", "deny", "warn")
         assert isinstance(reason, str)
@@ -126,14 +124,10 @@ class TestPolicyEngineOPA:
         settings.cost_tracking_enabled = False
         settings.session_dir = tmp_path
         engine = PolicyEngine(settings)
-        run = RunMeta(
-            agent="gemini", prompt="test", cwd="/tmp", owner="user", lane="standard"
-        )
+        run = RunMeta(agent="gemini", prompt="test", cwd="/tmp", owner="user", lane="standard")
 
         mock_resp = MagicMock()
-        mock_resp.json.return_value = {
-            "result": {"allow": True, "reason": "OPA allowed"}
-        }
+        mock_resp.json.return_value = {"result": {"allow": True, "reason": "OPA allowed"}}
         mock_resp.raise_for_status.return_value = None
         with patch("thegent.execution.httpx.post", return_value=mock_resp):
             result, reason = engine.evaluate(run)
@@ -152,14 +146,10 @@ class TestPolicyEngineOPA:
         settings.cost_tracking_enabled = False
         settings.session_dir = tmp_path
         engine = PolicyEngine(settings)
-        run = RunMeta(
-            agent="gemini", prompt="test", cwd="/tmp", owner="user", lane="standard"
-        )
+        run = RunMeta(agent="gemini", prompt="test", cwd="/tmp", owner="user", lane="standard")
 
         mock_resp = MagicMock()
-        mock_resp.json.return_value = {
-            "result": {"allow": False, "reason": "OPA denied"}
-        }
+        mock_resp.json.return_value = {"result": {"allow": False, "reason": "OPA denied"}}
         mock_resp.raise_for_status.return_value = None
         with patch("thegent.execution.httpx.post", return_value=mock_resp):
             result, reason = engine.evaluate(run)
@@ -178,13 +168,9 @@ class TestPolicyEngineOPA:
         settings.cost_tracking_enabled = False
         settings.session_dir = tmp_path
         engine = PolicyEngine(settings)
-        run = RunMeta(
-            agent="gemini", prompt="test", cwd="/tmp", owner="user", lane="standard"
-        )
+        run = RunMeta(agent="gemini", prompt="test", cwd="/tmp", owner="user", lane="standard")
 
-        with patch(
-            "thegent.execution.httpx.post", side_effect=OSError("connection refused")
-        ):
+        with patch("thegent.execution.httpx.post", side_effect=OSError("connection refused")):
             result, reason = engine.evaluate(run)
         assert result == "deny"
         assert "OPA" in reason or "deny" in reason.lower()
@@ -201,13 +187,9 @@ class TestPolicyEngineOPA:
         settings.cost_tracking_enabled = False
         settings.session_dir = tmp_path
         engine = PolicyEngine(settings)
-        run = RunMeta(
-            agent="gemini", prompt="test", cwd="/tmp", owner="user", lane="standard"
-        )
+        run = RunMeta(agent="gemini", prompt="test", cwd="/tmp", owner="user", lane="standard")
 
-        with patch(
-            "thegent.execution.httpx.post", side_effect=OSError("connection refused")
-        ):
+        with patch("thegent.execution.httpx.post", side_effect=OSError("connection refused")):
             result, reason = engine.evaluate(run)
         assert result == "allow"
         assert "fallback" in reason.lower()
@@ -223,13 +205,9 @@ class TestPolicyEngineOPA:
         settings.session_dir = Path("/tmp/fake")
 
         engine = PolicyEngine(settings)
-        run = RunMeta(
-            agent="gemini", prompt="test", cwd="/tmp", owner="user", lane="standard"
-        )
+        run = RunMeta(agent="gemini", prompt="test", cwd="/tmp", owner="user", lane="standard")
 
-        with patch(
-            "thegent.cost.aggregator.CostAggregator.get_mtd_total", return_value=15.0
-        ):
+        with patch("thegent.cost.aggregator.CostAggregator.get_mtd_total", return_value=15.0):
             result, reason = engine.evaluate(run)
 
         assert result == "deny"
@@ -254,14 +232,10 @@ class TestPolicyEngineOPA:
             lane="standard",
         )
 
-        with patch(
-            "thegent.governance.input_guardrails.InputGuardrails.check"
-        ) as mock_check:
+        with patch("thegent.governance.input_guardrails.InputGuardrails.check") as mock_check:
             from thegent.governance.input_guardrails import GuardrailResult
 
-            mock_check.return_value = GuardrailResult(
-                passed=False, rail_id="prompt_length", reason="too long"
-            )
+            mock_check.return_value = GuardrailResult(passed=False, rail_id="prompt_length", reason="too long")
             result, reason = engine.evaluate(run)
 
         assert result == "deny"
@@ -668,9 +642,7 @@ class TestGuardrailsFromEnvBranches:
     def test_invalid_prompt_max_chars_uses_default(self) -> None:
         # @trace FR-GOV-007
         """Invalid THGENT_PROMPT_MAX_CHARS falls back to default (lines 105-106)."""
-        with patch.dict(
-            os.environ, {"THGENT_PROMPT_MAX_CHARS": "not_a_number"}, clear=False
-        ):
+        with patch.dict(os.environ, {"THGENT_PROMPT_MAX_CHARS": "not_a_number"}, clear=False):
             g = guardrails_from_settings()
         assert g.prompt_max_chars == 65536
 
@@ -689,9 +661,7 @@ class TestGuardrailsFromEnvBranches:
     def test_agent_allowlist_from_env(self) -> None:
         # @trace FR-GOV-007
         """THGENT_AGENT_ALLOWLIST parsed from env (line 116)."""
-        with patch.dict(
-            os.environ, {"THGENT_AGENT_ALLOWLIST": "gemini,claude"}, clear=False
-        ):
+        with patch.dict(os.environ, {"THGENT_AGENT_ALLOWLIST": "gemini,claude"}, clear=False):
             g = guardrails_from_settings()
         assert "gemini" in g.agent_allowlist
         assert "claude" in g.agent_allowlist
@@ -699,9 +669,7 @@ class TestGuardrailsFromEnvBranches:
     def test_cwd_prefixes_from_env(self) -> None:
         # @trace FR-GOV-007
         """THGENT_CWD_ALLOWED_PREFIXES parsed from env (line 121)."""
-        with patch.dict(
-            os.environ, {"THGENT_CWD_ALLOWED_PREFIXES": "/home,/workspace"}, clear=False
-        ):
+        with patch.dict(os.environ, {"THGENT_CWD_ALLOWED_PREFIXES": "/home,/workspace"}, clear=False):
             g = guardrails_from_settings()
         assert "/home" in g.cwd_allowed_prefixes
         assert "/workspace" in g.cwd_allowed_prefixes

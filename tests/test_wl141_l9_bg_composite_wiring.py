@@ -70,9 +70,7 @@ def bg_impl_core_source(helpers_module) -> str:
 
 
 @pytest.mark.parametrize("phase_name", list(_COMPOSITE_PHASE_HELPERS))
-def test_bg_impl_core_delegates_to_composite_helpers(
-    phase_name: str, bg_impl_core_source: str
-) -> None:
+def test_bg_impl_core_delegates_to_composite_helpers(phase_name: str, bg_impl_core_source: str) -> None:
     """``bg_impl_core`` must call every composite phase helper, not inline its body.
 
     This guards against accidental re-inlining that would balloon the
@@ -90,9 +88,7 @@ def test_bg_impl_core_delegates_to_composite_helpers(
 
 
 @pytest.mark.parametrize("phase_name", list(_COMPOSITE_PHASE_HELPERS))
-def test_composite_helpers_keep_cc_within_l9_budget(
-    phase_name: str, helpers_module
-) -> None:
+def test_composite_helpers_keep_cc_within_l9_budget(phase_name: str, helpers_module) -> None:
     """Each composite ``_phase_bg_*`` helper must stay within the L9 ceiling.
 
     The L9 simple-helper budget is CC ≤ 15 / body ≤ 40L. Composite helpers
@@ -117,9 +113,7 @@ def test_composite_helpers_keep_cc_within_l9_budget(
 
 
 @pytest.mark.parametrize("phase_name", list(_COMPOSITE_PHASE_HELPERS))
-def test_composite_helpers_body_within_l9_budget(
-    phase_name: str, helpers_module
-) -> None:
+def test_composite_helpers_body_within_l9_budget(phase_name: str, helpers_module) -> None:
     """Each composite helper body must stay within the L9 body budget (≤ 80L).
 
     The L9 40-line budget applies to simple helpers. Composite helpers
@@ -148,9 +142,7 @@ def test_phase_bg_init_tracker_returns_tuple(helpers_module) -> None:
         )
 
     # bg_impl_core uses ``bg_<8-hex>`` prefix (parallel to run_<8-hex> for run_impl_core).
-    assert re.match(r"^bg_[0-9a-f]{8}$", rid), (
-        f"Expected rid to match `bg_<8-hex>`; got {rid!r}."
-    )
+    assert re.match(r"^bg_[0-9a-f]{8}$", rid), f"Expected rid to match `bg_<8-hex>`; got {rid!r}."
     assert tracker is fake_tracker
     fake_tracker.start_run.assert_called_once_with(rid)
 
@@ -210,9 +202,7 @@ def test_phase_bg_idempotency_replay_returns_none_when_no_token(
 ) -> None:
     """No token → no replay, returns ``None``."""
     registry = MagicMock()
-    result = helpers_module._phase_bg_idempotency_replay(
-        registry=registry, idempotency_token=None
-    )
+    result = helpers_module._phase_bg_idempotency_replay(registry=registry, idempotency_token=None)
     assert result is None
     registry.lookup_by_idempotency_token.assert_not_called()
 
@@ -228,12 +218,8 @@ def test_phase_bg_remote_dispatch_short_circuits_on_remote(helpers_module) -> No
     fake_client.transfer_files.return_value = True
     fake_client.execute_remote.return_value = {"status": "success", "stdout": "12345"}
     fake_remote_mod.RemoteComputeClient = MagicMock(return_value=fake_client)
-    with patch.dict(
-        "sys.modules", {"thegent.research.remote_compute": fake_remote_mod}
-    ):
-        payload = helpers_module._phase_bg_remote_dispatch(
-            remote="host-a", cwd=MagicMock(), run_meta=run_meta
-        )
+    with patch.dict("sys.modules", {"thegent.research.remote_compute": fake_remote_mod}):
+        payload = helpers_module._phase_bg_remote_dispatch(remote="host-a", cwd=MagicMock(), run_meta=run_meta)
     # When transfer succeeds and remote returns success, helper builds a payload.
     assert isinstance(payload, dict)
     assert payload.get("status") == "started_remote"
@@ -243,9 +229,7 @@ def test_phase_bg_remote_dispatch_passthrough_when_remote_none(
     helpers_module,
 ) -> None:
     """``remote is None`` → returns ``None`` (no remote dispatch)."""
-    payload = helpers_module._phase_bg_remote_dispatch(
-        remote=None, cwd=MagicMock(), run_meta=MagicMock()
-    )
+    payload = helpers_module._phase_bg_remote_dispatch(remote=None, cwd=MagicMock(), run_meta=MagicMock())
     assert payload is None
 
 
@@ -259,9 +243,7 @@ def test_phase_bg_filter_env_returns_dict(helpers_module) -> None:
         "stdout": MagicMock(__str__=lambda self: "/tmp/out.log"),
         "stderr": MagicMock(__str__=lambda self: "/tmp/err.log"),
     }
-    env = helpers_module._phase_bg_filter_env(
-        settings=settings, owner_tag="alice", session_id="sess-x", p=p
-    )
+    env = helpers_module._phase_bg_filter_env(settings=settings, owner_tag="alice", session_id="sess-x", p=p)
     assert isinstance(env, dict)
     # THGENT_SESSION_* keys must be injected (G-GP-08 contract).
     assert env["THGENT_SESSION_ID"] == "sess-x"
@@ -283,9 +265,7 @@ def test_phase_bg_apply_sandbox_returns_list(helpers_module) -> None:
     """Helper must always return a list[str]."""
     settings = MagicMock()
     settings.macos_sandbox_enabled = False
-    cmd = helpers_module._phase_bg_apply_sandbox(
-        settings=settings, cmd=["echo", "hi"], cwd=MagicMock()
-    )
+    cmd = helpers_module._phase_bg_apply_sandbox(settings=settings, cmd=["echo", "hi"], cwd=MagicMock())
     assert isinstance(cmd, list)
 
 

@@ -68,10 +68,8 @@ def test_wl9762_parse_phase_resolves_requested_approval_context() -> None:
     session_id = _start_session()
     _turn_id, approval_id = _submit_turn(session_id)
     binding = server._bind_approval_resolution_phases("grant")
-    parsed_approval_id, approval, turn, error = (
-        server._parse_approval_resolution_with_binding(
-            "req", {"approval_id": approval_id}, binding
-        )
+    parsed_approval_id, approval, turn, error = server._parse_approval_resolution_with_binding(
+        "req", {"approval_id": approval_id}, binding
     )
     assert error is None
     assert parsed_approval_id == approval_id
@@ -112,9 +110,7 @@ def test_wl9764_success_dispatch_executes_grant_and_returns_projection() -> None
 
 def test_wl9765_recovery_dispatch_returns_parse_error_payload() -> None:
     # @trace WL-9765
-    parse_error = server._error_response(
-        "req", server.JsonRpcError(-32005, "Approval not found")
-    )
+    parse_error = server._error_response("req", server.JsonRpcError(-32005, "Approval not found"))
     assert server._dispatch_approval_resolution_recovery(parse_error) == parse_error
 
 

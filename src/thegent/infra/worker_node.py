@@ -62,9 +62,7 @@ async def worker_loop(mesh_root: Path, runtime_name: str):
 
                 try:
                     proc = psutil.Process()
-                    record_resource_usage(
-                        os.getpid(), proc.cpu_percent(), proc.memory_info().rss
-                    )
+                    record_resource_usage(os.getpid(), proc.cpu_percent(), proc.memory_info().rss)
                 except Exception:
                     pass
 

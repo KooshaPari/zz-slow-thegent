@@ -40,9 +40,7 @@ pytestmark = pytest.mark.requirement("WL-034")
 # ---------------------------------------------------------------------------
 
 
-def _write_agent_md(
-    tmp_path: Path, name: str, fm: dict, body: str = "Agent body."
-) -> Path:
+def _write_agent_md(tmp_path: Path, name: str, fm: dict, body: str = "Agent body.") -> Path:
     """Write a minimal agent .md file with frontmatter."""
     content_lines = ["---"]
     content_lines.append(yaml.dump(fm, default_flow_style=False).strip())
@@ -234,18 +232,14 @@ class TestCapabilityIndexBuild:
 
     def test_ttl_cache_returns_same_instance(self, tmp_path: Path) -> None:
         CapabilityIndex.invalidate()
-        with patch(
-            "thegent.agents.capability_index._glob_agent_dirs", return_value=[tmp_path]
-        ):
+        with patch("thegent.agents.capability_index._glob_agent_dirs", return_value=[tmp_path]):
             idx1 = CapabilityIndex.get()
             idx2 = CapabilityIndex.get()
             assert idx1 is idx2
 
     def test_invalidate_clears_cache(self, tmp_path: Path) -> None:
         CapabilityIndex.invalidate()
-        with patch(
-            "thegent.agents.capability_index._glob_agent_dirs", return_value=[tmp_path]
-        ):
+        with patch("thegent.agents.capability_index._glob_agent_dirs", return_value=[tmp_path]):
             idx1 = CapabilityIndex.get()
             CapabilityIndex.invalidate()
             idx2 = CapabilityIndex.get()
@@ -260,9 +254,7 @@ class TestCapabilityIndexBuild:
 class TestRecommendationScoring:
     """Tests for CapabilityIndex.recommend()."""  # @trace WL-034
 
-    def _make_index_with_agents(
-        self, tmp_path: Path, agent_specs: list[dict]
-    ) -> CapabilityIndex:
+    def _make_index_with_agents(self, tmp_path: Path, agent_specs: list[dict]) -> CapabilityIndex:
         CapabilityIndex.invalidate()
         for spec in agent_specs:
             _write_agent_md(tmp_path, spec["name"], spec)
@@ -595,9 +587,7 @@ class TestAutoAgentSelection:
                 "model": "sonnet",
             },
         )
-        with patch(
-            "thegent.agents.capability_index._glob_agent_dirs", return_value=[tmp_path]
-        ):
+        with patch("thegent.agents.capability_index._glob_agent_dirs", return_value=[tmp_path]):
             CapabilityIndex.invalidate()
             from thegent.cli.apps.run import _auto_select_agent
 
@@ -606,9 +596,7 @@ class TestAutoAgentSelection:
 
     def test_auto_select_returns_none_when_no_agents(self, tmp_path: Path) -> None:
         CapabilityIndex.invalidate()
-        with patch(
-            "thegent.agents.capability_index._glob_agent_dirs", return_value=[tmp_path]
-        ):
+        with patch("thegent.agents.capability_index._glob_agent_dirs", return_value=[tmp_path]):
             CapabilityIndex.invalidate()
             from thegent.cli.apps.run import _auto_select_agent
 
@@ -706,9 +694,7 @@ class TestAutoAgentSelection:
             },
         )
 
-        with patch(
-            "thegent.agents.capability_index._glob_agent_dirs", return_value=[tmp_path]
-        ):
+        with patch("thegent.agents.capability_index._glob_agent_dirs", return_value=[tmp_path]):
             CapabilityIndex.invalidate()
             from thegent.cli.apps.registry import recommend_agent
 

@@ -278,9 +278,7 @@ class TestSyncToRemote:
 
     @patch("thegent.compute.remote_runner.subprocess.run")
     @patch("thegent.compute.remote_runner.RemoteExecutor")
-    def test_rsync_success(
-        self, mock_executor_cls: MagicMock, mock_run: MagicMock
-    ) -> None:
+    def test_rsync_success(self, mock_executor_cls: MagicMock, mock_run: MagicMock) -> None:
         """sync_to_remote returns True on successful rsync."""
         mock_executor = MagicMock()
         mock_executor.available_nodes.return_value = ["worker-1"]
@@ -301,9 +299,7 @@ class TestSyncToRemote:
 
     @patch("thegent.compute.remote_runner.subprocess.run")
     @patch("thegent.compute.remote_runner.RemoteExecutor")
-    def test_rsync_failure(
-        self, mock_executor_cls: MagicMock, mock_run: MagicMock
-    ) -> None:
+    def test_rsync_failure(self, mock_executor_cls: MagicMock, mock_run: MagicMock) -> None:
         """sync_to_remote returns False on rsync failure."""
         mock_executor = MagicMock()
         mock_executor.available_nodes.return_value = ["worker-1"]

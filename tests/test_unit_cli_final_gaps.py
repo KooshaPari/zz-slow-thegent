@@ -129,9 +129,7 @@ class TestObserveSummaryNonDictEscalation:
     @patch("thegent.cli.console")
     @patch("thegent.cli._normalize_output_format", return_value="rich")
     @patch("thegent.cli.commands.impl.observe_summary_impl")
-    def test_non_dict_escalation_skipped(
-        self, mock_impl, mock_fmt, mock_console
-    ) -> None:
+    def test_non_dict_escalation_skipped(self, mock_impl, mock_fmt, mock_console) -> None:
         # @trace FR-CLI-722
         mock_impl.return_value = {
             "kpis": {
@@ -206,9 +204,7 @@ class TestHealthGateUnrecognizedSuffix:
     @patch("thegent.cli.ThegentSettings")
     @patch("thegent.cli.commands.impl.session_contract_health_gate_impl")
     @patch("thegent.cli._write_health_gate_export", return_value="json")
-    def test_unrecognized_suffix_note(
-        self, mock_write, mock_impl, mock_settings_cls, mock_owner, mock_console
-    ) -> None:
+    def test_unrecognized_suffix_note(self, mock_write, mock_impl, mock_settings_cls, mock_owner, mock_console) -> None:
         # @trace FR-CLI-1114
         mock_settings_cls.return_value = _mock_settings()
         mock_impl.return_value = _health_gate_result()
@@ -217,10 +213,7 @@ class TestHealthGateUnrecognizedSuffix:
         output_path = Path("/tmp/test-output.xyz")
         session_contract_health_gate_cmd(output=output_path)
         # Should print a note about unrecognized extension
-        note_printed = any(
-            "not recognized for export" in str(c)
-            for c in mock_console.print.call_args_list
-        )
+        note_printed = any("not recognized for export" in str(c) for c in mock_console.print.call_args_list)
         assert note_printed, "Expected a note about unrecognized suffix"
 
 
@@ -271,9 +264,7 @@ class TestWriteReportExportJsonFallback:
 class TestWriteHealthGateExportTmpCleanup:
     """Cover line 1748: tmp file unlinked after atomic write in _write_health_gate_export."""
 
-    def test_health_gate_export_cleans_tmp_on_failure(
-        self, tmp_path, monkeypatch
-    ) -> None:
+    def test_health_gate_export_cleans_tmp_on_failure(self, tmp_path, monkeypatch) -> None:
         # @trace FR-CLI-1748
         from thegent.cli import _write_health_gate_export
 
@@ -285,9 +276,7 @@ class TestWriteHealthGateExportTmpCleanup:
 
         monkeypatch.setattr(Path, "replace", failing_replace)
         with pytest.raises(OSError, match="simulated replace failure"):
-            _write_health_gate_export(
-                output=output, report=report, export_format="json", overwrite=True
-            )
+            _write_health_gate_export(output=output, report=report, export_format="json", overwrite=True)
         tmp_files = list(tmp_path.glob(".*tmp"))
         assert len(tmp_files) == 0
 
@@ -313,9 +302,7 @@ class TestWriteHealthTrendExportTmpCleanup:
 
         monkeypatch.setattr(Path, "replace", failing_replace)
         with pytest.raises(OSError, match="simulated replace failure"):
-            _write_health_trend_export(
-                output=output, result=result, export_format="json"
-            )
+            _write_health_trend_export(output=output, result=result, export_format="json")
         tmp_files = list(tmp_path.glob(".*tmp"))
         assert len(tmp_files) == 0
 
@@ -476,9 +463,7 @@ class TestArchiveCmdDomainFilter:
 
     @patch("thegent.cli.console")
     @patch("thegent.cli.ThegentSettings")
-    def test_cold_tier_domain_filter(
-        self, mock_settings_cls, mock_console, tmp_path
-    ) -> None:
+    def test_cold_tier_domain_filter(self, mock_settings_cls, mock_console, tmp_path) -> None:
         # @trace FR-CLI-3119
 
         mock_settings_cls.return_value = _mock_settings(session_dir=str(tmp_path))
@@ -502,9 +487,7 @@ class TestArchiveCmdDomainFilter:
 
     @patch("thegent.cli.console")
     @patch("thegent.cli.ThegentSettings")
-    def test_hot_tier_domain_filter(
-        self, mock_settings_cls, mock_console, tmp_path
-    ) -> None:
+    def test_hot_tier_domain_filter(self, mock_settings_cls, mock_console, tmp_path) -> None:
         # @trace FR-CLI-3136
         import os
 
@@ -547,9 +530,7 @@ class TestOperationsCmdBranches:
 
         with (
             patch("thegent.operations.Operation", return_value=mock_op),
-            patch(
-                "thegent.operations.get_operations_by_type", return_value=[mock_entry]
-            ),
+            patch("thegent.operations.get_operations_by_type", return_value=[mock_entry]),
         ):
             # Source returns early for JSON format without printing
             operations_cmd(format="json", operation="orchestrate")
@@ -734,9 +715,7 @@ class TestDagRunCmdMaxParallelPriority:
                     "status": "pending",
                     "priority": "5",
                 },
-                BrokenPriorityDict(
-                    id="T2", agent="claude", prompt="Do T2", status="pending"
-                ),
+                BrokenPriorityDict(id="T2", agent="claude", prompt="Do T2", status="pending"),
             ]
         )
         mock_parse.return_value = doc
@@ -1146,9 +1125,7 @@ class TestDagSyncCmdSessionCompletion:
     @patch("thegent.cli._parse_dag_full")
     @patch("thegent.cli.ThegentSettings")
     @patch("thegent.cli._resolve_cwd")
-    @patch(
-        "thegent.cli._find_session_meta", side_effect=typer.BadParameter("not found")
-    )
+    @patch("thegent.cli._find_session_meta", side_effect=typer.BadParameter("not found"))
     def test_sync_bad_parameter_breaks(
         self,
         mock_find_meta,
@@ -1419,9 +1396,7 @@ class TestResolveModelRouteCmdNoRoutes:
     def test_no_route_no_available(self, mock_console) -> None:
         # @trace FR-CLI-4136
         with (
-            patch(
-                "thegent.models.normalize_route_policy", return_value="prefer_direct"
-            ),
+            patch("thegent.models.normalize_route_policy", return_value="prefer_direct"),
             patch("thegent.models.normalize_model_id", return_value="unknown-model"),
             patch("thegent.models.resolve_route_contract", return_value=None),
             patch("thegent.models.ModelCatalog") as MockCatalog,
@@ -1447,9 +1422,7 @@ class TestListCopilotModelsNoKnownModels:
     @patch("thegent.cli.console")
     @patch("thegent.cli._list_copilot_models_fallback")
     @patch("thegent.cli.subprocess")
-    def test_no_known_models_triggers_fallback(
-        self, mock_subprocess, mock_fallback, mock_console
-    ) -> None:
+    def test_no_known_models_triggers_fallback(self, mock_subprocess, mock_fallback, mock_console) -> None:
         # @trace FR-CLI-4237
         proc = MagicMock()
         proc.returncode = 0

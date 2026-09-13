@@ -62,9 +62,9 @@ def test_canonical_shim_accepts_failover_kwarg() -> None:
     from thegent.cli.commands.run.impl_core_runners import run_impl_core as shim
 
     sig = inspect.signature(shim)
-    assert any(
-        p.kind is inspect.Parameter.VAR_KEYWORD for p in sig.parameters.values()
-    ), "canonical run_impl_core shim must accept **kwargs to forward failover"
+    assert any(p.kind is inspect.Parameter.VAR_KEYWORD for p in sig.parameters.values()), (
+        "canonical run_impl_core shim must accept **kwargs to forward failover"
+    )
 
 
 def test_bg_impl_core_accepts_failover_kwarg() -> None:
@@ -90,6 +90,4 @@ def test_run_impl_core_callable_with_failover(target_path: str) -> None:
     module = importlib.import_module(module_path)
     fn = getattr(module, attr)
     sig = inspect.signature(fn)
-    assert "failover" in sig.parameters or any(
-        p.kind is inspect.Parameter.VAR_KEYWORD for p in sig.parameters.values()
-    )
+    assert "failover" in sig.parameters or any(p.kind is inspect.Parameter.VAR_KEYWORD for p in sig.parameters.values())

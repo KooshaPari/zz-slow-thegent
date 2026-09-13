@@ -12,9 +12,7 @@ from yaml import YAMLError, safe_dump, safe_load
 class SessionState:
     """Persist one named compositor session as YAML."""
 
-    def __init__(
-        self, session_name: str = "default", session_dir: Path | None = None
-    ) -> None:
+    def __init__(self, session_name: str = "default", session_dir: Path | None = None) -> None:
         self.session_name = self._safe_session_name(session_name)
         self.session_dir = session_dir or Path.home() / ".thegent" / "sessions"
         self.session_dir.mkdir(parents=True, exist_ok=True)

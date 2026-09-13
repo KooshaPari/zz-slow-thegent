@@ -39,9 +39,7 @@ class InputGuardrails:
     """Input validation rails before OPA/PolicyEngine. G-GP-02."""
 
     prompt_max_chars: int = 65536
-    prompt_blocklist_patterns: list[str] = field(
-        default_factory=list
-    )  # Thread-safe: read-only after __init__
+    prompt_blocklist_patterns: list[str] = field(default_factory=list)  # Thread-safe: read-only after __init__
     agent_allowlist: list[str] = field(default_factory=list)  # Empty = allow all
     cwd_allowed_prefixes: list[str] = field(default_factory=list)  # Empty = allow all
     model_allowlist: list[str] = field(default_factory=list)  # Empty = allow all

@@ -6,15 +6,11 @@ import pytest
 
 from conftest import _load_script_module
 
-SCRIPT_PATH = (
-    Path(__file__).resolve().parents[1] / "scripts" / "benchmark_python_suite.py"
-)
+SCRIPT_PATH = Path(__file__).resolve().parents[1] / "scripts" / "benchmark_python_suite.py"
 MODULE = _load_script_module("benchmark_python_suite", SCRIPT_PATH)
 
 
-def test_wl078_main_refuses_overwrite_without_flag(
-    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
-) -> None:
+def test_wl078_main_refuses_overwrite_without_flag(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
     out = tmp_path / "baseline.json"
     out.write_text('{"old": true}', encoding="utf-8")
     monkeypatch.setattr(
@@ -28,15 +24,11 @@ def test_wl078_main_refuses_overwrite_without_flag(
         ],
     )
 
-    with pytest.raises(
-        FileExistsError, match="Refusing to overwrite existing benchmark output"
-    ):
+    with pytest.raises(FileExistsError, match="Refusing to overwrite existing benchmark output"):
         MODULE.main()
 
 
-def test_wl078_main_allows_overwrite_with_flag(
-    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
-) -> None:
+def test_wl078_main_allows_overwrite_with_flag(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
     out = tmp_path / "baseline.json"
     out.write_text('{"old": true}', encoding="utf-8")
     monkeypatch.setattr(

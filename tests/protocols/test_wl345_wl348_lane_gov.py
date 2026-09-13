@@ -46,9 +46,7 @@ def test_wl348_export_checkpoint_writes_digest(tmp_path: Path) -> None:
     store.append(kind="policy_evaluation", actor="policy-engine")
     checkpoint_path = tmp_path / "checkpoint.json"
 
-    checkpoint = AuditExporter(store).export_checkpoint(
-        checkpoint_id="wl-348-checkpoint", output_path=checkpoint_path
-    )
+    checkpoint = AuditExporter(store).export_checkpoint(checkpoint_id="wl-348-checkpoint", output_path=checkpoint_path)
 
     assert checkpoint["checkpoint_id"] == "wl-348-checkpoint"
     assert checkpoint["record_count"] == 2

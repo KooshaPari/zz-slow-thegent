@@ -9,9 +9,7 @@ def test_run_impl_fails_fast_when_explicit_ollama_guard_fails() -> None:
     from thegent.cli.commands import impl as cli_impl
 
     with (
-        patch(
-            "thegent.models.catalog.resolve_route", return_value=("ollama", "llama3.3")
-        ),
+        patch("thegent.models.catalog.resolve_route", return_value=("ollama", "llama3.3")),
         patch(
             "thegent.cli.commands.impl._validate_explicit_ollama_provider",
             return_value="Ollama unavailable",
@@ -26,18 +24,14 @@ def test_run_impl_fails_fast_when_explicit_ollama_guard_fails() -> None:
 
     assert result["exit_code"] == 1
     assert "Ollama unavailable" in str(result.get("error"))
-    assert str(result.get("run_id", "")).startswith("run_") or str(
-        result.get("run_id", "")
-    ).startswith("run_err_")
+    assert str(result.get("run_id", "")).startswith("run_") or str(result.get("run_id", "")).startswith("run_err_")
 
 
 def test_bg_impl_fails_fast_when_explicit_ollama_guard_fails() -> None:
     from thegent.cli.commands import impl as cli_impl
 
     with (
-        patch(
-            "thegent.models.catalog.resolve_route", return_value=("ollama", "llama3.3")
-        ),
+        patch("thegent.models.catalog.resolve_route", return_value=("ollama", "llama3.3")),
         patch(
             "thegent.cli.commands.impl._validate_explicit_ollama_provider",
             return_value="No local models",
@@ -69,18 +63,14 @@ def test_validate_explicit_ollama_provider_returns_model_install_message() -> No
             return_value=[],
         ),
     ):
-        msg = _validate_explicit_ollama_provider(
-            provider="ollama-local", model="llama3.3"
-        )
+        msg = _validate_explicit_ollama_provider(provider="ollama-local", model="llama3.3")
 
     assert msg is not None
     assert "no local models are installed" in msg.lower()
     assert "ollama pull" in msg
 
 
-def test_validate_explicit_ollama_provider_returns_none_when_model_is_installed() -> (
-    None
-):
+def test_validate_explicit_ollama_provider_returns_none_when_model_is_installed() -> None:
     from thegent.cli.commands.impl import _validate_explicit_ollama_provider
 
     with (
@@ -93,8 +83,6 @@ def test_validate_explicit_ollama_provider_returns_none_when_model_is_installed(
             return_value=["llama3.3", "mistral"],
         ),
     ):
-        msg = _validate_explicit_ollama_provider(
-            provider="ollama", model="ollama/llama3.3"
-        )
+        msg = _validate_explicit_ollama_provider(provider="ollama", model="ollama/llama3.3")
 
     assert msg is None

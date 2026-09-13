@@ -165,9 +165,7 @@ class TestAllCanonicalSymbolsPresent:
     def test_symbol_count_is_exactly_10(self) -> None:
         mod = _load(GOVERNANCE_IMPL)
         present = [n for n in CANONICAL_SYMBOLS if hasattr(mod, n)]
-        assert len(present) == 10, (
-            f"expected 10 canonical symbols, found {len(present)}"
-        )
+        assert len(present) == 10, f"expected 10 canonical symbols, found {len(present)}"
         assert sorted(present) == sorted(CANONICAL_SYMBOLS)
 
     # @trace FR-AUDIT-N+10-006
@@ -207,9 +205,7 @@ class TestReExportIdentity:
         impl = _load(IMPL)
         gov = _load(GOVERNANCE_IMPL)
         for name in CANONICAL_SYMBOLS:
-            assert getattr(impl, name) is getattr(gov, name), (
-                f"{name} differs between {IMPL} and {GOVERNANCE_IMPL}"
-            )
+            assert getattr(impl, name) is getattr(gov, name), f"{name} differs between {IMPL} and {GOVERNANCE_IMPL}"
 
     # @trace FR-AUDIT-N+10-011
     def test_impl_escalate_add_impl_is_observability_escalate_add_impl(self) -> None:
@@ -231,9 +227,7 @@ class TestReExportIdentity:
             "get_data_protection_status_impl was not re-exported on impl.py"
         )
         assert hasattr(gov, "get_data_protection_status_impl")
-        assert (
-            impl.get_data_protection_status_impl is gov.get_data_protection_status_impl
-        )
+        assert impl.get_data_protection_status_impl is gov.get_data_protection_status_impl
 
 
 # ---------------------------------------------------------------------------
@@ -249,34 +243,13 @@ class TestCallSitesImportFromGovernanceImpl:
         src = inspect.getsource(mod)
         # Every lazy `from thegent.cli.governance.governance_impl import ...`
         # call should be present. We pin a representative subset.
-        assert (
-            "from thegent.cli.governance.governance_impl import escalate_add_impl"
-            in src
-        )
-        assert (
-            "from thegent.cli.governance.governance_impl import escalate_list_impl"
-            in src
-        )
-        assert (
-            "from thegent.cli.governance.governance_impl import escalate_approve_impl"
-            in src
-        )
-        assert (
-            "from thegent.cli.governance.governance_impl import escalate_resolve_impl"
-            in src
-        )
-        assert (
-            "from thegent.cli.governance.governance_impl import govern_approve_impl"
-            in src
-        )
-        assert (
-            "from thegent.cli.governance.governance_impl import govern_reject_impl"
-            in src
-        )
-        assert (
-            "from thegent.cli.governance.governance_impl import govern_list_pending_impl"
-            in src
-        )
+        assert "from thegent.cli.governance.governance_impl import escalate_add_impl" in src
+        assert "from thegent.cli.governance.governance_impl import escalate_list_impl" in src
+        assert "from thegent.cli.governance.governance_impl import escalate_approve_impl" in src
+        assert "from thegent.cli.governance.governance_impl import escalate_resolve_impl" in src
+        assert "from thegent.cli.governance.governance_impl import govern_approve_impl" in src
+        assert "from thegent.cli.governance.governance_impl import govern_reject_impl" in src
+        assert "from thegent.cli.governance.governance_impl import govern_list_pending_impl" in src
         assert "from thegent.cli.governance.governance_impl import sweep_impl" in src
 
     # @trace FR-AUDIT-N+10-014
@@ -305,38 +278,20 @@ class TestCallSitesImportFromGovernanceImpl:
     def test_data_protection_cmds_imports_from_governance_impl(self) -> None:
         mod = _load(DATA_PROTECTION_CMDS)
         src = inspect.getsource(mod)
-        assert (
-            "from thegent.cli.governance.governance_impl import get_data_protection_status_impl"
-            in src
-        )
-        assert (
-            "from thegent.cli.commands.impl import get_data_protection_status_impl"
-            not in src
-        )
+        assert "from thegent.cli.governance.governance_impl import get_data_protection_status_impl" in src
+        assert "from thegent.cli.commands.impl import get_data_protection_status_impl" not in src
 
     # @trace FR-AUDIT-N+10-016
     def test_apps_govern_imports_from_governance_impl(self) -> None:
         mod = _load(APPS_GOVERN)
         src = inspect.getsource(mod)
-        assert (
-            "from thegent.cli.governance.governance_impl import govern_approve_impl"
-            in src
-        )
-        assert (
-            "from thegent.cli.governance.governance_impl import govern_reject_impl"
-            in src
-        )
-        assert (
-            "from thegent.cli.governance.governance_impl import harness_register_host_impl"
-            in src
-        )
+        assert "from thegent.cli.governance.governance_impl import govern_approve_impl" in src
+        assert "from thegent.cli.governance.governance_impl import govern_reject_impl" in src
+        assert "from thegent.cli.governance.governance_impl import harness_register_host_impl" in src
         # Negative check.
         assert "from thegent.cli.commands.impl import govern_approve_impl" not in src
         assert "from thegent.cli.commands.impl import govern_reject_impl" not in src
-        assert (
-            "from thegent.cli.commands.impl import harness_register_host_impl"
-            not in src
-        )
+        assert "from thegent.cli.commands.impl import harness_register_host_impl" not in src
 
 
 # ---------------------------------------------------------------------------
@@ -354,9 +309,7 @@ class TestCanonicalSignaturesPreserved:
             sig = inspect.signature(fn)
             actual_params = set(sig.parameters.keys())
             for p in expected:
-                assert p in actual_params, (
-                    f"{name}: expected param {p!r} missing (actual={sorted(actual_params)})"
-                )
+                assert p in actual_params, f"{name}: expected param {p!r} missing (actual={sorted(actual_params)})"
 
     # @trace FR-AUDIT-N+10-021
     def test_escalate_add_impl_is_keyword_only(self) -> None:
@@ -366,14 +319,8 @@ class TestCanonicalSignaturesPreserved:
         gov = _load(GOVERNANCE_IMPL)
         sig = inspect.signature(gov.escalate_add_impl)
         # At least one parameter is keyword-only.
-        kw_only_count = sum(
-            1
-            for p in sig.parameters.values()
-            if p.kind == inspect.Parameter.KEYWORD_ONLY
-        )
-        assert kw_only_count > 0, (
-            "escalate_add_impl must have at least one keyword-only parameter"
-        )
+        kw_only_count = sum(1 for p in sig.parameters.values() if p.kind == inspect.Parameter.KEYWORD_ONLY)
+        assert kw_only_count > 0, "escalate_add_impl must have at least one keyword-only parameter"
 
     # @trace FR-AUDIT-N+10-022
     def test_sweep_impl_is_keyword_only(self) -> None:
@@ -381,11 +328,7 @@ class TestCanonicalSignaturesPreserved:
         required parameters."""
         gov = _load(GOVERNANCE_IMPL)
         sig = inspect.signature(gov.sweep_impl)
-        kw_only_params = [
-            p
-            for p in sig.parameters.values()
-            if p.kind == inspect.Parameter.KEYWORD_ONLY
-        ]
+        kw_only_params = [p for p in sig.parameters.values() if p.kind == inspect.Parameter.KEYWORD_ONLY]
         # 5 canonical kwargs.
         assert len(kw_only_params) == 5, (
             f"sweep_impl must have exactly 5 keyword-only parameters, found {len(kw_only_params)}"
@@ -460,11 +403,7 @@ class TestCanonicalRoundTrip:
         with patch.object(gov, "_session_dir", return_value=tmp_path):
             with patch(
                 "thegent.governance.hitl.HITLApprovalWorkflow",
-                return_value=MagicMock(
-                    approve=MagicMock(
-                        return_value={"run_id": "r-3", "status": "approved"}
-                    )
-                ),
+                return_value=MagicMock(approve=MagicMock(return_value={"run_id": "r-3", "status": "approved"})),
             ):
                 result = gov.govern_approve_impl(run_id="r-3", reason="ok")
                 assert result["run_id"] == "r-3"
@@ -478,11 +417,7 @@ class TestCanonicalRoundTrip:
         with patch.object(gov, "_session_dir", return_value=tmp_path):
             with patch(
                 "thegent.governance.hitl.HITLApprovalWorkflow",
-                return_value=MagicMock(
-                    reject=MagicMock(
-                        return_value={"run_id": "r-4", "status": "rejected"}
-                    )
-                ),
+                return_value=MagicMock(reject=MagicMock(return_value={"run_id": "r-4", "status": "rejected"})),
             ):
                 result = gov.govern_reject_impl(run_id="r-4", reason="denied")
                 assert result["run_id"] == "r-4"
@@ -508,9 +443,7 @@ class TestCanonicalRoundTrip:
         from unittest.mock import MagicMock
 
         gov = _load(GOVERNANCE_IMPL)
-        with patch(
-            "thegent.agents.unified_session_index.HarnessType"
-        ) as mock_harness_type:
+        with patch("thegent.agents.unified_session_index.HarnessType") as mock_harness_type:
             mock_harness_type.return_value = MagicMock()
             mock_harness_type.__call__ = MagicMock(return_value=MagicMock())
             with patch(
@@ -604,9 +537,7 @@ class TestCanonicalRoundTrip:
             gov.sweep_impl(drift_window=10)  # missing 4 kwargs
 
     # @trace FR-AUDIT-N+10-042
-    def test_sweep_impl_returns_dict_with_pass_key(
-        self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
-    ) -> None:
+    def test_sweep_impl_returns_dict_with_pass_key(self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
         from unittest.mock import MagicMock
 
         gov = _load(GOVERNANCE_IMPL)
@@ -622,9 +553,7 @@ class TestCanonicalRoundTrip:
                 "thegent.contracts.telemetry.ContractTelemetry",
                 return_value=MagicMock(
                     detect_drift=MagicMock(return_value=[]),
-                    get_drift_budget_status=MagicMock(
-                        return_value={"within_budget": True}
-                    ),
+                    get_drift_budget_status=MagicMock(return_value={"within_budget": True}),
                 ),
             ),
             patch(
@@ -681,9 +610,7 @@ class TestImplReExportStructure:
         src = inspect.getsource(impl)
         for name in CANONICAL_SYMBOLS:
             # A function definition (allowing method-def `def name(`).
-            assert f"def {name}(" not in src, (
-                f"impl.py must not define {name} locally — it's a re-export shim"
-            )
+            assert f"def {name}(" not in src, f"impl.py must not define {name} locally — it's a re-export shim"
 
 
 # ---------------------------------------------------------------------------

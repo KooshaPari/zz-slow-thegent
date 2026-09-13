@@ -277,9 +277,7 @@ class TestDiscoveryClientErrorFallback:
         mock_fb.assert_called_once()
         assert result == []
 
-    def test_sessions_fallback_empty_state_preserves_success_status(
-        self, tmp_path: Path
-    ) -> None:
+    def test_sessions_fallback_empty_state_preserves_success_status(self, tmp_path: Path) -> None:
         client = self._make_native_client(tmp_path)
         with (
             patch.object(client, "_run", return_value=None),
@@ -335,9 +333,7 @@ class TestDiscoveryClientErrorFallback:
         mock_fb.assert_called_once()
         assert result == []
         assert client.last_fallback_metadata["tools"]["status"] == "probe_failed"
-        assert (
-            client.last_fallback_metadata["tools"]["error_type"] == "path_probe_missing"
-        )
+        assert client.last_fallback_metadata["tools"]["error_type"] == "path_probe_missing"
 
     def test_processes_falls_back_on_none(self, tmp_path: Path) -> None:
         client = self._make_native_client(tmp_path)
@@ -358,9 +354,7 @@ class TestDiscoveryClientErrorFallback:
         mock_fb.assert_called_once()
         assert result == []
         assert client.last_fallback_metadata["processes"]["status"] == "probe_failed"
-        assert (
-            client.last_fallback_metadata["processes"]["error_type"] == "psutil_missing"
-        )
+        assert client.last_fallback_metadata["processes"]["error_type"] == "psutil_missing"
 
     def test_all_falls_back_on_none(self, tmp_path: Path) -> None:
         client = self._make_native_client(tmp_path)
@@ -387,16 +381,12 @@ class TestDiscoveryClientErrorFallback:
         assert result["fallback_metadata"]["tools"]["status"] == "ok"
         assert result["fallback_metadata"]["processes"]["status"] == "ok"
 
-    def test_all_falls_back_on_timeout_with_native_metadata(
-        self, tmp_path: Path
-    ) -> None:
+    def test_all_falls_back_on_timeout_with_native_metadata(self, tmp_path: Path) -> None:
         client = self._make_native_client(tmp_path)
         with (
             patch(
                 "subprocess.run",
-                side_effect=subprocess.TimeoutExpired(
-                    cmd="thegent-discovery", timeout=15
-                ),
+                side_effect=subprocess.TimeoutExpired(cmd="thegent-discovery", timeout=15),
             ),
             patch(
                 "thegent.native.discovery_native._fallback_sessions",
@@ -414,22 +404,15 @@ class TestDiscoveryClientErrorFallback:
             result = client.all()
         assert client.last_run_diagnostics is not None
         assert client.last_run_diagnostics["error_type"] == "timeout"
-        assert (
-            result["fallback_metadata"]["sessions"]["native_run"]["status"] == "error"
-        )
-        assert (
-            result["fallback_metadata"]["tools"]["native_run"]["error_type"]
-            == "timeout"
-        )
+        assert result["fallback_metadata"]["sessions"]["native_run"]["status"] == "error"
+        assert result["fallback_metadata"]["tools"]["native_run"]["error_type"] == "timeout"
 
     def test_all_falls_back_on_tmux_probe_failure(self, tmp_path: Path) -> None:
         client = self._make_native_client(tmp_path)
         with (
             patch(
                 "subprocess.run",
-                side_effect=subprocess.TimeoutExpired(
-                    cmd="thegent-discovery", timeout=15
-                ),
+                side_effect=subprocess.TimeoutExpired(cmd="thegent-discovery", timeout=15),
             ),
             patch(
                 "thegent.native.discovery_native._fallback_sessions",
@@ -508,9 +491,7 @@ class TestDiscoveryClientFallbackPath:
         ):
             return DiscoveryClient()
 
-    def test_sessions_delegates_to_fallback(
-        self, fallback_client: DiscoveryClient
-    ) -> None:
+    def test_sessions_delegates_to_fallback(self, fallback_client: DiscoveryClient) -> None:
         with patch(
             "thegent.native.discovery_native._fallback_sessions",
             return_value={
@@ -522,22 +503,14 @@ class TestDiscoveryClientFallbackPath:
         mock_fb.assert_called_once()
         assert result == [{"session_name": "s1"}]
 
-    def test_tools_delegates_to_fallback(
-        self, fallback_client: DiscoveryClient
-    ) -> None:
+    def test_tools_delegates_to_fallback(self, fallback_client: DiscoveryClient) -> None:
         expected = [{"tool": "git", "available": True, "path": "/usr/bin/git"}]
-        with patch(
-            "thegent.native.discovery_native._fallback_tools", return_value=expected
-        ):
+        with patch("thegent.native.discovery_native._fallback_tools", return_value=expected):
             result = fallback_client.tools()
         assert result == expected
 
-    def test_processes_delegates_to_fallback(
-        self, fallback_client: DiscoveryClient
-    ) -> None:
-        with patch(
-            "thegent.native.discovery_native._fallback_processes", return_value=[]
-        ) as mock_fb:
+    def test_processes_delegates_to_fallback(self, fallback_client: DiscoveryClient) -> None:
+        with patch("thegent.native.discovery_native._fallback_processes", return_value=[]) as mock_fb:
             fallback_client.processes(pattern="custom")
         mock_fb.assert_called_once_with("custom", include_meta=True)
 
@@ -548,9 +521,7 @@ class TestDiscoveryClientFallbackPath:
                 return_value={"sessions": [], "fallback": {"status": "ok"}},
             ),
             patch("thegent.native.discovery_native._fallback_tools", return_value=[]),
-            patch(
-                "thegent.native.discovery_native._fallback_processes", return_value=[]
-            ),
+            patch("thegent.native.discovery_native._fallback_processes", return_value=[]),
         ):
             result = fallback_client.all()
         assert set(result.keys()) == {
@@ -738,9 +709,7 @@ class TestFallbackProcesses:
         pids = [p["pid"] for p in result]
         assert 999 in pids
 
-    def test_psutil_import_error_returns_empty(
-        self, monkeypatch: pytest.MonkeyPatch
-    ) -> None:
+    def test_psutil_import_error_returns_empty(self, monkeypatch: pytest.MonkeyPatch) -> None:
         """When psutil is not importable, return empty list gracefully."""
         import sys
 
@@ -759,9 +728,7 @@ class TestFallbackProcesses:
 class TestScanAgentProcessesIntegration:
     """scan_agent_processes() in discovery.py delegates to DiscoveryClient."""
 
-    def test_uses_native_client_when_available(
-        self, fake_processes_json: list[dict]
-    ) -> None:
+    def test_uses_native_client_when_available(self, fake_processes_json: list[dict]) -> None:
         import thegent.discovery as discovery_mod
 
         # Reset the module-level cache

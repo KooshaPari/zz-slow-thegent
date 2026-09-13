@@ -74,9 +74,7 @@ def test_wl103_append_context_usage_emits_ratio_without_window_fields() -> None:
     assert "context_usage" not in payload
 
 
-@pytest.mark.parametrize(
-    "ratio", ["oops", float("nan"), float("inf"), -0.01, 1.01, True]
-)
+@pytest.mark.parametrize("ratio", ["oops", float("nan"), float("inf"), -0.01, 1.01, True])
 def test_wl103_append_context_usage_omits_invalid_ratio_without_window_fields(
     ratio: object,
 ) -> None:
@@ -109,9 +107,7 @@ def test_wl108_context_line_uses_display_helper() -> None:
     assert line == "Context usage: 700/1k"
 
 
-def test_wl108_context_line_prefers_shared_threshold_path_over_precomputed_display() -> (
-    None
-):
+def test_wl108_context_line_prefers_shared_threshold_path_over_precomputed_display() -> None:
     line = _format_context_usage_line({"used": 700, "max": 1000, "display": "stale"})
     assert line == "Context usage: 700/1k"
 
@@ -131,9 +127,7 @@ def test_wl108_build_context_usage_payload_returns_none_without_window() -> None
     assert build_context_usage_payload(used=None, max_tokens=1000, ratio=0.5) is None
 
 
-def test_wl108_build_context_usage_payload_returns_none_for_non_positive_window() -> (
-    None
-):
+def test_wl108_build_context_usage_payload_returns_none_for_non_positive_window() -> None:
     assert build_context_usage_payload(used=123, max_tokens=0, ratio=0.1) is None
 
 
@@ -261,9 +255,7 @@ def test_wl114_run_agent_bg_forwards_image_to_bg_cmd(
 def test_wl114_validate_image_capability_rejects_non_vision_model(
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
-    monkeypatch.setattr(
-        "thegent.cli.commands.impl._model_supports_vision", lambda _model: False
-    )
+    monkeypatch.setattr("thegent.cli.commands.impl._model_supports_vision", lambda _model: False)
     with pytest.raises(ValueError, match="does not advertise vision capability"):
         _validate_image_capability("codex", "text-only-model")
 
@@ -276,7 +268,5 @@ def test_wl114_validate_image_capability_rejects_non_codex_agent() -> None:
 def test_wl114_validate_image_capability_accepts_vision_model(
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
-    monkeypatch.setattr(
-        "thegent.cli.commands.impl._model_supports_vision", lambda _model: True
-    )
+    monkeypatch.setattr("thegent.cli.commands.impl._model_supports_vision", lambda _model: True)
     _validate_image_capability("codex", "gpt-5-codex")

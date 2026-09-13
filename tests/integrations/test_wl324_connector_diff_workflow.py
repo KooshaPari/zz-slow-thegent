@@ -49,9 +49,7 @@ async def test_connector_diff_workflow_output_includes_dry_run_artifact_path(
         "dry_run_diff_artifact_path": "artifacts/workstream_autosync_dry_run_diff.txt"
     }
 
-    manifest_payload = json.loads(
-        manifest_path.read_text(encoding="utf-8").splitlines()[-1]
-    )
+    manifest_payload = json.loads(manifest_path.read_text(encoding="utf-8").splitlines()[-1])
     assert manifest_payload["outputs"]["connector_diff_workflow"] == {
         "dry_run_diff_artifact_path": "artifacts/workstream_autosync_dry_run_diff.txt"
     }

@@ -10,9 +10,7 @@ class InMemoryLockAdapter:
     def __init__(self) -> None:
         self._locks: dict[str, CommandLock] = {}
 
-    def acquire(
-        self, cmd_hash: CommandHash, pid: int, output_path: str | None = None
-    ) -> CommandLock:
+    def acquire(self, cmd_hash: CommandHash, pid: int, output_path: str | None = None) -> CommandLock:
         """Acquire a command lock."""
         key = str(cmd_hash)
         if key in self._locks:

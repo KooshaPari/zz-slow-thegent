@@ -55,9 +55,7 @@ def test_wl9800_phase_plan_captures_route_binding_and_context() -> None:
     _reset_state()
     session_id = _start_session()
     _turn_id, approval_id = _submit_turn(session_id)
-    plan = server._build_approval_resolution_phase_plan(
-        "approval/grant", "req", {"approval_id": approval_id}
-    )
+    plan = server._build_approval_resolution_phase_plan("approval/grant", "req", {"approval_id": approval_id})
     assert plan["route"] == "grant"
     assert set(plan["binding"]) == {"parse", "execute", "project"}
     assert plan["approval_id"] == approval_id
@@ -69,9 +67,7 @@ def test_wl9800_phase_plan_captures_route_binding_and_context() -> None:
 def test_wl9801_parse_error_resolution_returns_parse_error_when_present() -> None:
     # @trace WL-9801
     _reset_state()
-    plan = server._build_approval_resolution_phase_plan(
-        "approval/grant", "req", {"approval_id": "approval-404"}
-    )
+    plan = server._build_approval_resolution_phase_plan("approval/grant", "req", {"approval_id": "approval-404"})
     parse_error = server._resolve_approval_resolution_parse_error(plan)
     assert parse_error is not None
     assert parse_error["error"]["code"] == -32005
@@ -88,12 +84,8 @@ def test_wl9803_execution_target_resolution_returns_typed_execution_tuple() -> N
     _reset_state()
     session_id = _start_session()
     _turn_id, approval_id = _submit_turn(session_id)
-    plan = server._build_approval_resolution_phase_plan(
-        "approval/grant", "req", {"approval_id": approval_id}
-    )
-    parsed_approval_id, approval, turn, route, binding = (
-        server._resolve_approval_resolution_execution_target(plan)
-    )
+    plan = server._build_approval_resolution_phase_plan("approval/grant", "req", {"approval_id": approval_id})
+    parsed_approval_id, approval, turn, route, binding = server._resolve_approval_resolution_execution_target(plan)
     assert parsed_approval_id == approval_id
     assert isinstance(approval, dict)
     assert isinstance(turn, dict)
@@ -103,9 +95,7 @@ def test_wl9803_execution_target_resolution_returns_typed_execution_tuple() -> N
 
 def test_wl9804_execution_target_resolution_fails_for_unresolved_plan_state() -> None:
     # @trace WL-9804
-    with pytest.raises(
-        ValueError, match="Approval resolution execution target unresolved"
-    ):
+    with pytest.raises(ValueError, match="Approval resolution execution target unresolved"):
         server._resolve_approval_resolution_execution_target(
             {
                 "approval_id": None,
@@ -126,9 +116,7 @@ def test_wl9805_apply_execution_delegates_to_binding_execute_phase() -> None:
     turn = SERVER_STATE.turns[turn_id]
     binding = server._bind_approval_resolution_phases("grant")
     notifications: list[dict[str, object]] = []
-    server._apply_approval_resolution_execution(
-        "grant", approval, turn, binding, notifications
-    )
+    server._apply_approval_resolution_execution("grant", approval, turn, binding, notifications)
     assert approval["status"] == "granted"
     assert turn["status"] == "completed"
     assert len(notifications) >= 3
@@ -143,9 +131,7 @@ def test_wl9806_success_response_projection_uses_emit_policy() -> None:
     turn = SERVER_STATE.turns[turn_id]
     binding = server._bind_approval_resolution_phases("grant")
     notifications: list[dict[str, object]] = []
-    server._apply_approval_resolution_execution(
-        "grant", approval, turn, binding, notifications
-    )
+    server._apply_approval_resolution_execution("grant", approval, turn, binding, notifications)
     request_response = server._build_approval_resolution_success_response(
         True, "req", approval_id, approval, turn, binding
     )
@@ -159,12 +145,8 @@ def test_wl9806_success_response_projection_uses_emit_policy() -> None:
 
 def test_wl9807_failure_response_builder_preserves_parse_error_payload() -> None:
     # @trace WL-9807
-    parse_error = server._error_response(
-        "req", server.JsonRpcError(-32005, "Approval not found")
-    )
-    assert (
-        server._build_approval_resolution_failure_response(parse_error) == parse_error
-    )
+    parse_error = server._error_response("req", server.JsonRpcError(-32005, "Approval not found"))
+    assert server._build_approval_resolution_failure_response(parse_error) == parse_error
 
 
 def test_wl9808_handler_uses_plan_and_failure_builder_for_parse_error_path() -> None:

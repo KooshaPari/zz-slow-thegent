@@ -201,9 +201,7 @@ class AgilePlusLoop:
             self._state = CycleState.DEPLOYING
             result.state = CycleState.DEPLOYING
             deployment_result = self._run_deployment(plan, scan_result)
-            result.tasks_executed = (
-                deployment_result.tasks_completed if deployment_result else 0
-            )
+            result.tasks_executed = deployment_result.tasks_completed if deployment_result else 0
 
             # Step 5: VERIFYING
             self._state = CycleState.VERIFYING
@@ -512,9 +510,7 @@ class AgilePlusLoop:
         self._evidence_ledger.record(
             event_type="cycle_completed",
             cycle_id=self._cycle_id,
-            tasks_executed=deployment_result.tasks_completed
-            if deployment_result
-            else 0,
+            tasks_executed=deployment_result.tasks_completed if deployment_result else 0,
             tasks_verified=verified_count,
         )
 

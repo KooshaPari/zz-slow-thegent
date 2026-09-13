@@ -71,9 +71,7 @@ class SemanticFirewall:
 
                 if rule.action == "block":
                     _log.error("FIREWALL BLOCK: %s", rule.reason)
-                    return "ERROR: BLOCK BY SEMANTIC FIREWALL", [
-                        f"CRITICAL: {rule.reason}"
-                    ]
+                    return "ERROR: BLOCK BY SEMANTIC FIREWALL", [f"CRITICAL: {rule.reason}"]
 
                 if rule.action == "redact":
                     _log.warning("FIREWALL REDACT: %s", rule.reason)

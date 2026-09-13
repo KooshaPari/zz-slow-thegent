@@ -95,9 +95,7 @@ def _get_parent_terminal_info() -> dict[str, Any] | None:
         ide_keywords = ["cursor", "code", "vscode", "claude", "clode", "cursor-agent"]
         if name:
             info["is_cursor"] = any(keyword in name for keyword in ide_keywords)
-            info["is_ide"] = info["is_cursor"] or any(
-                kw in name for kw in ["code", "vscode", "idea", "pycharm"]
-            )
+            info["is_ide"] = info["is_cursor"] or any(kw in name for kw in ["code", "vscode", "idea", "pycharm"])
 
         # Try to get TTY from process connections
         try:
@@ -119,9 +117,7 @@ def _get_parent_terminal_info() -> dict[str, Any] | None:
                     try:
                         parent_name = current.name().lower()
                         if any(kw in parent_name for kw in ide_keywords):
-                            info["is_cursor"] = (
-                                "cursor" in parent_name or "claude" in parent_name
-                            )
+                            info["is_cursor"] = "cursor" in parent_name or "claude" in parent_name
                             info["is_ide"] = True
                             info["detection_method"] = "process_tree"
                             logger.debug(f"Detected IDE in process tree: {parent_name}")
@@ -311,9 +307,7 @@ class TerminalKeepalive:
         # Method 3: Check parent process info
         if self._parent_info:
             if self._parent_info.get("is_cursor") or self._parent_info.get("is_ide"):
-                logger.debug(
-                    f"Keepalive enabled: IDE detected ({self._parent_info.get('name', 'unknown')})"
-                )
+                logger.debug(f"Keepalive enabled: IDE detected ({self._parent_info.get('name', 'unknown')})")
                 return True
 
             if self._parent_info.get("stdin_tty"):
@@ -376,9 +370,7 @@ class TerminalKeepalive:
                     from thegent.config import ThegentSettings
 
                     if ThegentSettings().debug_keepalive:
-                        logger.info(
-                            f"Keepalive sent via {method_used} at {time.time():.2f}"
-                        )
+                        logger.info(f"Keepalive sent via {method_used} at {time.time():.2f}")
                 else:
                     self._failure_count += 1
                     self._success_count = 0
@@ -418,9 +410,7 @@ class TerminalKeepalive:
 
             # Create and start thread
             try:
-                self._thread = threading.Thread(
-                    target=self._keepalive_loop, daemon=True, name="TerminalKeepalive"
-                )
+                self._thread = threading.Thread(target=self._keepalive_loop, daemon=True, name="TerminalKeepalive")
                 self._thread.start()
                 logger.debug(f"Keepalive thread started (interval={self.interval}s)")
                 return True
@@ -476,9 +466,7 @@ class TerminalKeepalive:
         self.stop()
 
 
-def create_keepalive(
-    interval: float = 180.0, enabled: bool = True, max_failures: int = 3
-) -> TerminalKeepalive:
+def create_keepalive(interval: float = 180.0, enabled: bool = True, max_failures: int = 3) -> TerminalKeepalive:
     """Create a keepalive instance.
 
     Factory function for creating TerminalKeepalive instances with
@@ -501,6 +489,4 @@ def create_keepalive(
         ...     finally:
         ...         keepalive.stop()
     """
-    return TerminalKeepalive(
-        interval=interval, enabled=enabled, max_failures=max_failures
-    )
+    return TerminalKeepalive(interval=interval, enabled=enabled, max_failures=max_failures)

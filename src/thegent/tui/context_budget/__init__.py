@@ -28,8 +28,6 @@ def context_budget_from_result(result: dict[str, Any]) -> ContextBudget:
 
 def context_budget_indicator(budget: ContextBudget) -> str:
     """Generate a visual indicator for context budget usage."""
-    percentage = (
-        (budget.used_tokens / budget.max_tokens) * 100 if budget.max_tokens > 0 else 0
-    )
+    percentage = (budget.used_tokens / budget.max_tokens) * 100 if budget.max_tokens > 0 else 0
     bar = "█" * int(percentage / 5) + "░" * (20 - int(percentage / 5))
     return f"[{bar}] {percentage:.1f}%"

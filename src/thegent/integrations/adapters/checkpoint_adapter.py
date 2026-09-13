@@ -24,14 +24,10 @@ class CheckpointAdapter:
         self._failure_queue = failure_queue
 
     def get_failure_queue_path(self) -> Path:
-        return self.config.failure_queue_path or Path(
-            "docs/reference/workstream_autosync_failures.json"
-        )
+        return self.config.failure_queue_path or Path("docs/reference/workstream_autosync_failures.json")
 
     def get_checkpoint_path(self) -> Path:
-        return self.config.checkpoint_file_path or Path(
-            "docs/reference/workstream_autosync_checkpoint.json"
-        )
+        return self.config.checkpoint_file_path or Path("docs/reference/workstream_autosync_checkpoint.json")
 
     def load_checkpoint(self) -> SyncCheckpoint | None:
         """Load checkpoint from disk."""

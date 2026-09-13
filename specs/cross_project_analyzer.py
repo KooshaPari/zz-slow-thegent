@@ -39,9 +39,7 @@ class UnifiedFeature:
     title: str
     description: str
     projects: list[str] = field(default_factory=list)
-    implementations: dict[str, str] = field(
-        default_factory=dict
-    )  # project -> feature_id
+    implementations: dict[str, str] = field(default_factory=dict)  # project -> feature_id
     priority: str = "medium"
     unified_requirement: str | None = None
 
@@ -146,9 +144,7 @@ class CrossProjectAnalyzer:
 
     def _find_shared_features(self):
         """Find features that appear across multiple projects."""
-        feature_titles: dict[str, list[tuple[str, str]]] = defaultdict(
-            list
-        )  # title -> [(project, feature_id)]
+        feature_titles: dict[str, list[tuple[str, str]]] = defaultdict(list)  # title -> [(project, feature_id)]
 
         # Collect all features by normalized title
         for project_name, specs in self.project_specs.items():
@@ -286,17 +282,11 @@ class CrossProjectAnalyzer:
                 title=f"Unified PRD: {group_name}",
                 description=f"Unified Product Requirements Document for {len(project_names)} related projects",
                 projects=project_names,
-                sections=[
-                    {"title": s.title, "content": s.content} for s in all_sections
-                ],
+                sections=[{"title": s.title, "content": s.content} for s in all_sections],
                 features=all_features,
                 requirements=all_requirements,
                 cross_project_dependencies=list(
-                    {
-                        dep
-                        for proj_name in project_names
-                        for dep in self.project_specs[proj_name].dependencies
-                    }
+                    {dep for proj_name in project_names for dep in self.project_specs[proj_name].dependencies}
                 ),
             )
 
@@ -335,14 +325,10 @@ class CrossProjectAnalyzer:
             "project": project_name,
             "wbs_elements": len(specs.wbs_elements),
             "tree": wbs_tree,
-            "total_estimated_hours": sum(
-                w.estimated_hours or 0 for w in specs.wbs_elements.values()
-            ),
+            "total_estimated_hours": sum(w.estimated_hours or 0 for w in specs.wbs_elements.values()),
         }
 
-    def _build_wbs_tree(
-        self, element: WBSElement, all_elements: dict[str, WBSElement]
-    ) -> dict:
+    def _build_wbs_tree(self, element: WBSElement, all_elements: dict[str, WBSElement]) -> dict:
         """Build WBS tree recursively."""
         tree = {
             "id": element.id,

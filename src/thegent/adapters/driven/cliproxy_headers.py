@@ -99,9 +99,7 @@ def extract_tg_headers(request_headers: dict) -> TgHeaders:
     )
 
 
-def build_cache_response_headers(
-    hit: bool, ttl: float, namespace: str
-) -> dict[str, str]:
+def build_cache_response_headers(hit: bool, ttl: float, namespace: str) -> dict[str, str]:
     """Build x-cache-* response headers for a cache HIT or MISS.
 
     Args:

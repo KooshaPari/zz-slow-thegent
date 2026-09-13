@@ -137,9 +137,7 @@ class TestBuildCacheResponseHeaders:
 
     @pytest.mark.requirement("FR-CACHE-027")
     def test_cache_namespace_in_headers(self) -> None:
-        result = build_cache_response_headers(
-            hit=False, ttl=120.0, namespace="user-123"
-        )
+        result = build_cache_response_headers(hit=False, ttl=120.0, namespace="user-123")
         assert result["x-cache-namespace"] == "user-123"
 
     @pytest.mark.requirement("FR-CACHE-027")

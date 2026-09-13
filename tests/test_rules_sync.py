@@ -56,9 +56,7 @@ def _default_rule(
     return {
         "id": rule_id,
         "title": title,
-        "platforms": platforms
-        if platforms is not None
-        else ["cursor", "claude", "codex"],
+        "platforms": platforms if platforms is not None else ["cursor", "claude", "codex"],
         "body": body,
     }
 
@@ -160,9 +158,7 @@ class TestLoadCanonicalRules:
         rules_dir = tmp_path / ".thegent" / "rules"
         rules_dir.mkdir(parents=True)
         bad = rules_dir / "bad.md"
-        bad.write_text(
-            "---\ntitle: No ID Rule\nplatforms: [cursor]\n---\nBody.", encoding="utf-8"
-        )
+        bad.write_text("---\ntitle: No ID Rule\nplatforms: [cursor]\n---\nBody.", encoding="utf-8")
         manager = RulesSyncManager()
         with pytest.raises(ValueError, match="missing required field 'id'"):
             manager.load_canonical_rules(tmp_path)
@@ -172,9 +168,7 @@ class TestLoadCanonicalRules:
         rules_dir = tmp_path / ".thegent" / "rules"
         rules_dir.mkdir(parents=True)
         bad = rules_dir / "no-title.md"
-        bad.write_text(
-            "---\nid: no-title\nplatforms: [cursor]\n---\nBody.", encoding="utf-8"
-        )
+        bad.write_text("---\nid: no-title\nplatforms: [cursor]\n---\nBody.", encoding="utf-8")
         manager = RulesSyncManager()
         with pytest.raises(ValueError, match="missing required field 'title'"):
             manager.load_canonical_rules(tmp_path)
@@ -295,9 +289,7 @@ class TestSyncToCursor:
 @pytest.mark.unit
 class TestSyncToClaude:
     def _make_rules(self, tmp_path: Path, body: str = "No fallbacks.") -> list[Rule]:
-        _make_rules_dir(
-            tmp_path, [_default_rule("r1", "Rule 1", ["claude"], body=body)]
-        )
+        _make_rules_dir(tmp_path, [_default_rule("r1", "Rule 1", ["claude"], body=body)])
         return RulesSyncManager().load_canonical_rules(tmp_path)
 
     def test_creates_claude_md_when_absent(self, tmp_path: Path) -> None:
@@ -443,9 +435,7 @@ class TestSyncAll:
         _make_rules_dir(
             tmp_path,
             [
-                _default_rule(
-                    "all-platforms", "All Platforms Rule", ["cursor", "claude", "codex"]
-                ),
+                _default_rule("all-platforms", "All Platforms Rule", ["cursor", "claude", "codex"]),
                 _default_rule("cursor-only", "Cursor Rule", ["cursor"]),
                 _default_rule("claude-only", "Claude Rule", ["claude"]),
             ],
@@ -626,9 +616,7 @@ class TestRulesSyncCLI:
         from typer.testing import CliRunner
 
         runner = CliRunner()
-        result = runner.invoke(
-            rules_app, ["--platform", "cursor", "--project", str(tmp_path)]
-        )
+        result = runner.invoke(rules_app, ["--platform", "cursor", "--project", str(tmp_path)])
         assert result.exit_code == 0
         assert (tmp_path / ".cursor" / "rules" / "thegent-rules.mdc").exists()
         assert not (tmp_path / "CLAUDE.md").exists()
@@ -639,9 +627,7 @@ class TestRulesSyncCLI:
         from typer.testing import CliRunner
 
         runner = CliRunner()
-        result = runner.invoke(
-            rules_app, ["--platform", "vscode", "--project", str(tmp_path)]
-        )
+        result = runner.invoke(rules_app, ["--platform", "vscode", "--project", str(tmp_path)])
         assert result.exit_code == 1
 
     def test_rules_sync_no_rules_dir_exits_nonzero(self, tmp_path: Path) -> None:

@@ -57,15 +57,11 @@ class PlaywrightRecorder:
         """Stop recording and return the result."""
         return {"status": "completed", "frames": []}
 
-    def take_screenshot(
-        self, url: str, options: ScreenshotOptions | None = None
-    ) -> str:
+    def take_screenshot(self, url: str, options: ScreenshotOptions | None = None) -> str:
         """Take a screenshot of a URL."""
         return f"screenshot_{hash(url)}.png"
 
-    def record_video(
-        self, url: str, options: VideoRecordingOptions | None = None
-    ) -> RecordingResult:
+    def record_video(self, url: str, options: VideoRecordingOptions | None = None) -> RecordingResult:
         """Record a video of a URL."""
         return RecordingResult(
             success=True,

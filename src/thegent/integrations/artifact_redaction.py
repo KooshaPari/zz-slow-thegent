@@ -24,9 +24,7 @@ class ArtifactRedactionPipeline:
         """Initialize the redaction pipeline."""
         self._rules: list[RedactionRule] = []
 
-    def add_rule(
-        self, field_path: str, replacement: str = "[REDACTED]"
-    ) -> RedactionRule:
+    def add_rule(self, field_path: str, replacement: str = "[REDACTED]") -> RedactionRule:
         """Add a redaction rule.
 
         Args:

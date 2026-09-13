@@ -25,9 +25,7 @@ class EfficientFileReader:
             chunk = f.read(limit)
             return chunk.decode("utf-8", errors="ignore")
 
-    def read_lines(
-        self, file_path: Path, start_line: int = 0, num_lines: int = 100
-    ) -> list[str]:
+    def read_lines(self, file_path: Path, start_line: int = 0, num_lines: int = 100) -> list[str]:
         """Read specific lines from file.
 
         Args:

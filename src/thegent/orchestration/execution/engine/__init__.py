@@ -201,15 +201,11 @@ class ExecutionEngine:
                 whitespace-only (NEW-4).
         """
         if not isinstance(run_meta, RunMeta):
-            raise TypeError(
-                f"run_meta must be a RunMeta instance, got {type(run_meta).__name__}"
-            )
+            raise TypeError(f"run_meta must be a RunMeta instance, got {type(run_meta).__name__}")
         # NEW-4: validate run_id is non-empty.
         run_id = (run_meta.run_id or "").strip()
         if not run_id:
-            raise ValueError(
-                "run_meta.run_id must be a non-empty string (AUDIT-N+36 FR-ORC-047)"
-            )
+            raise ValueError("run_meta.run_id must be a non-empty string (AUDIT-N+36 FR-ORC-047)")
         run_meta.run_id = run_id
 
         # NEW-7: ``run_meta.cwd`` resolution falls back to
@@ -299,10 +295,7 @@ class ExecutionEngine:
             if task_id is not None:
                 # NEW-10: idempotent on ``task_id``.
                 for existing in self.tasks:
-                    if (
-                        isinstance(existing, dict)
-                        and existing.get("task_id") == task_id
-                    ):
+                    if isinstance(existing, dict) and existing.get("task_id") == task_id:
                         return task_id
                 if isinstance(task, dict):
                     self.tasks.append({"task_id": task_id, **task})

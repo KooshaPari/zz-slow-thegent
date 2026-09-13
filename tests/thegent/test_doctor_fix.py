@@ -262,18 +262,10 @@ class TestRunDoctorFix:
             with patch("thegent.doctor._check_configuration", return_value=[]):
                 with patch("thegent.doctor._check_isolation", return_value=[]):
                     with patch("thegent.doctor._check_connectivity", return_value=[]):
-                        with patch(
-                            "thegent.doctor._check_environment", return_value=[]
-                        ):
-                            with patch(
-                                "thegent.doctor._check_shim_binaries", return_value=[]
-                            ):
-                                with patch(
-                                    "thegent.doctor._check_shell", return_value=[]
-                                ):
-                                    with patch(
-                                        "thegent.doctor._check_nix", return_value=[]
-                                    ):
+                        with patch("thegent.doctor._check_environment", return_value=[]):
+                            with patch("thegent.doctor._check_shim_binaries", return_value=[]):
+                                with patch("thegent.doctor._check_shell", return_value=[]):
+                                    with patch("thegent.doctor._check_nix", return_value=[]):
                                         with patch(
                                             "thegent.doctor._check_providers",
                                             return_value=[],
@@ -311,11 +303,9 @@ class TestRunDoctorFix:
                                                                             fix=False,
                                                                             dry_run=True,
                                                                         )
-                                                                        assert (
-                                                                            isinstance(
-                                                                                result,
-                                                                                bool,
-                                                                            )
+                                                                        assert isinstance(
+                                                                            result,
+                                                                            bool,
                                                                         )
 
     def test_run_doctor_with_fix_and_dry_run(self) -> None:
@@ -326,18 +316,10 @@ class TestRunDoctorFix:
             with patch("thegent.doctor._check_configuration", return_value=[]):
                 with patch("thegent.doctor._check_isolation", return_value=[]):
                     with patch("thegent.doctor._check_connectivity", return_value=[]):
-                        with patch(
-                            "thegent.doctor._check_environment", return_value=[]
-                        ):
-                            with patch(
-                                "thegent.doctor._check_shim_binaries", return_value=[]
-                            ):
-                                with patch(
-                                    "thegent.doctor._check_shell", return_value=[]
-                                ):
-                                    with patch(
-                                        "thegent.doctor._check_nix", return_value=[]
-                                    ):
+                        with patch("thegent.doctor._check_environment", return_value=[]):
+                            with patch("thegent.doctor._check_shim_binaries", return_value=[]):
+                                with patch("thegent.doctor._check_shell", return_value=[]):
+                                    with patch("thegent.doctor._check_nix", return_value=[]):
                                         with patch(
                                             "thegent.doctor._check_providers",
                                             return_value=[],
@@ -375,11 +357,9 @@ class TestRunDoctorFix:
                                                                             fix=True,
                                                                             dry_run=True,
                                                                         )
-                                                                        assert (
-                                                                            isinstance(
-                                                                                result,
-                                                                                bool,
-                                                                            )
+                                                                        assert isinstance(
+                                                                            result,
+                                                                            bool,
                                                                         )
 
 

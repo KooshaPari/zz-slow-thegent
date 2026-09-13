@@ -50,9 +50,7 @@ class TestEscalationQueueAppendLock:
 
     def test_lock_attribute_is_rlock(self, tmp_path: Path) -> None:
         queue = EscalationQueue(str(tmp_path))
-        assert hasattr(queue, "_append_lock"), (
-            "EscalationQueue must expose _append_lock"
-        )
+        assert hasattr(queue, "_append_lock"), "EscalationQueue must expose _append_lock"
         lock = queue._append_lock
         # RLock supports re-entry from the same thread.
         with lock, lock:  # re-entry: would deadlock if Lock, not RLock
@@ -230,9 +228,7 @@ class TestEscalationQueueEnqueueValidation:
 class TestEscalationQueueIOSafety:
     """AUDIT-N+32 NEW-4: ``OSError``-safe ``_save`` + ``add`` rollback."""
 
-    def test_save_raises_on_oserror(
-        self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
-    ) -> None:
+    def test_save_raises_on_oserror(self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
         queue = EscalationQueue(str(tmp_path))
         queue.add(run_id="run-1", reason="blocked")
 
@@ -250,9 +246,7 @@ class TestEscalationQueueIOSafety:
         with pytest.raises(OSError):
             queue._save()
 
-    def test_add_rollback_on_oserror(
-        self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
-    ) -> None:
+    def test_add_rollback_on_oserror(self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
         queue = EscalationQueue(str(tmp_path))
 
         import builtins
@@ -289,10 +283,7 @@ class TestEscalationQueueCorruptLines:
         # Write a mix of valid and corrupt lines.
         queue_path = tmp_path / "escalation_queue.jsonl"
         queue_path.write_text(
-            json.dumps({"run_id": "good", "reason": "ok"})
-            + "\n"
-            + "this is not json\n"
-            + "{broken: json\n",
+            json.dumps({"run_id": "good", "reason": "ok"}) + "\n" + "this is not json\n" + "{broken: json\n",
             encoding="utf-8",
         )
         queue = EscalationQueue(str(tmp_path))
@@ -311,9 +302,7 @@ class TestEscalationQueueCorruptLines:
     def test_corrupt_lines_not_mutated_by_list_pending(self, tmp_path: Path) -> None:
         queue_path = tmp_path / "escalation_queue.jsonl"
         queue_path.write_text(
-            json.dumps({"run_id": "good", "reason": "ok", "status": "pending"})
-            + "\n"
-            + "broken line\n",
+            json.dumps({"run_id": "good", "reason": "ok", "status": "pending"}) + "\n" + "broken line\n",
             encoding="utf-8",
         )
         queue = EscalationQueue(str(tmp_path))
@@ -350,10 +339,7 @@ class TestEscalationQueueClear:
     def test_clear_returns_queue_plus_corrupt_count(self, tmp_path: Path) -> None:
         queue_path = tmp_path / "escalation_queue.jsonl"
         queue_path.write_text(
-            json.dumps({"run_id": "good", "reason": "ok"})
-            + "\n"
-            + "broken1\n"
-            + "broken2\n",
+            json.dumps({"run_id": "good", "reason": "ok"}) + "\n" + "broken1\n" + "broken2\n",
             encoding="utf-8",
         )
         queue = EscalationQueue(str(tmp_path))
@@ -383,9 +369,7 @@ class TestEscalationQueueClear:
 class TestEscalationQueueListPendingDefensiveCopies:
     """AUDIT-N+32 NEW-7: ``list_pending`` returns defensive copies."""
 
-    def test_list_pending_mutating_returned_dict_does_not_persist(
-        self, tmp_path: Path
-    ) -> None:
+    def test_list_pending_mutating_returned_dict_does_not_persist(self, tmp_path: Path) -> None:
         queue = EscalationQueue(str(tmp_path))
         queue.add(run_id="run-1", reason="blocked", priority=2, sla_minutes=60)
         first = queue.list_pending()
@@ -398,9 +382,7 @@ class TestEscalationQueueListPendingDefensiveCopies:
         assert again[0]["priority"] == 2
         assert again[0]["run_id"] == "run-1"
 
-    def test_list_pending_mutating_returned_list_does_not_persist(
-        self, tmp_path: Path
-    ) -> None:
+    def test_list_pending_mutating_returned_list_does_not_persist(self, tmp_path: Path) -> None:
         queue = EscalationQueue(str(tmp_path))
         queue.add(run_id="run-1", reason="blocked", priority=2, sla_minutes=60)
         first = queue.list_pending()
@@ -583,9 +565,7 @@ class TestMessageEntryFromDict:
             MessageEntry.from_dict([1, 2, 3])  # type: ignore[arg-type]
 
     def test_from_dict_well_formed(self) -> None:
-        entry = MessageEntry.from_dict(
-            {"role": "user", "content": "hi", "timestamp": "t1"}
-        )
+        entry = MessageEntry.from_dict({"role": "user", "content": "hi", "timestamp": "t1"})
         assert entry.role == "user"
         assert entry.content == "hi"
         assert entry.timestamp == "t1"

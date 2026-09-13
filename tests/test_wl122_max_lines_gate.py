@@ -8,9 +8,7 @@ ROOT = Path(__file__).resolve().parents[1]
 SCRIPT = ROOT / "scripts" / "max-lines-gate.sh"
 
 
-def _run_gate(
-    *, impl: str, path: str = "/usr/bin:/bin"
-) -> subprocess.CompletedProcess[str]:
+def _run_gate(*, impl: str, path: str = "/usr/bin:/bin") -> subprocess.CompletedProcess[str]:
     env = dict(os.environ)
     env["THEGENT_MAX_LINES_IMPL"] = impl
     env["PATH"] = path

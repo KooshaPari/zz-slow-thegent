@@ -61,9 +61,7 @@ def initialize_runtime_infrastructure() -> None:
         logger.info("Runtime infrastructure initialized successfully")
 
     except Exception as e:
-        logger.warning(
-            f"Failed to initialize runtime infrastructure: {e}", exc_info=True
-        )
+        logger.warning(f"Failed to initialize runtime infrastructure: {e}", exc_info=True)
         # Don't raise - allow application to continue even if monitoring fails
 
 

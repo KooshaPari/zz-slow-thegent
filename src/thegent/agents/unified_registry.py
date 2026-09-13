@@ -102,9 +102,7 @@ class Agent(BaseModel):
     collaboration_rules: CollaborationRule = Field(default_factory=CollaborationRule)
 
     # Availability
-    availability: Availability = Field(
-        default_factory=lambda: Availability(schedule=None)
-    )
+    availability: Availability = Field(default_factory=lambda: Availability(schedule=None))
 
     # State
     status: AgentStatus = AgentStatus.INACTIVE
@@ -149,9 +147,7 @@ class AgentRegistryService:
         if status:
             result = [a for a in result if a.status == status]
         if project_id:
-            result = [
-                a for a in result if any(p.project_id == project_id for p in a.projects)
-            ]
+            result = [a for a in result if any(p.project_id == project_id for p in a.projects)]
         if capability:
             result = [a for a in result if capability in a.capabilities]
 
@@ -179,9 +175,7 @@ class AgentRegistryService:
             return True
         return False
 
-    def assign_to_project(
-        self, agent_id: str, assignment: ProjectAssignment
-    ) -> Agent | None:
+    def assign_to_project(self, agent_id: str, assignment: ProjectAssignment) -> Agent | None:
         """Assign an agent to a project."""
         agent = self.get_agent(agent_id)
         if not agent:
@@ -199,9 +193,7 @@ class AgentRegistryService:
         agent.updated_at = datetime.now()
         return agent
 
-    def update_collaboration_rules(
-        self, agent_id: str, rules: CollaborationRule
-    ) -> Agent | None:
+    def update_collaboration_rules(self, agent_id: str, rules: CollaborationRule) -> Agent | None:
         """Update collaboration rules for an agent."""
         agent = self.get_agent(agent_id)
         if not agent:
@@ -211,9 +203,7 @@ class AgentRegistryService:
         agent.updated_at = datetime.now()
         return agent
 
-    def update_metrics(
-        self, agent_id: str, metrics_update: dict[str, Any]
-    ) -> PerformanceMetrics | None:
+    def update_metrics(self, agent_id: str, metrics_update: dict[str, Any]) -> PerformanceMetrics | None:
         """Update performance metrics for an agent."""
         agent = self.get_agent(agent_id)
         if not agent:
@@ -237,11 +227,7 @@ class AgentRegistryService:
         candidates = self.list_agents(status=AgentStatus.ACTIVE, project_id=project_id)
 
         # Filter by capabilities
-        candidates = [
-            a
-            for a in candidates
-            if all(cap in a.capabilities for cap in required_capabilities)
-        ]
+        candidates = [a for a in candidates if all(cap in a.capabilities for cap in required_capabilities)]
 
         if not candidates:
             return None

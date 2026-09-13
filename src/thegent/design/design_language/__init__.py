@@ -24,9 +24,7 @@ def _default_tokens() -> dict[str, DesignToken]:
     """Create default tokens."""
     return {
         "color.info": DesignToken(name="color.info", value="#00ff00", category="color"),
-        "color.primary": DesignToken(
-            name="color.primary", value="#0000ff", category="color"
-        ),
+        "color.primary": DesignToken(name="color.primary", value="#0000ff", category="color"),
     }
 
 

@@ -17,9 +17,7 @@ from ..domain.value_objects import CommandHash
 class LockPort(Protocol):
     """Port for command lock operations."""
 
-    def acquire(
-        self, cmd_hash: CommandHash, pid: int, output_path: str | None = None
-    ) -> CommandLock:
+    def acquire(self, cmd_hash: CommandHash, pid: int, output_path: str | None = None) -> CommandLock:
         """Acquire a command lock."""
         ...
 
@@ -79,9 +77,7 @@ class MergePort(Protocol):
 class CoordinationPort(Protocol):
     """Port for distributed coordination."""
 
-    def acquire_lease(
-        self, resource_id: str, owner_id: str, duration_seconds: int
-    ) -> CoordinationState:
+    def acquire_lease(self, resource_id: str, owner_id: str, duration_seconds: int) -> CoordinationState:
         """Acquire a lease on a resource."""
         ...
 

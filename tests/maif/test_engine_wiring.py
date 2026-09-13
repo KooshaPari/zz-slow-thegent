@@ -43,12 +43,8 @@ def test_execution_engine_generates_artifacts(mock_settings, temp_session_dir):
 
     with (
         patch("thegent.execution.Auditor.sign_run") as mock_sign,
-        patch(
-            "thegent.execution.Auditor.generate_maif_artifact", create=True
-        ) as mock_gen,
-        patch(
-            "thegent.execution.Auditor.persist_maif_artifact", create=True
-        ) as mock_persist,
+        patch("thegent.execution.Auditor.generate_maif_artifact", create=True) as mock_gen,
+        patch("thegent.execution.Auditor.persist_maif_artifact", create=True) as mock_persist,
     ):
         mock_gen.return_value = {"id": "art_123", "session_id": "run_test_123"}
 

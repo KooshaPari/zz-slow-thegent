@@ -73,9 +73,7 @@ class PlanNode:
 
     def is_ready(self, done_ids: set[str]) -> bool:
         """Return True when all dependencies are satisfied."""
-        return self.status == "pending" and all(
-            dep in done_ids for dep in self.depends_on
-        )
+        return self.status == "pending" and all(dep in done_ids for dep in self.depends_on)
 
     def to_dict(self) -> dict[str, Any]:
         """Serialize to a plain dict for JSON / JSONL serialisation."""
@@ -420,9 +418,7 @@ class PlangentExecutor:
         Returns:
             The mutated *plan* with updated node statuses.
         """
-        _log.info(
-            "Executing plan %s (%d nodes) goal=%r", plan.id, len(plan.nodes), plan.goal
-        )
+        _log.info("Executing plan %s (%d nodes) goal=%r", plan.id, len(plan.nodes), plan.goal)
 
         while not self.planner.is_complete(plan):
             ready = self.planner.next_ready_tasks(plan)
@@ -526,9 +522,7 @@ class PlangentExecutor:
         while not self.planner.is_complete(plan):
             ready = self.planner.next_ready_tasks(plan)
             if not ready:
-                _log.warning(
-                    "No ready tasks; plan %s may be deadlocked (async)", plan.id
-                )
+                _log.warning("No ready tasks; plan %s may be deadlocked (async)", plan.id)
                 break
 
             # Mark all ready nodes as running before dispatching.
@@ -611,9 +605,7 @@ class PlangentExecutor:
                 # A node may be missing from dispatch_results if the plan has
                 # no nodes or a topological deadlock left some unreachable.
                 # Fail loudly — do not silently skip.
-                error_msg = (
-                    f"No DispatchResult returned for node {node.id} in plan {plan.id}"
-                )
+                error_msg = f"No DispatchResult returned for node {node.id} in plan {plan.id}"
                 _log.error(error_msg)
                 self.planner.mark_failed(plan, node.id, error_msg)
                 aggregator.add(
@@ -643,9 +635,7 @@ class PlangentExecutor:
                 )
                 self.planner.mark_done(plan, node.id, dispatch_result.output)
             else:
-                error_msg = (
-                    dispatch_result.error or f"Dispatch failed for node {node.id}"
-                )
+                error_msg = dispatch_result.error or f"Dispatch failed for node {node.id}"
                 aggregator.add(
                     _make_aggregator_message(
                         sender_id=node.id,
@@ -691,9 +681,7 @@ class PlangentExecutor:
 #: JSON schema that LLM output must satisfy.  Each node entry requires an
 #: ``id`` (str), ``task`` (str), ``agent_hint`` (str | null),
 #: ``deps`` (list[str]), and ``budget_tokens`` (int | null).
-_LLM_NODE_REQUIRED_KEYS: frozenset[str] = frozenset(
-    {"id", "task", "agent_hint", "deps", "budget_tokens"}
-)
+_LLM_NODE_REQUIRED_KEYS: frozenset[str] = frozenset({"id", "task", "agent_hint", "deps", "budget_tokens"})
 
 #: System prompt template instructing the model to produce structured JSON.
 #: Curly braces used as JSON example must be doubled for str.format() escaping.
@@ -756,72 +744,50 @@ def _parse_llm_response(raw: str) -> list[_LLMNodeSpec]:
     try:
         parsed = json.loads(raw)
     except json.JSONDecodeError as exc:
-        raise ValueError(
-            f"LLM output is not valid JSON: {exc}\nRaw output: {raw!r}"
-        ) from exc
+        raise ValueError(f"LLM output is not valid JSON: {exc}\nRaw output: {raw!r}") from exc
 
     if not isinstance(parsed, dict):
-        raise ValueError(
-            f"LLM output must be a JSON object, got {type(parsed).__name__!r}"
-        )
+        raise ValueError(f"LLM output must be a JSON object, got {type(parsed).__name__!r}")
 
     nodes_raw = parsed.get("nodes")
     if nodes_raw is None:
         raise ValueError("LLM output JSON is missing required key 'nodes'")
     if not isinstance(nodes_raw, list):
-        raise ValueError(
-            f"LLM output 'nodes' must be a list, got {type(nodes_raw).__name__!r}"
-        )
+        raise ValueError(f"LLM output 'nodes' must be a list, got {type(nodes_raw).__name__!r}")
     if len(nodes_raw) == 0:
         raise ValueError("LLM output 'nodes' list must not be empty")
 
     specs: list[_LLMNodeSpec] = []
     for idx, entry in enumerate(nodes_raw):
         if not isinstance(entry, dict):
-            raise ValueError(
-                f"nodes[{idx}] must be a JSON object, got {type(entry).__name__!r}"
-            )
+            raise ValueError(f"nodes[{idx}] must be a JSON object, got {type(entry).__name__!r}")
 
         missing = _LLM_NODE_REQUIRED_KEYS - entry.keys()
         if missing:
-            raise ValueError(
-                f"nodes[{idx}] is missing required keys: {sorted(missing)}"
-            )
+            raise ValueError(f"nodes[{idx}] is missing required keys: {sorted(missing)}")
 
         node_id = entry["id"]
         if not isinstance(node_id, str) or not node_id.strip():
-            raise ValueError(
-                f"nodes[{idx}].id must be a non-empty string, got {node_id!r}"
-            )
+            raise ValueError(f"nodes[{idx}].id must be a non-empty string, got {node_id!r}")
 
         task = entry["task"]
         if not isinstance(task, str) or not task.strip():
-            raise ValueError(
-                f"nodes[{idx}].task must be a non-empty string, got {task!r}"
-            )
+            raise ValueError(f"nodes[{idx}].task must be a non-empty string, got {task!r}")
 
         agent_hint = entry["agent_hint"]
         if agent_hint is not None and not isinstance(agent_hint, str):
-            raise ValueError(
-                f"nodes[{idx}].agent_hint must be a string or null, got {agent_hint!r}"
-            )
+            raise ValueError(f"nodes[{idx}].agent_hint must be a string or null, got {agent_hint!r}")
 
         deps = entry["deps"]
         if not isinstance(deps, list):
-            raise ValueError(
-                f"nodes[{idx}].deps must be a list, got {type(deps).__name__!r}"
-            )
+            raise ValueError(f"nodes[{idx}].deps must be a list, got {type(deps).__name__!r}")
         for dep in deps:
             if not isinstance(dep, str):
-                raise ValueError(
-                    f"nodes[{idx}].deps entries must be strings, got {dep!r}"
-                )
+                raise ValueError(f"nodes[{idx}].deps entries must be strings, got {dep!r}")
 
         budget_tokens = entry["budget_tokens"]
         if budget_tokens is not None and not isinstance(budget_tokens, int):
-            raise ValueError(
-                f"nodes[{idx}].budget_tokens must be an int or null, got {budget_tokens!r}"
-            )
+            raise ValueError(f"nodes[{idx}].budget_tokens must be an int or null, got {budget_tokens!r}")
 
         specs.append(
             _LLMNodeSpec(
@@ -857,9 +823,7 @@ def _specs_to_plan_nodes(specs: list[_LLMNodeSpec]) -> list[PlanNode]:
 
     nodes: list[PlanNode] = []
     for spec in specs:
-        resolved_deps = [
-            llm_id_to_uuid[dep] for dep in spec.deps if dep in llm_id_to_uuid
-        ]
+        resolved_deps = [llm_id_to_uuid[dep] for dep in spec.deps if dep in llm_id_to_uuid]
         metadata: dict[str, Any] = {}
         if spec.agent_hint is not None:
             metadata["agent_hint"] = spec.agent_hint
@@ -972,9 +936,7 @@ class LLMPlangentPlanner(PlangentPlanner):
     # Async helper — can be called directly for OrchestrationPlan output
     # ------------------------------------------------------------------
 
-    async def decompose_to_orchestration_plan(
-        self, goal: str, max_depth: int = 3
-    ) -> Any:
+    async def decompose_to_orchestration_plan(self, goal: str, max_depth: int = 3) -> Any:
         """Decompose *goal* directly into an OrchestrationPlan with full metadata.
 
         Unlike :meth:`decompose`, which loses agent_hint / budget_tokens when
@@ -1034,9 +996,7 @@ class LLMPlangentPlanner(PlangentPlanner):
     # Private
     # ------------------------------------------------------------------
 
-    async def _generate_plan_nodes(
-        self, goal: str, max_depth: int
-    ) -> list[PlanNode] | None:
+    async def _generate_plan_nodes(self, goal: str, max_depth: int) -> list[PlanNode] | None:
         """Call FlashAgent, parse response, and return validated PlanNodes.
 
         Returns ``None`` when the model is unavailable (FlashAgent timeout /
@@ -1056,10 +1016,7 @@ class LLMPlangentPlanner(PlangentPlanner):
 
         # @trace WL-087
         """
-        prompt = (
-            _DECOMPOSITION_SYSTEM_PROMPT.format(max_depth=max(2, max_depth))
-            + f"\n\nGoal to decompose:\n{goal}"
-        )
+        prompt = _DECOMPOSITION_SYSTEM_PROMPT.format(max_depth=max(2, max_depth)) + f"\n\nGoal to decompose:\n{goal}"
 
         config = FlashAgentConfig(
             task_prompt=prompt,

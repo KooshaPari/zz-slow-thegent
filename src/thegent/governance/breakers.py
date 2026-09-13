@@ -35,14 +35,10 @@ class CircuitBreaker:
         session_dir = Path(session_dir)
         # FR-GOV-CB-002 — absolute path required.
         if not session_dir.is_absolute():
-            raise ValueError(
-                f"session_dir must be an absolute path (got {session_dir!s})"
-            )
+            raise ValueError(f"session_dir must be an absolute path (got {session_dir!s})")
         # FR-GOV-CB-003 — threshold must be strictly positive.
         if threshold_usd_per_min <= 0:
-            raise ValueError(
-                f"threshold_usd_per_min must be > 0 (got {threshold_usd_per_min})"
-            )
+            raise ValueError(f"threshold_usd_per_min must be > 0 (got {threshold_usd_per_min})")
 
         self.session_dir = session_dir
         self.breaker_file = session_dir / "circuit_breakers.jsonl"

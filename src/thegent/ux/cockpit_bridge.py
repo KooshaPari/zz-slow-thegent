@@ -359,9 +359,7 @@ def _decision_notice_for(
     else:
         verdict = getattr(decision, "verdict", "allow")
         reason_value = getattr(decision, "reason_code", "")
-        reason_code = (
-            reason_value.value if hasattr(reason_value, "value") else str(reason_value)
-        )
+        reason_code = reason_value.value if hasattr(reason_value, "value") else str(reason_value)
         rule_id = getattr(decision, "rule_id", None)
         reason = getattr(decision, "reason", "")
         # PolicyDecision's evaluated_at timestamp drives the cockpit's
@@ -406,9 +404,7 @@ class DecisionNoticeBridge:
     def __init__(self, cockpit: OperatorCockpit) -> None:
         self._cockpit = cockpit
 
-    def feed(
-        self, decision: Any, *, agent: str = "", lane: str = "standard"
-    ) -> BridgeResult:
+    def feed(self, decision: Any, *, agent: str = "", lane: str = "standard") -> BridgeResult:
         """Push a single ``PolicyDecision``-like object through the cockpit."""
         try:
             notice = _decision_notice_for(decision, agent=agent, lane=lane)
@@ -418,9 +414,7 @@ class DecisionNoticeBridge:
             return BridgeResult(errors=[str(exc)])
         return BridgeResult(accepted=1)
 
-    def feed_many(
-        self, decisions: Iterable[Any], *, agent: str = "", lane: str = "standard"
-    ) -> BridgeResult:
+    def feed_many(self, decisions: Iterable[Any], *, agent: str = "", lane: str = "standard") -> BridgeResult:
         """Push a sequence of decisions and aggregate the bridge result."""
         result = BridgeResult()
         for decision in decisions:

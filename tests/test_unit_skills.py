@@ -99,9 +99,7 @@ class TestSkillDiscovery:
             result = validate_skill(skill_path)
 
             assert result["valid"] is True
-            assert any(
-                "Missing skill.json" in warning for warning in result["warnings"]
-            )
+            assert any("Missing skill.json" in warning for warning in result["warnings"])
 
     def test_validate_skill_invalid_json(self):
         """Test validating a skill with invalid JSON."""
@@ -123,9 +121,7 @@ class TestSkillDiscovery:
             assert result["valid"] is False
             assert len(result["errors"]) > 0
 
-    def test_discover_skills_supports_skill_md_only(
-        self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
-    ):
+    def test_discover_skills_supports_skill_md_only(self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch):
         """SKILL.md-only skill directories are discoverable for spec compatibility."""
         from thegent.skills.discovery import discover_skills
 
@@ -143,9 +139,7 @@ class TestSkillDiscovery:
         assert skills[0].name == "md-only-skill"
         assert skills[0].skill_md_path.name == "SKILL.md"
 
-    def test_load_skill_supports_skill_md_only(
-        self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
-    ):
+    def test_load_skill_supports_skill_md_only(self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch):
         """load_skill() returns default metadata for SKILL.md-only skills."""
         from thegent.skills.discovery import load_skill
 
@@ -164,9 +158,7 @@ class TestSkillDiscovery:
         assert skill["version"] == "1.0.0"
         assert skill["content"] == "# Instructions"
 
-    def test_discover_skills_sorts_results_deterministically(
-        self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
-    ):
+    def test_discover_skills_sorts_results_deterministically(self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch):
         """discover_skills should be deterministic regardless of filesystem iteration order."""
         from thegent.skills.discovery import discover_skills
 
@@ -176,15 +168,11 @@ class TestSkillDiscovery:
             skill_dir.mkdir(parents=True, exist_ok=True)
             (skill_dir / "SKILL.md").write_text(f"# {name}", encoding="utf-8")
 
-        monkeypatch.setattr(
-            "thegent.skills.discovery._get_all_skills_dirs", lambda: [skills_root]
-        )
+        monkeypatch.setattr("thegent.skills.discovery._get_all_skills_dirs", lambda: [skills_root])
         skills = discover_skills()
         assert [skill.name for skill in skills] == ["alpha", "zeta"]
 
-    def test_discover_skills_skips_empty_manifest_name(
-        self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
-    ):
+    def test_discover_skills_skips_empty_manifest_name(self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch):
         """Manifest entries with empty names are rejected."""
         from thegent.skills.discovery import discover_skills
 

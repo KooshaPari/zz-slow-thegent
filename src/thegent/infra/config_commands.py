@@ -25,9 +25,7 @@ err_console = Console(stderr=True)
 
 
 def config_validate_cmd(
-    config_path: str = typer.Option(
-        ".env", "--config", "-c", help="Path to configuration file"
-    ),
+    config_path: str = typer.Option(".env", "--config", "-c", help="Path to configuration file"),
 ) -> None:
     """Validate configuration file.
 
@@ -41,9 +39,7 @@ def config_validate_cmd(
 
 
 def config_show_cmd(
-    config_path: str = typer.Option(
-        ".env", "--config", "-c", help="Path to configuration file"
-    ),
+    config_path: str = typer.Option(".env", "--config", "-c", help="Path to configuration file"),
 ) -> None:
     """Show current configuration.
 
@@ -58,18 +54,14 @@ def config_show_cmd(
     path = Path(config_path)
     if not path.exists():
         console.print(f"[yellow]Configuration file not found: {path}[/yellow]")
-        console.print(
-            "[dim]Using default settings. Run 'thegent setup --wizard' to configure.[/dim]"
-        )
+        console.print("[dim]Using default settings. Run 'thegent setup --wizard' to configure.[/dim]")
         raise typer.Exit(0)
 
     try:
         # Use _env_file private parameter for pydantic-settings v2
         settings = ThegentSettings(_env_file=str(path))  # type: ignore[call-arg]
 
-        table = Table(
-            title="Current Configuration", show_header=True, header_style="bold cyan"
-        )
+        table = Table(title="Current Configuration", show_header=True, header_style="bold cyan")
         table.add_column("Setting", style="cyan")
         table.add_column("Value", style="green")
         table.add_column("Source", style="yellow")
@@ -109,9 +101,7 @@ def config_show_cmd(
 
 
 def config_wizard_cmd(
-    config_path: str = typer.Option(
-        ".env", "--config", "-c", help="Path to configuration file"
-    ),
+    config_path: str = typer.Option(".env", "--config", "-c", help="Path to configuration file"),
 ) -> None:
     """Run interactive configuration wizard.
 
@@ -125,15 +115,9 @@ def config_wizard_cmd(
 
 
 def config_migrate_cmd(
-    source: str = typer.Option(
-        ".env", "--source", "-s", help="Source configuration file"
-    ),
-    target: str = typer.Option(
-        ".env", "--target", "-t", help="Target configuration file"
-    ),
-    dry_run: bool = typer.Option(
-        False, "--dry-run", help="Show what would be migrated without making changes"
-    ),
+    source: str = typer.Option(".env", "--source", "-s", help="Source configuration file"),
+    target: str = typer.Option(".env", "--target", "-t", help="Target configuration file"),
+    dry_run: bool = typer.Option(False, "--dry-run", help="Show what would be migrated without making changes"),
 ) -> None:
     """Migrate configuration from old format to new format.
 
@@ -169,9 +153,7 @@ def config_migrate_cmd(
     # Simple migration: copy all THGENT_* variables
     for line in source_content.splitlines():
         line = line.strip()
-        if (line.startswith("THGENT_") and "=" in line) or (
-            line.startswith("#") and "THGENT" in line
-        ):
+        if (line.startswith("THGENT_") and "=" in line) or (line.startswith("#") and "THGENT" in line):
             migrated_lines.append(line)
 
     migrated_content = "\n".join(migrated_lines) + "\n"
@@ -184,9 +166,7 @@ def config_migrate_cmd(
                 border_style="yellow",
             )
         )
-        console.print(
-            "[yellow]Dry run: No changes made. Remove --dry-run to apply migration.[/yellow]"
-        )
+        console.print("[yellow]Dry run: No changes made. Remove --dry-run to apply migration.[/yellow]")
     else:
         try:
             target_path.parent.mkdir(parents=True, exist_ok=True)
@@ -197,9 +177,7 @@ def config_migrate_cmd(
             console.print("\n[dim]Validating migrated configuration...[/dim]")
             is_valid = validate_config(target_path)
             if not is_valid:
-                console.print(
-                    "[yellow]⚠ Migrated configuration has validation errors. Please review.[/yellow]"
-                )
+                console.print("[yellow]⚠ Migrated configuration has validation errors. Please review.[/yellow]")
         except Exception as e:
             # AUDIT-N+2: route through ``print_exc`` so a malicious
             # exception payload (``[red]pwned[/red]``) cannot inject

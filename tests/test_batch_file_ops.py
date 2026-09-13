@@ -60,9 +60,7 @@ class TestBatchReadFiles:
         content = "line1\nline2\nline3\nline4\nline5"
         test_file.write_text(content)
 
-        result = batch_read_files(
-            [str(test_file)], offsets={str(test_file): 2}, limits={str(test_file): 2}
-        )
+        result = batch_read_files([str(test_file)], offsets={str(test_file): 2}, limits={str(test_file): 2})
         lines = result[str(test_file)].split("\n")
         assert lines[0] == "line2"
         assert lines[1] == "line3"
@@ -494,9 +492,7 @@ class TestIntegration:
 
     def test_large_batch_operation(self, tmp_path):
         """Test batch operation with many files."""
-        files_to_create = [
-            (str(tmp_path / f"file{i}.txt"), f"Content {i}") for i in range(50)
-        ]
+        files_to_create = [(str(tmp_path / f"file{i}.txt"), f"Content {i}") for i in range(50)]
 
         result = batch_write_files(files_to_create)
 

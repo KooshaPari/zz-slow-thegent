@@ -71,9 +71,7 @@ class TestZmxBackendProbe:
             MagicMock(returncode=0, stdout="", stderr=""),  # list succeeds
         ],
     )
-    def test_version_fail_list_ok_returns_true(
-        self, _run: MagicMock, _which: MagicMock
-    ) -> None:
+    def test_version_fail_list_ok_returns_true(self, _run: MagicMock, _which: MagicMock) -> None:
         b = ZmxBackend()
         assert b.available is True
 
@@ -123,23 +121,17 @@ class TestZmxBackendCreate:
         "subprocess.run",
         return_value=MagicMock(returncode=1, stdout="", stderr="error"),
     )
-    def test_create_failure_returns_false(
-        self, _run: MagicMock, backend: ZmxBackend
-    ) -> None:
+    def test_create_failure_returns_false(self, _run: MagicMock, backend: ZmxBackend) -> None:
         result = backend.create("bad-session", ["fail"])
         assert result is False
 
-    def test_create_unavailable_returns_false(
-        self, unavailable_backend: ZmxBackend
-    ) -> None:
+    def test_create_unavailable_returns_false(self, unavailable_backend: ZmxBackend) -> None:
         # @trace FR-SES-002
         result = unavailable_backend.create("session", ["cmd"])
         assert result is False
 
     @patch("subprocess.run", side_effect=OSError("no such file"))
-    def test_create_oserror_returns_false(
-        self, _run: MagicMock, backend: ZmxBackend
-    ) -> None:
+    def test_create_oserror_returns_false(self, _run: MagicMock, backend: ZmxBackend) -> None:
         result = backend.create("session", ["cmd"])
         assert result is False
 
@@ -164,15 +156,11 @@ class TestZmxBackendAttach:
         assert call_args == ["zmx", "attach", "my-session"]
 
     @patch("subprocess.run", return_value=MagicMock(returncode=1))
-    def test_attach_failure_returns_false(
-        self, _run: MagicMock, backend: ZmxBackend
-    ) -> None:
+    def test_attach_failure_returns_false(self, _run: MagicMock, backend: ZmxBackend) -> None:
         result = backend.attach("missing-session")
         assert result is False
 
-    def test_attach_unavailable_returns_false(
-        self, unavailable_backend: ZmxBackend
-    ) -> None:
+    def test_attach_unavailable_returns_false(self, unavailable_backend: ZmxBackend) -> None:
         result = unavailable_backend.attach("session")
         assert result is False
 
@@ -186,9 +174,7 @@ class TestZmxBackendAttach:
 class TestZmxBackendList:
     """# @trace FR-SES-001"""
 
-    def test_list_unavailable_returns_empty(
-        self, unavailable_backend: ZmxBackend
-    ) -> None:
+    def test_list_unavailable_returns_empty(self, unavailable_backend: ZmxBackend) -> None:
         result = unavailable_backend.list()
         assert result == []
 
@@ -237,9 +223,7 @@ class TestZmxBackendList:
             ),
         ],
     )
-    def test_list_plain_text_fallback(
-        self, _run: MagicMock, backend: ZmxBackend
-    ) -> None:
+    def test_list_plain_text_fallback(self, _run: MagicMock, backend: ZmxBackend) -> None:
         sessions = backend.list()
         assert len(sessions) == 2
         assert sessions[0].name == "agent-1"
@@ -255,9 +239,7 @@ class TestZmxBackendList:
             MagicMock(returncode=0, stdout="", stderr=""),
         ],
     )
-    def test_list_empty_returns_empty(
-        self, _run: MagicMock, backend: ZmxBackend
-    ) -> None:
+    def test_list_empty_returns_empty(self, _run: MagicMock, backend: ZmxBackend) -> None:
         sessions = backend.list()
         assert sessions == []
 
@@ -268,9 +250,7 @@ class TestZmxBackendList:
             MagicMock(returncode=0, stdout="# header\n\n  \n", stderr=""),
         ],
     )
-    def test_list_skips_blank_and_comment_lines(
-        self, _run: MagicMock, backend: ZmxBackend
-    ) -> None:
+    def test_list_skips_blank_and_comment_lines(self, _run: MagicMock, backend: ZmxBackend) -> None:
         sessions = backend.list()
         assert sessions == []
 
@@ -295,15 +275,11 @@ class TestZmxBackendKill:
         "subprocess.run",
         return_value=MagicMock(returncode=1, stdout="", stderr="not found"),
     )
-    def test_kill_not_found_returns_false(
-        self, _run: MagicMock, backend: ZmxBackend
-    ) -> None:
+    def test_kill_not_found_returns_false(self, _run: MagicMock, backend: ZmxBackend) -> None:
         result = backend.kill("nonexistent")
         assert result is False
 
-    def test_kill_unavailable_returns_false(
-        self, unavailable_backend: ZmxBackend
-    ) -> None:
+    def test_kill_unavailable_returns_false(self, unavailable_backend: ZmxBackend) -> None:
         result = unavailable_backend.kill("session")
         assert result is False
 
@@ -331,23 +307,17 @@ class TestZmxBackendCapture:
         "subprocess.run",
         return_value=MagicMock(returncode=1, stdout="", stderr="not found"),
     )
-    def test_capture_failure_returns_empty(
-        self, _run: MagicMock, backend: ZmxBackend
-    ) -> None:
+    def test_capture_failure_returns_empty(self, _run: MagicMock, backend: ZmxBackend) -> None:
         content = backend.capture("missing", last_lines=50)
         assert content == ""
 
-    def test_capture_unavailable_returns_empty(
-        self, unavailable_backend: ZmxBackend
-    ) -> None:
+    def test_capture_unavailable_returns_empty(self, unavailable_backend: ZmxBackend) -> None:
         # @trace FR-SES-002
         content = unavailable_backend.capture("session")
         assert content == ""
 
     @patch("subprocess.run", side_effect=OSError("pipe broken"))
-    def test_capture_oserror_returns_empty(
-        self, _run: MagicMock, backend: ZmxBackend
-    ) -> None:
+    def test_capture_oserror_returns_empty(self, _run: MagicMock, backend: ZmxBackend) -> None:
         content = backend.capture("session")
         assert content == ""
 
@@ -355,9 +325,7 @@ class TestZmxBackendCapture:
         "subprocess.run",
         return_value=MagicMock(returncode=0, stdout="output\n", stderr=""),
     )
-    def test_capture_custom_line_count(
-        self, mock_run: MagicMock, backend: ZmxBackend
-    ) -> None:
+    def test_capture_custom_line_count(self, mock_run: MagicMock, backend: ZmxBackend) -> None:
         backend.capture("session", last_lines=100)
         call_args = mock_run.call_args[0][0]
         assert "--lines" in call_args
@@ -380,9 +348,7 @@ class TestZmxSession:
         assert s.extra == {}
 
     def test_with_all_fields(self) -> None:
-        s = ZmxSession(
-            name="a", pid=99, state="running", cmd="bash", extra={"tty": "/dev/pts/1"}
-        )
+        s = ZmxSession(name="a", pid=99, state="running", cmd="bash", extra={"tty": "/dev/pts/1"})
         assert s.pid == 99
         assert s.extra["tty"] == "/dev/pts/1"
 
@@ -445,9 +411,7 @@ class TestResolveSessionBackend:
         result = resolve_session_backend()
         assert result is None
 
-    def test_override_takes_precedence_over_env(
-        self, monkeypatch: pytest.MonkeyPatch
-    ) -> None:
+    def test_override_takes_precedence_over_env(self, monkeypatch: pytest.MonkeyPatch) -> None:
         monkeypatch.setenv("THGENT_SESSION_BACKEND", "zmx")
         # Override to "none" should win regardless of env
         result = resolve_session_backend("none")

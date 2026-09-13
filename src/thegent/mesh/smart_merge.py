@@ -195,9 +195,7 @@ def merge_files(
     mergiraf_bin = shutil.which("mergiraf")
 
     if mergiraf_bin:
-        return _merge_with_mergiraf(
-            mergiraf_bin, base, ours, theirs, output, path_hint=path_hint
-        )
+        return _merge_with_mergiraf(mergiraf_bin, base, ours, theirs, output, path_hint=path_hint)
 
     return _merge_with_git_merge_file(base, ours, theirs, output)
 
@@ -267,9 +265,7 @@ def _merge_with_git_merge_file(
     import tempfile
 
     # Work on a scratch copy of ours so the original is preserved.
-    with tempfile.NamedTemporaryFile(
-        suffix=ours.suffix, delete=False, dir=output.parent
-    ) as tmp:
+    with tempfile.NamedTemporaryFile(suffix=ours.suffix, delete=False, dir=output.parent) as tmp:
         tmp_path = Path(tmp.name)
 
     try:
@@ -379,16 +375,12 @@ class SmartMerger:
         output_p = Path(output)
 
         if self._binary:
-            return self._run_mergiraf(
-                base_p, ours_p, theirs_p, output_p, path_hint=path_hint
-            )
+            return self._run_mergiraf(base_p, ours_p, theirs_p, output_p, path_hint=path_hint)
 
         if self._config.fallback_to_git:
             return self._run_git_fallback(base_p, ours_p, theirs_p, output_p)
 
-        return MergeResult(
-            success=False, output="mergiraf unavailable and fallback disabled"
-        )
+        return MergeResult(success=False, output="mergiraf unavailable and fallback disabled")
 
     def merge_worktree_changes(
         self,
@@ -498,9 +490,7 @@ class SmartMerger:
                 used_mergiraf=used_mergiraf,
             )
         except FileNotFoundError as exc:
-            return MergeResult(
-                success=False, output=str(exc), used_mergiraf=used_mergiraf
-            )
+            return MergeResult(success=False, output=str(exc), used_mergiraf=used_mergiraf)
 
         combined_output = (result.stdout or "") + (result.stderr or "")
         success = result.returncode == 0

@@ -98,9 +98,7 @@ class TestObservabilityImplIsCanonicalHome:
         """AUDIT-N+9 legacy form: ``_resolve_audio_transcript_for_output(transcript)``
         returns ``{"transcript": ..., "duration": ...}``."""
         obs = _load(OBSERVABILITY_IMPL)
-        result = obs._resolve_audio_transcript_for_output(
-            {"text": "hello world", "duration": 1.5}
-        )
+        result = obs._resolve_audio_transcript_for_output({"text": "hello world", "duration": 1.5})
         assert result == {"transcript": "hello world", "duration": 1.5}
 
     # @trace FR-AUDIT-N+27-002
@@ -153,9 +151,7 @@ class TestObservabilityImplIsCanonicalHome:
         """AUDIT-N+9 legacy form: ``_resolve_grounding_sources_for_output(sources)``
         returns ``[{"source": ..., "content": ...[:100]}, ...]``."""
         obs = _load(OBSERVABILITY_IMPL)
-        result = obs._resolve_grounding_sources_for_output(
-            [{"source": "doc.md", "content": "x" * 250}]
-        )
+        result = obs._resolve_grounding_sources_for_output([{"source": "doc.md", "content": "x" * 250}])
         assert isinstance(result, list)
         assert len(result) == 1
         assert result[0]["source"] == "doc.md"
@@ -203,9 +199,7 @@ class TestDualModeBridgeDetection:
     def test_audio_transcript_positional_dict_returns_legacy(self) -> None:
         """A positional dict triggers the AUDIT-N+9 legacy form."""
         obs = _load(OBSERVABILITY_IMPL)
-        result = obs._resolve_audio_transcript_for_output(
-            {"text": "hi", "duration": 0.5}
-        )
+        result = obs._resolve_audio_transcript_for_output({"text": "hi", "duration": 0.5})
         assert isinstance(result, dict)
         assert result == {"transcript": "hi", "duration": 0.5}
 
@@ -214,9 +208,7 @@ class TestDualModeBridgeDetection:
         """A kwarg-only call triggers the WL-116/WL-125 form and returns
         a ``str | None`` (not a dict)."""
         obs = _load(OBSERVABILITY_IMPL)
-        result = obs._resolve_audio_transcript_for_output(
-            injected_audio_transcript="from-input-file"
-        )
+        result = obs._resolve_audio_transcript_for_output(injected_audio_transcript="from-input-file")
         assert isinstance(result, str)
         assert result == "from-input-file"
 
@@ -240,9 +232,7 @@ class TestDualModeBridgeDetection:
     def test_grounding_sources_positional_list_returns_legacy(self) -> None:
         """Positional list triggers the AUDIT-N+9 legacy form."""
         obs = _load(OBSERVABILITY_IMPL)
-        result = obs._resolve_grounding_sources_for_output(
-            [{"source": "a", "content": "b"}]
-        )
+        result = obs._resolve_grounding_sources_for_output([{"source": "a", "content": "b"}])
         assert isinstance(result, list)
         assert result[0]["source"] == "a"
         assert result[0]["content"] == "b"
@@ -257,30 +247,19 @@ class TestDualModeBridgeDetection:
 class TestImplReExportIdentity:
     # @trace FR-AUDIT-N+27-014
     def test_impl_resolve_audio_transcript_is_observability(self) -> None:
-        assert (
-            impl._resolve_audio_transcript_for_output
-            is observability_impl._resolve_audio_transcript_for_output
-        )
+        assert impl._resolve_audio_transcript_for_output is observability_impl._resolve_audio_transcript_for_output
 
     # @trace FR-AUDIT-N+27-015
     def test_impl_resolve_grounding_sources_is_observability(self) -> None:
-        assert (
-            impl._resolve_grounding_sources_for_output
-            is observability_impl._resolve_grounding_sources_for_output
-        )
+        assert impl._resolve_grounding_sources_for_output is observability_impl._resolve_grounding_sources_for_output
 
     # @trace FR-AUDIT-N+27-016
     def test_impl_build_audio_summary_metadata_is_observability(self) -> None:
-        assert (
-            impl._build_audio_summary_metadata
-            is observability_impl._build_audio_summary_metadata
-        )
+        assert impl._build_audio_summary_metadata is observability_impl._build_audio_summary_metadata
 
     # @trace FR-AUDIT-N+27-017
     def test_impl_build_run_event_details_is_observability(self) -> None:
-        assert (
-            impl._build_run_event_details is observability_impl._build_run_event_details
-        )
+        assert impl._build_run_event_details is observability_impl._build_run_event_details
 
     # @trace FR-AUDIT-N+27-018
     def test_all_dual_mode_helpers_module_is_observability_impl(self) -> None:
@@ -306,9 +285,7 @@ class TestImplShimPurity:
         the re-export shim binds them to ``observability_impl``."""
         impl_src = inspect.getsource(_load(IMPL))
         for name in DUAL_MODE_HELPERS:
-            assert f"def {name}(" not in impl_src, (
-                f"impl.py must not define {name} locally — it's a re-export shim"
-            )
+            assert f"def {name}(" not in impl_src, f"impl.py must not define {name} locally — it's a re-export shim"
 
     # @trace FR-AUDIT-N+27-020
     def test_impl_module_reexports_all_dual_mode_helpers(self) -> None:
@@ -347,9 +324,7 @@ class TestWL125MonkeypatchPropagation:
         assert impl.run_input_helpers is run_input_helpers
 
     # @trace FR-AUDIT-N+27-025
-    def test_wl125_audio_transcript_monkeypatch_observed(
-        self, monkeypatch: pytest.MonkeyPatch
-    ) -> None:
+    def test_wl125_audio_transcript_monkeypatch_observed(self, monkeypatch: pytest.MonkeyPatch) -> None:
         """Patching ``impl.run_event_helpers.resolve_audio_transcript_for_output``
         is observed by ``observability_impl._resolve_audio_transcript_for_output``
         (proves the bridge delegates through the same module object)."""
@@ -370,9 +345,7 @@ class TestWL125MonkeypatchPropagation:
         assert result == sentinel
 
     # @trace FR-AUDIT-N+27-026
-    def test_wl125_grounding_sources_monkeypatch_observed(
-        self, monkeypatch: pytest.MonkeyPatch
-    ) -> None:
+    def test_wl125_grounding_sources_monkeypatch_observed(self, monkeypatch: pytest.MonkeyPatch) -> None:
         """Patching ``impl.run_input_helpers.resolve_grounding_sources_for_output``
         is observed by ``observability_impl._resolve_grounding_sources_for_output``."""
         sentinel = ["https://patched.example.com"]
@@ -392,9 +365,7 @@ class TestWL125MonkeypatchPropagation:
         assert result == sentinel
 
     # @trace FR-AUDIT-N+27-027
-    def test_wl125_audio_metadata_monkeypatch_observed(
-        self, monkeypatch: pytest.MonkeyPatch
-    ) -> None:
+    def test_wl125_audio_metadata_monkeypatch_observed(self, monkeypatch: pytest.MonkeyPatch) -> None:
         """Patching ``impl.run_audio_helpers.build_audio_summary_metadata``
         is observed by ``observability_impl._build_audio_summary_metadata``."""
         sentinel = {"patched": True}
@@ -408,15 +379,11 @@ class TestWL125MonkeypatchPropagation:
         )
         obs = _load(OBSERVABILITY_IMPL)
         # WL-125 form (kwargs): triggers the delegation path.
-        result = obs._build_audio_summary_metadata(
-            audio_transcript="hello", audio_sources=[]
-        )
+        result = obs._build_audio_summary_metadata(audio_transcript="hello", audio_sources=[])
         assert result == sentinel
 
     # @trace FR-AUDIT-N+27-028
-    def test_wl125_run_event_details_monkeypatch_observed(
-        self, monkeypatch: pytest.MonkeyPatch
-    ) -> None:
+    def test_wl125_run_event_details_monkeypatch_observed(self, monkeypatch: pytest.MonkeyPatch) -> None:
         """Patching ``impl.run_event_helpers.build_run_event_details``
         is observed by ``observability_impl._build_run_event_details``."""
         sentinel = {"patched": True}
@@ -465,9 +432,7 @@ class TestAuditN9ContractPreserved:
         → ``{"event": ..., "timestamp": float}`` form. AUDIT-N+27 must
         preserve it."""
         obs = _load(OBSERVABILITY_IMPL)
-        result = obs._build_run_event_details(
-            {"type": "tool_call", "name": "read_logs"}
-        )
+        result = obs._build_run_event_details({"type": "tool_call", "name": "read_logs"})
         assert result["event"]["type"] == "tool_call"
         assert "timestamp" in result
         assert isinstance(result["timestamp"], float)
@@ -479,9 +444,7 @@ class TestAuditN9ContractPreserved:
         → ``{"transcript": "hello world", "duration": 1.5}`` form. AUDIT-N+27
         must preserve it."""
         obs = _load(OBSERVABILITY_IMPL)
-        result = obs._resolve_audio_transcript_for_output(
-            {"text": "hello world", "duration": 1.5}
-        )
+        result = obs._resolve_audio_transcript_for_output({"text": "hello world", "duration": 1.5})
         assert result == {"transcript": "hello world", "duration": 1.5}
 
     # @trace FR-AUDIT-N+27-032
@@ -491,9 +454,7 @@ class TestAuditN9ContractPreserved:
         → ``[{"source": "doc.md", "content": "x" * 100}]`` form. AUDIT-N+27
         must preserve it."""
         obs = _load(OBSERVABILITY_IMPL)
-        result = obs._resolve_grounding_sources_for_output(
-            [{"source": "doc.md", "content": "x" * 250}]
-        )
+        result = obs._resolve_grounding_sources_for_output([{"source": "doc.md", "content": "x" * 250}])
         assert isinstance(result, list)
         assert len(result) == 1
         assert result[0]["source"] == "doc.md"

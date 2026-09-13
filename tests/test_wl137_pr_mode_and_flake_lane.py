@@ -18,10 +18,7 @@ import pytest
 
 pytest.importorskip(
     "scripts.test_pytest_wave_artifacts",
-    reason=(
-        "scripts.test_pytest_wave_artifacts module removed; "
-        "pr mode and flake lane tests skipped"
-    ),
+    reason=("scripts.test_pytest_wave_artifacts module removed; pr mode and flake lane tests skipped"),
 )
 from scripts.test_pytest_wave_artifacts import (  # noqa: E402
     _parse_collect_metrics,
@@ -127,15 +124,11 @@ def test_pr_impact_guide_exists_and_mentions_anti_flake() -> None:
 
 def test_collect_metrics_parser_supports_pytest_count_formats() -> None:
     """Collect parser should extract node counts from common pytest summary formats."""
-    selected, _ = _parse_collect_metrics(
-        "3/10 tests collected (7 deselected) in 0.01s", ""
-    )
+    selected, _ = _parse_collect_metrics("3/10 tests collected (7 deselected) in 0.01s", "")
     assert selected == 3
     selected, _ = _parse_collect_metrics("collected 128 items in 0.01s", "")
     assert selected == 128
-    selected, _ = _parse_collect_metrics(
-        "no tests collected (10 deselected) in 0.01s", ""
-    )
+    selected, _ = _parse_collect_metrics("no tests collected (10 deselected) in 0.01s", "")
     assert selected == 0
 
 
@@ -145,9 +138,7 @@ def _build_minimal_pytest_tree(root: Path) -> tuple[Path, Path]:
     tests_dir.mkdir()
     src_dir.mkdir()
 
-    (src_dir / "api.py").write_text(
-        "def add(a: int, b: int) -> int:\n    return a + b\n", encoding="utf-8"
-    )
+    (src_dir / "api.py").write_text("def add(a: int, b: int) -> int:\n    return a + b\n", encoding="utf-8")
     (tests_dir / "test_api.py").write_text(
         "import pytest\n\n"
         '@pytest.mark.requirement("FR-TEST-001")\n'
@@ -385,15 +376,9 @@ def test_requirements_map_treats_trace_comments_as_secondary_evidence(
 
     payload = json.loads(requirements_output.read_text(encoding="utf-8"))
     assert "FR-TRACE-MAIN" in payload["requirement_to_tests"]
-    assert (
-        "FR-TRACE-ONLY"
-        not in payload["secondary_evidence_coverage"]["uncovered_requirements"]
-    )
+    assert "FR-TRACE-ONLY" not in payload["secondary_evidence_coverage"]["uncovered_requirements"]
     assert "FR-TRACE-ONLY" in payload["trace_to_tests"]
-    assert any(
-        "test_trace_only" in nodeid
-        for nodeid in payload["trace_to_tests"]["FR-TRACE-ONLY"]
-    )
+    assert any("test_trace_only" in nodeid for nodeid in payload["trace_to_tests"]["FR-TRACE-ONLY"])
 
 
 def test_untagged_heavy_migration_script_filters_by_loc(tmp_path: Path) -> None:
@@ -559,18 +544,12 @@ def test_requirements_promotion_criteria_contract_includes_optional_lane_readine
         encoding="utf-8",
     )
     health = tmp_path / "health.json"
-    health.write_text(
-        json.dumps({"overall_health_score": 93}, indent=2).decode(), encoding="utf-8"
-    )
+    health.write_text(json.dumps({"overall_health_score": 93}, indent=2).decode(), encoding="utf-8")
 
     run_1 = tmp_path / "run-1.json"
-    run_1.write_text(
-        json.dumps({"status": "passed"}, indent=2).decode(), encoding="utf-8"
-    )
+    run_1.write_text(json.dumps({"status": "passed"}, indent=2).decode(), encoding="utf-8")
     run_2 = tmp_path / "run-2.json"
-    run_2.write_text(
-        json.dumps({"status": "passed"}, indent=2).decode(), encoding="utf-8"
-    )
+    run_2.write_text(json.dumps({"status": "passed"}, indent=2).decode(), encoding="utf-8")
 
     criteria_output = tmp_path / "requirements-promotion-criteria.json"
     result = subprocess.run(
@@ -659,9 +638,7 @@ def test_requirements_promotion_criteria_contract_includes_optional_lane_readine
     lane_payload = json.loads(lane_output.read_text(encoding="utf-8"))
     assert lane_payload["schema_version"] == "lane-promotion/v1"
     assert lane_payload["recommendation"]["ready_to_require_optional_lanes"] is True
-    assert (
-        lane_payload["promotion_plan"]["action"] == "promote_optional_lane_to_required"
-    )
+    assert lane_payload["promotion_plan"]["action"] == "promote_optional_lane_to_required"
     assert lane_payload["promotion_plan"]["required"] is True
 
 
@@ -675,8 +652,7 @@ def test_requirements_diagram_output_respects_max_nodes_and_truncation(
             {
                 "schema_version": "requirements-map/v1",
                 "requirement_to_tests": {
-                    f"FR-TEST-{index:03d}": [f"tests/test_{index}.py::test_{index}"]
-                    for index in range(1, 7).decode()
+                    f"FR-TEST-{index:03d}": [f"tests/test_{index}.py::test_{index}"] for index in range(1, 7).decode()
                 },
                 "requirement_coverage": {"coverage_ratio": 1.0},
             },

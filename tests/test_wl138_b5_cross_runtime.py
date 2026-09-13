@@ -11,12 +11,7 @@ from __future__ import annotations
 
 from pathlib import Path
 
-REPORT_PATH = (
-    Path(__file__).parent.parent
-    / "docs"
-    / "reports"
-    / "2026-02-21-B90-W3-B5-cross-runtime-summary.md"
-)
+REPORT_PATH = Path(__file__).parent.parent / "docs" / "reports" / "2026-02-21-B90-W3-B5-cross-runtime-summary.md"
 
 
 def test_cross_runtime_summary_exists() -> None:

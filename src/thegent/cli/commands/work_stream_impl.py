@@ -146,9 +146,7 @@ def work_stream_claim_impl(
     cd: Path | None = None,
 ) -> dict[str, Any]:
     """WL-125 thin delegate to :func:`work_stream_orchestration.work_stream_claim_impl`."""
-    return work_stream_orchestration.work_stream_claim_impl(
-        item_id=item_id, agent_id=agent_id, cd=cd
-    )
+    return work_stream_orchestration.work_stream_claim_impl(item_id=item_id, agent_id=agent_id, cd=cd)
 
 
 def work_stream_complete_impl(
@@ -157,9 +155,7 @@ def work_stream_complete_impl(
     cd: Path | None = None,
 ) -> dict[str, Any]:
     """WL-125 thin delegate to :func:`work_stream_orchestration.work_stream_complete_impl`."""
-    return work_stream_orchestration.work_stream_complete_impl(
-        item_id=item_id, agent_id=agent_id, cd=cd
-    )
+    return work_stream_orchestration.work_stream_complete_impl(item_id=item_id, agent_id=agent_id, cd=cd)
 
 
 def incorporate_impl(cd: Path | None = None, dry_run: bool = False) -> dict[str, Any]:

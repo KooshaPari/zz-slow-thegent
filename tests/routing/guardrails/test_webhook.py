@@ -83,9 +83,7 @@ def test_webhook_verdict_unknown_treated_as_allow():
 
 
 def test_webhook_on_failure_allow_when_unreachable():
-    cfg = WebhookGuardrailConfig(
-        url="https://example.com/guardrail", on_failure="allow"
-    )
+    cfg = WebhookGuardrailConfig(url="https://example.com/guardrail", on_failure="allow")
 
     with patch(
         "thegent.utils.routing_impl.guardrails.webhook.httpx.post",
@@ -98,9 +96,7 @@ def test_webhook_on_failure_allow_when_unreachable():
 
 
 def test_webhook_on_failure_block_when_unreachable():
-    cfg = WebhookGuardrailConfig(
-        url="https://example.com/guardrail", on_failure="block"
-    )
+    cfg = WebhookGuardrailConfig(url="https://example.com/guardrail", on_failure="block")
 
     with patch(
         "thegent.utils.routing_impl.guardrails.webhook.httpx.post",
@@ -115,9 +111,7 @@ def test_webhook_on_failure_block_when_unreachable():
 def test_webhook_timeout_uses_on_failure():
     import httpx as _httpx
 
-    cfg = WebhookGuardrailConfig(
-        url="https://example.com/guardrail", on_failure="allow", timeout_sec=0.001
-    )
+    cfg = WebhookGuardrailConfig(url="https://example.com/guardrail", on_failure="allow", timeout_sec=0.001)
 
     with patch(
         "thegent.utils.routing_impl.guardrails.webhook.httpx.post",
@@ -172,9 +166,7 @@ def test_webhook_no_secret_header_when_empty():
 def test_webhook_returns_transformed_data():
     cfg = WebhookGuardrailConfig(url="https://example.com/guardrail")
     transformed = {"messages": [{"role": "user", "content": "Sanitised text"}]}
-    mock_resp = _make_mock_response(
-        {"verdict": "allow", "transformedData": transformed}
-    )
+    mock_resp = _make_mock_response({"verdict": "allow", "transformedData": transformed})
 
     with patch(
         "thegent.utils.routing_impl.guardrails.webhook.httpx.post",

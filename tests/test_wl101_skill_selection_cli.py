@@ -32,9 +32,7 @@ def test_wl101_inject_skill_instructions_errors_on_missing_skill(
         _inject_skill_instructions("base prompt", ["missing"])
 
 
-def test_wl101_resume_impl_applies_skill_to_followup_prompt(
-    monkeypatch: pytest.MonkeyPatch, tmp_path
-) -> None:
+def test_wl101_resume_impl_applies_skill_to_followup_prompt(monkeypatch: pytest.MonkeyPatch, tmp_path) -> None:
     session_root = tmp_path / "sessions"
     session_id = "sess-1"
     session_dir = session_root / session_id
@@ -51,9 +49,7 @@ def test_wl101_resume_impl_applies_skill_to_followup_prompt(
 
     sent: dict[str, str] = {}
 
-    def _fake_send(
-        session_id: str, message: str, msg_type: str = "reprompt"
-    ) -> tuple[bool, str]:
+    def _fake_send(session_id: str, message: str, msg_type: str = "reprompt") -> tuple[bool, str]:
         sent["session_id"] = session_id
         sent["message"] = message
         sent["msg_type"] = msg_type
@@ -98,9 +94,7 @@ def test_wl101_skills_select_errors_on_unknown_skill(
 def test_wl101_skills_select_shell_quotes_name_with_spaces(
     monkeypatch: pytest.MonkeyPatch, capsys: pytest.CaptureFixture[str]
 ) -> None:
-    monkeypatch.setattr(
-        "thegent.cli.apps.skills.load_skill", lambda _name: {"name": "x"}
-    )
+    monkeypatch.setattr("thegent.cli.apps.skills.load_skill", lambda _name: {"name": "x"})
     skills_select("team alpha")
     stdout = capsys.readouterr().out
     assert "--skill 'team alpha'" in stdout
@@ -150,9 +144,7 @@ def test_wl101_skills_select_rejects_ascii_unit_separator(
     assert "must not contain control characters" in stderr
 
 
-def test_wl101_skills_list_json_output(
-    monkeypatch: pytest.MonkeyPatch, capsys: pytest.CaptureFixture[str]
-) -> None:
+def test_wl101_skills_list_json_output(monkeypatch: pytest.MonkeyPatch, capsys: pytest.CaptureFixture[str]) -> None:
     monkeypatch.setattr(
         "thegent.cli.apps.skills.discover_skills",
         lambda: [

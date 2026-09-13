@@ -127,9 +127,7 @@ class TestWorkstreamSchemaLinter:
         """# @trace WL-224 — SchemaViolation supports custom severity."""
         from thegent.integrations.workstream_schema_linter import SchemaViolation
 
-        violation = SchemaViolation(
-            field="id", message="Missing id", severity="warning"
-        )
+        violation = SchemaViolation(field="id", message="Missing id", severity="warning")
         assert violation.severity == "warning"
 
     def test_is_valid_returns_true_for_valid_record(self):

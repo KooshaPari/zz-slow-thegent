@@ -191,9 +191,7 @@ class TestGovernanceThreadSafety:
         mod = importlib.import_module(module_path)
         cls = getattr(mod, class_name)
         obj = cls()
-        assert isinstance(obj._lock, type(threading.RLock())), (
-            f"{class_name}._lock is not an RLock instance"
-        )
+        assert isinstance(obj._lock, type(threading.RLock())), f"{class_name}._lock is not an RLock instance"
 
 
 # =====================================================================
@@ -359,9 +357,7 @@ class TestUXExplanations:
             "key_error",
         ],
     )
-    def test_explain_exception_known_types(
-        self, exc: Exception, expected_substring: str
-    ) -> None:
+    def test_explain_exception_known_types(self, exc: Exception, expected_substring: str) -> None:
         result = explain_exception(exc)
         assert isinstance(result, str)
         assert expected_substring in result.lower()

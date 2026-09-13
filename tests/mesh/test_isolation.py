@@ -33,9 +33,7 @@ class TestAllocateTmpdir:
     """allocate_tmpdir() creates a private, agent-scoped temporary directory."""
 
     # @trace TGNT-P10.1
-    def test_tmpdir_created_with_correct_path(
-        self, isolation: ResourceIsolation, tmp_path: Path
-    ) -> None:
+    def test_tmpdir_created_with_correct_path(self, isolation: ResourceIsolation, tmp_path: Path) -> None:
         """TMPDIR is created at mesh_root/tmp/<agent_id>."""
         result = isolation.allocate_tmpdir()
         expected = tmp_path / "tmp" / "agent-001"
@@ -43,9 +41,7 @@ class TestAllocateTmpdir:
         assert result.is_dir()
 
     # @trace TGNT-P10.1
-    def test_tmpdir_has_restricted_permissions(
-        self, isolation: ResourceIsolation
-    ) -> None:
+    def test_tmpdir_has_restricted_permissions(self, isolation: ResourceIsolation) -> None:
         """TMPDIR is created with mode 0o700 (owner-only access)."""
         result = isolation.allocate_tmpdir()
         mode = result.stat().st_mode & 0o777
@@ -72,9 +68,7 @@ class TestAllocateTmpdir:
         assert not tmpdir.exists()
 
     # @trace TGNT-P10.1
-    def test_cleanup_idempotent_when_no_tmpdir(
-        self, isolation: ResourceIsolation
-    ) -> None:
+    def test_cleanup_idempotent_when_no_tmpdir(self, isolation: ResourceIsolation) -> None:
         """cleanup() does not raise when TMPDIR was never created."""
         isolation.cleanup()  # must not raise
 
@@ -95,9 +89,7 @@ class TestAllocatePort:
         assert 10000 <= port < 20000
 
     # @trace TGNT-P10.2
-    def test_returns_none_when_no_ports_available(
-        self, isolation: ResourceIsolation
-    ) -> None:
+    def test_returns_none_when_no_ports_available(self, isolation: ResourceIsolation) -> None:
         """Returns None when all ports in the range are occupied."""
 
         def always_raise(*_args, **_kwargs):
@@ -145,9 +137,7 @@ class TestGetIsolatedEnv:
         assert env["PYTHONTEMP"] == agent_tmp
 
     # @trace TGNT-P10.3
-    def test_sets_agent_identity_vars(
-        self, isolation: ResourceIsolation, tmp_path: Path
-    ) -> None:
+    def test_sets_agent_identity_vars(self, isolation: ResourceIsolation, tmp_path: Path) -> None:
         """AGENT_ID and MESH_ROOT are set correctly."""
         env = isolation.get_isolated_env(base_env={})
         assert env["AGENT_ID"] == "agent-001"

@@ -9,9 +9,7 @@ import orjson as json
 SCRIPT_PATH = Path("scripts/benchmark-report.py")
 
 
-def _write_hyperfine(
-    path: Path, command: str, mean: float, minimum: float, maximum: float, stddev: float
-) -> None:
+def _write_hyperfine(path: Path, command: str, mean: float, minimum: float, maximum: float, stddev: float) -> None:
     payload = {
         "results": [
             {
@@ -28,9 +26,7 @@ def _write_hyperfine(
     path.write_text(json.dumps(payload).decode(), encoding="utf-8")
 
 
-def _run_reporter(
-    tmp_path: Path, baseline_dir: Path, current_dir: Path
-) -> tuple[Path, Path]:
+def _run_reporter(tmp_path: Path, baseline_dir: Path, current_dir: Path) -> tuple[Path, Path]:
     report_path = tmp_path / "report.md"
     summary_path = tmp_path / "summary.json"
     subprocess.run(

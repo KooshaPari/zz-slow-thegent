@@ -17,18 +17,14 @@ class TestRunCommand:
     @patch("thegent.cli.commands.cli.run_cmd")
     def test_run_basic(self, mock_run_cmd) -> None:
         # @trace FR-CLI-001
-        result = runner.invoke(
-            app, ["run", "agent", "hello world", "--agent", "claude"]
-        )
+        result = runner.invoke(app, ["run", "agent", "hello world", "--agent", "claude"])
         assert result.exit_code == 0
         mock_run_cmd.assert_called_once()
 
     @patch("thegent.cli.commands.cli.run_cmd")
     def test_run_with_model(self, mock_run_cmd) -> None:
         # @trace FR-CLI-002
-        result = runner.invoke(
-            app, ["run", "agent", "do stuff", "--agent", "claude", "--model", "gpt-4"]
-        )
+        result = runner.invoke(app, ["run", "agent", "do stuff", "--agent", "claude", "--model", "gpt-4"])
         assert result.exit_code == 0
         mock_run_cmd.assert_called_once()
 
@@ -41,9 +37,7 @@ class TestRunCommand:
     @patch("thegent.cli.commands.cli.run_cmd")
     def test_run_with_cd(self, mock_run_cmd, tmp_path) -> None:
         # @trace FR-CLI-004
-        result = runner.invoke(
-            app, ["run", "agent", "task", "--agent", "claude", "--cd", str(tmp_path)]
-        )
+        result = runner.invoke(app, ["run", "agent", "task", "--agent", "claude", "--cd", str(tmp_path)])
         assert result.exit_code == 0
 
     @patch("thegent.cli.commands.cli.run_cmd")
@@ -55,9 +49,7 @@ class TestRunCommand:
     @patch("thegent.cli.commands.cli.run_cmd")
     def test_run_with_timeout(self, mock_run_cmd) -> None:
         # @trace FR-CLI-006
-        result = runner.invoke(
-            app, ["run", "agent", "task", "--agent", "claude", "--timeout", "120"]
-        )
+        result = runner.invoke(app, ["run", "agent", "task", "--agent", "claude", "--timeout", "120"])
         assert result.exit_code == 0
 
     @patch("thegent.cli.commands.cli.run_cmd")
@@ -69,9 +61,7 @@ class TestRunCommand:
     @patch("thegent.cli.commands.cli.run_cmd")
     def test_run_with_failover(self, mock_run_cmd) -> None:
         # @trace FR-CLI-008
-        result = runner.invoke(
-            app, ["run", "agent", "task", "--agent", "claude", "--failover"]
-        )
+        result = runner.invoke(app, ["run", "agent", "task", "--agent", "claude", "--failover"])
         assert result.exit_code == 0
 
     @patch("thegent.cli.commands.cli.run_cmd")
@@ -92,9 +82,7 @@ class TestRunCommand:
     @patch("thegent.cli.commands.cli.run_cmd")
     def test_run_with_lane(self, mock_run_cmd) -> None:
         # @trace FR-CLI-011
-        result = runner.invoke(
-            app, ["run", "agent", "task", "--agent", "claude", "--lane", "critical"]
-        )
+        result = runner.invoke(app, ["run", "agent", "task", "--agent", "claude", "--lane", "critical"])
         assert result.exit_code == 0
 
     @patch("thegent.cli.commands.cli.run_cmd")
@@ -112,9 +100,7 @@ class TestRunCommand:
     @patch("thegent.cli.commands.cli.run_cmd")
     def test_run_with_domain(self, mock_run_cmd) -> None:
         # @trace FR-CLI-014
-        result = runner.invoke(
-            app, ["run", "agent", "task", "--agent", "claude", "--domain", "finance"]
-        )
+        result = runner.invoke(app, ["run", "agent", "task", "--agent", "claude", "--domain", "finance"])
         assert result.exit_code == 0
 
     @patch("thegent.cli.commands.cli.run_cmd")
@@ -131,58 +117,44 @@ class TestBgCommand:
     @patch("thegent.cli.commands.cli.bg_cmd")
     def test_bg_basic(self, mock_run_agent) -> None:
         # @trace FR-CLI-020
-        result = runner.invoke(
-            app, ["run", "agent", "do stuff", "--agent", "claude", "--bg"]
-        )
+        result = runner.invoke(app, ["run", "agent", "do stuff", "--agent", "claude", "--bg"])
         assert result.exit_code == 0
         mock_run_agent.assert_called_once()
 
     @patch("thegent.cli.commands.cli.bg_cmd")
     def test_bg_with_owner(self, mock_run_agent) -> None:
         # @trace FR-CLI-021
-        result = runner.invoke(
-            app, ["run", "agent", "task", "--agent", "claude", "--bg"]
-        )
+        result = runner.invoke(app, ["run", "agent", "task", "--agent", "claude", "--bg"])
         assert result.exit_code == 0
 
     @patch("thegent.cli.commands.cli.bg_cmd")
     def test_bg_with_model(self, mock_run_agent) -> None:
         # @trace FR-CLI-022
-        result = runner.invoke(
-            app, ["run", "agent", "task", "--agent", "claude", "--model", "o1", "--bg"]
-        )
+        result = runner.invoke(app, ["run", "agent", "task", "--agent", "claude", "--model", "o1", "--bg"])
         assert result.exit_code == 0
 
     @patch("thegent.cli.commands.cli.bg_cmd")
     def test_bg_with_continuation(self, mock_run_agent) -> None:
         # @trace FR-CLI-023
-        result = runner.invoke(
-            app, ["run", "agent", "continue", "--agent", "claude", "--bg"]
-        )
+        result = runner.invoke(app, ["run", "agent", "continue", "--agent", "claude", "--bg"])
         assert result.exit_code == 0
 
     @patch("thegent.cli.commands.cli.bg_cmd")
     def test_bg_with_idempotency_token(self, mock_run_agent) -> None:
         # @trace FR-CLI-024
-        result = runner.invoke(
-            app, ["run", "agent", "task", "--agent", "claude", "--bg"]
-        )
+        result = runner.invoke(app, ["run", "agent", "task", "--agent", "claude", "--bg"])
         assert result.exit_code == 0
 
     @patch("thegent.cli.commands.cli.bg_cmd")
     def test_bg_with_arbitration(self, mock_run_agent) -> None:
         # @trace FR-CLI-025
-        result = runner.invoke(
-            app, ["run", "agent", "task", "--agent", "claude", "--bg"]
-        )
+        result = runner.invoke(app, ["run", "agent", "task", "--agent", "claude", "--bg"])
         assert result.exit_code == 0
 
     @patch("thegent.cli.commands.cli.bg_cmd")
     def test_bg_with_format(self, mock_run_agent) -> None:
         # @trace FR-CLI-026
-        result = runner.invoke(
-            app, ["run", "agent", "task", "--agent", "claude", "--bg"]
-        )
+        result = runner.invoke(app, ["run", "agent", "task", "--agent", "claude", "--bg"])
         assert result.exit_code == 0
 
 

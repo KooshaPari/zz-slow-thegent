@@ -140,9 +140,7 @@ class MigrationController:
                 "status": "expired",
                 "contract": contract_name,
                 "version": version,
-                "reason": (
-                    f"{contract_name}@{version} expired {abs(days_left):.1f} days ago; must migrate."
-                ),
+                "reason": (f"{contract_name}@{version} expired {abs(days_left):.1f} days ago; must migrate."),
                 "migration_days_left": days_left,
             }
         return {

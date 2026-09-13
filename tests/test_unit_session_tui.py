@@ -153,9 +153,7 @@ def test_log_path_resolution_failure_sets_degraded_diagnostics() -> None:
 def test_subagent_enumeration_failure_records_metadata_error() -> None:
     tui = SessionTUI()
 
-    with patch(
-        "thegent.ux.session_tui.session_meta_impl", return_value={"error": "missing"}
-    ):
+    with patch("thegent.ux.session_tui.session_meta_impl", return_value={"error": "missing"}):
         subagents = tui._get_subagents_for_session("sess-4")
 
     assert subagents == []

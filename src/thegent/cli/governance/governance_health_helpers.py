@@ -10,10 +10,7 @@ from rich.table import Table
 
 def extract_dimension_values(scan_result: Any) -> dict[str, float]:
     """Extract per-dimension current values from scanner output."""
-    return {
-        dim_name: dim_scan.current_value
-        for dim_name, dim_scan in scan_result.dimensions.items()
-    }
+    return {dim_name: dim_scan.current_value for dim_name, dim_scan in scan_result.dimensions.items()}
 
 
 def resolve_band_value(health: Any, get_band: Callable[[float], Any]) -> str:
@@ -27,9 +24,7 @@ def resolve_status_value(status: Any) -> str:
     return status.value if hasattr(status, "value") else str(status)
 
 
-def build_health_json_output(
-    health: Any, get_band: Callable[[float], Any]
-) -> dict[str, Any]:
+def build_health_json_output(health: Any, get_band: Callable[[float], Any]) -> dict[str, Any]:
     """Build the JSON payload for `govern go health`."""
     output = {
         "score": health.score,

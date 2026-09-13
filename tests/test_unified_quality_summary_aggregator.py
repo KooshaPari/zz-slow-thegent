@@ -20,15 +20,11 @@ def test_unified_quality_summary_aggregator_emits_schema_valid_payload(
     quality.mkdir(parents=True)
 
     (hooks / "quality-gate-result.json").write_text(
-        json.dumps(
-            {"schema_version": "thegent-hooks-result/v1", "status": "passed"}
-        ).decode(),
+        json.dumps({"schema_version": "thegent-hooks-result/v1", "status": "passed"}).decode(),
         encoding="utf-8",
     )
     (hooks / "security-pipeline-result.json").write_text(
-        json.dumps(
-            {"schema_version": "thegent-hooks-result/v1", "status": "done"}
-        ).decode(),
+        json.dumps({"schema_version": "thegent-hooks-result/v1", "status": "done"}).decode(),
         encoding="utf-8",
     )
     (quality / "control-plane-readiness.json").write_text(

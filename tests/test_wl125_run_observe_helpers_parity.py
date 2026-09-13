@@ -60,9 +60,7 @@ def test_wl125_classify_observe_summary_trend_health_wrapper_delegates(
 def test_wl125_load_observe_summary_snapshots_wrapper_delegates(monkeypatch) -> None:
     captured: dict[str, Any] = {}
 
-    def _fake(
-        scope_signature: str, scope_key_json: str, limit: int
-    ) -> list[dict[str, Any]]:
+    def _fake(scope_signature: str, scope_key_json: str, limit: int) -> list[dict[str, Any]]:
         captured["scope_signature"] = scope_signature
         captured["scope_key_json"] = scope_key_json
         captured["limit"] = limit

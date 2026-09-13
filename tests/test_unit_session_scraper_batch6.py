@@ -178,9 +178,7 @@ def test_export_snapshot_daily_index_markdown_writes_file_with_daily_headers_and
         mtime=31,
     )
 
-    md_path = scraper.export_snapshot_daily_index_markdown(
-        root_dir=root, out_path=out_path
-    )
+    md_path = scraper.export_snapshot_daily_index_markdown(root_dir=root, out_path=out_path)
     content = md_path.read_text(encoding="utf-8")
 
     assert md_path == out_path
@@ -198,9 +196,7 @@ def test_empty_directory_returns_empty_daily_summary_and_exports_valid_markdown(
     out_path = tmp_path / "empty-daily-index.md"
 
     summary = scraper.summarize_snapshots_by_day(root_dir=root)
-    md_path = scraper.export_snapshot_daily_index_markdown(
-        root_dir=root, out_path=out_path
-    )
+    md_path = scraper.export_snapshot_daily_index_markdown(root_dir=root, out_path=out_path)
     content = md_path.read_text(encoding="utf-8")
 
     assert summary == {}
@@ -209,9 +205,7 @@ def test_empty_directory_returns_empty_daily_summary_and_exports_valid_markdown(
     assert "- (none)" in content
 
 
-def test_request_event_id_propagation_from_request_to_created_and_failed_events(
-    monkeypatch, tmp_path: Path
-) -> None:
+def test_request_event_id_propagation_from_request_to_created_and_failed_events(monkeypatch, tmp_path: Path) -> None:
     """
     WL-156 Regression: Validate request_event_id propagates from persist_snapshot request
     through to both snapshot.created and snapshot.failed events.
@@ -221,9 +215,7 @@ def test_request_event_id_propagation_from_request_to_created_and_failed_events(
     event_log_failed = tmp_path / "events-failed.jsonl"
 
     # Test 1: request_event_id propagation on SUCCESS
-    monkeypatch.setattr(
-        "thegent.orchestration.state.session_scraper.list_tmux_panes", list
-    )
+    monkeypatch.setattr("thegent.orchestration.state.session_scraper.list_tmux_panes", list)
     monkeypatch.setattr(
         "thegent.orchestration.state.session_scraper.SessionScraper.scrape_claude_history",
         lambda self: ["p1"],
@@ -242,16 +234,12 @@ def test_request_event_id_propagation_from_request_to_created_and_failed_events(
     )
 
     events_created = [
-        json.loads(line)
-        for line in event_log_created.read_text(encoding="utf-8").splitlines()
-        if line.strip()
+        json.loads(line) for line in event_log_created.read_text(encoding="utf-8").splitlines() if line.strip()
     ]
     assert len(events_created) == 1
     assert events_created[0]["event_name"] == "session.scraper.snapshot.created"
     assert events_created[0]["request_event_id"] == request_id_success
-    assert events_created[0]["event_id"] != request_id_success, (
-        "event_id should be distinct from request_event_id"
-    )
+    assert events_created[0]["event_id"] != request_id_success, "event_id should be distinct from request_event_id"
 
     # Test 2: request_event_id propagation on FAILURE
     def _raise_on_collect(self, trigger: str = "manual"):
@@ -272,13 +260,9 @@ def test_request_event_id_propagation_from_request_to_created_and_failed_events(
         )
 
     events_failed = [
-        json.loads(line)
-        for line in event_log_failed.read_text(encoding="utf-8").splitlines()
-        if line.strip()
+        json.loads(line) for line in event_log_failed.read_text(encoding="utf-8").splitlines() if line.strip()
     ]
     assert len(events_failed) == 1
     assert events_failed[0]["event_name"] == "session.scraper.snapshot.failed"
     assert events_failed[0]["request_event_id"] == request_id_fail
-    assert events_failed[0]["event_id"] != request_id_fail, (
-        "event_id should be distinct from request_event_id"
-    )
+    assert events_failed[0]["event_id"] != request_id_fail, "event_id should be distinct from request_event_id"

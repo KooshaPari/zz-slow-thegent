@@ -97,9 +97,7 @@ def test_make_help_shows_secrets_scan() -> None:
         check=False,
     )
     assert result.returncode == 0, result.stderr
-    assert "secrets-scan" in result.stdout, (
-        f"secrets-scan not listed in: {result.stdout!r}"
-    )
+    assert "secrets-scan" in result.stdout, f"secrets-scan not listed in: {result.stdout!r}"
 
 
 # ---------------------------------------------------------------------------
@@ -123,9 +121,7 @@ def test_script_has_valid_bash_syntax() -> None:
         text=True,
         check=False,
     )
-    assert result.returncode == 0, (
-        f"bash -n failed:\nstdout: {result.stdout}\nstderr: {result.stderr}"
-    )
+    assert result.returncode == 0, f"bash -n failed:\nstdout: {result.stdout}\nstderr: {result.stderr}"
 
 
 def test_script_exits_zero_on_canonical_workspace() -> None:
@@ -140,9 +136,7 @@ def test_script_exits_zero_on_canonical_workspace() -> None:
     assert result.returncode == 0, (
         f"unexpected exit {result.returncode}\nstdout: {result.stdout}\nstderr: {result.stderr}"
     )
-    assert "[make secrets-scan] OK" in result.stdout, (
-        f"expected OK marker in stdout: {result.stdout!r}"
-    )
+    assert "[make secrets-scan] OK" in result.stdout, f"expected OK marker in stdout: {result.stdout!r}"
 
 
 def test_script_reports_all_seven_canonical_checks() -> None:
@@ -223,9 +217,7 @@ def test_gitignore_covers_canonical_secret_bearing_patterns() -> None:
         "src/foo/users_test.go",
     ],
 )
-def test_path_allowlist_permits_canonical_paths(
-    allowed_path: str, tmp_path: Path
-) -> None:
+def test_path_allowlist_permits_canonical_paths(allowed_path: str, tmp_path: Path) -> None:
     """The script's path allowlist must permit canonical allowlist paths."""
     content = SCRIPT.read_text(encoding="utf-8")
     fn_match = "path_is_allowlisted() {"
@@ -262,9 +254,7 @@ def test_path_allowlist_permits_canonical_paths(
         "src/main.rs",
     ],
 )
-def test_path_allowlist_rejects_secret_bearing_paths(
-    denied_path: str, tmp_path: Path
-) -> None:
+def test_path_allowlist_rejects_secret_bearing_paths(denied_path: str, tmp_path: Path) -> None:
     """The script's path allowlist must reject canonical secret-bearing source paths."""
     content = SCRIPT.read_text(encoding="utf-8")
     fn_match = "path_is_allowlisted() {"
@@ -275,11 +265,7 @@ def test_path_allowlist_rejects_secret_bearing_paths(
     # Include the closing '}\n' so the extracted function is syntactically complete.
     fn_body = content[idx : end + 4]
     harness = tmp_path / "harness.sh"
-    harness.write_text(
-        fn_body
-        + "\n"
-        + f'if path_is_allowlisted "{denied_path}"; then exit 1; else exit 0; fi\n'
-    )
+    harness.write_text(fn_body + "\n" + f'if path_is_allowlisted "{denied_path}"; then exit 1; else exit 0; fi\n')
     harness.chmod(0o755)
     result = subprocess.run(
         ["bash", str(harness)],
@@ -288,9 +274,7 @@ def test_path_allowlist_rejects_secret_bearing_paths(
         text=True,
         check=False,
     )
-    assert result.returncode == 0, (
-        f"path_is_allowlisted({denied_path!r}) should have REJECTED the path"
-    )
+    assert result.returncode == 0, f"path_is_allowlisted({denied_path!r}) should have REJECTED the path"
 
 
 # ---------------------------------------------------------------------------
@@ -298,9 +282,7 @@ def test_path_allowlist_rejects_secret_bearing_paths(
 # ---------------------------------------------------------------------------
 
 
-def _run_script_in_sandbox(
-    tmp: Path, source_root: Path
-) -> subprocess.CompletedProcess[str]:
+def _run_script_in_sandbox(tmp: Path, source_root: Path) -> subprocess.CompletedProcess[str]:
     """Run a patched copy of the script against an isolated sandbox.
 
     ``source_root`` is the path the sandbox should treat as ROOT for
@@ -405,17 +387,11 @@ def test_script_fails_when_gitleaks_toml_missing(sandbox: Path, tmp_path: Path) 
     """Missing gitleaks.toml must fail the script (non-zero exit)."""
     (sandbox / "gitleaks.toml").unlink()
     result = _run_script_in_sandbox(tmp_path, sandbox)
-    assert result.returncode != 0, (
-        f"expected failure when gitleaks.toml missing; got: stdout={result.stdout!r}"
-    )
-    assert "gitleaks.toml exists" in result.stdout, (
-        f"missing gitleaks.toml check: {result.stdout!r}"
-    )
+    assert result.returncode != 0, f"expected failure when gitleaks.toml missing; got: stdout={result.stdout!r}"
+    assert "gitleaks.toml exists" in result.stdout, f"missing gitleaks.toml check: {result.stdout!r}"
 
 
-def test_script_fails_when_gitleaks_allowlist_block_missing(
-    sandbox: Path, tmp_path: Path
-) -> None:
+def test_script_fails_when_gitleaks_allowlist_block_missing(sandbox: Path, tmp_path: Path) -> None:
     """gitleaks.toml without [allowlist] block must fail the script."""
     sandbox.joinpath("gitleaks.toml").write_text(
         textwrap.dedent(
@@ -448,31 +424,19 @@ def test_script_fails_when_gitleaks_allowlist_block_missing(
         )
     )
     result = _run_script_in_sandbox(tmp_path, sandbox)
-    assert result.returncode != 0, (
-        f"expected failure when [allowlist] missing; got: stdout={result.stdout!r}"
-    )
-    assert "[allowlist]" in result.stdout, (
-        f"missing [allowlist] check: {result.stdout!r}"
-    )
+    assert result.returncode != 0, f"expected failure when [allowlist] missing; got: stdout={result.stdout!r}"
+    assert "[allowlist]" in result.stdout, f"missing [allowlist] check: {result.stdout!r}"
 
 
-def test_script_fails_when_trufflehog_yml_missing(
-    sandbox: Path, tmp_path: Path
-) -> None:
+def test_script_fails_when_trufflehog_yml_missing(sandbox: Path, tmp_path: Path) -> None:
     """Missing trufflehog.yml must fail the script (non-zero exit)."""
     (sandbox / "trufflehog.yml").unlink()
     result = _run_script_in_sandbox(tmp_path, sandbox)
-    assert result.returncode != 0, (
-        f"expected failure when trufflehog.yml missing; got: stdout={result.stdout!r}"
-    )
-    assert "trufflehog.yml" in result.stdout, (
-        f"missing trufflehog.yml check: {result.stdout!r}"
-    )
+    assert result.returncode != 0, f"expected failure when trufflehog.yml missing; got: stdout={result.stdout!r}"
+    assert "trufflehog.yml" in result.stdout, f"missing trufflehog.yml check: {result.stdout!r}"
 
 
-def test_script_fails_when_gitignore_missing_patterns(
-    sandbox: Path, tmp_path: Path
-) -> None:
+def test_script_fails_when_gitignore_missing_patterns(sandbox: Path, tmp_path: Path) -> None:
     """.gitignore without required secret-bearing patterns must fail."""
     sandbox.joinpath(".gitignore").write_text(
         textwrap.dedent(
@@ -484,21 +448,15 @@ def test_script_fails_when_gitignore_missing_patterns(
         )
     )
     result = _run_script_in_sandbox(tmp_path, sandbox)
-    assert result.returncode != 0, (
-        f"expected failure when .gitignore incomplete; got: stdout={result.stdout!r}"
-    )
+    assert result.returncode != 0, f"expected failure when .gitignore incomplete; got: stdout={result.stdout!r}"
     assert ".gitignore" in result.stdout, f"missing .gitignore check: {result.stdout!r}"
 
 
 def test_script_passes_when_sandbox_is_valid(sandbox: Path, tmp_path: Path) -> None:
     """A minimal-but-valid sandbox must pass all 7 checks."""
     result = _run_script_in_sandbox(tmp_path, sandbox)
-    assert result.returncode == 0, (
-        f"valid sandbox failed:\nstdout: {result.stdout}\nstderr: {result.stderr}"
-    )
-    assert "[make secrets-scan] OK" in result.stdout, (
-        f"expected OK marker; got: {result.stdout!r}"
-    )
+    assert result.returncode == 0, f"valid sandbox failed:\nstdout: {result.stdout}\nstderr: {result.stderr}"
+    assert "[make secrets-scan] OK" in result.stdout, f"expected OK marker; got: {result.stdout!r}"
 
 
 # ---------------------------------------------------------------------------
@@ -543,6 +501,4 @@ def test_ci_workflow_uses_minimal_permissions() -> None:
 
     data = yaml.safe_load(CI_WORKFLOW.read_text(encoding="utf-8"))
     perms = (data or {}).get("permissions") or {}
-    assert perms == {"contents": "read"}, (
-        f"CI workflow permissions drifted from least-privilege; got {perms!r}"
-    )
+    assert perms == {"contents": "read"}, f"CI workflow permissions drifted from least-privilege; got {perms!r}"

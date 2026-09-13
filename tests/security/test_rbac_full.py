@@ -77,12 +77,7 @@ class TestRBACManagerHasPermission:
         from thegent.security.rbac import Permission, RBACManager, Role
 
         manager = RBACManager()
-        assert (
-            manager.has_permission(
-                Role.INCIDENT_COMMANDER, Permission.EMERGENCY_OVERRIDE
-            )
-            is True
-        )
+        assert manager.has_permission(Role.INCIDENT_COMMANDER, Permission.EMERGENCY_OVERRIDE) is True
 
     def test_invalid_role_returns_false(self) -> None:
         """Invalid role returns False."""
@@ -124,9 +119,7 @@ class TestRBACManagerCheckAccess:
         from thegent.security.rbac import RBACManager, Role
 
         manager = RBACManager()
-        result = manager.check_access(
-            Role.INCIDENT_COMMANDER, "run test", lane="critical"
-        )
+        result = manager.check_access(Role.INCIDENT_COMMANDER, "run test", lane="critical")
         assert result["allowed"] is True
 
     def test_unknown_operation_denied(self) -> None:
@@ -154,20 +147,14 @@ class TestRBACManagerMapOperation:
         from thegent.security.rbac import Permission, RBACManager
 
         manager = RBACManager()
-        assert (
-            manager._map_operation_to_permission("orchestrate run")
-            == Permission.RUN_AGENT
-        )
+        assert manager._map_operation_to_permission("orchestrate run") == Permission.RUN_AGENT
 
     def test_govern_purge_maps_to_purge_data(self) -> None:
         """govern purge maps to PURGE_DATA."""
         from thegent.security.rbac import Permission, RBACManager
 
         manager = RBACManager()
-        assert (
-            manager._map_operation_to_permission("govern purge")
-            == Permission.PURGE_DATA
-        )
+        assert manager._map_operation_to_permission("govern purge") == Permission.PURGE_DATA
 
     def test_logs_maps_to_view_logs(self) -> None:
         """logs maps to VIEW_LOGS."""

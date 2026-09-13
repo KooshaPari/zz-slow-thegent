@@ -288,16 +288,12 @@ class TestListDumps:
 
         # Verify we created 3 files
         all_dumps = list(temp_dumps_dir.glob("conversation-*.md"))
-        assert len(all_dumps) == 3, (
-            f"Expected 3 dumps, got {len(all_dumps)}: {all_dumps}"
-        )
+        assert len(all_dumps) == 3, f"Expected 3 dumps, got {len(all_dumps)}: {all_dumps}"
 
         # Filter by conversation ID
         dumps = dumper.list_dumps(conversation_id="conv-a")
 
-        assert len(dumps) == 2, (
-            f"Expected 2 dumps for conv-a, got {len(dumps)}: {dumps}"
-        )
+        assert len(dumps) == 2, f"Expected 2 dumps for conv-a, got {len(dumps)}: {dumps}"
         for dump in dumps:
             assert "conv-a" in dump.name
 

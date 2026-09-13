@@ -104,9 +104,7 @@ class SubAgentDispatcher:
         if bus is not None and not isinstance(bus, MessageBus):
             raise TypeError(f"bus must be MessageBus, got {type(bus).__name__}")
         if plan is not None and not isinstance(plan, OrchestrationPlan):
-            raise TypeError(
-                f"plan must be OrchestrationPlan, got {type(plan).__name__}"
-            )
+            raise TypeError(f"plan must be OrchestrationPlan, got {type(plan).__name__}")
         # Backwards-compat: the legacy stub accepted `registry` /
         # `runner` / `policy_engine` / `config` and stored them as
         # attributes.  We keep the attributes so old callers can still
@@ -125,9 +123,7 @@ class SubAgentDispatcher:
         # STARTED / COMPLETED event pair (FR-ORC-070).
         self._dispatch_lock: threading.RLock = threading.RLock()
         self.sender_id = (
-            sender_id
-            if isinstance(sender_id, str) and sender_id
-            else f"{_DISPATCHER_SENDER_PREFIX}-{uuid.uuid4()}"
+            sender_id if isinstance(sender_id, str) and sender_id else f"{_DISPATCHER_SENDER_PREFIX}-{uuid.uuid4()}"
         )
 
     # ------------------------------------------------------------------
@@ -161,9 +157,7 @@ class SubAgentDispatcher:
         if not isinstance(node, PlanNode):
             wrapped = _wrap_sub_agent_request_as_plan_node(node)
             if wrapped is None:
-                raise TypeError(
-                    f"node must be PlanNode or SubAgentRequest, got {type(node).__name__}"
-                )
+                raise TypeError(f"node must be PlanNode or SubAgentRequest, got {type(node).__name__}")
             request_id = wrapped.id
             agent_type = wrapped.metadata.get(AGENT_HINT) or ""
             payload_agent_type = agent_type or ""
@@ -229,9 +223,7 @@ class SubAgentDispatcher:
             self._safe_publish_event(started_event)
             # Budget check — must raise BudgetExceededError before the
             # bus message is published.  STARTED was already emitted.
-            if self.budget_tracker is not None and hasattr(
-                self.budget_tracker, "check"
-            ):
+            if self.budget_tracker is not None and hasattr(self.budget_tracker, "check"):
                 try:
                     self.budget_tracker.check(node_id=node.id)
                 except Exception as exc:
@@ -321,9 +313,7 @@ class SubAgentDispatcher:
         """
         target = plan if plan is not None else self.plan
         if target is None:
-            raise ValueError(
-                "dispatch_all requires a plan argument when no plan is bound to the dispatcher"
-            )
+            raise ValueError("dispatch_all requires a plan argument when no plan is bound to the dispatcher")
         ordered = _topological_order(target)
         return [self.dispatch(node) for node in ordered]
 
@@ -331,9 +321,7 @@ class SubAgentDispatcher:
     # Result collection (drain the bus for an agent)
     # ------------------------------------------------------------------
 
-    def collect_results(
-        self, agent_id: str, timeout_s: float = 0.0
-    ) -> list[InterAgentMessage]:
+    def collect_results(self, agent_id: str, timeout_s: float = 0.0) -> list[InterAgentMessage]:
         """Drain queued messages for ``agent_id``.
 
         Auto-subscribes ``agent_id`` on the bus if it is not already
@@ -361,9 +349,7 @@ class SubAgentDispatcher:
         ``self.runner``).
         """
         if not isinstance(plan, OrchestrationPlan):
-            raise TypeError(
-                f"plan must be OrchestrationPlan, got {type(plan).__name__}"
-            )
+            raise TypeError(f"plan must be OrchestrationPlan, got {type(plan).__name__}")
         ordered = _topological_order(plan)
         results: dict[str, DispatchResult] = {}
         for node in ordered:
@@ -374,9 +360,7 @@ class SubAgentDispatcher:
             else:
                 # No runner — we still produce a placeholder so the
                 # executor can record the dispatch.
-                results[node.id] = DispatchResult(
-                    node_id=node.id, output="", success=True
-                )
+                results[node.id] = DispatchResult(node_id=node.id, output="", success=True)
         return results
 
     async def _invoke_runner(self, node: PlanNode) -> DispatchResult:
@@ -507,9 +491,7 @@ def _wrap_sub_agent_request_as_plan_node(node: Any) -> PlanNode | None:
         return node
     if not hasattr(node, "task"):
         return None
-    request_id = (
-        getattr(node, "request_id", None) or getattr(node, "agent_type", None) or ""
-    )
+    request_id = getattr(node, "request_id", None) or getattr(node, "agent_type", None) or ""
     agent_type = getattr(node, "agent_type", None) or request_id
     if not request_id:
         return None
@@ -569,9 +551,7 @@ def _topological_order(plan: OrchestrationPlan) -> list[PlanNode]:
                 ready.append(nodes_by_id[child_id])
 
     if len(ordered) != len(plan.nodes):
-        raise ValueError(
-            f"plan {plan.id!r} contains a cycle — cannot topologically sort nodes"
-        )
+        raise ValueError(f"plan {plan.id!r} contains a cycle — cannot topologically sort nodes")
     return ordered
 
 

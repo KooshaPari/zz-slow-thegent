@@ -331,9 +331,7 @@ class ContractTelemetry:
             if contract == "fallback-plain" or not bool(raw.get("success", True)):
                 fallback_count += 1
             confidence = raw.get("confidence")
-            if isinstance(confidence, (int, float)) and not isinstance(
-                confidence, bool
-            ):
+            if isinstance(confidence, (int, float)) and not isinstance(confidence, bool):
                 confidence_sum += float(confidence)
                 confidence_count += 1
 
@@ -353,30 +351,22 @@ class ContractTelemetry:
                 bucket["success"] += 1
             if contract == "fallback-plain" or not bool(raw.get("success", True)):
                 bucket["fallback"] += 1
-            if isinstance(confidence, (int, float)) and not isinstance(
-                confidence, bool
-            ):
+            if isinstance(confidence, (int, float)) and not isinstance(confidence, bool):
                 bucket["confidence_sum"] += float(confidence)
                 bucket["confidence_count"] += 1
 
         fallback_rate = (fallback_count / total) if total else 0.0
         success_rate = (success / total) if total else 0.0
-        avg_confidence = (
-            (confidence_sum / confidence_count) if confidence_count else 0.0
-        )
+        avg_confidence = (confidence_sum / confidence_count) if confidence_count else 0.0
 
         per_provider: dict[str, dict[str, Any]] = {}
         for name, bucket in by_provider.items():
             per_provider[name] = {
                 "total": bucket["total"],
                 "success": bucket["success"],
-                "fallback_rate": (
-                    bucket["fallback"] / bucket["total"] if bucket["total"] else 0.0
-                ),
+                "fallback_rate": (bucket["fallback"] / bucket["total"] if bucket["total"] else 0.0),
                 "avg_confidence": (
-                    bucket["confidence_sum"] / bucket["confidence_count"]
-                    if bucket["confidence_count"]
-                    else 0.0
+                    bucket["confidence_sum"] / bucket["confidence_count"] if bucket["confidence_count"] else 0.0
                 ),
             }
 
@@ -467,9 +457,7 @@ class ContractTelemetry:
 
         structural_rate = (structural / total * 100.0) if total else 0.0
         semantic_rate = (semantic / total * 100.0) if total else 0.0
-        within_budget = structural_rate <= float(
-            structural_budget_pct
-        ) and semantic_rate <= float(semantic_budget_pct)
+        within_budget = structural_rate <= float(structural_budget_pct) and semantic_rate <= float(semantic_budget_pct)
         return {
             "within_budget": within_budget,
             "structural_rate_pct": structural_rate,
@@ -508,9 +496,7 @@ class ContractTelemetry:
 
         def _avg_confidence(items: list[dict[str, Any]]) -> float:
             confidences = [
-                float(item.get("confidence", 0.0))
-                for item in items
-                if isinstance(item.get("confidence"), (int, float))
+                float(item.get("confidence", 0.0)) for item in items if isinstance(item.get("confidence"), (int, float))
             ]
             return sum(confidences) / len(confidences) if confidences else 0.0
 
@@ -520,8 +506,7 @@ class ContractTelemetry:
             fallback = sum(
                 1
                 for item in items
-                if str(item.get("contract", "")) == "fallback-plain"
-                or not bool(item.get("success", True))
+                if str(item.get("contract", "")) == "fallback-plain" or not bool(item.get("success", True))
             )
             return fallback / len(items)
 
@@ -534,10 +519,7 @@ class ContractTelemetry:
                     continue
                 provider = str(item.get("provider", "unknown"))
                 aggregates.setdefault(provider, []).append(float(item["confidence"]))
-            return {
-                provider: (sum(values) / len(values) if values else 0.0)
-                for provider, values in aggregates.items()
-            }
+            return {provider: (sum(values) / len(values) if values else 0.0) for provider, values in aggregates.items()}
 
         historical_confidence = _avg_confidence(historical)
         recent_confidence = _avg_confidence(recent)
@@ -595,19 +577,13 @@ class ContractTelemetry:
                 1
                 for item in historical
                 if str(item.get("provider", "unknown")) == provider
-                and (
-                    str(item.get("contract", "")) == "fallback-plain"
-                    or not bool(item.get("success", True))
-                )
+                and (str(item.get("contract", "")) == "fallback-plain" or not bool(item.get("success", True)))
             )
             r_fallback = sum(
                 1
                 for item in recent
                 if str(item.get("provider", "unknown")) == provider
-                and (
-                    str(item.get("contract", "")) == "fallback-plain"
-                    or not bool(item.get("success", True))
-                )
+                and (str(item.get("contract", "")) == "fallback-plain" or not bool(item.get("success", True)))
             )
             h_rate = (h_fallback / h_count) if h_count else 0.0
             r_rate = (r_fallback / r_count) if r_count else 0.0

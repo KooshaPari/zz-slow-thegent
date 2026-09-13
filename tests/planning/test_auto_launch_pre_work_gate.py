@@ -42,9 +42,7 @@ def test_try_launch_next_blocks_on_governance_gate() -> None:
     system = _make_system()
     system.db.get_ready_items.return_value = []
 
-    with patch(
-        "thegent.cli.commands.impl.do_next_impl", return_value=_blocked_payload()
-    ):
+    with patch("thegent.cli.commands.impl.do_next_impl", return_value=_blocked_payload()):
         asyncio.get_event_loop().run_until_complete(system._try_launch_next())
 
     system.launch_batch.assert_not_called()
@@ -66,9 +64,7 @@ def test_launch_item_blocks_before_bg_when_claim_gate_fails() -> None:
     }
 
     with (
-        patch(
-            "thegent.cli.commands.impl.work_stream_claim_impl", return_value=claim_block
-        ),
+        patch("thegent.cli.commands.impl.work_stream_claim_impl", return_value=claim_block),
         patch("thegent.cli.commands.impl.bg_impl") as mock_bg_impl,
     ):
         asyncio.get_event_loop().run_until_complete(

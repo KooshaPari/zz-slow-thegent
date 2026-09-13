@@ -139,9 +139,7 @@ class LinkChecker:
 
         return results
 
-    def check_directory(
-        self, dir_path: Path, pattern: str = "**/*.md"
-    ) -> dict[str, Any]:
+    def check_directory(self, dir_path: Path, pattern: str = "**/*.md") -> dict[str, Any]:
         """Check all markdown files in a directory.
 
         Args:

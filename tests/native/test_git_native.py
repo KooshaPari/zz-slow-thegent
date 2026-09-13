@@ -78,9 +78,7 @@ class TestGitNativeHead:
 
         assert result == {"sha": "a" * 40, "branch": "main"}
 
-    def test_none_sha_becomes_empty_string(
-        self, mock_thegent_git_module: MagicMock
-    ) -> None:
+    def test_none_sha_becomes_empty_string(self, mock_thegent_git_module: MagicMock) -> None:
         mock_thegent_git_module.get_head_sha.return_value = None
         mock_thegent_git_module.get_branch_name.return_value = "main"
 
@@ -102,9 +100,7 @@ class TestGitNativeHead:
 
         assert result["branch"] == "HEAD"
 
-    def test_calls_rust_with_repo_path(
-        self, mock_thegent_git_module: MagicMock
-    ) -> None:
+    def test_calls_rust_with_repo_path(self, mock_thegent_git_module: MagicMock) -> None:
         mock_thegent_git_module.get_head_sha.reset_mock()
         mock_thegent_git_module.get_branch_name.reset_mock()
         mock_thegent_git_module.get_head_sha.return_value = "c" * 40
@@ -139,9 +135,7 @@ class TestGitNativeStatus:
 
         assert result == expected
 
-    def test_delegates_to_rust_with_path(
-        self, mock_thegent_git_module: MagicMock
-    ) -> None:
+    def test_delegates_to_rust_with_path(self, mock_thegent_git_module: MagicMock) -> None:
         mock_thegent_git_module.get_status.reset_mock()
         mock_thegent_git_module.get_status.return_value = {
             "modified": [],
@@ -192,9 +186,7 @@ class TestGitNativeDiffStat:
         assert "insertions" in result
         assert "deletions" in result
 
-    def test_values_are_non_negative_ints(
-        self, mock_thegent_git_module: MagicMock
-    ) -> None:
+    def test_values_are_non_negative_ints(self, mock_thegent_git_module: MagicMock) -> None:
         from thegent.native.git_native import GitNative
 
         gn = GitNative(REPO_PATH)
@@ -205,9 +197,7 @@ class TestGitNativeDiffStat:
         assert isinstance(result["deletions"], int)
         assert all(v >= 0 for v in result.values())
 
-    def test_stub_currently_returns_zeros(
-        self, mock_thegent_git_module: MagicMock
-    ) -> None:
+    def test_stub_currently_returns_zeros(self, mock_thegent_git_module: MagicMock) -> None:
         """Stub implementation returns zeros. Update this test when diff_stat
         is implemented in the thegent-git Rust crate."""
         from thegent.native.git_native import GitNative

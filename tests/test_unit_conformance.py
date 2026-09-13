@@ -87,9 +87,7 @@ class TestBuildConformanceTests:
 class TestRunConformanceSuite:
     """Tests for run_conformance_suite."""
 
-    def _mock_adapter_result(
-        self, status: CSMStatus, confidence: float, summary: str = "Done"
-    ) -> MagicMock:
+    def _mock_adapter_result(self, status: CSMStatus, confidence: float, summary: str = "Done") -> MagicMock:
         """Build a mock AdapterResult."""
         csm = MagicMock()
         csm.status = status
@@ -103,9 +101,7 @@ class TestRunConformanceSuite:
     def test_all_pass(self, mock_normalize: MagicMock) -> None:
         # @trace FR-CON-064
         # Return COMPLETED with high confidence and non-empty summary for all tests
-        mock_normalize.return_value = self._mock_adapter_result(
-            CSMStatus.COMPLETED, 1.0, "Summary text"
-        )
+        mock_normalize.return_value = self._mock_adapter_result(CSMStatus.COMPLETED, 1.0, "Summary text")
         # Override behavior: for IN_PROGRESS expected tests, return IN_PROGRESS
         tests = _build_conformance_tests()
 
@@ -127,21 +123,15 @@ class TestRunConformanceSuite:
         assert report["failed"] == 0
 
     @patch("thegent.contracts.conformance.normalize_output")
-    def test_status_mismatch_counted_as_failure(
-        self, mock_normalize: MagicMock
-    ) -> None:
+    def test_status_mismatch_counted_as_failure(self, mock_normalize: MagicMock) -> None:
         # @trace FR-CON-065
         # Return FAILED for everything, so status mismatch for COMPLETED-expected tests
-        mock_normalize.return_value = self._mock_adapter_result(
-            CSMStatus.FAILED, 1.0, "Summary"
-        )
+        mock_normalize.return_value = self._mock_adapter_result(CSMStatus.FAILED, 1.0, "Summary")
         report = run_conformance_suite()
         assert report["failed"] > 0
         # Check issues contain "Status mismatch"
         failed_results = [r for r in report["results"] if not r["success"]]
-        assert any(
-            "Status mismatch" in issue for r in failed_results for issue in r["issues"]
-        )
+        assert any("Status mismatch" in issue for r in failed_results for issue in r["issues"])
 
     @patch("thegent.contracts.conformance.normalize_output")
     def test_low_confidence_counted_as_failure(self, mock_normalize: MagicMock) -> None:
@@ -168,9 +158,7 @@ class TestRunConformanceSuite:
     @patch("thegent.contracts.conformance.normalize_output")
     def test_report_structure(self, mock_normalize: MagicMock) -> None:
         # @trace FR-CON-067
-        mock_normalize.return_value = self._mock_adapter_result(
-            CSMStatus.COMPLETED, 1.0, "Ok"
-        )
+        mock_normalize.return_value = self._mock_adapter_result(CSMStatus.COMPLETED, 1.0, "Ok")
         report = run_conformance_suite()
         assert "total" in report
         assert "passed" in report
@@ -183,9 +171,7 @@ class TestRunConformanceSuite:
     @patch("thegent.contracts.conformance.normalize_output")
     def test_without_session_dir_no_drift(self, mock_normalize: MagicMock) -> None:
         # @trace FR-CON-068
-        mock_normalize.return_value = self._mock_adapter_result(
-            CSMStatus.COMPLETED, 1.0, "Ok"
-        )
+        mock_normalize.return_value = self._mock_adapter_result(CSMStatus.COMPLETED, 1.0, "Ok")
         report = run_conformance_suite(session_dir=None)
         assert report["drift_checked"] is False
         assert report["drift_issues"] == []
@@ -196,9 +182,7 @@ class TestRunConformanceSuite:
         self, mock_normalize: MagicMock, mock_telemetry_cls: MagicMock, tmp_path: Path
     ) -> None:
         # @trace FR-CON-069
-        mock_normalize.return_value = self._mock_adapter_result(
-            CSMStatus.COMPLETED, 1.0, "Ok"
-        )
+        mock_normalize.return_value = self._mock_adapter_result(CSMStatus.COMPLETED, 1.0, "Ok")
         mock_ct_instance = MagicMock()
         mock_ct_instance.detect_drift.return_value = []
         mock_ct_instance.get_drift_budget_status.return_value = {
@@ -221,9 +205,7 @@ class TestRunConformanceSuite:
         self, mock_normalize: MagicMock, mock_telemetry_cls: MagicMock, tmp_path: Path
     ) -> None:
         # @trace FR-CON-070
-        mock_normalize.return_value = self._mock_adapter_result(
-            CSMStatus.COMPLETED, 1.0, "Ok"
-        )
+        mock_normalize.return_value = self._mock_adapter_result(CSMStatus.COMPLETED, 1.0, "Ok")
         mock_ct_instance = MagicMock()
         mock_ct_instance.detect_drift.return_value = ["drift issue 1"]
         mock_ct_instance.get_drift_budget_status.return_value = {

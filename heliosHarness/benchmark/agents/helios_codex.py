@@ -26,9 +26,7 @@ class HeliosCodexAdapter:
     @property
     def version(self) -> str:
         try:
-            result = subprocess.run(
-                [self.binary, "--version"], capture_output=True, timeout=5
-            )
+            result = subprocess.run([self.binary, "--version"], capture_output=True, timeout=5)
             return result.stdout.decode() or "unknown"
         except:
             return "unknown"

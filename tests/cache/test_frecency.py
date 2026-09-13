@@ -62,9 +62,7 @@ def cache() -> FrecencyCache:
 @pytest.fixture
 def two_level_storage(tmp_path: Path) -> MultiLevelCache:
     """Return a two-level MultiLevelCache backed by a temp directory."""
-    storage = MultiLevelCache(
-        l1_maxsize=100, l1_ttl=3600, l2_dir=tmp_path / "frecency_db", l2_ttl=86400
-    )
+    storage = MultiLevelCache(l1_maxsize=100, l1_ttl=3600, l2_dir=tmp_path / "frecency_db", l2_ttl=86400)
     yield storage
     storage.close()
 
@@ -389,57 +387,39 @@ class TestMaxsizeEviction:
 class TestPersistence:
     """FR-CACHE-002: Frecency data survives via MultiLevelCache persistence."""
 
-    def test_entry_persisted_on_access(
-        self, two_level_storage: MultiLevelCache
-    ) -> None:
+    def test_entry_persisted_on_access(self, two_level_storage: MultiLevelCache) -> None:
         # @trace FR-CACHE-002
-        cache = FrecencyCache(
-            maxsize=10, half_life_seconds=3600.0, storage=two_level_storage
-        )
+        cache = FrecencyCache(maxsize=10, half_life_seconds=3600.0, storage=two_level_storage)
         cache.access("model-x")
         payload = two_level_storage.get("frecency:model-x")
         assert payload is not None
         assert payload["key"] == "model-x"
         assert payload["access_count"] == 1
 
-    def test_entry_restored_from_storage_on_new_cache(
-        self, two_level_storage: MultiLevelCache
-    ) -> None:
+    def test_entry_restored_from_storage_on_new_cache(self, two_level_storage: MultiLevelCache) -> None:
         # @trace FR-CACHE-002
-        cache1 = FrecencyCache(
-            maxsize=10, half_life_seconds=3600.0, storage=two_level_storage
-        )
+        cache1 = FrecencyCache(maxsize=10, half_life_seconds=3600.0, storage=two_level_storage)
         for _ in range(4):
             cache1.access("model-y")
 
         # New cache instance — should restore from storage on first access
-        cache2 = FrecencyCache(
-            maxsize=10, half_life_seconds=3600.0, storage=two_level_storage
-        )
+        cache2 = FrecencyCache(maxsize=10, half_life_seconds=3600.0, storage=two_level_storage)
         score = cache2.score("model-y")
         entry = cache2.get_entry("model-y")
         assert entry is not None
         assert entry.access_count == 4
         assert score > 0.0
 
-    def test_clear_removes_persisted_entries(
-        self, two_level_storage: MultiLevelCache
-    ) -> None:
+    def test_clear_removes_persisted_entries(self, two_level_storage: MultiLevelCache) -> None:
         # @trace FR-CACHE-002
-        cache = FrecencyCache(
-            maxsize=10, half_life_seconds=3600.0, storage=two_level_storage
-        )
+        cache = FrecencyCache(maxsize=10, half_life_seconds=3600.0, storage=two_level_storage)
         cache.access("model-z")
         cache.clear()
         assert two_level_storage.get("frecency:model-z") is None
 
-    def test_evict_lowest_removes_from_storage(
-        self, two_level_storage: MultiLevelCache
-    ) -> None:
+    def test_evict_lowest_removes_from_storage(self, two_level_storage: MultiLevelCache) -> None:
         # @trace FR-CACHE-002
-        cache = FrecencyCache(
-            maxsize=10, half_life_seconds=3600.0, storage=two_level_storage
-        )
+        cache = FrecencyCache(maxsize=10, half_life_seconds=3600.0, storage=two_level_storage)
         cache.access("lo")
         for _ in range(5):
             cache.access("hi")
@@ -467,9 +447,7 @@ class TestThreadSafety:
             except Exception as exc:
                 errors.append(exc)
 
-        threads = [
-            threading.Thread(target=worker, args=(f"key-{i}",)) for i in range(5)
-        ]
+        threads = [threading.Thread(target=worker, args=(f"key-{i}",)) for i in range(5)]
         for t in threads:
             t.start()
         for t in threads:
@@ -542,18 +520,13 @@ class TestFrecencyModelSelector:
     @pytest.mark.skipif(not _DISKCACHE_AVAILABLE, reason="diskcache not installed")
     def test_model_selector_with_storage_backend(self, tmp_path: Path) -> None:
         # @trace FR-CACHE-002
-        storage = MultiLevelCache(
-            l1_maxsize=50, l1_ttl=3600, l2_dir=tmp_path / "sel_db", l2_ttl=86400
-        )
+        storage = MultiLevelCache(l1_maxsize=50, l1_ttl=3600, l2_dir=tmp_path / "sel_db", l2_ttl=86400)
         try:
             sel = FrecencyModelSelector(storage=storage)
             for _ in range(3):
                 sel.record_use("preferred-model")
             sel.record_use("other-model")
-            assert (
-                sel.preferred_model(["preferred-model", "other-model"])
-                == "preferred-model"
-            )
+            assert sel.preferred_model(["preferred-model", "other-model"]) == "preferred-model"
         finally:
             storage.close()
 

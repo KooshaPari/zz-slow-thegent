@@ -139,9 +139,7 @@ class TestSupermemoryClientConfig:
     def test_custom_base_url_from_parameter(self, monkeypatch):
         """Custom base_url parameter overrides default."""
         monkeypatch.delenv("THGENT_SUPERMEMORY_BASE_URL", raising=False)
-        client = SupermemoryClient(
-            api_key="sm_x", base_url="https://custom.example.com/v9"
-        )
+        client = SupermemoryClient(api_key="sm_x", base_url="https://custom.example.com/v9")
         assert client._base_url == "https://custom.example.com/v9"
 
     def test_custom_base_url_from_env(self, monkeypatch):
@@ -168,9 +166,7 @@ class TestIsRetryable:
     def _make_status_error(self, status_code: int) -> httpx.HTTPStatusError:
         resp = MagicMock(spec=httpx.Response)
         resp.status_code = status_code
-        return httpx.HTTPStatusError(
-            f"HTTP {status_code}", request=MagicMock(), response=resp
-        )
+        return httpx.HTTPStatusError(f"HTTP {status_code}", request=MagicMock(), response=resp)
 
     def test_429_is_retryable(self):
         assert _is_retryable(self._make_status_error(429)) is True
@@ -205,9 +201,7 @@ class TestSupermemoryClientAdd:
     @pytest.fixture
     def client(self, monkeypatch):
         monkeypatch.delenv("THGENT_SUPERMEMORY_BASE_URL", raising=False)
-        return SupermemoryClient(
-            api_key="sm_test", base_url="https://api.supermemory.ai/v3"
-        )
+        return SupermemoryClient(api_key="sm_test", base_url="https://api.supermemory.ai/v3")
 
     @pytest.mark.asyncio
     async def test_add_returns_memory_id(self, client):
@@ -270,9 +264,7 @@ class TestSupermemoryClientSearch:
     @pytest.fixture
     def client(self, monkeypatch):
         monkeypatch.delenv("THGENT_SUPERMEMORY_BASE_URL", raising=False)
-        return SupermemoryClient(
-            api_key="sm_test", base_url="https://api.supermemory.ai/v3"
-        )
+        return SupermemoryClient(api_key="sm_test", base_url="https://api.supermemory.ai/v3")
 
     @pytest.mark.asyncio
     async def test_search_returns_memory_entries(self, client):
@@ -346,9 +338,7 @@ class TestSupermemoryClientDelete:
     @pytest.fixture
     def client(self, monkeypatch):
         monkeypatch.delenv("THGENT_SUPERMEMORY_BASE_URL", raising=False)
-        return SupermemoryClient(
-            api_key="sm_test", base_url="https://api.supermemory.ai/v3"
-        )
+        return SupermemoryClient(api_key="sm_test", base_url="https://api.supermemory.ai/v3")
 
     @pytest.mark.asyncio
     async def test_delete_sends_delete_request(self, client):
@@ -391,9 +381,7 @@ class TestSupermemoryClientList:
     @pytest.fixture
     def client(self, monkeypatch):
         monkeypatch.delenv("THGENT_SUPERMEMORY_BASE_URL", raising=False)
-        return SupermemoryClient(
-            api_key="sm_test", base_url="https://api.supermemory.ai/v3"
-        )
+        return SupermemoryClient(api_key="sm_test", base_url="https://api.supermemory.ai/v3")
 
     @pytest.mark.asyncio
     async def test_list_returns_memory_entries(self, client):

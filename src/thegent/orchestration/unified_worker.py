@@ -33,9 +33,7 @@ from typing import Any
 logger = logging.getLogger(__name__)
 
 
-def _dispatch_post_agent_run_hook(
-    *, run_id: str, extra_context: dict[str, Any] | None = None
-) -> None:
+def _dispatch_post_agent_run_hook(*, run_id: str, extra_context: dict[str, Any] | None = None) -> None:
     """Forward a COMPLETED event to the governance post-run hook.
 
     FR-ORC-075: this function lives at module scope so test harnesses

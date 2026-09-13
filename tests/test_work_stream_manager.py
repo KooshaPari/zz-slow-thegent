@@ -71,9 +71,7 @@ def _write_coordination_files(base: Path) -> None:
     )
 
 
-def test_claim_fails_if_any_coordination_write_fails(
-    tmp_path: Path, monkeypatch
-) -> None:
+def test_claim_fails_if_any_coordination_write_fails(tmp_path: Path, monkeypatch) -> None:
     _write_coordination_files(tmp_path)
     manager = WorkStreamManager(ThegentSettings(), base_dir=tmp_path)
 
@@ -90,17 +88,13 @@ def test_claim_fails_if_any_coordination_write_fails(
     monkeypatch.setattr(helpers, "safe_write_file", _fake_safe_write)
 
     result = manager.claim("wp-1", "agent-1")
-    work_stream_action = next(
-        a for a in result["actions"] if a["file"] == "WORK_STREAM.md"
-    )
+    work_stream_action = next(a for a in result["actions"] if a["file"] == "WORK_STREAM.md")
 
     assert work_stream_action["success"] is False
     assert result["success"] is False
 
 
-def test_complete_fails_when_remove_step_write_fails(
-    tmp_path: Path, monkeypatch
-) -> None:
+def test_complete_fails_when_remove_step_write_fails(tmp_path: Path, monkeypatch) -> None:
     _write_coordination_files(tmp_path)
     work_stream_path = tmp_path / "docs" / "reference" / "WORK_STREAM.md"
     work_stream_path.write_text(
@@ -145,9 +139,7 @@ def test_complete_fails_when_remove_step_write_fails(
     monkeypatch.setattr(helpers, "safe_write_file", _fake_safe_write)
 
     result = manager.complete("wp-1", "agent-1")
-    work_stream_action = next(
-        a for a in result["actions"] if a["file"] == "WORK_STREAM.md"
-    )
+    work_stream_action = next(a for a in result["actions"] if a["file"] == "WORK_STREAM.md")
 
     assert calls["work_stream"] >= 2
     assert work_stream_action["success"] is False
@@ -177,14 +169,10 @@ def test_sequential_duplicate_claim_rejected(tmp_path: Path) -> None:
 
     manager_b = WorkStreamManager(settings, base_dir=tmp_path)
     result_b = manager_b.claim("wp-1", "agent-b")
-    assert result_b["success"] is False, (
-        "Second claim for same item must fail (OCC duplicate check)"
-    )
+    assert result_b["success"] is False, "Second claim for same item must fail (OCC duplicate check)"
 
     # Verify the item appears exactly once in CLAIMED section.
-    content = (tmp_path / "docs" / "reference" / "WORK_STREAM.md").read_text(
-        encoding="utf-8"
-    )
+    content = (tmp_path / "docs" / "reference" / "WORK_STREAM.md").read_text(encoding="utf-8")
     in_claimed = False
     claim_count = 0
     for line in content.splitlines():
@@ -194,9 +182,7 @@ def test_sequential_duplicate_claim_rejected(tmp_path: Path) -> None:
             in_claimed = False
         elif in_claimed and "| wp-1 |" in line:
             claim_count += 1
-    assert claim_count == 1, (
-        f"Expected exactly 1 CLAIMED entry for wp-1, got {claim_count}"
-    )
+    assert claim_count == 1, f"Expected exactly 1 CLAIMED entry for wp-1, got {claim_count}"
 
 
 def test_concurrent_duplicate_claim_only_one_succeeds(tmp_path: Path) -> None:
@@ -232,9 +218,7 @@ def test_concurrent_duplicate_claim_only_one_succeeds(tmp_path: Path) -> None:
     )
 
     # Verify the item appears exactly once in CLAIMED section.
-    content = (tmp_path / "docs" / "reference" / "WORK_STREAM.md").read_text(
-        encoding="utf-8"
-    )
+    content = (tmp_path / "docs" / "reference" / "WORK_STREAM.md").read_text(encoding="utf-8")
     in_claimed = False
     claim_count = 0
     for line in content.splitlines():
@@ -244,9 +228,7 @@ def test_concurrent_duplicate_claim_only_one_succeeds(tmp_path: Path) -> None:
             in_claimed = False
         elif in_claimed and "| wp-1 |" in line:
             claim_count += 1
-    assert claim_count == 1, (
-        f"Expected exactly 1 CLAIMED entry for wp-1, got {claim_count}"
-    )
+    assert claim_count == 1, f"Expected exactly 1 CLAIMED entry for wp-1, got {claim_count}"
 
 
 def test_claim_success_uses_all_not_any(tmp_path: Path, monkeypatch) -> None:
@@ -278,9 +260,7 @@ def test_claim_success_uses_all_not_any(tmp_path: Path, monkeypatch) -> None:
 
     # Even though WBS_AGENT_PROGRESS.md write succeeds, the overall claim
     # must fail because WORK_STREAM.md write failed.
-    assert result["success"] is False, (
-        "claim() must return success=False when any file write fails (all() semantics)"
-    )
+    assert result["success"] is False, "claim() must return success=False when any file write fails (all() semantics)"
 
 
 def test_occ_hash_consistency_read_text_vs_read_bytes(tmp_path: Path) -> None:
@@ -288,9 +268,7 @@ def test_occ_hash_consistency_read_text_vs_read_bytes(tmp_path: Path) -> None:
     file_path.write_bytes(b"line-1\r\nline-2\r\n")
 
     bytes_hash = hashlib.sha256(file_path.read_bytes()).hexdigest()
-    text_hash = hashlib.sha256(
-        file_path.read_text(encoding="utf-8").encode("utf-8")
-    ).hexdigest()
+    text_hash = hashlib.sha256(file_path.read_text(encoding="utf-8").encode("utf-8")).hexdigest()
 
     assert bytes_hash != text_hash
 

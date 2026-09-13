@@ -14,9 +14,7 @@ from unittest.mock import MagicMock, patch
 import orjson as json
 import pytest
 
-pytestmark = pytest.mark.skip(
-    reason="Multiple pre-existing test failures - needs investigation"
-)
+pytestmark = pytest.mark.skip(reason="Multiple pre-existing test failures - needs investigation")
 
 from thegent.audit.shadow_audit_git import (
     GitJournal,
@@ -55,9 +53,7 @@ def git_repo(tmp_path: Path) -> Path:
 
     # Create initial commit
     (repo_path / "README.md").write_text("# Test Repo\n")
-    subprocess.run(
-        ["git", "add", "README.md"], cwd=repo_path, check=True, capture_output=True
-    )
+    subprocess.run(["git", "add", "README.md"], cwd=repo_path, check=True, capture_output=True)
     subprocess.run(
         ["git", "commit", "-m", "Initial commit"],
         cwd=repo_path,
@@ -169,9 +165,7 @@ class TestGitJournalEnhancedInit:
 class TestNativeScannerDetection:
     """Tests for native secret scanner detection and fallback."""
 
-    def test_scanner_available_when_hook_dispatcher_present(
-        self, git_repo: Path
-    ) -> None:
+    def test_scanner_available_when_hook_dispatcher_present(self, git_repo: Path) -> None:
         """Test scanner detection when hook-dispatcher is available."""
         with patch("subprocess.run") as mock_run:
             # Simulate hook-dispatcher --help succeeds
@@ -188,9 +182,7 @@ class TestNativeScannerDetection:
             assert result is True
             mock_run.assert_called()
 
-    def test_scanner_fallback_when_hook_dispatcher_missing(
-        self, git_repo: Path
-    ) -> None:
+    def test_scanner_fallback_when_hook_dispatcher_missing(self, git_repo: Path) -> None:
         """Test fallback when hook-dispatcher is not available."""
         with patch("subprocess.run") as mock_run:
             mock_run.side_effect = FileNotFoundError("hook-dispatcher not found")
@@ -313,9 +305,7 @@ class TestScrubWithNativeScanner:
 class TestRecordFileChangeBatching:
     """Tests for record_file_change with batching."""
 
-    def test_record_file_change_accumulates(
-        self, journal_enhanced: GitJournalEnhanced
-    ) -> None:
+    def test_record_file_change_accumulates(self, journal_enhanced: GitJournalEnhanced) -> None:
         """Test that file changes are accumulated in pending batch."""
         # Record multiple changes without flushing
         journal_enhanced.auto_commit = False
@@ -344,13 +334,9 @@ class TestRecordFileChangeBatching:
         assert len(journal._pending_changes) == 0
         assert sha1 != ""  # Commit was created
 
-    def test_record_file_change_manual_flush(
-        self, journal_enhanced: GitJournalEnhanced
-    ) -> None:
+    def test_record_file_change_manual_flush(self, journal_enhanced: GitJournalEnhanced) -> None:
         """Test manual flush via _flush_batch."""
-        journal_enhanced.record_file_change(
-            "manual.txt", b"manual content", action="created"
-        )
+        journal_enhanced.record_file_change("manual.txt", b"manual content", action="created")
 
         assert len(journal_enhanced._pending_changes) == 1
 
@@ -359,9 +345,7 @@ class TestRecordFileChangeBatching:
         assert len(journal_enhanced._pending_changes) == 0
         assert sha != ""
 
-    def test_record_file_change_with_secrets(
-        self, journal_enhanced: GitJournalEnhanced
-    ) -> None:
+    def test_record_file_change_with_secrets(self, journal_enhanced: GitJournalEnhanced) -> None:
         """Test that secrets are scrubbed in record_file_change."""
         content = b"API_KEY=sk-1234567890abcdef1234567890abcdef1234567890abcdef12"
         journal_enhanced.record_file_change("config.py", content, action="created")
@@ -394,9 +378,7 @@ class TestFlushBatch:
         sha = journal_enhanced._flush_batch()
         assert sha == ""
 
-    def test_flush_batch_creates_single_commit(
-        self, journal_enhanced: GitJournalEnhanced
-    ) -> None:
+    def test_flush_batch_creates_single_commit(self, journal_enhanced: GitJournalEnhanced) -> None:
         """Test that multiple pending changes create a single commit."""
         # Add multiple changes
         journal_enhanced.record_file_change("a.txt", b"content a", action="created")
@@ -414,9 +396,7 @@ class TestFlushBatch:
         assert "b.txt" in journal_enhanced._current_tree
         assert "c.txt" in journal_enhanced._current_tree
 
-    def test_flush_batch_includes_changes_in_message(
-        self, journal_enhanced: GitJournalEnhanced
-    ) -> None:
+    def test_flush_batch_includes_changes_in_message(self, journal_enhanced: GitJournalEnhanced) -> None:
         """Test that flush batch includes all changes in commit message."""
         journal_enhanced.record_file_change("x.txt", b"x", action="created")
         journal_enhanced.record_file_change("y.txt", b"y", action="modified")
@@ -436,13 +416,9 @@ class TestFlushBatch:
         assert "x.txt" in commit_msg
         assert "y.txt" in commit_msg
 
-    def test_flush_batch_updates_ref(
-        self, journal_enhanced: GitJournalEnhanced
-    ) -> None:
+    def test_flush_batch_updates_ref(self, journal_enhanced: GitJournalEnhanced) -> None:
         """Test that flush updates the audit ref."""
-        journal_enhanced.record_file_change(
-            "ref_test.txt", b"ref content", action="created"
-        )
+        journal_enhanced.record_file_change("ref_test.txt", b"ref content", action="created")
 
         sha = journal_enhanced._flush_batch()
 
@@ -465,9 +441,7 @@ class TestFlushBatch:
 class TestHashObjectCached:
     """Tests for _hash_object_cached method."""
 
-    def test_caching_returns_same_sha(
-        self, journal_enhanced: GitJournalEnhanced
-    ) -> None:
+    def test_caching_returns_same_sha(self, journal_enhanced: GitJournalEnhanced) -> None:
         """Test that identical content returns cached SHA."""
         content = b"cached content test"
 
@@ -479,9 +453,7 @@ class TestHashObjectCached:
         # Cache should have one entry
         assert len(journal_enhanced._blob_cache) == 1
 
-    def test_different_content_different_sha(
-        self, journal_enhanced: GitJournalEnhanced
-    ) -> None:
+    def test_different_content_different_sha(self, journal_enhanced: GitJournalEnhanced) -> None:
         """Test that different content returns different SHAs."""
         sha1 = journal_enhanced._hash_object_cached(b"content A")
         sha2 = journal_enhanced._hash_object_cached(b"content B")
@@ -489,9 +461,7 @@ class TestHashObjectCached:
         assert sha1 != sha2
         assert len(journal_enhanced._blob_cache) == 2
 
-    def test_cache_grows_with_content(
-        self, journal_enhanced: GitJournalEnhanced
-    ) -> None:
+    def test_cache_grows_with_content(self, journal_enhanced: GitJournalEnhanced) -> None:
         """Test that cache grows as new content is added."""
         initial_size = len(journal_enhanced._blob_cache)
 
@@ -510,9 +480,7 @@ class TestHashObjectCached:
 class TestAttestation:
     """Tests for attestation functionality."""
 
-    def test_create_attestation_structure(
-        self, journal_with_attestation: GitJournalEnhanced
-    ) -> None:
+    def test_create_attestation_structure(self, journal_with_attestation: GitJournalEnhanced) -> None:
         """Test that attestation has correct structure."""
         attestation = journal_with_attestation._create_attestation(
             commit_sha="abc123def456",
@@ -527,9 +495,7 @@ class TestAttestation:
         assert "signature" in attestation
         assert attestation["algorithm"] == "SHA-256"
 
-    def test_create_attestation_signature(
-        self, journal_with_attestation: GitJournalEnhanced
-    ) -> None:
+    def test_create_attestation_signature(self, journal_with_attestation: GitJournalEnhanced) -> None:
         """Test that attestation has valid signature."""
         import hashlib
 
@@ -547,9 +513,7 @@ class TestAttestation:
 
         assert attestation["signature"] == expected_sig
 
-    def test_verify_valid_attestation(
-        self, journal_with_attestation: GitJournalEnhanced
-    ) -> None:
+    def test_verify_valid_attestation(self, journal_with_attestation: GitJournalEnhanced) -> None:
         """Test verification of valid attestation."""
         attestation = journal_with_attestation._create_attestation(
             commit_sha="abc123",
@@ -558,9 +522,7 @@ class TestAttestation:
 
         assert journal_with_attestation.verify_attestation(attestation) is True
 
-    def test_verify_invalid_attestation(
-        self, journal_with_attestation: GitJournalEnhanced
-    ) -> None:
+    def test_verify_invalid_attestation(self, journal_with_attestation: GitJournalEnhanced) -> None:
         """Test verification fails for tampered attestation."""
         attestation = journal_with_attestation._create_attestation(
             commit_sha="abc123",
@@ -572,15 +534,11 @@ class TestAttestation:
 
         assert journal_with_attestation.verify_attestation(attestation) is False
 
-    def test_attestation_created_on_flush(
-        self, journal_with_attestation: GitJournalEnhanced
-    ) -> None:
+    def test_attestation_created_on_flush(self, journal_with_attestation: GitJournalEnhanced) -> None:
         """Test that attestation is created during flush when enabled."""
         initial_count = len(journal_with_attestation._attestations)
 
-        journal_with_attestation.record_file_change(
-            "attest.txt", b"content", action="created"
-        )
+        journal_with_attestation.record_file_change("attest.txt", b"content", action="created")
 
         assert len(journal_with_attestation._attestations) > initial_count
 
@@ -593,9 +551,7 @@ class TestAttestation:
 class TestPerformanceStats:
     """Tests for get_performance_stats method."""
 
-    def test_get_performance_stats_initial(
-        self, journal_enhanced: GitJournalEnhanced
-    ) -> None:
+    def test_get_performance_stats_initial(self, journal_enhanced: GitJournalEnhanced) -> None:
         """Test performance stats on initial state."""
         stats = journal_enhanced.get_performance_stats()
 
@@ -606,9 +562,7 @@ class TestPerformanceStats:
         assert "watcher" in stats
         assert "batch_size" in stats
 
-    def test_get_performance_stats_reflects_state(
-        self, journal_enhanced: GitJournalEnhanced
-    ) -> None:
+    def test_get_performance_stats_reflects_state(self, journal_enhanced: GitJournalEnhanced) -> None:
         """Test that stats reflect current journal state."""
         # Add some changes
         journal_enhanced.record_file_change("stat1.txt", b"content1", action="created")
@@ -643,14 +597,10 @@ class TestFinalizeSession:
 
         assert "final:" in result.stdout
 
-    def test_finalize_with_pending_changes(
-        self, journal_enhanced: GitJournalEnhanced
-    ) -> None:
+    def test_finalize_with_pending_changes(self, journal_enhanced: GitJournalEnhanced) -> None:
         """Test finalizing session with pending changes."""
         # Add changes but don't flush
-        journal_enhanced.record_file_change(
-            "final1.txt", b"final content", action="created"
-        )
+        journal_enhanced.record_file_change("final1.txt", b"final content", action="created")
 
         sha = journal_enhanced.finalize_session()
 
@@ -658,13 +608,9 @@ class TestFinalizeSession:
         assert len(journal_enhanced._pending_changes) == 0
         assert sha != ""
 
-    def test_finalize_with_attestation(
-        self, journal_with_attestation: GitJournalEnhanced
-    ) -> None:
+    def test_finalize_with_attestation(self, journal_with_attestation: GitJournalEnhanced) -> None:
         """Test finalization creates final attestation."""
-        journal_with_attestation.record_file_change(
-            "final_attest.txt", b"content", action="created"
-        )
+        journal_with_attestation.record_file_change("final_attest.txt", b"content", action="created")
 
         initial_attestations = len(journal_with_attestation._attestations)
 
@@ -704,9 +650,7 @@ class TestFileWatching:
             # First call (watchman) fails
             mock_run.side_effect = [
                 FileNotFoundError("watchman not found"),  # watchman check
-                MagicMock(
-                    returncode=0, stdout=b"fswatch 1.0", stderr=b""
-                ),  # fswatch check
+                MagicMock(returncode=0, stdout=b"fswatch 1.0", stderr=b""),  # fswatch check
             ]
 
             GitJournalEnhanced(
@@ -733,9 +677,7 @@ class TestFileWatching:
             # Watcher should be None
             assert journal._watcher is None
 
-    def test_start_watching_no_watcher(
-        self, journal_enhanced: GitJournalEnhanced
-    ) -> None:
+    def test_start_watching_no_watcher(self, journal_enhanced: GitJournalEnhanced) -> None:
         """Test start_watching when no watcher configured."""
         journal_enhanced._watcher = None
 

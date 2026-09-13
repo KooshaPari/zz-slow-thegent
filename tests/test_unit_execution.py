@@ -38,9 +38,7 @@ class TestRunRegistryStateAware:
         """After register_start, state is RUNNING."""
         with tempfile.TemporaryDirectory() as d:
             r = RunRegistry(Path(d))
-            m = RunMeta(
-                run_id="run_1", agent="gemini", prompt="x", cwd="/tmp", owner="u"
-            )
+            m = RunMeta(run_id="run_1", agent="gemini", prompt="x", cwd="/tmp", owner="u")
             r.register_start(m)
             assert r.get_run_state("run_1") == RunState.RUNNING
 
@@ -49,9 +47,7 @@ class TestRunRegistryStateAware:
         """After register_pause, state is PAUSED."""
         with tempfile.TemporaryDirectory() as d:
             r = RunRegistry(Path(d))
-            m = RunMeta(
-                run_id="run_1", agent="gemini", prompt="x", cwd="/tmp", owner="u"
-            )
+            m = RunMeta(run_id="run_1", agent="gemini", prompt="x", cwd="/tmp", owner="u")
             r.register_start(m)
             r.register_pause("run_1", "manual", {"phase": "operator"})
             assert r.get_run_state("run_1") == RunState.PAUSED
@@ -61,9 +57,7 @@ class TestRunRegistryStateAware:
         """After register_resume, state is RUNNING."""
         with tempfile.TemporaryDirectory() as d:
             r = RunRegistry(Path(d))
-            m = RunMeta(
-                run_id="run_1", agent="gemini", prompt="x", cwd="/tmp", owner="u"
-            )
+            m = RunMeta(run_id="run_1", agent="gemini", prompt="x", cwd="/tmp", owner="u")
             r.register_start(m)
             r.register_pause("run_1", "manual")
             r.register_resume("run_1")
@@ -74,9 +68,7 @@ class TestRunRegistryStateAware:
         """After register_end with completed, state is COMPLETED."""
         with tempfile.TemporaryDirectory() as d:
             r = RunRegistry(Path(d))
-            m = RunMeta(
-                run_id="run_1", agent="gemini", prompt="x", cwd="/tmp", owner="u"
-            )
+            m = RunMeta(run_id="run_1", agent="gemini", prompt="x", cwd="/tmp", owner="u")
             r.register_start(m)
             r.register_end("run_1", 0, "completed", "2026-02-14T12:00:00Z", 1.0)
             assert r.get_run_state("run_1") == RunState.COMPLETED
@@ -86,9 +78,7 @@ class TestRunRegistryStateAware:
         """After register_end with failed, state is FAILED."""
         with tempfile.TemporaryDirectory() as d:
             r = RunRegistry(Path(d))
-            m = RunMeta(
-                run_id="run_1", agent="gemini", prompt="x", cwd="/tmp", owner="u"
-            )
+            m = RunMeta(run_id="run_1", agent="gemini", prompt="x", cwd="/tmp", owner="u")
             r.register_start(m)
             r.register_end("run_1", 1, "failed", "2026-02-14T12:00:00Z", 1.0)
             assert r.get_run_state("run_1") == RunState.FAILED
@@ -111,9 +101,7 @@ class TestPolicyEngineEvaluate:
         # @trace FR-EXE-008
         """Standard lane in development environment is allowed."""
         engine = PolicyEngine(self._make_settings())
-        run = RunMeta(
-            agent="gemini", prompt="test", cwd="/tmp", owner="u", lane="standard"
-        )
+        run = RunMeta(agent="gemini", prompt="test", cwd="/tmp", owner="u", lane="standard")
         result, _reason = engine.evaluate(run)
         assert result == "allow"
 
@@ -147,9 +135,7 @@ class TestPolicyEngineEvaluate:
             confidence=0.95,
         )
         with patch("thegent.contracts.telemetry.ContractTelemetry") as mock_ct:
-            mock_ct.return_value.get_drift_budget_status.return_value = {
-                "within_budget": True
-            }
+            mock_ct.return_value.get_drift_budget_status.return_value = {"within_budget": True}
             result, _reason = engine.evaluate(run)
         assert result == "allow"
 
@@ -182,9 +168,7 @@ class TestPolicyEngineEvaluate:
             confidence=0.95,
         )
         with patch("thegent.contracts.telemetry.ContractTelemetry") as mock_ct:
-            mock_ct.return_value.get_drift_budget_status.return_value = {
-                "within_budget": True
-            }
+            mock_ct.return_value.get_drift_budget_status.return_value = {"within_budget": True}
             result, _reason = engine.evaluate(run)
         assert result == "deny"
 
@@ -207,9 +191,7 @@ class TestPolicyEngineEvaluate:
     def test_deny_production_below_trust_threshold(self) -> None:
         # @trace FR-EXE-006
         """Production denies when confidence below trust_score_threshold."""
-        engine = PolicyEngine(
-            self._make_settings(environment="production", trust_score_threshold=0.8)
-        )
+        engine = PolicyEngine(self._make_settings(environment="production", trust_score_threshold=0.8))
         run = RunMeta(
             agent="gemini",
             prompt="test",
@@ -225,9 +207,7 @@ class TestPolicyEngineEvaluate:
     def test_allow_production_above_trust_threshold(self) -> None:
         # @trace FR-EXE-006
         """Production allows when confidence above trust_score_threshold."""
-        engine = PolicyEngine(
-            self._make_settings(environment="production", trust_score_threshold=0.8)
-        )
+        engine = PolicyEngine(self._make_settings(environment="production", trust_score_threshold=0.8))
         run = RunMeta(
             agent="gemini",
             prompt="test",
@@ -684,9 +664,7 @@ class TestRunRegistryRetention:
         )
         reg.register_start(m2)
 
-        result = reg.purge_expired(
-            default_days=30, by_domain={"short": 5, "long": 20}, dry_run=False
-        )
+        result = reg.purge_expired(default_days=30, by_domain={"short": 5, "long": 20}, dry_run=False)
         assert result["purged"] == 1
         assert result["kept"] == 2  # r2 + schema marker
 
@@ -1073,9 +1051,7 @@ class TestPolicyEngineOPAQuery:
         run = RunMeta(agent="gemini", prompt="test", cwd="/tmp", owner="u")
 
         mock_resp = MagicMock()
-        mock_resp.json.return_value = {
-            "result": {"allow": False, "reason": "Not allowed"}
-        }
+        mock_resp.json.return_value = {"result": {"allow": False, "reason": "Not allowed"}}
         mock_resp.raise_for_status.return_value = None
         with patch("thegent.execution.httpx.post", return_value=mock_resp):
             result = engine._query_opa(run)
@@ -1112,9 +1088,7 @@ class TestCircuitBreakerHalfOpen:
     def test_circuit_remains_open_within_recovery(self, tmp_path: Path) -> None:
         # @trace FR-EXE-005
         """Circuit stays open within recovery period."""
-        cb = CircuitBreakerRegistry(
-            tmp_path, threshold=2, window_s=600, recovery_s=9999
-        )
+        cb = CircuitBreakerRegistry(tmp_path, threshold=2, window_s=600, recovery_s=9999)
         cb.record_failure("agent-x")
         cb.record_failure("agent-x")
         assert cb.is_open("agent-x") is True
@@ -1209,13 +1183,9 @@ class TestRunRegistryHashChaining:
         # @trace FR-GOV-007
         """register_end records cost_usd when provided."""
         reg = RunRegistry(tmp_path)
-        m = RunMeta(
-            run_id="run_cost", agent="gemini", prompt="p", cwd="/tmp", owner="u"
-        )
+        m = RunMeta(run_id="run_cost", agent="gemini", prompt="p", cwd="/tmp", owner="u")
         reg.register_start(m)
-        reg.register_end(
-            "run_cost", 0, "completed", "2026-02-14T12:00:00Z", 1.0, cost_usd=0.05
-        )
+        reg.register_end("run_cost", 0, "completed", "2026-02-14T12:00:00Z", 1.0, cost_usd=0.05)
         content = reg.registry_path.read_text(encoding="utf-8")
         assert '"cost_usd": 0.05' in content
 
@@ -1223,9 +1193,7 @@ class TestRunRegistryHashChaining:
         # @trace FR-GOV-007
         """register_end omits cost_usd when not provided."""
         reg = RunRegistry(tmp_path)
-        m = RunMeta(
-            run_id="run_nocost", agent="gemini", prompt="p", cwd="/tmp", owner="u"
-        )
+        m = RunMeta(run_id="run_nocost", agent="gemini", prompt="p", cwd="/tmp", owner="u")
         reg.register_start(m)
         reg.register_end("run_nocost", 0, "completed", "2026-02-14T12:00:00Z", 1.0)
         lines = reg.registry_path.read_text(encoding="utf-8").strip().split("\n")
@@ -1327,9 +1295,7 @@ class TestCalibrationFactorExceptionPath:
         factor = reg.get_calibration_factor("gemini")
         assert 0.5 <= factor <= 2.0
 
-    def test_calibration_factor_zero_confidence_returns_one(
-        self, tmp_path: Path
-    ) -> None:
+    def test_calibration_factor_zero_confidence_returns_one(self, tmp_path: Path) -> None:
         # @trace FR-EXE-006
         """get_calibration_factor returns 1.0 when avg_confidence is 0."""
         reg = RunRegistry(tmp_path)
@@ -1397,9 +1363,7 @@ class TestPurgeExpiredExceptionPaths:
         # Old record should be purged
         assert result["purged"] >= 1
 
-    def test_purge_expired_exception_in_second_pass_keeps_line(
-        self, tmp_path: Path
-    ) -> None:
+    def test_purge_expired_exception_in_second_pass_keeps_line(self, tmp_path: Path) -> None:
         # @trace FR-GOV-007
         """purge_expired keeps line on exception in second pass (lines 396-397)."""
         reg = RunRegistry(tmp_path)
@@ -1457,9 +1421,7 @@ class TestPolicyEngineCircuitBreakerModel:
         cb = CircuitBreakerRegistry(tmp_path, threshold=1)
         cb.record_failure("gpt-4", category="model")
 
-        run = RunMeta(
-            agent="gemini", model="gpt-4", prompt="test", cwd="/tmp", owner="u"
-        )
+        run = RunMeta(agent="gemini", model="gpt-4", prompt="test", cwd="/tmp", owner="u")
         result, reason = engine.evaluate(run)
         assert result == "deny"
         assert "model" in reason.lower()
@@ -1469,9 +1431,7 @@ class TestPolicyEngineCircuitBreakerModel:
 class TestTrustBoundaryValidatorGetLastEnvironmentException:
     """Tests for TrustBoundaryValidator.get_last_environment exception (lines 606-607)."""
 
-    def test_get_last_environment_corrupt_file_returns_none(
-        self, tmp_path: Path
-    ) -> None:
+    def test_get_last_environment_corrupt_file_returns_none(self, tmp_path: Path) -> None:
         # @trace FR-EXE-010
         """get_last_environment returns None when state file is corrupt."""
         v = TrustBoundaryValidator(tmp_path)
@@ -1707,9 +1667,7 @@ class TestConcurrencyControllerCriticalLane:
     Traces to: FR-EXE-011 (Critical lane slot reservation prevents starvation).
     """
 
-    def _make_controller(
-        self, tmp_path: Path, max_concurrency: int = 5, critical_lane_slots: int = 2
-    ):
+    def _make_controller(self, tmp_path: Path, max_concurrency: int = 5, critical_lane_slots: int = 2):
         """Build a ConcurrencyController with load-based limits disabled for deterministic tests."""
         from thegent.execution import ConcurrencyController
 
@@ -1736,9 +1694,7 @@ class TestConcurrencyControllerCriticalLane:
         """ConcurrencyController defaults critical_lane_slots to 2."""
         from thegent.execution import ConcurrencyController
 
-        cc = ConcurrencyController(
-            session_dir=tmp_path, max_concurrency=5, use_load_based=False
-        )
+        cc = ConcurrencyController(session_dir=tmp_path, max_concurrency=5, use_load_based=False)
         assert cc.critical_lane_slots == 2
 
     def test_critical_lane_slots_explicit(self, tmp_path: Path) -> None:
@@ -1753,27 +1709,19 @@ class TestConcurrencyControllerCriticalLane:
         from thegent.execution import ConcurrencyController
 
         monkeypatch.setenv("THGENT_CRITICAL_LANE_SLOTS", "4")
-        cc = ConcurrencyController(
-            session_dir=tmp_path, max_concurrency=10, use_load_based=False
-        )
+        cc = ConcurrencyController(session_dir=tmp_path, max_concurrency=10, use_load_based=False)
         assert cc.critical_lane_slots == 4
 
-    def test_critical_lane_slots_env_invalid_falls_back_to_default(
-        self, tmp_path: Path, monkeypatch
-    ) -> None:
+    def test_critical_lane_slots_env_invalid_falls_back_to_default(self, tmp_path: Path, monkeypatch) -> None:
         # @trace FR-EXE-011
         """Invalid THGENT_CRITICAL_LANE_SLOTS env var falls back to default 2."""
         from thegent.execution import ConcurrencyController
 
         monkeypatch.setenv("THGENT_CRITICAL_LANE_SLOTS", "not-a-number")
-        cc = ConcurrencyController(
-            session_dir=tmp_path, max_concurrency=10, use_load_based=False
-        )
+        cc = ConcurrencyController(session_dir=tmp_path, max_concurrency=10, use_load_based=False)
         assert cc.critical_lane_slots == 2
 
-    def test_standard_run_blocked_when_standard_slots_full(
-        self, tmp_path: Path
-    ) -> None:
+    def test_standard_run_blocked_when_standard_slots_full(self, tmp_path: Path) -> None:
         # @trace FR-EXE-011
         """Standard run is blocked when all standard-available slots are occupied.
 
@@ -1785,9 +1733,7 @@ class TestConcurrencyControllerCriticalLane:
             # 3 running == standard cap (5-2=3) → blocked
             assert cc.acquire(priority="standard") is False
 
-    def test_critical_run_admitted_when_standard_slots_full(
-        self, tmp_path: Path
-    ) -> None:
+    def test_critical_run_admitted_when_standard_slots_full(self, tmp_path: Path) -> None:
         # @trace FR-EXE-011
         """Critical run is admitted even when all standard-available slots are occupied.
 

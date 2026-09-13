@@ -8,9 +8,7 @@ import orjson as json
 
 from tests.e2e.test_split_hygiene import REPO_ROOT
 
-BASELINE_FIXTURE = (
-    Path(__file__).with_name("templates") / "governance_registry_baseline.json"
-)
+BASELINE_FIXTURE = Path(__file__).with_name("templates") / "governance_registry_baseline.json"
 
 
 def _load_baseline_payload() -> dict[str, object]:
@@ -64,9 +62,7 @@ def test_governance_delta_report_added_removed_deterministic_ordering(
     }
 
     output_path = tmp_path / "e2e-governance-delta-report.json"
-    output_path.write_text(
-        json.dumps(report, sort_keys=True).decode(), encoding="utf-8"
-    )
+    output_path.write_text(json.dumps(report, sort_keys=True).decode(), encoding="utf-8")
     loaded = json.loads(output_path.read_text(encoding="utf-8"))
 
     assert loaded["added"] == [

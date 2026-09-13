@@ -50,9 +50,7 @@ def _resolve_cwd(cd: Path | None) -> Path | None:
     return fn(cd)
 
 
-def dag_recover_cmd(
-    *, cd: Path | None = None, action: str = "retry-failed"
-) -> dict[str, Any]:
+def dag_recover_cmd(*, cd: Path | None = None, action: str = "retry-failed") -> dict[str, Any]:
     """Recover a DAG document according to ``action``.
 
     Args:
@@ -70,9 +68,7 @@ def dag_recover_cmd(
     Pinned by ``tests/test_unit_cli_impl_dag.py::TestDagRecoverCmd``.
     """
     if action not in _VALID_ACTIONS:
-        raise ValueError(
-            f"Unknown dag_recover_cmd action: {action!r}. Expected one of: {sorted(_VALID_ACTIONS)}"
-        )
+        raise ValueError(f"Unknown dag_recover_cmd action: {action!r}. Expected one of: {sorted(_VALID_ACTIONS)}")
     if _dag_impl is None:
         return {"action": action, "changed": [], "error": "dag_impl unavailable"}
 
@@ -91,9 +87,7 @@ def dag_recover_cmd(
         if action == "retry-failed" and status == "failed":
             task["status"] = "pending"
             changed.append(tid)
-        elif (action == "clear-stuck" and status == "running") or (
-            action == "reset-retries" and "retry_count" in task
-        ):
+        elif (action == "clear-stuck" and status == "running") or (action == "reset-retries" and "retry_count" in task):
             if action == "clear-stuck":
                 task["status"] = "pending"
             else:

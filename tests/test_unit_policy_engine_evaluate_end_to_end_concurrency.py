@@ -136,9 +136,7 @@ class TestPolicyEngineEvaluateEndToEndConcurrency:
             except BaseException as exc:  # pragma: no cover - diagnostic
                 errors.append(exc)
 
-        threads = [
-            threading.Thread(target=worker, args=(i,)) for i in range(thread_count)
-        ]
+        threads = [threading.Thread(target=worker, args=(i,)) for i in range(thread_count)]
         for t in threads:
             t.start()
         for t in threads:
@@ -259,9 +257,7 @@ class TestPolicyEngineEvaluateEndToEndConcurrency:
             t.join()
 
         assert not errors, f"worker raised: {errors!r}"
-        assert non_override_count == 0, (
-            f"{non_override_count} evaluations missed the override"
-        )
+        assert non_override_count == 0, f"{non_override_count} evaluations missed the override"
 
     def test_concurrent_evaluate_uses_decision_cache(
         self,

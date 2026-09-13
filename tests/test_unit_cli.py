@@ -224,9 +224,7 @@ class TestSessionCommands:
         assert meta["agent"] == "cursor-agent"
         assert meta["pid"] == 43210
 
-    def test_run_model_first_invalid_provider_shows_available(
-        self, tmp_path: Path
-    ) -> None:
+    def test_run_model_first_invalid_provider_shows_available(self, tmp_path: Path) -> None:
         # @trace FR-CLI-004
         """When -P provider doesn't serve model, error includes 'Available: ...' (Phase 11)."""
         (tmp_path / ".git").mkdir()
@@ -287,16 +285,12 @@ class TestSessionCommands:
             return calls["n"] == 1
 
         with patch.dict("os.environ", {"THGENT_SESSION_DIR": str(session_dir)}):
-            with patch(
-                "thegent.cli.commands.cli._is_pid_running", side_effect=fake_running
-            ):
+            with patch("thegent.cli.commands.cli._is_pid_running", side_effect=fake_running):
                 with patch("thegent.cli.commands.cli.os.killpg") as killpg:
                     stop_cmd(sid, force=False, wind_down=True, grace=1)
                     killpg.assert_called_once()
 
-    def test_stop_wind_down_reports_still_running_after_grace(
-        self, tmp_path: Path
-    ) -> None:
+    def test_stop_wind_down_reports_still_running_after_grace(self, tmp_path: Path) -> None:
         # @trace FR-CLI-004
         session_dir = tmp_path / "sessions"
         scoped = session_dir / "owner"
@@ -405,9 +399,7 @@ class TestObserveSummaryImpl:
                 assert window_size == 20
                 return []
 
-            def get_drift_budget_status(
-                self, structural_budget_pct, semantic_budget_pct, limit=500
-            ):
+            def get_drift_budget_status(self, structural_budget_pct, semantic_budget_pct, limit=500):
                 assert structural_budget_pct == 7.5
                 assert semantic_budget_pct == 12.5
                 assert limit == 123
@@ -423,9 +415,7 @@ class TestObserveSummaryImpl:
             def __init__(self, _session_dir) -> None:
                 pass
 
-            def list_pending(
-                self, past_sla_only: bool = False, limit: int = 50
-            ) -> list[dict]:
+            def list_pending(self, past_sla_only: bool = False, limit: int = 50) -> list[dict]:
                 assert limit >= 20
                 if past_sla_only:
                     return [
@@ -468,9 +458,7 @@ class TestObserveSummaryImpl:
                     },
                 ]
 
-        monkeypatch.setattr(
-            "thegent.contracts.telemetry.ContractTelemetry", _FakeTelemetry
-        )
+        monkeypatch.setattr("thegent.contracts.telemetry.ContractTelemetry", _FakeTelemetry)
         monkeypatch.setattr("thegent.execution.EscalationQueue", _FakeEscalationQueue)
 
         result = cli_impl.observe_summary_impl(
@@ -524,9 +512,7 @@ class TestObserveSummaryImpl:
             def detect_drift(self, window_size: int = 50) -> list[str]:
                 return []
 
-            def get_drift_budget_status(
-                self, structural_budget_pct, semantic_budget_pct, limit=500
-            ):
+            def get_drift_budget_status(self, structural_budget_pct, semantic_budget_pct, limit=500):
                 return {
                     "within_budget": True,
                     "structural_rate_pct": 0.0,
@@ -539,14 +525,10 @@ class TestObserveSummaryImpl:
             def __init__(self, _session_dir) -> None:
                 pass
 
-            def list_pending(
-                self, past_sla_only: bool = False, limit: int = 50
-            ) -> list[dict]:
+            def list_pending(self, past_sla_only: bool = False, limit: int = 50) -> list[dict]:
                 return []
 
-        monkeypatch.setattr(
-            "thegent.contracts.telemetry.ContractTelemetry", _FakeTelemetry
-        )
+        monkeypatch.setattr("thegent.contracts.telemetry.ContractTelemetry", _FakeTelemetry)
         monkeypatch.setattr("thegent.execution.EscalationQueue", _FakeEscalationQueue)
         snapshot_file = tmp_path / "observe_summary_snapshots.jsonl"
         monkeypatch.setenv("THGENT_HEALTH_SNAPSHOT_PATH", str(snapshot_file))

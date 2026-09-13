@@ -337,9 +337,7 @@ class TestUserInputRetry:
 
 
 @pytest.mark.unit
-@pytest.mark.skip(
-    reason="http_retry expects return-value-based retry, not exception-based"
-)
+@pytest.mark.skip(reason="http_retry expects return-value-based retry, not exception-based")
 class TestHttpRetry:
     """Test @http_retry decorator for HTTP calls with status-code-based retry."""
 
@@ -372,9 +370,7 @@ class TestHttpRetry:
                 # Simulate httpx.HTTPStatusError
                 response = MagicMock()
                 response.status_code = 429
-                exc = httpx.HTTPStatusError(
-                    "Rate limited", request=MagicMock(), response=response
-                )
+                exc = httpx.HTTPStatusError("Rate limited", request=MagicMock(), response=response)
                 raise exc
             return {"status": 200}
 
@@ -414,9 +410,7 @@ class TestHttpRetry:
             call_count += 1
             response = MagicMock()
             response.status_code = 400
-            exc = httpx.HTTPStatusError(
-                "Bad request", request=MagicMock(), response=response
-            )
+            exc = httpx.HTTPStatusError("Bad request", request=MagicMock(), response=response)
             raise exc
 
         # Should not retry, should raise immediately
@@ -439,9 +433,7 @@ class TestHttpRetry:
             if call_count < 2:
                 response = MagicMock()
                 response.status_code = 503
-                raise httpx.HTTPStatusError(
-                    "Service Unavailable", request=MagicMock(), response=response
-                )
+                raise httpx.HTTPStatusError("Service Unavailable", request=MagicMock(), response=response)
             return "success"
 
         with caplog.at_level(logging.WARNING):

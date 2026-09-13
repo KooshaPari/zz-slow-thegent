@@ -32,9 +32,7 @@ def _get_retry_decorator(max_attempts: int = 3):
     return tenacity.retry(
         stop=tenacity.stop_after_attempt(max_attempts),
         wait=tenacity.wait_exponential(multiplier=1, min=2, max=10),
-        retry=tenacity.retry_if_exception_type(
-            (Exception,)
-        ),  # Narrower in specific methods
+        retry=tenacity.retry_if_exception_type((Exception,)),  # Narrower in specific methods
         before_sleep=lambda retry_state: _log.warning(
             "Retrying HTTP request (attempt %d): %s",
             retry_state.attempt_number,
@@ -113,9 +111,7 @@ class FastHTTPClient:
         def _execute():
             if self._backend == "curl_cffi":
                 impersonate = kwargs.pop("impersonate", self.impersonate)
-                return curl_cffi.request(
-                    cast("_CurlMethod", method), url, impersonate=impersonate, **kwargs
-                )
+                return curl_cffi.request(cast("_CurlMethod", method), url, impersonate=impersonate, **kwargs)
             if self._backend == "httpx":
                 return (
                     self._client.request(method, url, **kwargs)

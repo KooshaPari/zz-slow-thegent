@@ -79,9 +79,7 @@ def test_apply_middle_out_preserves_recent_messages() -> None:
 def test_apply_middle_out_inserts_omission_message() -> None:
     messages = [{"role": "user", "content": f"msg {i}"} for i in range(30)]
     result = apply_middle_out(messages, max_messages=10)
-    omission_msgs = [
-        m for m in result if "omitted for context window" in m.get("content", "")
-    ]
+    omission_msgs = [m for m in result if "omitted for context window" in m.get("content", "")]
     assert len(omission_msgs) == 1
     assert omission_msgs[0]["role"] == "assistant"
 

@@ -59,9 +59,7 @@ class TestGetConfigProvider:
         assert p.provider_metadata == metadata
         assert metadata["control_plane_configured"] is False
 
-    def test_returns_env_provider_when_cp_import_fails(
-        self, monkeypatch, caplog
-    ) -> None:
+    def test_returns_env_provider_when_cp_import_fails(self, monkeypatch, caplog) -> None:
         """When CP URL set but ControlPlaneConfigProvider not available, falls back to Env."""
         monkeypatch.setenv("THGENT_CONTROL_PLANE_URL", "https://control-plane.example")
         real_import = builtins.__import__
@@ -99,14 +97,10 @@ class TestGetConfigProvider:
                 return None
 
         provider = _SlottedProvider()
-        attached = config_provider._attach_provider_metadata(
-            provider, {"source": "env"}
-        )
+        attached = config_provider._attach_provider_metadata(provider, {"source": "env"})
         assert attached is provider
 
-    def test_returns_control_plane_provider_with_attached_metadata(
-        self, monkeypatch
-    ) -> None:
+    def test_returns_control_plane_provider_with_attached_metadata(self, monkeypatch) -> None:
         monkeypatch.setenv("THGENT_CONTROL_PLANE_URL", "https://control-plane.example")
         fake_module = types.ModuleType("thegent.control_plane.client")
 

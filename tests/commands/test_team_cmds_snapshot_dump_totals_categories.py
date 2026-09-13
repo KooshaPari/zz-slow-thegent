@@ -14,9 +14,7 @@ class FakeSessionScraper:
         self.project_path = project_path
 
 
-def test_snapshot_daily_totals_cmd_json_emits_totals(
-    monkeypatch, capsys, tmp_path: Path
-) -> None:
+def test_snapshot_daily_totals_cmd_json_emits_totals(monkeypatch, capsys, tmp_path: Path) -> None:
     payload = {
         "total_days": 2,
         "total_snapshots": 7,
@@ -26,9 +24,7 @@ def test_snapshot_daily_totals_cmd_json_emits_totals(
         "generated_at": "2026-02-22T10:00:00+00:00",
     }
 
-    def fake_snapshot_daily_totals_payload(
-        scraper, limit: int = 1000, trigger=None, tag=None, since=None
-    ):
+    def fake_snapshot_daily_totals_payload(scraper, limit: int = 1000, trigger=None, tag=None, since=None):
         assert isinstance(scraper, FakeSessionScraper)
         assert scraper.project_path == tmp_path
         assert limit == 1000
@@ -37,9 +33,7 @@ def test_snapshot_daily_totals_cmd_json_emits_totals(
         assert since is None
         return payload
 
-    monkeypatch.setattr(
-        "thegent.orchestration.state.session_scraper.SessionScraper", FakeSessionScraper
-    )
+    monkeypatch.setattr("thegent.orchestration.state.session_scraper.SessionScraper", FakeSessionScraper)
     monkeypatch.setattr(
         "thegent.orchestration.state.session_snapshot_cli_helpers.snapshot_daily_totals_payload",
         fake_snapshot_daily_totals_payload,
@@ -51,9 +45,7 @@ def test_snapshot_daily_totals_cmd_json_emits_totals(
     assert json.loads(out) == payload
 
 
-def test_snapshot_daily_totals_cmd_rich_contains_total_snapshots_and_days(
-    monkeypatch, capsys, tmp_path: Path
-) -> None:
+def test_snapshot_daily_totals_cmd_rich_contains_total_snapshots_and_days(monkeypatch, capsys, tmp_path: Path) -> None:
     payload = {
         "total_days": 3,
         "total_snapshots": 9,
@@ -63,15 +55,11 @@ def test_snapshot_daily_totals_cmd_rich_contains_total_snapshots_and_days(
         "generated_at": "2026-02-22T10:00:00+00:00",
     }
 
-    def fake_snapshot_daily_totals_payload(
-        scraper, limit: int = 1000, trigger=None, tag=None, since=None
-    ):
+    def fake_snapshot_daily_totals_payload(scraper, limit: int = 1000, trigger=None, tag=None, since=None):
         assert isinstance(scraper, FakeSessionScraper)
         return payload
 
-    monkeypatch.setattr(
-        "thegent.orchestration.state.session_scraper.SessionScraper", FakeSessionScraper
-    )
+    monkeypatch.setattr("thegent.orchestration.state.session_scraper.SessionScraper", FakeSessionScraper)
     monkeypatch.setattr(
         "thegent.orchestration.state.session_snapshot_cli_helpers.snapshot_daily_totals_payload",
         fake_snapshot_daily_totals_payload,
@@ -86,9 +74,7 @@ def test_snapshot_daily_totals_cmd_rich_contains_total_snapshots_and_days(
     assert "3" in out
 
 
-def test_dump_categories_cmd_json_emits_categories_list(
-    monkeypatch, capsys, tmp_path: Path
-) -> None:
+def test_dump_categories_cmd_json_emits_categories_list(monkeypatch, capsys, tmp_path: Path) -> None:
     categories = ["alpha", "beta"]
 
     class FakeConversationDumper:
@@ -98,9 +84,7 @@ def test_dump_categories_cmd_json_emits_categories_list(
         def list_dump_categories(self) -> list[str]:
             return categories
 
-    monkeypatch.setattr(
-        "thegent.research.always_write_dumps.ConversationDumper", FakeConversationDumper
-    )
+    monkeypatch.setattr("thegent.research.always_write_dumps.ConversationDumper", FakeConversationDumper)
 
     team_cmds.dump_categories_cmd(project=tmp_path, format="json")
 
@@ -109,9 +93,7 @@ def test_dump_categories_cmd_json_emits_categories_list(
     assert payload["categories"] == categories
 
 
-def test_dump_categories_cmd_rich_prints_categories_or_none(
-    monkeypatch, capsys, tmp_path: Path
-) -> None:
+def test_dump_categories_cmd_rich_prints_categories_or_none(monkeypatch, capsys, tmp_path: Path) -> None:
     state = {"categories": ["research", "ops"]}
 
     class FakeConversationDumper:
@@ -121,9 +103,7 @@ def test_dump_categories_cmd_rich_prints_categories_or_none(
         def list_dump_categories(self) -> list[str]:
             return list(state["categories"])
 
-    monkeypatch.setattr(
-        "thegent.research.always_write_dumps.ConversationDumper", FakeConversationDumper
-    )
+    monkeypatch.setattr("thegent.research.always_write_dumps.ConversationDumper", FakeConversationDumper)
 
     team_cmds.dump_categories_cmd(project=tmp_path)
     out_nonempty = capsys.readouterr().out.lower()

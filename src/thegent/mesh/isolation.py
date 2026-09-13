@@ -9,9 +9,7 @@ from pathlib import Path
 class ResourceIsolation:
     """Resource isolation for agents (SCLI-P8.1–P8.3, FR-ISOL-001, FR-ISOL-003)."""
 
-    def __init__(
-        self, mesh_root: Path, agent_id: str, project_root: Path | None = None
-    ) -> None:
+    def __init__(self, mesh_root: Path, agent_id: str, project_root: Path | None = None) -> None:
         self.mesh_root = mesh_root
         self.project_root = project_root if project_root is not None else mesh_root
         self.agent_id = agent_id
@@ -41,9 +39,7 @@ class ResourceIsolation:
         self.work_dir.mkdir(parents=True, exist_ok=True, mode=0o700)
         return self.work_dir
 
-    def allocate_port(
-        self, start_port: int = 10000, end_port: int = 20000
-    ) -> int | None:
+    def allocate_port(self, start_port: int = 10000, end_port: int = 20000) -> int | None:
         """Dynamically allocate an available port (SCLI-P8.2)."""
         for port in range(start_port, end_port):
             with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
@@ -54,9 +50,7 @@ class ResourceIsolation:
                     continue
         return None
 
-    def get_isolated_env(
-        self, base_env: dict[str, str] | None = None
-    ) -> dict[str, str]:
+    def get_isolated_env(self, base_env: dict[str, str] | None = None) -> dict[str, str]:
         """Get environment variables isolated for the agent (SCLI-P8.3, FR-ISOL-003)."""
         env = (base_env or os.environ).copy()
         env["TMPDIR"] = str(self.agent_tmp)

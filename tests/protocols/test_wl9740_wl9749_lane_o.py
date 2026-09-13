@@ -59,9 +59,7 @@ def test_wl9741_parse_path_returns_turn_context() -> None:
         "approval_id": None,
     }
     SERVER_STATE.turns[turn["id"]] = turn
-    turn_id, resolved_turn, error = _parse_turn_cancel_request(
-        "turn/cancel", "req-9741", {"turn_id": "turn-0001"}
-    )
+    turn_id, resolved_turn, error = _parse_turn_cancel_request("turn/cancel", "req-9741", {"turn_id": "turn-0001"})
     assert error is None
     assert turn_id == "turn-0001"
     assert resolved_turn is turn
@@ -84,9 +82,7 @@ def test_wl9743_state_resolution_rejects_terminal_turns() -> None:
         "input": "x",
         "approval_id": None,
     }
-    _turn_id, _turn, state_error = _resolve_turn_cancel_context(
-        "req-9743", {"turn_id": "turn-0001"}
-    )
+    _turn_id, _turn, state_error = _resolve_turn_cancel_context("req-9743", {"turn_id": "turn-0001"})
     assert state_error is not None
     assert state_error["error"]["code"] == -32003
 
@@ -216,9 +212,7 @@ def test_wl9749_notification_turn_cancel_has_side_effect_without_response() -> N
     turn_id = submit["result"]["turn"]["id"]
 
     cancel_response, notifications = process_jsonrpc_line_full(
-        json.dumps(
-            {"jsonrpc": "2.0", "method": "turn/cancel", "params": {"turn_id": turn_id}}
-        )
+        json.dumps({"jsonrpc": "2.0", "method": "turn/cancel", "params": {"turn_id": turn_id}})
     )
     assert cancel_response is None
     assert notifications == []

@@ -32,12 +32,8 @@ def list_timeline(
     limit: int = 30,
     branch: str | None = None,
 ) -> dict[str, list[str] | bool | str]:
-    branches = run_git(
-        repo_path, ["for-each-ref", "--format=%(refname:short)", "refs/heads"]
-    ).splitlines()
-    tags = run_git(
-        repo_path, ["for-each-ref", "--format=%(refname:short)", "refs/tags"]
-    ).splitlines()
+    branches = run_git(repo_path, ["for-each-ref", "--format=%(refname:short)", "refs/heads"]).splitlines()
+    tags = run_git(repo_path, ["for-each-ref", "--format=%(refname:short)", "refs/tags"]).splitlines()
     selected_ref = "HEAD"
     head_sha = run_git(repo_path, ["rev-parse", "HEAD^{commit}"])
     branch_exists = False
@@ -77,9 +73,7 @@ def _safe_remove_path(path: Path) -> None:
     shutil.rmtree(path)
 
 
-def materialize_repo_checkout(
-    source_repo: Path, checkout_path: Path, resolved_sha: str
-) -> None:
+def materialize_repo_checkout(source_repo: Path, checkout_path: Path, resolved_sha: str) -> None:
     checkout_path.parent.mkdir(parents=True, exist_ok=True)
 
     # Remove existing materialization to keep deterministic state.
@@ -117,10 +111,7 @@ def materialize_repo_checkout(
         check=False,
     )
     if proc.returncode != 0:
-        raise RuntimeError(
-            "git worktree add failed for "
-            f"{source_repo} @ {resolved_sha}: {proc.stderr.strip()}"
-        )
+        raise RuntimeError(f"git worktree add failed for {source_repo} @ {resolved_sha}: {proc.stderr.strip()}")
 
 
 def detect_head_branch(checkout_path: Path) -> str | None:

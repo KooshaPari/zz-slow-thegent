@@ -61,9 +61,7 @@ pytestmark = pytest.mark.unit
 # ---------------------------------------------------------------------------
 
 
-def _make_notice(
-    *, verdict: str = "allow", reason_code: str = "ok", ts: float = 0.0
-) -> DecisionNotice:
+def _make_notice(*, verdict: str = "allow", reason_code: str = "ok", ts: float = 0.0) -> DecisionNotice:
     """Build a DecisionNotice with the minimum required fields."""
     return DecisionNotice(
         verdict=verdict,
@@ -238,9 +236,7 @@ class TestFollowAuditLogSurvivesTransientIO:
     ``EPERM`` on permission flips) instead of crashing the tail loop;
     the truncation semantics are documented."""
 
-    def test_unlink_mid_poll_does_not_crash(
-        self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
-    ) -> None:
+    def test_unlink_mid_poll_does_not_crash(self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
         """A file unlinked between ``stat()`` and ``open()`` must not
         propagate ``FileNotFoundError`` to the caller. The tail loop
         should log at DEBUG and retry on the next tick."""

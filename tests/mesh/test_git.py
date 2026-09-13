@@ -29,9 +29,7 @@ def _init_git_repo(path: Path) -> None:
     )
     (path / "README.md").write_text("init\n")
     subprocess.run(["git", "add", "."], cwd=str(path), check=True, capture_output=True)
-    subprocess.run(
-        ["git", "commit", "-m", "init"], cwd=str(path), check=True, capture_output=True
-    )
+    subprocess.run(["git", "commit", "-m", "init"], cwd=str(path), check=True, capture_output=True)
 
 
 def test_related_overlap_sorted() -> None:
@@ -80,18 +78,11 @@ def test_wait_for_index_lock_removes_stale_lock(tmp_path: Path) -> None:
     stale_time = time.time() - 120
     os.utime(lock_file, (stale_time, stale_time))
 
-    assert (
-        manager.wait_for_index_lock(
-            timeout_s=0.2, poll_s=0.05, stale_after_s=60.0, allow_stale_cleanup=True
-        )
-        is True
-    )
+    assert manager.wait_for_index_lock(timeout_s=0.2, poll_s=0.05, stale_after_s=60.0, allow_stale_cleanup=True) is True
     assert not lock_file.exists()
 
 
-def test_wait_for_index_lock_respects_open_lock_holder(
-    tmp_path: Path, monkeypatch
-) -> None:
+def test_wait_for_index_lock_respects_open_lock_holder(tmp_path: Path, monkeypatch) -> None:
     _init_git_repo(tmp_path)
     manager = GitParallelismManager(tmp_path, "agent-8")
     lock_file = tmp_path / ".git" / "index.lock"
@@ -102,10 +93,7 @@ def test_wait_for_index_lock_respects_open_lock_holder(
     os.utime(lock_file, (stale_time, stale_time))
 
     assert (
-        manager.wait_for_index_lock(
-            timeout_s=0.2, poll_s=0.05, stale_after_s=60.0, allow_stale_cleanup=True
-        )
-        is False
+        manager.wait_for_index_lock(timeout_s=0.2, poll_s=0.05, stale_after_s=60.0, allow_stale_cleanup=True) is False
     )
     assert lock_file.exists()
 
@@ -163,18 +151,10 @@ def test_changed_files_between_returns_list(tmp_path: Path) -> None:
     manager = GitParallelismManager(tmp_path, "agent-3")
 
     (tmp_path / "a.txt").write_text("a\n")
-    subprocess.run(
-        ["git", "add", "a.txt"], cwd=str(tmp_path), check=True, capture_output=True
-    )
-    subprocess.run(
-        ["git", "commit", "-m", "a"], cwd=str(tmp_path), check=True, capture_output=True
-    )
-    head2 = subprocess.check_output(
-        ["git", "rev-parse", "HEAD"], cwd=str(tmp_path), text=True
-    ).strip()
-    head1 = subprocess.check_output(
-        ["git", "rev-parse", "HEAD~1"], cwd=str(tmp_path), text=True
-    ).strip()
+    subprocess.run(["git", "add", "a.txt"], cwd=str(tmp_path), check=True, capture_output=True)
+    subprocess.run(["git", "commit", "-m", "a"], cwd=str(tmp_path), check=True, capture_output=True)
+    head2 = subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=str(tmp_path), text=True).strip()
+    head1 = subprocess.check_output(["git", "rev-parse", "HEAD~1"], cwd=str(tmp_path), text=True).strip()
 
     changed = manager.changed_files_between(head1, head2)
     assert "a.txt" in changed
@@ -195,15 +175,9 @@ def test_try_auto_merge_commit_success_for_disjoint_changes(tmp_path: Path) -> N
         capture_output=True,
     )
     (tmp_path / "a.txt").write_text("from-a\n")
-    subprocess.run(
-        ["git", "add", "a.txt"], cwd=str(tmp_path), check=True, capture_output=True
-    )
-    subprocess.run(
-        ["git", "commit", "-m", "a"], cwd=str(tmp_path), check=True, capture_output=True
-    )
-    a_hash = subprocess.check_output(
-        ["git", "rev-parse", "HEAD"], cwd=str(tmp_path), text=True
-    ).strip()
+    subprocess.run(["git", "add", "a.txt"], cwd=str(tmp_path), check=True, capture_output=True)
+    subprocess.run(["git", "commit", "-m", "a"], cwd=str(tmp_path), check=True, capture_output=True)
+    a_hash = subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=str(tmp_path), text=True).strip()
 
     # Branch B commit from main
     subprocess.run(
@@ -219,15 +193,9 @@ def test_try_auto_merge_commit_success_for_disjoint_changes(tmp_path: Path) -> N
         capture_output=True,
     )
     (tmp_path / "b.txt").write_text("from-b\n")
-    subprocess.run(
-        ["git", "add", "b.txt"], cwd=str(tmp_path), check=True, capture_output=True
-    )
-    subprocess.run(
-        ["git", "commit", "-m", "b"], cwd=str(tmp_path), check=True, capture_output=True
-    )
-    b_hash = subprocess.check_output(
-        ["git", "rev-parse", "HEAD"], cwd=str(tmp_path), text=True
-    ).strip()
+    subprocess.run(["git", "add", "b.txt"], cwd=str(tmp_path), check=True, capture_output=True)
+    subprocess.run(["git", "commit", "-m", "b"], cwd=str(tmp_path), check=True, capture_output=True)
+    b_hash = subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=str(tmp_path), text=True).strip()
 
     merged = manager.try_auto_merge_commit(a_hash, b_hash, "auto")
     assert merged is not None
@@ -248,15 +216,9 @@ def test_try_auto_merge_commit_returns_none_on_conflict(tmp_path: Path) -> None:
         capture_output=True,
     )
     (tmp_path / "README.md").write_text("a\n")
-    subprocess.run(
-        ["git", "add", "README.md"], cwd=str(tmp_path), check=True, capture_output=True
-    )
-    subprocess.run(
-        ["git", "commit", "-m", "a"], cwd=str(tmp_path), check=True, capture_output=True
-    )
-    a_hash = subprocess.check_output(
-        ["git", "rev-parse", "HEAD"], cwd=str(tmp_path), text=True
-    ).strip()
+    subprocess.run(["git", "add", "README.md"], cwd=str(tmp_path), check=True, capture_output=True)
+    subprocess.run(["git", "commit", "-m", "a"], cwd=str(tmp_path), check=True, capture_output=True)
+    a_hash = subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=str(tmp_path), text=True).strip()
 
     # Branch B modifies same file differently
     subprocess.run(
@@ -272,15 +234,9 @@ def test_try_auto_merge_commit_returns_none_on_conflict(tmp_path: Path) -> None:
         capture_output=True,
     )
     (tmp_path / "README.md").write_text("b\n")
-    subprocess.run(
-        ["git", "add", "README.md"], cwd=str(tmp_path), check=True, capture_output=True
-    )
-    subprocess.run(
-        ["git", "commit", "-m", "b"], cwd=str(tmp_path), check=True, capture_output=True
-    )
-    b_hash = subprocess.check_output(
-        ["git", "rev-parse", "HEAD"], cwd=str(tmp_path), text=True
-    ).strip()
+    subprocess.run(["git", "add", "README.md"], cwd=str(tmp_path), check=True, capture_output=True)
+    subprocess.run(["git", "commit", "-m", "b"], cwd=str(tmp_path), check=True, capture_output=True)
+    b_hash = subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=str(tmp_path), text=True).strip()
 
     merged = manager.try_auto_merge_commit(a_hash, b_hash, "auto")
     assert merged is None

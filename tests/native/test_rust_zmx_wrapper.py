@@ -119,9 +119,7 @@ def test_lib_rs_declares_zmx_session():
     # @trace FR-ZMX-002
     """
     content = SRC_LIB.read_text(encoding="utf-8")
-    assert "pub struct ZmxSession" in content, (
-        "lib.rs must contain 'pub struct ZmxSession'"
-    )
+    assert "pub struct ZmxSession" in content, "lib.rs must contain 'pub struct ZmxSession'"
 
 
 # ---------------------------------------------------------------------------
@@ -187,9 +185,7 @@ def test_crate_registered_in_workspace():
     # @trace FR-ZMX-001
     """
     content = WORKSPACE_TOML.read_text(encoding="utf-8")
-    assert '"thegent-zmx"' in content, (
-        "thegent-zmx must be listed in crates/Cargo.toml [workspace] members"
-    )
+    assert '"thegent-zmx"' in content, "thegent-zmx must be listed in crates/Cargo.toml [workspace] members"
 
 
 # ---------------------------------------------------------------------------
@@ -221,9 +217,7 @@ def test_cargo_check_passes():
     # @trace FR-ZMX-001
     """
     result = _cargo_check()
-    assert result.returncode == 0, (
-        f"cargo check failed:\nSTDOUT:\n{result.stdout}\nSTDERR:\n{result.stderr}"
-    )
+    assert result.returncode == 0, f"cargo check failed:\nSTDOUT:\n{result.stdout}\nSTDERR:\n{result.stderr}"
 
 
 # ---------------------------------------------------------------------------
@@ -267,9 +261,7 @@ def test_lib_rs_has_validate_session_name():
     # @trace FR-ZMX-004
     """
     content = SRC_LIB.read_text(encoding="utf-8")
-    assert "validate_session_name" in content, (
-        "lib.rs must define validate_session_name"
-    )
+    assert "validate_session_name" in content, "lib.rs must define validate_session_name"
 
 
 # ---------------------------------------------------------------------------
@@ -290,6 +282,4 @@ def test_cargo_test_passes():
         text=True,
         timeout=180,
     )
-    assert result.returncode == 0, (
-        f"cargo test failed:\nSTDOUT:\n{result.stdout}\nSTDERR:\n{result.stderr}"
-    )
+    assert result.returncode == 0, f"cargo test failed:\nSTDOUT:\n{result.stdout}\nSTDERR:\n{result.stderr}"

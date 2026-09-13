@@ -31,9 +31,7 @@ def test_missing_kratos_url_fails():
         with patch.dict(os.environ, env, clear=True):
             import kratos_contract_smoke as smoke
 
-            with pytest.raises(
-                RuntimeError, match="Missing required environment variable"
-            ):
+            with pytest.raises(RuntimeError, match="Missing required environment variable"):
                 smoke._require_env("KRATOS_PUBLIC_URL")
 
 

@@ -449,9 +449,7 @@ class TestProviderPreferences:
         prefs = ProviderPreferences(order=["anthropic", "openai"])
         result = filter_models_by_preferences(models, prefs)
         # anthropic first, then openai, then google (fallback)
-        assert result.index("anthropic/claude-3-5-sonnet") < result.index(
-            "openai/gpt-4o"
-        )
+        assert result.index("anthropic/claude-3-5-sonnet") < result.index("openai/gpt-4o")
         assert "google/gemini-pro" in result
 
     def test_filter_order_without_fallbacks_drops_non_priority(self) -> None:
@@ -515,9 +513,7 @@ class TestProviderPreferences:
         assert "sort" not in body
 
     def test_to_openrouter_body_max_price_included(self) -> None:
-        prefs = ProviderPreferences(
-            max_price=PriceConstraint(prompt=0.5, completion=1.0)
-        )
+        prefs = ProviderPreferences(max_price=PriceConstraint(prompt=0.5, completion=1.0))
         body = to_openrouter_provider_body(prefs)
         assert body["max_price"] == {"prompt": 0.5, "completion": 1.0}
 

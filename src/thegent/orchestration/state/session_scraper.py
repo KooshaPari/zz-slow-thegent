@@ -46,9 +46,7 @@ class SessionScraper:
         Args:
             session_dir: Optional path to the session directory.
         """
-        self.session_dir = (
-            Path(session_dir) if session_dir else Path("/tmp/thegent/sessions")
-        )
+        self.session_dir = Path(session_dir) if session_dir else Path("/tmp/thegent/sessions")
 
     def scrape_session(self, session_id: str) -> dict[str, Any]:
         """Scrape a session by ID.

@@ -33,9 +33,7 @@ def _lock_path_for(path: Path) -> Path:
 def _locked_file_access(path: Path) -> Iterator[None]:
     """Lock and synchronize workstream writes across concurrent claim/complete calls."""
     if fcntl is None:
-        raise RuntimeError(
-            "workstream lock requires fcntl; flock is unavailable on this platform"
-        )
+        raise RuntimeError("workstream lock requires fcntl; flock is unavailable on this platform")
 
     lock_path = _lock_path_for(path)
     lock_path.parent.mkdir(parents=True, exist_ok=True)
@@ -105,9 +103,7 @@ class WorkStreamOps:
         """
         content = safe_read_file(self.work_stream_path)
         if not content:
-            logger.warning(
-                f"Work stream file not found or empty: {self.work_stream_path}"
-            )
+            logger.warning(f"Work stream file not found or empty: {self.work_stream_path}")
             return []
 
         lines = content.splitlines()
@@ -190,11 +186,7 @@ class WorkStreamOps:
                     if lines[i].startswith("## "):
                         insert_at = i
                         break
-                    if (
-                        lines[i].startswith("|")
-                        and "| ID |" not in lines[i]
-                        and "|----" not in lines[i]
-                    ):
+                    if lines[i].startswith("|") and "| ID |" not in lines[i] and "|----" not in lines[i]:
                         insert_at = i + 1
 
                 timestamp = datetime.now(UTC).isoformat()
@@ -256,11 +248,7 @@ class WorkStreamOps:
                     if lines[i].startswith("## "):
                         insert_at = i
                         break
-                    if (
-                        lines[i].startswith("|")
-                        and "| ID |" not in lines[i]
-                        and "|----" not in lines[i]
-                    ):
+                    if lines[i].startswith("|") and "| ID |" not in lines[i] and "|----" not in lines[i]:
                         insert_at = i + 1
 
                 timestamp = datetime.now(UTC).isoformat()
@@ -306,7 +294,5 @@ class WorkStreamOps:
     def sort_and_normalize(self) -> str:
         """Sort WL sections and normalize status formatting."""
         if not self.work_stream_path.exists():
-            raise FileNotFoundError(
-                f"work stream file not found: {self.work_stream_path}"
-            )
+            raise FileNotFoundError(f"work stream file not found: {self.work_stream_path}")
         return normalize_workstream_sections(self.work_stream_path)

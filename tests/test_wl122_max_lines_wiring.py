@@ -11,9 +11,7 @@ ROOT = Path(__file__).resolve().parents[1]
 
 def test_wl122_max_lines_gate_wiring_is_canonical() -> None:
     taskfile = yaml.safe_load((ROOT / "Taskfile.yml").read_text(encoding="utf-8"))
-    pre_commit = yaml.safe_load(
-        (ROOT / ".pre-commit-config.yaml").read_text(encoding="utf-8")
-    )
+    pre_commit = yaml.safe_load((ROOT / ".pre-commit-config.yaml").read_text(encoding="utf-8"))
     qa_guide = (ROOT / "docs/guides/QUALITY_ASSURANCE.md").read_text(encoding="utf-8")
 
     max_lines_cmd = (
@@ -24,9 +22,7 @@ def test_wl122_max_lines_gate_wiring_is_canonical() -> None:
     assert max_lines_cmd in task_cmds
     assert {"task": "quality:max-lines"} in taskfile["tasks"]["quality"]["cmds"]
 
-    local_hooks = next(repo for repo in pre_commit["repos"] if repo["repo"] == "local")[
-        "hooks"
-    ]
+    local_hooks = next(repo for repo in pre_commit["repos"] if repo["repo"] == "local")["hooks"]
     hook = next(h for h in local_hooks if h["id"] == "max-lines-gate")
     assert hook["entry"] == "task quality:max-lines"
     assert "pre-commit" in hook["stages"]
@@ -46,9 +42,7 @@ def test_ci_quality_job_uses_minimal_harness_contract_gate_wiring() -> None:
     assert "Check extension package metadata sanity (WL-117)" in step_names
     assert "Run max-lines gate via canonical task path (WL-122)" in step_names
 
-    run_step = next(
-        step for step in steps if "mandatory quality gates" in step["name"].lower()
-    )
+    run_step = next(step for step in steps if "mandatory quality gates" in step["name"].lower())
     run_script = run_step["run"]
 
     assert run_script.count("task quality:sitback-contracts") == 1
@@ -57,12 +51,8 @@ def test_ci_quality_job_uses_minimal_harness_contract_gate_wiring() -> None:
     assert "harness_rc=$?" in run_script
     assert "set +e" in run_script
     assert "set -e" in run_script
-    assert run_script.index("set +e") < run_script.index(
-        "task quality:sitback-contracts"
-    )
-    assert run_script.index("task quality:harness-model-contracts") < run_script.index(
-        "set -e"
-    )
+    assert run_script.index("set +e") < run_script.index("task quality:sitback-contracts")
+    assert run_script.index("task quality:harness-model-contracts") < run_script.index("set -e")
     assert 'if [ "$sitback_rc" -ne 0 ] || [ "$harness_rc" -ne 0 ]' in run_script
     assert "exit 1" in run_script
 

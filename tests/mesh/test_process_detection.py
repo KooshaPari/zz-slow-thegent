@@ -36,12 +36,12 @@ class TestGetProcesses:
     # @trace TGNT-P12.1
     @patch("thegent.mesh.process_detection.platform")
     @patch("thegent.mesh.process_detection.subprocess")
-    def test_darwin_ps_scan(
-        self, mock_subprocess: MagicMock, mock_platform: MagicMock
-    ) -> None:
+    def test_darwin_ps_scan(self, mock_subprocess: MagicMock, mock_platform: MagicMock) -> None:
         """On macOS, get_processes parses ps output."""
         mock_platform.system.return_value = "Darwin"
-        mock_subprocess.check_output.return_value = b"  PID COMMAND\n    1 /sbin/launchd\n 1234 /usr/bin/claude-code --project foo\n 5678 cursor-agent serve\n"
+        mock_subprocess.check_output.return_value = (
+            b"  PID COMMAND\n    1 /sbin/launchd\n 1234 /usr/bin/claude-code --project foo\n 5678 cursor-agent serve\n"
+        )
         mock_subprocess.STDOUT = -1
         mock_subprocess.CalledProcessError = Exception
 
@@ -55,9 +55,7 @@ class TestGetProcesses:
     # @trace TGNT-P12.1
     @patch("thegent.mesh.process_detection.platform")
     @patch("thegent.mesh.process_detection.os")
-    def test_linux_proc_scan(
-        self, mock_os: MagicMock, mock_platform: MagicMock, tmp_path: Path
-    ) -> None:
+    def test_linux_proc_scan(self, mock_os: MagicMock, mock_platform: MagicMock, tmp_path: Path) -> None:
         """On Linux, get_processes reads /proc/<pid>/cmdline."""
         mock_platform.system.return_value = "Linux"
         mock_os.listdir.return_value = ["1", "42", "not_a_pid", "99"]
@@ -91,9 +89,7 @@ class TestGetProcesses:
     # @trace TGNT-P12.1
     @patch("thegent.mesh.process_detection.platform")
     @patch("thegent.mesh.process_detection.subprocess")
-    def test_darwin_ps_failure_returns_empty(
-        self, mock_subprocess: MagicMock, mock_platform: MagicMock
-    ) -> None:
+    def test_darwin_ps_failure_returns_empty(self, mock_subprocess: MagicMock, mock_platform: MagicMock) -> None:
         """When ps fails, get_processes returns an empty list."""
         mock_platform.system.return_value = "Darwin"
         mock_subprocess.CalledProcessError = Exception
@@ -192,9 +188,7 @@ class TestMeshManagerDiscoverAgents:
 
     # @trace TGNT-P12.1
     @patch("thegent.mesh.mesh.psutil.process_iter")
-    def test_discover_agents_matches_patterns(
-        self, mock_iter: MagicMock, tmp_path: Path
-    ) -> None:
+    def test_discover_agents_matches_patterns(self, mock_iter: MagicMock, tmp_path: Path) -> None:
         """discover_agents finds processes matching patterns."""
         proc1 = MagicMock()
         proc1.info = {

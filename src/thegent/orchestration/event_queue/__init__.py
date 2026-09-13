@@ -360,11 +360,7 @@ def _is_sub_agent_event_like(event: Any) -> bool:
     """
     if event is None:
         return False
-    return bool(
-        hasattr(event, "request_id")
-        and hasattr(event, "event_type")
-        and hasattr(event, "payload")
-    )
+    return bool(hasattr(event, "request_id") and hasattr(event, "event_type") and hasattr(event, "payload"))
 
 
 # ---------------------------------------------------------------------------

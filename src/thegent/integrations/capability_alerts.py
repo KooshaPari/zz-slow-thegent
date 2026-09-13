@@ -152,13 +152,9 @@ class ConnectorSLAEvaluator:
 
         breaches: list[str] = []
         if float(p95_value) > thresholds.p95_latency_ms:
-            breaches.append(
-                f"p95 latency breach ({float(p95_value):.3f}ms > {thresholds.p95_latency_ms:.3f}ms)"
-            )
+            breaches.append(f"p95 latency breach ({float(p95_value):.3f}ms > {thresholds.p95_latency_ms:.3f}ms)")
         if float(failure_rate) > thresholds.max_failure_rate:
-            breaches.append(
-                f"failure rate breach ({float(failure_rate):.4f} > {thresholds.max_failure_rate:.4f})"
-            )
+            breaches.append(f"failure rate breach ({float(failure_rate):.4f} > {thresholds.max_failure_rate:.4f})")
 
         return {
             "connector": connector_name,

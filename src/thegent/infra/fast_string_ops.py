@@ -51,12 +51,8 @@ class FastStringOps:
             - Uses optimized C++ implementation
         """
         if RAPIDFUZZ_AVAILABLE:
-            results = process.extract(
-                query, choices, limit=limit, score_cutoff=score_cutoff
-            )
-            return [
-                (match, score, idx) for idx, (match, score, _) in enumerate(results)
-            ]
+            results = process.extract(query, choices, limit=limit, score_cutoff=score_cutoff)
+            return [(match, score, idx) for idx, (match, score, _) in enumerate(results)]
         # Fallback to simple substring matching
         matches = []
         query_lower = query.lower()
@@ -86,9 +82,7 @@ class FastStringOps:
         return 0.0
 
     @staticmethod
-    def regex_search(
-        pattern: str, text: str, **kwargs
-    ) -> "regex.Match[str] | re.Match[str] | None":
+    def regex_search(pattern: str, text: str, **kwargs) -> "regex.Match[str] | re.Match[str] | None":
         """Search using regex library (faster for complex patterns).
 
         Args:
@@ -126,9 +120,7 @@ class FastStringOps:
 
 
 # Convenience functions
-def fuzzy_match(
-    query: str, choices: list[str], limit: int = 5, score_cutoff: int = 60
-) -> list[tuple[str, float, int]]:
+def fuzzy_match(query: str, choices: list[str], limit: int = 5, score_cutoff: int = 60) -> list[tuple[str, float, int]]:
     """Fuzzy string matching."""
     return FastStringOps.fuzzy_match(query, choices, limit, score_cutoff)
 

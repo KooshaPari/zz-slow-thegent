@@ -38,9 +38,7 @@ runner = CliRunner()
         ("fanta", _FANTA_MODEL_ALIAS),
     ],
 )
-def test_codex_tier_aliases_are_consistent_across_harnesses(
-    harness: str, model_alias_map: dict[str, str]
-) -> None:
+def test_codex_tier_aliases_are_consistent_across_harnesses(harness: str, model_alias_map: dict[str, str]) -> None:
     assert model_alias_map["dex"] == "gpt-5.3-codex", harness
     assert model_alias_map["high"] == "gpt-5.3-codex-high", harness
     assert model_alias_map["xhigh"] == "gpt-5.3-codex-xhigh", harness

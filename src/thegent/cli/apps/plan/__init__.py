@@ -32,9 +32,7 @@ if app is not None:
         help="Verify WORK_STREAM.md invariants (exits 1 on violations).",
     )
     def _verify_workstream(
-        cd: Path | None = typer.Option(
-            None, "--cd", help="Project root containing docs/reference/WORK_STREAM.md"
-        ),
+        cd: Path | None = typer.Option(None, "--cd", help="Project root containing docs/reference/WORK_STREAM.md"),
     ) -> None:
         plan_verify_workstream_cmd(cd=cd)
 
@@ -43,9 +41,7 @@ if app is not None:
         help="Lint WORK_STREAM.md schema (warnings to stdout, errors exit 1).",
     )
     def _lint_workstream(
-        cd: Path | None = typer.Option(
-            None, "--cd", help="Project root containing docs/reference/WORK_STREAM.md"
-        ),
+        cd: Path | None = typer.Option(None, "--cd", help="Project root containing docs/reference/WORK_STREAM.md"),
     ) -> None:
         plan_lint_workstream_cmd(cd=cd)
 
@@ -54,9 +50,7 @@ if app is not None:
         help="Normalize WORK_STREAM.md (idempotent; reports changes).",
     )
     def _normalize_workstream(
-        cd: Path | None = typer.Option(
-            None, "--cd", help="Project root containing docs/reference/WORK_STREAM.md"
-        ),
+        cd: Path | None = typer.Option(None, "--cd", help="Project root containing docs/reference/WORK_STREAM.md"),
     ) -> None:
         plan_normalize_workstream_cmd(cd=cd)
 

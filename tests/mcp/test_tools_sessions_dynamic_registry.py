@@ -45,9 +45,7 @@ def test_dynamic_tool_register_list_and_invoke_flow() -> None:
 
     invoked = tools_sessions.session_send_impl(
         session_id="sess-1",
-        message=json.dumps(
-            {"name": "lookup_weather", "arguments": {"city": "SF"}}
-        ).decode(),
+        message=json.dumps({"name": "lookup_weather", "arguments": {"city": "SF"}}).decode(),
         msg_type="dynamic_tool_invoke",
         send_impl=_noop_send_impl,
     )
@@ -121,9 +119,7 @@ def test_dynamic_tool_invoke_rejects_non_numeric_timeout() -> None:
     with pytest.raises(ValueError, match="timeout_seconds must be numeric"):
         tools_sessions.session_send_impl(
             session_id="sess-2b",
-            message=json.dumps(
-                {"name": "alpha", "arguments": {"x": "ok"}, "timeout_seconds": "abc"}
-            ).decode(),
+            message=json.dumps({"name": "alpha", "arguments": {"x": "ok"}, "timeout_seconds": "abc"}).decode(),
             msg_type="dynamic_tool_invoke",
             send_impl=_noop_send_impl,
         )
@@ -156,9 +152,7 @@ def test_dynamic_tool_complete_failure_roundtrip_includes_error_payload() -> Non
     )
     invoked = tools_sessions.session_send_impl(
         session_id="sess-4",
-        message=json.dumps(
-            {"name": "lookup_weather", "arguments": {"city": "SF"}}
-        ).decode(),
+        message=json.dumps({"name": "lookup_weather", "arguments": {"city": "SF"}}).decode(),
         msg_type="dynamic_tool_invoke",
         send_impl=_noop_send_impl,
     )
@@ -203,9 +197,7 @@ def test_dynamic_tool_complete_failure_requires_error_or_output() -> None:
     )
     invoked = tools_sessions.session_send_impl(
         session_id="sess-5",
-        message=json.dumps(
-            {"name": "lookup_weather", "arguments": {"city": "SF"}}
-        ).decode(),
+        message=json.dumps({"name": "lookup_weather", "arguments": {"city": "SF"}}).decode(),
         msg_type="dynamic_tool_invoke",
         send_impl=_noop_send_impl,
     )
@@ -237,9 +229,7 @@ def test_dynamic_tool_complete_rejects_expired_call(
     )
 
     monotonic_values = iter([200.0, 200.0, 200.2, 200.2])
-    monkeypatch.setattr(
-        "thegent.mcp.dynamic_tools.time.monotonic", lambda: next(monotonic_values)
-    )
+    monkeypatch.setattr("thegent.mcp.dynamic_tools.time.monotonic", lambda: next(monotonic_values))
     invoked = tools_sessions.session_send_impl(
         session_id="sess-6",
         message=json.dumps(
@@ -256,9 +246,7 @@ def test_dynamic_tool_complete_rejects_expired_call(
     with pytest.raises(ValueError, match="dynamic tool call expired"):
         tools_sessions.session_send_impl(
             session_id="sess-6",
-            message=json.dumps(
-                {"callId": call_id, "success": True, "output": {"ok": True}}
-            ).decode(),
+            message=json.dumps({"callId": call_id, "success": True, "output": {"ok": True}}).decode(),
             msg_type="dynamic_tool_complete",
             send_impl=_noop_send_impl,
         )

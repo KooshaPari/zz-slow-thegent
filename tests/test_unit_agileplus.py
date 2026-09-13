@@ -261,23 +261,15 @@ def test_run_once_full_cycle(loop: AgilePlusLoop) -> None:
 
     with (
         patch.object(AgilePlusLoop, "_init_components"),
-        patch.object(
-            AgilePlusLoop, "_run_scan", return_value=_SCAN_RESULT_MOCK
-        ) as mock_scan,
+        patch.object(AgilePlusLoop, "_run_scan", return_value=_SCAN_RESULT_MOCK) as mock_scan,
         patch.object(
             AgilePlusLoop,
             "_compute_health",
             return_value=MagicMock(score=50.0, band=MagicMock(value="warning")),
         ) as mock_compute,
-        patch.object(
-            AgilePlusLoop, "_run_analysis", return_value=_FINDINGS_MOCK
-        ) as mock_analysis,
-        patch.object(
-            AgilePlusLoop, "_run_planning", return_value=_PLAN_MOCK
-        ) as mock_planning,
-        patch.object(
-            AgilePlusLoop, "_run_deployment", return_value=_DEPLOYMENT_RESULT_MOCK
-        ) as mock_deploy,
+        patch.object(AgilePlusLoop, "_run_analysis", return_value=_FINDINGS_MOCK) as mock_analysis,
+        patch.object(AgilePlusLoop, "_run_planning", return_value=_PLAN_MOCK) as mock_planning,
+        patch.object(AgilePlusLoop, "_run_deployment", return_value=_DEPLOYMENT_RESULT_MOCK) as mock_deploy,
         patch.object(AgilePlusLoop, "_run_verification", return_value=2) as mock_verify,
         patch.object(AgilePlusLoop, "_run_commitment") as mock_commit,
     ):
@@ -337,9 +329,7 @@ def test_run_once_forces_cycle_when_healthy(loop: AgilePlusLoop) -> None:
         ),
         patch.object(AgilePlusLoop, "_run_analysis", return_value=[]),
         patch.object(AgilePlusLoop, "_run_planning", return_value=MagicMock(tasks=[])),
-        patch.object(
-            AgilePlusLoop, "_run_deployment", return_value=MagicMock(tasks_completed=0)
-        ),
+        patch.object(AgilePlusLoop, "_run_deployment", return_value=MagicMock(tasks_completed=0)),
         patch.object(AgilePlusLoop, "_run_verification", return_value=0),
         patch.object(AgilePlusLoop, "_run_commitment"),
     ):
@@ -381,9 +371,7 @@ def test_run_once_state_transitions(
             ),
             patch.object(AgilePlusLoop, "_run_analysis", return_value=_FINDINGS_MOCK),
             patch.object(AgilePlusLoop, "_run_planning", return_value=_PLAN_MOCK),
-            patch.object(
-                AgilePlusLoop, "_run_deployment", return_value=_DEPLOYMENT_RESULT_MOCK
-            ),
+            patch.object(AgilePlusLoop, "_run_deployment", return_value=_DEPLOYMENT_RESULT_MOCK),
             patch.object(AgilePlusLoop, "_run_verification", return_value=2),
             patch.object(AgilePlusLoop, "_run_commitment"),
         ):
@@ -409,9 +397,7 @@ def test_run_once_handles_scan_error(loop: AgilePlusLoop) -> None:
 
     with (
         patch.object(AgilePlusLoop, "_init_components"),
-        patch.object(
-            AgilePlusLoop, "_run_scan", side_effect=RuntimeError("Scan failed")
-        ),
+        patch.object(AgilePlusLoop, "_run_scan", side_effect=RuntimeError("Scan failed")),
     ):
         result = loop.run_once(force=True)
 
@@ -431,9 +417,7 @@ def test_run_once_handles_analysis_error(loop: AgilePlusLoop) -> None:
             "_compute_health",
             return_value=MagicMock(score=50.0, band=MagicMock(value="warning")),
         ),
-        patch.object(
-            AgilePlusLoop, "_run_analysis", side_effect=RuntimeError("Analysis failed")
-        ),
+        patch.object(AgilePlusLoop, "_run_analysis", side_effect=RuntimeError("Analysis failed")),
     ):
         result = loop.run_once(force=True)
 
@@ -454,9 +438,7 @@ def test_run_once_handles_planning_error(loop: AgilePlusLoop) -> None:
             return_value=MagicMock(score=50.0, band=MagicMock(value="warning")),
         ),
         patch.object(AgilePlusLoop, "_run_analysis", return_value=_FINDINGS_MOCK),
-        patch.object(
-            AgilePlusLoop, "_run_planning", side_effect=RuntimeError("Planning failed")
-        ),
+        patch.object(AgilePlusLoop, "_run_planning", side_effect=RuntimeError("Planning failed")),
     ):
         result = loop.run_once(force=True)
 
@@ -504,9 +486,7 @@ def test_run_once_handles_verification_error(loop: AgilePlusLoop) -> None:
         ),
         patch.object(AgilePlusLoop, "_run_analysis", return_value=_FINDINGS_MOCK),
         patch.object(AgilePlusLoop, "_run_planning", return_value=_PLAN_MOCK),
-        patch.object(
-            AgilePlusLoop, "_run_deployment", return_value=_DEPLOYMENT_RESULT_MOCK
-        ),
+        patch.object(AgilePlusLoop, "_run_deployment", return_value=_DEPLOYMENT_RESULT_MOCK),
         patch.object(
             AgilePlusLoop,
             "_run_verification",
@@ -710,9 +690,7 @@ def test_init_components(
         patch("thegent.governance.scanner.CodebaseScanner") as mock_scanner,
         patch("thegent.governance.health_score.HealthScoreComputer") as mock_hc,
         patch("thegent.governance.analyzer.HealthAnalyzer") as mock_analyzer,
-        patch(
-            "thegent.planning.remediation_planner.RemediationPlanner"
-        ) as mock_planner,
+        patch("thegent.planning.remediation_planner.RemediationPlanner") as mock_planner,
         patch("thegent.governance.backlog.BacklogManager") as mock_backlog,
         patch("thegent.cost.aggregator_controller.CostController") as mock_cost,
         patch("thegent.governance.evidence_ledger.EvidenceLedger") as mock_ledger,

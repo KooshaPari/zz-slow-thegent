@@ -160,15 +160,11 @@ class AdapterRegistry:
 
     def register_driver(self, name: str, driver_class: type, **metadata: Any) -> None:
         """Register a driver plugin."""
-        self.drivers[name] = DriverPlugin(
-            name=name, driver_class=driver_class, metadata=metadata
-        )
+        self.drivers[name] = DriverPlugin(name=name, driver_class=driver_class, metadata=metadata)
 
     def register_router(self, name: str, router_class: type, **metadata: Any) -> None:
         """Register a router plugin."""
-        self.routers[name] = RouterPlugin(
-            name=name, router_class=router_class, metadata=metadata
-        )
+        self.routers[name] = RouterPlugin(name=name, router_class=router_class, metadata=metadata)
 
     def register_cache_backend(self, name: str, backend_class: type) -> None:
         """Register a cache backend."""

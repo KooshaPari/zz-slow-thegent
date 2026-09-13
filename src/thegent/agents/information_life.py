@@ -37,9 +37,7 @@ class InformationPersona:
         # 2. Base64 encode for transport
         encoded = base64.b64encode(raw_json.encode()).decode()
 
-        _log.info(
-            "Persona encoded successfully. Payload length: %d chars", len(encoded)
-        )
+        _log.info("Persona encoded successfully. Payload length: %d chars", len(encoded))
         return encoded
 
     def decode_persona(self, encoded_data: str) -> bool:

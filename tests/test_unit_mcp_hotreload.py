@@ -22,15 +22,10 @@ def test_default_watch_paths_only_existing(tmp_path: Path) -> None:
 
 @pytest.mark.unit
 def test_is_relevant_change_filters_expected_paths() -> None:
-    assert (
-        hotreload._is_relevant_change(Path("/repo/src/thegent/mcp/server.py")) is True
-    )
+    assert hotreload._is_relevant_change(Path("/repo/src/thegent/mcp/server.py")) is True
     assert hotreload._is_relevant_change(Path("/repo/process-compose.yaml")) is True
     assert hotreload._is_relevant_change(Path("/repo/docs/readme.md")) is False
-    assert (
-        hotreload._is_relevant_change(Path("/repo/.venv/lib/site-packages/a.py"))
-        is False
-    )
+    assert hotreload._is_relevant_change(Path("/repo/.venv/lib/site-packages/a.py")) is False
 
 
 @pytest.mark.unit

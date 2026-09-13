@@ -22,9 +22,7 @@ def run_contract() -> list[dict[str, object]]:
     except ValueError as error:
         if str(error) != "already locked":
             raise
-        records.append(
-            {"case": "lock_contention", "outcome": "already_locked", "owner": 101}
-        )
+        records.append({"case": "lock_contention", "outcome": "already_locked", "owner": 101})
     else:
         raise AssertionError("a different PID must not acquire a held lock")
 
@@ -32,9 +30,7 @@ def run_contract() -> list[dict[str, object]]:
     records.append({"case": "lock_release", "outcome": "unlocked"})
 
     reacquired = lock_adapter.acquire(command_hash, 202)
-    records.append(
-        {"case": "lock_reacquire", "outcome": "locked", "owner": reacquired.pid}
-    )
+    records.append({"case": "lock_reacquire", "outcome": "locked", "owner": reacquired.pid})
 
     queue_adapter = InMemoryQueueAdapter()
     for command, priority in (
@@ -51,15 +47,9 @@ def run_contract() -> list[dict[str, object]]:
         }
     )
 
-    base = EditIntent(
-        agent_id="agent-a", file_path="fixture.rs", start_line=10, end_line=20
-    )
-    disjoint = EditIntent(
-        agent_id="agent-b", file_path="fixture.rs", start_line=30, end_line=40
-    )
-    overlap = EditIntent(
-        agent_id="agent-c", file_path="fixture.rs", start_line=15, end_line=25
-    )
+    base = EditIntent(agent_id="agent-a", file_path="fixture.rs", start_line=10, end_line=20)
+    disjoint = EditIntent(agent_id="agent-b", file_path="fixture.rs", start_line=30, end_line=40)
+    overlap = EditIntent(agent_id="agent-c", file_path="fixture.rs", start_line=15, end_line=25)
     records.append({"case": "edit_disjoint", "conflict": base.conflicts_with(disjoint)})
     records.append({"case": "edit_overlap", "conflict": base.conflicts_with(overlap)})
     return records

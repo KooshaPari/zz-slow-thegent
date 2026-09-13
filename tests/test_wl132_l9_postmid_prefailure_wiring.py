@@ -60,9 +60,7 @@ def helpers_module():
 
 
 @pytest.mark.parametrize("phase_name", list(_POST_MID_AND_PRE_FAILURE_HELPERS))
-def test_run_impl_core_delegates_to_phase_helpers(
-    phase_name: str, run_impl_core_source: str, helpers_module
-) -> None:
+def test_run_impl_core_delegates_to_phase_helpers(phase_name: str, run_impl_core_source: str, helpers_module) -> None:
     """``run_impl_core`` must call each post-mid / pre-failure helper, not inline the body.
 
     WL137 indirection: ``_phase_release_resource_leases`` is invoked from
@@ -80,8 +78,7 @@ def test_run_impl_core_delegates_to_phase_helpers(
         )
         delegator_src = inspect.getsource(getattr(helpers_module, delegator))
         assert f"{phase_name}(" in delegator_src, (
-            f"Indirect delegator {delegator} must invoke {phase_name}; "
-            f"re-inlining the body defeats the WL137 refactor."
+            f"Indirect delegator {delegator} must invoke {phase_name}; re-inlining the body defeats the WL137 refactor."
         )
         return
 
@@ -221,9 +218,7 @@ def test_run_impl_core_line_count_drops_after_wl132_wireup() -> None:
     """
     helpers = importlib.import_module("thegent.cli.services.run_execution_core_helpers")
     src_lines = inspect.getsource(helpers.run_impl_core).splitlines()
-    assert len(src_lines) <= 670, (
-        f"run_impl_core grew to {len(src_lines)} lines; expected ≤ 670 after WL-132 wire-ups."
-    )
+    assert len(src_lines) <= 670, f"run_impl_core grew to {len(src_lines)} lines; expected ≤ 670 after WL-132 wire-ups."
 
 
 def test_post_mid_and_pre_failure_helpers_exist_with_expected_signatures() -> None:

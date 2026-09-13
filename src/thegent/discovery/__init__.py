@@ -267,9 +267,7 @@ def _is_triggered_by_agent_process() -> bool:
         return False
 
 
-def _check_parent_agent(
-    parent: psutil.Process | None, agent_names: set[str]
-) -> tuple[bool, psutil.Process | None]:
+def _check_parent_agent(parent: psutil.Process | None, agent_names: set[str]) -> tuple[bool, psutil.Process | None]:
     """Check a single parent process for agent markers and return next parent."""
     if not parent:
         return False, None

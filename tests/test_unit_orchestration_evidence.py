@@ -44,9 +44,7 @@ class TestPromotionGate:
         assert "evidence_hash" in entry
         assert "ts" in entry
 
-    def test_validate_promotion_confidence_below_threshold(
-        self, tmp_path: Path
-    ) -> None:
+    def test_validate_promotion_confidence_below_threshold(self, tmp_path: Path) -> None:
         gate = PromotionGate(tmp_path)
         csm = CanonicalStructuredMessage(confidence_level=0.2)
         policy = FallbackPolicy(min_confidence_threshold=0.5)

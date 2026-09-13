@@ -27,16 +27,12 @@ def step_system_initialized(context, system: str):
 
 @given("a valid entity configuration")
 def step_valid_config(context):
-    context.test.config.update(
-        {"valid": True, "data": {"name": "Test", "type": "standard"}}
-    )
+    context.test.config.update({"valid": True, "data": {"name": "Test", "type": "standard"}})
 
 
 @given("an invalid entity configuration")
 def step_invalid_config(context):
-    context.test.config.update(
-        {"valid": False, "data": {"name": "", "type": "unknown"}}
-    )
+    context.test.config.update({"valid": False, "data": {"name": "", "type": "unknown"}})
 
 
 @given('an existing entity in state "{state}"')
@@ -84,9 +80,7 @@ def step_execute_transition(context, transition: str):
             raise RuntimeError("No entity")
         old_state = context.test.entity["state"]
         context.test.entity["state"] = transition
-        context.test.events.append(
-            {"type": "transition", "from": old_state, "to": transition}
-        )
+        context.test.events.append({"type": "transition", "from": old_state, "to": transition})
     except Exception as e:
         context.test.last_error = e
 

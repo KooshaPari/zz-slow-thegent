@@ -16,9 +16,7 @@ from thegent.config import ThegentSettings
 def hash_health_payload(payload: dict[str, Any]) -> dict[str, str]:
     """Return a stable health payload signature excluding volatile metadata fields."""
     payload_for_hash = {
-        key: value
-        for key, value in payload.items()
-        if key not in {"generated_at_utc", "payload_signature"}
+        key: value for key, value in payload.items() if key not in {"generated_at_utc", "payload_signature"}
     }
     body = json.dumps(payload_for_hash, option=json.OPT_SORT_KEYS).decode()
     return {"algorithm": "sha256", "value": hashlib.sha256(body.encode()).hexdigest()}
@@ -59,11 +57,7 @@ def health_snapshot_log_path() -> Path:
     """Resolve canonical health snapshot jsonl path and ensure parent directory exists."""
     settings = ThegentSettings()
     raw = str(settings.health_snapshot_path) if settings.health_snapshot_path else ""
-    path = (
-        Path(raw).expanduser()
-        if raw
-        else Path.home() / ".thegent" / "health-snapshots.jsonl"
-    )
+    path = Path(raw).expanduser() if raw else Path.home() / ".thegent" / "health-snapshots.jsonl"
     path.parent.mkdir(parents=True, exist_ok=True)
     return path
 

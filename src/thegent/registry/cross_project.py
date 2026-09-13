@@ -109,9 +109,7 @@ class PersonaRecord:
             name=data["name"],
             project_root=Path(data["project_root"]),
             capabilities=data.get("capabilities", []),
-            persona_file=Path(data["persona_file"])
-            if data.get("persona_file")
-            else None,
+            persona_file=Path(data["persona_file"]) if data.get("persona_file") else None,
             last_seen=last_seen,
         )
 
@@ -180,11 +178,7 @@ class CrossProjectRegistry:
             List of matching PersonaRecord objects.
         """
         capability = capability.lower()
-        return [
-            r
-            for r in self.records
-            if any(capability in cap.lower() for cap in r.capabilities)
-        ]
+        return [r for r in self.records if any(capability in cap.lower() for cap in r.capabilities)]
 
     def get_all(self) -> list[PersonaRecord]:
         """Get all registered personas."""

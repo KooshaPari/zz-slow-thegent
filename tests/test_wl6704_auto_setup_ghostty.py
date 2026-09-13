@@ -8,9 +8,7 @@ BEGIN = "# >>> thegent managed: ghostty shell integration >>>"
 END = "# <<< thegent managed: ghostty shell integration <<<"
 
 
-def test_auto_setup_ghostty_inserts_managed_block_once(
-    monkeypatch, tmp_path: Path
-) -> None:
+def test_auto_setup_ghostty_inserts_managed_block_once(monkeypatch, tmp_path: Path) -> None:
     home = tmp_path / "home"
     home.mkdir()
     zshrc = home / ".zshrc"
@@ -18,9 +16,7 @@ def test_auto_setup_ghostty_inserts_managed_block_once(
 
     monkeypatch.setenv("HOME", str(home))
     monkeypatch.delenv("GHOSTTY_RESOURCES_DIR", raising=False)
-    monkeypatch.setattr(
-        "thegent.ide.auto_setup.shutil.which", lambda name: "/usr/bin/ghostty"
-    )
+    monkeypatch.setattr("thegent.ide.auto_setup.shutil.which", lambda name: "/usr/bin/ghostty")
 
     first = auto_setup_ghostty_shell_integration(auto_configure=True)
     second = auto_setup_ghostty_shell_integration(auto_configure=True)
@@ -33,9 +29,7 @@ def test_auto_setup_ghostty_inserts_managed_block_once(
     assert content.count(END) == 1
 
 
-def test_auto_setup_ghostty_rewrites_existing_managed_block(
-    monkeypatch, tmp_path: Path
-) -> None:
+def test_auto_setup_ghostty_rewrites_existing_managed_block(monkeypatch, tmp_path: Path) -> None:
     home = tmp_path / "home"
     home.mkdir()
     zshrc = home / ".zshrc"
@@ -55,9 +49,7 @@ def test_auto_setup_ghostty_rewrites_existing_managed_block(
 
     monkeypatch.setenv("HOME", str(home))
     monkeypatch.delenv("GHOSTTY_RESOURCES_DIR", raising=False)
-    monkeypatch.setattr(
-        "thegent.ide.auto_setup.shutil.which", lambda name: "/usr/bin/ghostty"
-    )
+    monkeypatch.setattr("thegent.ide.auto_setup.shutil.which", lambda name: "/usr/bin/ghostty")
 
     result = auto_setup_ghostty_shell_integration(auto_configure=True)
 

@@ -141,18 +141,13 @@ class TestResolveAgentModel:
     def test_cursor_agent_uses_default_cursor_model(self) -> None:
         settings = MagicMock()
         settings.default_cursor_model = "cursor-model-x"
-        assert (
-            _resolve_agent_model("cursor-agent", None, "write", settings)
-            == "cursor-model-x"
-        )
+        assert _resolve_agent_model("cursor-agent", None, "write", settings) == "cursor-model-x"
 
     # @trace FR-CLI-404
     def test_cursor_alias_uses_default_cursor_model(self) -> None:
         settings = MagicMock()
         settings.default_cursor_model = "cursor-model-y"
-        assert (
-            _resolve_agent_model("cursor", None, "write", settings) == "cursor-model-y"
-        )
+        assert _resolve_agent_model("cursor", None, "write", settings) == "cursor-model-y"
 
     # @trace FR-CLI-405
     def test_gemini_uses_default_gemini_model(self) -> None:
@@ -182,25 +177,18 @@ class TestResolveAgentModel:
     def test_codex_full_mode_uses_high_model(self) -> None:
         settings = MagicMock()
         settings.default_codex_model_high = "gpt-5.3-codex-high"
-        assert (
-            _resolve_agent_model("codex", None, "full", settings)
-            == "gpt-5.3-codex-high"
-        )
+        assert _resolve_agent_model("codex", None, "full", settings) == "gpt-5.3-codex-high"
 
     # @trace FR-CLI-410
     def test_antigravity_uses_default_antigravity_model(self) -> None:
         settings = MagicMock()
         settings.default_antigravity_model = "ag-model"
-        assert (
-            _resolve_agent_model("antigravity", None, "write", settings) == "ag-model"
-        )
+        assert _resolve_agent_model("antigravity", None, "write", settings) == "ag-model"
 
     # @trace FR-CLI-411
     def test_minimax_returns_hardcoded(self) -> None:
         settings = MagicMock()
-        assert (
-            _resolve_agent_model("minimax", None, "write", settings) == "minimax-m2.5"
-        )
+        assert _resolve_agent_model("minimax", None, "write", settings) == "minimax-m2.5"
 
     # @trace FR-CLI-412
     def test_glm_returns_hardcoded(self) -> None:
@@ -220,9 +208,7 @@ class TestResolveAgentModel:
     # @trace FR-CLI-415
     def test_unknown_agent_returns_none(self) -> None:
         settings = MagicMock()
-        assert (
-            _resolve_agent_model("nonexistent-agent", None, "write", settings) is None
-        )
+        assert _resolve_agent_model("nonexistent-agent", None, "write", settings) is None
 
 
 # ---------------------------------------------------------------------------
@@ -282,9 +268,7 @@ class TestRunBackgroundSessionObserver:
         meta = tmp_path / "sess.json"
         rc = tmp_path / "sess.rc"
         started = datetime.now(UTC).isoformat()
-        meta.write_text(
-            json.dumps({"status": "running", "started_at_utc": started}).decode()
-        )
+        meta.write_text(json.dumps({"status": "running", "started_at_utc": started}).decode())
         with patch.dict(
             os.environ,
             {
@@ -417,9 +401,7 @@ class TestEnsureHeaders:
         )
         _ensure_evidence_header(doc)
         assert "evidence" in doc.table_headers
-        assert (
-            doc.table_headers.index("evidence") == doc.table_headers.index("status") + 1
-        )
+        assert doc.table_headers.index("evidence") == doc.table_headers.index("status") + 1
 
     # @trace FR-CLI-435
     def test_evidence_header_not_added_when_already_present(self) -> None:
@@ -515,9 +497,7 @@ class TestDagUpdateTask:
     def test_update_all_fields(self) -> None:
         doc = DagDocument(
             frontmatter={},
-            tasks=[
-                {"id": "T1", "status": "pending", "agent": "claude", "prompt": "old"}
-            ],
+            tasks=[{"id": "T1", "status": "pending", "agent": "claude", "prompt": "old"}],
             before_table="",
             after_table="",
             table_headers=["id", "agent", "prompt", "depends_on", "status"],
@@ -837,9 +817,7 @@ class TestLoadObserveSummarySnapshots:
             "captured_at_utc": "2025-01-01T00:00:00Z",
         }
         log_path.write_text(json.dumps(rec).decode() + "\n")
-        with patch(
-            "thegent.cli.commands.impl._health_snapshot_log_path", return_value=log_path
-        ):
+        with patch("thegent.cli.commands.impl._health_snapshot_log_path", return_value=log_path):
             result = _load_observe_summary_snapshots("sig-abc", "{}", 5)
         assert len(result) == 1
 
@@ -852,9 +830,7 @@ class TestLoadObserveSummarySnapshots:
             "captured_at_utc": "2025-01-01T00:00:00Z",
         }
         log_path.write_text(json.dumps(rec).decode() + "\n")
-        with patch(
-            "thegent.cli.commands.impl._health_snapshot_log_path", return_value=log_path
-        ):
+        with patch("thegent.cli.commands.impl._health_snapshot_log_path", return_value=log_path):
             result = _load_observe_summary_snapshots("sig-def", "{}", 5)
         assert len(result) == 1
 
@@ -868,9 +844,7 @@ class TestLoadObserveSummarySnapshots:
             "captured_at_utc": "2025-01-01T00:00:00Z",
         }
         log_path.write_text(json.dumps(rec).decode() + "\n")
-        with patch(
-            "thegent.cli.commands.impl._health_snapshot_log_path", return_value=log_path
-        ):
+        with patch("thegent.cli.commands.impl._health_snapshot_log_path", return_value=log_path):
             result = _load_observe_summary_snapshots("no-match", key_json, 5)
         assert len(result) == 1
 
@@ -886,9 +860,7 @@ class TestLoadObserveSummarySnapshots:
             }
             lines.append(json.dumps(rec).decode())
         log_path.write_text("\n".join(lines) + "\n")
-        with patch(
-            "thegent.cli.commands.impl._health_snapshot_log_path", return_value=log_path
-        ):
+        with patch("thegent.cli.commands.impl._health_snapshot_log_path", return_value=log_path):
             result = _load_observe_summary_snapshots("sig-x", "{}", 3)
         assert len(result) == 3
 
@@ -907,9 +879,7 @@ class TestLoadObserveSummarySnapshots:
             "",
         ]
         log_path.write_text("\n".join(lines) + "\n")
-        with patch(
-            "thegent.cli.commands.impl._health_snapshot_log_path", return_value=log_path
-        ):
+        with patch("thegent.cli.commands.impl._health_snapshot_log_path", return_value=log_path):
             result = _load_observe_summary_snapshots("sig-z", "{}", 5)
         assert result == []
 
@@ -931,12 +901,8 @@ class TestCompactHealthSnapshotLog:
     def test_under_limit_no_trim(self, tmp_path) -> None:
         log_path = tmp_path / "snap.jsonl"
         log_path.write_text("line1\nline2\n")
-        with patch(
-            "thegent.cli.commands.impl._health_snapshot_log_path", return_value=log_path
-        ):
-            with patch(
-                "thegent.cli.commands.impl._health_snapshot_max_lines", return_value=100
-            ):
+        with patch("thegent.cli.commands.impl._health_snapshot_log_path", return_value=log_path):
+            with patch("thegent.cli.commands.impl._health_snapshot_max_lines", return_value=100):
                 _compact_health_snapshot_log()
         assert len(log_path.read_text().splitlines()) == 2
 
@@ -945,12 +911,8 @@ class TestCompactHealthSnapshotLog:
         log_path = tmp_path / "snap.jsonl"
         lines = [f"line{i}" for i in range(20)]
         log_path.write_text("\n".join(lines) + "\n")
-        with patch(
-            "thegent.cli.commands.impl._health_snapshot_log_path", return_value=log_path
-        ):
-            with patch(
-                "thegent.cli.commands.impl._health_snapshot_max_lines", return_value=5
-            ):
+        with patch("thegent.cli.commands.impl._health_snapshot_log_path", return_value=log_path):
+            with patch("thegent.cli.commands.impl._health_snapshot_max_lines", return_value=5):
                 _compact_health_snapshot_log()
         remaining = log_path.read_text().splitlines()
         assert len(remaining) == 5
@@ -1040,9 +1002,7 @@ class TestLoadPreviousHealthSnapshot:
             "blocked_ratio": 0.1,
         }
         log_path.write_text(json.dumps(rec).decode() + "\n")
-        with patch(
-            "thegent.cli.commands.impl._health_snapshot_log_path", return_value=log_path
-        ):
+        with patch("thegent.cli.commands.impl._health_snapshot_log_path", return_value=log_path):
             result = _load_previous_health_snapshot(scope)
         assert result is not None
         assert result["blocked_ratio"] == 0.1
@@ -1052,9 +1012,7 @@ class TestLoadPreviousHealthSnapshot:
         log_path = tmp_path / "snap.jsonl"
         rec = {"record_type": "health_snapshot", "scope_key": {"type": "other"}}
         log_path.write_text(json.dumps(rec).decode() + "\n")
-        with patch(
-            "thegent.cli.commands.impl._health_snapshot_log_path", return_value=log_path
-        ):
+        with patch("thegent.cli.commands.impl._health_snapshot_log_path", return_value=log_path):
             assert _load_previous_health_snapshot({"type": "gate"}) is None
 
     # @trace FR-CLI-493
@@ -1064,14 +1022,10 @@ class TestLoadPreviousHealthSnapshot:
         lines = [
             "invalid json",
             "",
-            json.dumps(
-                {"record_type": "health_snapshot", "scope_key": scope, "val": 1}
-            ).decode(),
+            json.dumps({"record_type": "health_snapshot", "scope_key": scope, "val": 1}).decode(),
         ]
         log_path.write_text("\n".join(lines) + "\n")
-        with patch(
-            "thegent.cli.commands.impl._health_snapshot_log_path", return_value=log_path
-        ):
+        with patch("thegent.cli.commands.impl._health_snapshot_log_path", return_value=log_path):
             result = _load_previous_health_snapshot(scope)
         assert result is not None
         assert result["val"] == 1
@@ -1251,9 +1205,7 @@ class TestAppendHealthSnapshot:
     # @trace FR-CLI-408
     def test_report_payload_extracts_issue_types(self, tmp_path) -> None:
         log_path = tmp_path / "snap.jsonl"
-        with patch(
-            "thegent.cli.commands.impl._health_snapshot_log_path", return_value=log_path
-        ):
+        with patch("thegent.cli.commands.impl._health_snapshot_log_path", return_value=log_path):
             with patch("thegent.cli.commands.impl._compact_health_snapshot_log"):
                 payload = {
                     "payload_type": "session_contract_health_report",
@@ -1269,9 +1221,7 @@ class TestAppendHealthSnapshot:
     # @trace FR-CLI-409
     def test_gate_payload_extracts_from_blocked_sessions(self, tmp_path) -> None:
         log_path = tmp_path / "snap.jsonl"
-        with patch(
-            "thegent.cli.commands.impl._health_snapshot_log_path", return_value=log_path
-        ):
+        with patch("thegent.cli.commands.impl._health_snapshot_log_path", return_value=log_path):
             with patch("thegent.cli.commands.impl._compact_health_snapshot_log"):
                 payload = {
                     "payload_type": "session_contract_health_gate",
@@ -1294,9 +1244,7 @@ class TestAppendObserveSummarySnapshot:
     # @trace FR-CLI-410
     def test_oserror_on_write_handled(self) -> None:
         bad_path = Path("/nonexistent/dir/snap.jsonl")
-        with patch(
-            "thegent.cli.commands.impl._health_snapshot_log_path", return_value=bad_path
-        ):
+        with patch("thegent.cli.commands.impl._health_snapshot_log_path", return_value=bad_path):
             # Should not raise
             _append_observe_summary_snapshot(
                 payload={"generated_at_utc": "2025-01-01T00:00:00Z"},
@@ -1330,9 +1278,7 @@ class TestParseDagFullEdgeCases:
     # @trace FR-CLI-412
     def test_empty_table(self, tmp_path) -> None:
         dag_file = tmp_path / "dag.md"
-        dag_file.write_text(
-            "---\nversion: 1\n---\n## Tasks\n\n| ID | Status |\n|---|---|\n"
-        )
+        dag_file.write_text("---\nversion: 1\n---\n## Tasks\n\n| ID | Status |\n|---|---|\n")
         doc = _parse_dag_full(dag_file)
         assert doc.tasks == []
         assert len(doc.table_headers) == 2
@@ -1340,9 +1286,7 @@ class TestParseDagFullEdgeCases:
     # @trace FR-CLI-413
     def test_after_table_content_preserved(self, tmp_path) -> None:
         dag_file = tmp_path / "dag.md"
-        dag_file.write_text(
-            "## Tasks\n\n| ID | Status |\n|---|---|\n| T1 | done |\n\n## Notes\n\nSome notes here.\n"
-        )
+        dag_file.write_text("## Tasks\n\n| ID | Status |\n|---|---|\n| T1 | done |\n\n## Notes\n\nSome notes here.\n")
         doc = _parse_dag_full(dag_file)
         assert "Notes" in doc.after_table
 
@@ -1678,9 +1622,7 @@ class TestGetDataProtectionStatusImpl:
 
     # @trace FR-CLI-442
     @patch("thegent.cli.commands.impl.ThegentSettings")
-    def test_nonexistent_dir_reports_no_restriction(
-        self, mock_settings_cls, tmp_path
-    ) -> None:
+    def test_nonexistent_dir_reports_no_restriction(self, mock_settings_cls, tmp_path) -> None:
         session_dir = tmp_path / "nonexistent"
         settings = MagicMock()
         settings.session_dir = session_dir

@@ -49,9 +49,7 @@ def _gh_api(path: str, method: str = "GET", body: dict[str, Any] | None = None) 
     result = subprocess.run(cmd, capture_output=True, text=True)
 
     if result.returncode != 0:
-        raise RuntimeError(
-            f"gh api {method} {path} failed (exit {result.returncode}): {result.stderr.strip()}"
-        )
+        raise RuntimeError(f"gh api {method} {path} failed (exit {result.returncode}): {result.stderr.strip()}")
 
     if not result.stdout.strip():
         return None
@@ -59,9 +57,7 @@ def _gh_api(path: str, method: str = "GET", body: dict[str, Any] | None = None) 
     try:
         return json.loads(result.stdout)
     except json.JSONDecodeError as exc:
-        raise RuntimeError(
-            f"gh api {method} {path} returned non-JSON output: {result.stdout[:200]}"
-        ) from exc
+        raise RuntimeError(f"gh api {method} {path} returned non-JSON output: {result.stdout[:200]}") from exc
 
 
 # ---------------------------------------------------------------------------
@@ -281,9 +277,7 @@ def cancel_workflow_run(repo: str, run_id: int) -> None:
     RuntimeError
         On API failure.
     """
-    _gh_run_cmd(
-        "api", "--method", "POST", f"/repos/{repo}/actions/runs/{run_id}/cancel"
-    )
+    _gh_run_cmd("api", "--method", "POST", f"/repos/{repo}/actions/runs/{run_id}/cancel")
     _log.info("Cancelled workflow run %s in %s", run_id, repo)
 
 
@@ -305,9 +299,7 @@ def rerun_workflow(repo: str, run_id: int, *, failed_only: bool = False) -> None
         On API failure.
     """
     suffix = "/failed-jobs" if failed_only else ""
-    _gh_run_cmd(
-        "api", "--method", "POST", f"/repos/{repo}/actions/runs/{run_id}/rerun{suffix}"
-    )
+    _gh_run_cmd("api", "--method", "POST", f"/repos/{repo}/actions/runs/{run_id}/rerun{suffix}")
     _log.info(
         "Re-run triggered for workflow run %s in %s (failed_only=%s)",
         run_id,

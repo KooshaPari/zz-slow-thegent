@@ -63,8 +63,7 @@ def parse_checkpoint_by_id(line: str, checkpoint_id: str) -> dict[str, Any] | No
             # Native parser failed, fall through to JSON parsing
             _native_parse_diagnostics["total_failures"] += 1
             _native_parse_diagnostics["by_parser"]["parse_checkpoint_by_id"] = (
-                _native_parse_diagnostics["by_parser"].get("parse_checkpoint_by_id", 0)
-                + 1
+                _native_parse_diagnostics["by_parser"].get("parse_checkpoint_by_id", 0) + 1
             )
             _native_parse_diagnostics["last_error_type"] = type(e).__name__
             _native_parse_diagnostics["last_error_message"] = str(e)

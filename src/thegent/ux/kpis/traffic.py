@@ -62,9 +62,7 @@ def progress_bar(done: int, total: int, *, width: int = 24) -> str:
     return f"[{'#' * filled}{'-' * (width - filled)}] {pct:3d}%"
 
 
-def progress_bar_with_eta(
-    done: int, total: int, elapsed_s: float, *, width: int = 24
-) -> str:
+def progress_bar_with_eta(done: int, total: int, elapsed_s: float, *, width: int = 24) -> str:
     """Progress bar with an ETA estimate appended.
 
     Appends `` ETA 12s`` (or `` ETA 0:02`` for >= 60 s) to the standard
@@ -414,9 +412,7 @@ class TrafficDashboard:
     def summary(self) -> dict[str, Any]:
         """Aggregate summary combining window and trend stats."""
         snap = self.window.summary()
-        snap["rps_trend"] = render_trend(
-            self._rps_trend.values(), width=self.trend_width
-        )
+        snap["rps_trend"] = render_trend(self._rps_trend.values(), width=self.trend_width)
         return snap
 
     def rps_trend(self) -> str:

@@ -105,9 +105,7 @@ class TestJsonOutputRegistryList:
     # @trace WL-040 WP-4002
     """
 
-    def _make_persona_record(
-        self, name: str, project: str, caps: list[str]
-    ) -> MagicMock:
+    def _make_persona_record(self, name: str, project: str, caps: list[str]) -> MagicMock:
         from datetime import datetime
 
         rec = MagicMock()
@@ -178,9 +176,7 @@ class TestJsonOutputProjectList:
 
         mock_settings = MagicMock()
         mock_settings.session_dir = tmp_path
-        with patch(
-            "thegent.cli.commands.cli.ThegentSettings", return_value=mock_settings
-        ):
+        with patch("thegent.cli.commands.cli.ThegentSettings", return_value=mock_settings):
             project_list_cmd(format="json")
 
         captured = capsys.readouterr()
@@ -197,9 +193,7 @@ class TestJsonOutputProjectList:
         )
         mock_settings = MagicMock()
         mock_settings.session_dir = tmp_path
-        with patch(
-            "thegent.cli.commands.cli.ThegentSettings", return_value=mock_settings
-        ):
+        with patch("thegent.cli.commands.cli.ThegentSettings", return_value=mock_settings):
             project_list_cmd(format="json")
 
         captured = capsys.readouterr()
@@ -297,9 +291,7 @@ class TestHelpExamples:
         from thegent.cli.apps.main import app
 
         cmd_names = [cmd.name for cmd in app.registered_commands]
-        assert "help" in cmd_names, (
-            "help command must be registered on the main typer app"
-        )
+        assert "help" in cmd_names, "help command must be registered on the main typer app"
 
     def test_main_app_supports_version_option(self) -> None:
         from typer.testing import CliRunner
@@ -342,9 +334,7 @@ class TestProgressSpinners:
         import thegent.doctor as doctor_mod
 
         src = inspect.getsource(doctor_mod._apply_fixes)
-        assert "Progress" in src, (
-            "_apply_fixes must reference rich Progress for spinner feedback (WP-4005)"
-        )
+        assert "Progress" in src, "_apply_fixes must reference rich Progress for spinner feedback (WP-4005)"
 
     def test_spinner_context_available(self) -> None:
         """Verify that spinner_context exists in infra.progress."""
@@ -439,9 +429,7 @@ class TestDoctorRunnerChecks:
         thegent_dir = tmp_path / ".thegent"
         thegent_dir.mkdir()
         # Write invalid YAML (unbalanced brace)
-        (thegent_dir / "config.yaml").write_text(
-            "key: {bad yaml: [unclosed\n", encoding="utf-8"
-        )
+        (thegent_dir / "config.yaml").write_text("key: {bad yaml: [unclosed\n", encoding="utf-8")
         with patch("pathlib.Path.home", return_value=tmp_path):
             check = runner._check_config_yaml()
         assert check.status == "error"
@@ -481,34 +469,24 @@ class TestDoctorRunnerChecks:
         runner = self._runner()
         # Patch out side-effects — the DoctorCheck.name must match what we assert
         with (
-            patch.object(
-                runner, "_check_python_version", return_value=_ok("python_version")
-            ),
+            patch.object(runner, "_check_python_version", return_value=_ok("python_version")),
             patch.object(
                 runner,
                 "_check_anthropic_api_key",
                 return_value=_ok("anthropic_api_key"),
             ),
-            patch.object(
-                runner, "_check_thegent_dir", return_value=_ok("thegent_home_dir")
-            ),
+            patch.object(runner, "_check_thegent_dir", return_value=_ok("thegent_home_dir")),
             patch.object(
                 runner,
                 "_check_thegent_dir_writable",
                 return_value=_ok("thegent_dir_writable"),
             ),
-            patch.object(
-                runner, "_check_thegent_sessions_dir", return_value=_ok("sessions")
-            ),
-            patch.object(
-                runner, "_check_pyproject_toml", return_value=_ok("pyproject")
-            ),
+            patch.object(runner, "_check_thegent_sessions_dir", return_value=_ok("sessions")),
+            patch.object(runner, "_check_pyproject_toml", return_value=_ok("pyproject")),
             patch.object(runner, "_check_config_yaml", return_value=_ok("config_yaml")),
             patch.object(runner, "_check_ruff", return_value=_ok("ruff")),
             patch.object(runner, "_check_cargo", return_value=_ok("cargo")),
-            patch.object(
-                runner, "_check_mcp_config_dir", return_value=_ok("mcp_config")
-            ),
+            patch.object(runner, "_check_mcp_config_dir", return_value=_ok("mcp_config")),
             patch.object(runner, "_check_stale_shadow_dirs", return_value=_ok("stale")),
             patch.object(
                 runner,

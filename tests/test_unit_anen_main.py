@@ -34,17 +34,13 @@ def _mock_completed(returncode: int = 0) -> MagicMock:
 
 @patch("thegent.anen_main._resolve_anen_cmd", return_value="anen")
 @patch("thegent.anen_main.subprocess.run")
-def test_default_anen_uses_flash_model(
-    mock_run: MagicMock, _mock_resolve: MagicMock
-) -> None:
+def test_default_anen_uses_flash_model(mock_run: MagicMock, _mock_resolve: MagicMock) -> None:
     mock_run.return_value = _mock_completed(0)
 
     result = runner.invoke(app, [])
 
     assert result.exit_code == 0
-    mock_run.assert_called_once_with(
-        ["anen", "--model", GEMINI_FLASH_MODEL], check=False
-    )
+    mock_run.assert_called_once_with(["anen", "--model", GEMINI_FLASH_MODEL], check=False)
 
 
 @pytest.mark.parametrize(
@@ -80,17 +76,13 @@ def test_anen_alias_parity_table(model_alias: str, canonical_model: str) -> None
 
 @patch("thegent.anen_main._resolve_anen_cmd", return_value="anen")
 @patch("thegent.anen_main.subprocess.run")
-def test_anen_max_exec_sets_headless_model_flag(
-    mock_run: MagicMock, _mock_resolve: MagicMock
-) -> None:
+def test_anen_max_exec_sets_headless_model_flag(mock_run: MagicMock, _mock_resolve: MagicMock) -> None:
     mock_run.return_value = _mock_completed(0)
 
     result = runner.invoke(app, ["exec", "-m", "max", "hello world"])
 
     assert result.exit_code == 0
-    mock_run.assert_called_once_with(
-        ["anen", "exec", "-m", "MiniMax-M2.5", "hello world"], check=False
-    )
+    mock_run.assert_called_once_with(["anen", "exec", "-m", "MiniMax-M2.5", "hello world"], check=False)
 
 
 @patch("thegent.anen_main._resolve_anen_cmd", return_value="anen")
@@ -225,6 +217,4 @@ def test_anen_unknown_model_passthrough_cli_has_no_rejection_message(
 
     assert result.exit_code == 0
     assert "Unknown model" not in _normalized_output(result.output)
-    mock_run.assert_called_once_with(
-        ["anen", "exec", "-m", "unknown-model", "hello"], check=False
-    )
+    mock_run.assert_called_once_with(["anen", "exec", "-m", "unknown-model", "hello"], check=False)

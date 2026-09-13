@@ -46,9 +46,7 @@ def _script_path(project_root: Path) -> Path:
     return script
 
 
-def run_worktree_governance_script(
-    project_root: Path, *args: str
-) -> subprocess.CompletedProcess[str]:
+def run_worktree_governance_script(project_root: Path, *args: str) -> subprocess.CompletedProcess[str]:
     """Run the canonical worktree governance script and return the completed process."""
     return subprocess.run(
         [str(_script_path(project_root)), *args],
@@ -90,9 +88,7 @@ def worktree_governance_new(
     root: Path | None = typer.Option(None, "--root", "-r", help="Repository root"),
 ) -> None:
     """Create a structured worktree."""
-    _run_script(
-        _resolve_repo_root(root), "new", domain, scale, change_anchor, start_point
-    )
+    _run_script(_resolve_repo_root(root), "new", domain, scale, change_anchor, start_point)
 
 
 @worktree_governance_app.command("state")
@@ -115,9 +111,7 @@ def worktree_governance_list(
 
 @worktree_governance_app.command("prune")
 def worktree_governance_prune(
-    dry_run: bool = typer.Option(
-        False, "--dry-run", "-n", help="Show what would be pruned"
-    ),
+    dry_run: bool = typer.Option(False, "--dry-run", "-n", help="Show what would be pruned"),
     root: Path | None = typer.Option(None, "--root", "-r", help="Repository root"),
 ) -> None:
     """Prune done or broken worktrees."""
@@ -130,9 +124,7 @@ def worktree_governance_prune(
 @worktree_governance_app.command("refresh")
 def worktree_governance_refresh(
     change_anchor: str = typer.Argument(..., help="AgilePlus change anchor"),
-    remote: str = typer.Option(
-        "origin", "--remote", help="Remote to fetch before refresh"
-    ),
+    remote: str = typer.Option("origin", "--remote", help="Remote to fetch before refresh"),
     upstream_ref: str | None = typer.Option(
         None,
         "--ref",
@@ -155,9 +147,7 @@ def worktree_governance_refresh(
 
 @worktree_governance_app.command("migrate-legacy")
 def worktree_governance_migrate_legacy(
-    legacy_path: Path = typer.Argument(
-        ..., help="Legacy worktree path outside the canonical root"
-    ),
+    legacy_path: Path = typer.Argument(..., help="Legacy worktree path outside the canonical root"),
     domain: str = typer.Argument(..., help="Canonical task classifier domain"),
     scale: str = typer.Argument(..., help="Canonical task classifier scale"),
     change_anchor: str = typer.Argument(..., help="AgilePlus change anchor"),

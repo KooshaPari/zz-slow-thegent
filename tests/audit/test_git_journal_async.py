@@ -59,9 +59,7 @@ def git_repo(tmp_path: Path) -> Path:
 
     # Create initial commit
     (repo_path / "README.md").write_text("# Test Repo\n")
-    subprocess.run(
-        ["git", "add", "README.md"], cwd=repo_path, capture_output=True, check=True
-    )
+    subprocess.run(["git", "add", "README.md"], cwd=repo_path, capture_output=True, check=True)
     subprocess.run(
         ["git", "commit", "-m", "initial commit"],
         cwd=repo_path,
@@ -114,9 +112,7 @@ class TestCreate:
         assert not isinstance(async_journal._journal, GitJournalEnhanced)
 
     @pytest.mark.asyncio
-    async def test_create_default_is_enhanced(
-        self, git_repo: Path, session_id: str
-    ) -> None:
+    async def test_create_default_is_enhanced(self, git_repo: Path, session_id: str) -> None:
         """Test create defaults to enhanced=True."""
         async_journal = GitJournalAsync.create(
             repo_root=git_repo,
@@ -126,9 +122,7 @@ class TestCreate:
         assert isinstance(async_journal._journal, GitJournalEnhanced)
 
     @pytest.mark.asyncio
-    async def test_create_with_track_secrets(
-        self, git_repo: Path, session_id: str
-    ) -> None:
+    async def test_create_with_track_secrets(self, git_repo: Path, session_id: str) -> None:
         """Test create passes track_secrets parameter."""
         async_journal = GitJournalAsync.create(
             repo_root=git_repo,
@@ -140,9 +134,7 @@ class TestCreate:
         assert async_journal._journal.track_secrets is False
 
     @pytest.mark.asyncio
-    async def test_create_with_auto_commit(
-        self, git_repo: Path, session_id: str
-    ) -> None:
+    async def test_create_with_auto_commit(self, git_repo: Path, session_id: str) -> None:
         """Test create passes auto_commit parameter."""
         async_journal = GitJournalAsync.create(
             repo_root=git_repo,
@@ -165,9 +157,7 @@ class TestRecordFileChange:
     """Tests for async record_file_change method."""
 
     @pytest.mark.asyncio
-    async def test_record_file_change_basic(
-        self, git_repo: Path, session_id: str
-    ) -> None:
+    async def test_record_file_change_basic(self, git_repo: Path, session_id: str) -> None:
         """Test basic async file change recording."""
         async_journal = GitJournalAsync.create(
             repo_root=git_repo,
@@ -187,9 +177,7 @@ class TestRecordFileChange:
         assert len(result) == 40  # Git SHA length
 
     @pytest.mark.asyncio
-    async def test_record_file_change_modified(
-        self, git_repo: Path, session_id: str
-    ) -> None:
+    async def test_record_file_change_modified(self, git_repo: Path, session_id: str) -> None:
         """Test recording a file modification."""
         async_journal = GitJournalAsync.create(
             repo_root=git_repo,
@@ -206,9 +194,7 @@ class TestRecordFileChange:
         assert result is not None
 
     @pytest.mark.asyncio
-    async def test_record_file_change_deleted(
-        self, git_repo: Path, session_id: str
-    ) -> None:
+    async def test_record_file_change_deleted(self, git_repo: Path, session_id: str) -> None:
         """Test recording a file deletion."""
         async_journal = GitJournalAsync.create(
             repo_root=git_repo,
@@ -233,9 +219,7 @@ class TestRecordFileChange:
         assert result is not None
 
     @pytest.mark.asyncio
-    async def test_record_file_change_with_metadata(
-        self, git_repo: Path, session_id: str
-    ) -> None:
+    async def test_record_file_change_with_metadata(self, git_repo: Path, session_id: str) -> None:
         """Test recording file change with metadata."""
         async_journal = GitJournalAsync.create(
             repo_root=git_repo,
@@ -289,9 +273,7 @@ class TestRecordSnapshot:
         assert len(result) == 40
 
     @pytest.mark.asyncio
-    async def test_record_snapshot_with_default_message(
-        self, git_repo: Path, session_id: str
-    ) -> None:
+    async def test_record_snapshot_with_default_message(self, git_repo: Path, session_id: str) -> None:
         """Test snapshot with default message."""
         async_journal = GitJournalAsync.create(
             repo_root=git_repo,
@@ -326,9 +308,7 @@ class TestGetAuditLog:
         assert isinstance(result, list)
 
     @pytest.mark.asyncio
-    async def test_get_audit_log_with_entries(
-        self, git_repo: Path, session_id: str
-    ) -> None:
+    async def test_get_audit_log_with_entries(self, git_repo: Path, session_id: str) -> None:
         """Test getting audit log with recorded changes."""
         async_journal = GitJournalAsync.create(
             repo_root=git_repo,
@@ -354,9 +334,7 @@ class TestGetAuditLog:
         assert len(result) >= 2
 
     @pytest.mark.asyncio
-    async def test_get_audit_log_returns_dicts(
-        self, git_repo: Path, session_id: str
-    ) -> None:
+    async def test_get_audit_log_returns_dicts(self, git_repo: Path, session_id: str) -> None:
         """Test audit log returns proper dict structure."""
         async_journal = GitJournalAsync.create(
             repo_root=git_repo,
@@ -388,9 +366,7 @@ class TestFinalizeSession:
     """Tests for async finalize_session method."""
 
     @pytest.mark.asyncio
-    async def test_finalize_session_basic(
-        self, git_repo: Path, session_id: str
-    ) -> None:
+    async def test_finalize_session_basic(self, git_repo: Path, session_id: str) -> None:
         """Test basic session finalization."""
         async_journal = GitJournalAsync.create(
             repo_root=git_repo,
@@ -411,9 +387,7 @@ class TestFinalizeSession:
         assert len(result) == 40
 
     @pytest.mark.asyncio
-    async def test_finalize_session_with_default_message(
-        self, git_repo: Path, session_id: str
-    ) -> None:
+    async def test_finalize_session_with_default_message(self, git_repo: Path, session_id: str) -> None:
         """Test finalize with default message."""
         async_journal = GitJournalAsync.create(
             repo_root=git_repo,
@@ -458,9 +432,7 @@ class TestConcurrentOperations:
         journal2 = await create_journal()
 
         # Run concurrent operations
-        async def change_file(
-            journal: GitJournalAsync, filename: str, content: bytes
-        ) -> str:
+        async def change_file(journal: GitJournalAsync, filename: str, content: bytes) -> str:
             return await journal.record_file_change(
                 file_path=filename,
                 content=content,
@@ -478,9 +450,7 @@ class TestConcurrentOperations:
         assert all(r is not None for r in results)
 
     @pytest.mark.asyncio
-    async def test_concurrent_snapshot_and_record(
-        self, git_repo: Path, session_id: str
-    ) -> None:
+    async def test_concurrent_snapshot_and_record(self, git_repo: Path, session_id: str) -> None:
         """Test concurrent snapshot and record operations."""
         async_journal = GitJournalAsync.create(
             repo_root=git_repo,
@@ -490,12 +460,8 @@ class TestConcurrentOperations:
 
         # Run snapshot and record concurrently
         results = await asyncio.gather(
-            async_journal.record_file_change(
-                "concurrent1.txt", b"c1", action="created"
-            ),
-            async_journal.record_file_change(
-                "concurrent2.txt", b"c2", action="created"
-            ),
+            async_journal.record_file_change("concurrent1.txt", b"c1", action="created"),
+            async_journal.record_file_change("concurrent2.txt", b"c2", action="created"),
             async_journal.record_snapshot("concurrent snapshot"),
         )
 
@@ -511,9 +477,7 @@ class TestErrorPropagation:
     """Tests for error handling and propagation."""
 
     @pytest.mark.asyncio
-    async def test_error_invalid_repo_path(
-        self, tmp_path: Path, session_id: str
-    ) -> None:
+    async def test_error_invalid_repo_path(self, tmp_path: Path, session_id: str) -> None:
         """Test error handling for invalid repository path."""
         invalid_path = tmp_path / "nonexistent_repo"
 
@@ -525,9 +489,7 @@ class TestErrorPropagation:
             )
 
     @pytest.mark.asyncio
-    async def test_error_nonexistent_file(
-        self, git_repo: Path, session_id: str
-    ) -> None:
+    async def test_error_nonexistent_file(self, git_repo: Path, session_id: str) -> None:
         """Test error when trying to record nonexistent file."""
         async_journal = GitJournalAsync.create(
             repo_root=git_repo,
@@ -586,9 +548,7 @@ class TestThreadPoolBehavior:
             thread_names.append(__import__("threading").current_thread().name)
             return original_record(*args, **kwargs)
 
-        with patch.object(
-            async_journal._journal, "record_file_change", side_effect=tracking_record
-        ):
+        with patch.object(async_journal._journal, "record_file_change", side_effect=tracking_record):
             await async_journal.record_file_change(
                 file_path="test.txt",
                 content=b"test",
@@ -599,9 +559,7 @@ class TestThreadPoolBehavior:
         assert len(thread_names) > 0
 
     @pytest.mark.asyncio
-    async def test_executor_thread_name_prefix(
-        self, git_repo: Path, session_id: str
-    ) -> None:
+    async def test_executor_thread_name_prefix(self, git_repo: Path, session_id: str) -> None:
         """Test executor threads have correct name prefix."""
         async_journal = GitJournalAsync.create(
             repo_root=git_repo,
@@ -658,9 +616,7 @@ class TestEnhancedMode:
         assert len(attestations) > 0
 
     @pytest.mark.asyncio
-    async def test_enhanced_performance_stats(
-        self, git_repo: Path, session_id: str
-    ) -> None:
+    async def test_enhanced_performance_stats(self, git_repo: Path, session_id: str) -> None:
         """Test enhanced mode performance stats."""
         async_journal = GitJournalAsync.create(
             repo_root=git_repo,
@@ -768,12 +724,8 @@ class TestMultipleSessions:
     @pytest.mark.asyncio
     async def test_finalize_multiple_sessions(self, git_repo: Path) -> None:
         """Test finalizing multiple sessions."""
-        journal1 = GitJournalAsync.create(
-            repo_root=git_repo, session_id="final-1", enhanced=False
-        )
-        journal2 = GitJournalAsync.create(
-            repo_root=git_repo, session_id="final-2", enhanced=False
-        )
+        journal1 = GitJournalAsync.create(repo_root=git_repo, session_id="final-1", enhanced=False)
+        journal2 = GitJournalAsync.create(repo_root=git_repo, session_id="final-2", enhanced=False)
 
         await journal1.record_file_change("f1.txt", b"f1", action="created")
         await journal2.record_file_change("f2.txt", b"f2", action="created")

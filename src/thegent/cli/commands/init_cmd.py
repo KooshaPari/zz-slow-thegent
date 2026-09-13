@@ -212,9 +212,7 @@ def _format_banner(summary: InitSummary) -> str:
         lines.append(f"  WORK_STREAM.md   : {summary.work_stream}")
     if summary.onboarding_doc:
         lines.append(f"  onboarding doc   : {summary.onboarding_doc}")
-    lines.append(
-        f"  contract version : {summary.contract_version} (ok={summary.contract_ok})"
-    )
+    lines.append(f"  contract version : {summary.contract_version} (ok={summary.contract_ok})")
     if summary.contract_warning:
         lines.append(f"  contract warning : {summary.contract_warning}")
     if summary.rewrote:

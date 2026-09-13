@@ -272,9 +272,7 @@ class TestFRGOVIG011GuardrailsFromSettingsConstruction:
 
 class TestFRGOVIG012GuardrailsFromEnvDeprecatedAlias:
     def test_returns_input_guardrails_instance(self) -> None:
-        with patch(
-            "thegent.governance.input_guardrails.guardrails_from_settings"
-        ) as mock_gs:
+        with patch("thegent.governance.input_guardrails.guardrails_from_settings") as mock_gs:
             mock_gs.return_value = InputGuardrails()
             result = guardrails_from_env()
             mock_gs.assert_called_once()

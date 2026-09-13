@@ -283,9 +283,7 @@ def audit_context(
     elif isinstance(kind, AuditEntryKind):
         kind_enum = kind
     else:
-        raise TypeError(
-            f"audit_context: kind must be AuditEntryKind or str, got {type(kind).__name__}"
-        )
+        raise TypeError(f"audit_context: kind must be AuditEntryKind or str, got {type(kind).__name__}")
     t0 = time.monotonic()
     error_message: str | None = None
     try:

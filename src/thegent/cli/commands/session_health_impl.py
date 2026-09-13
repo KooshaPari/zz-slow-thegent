@@ -91,9 +91,7 @@ def _hash_health_payload(payload: dict[str, Any]) -> dict[str, str]:
     excluded so each report hashes deterministically.
     """
     payload_for_hash = {
-        key: value
-        for key, value in payload.items()
-        if key not in {"generated_at_utc", "payload_signature"}
+        key: value for key, value in payload.items() if key not in {"generated_at_utc", "payload_signature"}
     }
     import orjson as _json
 

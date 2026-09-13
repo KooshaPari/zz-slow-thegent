@@ -201,9 +201,7 @@ class TestAllMovedHelpersPresent:
         mod = _load(OBSERVABILITY_IMPL)
         for name in MOVED_HELPERS:
             obj = getattr(mod, name)
-            assert getattr(obj, "__module__", None) == OBSERVABILITY_IMPL, (
-                f"{name}.__module__ != observability_impl"
-            )
+            assert getattr(obj, "__module__", None) == OBSERVABILITY_IMPL, f"{name}.__module__ != observability_impl"
 
 
 # ---------------------------------------------------------------------------
@@ -236,9 +234,7 @@ class TestReExportIdentity:
         impl = _load(IMPL)
         obs = _load(OBSERVABILITY_IMPL)
         for name in MOVED_HELPERS:
-            assert getattr(impl, name) is getattr(obs, name), (
-                f"{name} differs between {IMPL} and {OBSERVABILITY_IMPL}"
-            )
+            assert getattr(impl, name) is getattr(obs, name), f"{name} differs between {IMPL} and {OBSERVABILITY_IMPL}"
 
 
 # ---------------------------------------------------------------------------
@@ -296,9 +292,7 @@ class TestMovedHelperSignaturesPreserved:
             sig = inspect.signature(fn)
             actual_params = set(sig.parameters.keys())
             for p in expected:
-                assert p in actual_params, (
-                    f"{name}: expected param {p!r} missing (actual={sorted(actual_params)})"
-                )
+                assert p in actual_params, f"{name}: expected param {p!r} missing (actual={sorted(actual_params)})"
 
     # @trace FR-AUDIT-N+9-016
     def test_observe_summary_impl_signature_unmodified(self) -> None:
@@ -361,9 +355,7 @@ class TestObservabilityRoundTrip:
         assert audio_meta["sample_rate"] == 16000
 
         # 2) Inject a time constraint into a synthetic prompt.
-        constrained = obs._inject_time_constraint(
-            "Investigate the deployment logs.", 30
-        )
+        constrained = obs._inject_time_constraint("Investigate the deployment logs.", 30)
         assert constrained.startswith("Investigate")
         assert "TIME CONSTRAINT" in constrained
         assert "30s" in constrained
@@ -378,14 +370,10 @@ class TestObservabilityRoundTrip:
     def test_audio_transcript_and_grounding_resolution(self) -> None:
         obs = _load(OBSERVABILITY_IMPL)
 
-        transcript = obs._resolve_audio_transcript_for_output(
-            {"text": "hello world", "duration": 1.5}
-        )
+        transcript = obs._resolve_audio_transcript_for_output({"text": "hello world", "duration": 1.5})
         assert transcript == {"transcript": "hello world", "duration": 1.5}
 
-        sources = obs._resolve_grounding_sources_for_output(
-            [{"source": "doc.md", "content": "x" * 250}]
-        )
+        sources = obs._resolve_grounding_sources_for_output([{"source": "doc.md", "content": "x" * 250}])
         assert isinstance(sources, list)
         assert len(sources) == 1
         assert sources[0]["source"] == "doc.md"
@@ -422,9 +410,7 @@ class TestObservabilityRoundTrip:
         assert obs._observe_summary_freshness_bucket(now - 7200) == "expired"
 
     # @trace FR-AUDIT-N+9-024
-    def test_env_parsers_default_and_invalid(
-        self, monkeypatch: pytest.MonkeyPatch
-    ) -> None:
+    def test_env_parsers_default_and_invalid(self, monkeypatch: pytest.MonkeyPatch) -> None:
         obs = _load(OBSERVABILITY_IMPL)
         # Default when unset.
         monkeypatch.delenv("THGENT_TEST_FLOAT", raising=False)
@@ -455,9 +441,7 @@ class TestObservabilityRoundTrip:
         assert named["thresholds"] == default["thresholds"]
 
     # @trace FR-AUDIT-N+9-026
-    def test_load_previous_health_snapshot_missing_returns_none(
-        self, tmp_path: Path
-    ) -> None:
+    def test_load_previous_health_snapshot_missing_returns_none(self, tmp_path: Path) -> None:
         obs = _load(OBSERVABILITY_IMPL)
         assert obs._load_previous_health_snapshot(tmp_path) is None
 
@@ -541,10 +525,7 @@ class TestObservabilityRoundTrip:
     # @trace FR-AUDIT-N+9-034
     def test_validate_image_capability_false_for_missing(self) -> None:
         obs = _load(OBSERVABILITY_IMPL)
-        assert (
-            obs._validate_image_capability("/nonexistent/path/never/exists.png")
-            is False
-        )
+        assert obs._validate_image_capability("/nonexistent/path/never/exists.png") is False
 
     # @trace FR-AUDIT-N+9-035
     def test_parse_observe_summary_timestamp_none_returns_now(self) -> None:
@@ -608,9 +589,7 @@ class TestBackwardCompatImports:
     def test_all_moved_helpers_importable_from_legacy_path(self) -> None:
         impl = _load(IMPL)
         for name in MOVED_HELPERS:
-            assert hasattr(impl, name), (
-                f"legacy `from thegent.cli.commands.impl import {name}` would fail"
-            )
+            assert hasattr(impl, name), f"legacy `from thegent.cli.commands.impl import {name}` would fail"
 
 
 # ---------------------------------------------------------------------------
@@ -703,9 +682,7 @@ class TestImplReExportStructure:
         impl = _load(IMPL)
         src = inspect.getsource(impl)
         for name in MOVED_HELPERS:
-            assert f"def {name}(" not in src, (
-                f"impl.py must not define {name} locally — it's a re-export shim"
-            )
+            assert f"def {name}(" not in src, f"impl.py must not define {name} locally — it's a re-export shim"
 
     # @trace FR-AUDIT-N+9-049
     def test_impl_module_contains_reexport_line(self) -> None:
@@ -718,9 +695,7 @@ class TestImplReExportStructure:
         impl = _load(IMPL)
         all_list = getattr(impl, "__all__", None)
         assert isinstance(all_list, list)
-        assert "observe_summary_impl" in all_list, (
-            "observe_summary_impl must be in impl.__all__ for backward compat"
-        )
+        assert "observe_summary_impl" in all_list, "observe_summary_impl must be in impl.__all__ for backward compat"
 
     # @trace FR-AUDIT-N+9-051
     def test_impl_escalate_add_impl_not_required_on_legacy_path(self) -> None:

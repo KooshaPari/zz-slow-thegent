@@ -19,9 +19,7 @@ class SLAAdapter:
     def __init__(self, config: Any, error_budget: ErrorBudgetTracker):
         self.config = config
         self._error_budget = error_budget
-        self._connector_sla_thresholds: dict[str, ConnectorSLAThresholds] = dict(
-            config.connector_sla_thresholds
-        )
+        self._connector_sla_thresholds: dict[str, ConnectorSLAThresholds] = dict(config.connector_sla_thresholds)
         self._connector_sla_evaluator = ConnectorSLAEvaluator()
         self._connector_latency_tracker = PipelinePercentileTracker()
         self._connector_error_budgets: dict[str, ErrorBudgetTracker] = {}
@@ -31,10 +29,7 @@ class SLAAdapter:
         alerts = []
 
         # Check snapshot staleness
-        if (
-            snapshot_age_seconds is not None
-            and snapshot_age_seconds > self.config.autosync_stale_snapshot_seconds
-        ):
+        if snapshot_age_seconds is not None and snapshot_age_seconds > self.config.autosync_stale_snapshot_seconds:
             alerts.append(f"autosync snapshot stale for {snapshot_age_seconds}s")
 
         # Check global error budget

@@ -25,9 +25,7 @@ class HandoffIntegrity:
         workspace_root = Path(workspace_root)
         # FR-GOV-HO-002 — absolute path required.
         if not workspace_root.is_absolute():
-            raise ValueError(
-                f"workspace_root must be an absolute path (got {workspace_root!s})"
-            )
+            raise ValueError(f"workspace_root must be an absolute path (got {workspace_root!s})")
         self.workspace_root = workspace_root
 
     def analyze_prompt(self, prompt: str) -> dict[str, Any]:
@@ -41,9 +39,7 @@ class HandoffIntegrity:
             raise ValueError("prompt must not be empty or whitespace-only")
         # FR-GOV-HO-010 — enforce max length.
         if len(prompt) > _MAX_PROMPT_LEN:
-            raise ValueError(
-                f"prompt exceeds max length {_MAX_PROMPT_LEN} (got {len(prompt)})"
-            )
+            raise ValueError(f"prompt exceeds max length {_MAX_PROMPT_LEN} (got {len(prompt)})")
         findings = []
         warnings = []
 
@@ -64,9 +60,7 @@ class HandoffIntegrity:
                 missing_files.append(p)
 
         if missing_files:
-            warnings.append(
-                f"Referenced files not found: {', '.join(missing_files[:3])}"
-            )
+            warnings.append(f"Referenced files not found: {', '.join(missing_files[:3])}")
 
         # 3. Look for keywords that suggest missing context
         vague_keywords = [
@@ -95,9 +89,7 @@ class HandoffIntegrity:
 
         # 5. Check for context indicators (good sign)
         context_indicators = ["because", "since", "to", "for", "when", "if"]
-        has_context = any(
-            indicator in prompt.lower() for indicator in context_indicators
-        )
+        has_context = any(indicator in prompt.lower() for indicator in context_indicators)
 
         # 6. Check for code blocks or examples (good sign)
         has_code = "```" in prompt or "`" in prompt
@@ -126,9 +118,7 @@ class HandoffIntegrity:
             "has_code": has_code,
         }
 
-    def suggest_improvements(
-        self, prompt: str, analysis: dict[str, Any] | None = None
-    ) -> str:
+    def suggest_improvements(self, prompt: str, analysis: dict[str, Any] | None = None) -> str:
         """
         Suggest ways to improve the handoff prompt.
 
@@ -157,9 +147,7 @@ class HandoffIntegrity:
 
         # Suggest improvements based on missing elements
         if not analysis["has_action"]:
-            suggestions.append(
-                "💡 Add specific action verbs (create, implement, refactor, etc.)"
-            )
+            suggestions.append("💡 Add specific action verbs (create, implement, refactor, etc.)")
 
         if not analysis["has_context"]:
             suggestions.append("💡 Add context explaining why this task is needed")
@@ -176,9 +164,7 @@ class HandoffIntegrity:
 
         return prompt
 
-    def validate_handoff(
-        self, prompt: str, min_completeness_score: int = 2
-    ) -> tuple[bool, str]:
+    def validate_handoff(self, prompt: str, min_completeness_score: int = 2) -> tuple[bool, str]:
         """
         Validate that a handoff prompt meets minimum quality requirements.
 

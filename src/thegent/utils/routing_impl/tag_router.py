@@ -62,9 +62,7 @@ class TagRouter:
             The target model/deployment string, or None if no route matches.
         """
         tag_set = set(request_tags)
-        matching: list[TagRoute] = [
-            route for route in self._routes if all(tag in tag_set for tag in route.tags)
-        ]
+        matching: list[TagRoute] = [route for route in self._routes if all(tag in tag_set for tag in route.tags)]
 
         if not matching:
             return None

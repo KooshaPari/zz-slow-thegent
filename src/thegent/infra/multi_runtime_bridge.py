@@ -73,10 +73,7 @@ class MultiRuntimeBridge:
 
                 # Check heartbeat (future implementation: workers write to SHM/file)
                 last_seen = self.worker_heartbeats.get(runtime, 0)
-                if (
-                    last_seen > 0
-                    and (time.time() - last_seen) > self.heartbeat_interval * 3
-                ):
+                if last_seen > 0 and (time.time() - last_seen) > self.heartbeat_interval * 3:
                     process.terminate()
 
             await asyncio.sleep(self.heartbeat_interval)
@@ -127,9 +124,7 @@ class MultiRuntimeBridge:
             self.worker_heartbeats[runtime] = time.time()
 
             # Log forwarding
-            log_forwarder_task = asyncio.create_task(
-                self._forward_logs(runtime, process)
-            )
+            log_forwarder_task = asyncio.create_task(self._forward_logs(runtime, process))
             self._log_forwarder_tasks.add(log_forwarder_task)
             log_forwarder_task.add_done_callback(self._log_forwarder_tasks.discard)
         except Exception:
@@ -166,11 +161,7 @@ class MultiRuntimeBridge:
             await self.start_worker(task.runtime)
         except Exception:
             # Fallback to CPython 3.14 if PyPy fails, or vice versa
-            fallback = (
-                RuntimeType.CPYTHON_314
-                if task.runtime == RuntimeType.PYPY
-                else RuntimeType.PYPY
-            )
+            fallback = RuntimeType.CPYTHON_314 if task.runtime == RuntimeType.PYPY else RuntimeType.PYPY
             await self.start_worker(fallback)
             task.runtime = fallback
 

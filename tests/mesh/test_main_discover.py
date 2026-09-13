@@ -38,15 +38,11 @@ def test_mesh_discover_auto_detect_registers_and_reports(monkeypatch, tmp_path) 
     assert [agent_id for agent_id, _ in mesh.registered] == ["claude-101", "cursor-202"]
 
 
-def test_mesh_discover_pattern_filter_registers_and_reports(
-    monkeypatch, tmp_path
-) -> None:
+def test_mesh_discover_pattern_filter_registers_and_reports(monkeypatch, tmp_path) -> None:
     mesh = _DummyMesh(tmp_path)
     monkeypatch.setattr("thegent.mesh.main.MeshManager", lambda root: mesh)
 
-    result = runner.invoke(
-        app, ["discover", "--patterns", "codex,claude", "--mesh-root", str(tmp_path)]
-    )
+    result = runner.invoke(app, ["discover", "--patterns", "codex,claude", "--mesh-root", str(tmp_path)])
 
     assert result.exit_code == 0
     assert "Discovered 1 agents." in result.output

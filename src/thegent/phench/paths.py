@@ -119,13 +119,7 @@ def repository_root_candidates() -> list[Path]:
     base = phenotype_root() / "repos"
     if not base.exists():
         return []
-    return sorted(
-        [
-            path
-            for path in base.iterdir()
-            if path.is_dir() and not path.name.startswith(".")
-        ]
-    )
+    return sorted([path for path in base.iterdir() if path.is_dir() and not path.name.startswith(".")])
 
 
 def _load_json_file(path: Path) -> dict:

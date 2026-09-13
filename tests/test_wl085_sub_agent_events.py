@@ -415,9 +415,7 @@ def test_dispatcher_budget_exceeded_no_completed_event():
     from thegent.orchestration.budget_tracker import BudgetExceededError
 
     mock_budget = MagicMock()
-    mock_budget.check.side_effect = BudgetExceededError(
-        node_id="test-node", budget=0, actual=1
-    )
+    mock_budget.check.side_effect = BudgetExceededError(node_id="test-node", budget=0, actual=1)
 
     q = SubAgentEventQueue()
     dispatcher = SubAgentDispatcher(
@@ -460,9 +458,7 @@ def test_dispatcher_uses_custom_event_queue_not_global():
 # ---------------------------------------------------------------------------
 
 
-def _drain_queue_bounded(
-    queue: SubAgentEventQueue, max_events: int
-) -> list[SubAgentEvent]:
+def _drain_queue_bounded(queue: SubAgentEventQueue, max_events: int) -> list[SubAgentEvent]:
     """Replicate the MCP tool's bounded-drain logic for unit testing.
 
     This mirrors the implementation in thegent_orchestration_events without
@@ -597,15 +593,9 @@ async def test_unified_worker_daemon_dispatches_post_agent_run_on_completed_even
     q = SubAgentEventQueue()
     daemon = UnifiedWorkerDaemon(event_queue=q)
 
-    with patch(
-        "thegent.orchestration.unified_worker._dispatch_post_agent_run_hook"
-    ) as mock_dispatch:
+    with patch("thegent.orchestration.unified_worker._dispatch_post_agent_run_hook") as mock_dispatch:
         task = asyncio.create_task(daemon._consume_events())
-        q.put(
-            _make_event(
-                request_id="req_completed", event_type=SubAgentEventType.COMPLETED
-            )
-        )
+        q.put(_make_event(request_id="req_completed", event_type=SubAgentEventType.COMPLETED))
         await asyncio.sleep(0.05)
         task.cancel()
         with pytest.raises(asyncio.CancelledError):

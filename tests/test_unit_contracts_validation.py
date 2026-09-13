@@ -67,10 +67,7 @@ class TestValidateCSM:
         # @trace FR-CTR-011
         csm = make_csm(status="FAILED", progress=0.0, issues=["disk full"])
         issues = validate_csm(csm)
-        assert not any(
-            "failed" in i.lower() and "issues" in i.lower() and "empty" in i.lower()
-            for i in issues
-        )
+        assert not any("failed" in i.lower() and "issues" in i.lower() and "empty" in i.lower() for i in issues)
 
     def test_reviewer_phase_missing_decision_code(self) -> None:
         # @trace FR-CTR-011

@@ -142,9 +142,7 @@ def test_call_url_substitution() -> None:
     assert result.status_code == 200
     # Verify the URL substitution was applied in the call.
     call_args = mock_client.request.call_args
-    called_url = (
-        call_args[0][1] if call_args[0] else call_args[1].get("url", call_args[0][1])
-    )
+    called_url = call_args[0][1] if call_args[0] else call_args[1].get("url", call_args[0][1])
     # The URL passed to client.request should have the query substituted.
     assert "shoes" in called_url
 

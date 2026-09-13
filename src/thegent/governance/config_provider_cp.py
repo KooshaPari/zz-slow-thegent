@@ -47,24 +47,18 @@ class ControlPlaneConfigProvider:
         """Resolve config via Control Plane API."""
         try:
             with httpx.Client(timeout=self.timeout) as client:
-                response = self._post_resolve(
-                    client, tenant_id, session_id, request_overrides, keys
-                )
+                response = self._post_resolve(client, tenant_id, session_id, request_overrides, keys)
                 if response.status_code == 200:
                     return response.json()
 
-                logger.error(
-                    f"CP resolution failed: {response.status_code} {response.text}"
-                )
+                logger.error(f"CP resolution failed: {response.status_code} {response.text}")
         except Exception as e:
             logger.error(f"CP connection error: {e}")
 
         # Fallback to local env if CP is down (Circuit Breaker logic would go here)
         from thegent.governance.config_provider import EnvConfigProvider
 
-        return EnvConfigProvider().resolve(
-            tenant_id, session_id, request_overrides, keys
-        )
+        return EnvConfigProvider().resolve(tenant_id, session_id, request_overrides, keys)
 
     def _post_resolve(
         self,

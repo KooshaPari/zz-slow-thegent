@@ -5,9 +5,7 @@ from __future__ import annotations
 from typing import Any
 
 
-def build_audio_summary_metadata(
-    *, audio_transcript: str | None, audio_sources: list[str]
-) -> dict[str, Any] | None:
+def build_audio_summary_metadata(*, audio_transcript: str | None, audio_sources: list[str]) -> dict[str, Any] | None:
     """Build compact transcript metadata for run output payloads."""
     if not audio_transcript:
         return None

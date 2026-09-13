@@ -69,9 +69,7 @@ def test_wl10991_resolve_turn_submit_execution_target_rejects_non_string_diff() 
         )
 
 
-def test_wl10992_resolve_turn_submit_response_approval_fields_returns_none_tuple() -> (
-    None
-):
+def test_wl10992_resolve_turn_submit_response_approval_fields_returns_none_tuple() -> None:
     # @trace WL-10992
     fields = server._resolve_turn_submit_response_approval_fields(None)
     assert fields == (None, None, None)
@@ -81,18 +79,14 @@ def test_wl10993_build_turn_submit_success_response_includes_approval_payload() 
     # @trace WL-10993
     turn = _turn_payload()
     approval_payload = {"id": "approval-1", "status": "requested", "diff": "---\n+++\n"}
-    response = server._build_turn_submit_success_response(
-        True, 11, turn, approval_payload
-    )
+    response = server._build_turn_submit_success_response(True, 11, turn, approval_payload)
     assert response is not None
     assert response["jsonrpc"] == "2.0"
     assert response["result"]["turn"] == turn
     assert response["result"]["approval"] == approval_payload
 
 
-def test_wl10994_handle_turn_submit_request_without_id_notifies_approval_request() -> (
-    None
-):
+def test_wl10994_handle_turn_submit_request_without_id_notifies_approval_request() -> None:
     # @trace WL-10994
     _reset_state()
     session_id = _start_session()
@@ -116,23 +110,17 @@ def test_wl10994_handle_turn_submit_request_without_id_notifies_approval_request
     assert notifications[2]["method"] == "approval/requested"
 
 
-def test_wl10995_resolve_turn_submit_completion_marks_turn_completed_and_adds_tool_call_id() -> (
-    None
-):
+def test_wl10995_resolve_turn_submit_completion_marks_turn_completed_and_adds_tool_call_id() -> None:
     # @trace WL-10995
     turn = _turn_payload()
     notifications: list[dict[str, object]] = []
-    server._resolve_turn_submit_completion(
-        "session-1", "turn-1", "run", turn, notifications
-    )
+    server._resolve_turn_submit_completion("session-1", "turn-1", "run", turn, notifications)
     assert turn["status"] == "completed"
     assert turn["tool_call_id"] == "toolcall-0001"
     assert notifications[-1]["method"] == "turn/completed"
 
 
-def test_wl10996_build_turn_submit_side_effects_phase_preserves_required_fields() -> (
-    None
-):
+def test_wl10996_build_turn_submit_side_effects_phase_preserves_required_fields() -> None:
     # @trace WL-10996
     side_effects_phase = server._build_turn_submit_side_effects_phase(
         "session-1", "turn-1", _turn_payload(), "input", True, "--- diff"
@@ -162,9 +150,7 @@ def test_wl10997_handle_turn_submit_request_preserves_numeric_request_id() -> No
     assert response["id"] == 7
 
 
-def test_wl10998_resolve_turn_submit_side_effects_target_rejects_missing_turn_payload() -> (
-    None
-):
+def test_wl10998_resolve_turn_submit_side_effects_target_rejects_missing_turn_payload() -> None:
     # @trace WL-10998
     with pytest.raises(ValueError, match="Turn submit side-effects target unresolved"):
         server._resolve_turn_submit_side_effects_target(
@@ -180,6 +166,4 @@ def test_wl10998_resolve_turn_submit_side_effects_target_rejects_missing_turn_pa
 def test_wl10999_extract_turn_submit_approval_payload_id_rejects_empty_string() -> None:
     # @trace WL-10999
     with pytest.raises(ValueError, match="Turn submit response target unresolved"):
-        server._extract_turn_submit_approval_payload_id(
-            {"id": "", "status": "requested"}
-        )
+        server._extract_turn_submit_approval_payload_id({"id": "", "status": "requested"})

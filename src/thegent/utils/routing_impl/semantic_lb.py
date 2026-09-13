@@ -75,9 +75,7 @@ class SemanticLoadBalancer:
         Returns None if capabilities list is empty or all scores below min_similarity.
         """
         if not self._capabilities:
-            _log.debug(
-                "SemanticLoadBalancer: no capabilities registered, returning None"
-            )
+            _log.debug("SemanticLoadBalancer: no capabilities registered, returning None")
             return None
 
         prompt_embedding = self._provider.embed(prompt)
@@ -118,9 +116,7 @@ class SemanticLoadBalancer:
     def add_capability(self, capability: ModelCapability) -> None:
         """Register a new model capability."""
         self._capabilities.append(capability)
-        self._desc_embeddings[capability.model] = self._provider.embed(
-            capability.description
-        )
+        self._desc_embeddings[capability.model] = self._provider.embed(capability.description)
         _log.debug("SemanticLoadBalancer: added capability model=%r", capability.model)
 
     def get_capabilities(self) -> list[ModelCapability]:

@@ -28,9 +28,7 @@ def _ctx(**kwargs) -> dict:
     return {"context": kwargs}
 
 
-def _route(
-    expression: str, target: str = "target-model", name: str = "test"
-) -> CelRoute:
+def _route(expression: str, target: str = "target-model", name: str = "test") -> CelRoute:
     return CelRoute(expression=expression, target=target, name=name)
 
 

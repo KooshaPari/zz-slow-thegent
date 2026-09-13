@@ -59,9 +59,7 @@ class ConflictGrowthGuardrail:
             raise ValueError("current_count must be non-negative")
 
         if current_count > self.max_conflicts:
-            raise ConflictLimitExceeded(
-                f"Conflict count {current_count} exceeds hard limit {self.max_conflicts}"
-            )
+            raise ConflictLimitExceeded(f"Conflict count {current_count} exceeds hard limit {self.max_conflicts}")
 
     def warn_level(self, current_count: int) -> bool:
         """Check if conflict count is at warning level.

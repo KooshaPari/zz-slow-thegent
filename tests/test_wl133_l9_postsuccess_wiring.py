@@ -40,9 +40,7 @@ def helpers_module():
 
 
 @pytest.mark.parametrize("phase_name", list(_WIRE_DONE))
-def test_run_impl_core_delegates_postsuccess_to_helper(
-    phase_name: str, run_impl_core_source: str
-) -> None:
+def test_run_impl_core_delegates_postsuccess_to_helper(phase_name: str, run_impl_core_source: str) -> None:
     """``run_impl_core`` must call the post-success helper, not inline the body."""
     assert f"{phase_name}(" in run_impl_core_source, (
         f"Expected run_impl_core to delegate to {phase_name} helper for "

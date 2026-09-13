@@ -315,9 +315,7 @@ class TestVerifyChain:
         # Tamper with the hash of the second record
         ledger_file = tmp_path / "agileplus" / "evidence_ledger.jsonl"
         lines = ledger_file.read_text().splitlines()
-        data = json.loads(
-            lines[2]
-        )  # second event line (0=marker, 1=first event, 2=second event)
+        data = json.loads(lines[2])  # second event line (0=marker, 1=first event, 2=second event)
         data["hash"] = "0" * 64  # corrupt hash
         lines[2] = json.dumps(data)
         ledger_file.write_text("\n".join(lines) + "\n")

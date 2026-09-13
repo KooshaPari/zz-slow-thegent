@@ -169,9 +169,7 @@ def _get_compiled(profile: DlpProfile) -> list[tuple[DlpPattern, re.Pattern[str]
             DlpProfile.PCI_DSS: PCI_DSS_PATTERNS,
         }
         raw = patterns_map.get(profile, [])
-        _compiled_cache[profile] = [
-            (p, re.compile(p.pattern, re.IGNORECASE)) for p in raw
-        ]
+        _compiled_cache[profile] = [(p, re.compile(p.pattern, re.IGNORECASE)) for p in raw]
     return _compiled_cache[profile]
 
 
@@ -185,9 +183,7 @@ def scan_dlp(text: str, config: DlpConfig | None = None) -> DlpResult:
     cfg = config or DlpConfig()
 
     if not cfg.enabled:
-        return DlpResult(
-            profile=cfg.profile, matches=[], violation=False, categories_found=[]
-        )
+        return DlpResult(profile=cfg.profile, matches=[], violation=False, categories_found=[])
 
     if cfg.profile == DlpProfile.CUSTOM:
         patterns = cfg.custom_patterns or []

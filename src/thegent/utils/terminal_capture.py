@@ -130,9 +130,7 @@ def _capture_via_proc(pid: int, n: int) -> CaptureResult | None:
     # @trace FR-SES-002, FR-SES-003
     """
     if platform.system() != "Linux":
-        logger.debug(
-            "/proc not available on %s; skipping proc backend", platform.system()
-        )
+        logger.debug("/proc not available on %s; skipping proc backend", platform.system())
         return None
 
     fd_path = f"/proc/{pid}/fd/1"

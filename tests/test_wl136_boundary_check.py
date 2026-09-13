@@ -73,9 +73,7 @@ def _collect_python_files(path: Path) -> list[Path]:
 def _extract_imports(source_file: Path) -> list[str]:
     """Extract all imported module names from a Python source file via AST."""
     try:
-        tree = ast.parse(
-            source_file.read_text(encoding="utf-8"), filename=str(source_file)
-        )
+        tree = ast.parse(source_file.read_text(encoding="utf-8"), filename=str(source_file))
     except SyntaxError:
         return []
 
@@ -131,9 +129,7 @@ def _find_boundary_violations() -> list[dict[str, str]]:
 
 def test_core_boundary_config_exists() -> None:
     """Canonical core-boundary config used by this checker must exist."""
-    assert _BOUNDARY_CONFIG.exists(), (
-        f"WL-136: Missing boundary config: {_BOUNDARY_CONFIG}"
-    )
+    assert _BOUNDARY_CONFIG.exists(), f"WL-136: Missing boundary config: {_BOUNDARY_CONFIG}"
 
 
 def test_core_modules_do_not_import_tooling_no_violations_detected() -> None:
@@ -148,9 +144,7 @@ def test_core_modules_do_not_import_tooling_no_violations_detected() -> None:
             f"\nWL-136 BOUNDARY VIOLATION: {len(violations)} core->tooling import(s) detected:",
         ]
         for v in violations:
-            lines.append(
-                f"  {v['file']}: imports '{v['import']}' (tooling prefix: {v['violates']})"
-            )
+            lines.append(f"  {v['file']}: imports '{v['import']}' (tooling prefix: {v['violates']})")
         lines.append(
             "\nFix: remove tooling imports from core modules. "
             "Move shared logic to a boundary-neutral helper or inject via dependency."
@@ -170,9 +164,7 @@ def test_core_module_paths_exist() -> None:
 
 def test_tooling_prefix_list_is_non_empty() -> None:
     """Tooling prefix list must not be empty (guard against accidental clearing)."""
-    assert len(TOOLING_IMPORT_PREFIXES) >= 4, (
-        "WL-136: TOOLING_IMPORT_PREFIXES must define at least cli, mcp, tui, ux"
-    )
+    assert len(TOOLING_IMPORT_PREFIXES) >= 4, "WL-136: TOOLING_IMPORT_PREFIXES must define at least cli, mcp, tui, ux"
 
 
 def test_boundary_check_scans_at_least_one_core_file() -> None:
@@ -181,6 +173,4 @@ def test_boundary_check_scans_at_least_one_core_file() -> None:
     for core_path in CORE_MODULE_PATHS:
         if core_path.exists():
             files_scanned.extend(_collect_python_files(core_path))
-    assert len(files_scanned) > 0, (
-        "WL-136: No core module Python files found to scan. Check that _SRC_ROOT is correct."
-    )
+    assert len(files_scanned) > 0, "WL-136: No core module Python files found to scan. Check that _SRC_ROOT is correct."

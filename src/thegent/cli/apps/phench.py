@@ -57,9 +57,7 @@ target_app = typer.Typer(help="Target lifecycle: init, add-repo, lock, materiali
 repos_app = typer.Typer(help="Discover and audit repos in a workspace.")
 env_app = typer.Typer(help="Environment preflight commands for targets.")
 snapshot_app = typer.Typer(help="Capture and inspect target snapshots.")
-modules_app = typer.Typer(
-    help="Manage cross-repo module manifests and shared-module discovery."
-)
+modules_app = typer.Typer(help="Manage cross-repo module manifests and shared-module discovery.")
 projects_app = typer.Typer(help="Guided target selection and execution workflows.")
 
 app = typer.Typer(
@@ -265,24 +263,16 @@ register_projects_run(
     help="Audit shared modules across repos in a phenotype workspace.",
 )
 def scan_shared_repos_cmd(
-    repos_root: str | None = typer.Option(
-        None, "--repos-root", help="Root directory to scan."
-    ),
-    exclude: list[str] = typer.Option(
-        [], "--exclude", help="Repo IDs to exclude; may be repeated."
-    ),
+    repos_root: str | None = typer.Option(None, "--repos-root", help="Root directory to scan."),
+    exclude: list[str] = typer.Option([], "--exclude", help="Repo IDs to exclude; may be repeated."),
     min_repo_count: int = typer.Option(
         2,
         "--min-repo-count",
         "--min-repos",
         help="Minimum repo count for a shared module.",
     ),
-    repos_root_mode: str = typer.Option(
-        "auto", "--repos-root-mode", help="Root discovery: auto|projects|phenotype."
-    ),
-    candidate_name_regex: str | None = typer.Option(
-        None, "--candidate-regex", help="Regex to filter candidate names."
-    ),
+    repos_root_mode: str = typer.Option("auto", "--repos-root-mode", help="Root discovery: auto|projects|phenotype."),
+    candidate_name_regex: str | None = typer.Option(None, "--candidate-regex", help="Regex to filter candidate names."),
     candidates: bool = typer.Option(
         False,
         "--candidates",
@@ -318,24 +308,12 @@ def scan_shared_repos_cmd(
 )
 def materialize_module_manifest_cmd(
     module: str = typer.Option(..., "--module", help="Module name."),
-    repos_root: str | None = typer.Option(
-        None, "--repos-root", help="Root directory for repos."
-    ),
-    repos_root_mode: str | None = typer.Option(
-        None, "--repos-root-mode", help="Root mode: auto|projects|phenotype."
-    ),
-    repos: list[str] = typer.Option(
-        [], "--repo", help="Repo IDs to include; may be repeated."
-    ),
-    min_repo_count: int = typer.Option(
-        2, "--min-repo-count", help="Minimum repo count."
-    ),
-    output_dir: str | None = typer.Option(
-        None, "--output-dir", help="Output directory for manifest."
-    ),
-    dry_run: bool = typer.Option(
-        False, "--dry-run", help="Print changes without writing."
-    ),
+    repos_root: str | None = typer.Option(None, "--repos-root", help="Root directory for repos."),
+    repos_root_mode: str | None = typer.Option(None, "--repos-root-mode", help="Root mode: auto|projects|phenotype."),
+    repos: list[str] = typer.Option([], "--repo", help="Repo IDs to include; may be repeated."),
+    min_repo_count: int = typer.Option(2, "--min-repo-count", help="Minimum repo count."),
+    output_dir: str | None = typer.Option(None, "--output-dir", help="Output directory for manifest."),
+    dry_run: bool = typer.Option(False, "--dry-run", help="Print changes without writing."),
     print_snippets: bool = typer.Option(
         False,
         "--print-snippets",

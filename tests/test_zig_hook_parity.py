@@ -31,17 +31,8 @@ import pytest
 @pytest.fixture
 def zig_dispatcher_bin():
     """Path to the built Zig dispatcher binary."""
-    bin_path = (
-        Path(__file__).parent.parent
-        / "hooks"
-        / "zig"
-        / "zig-out"
-        / "bin"
-        / "hook-dispatcher-zig"
-    )
-    assert bin_path.exists(), (
-        f"Zig dispatcher binary not found at {bin_path}. Run: cd hooks/zig && zig build"
-    )
+    bin_path = Path(__file__).parent.parent / "hooks" / "zig" / "zig-out" / "bin" / "hook-dispatcher-zig"
+    assert bin_path.exists(), f"Zig dispatcher binary not found at {bin_path}. Run: cd hooks/zig && zig build"
     return str(bin_path)
 
 
@@ -85,9 +76,7 @@ class TestZigDispatcher:
                 capture_output=True,
                 text=True,
             )
-            assert result.returncode == 0, (
-                f"validate {event_type} failed: {result.stderr}"
-            )
+            assert result.returncode == 0, f"validate {event_type} failed: {result.stderr}"
             assert "VALID" in result.stdout
             assert event_type in result.stdout
 
@@ -269,9 +258,7 @@ class TestGateParity:
             capture_output=True,
             text=True,
         )
-        assert result.returncode == 0, (
-            "Dispatcher should be operational for suppression checks"
-        )
+        assert result.returncode == 0, "Dispatcher should be operational for suppression checks"
 
     @pytest.mark.requirement("FR-GOV-003")
     def test_gate_fallback_detector_parity(self, zig_dispatcher_bin):
@@ -288,9 +275,7 @@ class TestGateParity:
             capture_output=True,
             text=True,
         )
-        assert result.returncode == 0, (
-            "Dispatcher should be operational for fallback detection"
-        )
+        assert result.returncode == 0, "Dispatcher should be operational for fallback detection"
 
     @pytest.mark.requirement("FR-QA-001")
     def test_gate_ai_slop_parity(self, zig_dispatcher_bin):
@@ -308,9 +293,7 @@ class TestGateParity:
             capture_output=True,
             text=True,
         )
-        assert result.returncode == 0, (
-            "Dispatcher should be operational for slop detection"
-        )
+        assert result.returncode == 0, "Dispatcher should be operational for slop detection"
 
 
 class TestDispatcherBehavior:
@@ -330,9 +313,7 @@ class TestDispatcherBehavior:
             results.append(result.stdout)
 
         # All runs should produce identical output
-        assert results[0] == results[1] == results[2], (
-            "Dispatcher output should be deterministic"
-        )
+        assert results[0] == results[1] == results[2], "Dispatcher output should be deterministic"
 
     def test_dispatcher_handles_empty_input_gracefully(self, zig_dispatcher_bin):
         """Dispatcher should handle empty input without crashing."""

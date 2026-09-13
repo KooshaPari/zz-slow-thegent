@@ -116,9 +116,7 @@ class TestInstallToClientDispatcher:
     def test_droid_exception_returns_failure(self) -> None:
         # @trace FR-MCP-003
         """Droid dispatch that raises returns (False, message)."""
-        with patch(
-            "thegent.mcp.manage.install_to_droid", side_effect=OSError("disk full")
-        ):
+        with patch("thegent.mcp.manage.install_to_droid", side_effect=OSError("disk full")):
             ok, msg = install_to_client("droid", DEFAULT_MCP_URL)
         assert ok is False
         assert "disk full" in msg
@@ -159,9 +157,7 @@ class TestInstallToClaudeDesktopExtended:
         claude_dir = tmp_path / "Library" / "Application Support" / "Claude"
         claude_dir.mkdir(parents=True)
         existing = {"mcpServers": {"other": {"url": "http://other"}}, "apiKey": "abc"}
-        (claude_dir / "claude_desktop_config.json").write_text(
-            json.dumps(existing).decode()
-        )
+        (claude_dir / "claude_desktop_config.json").write_text(json.dumps(existing).decode())
         with patch("thegent.mcp.manage.Path.home", return_value=tmp_path):
             install_to_claude_desktop(url=DEFAULT_MCP_URL)
         data = json.loads((claude_dir / "claude_desktop_config.json").read_text())
@@ -234,9 +230,7 @@ class TestServiceInstallExtended:
     """Extended tests for service_install."""
 
     @patch("thegent.mcp.manage.platform.system", return_value="Darwin")
-    def test_plist_contains_program_arguments(
-        self, mock_sys: MagicMock, tmp_path: Path
-    ) -> None:
+    def test_plist_contains_program_arguments(self, mock_sys: MagicMock, tmp_path: Path) -> None:
         # @trace FR-MCP-003
         """Plist file contains ProgramArguments."""
         plist_path = tmp_path / "LaunchAgents" / "com.thegent.mcp.plist"
@@ -259,9 +253,7 @@ class TestServiceUninstallExtended:
 
     @patch("thegent.mcp.manage.platform.system", return_value="Darwin")
     @patch("thegent.mcp.manage.subprocess.run")
-    def test_uninstall_calls_launchctl_unload(
-        self, mock_run: MagicMock, mock_sys: MagicMock, tmp_path: Path
-    ) -> None:
+    def test_uninstall_calls_launchctl_unload(self, mock_run: MagicMock, mock_sys: MagicMock, tmp_path: Path) -> None:
         # @trace FR-MCP-003
         """service_uninstall calls launchctl unload before removing plist."""
         plist = tmp_path / "com.thegent.mcp.plist"
@@ -294,9 +286,7 @@ class TestServiceStartExtended:
 
     @patch("thegent.mcp.manage.platform.system", return_value="Darwin")
     @patch("thegent.mcp.manage.subprocess.run")
-    def test_start_with_existing_plist(
-        self, mock_run: MagicMock, mock_sys: MagicMock, tmp_path: Path
-    ) -> None:
+    def test_start_with_existing_plist(self, mock_run: MagicMock, mock_sys: MagicMock, tmp_path: Path) -> None:
         # @trace FR-MCP-003
         """service_start calls launchctl load when plist exists."""
         plist = tmp_path / "com.thegent.mcp.plist"
@@ -390,9 +380,7 @@ class TestMcpUpExtended:
     """Extended tests for mcp_up."""
 
     @patch("thegent.mcp.manage.subprocess.run")
-    @patch(
-        "thegent.mcp.manage.shutil.which", return_value="/usr/local/bin/process-compose"
-    )
+    @patch("thegent.mcp.manage.shutil.which", return_value="/usr/local/bin/process-compose")
     @patch("thegent.mcp.manage._process_compose_path")
     def test_success(
         self,
@@ -417,9 +405,7 @@ class TestMcpUpExtended:
         assert "-D" in call_cmd
 
     @patch("thegent.mcp.manage.subprocess.run")
-    @patch(
-        "thegent.mcp.manage.shutil.which", return_value="/usr/local/bin/process-compose"
-    )
+    @patch("thegent.mcp.manage.shutil.which", return_value="/usr/local/bin/process-compose")
     @patch("thegent.mcp.manage._process_compose_path")
     def test_failure_returns_stderr(
         self,
@@ -433,9 +419,7 @@ class TestMcpUpExtended:
         pc_file = tmp_path / "process-compose.yaml"
         pc_file.write_text("version: '0.5'")
         mock_path.return_value = pc_file
-        mock_run.return_value = MagicMock(
-            returncode=1, stdout="", stderr="port already in use"
-        )
+        mock_run.return_value = MagicMock(returncode=1, stdout="", stderr="port already in use")
 
         ok, msg = mcp_up()
         assert ok is False
@@ -447,9 +431,7 @@ class TestMcpDownExtended:
     """Extended tests for mcp_down."""
 
     @patch("thegent.mcp.manage.subprocess.run")
-    @patch(
-        "thegent.mcp.manage.shutil.which", return_value="/usr/local/bin/process-compose"
-    )
+    @patch("thegent.mcp.manage.shutil.which", return_value="/usr/local/bin/process-compose")
     @patch("thegent.mcp.manage._process_compose_path")
     def test_success(
         self,
@@ -470,9 +452,7 @@ class TestMcpDownExtended:
         assert "stopped" in msg.lower()
 
     @patch("thegent.mcp.manage.subprocess.run")
-    @patch(
-        "thegent.mcp.manage.shutil.which", return_value="/usr/local/bin/process-compose"
-    )
+    @patch("thegent.mcp.manage.shutil.which", return_value="/usr/local/bin/process-compose")
     @patch("thegent.mcp.manage._process_compose_path")
     def test_failure_returns_stderr(
         self,
@@ -486,18 +466,14 @@ class TestMcpDownExtended:
         pc_file = tmp_path / "process-compose.yaml"
         pc_file.write_text("version: '0.5'")
         mock_path.return_value = pc_file
-        mock_run.return_value = MagicMock(
-            returncode=1, stdout="", stderr="no running instance"
-        )
+        mock_run.return_value = MagicMock(returncode=1, stdout="", stderr="no running instance")
 
         ok, msg = mcp_down()
         assert ok is False
         assert "no running instance" in msg
 
     @patch("thegent.mcp.manage.subprocess.run")
-    @patch(
-        "thegent.mcp.manage.shutil.which", return_value="/usr/local/bin/process-compose"
-    )
+    @patch("thegent.mcp.manage.shutil.which", return_value="/usr/local/bin/process-compose")
     @patch("thegent.mcp.manage._process_compose_path")
     def test_failure_uses_stdout_when_no_stderr(
         self,
@@ -511,9 +487,7 @@ class TestMcpDownExtended:
         pc_file = tmp_path / "process-compose.yaml"
         pc_file.write_text("version: '0.5'")
         mock_path.return_value = pc_file
-        mock_run.return_value = MagicMock(
-            returncode=1, stdout="error from stdout", stderr=""
-        )
+        mock_run.return_value = MagicMock(returncode=1, stdout="error from stdout", stderr="")
 
         ok, msg = mcp_down()
         assert ok is False
@@ -591,9 +565,7 @@ class TestProcessComposePath:
         assert result is None or isinstance(result, Path)
 
     @patch("thegent.mcp.manage.Path.exists", return_value=False)
-    def test_process_compose_path_missing_returns_none(
-        self, mock_exists: MagicMock
-    ) -> None:
+    def test_process_compose_path_missing_returns_none(self, mock_exists: MagicMock) -> None:
         # @trace FR-MCP-003
         """_process_compose_path returns None when file does not exist."""
         from thegent.mcp.manage import _process_compose_path

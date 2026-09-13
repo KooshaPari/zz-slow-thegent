@@ -82,10 +82,9 @@ def extract_grounding_sources_from_payload(payload: Any) -> list[str]:
         if isinstance(node, dict):
             for key, value in node.items():
                 lowered = str(key).lower()
-                if (
-                    lowered in {"uri", "url", "link"}
-                    or lowered.endswith(("uri", "url", "link"))
-                ) and isinstance(value, str):
+                if (lowered in {"uri", "url", "link"} or lowered.endswith(("uri", "url", "link"))) and isinstance(
+                    value, str
+                ):
                     _push(value)
                 elif lowered in {
                     "groundingmetadata",

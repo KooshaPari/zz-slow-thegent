@@ -64,9 +64,7 @@ def sample_queue_file(temp_dir):
             {
                 "month": "2026-02",
                 "total_files": 1,
-                "locations": [
-                    {"location": "test", "file_count": 1, "files": ["test.md"]}
-                ],
+                "locations": [{"location": "test", "file_count": 1, "files": ["test.md"]}],
             }
         ],
     }
@@ -174,9 +172,7 @@ def test_extract_frontmatter_missing_block(tmp_path: Path) -> None:
     assert extract_frontmatter(plain_file) == {}
 
 
-def test_extract_frontmatter_invalid_yaml(
-    tmp_path: Path, caplog: pytest.LogCaptureFixture
-) -> None:
+def test_extract_frontmatter_invalid_yaml(tmp_path: Path, caplog: pytest.LogCaptureFixture) -> None:
     """Malformed YAML frontmatter is handled and logged before returning an empty dict."""
 
     bad_file = tmp_path / "bad_frontmatter.md"
@@ -194,10 +190,7 @@ body
         result = extract_frontmatter(bad_file)
 
     assert result == {}
-    assert any(
-        "Failed to parse YAML frontmatter" in record.message
-        for record in caplog.records
-    )
+    assert any("Failed to parse YAML frontmatter" in record.message for record in caplog.records)
 
 
 def test_document_analyzer(sample_md_file):

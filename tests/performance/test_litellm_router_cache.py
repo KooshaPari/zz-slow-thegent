@@ -24,9 +24,7 @@ class TestLiteLLMRouterCache:
 
         self._clear_caches()
 
-        with patch(
-            "thegent.utils.routing_impl.litellm_router._build_litellm_router"
-        ) as mock_build:
+        with patch("thegent.utils.routing_impl.litellm_router._build_litellm_router") as mock_build:
             sentinel = MagicMock(name="Router")
             mock_build.return_value = sentinel
 
@@ -45,9 +43,7 @@ class TestLiteLLMRouterCache:
 
         self._clear_caches()
 
-        with patch(
-            "thegent.utils.routing_impl.litellm_router._build_litellm_router"
-        ) as mock_build:
+        with patch("thegent.utils.routing_impl.litellm_router._build_litellm_router") as mock_build:
             router_a = MagicMock(name="RouterA")
             router_b = MagicMock(name="RouterB")
             mock_build.side_effect = [router_a, router_b]
@@ -66,9 +62,7 @@ class TestLiteLLMRouterCache:
 
         self._clear_caches()
 
-        with patch(
-            "thegent.utils.routing_impl.litellm_router._build_litellm_router"
-        ) as mock_build:
+        with patch("thegent.utils.routing_impl.litellm_router._build_litellm_router") as mock_build:
             router_a = MagicMock(name="RouterA")
             router_b = MagicMock(name="RouterB")
             mock_build.side_effect = [router_a, router_b]

@@ -65,9 +65,7 @@ def test_runtime_exposes_public_symbols(symbol: str) -> None:
 
     module = importlib.import_module(RUNTIME_MODULE)
     assert hasattr(module, symbol), f"{RUNTIME_MODULE}.{symbol} is missing"
-    assert callable(getattr(module, symbol)), (
-        f"{RUNTIME_MODULE}.{symbol} is not callable"
-    )
+    assert callable(getattr(module, symbol)), f"{RUNTIME_MODULE}.{symbol} is not callable"
 
 
 def test_runtime_underscore_aliases_match_public() -> None:
@@ -259,9 +257,7 @@ def test_all_functions_under_complexity_threshold() -> None:
             v.visit(node)
             if v.cc > 15:
                 offenders.append((node.name, v.cc, f"{source_path}:{node.lineno}"))
-    assert offenders == [], (
-        f"Functions exceed CC=15: {offenders}. Project rule is CC ≤ 15."
-    )
+    assert offenders == [], f"Functions exceed CC=15: {offenders}. Project rule is CC ≤ 15."
 
 
 # ---------------------------------------------------------------------------
@@ -276,9 +272,7 @@ def test_runtime_module_size_within_budget() -> None:
     runtime = importlib.import_module(RUNTIME_MODULE)
     source_path = Path(str(runtime.__file__))
     line_count = sum(1 for _ in source_path.read_text().splitlines())
-    assert line_count <= 500, (
-        f"Runtime module is {line_count} LOC; budget is 500. Split further."
-    )
+    assert line_count <= 500, f"Runtime module is {line_count} LOC; budget is 500. Split further."
 
 
 # ---------------------------------------------------------------------------
@@ -427,10 +421,7 @@ def test_cliproxy_manager_patchers_under_cc_threshold() -> None:
     }
     offenders: list[tuple[str, int, str]] = []
     for node in ast.walk(tree):
-        if (
-            isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef))
-            and node.name in targets
-        ):
+        if isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef)) and node.name in targets:
             v = V()
             v.visit(node)
             if v.cc > 15:

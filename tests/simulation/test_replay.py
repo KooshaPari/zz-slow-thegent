@@ -45,9 +45,7 @@ def _make_meta(tmp_path: Path, session_id: str = "sess-001", **extra) -> dict:
         },
         **extra,
     }
-    (tmp_path / f"{session_id}.json").write_text(
-        json.dumps(meta).decode(), encoding="utf-8"
-    )
+    (tmp_path / f"{session_id}.json").write_text(json.dumps(meta).decode(), encoding="utf-8")
     return meta
 
 
@@ -213,10 +211,7 @@ def test_replay_yields_in_order(tmp_path: Path) -> None:
 
 def test_replay_no_sleep_when_speed_zero(tmp_path: Path) -> None:
     """FR-REPLAY-002: replay(speed=0) finishes near-instantly."""
-    events = [
-        ReplayEvent(timestamp=float(i), event_type="response", data={})
-        for i in range(5)
-    ]
+    events = [ReplayEvent(timestamp=float(i), event_type="response", data={}) for i in range(5)]
     session = ReplaySession(session_id="speed-zero", events=events)
     engine = _make_engine(tmp_path)
     start = time.monotonic()
@@ -233,10 +228,7 @@ def test_replay_no_sleep_when_speed_zero(tmp_path: Path) -> None:
 def test_replay_yields_all_events(tmp_path: Path) -> None:
     """FR-REPLAY-002: replay() yields every event exactly once."""
     n = 7
-    events = [
-        ReplayEvent(timestamp=float(i), event_type="response", data={})
-        for i in range(n)
-    ]
+    events = [ReplayEvent(timestamp=float(i), event_type="response", data={}) for i in range(n)]
     session = ReplaySession(session_id="all-events", events=events)
     engine = _make_engine(tmp_path)
     result = list(engine.replay(session, speed=0))
@@ -263,10 +255,7 @@ def test_replay_empty_session(tmp_path: Path) -> None:
 
 def test_replay_from_event_starts_at_index(tmp_path: Path) -> None:
     """FR-REPLAY-002: replay_from_event(idx=2) skips the first 2 events."""
-    events = [
-        ReplayEvent(timestamp=float(i), event_type="response", data={"n": i})
-        for i in range(5)
-    ]
+    events = [ReplayEvent(timestamp=float(i), event_type="response", data={"n": i}) for i in range(5)]
     session = ReplaySession(session_id="from-event", events=events)
     engine = _make_engine(tmp_path)
     result = list(engine.replay_from_event(session, 2))
@@ -396,9 +385,7 @@ def test_compare_sessions_identical(tmp_path: Path) -> None:
 def test_extract_tool_calls_filters_correctly(tmp_path: Path) -> None:
     """FR-REPLAY-005: extract_tool_calls returns only tool_call event data."""
     events = [
-        ReplayEvent(
-            timestamp=0.0, event_type="state_change", data={"state": "started"}
-        ),
+        ReplayEvent(timestamp=0.0, event_type="state_change", data={"state": "started"}),
         ReplayEvent(timestamp=1.0, event_type="tool_call", data={"tool": "read_file"}),
         ReplayEvent(timestamp=2.0, event_type="response", data={"content": "..."}),
         ReplayEvent(timestamp=3.0, event_type="tool_call", data={"tool": "write_file"}),
@@ -435,9 +422,7 @@ def test_generate_test_fixture_creates_file(tmp_path: Path) -> None:
     """FR-REPLAY-004: generate_test_fixture creates a .py file at the given path."""
     session = ReplaySession(
         session_id="fix-001",
-        events=[
-            ReplayEvent(timestamp=1.0, event_type="tool_call", data={"tool": "bash"})
-        ],
+        events=[ReplayEvent(timestamp=1.0, event_type="tool_call", data={"tool": "bash"})],
         metadata={"agent": "copilot"},
     )
     engine = _make_engine(tmp_path)
@@ -491,9 +476,7 @@ def test_generate_test_fixture_embeds_session_id(tmp_path: Path) -> None:
 def test_list_sessions_sorted(tmp_path: Path) -> None:
     """FR-REPLAY-001: list_sessions returns a sorted list of .json paths."""
     for name in ("c.json", "a.json", "b.json"):
-        (tmp_path / name).write_text(
-            json.dumps({"session_id": name}).decode(), encoding="utf-8"
-        )
+        (tmp_path / name).write_text(json.dumps({"session_id": name}).decode(), encoding="utf-8")
     engine = _make_engine(tmp_path)
     sessions = engine.list_sessions()
     names = [p.name for p in sessions]
@@ -586,9 +569,7 @@ def test_safe_repr_dict() -> None:
 def test_compare_sessions_tool_calls_diff(tmp_path: Path) -> None:
     """FR-REPLAY-003: compare_sessions tool_calls_diff contains added/removed/changed keys."""
     ev_tc_a = ReplayEvent(timestamp=1.0, event_type="tool_call", data={"tool": "read"})
-    ev_tc_b1 = ReplayEvent(
-        timestamp=1.0, event_type="tool_call", data={"tool": "write"}
-    )
+    ev_tc_b1 = ReplayEvent(timestamp=1.0, event_type="tool_call", data={"tool": "write"})
     ev_tc_b2 = ReplayEvent(timestamp=2.0, event_type="tool_call", data={"tool": "bash"})
     a = ReplaySession("a", [ev_tc_a])
     b = ReplaySession("b", [ev_tc_b1, ev_tc_b2])

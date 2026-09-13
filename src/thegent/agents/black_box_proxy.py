@@ -14,9 +14,7 @@ _log = logging.getLogger(__name__)
 class BlackBoxProxy:
     """Universal proxy for external agents."""
 
-    def __init__(
-        self, agent_cmd: list[str], policy_enforcer: Callable | None = None
-    ) -> None:
+    def __init__(self, agent_cmd: list[str], policy_enforcer: Callable | None = None) -> None:
         self.agent_cmd = agent_cmd
         self.policy_enforcer = policy_enforcer
         self.process: subprocess.Process | None = None

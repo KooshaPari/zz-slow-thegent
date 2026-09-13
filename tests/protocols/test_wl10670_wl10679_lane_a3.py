@@ -28,13 +28,9 @@ from thegent.protocols.turn_submit_boundaries import (
 )
 
 
-def test_wl10670_provider_selection_separates_rule_evaluation_from_final_selection() -> (
-    None
-):
+def test_wl10670_provider_selection_separates_rule_evaluation_from_final_selection() -> None:
     # @trace WL-10670
-    phase = build_provider_rule_evaluation_phase(
-        {"openai": 12, "anthropic": 9}, "weighted", "openai"
-    )
+    phase = build_provider_rule_evaluation_phase({"openai": 12, "anthropic": 9}, "weighted", "openai")
     assert resolve_provider_final_selection_target(phase) == (
         {"openai": 12, "anthropic": 9},
         "weighted",
@@ -44,9 +40,7 @@ def test_wl10670_provider_selection_separates_rule_evaluation_from_final_selecti
 
 def test_wl10671_workflow_progression_separates_guard_checks_from_execution() -> None:
     # @trace WL-10671
-    phase = build_workflow_guard_phase(
-        "wf-1", {"has-session": True, "has-policy": True}, "submit-turn"
-    )
+    phase = build_workflow_guard_phase("wf-1", {"has-session": True, "has-policy": True}, "submit-turn")
     assert resolve_workflow_execution_target(phase) == (
         "wf-1",
         {"has-session": True, "has-policy": True},
@@ -58,9 +52,7 @@ def test_wl10672_hook_reliability_separates_registration_from_invocation() -> No
     # @trace WL-10672
     registration_options = {"timeout_ms": 3000}
     invocation_payload = {"session_id": "s-1"}
-    phase = build_hook_registration_phase(
-        "before_turn_submit", registration_options, invocation_payload
-    )
+    phase = build_hook_registration_phase("before_turn_submit", registration_options, invocation_payload)
     assert resolve_hook_invocation_target(phase) == (
         "before_turn_submit",
         registration_options,
@@ -111,9 +103,7 @@ def test_wl10677_observability_separates_events_from_serialization() -> None:
 
 def test_wl10678_cli_dispatch_separates_parse_from_handler_selection() -> None:
     # @trace WL-10678
-    phase = build_cli_command_parse_phase(
-        "session resume --id s-1", ["session", "resume"], "resume_handler"
-    )
+    phase = build_cli_command_parse_phase("session resume --id s-1", ["session", "resume"], "resume_handler")
     assert resolve_cli_handler_selection_target(phase) == (
         "session resume --id s-1",
         ["session", "resume"],

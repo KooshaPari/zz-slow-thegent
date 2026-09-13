@@ -46,15 +46,9 @@ def shadow(db_path: Path) -> ShadowAuditGit:
 def project_with_entries(registry: ProjectRegistry, shadow: ShadowAuditGit) -> str:
     """Create a project with some audit entries and return its name."""
     proj = registry.register_project(name="test-audit-proj", path="/tmp/audit-test")
-    shadow.record_commit(
-        project_id=proj.id, sha="abc123", message="First commit", diff="diff1"
-    )
-    shadow.record_commit(
-        project_id=proj.id, sha="def456", message="Second commit", diff="diff2"
-    )
-    shadow.record_commit(
-        project_id=proj.id, sha="ghi789", message="Third commit", diff="diff3"
-    )
+    shadow.record_commit(project_id=proj.id, sha="abc123", message="First commit", diff="diff1")
+    shadow.record_commit(project_id=proj.id, sha="def456", message="Second commit", diff="diff2")
+    shadow.record_commit(project_id=proj.id, sha="ghi789", message="Third commit", diff="diff3")
     return proj.name
 
 
@@ -87,9 +81,7 @@ class TestAuditLog:
         assert "def456" in result.output
 
     def test_log_with_limit(self, _patch_deps, project_with_entries: str) -> None:
-        result = runner.invoke(
-            app, ["log", "--project", project_with_entries, "--limit", "2"]
-        )
+        result = runner.invoke(app, ["log", "--project", project_with_entries, "--limit", "2"])
         assert result.exit_code == 0
         assert "abc123" in result.output
         # With limit 2, should have at most 2 entries shown
@@ -102,11 +94,7 @@ class TestAuditLog:
     def test_log_no_project_flag(self, _patch_deps) -> None:
         result = runner.invoke(app, ["log"])
         # Should show usage error or require --project
-        assert (
-            result.exit_code != 0
-            or "Missing" in result.output
-            or "required" in result.output.lower()
-        )
+        assert result.exit_code != 0 or "Missing" in result.output or "required" in result.output.lower()
 
 
 # ---------------------------------------------------------------------------
@@ -116,38 +104,26 @@ class TestAuditLog:
 
 class TestAuditDiff:
     def test_diff_two_shas(self, _patch_deps, project_with_entries: str) -> None:
-        result = runner.invoke(
-            app, ["diff", "abc123", "def456", "--project", project_with_entries]
-        )
+        result = runner.invoke(app, ["diff", "abc123", "def456", "--project", project_with_entries])
         assert result.exit_code == 0
         # Should show diff content from both entries
         assert "abc123" in result.output or "diff1" in result.output
 
     def test_diff_unknown_sha(self, _patch_deps, project_with_entries: str) -> None:
-        result = runner.invoke(
-            app, ["diff", "unknown1", "unknown2", "--project", project_with_entries]
-        )
+        result = runner.invoke(app, ["diff", "unknown1", "unknown2", "--project", project_with_entries])
         assert result.exit_code == 1
 
     def test_diff_unknown_project(self, _patch_deps) -> None:
-        result = runner.invoke(
-            app, ["diff", "sha1", "sha2", "--project", "nonexistent"]
-        )
+        result = runner.invoke(app, ["diff", "sha1", "sha2", "--project", "nonexistent"])
         assert result.exit_code == 1
 
-    def test_diff_shows_both_entries(
-        self, _patch_deps, project_with_entries: str
-    ) -> None:
-        result = runner.invoke(
-            app, ["diff", "abc123", "ghi789", "--project", project_with_entries]
-        )
+    def test_diff_shows_both_entries(self, _patch_deps, project_with_entries: str) -> None:
+        result = runner.invoke(app, ["diff", "abc123", "ghi789", "--project", project_with_entries])
         assert result.exit_code == 0
         assert "Entry 1" in result.output
         assert "Entry 2" in result.output
 
     def test_diff_one_sha_missing(self, _patch_deps, project_with_entries: str) -> None:
-        result = runner.invoke(
-            app, ["diff", "abc123", "missing_sha", "--project", project_with_entries]
-        )
+        result = runner.invoke(app, ["diff", "abc123", "missing_sha", "--project", project_with_entries])
         assert result.exit_code == 1
         assert "not found" in result.output.lower()

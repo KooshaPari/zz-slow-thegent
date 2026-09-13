@@ -4,12 +4,8 @@ import importlib.util
 import json
 from pathlib import Path
 
-SCRIPT_PATH = (
-    Path(__file__).resolve().parents[1] / "scripts" / "sharecli_boundary_drift_check.py"
-)
-SPEC = importlib.util.spec_from_file_location(
-    "sharecli_boundary_drift_check", SCRIPT_PATH
-)
+SCRIPT_PATH = Path(__file__).resolve().parents[1] / "scripts" / "sharecli_boundary_drift_check.py"
+SPEC = importlib.util.spec_from_file_location("sharecli_boundary_drift_check", SCRIPT_PATH)
 assert SPEC is not None
 assert SPEC.loader is not None
 MODULE = importlib.util.module_from_spec(SPEC)
@@ -80,9 +76,7 @@ def test_enforced_lane_unallowlisted_violation_fails_in_strict_mode(
     )
 
     findings = MODULE.collect_findings(tmp_path, config_path)
-    exit_code = MODULE.main(
-        ["--root", str(tmp_path), "--config", str(config_path), "--strict"]
-    )
+    exit_code = MODULE.main(["--root", str(tmp_path), "--config", str(config_path), "--strict"])
 
     assert exit_code == 1
     assert len(findings) == 1
@@ -92,9 +86,7 @@ def test_enforced_lane_unallowlisted_violation_fails_in_strict_mode(
 
 
 def test_legacy_cli_share_import_is_rejected(tmp_path: Path) -> None:
-    config_path = _write_config(
-        tmp_path, '[sharecli_boundary]\nenforced_lanes = ["queue"]'
-    )
+    config_path = _write_config(tmp_path, '[sharecli_boundary]\nenforced_lanes = ["queue"]')
     _write_python(tmp_path, "src/thegent/mesh/cli.py", "import thegent_cli_share\n")
     findings = MODULE.collect_findings(tmp_path, config_path)
     assert len(findings) == 1
@@ -115,9 +107,7 @@ def test_json_payload_contains_required_finding_fields(tmp_path: Path, capsys) -
         "from thegent.mesh.process_detection import detect_agents\n",
     )
 
-    exit_code = MODULE.main(
-        ["--root", str(tmp_path), "--config", str(config_path), "--format", "json"]
-    )
+    exit_code = MODULE.main(["--root", str(tmp_path), "--config", str(config_path), "--format", "json"])
     payload = json.loads(capsys.readouterr().out)
     finding = payload["findings"][0]
 
@@ -134,9 +124,7 @@ def test_json_payload_contains_required_finding_fields(tmp_path: Path, capsys) -
 
 
 def test_docs_paths_are_ignored(tmp_path: Path) -> None:
-    config_path = _write_config(
-        tmp_path, '[sharecli_boundary]\nenforced_lanes = ["queue"]'
-    )
+    config_path = _write_config(tmp_path, '[sharecli_boundary]\nenforced_lanes = ["queue"]')
     _write_python(
         tmp_path,
         "docs/example.py",

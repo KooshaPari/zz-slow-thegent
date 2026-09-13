@@ -188,9 +188,8 @@ class TestHelpTextPeriodConvention:
             stripped = help_text.rstrip()
             if not stripped.endswith("."):
                 offenders.append((label, help_text))
-        assert not offenders, (
-            "sub-commands with help text not ending in '.':\n"
-            + "\n".join(f"  {label}: {help_text!r}" for label, help_text in offenders)
+        assert not offenders, "sub-commands with help text not ending in '.':\n" + "\n".join(
+            f"  {label}: {help_text!r}" for label, help_text in offenders
         )
 
     def test_cockpit_replay_help_is_single_sentence(self) -> None:
@@ -385,12 +384,8 @@ class TestErrorEnvelopeConvention:
                 leftover = re.findall(r"\{[^{}]+\}", stripped)
                 if leftover:
                     offenders.append((label, fstring.strip()[:120], ",".join(leftover)))
-        assert not offenders, (
-            "err_console.print f-strings with non-_exc_text interpolation:\n"
-            + "\n".join(
-                f"  {label}: {snippet!r} (leftover: {leftover!r})"
-                for label, snippet, leftover in offenders
-            )
+        assert not offenders, "err_console.print f-strings with non-_exc_text interpolation:\n" + "\n".join(
+            f"  {label}: {snippet!r} (leftover: {leftover!r})" for label, snippet, leftover in offenders
         )
 
     def test_help_text_invariant_for_known_subcommands(self) -> None:
@@ -406,9 +401,7 @@ class TestErrorEnvelopeConvention:
         expected = {
             ("render",): "Render the 4-pane operator cockpit to stdout.",
             ("traffic", "summary"): "Render a TRAFFIC KPI snapshot to stdout.",
-            (
-                "pre-check",
-            ): "Evaluate a PolicyContext against the governance PolicyEngine.",
+            ("pre-check",): "Evaluate a PolicyContext against the governance PolicyEngine.",
             ("audit", "tail"): "Print the last N decisions from the audit JSONL.",
         }
         for cmd in expected:
@@ -487,9 +480,7 @@ class TestCockpitReplayErrorEnvelope:
     is not associated with a value`` after the first ``replay
     failed: batch path not found:`` line)."""
 
-    def test_missing_batch_path_exits_one_with_single_envelope(
-        self, tmp_path: Path
-    ) -> None:
+    def test_missing_batch_path_exits_one_with_single_envelope(self, tmp_path: Path) -> None:
         import json
 
         from typer.testing import CliRunner
@@ -515,9 +506,7 @@ class TestCockpitReplayErrorEnvelope:
         assert "NameError" not in clean
         assert "batch path not found" in clean
 
-    def test_missing_compare_path_exits_one_with_single_envelope(
-        self, tmp_path: Path
-    ) -> None:
+    def test_missing_compare_path_exits_one_with_single_envelope(self, tmp_path: Path) -> None:
         import json
 
         from typer.testing import CliRunner
@@ -543,9 +532,7 @@ class TestCockpitReplayErrorEnvelope:
         assert "NameError" not in clean
         assert "compare path not found" in clean
 
-    def test_both_paths_missing_exits_one_with_single_envelope(
-        self, tmp_path: Path
-    ) -> None:
+    def test_both_paths_missing_exits_one_with_single_envelope(self, tmp_path: Path) -> None:
         from typer.testing import CliRunner
 
         batch = tmp_path / "nonexistent_batch.json"

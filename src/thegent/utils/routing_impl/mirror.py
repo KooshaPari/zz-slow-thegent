@@ -42,11 +42,7 @@ def should_mirror(config: MirrorConfig) -> bool:
     Returns:
         True if mirroring should occur for this request.
     """
-    return (
-        config.enabled
-        and config.target_url != ""
-        and random.random() < config.sample_rate
-    )
+    return config.enabled and config.target_url != "" and random.random() < config.sample_rate
 
 
 async def mirror_request(

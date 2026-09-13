@@ -60,11 +60,7 @@ class CoTVerifier:
     def get_summary(self) -> dict[str, Any]:
         """Summarize all verification results."""
         all_valid = all(r.is_valid for r in self.results)
-        avg_confidence = (
-            sum(r.confidence_score for r in self.results) / len(self.results)
-            if self.results
-            else 0.0
-        )
+        avg_confidence = sum(r.confidence_score for r in self.results) / len(self.results) if self.results else 0.0
 
         return {
             "run_id": self.run_id,

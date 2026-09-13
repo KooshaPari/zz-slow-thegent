@@ -72,9 +72,7 @@ class AgentTree:
             raise ValueError(f"Agent '{agent.name}' is already registered in this tree")
 
         if parent_name is not None and parent_name not in self._agents:
-            raise ValueError(
-                f"Parent agent '{parent_name}' not found in tree; register the parent first"
-            )
+            raise ValueError(f"Parent agent '{parent_name}' not found in tree; register the parent first")
 
         self._agents[agent.name] = agent
         self._children.setdefault(agent.name, [])
@@ -142,10 +140,7 @@ class AgentTree:
         """Return a serialisable representation of the tree."""
         return {
             "agents": list(self._agents.keys()),
-            "edges": [
-                {"child": child, "parent": parent}
-                for child, parent in self._parent.items()
-            ],
+            "edges": [{"child": child, "parent": parent} for child, parent in self._parent.items()],
         }
 
     def __len__(self) -> int:

@@ -164,21 +164,14 @@ class ComplianceEnforcer:
 
     def enforce_mandatory(self, action: str, context: dict[str, Any]) -> bool:
         """Enforce all mandatory controls for an action."""
-        return all(
-            self.check_control(control.id, context)
-            for control in self.profile.get_mandatory_controls()
-        )
+        return all(self.check_control(control.id, context) for control in self.profile.get_mandatory_controls())
 
-    def _check_automatic(
-        self, control: ComplianceControl, context: dict[str, Any]
-    ) -> bool:
+    def _check_automatic(self, control: ComplianceControl, context: dict[str, Any]) -> bool:
         """Perform automatic control check."""
         # Placeholder for actual logic
         return True
 
-    def _check_manual(
-        self, control: ComplianceControl, context: dict[str, Any]
-    ) -> bool:
+    def _check_manual(self, control: ComplianceControl, context: dict[str, Any]) -> bool:
         """Perform manual control check."""
         # In an agent-only environment, manual checks might still involve agent-based verification
         return context.get(f"manual_verification_{control.id}", False)
@@ -191,16 +184,12 @@ class ComplianceAuditTrail:
         storage_path = Path(storage_path)
         # FR-GOV-CP-001/002 — absolute path required.
         if not storage_path.is_absolute():
-            raise ValueError(
-                f"storage_path must be an absolute path (got {storage_path!s})"
-            )
+            raise ValueError(f"storage_path must be an absolute path (got {storage_path!s})")
         self.storage_path = storage_path
         self.storage_path.mkdir(parents=True, exist_ok=True)
         self.ledger_file = self.storage_path / "compliance_ledger.jsonl"
 
-    def record_action(
-        self, action: str, context: dict[str, Any], profile: ComplianceProfile
-    ):
+    def record_action(self, action: str, context: dict[str, Any], profile: ComplianceProfile):
         """Record an action in the audit trail."""
         entry: dict[str, Any] = {
             "timestamp": datetime.now(UTC).isoformat(),
@@ -261,9 +250,7 @@ class ComplianceExporter:
         session_dir = Path(session_dir)
         # FR-GOV-CP-007/008 — absolute path required.
         if not session_dir.is_absolute():
-            raise ValueError(
-                f"session_dir must be an absolute path (got {session_dir!s})"
-            )
+            raise ValueError(f"session_dir must be an absolute path (got {session_dir!s})")
         self.session_dir = session_dir
 
     def export_bundle(self, framework: str, target_path: Path) -> dict[str, Any]:
@@ -308,11 +295,7 @@ class ComplianceExporter:
         if not self.session_dir.exists():
             return []
         # Return list of relevant file names
-        return [
-            f.name
-            for f in self.session_dir.iterdir()
-            if f.suffix in (".json", ".jsonl")
-        ]
+        return [f.name for f in self.session_dir.iterdir() if f.suffix in (".json", ".jsonl")]
 
 
 # ---------------------------------------------------------------------------
@@ -377,9 +360,7 @@ class EvidenceStore:
         store_path = Path(store_path)
         # FR-GOV-CP-003/004 — absolute path required.
         if not store_path.is_absolute():
-            raise ValueError(
-                f"store_path must be an absolute path (got {store_path!s})"
-            )
+            raise ValueError(f"store_path must be an absolute path (got {store_path!s})")
         self.store_path = store_path
         self._last_hash: str = ""
 
@@ -451,11 +432,7 @@ class EvidenceStore:
 
     def list_since(self, cutoff_utc: datetime) -> list:
         """Return evidence records created at or after cutoff_utc."""
-        return [
-            r
-            for r in self.list_all()
-            if datetime.fromisoformat(r.timestamp_utc) >= cutoff_utc
-        ]
+        return [r for r in self.list_all() if datetime.fromisoformat(r.timestamp_utc) >= cutoff_utc]
 
     def purge_older_than(self, days: int) -> int:
         """Remove records older than `days` days. Returns count purged.
@@ -467,9 +444,7 @@ class EvidenceStore:
             raise ValueError(f"days must be non-negative, got {days}")
         cutoff = datetime.now(UTC) - _timedelta(days=days)
         all_records = self.list_all()
-        surviving = [
-            r for r in all_records if datetime.fromisoformat(r.timestamp_utc) >= cutoff
-        ]
+        surviving = [r for r in all_records if datetime.fromisoformat(r.timestamp_utc) >= cutoff]
         purged_count = len(all_records) - len(surviving)
 
         if purged_count == 0:
@@ -505,9 +480,7 @@ class EvidenceStore:
 
         tmp.replace(self.store_path)
         self._last_hash = prev_hash
-        _wl051_log.info(
-            "Evidence purge: removed %d records older than %d days", purged_count, days
-        )
+        _wl051_log.info("Evidence purge: removed %d records older than %d days", purged_count, days)
         return purged_count
 
     def verify_integrity(self) -> bool:
@@ -589,15 +562,10 @@ class RetentionEnforcer:
         if policy.policy_id in existing:
             raise ValueError(f"RetentionPolicy already exists: {policy.policy_id}")
         self._append_jsonl(self._policies_path, policy.model_dump(mode="json"))
-        _wl051_log.info(
-            "Retention policy added: %s tenant=%s", policy.policy_id, policy.tenant_id
-        )
+        _wl051_log.info("Retention policy added: %s tenant=%s", policy.policy_id, policy.tenant_id)
 
     def list_policies(self) -> list:
-        return [
-            RetentionPolicy.model_validate(r)
-            for r in self._read_jsonl(self._policies_path)
-        ]
+        return [RetentionPolicy.model_validate(r) for r in self._read_jsonl(self._policies_path)]
 
     def get_policy(self, policy_id: str) -> RetentionPolicy:
         for p in self.list_policies():
@@ -610,17 +578,12 @@ class RetentionEnforcer:
         self._append_jsonl(self._consent_path, record.model_dump(mode="json"))
 
     def list_consents(self, tenant_id: str | None = None) -> list:
-        records = [
-            ConsentRecord.model_validate(r)
-            for r in self._read_jsonl(self._consent_path)
-        ]
+        records = [ConsentRecord.model_validate(r) for r in self._read_jsonl(self._consent_path)]
         if tenant_id is not None:
             records = [r for r in records if r.tenant_id == tenant_id]
         return records
 
-    def has_active_consent(
-        self, *, tenant_id: str, subject_id: str, data_category: str
-    ) -> bool:
+    def has_active_consent(self, *, tenant_id: str, subject_id: str, data_category: str) -> bool:
         """Return True if a non-withdrawn consent exists for the subject+category."""
         for rec in self.list_consents(tenant_id=tenant_id):
             if rec.subject_id == subject_id and rec.data_category == data_category:
@@ -740,9 +703,7 @@ class AuditExporter:
             valid_kinds = set(EvidenceKind.__args__)
             unknown = [k for k in kind_filter if k not in valid_kinds]
             if unknown:
-                raise ValueError(
-                    f"Unknown evidence kind: {', '.join(sorted(str(k) for k in unknown))}"
-                )
+                raise ValueError(f"Unknown evidence kind: {', '.join(sorted(str(k) for k in unknown))}")
             records = [r for r in records if r.kind in kind_filter]
 
         integrity_ok = self._store.verify_integrity()
@@ -763,12 +724,8 @@ class AuditExporter:
         if output_path is not None:
             out = Path(output_path)
             out.parent.mkdir(parents=True, exist_ok=True)
-            out.write_text(
-                json.dumps(export, indent=2, sort_keys=True) + "\n", encoding="utf-8"
-            )
-            _wl051_log.info(
-                "Audit export written to %s (%d records)", out, len(records)
-            )
+            out.write_text(json.dumps(export, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+            _wl051_log.info("Audit export written to %s (%d records)", out, len(records))
 
         return export
 
@@ -783,9 +740,7 @@ class AuditExporter:
         exported = self.export_json(since_days=since_days, kind_filter=kind_filter)
         actual = int(exported["record_count"])
         if actual != expected_count:
-            raise RuntimeError(
-                f"Export reconciliation mismatch: expected={expected_count}, actual={actual}"
-            )
+            raise RuntimeError(f"Export reconciliation mismatch: expected={expected_count}, actual={actual}")
         return exported
 
     def enforce_integrity(self) -> bool:
@@ -799,9 +754,7 @@ class AuditExporter:
         """Export a deterministic checkpoint summary with evidence digest."""
         records = self._store.list_all()
         payload = [r.model_dump(mode="json") for r in records]
-        digest = hashlib.sha256(
-            json.dumps(payload, sort_keys=True).encode("utf-8")
-        ).hexdigest()
+        digest = hashlib.sha256(json.dumps(payload, sort_keys=True).encode("utf-8")).hexdigest()
         checkpoint = {
             "checkpoint_id": checkpoint_id,
             "generated_at_utc": datetime.now(UTC).isoformat(),
@@ -809,9 +762,7 @@ class AuditExporter:
             "evidence_digest_sha256": digest,
         }
         output_path.parent.mkdir(parents=True, exist_ok=True)
-        output_path.write_text(
-            json.dumps(checkpoint, indent=2, sort_keys=True) + "\n", encoding="utf-8"
-        )
+        output_path.write_text(json.dumps(checkpoint, indent=2, sort_keys=True) + "\n", encoding="utf-8")
         return checkpoint
 
 

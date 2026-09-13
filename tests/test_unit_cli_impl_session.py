@@ -163,9 +163,7 @@ class TestResolveSessionStatus:
     def test_exited_with_exit_code_in_payload(self, tmp_path) -> None:
         # @trace FR-CLI-115
         rc_path = tmp_path / "sess.rc"
-        result = cli_impl._resolve_session_status(
-            {"exit_code": 0}, rc_path, running=False
-        )
+        result = cli_impl._resolve_session_status({"exit_code": 0}, rc_path, running=False)
         assert result == "exited:0"
 
     def test_exited_with_rc_file(self, tmp_path) -> None:
@@ -246,9 +244,7 @@ class TestResolveAgentModel:
     def test_unknown_agent_returns_none(self) -> None:
         # @trace FR-CLI-126
         settings = MagicMock()
-        result = cli_impl._resolve_agent_model(
-            "unknown-agent-xyz", None, "write", settings
-        )
+        result = cli_impl._resolve_agent_model("unknown-agent-xyz", None, "write", settings)
         assert result is None
 
     def test_minimax_hardcoded(self) -> None:
@@ -656,9 +652,7 @@ class TestLogsImpl:
         meta_path = tmp_path / "sess-tail.json"
         meta_path.write_text("{}", encoding="utf-8")
         stdout_path = tmp_path / "sess-tail.stdout.log"
-        stdout_path.write_text(
-            "\n".join(f"line{i}" for i in range(100)), encoding="utf-8"
-        )
+        stdout_path.write_text("\n".join(f"line{i}" for i in range(100)), encoding="utf-8")
         with patch("thegent.cli.commands.impl.ThegentSettings", return_value=settings):
             result = cli_impl.logs_impl("sess-tail", tail=5)
         lines = result.strip().splitlines()
@@ -1061,9 +1055,7 @@ class TestBuildContinuationPrompt:
         meta_path.write_text("{}", encoding="utf-8")
         stdout_path = tmp_path / "prev.stdout.log"
         stdout_path.write_text("previous output here", encoding="utf-8")
-        result = cli_impl._build_continuation_prompt(
-            settings, "prev", "continue this", include_stderr=False
-        )
+        result = cli_impl._build_continuation_prompt(settings, "prev", "continue this", include_stderr=False)
         assert "previous output here" in result
         assert "continue this" in result
         assert "Continuing from prior session" in result
@@ -1122,9 +1114,7 @@ class TestBgImpl:
     @patch("thegent.cli.commands.impl.ThegentSettings")
     @patch("thegent.cli.commands.impl.resolve_agent", side_effect=lambda a: a)
     @patch("thegent.cli.commands.impl._resolve_cwd")
-    @patch(
-        "thegent.cli.commands.impl._default_owner_tag", return_value="user:proj:1234"
-    )
+    @patch("thegent.cli.commands.impl._default_owner_tag", return_value="user:proj:1234")
     @patch("thegent.contracts.migration.MigrationController")
     def test_bg_basic(
         self,
@@ -1235,9 +1225,7 @@ class TestBgImpl:
     @patch("thegent.cli.commands.impl.resolve_agent", side_effect=lambda a: a)
     @patch("thegent.cli.commands.impl._resolve_cwd", return_value=None)
     @patch("thegent.contracts.migration.MigrationController")
-    def test_bg_ambiguous_cwd(
-        self, mock_migration_cls, mock_cwd, mock_resolve, mock_settings_cls, tmp_path
-    ) -> None:
+    def test_bg_ambiguous_cwd(self, mock_migration_cls, mock_cwd, mock_resolve, mock_settings_cls, tmp_path) -> None:
         # @trace FR-CLI-129
         settings = MagicMock()
         settings.default_timeout_claude = 300
@@ -1264,9 +1252,7 @@ class TestBgImpl:
     @patch("thegent.cli.commands.impl.ThegentSettings")
     @patch("thegent.cli.commands.impl.resolve_agent", side_effect=lambda a: a)
     @patch("thegent.contracts.migration.MigrationController")
-    def test_bg_contract_version_rejected(
-        self, mock_migration_cls, mock_resolve, mock_settings_cls, tmp_path
-    ) -> None:
+    def test_bg_contract_version_rejected(self, mock_migration_cls, mock_resolve, mock_settings_cls, tmp_path) -> None:
         # @trace FR-CLI-130
         settings = MagicMock()
         settings.default_timeout_claude = 300
@@ -1290,10 +1276,7 @@ class TestBgImpl:
             contract_version="0.0.1",
         )
         assert "error" in result
-        assert (
-            "rejected" in result["error"].lower()
-            or "Version too old" in result["error"]
-        )
+        assert "rejected" in result["error"].lower() or "Version too old" in result["error"]
 
     @patch("thegent.cli.commands.impl.subprocess.Popen")
     @patch("thegent.cli.commands.impl.RunRegistry")
@@ -1431,14 +1414,10 @@ class TestRunImpl:
             patch("thegent.cli.commands.impl.ThegentSettings", return_value=settings),
             patch("thegent.cli.commands.impl.resolve_agent", side_effect=lambda a: a),
             patch("thegent.cli.commands.impl._resolve_cwd", return_value=cwd),
-            patch(
-                "thegent.cli.commands.impl._default_owner_tag", return_value="user:proj"
-            ),
+            patch("thegent.cli.commands.impl._default_owner_tag", return_value="user:proj"),
             patch("thegent.cli.commands.impl.RunRegistry", return_value=mock_registry),
             patch("thegent.cli.commands.impl.get_fallback_agents", return_value=[]),
-            patch(
-                "thegent.cli.commands.impl.extract_condensed", return_value="condensed"
-            ),
+            patch("thegent.cli.commands.impl.extract_condensed", return_value="condensed"),
             patch("thegent.cli.commands.impl.is_usage_limit", return_value=False),
             patch(
                 "thegent.contracts.migration.MigrationController",
@@ -1586,9 +1565,7 @@ class TestRunImpl:
             patch("thegent.cli.commands.impl.resolve_agent", side_effect=lambda a: a),
             patch("thegent.cli.commands.impl.RunRegistry"),
             patch("thegent.cli.commands.impl.get_fallback_agents", return_value=[]),
-            patch(
-                "thegent.cli.commands.impl.extract_condensed", return_value="condensed"
-            ),
+            patch("thegent.cli.commands.impl.extract_condensed", return_value="condensed"),
             patch("thegent.cli.commands.impl.is_usage_limit", return_value=False),
             patch(
                 "thegent.contracts.migration.MigrationController",
@@ -1652,9 +1629,7 @@ class TestRunImpl:
                 contract_version="0.0.1",
             )
         assert result["exit_code"] == 1
-        assert "rejected" in result.get(
-            "error", ""
-        ).lower() or "Unsupported" in result.get("error", "")
+        assert "rejected" in result.get("error", "").lower() or "Unsupported" in result.get("error", "")
 
     def test_run_include_contract_flag(self, tmp_path) -> None:
         # @trace FR-CLI-139
@@ -1726,9 +1701,7 @@ class TestLoadPriorSessionOutput:
         stdout_path.write_text("stdout content", encoding="utf-8")
         stderr_path = tmp_path / "prev2.stderr.log"
         stderr_path.write_text("stderr content", encoding="utf-8")
-        result = cli_impl._load_prior_session_output(
-            settings, "prev2", include_stderr=True
-        )
+        result = cli_impl._load_prior_session_output(settings, "prev2", include_stderr=True)
         assert "stdout content" in result
         assert "stderr" in result.lower()
 

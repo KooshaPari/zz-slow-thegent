@@ -34,9 +34,7 @@ def test_wl9810_phase_plan_separates_parse_from_execution_state() -> None:
     # @trace WL-9810
     _reset_state()
     session_id = _start_session()
-    plan = server._build_turn_submit_phase_plan(
-        "req", {"session_id": session_id, "input": "ac"}
-    )
+    plan = server._build_turn_submit_phase_plan("req", {"session_id": session_id, "input": "ac"})
     assert plan["parse_error"] is None
     assert plan["session_id"] == session_id
     assert plan["requires_approval"] is False
@@ -46,9 +44,7 @@ def test_wl9810_phase_plan_separates_parse_from_execution_state() -> None:
 def test_wl9811_parse_error_resolution_returns_session_validation_error() -> None:
     # @trace WL-9811
     _reset_state()
-    plan = server._build_turn_submit_phase_plan(
-        "req", {"session_id": "session-404", "input": "ac"}
-    )
+    plan = server._build_turn_submit_phase_plan("req", {"session_id": "session-404", "input": "ac"})
     parse_error = server._resolve_turn_submit_parse_error(plan)
     assert parse_error is not None
     assert parse_error["error"]["code"] == -32001
@@ -64,9 +60,7 @@ def test_wl9813_execution_target_resolution_returns_typed_tuple() -> None:
     # @trace WL-9813
     _reset_state()
     session_id = _start_session()
-    plan = server._build_turn_submit_phase_plan(
-        "req", {"session_id": session_id, "input": "ac"}
-    )
+    plan = server._build_turn_submit_phase_plan("req", {"session_id": session_id, "input": "ac"})
     parsed_session_id, session, user_input, requires_approval, approval_diff = (
         server._resolve_turn_submit_execution_target(plan)
     )

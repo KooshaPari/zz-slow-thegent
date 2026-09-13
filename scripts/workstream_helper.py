@@ -29,9 +29,7 @@ from typing import IO
 # ---------------------------------------------------------------------------
 # Default path – override via parse_work_stream(path=...)
 # ---------------------------------------------------------------------------
-DEFAULT_WORK_STREAM_PATH = (
-    Path(__file__).parent.parent / "docs" / "reference" / "WORK_STREAM.md"
-)
+DEFAULT_WORK_STREAM_PATH = Path(__file__).parent.parent / "docs" / "reference" / "WORK_STREAM.md"
 
 # Priority order (lower index = higher priority)
 _PRIORITY_ORDER = ["P0", "P1", "P2", "P3", "P4"]

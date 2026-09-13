@@ -32,9 +32,7 @@ class MetricsCollector:
     def __init__(self, *args: Any, **kwargs: Any) -> None:
         self._metrics: dict[str, list[MetricPoint]] = {}
 
-    def record(
-        self, name: str, value: float, tags: dict[str, str] | None = None
-    ) -> None:
+    def record(self, name: str, value: float, tags: dict[str, str] | None = None) -> None:
         if name not in self._metrics:
             self._metrics[name] = []
         self._metrics[name].append(

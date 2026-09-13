@@ -96,9 +96,7 @@ def read_dual(target: str, filename: str, family: str | None = None) -> dict[str
             return payload
         except json.JSONDecodeError:
             errors.append(f"json-error:{path}")
-    raise FileNotFoundError(
-        f"Unable to load {filename} for {target}; {', '.join(errors)}"
-    )
+    raise FileNotFoundError(f"Unable to load {filename} for {target}; {', '.join(errors)}")
 
 
 def sync_dual(
@@ -156,14 +154,8 @@ def sync_dual(
         project_mtime = project_path.stat().st_mtime
         mirror_mtime = mirror_path.stat().st_mtime
         if project_mtime == mirror_mtime:
-            raise ValueError(
-                "Dual state drift with equal mtime; rerun with --prefer projects|home"
-            )
-        source, dest = (
-            (project_path, mirror_path)
-            if project_mtime > mirror_mtime
-            else (mirror_path, project_path)
-        )
+            raise ValueError("Dual state drift with equal mtime; rerun with --prefer projects|home")
+        source, dest = (project_path, mirror_path) if project_mtime > mirror_mtime else (mirror_path, project_path)
 
     _copy_wrapped_json(source, dest)
     return {"status": "repaired", "source": str(source), "synced": str(dest)}

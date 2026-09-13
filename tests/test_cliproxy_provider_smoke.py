@@ -11,9 +11,7 @@ _SCRIPT_PATH = _ROOT / "scripts" / "cliproxy_provider_smoke.py"
 
 
 def _load_module():
-    spec = importlib.util.spec_from_file_location(
-        "cliproxy_provider_smoke", _SCRIPT_PATH
-    )
+    spec = importlib.util.spec_from_file_location("cliproxy_provider_smoke", _SCRIPT_PATH)
     assert spec is not None and spec.loader is not None
     module = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(module)
@@ -60,9 +58,7 @@ def test_main_starts_proxy_when_unreachable(monkeypatch) -> None:
         started["called"] = True
         return FakeProc()
 
-    monkeypatch.setattr(
-        mod.argparse.ArgumentParser, "parse_args", lambda _self: fake_parse_args()
-    )
+    monkeypatch.setattr(mod.argparse.ArgumentParser, "parse_args", lambda _self: fake_parse_args())
     monkeypatch.setattr(mod, "_reachable", fake_reachable)
     monkeypatch.setattr(mod, "_start_proxy", fake_start)
     monkeypatch.setattr(
@@ -231,10 +227,7 @@ def test_run_matrix_retries_anthropic_with_messages_payload(monkeypatch) -> None
     def fake_post(*_args, **kwargs):
         payload = kwargs.get("json", {})
         post_calls.append(payload)
-        if (
-            payload.get("model") == "claude-3-5-haiku-20241022"
-            and "messages" not in payload
-        ):
+        if payload.get("model") == "claude-3-5-haiku-20241022" and "messages" not in payload:
             return FakeResp(
                 400,
                 text='{"error":{"message":"messages: at least one message is required"}}',

@@ -29,18 +29,14 @@ def test_wl125_resolve_audio_transcript_wrapper_delegates(monkeypatch) -> None:
 def test_wl125_build_run_event_details_wrapper_delegates(monkeypatch) -> None:
     captured: dict[str, object] = {}
 
-    def _fake(
-        *, grounding_sources, audio_transcript, audio_sources, context_usage_ratio
-    ):
+    def _fake(*, grounding_sources, audio_transcript, audio_sources, context_usage_ratio):
         captured["grounding_sources"] = grounding_sources
         captured["audio_transcript"] = audio_transcript
         captured["audio_sources"] = audio_sources
         captured["context_usage_ratio"] = context_usage_ratio
         return {"ok": True}
 
-    monkeypatch.setattr(
-        "thegent.cli.commands.impl.run_event_helpers.build_run_event_details", _fake
-    )
+    monkeypatch.setattr("thegent.cli.commands.impl.run_event_helpers.build_run_event_details", _fake)
 
     output = impl._build_run_event_details(
         grounding_sources=["https://example.com"],

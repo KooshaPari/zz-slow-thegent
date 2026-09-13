@@ -6,11 +6,7 @@ import orjson as json
 
 from conftest import _load_script_module
 
-SCRIPT_PATH = (
-    Path(__file__).resolve().parents[1]
-    / "scripts"
-    / "check_extension_package_metadata.py"
-)
+SCRIPT_PATH = Path(__file__).resolve().parents[1] / "scripts" / "check_extension_package_metadata.py"
 MODULE = _load_script_module("check_extension_package_metadata", SCRIPT_PATH)
 
 
@@ -18,9 +14,7 @@ def _write_valid_extension(root: Path, name: str = "vscode") -> Path:
     extension_dir = root / name
     src_dir = extension_dir / "src"
     src_dir.mkdir(parents=True)
-    (src_dir / "extension.ts").write_text(
-        "export function activate() {}\n", encoding="utf-8"
-    )
+    (src_dir / "extension.ts").write_text("export function activate() {}\n", encoding="utf-8")
     package = {
         "name": "thegent-vscode",
         "displayName": "thegent",
@@ -39,9 +33,7 @@ def _write_valid_extension(root: Path, name: str = "vscode") -> Path:
             "test": "node ./out/tests.js",
         },
     }
-    (extension_dir / "package.json").write_text(
-        json.dumps(package).decode(), encoding="utf-8"
-    )
+    (extension_dir / "package.json").write_text(json.dumps(package).decode(), encoding="utf-8")
     (extension_dir / "README.md").write_text(
         "## Run Steps\n\n```bash\nnpm run lint\nnpm run test\n```\n",
         encoding="utf-8",
@@ -65,9 +57,7 @@ def test_validate_extension_package_flags_missing_activation_event(
     package_path.write_text(json.dumps(package).decode(), encoding="utf-8")
 
     errors = MODULE.validate_extension_package(extension_dir)
-    assert any(
-        "`activationEvents` must be a non-empty list" in error for error in errors
-    )
+    assert any("`activationEvents` must be a non-empty list" in error for error in errors)
 
 
 def test_build_report_checks_all_extension_directories(tmp_path: Path) -> None:
@@ -78,9 +68,7 @@ def test_build_report_checks_all_extension_directories(tmp_path: Path) -> None:
     report = MODULE.build_report(tmp_path)
     assert report["ok"] is False
     assert sorted(report["checked_extensions"]) == ["broken", "vscode"]
-    assert any(
-        "`name` must be a non-empty string" in error for error in report["errors"]
-    )
+    assert any("`name` must be a non-empty string" in error for error in report["errors"])
 
 
 def test_validate_extension_package_flags_missing_readme_script_reference(
@@ -108,10 +96,7 @@ def test_validate_extension_package_rejects_duplicate_command_ids(
     package_path.write_text(json.dumps(package).decode(), encoding="utf-8")
 
     errors = MODULE.validate_extension_package(extension_dir)
-    assert any(
-        "duplicate contributes.commands command id `thegent.startSession`" in error
-        for error in errors
-    )
+    assert any("duplicate contributes.commands command id `thegent.startSession`" in error for error in errors)
 
 
 def test_validate_extension_package_requires_lint_and_test_run_steps(
@@ -137,10 +122,7 @@ def test_validate_extension_package_requires_lint_before_test_in_run_steps(
     )
 
     errors = MODULE.validate_extension_package(extension_dir)
-    assert any(
-        "Run Steps must list `npm run lint` before `npm run test`" in error
-        for error in errors
-    )
+    assert any("Run Steps must list `npm run lint` before `npm run test`" in error for error in errors)
 
 
 def test_validate_extension_package_rejects_duplicate_run_step_commands(
@@ -153,10 +135,7 @@ def test_validate_extension_package_rejects_duplicate_run_step_commands(
     )
 
     errors = MODULE.validate_extension_package(extension_dir)
-    assert any(
-        "Run Steps must not repeat the same `npm run <script>` command" in error
-        for error in errors
-    )
+    assert any("Run Steps must not repeat the same `npm run <script>` command" in error for error in errors)
 
 
 # noqa: PT018

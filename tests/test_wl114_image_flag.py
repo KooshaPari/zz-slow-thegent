@@ -244,9 +244,7 @@ def test_validate_image_capability_accepts_claude_agent(
 
     # @trace WL-114
     """
-    monkeypatch.setattr(
-        "thegent.cli.commands.impl._model_supports_vision", lambda _m: True
-    )
+    monkeypatch.setattr("thegent.cli.commands.impl._model_supports_vision", lambda _m: True)
     # Must not raise
     _validate_image_capability("claude", "claude-opus-4-6")
 

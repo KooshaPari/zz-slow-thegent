@@ -55,9 +55,7 @@ class AuditManager:
             shutil.copy2(file_path, dest)
             # Commit to shadow repo for version history
             try:
-                shim_run(
-                    ["git", "add", str(rel_path)], cwd=self.shadow_root, check=True
-                )
+                shim_run(["git", "add", str(rel_path)], cwd=self.shadow_root, check=True)
                 shim_run(
                     ["git", "commit", "-m", f"Audit backup of {rel_path}"],
                     cwd=self.shadow_root,

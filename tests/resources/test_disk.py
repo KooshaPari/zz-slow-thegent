@@ -125,9 +125,7 @@ class TestDiskQueueSampleDataclass:
 
     def test_explicit_timestamp(self) -> None:
         ts = 1_700_000_000.0
-        sample = DiskQueueSample(
-            device="nvme0", queue_depth=1.2, utilization_pct=75.0, timestamp=ts
-        )
+        sample = DiskQueueSample(device="nvme0", queue_depth=1.2, utilization_pct=75.0, timestamp=ts)
         assert sample.timestamp == ts
 
     def test_field_names(self) -> None:
@@ -149,9 +147,7 @@ class TestGetIoStats:
             "sdb": _make_counters(read_count=20, write_count=10),
         }
         monitor = DiskMonitor()
-        with patch(
-            "thegent.resources.disk.psutil.disk_io_counters", return_value=counters
-        ):
+        with patch("thegent.resources.disk.psutil.disk_io_counters", return_value=counters):
             stats = monitor.get_io_stats()
         devices = {s.device for s in stats}
         assert devices == {"sda", "sdb"}
@@ -162,9 +158,7 @@ class TestGetIoStats:
             "sdb": _make_counters(read_count=99),
         }
         monitor = DiskMonitor()
-        with patch(
-            "thegent.resources.disk.psutil.disk_io_counters", return_value=counters
-        ):
+        with patch("thegent.resources.disk.psutil.disk_io_counters", return_value=counters):
             stats = monitor.get_io_stats(device="sda")
         assert len(stats) == 1
         assert stats[0].device == "sda"
@@ -172,9 +166,7 @@ class TestGetIoStats:
     def test_device_filter_no_match_returns_empty(self) -> None:
         counters = {"sda": _make_counters()}
         monitor = DiskMonitor()
-        with patch(
-            "thegent.resources.disk.psutil.disk_io_counters", return_value=counters
-        ):
+        with patch("thegent.resources.disk.psutil.disk_io_counters", return_value=counters):
             stats = monitor.get_io_stats(device="nvme9")
         assert stats == []
 
@@ -189,9 +181,7 @@ class TestGetIoStats:
             busy_time=777,
         )
         monitor = DiskMonitor()
-        with patch(
-            "thegent.resources.disk.psutil.disk_io_counters", return_value={"disk0": c}
-        ):
+        with patch("thegent.resources.disk.psutil.disk_io_counters", return_value={"disk0": c}):
             stats = monitor.get_io_stats()
         s = stats[0]
         assert s.device == "disk0"
@@ -213,9 +203,7 @@ class TestGetIoStats:
             write_time=6,
         )
         monitor = DiskMonitor()
-        with patch(
-            "thegent.resources.disk.psutil.disk_io_counters", return_value={"sda": c}
-        ):
+        with patch("thegent.resources.disk.psutil.disk_io_counters", return_value={"sda": c}):
             stats = monitor.get_io_stats()
         assert stats[0].busy_time_ms is None
 
@@ -250,9 +238,7 @@ class TestListDevices:
             "nvme0": _make_counters(),
         }
         monitor = DiskMonitor()
-        with patch(
-            "thegent.resources.disk.psutil.disk_io_counters", return_value=counters
-        ):
+        with patch("thegent.resources.disk.psutil.disk_io_counters", return_value=counters):
             devices = monitor.list_devices()
         assert devices == sorted(counters.keys())
 
@@ -298,9 +284,7 @@ class TestGetDiskUsage:
     def test_default_path_is_root(self) -> None:
         usage = MagicMock(total=100, used=60, free=40, percent=60.0)
         monitor = DiskMonitor()
-        with patch(
-            "thegent.resources.disk.psutil.disk_usage", return_value=usage
-        ) as mock_du:
+        with patch("thegent.resources.disk.psutil.disk_usage", return_value=usage) as mock_du:
             result = monitor.get_disk_usage()
         mock_du.assert_called_once_with("/")
         assert result["total"] == 100
@@ -311,9 +295,7 @@ class TestGetDiskUsage:
     def test_custom_path(self) -> None:
         usage = MagicMock(total=500, used=250, free=250, percent=50.0)
         monitor = DiskMonitor()
-        with patch(
-            "thegent.resources.disk.psutil.disk_usage", return_value=usage
-        ) as mock_du:
+        with patch("thegent.resources.disk.psutil.disk_usage", return_value=usage) as mock_du:
             result = monitor.get_disk_usage("/home")
         mock_du.assert_called_once_with("/home")
         assert result["used"] == 250
@@ -329,9 +311,7 @@ class TestGetDiskUsage:
 
     def test_value_error_returns_empty_dict(self) -> None:
         monitor = DiskMonitor()
-        with patch(
-            "thegent.resources.disk.psutil.disk_usage", side_effect=ValueError("bad")
-        ):
+        with patch("thegent.resources.disk.psutil.disk_usage", side_effect=ValueError("bad")):
             result = monitor.get_disk_usage("/badpath")
         assert result == {}
 

@@ -38,9 +38,7 @@ class MAIFArtifact:
 
     def _generate_id(self) -> str:
         """Generate a unique artifact ID."""
-        content = (
-            f"{self.action_type}:{self.agent_id}:{self.session_id}:{self.timestamp}"
-        )
+        content = f"{self.action_type}:{self.agent_id}:{self.session_id}:{self.timestamp}"
         return hashlib.sha256(content.encode()).hexdigest()[:16]
 
     def to_signable_content(self) -> str:

@@ -47,9 +47,7 @@ class DriftReplayEngine:
             raise ValueError(f"Archive directory does not exist: {archive_dir}")
 
         output_path = archive_dir / f"{manifest.manifest_id}.json"
-        output_path.write_bytes(
-            orjson.dumps(manifest.to_dict(), option=orjson.OPT_INDENT_2)
-        )
+        output_path.write_bytes(orjson.dumps(manifest.to_dict(), option=orjson.OPT_INDENT_2))
 
         return output_path
 

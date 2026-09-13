@@ -29,9 +29,7 @@ class TestCodexModelVisibilityWithCopilot:
 
     @patch("thegent.clode_main._get_codex_env")
     @patch("thegent.dex_main._get_codex_env")
-    def test_no_provider_conflict_when_multiple_enabled(
-        self, mock_dex: patch, mock_clode: patch
-    ) -> None:
+    def test_no_provider_conflict_when_multiple_enabled(self, mock_dex: patch, mock_clode: patch) -> None:
         """Multiple providers enabled should not cause model resolution conflicts."""
         mock_clode.return_value = {"CODEx_API_KEY": "test-key"}
         mock_dex.return_value = {"CODEx_API_KEY": "test-key"}

@@ -103,24 +103,14 @@ def _graphql_request(
     if response.status_code in {401, 403}:
         raise LinearGraphQLAuthError(f"Linear auth failed ({response.status_code})")
     if response.status_code >= 400:
-        raise LinearGraphQLError(
-            f"Linear request failed ({response.status_code}): {response.text[:200]}"
-        )
+        raise LinearGraphQLError(f"Linear request failed ({response.status_code}): {response.text[:200]}")
 
     body = response.json()
     errors = body.get("errors") or []
     if errors:
-        message = "; ".join(
-            str(error.get("message", "unknown error"))
-            for error in errors
-            if isinstance(error, dict)
-        )
+        message = "; ".join(str(error.get("message", "unknown error")) for error in errors if isinstance(error, dict))
         lower_message = message.lower()
-        if (
-            "auth" in lower_message
-            or "token" in lower_message
-            or "permission" in lower_message
-        ):
+        if "auth" in lower_message or "token" in lower_message or "permission" in lower_message:
             raise LinearGraphQLAuthError(message)
         raise LinearGraphQLError(message or "Linear GraphQL returned errors")
     data = body.get("data")
@@ -133,9 +123,7 @@ def _status_to_linear_type(status: str) -> str:
     normalized = status.strip().upper()
     mapped = LOCAL_STATUS_TO_LINEAR_STATE_TYPE.get(normalized)
     if mapped is None:
-        raise LinearGraphQLError(
-            f"Unsupported local status for Linear mapping: {status}"
-        )
+        raise LinearGraphQLError(f"Unsupported local status for Linear mapping: {status}")
     return mapped
 
 
@@ -185,25 +173,16 @@ def build_linear_state_mapping(states_nodes: list[dict[str, Any]]) -> dict[str, 
     for state in states_nodes:
         state_type = str(state.get("type") or "").strip().lower()
         state_id = str(state.get("id") or "").strip()
-        if (
-            state_type in REQUIRED_LINEAR_STATE_TYPES
-            and state_id
-            and state_type not in states_by_type
-        ):
+        if state_type in REQUIRED_LINEAR_STATE_TYPES and state_id and state_type not in states_by_type:
             states_by_type[state_type] = state_id
 
     missing = sorted(REQUIRED_LINEAR_STATE_TYPES - set(states_by_type.keys()))
     if missing:
-        raise LinearGraphQLError(
-            "Linear workflow is missing required state type mappings: "
-            + ", ".join(missing)
-        )
+        raise LinearGraphQLError("Linear workflow is missing required state type mappings: " + ", ".join(missing))
     return states_by_type
 
 
-def _load_team_bundle(
-    config: LinearGraphQLConfig, issue_limit: int = 250
-) -> dict[str, Any]:
+def _load_team_bundle(config: LinearGraphQLConfig, issue_limit: int = 250) -> dict[str, Any]:
     query = """
     query TeamBundle($teamKey: String!, $issueLimit: Int!) {
       teams(filter: { key: { eq: $teamKey } }, first: 1) {
@@ -247,27 +226,17 @@ def _load_team_bundle(
     return team if isinstance(team, dict) else {}
 
 
-def sync_to_linear(
-    config: LinearGraphQLConfig, workstream_data: list[dict[str, Any]]
-) -> dict[str, Any]:
+def sync_to_linear(config: LinearGraphQLConfig, workstream_data: list[dict[str, Any]]) -> dict[str, Any]:
     """Upsert workstream items into Linear issues."""
     team = _load_team_bundle(config)
     team_id = str(team.get("id") or "")
     if not team_id:
         raise LinearGraphQLError("Linear team id missing from API response")
 
-    states_nodes = (
-        team.get("states", {}).get("nodes", [])
-        if isinstance(team.get("states"), dict)
-        else []
-    )
+    states_nodes = team.get("states", {}).get("nodes", []) if isinstance(team.get("states"), dict) else []
     states_by_type = _resolve_linear_state_mapping(config, states_nodes)
 
-    issues_nodes = (
-        team.get("issues", {}).get("nodes", [])
-        if isinstance(team.get("issues"), dict)
-        else []
-    )
+    issues_nodes = team.get("issues", {}).get("nodes", []) if isinstance(team.get("issues"), dict) else []
     issues_by_workstream_id: dict[str, dict[str, Any]] = {}
     for issue in issues_nodes:
         if not isinstance(issue, dict):
@@ -310,10 +279,7 @@ def sync_to_linear(
                     input_payload["stateId"] = target_state_id
                 result = _graphql_request(config, mutation, {"input": input_payload})
                 create_result = result.get("issueCreate", {})
-                if (
-                    not isinstance(create_result, dict)
-                    or create_result.get("success") is not True
-                ):
+                if not isinstance(create_result, dict) or create_result.get("success") is not True:
                     raise LinearGraphQLError(f"Linear issueCreate failed for {item_id}")
                 created_issue = create_result.get("issue")
                 if isinstance(created_issue, dict):
@@ -344,10 +310,7 @@ def sync_to_linear(
                 {"id": issue_uuid, "input": update_payload},
             )
             update_result = result.get("issueUpdate", {})
-            if (
-                not isinstance(update_result, dict)
-                or update_result.get("success") is not True
-            ):
+            if not isinstance(update_result, dict) or update_result.get("success") is not True:
                 raise LinearGraphQLError(f"Linear issueUpdate failed for {item_id}")
             items_updated += 1
         except LinearGraphQLError as exc:
@@ -365,11 +328,7 @@ def sync_to_linear(
 def sync_from_linear(config: LinearGraphQLConfig) -> dict[str, Any]:
     """Read workstream-related issue status from Linear."""
     team = _load_team_bundle(config)
-    issues_nodes = (
-        team.get("issues", {}).get("nodes", [])
-        if isinstance(team.get("issues"), dict)
-        else []
-    )
+    issues_nodes = team.get("issues", {}).get("nodes", []) if isinstance(team.get("issues"), dict) else []
     results: list[dict[str, Any]] = []
     for issue in issues_nodes:
         if not isinstance(issue, dict):

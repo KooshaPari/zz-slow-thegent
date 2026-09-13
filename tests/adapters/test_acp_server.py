@@ -40,9 +40,7 @@ runner = CliRunner()
 # ---------------------------------------------------------------------------
 
 
-def _make_runner(
-    stdout: str = "done", stderr: str = "", exit_code: int = 0, timed_out: bool = False
-) -> AgentRunner:
+def _make_runner(stdout: str = "done", stderr: str = "", exit_code: int = 0, timed_out: bool = False) -> AgentRunner:
     """Return a mock AgentRunner that returns a fixed RunResult."""
     runner = MagicMock(spec=AgentRunner)
     runner.run.return_value = RunResult(
@@ -169,9 +167,7 @@ class TestCliEntryPoint:
 
         assert result.exit_code == 0
         mock_adapter = mock_adapter_cls.return_value
-        mock_adapter.run_http.assert_called_once_with(
-            host="0.0.0.0", port=ACP_DEFAULT_PORT + 1
-        )
+        mock_adapter.run_http.assert_called_once_with(host="0.0.0.0", port=ACP_DEFAULT_PORT + 1)
         mock_asyncio_run.assert_not_called()
 
 
@@ -239,12 +235,8 @@ class TestHandleAcpMessage:
         assert response["result"]["exit_code"] == 0
 
     @pytest.mark.asyncio
-    async def test_unsupported_type_returns_error(
-        self, adapter: ACPServerAdapter
-    ) -> None:
-        response = await adapter.handle_acp_message(
-            {"type": "unknown", "payload": {}, "agent_id": "x"}
-        )
+    async def test_unsupported_type_returns_error(self, adapter: ACPServerAdapter) -> None:
+        response = await adapter.handle_acp_message({"type": "unknown", "payload": {}, "agent_id": "x"})
         assert response["type"] == "error"
         assert "UNSUPPORTED_TYPE" in response["error"]["code"]
 
@@ -261,18 +253,14 @@ class TestHandleAcpMessage:
         assert "AGENT_NOT_FOUND" in response["error"]["code"]
 
     @pytest.mark.asyncio
-    async def test_caller_agent_id_preserved_on_error(
-        self, adapter: ACPServerAdapter
-    ) -> None:
+    async def test_caller_agent_id_preserved_on_error(self, adapter: ACPServerAdapter) -> None:
         response = await adapter.handle_acp_message(
             {"type": "task", "payload": {"agent": "ghost"}, "agent_id": "caller-99"}
         )
         assert response["agent_id"] == "caller-99"
 
     @pytest.mark.asyncio
-    async def test_session_created_in_sessions_dict(
-        self, adapter_with_agent: tuple
-    ) -> None:
+    async def test_session_created_in_sessions_dict(self, adapter_with_agent: tuple) -> None:
         inst, _ = adapter_with_agent
         await inst.handle_acp_message(
             {
@@ -284,9 +272,7 @@ class TestHandleAcpMessage:
         assert len(inst.sessions) == 1
 
     @pytest.mark.asyncio
-    async def test_runner_execution_error_returns_error_type(
-        self, adapter: ACPServerAdapter
-    ) -> None:
+    async def test_runner_execution_error_returns_error_type(self, adapter: ACPServerAdapter) -> None:
         bad_runner = MagicMock(spec=AgentRunner)
         bad_runner.run.side_effect = RuntimeError("crash")
         adapter.agents["crasher"] = bad_runner
@@ -312,21 +298,15 @@ class TestRpcInitialize:
     @pytest.mark.asyncio
     async def test_initialize_lists_agents(self, adapter_with_agent: tuple) -> None:
         inst, _ = adapter_with_agent
-        response = await inst.handle_jsonrpc(
-            {"jsonrpc": "2.0", "id": 1, "method": "initialize", "params": {}}
-        )
+        response = await inst.handle_jsonrpc({"jsonrpc": "2.0", "id": 1, "method": "initialize", "params": {}})
         assert response["jsonrpc"] == "2.0"
         assert response["id"] == 1
         assert "agents" in response["result"]["capabilities"]
         assert "claude" in response["result"]["capabilities"]["agents"]
 
     @pytest.mark.asyncio
-    async def test_initialize_includes_supported_methods(
-        self, adapter: ACPServerAdapter
-    ) -> None:
-        response = await adapter.handle_jsonrpc(
-            {"id": 1, "method": "initialize", "params": {}}
-        )
+    async def test_initialize_includes_supported_methods(self, adapter: ACPServerAdapter) -> None:
+        response = await adapter.handle_jsonrpc({"id": 1, "method": "initialize", "params": {}})
         methods = response["result"]["capabilities"]["methods"]
         assert "agent/spawn" in methods
         assert "agent/stop" in methods
@@ -341,9 +321,7 @@ class TestRpcSpawn:
     """FR-ACP-001: agent/spawn method."""
 
     @pytest.mark.asyncio
-    async def test_spawn_known_agent_returns_result(
-        self, adapter_with_agent: tuple
-    ) -> None:
+    async def test_spawn_known_agent_returns_result(self, adapter_with_agent: tuple) -> None:
         inst, _ = adapter_with_agent
         response = await inst.handle_jsonrpc(
             {
@@ -358,12 +336,8 @@ class TestRpcSpawn:
         assert "agent_id" in response["result"]
 
     @pytest.mark.asyncio
-    async def test_spawn_unknown_agent_returns_error(
-        self, adapter: ACPServerAdapter
-    ) -> None:
-        response = await adapter.handle_jsonrpc(
-            {"id": 2, "method": "agent/spawn", "params": {"agent": "ghost"}}
-        )
+    async def test_spawn_unknown_agent_returns_error(self, adapter: ACPServerAdapter) -> None:
+        response = await adapter.handle_jsonrpc({"id": 2, "method": "agent/spawn", "params": {"agent": "ghost"}})
         assert "error" in response
         assert response["error"]["code"] == -32602
 
@@ -380,9 +354,7 @@ class TestRpcSpawn:
         assert len(inst.sessions) == 1
 
     @pytest.mark.asyncio
-    async def test_spawn_runner_exception_returns_error(
-        self, adapter: ACPServerAdapter
-    ) -> None:
+    async def test_spawn_runner_exception_returns_error(self, adapter: ACPServerAdapter) -> None:
         bad = MagicMock(spec=AgentRunner)
         bad.run.side_effect = ValueError("oops")
         adapter.agents["oops"] = bad
@@ -396,9 +368,7 @@ class TestRpcSpawn:
         assert "error" in response
 
     @pytest.mark.asyncio
-    async def test_spawn_with_cwd(
-        self, adapter_with_agent: tuple, tmp_path: Path
-    ) -> None:
+    async def test_spawn_with_cwd(self, adapter_with_agent: tuple, tmp_path: Path) -> None:
         inst, _ = adapter_with_agent
         response = await inst.handle_jsonrpc(
             {
@@ -423,9 +393,7 @@ class TestRpcMessage:
 
     @pytest.mark.asyncio
     async def test_message_requires_agent_id(self, adapter: ACPServerAdapter) -> None:
-        response = await adapter.handle_jsonrpc(
-            {"id": 3, "method": "agent/message", "params": {"message": "hi"}}
-        )
+        response = await adapter.handle_jsonrpc({"id": 3, "method": "agent/message", "params": {"message": "hi"}})
         assert response["error"]["code"] == -32602
 
     @pytest.mark.asyncio
@@ -440,9 +408,7 @@ class TestRpcMessage:
         assert response["error"]["code"] == -32602
 
     @pytest.mark.asyncio
-    async def test_message_sends_to_existing_session(
-        self, adapter_with_agent: tuple
-    ) -> None:
+    async def test_message_sends_to_existing_session(self, adapter_with_agent: tuple) -> None:
         inst, runner = adapter_with_agent
         # Spawn first
         spawn_resp = await inst.handle_jsonrpc(
@@ -454,9 +420,7 @@ class TestRpcMessage:
         )
         session_id = spawn_resp["result"]["agent_id"]
 
-        runner.run.return_value = RunResult(
-            exit_code=0, stdout="follow-up reply", stderr="", timed_out=False
-        )
+        runner.run.return_value = RunResult(exit_code=0, stdout="follow-up reply", stderr="", timed_out=False)
 
         msg_resp = await inst.handle_jsonrpc(
             {
@@ -468,9 +432,7 @@ class TestRpcMessage:
         assert msg_resp["result"]["stdout"] == "follow-up reply"
 
     @pytest.mark.asyncio
-    async def test_message_appends_to_conversation_history(
-        self, adapter_with_agent: tuple
-    ) -> None:
+    async def test_message_appends_to_conversation_history(self, adapter_with_agent: tuple) -> None:
         inst, _ = adapter_with_agent
         spawn_resp = await inst.handle_jsonrpc(
             {
@@ -504,16 +466,12 @@ class TestRpcStop:
 
     @pytest.mark.asyncio
     async def test_stop_requires_agent_id(self, adapter: ACPServerAdapter) -> None:
-        response = await adapter.handle_jsonrpc(
-            {"id": 4, "method": "agent/stop", "params": {}}
-        )
+        response = await adapter.handle_jsonrpc({"id": 4, "method": "agent/stop", "params": {}})
         assert response["error"]["code"] == -32602
 
     @pytest.mark.asyncio
     async def test_stop_unknown_session(self, adapter: ACPServerAdapter) -> None:
-        response = await adapter.handle_jsonrpc(
-            {"id": 4, "method": "agent/stop", "params": {"agent_id": "ghost"}}
-        )
+        response = await adapter.handle_jsonrpc({"id": 4, "method": "agent/stop", "params": {"agent_id": "ghost"}})
         assert response["error"]["code"] == -32602
 
     @pytest.mark.asyncio
@@ -528,9 +486,7 @@ class TestRpcStop:
         )
         session_id = spawn_resp["result"]["agent_id"]
 
-        stop_resp = await inst.handle_jsonrpc(
-            {"id": 4, "method": "agent/stop", "params": {"agent_id": session_id}}
-        )
+        stop_resp = await inst.handle_jsonrpc({"id": 4, "method": "agent/stop", "params": {"agent_id": session_id}})
         assert stop_resp["result"]["stopped"] is True
         assert stop_resp["result"]["agent_id"] == session_id
 
@@ -546,9 +502,7 @@ class TestRpcStop:
         )
         session_id = spawn_resp["result"]["agent_id"]
 
-        await inst.handle_jsonrpc(
-            {"id": 4, "method": "agent/stop", "params": {"agent_id": session_id}}
-        )
+        await inst.handle_jsonrpc({"id": 4, "method": "agent/stop", "params": {"agent_id": session_id}})
 
         assert inst.sessions[session_id]._stop_event.is_set()
 
@@ -563,9 +517,7 @@ class TestRpcUnknownMethod:
 
     @pytest.mark.asyncio
     async def test_unknown_method_error_code(self, adapter: ACPServerAdapter) -> None:
-        response = await adapter.handle_jsonrpc(
-            {"id": 99, "method": "nonexistent/method", "params": {}}
-        )
+        response = await adapter.handle_jsonrpc({"id": 99, "method": "nonexistent/method", "params": {}})
         assert response["error"]["code"] == -32601
 
     @pytest.mark.asyncio
@@ -604,9 +556,7 @@ class TestStarletteApp:
         assert "capabilities" in body["result"]
 
     def test_rpc_invalid_json_returns_400(self, client: TestClient) -> None:
-        resp = client.post(
-            "/rpc", content=b"not json", headers={"Content-Type": "application/json"}
-        )
+        resp = client.post("/rpc", content=b"not json", headers={"Content-Type": "application/json"})
         assert resp.status_code == 400
 
     def test_rpc_spawn_known_agent(self, client: TestClient) -> None:
@@ -648,9 +598,7 @@ class TestStarletteApp:
         assert body["type"] == "result"
 
     def test_acp_invalid_json_returns_400(self, client: TestClient) -> None:
-        resp = client.post(
-            "/acp", content=b"bad", headers={"Content-Type": "application/json"}
-        )
+        resp = client.post("/acp", content=b"bad", headers={"Content-Type": "application/json"})
         assert resp.status_code == 400
 
     def test_acp_error_type_returns_422(self, client: TestClient) -> None:
@@ -678,9 +626,7 @@ class TestResolveRunner:
         resolved = inst._resolve_runner("claude")
         assert resolved is runner
 
-    def test_resolve_loads_from_registry_if_not_cached(
-        self, adapter: ACPServerAdapter
-    ) -> None:
+    def test_resolve_loads_from_registry_if_not_cached(self, adapter: ACPServerAdapter) -> None:
         runner = _make_runner()
         with patch("thegent.adapters.acp_server.get_runner", return_value=runner):
             resolved = adapter._resolve_runner("new-agent")

@@ -13,9 +13,7 @@ app = typer.Typer(help="Mesh: Local agent mesh coordination (init, status, disco
 
 @app.command("status")
 def status(
-    mesh_root: Path | None = typer.Option(
-        None, "--mesh-root", help="Path to mesh root"
-    ),
+    mesh_root: Path | None = typer.Option(None, "--mesh-root", help="Path to mesh root"),
 ):
     """Show current mesh status."""
     from thegent.config import ThegentSettings
@@ -26,9 +24,7 @@ def status(
 
 @app.command("agents")
 def agents(
-    mesh_root: Path | None = typer.Option(
-        None, "--mesh-root", help="Path to mesh root"
-    ),
+    mesh_root: Path | None = typer.Option(None, "--mesh-root", help="Path to mesh root"),
 ):
     """List registered mesh agents."""
     from thegent.config import ThegentSettings
@@ -39,9 +35,7 @@ def agents(
 
 @app.command("init")
 def init(
-    mesh_root: Path | None = typer.Option(
-        None, "--mesh-root", help="Path to mesh root"
-    ),
+    mesh_root: Path | None = typer.Option(None, "--mesh-root", help="Path to mesh root"),
 ):
     """Initialize agent mesh."""
     from thegent.config import ThegentSettings
@@ -57,9 +51,7 @@ def discover(
         "--patterns",
         help="Comma-separated regex patterns (optional; defaults to agents.conf)",
     ),
-    mesh_root: Path | None = typer.Option(
-        None, "--mesh-root", help="Path to mesh root"
-    ),
+    mesh_root: Path | None = typer.Option(None, "--mesh-root", help="Path to mesh root"),
 ):
     """Discover active agents and register them."""
     from thegent.config import ThegentSettings

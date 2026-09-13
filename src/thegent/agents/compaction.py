@@ -25,9 +25,7 @@ class CompactionConfig(BaseModel, frozen=True):
     trigger: CompactionTrigger = CompactionTrigger.NEVER
     token_threshold: int = 100_000
     turn_threshold: int = 50
-    summary_prompt: str = (
-        "Summarize the conversation so far, preserving key decisions and context."
-    )
+    summary_prompt: str = "Summarize the conversation so far, preserving key decisions and context."
     max_summary_tokens: int = 2_000
 
 

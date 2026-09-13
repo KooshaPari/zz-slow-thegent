@@ -178,6 +178,4 @@ class EditIntent(BaseModel):
         if self.file_path != other.file_path:
             return False
         # Check if ranges overlap
-        return not (
-            self.end_line < other.start_line or other.end_line < self.start_line
-        )
+        return not (self.end_line < other.start_line or other.end_line < self.start_line)

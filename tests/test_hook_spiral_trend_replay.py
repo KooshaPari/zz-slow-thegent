@@ -14,14 +14,7 @@ def _repo_root() -> Path:
 
 
 def _dispatcher_bin() -> Path:
-    return (
-        _repo_root()
-        / "hooks"
-        / "hook-dispatcher"
-        / "target"
-        / "debug"
-        / "hook-dispatcher"
-    )
+    return _repo_root() / "hooks" / "hook-dispatcher" / "target" / "debug" / "hook-dispatcher"
 
 
 @pytest.mark.unit
@@ -31,9 +24,7 @@ def test_spiral_trend_replay_manifest_invariants() -> None:
 
     fixture_root = _repo_root() / "tests" / "fixtures" / "governance"
     replay_dir = fixture_root / "replay"
-    manifest = json.loads(
-        (fixture_root / "spiral_trend_replay_manifest.json").read_text(encoding="utf-8")
-    )
+    manifest = json.loads((fixture_root / "spiral_trend_replay_manifest.json").read_text(encoding="utf-8"))
     assert manifest["schema_version"] >= 1
     assert manifest["changelog"], "replay manifest changelog is required"
 
@@ -84,9 +75,7 @@ def test_spiral_trend_replay_manifest_invariants() -> None:
             "If intentional, bump schema_version and append changelog entry in "
             "tests/fixtures/governance/spiral_trend_replay_manifest.json."
         )
-        assert (
-            case["min_pressure"] <= payload["pressure_score"] <= case["max_pressure"]
-        ), (
+        assert case["min_pressure"] <= payload["pressure_score"] <= case["max_pressure"], (
             "spiral trend replay pressure range drift detected. "
             "If intentional, bump schema_version and append changelog entry in "
             "tests/fixtures/governance/spiral_trend_replay_manifest.json."

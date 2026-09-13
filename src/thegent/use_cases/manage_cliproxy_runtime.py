@@ -359,18 +359,12 @@ def start_proxy_managed(
         "on",
     }
     try:
-        proc = _start_proxy_and_wait(
-            binary, config_path, base_url, settings, use_adapter=use_adapter
-        )
+        proc = _start_proxy_and_wait(binary, config_path, base_url, settings, use_adapter=use_adapter)
     except RuntimeError as exc:
         if use_adapter and not strict_adapter:
-            _LOG.warning(
-                "Adapter startup failed; falling back to raw proxy mode: %s", exc
-            )
+            _LOG.warning("Adapter startup failed; falling back to raw proxy mode: %s", exc)
             kill_proxy(settings)
-            proc = _start_proxy_and_wait(
-                binary, config_path, base_url, settings, use_adapter=False
-            )
+            proc = _start_proxy_and_wait(binary, config_path, base_url, settings, use_adapter=False)
         else:
             raise
     return (proc, base_url)
@@ -397,17 +391,13 @@ def kill_proxy(settings: ThegentSettings) -> bool:
         if result.returncode != 0 or not result.stdout:
             return False
         stdout_text = (
-            result.stdout
-            if isinstance(result.stdout, str)
-            else result.stdout.decode("utf-8", errors="replace")
+            result.stdout if isinstance(result.stdout, str) else result.stdout.decode("utf-8", errors="replace")
         )
         if not stdout_text.strip():
             return False
         pids = [p.strip() for p in stdout_text.strip().split("\n") if p.strip()]
         for pid in pids:
-            run_subprocess_optimized(
-                ["kill", "-9", pid], capture_output=True, timeout=2, check=False
-            )
+            run_subprocess_optimized(["kill", "-9", pid], capture_output=True, timeout=2, check=False)
         return bool(pids)
     except (subprocess.TimeoutExpired, FileNotFoundError, OSError):
         return False

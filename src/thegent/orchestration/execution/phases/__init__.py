@@ -26,9 +26,7 @@ class PhaseManager:
 
     def transition(self, to_phase: str) -> PhaseTransitionContract:
         """Transition to a new phase."""
-        contract = PhaseTransitionContract(
-            from_phase=self.current_phase, to_phase=to_phase
-        )
+        contract = PhaseTransitionContract(from_phase=self.current_phase, to_phase=to_phase)
         if contract.is_valid():
             self.current_phase = to_phase
         return contract

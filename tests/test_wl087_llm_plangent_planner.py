@@ -86,9 +86,7 @@ def _make_valid_llm_json(
     return json.dumps({"nodes": nodes}).decode()
 
 
-def _make_flash_result(
-    *, success: bool, output: str = "", elapsed_s: float = 0.5
-) -> MagicMock:
+def _make_flash_result(*, success: bool, output: str = "", elapsed_s: float = 0.5) -> MagicMock:
     """Build a minimal FlashAgentResult mock."""
     result = MagicMock()
     result.success = success
@@ -234,9 +232,7 @@ class TestParseLlmResponseErrors:
     def test_raises_when_node_missing_required_keys(self) -> None:
         """_parse_llm_response raises ValueError when a node is missing required keys."""
         with pytest.raises(ValueError, match="missing required keys"):
-            _parse_llm_response(
-                json.dumps({"nodes": [{"id": "t1", "task": "do"}]}).decode()
-            )
+            _parse_llm_response(json.dumps({"nodes": [{"id": "t1", "task": "do"}]}).decode())
 
     def test_raises_on_blank_node_id(self) -> None:
         """_parse_llm_response raises ValueError for a blank 'id' field."""
@@ -363,14 +359,8 @@ class TestSpecsToPlanNodes:
         """_specs_to_plan_nodes produces PlanNodes with UUID-format ids."""
         import re
 
-        uuid_pattern = re.compile(
-            r"^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"
-        )
-        specs = [
-            _LLMNodeSpec(
-                id="t1", task="Task A", agent_hint=None, deps=[], budget_tokens=None
-            )
-        ]
+        uuid_pattern = re.compile(r"^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$")
+        specs = [_LLMNodeSpec(id="t1", task="Task A", agent_hint=None, deps=[], budget_tokens=None)]
         nodes = _specs_to_plan_nodes(specs)
         assert len(nodes) == 1
         assert uuid_pattern.match(nodes[0].id), f"Expected UUID, got {nodes[0].id!r}"
@@ -378,12 +368,8 @@ class TestSpecsToPlanNodes:
     def test_deps_reference_resolved_uuids(self) -> None:
         """_specs_to_plan_nodes remaps dep ids from LLM namespace to real UUIDs."""
         specs = [
-            _LLMNodeSpec(
-                id="t1", task="First", agent_hint=None, deps=[], budget_tokens=None
-            ),
-            _LLMNodeSpec(
-                id="t2", task="Second", agent_hint=None, deps=["t1"], budget_tokens=None
-            ),
+            _LLMNodeSpec(id="t1", task="First", agent_hint=None, deps=[], budget_tokens=None),
+            _LLMNodeSpec(id="t2", task="Second", agent_hint=None, deps=["t1"], budget_tokens=None),
         ]
         nodes = _specs_to_plan_nodes(specs)
         assert nodes[1].depends_on == [nodes[0].id]
@@ -404,21 +390,13 @@ class TestSpecsToPlanNodes:
 
     def test_budget_tokens_stored_in_metadata(self) -> None:
         """_specs_to_plan_nodes stores budget_tokens in node.metadata."""
-        specs = [
-            _LLMNodeSpec(
-                id="t1", task="do it", agent_hint=None, deps=[], budget_tokens=800
-            )
-        ]
+        specs = [_LLMNodeSpec(id="t1", task="do it", agent_hint=None, deps=[], budget_tokens=800)]
         nodes = _specs_to_plan_nodes(specs)
         assert nodes[0].metadata.get("budget_tokens") == 800
 
     def test_null_agent_hint_not_in_metadata(self) -> None:
         """_specs_to_plan_nodes does not add agent_hint to metadata when null."""
-        specs = [
-            _LLMNodeSpec(
-                id="t1", task="do it", agent_hint=None, deps=[], budget_tokens=None
-            )
-        ]
+        specs = [_LLMNodeSpec(id="t1", task="do it", agent_hint=None, deps=[], budget_tokens=None)]
         nodes = _specs_to_plan_nodes(specs)
         assert "agent_hint" not in nodes[0].metadata
 

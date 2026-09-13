@@ -54,9 +54,7 @@ class TestCostEstimator:
     def test_estimate_zero_tokens_and_prompt(self) -> None:
         """Test estimation with zero tokens and prompt returns fallback."""
         estimator = CostEstimator()
-        cost = estimator.estimate(
-            model="unknown-model", tokens_total=0, prompt_length=0
-        )
+        cost = estimator.estimate(model="unknown-model", tokens_total=0, prompt_length=0)
         expected = (500 / 1_000_000.0) * 2.0
         assert cost == expected
 
@@ -81,9 +79,7 @@ class TestCostEstimator:
     def test_estimate_unknown_model_uses_fallback(self) -> None:
         """Test unknown model uses fallback pricing."""
         estimator = CostEstimator()
-        cost = estimator.estimate(
-            model="completely-unknown-model", tokens_total=500_000
-        )
+        cost = estimator.estimate(model="completely-unknown-model", tokens_total=500_000)
         assert cost == 2.00  # $2/MTok fallback
 
     def test_estimate_case_sensitive_pricing(self) -> None:
@@ -189,9 +185,7 @@ class TestCostAggregator:
     def test_daily_total_handles_invalid_json(self, tmp_path: Path) -> None:
         """Test daily total handles malformed JSON lines."""
         registry = tmp_path / "run_registry.jsonl"
-        registry.write_text(
-            '{"event": "finish", "cost_usd": 1.0}\nnot-json\n', encoding="utf-8"
-        )
+        registry.write_text('{"event": "finish", "cost_usd": 1.0}\nnot-json\n', encoding="utf-8")
         agg = CostAggregator(session_dir=tmp_path)
         assert agg.daily_total("owner") == 1.0
 
@@ -235,8 +229,7 @@ class TestCostAggregator:
         registry = tmp_path / "run_registry.jsonl"
         now = datetime.now(UTC).isoformat()
         registry.write_text(
-            json.dumps({"event": "finish", "cost_usd": 1.0, "ended_at_utc": now})
-            + "\n",
+            json.dumps({"event": "finish", "cost_usd": 1.0, "ended_at_utc": now}) + "\n",
             encoding="utf-8",
         )
         registry.open("a", encoding="utf-8").write(
@@ -723,9 +716,7 @@ class TestBudgetAlertSystem:
         aggregate = tmp_path / "aggregate.jsonl"
         now = datetime.now(UTC).isoformat()
         aggregate.write_text(
-            json.dumps({"total_cost": 5.0, "timestamp": now})
-            + "\n"
-            + "not-valid-json\n",
+            json.dumps({"total_cost": 5.0, "timestamp": now}) + "\n" + "not-valid-json\n",
             encoding="utf-8",
         )
         system = BudgetAlertSystem(cost_dir=tmp_path)
@@ -818,9 +809,7 @@ class TestCostQualityOptimizer:
     def test_route_request_filters_by_quality(self) -> None:
         """Test routing filters by quality threshold."""
         optimizer = CostQualityOptimizer()
-        optimizer.register_model(
-            "cheap-model", cost_per_token=0.00001, quality_score=0.5
-        )
+        optimizer.register_model("cheap-model", cost_per_token=0.00001, quality_score=0.5)
         optimizer.register_model("good-model", cost_per_token=0.0001, quality_score=0.9)
 
         result = optimizer.route_request(task_complexity=0.5, quality_threshold=0.8)
@@ -829,12 +818,8 @@ class TestCostQualityOptimizer:
     def test_route_request_falls_back_when_no_match(self) -> None:
         """Test routing falls back to highest quality when no match."""
         optimizer = CostQualityOptimizer()
-        optimizer.register_model(
-            "low-quality", cost_per_token=0.00001, quality_score=0.3
-        )
-        optimizer.register_model(
-            "medium-quality", cost_per_token=0.00005, quality_score=0.6
-        )
+        optimizer.register_model("low-quality", cost_per_token=0.00001, quality_score=0.3)
+        optimizer.register_model("medium-quality", cost_per_token=0.00005, quality_score=0.6)
 
         result = optimizer.route_request(task_complexity=0.5, quality_threshold=0.8)
         assert result in ("low-quality", "medium-quality")
@@ -845,9 +830,7 @@ class TestCostQualityOptimizer:
         optimizer.register_model("expensive", cost_per_token=0.001, quality_score=0.95)
         optimizer.register_model("cheap", cost_per_token=0.0001, quality_score=0.8)
 
-        result = optimizer.route_request(
-            task_complexity=0.5, quality_threshold=0.5, max_cost=0.1
-        )
+        result = optimizer.route_request(task_complexity=0.5, quality_threshold=0.5, max_cost=0.1)
         assert result == "cheap"
 
     def test_route_request_tracks_history(self) -> None:
@@ -863,9 +846,7 @@ class TestCostQualityOptimizer:
         """Test routing selects best cost/quality ratio."""
         optimizer = CostQualityOptimizer()
         optimizer.register_model("efficient", cost_per_token=0.00005, quality_score=0.8)
-        optimizer.register_model(
-            "inefficient", cost_per_token=0.0001, quality_score=0.8
-        )
+        optimizer.register_model("inefficient", cost_per_token=0.0001, quality_score=0.8)
         optimizer.register_model("wasteful", cost_per_token=0.0002, quality_score=0.9)
 
         result = optimizer.route_request(task_complexity=0.5, quality_threshold=0.5)
@@ -1102,16 +1083,12 @@ class TestCostController:
             ),
             encoding="utf-8",
         )
-        controller = CostController(
-            session_dir=tmp_path, health_targets_path=health_file
-        )
+        controller = CostController(session_dir=tmp_path, health_targets_path=health_file)
         assert controller._calls_limit == 50
 
     def test_init_handles_missing_health_targets(self, tmp_path: Path) -> None:
         """Test controller handles missing health targets file."""
-        controller = CostController(
-            session_dir=tmp_path, health_targets_path=tmp_path / "nonexistent.json"
-        )
+        controller = CostController(session_dir=tmp_path, health_targets_path=tmp_path / "nonexistent.json")
         assert controller._calls_limit == 20
 
     def test_record_call_increments_counters(self, tmp_path: Path) -> None:
@@ -1334,9 +1311,7 @@ class TestCostEdgeCases:
     def test_optimizer_handles_zero_quality(self) -> None:
         """Test optimizer handles zero quality score."""
         optimizer = CostQualityOptimizer()
-        optimizer.register_model(
-            "zero-quality", cost_per_token=0.0001, quality_score=0.0
-        )
+        optimizer.register_model("zero-quality", cost_per_token=0.0001, quality_score=0.0)
         result = optimizer.route_request(task_complexity=0.5, quality_threshold=0.0)
         assert result == "zero-quality"
 
@@ -1362,9 +1337,7 @@ class TestCostEdgeCases:
             ),
             encoding="utf-8",
         )
-        controller = CostController(
-            session_dir=tmp_path, health_targets_path=health_file
-        )
+        controller = CostController(session_dir=tmp_path, health_targets_path=health_file)
         assert controller._calls_limit == 0
         assert controller.get_tier() == BudgetTier.HALTED
 

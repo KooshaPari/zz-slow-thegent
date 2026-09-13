@@ -69,9 +69,7 @@ def __getattr__(name: str) -> Any:
                 return ""
 
             return capture_tmux_pane
-    raise AttributeError(
-        f"module 'thegent.orchestration.pruning.smart_prune' has no attribute {name!r}"
-    )
+    raise AttributeError(f"module 'thegent.orchestration.pruning.smart_prune' has no attribute {name!r}")
 
 
 IDLE_COUNT_THRESHOLD = 10
@@ -236,9 +234,7 @@ class SmartPruner:
         )
         return is_idle and is_complete and docs
 
-    def _prune_session(
-        self, session: dict[str, Any], pane: str | None = None
-    ) -> dict[str, Any]:
+    def _prune_session(self, session: dict[str, Any], pane: str | None = None) -> dict[str, Any]:
         """Belt-and-suspenders: re-check guard, then mcp_prune."""
         agent = str(session.get("agent", ""))
         if _is_protected_process(agent):

@@ -90,9 +90,7 @@ class SessionAgentRegistry:
     def register(self, agent: HierarchicalAgent) -> None:
         """Register an agent in this session."""
         if len(self._agents) >= self.session_cap:
-            raise AgentCapExceededError(
-                f"Session agent cap ({self.session_cap}) exceeded"
-            )
+            raise AgentCapExceededError(f"Session agent cap ({self.session_cap}) exceeded")
         self._agents[agent.agent_id] = agent
 
     def get(self, agent_id: str) -> HierarchicalAgent | None:
@@ -106,16 +104,12 @@ class SessionAgentRegistry:
     def active_count(self) -> int:
         """Count active agents (RUNNING or FINISHED)."""
         return sum(
-            1
-            for a in self._agents.values()
-            if a.state in (AgentLifecycleState.RUNNING, AgentLifecycleState.FINISHED)
+            1 for a in self._agents.values() if a.state in (AgentLifecycleState.RUNNING, AgentLifecycleState.FINISHED)
         )
 
     def running_count(self) -> int:
         """Count running agents."""
-        return sum(
-            1 for a in self._agents.values() if a.state == AgentLifecycleState.RUNNING
-        )
+        return sum(1 for a in self._agents.values() if a.state == AgentLifecycleState.RUNNING)
 
     def count(self) -> int:
         """Count all agents in this session."""
@@ -153,9 +147,7 @@ class HierarchicalAgentRegistry:
     def register(self, agent: HierarchicalAgent) -> None:
         """Register an agent globally and in its session."""
         if self._total_agents >= self.system_cap:
-            raise AgentCapExceededError(
-                f"System agent cap ({self.system_cap}) exceeded"
-            )
+            raise AgentCapExceededError(f"System agent cap ({self.system_cap}) exceeded")
 
         # Track parent-child relationship
         if agent.parent_id:
@@ -213,9 +205,7 @@ class HierarchicalAgentRegistry:
             to_remove = []
             for agent_id, agent in session_registry.agents.items():
                 # Check staleness based on heartbeat
-                heartbeat_stale = (
-                    current_time - agent.last_heartbeat
-                ) > stale_threshold
+                heartbeat_stale = (current_time - agent.last_heartbeat) > stale_threshold
 
                 # FINISHED/COMPLETED agents that are stale should be pruned
                 is_terminal = agent.state in (
@@ -298,9 +288,7 @@ class HierarchicalDispatcher:
     async def dispatch(self, request: HierarchicalDispatchRequest) -> HierarchicalAgent:
         """Dispatch a new hierarchical agent."""
         if request.depth >= MAX_HIERARCHY_DEPTH:
-            raise MaxDepthExceededError(
-                f"Max hierarchy depth ({MAX_HIERARCHY_DEPTH}) exceeded"
-            )
+            raise MaxDepthExceededError(f"Max hierarchy depth ({MAX_HIERARCHY_DEPTH}) exceeded")
 
         agent_id = f"agent-{request.session_id}-{self.registry.count_session(request.session_id)}"
         agent = HierarchicalAgent(
@@ -317,9 +305,7 @@ class HierarchicalDispatcher:
         return agent
 
     # Alias for test compatibility
-    async def dispatch_hierarchical(
-        self, request: HierarchicalDispatchRequest
-    ) -> HierarchicalAgent:
+    async def dispatch_hierarchical(self, request: HierarchicalDispatchRequest) -> HierarchicalAgent:
         """Dispatch a new hierarchical agent (alias for dispatch)."""
         return await self.dispatch(request)
 

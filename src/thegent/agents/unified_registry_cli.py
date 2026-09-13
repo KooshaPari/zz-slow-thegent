@@ -21,18 +21,12 @@ _service = AgentRegistryService()
 
 @app.command("list")
 def list_agents(
-    status: AgentStatus | None = typer.Option(
-        None, "--status", help="Filter by status"
-    ),
+    status: AgentStatus | None = typer.Option(None, "--status", help="Filter by status"),
     project: str | None = typer.Option(None, "--project", help="Filter by project ID"),
-    capability: AgentCapability | None = typer.Option(
-        None, "--capability", help="Filter by capability"
-    ),
+    capability: AgentCapability | None = typer.Option(None, "--capability", help="Filter by capability"),
 ):
     """List all agents in the registry."""
-    agents = _service.list_agents(
-        status=status, project_id=project, capability=capability
-    )
+    agents = _service.list_agents(status=status, project_id=project, capability=capability)
 
     if not agents:
         console.print("[yellow]No agents found matching criteria.[/yellow]")
@@ -76,9 +70,7 @@ def get_agent(agent_id: str = typer.Argument(..., help="Agent ID")):
 
     console.print("\n[bold green]Performance Metrics:[/bold blue]")
     console.print(f"  Success Rate: {agent.metrics.success_rate:.1%}")
-    console.print(
-        f"  Tasks: {agent.metrics.completed_tasks}/{agent.metrics.total_tasks}"
-    )
+    console.print(f"  Tasks: {agent.metrics.completed_tasks}/{agent.metrics.total_tasks}")
     console.print(f"  Avg Response Time: {agent.metrics.average_response_time:.2f}s")
 
 
@@ -86,18 +78,12 @@ def get_agent(agent_id: str = typer.Argument(..., help="Agent ID")):
 def register_agent(
     agent_id: str = typer.Argument(..., help="Unique agent ID"),
     name: str = typer.Argument(..., help="Display name"),
-    capabilities: list[AgentCapability] = typer.Option(
-        [], "--capability", "-c", help="Agent capabilities"
-    ),
+    capabilities: list[AgentCapability] = typer.Option([], "--capability", "-c", help="Agent capabilities"),
 ):
     """Register a new agent."""
-    agent = Agent(
-        id=agent_id, name=name, capabilities=capabilities, status=AgentStatus.ACTIVE
-    )
+    agent = Agent(id=agent_id, name=name, capabilities=capabilities, status=AgentStatus.ACTIVE)
     _service.register_agent(agent)
-    console.print(
-        f"[green]Agent '{name}' ({agent_id}) registered successfully.[/green]"
-    )
+    console.print(f"[green]Agent '{name}' ({agent_id}) registered successfully.[/green]")
 
 
 @app.command("assign")
@@ -110,9 +96,7 @@ def assign_project(
     assignment = ProjectAssignment(project_id=project_id, role=role)
     agent = _service.assign_to_project(agent_id, assignment)
     if agent:
-        console.print(
-            f"[green]Agent '{agent_id}' assigned to project '{project_id}' as {role}.[/green]"
-        )
+        console.print(f"[green]Agent '{agent_id}' assigned to project '{project_id}' as {role}.[/green]")
     else:
         console.print(f"[red]Agent '{agent_id}' not found.[/red]")
 
@@ -120,17 +104,13 @@ def assign_project(
 @app.command("discover")
 def discover(
     description: str = typer.Argument(..., help="Task description"),
-    capabilities: list[AgentCapability] = typer.Option(
-        ..., "--capability", "-c", help="Required capabilities"
-    ),
+    capabilities: list[AgentCapability] = typer.Option(..., "--capability", "-c", help="Required capabilities"),
     project: str | None = typer.Option(None, "--project", help="Project context"),
 ):
     """Discover best agent for a task."""
     agent = _service.discover_best_agent(description, capabilities, project_id=project)
     if agent:
-        console.print(
-            f"[green]Best agent found: [bold]{agent.name}[/bold] ({agent.id})[/green]"
-        )
+        console.print(f"[green]Best agent found: [bold]{agent.name}[/bold] ({agent.id})[/green]")
         console.print(f"Success Rate: {agent.metrics.success_rate:.1%}")
     else:
         console.print("[yellow]No suitable agent found.[/yellow]")

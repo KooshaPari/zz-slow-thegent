@@ -120,9 +120,7 @@ def inject_time_constraint(prompt: str, timeout: int) -> str:
         Prompt with time constraint injected.
     """
     tool_calls = max(1, round(timeout / 2.3))
-    constraint = (
-        f"\n\n[TIME CONSTRAINT] Complete in {timeout}s (~{tool_calls} tool calls).\n"
-    )
+    constraint = f"\n\n[TIME CONSTRAINT] Complete in {timeout}s (~{tool_calls} tool calls).\n"
     return prompt + constraint
 
 
@@ -162,10 +160,7 @@ def resolve_grounding_sources_for_output(sources: list[dict]) -> list[dict[str, 
     Returns:
         Formatted sources list (truncated content).
     """
-    return [
-        {"source": s.get("source", ""), "content": s.get("content", "")[:100]}
-        for s in sources
-    ]
+    return [{"source": s.get("source", ""), "content": s.get("content", "")[:100]} for s in sources]
 
 
 def get_terminal_width() -> int:

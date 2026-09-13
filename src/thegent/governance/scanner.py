@@ -199,9 +199,7 @@ class CodebaseScanner:
             current_value=current,
             target_value=target,
             delta=target - current,
-            raw_output=f"missing dirs: {missing}"
-            if missing
-            else "all required dirs present",
+            raw_output=f"missing dirs: {missing}" if missing else "all required dirs present",
             affected_files=missing,
             scan_duration_s=round(time.monotonic() - t0, 3),
         )

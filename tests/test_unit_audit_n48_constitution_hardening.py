@@ -118,9 +118,7 @@ class TestCNCritiqueActionPrivacy:
 
     def test_password_detected(self, tmp_path: Path) -> None:
         yaml_file = tmp_path / "constitution.yaml"
-        yaml_file.write_text(
-            "principles:\n  - id: P2-PRIVACY\n    desc: Privacy matters\n"
-        )
+        yaml_file.write_text("principles:\n  - id: P2-PRIVACY\n    desc: Privacy matters\n")
         cm = ConstitutionManager(yaml_file)
         violations = cm.critique_action({"prompt": "send the password"})
         assert len(violations) >= 1
@@ -128,9 +126,7 @@ class TestCNCritiqueActionPrivacy:
 
     def test_api_key_detected(self, tmp_path: Path) -> None:
         yaml_file = tmp_path / "constitution.yaml"
-        yaml_file.write_text(
-            "principles:\n  - id: P2-PRIVACY\n    desc: Privacy matters\n"
-        )
+        yaml_file.write_text("principles:\n  - id: P2-PRIVACY\n    desc: Privacy matters\n")
         cm = ConstitutionManager(yaml_file)
         violations = cm.critique_action({"prompt": "include api_key in payload"})
         assert len(violations) >= 1

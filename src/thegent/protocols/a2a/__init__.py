@@ -61,9 +61,7 @@ def validate_a2a_message(msg: A2AMessage) -> list[str]:
     if not msg.source_agent:
         errors.append("source_agent is required and cannot be empty")
     if msg.message_type not in VALID_MESSAGE_TYPES:
-        errors.append(
-            f"message_type must be one of {VALID_MESSAGE_TYPES}, got: {msg.message_type}"
-        )
+        errors.append(f"message_type must be one of {VALID_MESSAGE_TYPES}, got: {msg.message_type}")
     return errors
 
 

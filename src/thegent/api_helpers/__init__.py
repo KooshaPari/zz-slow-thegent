@@ -20,27 +20,19 @@ class APIClient:
     def get(self, path: str, **kwargs: Any) -> dict[str, Any]:
         """GET request."""
         with httpx.Client() as client:
-            return client.get(
-                f"{self.base_url}{path}", timeout=self.timeout, **kwargs
-            ).json()
+            return client.get(f"{self.base_url}{path}", timeout=self.timeout, **kwargs).json()
 
     def post(self, path: str, **kwargs: Any) -> dict[str, Any]:
         """POST request."""
         with httpx.Client() as client:
-            return client.post(
-                f"{self.base_url}{path}", timeout=self.timeout, **kwargs
-            ).json()
+            return client.post(f"{self.base_url}{path}", timeout=self.timeout, **kwargs).json()
 
     def put(self, path: str, **kwargs: Any) -> dict[str, Any]:
         """PUT request."""
         with httpx.Client() as client:
-            return client.put(
-                f"{self.base_url}{path}", timeout=self.timeout, **kwargs
-            ).json()
+            return client.put(f"{self.base_url}{path}", timeout=self.timeout, **kwargs).json()
 
     def delete(self, path: str, **kwargs: Any) -> dict[str, Any]:
         """DELETE request."""
         with httpx.Client() as client:
-            return client.delete(
-                f"{self.base_url}{path}", timeout=self.timeout, **kwargs
-            ).json()
+            return client.delete(f"{self.base_url}{path}", timeout=self.timeout, **kwargs).json()

@@ -40,12 +40,8 @@ PARITY_CASES: list[tuple[str, str, list[str]]] = [
 ]
 
 
-@pytest.mark.parametrize(
-    ("model_str", "expected_base", "expected_suffixes"), PARITY_CASES
-)
-def test_parse_model_suffixes_base_model(
-    model_str: str, expected_base: str, expected_suffixes: list[str]
-) -> None:
+@pytest.mark.parametrize(("model_str", "expected_base", "expected_suffixes"), PARITY_CASES)
+def test_parse_model_suffixes_base_model(model_str: str, expected_base: str, expected_suffixes: list[str]) -> None:
     """Base model is extracted correctly for all parity cases."""
     del expected_suffixes
     result = parse_model_suffixes(model_str)
@@ -54,33 +50,21 @@ def test_parse_model_suffixes_base_model(
     )
 
 
-@pytest.mark.parametrize(
-    ("model_str", "expected_base", "expected_suffixes"), PARITY_CASES
-)
-def test_parse_model_suffixes_suffix_values(
-    model_str: str, expected_base: str, expected_suffixes: list[str]
-) -> None:
+@pytest.mark.parametrize(("model_str", "expected_base", "expected_suffixes"), PARITY_CASES)
+def test_parse_model_suffixes_suffix_values(model_str: str, expected_base: str, expected_suffixes: list[str]) -> None:
     """Suffix values are extracted correctly for all parity cases."""
     del expected_base
     result = parse_model_suffixes(model_str)
     actual = [s.value for s in result.suffixes]
-    assert actual == expected_suffixes, (
-        f"input={model_str!r}: expected suffixes={expected_suffixes!r}, got {actual!r}"
-    )
+    assert actual == expected_suffixes, f"input={model_str!r}: expected suffixes={expected_suffixes!r}, got {actual!r}"
 
 
-@pytest.mark.parametrize(
-    ("model_str", "expected_base", "expected_suffixes"), PARITY_CASES
-)
-def test_parse_model_suffixes_raw_preserved(
-    model_str: str, expected_base: str, expected_suffixes: list[str]
-) -> None:
+@pytest.mark.parametrize(("model_str", "expected_base", "expected_suffixes"), PARITY_CASES)
+def test_parse_model_suffixes_raw_preserved(model_str: str, expected_base: str, expected_suffixes: list[str]) -> None:
     """Raw input string is preserved unchanged."""
     del expected_base, expected_suffixes
     result = parse_model_suffixes(model_str)
-    assert result.raw == model_str, (
-        f"input={model_str!r}: raw not preserved, got {result.raw!r}"
-    )
+    assert result.raw == model_str, f"input={model_str!r}: raw not preserved, got {result.raw!r}"
 
 
 def test_unknown_suffix_does_not_raise() -> None:
@@ -137,9 +121,7 @@ def test_rust_extension_parity_if_available() -> None:
     try:
         import thegent_parser  # type: ignore[import]
     except ImportError:
-        pytest.skip(
-            "thegent_parser Rust extension not built; skipping cross-language parity"
-        )
+        pytest.skip("thegent_parser Rust extension not built; skipping cross-language parity")
 
     if not hasattr(thegent_parser, "parse_model_suffixes"):
         pytest.skip("parse_model_suffixes not exported from Rust extension")
@@ -154,6 +136,4 @@ def test_rust_extension_parity_if_available() -> None:
             f"Rust/Python suffixes mismatch for {model_str!r}: "
             f"Rust={rust_result['suffixes']!r}, Python={expected_suffixes!r}"
         )
-        assert rust_result["raw"] == model_str, (
-            f"Rust raw not preserved for {model_str!r}"
-        )
+        assert rust_result["raw"] == model_str, f"Rust raw not preserved for {model_str!r}"

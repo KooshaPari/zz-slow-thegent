@@ -47,9 +47,7 @@ def _run_claude_interactive(model: str = "claude-3-5-sonnet-20241022") -> int:
     return 0
 
 
-def _run_claude_print(
-    model: str = "claude-3-5-sonnet-20241022", prompt: str = ""
-) -> str:
+def _run_claude_print(model: str = "claude-3-5-sonnet-20241022", prompt: str = "") -> str:
     """Run Claude with print output."""
     return f"Claude response to: {prompt}"
 

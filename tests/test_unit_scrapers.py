@@ -66,11 +66,7 @@ class TestLoadCached:
         # @trace FR-MOD-002
         now = time.time()
         mock_cache.get.side_effect = lambda k, default=None: (
-            {"claude": ["haiku"]}
-            if k == "by_provider"
-            else now
-            if k == "by_provider_mtime"
-            else default
+            {"claude": ["haiku"]} if k == "by_provider" else now if k == "by_provider_mtime" else default
         )
         from thegent.models.scrapers import _load_cached
 
@@ -103,17 +99,13 @@ class TestSaveCache:
 
     @patch(f"{MODULE}.time")
     @patch(f"{MODULE}._MODELS_CACHE")
-    def test_writes_to_cache_with_ttl(
-        self, mock_cache: MagicMock, mock_time: MagicMock
-    ) -> None:
+    def test_writes_to_cache_with_ttl(self, mock_cache: MagicMock, mock_time: MagicMock) -> None:
         # @trace FR-MOD-006
         mock_time.time.return_value = 1700000000.0
         from thegent.models.scrapers import _save_cache
 
         _save_cache({"claude": ["sonnet"]}, ttl_sec=300)
-        mock_cache.set.assert_any_call(
-            "by_provider", {"claude": ["sonnet"]}, expire=300
-        )
+        mock_cache.set.assert_any_call("by_provider", {"claude": ["sonnet"]}, expire=300)
         mock_cache.set.assert_any_call("by_provider_mtime", 1700000000.0, expire=300)
 
 
@@ -251,9 +243,7 @@ class TestScrapeCopilot:
     @patch("subprocess.run")
     def test_returns_fallback_on_no_model_flag(self, mock_run: MagicMock) -> None:
         # @trace FR-MOD-017
-        mock_run.return_value = _subprocess_result(
-            stdout="Usage: copilot\n  --help", returncode=0
-        )
+        mock_run.return_value = _subprocess_result(stdout="Usage: copilot\n  --help", returncode=0)
         from thegent.models.scrapers import scrape_copilot
 
         result = scrape_copilot()
@@ -353,9 +343,7 @@ class TestScrapeClaude:
         assert "claude-haiku-4.5" in result
 
     @patch("subprocess.run")
-    def test_returns_fallback_when_no_matches_beyond_aliases(
-        self, mock_run: MagicMock
-    ) -> None:
+    def test_returns_fallback_when_no_matches_beyond_aliases(self, mock_run: MagicMock) -> None:
         # @trace FR-MOD-024
         # stdout has no claude-* models, so out stays at 3 aliases -> returns fallback
         mock_run.return_value = _subprocess_result(
@@ -396,13 +384,9 @@ class TestScrapeProxy:
 
     @patch(f"{MODULE}.urllib.request.urlopen")
     @patch(f"{MODULE}.urllib.request.Request")
-    def test_scrape_proxy_models_parses_response(
-        self, mock_req_cls: MagicMock, mock_urlopen: MagicMock
-    ) -> None:
+    def test_scrape_proxy_models_parses_response(self, mock_req_cls: MagicMock, mock_urlopen: MagicMock) -> None:
         # @trace FR-MOD-026
-        body = json.dumps(
-            {"data": [{"id": "gemini-3-flash"}, {"id": "claude-sonnet-4.5"}]}
-        ).decode()
+        body = json.dumps({"data": [{"id": "gemini-3-flash"}, {"id": "claude-sonnet-4.5"}]}).decode()
         mock_resp = MagicMock()
         mock_resp.read.return_value = body.encode()
         mock_resp.__enter__ = MagicMock(return_value=mock_resp)
@@ -414,12 +398,8 @@ class TestScrapeProxy:
         assert "gemini-3-flash" in result
         assert "claude-sonnet-4.5" in result
 
-    @patch(
-        f"{MODULE}.urllib.request.urlopen", side_effect=Exception("connection refused")
-    )
-    def test_scrape_proxy_models_returns_empty_on_error(
-        self, mock_urlopen: MagicMock
-    ) -> None:
+    @patch(f"{MODULE}.urllib.request.urlopen", side_effect=Exception("connection refused"))
+    def test_scrape_proxy_models_returns_empty_on_error(self, mock_urlopen: MagicMock) -> None:
         # @trace FR-MOD-027
         from thegent.models.scrapers import _scrape_proxy_models
 
@@ -427,9 +407,7 @@ class TestScrapeProxy:
 
     @patch(f"{MODULE}._scrape_proxy_models")
     @patch(f"{MODULE}.ThegentSettings")
-    def test_scrape_proxy_categorizes_models(
-        self, mock_settings_cls: MagicMock, mock_fetch: MagicMock
-    ) -> None:
+    def test_scrape_proxy_categorizes_models(self, mock_settings_cls: MagicMock, mock_fetch: MagicMock) -> None:
         # @trace FR-MOD-028
         settings = _make_settings()
         mock_fetch.return_value = [
@@ -454,9 +432,7 @@ class TestScrapeProxy:
 
     @patch(f"{MODULE}._scrape_proxy_models", return_value=[])
     @patch(f"{MODULE}.ThegentSettings")
-    def test_scrape_proxy_defaults_minimax_and_glm(
-        self, mock_settings_cls: MagicMock, mock_fetch: MagicMock
-    ) -> None:
+    def test_scrape_proxy_defaults_minimax_and_glm(self, mock_settings_cls: MagicMock, mock_fetch: MagicMock) -> None:
         # @trace FR-MOD-029
         settings = _make_settings()
         from thegent.models.scrapers import scrape_proxy
@@ -477,13 +453,9 @@ class TestScrapeCursorApi:
 
     @patch(f"{MODULE}.urllib.request.urlopen")
     @patch(f"{MODULE}.urllib.request.Request")
-    def test_fetches_models_with_token(
-        self, mock_req_cls: MagicMock, mock_urlopen: MagicMock
-    ) -> None:
+    def test_fetches_models_with_token(self, mock_req_cls: MagicMock, mock_urlopen: MagicMock) -> None:
         # @trace FR-MOD-030
-        body = json.dumps(
-            {"data": [{"id": "claude-4.5-opus-high-thinking"}, {"id": "gpt-5.1-codex"}]}
-        ).decode()
+        body = json.dumps({"data": [{"id": "claude-4.5-opus-high-thinking"}, {"id": "gpt-5.1-codex"}]}).decode()
         mock_resp = MagicMock()
         mock_resp.read.return_value = body.encode()
         mock_resp.__enter__ = MagicMock(return_value=mock_resp)
@@ -497,13 +469,9 @@ class TestScrapeCursorApi:
 
     @patch(f"{MODULE}.urllib.request.urlopen")
     @patch(f"{MODULE}.urllib.request.Request")
-    def test_skips_non_string_ids(
-        self, mock_req_cls: MagicMock, mock_urlopen: MagicMock
-    ) -> None:
+    def test_skips_non_string_ids(self, mock_req_cls: MagicMock, mock_urlopen: MagicMock) -> None:
         # @trace FR-MOD-001
-        body = json.dumps(
-            {"data": [{"id": 123}, {"id": None}, {"id": "valid-model"}]}
-        ).decode()
+        body = json.dumps({"data": [{"id": 123}, {"id": None}, {"id": "valid-model"}]}).decode()
         mock_resp = MagicMock()
         mock_resp.read.return_value = body.encode()
         mock_resp.__enter__ = MagicMock(return_value=mock_resp)
@@ -524,9 +492,7 @@ class TestScrapeCursorApi:
     def test_scrape_cursor_api_delegates_to_internal(self) -> None:
         # @trace FR-MOD-003
         settings = _make_settings()
-        with patch(
-            f"{MODULE}._scrape_cursor_api_models", return_value=["m1"]
-        ) as mock_internal:
+        with patch(f"{MODULE}._scrape_cursor_api_models", return_value=["m1"]) as mock_internal:
             from thegent.models.scrapers import scrape_cursor_api
 
             result = scrape_cursor_api(settings)
@@ -566,9 +532,7 @@ class TestScrapeAnte:
         mock_settings_path = MagicMock()
         mock_settings_path.exists.return_value = True
         mock_home.return_value = MagicMock(
-            __truediv__=lambda self, x: (
-                mock_settings_path if x == ".ante" else MagicMock()
-            )
+            __truediv__=lambda self, x: mock_settings_path if x == ".ante" else MagicMock()
         )
 
         settings_data = {
@@ -577,9 +541,7 @@ class TestScrapeAnte:
         }
 
         with patch("builtins.open", create=True) as mock_open:
-            mock_open.return_value.__enter__.return_value.read.return_value = (
-                json.dumps(settings_data).decode()
-            )
+            mock_open.return_value.__enter__.return_value.read.return_value = json.dumps(settings_data).decode()
             from thegent.models.scrapers import scrape_ante
 
             result = scrape_ante()
@@ -592,9 +554,7 @@ class TestScrapeAnte:
         mock_settings_path = MagicMock()
         mock_settings_path.exists.return_value = False
         mock_home.return_value = MagicMock(
-            __truediv__=lambda self, x: (
-                mock_settings_path if x == ".ante" else MagicMock()
-            )
+            __truediv__=lambda self, x: mock_settings_path if x == ".ante" else MagicMock()
         )
 
         from thegent.models.scrapers import scrape_ante
@@ -609,15 +569,11 @@ class TestScrapeAnte:
         mock_settings_path = MagicMock()
         mock_settings_path.exists.return_value = True
         mock_home.return_value = MagicMock(
-            __truediv__=lambda self, x: (
-                mock_settings_path if x == ".ante" else MagicMock()
-            )
+            __truediv__=lambda self, x: mock_settings_path if x == ".ante" else MagicMock()
         )
 
         with patch("builtins.open", create=True) as mock_open:
-            mock_open.return_value.__enter__.return_value.read.side_effect = ValueError(
-                "invalid json"
-            )
+            mock_open.return_value.__enter__.return_value.read.side_effect = ValueError("invalid json")
             from thegent.models.scrapers import scrape_ante
 
             result = scrape_ante()
@@ -728,9 +684,7 @@ class TestScrapeProxyEnsureProxyException:
 
     @patch(f"{MODULE}._scrape_proxy_models", return_value=["test-model"])
     @patch(f"{MODULE}.ThegentSettings")
-    def test_ensure_proxy_exception_falls_through(
-        self, mock_settings_cls: MagicMock, mock_fetch: MagicMock
-    ) -> None:
+    def test_ensure_proxy_exception_falls_through(self, mock_settings_cls: MagicMock, mock_fetch: MagicMock) -> None:
         # @trace FR-MOD-026
         """scrape_proxy continues when ensure_proxy_running raises."""
         settings = _make_settings()

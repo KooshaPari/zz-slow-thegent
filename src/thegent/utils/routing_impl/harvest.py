@@ -11,9 +11,7 @@ from thegent.utils.routing_impl.cost_tracker import get_cost_tracker
 logger = logging.getLogger(__name__)
 
 
-def harvest_routing_metrics(
-    session_id: str, output_path: Path | str | None = None
-) -> dict[str, Any]:
+def harvest_routing_metrics(session_id: str, output_path: Path | str | None = None) -> dict[str, Any]:
     """Harvest cost and latency data for a session and save to output_path.
 
     Args:
@@ -47,13 +45,9 @@ def harvest_routing_metrics(
 
     # Aggregate session metrics
     total_cost = sum(e.get("cost_usd", 0.0) for e in session_entries)
-    total_tokens = sum(
-        e.get("input_tokens", 0) + e.get("output_tokens", 0) for e in session_entries
-    )
+    total_tokens = sum(e.get("input_tokens", 0) + e.get("output_tokens", 0) for e in session_entries)
     avg_latency = (
-        sum(e.get("latency_ms", 0.0) for e in session_entries) / len(session_entries)
-        if session_entries
-        else 0.0
+        sum(e.get("latency_ms", 0.0) for e in session_entries) / len(session_entries) if session_entries else 0.0
     )
 
     metrics = {

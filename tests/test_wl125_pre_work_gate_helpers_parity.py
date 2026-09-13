@@ -11,9 +11,7 @@ SCRIPT = ROOT / "scripts" / "check_instruction_architecture.py"
 
 
 def _load_architecture_module():
-    spec = importlib.util.spec_from_file_location(
-        "instruction_architecture_check", SCRIPT
-    )
+    spec = importlib.util.spec_from_file_location("instruction_architecture_check", SCRIPT)
     assert spec is not None
     assert spec.loader is not None
     module = importlib.util.module_from_spec(spec)
@@ -83,9 +81,7 @@ def test_wl125_impl_pre_work_gate_wrappers_delegate(monkeypatch) -> None:
         violations=[{"evidence_type": "test"}],
         config_source="config.yaml",
     ) == {"governance_blocked": True}
-    assert impl._enforce_pre_work_hard_gate(Path("/tmp/project")) == {
-        "governance_blocked": True
-    }
+    assert impl._enforce_pre_work_hard_gate(Path("/tmp/project")) == {"governance_blocked": True}
 
     assert called["defaults"] is True
     assert called["thresholds_project_dir"] == Path("/tmp/project")

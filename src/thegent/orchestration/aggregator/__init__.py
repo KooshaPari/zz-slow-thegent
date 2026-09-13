@@ -84,9 +84,7 @@ class ResultAggregator:
             raise TypeError("message must expose a 'message_type' attribute")
         msg_type = message.message_type
         if not isinstance(msg_type, str):
-            raise TypeError(
-                f"message.message_type must be str, got {type(msg_type).__name__}"
-            )
+            raise TypeError(f"message.message_type must be str, got {type(msg_type).__name__}")
 
         self._messages.append(message)
         self._by_type[msg_type] = self._by_type.get(msg_type, 0) + 1
@@ -134,9 +132,7 @@ class ResultAggregator:
         """Return a one-line human-readable summary string."""
         total = len(self._messages)
         verdict = "FAILED" if self._errors else "PASSED"
-        by_type = (
-            ", ".join(f"{k}={v}" for k, v in sorted(self._by_type.items())) or "none"
-        )
+        by_type = ", ".join(f"{k}={v}" for k, v in sorted(self._by_type.items())) or "none"
         return (
             f"ResultAggregator summary: total={total} verdict={verdict} "
             f"by_type={{{by_type}}} errors={len(self._errors)} "

@@ -6,11 +6,7 @@ import orjson as json
 
 from conftest import _load_script_module
 
-SCRIPT_PATH = (
-    Path(__file__).resolve().parents[1]
-    / "scripts"
-    / "check_deprecated_quality_aliases.py"
-)
+SCRIPT_PATH = Path(__file__).resolve().parents[1] / "scripts" / "check_deprecated_quality_aliases.py"
 MODULE = _load_script_module("check_deprecated_quality_aliases", SCRIPT_PATH)
 
 
@@ -94,9 +90,7 @@ tasks:
     assert exit_code == 1
 
 
-def test_main_migration_format_includes_replacement_suggestions(
-    tmp_path: Path, capsys
-) -> None:
+def test_main_migration_format_includes_replacement_suggestions(tmp_path: Path, capsys) -> None:
     taskfile = tmp_path / "Taskfile.yml"
     taskfile.write_text(
         """
@@ -156,9 +150,7 @@ tasks:
     assert "| Missing canonical commands |" in out
 
 
-def test_main_migration_json_format_emits_structured_payload(
-    tmp_path: Path, capsys
-) -> None:
+def test_main_migration_json_format_emits_structured_payload(tmp_path: Path, capsys) -> None:
     taskfile = tmp_path / "Taskfile.yml"
     taskfile.write_text(
         """
@@ -228,9 +220,7 @@ def test_build_migration_entries_returns_ordered_line_items() -> None:
     ]
 
 
-def test_main_migration_jsonl_format_emits_line_delimited_entries(
-    tmp_path: Path, capsys
-) -> None:
+def test_main_migration_jsonl_format_emits_line_delimited_entries(tmp_path: Path, capsys) -> None:
     taskfile = tmp_path / "Taskfile.yml"
     taskfile.write_text(
         """
@@ -252,9 +242,7 @@ tasks:
         encoding="utf-8",
     )
 
-    exit_code = MODULE.main(
-        ["--taskfile", str(taskfile), "--format", "migration-jsonl"]
-    )
+    exit_code = MODULE.main(["--taskfile", str(taskfile), "--format", "migration-jsonl"])
 
     assert exit_code == 0
     lines = [json.loads(line) for line in capsys.readouterr().out.strip().splitlines()]

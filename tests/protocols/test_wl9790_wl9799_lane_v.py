@@ -18,36 +18,21 @@ def _reset_state() -> None:
 
 def test_wl9790_turn_cancel_recovery_suppression_decision() -> None:
     # @trace WL-9790
-    parse_error = server._error_response(
-        "req", server.JsonRpcError(-32003, "Turn already terminal")
-    )
-    assert (
-        server._should_suppress_turn_cancel_recovery_response(False, parse_error)
-        is True
-    )
-    assert (
-        server._should_suppress_turn_cancel_recovery_response(True, parse_error)
-        is False
-    )
+    parse_error = server._error_response("req", server.JsonRpcError(-32003, "Turn already terminal"))
+    assert server._should_suppress_turn_cancel_recovery_response(False, parse_error) is True
+    assert server._should_suppress_turn_cancel_recovery_response(True, parse_error) is False
 
 
 def test_wl9791_turn_cancel_recovery_error_code_extraction() -> None:
     # @trace WL-9791
-    parse_error = server._error_response(
-        "req", server.JsonRpcError(-32003, "Turn already terminal")
-    )
+    parse_error = server._error_response("req", server.JsonRpcError(-32003, "Turn already terminal"))
     assert server._extract_turn_cancel_recovery_error_code(parse_error) == -32003
-    assert (
-        server._extract_turn_cancel_recovery_error_code({"error": {"code": "x"}})
-        is None
-    )
+    assert server._extract_turn_cancel_recovery_error_code({"error": {"code": "x"}}) is None
 
 
 def test_wl9792_turn_approval_id_resolution_requires_string() -> None:
     # @trace WL-9792
-    assert (
-        server._resolve_turn_approval_id({"approval_id": "approval-1"}) == "approval-1"
-    )
+    assert server._resolve_turn_approval_id({"approval_id": "approval-1"}) == "approval-1"
     assert server._resolve_turn_approval_id({"approval_id": 12}) is None
     assert server._resolve_turn_approval_id({}) is None
 

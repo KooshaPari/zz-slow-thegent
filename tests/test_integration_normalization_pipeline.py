@@ -108,9 +108,7 @@ class TestAdapterValidationChain:
         # @trace FR-CTR-003
         """A properly formed COMPLETED output should pass validation cleanly."""
         adapter = XMLOutputAdapter("test-provider")
-        raw = (
-            "<STATUS>completed</STATUS><SUMMARY>Done</SUMMARY><PROGRESS>100%</PROGRESS>"
-        )
+        raw = "<STATUS>completed</STATUS><SUMMARY>Done</SUMMARY><PROGRESS>100%</PROGRESS>"
         result = adapter.normalize(raw)
         issues = validate_csm(result.csm)
 

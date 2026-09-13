@@ -16,13 +16,9 @@ from thegent.infra.multi_runtime_diagnostics import (
 )
 
 
-def _completed_process(
-    *, returncode: int = 0, stdout: str = "", stderr: str = ""
-) -> subprocess.CompletedProcess[str]:
+def _completed_process(*, returncode: int = 0, stdout: str = "", stderr: str = "") -> subprocess.CompletedProcess[str]:
     """Build a simple completed process object."""
-    return subprocess.CompletedProcess(
-        args=(), returncode=returncode, stdout=stdout, stderr=stderr
-    )
+    return subprocess.CompletedProcess(args=(), returncode=returncode, stdout=stdout, stderr=stderr)
 
 
 class TestRuntimeStatus:
@@ -104,9 +100,7 @@ class TestHardware:
     @patch("platform.system", return_value="Linux")
     @patch("platform.machine", return_value="x86_64")
     @patch("platform.release", return_value="linux")
-    @patch(
-        "pathlib.Path.exists", side_effect=RuntimeError("io_uring permission denied")
-    )
+    @patch("pathlib.Path.exists", side_effect=RuntimeError("io_uring permission denied"))
     def test_check_hardware_records_io_uring_probe_error(self, *_):
         result = check_hardware()
 

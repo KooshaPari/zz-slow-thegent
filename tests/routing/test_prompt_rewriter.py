@@ -156,9 +156,7 @@ def test_remove_empty_turns_keeps_nonempty() -> None:
 @pytest.mark.requirement("FR-PROMPT-069")
 def test_rule_matches_provider() -> None:
     """A rule with providers=['anthropic'] matches anthropic but not openai."""
-    anthropic_rule = _rule(
-        name="anthr_rule", providers=["anthropic"], transform="remove_empty_turns"
-    )
+    anthropic_rule = _rule(name="anthr_rule", providers=["anthropic"], transform="remove_empty_turns")
     cfg = RewriteConfig(rules=[anthropic_rule])
 
     # Empty message + empty turn so we can see if the rule was applied
@@ -179,9 +177,7 @@ def test_rule_matches_provider() -> None:
 @pytest.mark.requirement("FR-PROMPT-069")
 def test_rule_matches_model_prefix() -> None:
     """A rule with models=['claude-opus'] matches 'claude-opus-4-6' (prefix match)."""
-    rule = _rule(
-        name="opus_rule", models=["claude-opus"], transform="remove_empty_turns"
-    )
+    rule = _rule(name="opus_rule", models=["claude-opus"], transform="remove_empty_turns")
     cfg = RewriteConfig(rules=[rule])
 
     messages = [_user("hi"), {"role": "assistant", "content": ""}]
@@ -207,9 +203,7 @@ def test_rule_empty_providers_matches_all() -> None:
 
     for prov in ["openai", "anthropic", "google", "mistral", ""]:
         result = rewrite_prompt(messages, provider=prov, config=cfg)
-        assert "universal" in result.applied_rules, (
-            f"Expected match for provider={prov!r}"
-        )
+        assert "universal" in result.applied_rules, f"Expected match for provider={prov!r}"
 
 
 # ---------------------------------------------------------------------------
@@ -240,9 +234,7 @@ def test_rewrite_result_applied_rules() -> None:
     rule_a = _rule(name="rule_a", transform="remove_empty_turns", priority=10)
     rule_b = _rule(name="rule_b", transform="remove_empty_turns", priority=5)
     # rule_c should not match (wrong provider)
-    rule_c = _rule(
-        name="rule_c", providers=["anthropic"], transform="remove_empty_turns"
-    )
+    rule_c = _rule(name="rule_c", providers=["anthropic"], transform="remove_empty_turns")
     cfg = RewriteConfig(rules=[rule_a, rule_b, rule_c])
     messages = [_user("hello")]
     result = rewrite_prompt(messages, provider="openai", config=cfg)

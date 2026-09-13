@@ -9,12 +9,7 @@ from __future__ import annotations
 
 from pathlib import Path
 
-_ADR_DIR = (
-    Path(__file__).parent.parent.parent
-    / "docs"
-    / "changes"
-    / "two-surface-architecture"
-)
+_ADR_DIR = Path(__file__).parent.parent.parent / "docs" / "changes" / "two-surface-architecture"
 
 
 def test_proposal_md_exists() -> None:
@@ -42,14 +37,10 @@ def test_proposal_mentions_core_and_tooling() -> None:
 def test_design_mentions_import_boundary() -> None:
     """design.md must document the import boundary rule."""
     content = (_ADR_DIR / "design.md").read_text(encoding="utf-8")
-    assert "import boundary" in content.lower(), (
-        "design.md must mention 'import boundary'"
-    )
+    assert "import boundary" in content.lower(), "design.md must mention 'import boundary'"
 
 
 def test_tasks_mentions_wave4_extractions() -> None:
     """tasks.md must reference Wave-4 remaining extractions."""
     content = (_ADR_DIR / "tasks.md").read_text(encoding="utf-8")
-    assert "Wave-4" in content or "wave-4" in content.lower(), (
-        "tasks.md must mention Wave-4 remaining extractions"
-    )
+    assert "Wave-4" in content or "wave-4" in content.lower(), "tasks.md must mention Wave-4 remaining extractions"

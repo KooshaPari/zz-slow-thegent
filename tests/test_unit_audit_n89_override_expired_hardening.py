@@ -30,9 +30,7 @@ class TestOverrideExpirationHandlerInit:
 class TestRegisterOverride:
     def test_register_stores(self):
         handler = OverrideExpirationHandler()
-        handler.register_override(
-            "ov-1", datetime.now(UTC) + timedelta(hours=1), "policy-a"
-        )
+        handler.register_override("ov-1", datetime.now(UTC) + timedelta(hours=1), "policy-a")
         assert "ov-1" in handler.overrides
 
     def test_register_multiple(self):

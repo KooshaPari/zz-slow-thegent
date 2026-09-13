@@ -230,9 +230,7 @@ def proxy_service_uninstall() -> tuple[bool, str]:
     if platform.system() != "Darwin":
         return False, "launchd only on macOS"
     plist_path = _proxy_plist_path()
-    run_subprocess_optimized(
-        ["launchctl", "unload", str(plist_path)], check=False, capture_output=True
-    )
+    run_subprocess_optimized(["launchctl", "unload", str(plist_path)], check=False, capture_output=True)
     if plist_path.exists():
         plist_path.unlink()
     return True, "Uninstalled"
@@ -247,9 +245,7 @@ def proxy_service_start() -> tuple[bool, str]:
     plist_path = _proxy_plist_path()
     if not plist_path.exists():
         return False, "Service not installed. Run: thegent cliproxy service install"
-    run_subprocess_optimized(
-        ["launchctl", "load", str(plist_path)], capture_output=True, check=True
-    )
+    run_subprocess_optimized(["launchctl", "load", str(plist_path)], capture_output=True, check=True)
     return True, "Started"
 
 
@@ -262,9 +258,7 @@ def proxy_service_stop() -> tuple[bool, str]:
     plist_path = _proxy_plist_path()
     if not plist_path.exists():
         return False, "Service not installed"
-    run_subprocess_optimized(
-        ["launchctl", "unload", str(plist_path)], check=False, capture_output=True
-    )
+    run_subprocess_optimized(["launchctl", "unload", str(plist_path)], check=False, capture_output=True)
     return True, "Stopped"
 
 

@@ -159,9 +159,7 @@ def test_worktree_governance_check_fails_for_invalid_structured_state(
 ) -> None:
     """`worktree_governance.sh check` rejects structured paths with invalid state labels."""
     repo_root = init_repo(tmp_path)
-    invalid_state_path = (
-        repo_root / ".worktrees" / "backend" / "m" / "anchor" / "invalid-state"
-    )
+    invalid_state_path = repo_root / ".worktrees" / "backend" / "m" / "anchor" / "invalid-state"
 
     add_invalid_state = subprocess.run(
         [

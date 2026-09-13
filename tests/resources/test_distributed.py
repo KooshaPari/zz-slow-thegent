@@ -130,9 +130,7 @@ def test_acquire_returns_lease(coordinator: DistributedResourceCoordinator) -> N
     assert lease.expires_at > time.time()
 
 
-def test_acquire_stores_lease_on_disk(
-    coordinator: DistributedResourceCoordinator, lease_file: Path
-) -> None:
+def test_acquire_stores_lease_on_disk(coordinator: DistributedResourceCoordinator, lease_file: Path) -> None:
     """After acquire, the lease file exists and is valid JSON."""
     coordinator.acquire(resource="cpu", amount=1.0, owner="agent-1")
     assert lease_file.exists()

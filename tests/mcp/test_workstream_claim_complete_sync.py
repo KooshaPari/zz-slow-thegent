@@ -28,9 +28,7 @@ def test_workstream_claim_tool_impl_wraps_claim_result() -> None:
         calls.append((item_id, agent_id))
         return {"success": True, "item_id": item_id, "agent_id": agent_id}
 
-    result = workstream_claim_tool_impl(
-        item_id="WL-9", agent_id="agent-sync", claim_impl=_claim
-    )
+    result = workstream_claim_tool_impl(item_id="WL-9", agent_id="agent-sync", claim_impl=_claim)
 
     assert calls == [("WL-9", "agent-sync")]
     assert result.structured_content == {
@@ -49,9 +47,7 @@ def test_workstream_complete_tool_impl_wraps_complete_result() -> None:
         calls.append((item_id, agent_id))
         return {"success": True, "completed": item_id, "agent": agent_id}
 
-    result = workstream_complete_tool_impl(
-        item_id="WL-10", agent_id="agent-sync", complete_impl=_complete
-    )
+    result = workstream_complete_tool_impl(item_id="WL-10", agent_id="agent-sync", complete_impl=_complete)
 
     assert calls == [("WL-10", "agent-sync")]
     assert result.structured_content == {
@@ -70,9 +66,7 @@ def test_workstream_sync_plan_incorporate_forwards_cd_and_dry_run() -> None:
         calls.append((cd, dry_run))
         return {"merged": 3, "dry_run": dry_run, "target": str(cd) if cd else "cwd"}
 
-    result = thegent_plan_incorporate_impl(
-        cd="/tmp/workstream-sync", dry_run=True, incorporate_impl=_incorporate
-    )
+    result = thegent_plan_incorporate_impl(cd="/tmp/workstream-sync", dry_run=True, incorporate_impl=_incorporate)
 
     assert calls == [(Path("/tmp/workstream-sync"), True)]
     assert result.structured_content == {

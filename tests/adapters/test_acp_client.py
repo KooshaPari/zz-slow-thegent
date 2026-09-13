@@ -54,9 +54,7 @@ def _mock_response(status_code: int = 200, json_body: Any = None) -> MagicMock:
     return resp
 
 
-def _patch_client(
-    post_response: MagicMock, get_response: MagicMock | None = None
-) -> Any:
+def _patch_client(post_response: MagicMock, get_response: MagicMock | None = None) -> Any:
     """Return a patch context manager for httpx.AsyncClient.
 
     Args:
@@ -92,9 +90,7 @@ class TestIsRetryable:
     def _status_error(self, status_code: int) -> httpx.HTTPStatusError:
         resp = MagicMock(spec=httpx.Response)
         resp.status_code = status_code
-        return httpx.HTTPStatusError(
-            f"HTTP {status_code}", request=MagicMock(), response=resp
-        )
+        return httpx.HTTPStatusError(f"HTTP {status_code}", request=MagicMock(), response=resp)
 
     def test_429_is_retryable(self) -> None:
         """HTTP 429 Too Many Requests is retryable."""
@@ -147,9 +143,7 @@ class TestACPResult:
 
     def test_fields_stored_correctly(self) -> None:
         """All fields are stored and accessible."""
-        r = ACPResult(
-            success=True, result="hello", agent_id="remote-1", elapsed_ms=42.5
-        )
+        r = ACPResult(success=True, result="hello", agent_id="remote-1", elapsed_ms=42.5)
         assert r.success is True
         assert r.result == "hello"
         assert r.agent_id == "remote-1"
@@ -232,40 +226,30 @@ class TestSendTask:
         assert endpoint == "/tasks"
 
     @pytest.mark.asyncio
-    async def test_send_task_payload_contains_task_and_agent_id(
-        self, client: ACPClient
-    ) -> None:
+    async def test_send_task_payload_contains_task_and_agent_id(self, client: ACPClient) -> None:
         """send_task() sends task text and agent_id in the request body."""
         resp = _mock_response(200, {"result": "ok", "agent_id": "r"})
         ctx, mock_client = _patch_client(resp)
         with ctx:
             await client.send_task("analyse codebase")
         call_kwargs = mock_client.post.call_args
-        payload = call_kwargs[1].get("json") or (
-            call_kwargs[0][1] if len(call_kwargs[0]) > 1 else {}
-        )
+        payload = call_kwargs[1].get("json") or (call_kwargs[0][1] if len(call_kwargs[0]) > 1 else {})
         assert payload["task"] == "analyse codebase"
         assert payload["agent_id"] == "thegent"
 
     @pytest.mark.asyncio
-    async def test_send_task_with_context_includes_context(
-        self, client: ACPClient
-    ) -> None:
+    async def test_send_task_with_context_includes_context(self, client: ACPClient) -> None:
         """send_task() includes context dict in payload when provided."""
         resp = _mock_response(200, {"result": "ok", "agent_id": "r"})
         ctx, mock_client = _patch_client(resp)
         with ctx:
-            await client.send_task(
-                "task", context={"repo": "thegent", "branch": "main"}
-            )
+            await client.send_task("task", context={"repo": "thegent", "branch": "main"})
         call_kwargs = mock_client.post.call_args
         payload = call_kwargs[1].get("json") or {}
         assert payload.get("context") == {"repo": "thegent", "branch": "main"}
 
     @pytest.mark.asyncio
-    async def test_send_task_without_context_omits_context_key(
-        self, client: ACPClient
-    ) -> None:
+    async def test_send_task_without_context_omits_context_key(self, client: ACPClient) -> None:
         """send_task() omits context key when context=None."""
         resp = _mock_response(200, {"result": "ok", "agent_id": "r"})
         ctx, mock_client = _patch_client(resp)
@@ -276,9 +260,7 @@ class TestSendTask:
         assert "context" not in payload
 
     @pytest.mark.asyncio
-    async def test_send_task_missing_agent_id_in_response_uses_unknown(
-        self, client: ACPClient
-    ) -> None:
+    async def test_send_task_missing_agent_id_in_response_uses_unknown(self, client: ACPClient) -> None:
         """send_task() uses 'unknown' as agent_id when not in the response."""
         resp = _mock_response(200, {"result": "done"})
         ctx, _ = _patch_client(resp)
@@ -287,9 +269,7 @@ class TestSendTask:
         assert result.agent_id == "unknown"
 
     @pytest.mark.asyncio
-    async def test_send_task_raises_acp_client_error_on_400(
-        self, client: ACPClient
-    ) -> None:
+    async def test_send_task_raises_acp_client_error_on_400(self, client: ACPClient) -> None:
         """send_task() raises ACPClientError on HTTP 400."""
         resp = _mock_response(400, {"message": "bad request"})
         ctx, _ = _patch_client(resp)
@@ -298,9 +278,7 @@ class TestSendTask:
         assert exc_info.value.status_code == 400
 
     @pytest.mark.asyncio
-    async def test_send_task_raises_acp_client_error_on_500(
-        self, client: ACPClient
-    ) -> None:
+    async def test_send_task_raises_acp_client_error_on_500(self, client: ACPClient) -> None:
         """send_task() raises ACPClientError on HTTP 500."""
         resp = _mock_response(500, {"message": "server error"})
         ctx, _ = _patch_client(resp)
@@ -309,9 +287,7 @@ class TestSendTask:
         assert exc_info.value.status_code == 500
 
     @pytest.mark.asyncio
-    async def test_send_task_raises_acp_client_error_on_404(
-        self, client: ACPClient
-    ) -> None:
+    async def test_send_task_raises_acp_client_error_on_404(self, client: ACPClient) -> None:
         """send_task() raises ACPClientError on HTTP 404."""
         resp = _mock_response(404, {"message": "not found"})
         ctx, _ = _patch_client(resp)
@@ -319,9 +295,7 @@ class TestSendTask:
             await client.send_task("task")
 
     @pytest.mark.asyncio
-    async def test_send_task_raises_unreachable_on_connect_error(
-        self, client: ACPClient
-    ) -> None:
+    async def test_send_task_raises_unreachable_on_connect_error(self, client: ACPClient) -> None:
         """send_task() raises ACPServerUnreachableError when server is unreachable."""
         mock_client_inst = AsyncMock()
         mock_client_inst.__aenter__ = AsyncMock(return_value=mock_client_inst)
@@ -338,9 +312,7 @@ class TestSendTask:
             await client.send_task("task")
 
     @pytest.mark.asyncio
-    async def test_send_task_raises_unreachable_on_timeout(
-        self, client: ACPClient
-    ) -> None:
+    async def test_send_task_raises_unreachable_on_timeout(self, client: ACPClient) -> None:
         """send_task() raises ACPServerUnreachableError on read timeout."""
         mock_client_inst = AsyncMock()
         mock_client_inst.__aenter__ = AsyncMock(return_value=mock_client_inst)
@@ -407,9 +379,7 @@ class TestHealthCheck:
         assert healthy is False
 
     @pytest.mark.asyncio
-    async def test_health_check_returns_false_on_connect_error(
-        self, client: ACPClient
-    ) -> None:
+    async def test_health_check_returns_false_on_connect_error(self, client: ACPClient) -> None:
         """health_check() returns False when server is unreachable."""
         mock_client_inst = AsyncMock()
         mock_client_inst.__aenter__ = AsyncMock(return_value=mock_client_inst)
@@ -424,9 +394,7 @@ class TestHealthCheck:
         assert healthy is False
 
     @pytest.mark.asyncio
-    async def test_health_check_returns_false_on_timeout(
-        self, client: ACPClient
-    ) -> None:
+    async def test_health_check_returns_false_on_timeout(self, client: ACPClient) -> None:
         """health_check() returns False when the request times out."""
         mock_client_inst = AsyncMock()
         mock_client_inst.__aenter__ = AsyncMock(return_value=mock_client_inst)

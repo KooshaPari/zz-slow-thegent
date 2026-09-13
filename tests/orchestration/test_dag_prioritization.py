@@ -160,9 +160,7 @@ class TestLinearChain:
         order = prioritizer.topological_sort()
         assert order.index("a") < order.index("b") < order.index("c")
 
-    def test_priority_scores_all_on_critical_path(
-        self, prioritizer: DagPrioritizer
-    ) -> None:
+    def test_priority_scores_all_on_critical_path(self, prioritizer: DagPrioritizer) -> None:
         # All three tasks are on the critical path (a→b→c, total = 1+2+3 = 6).
         # Standard CPM: total float is zero for every node on the critical path.
         # Priority score = project_makespan - total_float = 6.0 for all.
@@ -233,9 +231,7 @@ class TestDiamondDag:
         ready = prioritizer.ready_tasks(completed=set())
         assert ready == ["a"]
 
-    def test_ready_tasks_after_a_both_branches(
-        self, prioritizer: DagPrioritizer
-    ) -> None:
+    def test_ready_tasks_after_a_both_branches(self, prioritizer: DagPrioritizer) -> None:
         ready = prioritizer.ready_tasks(completed={"a"})
         assert set(ready) == {"b", "c"}
         # b is on the critical path → should be first

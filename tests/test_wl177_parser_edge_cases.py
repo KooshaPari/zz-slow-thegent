@@ -168,9 +168,7 @@ class TestFileBoundaryConditions:
     """Test parser with edge cases at file boundaries."""
 
     @pytest.mark.requirement("WL-177")
-    def test_wl_section_at_end_of_file_no_trailing_newline(
-        self, tmp_path: Path
-    ) -> None:
+    def test_wl_section_at_end_of_file_no_trailing_newline(self, tmp_path: Path) -> None:
         """Test WL section at end of file with no trailing newline."""
         work_stream = tmp_path / "WORK_STREAM.md"
         # No trailing newline after the last line

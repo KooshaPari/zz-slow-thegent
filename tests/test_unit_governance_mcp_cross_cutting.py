@@ -101,9 +101,7 @@ def engine(settings: ThegentSettings) -> PolicyEngine:
 
 @pytest.fixture
 def federated_engine(settings: ThegentSettings) -> PolicyEngine:
-    return PolicyEngine(
-        settings=settings, use_federation=True, default_namespace="acme"
-    )
+    return PolicyEngine(settings=settings, use_federation=True, default_namespace="acme")
 
 
 # ---------------------------------------------------------------------------
@@ -290,9 +288,7 @@ class TestFederatedPolicyMcpObserveSummary:
     """A federated rule must never block an MCP *resource* reader —
     resources are read-only and the cockpit must always render fresh data."""
 
-    def test_federated_rule_does_not_block_observe_resource(
-        self, federated_engine
-    ) -> None:
+    def test_federated_rule_does_not_block_observe_resource(self, federated_engine) -> None:
         """Register a federated DENY rule for the observe-summary shape and
         confirm the MCP *resource* reader still returns the payload
         (resources bypass the pre-check gate)."""
@@ -331,9 +327,7 @@ class TestFederatedPolicyMcpObserveSummary:
                 namespace="acme",
             )
         )
-        assert decision.verdict == Verdict.DENY, (
-            "federated rule must still block tool dispatch"
-        )
+        assert decision.verdict == Verdict.DENY, "federated rule must still block tool dispatch"
 
 
 # ---------------------------------------------------------------------------
@@ -345,9 +339,7 @@ class TestConcurrentMcpDispatchFederatedWriters:
     """Concurrent MCP tool dispatch + concurrent federated writers must
     not produce torn envelopes or lost rules."""
 
-    def test_concurrent_observe_summary_dispatches_under_writer_pressure(
-        self, federated_engine
-    ) -> None:
+    def test_concurrent_observe_summary_dispatches_under_writer_pressure(self, federated_engine) -> None:
         """4 reader threads × 25 dispatches while 2 writer threads each
         register 30 federated rules. Every dispatch returns a non-empty
         JSON string (no torn payload) and the rule count converges to
@@ -360,9 +352,7 @@ class TestConcurrentMcpDispatchFederatedWriters:
             try:
                 from thegent.mcp.server import resource_observe_summary as _resource
 
-                with patch(
-                    "thegent.mcp.server.observe_summary_impl", return_value=sentinel
-                ):
+                with patch("thegent.mcp.server.observe_summary_impl", return_value=sentinel):
                     for _ in range(25):
                         payload = _resource()
                         assert isinstance(payload, str)
@@ -657,9 +647,7 @@ class TestGovernanceMcpPerfBudgetGuard:
             # Drive a single audited_budget context to confirm wiring
             from thegent.mcp.server.mcp_audit_wiring import audited_budget
 
-            with audited_budget(
-                AuditEntryKind.TOOL_INVOCATION, "tool_invoke_ms", agent="test"
-            ):
+            with audited_budget(AuditEntryKind.TOOL_INVOCATION, "tool_invoke_ms", agent="test"):
                 pass
             stats = mcp_audit_stats()
             assert stats["total_entries"] >= 1, (
@@ -680,9 +668,7 @@ class TestGovernanceMcpPerfBudgetGuard:
         from thegent.mcp import server as _mcp_server_mod
 
         src = inspect.getsource(_mcp_server_mod.resource_session_contract_health_trend)
-        assert "health_trend_ms" in src, (
-            "resource_session_contract_health_trend must use health_trend_ms budget"
-        )
+        assert "health_trend_ms" in src, "resource_session_contract_health_trend must use health_trend_ms budget"
 
 
 # ---------------------------------------------------------------------------
@@ -703,9 +689,7 @@ class TestFederatedCacheInvalidation:
     a no-op).
     """
 
-    def test_register_rule_invalidates_cache_for_matching_context(
-        self, federated_engine
-    ) -> None:
+    def test_register_rule_invalidates_cache_for_matching_context(self, federated_engine) -> None:
         """Baseline evaluate populates the cache with ALLOW for the
         matched context. A subsequently-registered federated DENY rule
         that matches the same context must take effect on the next
@@ -783,9 +767,7 @@ class TestFederatedCacheInvalidation:
         assert flipped.override_applied is True
         assert flipped.cached is False
 
-    def test_load_rules_from_file_invalidates_cache(
-        self, tmp_path, federated_engine
-    ) -> None:
+    def test_load_rules_from_file_invalidates_cache(self, tmp_path, federated_engine) -> None:
         """``load_rules_from_file`` must drop the OPT-008 cache so the
         freshly-loaded rules take effect on the next ``evaluate`` call.
         Without invalidation, a hot cache key would serve the stale
@@ -833,18 +815,14 @@ class TestFederatedCacheInvalidation:
         assert flipped.cached is False
         assert flipped.rule_id == "RULE_FILE_DENY"
 
-    def test_register_rule_preserves_cache_stats_counters(
-        self, federated_engine
-    ) -> None:
+    def test_register_rule_preserves_cache_stats_counters(self, federated_engine) -> None:
         """The cache invalidation must clear the OPT-008 *cache* but
         preserve the hit/miss counters — a SOTA audit window that
         started before the registration should still see pre-existing
         observations. (The cache and the counters are deliberately
         separate so the ``cache_stats()`` audit hook continues to
         report the lifetime histogram.)"""
-        ctx = PolicyContext(
-            agent="cursor", model="gpt-5.3-codex", lane="standard", namespace="acme"
-        )
+        ctx = PolicyContext(agent="cursor", model="gpt-5.3-codex", lane="standard", namespace="acme")
         federated_engine.evaluate(ctx)  # miss
         federated_engine.evaluate(ctx)  # hit
         stats_before = federated_engine.cache_stats()
@@ -862,20 +840,14 @@ class TestFederatedCacheInvalidation:
         )
 
         stats_after = federated_engine.cache_stats()
-        assert stats_after["hits"] == stats_before["hits"], (
-            "register_rule must NOT reset the hit counter"
-        )
-        assert stats_after["misses"] == stats_before["misses"], (
-            "register_rule must NOT reset the miss counter"
-        )
+        assert stats_after["hits"] == stats_before["hits"], "register_rule must NOT reset the hit counter"
+        assert stats_after["misses"] == stats_before["misses"], "register_rule must NOT reset the miss counter"
         # But the cache itself must be empty so the next call misses.
         assert stats_after["size"] == 0, (
             f"OPT-008 cache must be empty after invalidation, got size={stats_after['size']}"
         )
 
-    def test_register_rule_under_concurrent_evaluators_does_not_shadow(
-        self, federated_engine
-    ) -> None:
+    def test_register_rule_under_concurrent_evaluators_does_not_shadow(self, federated_engine) -> None:
         """Two reader threads polling the same context while a writer
         registers a new rule: at least ONE post-registration read must
         observe the DENY verdict. Without cache invalidation the readers
@@ -925,9 +897,7 @@ class TestFederatedCacheInvalidation:
             assert not t.is_alive(), "reader thread hung"
 
         assert errors == [], f"errors: {errors!r}"
-        assert any(seen_denies), (
-            f"no reader observed the post-registration DENY verdict: {seen_denies!r}"
-        )
+        assert any(seen_denies), f"no reader observed the post-registration DENY verdict: {seen_denies!r}"
 
 
 # ---------------------------------------------------------------------------
@@ -968,9 +938,7 @@ class TestBudgetExceededRecoveryPath:
             )
 
             # Restore a sane budget for the recovery call.
-            mcp_perf_gates.MCP_PERF_BUDGETS["tool_invoke_ms"] = original.get(
-                "tool_invoke_ms", 100.0
-            )
+            mcp_perf_gates.MCP_PERF_BUDGETS["tool_invoke_ms"] = original.get("tool_invoke_ms", 100.0)
 
             # 2nd call with a fast impl must NOT inherit any state from
             # the previous budget violation.
@@ -1043,9 +1011,7 @@ class TestBudgetExceededRecoveryPath:
 
             # Explicit per-call override: 10ms budget. Block exceeds it.
             with pytest.raises(mcp_perf_gates.MCPBudgetExceeded):
-                with mcp_perf_gates.mcp_budget_context(
-                    "recovery_probe", budget_ms=10.0
-                ):
+                with mcp_perf_gates.mcp_budget_context("recovery_probe", budget_ms=10.0):
                     time.sleep(0.02)
 
             # Named budget must NOT have been mutated by the override.
@@ -1102,9 +1068,7 @@ class TestRecordDecisionThreadSafety:
             except BaseException as exc:
                 errors.append(exc)
 
-        threads = [
-            threading.Thread(target=_writer, args=(idx,)) for idx in range(writers)
-        ]
+        threads = [threading.Thread(target=_writer, args=(idx,)) for idx in range(writers)]
         for t in threads:
             t.start()
         for t in threads:
@@ -1124,9 +1088,7 @@ class TestRecordDecisionThreadSafety:
             f"torn write detected: duplicate rule_ids in snapshot: "
             f"{[r for r in rule_ids if [n['rule_id'] for n in notices].count(r) > 1]}"
         )
-        assert len(notices) == 64, (
-            f"expected bounded deque (maxlen=64) to be full, got {len(notices)}"
-        )
+        assert len(notices) == 64, f"expected bounded deque (maxlen=64) to be full, got {len(notices)}"
         # And the snapshot is internally consistent: every notice has
         # the expected shape (verdict, reason_code, rule_id, agent,
         # lane, evaluated_at, reason).

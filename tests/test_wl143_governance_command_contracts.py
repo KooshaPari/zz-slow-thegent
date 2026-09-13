@@ -131,9 +131,7 @@ def _patch_console(mod: Any, fake_console: Any):
 
     stack = ExitStack()
     if hasattr(mod, "Console"):
-        stack.enter_context(
-            patch.object(mod, "Console", new=lambda *a, **kw: fake_console)
-        )
+        stack.enter_context(patch.object(mod, "Console", new=lambda *a, **kw: fake_console))
     stack.enter_context(patch("rich.console.Console", return_value=fake_console))
     return stack
 
@@ -161,9 +159,7 @@ def test_governance_module_imports_cleanly(mod_name: str) -> None:
 def test_governance_module_exposes_registry_cmd(mod_name: str) -> None:
     """Every governance module exposes ``contracts_registry_cmd``."""
     mod = importlib.import_module(mod_name)
-    assert hasattr(mod, "contracts_registry_cmd"), (
-        f"{mod_name} missing contracts_registry_cmd"
-    )
+    assert hasattr(mod, "contracts_registry_cmd"), f"{mod_name} missing contracts_registry_cmd"
     assert callable(mod.contracts_registry_cmd)
 
 
@@ -189,9 +185,7 @@ def test_governance_module_exposes_policy_show_cmd(mod_name: str) -> None:
 
 
 @pytest.mark.parametrize("mod_name", ALL_GOV_MODS)
-def test_contracts_registry_json_contains_csm(
-    mod_name: str, canonical_csm_entry
-) -> None:
+def test_contracts_registry_json_contains_csm(mod_name: str, canonical_csm_entry) -> None:
     """The JSON output contains the canonical ``csm`` entry."""
     mod = importlib.import_module(mod_name)
     output = _capture_stdout(mod.contracts_registry_cmd, format="json")
@@ -312,9 +306,7 @@ def test_drift_cmd_json_shape(mod_name: str) -> None:
         "semantic_rate_pct": 0,
         "semantic_budget_pct": 10.0,
     }
-    with patch(
-        "thegent.contracts.telemetry.ContractTelemetry", return_value=fake_telemetry
-    ):
+    with patch("thegent.contracts.telemetry.ContractTelemetry", return_value=fake_telemetry):
         output = _capture_stdout(
             mod.drift_cmd,
             window=10,
@@ -370,9 +362,7 @@ def test_contracts_conformance_cmd_json_shape() -> None:
         ],
         "drift_issues": [],
     }
-    with patch(
-        "thegent.contracts.conformance.run_conformance_suite", return_value=fake_report
-    ):
+    with patch("thegent.contracts.conformance.run_conformance_suite", return_value=fake_report):
         output = _capture_stdout(
             mod.contracts_conformance_cmd,
             format="json",
@@ -404,9 +394,7 @@ def test_contracts_conformance_cmd_json_with_drift() -> None:
         "drift_checked": True,
         "drift_issues": ["minor structural drift"],
     }
-    with patch(
-        "thegent.contracts.conformance.run_conformance_suite", return_value=fake_report
-    ):
+    with patch("thegent.contracts.conformance.run_conformance_suite", return_value=fake_report):
         with pytest.raises(typer.Exit):
             _capture_stdout(
                 mod.contracts_conformance_cmd,
@@ -434,9 +422,7 @@ def test_contracts_conformance_cmd_renders_table() -> None:
         ],
         "drift_issues": [],
     }
-    with patch(
-        "thegent.contracts.conformance.run_conformance_suite", return_value=fake_report
-    ):
+    with patch("thegent.contracts.conformance.run_conformance_suite", return_value=fake_report):
         mod.contracts_conformance_cmd(format=None, check_drift=False, drift_window=10)
 
 
@@ -611,9 +597,7 @@ def test_contracts_registry_renders_table_path(mod_name: str) -> None:
 
 
 @pytest.mark.parametrize("mod_name", ALL_GOV_MODS)
-def test_contracts_registry_renders_deprecated_entry(
-    mod_name: str, registry_mod
-) -> None:
+def test_contracts_registry_renders_deprecated_entry(mod_name: str, registry_mod) -> None:
     """A deprecated entry renders the ``DEPRECATED`` status marker.
 
     The table path branches on ``deprecated=True`` (and on a non-empty
@@ -640,9 +624,7 @@ def test_contracts_registry_renders_deprecated_entry(
 
 
 @pytest.mark.parametrize("mod_name", ALL_GOV_MODS)
-def test_contracts_registry_singleton_remove_restores_view(
-    mod_name: str, registry_mod
-) -> None:
+def test_contracts_registry_singleton_remove_restores_view(mod_name: str, registry_mod) -> None:
     """Removing a sentinel from the singleton is reflected in the next
     ``contracts_registry_cmd`` call.
 
@@ -689,6 +671,4 @@ def test_is_compatible_rejects_downgrade(registry_mod) -> None:
     ]
     for requested, cur, expected in cases:
         got = registry_mod.get_registry().is_compatible(requested, cur)
-        assert got is expected, (
-            f"is_compatible({requested!r}, {cur!r}) → {got}, want {expected}"
-        )
+        assert got is expected, f"is_compatible({requested!r}, {cur!r}) → {got}, want {expected}"

@@ -10,9 +10,7 @@ from thegent.utils.provider_names import normalize_provider_name
 
 # Canonical model ID -> list of routes (provider, backend, model_alias, priority)
 # Lower priority = prefer first when using prefer_direct
-RoutePolicy = Literal[
-    "prefer_direct", "prefer_proxy", "failover", "round_robin", "cheapest", "pareto"
-]
+RoutePolicy = Literal["prefer_direct", "prefer_proxy", "failover", "round_robin", "cheapest", "pareto"]
 ROUTE_SCHEMA_VERSION = 1
 
 
@@ -244,10 +242,7 @@ def _scraped_to_routes(by_provider: dict[str, list[str]]) -> dict[str, list[Rout
                 priority=priority,
                 cost_weight=cost_weight,
             )
-            if not any(
-                r.provider == provider and r.model_alias == model_id
-                for r in by_model[canonical]
-            ):
+            if not any(r.provider == provider and r.model_alias == model_id for r in by_model[canonical]):
                 by_model[canonical].append(route)
     return by_model
 
@@ -317,9 +312,7 @@ def _get_catalog() -> dict[str, list[Route]]:
                         if custom_routes:
                             if model_id in _STATIC_CATALOG:
                                 # Prepend custom routes to override/augment static ones
-                                _STATIC_CATALOG[model_id] = _merge_routes(
-                                    custom_routes, _STATIC_CATALOG[model_id]
-                                )
+                                _STATIC_CATALOG[model_id] = _merge_routes(custom_routes, _STATIC_CATALOG[model_id])
                             else:
                                 _STATIC_CATALOG[model_id] = custom_routes
         except Exception as e:
@@ -367,18 +360,12 @@ class ModelCatalog:
             if not scraped:
                 return static_routes
             scraped_routes_map = _scraped_to_routes(scraped)
-            scraped_routes = (
-                scraped_routes_map.get(canonical)
-                or scraped_routes_map.get(model_id)
-                or []
-            )
+            scraped_routes = scraped_routes_map.get(canonical) or scraped_routes_map.get(model_id) or []
         except Exception:
             return static_routes
 
         # Merge: static first, then scraped routes not already present (by provider+model_alias)
-        seen: set[tuple[str, str]] = {
-            (r.provider, r.model_alias) for r in static_routes
-        }
+        seen: set[tuple[str, str]] = {(r.provider, r.model_alias) for r in static_routes}
         merged = list(static_routes)
         for r in scraped_routes:
             if (r.provider, r.model_alias) not in seen:
@@ -427,9 +414,7 @@ class ModelCatalog:
                 if scraped:
                     scraped_routes = _scraped_to_routes(scraped)
                     for model_id, routes in scraped_routes.items():
-                        catalog[model_id] = _merge_routes(
-                            catalog.get(model_id, []), routes
-                        )
+                        catalog[model_id] = _merge_routes(catalog.get(model_id, []), routes)
             except Exception:
                 pass
 
@@ -451,9 +436,7 @@ class ModelCatalog:
                 for r in routes
             ]
             if provider_filter:
-                route_rows = [
-                    row for row in route_rows if row["provider"] == provider_filter
-                ]
+                route_rows = [row for row in route_rows if row["provider"] == provider_filter]
             if not route_rows:
                 continue
             detail[model_id] = cast("list[dict[str, object]]", route_rows)
@@ -537,14 +520,10 @@ def resolve_route(
     - quality_floor: Minimum quality threshold (0-1) for cost_quality routing.
     - lane: Execution lane (reserved for future routing strategies).
     """
-    normalized_provider_hint = (
-        normalize_provider_name(provider_hint) if provider_hint else None
-    )
+    normalized_provider_hint = normalize_provider_name(provider_hint) if provider_hint else None
 
     # OPT-020: Check cache first (multi-tier if available)
-    cache_key = _make_route_cache_key(
-        model_id, normalized_provider_hint, policy, quality_floor, lane
-    )
+    cache_key = _make_route_cache_key(model_id, normalized_provider_hint, policy, quality_floor, lane)
     if _USE_MULTI_TIER_CACHE:
         cached_result = _ROUTE_CACHE.get(cache_key)
         if cached_result is not None:
@@ -597,9 +576,7 @@ def resolve_route(
                 )
             if offers:
                 frontier = _pareto_frontier(offers)
-                sel = _lexicographic_select(
-                    frontier or offers, order=("quality", "cost", "speed")
-                )
+                sel = _lexicographic_select(frontier or offers, order=("quality", "cost", "speed"))
                 if sel:
                     return (sel.provider, sel.model_alias)
         except Exception:

@@ -92,9 +92,7 @@ def test_snapshot_daily_export_payload_returns_source_json_and_source_md(
         captured_at="2026-02-22T00:02:00+00:00",
     )
 
-    payload = snapshot_daily_export_payload(
-        scraper, out_path=str(tmp_path / "daily-export"), limit=1000
-    )
+    payload = snapshot_daily_export_payload(scraper, out_path=str(tmp_path / "daily-export"), limit=1000)
 
     assert "source_json" in payload
     assert "source_md" in payload
@@ -113,9 +111,7 @@ def test_snapshot_daily_export_payload_returns_alias_paths_matching_source_keys(
         captured_at="2026-02-22T00:03:00+00:00",
     )
 
-    payload = snapshot_daily_export_payload(
-        scraper, out_path=str(tmp_path / "daily-export-aliases"), limit=1000
-    )
+    payload = snapshot_daily_export_payload(scraper, out_path=str(tmp_path / "daily-export-aliases"), limit=1000)
 
     assert payload["json_path"] == payload["source_json"]
     assert payload["markdown_path"] == payload["source_md"]
@@ -134,9 +130,7 @@ def test_snapshot_daily_export_json_contains_generated_at_in_summary(
         captured_at="2026-02-22T00:04:00+00:00",
     )
 
-    payload = snapshot_daily_export_payload(
-        scraper, out_path=str(tmp_path / "daily-export-json"), limit=1000
-    )
+    payload = snapshot_daily_export_payload(scraper, out_path=str(tmp_path / "daily-export-json"), limit=1000)
     exported = json.loads(Path(payload["source_json"]).read_text(encoding="utf-8"))
 
     assert "summary" in exported

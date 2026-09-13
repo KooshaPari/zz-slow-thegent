@@ -161,9 +161,7 @@ def test_validate_key_not_found() -> None:
 def test_validate_key_model_not_allowed() -> None:
     """A key with an allowed_models list should block models not in the list."""
     store = VirtualKeyStore()
-    cfg = VirtualKeyConfig(
-        key_id="sk-tg-restricted", allowed_models=["claude-3-5-sonnet"]
-    )
+    cfg = VirtualKeyConfig(key_id="sk-tg-restricted", allowed_models=["claude-3-5-sonnet"])
     store.register(cfg)
     validator = VirtualKeyValidator()
     result = validator.validate_key("sk-tg-restricted", "gpt-4o", store=store)
@@ -176,9 +174,7 @@ def test_validate_key_model_not_allowed() -> None:
 def test_validate_key_model_allowed_in_list() -> None:
     """A key with an allowed_models list should allow a model that is in the list."""
     store = VirtualKeyStore()
-    cfg = VirtualKeyConfig(
-        key_id="sk-tg-claude", allowed_models=["claude-3-5-sonnet", "claude-3-haiku"]
-    )
+    cfg = VirtualKeyConfig(key_id="sk-tg-claude", allowed_models=["claude-3-5-sonnet", "claude-3-haiku"])
     store.register(cfg)
     validator = VirtualKeyValidator()
     result = validator.validate_key("sk-tg-claude", "claude-3-5-sonnet", store=store)

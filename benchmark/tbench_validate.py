@@ -84,9 +84,7 @@ def main():
     parser = argparse.ArgumentParser(description="Terminal-Bench Validation")
     parser.add_argument("--compare", action="store_true", help="Compare with baseline")
     parser.add_argument("--swarm", action="store_true", help="Enable swarm mode")
-    parser.add_argument(
-        "--output", default="benchmark/results", help="Output directory"
-    )
+    parser.add_argument("--output", default="benchmark/results", help="Output directory")
     args = parser.parse_args()
 
     results = run_benchmark(compare=args.compare, swarm=args.swarm)

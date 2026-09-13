@@ -167,19 +167,13 @@ class TestWorkStreamItem:
 
     def test_priority_key_order(self):
         """P0 < P1 < P2 < P3 < P4."""
-        keys = [
-            WorkStreamItem(id="x", title="X", priority=p).priority_key()
-            for p in ["P0", "P1", "P2", "P3", "P4"]
-        ]
+        keys = [WorkStreamItem(id="x", title="X", priority=p).priority_key() for p in ["P0", "P1", "P2", "P3", "P4"]]
         assert keys == sorted(keys)
 
     def test_priority_key_unknown(self):
         """Unknown priority sorts to end."""
         item = WorkStreamItem(id="x", title="X", priority="PX")
-        assert (
-            item.priority_key()
-            > WorkStreamItem(id="y", title="Y", priority="P4").priority_key()
-        )
+        assert item.priority_key() > WorkStreamItem(id="y", title="Y", priority="P4").priority_key()
 
 
 # ---------------------------------------------------------------------------
@@ -191,15 +185,11 @@ class TestWorkStreamState:
     """Tests for WorkStreamState dataclass."""
 
     def test_claimed_ids(self):
-        state = WorkStreamState(
-            claimed=[WorkStreamItem(id="a", title="A", status="claimed")]
-        )
+        state = WorkStreamState(claimed=[WorkStreamItem(id="a", title="A", status="claimed")])
         assert "a" in state.claimed_ids()
 
     def test_completed_ids(self):
-        state = WorkStreamState(
-            completed=[WorkStreamItem(id="b", title="B", status="completed")]
-        )
+        state = WorkStreamState(completed=[WorkStreamItem(id="b", title="B", status="completed")])
         assert "b" in state.completed_ids()
 
     def test_all_items(self):
@@ -492,9 +482,7 @@ class TestAddBacklogItem:
         assert "task-gamma" in existing_ids
 
     def test_add_item_with_dependency(self, ws_file: Path):
-        new_item = WorkStreamItem(
-            id="task-dep", title="Dep Task", priority="P2", depends="task-alpha"
-        )
+        new_item = WorkStreamItem(id="task-dep", title="Dep Task", priority="P2", depends="task-alpha")
         add_backlog_item(new_item, path=ws_file)
         state = parse_work_stream(ws_file)
         added = next(i for i in state.backlog if i.id == "task-dep")

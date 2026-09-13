@@ -68,9 +68,7 @@ class TestValidateChange:
 
 class TestLockedPrinciple:
     def test_has_required_fields(self):
-        lp = LockedPrinciple(
-            principle_id="P1", description="test", commitment_hash="abc"
-        )
+        lp = LockedPrinciple(principle_id="P1", description="test", commitment_hash="abc")
         assert lp.principle_id == "P1"
         assert lp.locked_at is not None
 

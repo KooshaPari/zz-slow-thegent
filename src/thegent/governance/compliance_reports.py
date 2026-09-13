@@ -56,9 +56,7 @@ class ComplianceReporter:
             return self._generate_html(report)
         raise ValueError("Unsupported compliance report format")
 
-    def generate_governance_rollup(
-        self, evidence: list[dict[str, Any]]
-    ) -> dict[str, Any]:
+    def generate_governance_rollup(self, evidence: list[dict[str, Any]]) -> dict[str, Any]:
         """Build deterministic governance rollup aggregates."""
         by_kind: dict[str, int] = {}
         by_actor: dict[str, int] = {}
@@ -78,17 +76,13 @@ class ComplianceReporter:
             "by_actor": dict(sorted(by_actor.items())),
         }
 
-    def build_governance_queue(
-        self, evidence: list[dict[str, Any]]
-    ) -> list[dict[str, Any]]:
+    def build_governance_queue(self, evidence: list[dict[str, Any]]) -> list[dict[str, Any]]:
         """Create action queue ordered by severity then time."""
         severity_rank = {"critical": 0, "high": 1, "medium": 2, "low": 3}
         queue: list[dict[str, Any]] = []
         for item in evidence:
             payload = item.get("payload")
-            if not isinstance(payload, dict) or not bool(
-                payload.get("requires_action")
-            ):
+            if not isinstance(payload, dict) or not bool(payload.get("requires_action")):
                 continue
             severity = str(payload.get("severity", "low")).lower()
             queue.append(
@@ -107,9 +101,7 @@ class ComplianceReporter:
         )
         return queue
 
-    def generate_governance_telemetry(
-        self, *, rollup: dict[str, Any], queue: list[dict[str, Any]]
-    ) -> dict[str, Any]:
+    def generate_governance_telemetry(self, *, rollup: dict[str, Any], queue: list[dict[str, Any]]) -> dict[str, Any]:
         """Project key telemetry counters from rollup and queue."""
         return {
             "total_records": int(rollup.get("total_records", 0)),

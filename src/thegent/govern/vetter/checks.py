@@ -86,9 +86,7 @@ class SchemaCheck:
     ) -> VetterCheckResult:
         """Run schema validation check. # @trace WL-090"""
         if not self.schema:
-            raise VetterConfigError(
-                f"SchemaCheck for run {run_id}: schema must not be empty"
-            )
+            raise VetterConfigError(f"SchemaCheck for run {run_id}: schema must not be empty")
 
         try:
             parsed = json.loads(output)
@@ -131,9 +129,7 @@ class DiffSizeCheck:
     ) -> VetterCheckResult:
         """Run diff size check. # @trace WL-090"""
         added = sum(
-            1
-            for line in output.splitlines()
-            if line.startswith(("+", "-")) and not line.startswith(("+++", "---"))
+            1 for line in output.splitlines() if line.startswith(("+", "-")) and not line.startswith(("+++", "---"))
         )
 
         if added > self.max_lines:
@@ -216,9 +212,7 @@ class LLMJudgeCheck:
 
     name: str = "llm_judge"
     judge_model: str = "gpt-4o-mini"
-    criteria: list[str] = field(
-        default_factory=lambda: ["correctness", "completeness", "safety"]
-    )
+    criteria: list[str] = field(default_factory=lambda: ["correctness", "completeness", "safety"])
     pass_threshold: float = 0.75
 
     async def check(
@@ -289,9 +283,7 @@ class QualityScoreVetterCheck:
 
     name: str = "quality_score"
     judge_model: str = "auto"
-    rubric: list[str] | dict[str, str] = field(
-        default_factory=lambda: ["correctness", "completeness", "safety"]
-    )
+    rubric: list[str] | dict[str, str] = field(default_factory=lambda: ["correctness", "completeness", "safety"])
     pass_threshold: float = 0.75
     min_criterion_score: int = 3
     always_run: bool = False
@@ -299,28 +291,20 @@ class QualityScoreVetterCheck:
 
     def __post_init__(self) -> None:
         if not 0.0 <= self.pass_threshold <= 1.0:
-            raise VetterConfigError(
-                "QualityScoreVetterCheck pass_threshold must be in range [0.0, 1.0]"
-            )
+            raise VetterConfigError("QualityScoreVetterCheck pass_threshold must be in range [0.0, 1.0]")
         if not 1 <= self.min_criterion_score <= 5:
-            raise VetterConfigError(
-                "QualityScoreVetterCheck min_criterion_score must be in range [1, 5]"
-            )
+            raise VetterConfigError("QualityScoreVetterCheck min_criterion_score must be in range [1, 5]")
         self._rubric_map = self._normalize_rubric(self.rubric)
 
     def _normalize_rubric(self, rubric: list[str] | dict[str, str]) -> dict[str, str]:
         if isinstance(rubric, list):
             keys = [entry.strip() for entry in rubric if entry.strip()]
             if not keys:
-                raise VetterConfigError(
-                    "QualityScoreVetterCheck rubric list must contain at least one criterion"
-                )
+                raise VetterConfigError("QualityScoreVetterCheck rubric list must contain at least one criterion")
             key_counts: dict[str, int] = {}
             for key in keys:
                 key_counts[key] = key_counts.get(key, 0) + 1
-            duplicate_keys = sorted(
-                key for key, count in key_counts.items() if count > 1
-            )
+            duplicate_keys = sorted(key for key, count in key_counts.items() if count > 1)
             if duplicate_keys:
                 raise VetterConfigError(
                     "QualityScoreVetterCheck duplicate rubric criterion after normalization: "
@@ -339,13 +323,9 @@ class QualityScoreVetterCheck:
                     )
                 normalized[key] = str(raw_description).strip() or key
             if not normalized:
-                raise VetterConfigError(
-                    "QualityScoreVetterCheck rubric dict must contain at least one criterion"
-                )
+                raise VetterConfigError("QualityScoreVetterCheck rubric dict must contain at least one criterion")
             return normalized
-        raise VetterConfigError(
-            "QualityScoreVetterCheck rubric must be list[str] or dict[str, str]"
-        )
+        raise VetterConfigError("QualityScoreVetterCheck rubric must be list[str] or dict[str, str]")
 
     def _resolve_model(self, context: dict[str, Any]) -> str:
         if self.judge_model != "auto":
@@ -359,14 +339,10 @@ class QualityScoreVetterCheck:
             return model
         resolved = self.model_resolver("quality scoring", context)
         if not isinstance(resolved, str):
-            raise VetterConfigError(
-                "QualityScoreVetterCheck model_resolver must return a non-empty string model name"
-            )
+            raise VetterConfigError("QualityScoreVetterCheck model_resolver must return a non-empty string model name")
         model = resolved.strip()
         if not model:
-            raise VetterConfigError(
-                "QualityScoreVetterCheck model_resolver returned empty model name"
-            )
+            raise VetterConfigError("QualityScoreVetterCheck model_resolver returned empty model name")
         return model
 
     def _resolve_auto_model(self, context: dict[str, Any]) -> str:
@@ -387,11 +363,7 @@ class QualityScoreVetterCheck:
         all_agents = index.all_agents()
         for recommendation in recommendations:
             for agent in all_agents:
-                if (
-                    agent.path == recommendation.path
-                    and agent.model
-                    and agent.model.strip()
-                ):
+                if agent.path == recommendation.path and agent.model and agent.model.strip():
                     return agent.model.strip()
         raise VetterConfigError(
             "QualityScoreVetterCheck judge_model='auto' recommendations did not include a configured model"
@@ -405,8 +377,7 @@ class QualityScoreVetterCheck:
     ) -> VetterCheckResult:
         """Run quality-scoring check and enforce aggregate + per-criterion thresholds. # @trace WL-095"""
         rubric_lines = "\n".join(
-            f"- {criterion}: {description}"
-            for criterion, description in sorted(self._rubric_map.items())
+            f"- {criterion}: {description}" for criterion, description in sorted(self._rubric_map.items())
         )
         task_description = context.get("task", "unknown task")
         resolved_model = self._resolve_model(context)
@@ -448,30 +419,22 @@ class QualityScoreVetterCheck:
         seen = set(parsed.scores.keys())
         missing = sorted(expected - seen)
         if missing:
-            raise VetterConfigError(
-                f"QualityScoreVetterCheck missing score(s) for criterion: {', '.join(missing)}"
-            )
+            raise VetterConfigError(f"QualityScoreVetterCheck missing score(s) for criterion: {', '.join(missing)}")
         unexpected = sorted(seen - expected)
         if unexpected:
             raise VetterConfigError(
                 f"QualityScoreVetterCheck unexpected score(s) for criterion: {', '.join(unexpected)}"
             )
 
-        scores = {
-            criterion: int(parsed.scores[criterion]) for criterion in sorted(expected)
-        }
+        scores = {criterion: int(parsed.scores[criterion]) for criterion in sorted(expected)}
         if any(score < 1 or score > 5 for score in scores.values()):
-            raise VetterConfigError(
-                "QualityScoreVetterCheck scores must be integers in range [1, 5]"
-            )
+            raise VetterConfigError("QualityScoreVetterCheck scores must be integers in range [1, 5]")
 
         # Normalise mean score to [0.0, 1.0] for threshold comparison
         mean_raw = sum(scores.values()) / len(scores)
         aggregate_score = mean_raw / 5.0
         aggregate_ok = aggregate_score >= self.pass_threshold
-        per_criterion_ok = all(
-            score >= self.min_criterion_score for score in scores.values()
-        )
+        per_criterion_ok = all(score >= self.min_criterion_score for score in scores.values())
         passed = bool(parsed.pass_verdict and aggregate_ok and per_criterion_ok)
 
         message = ""
@@ -479,15 +442,9 @@ class QualityScoreVetterCheck:
             message = parsed.critique.strip()
             if not message:
                 failing = [
-                    f"{criterion}={score}"
-                    for criterion, score in scores.items()
-                    if score < self.min_criterion_score
+                    f"{criterion}={score}" for criterion, score in scores.items() if score < self.min_criterion_score
                 ]
-                details = (
-                    ", ".join(failing)
-                    if failing
-                    else "no criterion fell below minimum score"
-                )
+                details = ", ".join(failing) if failing else "no criterion fell below minimum score"
                 message = (
                     "Quality judge rejected output: "
                     f"pass_verdict={parsed.pass_verdict}, "
@@ -549,9 +506,7 @@ class TestPassCheck:
         )
 
         try:
-            stdout, _ = await asyncio.wait_for(
-                proc.communicate(), timeout=self.timeout_seconds
-            )
+            stdout, _ = await asyncio.wait_for(proc.communicate(), timeout=self.timeout_seconds)
         except TimeoutError:
             proc.kill()  # Non-async; asyncio.subprocess.Process.kill() is synchronous
             await proc.wait()
@@ -738,18 +693,14 @@ class DiffSizeVetterCheck:
     ) -> VetterCheckResult:
         """Run diff size check. # @trace WL-091"""
         lines_changed = sum(
-            1
-            for line in output.splitlines()
-            if line.startswith(("+", "-")) and not line.startswith(("+++", "---"))
+            1 for line in output.splitlines() if line.startswith(("+", "-")) and not line.startswith(("+++", "---"))
         )
 
         if lines_changed > self.max_lines_changed:
             return VetterCheckResult(
                 check_name=self.name,
                 passed=False,
-                message=(
-                    f"Diff size {lines_changed} lines exceeds max {self.max_lines_changed}"
-                ),
+                message=(f"Diff size {lines_changed} lines exceeds max {self.max_lines_changed}"),
                 metadata={
                     "lines_changed": lines_changed,
                     "max_lines_changed": self.max_lines_changed,
@@ -871,9 +822,7 @@ class TestPassVetterCheck:
                 metadata={"timeout": True, "files_tested": changed_files},
             )
 
-        combined_output = (proc.stdout or b"").decode(errors="replace") + (
-            proc.stderr or b""
-        ).decode(errors="replace")
+        combined_output = (proc.stdout or b"").decode(errors="replace") + (proc.stderr or b"").decode(errors="replace")
         passed = proc.returncode == 0
 
         return VetterCheckResult(
@@ -941,9 +890,7 @@ class RuffVetterCheck:
             cwd=self.cwd or context.get("cwd"),
         )
 
-        ruff_output = (proc.stdout or b"").decode(errors="replace") + (
-            proc.stderr or b""
-        ).decode(errors="replace")
+        ruff_output = (proc.stdout or b"").decode(errors="replace") + (proc.stderr or b"").decode(errors="replace")
         passed = proc.returncode == 0
 
         return VetterCheckResult(

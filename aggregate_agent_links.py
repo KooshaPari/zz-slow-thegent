@@ -60,9 +60,7 @@ for l in all_md_links:
 
 # Append to research queue
 with open("docs/research/to-research-queue.md", "a") as out:
-    out.write(
-        f"\n\n## Agent Aggregation (Droid, Codex, Cursor, Claude - {len(unique_md_links)} links discovered)\n\n"
-    )
+    out.write(f"\n\n## Agent Aggregation (Droid, Codex, Cursor, Claude - {len(unique_md_links)} links discovered)\n\n")
 
     # Categorize by source file
     sources = {}

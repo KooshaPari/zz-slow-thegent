@@ -19,9 +19,7 @@ TASKFILE = ROOT / "Taskfile.yml"
 # @trace WL-134 B90-W3-C2
 def test_fast_deep_lane_doc_exists() -> None:
     """docs/guides/FAST_DEEP_LANE.md must exist."""
-    assert LANE_DOCS.exists(), (
-        f"FAST_DEEP_LANE.md not found at {LANE_DOCS}. Create it per WL-134 B90-W3-C2 spec."
-    )
+    assert LANE_DOCS.exists(), f"FAST_DEEP_LANE.md not found at {LANE_DOCS}. Create it per WL-134 B90-W3-C2 spec."
 
 
 # @trace WL-134 B90-W3-C2
@@ -42,9 +40,7 @@ def test_fast_deep_lane_doc_contains_deep_lane() -> None:
 def test_fast_deep_lane_doc_contains_deep_marker() -> None:
     """FAST_DEEP_LANE.md must show the @pytest.mark.deep marker usage."""
     text = LANE_DOCS.read_text(encoding="utf-8")
-    assert "@pytest.mark.deep" in text, (
-        "FAST_DEEP_LANE.md does not show @pytest.mark.deep usage example."
-    )
+    assert "@pytest.mark.deep" in text, "FAST_DEEP_LANE.md does not show @pytest.mark.deep usage example."
 
 
 # @trace WL-134 B90-W3-C2

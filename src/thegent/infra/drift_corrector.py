@@ -21,9 +21,7 @@ class DriftCorrector:
         current_spec = self.provisioner.active_resources.get(resource_id)
 
         if not current_spec:
-            _log.warning(
-                "Resource %s not found. Drift detected (missing).", resource_id
-            )
+            _log.warning("Resource %s not found. Drift detected (missing).", resource_id)
             return True
 
         # Compare key metrics

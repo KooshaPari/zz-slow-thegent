@@ -27,9 +27,7 @@ class ObjectiveSelector:
     profile of weights, returns the best model for the profile.
     """
 
-    def select(
-        self, candidates: list[dict], profile: ObjectiveWeights | None = None
-    ) -> dict:
+    def select(self, candidates: list[dict], profile: ObjectiveWeights | None = None) -> dict:
         """Select the best candidate for the given objective weights.
 
         Args:
@@ -77,11 +75,7 @@ class ObjectiveSelector:
         latency_score = 1.0 - candidate.get("latency", 0.0)
         # Cost is lower-is-better
         cost_score = 1.0 - candidate.get("cost", 0.0)
-        return (
-            profile.latency * latency_score
-            + profile.quality * quality_score
-            + profile.cost * cost_score
-        )
+        return profile.latency * latency_score + profile.quality * quality_score + profile.cost * cost_score
 
 
 class CostPredictor:
@@ -91,9 +85,7 @@ class CostPredictor:
     predicts the cost for a specific action type.
     """
 
-    def predict_cost(
-        self, model: dict, tokens_estimate: int, action_type: str
-    ) -> float:
+    def predict_cost(self, model: dict, tokens_estimate: int, action_type: str) -> float:
         """Predict the cost of an action.
 
         Args:

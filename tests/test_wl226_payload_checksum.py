@@ -83,9 +83,7 @@ class TestRemotePayloadChecksumVerifier:
         data = {"key": "value"}
         record = verifier.compute("payload_1", data)
 
-        expected_hash = hashlib.sha256(
-            json.dumps(data, sort_keys=True).decode().encode("utf-8")
-        ).hexdigest()
+        expected_hash = hashlib.sha256(json.dumps(data, sort_keys=True).decode().encode("utf-8")).hexdigest()
 
         assert record.checksum == expected_hash
 

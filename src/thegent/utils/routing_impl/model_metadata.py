@@ -431,13 +431,7 @@ def validate_metadata_freshness(
 
 def _normalize_model_id_token(model_id: str) -> str:
     """Normalize model IDs to token-comparable form."""
-    return (
-        model_id.lower()
-        .replace("-", "")
-        .replace(".", "")
-        .replace("/", "")
-        .replace("_", "")
-    )
+    return model_id.lower().replace("-", "").replace(".", "").replace("/", "").replace("_", "")
 
 
 def _model_id_candidates(model_id: str) -> list[str]:
@@ -496,10 +490,7 @@ def get_model_metadata(model_id: str) -> dict[str, Any] | None:
         if candidate in MODEL_METADATA:
             return MODEL_METADATA[candidate]
 
-    normalized_map = {
-        _normalize_model_id_token(key): metadata
-        for key, metadata in MODEL_METADATA.items()
-    }
+    normalized_map = {_normalize_model_id_token(key): metadata for key, metadata in MODEL_METADATA.items()}
     for candidate in candidates:
         normalized_candidate = _normalize_model_id_token(candidate)
         if normalized_candidate in normalized_map:

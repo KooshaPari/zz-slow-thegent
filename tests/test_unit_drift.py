@@ -90,9 +90,7 @@ def test_drift_detector_sweep_cleans_overrides(mock_settings):
 def test_drift_detector_establishes_policy_baseline(mock_settings):
     contracts_dir = mock_settings.session_dir / "contracts"
     contracts_dir.mkdir()
-    (contracts_dir / "policy.json").write_text(
-        json.dumps({"allow": True}).decode(), encoding="utf-8"
-    )
+    (contracts_dir / "policy.json").write_text(json.dumps({"allow": True}).decode(), encoding="utf-8")
 
     detector = DriftDetector(mock_settings)
     report = detector.detect_drift()
@@ -135,15 +133,11 @@ def test_drift_detector_detects_policy_contract_add_and_remove(mock_settings):
     detector.detect_drift()
 
     second.unlink()
-    (contracts_dir / "third.json").write_text(
-        json.dumps({"c": 3}).decode(), encoding="utf-8"
-    )
+    (contracts_dir / "third.json").write_text(json.dumps({"c": 3}).decode(), encoding="utf-8")
 
     report = detector.detect_drift()
     assert report["drift_detected"] is True
-    mismatch_types = {
-        (item["contract"], item["type"]) for item in report["policy_mismatches"]
-    }
+    mismatch_types = {(item["contract"], item["type"]) for item in report["policy_mismatches"]}
     assert ("second.json", "removed") in mismatch_types
     assert ("third.json", "added") in mismatch_types
 
@@ -151,9 +145,7 @@ def test_drift_detector_detects_policy_contract_add_and_remove(mock_settings):
 def test_drift_detector_raises_on_invalid_baseline(mock_settings):
     baseline = mock_settings.session_dir / "policy_contracts_baseline.json"
     baseline.write_text(
-        json.dumps(
-            {"generated_at_utc": "2026-02-23T00:00:00+00:00", "contracts": []}
-        ).decode(),
+        json.dumps({"generated_at_utc": "2026-02-23T00:00:00+00:00", "contracts": []}).decode(),
         encoding="utf-8",
     )
 

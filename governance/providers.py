@@ -19,9 +19,7 @@ class ProviderConfig:
     cost_per_1m_tokens: float
     reliability: float  # 0.0-1.0
     latency_p99_ms: int
-    fallback_chain: list[str] = field(
-        default_factory=list
-    )  # Ordered fallback providers
+    fallback_chain: list[str] = field(default_factory=list)  # Ordered fallback providers
 
     def to_metrics(self) -> ProviderMetrics:
         """Convert to ProviderMetrics for scoring"""
@@ -222,9 +220,7 @@ class ProviderRegistry:
         Returns:
             List of (provider_id, ProviderScore) tuples sorted by score descending
         """
-        scores = [
-            (provider_id, self.get_score(provider_id)) for provider_id in self.providers
-        ]
+        scores = [(provider_id, self.get_score(provider_id)) for provider_id in self.providers]
         scores.sort(key=lambda item: item[1].composite_score, reverse=True)
         return scores
 
@@ -237,9 +233,7 @@ class ProviderRegistry:
         """
         missing = {}
         for provider_id, config in self.providers.items():
-            missing_for_provider = [
-                fb for fb in config.fallback_chain if fb not in self.providers
-            ]
+            missing_for_provider = [fb for fb in config.fallback_chain if fb not in self.providers]
             if missing_for_provider:
                 missing[provider_id] = missing_for_provider
 

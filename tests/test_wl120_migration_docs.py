@@ -79,6 +79,4 @@ class TestMcpServerExtractionDocs:
         """design.md must document extracted tool groups."""
         design = ROOT / "docs" / "changes" / "mcp-server-extraction" / "design.md"
         content = design.read_text(encoding="utf-8")
-        assert "tools_" in content, (
-            "mcp-server-extraction/design.md must list extracted tool group modules"
-        )
+        assert "tools_" in content, "mcp-server-extraction/design.md must list extracted tool group modules"

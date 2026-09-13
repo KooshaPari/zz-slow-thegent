@@ -167,9 +167,7 @@ class TestOrchestratePlanImpl:
 
             orchestrate_plan_impl("deep goal", max_depth=7)
 
-        instance.decompose_to_orchestration_plan.assert_awaited_once_with(
-            "deep goal", 7
-        )
+        instance.decompose_to_orchestration_plan.assert_awaited_once_with("deep goal", 7)
 
     # @trace WL-088
     def test_model_passed_to_planner_constructor(self) -> None:
@@ -491,9 +489,7 @@ class TestOrchestrateCLIPlan:
         ) as mock_impl:
             runner.invoke(app, ["plan", "g", "--max-depth", "5"])
 
-        mock_impl.assert_called_once_with(
-            "g", max_depth=5, model="claude-haiku-4.5", timeout_s=30.0
-        )
+        mock_impl.assert_called_once_with("g", max_depth=5, model="claude-haiku-4.5", timeout_s=30.0)
 
     # @trace WL-088
     def test_plan_custom_model_forwarded(self, runner: CliRunner) -> None:
@@ -514,9 +510,7 @@ class TestOrchestrateCLIPlan:
         ) as mock_impl:
             runner.invoke(app, ["plan", "g", "--model", "gemini-flash"])
 
-        mock_impl.assert_called_once_with(
-            "g", max_depth=3, model="gemini-flash", timeout_s=30.0
-        )
+        mock_impl.assert_called_once_with("g", max_depth=3, model="gemini-flash", timeout_s=30.0)
 
 
 @pytest.mark.requirement("FR-ORC-088")

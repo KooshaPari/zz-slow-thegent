@@ -95,13 +95,9 @@ class SentenceTransformerProvider:
     def is_available(self) -> bool:
         """Return True if sentence_transformers is importable."""
         if self._available is None:
-            self._available = (
-                importlib.util.find_spec("sentence_transformers") is not None
-            )
+            self._available = importlib.util.find_spec("sentence_transformers") is not None
             if not self._available:
-                _log.debug(
-                    "sentence_transformers not available; SentenceTransformerProvider disabled"
-                )
+                _log.debug("sentence_transformers not available; SentenceTransformerProvider disabled")
         return self._available
 
     def _load_model(self) -> Any:
@@ -258,9 +254,7 @@ class SemanticCache:
         )
 
         if best_entry is not None and best_score >= self._config.similarity_threshold:
-            _log.debug(
-                "Semantic cache HIT namespace=%s score=%.4f", namespace, best_score
-            )
+            _log.debug("Semantic cache HIT namespace=%s score=%.4f", namespace, best_score)
             return best_entry.response
 
         return None
@@ -315,9 +309,7 @@ class SemanticCache:
         """
         removed = 0
         with self._lock:
-            namespaces = (
-                [namespace] if namespace is not None else list(self._store.keys())
-            )
+            namespaces = [namespace] if namespace is not None else list(self._store.keys())
             for ns in namespaces:
                 if ns not in self._store:
                     continue

@@ -32,53 +32,35 @@ def _start_session() -> str:
 
 def test_wl11040_extract_turn_submit_approval_payload_id_returns_value() -> None:
     # @trace WL-11040
-    assert (
-        server._extract_turn_submit_approval_payload_id(
-            {"id": "approval-1", "status": "requested"}
-        )
-        == "approval-1"
-    )
+    assert server._extract_turn_submit_approval_payload_id({"id": "approval-1", "status": "requested"}) == "approval-1"
 
 
 def test_wl11041_extract_turn_submit_approval_payload_id_rejects_empty_value() -> None:
     # @trace WL-11041
     with pytest.raises(ValueError, match="Turn submit response target unresolved"):
-        server._extract_turn_submit_approval_payload_id(
-            {"id": "", "status": "requested"}
-        )
+        server._extract_turn_submit_approval_payload_id({"id": "", "status": "requested"})
 
 
 def test_wl11042_extract_turn_submit_approval_payload_status_returns_value() -> None:
     # @trace WL-11042
     assert (
-        server._extract_turn_submit_approval_payload_status(
-            {"id": "approval-1", "status": "requested"}
-        )
-        == "requested"
+        server._extract_turn_submit_approval_payload_status({"id": "approval-1", "status": "requested"}) == "requested"
     )
 
 
-def test_wl11043_extract_turn_submit_approval_payload_status_rejects_non_string() -> (
-    None
-):
+def test_wl11043_extract_turn_submit_approval_payload_status_rejects_non_string() -> None:
     # @trace WL-11043
     with pytest.raises(ValueError, match="Turn submit response target unresolved"):
-        server._extract_turn_submit_approval_payload_status(
-            {"id": "approval-1", "status": 0}
-        )
+        server._extract_turn_submit_approval_payload_status({"id": "approval-1", "status": 0})
 
 
-def test_wl11044_resolve_turn_submit_response_approval_fields_rejects_empty_payload() -> (
-    None
-):
+def test_wl11044_resolve_turn_submit_response_approval_fields_rejects_empty_payload() -> None:
     # @trace WL-11044
     with pytest.raises(ValueError, match="Turn submit response target unresolved"):
         server._resolve_turn_submit_response_approval_fields({"id": "", "status": ""})
 
 
-def test_wl11045_resolve_turn_submit_response_approval_fields_accepts_none_diff() -> (
-    None
-):
+def test_wl11045_resolve_turn_submit_response_approval_fields_accepts_none_diff() -> None:
     # @trace WL-11045
     payload = server._resolve_turn_submit_response_approval_fields(
         {"id": "approval-1", "status": "requested", "diff": None}
@@ -86,9 +68,7 @@ def test_wl11045_resolve_turn_submit_response_approval_fields_accepts_none_diff(
     assert payload == ("approval-1", "requested", None)
 
 
-def test_wl11046_build_turn_submit_response_phase_preserves_request_path_without_id() -> (
-    None
-):
+def test_wl11046_build_turn_submit_response_phase_preserves_request_path_without_id() -> None:
     # @trace WL-11046
     phase = server._build_turn_submit_response_phase(
         False, None, {"id": "turn-1"}, {"id": "approval-1", "status": "requested"}
@@ -101,9 +81,7 @@ def test_wl11046_build_turn_submit_response_phase_preserves_request_path_without
     }
 
 
-def test_wl11047_handle_turn_submit_request_with_no_request_id_suppresses_result() -> (
-    None
-):
+def test_wl11047_handle_turn_submit_request_with_no_request_id_suppresses_result() -> None:
     # @trace WL-11047
     _reset_state()
     session_id = _start_session()
@@ -118,9 +96,7 @@ def test_wl11047_handle_turn_submit_request_with_no_request_id_suppresses_result
     assert notifications[0]["method"] == "turn/started"
 
 
-def test_wl11048_handle_turn_submit_request_with_parse_error_returns_error_response_without_id() -> (
-    None
-):
+def test_wl11048_handle_turn_submit_request_with_parse_error_returns_error_response_without_id() -> None:
     # @trace WL-11048
     _reset_state()
     request = {
@@ -136,14 +112,10 @@ def test_wl11048_handle_turn_submit_request_with_parse_error_returns_error_respo
     assert notifications == []
 
 
-def test_wl11049_extract_turn_submit_response_request_id_rejects_none_when_expected() -> (
-    None
-):
+def test_wl11049_extract_turn_submit_response_request_id_rejects_none_when_expected() -> None:
     # @trace WL-11049
     with pytest.raises(ValueError, match="Turn submit response target unresolved"):
         server._extract_turn_submit_response_request_id(
-            server._build_turn_submit_response_phase(
-                True, None, {"id": "turn-1"}, None
-            ),
+            server._build_turn_submit_response_phase(True, None, {"id": "turn-1"}, None),
             request_has_id=True,
         )

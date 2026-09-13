@@ -140,13 +140,9 @@ class TestCockpitReplaySnapshotFlip:
         assert "matched=False" in result.output
         assert "verdict" in result.output
         # ``--compare`` file on disk MUST be left untouched.
-        assert _sha256(compare) == before_hash, (
-            "snapshot-flip must not mutate --compare"
-        )
+        assert _sha256(compare) == before_hash, "snapshot-flip must not mutate --compare"
 
-    def test_snapshot_flip_verdict_json_envelope_shows_mismatch(
-        self, tmp_path: Path
-    ) -> None:
+    def test_snapshot_flip_verdict_json_envelope_shows_mismatch(self, tmp_path: Path) -> None:
         """``cockpit replay --snapshot-flip verdict --json`` emits matched=False envelope."""
         runner = CliRunner()
         batch = tmp_path / "batch.json"
@@ -176,9 +172,7 @@ class TestCockpitReplaySnapshotFlip:
             assert set(row.keys()) >= set(_MISMATCH_SUBKEYS)
             assert "verdict" in row["fields"]
 
-    def test_snapshot_flip_override_applied_forces_mismatch(
-        self, tmp_path: Path
-    ) -> None:
+    def test_snapshot_flip_override_applied_forces_mismatch(self, tmp_path: Path) -> None:
         """Bool negation on ``override_applied`` still triggers exit code 4."""
         runner = CliRunner()
         batch = tmp_path / "batch.json"
@@ -226,9 +220,7 @@ class TestCockpitReplaySnapshotFlip:
         assert result.exit_code == 0, result.output
         assert "matched=True" in result.output
 
-    def test_snapshot_flip_unknown_field_still_records_mismatch(
-        self, tmp_path: Path
-    ) -> None:
+    def test_snapshot_flip_unknown_field_still_records_mismatch(self, tmp_path: Path) -> None:
         """A non-compare-table field still walks the mismatch path via the sentinel."""
         runner = CliRunner()
         batch = tmp_path / "batch.json"
@@ -333,9 +325,7 @@ class TestSotaReplaySnapshotFlip:
         assert envelope["mismatches"], "expected at least one mismatch row"
         assert all("verdict" in row["fields"] for row in envelope["mismatches"])
 
-    def test_sota_replay_snapshot_flip_junitxml_records_failure(
-        self, tmp_path: Path
-    ) -> None:
+    def test_sota_replay_snapshot_flip_junitxml_records_failure(self, tmp_path: Path) -> None:
         """The JUnit-XML report-format emits a ``<failure>`` on every flipped entry."""
         runner = CliRunner()
         batch = tmp_path / "batch.json"
@@ -458,9 +448,7 @@ class TestSnapshotFlipMultiField:
     machinery on every tracked field at once.
     """
 
-    def test_multi_field_verdict_and_override_applied_forces_mismatch(
-        self, tmp_path: Path
-    ) -> None:
+    def test_multi_field_verdict_and_override_applied_forces_mismatch(self, tmp_path: Path) -> None:
         """Repeated ``--snapshot-flip`` inverts both fields on every entry."""
         runner = CliRunner()
         batch = tmp_path / "batch.json"
@@ -494,13 +482,9 @@ class TestSnapshotFlipMultiField:
             assert "verdict" in row["fields"], row
             assert "override_applied" in row["fields"], row
         # ``--compare`` file on disk MUST be left untouched.
-        assert _sha256(compare) == before_hash, (
-            "multi-field flip must not mutate --compare"
-        )
+        assert _sha256(compare) == before_hash, "multi-field flip must not mutate --compare"
 
-    def test_multi_field_repeated_field_composes_to_noop_for_verdict(
-        self, tmp_path: Path
-    ) -> None:
+    def test_multi_field_repeated_field_composes_to_noop_for_verdict(self, tmp_path: Path) -> None:
         """``--snapshot-flip verdict --snapshot-flip verdict`` is deduped to a single flip.
 
         The normaliser collapses repeated entries to first-seen so an
@@ -553,9 +537,7 @@ class TestSnapshotFlipMultiField:
         assert "matched=False" in result_double.output
         assert "verdict" in result_double.output
 
-    def test_snapshot_flip_all_forces_mismatch_on_verdict_override_and_cached(
-        self, tmp_path: Path
-    ) -> None:
+    def test_snapshot_flip_all_forces_mismatch_on_verdict_override_and_cached(self, tmp_path: Path) -> None:
         """``--snapshot-flip-all`` flips the canonical triple and walks the mismatch path."""
         runner = CliRunner()
         batch = tmp_path / "batch.json"
@@ -586,9 +568,7 @@ class TestSnapshotFlipMultiField:
             # refactors that accidentally no-op the preset).
             assert "verdict" in fields, row
 
-    def test_snapshot_flip_all_then_explicit_field_does_not_duplicate(
-        self, tmp_path: Path
-    ) -> None:
+    def test_snapshot_flip_all_then_explicit_field_does_not_duplicate(self, tmp_path: Path) -> None:
         """``--snapshot-flip-all --snapshot-flip verdict`` does NOT flip verdict twice.
 
         Composition rule: explicit ``--snapshot-flip <field>`` after
@@ -634,9 +614,7 @@ class TestSnapshotFlipMultiField:
         assert "matched=False" in result_all.output
         assert "matched=False" in result_composed.output
 
-    def test_snapshot_flip_all_propagates_through_sota_shim_with_junitxml(
-        self, tmp_path: Path
-    ) -> None:
+    def test_snapshot_flip_all_propagates_through_sota_shim_with_junitxml(self, tmp_path: Path) -> None:
         """``cockpit replay --snapshot-flip-all --report-format junitxml`` produces failing XML.
 
         Multi-field flips MUST travel through the cockpit→sota shim

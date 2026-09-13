@@ -164,9 +164,7 @@ def test_worktree_governance_refresh_invokes_script(
             return_value=completed,
         ) as mock_run,
     ):
-        result = runner.invoke(
-            invoke_app, [part.format(root=tmp_path) for part in invoke_args]
-        )
+        result = runner.invoke(invoke_app, [part.format(root=tmp_path) for part in invoke_args])
 
     assert result.exit_code == 0
     assert "[OK] refreshed worktree" in result.output
@@ -222,9 +220,7 @@ def test_worktree_governance_migrate_legacy_invokes_script(
     legacy_path = tmp_path / "legacy-cache"
     legacy_path.mkdir()
 
-    completed = MagicMock(
-        returncode=0, stdout="[OK] migrated legacy worktree\n", stderr=""
-    )
+    completed = MagicMock(returncode=0, stdout="[OK] migrated legacy worktree\n", stderr="")
     with (
         patch(
             "thegent.cli.commands.cli_git_worktree_governance._script_path",
@@ -299,9 +295,7 @@ def test_root_worktree_check_preserves_root_path_with_spaces(tmp_path: Path) -> 
     script.parent.mkdir(parents=True)
     script.write_text("#!/usr/bin/env sh\n", encoding="utf-8")
 
-    completed = MagicMock(
-        returncode=0, stdout="[OK] worktree governance check passed\n", stderr=""
-    )
+    completed = MagicMock(returncode=0, stdout="[OK] worktree governance check passed\n", stderr="")
     with (
         patch(
             "thegent.cli.commands.cli_git_worktree_governance._script_path",
@@ -312,9 +306,7 @@ def test_root_worktree_check_preserves_root_path_with_spaces(tmp_path: Path) -> 
             return_value=completed,
         ) as mock_run,
     ):
-        result = runner.invoke(
-            app, ["worktree", "governance", "check", "--root", str(root)]
-        )
+        result = runner.invoke(app, ["worktree", "governance", "check", "--root", str(root)])
 
     assert result.exit_code == 0
     assert "[OK] worktree governance check passed" in result.output
@@ -325,9 +317,7 @@ def test_root_worktree_check_preserves_root_path_with_spaces(tmp_path: Path) -> 
 
 def test_root_worktree_check_fails_when_repo_root_lookup_fails() -> None:
     """`thegent worktree check` should surface a failing `git rev-parse`."""
-    completed = MagicMock(
-        returncode=1, stdout="", stderr="fatal: not a git repository\n"
-    )
+    completed = MagicMock(returncode=1, stdout="", stderr="fatal: not a git repository\n")
     with patch(
         "thegent.cli.commands.cli_git_worktree_governance.subprocess.run",
         return_value=completed,
@@ -382,9 +372,7 @@ def test_root_worktree_check_missing_script_fails_loudly(tmp_path: Path) -> None
         "thegent.cli.commands.cli_git_worktree_governance._script_path",
         side_effect=FileNotFoundError("missing worktree governance script"),
     ):
-        result = runner.invoke(
-            main_app, ["worktree", "check", "--root", str(script_root)]
-        )
+        result = runner.invoke(main_app, ["worktree", "check", "--root", str(script_root)])
 
     assert result.exit_code != 0
     assert "missing worktree governance script" in str(result.exception)

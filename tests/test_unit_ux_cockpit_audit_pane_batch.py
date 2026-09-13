@@ -88,9 +88,7 @@ def _make_notice(
 class TestOperatorCockpitAuditAppenderWiring:
     """``audit_appender`` + ``auto_tail`` constructor wiring + lifecycle."""
 
-    def test_default_policy_commit_enables_federation(
-        self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
-    ) -> None:
+    def test_default_policy_commit_enables_federation(self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
         """``--default-policy`` with ``--commit`` builds ``PolicyEngine(use_federation=True, ...)``."""
         from thegent.governance import policy_engine as pe_mod
 
@@ -204,9 +202,7 @@ class TestOperatorCockpitAuditAppenderWiring:
         assert kwargs["use_federation"] is True
         assert kwargs["default_namespace"] == "team-acme"
 
-    def test_default_policy_omitted_keeps_federation_off(
-        self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
-    ) -> None:
+    def test_default_policy_omitted_keeps_federation_off(self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
         """Omitting ``--default-policy`` keeps ``use_federation=False`` on the engine."""
         from thegent.governance import policy_engine as pe_mod
 
@@ -311,9 +307,7 @@ class TestDecisionHistoryPane:
         clk = _FrozenClock(start=1_700_000_000.0)
         cockpit = OperatorCockpit(clock=clk)
         try:
-            cockpit.record_decision(
-                _make_notice(verdict="deny", rule_id="crit.lane", evaluated_at=clk.now)
-            )
+            cockpit.record_decision(_make_notice(verdict="deny", rule_id="crit.lane", evaluated_at=clk.now))
             rendered = cockpit.render()
             assert "Decision History" in rendered
             # Glyph + rule_id present.
@@ -386,9 +380,7 @@ class TestDecisionHistoryPane:
     def test_decision_glyph_helper_classifies_verdicts(self) -> None:
         assert _decision_glyph(_make_notice(verdict="deny")) == "\u2717"
         assert _decision_glyph(_make_notice(verdict="warn")) == "!"
-        assert (
-            _decision_glyph(_make_notice(verdict="allow", evaluated_at=1.0)) == "\u2713"
-        )
+        assert _decision_glyph(_make_notice(verdict="allow", evaluated_at=1.0)) == "\u2713"
         # No clock yet -> dash (no fake age).
         assert _decision_glyph(_make_notice(verdict="allow", evaluated_at=0.0)) == "-"
 
@@ -1057,9 +1049,7 @@ class TestDecisionTailFollow:
             finally:
                 stop_flag.set()
 
-        thread = threading.Thread(
-            target=_runner, name="test-decision-tail", daemon=True
-        )
+        thread = threading.Thread(target=_runner, name="test-decision-tail", daemon=True)
         thread.start()
         try:
             # Give the thread time to seed its offset from the file's
@@ -1122,9 +1112,7 @@ class TestDecisionTailFollow:
             except BaseException as exc:  # noqa: BLE001
                 emit_error.append(exc)
 
-        thread = threading.Thread(
-            target=_runner, name="test-truncation-tail", daemon=True
-        )
+        thread = threading.Thread(target=_runner, name="test-truncation-tail", daemon=True)
         thread.start()
         try:
             time.sleep(interval_s * 2)

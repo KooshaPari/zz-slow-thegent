@@ -154,12 +154,8 @@ class TestAuditTrailQuery:
             agent="b",
             outcome="error",
         )
-        trail.record(
-            kind=AuditEntryKind.GATE_CHECK, operation="gate", agent="a", outcome="pass"
-        )
-        trail.record(
-            kind=AuditEntryKind.RESOURCE_READ, operation="read", agent="c", outcome="ok"
-        )
+        trail.record(kind=AuditEntryKind.GATE_CHECK, operation="gate", agent="a", outcome="pass")
+        trail.record(kind=AuditEntryKind.RESOURCE_READ, operation="read", agent="c", outcome="ok")
         return trail
 
     def test_filter_by_kind(self) -> None:
@@ -289,12 +285,8 @@ class TestAuditTrailClear:
 
     def test_clear(self) -> None:
         trail = MCPAuditTrail()
-        trail.record(
-            kind=AuditEntryKind.GATE_CHECK, operation="g", agent="a", outcome="ok"
-        )
-        trail.record(
-            kind=AuditEntryKind.GATE_CHECK, operation="g", agent="a", outcome="ok"
-        )
+        trail.record(kind=AuditEntryKind.GATE_CHECK, operation="g", agent="a", outcome="ok")
+        trail.record(kind=AuditEntryKind.GATE_CHECK, operation="g", agent="a", outcome="ok")
         count = trail.clear()
         assert count == 2
         assert trail.recent() == []

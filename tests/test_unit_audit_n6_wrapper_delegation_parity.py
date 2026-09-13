@@ -263,9 +263,7 @@ def test_run_impl_signature_accepts_prompt_and_kwargs() -> None:
     arbitrary ``**kwargs`` — callers in cli.py / run_cmd depend on it."""
     import inspect
 
-    sig = inspect.signature(
-        importlib.import_module("thegent.cli.commands.impl").run_impl
-    )
+    sig = inspect.signature(importlib.import_module("thegent.cli.commands.impl").run_impl)
     params = list(sig.parameters.values())
     assert params[0].name == "prompt"
     # last param must be VAR_KEYWORD
@@ -275,9 +273,7 @@ def test_run_impl_signature_accepts_prompt_and_kwargs() -> None:
 def test_bg_impl_signature_accepts_prompt_and_kwargs() -> None:
     import inspect
 
-    sig = inspect.signature(
-        importlib.import_module("thegent.cli.commands.impl").bg_impl
-    )
+    sig = inspect.signature(importlib.import_module("thegent.cli.commands.impl").bg_impl)
     params = list(sig.parameters.values())
     assert params[0].name == "prompt"
     assert params[-1].kind is inspect.Parameter.VAR_KEYWORD

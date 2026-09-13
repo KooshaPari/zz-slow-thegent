@@ -65,9 +65,7 @@ def collect_metrics(path: Path) -> dict[str, object]:
     module = tree if isinstance(tree, ast.Module) else ast.Module(body=[])
 
     top_level_functions = _extract_top_level_functions(module)
-    async_function_count = sum(
-        isinstance(node, ast.AsyncFunctionDef) for node in ast.walk(tree)
-    )
+    async_function_count = sum(isinstance(node, ast.AsyncFunctionDef) for node in ast.walk(tree))
     class_count = sum(isinstance(node, ast.ClassDef) for node in ast.walk(tree))
 
     lines = source.splitlines()
@@ -93,9 +91,7 @@ def collect_all() -> dict[str, dict[str, object]]:
 def _parse_args(argv: list[str]) -> argparse.Namespace:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--format", choices=["json", "text"], default="json")
-    parser.add_argument(
-        "--out", type=Path, default=None, help="Optional output file path."
-    )
+    parser.add_argument("--out", type=Path, default=None, help="Optional output file path.")
     return parser.parse_args(argv)
 
 

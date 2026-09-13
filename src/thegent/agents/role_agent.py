@@ -28,9 +28,7 @@ class RoleAgentRunner(AgentRunner):
         env: dict[str, str] | None = None,
     ) -> RunResult:
         role_prompt = get_role_prompt(self.role)
-        full_prompt = (
-            f"[ROLE: {self.role.value.upper()}]\n{role_prompt}\n\nTASK:\n{prompt}"
-        )
+        full_prompt = f"[ROLE: {self.role.value.upper()}]\n{role_prompt}\n\nTASK:\n{prompt}"
 
         return self.base_runner.run(
             prompt=full_prompt,

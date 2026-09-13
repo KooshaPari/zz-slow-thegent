@@ -14,9 +14,7 @@ from thegent.config import ThegentSettings
 _LAST_GUARDRAIL_DIAGNOSTIC: dict[str, Any] = {"status": "not_checked"}
 
 
-def suggest_terminal_reuse(
-    *, settings: ThegentSettings, cwd: Path, console: Console, log: logging.Logger
-) -> None:
+def suggest_terminal_reuse(*, settings: ThegentSettings, cwd: Path, console: Console, log: logging.Logger) -> None:
     """Emit lightweight terminal reuse hints for the current cwd."""
     if not settings.terminal_management_enabled:
         return
@@ -33,9 +31,7 @@ def suggest_terminal_reuse(
                 console.print(
                     f"[bold yellow]Found existing terminal session for this path: {existing_pane}[/bold yellow]"
                 )
-                console.print(
-                    f"[dim]You can attach with: thegent terminal attach {existing_pane}[/dim]"
-                )
+                console.print(f"[dim]You can attach with: thegent terminal attach {existing_pane}[/dim]")
     except Exception as exc:
         log.debug("Terminal discovery failed: %s", exc)
 
@@ -76,9 +72,7 @@ def enforce_input_guardrails(
         return None
 
     try:
-        result = guardrails.check(
-            prompt=prompt, agent=agent or "", model=model, cwd=cwd
-        )
+        result = guardrails.check(prompt=prompt, agent=agent or "", model=model, cwd=cwd)
         if not result.passed:
             _LAST_GUARDRAIL_DIAGNOSTIC = {
                 "status": "blocked",
@@ -191,11 +185,7 @@ def enforce_concurrency_limit(
         config = LimitGateConfig.from_dict(settings_payload)
         effective_limit, _ = compute_dynamic_limit(snapshot, config)
 
-        bottlenecks = (
-            controller.get_bottlenecks()
-            if hasattr(controller, "get_bottlenecks")
-            else {}
-        )
+        bottlenecks = controller.get_bottlenecks() if hasattr(controller, "get_bottlenecks") else {}
         bottleneck_msg = ""
         if bottlenecks.get("resource_contention"):
             bottleneck_msg = f" Resource contention detected: {len(bottlenecks['resource_contention'])} issue(s)."

@@ -89,9 +89,7 @@ class TestDispatchBenchmark:
         def prune():
             return registry.prune_finished_stale()
 
-        result = benchmark.pedantic(
-            prune, setup=setup_prune_test, rounds=5, iterations=1
-        )
+        result = benchmark.pedantic(prune, setup=setup_prune_test, rounds=5, iterations=1)
         assert result >= 500  # At least half should be pruned
 
     @pytest.mark.benchmark
@@ -140,9 +138,7 @@ class TestDispatchBenchmark:
                     agent_id=f"agent-s{s}-{i}",
                     session_id=f"session-{s}",
                     depth=i % 3,
-                    state=AgentLifecycleState.RUNNING
-                    if i % 2 == 0
-                    else AgentLifecycleState.FINISHED,
+                    state=AgentLifecycleState.RUNNING if i % 2 == 0 else AgentLifecycleState.FINISHED,
                 )
                 registry.register_agent(agent)
 

@@ -25,14 +25,10 @@ def test_wl6765_fetch_provider_metrics_connection_refused_sets_network_status(
     monkeypatch.setattr(
         cliproxy_manager.httpx,
         "get",
-        lambda *_args, **_kwargs: (_ for _ in ()).throw(
-            httpx.ConnectError("refused", request=request)
-        ),
+        lambda *_args, **_kwargs: (_ for _ in ()).throw(httpx.ConnectError("refused", request=request)),
     )
 
-    metrics = cliproxy_manager.fetch_provider_metrics(
-        settings=ThegentSettings(cliproxy_port=8317)
-    )
+    metrics = cliproxy_manager.fetch_provider_metrics(settings=ThegentSettings(cliproxy_port=8317))
 
     assert metrics is None
     status = cliproxy_manager.get_last_provider_metrics_status()
@@ -47,14 +43,10 @@ def test_wl6765_fetch_provider_metrics_timeout_sets_timeout_status(
     monkeypatch.setattr(
         cliproxy_manager.httpx,
         "get",
-        lambda *_args, **_kwargs: (_ for _ in ()).throw(
-            httpx.ReadTimeout("timed out", request=request)
-        ),
+        lambda *_args, **_kwargs: (_ for _ in ()).throw(httpx.ReadTimeout("timed out", request=request)),
     )
 
-    metrics = cliproxy_manager.fetch_provider_metrics(
-        settings=ThegentSettings(cliproxy_port=8317)
-    )
+    metrics = cliproxy_manager.fetch_provider_metrics(settings=ThegentSettings(cliproxy_port=8317))
 
     assert metrics is None
     status = cliproxy_manager.get_last_provider_metrics_status()
@@ -71,13 +63,9 @@ def test_wl6765_fetch_provider_metrics_invalid_json(
         def json(self) -> dict[str, dict]:
             raise json.JSONDecodeError("bad", "{", 0)
 
-    monkeypatch.setattr(
-        cliproxy_manager.httpx, "get", lambda *_args, **_kwargs: _Resp()
-    )
+    monkeypatch.setattr(cliproxy_manager.httpx, "get", lambda *_args, **_kwargs: _Resp())
 
-    metrics = cliproxy_manager.fetch_provider_metrics(
-        settings=ThegentSettings(cliproxy_port=8317)
-    )
+    metrics = cliproxy_manager.fetch_provider_metrics(settings=ThegentSettings(cliproxy_port=8317))
 
     assert metrics is None
     status = cliproxy_manager.get_last_provider_metrics_status()
@@ -95,13 +83,9 @@ def test_wl6765_fetch_provider_metrics_non_dict_payload(
         def json() -> list[str]:
             return ["bad"]
 
-    monkeypatch.setattr(
-        cliproxy_manager.httpx, "get", lambda *_args, **_kwargs: _Resp()
-    )
+    monkeypatch.setattr(cliproxy_manager.httpx, "get", lambda *_args, **_kwargs: _Resp())
 
-    metrics = cliproxy_manager.fetch_provider_metrics(
-        settings=ThegentSettings(cliproxy_port=8317)
-    )
+    metrics = cliproxy_manager.fetch_provider_metrics(settings=ThegentSettings(cliproxy_port=8317))
 
     assert metrics is None
     status = cliproxy_manager.get_last_provider_metrics_status()
@@ -172,9 +156,7 @@ def test_wl6767_registry_malformed_json_sets_corrupt_meta(tmp_path: Path) -> Non
 
 
 @pytest.mark.unit
-def test_wl6767_registry_permission_error_sets_unreadable_meta(
-    monkeypatch: pytest.MonkeyPatch, tmp_path: Path
-) -> None:
+def test_wl6767_registry_permission_error_sets_unreadable_meta(monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> None:
     reg_file = tmp_path / "registry.json"
     reg_file.write_text("{}", encoding="utf-8")
     original_read_text = Path.read_text
@@ -197,9 +179,7 @@ def test_wl6769_poll_session_messages_meta_missing_status(
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
     fake_impl = types.ModuleType("thegent.cli.commands.impl")
-    fake_impl._find_session_meta = lambda _settings, _session_id: (_ for _ in ()).throw(
-        FileNotFoundError("missing")
-    )
+    fake_impl._find_session_meta = lambda _settings, _session_id: (_ for _ in ()).throw(FileNotFoundError("missing"))
     monkeypatch.setitem(sys.modules, "thegent.cli.commands.impl", fake_impl)
 
     payload = poll_session_messages("sess-1", include_meta=True)
@@ -210,9 +190,7 @@ def test_wl6769_poll_session_messages_meta_missing_status(
 
 
 @pytest.mark.unit
-def test_wl6769_poll_session_messages_unreadable_message_log(
-    monkeypatch: pytest.MonkeyPatch, tmp_path: Path
-) -> None:
+def test_wl6769_poll_session_messages_unreadable_message_log(monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> None:
     session_id = "sess-2"
     meta_path = tmp_path / f"{session_id}.meta.json"
     meta_path.parent.mkdir(parents=True, exist_ok=True)
@@ -237,9 +215,7 @@ def test_wl6769_poll_session_messages_unreadable_message_log(
 
 
 @pytest.mark.unit
-def test_wl6769_poll_session_messages_parser_failure(
-    monkeypatch: pytest.MonkeyPatch, tmp_path: Path
-) -> None:
+def test_wl6769_poll_session_messages_parser_failure(monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> None:
     session_id = "sess-3"
     meta_path = tmp_path / f"{session_id}.meta.json"
     meta_path.parent.mkdir(parents=True, exist_ok=True)
@@ -264,9 +240,7 @@ def test_wl6769_poll_session_messages_parser_failure(
 
 
 @pytest.mark.unit
-def test_wl6769_poll_session_messages_empty_pending_is_ok(
-    monkeypatch: pytest.MonkeyPatch, tmp_path: Path
-) -> None:
+def test_wl6769_poll_session_messages_empty_pending_is_ok(monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> None:
     session_id = "sess-4"
     meta_path = tmp_path / f"{session_id}.meta.json"
     meta_path.parent.mkdir(parents=True, exist_ok=True)

@@ -63,9 +63,7 @@ def _drive_four_entries() -> None:
     exactly the two newest entries).
     """
     reset_audit_trail()
-    with audited_budget(
-        AuditEntryKind.TOOL_INVOCATION, "tool_invoke_ms", agent="cursor"
-    ):
+    with audited_budget(AuditEntryKind.TOOL_INVOCATION, "tool_invoke_ms", agent="cursor"):
         pass
     record_resource_read("observe_summary_ms", agent="claude", outcome="ok")
     record_gate_check("gate_check_ms", agent="cursor", outcome="ok")
@@ -139,9 +137,7 @@ class TestCockpitTrafficMcpAuditDisabledByDefault:
             assert needle in obj, f"missing traffic key {needle!r} in:\n{obj}"
         # And the new block is absent.
         for forbidden in ("mcp_audit_stats", "mcp_audit_recent", "mcp_audit_filters"):
-            assert forbidden not in obj, (
-                f"unexpected {forbidden!r} in default envelope:\n{obj}"
-            )
+            assert forbidden not in obj, f"unexpected {forbidden!r} in default envelope:\n{obj}"
 
     def test_default_text_mode_omits_audit_block(self) -> None:
         _drive_four_entries()
@@ -153,9 +149,7 @@ class TestCockpitTrafficMcpAuditDisabledByDefault:
 
     def test_explicit_no_mcp_audit_matches_default(self) -> None:
         _drive_four_entries()
-        result = CliRunner().invoke(
-            cockpit_app, ["traffic", "summary", "--json", "--no-mcp-audit"]
-        )
+        result = CliRunner().invoke(cockpit_app, ["traffic", "summary", "--json", "--no-mcp-audit"])
         assert result.exit_code == 0
         obj = json.loads(result.output)
         assert "mcp_audit_stats" not in obj
@@ -369,9 +363,7 @@ class TestCockpitTrafficMcpAuditTextRendering:
         # such row. The seq is monotonically increasing so the
         # rendered row is the freshest entry (seq=4).
         rows = [ln for ln in clean.splitlines() if "[mcp-audit] seq=" in ln]
-        assert len(rows) == 1, (
-            f"expected exactly 1 audit row with --mcp-audit-lines 1, got {len(rows)}:\n{rows}"
-        )
+        assert len(rows) == 1, f"expected exactly 1 audit row with --mcp-audit-lines 1, got {len(rows)}:\n{rows}"
         assert "seq=4" in rows[0]
 
     def test_text_mode_no_matches_surfaces_neutral(self) -> None:

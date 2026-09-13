@@ -49,12 +49,7 @@ def _normalize_model_alias(model: str) -> str:
 
 def _resolve_provider_for_model(model: str) -> str:
     model_lower = model.lower()
-    if (
-        "claude" in model_lower
-        or "sonnet" in model_lower
-        or "haiku" in model_lower
-        or "opus" in model_lower
-    ):
+    if "claude" in model_lower or "sonnet" in model_lower or "haiku" in model_lower or "opus" in model_lower:
         return "anthropic"
     elif "gpt" in model_lower or "openai" in model_lower or "o1" in model_lower:
         return "openai"

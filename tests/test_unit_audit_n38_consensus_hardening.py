@@ -186,9 +186,7 @@ from thegent.orchestration.consensus.redlock_atomic import (
 # ---------------------------------------------------------------------------
 
 
-def _mock_redis_client(
-    *, set_ok: bool = True, eval_result: int = 1, exists: bool = False
-) -> MagicMock:
+def _mock_redis_client(*, set_ok: bool = True, eval_result: int = 1, exists: bool = False) -> MagicMock:
     """Build a mock Redis client (mirrors ``test_redlock_atomic.py``)."""
     client = MagicMock()
     client.ping.return_value = True
@@ -198,16 +196,10 @@ def _mock_redis_client(
     return client
 
 
-def _fallback_controller(
-    key: str = "test-key", ttl_ms: int = 5000
-) -> RedlockController:
+def _fallback_controller(key: str = "test-key", ttl_ms: int = 5000) -> RedlockController:
     """Create a RedlockController forced into in-memory fallback mode."""
-    with patch(
-        "thegent.orchestration.redlock_atomic._import_redis_sync", return_value=None
-    ):
-        return RedlockController(
-            key, ttl_ms=ttl_ms, redis_nodes=["redis://localhost:6379"]
-        )
+    with patch("thegent.orchestration.redlock_atomic._import_redis_sync", return_value=None):
+        return RedlockController(key, ttl_ms=ttl_ms, redis_nodes=["redis://localhost:6379"])
 
 
 def _redis_controller(
@@ -233,29 +225,21 @@ class TestRedlockControllerInit:
 
     def test_init_stores_ttl_and_nodes(self) -> None:
         """``ttl_ms`` and ``redis_nodes`` are stored as ``_ttl_ms`` / ``_nodes_urls``."""
-        with patch(
-            "thegent.orchestration.redlock_atomic._import_redis_sync", return_value=None
-        ):
-            ctrl = RedlockController(
-                "k", ttl_ms=4321, redis_nodes=["redis://a:6379", "redis://b:6380"]
-            )
+        with patch("thegent.orchestration.redlock_atomic._import_redis_sync", return_value=None):
+            ctrl = RedlockController("k", ttl_ms=4321, redis_nodes=["redis://a:6379", "redis://b:6380"])
         assert ctrl._ttl_ms == 4321
         assert ctrl._nodes_urls == ["redis://a:6379", "redis://b:6380"]
 
     def test_init_redis_module_unavailable_sets_fallback(self) -> None:
         """When the redis module import returns ``None`` the controller is in fallback mode."""
-        with patch(
-            "thegent.orchestration.redlock_atomic._import_redis_sync", return_value=None
-        ):
+        with patch("thegent.orchestration.redlock_atomic._import_redis_sync", return_value=None):
             ctrl = RedlockController("k")
         assert ctrl._fallback is not None
         assert ctrl._clients == []
         assert ctrl._redis_available is False
 
     def test_init_is_available_false_in_fallback(self) -> None:
-        with patch(
-            "thegent.orchestration.redlock_atomic._import_redis_sync", return_value=None
-        ):
+        with patch("thegent.orchestration.redlock_atomic._import_redis_sync", return_value=None):
             ctrl = RedlockController("k")
         assert ctrl.is_available() is False
 
@@ -500,30 +484,22 @@ class TestMakeRedlockController:
     """@trace FR-ORC-CON-069"""
 
     def test_returns_redlock_controller(self) -> None:
-        with patch(
-            "thegent.orchestration.redlock_atomic._import_redis_sync", return_value=None
-        ):
+        with patch("thegent.orchestration.redlock_atomic._import_redis_sync", return_value=None):
             ctrl = make_redlock_controller("my-lock")
         assert isinstance(ctrl, RedlockController)
 
     def test_passes_ttl_ms(self) -> None:
-        with patch(
-            "thegent.orchestration.redlock_atomic._import_redis_sync", return_value=None
-        ):
+        with patch("thegent.orchestration.redlock_atomic._import_redis_sync", return_value=None):
             ctrl = make_redlock_controller("my-lock", ttl_ms=1234)
         assert ctrl._ttl_ms == 1234
 
     def test_passes_redis_nodes(self) -> None:
-        with patch(
-            "thegent.orchestration.redlock_atomic._import_redis_sync", return_value=None
-        ):
+        with patch("thegent.orchestration.redlock_atomic._import_redis_sync", return_value=None):
             ctrl = make_redlock_controller("my-lock", redis_nodes=["redis://a:6379"])
         assert ctrl._nodes_urls == ["redis://a:6379"]
 
     def test_factory_fallback_functional(self) -> None:
-        with patch(
-            "thegent.orchestration.redlock_atomic._import_redis_sync", return_value=None
-        ):
+        with patch("thegent.orchestration.redlock_atomic._import_redis_sync", return_value=None):
             ctrl = make_redlock_controller("factory-test")
         result = ctrl.acquire()
         assert result.acquired is True
@@ -639,9 +615,7 @@ class TestParseNodeUrlsFromEnvHardening:
         assert urls == ["redis://localhost:6379"]
 
     def test_multiple_nodes(self, monkeypatch: pytest.MonkeyPatch) -> None:
-        monkeypatch.setenv(
-            "THGENT_REDLOCK_NODES", "redis://a:6379,redis://b:6380,redis://c:6381"
-        )
+        monkeypatch.setenv("THGENT_REDLOCK_NODES", "redis://a:6379,redis://b:6380,redis://c:6381")
         urls = _parse_node_urls_from_env()
         assert urls == ["redis://a:6379", "redis://b:6380", "redis://c:6381"]
 
@@ -682,17 +656,13 @@ class TestOmegaConsensusHardening:
 
     def test_propose_state_returns_string_id(self) -> None:
         c = OmegaConsensus(swarm_size=3, threshold=0.5)
-        pid = c.propose_state(
-            proposer_id="agent-master", state={"status": "x"}, metadata={}
-        )
+        pid = c.propose_state(proposer_id="agent-master", state={"status": "x"}, metadata={})
         assert isinstance(pid, str)
         assert len(pid) > 0
 
     def test_proposal_ids_are_unique(self) -> None:
         c = OmegaConsensus(swarm_size=3, threshold=0.5)
-        ids = {
-            c.propose_state(proposer_id="a", state={}, metadata={}) for _ in range(10)
-        }
+        ids = {c.propose_state(proposer_id="a", state={}, metadata={}) for _ in range(10)}
         assert len(ids) == 10
 
     def test_cast_vote_unknown_proposal_returns_false(self) -> None:
@@ -712,9 +682,7 @@ class TestOmegaConsensusHardening:
     def test_consensus_reached_above_threshold(self) -> None:
         """4/5 YES at 60% threshold → quorum."""
         c = OmegaConsensus(swarm_size=5, threshold=0.6)
-        pid = c.propose_state(
-            proposer_id="agent-master", state={"status": "done"}, metadata={}
-        )
+        pid = c.propose_state(proposer_id="agent-master", state={"status": "done"}, metadata={})
         for i in range(4):
             assert c.cast_vote(pid, f"voter-{i}", True, f"sig-{i}") is True
         assert c.finalize_consensus(pid) is True
@@ -725,9 +693,7 @@ class TestOmegaConsensusHardening:
     def test_consensus_fails_below_threshold(self) -> None:
         """7/10 YES at 80% threshold → fail."""
         c = OmegaConsensus(swarm_size=10, threshold=0.8)
-        pid = c.propose_state(
-            proposer_id="agent-master", state={"status": "failed"}, metadata={}
-        )
+        pid = c.propose_state(proposer_id="agent-master", state={"status": "failed"}, metadata={})
         for i in range(7):
             c.cast_vote(pid, f"voter-{i}", True, "sig")
         assert c.finalize_consensus(pid) is False

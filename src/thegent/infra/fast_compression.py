@@ -24,9 +24,7 @@ class FastCompression:
     """High-performance compression with automatic backend selection."""
 
     @staticmethod
-    def compress(
-        data: bytes, method: str = "auto", level: int = 6
-    ) -> tuple[bytes, str]:
+    def compress(data: bytes, method: str = "auto", level: int = 6) -> tuple[bytes, str]:
         """Compress data using fastest available method.
 
         Args:

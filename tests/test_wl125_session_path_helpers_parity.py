@@ -13,9 +13,7 @@ def test_wl125_session_paths_wrapper_delegates(monkeypatch) -> None:
         captured["session_id"] = session_id
         return {"meta": base / "x.json"}
 
-    monkeypatch.setattr(
-        "thegent.cli.commands.impl.session_path_helpers.session_paths", _fake
-    )
+    monkeypatch.setattr("thegent.cli.commands.impl.session_path_helpers.session_paths", _fake)
 
     base = Path("/tmp/wl125")
     output = impl._session_paths(base, "sess-1")

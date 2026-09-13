@@ -40,9 +40,7 @@ def _apply_pareto_routing(
         )
     except ImportError:
         return agent, model, route_contract, route_request
-    return _impl_apply(
-        agent, model, routing, include_contract, route_contract, route_request
-    )
+    return _impl_apply(agent, model, routing, include_contract, route_contract, route_request)
 
 
 __all__ = ["_apply_pareto_routing"]

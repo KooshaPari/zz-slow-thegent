@@ -68,9 +68,7 @@ def test_invoke_does_not_skip_for_normal_result(
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
     expected = DummyResult(stdout="ok", stderr="")
-    monkeypatch.setattr(
-        cli_runner_compat_module.CliRunner, "invoke", lambda *args, **kwargs: expected
-    )
+    monkeypatch.setattr(cli_runner_compat_module.CliRunner, "invoke", lambda *args, **kwargs: expected)
 
     runner = CompatCliRunner()
 
@@ -242,9 +240,7 @@ def test_invoke_does_not_retry_when_alias_rewrite_returns_none_even_on_no_such_c
         rewrite_calls.append((rewrite_app, rewrite_argv))
 
     monkeypatch.setattr(cli_runner_compat_module.CliRunner, "invoke", fake_invoke)
-    monkeypatch.setattr(
-        cli_runner_compat_module, "_alias_rewrite_argv", fake_alias_rewrite_argv
-    )
+    monkeypatch.setattr(cli_runner_compat_module, "_alias_rewrite_argv", fake_alias_rewrite_argv)
 
     runner = CompatCliRunner()
     expected_message = _expected_skip_message(["logs"])
@@ -405,22 +401,16 @@ def test_build_command_surface_drift_skip_message_handles_tuple_argv() -> None:
     assert message == _expected_skip_message(["logs", "now"])
 
 
-def test_build_command_surface_drift_skip_message_handles_scalar_positional_argv() -> (
-    None
-):
+def test_build_command_surface_drift_skip_message_handles_scalar_positional_argv() -> None:
     message = _build_command_surface_drift_skip_message("app", "logs")
 
-    assert message == (
-        f"{COMMAND_SURFACE_DRIFT_SKIP_MESSAGE} {ATTEMPTED_ARGV_COMMAND_PATH_PREFIX} logs"
-    )
+    assert message == (f"{COMMAND_SURFACE_DRIFT_SKIP_MESSAGE} {ATTEMPTED_ARGV_COMMAND_PATH_PREFIX} logs")
 
 
 def test_build_command_surface_drift_skip_message_handles_missing_args() -> None:
     message = _build_command_surface_drift_skip_message("app")
 
-    assert message == (
-        f"{COMMAND_SURFACE_DRIFT_SKIP_MESSAGE} {ATTEMPTED_ARGV_COMMAND_PATH_PREFIX} <unspecified>"
-    )
+    assert message == (f"{COMMAND_SURFACE_DRIFT_SKIP_MESSAGE} {ATTEMPTED_ARGV_COMMAND_PATH_PREFIX} <unspecified>")
 
 
 def test_extract_invoke_app_extracts_positional_app() -> None:
@@ -437,10 +427,7 @@ def test_extract_invoke_app_prefers_positional_over_kwargs() -> None:
     positional_app = object()
     kwargs_app = object()
 
-    assert (
-        _extract_invoke_app(positional_app, app=kwargs_app, args=["logs"])
-        is positional_app
-    )
+    assert _extract_invoke_app(positional_app, app=kwargs_app, args=["logs"]) is positional_app
 
 
 def test_extract_invoke_app_returns_none_when_missing() -> None:
@@ -461,15 +448,10 @@ def test_extract_invoke_argv_prefers_positional_over_kwargs_args() -> None:
     positional_argv = ["logs"]
     kwargs_argv = ["status"]
 
-    assert (
-        _extract_invoke_argv("app", positional_argv, args=kwargs_argv)
-        == positional_argv
-    )
+    assert _extract_invoke_argv("app", positional_argv, args=kwargs_argv) == positional_argv
 
 
-def test_extract_invoke_argv_returns_none_when_positional_is_explicitly_none_and_kwargs_missing() -> (
-    None
-):
+def test_extract_invoke_argv_returns_none_when_positional_is_explicitly_none_and_kwargs_missing() -> None:
     assert _extract_invoke_argv("app", None) is None
 
 
@@ -514,15 +496,11 @@ def test_result_mentions_no_such_command_handles_none_stdout_stderr_values() -> 
     assert not _result_mentions_no_such_command(ResultWithNoneStreams())
 
 
-def test_result_mentions_no_such_command_handles_missing_stdout_stderr_attributes() -> (
-    None
-):
+def test_result_mentions_no_such_command_handles_missing_stdout_stderr_attributes() -> None:
     assert not _result_mentions_no_such_command(object())
 
 
-def test_result_mentions_no_such_command_ignores_separate_no_and_command_words() -> (
-    None
-):
+def test_result_mentions_no_such_command_ignores_separate_no_and_command_words() -> None:
     result = DummyResult(
         stdout="There is no issue here; we can run another command later.",
         stderr="",

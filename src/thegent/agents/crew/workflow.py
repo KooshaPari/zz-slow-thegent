@@ -60,9 +60,7 @@ class WorkflowEngine:
         for stage in self.stages:
             for dep_id in stage.depends_on:
                 if dep_id not in stage_map:
-                    raise ValueError(
-                        f"Unknown dependency {dep_id!r} for stage {stage.id!r}"
-                    )
+                    raise ValueError(f"Unknown dependency {dep_id!r} for stage {stage.id!r}")
                 if dep_id == stage.id:
                     raise ValueError(f"Stage {stage.id!r} cannot depend on itself")
                 graph[dep_id].append(stage.id)

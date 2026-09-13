@@ -30,9 +30,7 @@ from thegent.protocols.turn_submit_boundaries import (
 
 def test_wl10720_provider_selection_separates_fallback_and_normal_paths() -> None:
     # @trace WL-10720
-    phase = build_provider_selection_phase(
-        ["fallback", "primary"], "primary", "weighted"
-    )
+    phase = build_provider_selection_phase(["fallback", "primary"], "primary", "weighted")
     assert resolve_workflow_guard_target(phase) == (
         ["fallback", "primary"],
         "primary",
@@ -42,9 +40,7 @@ def test_wl10720_provider_selection_separates_fallback_and_normal_paths() -> Non
 
 def test_wl10721_policy_enforcement_separates_rule_discovery_and_action() -> None:
     # @trace WL-10721
-    phase = build_policy_match_phase(
-        "policy-10721", ["allow:team", "deny:none"], "allow"
-    )
+    phase = build_policy_match_phase("policy-10721", ["allow:team", "deny:none"], "allow")
     assert resolve_policy_enforcement_plan_target(phase) == (
         "policy-10721",
         ["allow:team", "deny:none"],
@@ -66,9 +62,7 @@ def test_wl10722_sync_reliability_separates_scan_and_apply() -> None:
     )
 
 
-def test_wl10723_runtime_error_behavior_preserves_recoverable_and_terminal_branches() -> (
-    None
-):
+def test_wl10723_runtime_error_behavior_preserves_recoverable_and_terminal_branches() -> None:
     # @trace WL-10723
     phase = build_retry_loop_phase(2, 3, "retry")
     assert resolve_terminal_outcome_target(phase) == (2, 3, "retry")
@@ -138,9 +132,7 @@ def test_wl10728_queue_throughput_separates_intake_and_worker_fanout() -> None:
 
 def test_wl10729_telemetry_separates_metric_collection_and_emitter_lifecycle() -> None:
     # @trace WL-10729
-    phase = build_observability_event_phase(
-        "telemetry-10729", {"metric": "queue.depth", "value": 9}, "json"
-    )
+    phase = build_observability_event_phase("telemetry-10729", {"metric": "queue.depth", "value": 9}, "json")
     assert resolve_observability_serialization_target(phase) == (
         "telemetry-10729",
         {"metric": "queue.depth", "value": 9},
@@ -148,7 +140,5 @@ def test_wl10729_telemetry_separates_metric_collection_and_emitter_lifecycle() -
     )
     with pytest.raises(ValueError, match="invalid serialization_format"):
         resolve_observability_serialization_target(
-            build_observability_event_phase(
-                "telemetry-10729", {"metric": "queue.depth"}, ""
-            ),
+            build_observability_event_phase("telemetry-10729", {"metric": "queue.depth"}, ""),
         )

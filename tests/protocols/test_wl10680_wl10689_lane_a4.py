@@ -70,9 +70,7 @@ def test_wl10684_error_semantics_separates_retry_loops_and_terminal_outcomes() -
 
 def test_wl10685_workflow_progression_fails_when_guard_blocks_execution() -> None:
     # @trace WL-10685
-    phase = build_workflow_guard_phase(
-        "wf-blocked", {"session_exists": False}, "dispatch"
-    )
+    phase = build_workflow_guard_phase("wf-blocked", {"session_exists": False}, "dispatch")
     with pytest.raises(ValueError, match="Workflow execution target unresolved"):
         resolve_workflow_execution_target(phase)
 
@@ -94,15 +92,11 @@ def test_wl10687_session_consistency_rejects_negative_persistence_revision() -> 
 def test_wl10688_observability_rejects_unknown_serialization_format() -> None:
     # @trace WL-10688
     phase = build_observability_event_phase("lane-a4-observe", {"status": "ok"}, "")
-    with pytest.raises(
-        ValueError, match="Observability serialization target unresolved"
-    ):
+    with pytest.raises(ValueError, match="Observability serialization target unresolved"):
         resolve_observability_serialization_target(phase)
 
 
-def test_wl10689_error_semantics_rejects_terminal_outcome_with_excess_attempts() -> (
-    None
-):
+def test_wl10689_error_semantics_rejects_terminal_outcome_with_excess_attempts() -> None:
     # @trace WL-10689
     phase = build_retry_loop_phase(5, 3, "failed")
     with pytest.raises(ValueError, match="attempt_count exceeds max_attempts"):

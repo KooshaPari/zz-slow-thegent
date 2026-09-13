@@ -297,29 +297,21 @@ class TestParseTokensFromResult:
 
     def test_parse_multiple_usage_lines_summed(self) -> None:
         """Multiple usage lines must be summed together. # @trace WL-086"""
-        line1 = json.dumps(
-            {"usage": {"prompt_tokens": 80, "completion_tokens": 20}}
-        ).decode()
-        line2 = json.dumps(
-            {"usage": {"prompt_tokens": 40, "completion_tokens": 10}}
-        ).decode()
+        line1 = json.dumps({"usage": {"prompt_tokens": 80, "completion_tokens": 20}}).decode()
+        line2 = json.dumps({"usage": {"prompt_tokens": 40, "completion_tokens": 10}}).decode()
         stdout = f"{line1}\n{line2}"
         assert BudgetTracker.parse_tokens_from_result(stdout) == 150
 
     def test_parse_mixed_json_and_plain_text(self) -> None:
         """Plain text lines interspersed with JSON must not cause errors. # @trace WL-086"""
-        usage_line = json.dumps(
-            {"usage": {"prompt_tokens": 70, "completion_tokens": 30}}
-        ).decode()
+        usage_line = json.dumps({"usage": {"prompt_tokens": 70, "completion_tokens": 30}}).decode()
         stdout = f"Starting agent...\n{usage_line}\nDone."
         assert BudgetTracker.parse_tokens_from_result(stdout) == 100
 
     def test_parse_malformed_json_skipped(self) -> None:
         """Malformed JSON lines must be silently skipped. # @trace WL-086"""
         bad_line = "{this is not valid json}"
-        good_line = json.dumps(
-            {"usage": {"prompt_tokens": 50, "completion_tokens": 25}}
-        ).decode()
+        good_line = json.dumps({"usage": {"prompt_tokens": 50, "completion_tokens": 25}}).decode()
         stdout = f"{bad_line}\n{good_line}"
         assert BudgetTracker.parse_tokens_from_result(stdout) == 75
 
@@ -330,9 +322,7 @@ class TestParseTokensFromResult:
 
     def test_parse_zero_tokens_in_usage(self) -> None:
         """Usage object with all-zero tokens must return 0. # @trace WL-086"""
-        stdout = json.dumps(
-            {"usage": {"prompt_tokens": 0, "completion_tokens": 0}}
-        ).decode()
+        stdout = json.dumps({"usage": {"prompt_tokens": 0, "completion_tokens": 0}}).decode()
         assert BudgetTracker.parse_tokens_from_result(stdout) == 0
 
 

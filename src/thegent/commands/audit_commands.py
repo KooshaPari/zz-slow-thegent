@@ -46,9 +46,7 @@ app = Typer(help="Audit commands for tracking agent git operations.")
 @app.command()
 def log(
     project: Annotated[str, Argument(help="Project name to show audit log for.")],
-    limit: Annotated[
-        int | None, Argument(help="Maximum number of entries to show.")
-    ] = None,
+    limit: Annotated[int | None, Argument(help="Maximum number of entries to show.")] = None,
 ) -> None:
     """Show audit log entries for a project."""
     registry = _get_registry()

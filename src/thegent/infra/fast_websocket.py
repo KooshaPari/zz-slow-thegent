@@ -60,13 +60,9 @@ class FastWebSocket:
         elif WEBSOCKET_CLIENT_AVAILABLE:
             # Fallback: run synchronous websocket-client in thread pool
             self._backend = "websocket-client-async"
-            self._ws = await asyncio.to_thread(
-                websocket.create_connection, self.url, **self.options
-            )
+            self._ws = await asyncio.to_thread(websocket.create_connection, self.url, **self.options)
         else:
-            raise ImportError(
-                "No WebSocket library available. Install 'websockets' or 'websocket-client'."
-            )
+            raise ImportError("No WebSocket library available. Install 'websockets' or 'websocket-client'.")
 
     def connect_sync(self) -> None:
         """Connect synchronously using websocket-client.
@@ -79,9 +75,7 @@ class FastWebSocket:
             self._backend = "websocket-client"
             self._ws = websocket.create_connection(self.url, **self.options)
         else:
-            raise ImportError(
-                "No WebSocket library available. Install 'websocket-client' for sync support."
-            )
+            raise ImportError("No WebSocket library available. Install 'websocket-client' for sync support.")
 
     async def send_async(self, data: str | bytes) -> None:
         """Send data asynchronously."""

@@ -54,9 +54,7 @@ class AgentProber:
             timestamp="2026-02-16T16:00:00Z",
         )
 
-    def identify_deviations(
-        self, current_fp: AgentFingerprint, baseline_fp: AgentFingerprint
-    ) -> list[str]:
+    def identify_deviations(self, current_fp: AgentFingerprint, baseline_fp: AgentFingerprint) -> list[str]:
         """Detect if an agent's behavior has drifted from its baseline fingerprint."""
         deviations = []
         if abs(current_fp.creativity_score - baseline_fp.creativity_score) > 0.3:

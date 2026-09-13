@@ -44,45 +44,32 @@ def _touch(path: Path) -> None:
 
 
 def _check_result(name: str, category: str) -> SimpleNamespace:
-    return SimpleNamespace(
-        name=name, category=category, status="", message="", details="", fix_hint=""
-    )
+    return SimpleNamespace(name=name, category=category, status="", message="", details="", fix_hint="")
 
 
-def test_wl6900_shell_doctor_alias_probe_success_branch(
-    monkeypatch: pytest.MonkeyPatch, tmp_path: Path
-) -> None:
+def test_wl6900_shell_doctor_alias_probe_success_branch(monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> None:
     _touch(tmp_path / ".zshenv")
     _touch(tmp_path / ".zsh_bundle.zsh")
     monkeypatch.setattr(shell_cli.Path, "home", lambda: tmp_path)
     monkeypatch.setattr(
         shell_cli.subprocess,
         "run",
-        lambda *args, **kwargs: subprocess.CompletedProcess(
-            args[0], 0, stdout="alias ls='tree -a'\n", stderr=""
-        ),
+        lambda *args, **kwargs: subprocess.CompletedProcess(args[0], 0, stdout="alias ls='tree -a'\n", stderr=""),
     )
     collector = _PrintCollector()
     monkeypatch.setattr(shell_cli, "console", collector)
 
     shell_cli.shell_doctor(fix=False)
 
-    assert any(
-        "ls is aliased to tree/recursive output" in message
-        for message in collector.messages
-    )
+    assert any("ls is aliased to tree/recursive output" in message for message in collector.messages)
 
 
-def test_wl6900_shell_doctor_records_probe_timeout(
-    monkeypatch: pytest.MonkeyPatch, tmp_path: Path
-) -> None:
+def test_wl6900_shell_doctor_records_probe_timeout(monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> None:
     _touch(tmp_path / ".zshenv")
     _touch(tmp_path / ".zsh_bundle.zsh")
     monkeypatch.setattr(shell_cli.Path, "home", lambda: tmp_path)
 
-    def _raise_timeout(
-        *_args: object, **_kwargs: object
-    ) -> subprocess.CompletedProcess[str]:
+    def _raise_timeout(*_args: object, **_kwargs: object) -> subprocess.CompletedProcess[str]:
         raise subprocess.TimeoutExpired(cmd=["zsh"], timeout=2)
 
     monkeypatch.setattr(shell_cli.subprocess, "run", _raise_timeout)
@@ -91,10 +78,7 @@ def test_wl6900_shell_doctor_records_probe_timeout(
 
     shell_cli.shell_doctor(fix=False)
 
-    assert any(
-        "Alias probe timed out" in message and "timeout" in message
-        for message in collector.messages
-    )
+    assert any("Alias probe timed out" in message and "timeout" in message for message in collector.messages)
 
 
 def test_wl6901_shell_platform_reports_success_version(
@@ -108,9 +92,7 @@ def test_wl6901_shell_platform_reports_success_version(
 
     def _fake_run(*args: object, **kwargs: object) -> subprocess.CompletedProcess[str]:
         if args and args[0] == ["zsh", "--version"]:
-            return subprocess.CompletedProcess(
-                args[0], 0, stdout="zsh 5.9 (x86_64)\n", stderr=""
-            )
+            return subprocess.CompletedProcess(args[0], 0, stdout="zsh 5.9 (x86_64)\n", stderr="")
         return original_run(*args, **kwargs)
 
     monkeypatch.setattr(shell_cli.subprocess, "run", _fake_run)
@@ -161,9 +143,7 @@ def test_wl6902_get_git_commits_non_repo_reports_not_repo(tmp_path: Path) -> Non
     assert payload.error["type"] == "not_repo"
 
 
-def test_wl6902_get_git_commits_command_failure_reports_error(
-    monkeypatch: pytest.MonkeyPatch, tmp_path: Path
-) -> None:
+def test_wl6902_get_git_commits_command_failure_reports_error(monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> None:
     (tmp_path / ".git").mkdir()
     start = datetime.now(UTC) - timedelta(days=1)
     end = datetime.now(UTC)
@@ -171,9 +151,7 @@ def test_wl6902_get_git_commits_command_failure_reports_error(
     monkeypatch.setattr(
         summary.subprocess,
         "run",
-        lambda *args, **kwargs: subprocess.CompletedProcess(
-            args[0], 128, stdout="", stderr="fatal: not a git repo"
-        ),
+        lambda *args, **kwargs: subprocess.CompletedProcess(args[0], 128, stdout="", stderr="fatal: not a git repo"),
     )
 
     payload = summary.get_git_commits(tmp_path, start, end)
@@ -192,9 +170,7 @@ def test_wl6902_get_git_commits_empty_window_keeps_empty_status(
     monkeypatch.setattr(
         summary.subprocess,
         "run",
-        lambda *args, **kwargs: subprocess.CompletedProcess(
-            args[0], 0, stdout="", stderr=""
-        ),
+        lambda *args, **kwargs: subprocess.CompletedProcess(args[0], 0, stdout="", stderr=""),
     )
 
     payload = summary.get_git_commits(tmp_path, start, end)
@@ -238,17 +214,13 @@ def test_wl6904_read_log_file_missing_file_reports_explicit_status(
     start = datetime(2026, 1, 1, tzinfo=UTC)
     end = datetime(2026, 1, 31, tzinfo=UTC)
 
-    payload = summary._read_log_file(
-        tmp_path / "missing.jsonl", start, end, include_diagnostics=True
-    )
+    payload = summary._read_log_file(tmp_path / "missing.jsonl", start, end, include_diagnostics=True)
 
     assert payload["status"] == "missing"
     assert payload["error"]["type"] == "FileNotFoundError"
 
 
-def test_wl6904_read_log_file_permission_denied_reports_status(
-    monkeypatch: pytest.MonkeyPatch, tmp_path: Path
-) -> None:
+def test_wl6904_read_log_file_permission_denied_reports_status(monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> None:
     start = datetime(2026, 1, 1, tzinfo=UTC)
     end = datetime(2026, 1, 31, tzinfo=UTC)
     path = tmp_path / "denied.jsonl"
@@ -276,15 +248,10 @@ def test_wl6905_ensure_mcp_running_healthy_preflight_short_circuits(
     monkeypatch.setattr(
         doctor_setup_checks.httpx,
         "get",
-        lambda *args, **kwargs: httpx.Response(
-            200, request=httpx.Request("GET", args[0])
-        ),
+        lambda *args, **kwargs: httpx.Response(200, request=httpx.Request("GET", args[0])),
     )
 
-    assert (
-        doctor_setup_checks.ensure_mcp_running(settings=settings, console=collector)
-        is True
-    )
+    assert doctor_setup_checks.ensure_mcp_running(settings=settings, console=collector) is True
 
 
 def test_wl6905_ensure_mcp_running_records_timeout_preflight(
@@ -300,16 +267,8 @@ def test_wl6905_ensure_mcp_running_records_timeout_preflight(
     fake_manage = SimpleNamespace(mcp_up=lambda: (False, "not started"))
     monkeypatch.setitem(sys.modules, "thegent.mcp.manage", fake_manage)
 
-    assert (
-        doctor_setup_checks.ensure_mcp_running(
-            settings=settings, console=collector, timeout=1
-        )
-        is False
-    )
-    assert any(
-        "preflight health check failed" in message and "timeout" in message
-        for message in collector.messages
-    )
+    assert doctor_setup_checks.ensure_mcp_running(settings=settings, console=collector, timeout=1) is False
+    assert any("preflight health check failed" in message and "timeout" in message for message in collector.messages)
 
 
 def test_wl6906_ensure_mcp_running_retry_diagnostics_transient_then_success(
@@ -323,25 +282,13 @@ def test_wl6906_ensure_mcp_running_retry_diagnostics_transient_then_success(
         httpx.ConnectError("refused"),
         httpx.Response(200, request=request),
     ]
-    monkeypatch.setattr(
-        doctor_setup_checks.httpx, "get", MagicMock(side_effect=responses)
-    )
+    monkeypatch.setattr(doctor_setup_checks.httpx, "get", MagicMock(side_effect=responses))
     fake_manage = SimpleNamespace(mcp_up=lambda: (True, "started"))
     monkeypatch.setitem(sys.modules, "thegent.mcp.manage", fake_manage)
-    monkeypatch.setattr(
-        doctor_setup_checks.time, "sleep", lambda *_args, **_kwargs: None
-    )
+    monkeypatch.setattr(doctor_setup_checks.time, "sleep", lambda *_args, **_kwargs: None)
 
-    assert (
-        doctor_setup_checks.ensure_mcp_running(
-            settings=settings, console=collector, timeout=2
-        )
-        is True
-    )
-    assert any(
-        "retry diagnostics" in message and "connection_error=1" in message
-        for message in collector.messages
-    )
+    assert doctor_setup_checks.ensure_mcp_running(settings=settings, console=collector, timeout=2) is True
+    assert any("retry diagnostics" in message and "connection_error=1" in message for message in collector.messages)
 
 
 def test_wl6906_ensure_mcp_running_retry_diagnostics_persistent_failure(
@@ -356,29 +303,17 @@ def test_wl6906_ensure_mcp_running_retry_diagnostics_persistent_failure(
     )
     fake_manage = SimpleNamespace(mcp_up=lambda: (True, "started"))
     monkeypatch.setitem(sys.modules, "thegent.mcp.manage", fake_manage)
-    monkeypatch.setattr(
-        doctor_setup_checks.time, "sleep", lambda *_args, **_kwargs: None
-    )
+    monkeypatch.setattr(doctor_setup_checks.time, "sleep", lambda *_args, **_kwargs: None)
 
-    assert (
-        doctor_setup_checks.ensure_mcp_running(
-            settings=settings, console=collector, timeout=1
-        )
-        is False
-    )
-    assert any(
-        "retry diagnostics" in message and "connection_error=" in message
-        for message in collector.messages
-    )
+    assert doctor_setup_checks.ensure_mcp_running(settings=settings, console=collector, timeout=1) is False
+    assert any("retry diagnostics" in message and "connection_error=" in message for message in collector.messages)
 
 
 @pytest.mark.parametrize(
     ("proxy_behavior", "expected_message"),
     [
         (
-            httpx.Response(
-                503, request=httpx.Request("GET", "http://127.0.0.1:8317/v1/models")
-            ),
+            httpx.Response(503, request=httpx.Request("GET", "http://127.0.0.1:8317/v1/models")),
             "returned 503",
         ),
         (httpx.ReadTimeout("timeout"), "request timed out"),
@@ -416,14 +351,10 @@ def test_wl6907_check_connectivity_cliproxy_categorizes_failures(
     assert expected_message in cliproxy_result.message
 
 
-def test_wl6908_shared_mcp_cleans_only_stale_lockfile(
-    monkeypatch: pytest.MonkeyPatch, tmp_path: Path
-) -> None:
+def test_wl6908_shared_mcp_cleans_only_stale_lockfile(monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> None:
     monkeypatch.setattr(shared_mcp_manager.Path, "home", lambda: tmp_path)
     _scope, lockfile = shared_mcp_manager.get_server_scope()
-    lockfile.write_text(
-        json.dumps({"pid": 424242, "port": 3847}).decode(), encoding="utf-8"
-    )
+    lockfile.write_text(json.dumps({"pid": 424242, "port": 3847}).decode(), encoding="utf-8")
     monkeypatch.setattr(
         shared_mcp_manager.os,
         "kill",
@@ -458,9 +389,7 @@ def test_wl6908_shared_mcp_malformed_json_does_not_delete_lockfile(
     assert lockfile.read_text(encoding="utf-8") == "{ not json"
 
 
-def test_wl6908_shared_mcp_read_error_does_not_delete_lockfile(
-    monkeypatch: pytest.MonkeyPatch, tmp_path: Path
-) -> None:
+def test_wl6908_shared_mcp_read_error_does_not_delete_lockfile(monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> None:
     monkeypatch.setattr(shared_mcp_manager.Path, "home", lambda: tmp_path)
     _scope, lockfile = shared_mcp_manager.get_server_scope()
     lockfile.write_text(json.dumps({"pid": 1, "port": 3847}).decode(), encoding="utf-8")

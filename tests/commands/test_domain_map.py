@@ -42,17 +42,13 @@ def test_domain_map_advisor_json_payload() -> None:
 
 
 def test_domain_map_invalid_domain_fails() -> None:
-    result = runner.invoke(
-        app, ["domain", "map", "localhost", "--target", "http://localhost:3847"]
-    )
+    result = runner.invoke(app, ["domain", "map", "localhost", "--target", "http://localhost:3847"])
     assert result.exit_code == 0
     assert "domain must be a valid FQDN" in result.output
 
 
 def test_domain_map_invalid_target_fails() -> None:
-    result = runner.invoke(
-        app, ["domain", "map", "example.com", "--target", "localhost:3847"]
-    )
+    result = runner.invoke(app, ["domain", "map", "example.com", "--target", "localhost:3847"])
     assert result.exit_code == 0
     assert "target must be an absolute URL" in result.output
 

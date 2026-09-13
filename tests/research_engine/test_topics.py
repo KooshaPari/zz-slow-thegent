@@ -7,9 +7,7 @@ def test_extract_from_pyproject(tmp_path: Path) -> None:
     from research_engine.topics import TopicExtractor
 
     pyproject = tmp_path / "pyproject.toml"
-    pyproject.write_text(
-        '[project]\ndependencies = ["httpx>=0.28", "pydantic>=2.0", "structlog"]\n'
-    )
+    pyproject.write_text('[project]\ndependencies = ["httpx>=0.28", "pydantic>=2.0", "structlog"]\n')
     extractor = TopicExtractor(project_root=tmp_path)
     topics = extractor.extract()
     assert "httpx" in topics

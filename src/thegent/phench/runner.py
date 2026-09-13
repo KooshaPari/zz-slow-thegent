@@ -43,11 +43,7 @@ def _task_targets(path: Path) -> list[str]:
             continue
         if line.startswith("#"):
             continue
-        if (
-            line.endswith(":")
-            and not line.startswith("version:")
-            and not line.startswith("tasks:")
-        ):
+        if line.endswith(":") and not line.startswith("version:") and not line.startswith("tasks:"):
             targets.append(line[:-1].strip())
     return sorted({t for t in targets if t})
 
@@ -94,9 +90,7 @@ def build_runner_catalog(target: str, repo_checkout: Path) -> RunnerCatalog:
             commands.append(RunnerCommand("make", name, f"make {name}", str(makefile)))
 
     package_json = repo_checkout / "package.json"
-    if package_json.exists() and (
-        shutil.which("pnpm") or shutil.which("npm") or shutil.which("bun")
-    ):
+    if package_json.exists() and (shutil.which("pnpm") or shutil.which("npm") or shutil.which("bun")):
         if shutil.which("pnpm"):
             runner = "pnpm"
         elif shutil.which("bun"):
@@ -126,9 +120,7 @@ def pick_command_interactive(catalog: RunnerCatalog) -> RunnerCommand:
     if not catalog.commands:
         raise ValueError("No runnable commands found in runner catalog")
     if not sys.stdin.isatty() or not sys.stdout.isatty():
-        raise ValueError(
-            "Interactive command selection requires a TTY; pass --runner and --command explicitly"
-        )
+        raise ValueError("Interactive command selection requires a TTY; pass --runner and --command explicitly")
 
     typer.echo("Select command to run:")
     for idx, command in enumerate(catalog.commands, start=1):

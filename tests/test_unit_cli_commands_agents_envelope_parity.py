@@ -188,9 +188,7 @@ class TestSafeEchoEndToEnd:
     space-joined multi-value passthrough, plain-string passthrough.
     """
 
-    def test_err_true_writes_to_stderr(
-        self, capsys: pytest.CaptureFixture[str]
-    ) -> None:
+    def test_err_true_writes_to_stderr(self, capsys: pytest.CaptureFixture[str]) -> None:
         from thegent.ux.cli_errors import safe_echo
 
         safe_echo("hello", "world", err=True)
@@ -249,9 +247,7 @@ class TestSafeEchoEndToEnd:
         )
         captured = capsys.readouterr()
         clean = _strip_ansi(captured.err)
-        assert (
-            clean == "verify-workstream: id 'WL-224' appears in both 'foo' and 'bar'\n"
-        )
+        assert clean == "verify-workstream: id 'WL-224' appears in both 'foo' and 'bar'\n"
 
     def test_multiple_positional_values_are_space_joined(
         self,
@@ -358,9 +354,7 @@ class TestRunAppModuleImports:
         assert callable(run_app._safe_model_unavailable_line)
         # Smoke-test: literal quoting is preserved + malicious
         # values are escaped.
-        line = run_app._safe_model_unavailable_line(
-            "gpt-4o", "[red]pwned[/red]", " Available: openai."
-        )
+        line = run_app._safe_model_unavailable_line("gpt-4o", "[red]pwned[/red]", " Available: openai.")
         assert "Model 'gpt-4o' not available via provider " in line
         assert r"\[red]pwned\[/red]" in line
 
@@ -389,9 +383,7 @@ _AUDIT_N3_CLOSED_NEEDLES: dict[str, tuple[str, ...]] = {
         'typer.echo(f"normalize-workstream: file not found: {path}", err=True)',
         'typer.echo(f"normalize-workstream: {change}")',
     ),
-    CLI_APPS_RUN: (
-        "typer.echo(f\"Model '{model}' not available via provider '{provider}'.{suffix}\")",
-    ),
+    CLI_APPS_RUN: ("typer.echo(f\"Model '{model}' not available via provider '{provider}'.{suffix}\")",),
 }
 
 
@@ -704,8 +696,7 @@ class TestStaticAuditExcludesSafeByConstructionSites:
             'Unsafe console.print(f"[red]X: {y}[/red]") pattern '
             "found in agents/unified_registry_cli.py or "
             "cli/apps/govern.py outside the F-15 / AUDIT-N+1 "
-            "SAFE-by-construction exception list:\n"
-            + "\n".join(f"{p}:{ln} {s}" for p, ln, s in offenders)
+            "SAFE-by-construction exception list:\n" + "\n".join(f"{p}:{ln} {s}" for p, ln, s in offenders)
         )
 
     def test_safe_by_construction_sites_still_present(self) -> None:
@@ -723,9 +714,7 @@ class TestStaticAuditExcludesSafeByConstructionSites:
         # The "Agent '<agent_id>' not found." envelope remains —
         # this is the canonical F-15 / AUDIT-N+1 SAFE-by-
         # construction site.
-        assert (
-            "console.print(f\"[red]Agent '{agent_id}' not found.[/red]\")" in source
-        ), (
+        assert "console.print(f\"[red]Agent '{agent_id}' not found.[/red]\")" in source, (
             "agents/unified_registry_cli.py no longer contains "
             "the documented F-15 / AUDIT-N+1 SAFE-by-construction "
             "site. If this is intentional, update "

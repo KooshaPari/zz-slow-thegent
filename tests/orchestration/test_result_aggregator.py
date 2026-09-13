@@ -82,9 +82,7 @@ class TestResultAggregatorMultiple:
         """All COMPLETED results produce all_passed=True."""
         agg = ResultAggregator()
         for i in range(3):
-            agg.add(
-                _make_result(request_id=f"req-{i}", status=SubAgentStatus.COMPLETED)
-            )
+            agg.add(_make_result(request_id=f"req-{i}", status=SubAgentStatus.COMPLETED))
         result = agg.aggregate()
         assert result.success_count == 3
         assert result.failure_count == 0
@@ -94,11 +92,7 @@ class TestResultAggregatorMultiple:
         """Mixed results produce correct success/failure counts and all_passed=False."""
         agg = ResultAggregator()
         agg.add(_make_result(request_id="req-1", status=SubAgentStatus.COMPLETED))
-        agg.add(
-            _make_result(
-                request_id="req-2", status=SubAgentStatus.FAILED, error="err-A"
-            )
-        )
+        agg.add(_make_result(request_id="req-2", status=SubAgentStatus.FAILED, error="err-A"))
         agg.add(_make_result(request_id="req-3", status=SubAgentStatus.COMPLETED))
         result = agg.aggregate()
         assert result.success_count == 2
@@ -147,14 +141,8 @@ class TestResultAggregatorErrors:
     def test_result_aggregator_errors_collected(self) -> None:
         """errors list collects error strings from all failed results."""
         agg = ResultAggregator()
-        agg.add(
-            _make_result(
-                request_id="req-1", status=SubAgentStatus.FAILED, error="timeout"
-            )
-        )
-        agg.add(
-            _make_result(request_id="req-2", status=SubAgentStatus.FAILED, error="oom")
-        )
+        agg.add(_make_result(request_id="req-1", status=SubAgentStatus.FAILED, error="timeout"))
+        agg.add(_make_result(request_id="req-2", status=SubAgentStatus.FAILED, error="oom"))
         result = agg.aggregate()
         assert "timeout" in result.errors
         assert "oom" in result.errors

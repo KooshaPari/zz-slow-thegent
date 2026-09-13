@@ -65,9 +65,7 @@ def extract_condensed(raw: str) -> str:
     return raw.strip()
 
 
-def extract_condensed_structured(
-    raw: str, schema: dict[str, Any] | None = None
-) -> dict[str, Any]:
+def extract_condensed_structured(raw: str, schema: dict[str, Any] | None = None) -> dict[str, Any]:
     """Extract structured data from condensed output.
 
     Args:
@@ -111,9 +109,7 @@ def extract_condensed_validated(raw: str, schema: dict[str, Any]) -> ParseResult
         required_fields = schema.get("required", [])
         for field in required_fields:
             if field not in data:
-                return ParseResult(
-                    success=False, error=f"Missing required field: {field}"
-                )
+                return ParseResult(success=False, error=f"Missing required field: {field}")
 
         return ParseResult(success=True, data=data)
     except Exception as e:

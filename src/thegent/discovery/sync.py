@@ -23,9 +23,7 @@ class SyncDiscovery:
 class SyncLoop:
     """Sync loop for service discovery."""
 
-    def __init__(
-        self, registry: Any = None, sync_dir: str | Path | None = None, **kwargs
-    ) -> None:
+    def __init__(self, registry: Any = None, sync_dir: str | Path | None = None, **kwargs) -> None:
         self._running = False
         self.registry = registry
         self.sync_dir = Path(sync_dir) if sync_dir else None

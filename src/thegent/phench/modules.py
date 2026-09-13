@@ -104,9 +104,7 @@ def _resolve_module_manifest_path(module: str) -> Path:
             if explicit_path.is_dir() and (explicit_path / "manifest.json").exists():
                 return explicit_path / "manifest.json"
 
-        normalized_parts = [
-            part.lower() for part in explicit_path.as_posix().split("/")
-        ]
+        normalized_parts = [part.lower() for part in explicit_path.as_posix().split("/")]
         if "modules" in normalized_parts:
             modules_index = normalized_parts.index("modules")
             if modules_index + 1 < len(normalized_parts):
@@ -140,9 +138,7 @@ def _validate_module_repos_payload_field(
     values: list[str] = []
     for value in raw:
         if not isinstance(value, str):
-            raise ValueError(
-                f"module manifest field '{field}' contains non-string entry"
-            )
+            raise ValueError(f"module manifest field '{field}' contains non-string entry")
         repo_id = value.strip()
         if not repo_id:
             continue
@@ -171,9 +167,7 @@ def _validate_module_repos_payload_map(
             raise ValueError(f"module manifest field '{field}' requires string values")
         item = value.strip()
         if not item:
-            raise ValueError(
-                f"module manifest field '{field}' for repo '{repo_id}' must not be empty"
-            )
+            raise ValueError(f"module manifest field '{field}' for repo '{repo_id}' must not be empty")
         items[repo_id] = item
     return items
 
@@ -186,13 +180,9 @@ def _validate_module_manifest_schema_version(
     if schema_version is None:
         return 1
     if not isinstance(schema_version, int) or isinstance(schema_version, bool):
-        raise ValueError(
-            f"module manifest '{module}' schema_version must be an integer"
-        )
+        raise ValueError(f"module manifest '{module}' schema_version must be an integer")
     if schema_version not in SUPPORTED_MODULE_MANIFEST_SCHEMA_VERSIONS:
-        raise ValueError(
-            f"module manifest '{module}' has unsupported schema_version: {schema_version}"
-        )
+        raise ValueError(f"module manifest '{module}' has unsupported schema_version: {schema_version}")
     return schema_version
 
 
@@ -206,9 +196,7 @@ def _validate_module_owners(payload: dict[str, Any], *, field: str) -> list[str]
     seen: set[str] = set()
     for item in raw:
         if not isinstance(item, str):
-            raise ValueError(
-                f"module manifest field '{field}' contains non-string entry"
-            )
+            raise ValueError(f"module manifest field '{field}' contains non-string entry")
         owner = item.strip()
         if not owner:
             continue
@@ -279,11 +267,7 @@ def audit_shared_modules(target: str, family: str | None = None) -> dict[str, An
             owners = module_map.setdefault(child.name, [])
             owners.append(repo.repo_id)
 
-    shared = {
-        module: sorted(set(owners))
-        for module, owners in module_map.items()
-        if len(set(owners)) >= 2
-    }
+    shared = {module: sorted(set(owners)) for module, owners in module_map.items() if len(set(owners)) >= 2}
     return {
         "target": target,
         "shared_modules": shared,
@@ -307,9 +291,7 @@ def audit_shared_modules_across_repos(
     include_specs = _normalize_name_list(include_repos)
     exclude_specs = _normalize_name_set(exclude_repos)
     additional_excludes = _normalize_name_set(skip_repos)
-    effective_excludes = sorted(
-        exclude_specs | DEFAULT_SHARED_MODULE_REPO_EXCLUDE | additional_excludes
-    )
+    effective_excludes = sorted(exclude_specs | DEFAULT_SHARED_MODULE_REPO_EXCLUDE | additional_excludes)
     excluded_modules = _normalize_name_set(exclude_modules)
     included_modules = _normalize_name_set(include_modules)
 
@@ -359,27 +341,19 @@ def audit_shared_modules_across_repos(
     shared_modules = {
         module: sorted(repos)
         for module, repos in (
-            shared_candidate_module_map
-            if include_repo_modules_root
-            else discovered_module_map
+            shared_candidate_module_map if include_repo_modules_root else discovered_module_map
         ).items()
         if len(repos) >= max(min_repo_count, 2)
     }
 
-    discovered_modules = {
-        module: set(repos) for module, repos in discovered_module_map.items()
-    }
+    discovered_modules = {module: set(repos) for module, repos in discovered_module_map.items()}
     if include_repo_modules_root:
         for module, repos in shared_candidate_module_map.items():
             discovered_modules.setdefault(module, set()).update(repos)
-        discovered_modules = {
-            module: sorted(repos) for module, repos in discovered_modules.items()
-        }
+        discovered_modules = {module: sorted(repos) for module, repos in discovered_modules.items()}
     existing = set(list_modules())
     candidate_modules = sorted(
-        module
-        for module, repos in shared_modules.items()
-        if include_repo_modules_root and module not in existing
+        module for module, repos in shared_modules.items() if include_repo_modules_root and module not in existing
     )
 
     return {
@@ -411,9 +385,7 @@ def sync_project_modules_from_repos(
     destination = destination_root or projects_modules_root()
     destination = destination_root
     if destination is None:
-        candidate = (
-            source.parent / "projects" / "modules" if source_root is not None else None
-        )
+        candidate = source.parent / "projects" / "modules" if source_root is not None else None
         if (
             os.environ.get("THGENT_PHENOTYPE_ROOT") is None
             and candidate is not None
@@ -455,9 +427,7 @@ def sync_project_modules_from_repos(
             try:
                 parsed = json.loads(payload)
             except Exception as exc:  # noqa: BLE001
-                raise ValueError(
-                    f"invalid module manifest in {repo_candidate.repo_id}: {entry.name}"
-                ) from exc
+                raise ValueError(f"invalid module manifest in {repo_candidate.repo_id}: {entry.name}") from exc
 
             if not isinstance(parsed, dict):
                 raise ValueError(
@@ -532,16 +502,10 @@ def list_modules() -> list[str]:
     if not root.exists():
         return []
 
-    return sorted(
-        entry.name
-        for entry in root.iterdir()
-        if entry.is_dir() and (entry / "manifest.json").is_file()
-    )
+    return sorted(entry.name for entry in root.iterdir() if entry.is_dir() and (entry / "manifest.json").is_file())
 
 
-def build_module_manifest_payload(
-    module_name: str, repo_ids: list[str]
-) -> dict[str, Any]:
+def build_module_manifest_payload(module_name: str, repo_ids: list[str]) -> dict[str, Any]:
     from .config import SCAN_SHARED_REPOS_SCHEMA_VERSION
 
     sorted_repos = sorted(repo_ids)
@@ -562,20 +526,14 @@ def load_module_manifest(module: str) -> ModuleManifest:
     try:
         payload = json.loads(manifest_path.read_text(encoding="utf-8"))
     except json.JSONDecodeError as exc:
-        raise ValueError(
-            f"invalid module manifest for {module}: malformed json"
-        ) from exc
+        raise ValueError(f"invalid module manifest for {module}: malformed json") from exc
 
     if not isinstance(payload, dict):
-        raise ValueError(
-            f"invalid module manifest for {module}: payload must be an object"
-        )
+        raise ValueError(f"invalid module manifest for {module}: payload must be an object")
 
     schema_version = int(payload.get("schema_version", 1))
     if schema_version != 1:
-        raise ValueError(
-            f"unsupported schema version {schema_version} for manifest: {module}"
-        )
+        raise ValueError(f"unsupported schema version {schema_version} for manifest: {module}")
 
     owners: list[str] = []
     if "owners" in payload:
@@ -597,16 +555,12 @@ def load_module_manifest(module: str) -> ModuleManifest:
     raw_patterns = payload.get("repo_patterns")
     if raw_patterns is None:
         repo_patterns: list[str] = ["*"]
-    elif isinstance(raw_patterns, list) and all(
-        isinstance(p, str) for p in raw_patterns
-    ):
+    elif isinstance(raw_patterns, list) and all(isinstance(p, str) for p in raw_patterns):
         repo_patterns = raw_patterns
     else:
         raise ValueError(f"invalid repo_patterns in manifest: {module}")
 
-    temp_manifest = ModuleManifest(
-        schema_version=schema_version, repo_patterns=repo_patterns
-    )
+    temp_manifest = ModuleManifest(schema_version=schema_version, repo_patterns=repo_patterns)
     selected_repos = _select_module_repos(temp_manifest)
     repo_ids = sorted(r.name for r in selected_repos)
 
@@ -616,11 +570,7 @@ def load_module_manifest(module: str) -> ModuleManifest:
             return {}
         if not isinstance(raw, dict):
             raise ValueError(f"invalid {key} in manifest: {module}")
-        return {
-            str(k): str(v)
-            for k, v in raw.items()
-            if isinstance(k, str) and isinstance(v, str)
-        }
+        return {str(k): str(v) for k, v in raw.items() if isinstance(k, str) and isinstance(v, str)}
 
     return ModuleManifest(
         schema_version=schema_version,
@@ -641,6 +591,4 @@ def load_module_repos(
     *,
     available_repo_ids: list[str] | None = None,
 ) -> list[str]:
-    return load_module_manifest(module, available_repo_ids=available_repo_ids)[
-        "repo_ids"
-    ]
+    return load_module_manifest(module, available_repo_ids=available_repo_ids)["repo_ids"]

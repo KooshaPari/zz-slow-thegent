@@ -223,9 +223,7 @@ class TestRoutingP2P:
         """Tasks cycle through agents in order."""
         s = HybridCoordinationStrategy(seed=0)
         agents = ["a0", "a1", "a2"]
-        results = [
-            s.route_task(f"t{i}", agents, CoordinationMode.P2P) for i in range(6)
-        ]
+        results = [s.route_task(f"t{i}", agents, CoordinationMode.P2P) for i in range(6)]
         assert results == ["a0", "a1", "a2", "a0", "a1", "a2"]
 
     def test_single_agent_round_robin(self):
@@ -269,10 +267,7 @@ class TestRoutingAdaptive:
         s = HybridCoordinationStrategy(seed=0)
         agents = ["coord", "w1", "w2"]
         # avg_load=0.31 → p2p_weight close to 0 → mostly coordinator
-        results = [
-            s.route_task(f"t{i}", agents, CoordinationMode.ADAPTIVE, avg_load=0.31)
-            for i in range(20)
-        ]
+        results = [s.route_task(f"t{i}", agents, CoordinationMode.ADAPTIVE, avg_load=0.31) for i in range(20)]
         coordinator_count = results.count("coord")
         # Should be the majority; with seed=0 and near-zero weight the rng
         # will rarely produce p2p choices.
@@ -288,10 +283,7 @@ class TestRoutingAdaptive:
         """
         s = HybridCoordinationStrategy(seed=0)
         agents = ["coord", "w1", "w2"]
-        results = [
-            s.route_task(f"t{i}", agents, CoordinationMode.ADAPTIVE, avg_load=0.69)
-            for i in range(100)
-        ]
+        results = [s.route_task(f"t{i}", agents, CoordinationMode.ADAPTIVE, avg_load=0.69) for i in range(100)]
         non_coord_count = sum(1 for r in results if r != "coord")
         # In pure P2P all agents share equally (≈33% each), so non-coord ≈ 66%.
         # With p2p_weight≈0.975 the distribution should still be mostly P2P-style.
@@ -302,10 +294,7 @@ class TestRoutingAdaptive:
         """avg_load=0.5 should produce a mix of hierarchical and P2P choices."""
         s = HybridCoordinationStrategy(seed=99)
         agents = ["coord", "w1", "w2"]
-        results = [
-            s.route_task(f"t{i}", agents, CoordinationMode.ADAPTIVE, avg_load=0.5)
-            for i in range(40)
-        ]
+        results = [s.route_task(f"t{i}", agents, CoordinationMode.ADAPTIVE, avg_load=0.5) for i in range(40)]
         coordinator_count = results.count("coord")
         non_coord_count = len(results) - coordinator_count
         # Both should appear

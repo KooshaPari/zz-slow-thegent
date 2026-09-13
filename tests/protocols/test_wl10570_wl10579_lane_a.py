@@ -18,9 +18,7 @@ from thegent.protocols.turn_submit_boundaries import (
 
 def test_wl10570_parse_phase_keeps_boundary_payload_explicit() -> None:
     # @trace WL-10570
-    phase = build_parse_phase(
-        "session-1", "hello", request_id="req-1", request_has_id=True
-    )
+    phase = build_parse_phase("session-1", "hello", request_id="req-1", request_has_id=True)
     assert phase["session_id"] == "session-1"
     assert phase["user_input"] == "hello"
     assert phase["request_id"] == "req-1"
@@ -29,9 +27,7 @@ def test_wl10570_parse_phase_keeps_boundary_payload_explicit() -> None:
 
 def test_wl10571_parse_target_resolution_is_typed_and_stable() -> None:
     # @trace WL-10571
-    phase = build_parse_phase(
-        "session-1", "hello", request_id="req-1", request_has_id=True
-    )
+    phase = build_parse_phase("session-1", "hello", request_id="req-1", request_has_id=True)
     assert resolve_parse_target(phase) == ("session-1", "hello", "req-1", True)
 
 

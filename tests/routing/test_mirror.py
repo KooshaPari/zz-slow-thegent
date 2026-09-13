@@ -13,16 +13,12 @@ from thegent.utils.routing_impl.mirror import MirrorConfig, MirrorResult, should
 @pytest.mark.requirement("FR-AROUTE-059")
 class TestShouldMirror:
     def test_should_mirror_enabled(self) -> None:
-        config = MirrorConfig(
-            enabled=True, target_url="http://secondary:8080", sample_rate=1.0
-        )
+        config = MirrorConfig(enabled=True, target_url="http://secondary:8080", sample_rate=1.0)
         # With sample_rate=1.0, random.random() < 1.0 is always True
         assert should_mirror(config) is True
 
     def test_should_mirror_disabled(self) -> None:
-        config = MirrorConfig(
-            enabled=False, target_url="http://secondary:8080", sample_rate=1.0
-        )
+        config = MirrorConfig(enabled=False, target_url="http://secondary:8080", sample_rate=1.0)
         assert should_mirror(config) is False
 
     def test_should_mirror_empty_url(self) -> None:
@@ -30,16 +26,12 @@ class TestShouldMirror:
         assert should_mirror(config) is False
 
     def test_should_mirror_sample_rate_zero(self) -> None:
-        config = MirrorConfig(
-            enabled=True, target_url="http://secondary:8080", sample_rate=0.0
-        )
+        config = MirrorConfig(enabled=True, target_url="http://secondary:8080", sample_rate=0.0)
         # random.random() >= 0.0 is always True, so 0.0 never mirrors
         assert should_mirror(config) is False
 
     def test_should_mirror_sample_rate_partial(self) -> None:
-        config = MirrorConfig(
-            enabled=True, target_url="http://secondary:8080", sample_rate=0.5
-        )
+        config = MirrorConfig(enabled=True, target_url="http://secondary:8080", sample_rate=0.5)
         # Deterministic via monkeypatching not needed here — just verify it returns bool
         result = should_mirror(config)
         assert isinstance(result, bool)

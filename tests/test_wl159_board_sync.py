@@ -100,10 +100,7 @@ class TestBoardSyncWorkflow:
 
         assert result.status == SyncOperationStatus.SUCCESS
         metrics = get_metrics_collector().render_text()
-        assert (
-            'thegent_board_sync_cycles_total{source="github",status="success"} 1'
-            in metrics
-        )
+        assert 'thegent_board_sync_cycles_total{source="github",status="success"} 1' in metrics
 
     def test_board_sync_success(self, temp_project: Path) -> None:
         """Board sync should succeed and sync work items."""
@@ -143,9 +140,7 @@ class TestBoardSyncWorkflow:
         assert result.details["items_synced"] >= 3
 
     @pytest.mark.requirement("WL-229")
-    def test_board_sync_includes_maintenance_banner_when_active(
-        self, temp_project: Path, monkeypatch
-    ) -> None:
+    def test_board_sync_includes_maintenance_banner_when_active(self, temp_project: Path, monkeypatch) -> None:
         """Maintenance mode should propagate a banner into board sync outputs."""
         work_stream = temp_project / "docs" / "reference" / "WORK_STREAM.md"
         work_stream.write_text(
@@ -165,9 +160,7 @@ class TestBoardSyncWorkflow:
         assert result.status == SyncOperationStatus.DRY_RUN
         assert "[MAINTENANCE] connector=github reason=release-window" in result.message
         assert result.changes
-        assert (
-            "[MAINTENANCE] connector=github reason=release-window" in result.changes[0]
-        )
+        assert "[MAINTENANCE] connector=github reason=release-window" in result.changes[0]
 
     def test_parse_work_stream_items(self, temp_project: Path) -> None:
         """Test parsing of WORK_STREAM.md items with status."""
@@ -201,9 +194,7 @@ class TestBoardSyncWorkflow:
         assert wl159["status"] == "IN_PROGRESS"
 
     @pytest.mark.requirement("WL-184")
-    def test_parse_work_stream_items_normalizes_malformed_headers(
-        self, temp_project: Path
-    ) -> None:
+    def test_parse_work_stream_items_normalizes_malformed_headers(self, temp_project: Path) -> None:
         """Malformed WL headers are normalized before parsing."""
         work_stream = temp_project / "docs" / "reference" / "WORK_STREAM.md"
         work_stream.write_text(
@@ -248,9 +239,7 @@ class TestBoardSyncWorkflow:
         )
 
         cmd = SyncCommand(project_root=temp_project)
-        result = cmd.sync_board(
-            board_id="123", source="github", dry_run=True, wl_start=184, wl_end=188
-        )
+        result = cmd.sync_board(board_id="123", source="github", dry_run=True, wl_start=184, wl_end=188)
 
         assert result.status == SyncOperationStatus.DRY_RUN
         assert result.details["items_to_sync"] == 2
@@ -260,9 +249,7 @@ class TestBoardSyncWorkflow:
         assert all("WL-189" not in line for line in result.changes)
 
     @pytest.mark.requirement("WL-186")
-    def test_board_sync_dry_run_emits_human_readable_diffs(
-        self, temp_project: Path
-    ) -> None:
+    def test_board_sync_dry_run_emits_human_readable_diffs(self, temp_project: Path) -> None:
         """Dry-run output includes human-readable local->remote field deltas."""
         work_stream = temp_project / "docs" / "reference" / "WORK_STREAM.md"
         work_stream.write_text(
@@ -302,9 +289,7 @@ class TestBoardSyncWorkflow:
         cmd = SyncCommand(project_root=temp_project)
         batch_sizes: list[int] = []
 
-        def _fake_sync(
-            *, board_id: str, work_stream_items: list[dict[str, str]]
-        ) -> dict[str, object]:
+        def _fake_sync(*, board_id: str, work_stream_items: list[dict[str, str]]) -> dict[str, object]:
             assert board_id == "777"
             batch_sizes.append(len(work_stream_items))
             return {
@@ -315,20 +300,14 @@ class TestBoardSyncWorkflow:
             }
 
         class _FakeAdapter:
-            def sync(
-                self, board_id: str, work_stream_items: list[dict[str, str]]
-            ) -> dict[str, object]:
-                return _fake_sync(
-                    board_id=board_id, work_stream_items=work_stream_items
-                )
+            def sync(self, board_id: str, work_stream_items: list[dict[str, str]]) -> dict[str, object]:
+                return _fake_sync(board_id=board_id, work_stream_items=work_stream_items)
 
         with patch(
             "thegent.sync.board_adapters.resolve_board_adapter",
             return_value=_FakeAdapter(),
         ):
-            result = cmd.sync_board(
-                board_id="777", source="github", dry_run=False, write_batch_size=2
-            )
+            result = cmd.sync_board(board_id="777", source="github", dry_run=False, write_batch_size=2)
 
         assert result.status == SyncOperationStatus.SUCCESS
         assert batch_sizes == [2, 1]
@@ -354,9 +333,7 @@ class TestBoardSyncWorkflow:
         class _FakeAdapter:
             source = "github"
 
-            def sync(
-                self, board_id: str, work_stream_items: list[dict[str, str]]
-            ) -> dict[str, object]:
+            def sync(self, board_id: str, work_stream_items: list[dict[str, str]]) -> dict[str, object]:
                 assert board_id == "123"
                 assert work_stream_items == items
                 return fake_result
@@ -461,9 +438,7 @@ class TestBoardSyncErrorHandling:
         """Board sync should report errors properly."""
         # Create a scenario where parsing might fail
         work_stream = temp_project / "docs" / "reference" / "WORK_STREAM.md"
-        work_stream.write_text(
-            "# WORK_STREAM\n\n### [WL-159] Test\n**Status:** INVALID"
-        )
+        work_stream.write_text("# WORK_STREAM\n\n### [WL-159] Test\n**Status:** INVALID")
 
         cmd = SyncCommand(project_root=temp_project)
         # Even with invalid status, should not raise
@@ -481,9 +456,7 @@ class TestBoardSyncErrorHandling:
 
         assert result.status != SyncOperationStatus.FAILED or result.errors
 
-    def test_board_sync_records_remote_write_dead_letter(
-        self, temp_project: Path
-    ) -> None:
+    def test_board_sync_records_remote_write_dead_letter(self, temp_project: Path) -> None:
         """Failed remote item writes should be persisted to dead-letter queue."""
         work_stream = temp_project / "docs" / "reference" / "WORK_STREAM.md"
         work_stream.write_text(
@@ -521,12 +494,7 @@ class TestBoardSyncErrorHandling:
         assert result.status == SyncOperationStatus.SUCCESS
         assert result.details["dead_letters_written"] == 1
 
-        queue_path = (
-            temp_project
-            / "docs"
-            / "reference"
-            / "workstream_remote_writes_dead_letter.jsonl"
-        )
+        queue_path = temp_project / "docs" / "reference" / "workstream_remote_writes_dead_letter.jsonl"
         lines = queue_path.read_text(encoding="utf-8").strip().splitlines()
         assert len(lines) == 1
         payload = json.loads(lines[0])
@@ -535,12 +503,7 @@ class TestBoardSyncErrorHandling:
 
     def test_dead_letter_replay_marks_entry_replayed(self, temp_project: Path) -> None:
         """Replay should mark pending dead-letter entries as replayed when successful."""
-        queue_path = (
-            temp_project
-            / "docs"
-            / "reference"
-            / "workstream_remote_writes_dead_letter.jsonl"
-        )
+        queue_path = temp_project / "docs" / "reference" / "workstream_remote_writes_dead_letter.jsonl"
         queue_path.parent.mkdir(parents=True, exist_ok=True)
         queue_path.write_text(
             (
@@ -564,15 +527,11 @@ class TestBoardSyncErrorHandling:
                 "batches": 1,
             },
         ):
-            result = cmd.replay_dead_letters(
-                source="github", board_id="123", limit=10, dry_run=False
-            )
+            result = cmd.replay_dead_letters(source="github", board_id="123", limit=10, dry_run=False)
 
         assert result.status == SyncOperationStatus.SUCCESS
         assert result.details["replayed"] == 1
 
-        payload = json.loads(
-            queue_path.read_text(encoding="utf-8").strip().splitlines()[0]
-        )
+        payload = json.loads(queue_path.read_text(encoding="utf-8").strip().splitlines()[0])
         assert payload["status"] == "replayed"
         assert payload["resolved_at"] is not None

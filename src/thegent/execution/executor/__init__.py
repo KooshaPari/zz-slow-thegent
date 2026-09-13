@@ -155,9 +155,7 @@ class Executor:
             def info(self, message: str, **kwargs: Any) -> None:
                 pass
 
-            def error(
-                self, message: str, exc: Exception | None = None, **kwargs: Any
-            ) -> None:
+            def error(self, message: str, exc: Exception | None = None, **kwargs: Any) -> None:
                 pass
 
             def debug(self, message: str, **kwargs: Any) -> None:
@@ -181,9 +179,7 @@ class Executor:
             def emit(self, event_type: str, data: Any) -> None:
                 pass
 
-            def subscribe(
-                self, event_type: str, handler: Callable
-            ) -> Callable[[], None]:
+            def subscribe(self, event_type: str, handler: Callable) -> Callable[[], None]:
                 def _noop_unsub() -> None:
                     return None
 

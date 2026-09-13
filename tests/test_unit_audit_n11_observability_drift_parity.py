@@ -58,10 +58,7 @@ class TestInjectTimeConstraintSignatureRestored:
         sig = inspect.signature(cli_impl._inject_time_constraint)
         assert "seconds_per_tool_call" in sig.parameters
         assert sig.parameters["seconds_per_tool_call"].default == 2.3
-        assert (
-            sig.parameters["seconds_per_tool_call"].kind
-            is inspect.Parameter.KEYWORD_ONLY
-        )
+        assert sig.parameters["seconds_per_tool_call"].kind is inspect.Parameter.KEYWORD_ONLY
 
     def test_signature_prompt_and_timeout_remain_positional(self) -> None:
         # @trace AUDIT-N+11-003
@@ -73,10 +70,7 @@ class TestInjectTimeConstraintSignatureRestored:
     def test_impl_resolves_to_observability_impl_canonical(self) -> None:
         # @trace AUDIT-N+11-004
         # AUDIT-N+9 contract preserved: identity holds across impl.
-        assert (
-            cli_impl._inject_time_constraint
-            is observability_impl._inject_time_constraint
-        )
+        assert cli_impl._inject_time_constraint is observability_impl._inject_time_constraint
 
 
 # ---------------------------------------------------------------------------
@@ -128,9 +122,7 @@ class TestInjectTimeConstraintRoundTrip:
         # every prompt before sending to the agent. Before AUDIT-N+11
         # this raised ``TypeError: _inject_time_constraint() got an
         # unexpected keyword argument 'summary_mode'`` on every call.
-        result = run_execution_core_helpers._inject_time_constraint_local(
-            "hello", 30, summary_mode=True
-        )
+        result = run_execution_core_helpers._inject_time_constraint_local("hello", 30, summary_mode=True)
         assert isinstance(result, str)
         assert "hello" in result
         assert "TIME CONSTRAINT" in result
@@ -155,10 +147,7 @@ class TestBuildObserveSummaryTrendScopeMoved:
         # @trace AUDIT-N+11-012
         # AUDIT-N+9 re-export contract holds: legacy path resolves.
         assert hasattr(cli_impl, "_build_observe_summary_trend_scope")
-        assert (
-            cli_impl._build_observe_summary_trend_scope
-            is observability_impl._build_observe_summary_trend_scope
-        )
+        assert cli_impl._build_observe_summary_trend_scope is observability_impl._build_observe_summary_trend_scope
 
     def test_impl_no_longer_defines_inline(self) -> None:
         # @trace AUDIT-N+11-013
@@ -184,9 +173,7 @@ class TestBuildObserveSummaryTrendScopeMoved:
 
     def test_trend_scope_custom_limit(self) -> None:
         # @trace AUDIT-N+11-017
-        result = cli_impl._build_observe_summary_trend_scope(
-            trend_samples=10, limit=100
-        )
+        result = cli_impl._build_observe_summary_trend_scope(trend_samples=10, limit=100)
         assert result == {"trend_samples": 10, "limit": 100, "enabled": True}
 
 
@@ -207,8 +194,7 @@ class TestObservabilityImplSurfaceIntact:
         # @trace AUDIT-N+11-019
         src = inspect.getsource(observability_impl)
         assert "AUDIT-N+11" in src, (
-            "AUDIT-N+11 marker must be present in observability_impl.py "
-            "to document the WL-125 signature restoration"
+            "AUDIT-N+11 marker must be present in observability_impl.py to document the WL-125 signature restoration"
         )
 
     def test_audit_n9_marker_still_present(self) -> None:
@@ -278,11 +264,8 @@ class TestAuditN11CarryForwardDocumented:
             ("_compact_health_snapshot_log", "compact_health_snapshot_log"),
         ]
         for n9_name, real_name in overlap_pairs:
-            assert hasattr(run_observe_helpers, real_name) or hasattr(
-                run_observe_helpers, n9_name
-            ), (
-                f"run_observe_helpers.{{{n9_name}, {real_name}}} missing — "
-                f"overlap surface drifted"
+            assert hasattr(run_observe_helpers, real_name) or hasattr(run_observe_helpers, n9_name), (
+                f"run_observe_helpers.{{{n9_name}, {real_name}}} missing — overlap surface drifted"
             )
 
 

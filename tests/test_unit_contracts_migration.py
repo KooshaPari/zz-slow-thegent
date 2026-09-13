@@ -40,9 +40,7 @@ class TestMigrationControllerEvaluateVersion:
 
     def test_deprecated_no_window_still_allowed(self) -> None:
         # @trace FR-CTR-010
-        cv = ContractVersion(
-            contract_id="csm", version="csm-v0", description="old", deprecated=True
-        )
+        cv = ContractVersion(contract_id="csm", version="csm-v0", description="old", deprecated=True)
         reg = _make_registry_with_versions(cv)
         mc = MigrationController(registry=reg)
         result = mc.evaluate_version("csm", "csm-v0")
@@ -89,10 +87,7 @@ class TestMigrationControllerEvaluateVersion:
         reg = _make_registry_with_versions(cv)
         mc = MigrationController(registry=reg)
         result = mc.evaluate_version("csm", "csm-v1")
-        assert (
-            "active" in result["reason"].lower()
-            or "supported" in result["reason"].lower()
-        )
+        assert "active" in result["reason"].lower() or "supported" in result["reason"].lower()
 
 
 @pytest.mark.unit

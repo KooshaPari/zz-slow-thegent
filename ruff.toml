@@ -1,3 +1,5 @@
+line-length = 120
+target-version = "py313"
 exclude = [
     "templates/*",
     "src/fastmcp/*",
@@ -40,6 +42,7 @@ ignore = [
     "INP001",  # implicit-namespace-package
     "SIM102",  # collapsible-if
     "SIM105",  # suppressible-exception
+    "SIM108",  # if-else-block-instead-of-if-exp
     "SIM115",  # open-file-with-context-handler
     "SIM117",  # multiple-with-statements
     "E722",    # bare-except

@@ -25,9 +25,7 @@ class TestLeasingRaceConcurrentAcquire:
     """Concurrent acquire/release must not corrupt the leases dict."""
 
     @pytest.mark.requirement("FR-ORCH-001")
-    def test_concurrent_acquire_no_data_corruption(
-        self, lease_manager: EditLeaseManager
-    ) -> None:
+    def test_concurrent_acquire_no_data_corruption(self, lease_manager: EditLeaseManager) -> None:
         """50 threads acquiring different paths must not see KeyError or lost leases."""
         n_threads = 50
         errors: list[Exception] = []
@@ -46,10 +44,7 @@ class TestLeasingRaceConcurrentAcquire:
                 with lock:
                     errors.append(exc)
 
-        threads = [
-            threading.Thread(target=acquire_release, args=(i,))
-            for i in range(n_threads)
-        ]
+        threads = [threading.Thread(target=acquire_release, args=(i,)) for i in range(n_threads)]
         for t in threads:
             t.start()
         for t in threads:
@@ -59,9 +54,7 @@ class TestLeasingRaceConcurrentAcquire:
         assert len(results) == n_threads
 
     @pytest.mark.requirement("FR-ORCH-001")
-    def test_concurrent_acquire_same_path_exactly_one_winner(
-        self, lease_manager: EditLeaseManager
-    ) -> None:
+    def test_concurrent_acquire_same_path_exactly_one_winner(self, lease_manager: EditLeaseManager) -> None:
         """50 threads racing for the same path — exactly one must win."""
         n_threads = 50
         winners: list[int] = []
@@ -70,9 +63,7 @@ class TestLeasingRaceConcurrentAcquire:
 
         def try_acquire(i: int) -> None:
             try:
-                ok = lease_manager.acquire(
-                    "/shared/file.py", f"agent_{i}", duration=300.0
-                )
+                ok = lease_manager.acquire("/shared/file.py", f"agent_{i}", duration=300.0)
                 if ok:
                     with lock:
                         winners.append(i)
@@ -80,9 +71,7 @@ class TestLeasingRaceConcurrentAcquire:
                 with lock:
                     errors.append(exc)
 
-        threads = [
-            threading.Thread(target=try_acquire, args=(i,)) for i in range(n_threads)
-        ]
+        threads = [threading.Thread(target=try_acquire, args=(i,)) for i in range(n_threads)]
         for t in threads:
             t.start()
         for t in threads:
@@ -123,9 +112,7 @@ class TestLeasingRacePrune:
     """Concurrent prune + acquire must not corrupt state."""
 
     @pytest.mark.requirement("FR-ORCH-001")
-    def test_concurrent_prune_and_acquire(
-        self, lease_manager: EditLeaseManager
-    ) -> None:
+    def test_concurrent_prune_and_acquire(self, lease_manager: EditLeaseManager) -> None:
         """prune() and acquire() running concurrently must not corrupt leases dict."""
         errors: list[Exception] = []
         lock = threading.Lock()

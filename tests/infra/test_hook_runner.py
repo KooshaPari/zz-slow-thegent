@@ -25,9 +25,7 @@ def test_run_hook_timeout_handles_text_streams(monkeypatch) -> None:
     )
 
     def _raise_timeout(*args, **kwargs):
-        raise subprocess.TimeoutExpired(
-            cmd=args[0], timeout=5, output="partial-out", stderr="partial-err"
-        )
+        raise subprocess.TimeoutExpired(cmd=args[0], timeout=5, output="partial-out", stderr="partial-err")
 
     monkeypatch.setattr("thegent.infra.hook_runner.subprocess.run", _raise_timeout)
 

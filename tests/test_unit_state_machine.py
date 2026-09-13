@@ -281,9 +281,7 @@ class TestProviderRotation:
 
     @patch("thegent.agents.state_machine.time.sleep")
     @patch("thegent.agents.state_machine.classify_failure")
-    def test_transient_failure_retries_same_provider(
-        self, mock_classify, mock_sleep
-    ) -> None:
+    def test_transient_failure_retries_same_provider(self, mock_classify, mock_sleep) -> None:
         # @trace FR-AGT-009
         from thegent.agents.resilience import FailureKind
 
@@ -314,9 +312,7 @@ class TestProviderRotation:
 
     @patch("thegent.agents.state_machine.time.sleep")
     @patch("thegent.agents.state_machine.classify_failure")
-    def test_max_retries_exhausted_moves_to_next_provider(
-        self, mock_classify, mock_sleep
-    ) -> None:
+    def test_max_retries_exhausted_moves_to_next_provider(self, mock_classify, mock_sleep) -> None:
         # @trace FR-AGT-009
         from thegent.agents.resilience import FailureKind
 

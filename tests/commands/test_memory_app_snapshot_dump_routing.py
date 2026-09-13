@@ -11,9 +11,7 @@ from thegent.cli.apps.memory import app
 runner = CliRunner()
 
 
-def test_memory_snapshot_export_forwards_snapshot_project_out_and_format(
-    monkeypatch, tmp_path: Path
-) -> None:
+def test_memory_snapshot_export_forwards_snapshot_project_out_and_format(monkeypatch, tmp_path: Path) -> None:
     captured: dict[str, object] = {}
 
     def fake_snapshot_export_cmd(
@@ -61,9 +59,7 @@ def test_memory_snapshot_export_forwards_snapshot_project_out_and_format(
     }
 
 
-def test_memory_snapshot_daily_export_forwards_project_out_dir_limit_and_format(
-    monkeypatch, tmp_path: Path
-) -> None:
+def test_memory_snapshot_daily_export_forwards_project_out_dir_limit_and_format(monkeypatch, tmp_path: Path) -> None:
     captured: dict[str, object] = {}
 
     def fake_snapshot_daily_export_cmd(
@@ -111,9 +107,7 @@ def test_memory_snapshot_daily_export_forwards_project_out_dir_limit_and_format(
     }
 
 
-def test_memory_snapshot_list_forwards_since_trigger_tag_and_format(
-    monkeypatch, tmp_path: Path
-) -> None:
+def test_memory_snapshot_list_forwards_since_trigger_tag_and_format(monkeypatch, tmp_path: Path) -> None:
     captured: dict[str, object] = {}
 
     def fake_snapshot_list_cmd(
@@ -168,9 +162,7 @@ def test_memory_snapshot_list_forwards_since_trigger_tag_and_format(
     }
 
 
-def test_memory_dump_latest_forwards_category_json_only_and_format(
-    monkeypatch, tmp_path: Path
-) -> None:
+def test_memory_dump_latest_forwards_category_json_only_and_format(monkeypatch, tmp_path: Path) -> None:
     captured: dict[str, object] = {}
 
     def fake_dump_latest_cmd(
@@ -216,9 +208,7 @@ def test_memory_dump_latest_forwards_category_json_only_and_format(
     }
 
 
-def test_memory_dump_index_forwards_project_and_format(
-    monkeypatch, tmp_path: Path
-) -> None:
+def test_memory_dump_index_forwards_project_and_format(monkeypatch, tmp_path: Path) -> None:
     captured: dict[str, object] = {}
 
     def fake_dump_index_cmd(*, project: Path | None, format: str | None) -> None:

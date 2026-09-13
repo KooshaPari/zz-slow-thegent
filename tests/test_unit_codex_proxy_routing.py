@@ -21,12 +21,8 @@ class TestCodexProxyRunnerRouting:
         )
 
         with patch.object(runner, "_execute_native_cli") as mock_native:
-            mock_native.return_value = MagicMock(
-                exit_code=0, stdout="done", stderr="", timed_out=False
-            )
-            runner.run_with_metadata(
-                "test prompt", Path("/tmp"), "read", 60, metadata=metadata
-            )
+            mock_native.return_value = MagicMock(exit_code=0, stdout="done", stderr="", timed_out=False)
+            runner.run_with_metadata("test prompt", Path("/tmp"), "read", 60, metadata=metadata)
             mock_native.assert_called_once()
 
     def test_api_key_provider_routes_correctly(self):
@@ -70,9 +66,7 @@ class TestLiteLLMApiExecution:
                 mock_completion.assert_called_once()
                 call_kwargs = mock_completion.call_args[1]
                 assert call_kwargs["model"] == "minimax/minimax-m2.5"
-                assert call_kwargs["messages"] == [
-                    {"role": "user", "content": "Hello, world!"}
-                ]
+                assert call_kwargs["messages"] == [{"role": "user", "content": "Hello, world!"}]
                 assert call_kwargs["api_key"] == "test-api-key-123"
                 assert call_kwargs["timeout"] == 60
 

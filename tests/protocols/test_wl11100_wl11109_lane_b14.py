@@ -24,16 +24,10 @@ def test_wl11100_build_turn_submit_phase_plan_rejects_non_string_input() -> None
         "req-11100",
         {"session_id": session["id"], "input": 7},
     )
-    assert plan == {
-        "parse_error": server._error_response(
-            "req-11100", server._invalid_params("input_must_be_string")
-        )
-    }
+    assert plan == {"parse_error": server._error_response("req-11100", server._invalid_params("input_must_be_string"))}
 
 
-def test_wl11101_build_turn_submit_phase_plan_rejects_non_bool_requires_approval() -> (
-    None
-):
+def test_wl11101_build_turn_submit_phase_plan_rejects_non_bool_requires_approval() -> None:
     # @trace WL-11101
     session = server._build_session_start_record()
     plan = server._build_turn_submit_phase_plan(
@@ -41,15 +35,11 @@ def test_wl11101_build_turn_submit_phase_plan_rejects_non_bool_requires_approval
         {"session_id": session["id"], "input": "hello", "requires_approval": "yes"},
     )
     assert plan == {
-        "parse_error": server._error_response(
-            "req-11101", server._invalid_params("requires_approval_must_be_boolean")
-        )
+        "parse_error": server._error_response("req-11101", server._invalid_params("requires_approval_must_be_boolean"))
     }
 
 
-def test_wl11102_build_turn_submit_phase_plan_requires_diff_when_approval_enabled() -> (
-    None
-):
+def test_wl11102_build_turn_submit_phase_plan_requires_diff_when_approval_enabled() -> None:
     # @trace WL-11102
     session = server._build_session_start_record()
     plan = server._build_turn_submit_phase_plan(
@@ -76,15 +66,11 @@ def test_wl11103_handle_turn_submit_request_returns_parse_failure_response() -> 
         notifications,
     )
 
-    assert response == server._error_response(
-        "req-11103", server._invalid_params("input_must_be_string")
-    )
+    assert response == server._error_response("req-11103", server._invalid_params("input_must_be_string"))
     assert notifications == []
 
 
-def test_wl11104_handle_turn_submit_request_notification_path_commits_and_emits_events() -> (
-    None
-):
+def test_wl11104_handle_turn_submit_request_notification_path_commits_and_emits_events() -> None:
     # @trace WL-11104
     session = server._build_session_start_record()
     notifications: list[dict[str, object]] = []
@@ -112,9 +98,7 @@ def test_wl11104_handle_turn_submit_request_notification_path_commits_and_emits_
     ]
 
 
-def test_wl11105_handle_turn_submit_request_response_path_returns_approval_payload() -> (
-    None
-):
+def test_wl11105_handle_turn_submit_request_response_path_returns_approval_payload() -> None:
     # @trace WL-11105
     session = server._build_session_start_record()
     notifications: list[dict[str, object]] = []
@@ -141,9 +125,7 @@ def test_wl11105_handle_turn_submit_request_response_path_returns_approval_paylo
     assert notifications[-1]["method"] == "approval/requested"
 
 
-def test_wl11106_apply_turn_submit_side_effects_completes_when_approval_not_required() -> (
-    None
-):
+def test_wl11106_apply_turn_submit_side_effects_completes_when_approval_not_required() -> None:
     # @trace WL-11106
     notifications: list[dict[str, object]] = []
     turn = {
@@ -170,9 +152,7 @@ def test_wl11106_apply_turn_submit_side_effects_completes_when_approval_not_requ
     assert turn["tool_call_id"] is not None
 
 
-def test_wl11107_apply_turn_submit_side_effects_returns_approval_payload_when_required() -> (
-    None
-):
+def test_wl11107_apply_turn_submit_side_effects_returns_approval_payload_when_required() -> None:
     # @trace WL-11107
     notifications: list[dict[str, object]] = []
     turn = {
@@ -200,9 +180,7 @@ def test_wl11107_apply_turn_submit_side_effects_returns_approval_payload_when_re
     assert turn["approval_id"] == approval_payload["id"]
 
 
-def test_wl11108_build_turn_submit_execution_plan_initializes_in_progress_turn() -> (
-    None
-):
+def test_wl11108_build_turn_submit_execution_plan_initializes_in_progress_turn() -> None:
     # @trace WL-11108
     turn_id, turn = server._build_turn_submit_execution_plan("session-1", "hello")
 

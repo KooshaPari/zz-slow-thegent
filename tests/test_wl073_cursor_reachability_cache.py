@@ -76,9 +76,7 @@ class TestCursorApiReachabilityCache:
             _is_cursor_api_reachable("http://localhost:7001", "tok")
             _is_cursor_api_reachable("http://localhost:7002", "tok")
 
-        assert len(call_args_log) == 2, (
-            "Each distinct URL should only trigger one HTTP call"
-        )
+        assert len(call_args_log) == 2, "Each distinct URL should only trigger one HTTP call"
         assert ("http://localhost:7001", "tok") in call_args_log
         assert ("http://localhost:7002", "tok") in call_args_log
 
@@ -165,12 +163,8 @@ class TestCursorApiReachabilityCache:
             from thegent.agents.cursor_api_runner import _is_cursor_api_reachable
 
             r1 = _is_cursor_api_reachable("http://localhost:7777", "tok")
-            r2 = _is_cursor_api_reachable(
-                "http://localhost:7777", "tok"
-            )  # Connection error
-            r3 = _is_cursor_api_reachable(
-                "http://localhost:7777", "tok"
-            )  # Should retry
+            r2 = _is_cursor_api_reachable("http://localhost:7777", "tok")  # Connection error
+            r3 = _is_cursor_api_reachable("http://localhost:7777", "tok")  # Should retry
 
         assert r1 is True
         assert r2 is False

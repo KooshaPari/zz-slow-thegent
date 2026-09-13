@@ -33,9 +33,7 @@ class heliosShieldBridge:
         """Check if mesh coordination layer is initialized."""
         return self.mesh_root.exists()
 
-    def create_shared_task(
-        self, task_id: str, description: str, depends_on: list[str] | None = None
-    ) -> bool:
+    def create_shared_task(self, task_id: str, description: str, depends_on: list[str] | None = None) -> bool:
         """WP-16003: Create a task in the mesh's global task list."""
         if not self.is_available():
             return False

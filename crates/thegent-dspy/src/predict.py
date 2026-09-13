@@ -6,9 +6,7 @@ from .module import DSPyModule
 class Predict(DSPyModule):
     """Predict module that wraps a thegent agent call."""
 
-    def __init__(
-        self, agent_role: str = "predictor", prompt_template: str = "{input}"
-    ) -> None:
+    def __init__(self, agent_role: str = "predictor", prompt_template: str = "{input}") -> None:
         super().__init__(name="Predict")
         self.agent_role = agent_role
         self.prompt_template = prompt_template

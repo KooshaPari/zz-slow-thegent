@@ -55,9 +55,7 @@ def _gh_api(path: str, method: str = "GET", body: dict[str, Any] | None = None) 
     result = subprocess.run(cmd, capture_output=True, text=True)
 
     if result.returncode != 0:
-        raise RuntimeError(
-            f"gh api {method} {path} failed (exit {result.returncode}): {result.stderr.strip()}"
-        )
+        raise RuntimeError(f"gh api {method} {path} failed (exit {result.returncode}): {result.stderr.strip()}")
 
     if not result.stdout.strip():
         return None
@@ -65,9 +63,7 @@ def _gh_api(path: str, method: str = "GET", body: dict[str, Any] | None = None) 
     try:
         return json.loads(result.stdout)
     except json.JSONDecodeError as exc:
-        raise RuntimeError(
-            f"gh api {method} {path} returned non-JSON output: {result.stdout[:200]}"
-        ) from exc
+        raise RuntimeError(f"gh api {method} {path} returned non-JSON output: {result.stdout[:200]}") from exc
 
 
 # ---------------------------------------------------------------------------
@@ -108,12 +104,7 @@ class PRStatus:
     @property
     def ready_to_merge(self) -> bool:
         """Return True if PR is mergeable and all checks passed."""
-        return (
-            self.mergeable is True
-            and self.mergeable_state == "clean"
-            and not self.draft
-            and self.all_checks_passed
-        )
+        return self.mergeable is True and self.mergeable_state == "clean" and not self.draft and self.all_checks_passed
 
 
 @dataclass
@@ -347,9 +338,7 @@ def merge_pr(
         payload["commit_message"] = commit_message
 
     _log.info("Merging PR #%s in %s via %s", pr_number, repo, method)
-    result: dict[str, Any] = _gh_api(
-        f"/repos/{repo}/pulls/{pr_number}/merge", method="PUT", body=payload
-    )
+    result: dict[str, Any] = _gh_api(f"/repos/{repo}/pulls/{pr_number}/merge", method="PUT", body=payload)
 
     if delete_branch:
         try:

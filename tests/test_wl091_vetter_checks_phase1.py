@@ -82,9 +82,7 @@ def test_schema_vetter_check_passes_valid_stdout():
     # @trace WL-091
     check = SchemaVetterCheck(schema_model=_Item)
     payload = json.dumps({"name": "widget", "value": 42}).decode()
-    result = asyncio.run(
-        check.check("run-1", payload, {"stdout": payload, "stderr": ""})
-    )
+    result = asyncio.run(check.check("run-1", payload, {"stdout": payload, "stderr": ""}))
     assert result.passed is True
     assert result.check_name == "schema_vetter"
 
@@ -103,9 +101,7 @@ def test_schema_vetter_check_fails_schema_mismatch_stdout():
     check = SchemaVetterCheck(schema_model=_Item)
     # value is a string, not int
     payload = json.dumps({"name": "widget", "value": "not-an-int"}).decode()
-    result = asyncio.run(
-        check.check("run-1", payload, {"stdout": payload, "stderr": ""})
-    )
+    result = asyncio.run(check.check("run-1", payload, {"stdout": payload, "stderr": ""}))
     assert result.passed is False
     assert "Schema validation failed" in result.message
 
@@ -114,9 +110,7 @@ def test_schema_vetter_check_fails_missing_required_field():
     # @trace WL-091
     check = SchemaVetterCheck(schema_model=_Item)
     payload = json.dumps({"name": "widget"}).decode()  # missing 'value'
-    result = asyncio.run(
-        check.check("run-1", payload, {"stdout": payload, "stderr": ""})
-    )
+    result = asyncio.run(check.check("run-1", payload, {"stdout": payload, "stderr": ""}))
     assert result.passed is False
     assert "Schema validation failed" in result.message
 
@@ -143,9 +137,7 @@ def test_schema_vetter_check_reads_stderr_when_target_is_stderr():
 def test_schema_vetter_check_fails_bad_stderr_json():
     # @trace WL-091
     check = SchemaVetterCheck(schema_model=_Item, target="stderr")
-    result = asyncio.run(
-        check.check("run-2", "out", {"stdout": "out", "stderr": "bad{"})
-    )
+    result = asyncio.run(check.check("run-2", "out", {"stdout": "out", "stderr": "bad{"}))
     assert result.passed is False
     assert "JSON parse failed" in result.message
 
@@ -160,18 +152,14 @@ def test_schema_vetter_check_combined_concatenates_stdout_stderr():
     check = SchemaVetterCheck(schema_model=_Item, target="combined")
     # combined should concat stdout + stderr; the full JSON is in combined
     payload = json.dumps({"name": "combo", "value": 99}).decode()
-    result = asyncio.run(
-        check.check("run-3", "ignored", {"stdout": payload, "stderr": ""})
-    )
+    result = asyncio.run(check.check("run-3", "ignored", {"stdout": payload, "stderr": ""}))
     assert result.passed is True
 
 
 def test_schema_vetter_check_combined_fails_invalid_combined():
     # @trace WL-091
     check = SchemaVetterCheck(schema_model=_Item, target="combined")
-    result = asyncio.run(
-        check.check("run-3", "ignored", {"stdout": "bad", "stderr": "garbage"})
-    )
+    result = asyncio.run(check.check("run-3", "ignored", {"stdout": "bad", "stderr": "garbage"}))
     assert result.passed is False
     assert "JSON parse failed" in result.message
 
@@ -180,9 +168,7 @@ def test_schema_vetter_check_nested_model_passes():
     # @trace WL-091
     check = SchemaVetterCheck(schema_model=_Nested)
     payload = json.dumps({"items": [{"name": "a", "value": 1}], "count": 1}).decode()
-    result = asyncio.run(
-        check.check("run-4", payload, {"stdout": payload, "stderr": ""})
-    )
+    result = asyncio.run(check.check("run-4", payload, {"stdout": payload, "stderr": ""}))
     assert result.passed is True
 
 
@@ -190,9 +176,7 @@ def test_schema_vetter_check_nested_model_fails_wrong_type():
     # @trace WL-091
     check = SchemaVetterCheck(schema_model=_Nested)
     payload = json.dumps({"items": "not-a-list", "count": 1}).decode()
-    result = asyncio.run(
-        check.check("run-4", payload, {"stdout": payload, "stderr": ""})
-    )
+    result = asyncio.run(check.check("run-4", payload, {"stdout": payload, "stderr": ""}))
     assert result.passed is False
     assert "Schema validation failed" in result.message
 
@@ -201,9 +185,7 @@ def test_schema_vetter_check_result_is_vetter_check_result():
     # @trace WL-091
     check = SchemaVetterCheck(schema_model=_Item)
     payload = json.dumps({"name": "x", "value": 0}).decode()
-    result = asyncio.run(
-        check.check("run-5", payload, {"stdout": payload, "stderr": ""})
-    )
+    result = asyncio.run(check.check("run-5", payload, {"stdout": payload, "stderr": ""}))
     assert isinstance(result, VetterCheckResult)
 
 
@@ -271,9 +253,7 @@ def test_diff_size_vetter_check_excludes_triple_plus_headers():
 
 def test_diff_size_vetter_check_counts_removals_too():
     # @trace WL-091
-    diff = "\n".join(
-        [f"-removed{i}" for i in range(10)] + [f"+added{i}" for i in range(5)]
-    )
+    diff = "\n".join([f"-removed{i}" for i in range(10)] + [f"+added{i}" for i in range(5)])
     check = DiffSizeVetterCheck(max_lines_changed=100)
     result = asyncio.run(check.check("run-1", diff, {}))
     assert result.metadata["lines_changed"] == 15
@@ -328,9 +308,7 @@ def test_safety_vetter_check_implements_protocol():
 def test_safety_vetter_check_passes_clean_output():
     # @trace WL-091
     check = SafetyVetterCheck()
-    result = asyncio.run(
-        check.check("run-1", "This is a normal output with no secrets.", {})
-    )
+    result = asyncio.run(check.check("run-1", "This is a normal output with no secrets.", {}))
     assert result.passed is True
     assert result.check_name == "safety_vetter"
 

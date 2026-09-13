@@ -10,14 +10,7 @@ import orjson as json
 import pytest
 from fastmcp.tools.tool import ToolResult
 
-MODULE_PATH = (
-    Path(__file__).resolve().parents[2]
-    / "src"
-    / "thegent"
-    / "mcp"
-    / "server"
-    / "tools_skills.py"
-)
+MODULE_PATH = Path(__file__).resolve().parents[2] / "src" / "thegent" / "mcp" / "server" / "tools_skills.py"
 SPEC = importlib.util.spec_from_file_location("tools_skills", MODULE_PATH)
 assert SPEC is not None and SPEC.loader is not None
 MODULE = importlib.util.module_from_spec(SPEC)
@@ -194,18 +187,14 @@ def test_list_skills_rejects_duplicates_after_whitespace_trim() -> None:
 
 
 def test_activate_skill_returns_payload_for_existing_skill() -> None:
-    result = thegent_activate_skill_impl(
-        skill_name="alpha", backend=_FakeBackend(), error_result_impl=_error_result
-    )
+    result = thegent_activate_skill_impl(skill_name="alpha", backend=_FakeBackend(), error_result_impl=_error_result)
     data = result.structured_content
     assert data["skill"]["name"] == "alpha"
     assert "content" in data["skill"]
 
 
 def test_activate_skill_returns_error_for_missing_skill() -> None:
-    result = thegent_activate_skill_impl(
-        skill_name="missing", backend=_FakeBackend(), error_result_impl=_error_result
-    )
+    result = thegent_activate_skill_impl(skill_name="missing", backend=_FakeBackend(), error_result_impl=_error_result)
     data = result.structured_content
     assert "error" in data
     assert data["skill_name"] == "missing"
@@ -223,26 +212,20 @@ def test_activate_skill_missing_error_uses_normalized_name() -> None:
 
 
 def test_activate_skill_rejects_empty_name() -> None:
-    result = thegent_activate_skill_impl(
-        skill_name="   ", backend=_FakeBackend(), error_result_impl=_error_result
-    )
+    result = thegent_activate_skill_impl(skill_name="   ", backend=_FakeBackend(), error_result_impl=_error_result)
     data = result.structured_content
     assert data["error"] == "skill_name must be non-empty"
 
 
 def test_activate_skill_rejects_non_string_name() -> None:
-    result = thegent_activate_skill_impl(
-        skill_name=123, backend=_FakeBackend(), error_result_impl=_error_result
-    )
+    result = thegent_activate_skill_impl(skill_name=123, backend=_FakeBackend(), error_result_impl=_error_result)
     data = result.structured_content
     assert data["error"] == "skill_name must be a string"
 
 
 def test_activate_skill_strips_whitespace_before_backend_call() -> None:
     backend = _FakeBackend()
-    result = thegent_activate_skill_impl(
-        skill_name="  alpha  ", backend=backend, error_result_impl=_error_result
-    )
+    result = thegent_activate_skill_impl(skill_name="  alpha  ", backend=backend, error_result_impl=_error_result)
     data = result.structured_content
     assert backend.activate_calls == ["alpha"]
     assert data["skill"]["name"] == "alpha"

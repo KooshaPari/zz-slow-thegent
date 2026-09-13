@@ -102,7 +102,9 @@ class TestExtractChangedPyFiles:
 
     def test_ignores_non_python_files(self):
         """Only .py files are returned; .md, .txt, .json are dropped."""
-        diff = "--- a/README.md\n+++ b/README.md\n--- a/data.json\n+++ b/data.json\n--- a/src/util.py\n+++ b/src/util.py\n"
+        diff = (
+            "--- a/README.md\n+++ b/README.md\n--- a/data.json\n+++ b/data.json\n--- a/src/util.py\n+++ b/src/util.py\n"
+        )
         result = _extract_changed_py_files(diff)
         assert result == ["src/util.py"]
 
@@ -269,9 +271,7 @@ class TestVetterChecksRunOnDiff:
         # Create a passing pytest test inside the diff-referenced path.
         test_dir = tmp_path / "tests"
         test_dir.mkdir(parents=True, exist_ok=True)
-        (test_dir / "test_sample.py").write_text(
-            "def test_pass():\n    assert True\n", encoding="utf-8"
-        )
+        (test_dir / "test_sample.py").write_text("def test_pass():\n    assert True\n", encoding="utf-8")
 
         diff = (
             "diff --git a/tests/test_sample.py b/tests/test_sample.py\n"
@@ -353,9 +353,7 @@ def _build_team(
 class TestAdaptiveCoordinationDispatchesByComplexity:
     """@trace FR-GOV-TW-001..015 — ADAPTIVE mode picks hierarchical vs collaborative."""
 
-    def test_low_complexity_dispatches_collaborative(
-        self, hierarchy_manager: AgentHierarchyManager
-    ):
+    def test_low_complexity_dispatches_collaborative(self, hierarchy_manager: AgentHierarchyManager):
         """complexity < 0.5 (short task) → ADAPTIVE delegates to COLLABORATIVE (P2P)."""
         _build_team(
             hierarchy_manager,
@@ -364,18 +362,14 @@ class TestAdaptiveCoordinationDispatchesByComplexity:
             members=3,
         )
         coord = TeamCoordinator(hierarchy_manager)
-        result = coord.coordinate_team_task(
-            "t-low", task="do X", context={"complexity": 0.0}
-        )
+        result = coord.coordinate_team_task("t-low", task="do X", context={"complexity": 0.0})
         assert result["status"] == "success"
         assert result["coordination_mode"] == "collaborative"
         # 3 members → C(3,2)=3 P2P assignments.
         assert len(result["assignments"]) == 3
         assert len(result["participants"]) == 3
 
-    def test_high_complexity_dispatches_hierarchical(
-        self, hierarchy_manager: AgentHierarchyManager
-    ):
+    def test_high_complexity_dispatches_hierarchical(self, hierarchy_manager: AgentHierarchyManager):
         """complexity >= 0.5 (weighted) → ADAPTIVE delegates to HIERARCHICAL (lead → members).
 
         Note: _evaluate_task_complexity weights user-supplied complexity at 0.5,
@@ -388,9 +382,7 @@ class TestAdaptiveCoordinationDispatchesByComplexity:
             members=3,
         )
         coord = TeamCoordinator(hierarchy_manager)
-        result = coord.coordinate_team_task(
-            "t-high", task="do X", context={"complexity": 1.0}
-        )
+        result = coord.coordinate_team_task("t-high", task="do X", context={"complexity": 1.0})
         assert result["status"] == "success"
         assert result["coordination_mode"] == "hierarchical"
         # 3 members → lead + 2 specialists; lead delegates to 2 specialists → 2 assignments.
@@ -412,22 +404,14 @@ class TestAdaptiveCoordinationDispatchesByComplexity:
         )
 
         coord = TeamCoordinator(hierarchy_manager)
-        low = coord.coordinate_team_task(
-            "t-mid", task="do X", context={"complexity": 0.99}
-        )
-        high = coord.coordinate_team_task(
-            "t-mid", task="do X", context={"complexity": 1.0}
-        )
+        low = coord.coordinate_team_task("t-mid", task="do X", context={"complexity": 0.99})
+        high = coord.coordinate_team_task("t-mid", task="do X", context={"complexity": 1.0})
         assert low["coordination_mode"] == "collaborative"
         assert high["coordination_mode"] == "hierarchical"
 
-    def test_swarm_mode_tracks_assignments_without_relationships(
-        self, hierarchy_manager: AgentHierarchyManager
-    ):
+    def test_swarm_mode_tracks_assignments_without_relationships(self, hierarchy_manager: AgentHierarchyManager):
         """SWARM mode returns assignments list equal to active member run_ids."""
-        _build_team(
-            hierarchy_manager, team_id="t-swarm", mode=CoordinationMode.SWARM, members=3
-        )
+        _build_team(hierarchy_manager, team_id="t-swarm", mode=CoordinationMode.SWARM, members=3)
         coord = TeamCoordinator(hierarchy_manager)
         result = coord.coordinate_team_task("t-swarm", task="t")
         assert result["coordination_mode"] == "swarm"
@@ -437,13 +421,9 @@ class TestAdaptiveCoordinationDispatchesByComplexity:
             "spec-t-swarm-1",
         }
 
-    def test_no_active_members_returns_error(
-        self, hierarchy_manager: AgentHierarchyManager
-    ):
+    def test_no_active_members_returns_error(self, hierarchy_manager: AgentHierarchyManager):
         """A team with zero active members yields status=error."""
-        _build_team(
-            hierarchy_manager, team_id="t-empty", mode=CoordinationMode.SWARM, members=2
-        )
+        _build_team(hierarchy_manager, team_id="t-empty", mode=CoordinationMode.SWARM, members=2)
         # Mark all members inactive.
         for agent in hierarchy_manager.list_all_agents():
             agent.status = "inactive"
@@ -461,9 +441,7 @@ class TestAdaptiveCoordinationDispatchesByComplexity:
 class TestCrossTeamDelegation:
     """@trace FR-GOV-TW-011..015 — TeamCoordinator.delegate_cross_team()."""
 
-    def test_cross_team_creates_collaboration_relationship(
-        self, hierarchy_manager: AgentHierarchyManager
-    ):
+    def test_cross_team_creates_collaboration_relationship(self, hierarchy_manager: AgentHierarchyManager):
         """delegate_cross_team() creates a CROSS_TEAM_COLLABORATION relationship."""
         _build_team(
             hierarchy_manager,
@@ -491,9 +469,7 @@ class TestCrossTeamDelegation:
         assert rel.handoff_context["mediator_id"] == "exec-team-a"
         assert rel.handoff_context["cross_team"] is True
 
-    def test_cross_team_rejects_same_team_agents(
-        self, hierarchy_manager: AgentHierarchyManager
-    ):
+    def test_cross_team_rejects_same_team_agents(self, hierarchy_manager: AgentHierarchyManager):
         """delegate_cross_team() raises ValueError when both agents are in the same team."""
         _build_team(
             hierarchy_manager,
@@ -509,9 +485,7 @@ class TestCrossTeamDelegation:
                 task="x",
             )
 
-    def test_delegate_within_team_creates_membership_relationship(
-        self, hierarchy_manager: AgentHierarchyManager
-    ):
+    def test_delegate_within_team_creates_membership_relationship(self, hierarchy_manager: AgentHierarchyManager):
         """delegate_within_team() creates a TEAM_MEMBERSHIP relationship."""
         _build_team(
             hierarchy_manager,
@@ -536,9 +510,7 @@ class TestCrossTeamDelegation:
 class TestRetentionExtendedArchive:
     """@trace WP-3006 — retention boundary + list_archived() surface."""
 
-    def test_files_at_retention_boundary_are_kept(
-        self, retention_settings: ThegentSettings
-    ):
+    def test_files_at_retention_boundary_are_kept(self, retention_settings: ThegentSettings):
         """Files newer than retention_days remain in evidence (boundary not inclusive)."""
         evidence_dir = retention_settings.session_dir / "evidence"
         evidence_dir.mkdir(parents=True, exist_ok=True)
@@ -577,16 +549,12 @@ class TestRetentionExtendedArchive:
         for name in names:
             assert not (evidence_dir / name).exists()
 
-    def test_list_archived_empty_when_archive_dir_missing(
-        self, retention_settings: ThegentSettings
-    ):
+    def test_list_archived_empty_when_archive_dir_missing(self, retention_settings: ThegentSettings):
         """list_archived() returns [] when no archive dir has been created yet."""
         manager = EvidenceRetentionManager(retention_settings)
         assert manager.list_archived() == []
 
-    def test_archive_dir_created_on_first_archive(
-        self, retention_settings: ThegentSettings
-    ):
+    def test_archive_dir_created_on_first_archive(self, retention_settings: ThegentSettings):
         """enforce_retention() creates the archive directory lazily."""
         evidence_dir = retention_settings.session_dir / "evidence"
         evidence_dir.mkdir(parents=True, exist_ok=True)
@@ -620,27 +588,21 @@ class TestAdapterAdmissionPolicyEvaluation:
         assert result["allowed"] is False
         assert "not registered" in result["reason"].lower()
 
-    def test_high_trust_adapter_admitted_to_critical_lane(
-        self, capability_registry: CapabilityRegistry
-    ):
+    def test_high_trust_adapter_admitted_to_critical_lane(self, capability_registry: CapabilityRegistry):
         """An adapter with trust_level >= 4 is admitted to the critical lane."""
         policy = AdapterAdmissionPolicy(capability_registry)
         result = policy.evaluate_admission("critical", "critical")
         assert result["allowed"] is True
         assert result["trust_level"] == 5
 
-    def test_low_trust_adapter_rejected_from_critical_lane(
-        self, capability_registry: CapabilityRegistry
-    ):
+    def test_low_trust_adapter_rejected_from_critical_lane(self, capability_registry: CapabilityRegistry):
         """An adapter with trust_level < 4 is rejected from the critical lane."""
         policy = AdapterAdmissionPolicy(capability_registry)
         result = policy.evaluate_admission("safe", "critical")
         assert result["allowed"] is False
         assert "trust" in result["reason"].lower()
 
-    def test_repeated_evaluation_uses_cache(
-        self, capability_registry: CapabilityRegistry
-    ):
+    def test_repeated_evaluation_uses_cache(self, capability_registry: CapabilityRegistry):
         """A second call for the same (adapter, lane) hits the cache and returns the same dict."""
         policy = AdapterAdmissionPolicy(capability_registry)
         first = policy.evaluate_admission("critical", "default")

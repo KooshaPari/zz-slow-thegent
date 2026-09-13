@@ -32,9 +32,7 @@ def queue_cmd():
 @click.option("--config", "-c", type=click.Path(exists=True), help="Config file path")
 @click.option("--output", "-o", type=click.Path(), help="Output file path")
 @click.option("--min-date", help="Minimum date (YYYY-MM)")
-@click.option(
-    "--location", multiple=True, help="Location to scan (name:path:recursive:max_depth)"
-)
+@click.option("--location", multiple=True, help="Location to scan (name:path:recursive:max_depth)")
 def scan(config: str | None, output: str | None, min_date: str | None, location: tuple):
     """Scan for markdown files and create queue."""
     if config:
@@ -84,45 +82,32 @@ def scan(config: str | None, output: str | None, min_date: str | None, location:
 
 
 @queue_cmd.command("list")
-@click.option(
-    "--queue-file", "-q", type=click.Path(exists=True), help="Queue file path"
-)
+@click.option("--queue-file", "-q", type=click.Path(exists=True), help="Queue file path")
 def list_months(queue_file: str | None):
     """List all months in the queue."""
     if queue_file:
         queue_manager = QueueManager(Path(queue_file))
     else:
-        queue_manager = QueueManager(
-            Path.home() / ".thegent" / "scans" / "MARKDOWN_SCAN_QUEUE.json"
-        )
+        queue_manager = QueueManager(Path.home() / ".thegent" / "scans" / "MARKDOWN_SCAN_QUEUE.json")
 
     months = queue_manager.list_months()
     click.echo("Available months:")
     for month_entry in months:
         month = month_entry["month"]
         total = month_entry["total_files"]
-        locations = ", ".join(
-            [
-                f"{loc['location']}({loc['file_count']})"
-                for loc in month_entry["locations"]
-            ]
-        )
+        locations = ", ".join([f"{loc['location']}({loc['file_count']})" for loc in month_entry["locations"]])
         click.echo(f"  {month}: {total} files [{locations}]")
 
 
 @queue_cmd.command("next")
-@click.option(
-    "--queue-file", "-q", type=click.Path(exists=True), help="Queue file path"
-)
+@click.option("--queue-file", "-q", type=click.Path(exists=True), help="Queue file path")
 @click.option("--files", is_flag=True, help="Show file list")
 def next_month(queue_file: str | None, files: bool):
     """Get next month to process."""
     if queue_file:
         queue_manager = QueueManager(Path(queue_file))
     else:
-        queue_manager = QueueManager(
-            Path.home() / ".thegent" / "scans" / "MARKDOWN_SCAN_QUEUE.json"
-        )
+        queue_manager = QueueManager(Path.home() / ".thegent" / "scans" / "MARKDOWN_SCAN_QUEUE.json")
 
     next_month = queue_manager.get_next_month()
     if next_month:
@@ -131,9 +116,7 @@ def next_month(queue_file: str | None, files: bool):
 
         if files:
             for loc_entry in next_month["locations"]:
-                click.echo(
-                    f"\n[{loc_entry['location']}] ({loc_entry['file_count']} files):"
-                )
+                click.echo(f"\n[{loc_entry['location']}] ({loc_entry['file_count']} files):")
                 for filepath in loc_entry["files"][:10]:
                     click.echo(f"  {filepath}")
                 if loc_entry["file_count"] > 10:
@@ -145,20 +128,14 @@ def next_month(queue_file: str | None, files: bool):
 @queue_cmd.command("files")
 @click.argument("month")
 @click.option("--location", help="Filter by location")
-@click.option(
-    "--queue-file", "-q", type=click.Path(exists=True), help="Queue file path"
-)
+@click.option("--queue-file", "-q", type=click.Path(exists=True), help="Queue file path")
 @click.option("--output", "-o", type=click.Path(), help="Output file path")
-def get_files(
-    month: str, location: str | None, queue_file: str | None, output: str | None
-):
+def get_files(month: str, location: str | None, queue_file: str | None, output: str | None):
     """Get files for a specific month."""
     if queue_file:
         queue_manager = QueueManager(Path(queue_file))
     else:
-        queue_manager = QueueManager(
-            Path.home() / ".thegent" / "scans" / "MARKDOWN_SCAN_QUEUE.json"
-        )
+        queue_manager = QueueManager(Path.home() / ".thegent" / "scans" / "MARKDOWN_SCAN_QUEUE.json")
 
     files = queue_manager.get_month_files(month, location)
 
@@ -172,17 +149,13 @@ def get_files(
 
 
 @queue_cmd.command("summary")
-@click.option(
-    "--queue-file", "-q", type=click.Path(exists=True), help="Queue file path"
-)
+@click.option("--queue-file", "-q", type=click.Path(exists=True), help="Queue file path")
 def summary(queue_file: str | None):
     """Get queue summary statistics."""
     if queue_file:
         queue_manager = QueueManager(Path(queue_file))
     else:
-        queue_manager = QueueManager(
-            Path.home() / ".thegent" / "scans" / "MARKDOWN_SCAN_QUEUE.json"
-        )
+        queue_manager = QueueManager(Path.home() / ".thegent" / "scans" / "MARKDOWN_SCAN_QUEUE.json")
 
     summary_data = queue_manager.get_summary()
     click.echo("Queue Summary:")
@@ -200,9 +173,7 @@ def summary(queue_file: str | None):
 
 @queue_cmd.command("process")
 @click.argument("filepath")
-@click.option(
-    "--queue-file", "-q", type=click.Path(exists=True), help="Queue file path"
-)
+@click.option("--queue-file", "-q", type=click.Path(exists=True), help="Queue file path")
 @click.option("--analyze", is_flag=True, help="Also analyze the document")
 def process_file(filepath: str, queue_file: str | None, analyze: bool):
     """Process a single file."""
@@ -241,9 +212,7 @@ def process_file(filepath: str, queue_file: str | None, analyze: bool):
         click.echo("\nAnalysis:")
         click.echo(f"  Category: {analysis.category.value}")
         click.echo(f"  Word count: {analysis.word_count}")
-        click.echo(
-            f"  Estimated reading time: {analysis.estimated_reading_time:.1f} minutes"
-        )
+        click.echo(f"  Estimated reading time: {analysis.estimated_reading_time:.1f} minutes")
         click.echo(f"  Sections: {analysis.section_count}")
 
 
@@ -262,9 +231,7 @@ def analyze_file(filepath: str):
     click.echo(f"Analysis for: {filepath}")
     click.echo(f"  Category: {analysis.category.value}")
     click.echo(f"  Word count: {analysis.word_count}")
-    click.echo(
-        f"  Estimated reading time: {analysis.estimated_reading_time:.1f} minutes"
-    )
+    click.echo(f"  Estimated reading time: {analysis.estimated_reading_time:.1f} minutes")
     click.echo(f"  Sections: {analysis.section_count}")
     click.echo(f"  Has code blocks: {analysis.has_code_blocks}")
     click.echo(f"  Has images: {analysis.has_images}")

@@ -21,18 +21,14 @@ def _full_bundle_command() -> str:
 
 def test_full_bundle_starts_with_expected_prefix_sequence() -> None:
     command = _full_bundle_command()
-    expected_prefix = "pytest -q tests/e2e/test_cli_alias_rewrite_contract.py tests/e2e/test_cli_alias_rewrite_real_app.py"
+    expected_prefix = (
+        "pytest -q tests/e2e/test_cli_alias_rewrite_contract.py tests/e2e/test_cli_alias_rewrite_real_app.py"
+    )
     assert command.startswith(expected_prefix)
 
 
 def test_full_bundle_has_no_duplicate_test_paths() -> None:
     command = _full_bundle_command()
-    paths = [
-        token
-        for token in command.split()
-        if token.startswith("tests/") and token.endswith(".py")
-    ]
+    paths = [token for token in command.split() if token.startswith("tests/") and token.endswith(".py")]
     assert paths
-    assert len(paths) == len(set(paths)), (
-        "Full governance bundle has duplicate test paths"
-    )
+    assert len(paths) == len(set(paths)), "Full governance bundle has duplicate test paths"

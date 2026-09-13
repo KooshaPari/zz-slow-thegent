@@ -191,9 +191,7 @@ class GardenerAgent:
                 )
             _log.info(
                 "GardenerAgent.read_sources: loaded %d conversation dump(s)",
-                len(
-                    [s for s in sources if s.path.name.startswith("CONVERSATION_DUMP_")]
-                ),
+                len([s for s in sources if s.path.name.startswith("CONVERSATION_DUMP_")]),
             )
         else:
             _log.info(
@@ -303,10 +301,7 @@ class GardenerAgent:
                             "WL items marked pending but completed in sources: "
                             + ", ".join(f"WL-{i}" for i in sorted_ids)
                         ),
-                        suggested_action=(
-                            "Mark items as COMPLETED: "
-                            + ", ".join(f"WL-{i}" for i in sorted_ids)
-                        ),
+                        suggested_action=("Mark items as COMPLETED: " + ", ".join(f"WL-{i}" for i in sorted_ids)),
                     )
                 )
 
@@ -320,9 +315,7 @@ class GardenerAgent:
     # Synthesis
     # ------------------------------------------------------------------
 
-    def synthesize_update(
-        self, stale_doc: StaleDoc, sources: list[SourceDocument]
-    ) -> str:
+    def synthesize_update(self, stale_doc: StaleDoc, sources: list[SourceDocument]) -> str:
         """Generate a rule-based status update for a stale doc.
 
         For ``WORK_STREAM.md``: extracts completed/pending items and
@@ -346,9 +339,7 @@ class GardenerAgent:
 
         return self._synthesize_generic_update(stale_doc, sources)
 
-    def _synthesize_work_stream_update(
-        self, stale_doc: StaleDoc, sources: list[SourceDocument]
-    ) -> str:
+    def _synthesize_work_stream_update(self, stale_doc: StaleDoc, sources: list[SourceDocument]) -> str:
         """Build a patch note for WORK_STREAM.md."""
         # Extract WL IDs from the reason field
         wl_ids = re.findall(r"WL-(\d+)", stale_doc.reason)
@@ -364,9 +355,7 @@ class GardenerAgent:
         if wl_ids:
             lines.append("### Items to mark COMPLETED")
             for wl_id in sorted(set(wl_ids), key=int):
-                lines.append(
-                    f"- Change `**Status:** pending` → `**Status:** COMPLETED` for [WL-{wl_id}]"
-                )
+                lines.append(f"- Change `**Status:** pending` → `**Status:** COMPLETED` for [WL-{wl_id}]")
             lines.append("")
 
         # Cross-reference sources that mention these IDs
@@ -383,9 +372,7 @@ class GardenerAgent:
 
         return "\n".join(lines)
 
-    def _synthesize_generic_update(
-        self, stale_doc: StaleDoc, sources: list[SourceDocument]
-    ) -> str:
+    def _synthesize_generic_update(self, stale_doc: StaleDoc, sources: list[SourceDocument]) -> str:
         """Build a generic append note for non-WORK_STREAM docs."""
         import datetime
 

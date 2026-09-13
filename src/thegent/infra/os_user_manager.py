@@ -145,14 +145,10 @@ class OSUserManager:
         shim_run(cmd, check=True, capture_output=True)
 
         # Hide the user from the login screen
-        shim_run(
-            ["dscl", ".", "create", f"/Users/{username}", "IsHidden", "1"], check=True
-        )
+        shim_run(["dscl", ".", "create", f"/Users/{username}", "IsHidden", "1"], check=True)
 
     def _create_windows_user(self, username: str, home_base: str | None) -> None:
         """Windows-specific user creation."""
         # -NoPassword for simple local accounts (requires elevated PS)
         ps_cmd = f"New-LocalUser -Name '{username}' -Description 'TheGent Agent Identity' -NoPassword"
-        shim_run(
-            ["powershell.exe", "-Command", ps_cmd], check=True, capture_output=True
-        )
+        shim_run(["powershell.exe", "-Command", ps_cmd], check=True, capture_output=True)

@@ -22,9 +22,7 @@ SUPPORTED_METHODS = [
 class JsonRpcError:
     """JSON-RPC error class."""
 
-    def __init__(
-        self, code: int, message: str, data: dict[str, Any] | None = None
-    ) -> None:
+    def __init__(self, code: int, message: str, data: dict[str, Any] | None = None) -> None:
         self.code = code
         self.message = message
         self.data = data
@@ -119,9 +117,7 @@ async def serve_stdio() -> None:
                 pass
 
 
-def _error_response(
-    request_id: str | int | None, error: JsonRpcError
-) -> dict[str, Any]:
+def _error_response(request_id: str | int | None, error: JsonRpcError) -> dict[str, Any]:
     """Build an error response."""
     return {"jsonrpc": "2.0", "id": request_id, "error": error.to_dict()}
 
@@ -193,17 +189,13 @@ def _handle_session_resume(request_id: str | int, session_id: str) -> dict[str, 
     }
 
 
-def _handle_session_read(
-    request_id: str | int, params: dict[str, Any]
-) -> dict[str, Any]:
+def _handle_session_read(request_id: str | int, params: dict[str, Any]) -> dict[str, Any]:
     """Handle session/read method."""
     session_id = params.get("session_id")
     if not session_id:
         return _error_response(
             request_id,
-            JsonRpcError(
-                -32602, "session_id required", {"reason": "session_id_required"}
-            ),
+            JsonRpcError(-32602, "session_id required", {"reason": "session_id_required"}),
         )
     if session_id not in SERVER_STATE.sessions:
         return _error_response(
@@ -296,9 +288,7 @@ def _handle_turn_submit_request(
     }
 
 
-def _build_turn_submit_execution_plan(
-    session_id: str, input_text: str
-) -> tuple[str, dict[str, Any]]:
+def _build_turn_submit_execution_plan(session_id: str, input_text: str) -> tuple[str, dict[str, Any]]:
     """Build turn submit execution plan."""
     session = SERVER_STATE.sessions.get(session_id)
     if not session:
@@ -322,9 +312,7 @@ def _build_turn_submit_execution_plan(
     return turn_id, turn
 
 
-def _commit_turn_submit_plan(
-    turn_id: str, turn: dict[str, Any], session: dict[str, Any]
-) -> None:
+def _commit_turn_submit_plan(turn_id: str, turn: dict[str, Any], session: dict[str, Any]) -> None:
     """Commit turn submit plan."""
     if session:
         session.setdefault("turn_ids", []).append(turn_id)
@@ -428,9 +416,7 @@ def _apply_turn_submit_side_effects(
 
 def _build_turn_submit_execution_phase(
     parse_phase: dict[str, Any],
-) -> tuple[
-    str, dict[str, Any], str, bool, str | None, str | None, list[dict[str, Any]]
-]:
+) -> tuple[str, dict[str, Any], str, bool, str | None, str | None, list[dict[str, Any]]]:
     """Build turn submit execution phase from parse phase."""
     # Validate required fields are present
     session_id = parse_phase.get("session_id")
@@ -495,14 +481,10 @@ def _parse_turn_cancel_request(
 ) -> JsonRpcError | dict[str, str]:
     """Parse turn cancel request."""
     if not isinstance(params, dict):
-        return JsonRpcError(
-            -32602, "params must be object", {"reason": "params_must_be_object"}
-        )
+        return JsonRpcError(-32602, "params must be object", {"reason": "params_must_be_object"})
     turn_id = params.get("turn_id")
     if not turn_id:
-        return JsonRpcError(
-            -32602, "turn_id is required", {"reason": "turn_id_required"}
-        )
+        return JsonRpcError(-32602, "turn_id is required", {"reason": "turn_id_required"})
     return {"turn_id": turn_id}
 
 
@@ -531,9 +513,7 @@ def _resolve_turn_cancel_turn(
 ) -> JsonRpcError | dict[str, Any]:
     """Resolve turn cancel turn."""
     if not turn_id:
-        return JsonRpcError(
-            -32602, "turn_id is required", {"reason": "turn_id_required"}
-        )
+        return JsonRpcError(-32602, "turn_id is required", {"reason": "turn_id_required"})
     turn = SERVER_STATE.turns.get(turn_id)
     if not turn:
         return JsonRpcError(-32002, "Turn not found", {"reason": "turn_not_found"})
@@ -545,9 +525,7 @@ def _resolve_turn_cancel_context(
 ) -> JsonRpcError | dict[str, Any]:
     """Resolve turn cancel context."""
     if not turn_id:
-        return JsonRpcError(
-            -32602, "turn_id is required", {"reason": "turn_id_required"}
-        )
+        return JsonRpcError(-32602, "turn_id is required", {"reason": "turn_id_required"})
     turn = SERVER_STATE.turns.get(turn_id)
     if not turn:
         return JsonRpcError(-32002, "Turn not found", {"reason": "turn_not_found"})
@@ -562,9 +540,7 @@ def _resolve_turn_cancel_context(
 def _validate_turn_cancel_turn_state(turn: dict[str, Any]) -> JsonRpcError | None:
     """Validate turn cancel turn state."""
     if turn.get("status") in ("completed", "cancelled", "failed"):
-        return JsonRpcError(
-            -32003, "Turn already terminal", {"reason": "turn_terminal"}
-        )
+        return JsonRpcError(-32003, "Turn already terminal", {"reason": "turn_terminal"})
     return None
 
 
@@ -598,9 +574,7 @@ def _validate_turn_cancel_projection_turn_id(
 ) -> JsonRpcError | None:
     """Validate turn cancel projection turn id."""
     if projection.get("id") != turn_id:
-        return JsonRpcError(
-            -32001, "Projection turn_id mismatch", {"reason": "turn_id_mismatch"}
-        )
+        return JsonRpcError(-32001, "Projection turn_id mismatch", {"reason": "turn_id_mismatch"})
     return None
 
 
@@ -621,9 +595,7 @@ def _build_turn_cancel_phase_plan(
 ) -> JsonRpcError | dict[str, Any]:
     """Build turn cancel phase plan."""
     if turn_id is None:
-        return JsonRpcError(
-            -32602, "turn_id is required", {"reason": "turn_id_required"}
-        )
+        return JsonRpcError(-32602, "turn_id is required", {"reason": "turn_id_required"})
 
     result = _resolve_turn_cancel_turn(turn_id)
     if isinstance(result, JsonRpcError):
@@ -688,17 +660,13 @@ def _handle_approval_grant(
     if not approval:
         return _error_response(
             request_id,
-            JsonRpcError(
-                -32002, "Approval not found", {"reason": "approval_not_found"}
-            ),
+            JsonRpcError(-32002, "Approval not found", {"reason": "approval_not_found"}),
         )
 
     if approval.get("status") != "pending":
         return _error_response(
             request_id,
-            JsonRpcError(
-                -32003, "Approval not pending", {"reason": "approval_not_pending"}
-            ),
+            JsonRpcError(-32003, "Approval not pending", {"reason": "approval_not_pending"}),
         )
 
     approval["status"] = "granted"
@@ -706,9 +674,7 @@ def _handle_approval_grant(
     if turn_id and turn_id in SERVER_STATE.turns:
         SERVER_STATE.turns[turn_id]["status"] = "approved"
         SERVER_STATE.tool_call_counter += 1
-        SERVER_STATE.turns[turn_id]["tool_call_id"] = (
-            f"tool-call-{SERVER_STATE.tool_call_counter:04d}"
-        )
+        SERVER_STATE.turns[turn_id]["tool_call_id"] = f"tool-call-{SERVER_STATE.tool_call_counter:04d}"
 
     return {
         "jsonrpc": "2.0",
@@ -726,17 +692,13 @@ def _handle_approval_reject(
     if not approval:
         return _error_response(
             request_id,
-            JsonRpcError(
-                -32002, "Approval not found", {"reason": "approval_not_found"}
-            ),
+            JsonRpcError(-32002, "Approval not found", {"reason": "approval_not_found"}),
         )
 
     if approval.get("status") != "pending":
         return _error_response(
             request_id,
-            JsonRpcError(
-                -32003, "Approval not pending", {"reason": "approval_not_pending"}
-            ),
+            JsonRpcError(-32003, "Approval not pending", {"reason": "approval_not_pending"}),
         )
 
     approval["status"] = "rejected"
@@ -821,9 +783,7 @@ def process_jsonrpc_line(line: str) -> str | None:
     elif method == "config/read":
         response = _handle_config_read(request_id, params.get("key", ""))
     else:
-        response = _error_response(
-            request_id, JsonRpcError(-32601, f"Method not found: {method}")
-        )
+        response = _error_response(request_id, JsonRpcError(-32601, f"Method not found: {method}"))
 
     return orjson.dumps(response).decode()
 
@@ -924,9 +884,7 @@ def process_jsonrpc_line_full(
         if is_notification:
             response = None
     else:
-        response = _error_response(
-            request_id, JsonRpcError(-32601, f"Method not found: {method}")
-        )
+        response = _error_response(request_id, JsonRpcError(-32601, f"Method not found: {method}"))
 
     return (response, notifications)
 
@@ -934,9 +892,7 @@ def process_jsonrpc_line_full(
 # === Turn Submit Phase Functions ===
 
 
-def _build_turn_submit_phase_plan(
-    request_id: str | int, params: dict[str, Any]
-) -> dict[str, Any]:
+def _build_turn_submit_phase_plan(request_id: str | int, params: dict[str, Any]) -> dict[str, Any]:
     """Build turn submit phase plan from request parameters."""
     session_id = params.get("session_id")
     input_text = params.get("input", "")
@@ -971,16 +927,12 @@ def _build_turn_submit_parse_phase(plan: dict[str, Any]) -> dict[str, Any]:
 
     # Validate session
     if not session_id or not session:
-        parse_phase["parse_error"] = {
-            "error": {"code": -32001, "message": f"Session not found: {session_id}"}
-        }
+        parse_phase["parse_error"] = {"error": {"code": -32001, "message": f"Session not found: {session_id}"}}
         return parse_phase
 
     # Validate input is string
     if input_text is not None and not isinstance(input_text, str):
-        parse_phase["parse_error"] = {
-            "error": {"code": -32001, "message": "input_must_be_string"}
-        }
+        parse_phase["parse_error"] = {"error": {"code": -32001, "message": "input_must_be_string"}}
         return parse_phase
 
     # Create turn object for execution phase

@@ -83,13 +83,9 @@ def _load_impl_module(monkeypatch) -> types.ModuleType:
     return importlib.import_module("thegent.cli.commands.impl")
 
 
-def test_run_impl_wrapper_delegates_with_argument_passthrough(
-    monkeypatch, tmp_path: Path
-) -> None:
+def test_run_impl_wrapper_delegates_with_argument_passthrough(monkeypatch, tmp_path: Path) -> None:
     impl = _load_impl_module(monkeypatch)
-    run_execution_core_helpers = importlib.import_module(
-        "thegent.cli.services.run_execution_core_helpers"
-    )
+    run_execution_core_helpers = importlib.import_module("thegent.cli.services.run_execution_core_helpers")
 
     captured: dict[str, object] = {}
 
@@ -128,13 +124,9 @@ def test_run_impl_wrapper_delegates_with_argument_passthrough(
     assert captured["impl_ns"] is impl
 
 
-def test_bg_impl_wrapper_delegates_with_argument_passthrough(
-    monkeypatch, tmp_path: Path
-) -> None:
+def test_bg_impl_wrapper_delegates_with_argument_passthrough(monkeypatch, tmp_path: Path) -> None:
     impl = _load_impl_module(monkeypatch)
-    run_execution_core_helpers = importlib.import_module(
-        "thegent.cli.services.run_execution_core_helpers"
-    )
+    run_execution_core_helpers = importlib.import_module("thegent.cli.services.run_execution_core_helpers")
 
     captured: dict[str, object] = {}
 

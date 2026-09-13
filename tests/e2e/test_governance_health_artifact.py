@@ -21,9 +21,7 @@ def _bundle_paths() -> list[str]:
 
 
 def test_governance_health_artifact_schema_and_counts(tmp_path: Path) -> None:
-    missing_files = [
-        str(path) for path in REQUIRED_E2E_GOVERNANCE_FILES if not path.exists()
-    ]
+    missing_files = [str(path) for path in REQUIRED_E2E_GOVERNANCE_FILES if not path.exists()]
     bundle_paths = _bundle_paths()
 
     artifact = {
@@ -34,9 +32,7 @@ def test_governance_health_artifact_schema_and_counts(tmp_path: Path) -> None:
     }
 
     output_path = tmp_path / "e2e-governance-health.json"
-    output_path.write_text(
-        json.dumps(artifact, sort_keys=True).decode(), encoding="utf-8"
-    )
+    output_path.write_text(json.dumps(artifact, sort_keys=True).decode(), encoding="utf-8")
 
     loaded = json.loads(output_path.read_text(encoding="utf-8"))
     assert loaded["schema_version"] == "e2e-governance-health-v1"

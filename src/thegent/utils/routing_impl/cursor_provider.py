@@ -149,9 +149,7 @@ class CursorExecutorManager:
         """Build Authorization header dict for the current token."""
         token = self._provider.get_token()
         if not token:
-            raise RuntimeError(
-                "Cursor token is empty. Run `thegent cliproxy login cursor` to authenticate."
-            )
+            raise RuntimeError("Cursor token is empty. Run `thegent cliproxy login cursor` to authenticate.")
         return {"Authorization": f"Bearer {token}"}
 
 

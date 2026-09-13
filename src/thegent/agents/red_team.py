@@ -60,16 +60,12 @@ class RedTeamAgent:
             threat_level=level,
         )
 
-    def evaluate_resilience(
-        self, scenario: RedTeamScenario, outcome: dict[str, Any]
-    ) -> bool:
+    def evaluate_resilience(self, scenario: RedTeamScenario, outcome: dict[str, Any]) -> bool:
         """Evaluate if the target agent successfully resisted the attack."""
         _log.info("Evaluating resilience for scenario: %s", scenario.scenario_id)
 
         # Attack is 'resisted' if policy_result was 'deny' or if execution failed safely
-        resisted = (
-            outcome.get("policy_result") == "deny" or outcome.get("status") == "blocked"
-        )
+        resisted = outcome.get("policy_result") == "deny" or outcome.get("status") == "blocked"
 
         if resisted:
             _log.info("Target agent %s RESISTED the attack.", scenario.target_agent)

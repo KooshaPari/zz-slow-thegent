@@ -30,9 +30,7 @@ from thegent.protocols.turn_submit_boundaries import (
 
 def test_wl10730_plan_execution_boundary_preserves_commit_inputs() -> None:
     # @trace WL-10730
-    phase = build_commit_phase(
-        "session-10730", {"status": "queued"}, "turn-10730", {"goal": "parse"}
-    )
+    phase = build_commit_phase("session-10730", {"status": "queued"}, "turn-10730", {"goal": "parse"})
     assert resolve_commit_target(phase) == (
         "session-10730",
         {"status": "queued"},
@@ -41,17 +39,13 @@ def test_wl10730_plan_execution_boundary_preserves_commit_inputs() -> None:
     )
 
 
-def test_wl10731_intake_and_fanout_boundaries_are_parseable_before_persistence() -> (
-    None
-):
+def test_wl10731_intake_and_fanout_boundaries_are_parseable_before_persistence() -> None:
     # @trace WL-10731
     phase = build_queue_scheduling_phase(["turn-a", "turn-b"], 101, 8)
     assert resolve_session_persistence_target(phase) == (["turn-a", "turn-b"], 101, 8)
 
     with pytest.raises(ValueError, match="invalid batch_size"):
-        resolve_session_persistence_target(
-            build_queue_scheduling_phase(["turn-a"], 101, 0)
-        )
+        resolve_session_persistence_target(build_queue_scheduling_phase(["turn-a"], 101, 0))
 
 
 def test_wl10732_telemetry_boundary_separates_event_and_serialization() -> None:
@@ -69,13 +63,9 @@ def test_wl10732_telemetry_boundary_separates_event_and_serialization() -> None:
         )
 
 
-def test_wl10733_provider_selection_boundaries_are_detached_from_selection_reason() -> (
-    None
-):
+def test_wl10733_provider_selection_boundaries_are_detached_from_selection_reason() -> None:
     # @trace WL-10733
-    phase = build_provider_selection_phase(
-        ["primary", "secondary"], "primary", "weight"
-    )
+    phase = build_provider_selection_phase(["primary", "secondary"], "primary", "weight")
     assert resolve_workflow_guard_target(phase) == (
         ["primary", "secondary"],
         "primary",
@@ -85,9 +75,7 @@ def test_wl10733_provider_selection_boundaries_are_detached_from_selection_reaso
 
 def test_wl10734_policy_enforcement_boundary_enforces_rule_discovery_contract() -> None:
     # @trace WL-10734
-    phase = build_policy_match_phase(
-        "policy-10734", ["allow:admin", "allow:user"], "allow"
-    )
+    phase = build_policy_match_phase("policy-10734", ["allow:admin", "allow:user"], "allow")
     assert resolve_policy_enforcement_plan_target(phase) == (
         "policy-10734",
         ["allow:admin", "allow:user"],
@@ -95,9 +83,7 @@ def test_wl10734_policy_enforcement_boundary_enforces_rule_discovery_contract() 
     )
 
     with pytest.raises(ValueError, match="invalid matched_rules"):
-        resolve_policy_enforcement_plan_target(
-            build_policy_match_phase("policy-10734", [], "allow")
-        )
+        resolve_policy_enforcement_plan_target(build_policy_match_phase("policy-10734", [], "allow"))
 
 
 def test_wl10735_sync_boundaries_split_scan_and_apply() -> None:
@@ -111,9 +97,7 @@ def test_wl10735_sync_boundaries_split_scan_and_apply() -> None:
     )
 
     with pytest.raises(ValueError, match="invalid commit_author"):
-        resolve_sync_commit_plan_target(
-            build_sync_diff_phase(diff, "refresh sync state", "")
-        )
+        resolve_sync_commit_plan_target(build_sync_diff_phase(diff, "refresh sync state", ""))
 
 
 def test_wl10736_runtime_error_boundary_preserves_recoverable_terminal_state() -> None:
@@ -139,14 +123,10 @@ def test_wl10737_hook_delivery_boundary_keeps_trigger_and_payload_separate() -> 
     )
 
     with pytest.raises(ValueError, match="invalid hook_name"):
-        resolve_hook_invocation_target(
-            build_hook_registration_phase("", {"scope": "global"}, {"session": "x"})
-        )
+        resolve_hook_invocation_target(build_hook_registration_phase("", {"scope": "global"}, {"session": "x"}))
 
 
-def test_wl10738_session_lifecycle_boundary_uses_queued_state_and_revision_contract() -> (
-    None
-):
+def test_wl10738_session_lifecycle_boundary_uses_queued_state_and_revision_contract() -> None:
     # @trace WL-10738
     phase = build_session_state_update_phase("session-10738", {"status": "claimed"}, 44)
     assert resolve_session_persistence_plan_target(phase) == (
@@ -157,17 +137,13 @@ def test_wl10738_session_lifecycle_boundary_uses_queued_state_and_revision_contr
 
     with pytest.raises(ValueError, match="invalid persistence_revision"):
         resolve_session_persistence_plan_target(
-            build_session_state_update_phase(
-                "session-10738", {"status": "claimed"}, -1
-            ),
+            build_session_state_update_phase("session-10738", {"status": "claimed"}, -1),
         )
 
 
 def test_wl10739_cli_command_boundary_preserves_raw_parse_and_handler_targets() -> None:
     # @trace WL-10739
-    phase = build_cli_command_parse_phase(
-        "run queue sync", ["run", "queue", "sync"], "run_handler"
-    )
+    phase = build_cli_command_parse_phase("run queue sync", ["run", "queue", "sync"], "run_handler")
     assert resolve_cli_handler_selection_target(phase) == (
         "run queue sync",
         ["run", "queue", "sync"],

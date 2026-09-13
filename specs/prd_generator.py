@@ -285,17 +285,12 @@ class PRDGenerator:
         for section in self.project_specs.prd_sections:
             if "objective" in section.title.lower():
                 # Extract list items
-                items = re.findall(
-                    r"[-*]\s*(.+?)(?=^[-*]|$)", section.content, re.MULTILINE
-                )
+                items = re.findall(r"[-*]\s*(.+?)(?=^[-*]|$)", section.content, re.MULTILINE)
                 objectives.extend(items[:10])
 
         # Look in features for goals
         for feature in self.project_specs.features.values():
-            if (
-                "goal" in feature.description.lower()
-                or "objective" in feature.description.lower()
-            ):
+            if "goal" in feature.description.lower() or "objective" in feature.description.lower():
                 objectives.append(feature.title)
 
         return objectives[:10]
@@ -306,9 +301,7 @@ class PRDGenerator:
 
         for section in self.project_specs.prd_sections:
             if "metric" in section.title.lower() or "success" in section.title.lower():
-                items = re.findall(
-                    r"[-*]\s*(.+?)(?=^[-*]|$)", section.content, re.MULTILINE
-                )
+                items = re.findall(r"[-*]\s*(.+?)(?=^[-*]|$)", section.content, re.MULTILINE)
                 metrics.extend(items[:10])
 
         return metrics[:10]
@@ -355,10 +348,7 @@ class PRDGenerator:
 
         # Look for NFR sections
         for section in self.project_specs.prd_sections:
-            if any(
-                term in section.title.lower()
-                for term in ["performance", "security", "scalability", "reliability"]
-            ):
+            if any(term in section.title.lower() for term in ["performance", "security", "scalability", "reliability"]):
                 nfrs.append(
                     {
                         "title": section.title,
@@ -399,9 +389,7 @@ class PRDGenerator:
         tech_reqs = []
 
         # Extract from technologies
-        tech_reqs.extend(
-            [f"Use {tech}" for tech in list(self.project_specs.technologies)[:10]]
-        )
+        tech_reqs.extend([f"Use {tech}" for tech in list(self.project_specs.technologies)[:10]])
 
         return tech_reqs
 
@@ -426,9 +414,7 @@ class PRDGenerator:
         phases = []
 
         # Get level 1 WBS elements as phases
-        level1_elements = [
-            w for w in self.project_specs.wbs_elements.values() if w.level == 1
-        ]
+        level1_elements = [w for w in self.project_specs.wbs_elements.values() if w.level == 1]
 
         for i, element in enumerate(level1_elements, 1):
             phase = {
@@ -450,9 +436,7 @@ class PRDGenerator:
         # Look for milestone patterns
         for section in self.project_specs.prd_sections:
             if "milestone" in section.title.lower():
-                items = re.findall(
-                    r"[-*]\s*(.+?)(?=^[-*]|$)", section.content, re.MULTILINE
-                )
+                items = re.findall(r"[-*]\s*(.+?)(?=^[-*]|$)", section.content, re.MULTILINE)
                 for item in items[:10]:
                     milestones.append(
                         {

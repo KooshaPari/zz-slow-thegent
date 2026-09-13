@@ -91,9 +91,7 @@ def test_empty_text_not_flagged():
 
 def test_custom_blocklist():
     config = ModerationConfig(custom_blocklist=["forbidden_phrase", "another_bad_word"])
-    result = check_moderation(
-        "This text contains forbidden_phrase somewhere.", config=config
-    )
+    result = check_moderation("This text contains forbidden_phrase somewhere.", config=config)
     assert result.flagged is True
     assert "custom_blocklist" in result.categories
     assert should_block(result, config=config) is True

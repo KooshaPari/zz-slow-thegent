@@ -22,9 +22,7 @@ def test_git_lock_status_reports_clear_state() -> None:
         "open_holder_detected": False,
     }
 
-    with patch(
-        "thegent.cli.commands.cli_git.GitParallelismManager", return_value=fake_manager
-    ):
+    with patch("thegent.cli.commands.cli_git.GitParallelismManager", return_value=fake_manager):
         result = runner.invoke(app, ["git", "lock-status"])
 
     assert result.exit_code == 0
@@ -44,12 +42,8 @@ def test_git_lock_status_outputs_json() -> None:
         "open_holder_detected": False,
     }
 
-    with patch(
-        "thegent.cli.commands.cli_git.GitParallelismManager", return_value=fake_manager
-    ):
-        result = runner.invoke(
-            app, ["git", "lock-status", "--json", "--stale-after", "120"]
-        )
+    with patch("thegent.cli.commands.cli_git.GitParallelismManager", return_value=fake_manager):
+        result = runner.invoke(app, ["git", "lock-status", "--json", "--stale-after", "120"])
 
     assert result.exit_code == 0
     assert '"exists": true' in result.stdout

@@ -34,9 +34,7 @@ def _is_pytest_e2e_marker(decorator: ast.expr) -> bool:
 
 def _module_has_explicit_e2e_decorator(module: ast.Module) -> bool:
     for node in ast.walk(module):
-        if isinstance(
-            node, (ast.FunctionDef, ast.AsyncFunctionDef, ast.ClassDef)
-        ) and any(
+        if isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef, ast.ClassDef)) and any(
             _is_pytest_e2e_marker(decorator) for decorator in node.decorator_list
         ):
             return True
@@ -62,10 +60,7 @@ def test_split_files_do_not_directly_import_bare_cli_runner() -> None:
         forbidden_imported_modules: set[str] = set()
 
         for node in ast.walk(module):
-            if (
-                isinstance(node, ast.ImportFrom)
-                and node.module in FORBIDDEN_CLI_RUNNER_MODULES
-            ):
+            if isinstance(node, ast.ImportFrom) and node.module in FORBIDDEN_CLI_RUNNER_MODULES:
                 if any(alias.name == "CliRunner" for alias in node.names):
                     forbidden_imported_modules.add(node.module)
 
@@ -85,6 +80,4 @@ def test_split_files_import_compat_cli_runner() -> None:
             for node in ast.walk(module)
         )
 
-        assert imports_compat, (
-            f"{path} must import CompatCliRunner from {COMPAT_RUNNER_MODULE}"
-        )
+        assert imports_compat, f"{path} must import CompatCliRunner from {COMPAT_RUNNER_MODULE}"

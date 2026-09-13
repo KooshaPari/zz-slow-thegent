@@ -15,9 +15,7 @@ def test_latest_dump_returns_newest_markdown_for_category_and_global(
 
     old_exec = dumper.dump_conversation("run-old-exec", "old", category="execution")
     new_exec = dumper.dump_conversation("run-new-exec", "new", category="execution")
-    newest_research = dumper.dump_conversation(
-        "run-newest-research", "newest", category="research"
-    )
+    newest_research = dumper.dump_conversation("run-newest-research", "newest", category="research")
 
     old_mtime = 1_700_000_001
     new_exec_mtime = 1_700_000_002

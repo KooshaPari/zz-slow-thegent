@@ -61,8 +61,4 @@ class CycleMetricsEmitter:
         Returns:
             Sum of all values for that metric in that cycle.
         """
-        return sum(
-            m.value
-            for m in self._metrics
-            if m.cycle_id == cycle_id and m.metric_name == metric_name
-        )
+        return sum(m.value for m in self._metrics if m.cycle_id == cycle_id and m.metric_name == metric_name)

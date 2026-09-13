@@ -10,9 +10,7 @@ SCRIPT_PATH = ROOT / "scripts" / "check_rust_links_conflicts.py"
 
 
 def _load_module():
-    spec = importlib.util.spec_from_file_location(
-        "check_rust_links_conflicts", SCRIPT_PATH
-    )
+    spec = importlib.util.spec_from_file_location("check_rust_links_conflicts", SCRIPT_PATH)
     assert spec is not None
     assert spec.loader is not None
     module = importlib.util.module_from_spec(spec)
@@ -67,6 +65,6 @@ def test_taskfile_wires_links_conflict_check_before_pyo3_drift() -> None:
     quality_cmds = taskfile["tasks"]["quality"]["cmds"]
     assert {"task": "quality:rust:links-conflicts"} in quality_cmds
     assert {"task": "quality:rust:pyo3-drift"} in quality_cmds
-    assert quality_cmds.index(
-        {"task": "quality:rust:links-conflicts"}
-    ) < quality_cmds.index({"task": "quality:rust:pyo3-drift"})
+    assert quality_cmds.index({"task": "quality:rust:links-conflicts"}) < quality_cmds.index(
+        {"task": "quality:rust:pyo3-drift"}
+    )

@@ -45,9 +45,7 @@ class ExecutionOrchestrator:
         if not idempotency_token:
             return None
 
-        session_id_from_token = (
-            f"run_{hashlib.sha256(idempotency_token.encode()).hexdigest()[:8]}"
-        )
+        session_id_from_token = f"run_{hashlib.sha256(idempotency_token.encode()).hexdigest()[:8]}"
         if registry.session_exists(session_id_from_token):
             existing = registry.find_by_token(idempotency_token)
             if existing and existing.get("status") == "completed":
@@ -108,11 +106,7 @@ class ExecutionOrchestrator:
         metadata = RunMeta(
             run_id=run_id,
             correlation_id=kwargs.get("correlation_id"),
-            source=(
-                AgentSource.THEGENT_SUBAGENT
-                if kwargs.get("task_id")
-                else AgentSource.THEGENT_RUN
-            ),
+            source=(AgentSource.THEGENT_SUBAGENT if kwargs.get("task_id") else AgentSource.THEGENT_RUN),
             interactivity=InteractivityMode.PTY,
             agent=agent or "unknown",
             model=model,
@@ -169,9 +163,7 @@ class ExecutionOrchestrator:
         if model:
             model_id = normalize_model_id(model)
             routes = ModelCatalog.routes_for(model_id)
-            catalog_fallbacks = [
-                r.provider for r in routes if r.provider != primary_agent
-            ]
+            catalog_fallbacks = [r.provider for r in routes if r.provider != primary_agent]
             agents.extend(catalog_fallbacks)
 
         provider_fallbacks = get_fallback_agents(primary_agent or "unknown")

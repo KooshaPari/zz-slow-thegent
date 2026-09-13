@@ -54,9 +54,7 @@ class RateLimitConfig:
         if self.initial_wait <= 0:
             raise ValueError(f"initial_wait must be > 0, got {self.initial_wait}")
         if self.max_wait < self.initial_wait:
-            raise ValueError(
-                f"max_wait ({self.max_wait}) must be >= initial_wait ({self.initial_wait})"
-            )
+            raise ValueError(f"max_wait ({self.max_wait}) must be >= initial_wait ({self.initial_wait})")
         if self.multiplier < 1.0:
             raise ValueError(f"multiplier must be >= 1.0, got {self.multiplier}")
 
@@ -162,8 +160,6 @@ class RateLimitBackoffManager:
         return tenacity_retry(
             wait=config["wait"],
             stop=config["stop"],
-            retry=retry_if_result(
-                lambda result: isinstance(result, int) and self.is_rate_limited(result)
-            ),
+            retry=retry_if_result(lambda result: isinstance(result, int) and self.is_rate_limited(result)),
             reraise=True,
         )

@@ -78,9 +78,7 @@ def test_loop_controller_re_prompts(mock_run, controller):
 
     with patch.object(controller.checker, "decide") as mock_decide:
         mock_decide.side_effect = [
-            CheckerResult(
-                decision=CheckerDecision.RE_PROMPT, prompt="Fix bug", reason="Bug found"
-            ),
+            CheckerResult(decision=CheckerDecision.RE_PROMPT, prompt="Fix bug", reason="Bug found"),
             CheckerResult(decision=CheckerDecision.KILL, reason="Done now"),
         ]
 
@@ -126,9 +124,7 @@ def test_soft_loop_stops_on_signal(mock_run, controller):
     mock_run.return_value = {"exit_code": 0, "stdout": "All done! STOP", "stderr": ""}
 
     with patch.object(controller.checker, "decide") as mock_decide:
-        mock_decide.return_value = CheckerResult(
-            decision=CheckerDecision.CONTINUE, reason="Ok"
-        )
+        mock_decide.return_value = CheckerResult(decision=CheckerDecision.CONTINUE, reason="Ok")
 
         state = controller.run_loop("Start", "Todo")
 
@@ -165,14 +161,10 @@ def test_loop_controller_handles_takeover(mock_run, controller):
     session_dir.mkdir(parents=True, exist_ok=True)
     import json
 
-    (session_dir / "takeover.json").write_text(
-        json.dumps({"prompt": "Takeover Prompt"}).decode()
-    )
+    (session_dir / "takeover.json").write_text(json.dumps({"prompt": "Takeover Prompt"}).decode())
 
     with patch.object(controller.checker, "decide") as mock_decide:
-        mock_decide.return_value = CheckerResult(
-            decision=CheckerDecision.KILL, reason="Done"
-        )
+        mock_decide.return_value = CheckerResult(decision=CheckerDecision.KILL, reason="Done")
 
         controller.run_loop("Start", "Todo")
 
@@ -184,9 +176,7 @@ def test_loop_controller_handles_takeover(mock_run, controller):
 def test_loop_controller_escalates_on_denial(mock_run, controller):
     """Loop escalates to queue when policy denies the task."""
     # "delete" keyword should trigger PolicyEffect.DENY
-    with patch(
-        "thegent.governance.escalation.EscalationQueue.escalate"
-    ) as mock_escalate:
+    with patch("thegent.governance.escalation.EscalationQueue.escalate") as mock_escalate:
         state = controller.run_loop("delete all files", "Todo")
 
         assert state.stopped is True

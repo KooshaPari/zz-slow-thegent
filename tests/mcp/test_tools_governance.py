@@ -7,17 +7,8 @@ import orjson as json
 
 
 def _load_tools_governance_module() -> object:
-    module_path = (
-        Path(__file__).resolve().parents[2]
-        / "src"
-        / "thegent"
-        / "mcp"
-        / "server"
-        / "tools_governance.py"
-    )
-    spec = importlib.util.spec_from_file_location(
-        "thegent.mcp.server.tools_governance_test", module_path
-    )
+    module_path = Path(__file__).resolve().parents[2] / "src" / "thegent" / "mcp" / "server" / "tools_governance.py"
+    spec = importlib.util.spec_from_file_location("thegent.mcp.server.tools_governance_test", module_path)
     if spec is None or spec.loader is None:
         raise RuntimeError(f"Unable to load tools_governance module from {module_path}")
     module = importlib.util.module_from_spec(spec)

@@ -51,9 +51,7 @@ class TestHttp429:
     def test_rate_limit_classified(self, msg: str) -> None:
         # @trace WL-039 WP-2002
         kind = classify_failure(_r(msg))
-        assert kind == FailureKind.RATE_LIMIT, (
-            f"Expected RATE_LIMIT for {msg!r}, got {kind}"
-        )
+        assert kind == FailureKind.RATE_LIMIT, f"Expected RATE_LIMIT for {msg!r}, got {kind}"
 
     def test_retry_after_header_is_retryable(self) -> None:
         # @trace WL-039 WP-2002
@@ -108,9 +106,7 @@ class TestHttp5xx:
     def test_5xx_classified_transient(self, msg: str) -> None:
         # @trace WL-039 WP-2002
         kind = classify_failure(_r(msg))
-        assert kind == FailureKind.TRANSIENT, (
-            f"Expected TRANSIENT for {msg!r}, got {kind}"
-        )
+        assert kind == FailureKind.TRANSIENT, f"Expected TRANSIENT for {msg!r}, got {kind}"
 
     @pytest.mark.parametrize(
         "msg",

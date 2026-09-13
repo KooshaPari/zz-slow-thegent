@@ -229,11 +229,7 @@ def test_audit_hooks_fix_suggestion_populated_for_missing(tmp_project: Path) -> 
 
     auditor = SystemAuditor(project_root=tmp_project)
     results = auditor.audit_hooks()
-    missing = next(
-        r
-        for r in results
-        if r.status == AuditStatus.MISSING and r.item == "missing-hook"
-    )
+    missing = next(r for r in results if r.status == AuditStatus.MISSING and r.item == "missing-hook")
     assert missing.fix_suggestion != ""
 
 
@@ -253,14 +249,10 @@ def test_audit_agents_missing_agents_dir(tmp_path: Path) -> None:
 
 def test_audit_agents_ok_for_nonempty_md_file(tmp_project: Path) -> None:
     """Traces to: FR-AUDIT-009 -- OK result for a non-empty agent .md file."""
-    (tmp_project / "agents" / "my-agent.md").write_text(
-        "# My Agent\nA capable persona.\n", encoding="utf-8"
-    )
+    (tmp_project / "agents" / "my-agent.md").write_text("# My Agent\nA capable persona.\n", encoding="utf-8")
     auditor = SystemAuditor(project_root=tmp_project)
     results = auditor.audit_agents()
-    ok_results = [
-        r for r in results if r.item == "my-agent" and r.status == AuditStatus.OK
-    ]
+    ok_results = [r for r in results if r.item == "my-agent" and r.status == AuditStatus.OK]
     assert len(ok_results) == 1
 
 
@@ -278,12 +270,8 @@ def test_audit_agents_missing_when_referenced_in_bounded_contexts(
 ) -> None:
     """Traces to: FR-AUDIT-010 -- MISSING when bounded-contexts.yaml references absent agent."""
     # Need at least one real .md file so the function doesn't exit early with WARN
-    (tmp_project / "agents" / "real-agent.md").write_text(
-        "# Real Agent\nA working persona.\n", encoding="utf-8"
-    )
-    (tmp_project / "agents" / "bounded-contexts.yaml").write_text(
-        "agents:\n  - nonexistent-agent\n", encoding="utf-8"
-    )
+    (tmp_project / "agents" / "real-agent.md").write_text("# Real Agent\nA working persona.\n", encoding="utf-8")
+    (tmp_project / "agents" / "bounded-contexts.yaml").write_text("agents:\n  - nonexistent-agent\n", encoding="utf-8")
     auditor = SystemAuditor(project_root=tmp_project)
     results = auditor.audit_agents()
     missing = [r for r in results if r.status == AuditStatus.MISSING]
@@ -302,9 +290,7 @@ def test_audit_agents_warn_when_empty_directory(tmp_project: Path) -> None:
 # ---------------------------------------------------------------------------
 
 
-def test_audit_config_returns_results_for_all_fields(
-    tmp_project: Path, monkeypatch: pytest.MonkeyPatch
-) -> None:
+def test_audit_config_returns_results_for_all_fields(tmp_project: Path, monkeypatch: pytest.MonkeyPatch) -> None:
     """Traces to: FR-AUDIT-011 -- audit_config returns at least one result per known field."""
     # Ensure no stray THGENT_ vars from test env bleed in
     for key in list(os.environ.keys()):
@@ -317,9 +303,7 @@ def test_audit_config_returns_results_for_all_fields(
     assert len(results) >= 10
 
 
-def test_audit_config_ok_for_set_env_var(
-    tmp_project: Path, monkeypatch: pytest.MonkeyPatch
-) -> None:
+def test_audit_config_ok_for_set_env_var(tmp_project: Path, monkeypatch: pytest.MonkeyPatch) -> None:
     """Traces to: FR-AUDIT-012 -- OK result when a THGENT_* env var is explicitly set."""
     monkeypatch.setenv("THGENT_DEBUG", "0")
     auditor = SystemAuditor(project_root=tmp_project)
@@ -327,15 +311,10 @@ def test_audit_config_ok_for_set_env_var(
     debug_results = [r for r in results if r.item == "debug"]
     assert len(debug_results) == 1
     assert debug_results[0].status == AuditStatus.OK
-    assert (
-        "THGENT_DEBUG" in debug_results[0].expected
-        or "THGENT_DEBUG" in debug_results[0].actual
-    )
+    assert "THGENT_DEBUG" in debug_results[0].expected or "THGENT_DEBUG" in debug_results[0].actual
 
 
-def test_audit_config_unexpected_unknown_env_var(
-    tmp_project: Path, monkeypatch: pytest.MonkeyPatch
-) -> None:
+def test_audit_config_unexpected_unknown_env_var(tmp_project: Path, monkeypatch: pytest.MonkeyPatch) -> None:
     """Traces to: FR-AUDIT-012 -- UNEXPECTED result for unknown THGENT_* env var."""
     monkeypatch.setenv("THGENT_TOTALLY_UNKNOWN_XYZ", "value")
     auditor = SystemAuditor(project_root=tmp_project)
@@ -515,9 +494,7 @@ def test_export_json_writes_valid_json(tmp_project: Path, tmp_path: Path) -> Non
     assert "summary" in data
 
 
-def test_export_json_creates_parent_directories(
-    tmp_project: Path, tmp_path: Path
-) -> None:
+def test_export_json_creates_parent_directories(tmp_project: Path, tmp_path: Path) -> None:
     """Traces to: FR-AUDIT-019 -- export_json creates missing parent directories."""
     report = AuditReport(timestamp="2026-01-01T00:00:00+00:00")
     out_path = tmp_path / "nested" / "deep" / "report.json"

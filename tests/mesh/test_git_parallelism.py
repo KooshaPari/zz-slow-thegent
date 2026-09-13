@@ -48,9 +48,7 @@ def _init_git_repo(path: Path) -> None:
     # Create an initial commit so HEAD exists
     (path / "README.md").write_text("init\n")
     subprocess.run(["git", "add", "."], cwd=str(path), check=True, capture_output=True)
-    subprocess.run(
-        ["git", "commit", "-m", "init"], cwd=str(path), check=True, capture_output=True
-    )
+    subprocess.run(["git", "commit", "-m", "init"], cwd=str(path), check=True, capture_output=True)
 
 
 # ---------------------------------------------------------------------------

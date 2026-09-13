@@ -85,9 +85,7 @@ class UnifiedConfigManager:
         resolved = {}
 
         # Apply sources in order of priority - first source wins
-        sources_order = (
-            [s for s, _ in self.config_sources] if self.config_sources else []
-        )
+        sources_order = [s for s, _ in self.config_sources] if self.config_sources else []
 
         # If config_sources is empty, use unified_config keys as order
         if not sources_order:
@@ -137,14 +135,14 @@ class UnifiedConfigManager:
                     # Preserve body after ---
                     if "---" in existing:
                         parts = existing.split("---", 2)
-                        content = f"---\n{yaml.dump(unflatten_config(source_flat))}---{parts[2] if len(parts) > 2 else ''}"
+                        content = (
+                            f"---\n{yaml.dump(unflatten_config(source_flat))}---{parts[2] if len(parts) > 2 else ''}"
+                        )
                     path.write_text(content, encoding="utf-8")
 
         self._data["conflicts"] = conflicts
 
-    def merge(
-        self, other: dict[str, Any], strategy: str = "prefer_existing"
-    ) -> dict[str, Any]:
+    def merge(self, other: dict[str, Any], strategy: str = "prefer_existing") -> dict[str, Any]:
         """Merge configurations with conflict resolution."""
         result = self._config.copy()
         for key, value in other.items():
