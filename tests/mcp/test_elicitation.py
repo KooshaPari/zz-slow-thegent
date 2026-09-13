@@ -12,10 +12,10 @@ Tests cover:
 
 from __future__ import annotations
 
-import orjson as json
 from typing import Any
-from unittest.mock import AsyncMock, MagicMock, patch
+from unittest.mock import AsyncMock, MagicMock
 
+import orjson as json
 import pytest
 
 fastmcp = pytest.importorskip("fastmcp", reason="fastmcp required for elicitation tests")

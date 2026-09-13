@@ -94,7 +94,11 @@ def test_loop_controller_matches_presets(mock_run, controller):
     """Loop matches output to presets before calling checker."""
     # First call output contains "pytest", should match "write_tests" preset
     mock_run.side_effect = [
-        {"exit_code": 0, "stdout": "I wrote some code, now I should run pytest", "stderr": ""},
+        {
+            "exit_code": 0,
+            "stdout": "I wrote some code, now I should run pytest",
+            "stderr": "",
+        },
         {"exit_code": 0, "stdout": "Tests passed", "stderr": "STOP"},
     ]
 

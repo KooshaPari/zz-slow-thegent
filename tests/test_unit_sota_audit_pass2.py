@@ -23,8 +23,8 @@ from typing import Any
 import pytest
 
 from thegent.infra.perf_budget import (
-    PerformanceBudgetError,
     BudgetResult,
+    PerformanceBudgetError,
     budget_context,
     check_memory_budget,
     check_module_load_budget,
@@ -48,7 +48,6 @@ from thegent.ux.explanations import (
     explain_exit_code,
 )
 
-
 # =====================================================================
 # 1. mcp_perf_gates module exports
 # =====================================================================
@@ -59,7 +58,12 @@ class TestMCPPerfGatesExports:
 
     @pytest.mark.parametrize(
         "symbol_name",
-        ["MCP_PERF_BUDGETS", "MCPBudgetExceeded", "check_mcp_budget", "mcp_budget_context"],
+        [
+            "MCP_PERF_BUDGETS",
+            "MCPBudgetExceeded",
+            "check_mcp_budget",
+            "mcp_budget_context",
+        ],
         ids=["budgets_dict", "exception", "check_fn", "context_mgr"],
     )
     def test_symbol_importable(self, symbol_name: str) -> None:

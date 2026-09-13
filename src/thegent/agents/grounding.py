@@ -10,7 +10,6 @@ import litellm
 
 from thegent.agents.base import RunResult
 
-
 # Agents that are Gemini-backed and eligible for grounding.
 GEMINI_GROUNDING_AGENTS = frozenset({"gemini", "antigravity"})
 GROUNDING_AGENTS = GEMINI_GROUNDING_AGENTS

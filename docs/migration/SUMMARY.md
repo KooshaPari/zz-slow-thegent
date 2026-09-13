@@ -9,16 +9,19 @@ Comprehensive analysis and solutions for thegent's performance issues, with a co
 ## ✅ Issues Fixed
 
 ### 1. `find -q` Compatibility ✅
+
 **Problem**: macOS BSD `find` doesn't support `-q` option
 
 **Solution**: Updated wrappers to filter out GNU-only options
 
 ### 2. `which` Timeout ✅
+
 **Problem**: `which codex` timing out after 2m 43s
 
 **Solution**: Fast-path detection prevents shell wrapper cascades
 
 ### 3. Fork Failures ✅
+
 **Problem**: "Resource temporarily unavailable" errors
 
 **Solution**: Process throttling, circuit breakers, Rust migration
@@ -37,12 +40,12 @@ Comprehensive analysis and solutions for thegent's performance issues, with a co
 
 ## 📊 Performance Improvements
 
-| Operation | Before | After | Speedup |
-|-----------|--------|-------|---------|
-| Tool detection | 60ms | 1ms | **60x** |
-| PATH resolution | 20ms | 0.5ms | **40x** |
-| Process scanning | 50ms | 0.5ms | **100x** |
-| Hook execution | 200ms | 20ms | **10x** |
+| Operation        | Before | After | Speedup  |
+| ---------------- | ------ | ----- | -------- |
+| Tool detection   | 60ms   | 1ms   | **60x**  |
+| PATH resolution  | 20ms   | 0.5ms | **40x**  |
+| Process scanning | 50ms   | 0.5ms | **100x** |
+| Hook execution   | 200ms  | 20ms  | **10x**  |
 
 ---
 
@@ -87,8 +90,8 @@ time which codex  # Should be <10ms
 **Status**: Ready for implementation
 **Next Step**: Build and test Rust extensions
 
-
 ---
+
 ## See also
 
 - [WORK_STREAM.md](../reference/WORK_STREAM.md) — canonical backlog

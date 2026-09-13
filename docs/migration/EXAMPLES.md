@@ -74,7 +74,7 @@ print(tools)
 # {'fd': '/usr/local/bin/fd', 'jq': '/usr/local/bin/jq', ...}
 
 # Detect single tool
-path = detect_tool('jq')
+path = detect_tool("jq")
 if path:
     print(f"Found jq at: {path}")
 else:
@@ -87,17 +87,17 @@ else:
 from thegent_path_resolve import resolve_binary, PathResolver
 
 # Simple usage
-path = resolve_binary('codex')
+path = resolve_binary("codex")
 if path:
     print(f"Found codex at: {path}")
 
 # With skip directories
-resolver = PathResolver.with_skip_dirs(['/usr/local/bin'])
-path = resolver.resolve('codex')
+resolver = PathResolver.with_skip_dirs(["/usr/local/bin"])
+path = resolver.resolve("codex")
 
 # Resolve multiple at once (more efficient)
 resolver = PathResolver.new()
-results = resolver.resolve_many(['codex', 'maturin', 'cargo'])
+results = resolver.resolve_many(["codex", "maturin", "cargo"])
 for name, path in results.items():
     if path:
         print(f"{name}: {path}")
@@ -114,7 +114,7 @@ agents = discovery.scan_agents()
 print(f"Found {len(agents)} agents:")
 for agent in agents:
     print(f"  {agent['name']}: PID {agent['pid']} in {agent['cwd']}")
-    if agent['session_id']:
+    if agent["session_id"]:
         print(f"    Session: {agent['session_id']}")
 ```
 
@@ -147,14 +147,9 @@ from thegent_path_resolve import resolve_binary
 import subprocess
 
 # Detect tools
-jq_path = detect_tool('jq')
+jq_path = detect_tool("jq")
 if jq_path:
-    result = subprocess.run(
-        [jq_path, '.version'],
-        input=open('package.json').read(),
-        capture_output=True,
-        text=True
-    )
+    result = subprocess.run([jq_path, ".version"], input=open("package.json").read(), capture_output=True, text=True)
     print(f"Version: {result.stdout.strip()}")
 ```
 
@@ -167,10 +162,10 @@ from thegent_path_resolve import resolve_binary
 
 # Fast tool detection
 tools = detect_tools()
-jq_cmd = tools.get('jq', 'jq')  # Fallback to 'jq' if not found
+jq_cmd = tools.get("jq", "jq")  # Fallback to 'jq' if not found
 
 # Fast PATH resolution
-codex_path = resolve_binary('codex')
+codex_path = resolve_binary("codex")
 if codex_path:
     # Use codex_path
     pass
@@ -192,6 +187,7 @@ FD_CMD="$(command -v fd 2>/dev/null || command -v fdfind 2>/dev/null || true)"
 ```python
 # Fast: 1ms (cached), 10ms (uncached)
 from thegent_tool_detect import detect_tools
+
 tools = detect_tools()
 ```
 
@@ -231,6 +227,7 @@ eval "$(thegent-tool-detect --format shell)"
 from thegent_tool_detect import detect_tools
 from thegent_path_resolve import resolve_binary
 
+
 class ToolManager:
     def __init__(self):
         self.tools = detect_tools()
@@ -242,8 +239,8 @@ class ToolManager:
         return resolve_binary(name)
 ```
 
-
 ---
+
 ## See also
 
 - [WORK_STREAM.md](../reference/WORK_STREAM.md) — canonical backlog

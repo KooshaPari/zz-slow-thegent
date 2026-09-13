@@ -7,8 +7,7 @@ committing, side effects, and response phases.
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any
-
+from typing import Any
 
 
 def build_parse_phase(
@@ -19,13 +18,13 @@ def build_parse_phase(
     request_has_id: bool = False,
 ) -> dict[str, Any]:
     """Build a parse phase payload.
-    
+
     Args:
         session_id: The session identifier.
         user_input: The user's input text.
         request_id: Optional request identifier.
         request_has_id: Whether the request has an ID.
-        
+
     Returns:
         Parse phase payload dictionary.
     """
@@ -39,13 +38,13 @@ def build_parse_phase(
 
 def resolve_parse_target(phase: dict[str, Any]) -> tuple[str, str, str, bool]:
     """Resolve the parse phase target.
-    
+
     Args:
         phase: Parse phase payload.
-        
+
     Returns:
         Tuple of (session_id, user_input, request_id, request_has_id).
-        
+
     Raises:
         ValueError: If target cannot be resolved.
     """
@@ -53,10 +52,10 @@ def resolve_parse_target(phase: dict[str, Any]) -> tuple[str, str, str, bool]:
     user_input = phase.get("user_input", "")
     request_id = phase.get("request_id", "")
     request_has_id = phase.get("request_has_id", False)
-    
+
     if not session_id:
         raise ValueError("parse target unresolved: missing session_id")
-    
+
     return (session_id, user_input, request_id, request_has_id)
 
 
@@ -67,13 +66,13 @@ def build_commit_phase(
     turn: dict[str, Any],
 ) -> dict[str, Any]:
     """Build a commit phase payload.
-    
+
     Args:
         session_id: The session identifier.
         session: The session object.
         turn_id: The turn identifier.
         turn: The turn object.
-        
+
     Returns:
         Commit phase payload dictionary.
     """
@@ -89,13 +88,13 @@ def resolve_commit_target(
     phase: dict[str, Any],
 ) -> tuple[str, dict, str, dict]:
     """Resolve the commit phase target.
-    
+
     Args:
         phase: Commit phase payload.
-        
+
     Returns:
         Tuple of (session_id, session, turn_id, turn).
-        
+
     Raises:
         ValueError: If target cannot be resolved.
     """
@@ -103,10 +102,10 @@ def resolve_commit_target(
     session = phase.get("session")
     turn_id = phase.get("turn_id", "")
     turn = phase.get("turn")
-    
+
     if not session_id or session is None or turn is None:
         raise ValueError("commit target unresolved: missing required fields")
-    
+
     return (session_id, session, turn_id, turn)
 
 
@@ -119,7 +118,7 @@ def build_side_effects_phase(
     approval_diff: str | None,
 ) -> dict[str, Any]:
     """Build a side effects phase payload.
-    
+
     Args:
         session_id: The session identifier.
         turn_id: The turn identifier.
@@ -127,7 +126,7 @@ def build_side_effects_phase(
         response: The agent response.
         requires_approval: Whether approval is required.
         approval_diff: Optional diff for approval.
-        
+
     Returns:
         Side effects phase payload dictionary.
     """
@@ -145,10 +144,10 @@ def resolve_side_effects_target(
     phase: dict[str, Any],
 ) -> tuple[str, str, dict, str, bool, str | None]:
     """Resolve the side effects phase target.
-    
+
     Args:
         phase: Side effects phase payload.
-        
+
     Returns:
         Tuple of all phase fields.
     """
@@ -169,13 +168,13 @@ def build_response_phase(
     approval_payload: dict[str, Any] | None,
 ) -> dict[str, Any]:
     """Build a response phase payload.
-    
+
     Args:
         request_has_id: Whether the request has an ID.
         request_id: The request identifier.
         turn: The turn object.
         approval_payload: Optional approval payload.
-        
+
     Returns:
         Response phase payload dictionary.
     """
@@ -191,13 +190,13 @@ def resolve_response_target(
     phase: dict[str, Any],
 ) -> tuple[bool, str, dict, dict | None]:
     """Resolve the response phase target.
-    
+
     Args:
         phase: Response phase payload.
-        
+
     Returns:
         Tuple of (request_has_id, request_id, turn, approval_payload).
-        
+
     Raises:
         ValueError: If target cannot be resolved.
     """
@@ -205,10 +204,10 @@ def resolve_response_target(
     request_id = phase.get("request_id", "")
     turn = phase.get("turn", {})
     approval_payload = phase.get("approval_payload")
-    
+
     if approval_payload is not None and not isinstance(approval_payload, dict):
         raise ValueError("response target unresolved: invalid approval_payload")
-    
+
     return (request_has_id, request_id, turn, approval_payload)
 
 
@@ -244,12 +243,14 @@ def build_policy_match_phase(policy_id: str, context: dict[str, Any]) -> dict[st
 
 def build_provider_selection_phase(provider_id: str, context: dict[str, Any]) -> dict[str, Any]:
     """Build provider selection phase payload."""
-    return {"type": "provider_selection", "provider_id": provider_id, "context": context}
+    return {
+        "type": "provider_selection",
+        "provider_id": provider_id,
+        "context": context,
+    }
 
 
-def build_provider_rule_evaluation_phase(
-    rule_id: str, context: dict[str, Any]
-) -> dict[str, Any]:
+def build_provider_rule_evaluation_phase(rule_id: str, context: dict[str, Any]) -> dict[str, Any]:
     """Build provider rule evaluation phase payload."""
     return {"type": "provider_rule_evaluation", "rule_id": rule_id, "context": context}
 

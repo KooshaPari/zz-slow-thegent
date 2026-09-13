@@ -28,10 +28,10 @@ Global options work with any CRUN command:
 crun [OPTIONS] COMMAND [ARGS]
 ```
 
-| Option | Description | Example |
-|--------|-------------|---------|
-| `--help` | Show help message | `crun --help` |
-| `-v, --version` | Show CRUN version | `crun --version` |
+| Option           | Description               | Example               |
+| ---------------- | ------------------------- | --------------------- |
+| `--help`         | Show help message         | `crun --help`         |
+| `-v, --version`  | Show CRUN version         | `crun --version`      |
 | `--list-clients` | List available UI clients | `crun --list-clients` |
 
 ---
@@ -47,23 +47,25 @@ AI planning commands are in the `ai-plan` namespace.
 Generate a large, detailed project plan using AI.
 
 **Usage:**
+
 ```bash
 crun ai-plan generate-massive [OPTIONS] DESCRIPTION_FILE
 ```
 
 **Arguments:**
+
 - `DESCRIPTION_FILE` - Path to PRD/description file (text or JSON)
 
 **Options:**
 
-| Flag | Default | Description |
-|------|---------|-------------|
-| `-o, --output` | `massive-plan.json` | Output path for generated WBS |
-| `--max-depth` | `4` | Maximum WBS hierarchy depth |
-| `--model` | `anthropic/claude-sonnet-4` | Primary model for generation |
-| `--fast-model` | `anthropic/claude-haiku-4` | Fast model for simpler tasks |
-| `--streaming/--no-streaming` | `--streaming` | Enable streaming progress |
-| `--api-key` | from `OPENROUTER_API_KEY` | API key override |
+| Flag                         | Default                     | Description                   |
+| ---------------------------- | --------------------------- | ----------------------------- |
+| `-o, --output`               | `massive-plan.json`         | Output path for generated WBS |
+| `--max-depth`                | `4`                         | Maximum WBS hierarchy depth   |
+| `--model`                    | `anthropic/claude-sonnet-4` | Primary model for generation  |
+| `--fast-model`               | `anthropic/claude-haiku-4`  | Fast model for simpler tasks  |
+| `--streaming/--no-streaming` | `--streaming`               | Enable streaming progress     |
+| `--api-key`                  | from `OPENROUTER_API_KEY`   | API key override              |
 
 **Examples:**
 
@@ -81,20 +83,22 @@ echo "Build a task management app" | crun ai-plan generate-massive - -o plan.jso
 ### `crun ai-plan visualize`
 
 **Usage:**
+
 ```bash
 crun ai-plan visualize [OPTIONS] PLAN_FILE
 ```
 
 **Arguments:**
+
 - `PLAN_FILE` - Path to WBS plan file (JSON)
 
 **Options:**
 
-| Flag | Default | Description |
-|------|---------|-------------|
-| `-f, --format` | `gantt` | `gantt`, `dag`, `timeline`, `mermaid` |
-| `-o, --output` | auto | Output path |
-| `--highlight-critical/--no-highlight-critical` | `--highlight-critical` | Highlight critical path |
+| Flag                                           | Default                | Description                           |
+| ---------------------------------------------- | ---------------------- | ------------------------------------- |
+| `-f, --format`                                 | `gantt`                | `gantt`, `dag`, `timeline`, `mermaid` |
+| `-o, --output`                                 | auto                   | Output path                           |
+| `--highlight-critical/--no-highlight-critical` | `--highlight-critical` | Highlight critical path               |
 
 **Example:**
 
@@ -105,36 +109,38 @@ crun ai-plan visualize my_plan.json --format dag --output dag.png
 ### `crun ai-plan edit`
 
 **Usage:**
+
 ```bash
 crun ai-plan edit [OPTIONS] PLAN_FILE
 ```
 
 **Options:**
 
-| Flag | Description |
-|------|-------------|
-| `-t, --task` | (required) Task ID to edit |
-| `--set-status` | Set status (`pending`, `in_progress`, `completed`, `blocked`) |
-| `--set-assignee` | Set assignee |
-| `--set-priority` | Set priority |
-| `--add-tag` | Add a tag |
-| `--remove-tag` | Remove a tag |
+| Flag             | Description                                                   |
+| ---------------- | ------------------------------------------------------------- |
+| `-t, --task`     | (required) Task ID to edit                                    |
+| `--set-status`   | Set status (`pending`, `in_progress`, `completed`, `blocked`) |
+| `--set-assignee` | Set assignee                                                  |
+| `--set-priority` | Set priority                                                  |
+| `--add-tag`      | Add a tag                                                     |
+| `--remove-tag`   | Remove a tag                                                  |
 
 ### `crun ai-plan monitor`
 
 **Usage:**
+
 ```bash
 crun ai-plan monitor [OPTIONS] PLAN_FILE
 ```
 
 **Options:**
 
-| Flag | Default | Description |
-|------|---------|-------------|
-| `-f, --follow` | `False` | Stream execution updates |
-| `-w, --workers` | `10` | Maximum workers |
-| `-p, --priority` | `critical_path` | `critical_path`, `slack`, `complexity`, `hybrid` |
-| `--dry-run/--execute` | `--dry-run` | Simulate or execute |
+| Flag                  | Default         | Description                                      |
+| --------------------- | --------------- | ------------------------------------------------ |
+| `-f, --follow`        | `False`         | Stream execution updates                         |
+| `-w, --workers`       | `10`            | Maximum workers                                  |
+| `-p, --priority`      | `critical_path` | `critical_path`, `slack`, `complexity`, `hybrid` |
+| `--dry-run/--execute` | `--dry-run`     | Simulate or execute                              |
 
 ---
 
@@ -171,9 +177,11 @@ Monitoring is under `crun monitor` for static quality/test monitoring.
 Some builds may also expose adapter-based dashboards under `crun monitoring` (project/agent/quality/all).
 
 ### `crun monitor start`
+
 Start static monitoring and optional lint/test fixing over a workspace.
 
 Options:
+
 - `--workspace, -w`: Workspace directory (default `.`)
 - `--languages, -l`: Comma-separated languages to scan (default `python,typescript`)
 - `--lint` (default true): Enable lint fixing
@@ -187,6 +195,7 @@ crun monitor start --workspace . --languages python,typescript
 ```
 
 ### `crun monitor list-models`
+
 List models available to the monitor runner.
 
 ```bash
@@ -254,6 +263,7 @@ crun monitor start --workspace .
 **Cause:** CRUN is not installed in the active environment.
 
 **Solution:**
+
 ```bash
 source venv/bin/activate
 pip install -e ".[all]"
@@ -264,6 +274,7 @@ pip install -e ".[all]"
 **Cause:** OpenRouter API key missing.
 
 **Solution:**
+
 ```bash
 export OPENROUTER_API_KEY=or-your-key
 ```
@@ -279,6 +290,7 @@ export OPENROUTER_API_KEY=or-your-key
 **Cause:** `crun quality` is not a top-level command.
 
 **Solution:**
+
 ```bash
 crun monitor start --workspace . --languages python,typescript --lint --tests
 ```
@@ -303,7 +315,6 @@ crun ai-plan monitor plan.json --dry-run
 ```
 
 **Version:** CRUN 3.0.0 | Last Updated: 2026-02-22
-
 
 ---
 
@@ -366,6 +377,7 @@ async def workspace_operation(
 ```
 
 **Operations:**
+
 - `set_context()` - Set active workspace entity
 - `get_context()` - Get current context
 - `list_workspaces()` - List available workspaces
@@ -390,6 +402,7 @@ async def entity_operation(
 ```
 
 **Supported Entity Types:**
+
 - Documents
 - Requirements
 - Projects
@@ -425,6 +438,7 @@ async def relationship_operation(
 ```
 
 **Relationship Types:**
+
 - `member` - Entity membership
 - `contains` - Containment relationship
 - `references` - Reference relationship
@@ -445,6 +459,7 @@ async def workflow_execute(
 ```
 
 **Benefits:**
+
 - Atomic operations (all or nothing)
 - Ordered execution
 - Built-in error recovery
@@ -474,6 +489,7 @@ async def data_query(
 | **Relationship** | Entity graph navigation |
 
 **Search Modes:**
+
 - `semantic` - Vector similarity only (slow, accurate)
 - `keyword` - BM25 text search (fast, exact)
 - `hybrid` - Combined semantic + keyword (balanced)
@@ -499,11 +515,11 @@ All tools return standardized JSON:
 
 ## Authentication
 
-| Method | Description |
-|--------|-------------|
-| **OAuth 2.0 PKCE** | Recommended for Claude Desktop - browser-based flow |
-| **Bearer Tokens** | For service-to-service - JWT in `auth_token` parameter |
-| **Session Tokens** | Created during OAuth flow, cached in-memory |
+| Method             | Description                                            |
+| ------------------ | ------------------------------------------------------ |
+| **OAuth 2.0 PKCE** | Recommended for Claude Desktop - browser-based flow    |
+| **Bearer Tokens**  | For service-to-service - JWT in `auth_token` parameter |
+| **Session Tokens** | Created during OAuth flow, cached in-memory            |
 
 **RLS Integration:** Server extracts user_id from JWT, sets Supabase context, queries automatically filtered.
 
@@ -529,6 +545,7 @@ Add to Claude's configuration file:
 ## Typical Workflows
 
 **Workflow 1: Create a Project with Documents**
+
 ```
 1. workspace_operation (set_context) → Set active workspace/project
 2. entity_operation (create) → Create project entity
@@ -538,6 +555,7 @@ Add to Claude's configuration file:
 ```
 
 **Workflow 2: Search and Analyze Requirements**
+
 ```
 1. workspace_operation (get_context) → Get current workspace context
 2. data_query (rag_search) → Semantic search for requirements
@@ -549,7 +567,6 @@ Add to Claude's configuration file:
 ---
 
 **Content merged from:** technical-documentation-mcp.md
-
 
 ---
 
@@ -630,7 +647,7 @@ GET /metrics  # Prometheus metrics
 ```json
 {
   "model": "claude-4.5-sonnet",
-  "messages": [{"role": "user", "content": "Hello!"}],
+  "messages": [{ "role": "user", "content": "Hello!" }],
   "stream": false,
   "temperature": 0.7,
   "max_tokens": 1024,
@@ -640,7 +657,7 @@ GET /metrics  # Prometheus metrics
     "organization_id": "org-uuid",
     "user_id": "user-uuid",
     "workflow": "customer_support",
-    "variables": {"customer_name": "John"},
+    "variables": { "customer_name": "John" },
     "allowed_tools": ["calculator", "web_search"],
     "mcp_servers": {}
   }
@@ -655,12 +672,14 @@ GET /metrics  # Prometheus metrics
   "object": "chat.completion",
   "created": 1234567890,
   "model": "claude-4.5-sonnet",
-  "choices": [{
-    "index": 0,
-    "message": {"role": "assistant", "content": "Hello! How can I help?"},
-    "finish_reason": "stop"
-  }],
-  "usage": {"prompt_tokens": 10, "completion_tokens": 5, "total_tokens": 15}
+  "choices": [
+    {
+      "index": 0,
+      "message": { "role": "assistant", "content": "Hello! How can I help?" },
+      "finish_reason": "stop"
+    }
+  ],
+  "usage": { "prompt_tokens": 10, "completion_tokens": 5, "total_tokens": 15 }
 }
 ```
 
@@ -685,12 +704,13 @@ data: [DONE]
 
 ## Authentication
 
-| Method | Header | Description |
-|--------|--------|-------------|
+| Method    | Header                          | Description                            |
+| --------- | ------------------------------- | -------------------------------------- |
 | JWT Token | `Authorization: Bearer <token>` | WorkOS JWT with user_id, org_id claims |
-| API Key | `X-API-Key: <key>` | Static API key for service-to-service |
+| API Key   | `X-API-Key: <key>`              | Static API key for service-to-service  |
 
 **JWT Claims Expected:**
+
 - `user_id` - User identifier
 - `org_id` - Organization identifier (multi-tenant)
 - `permissions` - Permission array (cached for 5 minutes for performance)
@@ -708,18 +728,19 @@ data: [DONE]
 | Gemini 2.5 Flash | Fast, multimodal |
 
 **Fallback API:**
+
 - Anthropic Claude API: https://api.anthropic.com/v1/messages
 
 ## 4-Level Prompt Orchestration
 
 The system composes system prompts from 4 hierarchical levels:
 
-| Level | Source | Purpose |
-|-------|--------|---------|
-| **Platform** | Config file | Default prompt for all users |
-| **Organization** | Database table | Custom prompts per organization |
-| **User** | Database table | User-specific customizations |
-| **Workflow** | Config/Database | Workflow-specific context |
+| Level            | Source          | Purpose                         |
+| ---------------- | --------------- | ------------------------------- |
+| **Platform**     | Config file     | Default prompt for all users    |
+| **Organization** | Database table  | Custom prompts per organization |
+| **User**         | Database table  | User-specific customizations    |
+| **Workflow**     | Config/Database | Workflow-specific context       |
 
 **Composition Logic:** Platform + Organization + User + Workflow = Final System Prompt
 
@@ -728,6 +749,7 @@ The system composes system prompts from 4 hierarchical levels:
 ## MCP Server Integration
 
 **Registration Workflow:**
+
 1. Register via CLI: `atoms-agent mcp create --org <uuid> --name "My Tool" --url https://mcp.example.com`
 2. Store in Database with auth config (bearer token, OAuth, API key)
 3. User enables specific servers from marketplace
@@ -738,7 +760,6 @@ The system composes system prompts from 4 hierarchical levels:
 ---
 
 **Content merged from:** technical-documentation-backend.md
-
 
 ---
 

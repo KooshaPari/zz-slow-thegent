@@ -5,8 +5,7 @@ This module provides the bg (background) command for thegent CLI.
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any
-
+from typing import Any
 
 
 def bg_cmd(
@@ -17,14 +16,14 @@ def bg_cmd(
     **kwargs: Any,
 ) -> int:
     """Execute the background command.
-    
+
     Args:
         model: Model to use
         prompt: Prompt for the model
         cwd: Working directory
         remote: Remote execution target
         **kwargs: Additional arguments
-        
+
     Returns:
         Exit code (0 for success)
     """

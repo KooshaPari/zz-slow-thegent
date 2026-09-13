@@ -1,10 +1,12 @@
 """Stub module."""
+
 from dataclasses import dataclass
 
 
 @dataclass
 class ContentTabs:
     """Container for content tabs."""
+
     tabs: list = None
 
     def __post_init__(self) -> None:

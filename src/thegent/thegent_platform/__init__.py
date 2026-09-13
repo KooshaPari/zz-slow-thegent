@@ -6,12 +6,14 @@ This stub exists for backwards compatibility with existing tests.
 """
 
 from __future__ import annotations
+
 from enum import Enum
 from typing import Any
 
 
 class PlatformEnum(Enum):
     """Platform enumeration."""
+
     MACOS = "macos"
     LINUX = "linux"
     WINDOWS = "windows"

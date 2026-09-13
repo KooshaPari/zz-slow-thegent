@@ -12,13 +12,13 @@ from typing import Literal
 from pydantic import Field, SecretStr, field_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
+from thegent.config.logging_config import LoggingConfig
 from thegent.config_defaults import (
     default_cost_budget_by_category,
     default_mac_keep_awake_agents,
     default_sandbox_env_allowlist,
     expanded_path_factory,
 )
-from thegent.config.logging_config import LoggingConfig
 from thegent.config_parsers import (
     parse_retention_by_domain,
 )

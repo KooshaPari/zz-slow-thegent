@@ -39,24 +39,28 @@ zen-mcp-server/
 ## Key Components
 
 ### 1. Protocol Implementation
+
 - MCP protocol compliance
 - Request/response handling
 - Session management
 - See: `docs/architecture/`
 
 ### 2. Tool System
+
 - Tool registration
 - Tool discovery
 - Execution engine
 - See: `docs/api/` and examples
 
 ### 3. Resource Handler
+
 - File access patterns
 - Resource management
 - Access control
 - See: `docs/guides/`
 
 ### 4. Migration Support
+
 - Tool migrations
 - FastMCP compatibility
 - Schema upgrades
@@ -65,6 +69,7 @@ zen-mcp-server/
 ## Development
 
 ### Setup
+
 ```bash
 cd zen-mcp-server
 python -m venv venv
@@ -73,12 +78,14 @@ pip install -e ".[dev]"
 ```
 
 ### Running Tests
+
 ```bash
 pytest tests/
 pytest tests/ -v  # Verbose
 ```
 
 ### Building Documentation
+
 ```bash
 cd docs
 make html  # Build HTML docs

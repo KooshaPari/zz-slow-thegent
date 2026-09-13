@@ -7,9 +7,9 @@ JetBrains IDE integration utilities for thegent.
 Provides detection of installed JetBrains IDEs and configuration of the MCP
 server endpoint so the JetBrains AI plugin can connect to thegent.
 
-MCP config path per IDE:  ~/.config/JetBrains/&lt;IDE&gt;/mcp.json
+MCP config path per IDE: ~/.config/JetBrains/&lt;IDE&gt;/mcp.json
 MCP config format:
-    {"mcpServers": {"thegent": {"url": "http://localhost:3847/mcp"}}}
+{"mcpServers": {"thegent": {"url": "http://localhost:3847/mcp"}}}
 
 FR traceability: FR-IDE-001 (JetBrains MCP integration)
 
@@ -47,7 +47,7 @@ Usage::
 
 ### Methods
 
-#### JetBrainsIntegration.__init__
+#### JetBrainsIntegration.**init**
 
 ```python
 __init__(self: Any, mcp_server_url: str, serena_project_root: str)
@@ -57,10 +57,10 @@ Initialise with target MCP server URL and optional project root.
 
 **Parameters**:
 
-- `mcp_server_url`:      URL of the thegent MCP server.
+- `mcp_server_url`: URL of the thegent MCP server.
 - `serena_project_root`: Absolute project root for Serena context.
-If empty, the IDE plugin will use its own
-project root.
+  If empty, the IDE plugin will use its own
+  project root.
 
 ---
 
@@ -93,8 +93,8 @@ Check whether the thegent MCP plugin entry exists in the IDE config.
 
 - `config`: JetBrainsConfig for the IDE to inspect.
 
-**Returns**: True if mcp.json exists and contains a ``thegent`` entry under
-``mcpServers``; False otherwise.
+**Returns**: True if mcp.json exists and contains a `thegent` entry under
+`mcpServers`; False otherwise.
 
 ---
 
@@ -108,9 +108,9 @@ Read and parse an existing mcp.json for the given IDE.
 
 **Parameters**:
 
-- `config`: JetBrainsConfig whose ``mcp_config_path`` will be read.
+- `config`: JetBrainsConfig whose `mcp_config_path` will be read.
 
-**Returns**: Parsed JSON as a dict, or ``None`` if the file does not exist or
+**Returns**: Parsed JSON as a dict, or `None` if the file does not exist or
 cannot be parsed.
 
 ---
@@ -135,8 +135,8 @@ write_mcp_config(self: Any, config: JetBrainsConfig)
 
 Write (or merge) the thegent MCP server entry into the IDE mcp.json.
 
-If mcp.json already exists, the existing ``mcpServers`` entries are
-preserved and the ``thegent`` entry is added / updated.  Other entries
+If mcp.json already exists, the existing `mcpServers` entries are
+preserved and the `thegent` entry is added / updated. Other entries
 are left untouched.
 
 **Parameters**:
@@ -178,8 +178,8 @@ Check whether the thegent MCP plugin entry exists in the IDE config.
 
 - `config`: JetBrainsConfig for the IDE to inspect.
 
-**Returns**: True if mcp.json exists and contains a ``thegent`` entry under
-``mcpServers``; False otherwise.
+**Returns**: True if mcp.json exists and contains a `thegent` entry under
+`mcpServers`; False otherwise.
 
 ---
 
@@ -203,9 +203,9 @@ Read and parse an existing mcp.json for the given IDE.
 
 **Parameters**:
 
-- `config`: JetBrainsConfig whose ``mcp_config_path`` will be read.
+- `config`: JetBrainsConfig whose `mcp_config_path` will be read.
 
-**Returns**: Parsed JSON as a dict, or ``None`` if the file does not exist or
+**Returns**: Parsed JSON as a dict, or `None` if the file does not exist or
 cannot be parsed.
 
 ---
@@ -230,8 +230,8 @@ write_mcp_config(self: Any, config: JetBrainsConfig)
 
 Write (or merge) the thegent MCP server entry into the IDE mcp.json.
 
-If mcp.json already exists, the existing ``mcpServers`` entries are
-preserved and the ``thegent`` entry is added / updated.  Other entries
+If mcp.json already exists, the existing `mcpServers` entries are
+preserved and the `thegent` entry is added / updated. Other entries
 are left untouched.
 
 **Parameters**:

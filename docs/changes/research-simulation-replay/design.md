@@ -38,6 +38,7 @@ import asyncio
 from pathlib import Path
 import zstd
 
+
 @dataclass
 class ToolCallRecord:
     type: str = "tool_call"
@@ -57,6 +58,7 @@ class ToolCallRecord:
     def to_json_line(self) -> str:
         return json.dumps(asdict(self))
 
+
 @dataclass
 class DecisionRecord:
     type: str = "decision"
@@ -65,6 +67,7 @@ class DecisionRecord:
     choice: str = ""
     session_id: str = ""
     timestamp: str = ""
+
 
 @dataclass
 class SessionRecord:
@@ -79,6 +82,7 @@ class SessionRecord:
     end_time: Optional[str] = None
     total_cost: float = 0.0
     total_tokens: int = 0
+
 
 class TraceRecorder:
     """Records execution traces to JSONL format."""
@@ -179,7 +183,7 @@ class TraceRecorder:
 
     async def _write_worker(self):
         """Async writer worker."""
-        with open(self.trace_file, 'a') as f:
+        with open(self.trace_file, "a") as f:
             while self._running:
                 try:
                     line = await asyncio.wait_for(self._write_queue.get(), timeout=1.0)
@@ -192,9 +196,10 @@ class TraceRecorder:
         """Compress trace file after recording."""
         # Gzip for now; can upgrade to zstd for better compression
         import gzip
+
         if self.trace_file.exists():
-            with open(self.trace_file, 'rb') as f_in:
-                with gzip.open(f"{self.trace_file}.gz", 'wb') as f_out:
+            with open(self.trace_file, "rb") as f_in:
+                with gzip.open(f"{self.trace_file}.gz", "wb") as f_out:
                     f_out.writelines(f_in)
 ```
 
@@ -226,6 +231,7 @@ from pathlib import Path
 import json
 from dataclasses import dataclass
 
+
 @dataclass
 class ExecutionContext:
     trace_records: List[Dict[str, Any]]
@@ -237,6 +243,7 @@ class ExecutionContext:
             self.record_index += 1
             return record
         return None
+
 
 class ReplayEngine:
     """Re-executes workflows with mocked tool calls."""
@@ -254,7 +261,7 @@ class ReplayEngine:
     def _load_trace(self, trace_file: Path) -> ExecutionContext:
         """Load trace from JSONL file."""
         records = []
-        with open(trace_file, 'r') as f:
+        with open(trace_file, "r") as f:
             for line in f:
                 if line.strip():
                     records.append(json.loads(line))
@@ -285,6 +292,7 @@ class ReplayEngine:
 
     def _create_mock_executor(self):
         """Create mock tool executor that returns traced results."""
+
         def mock_executor(tool_name: str, inputs: Dict[str, Any]) -> Any:
             record = self.context.next_record()
             if record and record.get("type") == "tool_call":
@@ -297,6 +305,7 @@ class ReplayEngine:
             elif self.fallback_mode == "live":
                 # Execute live (expensive)
                 import warnings
+
                 warnings.warn(f"Trace mismatch for {tool_name}, falling back to live execution")
                 return self._execute_live(tool_name, inputs)
             else:  # error
@@ -333,6 +342,7 @@ class ReplayEngine:
 from typing import Dict, Any, Optional
 import hashlib
 
+
 class LLMCallMocker:
     """Mocks LLM calls from trace data."""
 
@@ -367,8 +377,7 @@ class LLMCallMocker:
     def _find_trace_record(self, model: str, prompt_prefix: str) -> Optional[Dict]:
         """Find matching trace record for LLM call."""
         for record in self.trace_context.trace_records:
-            if (record.get("type") == "tool_call" and
-                record.get("tool_name") in ["llm_call", "claude", "gpt"]):
+            if record.get("type") == "tool_call" and record.get("tool_name") in ["llm_call", "claude", "gpt"]:
                 # Match by model and prompt similarity
                 if record.get("model") == model:
                     return record
@@ -389,9 +398,11 @@ from dataclasses import dataclass
 from typing import List, Dict, Any
 from enum import Enum
 
+
 class ChangeType(Enum):
     DETERMINISTIC = "deterministic"
     NON_DETERMINISTIC = "non_deterministic"
+
 
 @dataclass
 class Difference:
@@ -401,6 +412,7 @@ class Difference:
     replayed: str
     change_type: ChangeType
     reason: str = ""
+
 
 class DiffAnalyzer:
     """Compares original and replayed executions."""
@@ -432,8 +444,7 @@ class DiffAnalyzer:
     def _records_equal(self, rec1: Dict, rec2: Dict) -> bool:
         """Check if records are equal."""
         # Compare results, ignoring metadata
-        return (rec1.get("tool_name") == rec2.get("tool_name") and
-                rec1.get("result") == rec2.get("result"))
+        return rec1.get("tool_name") == rec2.get("tool_name") and rec1.get("result") == rec2.get("result")
 
     def _classify_difference(self, orig: Dict, repl: Dict, index: int) -> Difference:
         """Classify difference as deterministic or non-deterministic."""
@@ -480,7 +491,7 @@ class DiffAnalyzer:
     def _load_trace(self, trace_file: str) -> List[Dict]:
         """Load trace from file."""
         records = []
-        with open(trace_file, 'r') as f:
+        with open(trace_file, "r") as f:
             for line in f:
                 if line.strip():
                     records.append(json.loads(line))
@@ -500,6 +511,7 @@ class DiffAnalyzer:
 from typing import List, Dict, Any
 from pathlib import Path
 import copy
+
 
 class TraceVariator:
     """Modifies traces parametrically for simulation."""
@@ -535,10 +547,7 @@ class TraceVariator:
                 record["config"].update(config_changes)
         return varied
 
-    def batch_vary(
-        self,
-        parameter_grid: Dict[str, List[Any]]
-    ) -> List[tuple[str, List[Dict]]]:
+    def batch_vary(self, parameter_grid: Dict[str, List[Any]]) -> List[tuple[str, List[Dict]]]:
         """Create multiple variations from parameter grid."""
         variations = []
 
@@ -556,7 +565,7 @@ class TraceVariator:
     def _load_trace(self, trace_file: Path) -> List[Dict]:
         """Load trace from file."""
         records = []
-        with open(trace_file, 'r') as f:
+        with open(trace_file, "r") as f:
             for line in f:
                 if line.strip():
                     records.append(json.loads(line))
@@ -717,13 +726,13 @@ trace:
   # Retention
   ttl_days: 7
   max_storage_gb: 10
-  compression: zstd  # zstd | gzip
+  compression: zstd # zstd | gzip
 
   # Sampling (record 1 in N traces)
   sample_rate: 1.0
 
 replay:
-  fallback_mode: mock  # mock | live | error
+  fallback_mode: mock # mock | live | error
   validate_traces: true
 
 variator:

@@ -8,9 +8,10 @@ Flow:
 
 from __future__ import annotations
 
-import orjson as json
 import logging
 from dataclasses import dataclass
+
+import orjson as json
 
 from thegent.utils.routing_impl.pareto_router import (
     RouteTrace,

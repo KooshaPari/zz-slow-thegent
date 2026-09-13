@@ -9,15 +9,15 @@
 
 ## Document Series
 
-| # | Document | Scope |
-|---|----------|-------|
-| 1 | [CHATGPT_PARETO_DEEP_01_FOUNDATIONS.md](./CHATGPT_PARETO_DEEP_01_FOUNDATIONS.md) | Core Pareto design, Offer abstraction, PRD/ALD foundations, design philosophy |
-| 2 | [CHATGPT_PARETO_DEEP_02_INDICES_ECONOMICS.md](./CHATGPT_PARETO_DEEP_02_INDICES_ECONOMICS.md) | Speed/Cost/Quality index formulas, shadow pricing, budget engine, plan types |
-| 3 | [CHATGPT_PARETO_DEEP_03_API_PIPELINES.md](./CHATGPT_PARETO_DEEP_03_API_PIPELINES.md) | User journeys, API processes, data pipelines, execution flow |
-| 4 | [CHATGPT_PARETO_DEEP_04_PROJECT_CATALOG.md](./CHATGPT_PARETO_DEEP_04_PROJECT_CATALOG.md) | Project-specific subscriptions, Copilot schema, catalog examples, worked routing |
-| 5 | [CHATGPT_PARETO_DEEP_05_SPEED_STACK.md](./CHATGPT_PARETO_DEEP_05_SPEED_STACK.md) | Cerebras, NVIDIA NIM, Step 3.5 Flash, Morph, Relace — sourced research |
-| 6 | [CHATGPT_PARETO_DEEP_06_HELIOS_UNIFIED_SPEC.md](./CHATGPT_PARETO_DEEP_06_HELIOS_UNIFIED_SPEC.md) | Full Helios Router v1.1: PRD + WBS + ALD + ADR |
-| 7 | [CHATGPT_PARETO_DEEP_07_FEB2026_SOTA.md](./CHATGPT_PARETO_DEEP_07_FEB2026_SOTA.md) | Feb 2026 SOTA: models, pricing, meta-routers, cost-efficiency strategies |
+| #   | Document                                                                                         | Scope                                                                            |
+| --- | ------------------------------------------------------------------------------------------------ | -------------------------------------------------------------------------------- |
+| 1   | [CHATGPT_PARETO_DEEP_01_FOUNDATIONS.md](./CHATGPT_PARETO_DEEP_01_FOUNDATIONS.md)                 | Core Pareto design, Offer abstraction, PRD/ALD foundations, design philosophy    |
+| 2   | [CHATGPT_PARETO_DEEP_02_INDICES_ECONOMICS.md](./CHATGPT_PARETO_DEEP_02_INDICES_ECONOMICS.md)     | Speed/Cost/Quality index formulas, shadow pricing, budget engine, plan types     |
+| 3   | [CHATGPT_PARETO_DEEP_03_API_PIPELINES.md](./CHATGPT_PARETO_DEEP_03_API_PIPELINES.md)             | User journeys, API processes, data pipelines, execution flow                     |
+| 4   | [CHATGPT_PARETO_DEEP_04_PROJECT_CATALOG.md](./CHATGPT_PARETO_DEEP_04_PROJECT_CATALOG.md)         | Project-specific subscriptions, Copilot schema, catalog examples, worked routing |
+| 5   | [CHATGPT_PARETO_DEEP_05_SPEED_STACK.md](./CHATGPT_PARETO_DEEP_05_SPEED_STACK.md)                 | Cerebras, NVIDIA NIM, Step 3.5 Flash, Morph, Relace — sourced research           |
+| 6   | [CHATGPT_PARETO_DEEP_06_HELIOS_UNIFIED_SPEC.md](./CHATGPT_PARETO_DEEP_06_HELIOS_UNIFIED_SPEC.md) | Full Helios Router v1.1: PRD + WBS + ALD + ADR                                   |
+| 7   | [CHATGPT_PARETO_DEEP_07_FEB2026_SOTA.md](./CHATGPT_PARETO_DEEP_07_FEB2026_SOTA.md)               | Feb 2026 SOTA: models, pricing, meta-routers, cost-efficiency strategies         |
 
 ---
 

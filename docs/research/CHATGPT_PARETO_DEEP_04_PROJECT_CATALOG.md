@@ -9,24 +9,24 @@
 
 ## 1. Ground Truth Subscriptions (From User)
 
-| Plan | Monthly | Notes |
-|------|---------|-------|
-| Claude Max | $200 | ~3B tok/mo (dynamic, across 3 models, includes cached) |
-| Codex | $200 | ~11B tok/mo |
-| Cursor | $200 | ~$600 usage equivalent |
-| Minimax | $40 | 300 prompts / 5 hours |
-| Copilot Student Pro | Free | Unlimited completions; 300 premium requests/mo (Pro) |
-| GLM Max | $80 | 3× usage vs Claude (on paper) |
-| Gemini/Antigravity | $20 | Free plans via Google AI Premium |
-| Promo (Kilo, Roo, Opencode, Kimi, Qwen) | Varies | Rotating free/cheap models |
+| Plan                                    | Monthly | Notes                                                  |
+| --------------------------------------- | ------- | ------------------------------------------------------ |
+| Claude Max                              | $200    | ~3B tok/mo (dynamic, across 3 models, includes cached) |
+| Codex                                   | $200    | ~11B tok/mo                                            |
+| Cursor                                  | $200    | ~$600 usage equivalent                                 |
+| Minimax                                 | $40     | 300 prompts / 5 hours                                  |
+| Copilot Student Pro                     | Free    | Unlimited completions; 300 premium requests/mo (Pro)   |
+| GLM Max                                 | $80     | 3× usage vs Claude (on paper)                          |
+| Gemini/Antigravity                      | $20     | Free plans via Google AI Premium                       |
+| Promo (Kilo, Roo, Opencode, Kimi, Qwen) | Varies  | Rotating free/cheap models                             |
 
 ### Copilot Tiers (Clarified)
 
-| Tier | Premium Requests | Overage | Notes |
-|------|------------------|---------|-------|
-| **Free** | 50 premium/mo | — | 2,000 inline suggestions |
-| **Pro** (Student) | 300 premium/mo | $0.04/request | Unlimited completions |
-| **Pro+** | 1,500 premium/mo | $0.04/request | Full model access |
+| Tier              | Premium Requests | Overage       | Notes                    |
+| ----------------- | ---------------- | ------------- | ------------------------ |
+| **Free**          | 50 premium/mo    | —             | 2,000 inline suggestions |
+| **Pro** (Student) | 300 premium/mo   | $0.04/request | Unlimited completions    |
+| **Pro+**          | 1,500 premium/mo | $0.04/request | Full model access        |
 
 **Key**: Premium requests are **weighted by model**. Some models (GPT-4.1, GPT-5 mini) are **0×** — don't count against usage.
 
@@ -36,15 +36,15 @@
 
 ### 2.1 Unit Multipliers (Examples)
 
-| Model | Multiplier |
-|-------|------------|
-| Claude Sonnet 4.6 | 1.0× |
-| Claude Opus 4.6 | 2.0× |
-| Claude Haiku 4.5 | 0.33× |
-| Gemini 3 Pro | 0.1× |
-| Gemini 3 Flash | 0.1× |
-| GPT-4.1 | 0× |
-| GPT-5 mini | 0× |
+| Model             | Multiplier |
+| ----------------- | ---------- |
+| Claude Sonnet 4.6 | 1.0×       |
+| Claude Opus 4.6   | 2.0×       |
+| Claude Haiku 4.5  | 0.33×      |
+| Gemini 3 Pro      | 0.1×       |
+| Gemini 3 Flash    | 0.1×       |
+| GPT-4.1           | 0×         |
+| GPT-5 mini        | 0×         |
 
 ### 2.2 Plan Schema (Copilot Pro Student)
 
@@ -79,6 +79,7 @@
 ### 2.3 Copilot Effective Cost (0× Models)
 
 For m = 0 (GPT-4.1, GPT-5 mini):
+
 - Monetary cost = 0
 - Add: floor_cost + volatility_penalty + opportunity_penalty
 - Floor cost tiny (e.g., $0.002 equivalent) to prevent degenerate "always pick free" during tie-breaks
@@ -248,7 +249,7 @@ offers:
 ```json
 {
   "asOf": "2026-02-18T07:00:00Z",
-  "global": { "budgetRemainingUsd": 412.30, "budgetShadow": 1.15 },
+  "global": { "budgetRemainingUsd": 412.3, "budgetShadow": 1.15 },
   "plans": {
     "copilot-pro": {
       "shadow": 1.02,
@@ -256,7 +257,7 @@ offers:
       "premiumRequestsRemaining": 263
     },
     "codex-sub": {
-      "shadow": 1.30,
+      "shadow": 1.3,
       "effectiveUnitCost": { "inPerMTokUsd": 0.02, "outPerMTokUsd": 0.02 }
     }
   }
@@ -290,7 +291,7 @@ offers:
 {
   "offers": {
     "copilot:gpt-5-mini:chat": { "code_complex": 0.78, "code_simple": 0.84 },
-    "codex:gpt-5.3-codex-medplus": { "code_complex": 0.88, "code_simple": 0.90 }
+    "codex:gpt-5.3-codex-medplus": { "code_complex": 0.88, "code_simple": 0.9 }
   },
   "confidence": {
     "copilot:gpt-5-mini:chat": { "code_complex": 0.55 },
@@ -310,6 +311,7 @@ offers:
 ### Cost per Offer
 
 **A) Codex sub (fixed bucket)**
+
 ```
 EUC ~ $0.0182/MTok × shadow 1.3
 Total tokens = 14,500
@@ -318,6 +320,7 @@ effective = base * 1.3 = $0.000343
 ```
 
 **B) Copilot chat (premium requests)**
+
 ```
 avg total tokens per premium request = 20,000
 Implied EUC = 0.04/20000 = $2/MTok
@@ -327,6 +330,7 @@ effective = 0.029 * 1.1 = $0.032
 ```
 
 **C) OpenRouter payg**
+
 ```
 base = 12000*(0.5/1e6) + 2500*(1/1e6) = $0.0085
 effective = base * budget_shadow(1.15) = $0.0098
@@ -338,16 +342,16 @@ effective = base * budget_shadow(1.15) = $0.0098
 
 ## 8. Plan Mapping (Ground Truths → Schema)
 
-| User Plan | Schema Type |
-|-----------|-------------|
-| Claude Max $200 | fixed_bucket_tokens, prior 3B tok/mo |
-| Codex $200 | fixed_bucket_tokens, prior 11B tok/mo |
-| Cursor $200 | subsidized_payg (3× value prior) + learn from logs |
-| Minimax $40 | prompt_rate_limited |
-| Copilot student | weighted_unit_bucket, 300 units, 0× for GPT-4.1/GPT-5 mini |
-| GLM Max $80 | fixed_bucket or prompt-limited; learn EUC from logs |
-| Gemini premium $20 | fixed_bucket / unlimited depending on limits |
-| Promo harnesses | volatile_free, high volatility penalty |
+| User Plan          | Schema Type                                                |
+| ------------------ | ---------------------------------------------------------- |
+| Claude Max $200    | fixed_bucket_tokens, prior 3B tok/mo                       |
+| Codex $200         | fixed_bucket_tokens, prior 11B tok/mo                      |
+| Cursor $200        | subsidized_payg (3× value prior) + learn from logs         |
+| Minimax $40        | prompt_rate_limited                                        |
+| Copilot student    | weighted_unit_bucket, 300 units, 0× for GPT-4.1/GPT-5 mini |
+| GLM Max $80        | fixed_bucket or prompt-limited; learn EUC from logs        |
+| Gemini premium $20 | fixed_bucket / unlimited depending on limits               |
+| Promo harnesses    | volatile_free, high volatility penalty                     |
 
 ---
 

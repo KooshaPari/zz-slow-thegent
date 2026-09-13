@@ -1,7 +1,7 @@
 """Tests for `thegent git worktree` lifecycle commands."""
 
 import importlib.util
-import sys
+
 import pytest
 
 # Skip entire test module if thegent_git native extension is not available
@@ -10,10 +10,10 @@ if importlib.util.find_spec("thegent_git") is None:
 
     pytest.skip("thegent-git native extension not installed", allow_module_level=True)
 
-import orjson as json
 from pathlib import Path
 from unittest.mock import MagicMock, patch
 
+import orjson as json
 from typer.testing import CliRunner
 
 from thegent.cli.commands.cli_git import app
@@ -112,7 +112,10 @@ def test_git_worktree_status_supports_json_output(tmp_path: Path) -> None:
 
     assert result.exit_code == 0
     payload = json.loads(result.output)
-    assert payload == [{"agent_id": "alpha", "branch": "agent/alpha"}, {"agent_id": "beta", "branch": "agent/beta"}]
+    assert payload == [
+        {"agent_id": "alpha", "branch": "agent/alpha"},
+        {"agent_id": "beta", "branch": "agent/beta"},
+    ]
 
 
 def test_git_worktree_claim_aliases_acquire(tmp_path: Path) -> None:
@@ -138,7 +141,10 @@ def test_git_worktree_list_supports_json_output(tmp_path: Path) -> None:
 
     assert result.exit_code == 0
     payload = json.loads(result.output)
-    assert payload == [{"agent_id": "alpha", "branch": "agent/alpha"}, {"agent_id": "beta", "branch": "agent/beta"}]
+    assert payload == [
+        {"agent_id": "alpha", "branch": "agent/alpha"},
+        {"agent_id": "beta", "branch": "agent/beta"},
+    ]
 
 
 def test_git_worktree_acquire_supports_json_output(tmp_path: Path) -> None:
@@ -150,4 +156,8 @@ def test_git_worktree_acquire_supports_json_output(tmp_path: Path) -> None:
 
     assert result.exit_code == 0
     payload = json.loads(result.output.replace("\n", ""))
-    assert payload == {"agent_id": "agent-1", "path": str(tmp_path / "agent-1"), "branch": "agent/agent-1"}
+    assert payload == {
+        "agent_id": "agent-1",
+        "path": str(tmp_path / "agent-1"),
+        "branch": "agent/agent-1",
+    }

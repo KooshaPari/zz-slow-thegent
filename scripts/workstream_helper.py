@@ -22,7 +22,7 @@ from __future__ import annotations
 import fcntl
 import re
 from dataclasses import dataclass, field
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from pathlib import Path
 from typing import IO
 
@@ -364,7 +364,7 @@ def claim_item(
         if item_id in state.claimed_ids():
             return False
 
-        ts = datetime.now(tz=timezone.utc).isoformat()
+        ts = datetime.now(tz=UTC).isoformat()
         new_row = f"| {item_id} | {agent_id} | {ts} |  |\n"
         content = _insert_into_claimed(content, new_row)
 
@@ -415,7 +415,7 @@ def complete_item(
         # Remove from backlog and claimed
         content = _remove_item_row(content, item_id)
 
-        ts = datetime.now(tz=timezone.utc).strftime("%Y-%m-%d")
+        ts = datetime.now(tz=UTC).strftime("%Y-%m-%d")
         safe_notes = notes.replace("|", " ") if notes else ""
         new_row = f"| {item_id} | {agent_id} | {ts} | {safe_notes} |\n"
         content = _insert_into_completed(content, new_row)

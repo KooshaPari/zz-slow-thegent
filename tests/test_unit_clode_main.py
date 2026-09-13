@@ -13,13 +13,13 @@ from thegent.clode_main import (
     _CLODE_BYPASS_FLAG,
     _GLM_POLICY_COUNTER,
     _MODEL_ALIAS,
-    _run_sitback_codex,
     _resolve_clode_token,
     _run_claude_interactive,
     _run_claude_print,
+    _run_sitback_codex,
     _run_sitback_droid,
-    sitback_cmd,
     app,
+    sitback_cmd,
 )
 
 runner = CliRunner()
@@ -199,12 +199,21 @@ def test_clode_print_mode_uses_dangerous_skip_permissions_flag() -> None:
         patch("thegent.clode_main._ensure_provider_configured"),
         patch(
             "thegent.clode_main._get_claude_env",
-            return_value={"ANTHROPIC_BASE_URL": "http://127.0.0.1:8317", "CLAUDE_CONFIG_DIR": "/tmp/claude-config"},
+            return_value={
+                "ANTHROPIC_BASE_URL": "http://127.0.0.1:8317",
+                "CLAUDE_CONFIG_DIR": "/tmp/claude-config",
+            },
         ),
         patch("thegent.clode_main._ensure_claude_config_isolation"),
         patch("thegent.clode_main.wrap_with_caffeinate", side_effect=lambda cmd, _: cmd),
-        patch("thegent.clode_main._ensure_claude_installed", return_value="/usr/bin/claude"),
-        patch("thegent.clode_main.subprocess.run", return_value=type("RunResult", (), {"returncode": 0})()) as run,
+        patch(
+            "thegent.clode_main._ensure_claude_installed",
+            return_value="/usr/bin/claude",
+        ),
+        patch(
+            "thegent.clode_main.subprocess.run",
+            return_value=type("RunResult", (), {"returncode": 0})(),
+        ) as run,
     ):
         with pytest.raises(typer.Exit) as exit_info:
             _run_claude_print("minimax", "hi", model_override="MiniMax-M2.5")
@@ -215,7 +224,10 @@ def test_clode_print_mode_uses_dangerous_skip_permissions_flag() -> None:
 
 def test_clode_provider_default_to_interactive() -> None:
     with (
-        patch("thegent.clode_main._get_claude_env", return_value={"ANTHROPIC_MODEL": "glm-5"}),
+        patch(
+            "thegent.clode_main._get_claude_env",
+            return_value={"ANTHROPIC_MODEL": "glm-5"},
+        ),
         patch("thegent.clode_main._run_claude_interactive") as run_interactive,
     ):
         result = runner.invoke(app, ["nim"])
@@ -258,7 +270,10 @@ def test_clode_run_and_bg_delegate_to_claude_cmd() -> None:
     with (
         patch(
             "thegent.clode_main._get_claude_env",
-            return_value={"ANTHROPIC_MODEL": "glm-5", "CLAUDE_CONFIG_DIR": "/tmp/claude-config"},
+            return_value={
+                "ANTHROPIC_MODEL": "glm-5",
+                "CLAUDE_CONFIG_DIR": "/tmp/claude-config",
+            },
         ),
         patch("thegent.cli.run_cmd") as run_cmd,
     ):
@@ -274,7 +289,10 @@ def test_clode_run_and_bg_delegate_to_claude_cmd() -> None:
     with (
         patch(
             "thegent.clode_main._get_claude_env",
-            return_value={"ANTHROPIC_MODEL": "glm-5", "CLAUDE_CONFIG_DIR": "/tmp/claude-config"},
+            return_value={
+                "ANTHROPIC_MODEL": "glm-5",
+                "CLAUDE_CONFIG_DIR": "/tmp/claude-config",
+            },
         ),
         patch("thegent.cli.bg_cmd") as bg_cmd,
     ):
@@ -291,7 +309,10 @@ def test_clode_run_global_forwards_remote_to_run_cmd() -> None:
     with (
         patch(
             "thegent.clode_main._get_claude_env",
-            return_value={"ANTHROPIC_MODEL": "glm-5", "CLAUDE_CONFIG_DIR": "/tmp/claude-config"},
+            return_value={
+                "ANTHROPIC_MODEL": "glm-5",
+                "CLAUDE_CONFIG_DIR": "/tmp/claude-config",
+            },
         ),
         patch("thegent.clode_main.run_cmd") as run_cmd,
     ):
@@ -306,7 +327,10 @@ def test_clode_bg_global_forwards_remote_to_bg_cmd() -> None:
     with (
         patch(
             "thegent.clode_main._get_claude_env",
-            return_value={"ANTHROPIC_MODEL": "glm-5", "CLAUDE_CONFIG_DIR": "/tmp/claude-config"},
+            return_value={
+                "ANTHROPIC_MODEL": "glm-5",
+                "CLAUDE_CONFIG_DIR": "/tmp/claude-config",
+            },
         ),
         patch("thegent.clode_main.bg_cmd") as bg_cmd,
     ):
@@ -457,7 +481,10 @@ def test_sitback_codex_includes_yolo_and_bypass_flags_when_not_agent() -> None:
         patch("thegent.clode_main.shutil.which", return_value="/usr/bin/codex"),
         patch("thegent.clode_main._is_triggered_by_agent_process", return_value=False),
         patch("thegent.dex_main._resolve_provider_for_model", return_value="copilot"),
-        patch("thegent.dex_main._get_codex_env", return_value={"OPENAI_BASE_URL": "http://127.0.0.1:8317"}),
+        patch(
+            "thegent.dex_main._get_codex_env",
+            return_value={"OPENAI_BASE_URL": "http://127.0.0.1:8317"},
+        ),
     ):
         _run_sitback_codex("max", {"OPENAI_BASE_URL": "http://127.0.0.1:8317"}, tmux=False)
         command = execvpe.call_args.args[1]
@@ -785,7 +812,10 @@ def test_run_claude_interactive_exec_path_and_env_handshake() -> None:
         patch("thegent.clode_main._ensure_provider_configured"),
         patch("thegent.clode_main._get_claude_env", return_value=fake_env),
         patch("thegent.clode_main._ensure_claude_config_isolation"),
-        patch("thegent.clode_main._ensure_claude_installed", return_value="/usr/bin/claude"),
+        patch(
+            "thegent.clode_main._ensure_claude_installed",
+            return_value="/usr/bin/claude",
+        ),
         patch("thegent.clode_main._is_triggered_by_agent_process", return_value=True),
         patch("thegent.clode_main.wrap_with_caffeinate", side_effect=lambda cmd, _: cmd),
         patch("thegent.clode_main.os.execvpe") as execvpe,

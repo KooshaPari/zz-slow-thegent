@@ -28,7 +28,6 @@ from typer.testing import CliRunner
 from thegent.cli.apps.main import app as main_app
 from thegent.cli.commands.impl import run_impl
 
-
 runner = CliRunner(mix_stderr=False)
 
 

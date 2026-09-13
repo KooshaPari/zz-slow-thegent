@@ -45,7 +45,8 @@ class TestChecks:
 
     def test_check_mojo_records_probe_error(self):
         with patch(
-            "thegent.infra.multi_runtime_diagnostics.run_subprocess_optimized", side_effect=RuntimeError("mojo missing")
+            "thegent.infra.multi_runtime_diagnostics.run_subprocess_optimized",
+            side_effect=RuntimeError("mojo missing"),
         ):
             result = check_mojo()
 
@@ -55,7 +56,8 @@ class TestChecks:
 
     def test_check_zig_records_probe_error(self):
         with patch(
-            "thegent.infra.multi_runtime_diagnostics.run_subprocess_optimized", side_effect=RuntimeError("zig missing")
+            "thegent.infra.multi_runtime_diagnostics.run_subprocess_optimized",
+            side_effect=RuntimeError("zig missing"),
         ):
             result = check_zig()
 
@@ -112,7 +114,21 @@ class TestNetworkLatency:
     """Tests for latency check behavior."""
 
     @patch("thegent.infra.multi_runtime_diagnostics.run_subprocess_optimized")
-    @patch("time.perf_counter", side_effect=[0.0, 0.001, 0.002, 0.003, 0.004, 0.005, 0.006, 0.007, 0.008, 0.009])
+    @patch(
+        "time.perf_counter",
+        side_effect=[
+            0.0,
+            0.001,
+            0.002,
+            0.003,
+            0.004,
+            0.005,
+            0.006,
+            0.007,
+            0.008,
+            0.009,
+        ],
+    )
     def test_check_network_latency_success(self, *_):
         result = check_network_latency("127.0.0.1")
 
@@ -120,8 +136,25 @@ class TestNetworkLatency:
         assert result["jitter_ms"] == pytest.approx(0.0)
         assert result["errors"] == []
 
-    @patch("thegent.infra.multi_runtime_diagnostics.run_subprocess_optimized", side_effect=RuntimeError("ping missing"))
-    @patch("time.perf_counter", side_effect=[0.0, 0.001, 0.002, 0.003, 0.004, 0.005, 0.006, 0.007, 0.008, 0.009])
+    @patch(
+        "thegent.infra.multi_runtime_diagnostics.run_subprocess_optimized",
+        side_effect=RuntimeError("ping missing"),
+    )
+    @patch(
+        "time.perf_counter",
+        side_effect=[
+            0.0,
+            0.001,
+            0.002,
+            0.003,
+            0.004,
+            0.005,
+            0.006,
+            0.007,
+            0.008,
+            0.009,
+        ],
+    )
     def test_check_network_latency_collects_errors_when_unavailable(self, *_):
         result = check_network_latency("127.0.0.1")
 

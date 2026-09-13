@@ -13,7 +13,7 @@ from __future__ import annotations
 import os
 import time
 from typing import TYPE_CHECKING
-from unittest.mock import MagicMock, patch
+from unittest.mock import patch
 
 import pytest
 
@@ -104,7 +104,11 @@ class TestPurePythonBreakerStore:
         store = _PurePythonBreakerStore()
         # Inject failures just beyond the recovery window
         now = time.time()
-        store._failures["target:agent"] = [now - 10, now - 10, now - 10]  # threshold=3 met
+        store._failures["target:agent"] = [
+            now - 10,
+            now - 10,
+            now - 10,
+        ]  # threshold=3 met
         # recovery_s=5: last failure was 10s ago > 5s, so half-open (returns False)
         assert not store.is_open("target", "agent", threshold=3, window_s=300, recovery_s=5)
 
@@ -365,5 +369,9 @@ class TestEnvVarControl:
     def test_env_zero_disables_native(self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
         monkeypatch.setenv("THGENT_USE_NATIVE_SHM", "0")
         # Re-evaluate the module-level probe by simulating what the module does
-        enabled = os.environ.get("THGENT_USE_NATIVE_SHM", "1").strip() not in ("0", "false", "no")
+        enabled = os.environ.get("THGENT_USE_NATIVE_SHM", "1").strip() not in (
+            "0",
+            "false",
+            "no",
+        )
         assert not enabled

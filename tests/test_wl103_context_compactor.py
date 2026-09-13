@@ -22,7 +22,6 @@ from thegent.agents.context_compactor import (
     _encoding_for_model,
 )
 
-
 # ---------------------------------------------------------------------------
 # Helpers
 # ---------------------------------------------------------------------------
@@ -264,7 +263,12 @@ def test_compact_summarizes_older_turns_and_keeps_recent_two() -> None:  # @trac
 @pytest.mark.requirement("WL-103")
 def test_compact_reduces_usage_ratio() -> None:  # @trace WL-103
     compactor = ContextCompactor(threshold_ratio=0.2, chars_per_token=1.0)
-    turns = [_turn("user", "x" * 40), _turn("assistant", "y" * 40), _turn("user", "z" * 40), _turn("assistant", "w")]
+    turns = [
+        _turn("user", "x" * 40),
+        _turn("assistant", "y" * 40),
+        _turn("user", "z" * 40),
+        _turn("assistant", "w"),
+    ]
     before = compactor.usage_ratio(turns, 50)
     after = compactor.compact(turns, 50).usage_ratio
     assert before > after

@@ -25,7 +25,6 @@ from unittest.mock import MagicMock, patch
 
 import pytest
 
-
 _WIRE_DONE = ("_phase_update_teammate_status",)
 
 
@@ -122,7 +121,9 @@ def test_phase_update_teammate_status_failed_uses_stderr(helpers_module) -> None
         assert kwargs["summary"].startswith("e")
 
 
-def test_phase_update_teammate_status_failed_no_stderr_uses_fallback(helpers_module) -> None:
+def test_phase_update_teammate_status_failed_no_stderr_uses_fallback(
+    helpers_module,
+) -> None:
     """status='failed' with empty stderr → summary is 'Failed without stderr'."""
     settings = MagicMock()
     settings.cache_dir = MagicMock()

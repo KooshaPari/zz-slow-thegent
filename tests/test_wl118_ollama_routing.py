@@ -16,7 +16,11 @@ def test_resolve_route_supports_ollama_provider_hint_aliases(alias: str) -> None
 
 
 def test_litellm_config_sets_local_ollama_api_base() -> None:
-    route = Route(provider=normalize_provider_name("ollama-local"), backend_type="direct", model_alias="llama3.3")
+    route = Route(
+        provider=normalize_provider_name("ollama-local"),
+        backend_type="direct",
+        model_alias="llama3.3",
+    )
     conf = _route_to_litellm_config(route)
     assert conf["litellm_params"]["model"] == "ollama/llama3.3"
     assert conf["litellm_params"]["api_base"] == "http://127.0.0.1:11434/v1"

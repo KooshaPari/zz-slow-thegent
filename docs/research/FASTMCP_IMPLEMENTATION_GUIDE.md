@@ -5,6 +5,7 @@
 **Purpose:** Consolidated extraction of all implementable items, patterns, and design decisions from FastMCP research documents.
 **Status:** Implementation Guide | **P3 Polish**: Summary table, cross-links, next actions added
 **Related**:
+
 - [MCP_FULL_PARITY_AND_FASTMCP_AUDIT.md](./MCP_FULL_PARITY_AND_FASTMCP_AUDIT.md) - MCP parity audit
 - [MCP_TOOL_OPTIMIZATION_PLAN.md](../plans/MCP_TOOL_OPTIMIZATION_PLAN.md) - MCP tool optimization
 - [WORK_STREAM.md](../reference/WORK_STREAM.md) - Unified work stream
@@ -13,28 +14,28 @@
 
 ## Document Summary
 
-| Aspect | Details |
-|--------|---------|
-| **Document Type** | Implementation guide |
-| **Lines** | ~1,332 lines |
-| **Sections** | 10+ sections covering FastMCP features, patterns, implementation |
-| **Status** | Guide complete, ready for implementation |
-| **Key Features** | Elicitation API, Context API, Task mode, Tool patterns, Storage/EventStore |
-| **Implementation Priority** | High (core MCP functionality) |
-| **Performance Targets** | <50ms tool execution (p95), <100ms elicitation response |
-| **BACKLOG Items** | 5 items extracted (see Next Actions) |
+| Aspect                      | Details                                                                    |
+| --------------------------- | -------------------------------------------------------------------------- |
+| **Document Type**           | Implementation guide                                                       |
+| **Lines**                   | ~1,332 lines                                                               |
+| **Sections**                | 10+ sections covering FastMCP features, patterns, implementation           |
+| **Status**                  | Guide complete, ready for implementation                                   |
+| **Key Features**            | Elicitation API, Context API, Task mode, Tool patterns, Storage/EventStore |
+| **Implementation Priority** | High (core MCP functionality)                                              |
+| **Performance Targets**     | <50ms tool execution (p95), <100ms elicitation response                    |
+| **BACKLOG Items**           | 5 items extracted (see Next Actions)                                       |
 
 ---
 
 ## Next Actions (WORK_STREAM IDs)
 
-| ID | Action | Priority | Depends | Status |
-|----|--------|----------|---------|--------|
-| `fastmcp-elicitation-api` | Implement FastMCP elicitation API (structured input, single/multi-select) | P1 | - | BACKLOG |
-| `fastmcp-context-api` | Implement FastMCP Context API (foreground/background modes) | P1 | - | BACKLOG |
-| `fastmcp-task-mode` | Implement FastMCP task mode (background execution) | P1 | fastmcp-context-api | BACKLOG |
-| `fastmcp-storage-eventstore` | Implement FastMCP Storage/EventStore integration | P2 | fastmcp-context-api | BACKLOG |
-| `fastmcp-tool-patterns` | Implement FastMCP tool patterns (error handling, retry, validation) | P2 | fastmcp-elicitation-api | BACKLOG |
+| ID                           | Action                                                                    | Priority | Depends                 | Status  |
+| ---------------------------- | ------------------------------------------------------------------------- | -------- | ----------------------- | ------- |
+| `fastmcp-elicitation-api`    | Implement FastMCP elicitation API (structured input, single/multi-select) | P1       | -                       | BACKLOG |
+| `fastmcp-context-api`        | Implement FastMCP Context API (foreground/background modes)               | P1       | -                       | BACKLOG |
+| `fastmcp-task-mode`          | Implement FastMCP task mode (background execution)                        | P1       | fastmcp-context-api     | BACKLOG |
+| `fastmcp-storage-eventstore` | Implement FastMCP Storage/EventStore integration                          | P2       | fastmcp-context-api     | BACKLOG |
+| `fastmcp-tool-patterns`      | Implement FastMCP tool patterns (error handling, retry, validation)       | P2       | fastmcp-elicitation-api | BACKLOG |
 
 **See Also**: [WORK_STREAM.md](../reference/WORK_STREAM.md) for full backlog
 
@@ -43,6 +44,7 @@
 ## 1. Elicitation & Context API
 
 ### Key Findings
+
 - FastMCP provides a unified Context interface for user interaction in both foreground (request) and background (task) modes
 - Elicitation supports structured responses (primitives, Pydantic models, multi-select)
 - Context logging delegates to MCP client for real-time visibility
@@ -50,10 +52,13 @@
 ### Implementable Items
 
 #### 1.1 User Input Elicitation
+
 **Description:** Request structured user input within tool execution
 **Implementation:**
+
 ```python
 from fastmcp.dependencies import CurrentContext
+
 
 @mcp.tool()
 async def configure_agent(ctx: Context = CurrentContext()) -> str:
@@ -68,13 +73,16 @@ async def configure_agent(ctx: Context = CurrentContext()) -> str:
 ```
 
 **Use cases for thegent:**
+
 - Ask for agent configuration parameters
 - Elicit prompt refinement options
 - Request deployment approval before critical operations
 
 #### 1.2 Single-Select and Multi-Select Options
+
 **Description:** Present categorical choices to user
 **Implementation:**
+
 ```python
 # Single-select with key mapping
 config_options = {
@@ -91,31 +99,34 @@ selected = result.data  # ["email", "slack"] etc.
 ```
 
 **Use cases for thegent:**
+
 - Select which agents to run in parallel
 - Choose notification channels for task completion
 - Filter resources by deployment region
 
 #### 1.3 Structured Data Input
+
 **Description:** Request complex structured data with validation
 **Implementation:**
+
 ```python
 from pydantic import BaseModel
+
 
 class AgentConfig(BaseModel):
     name: str
     timeout_secs: int
     retry_count: int
 
-result = await ctx.elicit(
-    "Configure the agent",
-    response_type=AgentConfig
-)
+
+result = await ctx.elicit("Configure the agent", response_type=AgentConfig)
 if isinstance(result, AcceptedElicitation):
     config: AgentConfig = result.data
     await spawn_agent(config)
 ```
 
 **Use cases for thegent:**
+
 - Request agent parameters with validation
 - Elicit deployment configuration
 - Capture pipeline execution settings
@@ -123,6 +134,7 @@ if isinstance(result, AcceptedElicitation):
 ### Patterns
 
 **Pattern 1: Optional Elicitation with Fallback**
+
 ```python
 result = await ctx.elicit("Feature flag?", response_type=str)
 if isinstance(result, AcceptedElicitation):
@@ -132,6 +144,7 @@ else:
 ```
 
 **Pattern 2: Conditional Elicitation Chain**
+
 ```python
 env_result = await ctx.elicit("Environment?", response_type=["dev", "prod"])
 if env_result.data == "prod":
@@ -153,6 +166,7 @@ if env_result.data == "prod":
 ## 2. Logging & Client Messaging
 
 ### Key Findings
+
 - All logging methods (`info`, `debug`, `error`, `warning`) delegate to `ctx.log()`
 - Messages route to connected MCP client in real-time
 - Supports structured logging with `extra` metadata
@@ -160,8 +174,10 @@ if env_result.data == "prod":
 ### Implementable Items
 
 #### 2.1 Contextual Logging
+
 **Description:** Send real-time updates to client during tool execution
 **Implementation:**
+
 ```python
 @mcp.tool()
 async def long_task(ctx: Context = CurrentContext()) -> str:
@@ -177,13 +193,16 @@ async def long_task(ctx: Context = CurrentContext()) -> str:
 ```
 
 **Use cases for thegent:**
+
 - Report orchestration progress in `thegent_run`
 - Log agent startup/shutdown events
 - Surface internal errors to client for debugging
 
 #### 2.2 Structured Logging with Metadata
+
 **Description:** Attach structured metadata to log entries
 **Implementation:**
+
 ```python
 await ctx.info(
     "Agent spawned",
@@ -192,11 +211,12 @@ await ctx.info(
         "agent_id": agent.id,
         "agent_name": agent.name,
         "config": agent.config.dict(),
-    }
+    },
 )
 ```
 
 **Use cases for thegent:**
+
 - Log agent execution metrics (duration, memory, tokens)
 - Attach session context (session_id, user_id)
 - Record resource allocation details
@@ -204,6 +224,7 @@ await ctx.info(
 ### Patterns
 
 **Pattern 1: Try-Finally Logging for Cleanup**
+
 ```python
 await ctx.info("Starting operation...")
 try:
@@ -213,6 +234,7 @@ finally:
 ```
 
 **Pattern 2: Progressive Log Levels**
+
 ```python
 await ctx.debug(f"Parsed input: {parsed}")
 await ctx.info(f"Processing {len(items)} items")
@@ -225,6 +247,7 @@ for item in items:
 ## 3. Progress Reporting & Tasks
 
 ### Key Findings
+
 - Progress reporting works in both foreground and background (Docket) modes
 - TaskConfig modes control sync vs. async execution
 - asyncio.to_thread enables long-running sync code in async context
@@ -232,8 +255,10 @@ for item in items:
 ### Implementable Items
 
 #### 3.1 Progress Reporting
+
 **Description:** Report incremental progress to client during long-running operations
 **Implementation:**
+
 ```python
 @mcp.tool()
 async def thegent_run(
@@ -255,13 +280,16 @@ async def thegent_run(
 ```
 
 **Use cases for thegent:**
+
 - Report multi-agent execution progress
 - Show pipeline stage completion
 - Track long-running transformations
 
 #### 3.2 Task Mode Configuration
+
 **Description:** Define sync/async execution policy for tools
 **Implementation:**
+
 ```python
 from fastmcp.dependencies import TaskConfig
 
@@ -283,13 +311,16 @@ async def quick_lookup(...) -> str:
 ```
 
 **Use cases for thegent:**
+
 - `thegent_run`: required or optional depending on client timeout
 - Agent execution: required (can exceed HTTP timeout)
 - Quick lookups (ps, list_agents): forbidden
 
 #### 3.3 Sync Code in Async Handler (asyncio.to_thread)
+
 **Description:** Execute blocking I/O or sync libraries in threadpool
 **Implementation:**
+
 ```python
 @mcp.tool(task=TaskConfig(mode="optional"))
 async def thegent_run(agents: list[str], ctx: Context = CurrentContext()) -> dict:
@@ -306,6 +337,7 @@ async def thegent_run(agents: list[str], ctx: Context = CurrentContext()) -> dic
 ```
 
 **Use cases for thegent:**
+
 - Execute agents that use subprocess or blocking APIs
 - Call synchronous orchestration libraries
 - Integrate legacy sync codebase
@@ -313,6 +345,7 @@ async def thegent_run(agents: list[str], ctx: Context = CurrentContext()) -> dic
 ### Patterns
 
 **Pattern 1: Progress with Checkpoints**
+
 ```python
 total = sum(agent.estimated_cost for agent in agents)
 await progress.set_total(int(total))
@@ -324,6 +357,7 @@ for agent in agents:
 ```
 
 **Pattern 2: Task-aware Error Handling**
+
 ```python
 @mcp.tool(task=TaskConfig(mode="optional"))
 async def risky_operation(...) -> dict:
@@ -348,6 +382,7 @@ async def risky_operation(...) -> dict:
 ## 4. Transforms & Component Exposure
 
 ### Key Findings
+
 - Transforms are applied after provider aggregation and can namespace/modify all components
 - ResourcesAsTools and PromptsAsTools bridge resources/prompts for tool-only clients
 - Namespace transform prefixes all tool names (useful for multi-provider aggregation)
@@ -355,8 +390,10 @@ async def risky_operation(...) -> dict:
 ### Implementable Items
 
 #### 4.1 Namespace Transform for Multi-Provider Aggregation
+
 **Description:** Prefix all tools from a provider to avoid naming collisions
 **Implementation:**
+
 ```python
 from fastmcp import FastMCP
 from fastmcp.server.transforms import Namespace
@@ -365,15 +402,21 @@ main = FastMCP("MainServer")
 
 # Sub-provider for agents
 agents_server = FastMCP("AgentServer")
+
+
 @agents_server.tool()
 async def execute() -> str:
     return "exec result"
 
+
 # Sub-provider for models
 models_server = FastMCP("ModelsServer")
+
+
 @models_server.tool()
 async def list_models() -> list[str]:
     return ["gpt-4", "claude"]
+
 
 # Mount with namespaces
 main.add_provider(FastMCPProvider(agents_server).add_transform(Namespace("agents")))
@@ -383,59 +426,71 @@ main.add_provider(FastMCPProvider(models_server).add_transform(Namespace("models
 ```
 
 **Use cases for thegent:**
+
 - Organize orchestration tools (thegent_run, thegent_ps → orch_run, orch_ps)
 - Separate agent management from execution
 - Multi-deployment scenarios (prod_run, staging_run)
 
 #### 4.2 Tool Transform for Schema/Description Overrides
+
 **Description:** Override individual tool metadata without code changes
 **Implementation:**
+
 ```python
 from fastmcp.server.transforms import ToolTransform
 
 server = FastMCP("Server")
+
 
 @server.tool()
 async def thegent_run(agents: list[str]) -> dict:
     """Original description"""
     ...
 
+
 # Override schema
-transform = ToolTransform({
-    "thegent_run": {
-        "description": "Execute agents in parallel with timeout=600s",
-        "input_schema": {
-            "properties": {
-                "agents": {
-                    "type": "array",
-                    "items": {"type": "string"},
-                    "minItems": 1,
-                    "maxItems": 10,
+transform = ToolTransform(
+    {
+        "thegent_run": {
+            "description": "Execute agents in parallel with timeout=600s",
+            "input_schema": {
+                "properties": {
+                    "agents": {
+                        "type": "array",
+                        "items": {"type": "string"},
+                        "minItems": 1,
+                        "maxItems": 10,
+                    }
                 }
-            }
+            },
         }
     }
-})
+)
 server.add_transform(transform)
 ```
 
 **Use cases for thegent:**
+
 - Document constraints (max agents, timeout bounds) without code changes
 - Update tool descriptions based on deployment context
 - Add examples to tool schemas
 
 #### 4.3 ResourcesAsTools for Tool-Only Clients
+
 **Description:** Expose resources as tools for clients lacking resource support
 **Implementation:**
+
 ```python
 from fastmcp.server.transforms import ResourcesAsTools
 
 mcp = FastMCP("ThegentServer")
 
+
 @mcp.resource()
 async def thegent_session_logs(session_id: str) -> str:
     """Retrieve session execution logs"""
     return fetch_logs(session_id)
+
 
 # Add transform to expose as tools
 mcp.add_transform(ResourcesAsTools(mcp))
@@ -446,22 +501,27 @@ mcp.add_transform(ResourcesAsTools(mcp))
 ```
 
 **Use cases for thegent:**
+
 - Expose session/execution logs as resources
 - Allow tool-only clients to read thegent metadata
 - Bridge resource-based APIs to tool-only integrations
 
 #### 4.4 PromptsAsTools for Tool-Only Clients
+
 **Description:** Expose prompts as tools for clients lacking prompt support
 **Implementation:**
+
 ```python
 from fastmcp.server.transforms import PromptsAsTools
 
 mcp = FastMCP("ThegentServer")
 
+
 @mcp.prompt()
 async def thegent_run_agent(agent_name: str, instructions: str) -> str:
     """Prompt template for running an agent"""
     return f"Run agent {agent_name} with:\n{instructions}"
+
 
 mcp.add_transform(PromptsAsTools(mcp))
 
@@ -471,6 +531,7 @@ mcp.add_transform(PromptsAsTools(mcp))
 ```
 
 **Use cases for thegent:**
+
 - Expose prompt templates as callable tools
 - Allow CLI/tool-only clients to invoke prompts
 - Simplify LLM integration for certain clients
@@ -478,6 +539,7 @@ mcp.add_transform(PromptsAsTools(mcp))
 ### Patterns
 
 **Pattern 1: Multi-Server Aggregation with Namespaces**
+
 ```python
 main = FastMCP("Main")
 for role in ["agents", "models", "integrations"]:
@@ -487,6 +549,7 @@ for role in ["agents", "models", "integrations"]:
 ```
 
 **Pattern 2: Conditional Resource-to-Tool Bridge**
+
 ```python
 if client_supports_resources():
     # Expose via resources
@@ -509,6 +572,7 @@ else:
 ## 5. Storage Backends & EventStore
 
 ### Key Findings
+
 - FastMCP supports pluggable storage: MemoryStore (default), DiskStore (single-server), RedisStore (distributed)
 - EventStore enables SSE polling resumability for long-running operations
 - FernetEncryptionWrapper required for production OAuth
@@ -517,8 +581,10 @@ else:
 ### Implementable Items
 
 #### 5.1 Development Setup (In-Memory)
+
 **Description:** Configure thegent for local development with in-memory storage
 **Implementation:**
+
 ```python
 from fastmcp import FastMCP
 from fastmcp.server.event_store import EventStore
@@ -537,13 +603,16 @@ app = mcp.http_app(
 ```
 
 **Use cases:**
+
 - Local development
 - Testing and CI/CD
 - Single-process deployments
 
 #### 5.2 Single-Server Production (Disk)
+
 **Description:** Configure thegent for single-server production with persistent disk cache
 **Implementation:**
+
 ```python
 from fastmcp.server.middleware.caching import ResponseCachingMiddleware, CallToolSettings
 from key_value.aio.stores.disk import DiskStore
@@ -551,13 +620,14 @@ from key_value.aio.stores.disk import DiskStore
 cache_store = DiskStore(directory="/var/cache/thegent")
 event_store = EventStore(storage=DiskStore(directory="/var/lib/thegent/events"))
 
-mcp.add_middleware(ResponseCachingMiddleware(
-    cache_storage=cache_store,
-    call_tool_settings=CallToolSettings(
-        included_tools=["thegent_ps", "thegent_list_agents", "thegent_list_droids", "thegent_list_models"],
-        ttl=30
+mcp.add_middleware(
+    ResponseCachingMiddleware(
+        cache_storage=cache_store,
+        call_tool_settings=CallToolSettings(
+            included_tools=["thegent_ps", "thegent_list_agents", "thegent_list_droids", "thegent_list_models"], ttl=30
+        ),
     )
-))
+)
 
 app = mcp.http_app(
     event_store=event_store,
@@ -567,19 +637,23 @@ app = mcp.http_app(
 ```
 
 **Use cases:**
+
 - Single-server production
 - Data persistence across restarts
 - Moderate caching needs
 
 **Config Variables:**
+
 ```bash
 THEGENT_CACHE_STORAGE=disk:/var/cache/thegent
 FASTMCP_EVENT_STORE_PATH=/var/lib/thegent/events
 ```
 
 #### 5.3 Distributed Production (Redis)
+
 **Description:** Configure thegent for distributed/multi-server with Redis backend
 **Implementation:**
+
 ```python
 from key_value.aio.stores.redis import RedisStore
 from fastmcp.server.middleware.caching import ResponseCachingMiddleware, CallToolSettings
@@ -588,13 +662,14 @@ redis_url = os.environ.get("REDIS_URL", "redis://localhost:6379")
 cache_store = RedisStore(url=redis_url)
 event_store = EventStore(storage=RedisStore(url=redis_url))
 
-mcp.add_middleware(ResponseCachingMiddleware(
-    cache_storage=cache_store,
-    call_tool_settings=CallToolSettings(
-        included_tools=["thegent_ps", "thegent_list_agents", "thegent_list_droids", "thegent_list_models"],
-        ttl=30
+mcp.add_middleware(
+    ResponseCachingMiddleware(
+        cache_storage=cache_store,
+        call_tool_settings=CallToolSettings(
+            included_tools=["thegent_ps", "thegent_list_agents", "thegent_list_droids", "thegent_list_models"], ttl=30
+        ),
     )
-))
+)
 
 app = mcp.http_app(
     event_store=event_store,
@@ -604,11 +679,13 @@ app = mcp.http_app(
 ```
 
 **Use cases:**
+
 - Multi-server deployments
 - Kubernetes/container orchestration
 - High availability
 
 **Config Variables:**
+
 ```bash
 REDIS_URL=redis://redis.prod.internal:6379/0
 THEGENT_CACHE_STORAGE=redis://redis.prod.internal:6379/1
@@ -616,8 +693,10 @@ FASTMCP_DOCKET_URL=redis://redis.prod.internal:6379/2
 ```
 
 #### 5.4 EventStore with TTL Configuration
+
 **Description:** Set event retention policy for long-running operations
 **Implementation:**
+
 ```python
 from fastmcp.server.event_store import EventStore
 
@@ -625,7 +704,7 @@ from fastmcp.server.event_store import EventStore
 event_store = EventStore(
     storage=RedisStore(url="redis://localhost"),
     max_events_per_stream=200,
-    ttl=3600  # seconds
+    ttl=3600,  # seconds
 )
 
 app = mcp.http_app(
@@ -636,23 +715,25 @@ app = mcp.http_app(
 ```
 
 **Use cases:**
+
 - Balance resumability vs. storage cost
 - Prevent indefinite event accumulation
 - Configure based on expected operation duration
 
 #### 5.5 Multi-Tenant Isolation
+
 **Description:** Namespace cache/event storage per tenant
 **Implementation:**
+
 ```python
 from key_value.aio.wrappers.prefix_collections import PrefixCollectionsWrapper
 from key_value.aio.stores.redis import RedisStore
 
+
 def get_tenant_cache(tenant_id: str):
     base_store = RedisStore(url="redis://localhost")
-    return PrefixCollectionsWrapper(
-        key_value=base_store,
-        prefix=f"tenant:{tenant_id}"
-    )
+    return PrefixCollectionsWrapper(key_value=base_store, prefix=f"tenant:{tenant_id}")
+
 
 # Per-request
 tenant_cache = get_tenant_cache(request.tenant_id)
@@ -660,6 +741,7 @@ middleware = ResponseCachingMiddleware(cache_storage=tenant_cache)
 ```
 
 **Use cases:**
+
 - SaaS deployments with multiple tenants
 - Namespace isolation in shared infrastructure
 - Data privacy compliance
@@ -667,6 +749,7 @@ middleware = ResponseCachingMiddleware(cache_storage=tenant_cache)
 ### Patterns
 
 **Pattern 1: Backend Auto-Selection**
+
 ```python
 storage_url = os.environ.get("THEGENT_CACHE_STORAGE", "memory")
 if storage_url == "memory":
@@ -680,6 +763,7 @@ else:
 ```
 
 **Pattern 2: Event Store with Graceful Degradation**
+
 ```python
 event_store = None
 try:
@@ -706,6 +790,7 @@ except Exception as e:
 ## 6. Sampling & Telemetry
 
 ### Key Findings
+
 - `ctx.sample()` delegates to client's sampling provider (Claude, etc.)
 - `result_type` enables structured output with Pydantic validation
 - Fallback handler (e.g., OpenAISamplingHandler) for clients lacking sampling
@@ -715,27 +800,31 @@ except Exception as e:
 ### Implementable Items
 
 #### 6.1 Basic Sampling
+
 **Description:** Invoke LLM sampling via client (usually Claude)
 **Implementation:**
+
 ```python
 @mcp.tool()
 async def thegent_analyze_output(output: str, ctx: Context = CurrentContext()) -> str:
-    result = await ctx.sample(
-        f"Analyze this output for errors:\n\n{output}"
-    )
+    result = await ctx.sample(f"Analyze this output for errors:\n\n{output}")
     return result.text or ""
 ```
 
 **Use cases for thegent:**
+
 - Analyze agent execution output
 - Validate generated code
 - Summarize logs and metrics
 
 #### 6.2 Structured Sampling with Validation
+
 **Description:** Request structured LLM output with Pydantic validation
 **Implementation:**
+
 ```python
 from pydantic import BaseModel
+
 
 class ExecutionSummary(BaseModel):
     status: str  # "success", "partial", "failed"
@@ -743,48 +832,49 @@ class ExecutionSummary(BaseModel):
     errors: list[str]
     recommendations: str
 
+
 @mcp.tool()
 async def thegent_summarize_run(session_id: str, ctx: Context = CurrentContext()) -> ExecutionSummary:
     logs = await fetch_session_logs(session_id)
 
-    result = await ctx.sample(
-        f"Summarize this thegent run:\n{logs}",
-        result_type=ExecutionSummary
-    )
+    result = await ctx.sample(f"Summarize this thegent run:\n{logs}", result_type=ExecutionSummary)
 
     # result.result is ExecutionSummary (validated)
     return result.result
 ```
 
 **Use cases for thegent:**
+
 - Parse agent output into structured config
 - Extract metrics from execution logs
 - Generate typed recommendations
 
 #### 6.3 Sampling Fallback Handler
+
 **Description:** Use fallback LLM when client lacks sampling capability
 **Implementation:**
+
 ```python
 from fastmcp.client.sampling.handlers.openai import OpenAISamplingHandler
 
 mcp = FastMCP(
     name="ThegentServer",
-    sampling_handler=OpenAISamplingHandler(
-        api_key=os.environ["OPENAI_API_KEY"],
-        default_model="gpt-4o-mini"
-    ),
+    sampling_handler=OpenAISamplingHandler(api_key=os.environ["OPENAI_API_KEY"], default_model="gpt-4o-mini"),
     sampling_handler_behavior="fallback",  # Use only when client doesn't support
 )
 ```
 
 **Use cases:**
+
 - Offline operation (client lacks Claude)
 - Cost-sensitive deployments (OpenAI fallback)
 - Development/testing without client
 
 #### 6.4 Prompt Suggestion via Sampling
+
 **Description:** Refine user prompts using LLM
 **Implementation:**
+
 ```python
 @mcp.tool()
 async def thegent_suggest_prompt(raw_prompt: str, ctx: Context = CurrentContext()) -> str:
@@ -796,15 +886,19 @@ async def thegent_suggest_prompt(raw_prompt: str, ctx: Context = CurrentContext(
 ```
 
 **Use cases for thegent:**
+
 - Help users write better agent instructions
 - Suggest system prompts for models
 - Auto-enhance prompt templates
 
 #### 6.5 Custom Tracing with get_tracer()
+
 **Description:** Add custom OpenTelemetry spans to track execution phases
 **Implementation:**
+
 ```python
 from fastmcp.telemetry import get_tracer
+
 
 @mcp.tool()
 async def thegent_run(agents: list[str], ctx: Context = CurrentContext()) -> dict:
@@ -829,21 +923,25 @@ async def thegent_run(agents: list[str], ctx: Context = CurrentContext()) -> dic
 ```
 
 **Use cases:**
+
 - Debug execution bottlenecks
 - Monitor agent execution phases
 - Export traces to observability platform
 
 #### 6.6 OpenTelemetry Auto-Instrumentation
+
 **Description:** Enable automatic trace export without code changes
 **Implementation:**
 
 **Installation:**
+
 ```bash
 pip install opentelemetry-distro opentelemetry-exporter-otlp
 opentelemetry-bootstrap -a install
 ```
 
 **Startup:**
+
 ```bash
 export OTEL_SERVICE_NAME=thegent-mcp
 export OTEL_EXPORTER_OTLP_ENDPOINT=http://localhost:4317
@@ -851,13 +949,14 @@ opentelemetry-instrument python -m thegent.main serve --host 127.0.0.1 --port 38
 ```
 
 **Docker Compose (for local Jaeger):**
+
 ```yaml
 services:
   jaeger:
     image: jaegertracing/all-in-one:latest
     ports:
-      - "4317:4317"  # OTLP gRPC
-      - "16686:16686"  # Jaeger UI
+      - "4317:4317" # OTLP gRPC
+      - "16686:16686" # Jaeger UI
 
   thegent:
     build: .
@@ -870,6 +969,7 @@ services:
 ```
 
 **Auto-generated spans:**
+
 ```
 - tools/call {name}  # e.g., tools/call thegent_run
 - resources/read {uri}
@@ -877,6 +977,7 @@ services:
 ```
 
 **View traces:**
+
 ```
 Open http://localhost:16686 in browser
 ```
@@ -884,6 +985,7 @@ Open http://localhost:16686 in browser
 ### Patterns
 
 **Pattern 1: Sampling with Fallback and Retry**
+
 ```python
 try:
     result = await ctx.sample(prompt, result_type=ResultType)
@@ -896,6 +998,7 @@ except Exception as e:
 ```
 
 **Pattern 2: Multi-Phase Tracing**
+
 ```python
 tracer = get_tracer()
 phases = ["validate", "execute", "summarize"]
@@ -906,18 +1009,17 @@ for phase in phases:
 ```
 
 **Pattern 3: Sampling for Dynamic Configuration**
+
 ```python
 class ConfigUpdate(BaseModel):
     max_agents: int
     timeout_secs: int
     log_level: str
 
+
 @mcp.tool()
 async def suggest_config(current_config: dict, ctx: Context = CurrentContext()) -> ConfigUpdate:
-    result = await ctx.sample(
-        f"Suggest improvements to this config:\n{current_config}",
-        result_type=ConfigUpdate
-    )
+    result = await ctx.sample(f"Suggest improvements to this config:\n{current_config}", result_type=ConfigUpdate)
     return result.result
 ```
 
@@ -937,6 +1039,7 @@ async def suggest_config(current_config: dict, ctx: Context = CurrentContext()) 
 ## 7. Middleware Pipeline
 
 ### Key Findings
+
 - Middleware executes in order added (first added = outermost)
 - ResponseCachingMiddleware supports fine-grained caching per operation
 - RateLimitingMiddleware protects against abuse
@@ -945,19 +1048,22 @@ async def suggest_config(current_config: dict, ctx: Context = CurrentContext()) 
 ### Implementable Items
 
 #### 7.1 Middleware Execution Order
+
 **Description:** Configure middleware stack in correct order
 **Implementation:**
+
 ```python
 # Order: outermost first (executed first)
-mcp.add_middleware(ErrorHandlingMiddleware())      # 1st (outermost)
-mcp.add_middleware(RateLimitingMiddleware(...))    # 2nd
-mcp.add_middleware(TimingMiddleware())             # 3rd
-mcp.add_middleware(ResponseCachingMiddleware(...)) # 4th
-mcp.add_middleware(ResponseLimitingMiddleware(...)) # 5th
-mcp.add_middleware(LoggingMiddleware())            # 6th (innermost)
+mcp.add_middleware(ErrorHandlingMiddleware())  # 1st (outermost)
+mcp.add_middleware(RateLimitingMiddleware(...))  # 2nd
+mcp.add_middleware(TimingMiddleware())  # 3rd
+mcp.add_middleware(ResponseCachingMiddleware(...))  # 4th
+mcp.add_middleware(ResponseLimitingMiddleware(...))  # 5th
+mcp.add_middleware(LoggingMiddleware())  # 6th (innermost)
 ```
 
 **Recommended order for thegent:**
+
 ```python
 mcp.add_middleware(ErrorHandlingMiddleware())
 mcp.add_middleware(RateLimitingMiddleware(max_requests_per_second=10, burst_capacity=20))
@@ -968,13 +1074,16 @@ mcp.add_middleware(LoggingMiddleware())
 ```
 
 **Use cases:**
+
 - Error handling first (outermost) to catch all failures
 - Rate limiting second to stop abuse early
 - Timing and logging innermost to measure actual work
 
 #### 7.2 Response Caching Middleware
+
 **Description:** Cache responses from read-heavy tools
 **Implementation:**
+
 ```python
 from fastmcp.server.middleware.caching import (
     ResponseCachingMiddleware,
@@ -985,50 +1094,61 @@ from key_value.aio.stores.redis import RedisStore
 
 cache_store = RedisStore(url="redis://localhost")
 
-mcp.add_middleware(ResponseCachingMiddleware(
-    cache_storage=cache_store,
-    list_tools_settings=ListToolsSettings(ttl=30),
-    call_tool_settings=CallToolSettings(
-        included_tools=[
-            "thegent_ps",
-            "thegent_list_agents",
-            "thegent_list_droids",
-            "thegent_list_models",
-        ],
-        ttl=30
-    ),
-))
+mcp.add_middleware(
+    ResponseCachingMiddleware(
+        cache_storage=cache_store,
+        list_tools_settings=ListToolsSettings(ttl=30),
+        call_tool_settings=CallToolSettings(
+            included_tools=[
+                "thegent_ps",
+                "thegent_list_agents",
+                "thegent_list_droids",
+                "thegent_list_models",
+            ],
+            ttl=30,
+        ),
+    )
+)
 ```
 
 **Use cases for thegent:**
+
 - Cache `list_agents`, `list_droids`, `list_models` (stable, expensive)
 - Cache `ps` output (session list, rarely changes)
 - 30-second TTL balances freshness and load
 
 #### 7.3 Rate Limiting Middleware
+
 **Description:** Protect thegent_run from abuse
 **Implementation:**
+
 ```python
 from fastmcp.server.middleware.rate_limiting import RateLimitingMiddleware
 
-mcp.add_middleware(RateLimitingMiddleware(
-    max_requests_per_second=10.0,
-    burst_capacity=20,
-))
+mcp.add_middleware(
+    RateLimitingMiddleware(
+        max_requests_per_second=10.0,
+        burst_capacity=20,
+    )
+)
 ```
 
 **Use cases:**
+
 - Prevent runaway `thegent_run` invocations
 - Protect shared infrastructure
 - Manage concurrent execution load
 
 **Tuning:**
+
 - `max_requests_per_second=10`: 10 concurrent thegent_run calls
 - `burst_capacity=20`: Allow brief spike to 20 concurrent
 
 #### 7.4 Response Limiting Middleware
+
 **Description:** Prevent large responses from exceeding context limits
 **Implementation:**
+
 ```python
 from fastmcp.server.middleware.response_limiting import ResponseLimitingMiddleware
 
@@ -1036,22 +1156,23 @@ from fastmcp.server.middleware.response_limiting import ResponseLimitingMiddlewa
 mcp.add_middleware(ResponseLimitingMiddleware(max_size=500_000))
 
 # Or limit specific tools
-mcp.add_middleware(ResponseLimitingMiddleware(
-    max_size=500_000,
-    tools=["thegent_logs", "thegent_run"]
-))
+mcp.add_middleware(ResponseLimitingMiddleware(max_size=500_000, tools=["thegent_logs", "thegent_run"]))
 ```
 
 **Use cases:**
+
 - Prevent `thegent_logs` from returning terabytes of logs
 - Protect Claude context window
 - Graceful truncation vs. error
 
 #### 7.5 Custom Middleware for thegent_run Logging
+
 **Description:** Add audit trail for critical operations
 **Implementation:**
+
 ```python
 from fastmcp.server.middleware import Middleware, MiddlewareContext
+
 
 class AuditMiddleware(Middleware):
     async def on_call_tool(self, context: MiddlewareContext, call_next):
@@ -1060,22 +1181,25 @@ class AuditMiddleware(Middleware):
 
         if tool_name == "thegent_run":
             import json
+
             await ctx.info(
                 f"Audit: thegent_run invoked",
                 extra={
                     "tool": tool_name,
                     "agents": args.get("agents", []),
                     "timestamp": datetime.utcnow().isoformat(),
-                }
+                },
             )
 
         result = await call_next(context)
         return result
 
+
 mcp.add_middleware(AuditMiddleware())
 ```
 
 **Use cases:**
+
 - Log all `thegent_run` invocations
 - Track who ran what and when
 - Compliance and debugging
@@ -1083,8 +1207,9 @@ mcp.add_middleware(AuditMiddleware())
 ### Patterns
 
 **Pattern 1: Conditional Caching**
+
 ```python
-call_tool_settings=CallToolSettings(
+call_tool_settings = CallToolSettings(
     included_tools=[
         "thegent_ps",  # List, rarely changes
         "thegent_list_agents",  # Expensive query
@@ -1092,20 +1217,24 @@ call_tool_settings=CallToolSettings(
     excluded_tools=[
         "thegent_run",  # Stateful, never cache
     ],
-    ttl=30
+    ttl=30,
 )
 ```
 
 **Pattern 2: Per-Client Rate Limiting**
+
 ```python
 def get_client_id(context):
     # Extract user/tenant from auth context
     return context.fastmcp_context.client_id if context.fastmcp_context else "anonymous"
 
-mcp.add_middleware(RateLimitingMiddleware(
-    max_requests_per_second=10,
-    client_id_func=get_client_id,
-))
+
+mcp.add_middleware(
+    RateLimitingMiddleware(
+        max_requests_per_second=10,
+        client_id_func=get_client_id,
+    )
+)
 ```
 
 ### Design Decisions
@@ -1124,6 +1253,7 @@ mcp.add_middleware(RateLimitingMiddleware(
 ## 8. HTTP Deployment & EventStore
 
 ### Key Findings
+
 - EventStore enables SSE polling resumability for long HTTP operations
 - `ctx.close_sse_stream()` breaks connection to avoid load balancer timeouts
 - Streamable HTTP transport recommended for long-running tools
@@ -1132,8 +1262,10 @@ mcp.add_middleware(RateLimitingMiddleware(
 ### Implementable Items
 
 #### 8.1 Streamable HTTP with EventStore
+
 **Description:** Deploy thegent over HTTP with resumable long-running operations
 **Implementation:**
+
 ```python
 from fastmcp import FastMCP
 from fastmcp.server.event_store import EventStore
@@ -1142,11 +1274,7 @@ from key_value.aio.stores.redis import RedisStore
 mcp = FastMCP("ThegentServer")
 
 # Configure EventStore for resumability
-event_store = EventStore(
-    storage=RedisStore(url="redis://localhost"),
-    max_events_per_stream=200,
-    ttl=3600
-)
+event_store = EventStore(storage=RedisStore(url="redis://localhost"), max_events_per_stream=200, ttl=3600)
 
 # Create HTTP app
 app = mcp.http_app(
@@ -1158,13 +1286,16 @@ app = mcp.http_app(
 ```
 
 **Use cases:**
+
 - Long-running `thegent_run` operations (>30s)
 - HTTP deployments with load balancers
 - Browser-based clients with reconnection
 
 #### 8.2 Close SSE Stream Pattern for Load Balancer Timeouts
+
 **Description:** Prevent 30s load balancer timeout during long operations
 **Implementation:**
+
 ```python
 @mcp.tool()
 async def thegent_run(agents: list[str], ctx: Context = CurrentContext()) -> dict:
@@ -1184,19 +1315,23 @@ async def thegent_run(agents: list[str], ctx: Context = CurrentContext()) -> dic
 ```
 
 **Behavior:**
+
 1. Close connection after 30 iterations
 2. Client receives 200 OK, reconnects
 3. Client resumes from last event in EventStore
 4. Seamless from client perspective
 
 **Use cases:**
+
 - Protect against 30-60s load balancer timeouts
 - Keep long-running operations resumable
 - Support network interruptions gracefully
 
 #### 8.3 Stateless HTTP for Horizontal Scaling
+
 **Description:** Deploy multiple thegent instances behind load balancer
 **Implementation:**
+
 ```python
 app = mcp.http_app(
     path="/mcp",
@@ -1207,17 +1342,21 @@ app = mcp.http_app(
 ```
 
 **Key difference:**
+
 - `stateless_http=True`: New transport per request; all state in Redis
 - `stateless_http=False` (default): Session affinity; single transport per session
 
 **Use cases:**
+
 - Kubernetes deployments
 - Multiple replicas behind load balancer
 - Auto-scaling scenarios
 
 #### 8.4 Pure SSE Transport (Server-Sent Events)
+
 **Description:** Alternative streamable transport without polling overhead
 **Implementation:**
+
 ```python
 app = mcp.http_app(
     path="/mcp/sse",
@@ -1227,12 +1366,14 @@ app = mcp.http_app(
 ```
 
 **Trade-offs:**
+
 - **SSE:** Lower latency, simpler client; requires long-lived connection
 - **Streamable HTTP:** More robust to network interruptions; slight polling overhead
 
 ### Patterns
 
 **Pattern 1: Graceful Degradation (HTTP app initialization)**
+
 ```python
 import os
 from fastmcp.server.event_store import EventStore
@@ -1255,8 +1396,11 @@ app = mcp.http_app(
 ```
 
 **Pattern 2: Checkpoint-based Stream Closing**
+
 ```python
 STREAM_CLOSE_INTERVAL = 30  # iterations
+
+
 @mcp.tool()
 async def thegent_run(agents: list[str], ctx: Context = CurrentContext()) -> dict:
     for i, agent in enumerate(agents):
@@ -1305,32 +1449,28 @@ event_store = EventStore(storage=RedisStore(url=redis_url))
 # Create server with sampling fallback
 mcp = FastMCP(
     name="ThegentServer",
-    sampling_handler=OpenAISamplingHandler(
-        api_key=os.environ.get("OPENAI_API_KEY"),
-        default_model="gpt-4o-mini"
-    ),
+    sampling_handler=OpenAISamplingHandler(api_key=os.environ.get("OPENAI_API_KEY"), default_model="gpt-4o-mini"),
     sampling_handler_behavior="fallback",
 )
 
 # Middleware pipeline (outermost first)
 mcp.add_middleware(ErrorHandlingMiddleware())
-mcp.add_middleware(RateLimitingMiddleware(
-    max_requests_per_second=10.0,
-    burst_capacity=20
-))
+mcp.add_middleware(RateLimitingMiddleware(max_requests_per_second=10.0, burst_capacity=20))
 mcp.add_middleware(TimingMiddleware())
-mcp.add_middleware(ResponseCachingMiddleware(
-    cache_storage=cache_store,
-    call_tool_settings=CallToolSettings(
-        included_tools=[
-            "thegent_ps",
-            "thegent_list_agents",
-            "thegent_list_droids",
-            "thegent_list_models",
-        ],
-        ttl=30
-    ),
-))
+mcp.add_middleware(
+    ResponseCachingMiddleware(
+        cache_storage=cache_store,
+        call_tool_settings=CallToolSettings(
+            included_tools=[
+                "thegent_ps",
+                "thegent_list_agents",
+                "thegent_list_droids",
+                "thegent_list_models",
+            ],
+            ttl=30,
+        ),
+    )
+)
 mcp.add_middleware(ResponseLimitingMiddleware(max_size=500_000))
 mcp.add_middleware(LoggingMiddleware())
 
@@ -1361,30 +1501,29 @@ app = mcp.http_app(
 
 ### 10.1 Failure Modes
 
-| Failure Mode | Impact | Mitigation |
-|--------------|--------|------------|
-| **Elicitation timeout** | User doesn't respond, tool hangs | Set timeout, fallback to default, return DeclinedElicitation |
-| **Context unavailable** | Tool called without context | Graceful degradation, log warning, use default behavior |
-| **Storage backend failure** | EventStore unavailable | Fallback to MemoryStore, retry with exponential backoff |
-| **Task mode failure** | Background task crashes | Error logging, task status update, client notification |
-| **Progress reporting failure** | Progress updates lost | Non-blocking, continue execution, log error |
-| **SSE stream closed** | Client disconnected | Graceful shutdown, cleanup resources, save state |
+| Failure Mode                   | Impact                           | Mitigation                                                   |
+| ------------------------------ | -------------------------------- | ------------------------------------------------------------ |
+| **Elicitation timeout**        | User doesn't respond, tool hangs | Set timeout, fallback to default, return DeclinedElicitation |
+| **Context unavailable**        | Tool called without context      | Graceful degradation, log warning, use default behavior      |
+| **Storage backend failure**    | EventStore unavailable           | Fallback to MemoryStore, retry with exponential backoff      |
+| **Task mode failure**          | Background task crashes          | Error logging, task status update, client notification       |
+| **Progress reporting failure** | Progress updates lost            | Non-blocking, continue execution, log error                  |
+| **SSE stream closed**          | Client disconnected              | Graceful shutdown, cleanup resources, save state             |
 
 ### 10.2 Error Handling Patterns
 
 **Pattern 1: Elicitation with Timeout**
+
 ```python
 try:
-    result = await asyncio.wait_for(
-        ctx.elicit("Confirm?", response_type=bool),
-        timeout=30.0
-    )
+    result = await asyncio.wait_for(ctx.elicit("Confirm?", response_type=bool), timeout=30.0)
 except asyncio.TimeoutError:
     await ctx.warning("No response, using default")
     result = False
 ```
 
 **Pattern 2: Storage Fallback**
+
 ```python
 try:
     await event_store.append(event)
@@ -1394,6 +1533,7 @@ except StorageError:
 ```
 
 **Pattern 3: Task Error Recovery**
+
 ```python
 @mcp.tool(task_config=TaskConfig(mode="optional"))
 async def long_task(ctx: Context = CurrentContext()) -> dict:
@@ -1408,16 +1548,19 @@ async def long_task(ctx: Context = CurrentContext()) -> dict:
 ### 10.3 Validation
 
 **Pre-flight Checks:**
+
 - Verify context is available before elicitation
 - Validate storage backend connectivity
 - Check task mode compatibility
 
 **Post-action Verification:**
+
 - Confirm elicitation result is valid
 - Verify storage write succeeded
 - Validate task completion status
 
 **Performance Targets:**
+
 - Elicitation response: <100ms (p95)
 - Tool execution: <50ms (p95)
 - Storage write: <10ms (p95)
@@ -1463,22 +1606,16 @@ auth_provider = GitHubProvider(
     client_secret=os.environ["GITHUB_CLIENT_SECRET"],
     redirect_uri=os.environ["GITHUB_REDIRECT_URI"],
     client_storage=FernetEncryptionWrapper(
-        key_value=RedisStore(url=os.environ["REDIS_URL"]),
-        fernet=Fernet(os.environ["STORAGE_ENCRYPTION_KEY"])
-    )
+        key_value=RedisStore(url=os.environ["REDIS_URL"]), fernet=Fernet(os.environ["STORAGE_ENCRYPTION_KEY"])
+    ),
 )
 
 # Bearer token validation for service-to-service
 token_validator = BearerTokenValidator(
-    token_header="Authorization",
-    token_prefix="Bearer",
-    validate_token=lambda token: token in valid_tokens
+    token_header="Authorization", token_prefix="Bearer", validate_token=lambda token: token in valid_tokens
 )
 
-mcp.add_middleware(AuthMiddleware(
-    auth_provider=auth_provider,
-    token_validator=token_validator
-))
+mcp.add_middleware(AuthMiddleware(auth_provider=auth_provider, token_validator=token_validator))
 ```
 
 **Cross-reference:** See `FASTMCP_SPEC_DEEP_DIVE.md` Section 13 for OAuth adoption checklist. See `hooks/security-pipeline.sh` for security enforcement patterns.
@@ -1488,21 +1625,26 @@ mcp.add_middleware(AuthMiddleware(
 ```python
 from fastmcp.server.auth import TenantAwareAuth
 
+
 def extract_tenant(context):
     """Extract tenant ID from request context."""
     token = context.request.headers.get("X-Tenant-ID")
     return token if token else "default"
 
-mcp.add_middleware(TenantAwareAuth(
-    tenant_extractor=extract_tenant,
-    tenant_scopes={
-        "tenant-a": {"tools": ["read"], "resources": ["sessions"]},
-        "tenant-b": {"tools": ["read", "write"], "resources": ["all"]},
-    }
-))
+
+mcp.add_middleware(
+    TenantAwareAuth(
+        tenant_extractor=extract_tenant,
+        tenant_scopes={
+            "tenant-a": {"tools": ["read"], "resources": ["sessions"]},
+            "tenant-b": {"tools": ["read", "write"], "resources": ["all"]},
+        },
+    )
+)
 ```
 
 **Use cases:**
+
 - SaaS deployments with tenant isolation
 - Enterprise multi-team environments
 - Compliance with data residency requirements
@@ -1516,6 +1658,7 @@ import pytest
 from fastmcp import FastMCP
 from fastmcp.server.dependencies import Depends
 
+
 @pytest.fixture
 def mcp_server():
     """Create test server with tools."""
@@ -1526,6 +1669,7 @@ def mcp_server():
         return value * 2
 
     return mcp
+
 
 @pytest.mark.asyncio
 async def test_tool_execution(mcp_server):
@@ -1542,19 +1686,18 @@ async def test_tool_execution(mcp_server):
 import asyncio
 from fastmcp import Client
 
+
 @pytest.mark.asyncio
 async def test_elicitation_flow():
     """Test elicitation via MCP client."""
     async with Client(mcp) as client:
         # Mock elicitation response
-        result = await client.call_tool(
-            "thegent_run",
-            {"agents": ["test-agent"]}
-        )
+        result = await client.call_tool("thegent_run", {"agents": ["test-agent"]})
         assert result.content[0].text == "expected output"
 ```
 
 **Use cases:**
+
 - End-to-end tool testing
 - Context behavior verification
 - Middleware interaction testing
@@ -1567,19 +1710,11 @@ async def test_elicitation_flow():
 from httpx import AsyncClient, Limits, Timeout
 
 http_client = AsyncClient(
-    limits=Limits(
-        max_keepalive_connections=20,
-        max_connections=100,
-        keepalive_expiry=30.0
-    ),
-    timeout=Timeout(10.0)
+    limits=Limits(max_keepalive_connections=20, max_connections=100, keepalive_expiry=30.0), timeout=Timeout(10.0)
 )
 
 # Use with HTTP transport
-app = mcp.http_app(
-    transport="streamable-http",
-    http_client=http_client
-)
+app = mcp.http_app(transport="streamable-http", http_client=http_client)
 ```
 
 **Cross-reference:** See `docs/reference/PERFORMANCE_OPTIMIZATION.md` for runtime optimization patterns.
@@ -1589,19 +1724,14 @@ app = mcp.http_app(
 ```python
 from fastmcp.server.tools import ToolBatch
 
-async def batched_agent_execution(
-    agents: list[str],
-    batch_size: int = 5
-) -> list[dict]:
+
+async def batched_agent_execution(agents: list[str], batch_size: int = 5) -> list[dict]:
     """Execute agents in batches to control concurrency."""
     results = []
 
     for i in range(0, len(agents), batch_size):
-        batch = agents[i:i + batch_size]
-        batch_results = await asyncio.gather(
-            *[execute_agent(a) for a in batch],
-            return_exceptions=True
-        )
+        batch = agents[i : i + batch_size]
+        batch_results = await asyncio.gather(*[execute_agent(a) for a in batch], return_exceptions=True)
         results.extend(batch_results)
 
     return results
@@ -1609,24 +1739,24 @@ async def batched_agent_execution(
 
 **Configuration:**
 
-| Parameter | Value | Rationale |
-|-----------|-------|-----------|
-| batch_size | 5-10 | Balance throughput and rate limits |
-| max_concurrent | 20 | Prevent resource exhaustion |
-| retry_delay | 1.0 | Exponential backoff base |
+| Parameter      | Value | Rationale                          |
+| -------------- | ----- | ---------------------------------- |
+| batch_size     | 5-10  | Balance throughput and rate limits |
+| max_concurrent | 20    | Prevent resource exhaustion        |
+| retry_delay    | 1.0   | Exponential backoff base           |
 
 ### 12. Cross-Document References
 
-| Reference | Purpose |
-|-----------|---------|
-| `FASTMCP_SPEC_DEEP_DIVE.md` | Full specification details, SEP compliance |
-| `FASTMCP_MIDDLEWARE.md` | Middleware pipeline configuration |
-| `FASTMCP_STORAGE_EVENTSTORE.md` | Storage backend selection |
-| `FASTMCP_TRANSFORMS_DEPLOYMENT.md` | Transform patterns and HTTP deployment |
-| `FASTMCP_FEATURES_AND_TRANSPORT_GAPS.md` | Client compatibility and gaps |
-| `docs/guides/TESTING.md` | Testing strategies and patterns |
-| `docs/reference/PERFORMANCE_OPTIMIZATION.md` | Runtime optimization |
-| `hooks/security-pipeline.sh` | Security enforcement hooks |
+| Reference                                    | Purpose                                    |
+| -------------------------------------------- | ------------------------------------------ |
+| `FASTMCP_SPEC_DEEP_DIVE.md`                  | Full specification details, SEP compliance |
+| `FASTMCP_MIDDLEWARE.md`                      | Middleware pipeline configuration          |
+| `FASTMCP_STORAGE_EVENTSTORE.md`              | Storage backend selection                  |
+| `FASTMCP_TRANSFORMS_DEPLOYMENT.md`           | Transform patterns and HTTP deployment     |
+| `FASTMCP_FEATURES_AND_TRANSPORT_GAPS.md`     | Client compatibility and gaps              |
+| `docs/guides/TESTING.md`                     | Testing strategies and patterns            |
+| `docs/reference/PERFORMANCE_OPTIMIZATION.md` | Runtime optimization                       |
+| `hooks/security-pipeline.sh`                 | Security enforcement hooks                 |
 
 ---
 

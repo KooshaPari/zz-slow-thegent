@@ -10,18 +10,18 @@ This playbook defines recovery procedures for common failure scenarios in multi-
 
 ### Quick Symptom Matcher
 
-| Symptom | Root Cause | Playbook Section |
-|---------|-----------|------------------|
-| Task claimed but no progress for 10+ min | Agent crash/hang | FRP-1 |
-| Two agents claim same task | Race condition in WORK_STREAM.md | FRP-2 |
-| Task A depends on B, B depends on A | Circular dependency | FRP-3 |
-| Multiple agents editing same file, merge conflict | Concurrent file edits | FRP-4 |
-| Task marked complete, but downstream finds bug | Incomplete testing/QA | FRP-5 |
-| Task estimate 5m, now 45+ min running | SLO breach / scope creep | FRP-6 |
-| CLAIMED and PENDING both show same task | Git conflict in WORK_STREAM.md | FRP-7 |
-| Blocker waiting 30+ min, upstream task stuck | Dependency SLO breach | FRP-8 |
-| Agent reports file already exists / can't create | Permission or file locking issue | FRP-9 |
-| All agents idle, no work items available | Work stream depletion | FRP-10 |
+| Symptom                                           | Root Cause                       | Playbook Section |
+| ------------------------------------------------- | -------------------------------- | ---------------- |
+| Task claimed but no progress for 10+ min          | Agent crash/hang                 | FRP-1            |
+| Two agents claim same task                        | Race condition in WORK_STREAM.md | FRP-2            |
+| Task A depends on B, B depends on A               | Circular dependency              | FRP-3            |
+| Multiple agents editing same file, merge conflict | Concurrent file edits            | FRP-4            |
+| Task marked complete, but downstream finds bug    | Incomplete testing/QA            | FRP-5            |
+| Task estimate 5m, now 45+ min running             | SLO breach / scope creep         | FRP-6            |
+| CLAIMED and PENDING both show same task           | Git conflict in WORK_STREAM.md   | FRP-7            |
+| Blocker waiting 30+ min, upstream task stuck      | Dependency SLO breach            | FRP-8            |
+| Agent reports file already exists / can't create  | Permission or file locking issue | FRP-9            |
+| All agents idle, no work items available          | Work stream depletion            | FRP-10           |
 
 ---
 
@@ -30,6 +30,7 @@ This playbook defines recovery procedures for common failure scenarios in multi-
 **Symptom:** Task in CLAIMED section, agent not responding, no status update for 10+ minutes.
 
 **Detection:**
+
 ```bash
 # Check for stale sessions (no update in 10 min)
 thegent ps | grep -v updated
@@ -45,9 +46,11 @@ done
 **Option A: Graceful Recovery (Preferred)**
 
 1. **Attempt Soft Shutdown** (30-second timeout)
+
    ```bash
    thegent wait {session_id} --timeout 30
    ```
+
    - If agent responds, it can finish or gracefully abort
    - Check logs to understand what happened:
      ```bash
@@ -55,6 +58,7 @@ done
      ```
 
 2. **If Agent Responds:** Let it finish or ask to abort
+
    ```bash
    # Send message to agent (if TeamCreate used)
    SendMessage type=message recipient="{agent-name}" \
@@ -76,11 +80,13 @@ done
 **Option B: Force Terminate (If Soft Timeout Fails)**
 
 1. **Force Kill Session** (immediate, no cleanup)
+
    ```bash
    thegent kill {session_id} --force
    ```
 
 2. **Check for Partial Files**
+
    ```bash
    # Look for incomplete edits (e.g., .swp, .tmp files)
    git status | grep -E "\.swp|\.tmp|\.bak"
@@ -89,6 +95,7 @@ done
    ```
 
 3. **Abort Any Pending Git Operations**
+
    ```bash
    # Check for dangling lock files
    ls -la .git/ | grep lock
@@ -99,6 +106,7 @@ done
 4. **Move Task Back to PENDING** (same as Option A, step 3)
 
 5. **Update AGENTS_ACTIVE.md**
+
    ```markdown
    | agent-id | ... | ERROR | TGNT-P6.1 | -- | 2026-02-18T14:30:00Z | 2026-02-18T15:45:00Z | 75 min | Force killed after timeout |
    ```
@@ -126,6 +134,7 @@ done
 **Symptom:** Two agents claim the same task (both update WORK_STREAM.md simultaneously).
 
 **Detection:**
+
 ```bash
 # Check for duplicate task in CLAIMED
 grep "TGNT-P6.1" docs/reference/WORK_STREAM.md | wc -l
@@ -157,6 +166,7 @@ git show {commit2}:docs/reference/WORK_STREAM.md | grep TGNT-P6.1
 **Step 3: Assign Task to Winner, Release Loser**
 
 **If Agent 1 wins:**
+
 ```bash
 # In WORK_STREAM.md CLAIMED section, keep Agent 1 entry, remove Agent 2
 # Commit with message:
@@ -171,6 +181,7 @@ Next available: TGNT-P6.6 (ready now). Claim it?"
 **Step 4: Lock WORK_STREAM.md During High Contention**
 
 If race conditions are frequent:
+
 ```bash
 # Add atomic locking mechanism (Git pre-commit hook)
 cat > .git/hooks/pre-commit << 'EOF'
@@ -192,6 +203,7 @@ chmod +x .git/hooks/pre-commit
 **Step 5: Implement Mutex for CLAIMED Updates**
 
 Use file locking to prevent concurrent updates:
+
 ```bash
 # Wrap WORK_STREAM.md updates with flock
 update_work_stream() {
@@ -270,6 +282,7 @@ grep -A1 "TGNT-P6.1\|TGNT-P6.2" docs/reference/WORK_STREAM.md
 **Step 2: Break Cycle by Removing Weakest Link**
 
 Identify which dependency is weakest:
+
 ```bash
 # Ask questions:
 # 1. Can task B be done without A's output? (if yes, remove A→B dependency)
@@ -280,11 +293,13 @@ Identify which dependency is weakest:
 **Example: A=Auth, B=API depends on Auth**
 
 Original:
+
 - TGNT-P1: Auth system (depends on: none)
 - TGNT-P2: API endpoints (depends on: TGNT-P1)
 - But TGNT-P1 also depends on TGNT-P2 (API middleware?)
 
 Resolution: Split TGNT-P1 into two tasks:
+
 - TGNT-P1a: Auth core (no deps) → can start now
 - TGNT-P1b: Auth API integration (depends on TGNT-P2) → can start after P2
 
@@ -292,13 +307,14 @@ Resolution: Split TGNT-P1 into two tasks:
 
 ```markdown
 | TGNT-P1a | Auth core | ... | -- | ~5min | PENDING |
-| TGNT-P2  | API endpoints | ... | TGNT-P1a | ~10min | PENDING |
+| TGNT-P2 | API endpoints | ... | TGNT-P1a | ~10min | PENDING |
 | TGNT-P1b | Auth API integration | ... | TGNT-P2 | ~5min | PENDING |
 ```
 
 **Step 4: Reorder Tasks**
 
 Now that cycle is broken, reorder to maximize parallelism:
+
 ```
 TGNT-P1a (start now) → TGNT-P2 (start after P1a) + TGNT-P1b (wait for P2)
 ```
@@ -346,6 +362,7 @@ git mergetool {filename}
 **Step 2: Resolve Manually or Auto-Merge**
 
 **Option A: Manual Merge** (for logic conflicts)
+
 ```bash
 # Edit file, remove conflict markers
 nano {filename}
@@ -359,6 +376,7 @@ git commit -m "Resolve conflict: {filename} (took {agent-1} logic for {section})
 **Option B: Rebase & Replay**
 
 If conflict is just ordering/format:
+
 ```bash
 # Rebase agent B's changes on top of agent A's
 git rebase -i {base-commit}
@@ -391,17 +409,21 @@ pytest tests/test_{filename}.py
 **Step 5: Prevent Future Conflicts**
 
 Implement task scoping to prevent overlaps:
+
 ```markdown
 # Best: Different agents, different files
+
 Agent A: auth.py
 Agent B: api.py
 
 # OK: Same file, different functions
+
 Agent A: auth.py (classes UserAuth, TokenAuth)
 Agent B: auth.py (functions validate_token, refresh_token)
 
 # BAD: Same function, both agents editing
-Agent A & B: auth.py (function validate_token)  ❌
+
+Agent A & B: auth.py (function validate_token) ❌
 ```
 
 ---
@@ -439,12 +461,14 @@ pytest tests/test_git_index.py::test_atomic_write -v
 
 ```markdown
 # In WORK_STREAM.md, move from COMPLETED back to IN_PROGRESS:
+
 | TGNT-P6.1 | dev-agent-1 | 2026-02-18T14:30:00Z | -- | IN_PROGRESS (reopened: regression in TGNT-P6.2) |
 ```
 
 **Step 3: Root Cause Analysis**
 
 Ask agent: "What went wrong?"
+
 - Incomplete testing? (test didn't catch edge case)
 - Partial implementation? (feature flag not complete)
 - Assumption error? (didn't test on all platforms)
@@ -452,6 +476,7 @@ Ask agent: "What went wrong?"
 **Step 4: Fix and Re-Test**
 
 Agent fixes the issue:
+
 ```bash
 # Make fix
 nano {file}
@@ -499,6 +524,7 @@ fi
 **Step 1: Determine Root Cause**
 
 Send message to agent:
+
 ```
 "TGNT-P6.1 is running long (80m vs 8m estimate).
 What's blocking you?
@@ -511,6 +537,7 @@ D) Need help/pair programming"
 **Step 2: Based on Response:**
 
 **If A (Task More Complex):**
+
 - Split task into smaller subtasks
 - Complete current subtask, mark as partial completion
 - Reassess scope of remaining work
@@ -521,16 +548,19 @@ D) Need help/pair programming"
   ```
 
 **If B (Waiting for Dependency):**
+
 - Escalate dependency blocker (see FRP-8)
 - If dependency is far away, consider different approach
 - Can agent do other work in parallel?
 
 **If C (Tooling Issues):**
+
 - Provide support, assign troubleshooting agent
 - Install missing tools, fix environment
 - Restart task once fixed
 
 **If D (Need Help):**
+
 - Pair agent with specialist
 - Or bring in second agent to handle sub-part
 - Update task to show collaboration
@@ -544,6 +574,7 @@ D) Need help/pair programming"
 **Step 4: Adjust Future Estimates**
 
 Document lessons learned:
+
 ```markdown
 # Post-Task Analysis
 
@@ -551,14 +582,16 @@ Document lessons learned:
 **Original Estimate:** 8 min
 **Actual Duration:** 45 min (5.6x over)
 **Root Causes:**
-  - GIT_INDEX_FILE semantics more complex than anticipated
-  - Edge cases in concurrent access not covered by initial design
-  - Testing + debugging took longer than expected
+
+- GIT_INDEX_FILE semantics more complex than anticipated
+- Edge cases in concurrent access not covered by initial design
+- Testing + debugging took longer than expected
 
 **Recommendations for Similar Tasks:**
-  - Estimate should be 20-30 min minimum for git-level operations
-  - Build in 50% buffer for git testing (very environment-dependent)
-  - Consider pair programming for git operations (high risk of subtle bugs)
+
+- Estimate should be 20-30 min minimum for git-level operations
+- Build in 50% buffer for git testing (very environment-dependent)
+- Consider pair programming for git operations (high risk of subtle bugs)
 
 **Estimate Adjustment:** +300% for similar git-level tasks going forward
 ```
@@ -566,6 +599,7 @@ Document lessons learned:
 **Step 5: Monitor for Pattern**
 
 If multiple tasks are overshooting:
+
 - Team is overcommitting
 - Complexity underestimated
 - Consider reducing sprint scope
@@ -697,12 +731,14 @@ Options:
 
 ```markdown
 # In WORK_STREAM.md:
+
 | TGNT-P6.7 | ... | BLOCKED | Notes: Escalated to L1 due to 30m wait on TGNT-P6.5 |
 ```
 
 **Step 5: Automated Escalation Policy**
 
 Add rule to dashboard:
+
 ```
 if (time_blocked > 15 min):
   severity = MEDIUM
@@ -759,6 +795,7 @@ ls -la .git/ | grep lock
 **Step 3: Fix Appropriately**
 
 **If Permission:**
+
 ```bash
 # Fix file permissions
 chmod 644 {filename}
@@ -771,6 +808,7 @@ git config core.filemode
 ```
 
 **If Lock:**
+
 ```bash
 # Check what process is holding it
 lsof {filename} | awk '{print $2}' | grep -v PID | xargs ps aux | grep
@@ -783,6 +821,7 @@ rm -f .git/index.lock .git/HEAD.lock
 ```
 
 **If Network Drive:**
+
 ```bash
 # Try remounting NFS with shorter timeouts:
 sudo mount -o remount,timeo=10 {mount_point}
@@ -792,6 +831,7 @@ sudo mount -o remount,timeo=10 {mount_point}
 **Step 4: Retry Task**
 
 Once fixed:
+
 ```bash
 git status  # Should show no errors
 # Agent retries task
@@ -801,6 +841,7 @@ git status  # Should show no errors
 
 ```markdown
 # In AGENTS_ACTIVE.md notes:
+
 | agent-id | ... | ERROR | TGNT-P6.1 | -- | ... | File lock on git/index. Fixed with: rm .git/index.lock. Retrying now. |
 ```
 
@@ -885,6 +926,7 @@ task quality
 ## Phase 6: Git Parallelism - Complete
 
 ### Summary
+
 - Started: 2026-02-18 14:00 UTC
 - Completed: 2026-02-18 17:15 UTC
 - Duration: 3h 15m
@@ -893,17 +935,20 @@ task quality
 - Regressions: 0
 
 ### Metrics
+
 - Avg Cycle Time: 18 min
 - SLO Breaches: 1 (TGNT-P6.1, resolved)
 - Blockers: 2 (all resolved)
 - Quality: ✓ PASS (lint 0, tests 42/42, coverage 94%)
 
 ### Key Learnings
+
 1. Git operations need 3-4x estimate buffer (too complex)
 2. Atomic writes are hard to test (environment-dependent)
 3. Pair programming worked well for tricky sections
 
 ### Next Phase: Phase 7 (Monitoring)
+
 - Ready to start immediately
 - No blocking dependencies
 - First task: Dashboard design & implementation
@@ -930,11 +975,12 @@ cp docs/reports/PHASE_6_COMPLETION_SUMMARY.md docs/reference/archive/phase-6/
 
 ### thegent: Phase 7 (Monitoring - PENDING)
 
-| ID | Title | Type | Depends On | Effort | Status |
-|----|-------|------|-----------|--------|--------|
-| TGNT-P7.1 | Dashboard design (TUI mockup + hotkeys) | feature | TGNT-P6 | ~15min | PENDING |
-| TGNT-P7.2 | Dashboard MVP (parse WORK_STREAM, display header) | feature | TGNT-P7.1 | ~10min | PENDING |
-| TGNT-P7.3 | Dashboard agents view (live updates) | feature | TGNT-P7.2 | ~12min | PENDING |
+| ID        | Title                                             | Type    | Depends On | Effort | Status  |
+| --------- | ------------------------------------------------- | ------- | ---------- | ------ | ------- |
+| TGNT-P7.1 | Dashboard design (TUI mockup + hotkeys)           | feature | TGNT-P6    | ~15min | PENDING |
+| TGNT-P7.2 | Dashboard MVP (parse WORK_STREAM, display header) | feature | TGNT-P7.1  | ~10min | PENDING |
+| TGNT-P7.3 | Dashboard agents view (live updates)              | feature | TGNT-P7.2  | ~12min | PENDING |
+
 ...
 ```
 
@@ -983,25 +1029,25 @@ Failure Detected
 
 ## Escalation Matrix
 
-| Issue | Severity | Initial Handler | Escalation | Time Limit |
-|-------|----------|-----------------|-----------|-----------|
-| Agent timeout | Medium | L2 (Release task) | L1 (Investigate) | 30 min |
-| Race condition | High | L2 (Resolve) | L1 (Lock WORK_STREAM) | 15 min |
-| Circular dep | High | L1 (Break cycle) | Design review | 20 min |
-| File conflict | Medium | L2 (Manual merge) | L1 (Rebase strategy) | 10 min |
-| Regression | High | Upstream (Fix) | L1 (Post-mortem) | 30 min |
-| SLO breach | High | L2 (Escalate) | L1 (Reprioritize) | 15 min |
-| Blocker 30min | Critical | L1 (Escalate) | Team Lead (Override) | 5 min |
-| File lock | Low | Agent (Retry) | Ops (Fix perms) | 10 min |
-| No more work | Low | L1 (Create more) | -- | N/A |
+| Issue          | Severity | Initial Handler   | Escalation            | Time Limit |
+| -------------- | -------- | ----------------- | --------------------- | ---------- |
+| Agent timeout  | Medium   | L2 (Release task) | L1 (Investigate)      | 30 min     |
+| Race condition | High     | L2 (Resolve)      | L1 (Lock WORK_STREAM) | 15 min     |
+| Circular dep   | High     | L1 (Break cycle)  | Design review         | 20 min     |
+| File conflict  | Medium   | L2 (Manual merge) | L1 (Rebase strategy)  | 10 min     |
+| Regression     | High     | Upstream (Fix)    | L1 (Post-mortem)      | 30 min     |
+| SLO breach     | High     | L2 (Escalate)     | L1 (Reprioritize)     | 15 min     |
+| Blocker 30min  | Critical | L1 (Escalate)     | Team Lead (Override)  | 5 min      |
+| File lock      | Low      | Agent (Retry)     | Ops (Fix perms)       | 10 min     |
+| No more work   | Low      | L1 (Create more)  | --                    | N/A        |
 
 ---
 
 ## Version & Maintenance
 
-| Version | Date | Changes | Status |
-|---------|------|---------|--------|
-| 1.0 | 2026-02-18 | 10 FRP scenarios + decision tree | Active |
+| Version | Date       | Changes                          | Status |
+| ------- | ---------- | -------------------------------- | ------ |
+| 1.0     | 2026-02-18 | 10 FRP scenarios + decision tree | Active |
 
 **Maintained By:** L1 Coordinator
 **Review Frequency:** After each failure scenario encountered

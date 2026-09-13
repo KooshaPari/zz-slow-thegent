@@ -23,12 +23,12 @@ Covers remaining uncovered branches and edge cases in:
 - list_agents_impl (lines 3344-3358)
 """
 
-import orjson as json
 import os
 from datetime import UTC, datetime, timedelta
 from pathlib import Path
 from unittest.mock import MagicMock, patch
 
+import orjson as json
 import pytest
 
 
@@ -293,7 +293,10 @@ class TestObserveSummaryDeltaTypeError:
         with (
             patch("thegent.contracts.telemetry.ContractTelemetry", return_value=mock_ct),
             patch("thegent.execution.EscalationQueue", return_value=mock_queue),
-            patch("thegent.cli.commands.impl._load_observe_summary_snapshots", return_value=trend_records),
+            patch(
+                "thegent.cli.commands.impl._load_observe_summary_snapshots",
+                return_value=trend_records,
+            ),
         ):
             result = observe_summary_impl(trend_samples=5)
 
@@ -384,7 +387,11 @@ class TestRunImplDeprecatedContract:
         mock_settings_cls.return_value = mock_settings
 
         mock_migrator = MagicMock()
-        mock_migrator.evaluate_version.return_value = {"allowed": True, "status": "deprecated", "reason": "old version"}
+        mock_migrator.evaluate_version.return_value = {
+            "allowed": True,
+            "status": "deprecated",
+            "reason": "old version",
+        }
 
         mock_result = MagicMock()
         mock_result.stdout = "output"
@@ -403,8 +410,14 @@ class TestRunImplDeprecatedContract:
 
         with (
             patch("thegent.cli.commands.impl.resolve_agent", return_value="claude"),
-            patch("thegent.contracts.migration.MigrationController", return_value=mock_migrator),
-            patch("thegent.cli.commands.impl._inject_time_constraint", return_value="hello"),
+            patch(
+                "thegent.contracts.migration.MigrationController",
+                return_value=mock_migrator,
+            ),
+            patch(
+                "thegent.cli.commands.impl._inject_time_constraint",
+                return_value="hello",
+            ),
             patch("thegent.cli.commands.impl._resolve_cwd", return_value=tmp_path),
             patch.dict(os.environ, {}, clear=False),
             patch("thegent.cli.commands.impl.RunRegistry"),
@@ -413,12 +426,18 @@ class TestRunImplDeprecatedContract:
             patch("thegent.execution.TrustBoundaryValidator"),
             patch("thegent.execution.OverrideRegistry"),
             patch("thegent.execution.PolicyEngine") as mock_pe_cls,
-            patch("thegent.cli.commands.impl._default_owner_tag", return_value="test_owner"),
+            patch(
+                "thegent.cli.commands.impl._default_owner_tag",
+                return_value="test_owner",
+            ),
             patch("thegent.cli.commands.impl.get_fallback_agents", return_value=[]),
             patch("thegent.cli.commands.impl.escalate_add_impl"),
             patch("thegent.cli.commands.impl.extract_condensed", return_value="condensed"),
             patch("thegent.cli.commands.impl.get_runner", return_value=MagicMock()),
-            patch("thegent.agents.state_machine.FallbackStateMachine", return_value=mock_fsm),
+            patch(
+                "thegent.agents.state_machine.FallbackStateMachine",
+                return_value=mock_fsm,
+            ),
             patch("thegent.contracts.telemetry.ContractTelemetry"),
             patch("thegent.contracts.policy.FallbackPolicy"),
         ):
@@ -451,7 +470,11 @@ class TestRunImplInputGuardrailFail:
         mock_settings_cls.return_value = mock_settings
 
         mock_migrator = MagicMock()
-        mock_migrator.evaluate_version.return_value = {"allowed": True, "status": "current", "reason": "ok"}
+        mock_migrator.evaluate_version.return_value = {
+            "allowed": True,
+            "status": "current",
+            "reason": "ok",
+        }
 
         mock_gr_result = MagicMock()
         mock_gr_result.passed = False
@@ -466,11 +489,20 @@ class TestRunImplInputGuardrailFail:
 
         with (
             patch("thegent.cli.commands.impl.resolve_agent", return_value="claude"),
-            patch("thegent.contracts.migration.MigrationController", return_value=mock_migrator),
-            patch("thegent.cli.commands.impl._inject_time_constraint", return_value="hello"),
+            patch(
+                "thegent.contracts.migration.MigrationController",
+                return_value=mock_migrator,
+            ),
+            patch(
+                "thegent.cli.commands.impl._inject_time_constraint",
+                return_value="hello",
+            ),
             patch("thegent.cli.commands.impl._resolve_cwd", return_value=tmp_path),
             patch.dict(os.environ, env, clear=False),
-            patch("thegent.governance.input_guardrails._guardrails_from_env", return_value=mock_guardrails),
+            patch(
+                "thegent.governance.input_guardrails._guardrails_from_env",
+                return_value=mock_guardrails,
+            ),
         ):
             result = run_impl(agent="claude", prompt="secret data here")
 
@@ -504,7 +536,11 @@ class TestRunImplInputGuardrailException:
         mock_settings_cls.return_value = mock_settings
 
         mock_migrator = MagicMock()
-        mock_migrator.evaluate_version.return_value = {"allowed": True, "status": "current", "reason": "ok"}
+        mock_migrator.evaluate_version.return_value = {
+            "allowed": True,
+            "status": "current",
+            "reason": "ok",
+        }
 
         mock_result = MagicMock()
         mock_result.stdout = "output"
@@ -525,23 +561,38 @@ class TestRunImplInputGuardrailException:
 
         with (
             patch("thegent.cli.commands.impl.resolve_agent", return_value="claude"),
-            patch("thegent.contracts.migration.MigrationController", return_value=mock_migrator),
-            patch("thegent.cli.commands.impl._inject_time_constraint", return_value="hello"),
+            patch(
+                "thegent.contracts.migration.MigrationController",
+                return_value=mock_migrator,
+            ),
+            patch(
+                "thegent.cli.commands.impl._inject_time_constraint",
+                return_value="hello",
+            ),
             patch("thegent.cli.commands.impl._resolve_cwd", return_value=tmp_path),
             patch.dict(os.environ, env, clear=False),
-            patch("thegent.governance.input_guardrails._guardrails_from_env", side_effect=RuntimeError("boom")),
+            patch(
+                "thegent.governance.input_guardrails._guardrails_from_env",
+                side_effect=RuntimeError("boom"),
+            ),
             patch("thegent.cli.commands.impl.RunRegistry"),
             patch("thegent.execution.Auditor") as mock_aud_cls,
             patch("thegent.execution.CircuitBreakerRegistry"),
             patch("thegent.execution.TrustBoundaryValidator"),
             patch("thegent.execution.OverrideRegistry"),
             patch("thegent.execution.PolicyEngine") as mock_pe_cls,
-            patch("thegent.cli.commands.impl._default_owner_tag", return_value="test_owner"),
+            patch(
+                "thegent.cli.commands.impl._default_owner_tag",
+                return_value="test_owner",
+            ),
             patch("thegent.cli.commands.impl.get_fallback_agents", return_value=[]),
             patch("thegent.cli.commands.impl.escalate_add_impl"),
             patch("thegent.cli.commands.impl.extract_condensed", return_value="condensed"),
             patch("thegent.cli.commands.impl.get_runner", return_value=MagicMock()),
-            patch("thegent.agents.state_machine.FallbackStateMachine", return_value=mock_fsm),
+            patch(
+                "thegent.agents.state_machine.FallbackStateMachine",
+                return_value=mock_fsm,
+            ),
             patch("thegent.contracts.telemetry.ContractTelemetry"),
             patch("thegent.contracts.policy.FallbackPolicy"),
         ):
@@ -585,7 +636,11 @@ def _run_impl_mocks(
     mock_settings.normalization_policy_strict_providers = ""
 
     mock_migrator = MagicMock()
-    mock_migrator.evaluate_version.return_value = {"allowed": True, "status": "current", "reason": "ok"}
+    mock_migrator.evaluate_version.return_value = {
+        "allowed": True,
+        "status": "current",
+        "reason": "ok",
+    }
 
     mock_result = MagicMock()
     mock_result.stdout = "output"
@@ -623,7 +678,12 @@ def _apply_run_impl_patches(mocks, tmp_path):
     stack = ExitStack()
     stack.enter_context(patch("thegent.cli.commands.impl.ThegentSettings", return_value=mocks["settings"]))
     stack.enter_context(patch("thegent.cli.commands.impl.resolve_agent", return_value="claude"))
-    stack.enter_context(patch("thegent.contracts.migration.MigrationController", return_value=mocks["migrator"]))
+    stack.enter_context(
+        patch(
+            "thegent.contracts.migration.MigrationController",
+            return_value=mocks["migrator"],
+        )
+    )
     stack.enter_context(patch("thegent.cli.commands.impl._inject_time_constraint", return_value="hello"))
     stack.enter_context(patch("thegent.cli.commands.impl._resolve_cwd", return_value=tmp_path))
     stack.enter_context(patch.dict(os.environ, mocks["env_extras"], clear=False))
@@ -634,13 +694,21 @@ def _apply_run_impl_patches(mocks, tmp_path):
     stack.enter_context(patch("thegent.execution.TrustBoundaryValidator"))
     or_reg = stack.enter_context(patch("thegent.execution.OverrideRegistry"))
     pe = stack.enter_context(patch("thegent.execution.PolicyEngine"))
-    pe.return_value.evaluate.return_value = (mocks["policy_result"], mocks["policy_reason"])
+    pe.return_value.evaluate.return_value = (
+        mocks["policy_result"],
+        mocks["policy_reason"],
+    )
     stack.enter_context(patch("thegent.cli.commands.impl._default_owner_tag", return_value="test_owner"))
     stack.enter_context(patch("thegent.cli.commands.impl.get_fallback_agents", return_value=[]))
     stack.enter_context(patch("thegent.cli.commands.impl.escalate_add_impl"))
     stack.enter_context(patch("thegent.cli.commands.impl.extract_condensed", return_value="condensed"))
     stack.enter_context(patch("thegent.cli.commands.impl.get_runner", return_value=MagicMock()))
-    stack.enter_context(patch("thegent.agents.state_machine.FallbackStateMachine", return_value=mocks["fsm"]))
+    stack.enter_context(
+        patch(
+            "thegent.agents.state_machine.FallbackStateMachine",
+            return_value=mocks["fsm"],
+        )
+    )
     stack.enter_context(patch("thegent.contracts.telemetry.ContractTelemetry"))
     stack.enter_context(patch("thegent.contracts.policy.FallbackPolicy"))
     # Inject mock console into cli_impl module namespace (console is used but not imported)
@@ -726,7 +794,13 @@ class TestRunImplFallbackAppend:
         mocks = _run_impl_mocks(tmp_path)
         stack, _ = _apply_run_impl_patches(mocks, tmp_path)
 
-        with stack, patch("thegent.cli.commands.impl.get_fallback_agents", return_value=["gemini", "claude"]):
+        with (
+            stack,
+            patch(
+                "thegent.cli.commands.impl.get_fallback_agents",
+                return_value=["gemini", "claude"],
+            ),
+        ):
             result = run_impl(agent="claude", prompt="hello")
 
         assert result.get("exit_code", 0) == 0
@@ -869,7 +943,10 @@ class TestRunImplCircuitBreakerAndRunnerFactory:
             stack,
             patch("thegent.execution.CircuitBreakerRegistry") as mock_cb,
             patch("thegent.cli.commands.impl.get_runner", return_value=mock_runner),
-            patch("thegent.cli.commands.impl._resolve_agent_model", return_value="test-model"),
+            patch(
+                "thegent.cli.commands.impl._resolve_agent_model",
+                return_value="test-model",
+            ),
         ):
             mock_cb.return_value.is_open.return_value = False
             result = run_impl(agent="claude", prompt="hello")
@@ -921,7 +998,10 @@ class TestRunImplUsageLimit:
         mocks = _run_impl_mocks(tmp_path, run_exit_code=1, fsm_status="failed")
         stack, _ = _apply_run_impl_patches(mocks, tmp_path)
 
-        with stack, patch("thegent.cli.commands.impl.is_usage_limit", return_value=True):
+        with (
+            stack,
+            patch("thegent.cli.commands.impl.is_usage_limit", return_value=True),
+        ):
             result = run_impl(agent="claude", prompt="hello")
 
         assert "exit_code" in result or "error" in result
@@ -941,7 +1021,10 @@ class TestRunImplApiError:
         mocks["result"].timed_out = False
         stack, _ = _apply_run_impl_patches(mocks, tmp_path)
 
-        with stack, patch("thegent.cli.commands.impl.is_usage_limit", return_value=False):
+        with (
+            stack,
+            patch("thegent.cli.commands.impl.is_usage_limit", return_value=False),
+        ):
             result = run_impl(agent="claude", prompt="hello")
 
         assert "exit_code" in result or "error" in result
@@ -963,7 +1046,10 @@ class TestRunImplCostTracking:
         mock_estimator = MagicMock()
         mock_estimator.estimate.return_value = 0.05
 
-        with stack, patch("thegent.cost.aggregator.CostEstimator", return_value=mock_estimator):
+        with (
+            stack,
+            patch("thegent.cost.aggregator.CostEstimator", return_value=mock_estimator),
+        ):
             result = run_impl(agent="claude", prompt="hello")
 
         assert result.get("exit_code", 0) == 0
@@ -976,7 +1062,13 @@ class TestRunImplCostTracking:
         mocks = _run_impl_mocks(tmp_path, env_extras={"THGENT_COST_TRACKING": "true"})
         stack, _ = _apply_run_impl_patches(mocks, tmp_path)
 
-        with stack, patch("thegent.cost.aggregator.CostEstimator", side_effect=RuntimeError("boom")):
+        with (
+            stack,
+            patch(
+                "thegent.cost.aggregator.CostEstimator",
+                side_effect=RuntimeError("boom"),
+            ),
+        ):
             result = run_impl(agent="claude", prompt="hello")
 
         assert result.get("exit_code", 0) == 0
@@ -1024,7 +1116,11 @@ class TestRunImplCsmAndContract:
 
         with stack:
             result = run_impl(
-                agent="claude", prompt="hello", include_contract=True, route_contract=rc, route_request=rr
+                agent="claude",
+                prompt="hello",
+                include_contract=True,
+                route_contract=rc,
+                route_request=rr,
             )
 
         assert result.get("route_contract") == rc
@@ -1050,7 +1146,11 @@ class TestBgImplDomainFlag:
         mock_settings_cls.return_value = mock_settings
 
         mock_migrator = MagicMock()
-        mock_migrator.evaluate_version.return_value = {"allowed": True, "status": "current", "reason": "ok"}
+        mock_migrator.evaluate_version.return_value = {
+            "allowed": True,
+            "status": "current",
+            "reason": "ok",
+        }
 
         mock_proc = MagicMock()
         mock_proc.pid = 12345
@@ -1061,7 +1161,10 @@ class TestBgImplDomainFlag:
             patch("thegent.cli.commands.impl._default_owner_tag", return_value="me"),
             patch("thegent.cli.commands.impl._session_paths") as mock_sp,
             patch("thegent.cli.commands.impl.RunRegistry"),
-            patch("thegent.contracts.migration.MigrationController", return_value=mock_migrator),
+            patch(
+                "thegent.contracts.migration.MigrationController",
+                return_value=mock_migrator,
+            ),
             patch("subprocess.Popen", return_value=mock_proc) as mock_popen,
             patch("thegent.cli.commands.impl._run_background_session_observer"),
         ):
@@ -1504,7 +1607,10 @@ class TestEventsImplBadJsonContinue:
 @pytest.mark.unit
 class TestListAgentsImpl:
     # @trace FR-CLI-618
-    @patch("thegent.cli.commands.impl.list_agent_names", return_value=["claude", "gemini", "minimax", "cursor-agent"])
+    @patch(
+        "thegent.cli.commands.impl.list_agent_names",
+        return_value=["claude", "gemini", "minimax", "cursor-agent"],
+    )
     def test_returns_agents_with_backends(self, mock_names) -> None:
         """list_agents_impl returns agent dicts with names and backends (lines 3344-3358)."""
         from thegent.cli.commands.impl import list_agents_impl

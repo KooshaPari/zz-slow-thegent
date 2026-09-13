@@ -15,11 +15,13 @@ Batch 2 implements three additional fast abstraction layers for JSON schema vali
 ## 1. Fast JSON Schema Validator ✅
 
 ### Implementation
+
 - **File**: `src/thegent/infra/fast_json_schema.py`
 - **Backends**: fastjsonschema → jsonschema fallback
 - **Performance**: 2-3x faster than standard jsonschema
 
 ### Features
+
 - Schema compilation to Python code (fastjsonschema)
 - Schema caching for repeated validation
 - Compatible API with jsonschema
@@ -30,13 +32,7 @@ Batch 2 implements three additional fast abstraction layers for JSON schema vali
 ```python
 from thegent.infra import validate_json_schema, is_valid_json_schema
 
-schema = {
-    "type": "object",
-    "properties": {
-        "name": {"type": "string"},
-        "age": {"type": "integer"}
-    }
-}
+schema = {"type": "object", "properties": {"name": {"type": "string"}, "age": {"type": "integer"}}}
 
 data = {"name": "John", "age": 30}
 
@@ -49,6 +45,7 @@ if is_valid_json_schema(data, schema):
 ```
 
 ### Research Findings
+
 - **fastjsonschema**: Compiles schemas to Python code, 2-3x faster
 - **jsonschema**: Standard library, well-maintained, baseline performance
 - **Recommendation**: Use fastjsonschema for hot paths, jsonschema for compatibility
@@ -58,6 +55,7 @@ if is_valid_json_schema(data, schema):
 ## 2. Fast File Operations ✅
 
 ### Implementation
+
 - **File**: `src/thegent/infra/fast_file_ops.py`
 - **Optimizations**:
   - Linux: `os.sendfile()` for large files (zero-copy)
@@ -65,6 +63,7 @@ if is_valid_json_schema(data, schema):
 - **Performance**: Zero-copy on Linux for files >10MB
 
 ### Features
+
 - Zero-copy file transfers on Linux (sendfile)
 - Optimized directory operations
 - Batch file operations
@@ -86,6 +85,7 @@ size = get_path_size("/path/to/file")
 ```
 
 ### Research Findings
+
 - **os.sendfile()**: Zero-copy on Linux, 2-3x faster for large files
 - **shutil**: Good cross-platform support, baseline performance
 - **Recommendation**: Use sendfile for large file copies on Linux
@@ -95,11 +95,13 @@ size = get_path_size("/path/to/file")
 ## 3. Fast HTTP Client ✅
 
 ### Implementation
+
 - **File**: `src/thegent/infra/fast_http_client.py`
 - **Backends**: curl_cffi → httpx → requests fallback
 - **Performance**: 2-3x faster with curl_cffi
 
 ### Features
+
 - Browser fingerprinting support (curl_cffi)
 - Automatic backend selection
 - Compatible API with requests/httpx
@@ -122,6 +124,7 @@ response = http_post("https://api.example.com/submit", json={"key": "value"})
 ```
 
 ### Research Findings
+
 - **curl_cffi**: libcurl-based, 2-3x faster, browser fingerprinting
 - **httpx**: Modern, well-maintained, good async/sync support ✅ Already excellent
 - **requests**: Legacy, slower
@@ -132,14 +135,17 @@ response = http_post("https://api.example.com/submit", json={"key": "value"})
 ## Performance Benchmarks
 
 ### JSON Schema Validation
+
 - **jsonschema**: Baseline (100ms for 1000 validations)
 - **fastjsonschema**: 30-50ms (2-3x faster)
 
 ### File Operations
+
 - **shutil.copy2**: Baseline (500ms for 100MB file)
 - **sendfile()**: 50-100ms (5-10x faster, zero-copy)
 
 ### HTTP Client
+
 - **httpx**: Baseline (good performance)
 - **curl_cffi**: 2-3x faster for high-throughput scenarios
 
@@ -148,14 +154,17 @@ response = http_post("https://api.example.com/submit", json={"key": "value"})
 ## Integration Points
 
 ### JSON Schema Usage
+
 - `thegent/tools/universal_adapter.py` - Tool schema validation
 - `thegent/contracts/csm/v2/__init__.py` - Contract validation
 
 ### File Operations Usage
+
 - Anywhere `shutil.copy`, `shutil.copy2`, `shutil.move` is used
 - Directory operations throughout codebase
 
 ### HTTP Client Usage
+
 - Currently using `httpx` (already excellent)
 - Consider `curl_cffi` for high-throughput scenarios only
 
@@ -164,6 +173,7 @@ response = http_post("https://api.example.com/submit", json={"key": "value"})
 ## Next Steps
 
 1. **Install Fast Backends** (Optional):
+
    ```bash
    pip install fastjsonschema  # JSON schema (2-3x faster)
    pip install curl-cffi       # HTTP client (2-3x faster, optional)
@@ -182,11 +192,11 @@ response = http_post("https://api.example.com/submit", json={"key": "value"})
 
 ## Status Summary
 
-| Component | Status | Performance Gain | Priority |
-|-----------|--------|------------------|----------|
-| JSON Schema | ✅ Done | 2-3x faster | Medium |
-| File Ops | ✅ Done | 5-10x (Linux) | Medium |
-| HTTP Client | ✅ Done | 2-3x (optional) | Low |
+| Component   | Status  | Performance Gain | Priority |
+| ----------- | ------- | ---------------- | -------- |
+| JSON Schema | ✅ Done | 2-3x faster      | Medium   |
+| File Ops    | ✅ Done | 5-10x (Linux)    | Medium   |
+| HTTP Client | ✅ Done | 2-3x (optional)  | Low      |
 
 **Batch 2 Status**: ✅ Complete
 **Next**: Batch 3 - Additional optimizations or code migration

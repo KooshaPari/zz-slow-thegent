@@ -12,7 +12,6 @@ from enum import Enum
 from pathlib import Path
 from typing import Any
 
-
 logger = logging.getLogger(__name__)
 
 
@@ -91,7 +90,11 @@ class DocumentProcessor:
         """Process a single file."""
         path = Path(filepath)
         if not path.exists():
-            return ProcessingResult(filepath=filepath, status=ProcessingStatus.FAILED, error="File not found")
+            return ProcessingResult(
+                filepath=filepath,
+                status=ProcessingStatus.FAILED,
+                error="File not found",
+            )
 
         result = self.pipeline.process(path)
         self.results.append(result)
@@ -109,7 +112,13 @@ class DocumentProcessor:
         """Get processing statistics."""
         total = len(self.results)
         if total == 0:
-            return {"total": 0, "completed": 0, "failed": 0, "skipped": 0, "avg_processing_time": 0.0}
+            return {
+                "total": 0,
+                "completed": 0,
+                "failed": 0,
+                "skipped": 0,
+                "avg_processing_time": 0.0,
+            }
 
         completed = sum(1 for r in self.results if r.status == ProcessingStatus.COMPLETED)
         failed = sum(1 for r in self.results if r.status == ProcessingStatus.FAILED)
@@ -185,7 +194,11 @@ def extract_frontmatter(filepath: Path) -> dict[str, Any]:
 
         return {"frontmatter": frontmatter} if frontmatter else {}
     except OSError as exc:
-        logger.warning("Failed to read markdown for frontmatter extraction: %s", filepath, exc_info=exc)
+        logger.warning(
+            "Failed to read markdown for frontmatter extraction: %s",
+            filepath,
+            exc_info=exc,
+        )
     except Exception as exc:
         logger.debug("Frontmatter extraction failed for %s: %s", filepath, exc)
     return {}

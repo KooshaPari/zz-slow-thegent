@@ -7,7 +7,8 @@ from __future__ import annotations
 
 import logging
 import traceback
-from typing import Any, Callable, TypeVar
+from collections.abc import Callable
+from typing import Any, TypeVar
 
 logger = logging.getLogger(__name__)
 
@@ -68,7 +69,7 @@ def handle_error(
         raise error
 
 
-def safe_execute(
+def safe_execute[T](
     func: Callable[..., T],
     *args: Any,
     default: T | None = None,
@@ -95,7 +96,9 @@ def safe_execute(
         return default
 
 
-def suppress_errors(default: T | None = None) -> Callable[[Callable[..., T]], Callable[..., T]]:
+def suppress_errors[T](
+    default: T | None = None,
+) -> Callable[[Callable[..., T]], Callable[..., T]]:
     """Decorator that suppresses errors and returns default.
 
     Args:
@@ -119,7 +122,9 @@ def suppress_errors(default: T | None = None) -> Callable[[Callable[..., T]], Ca
     return decorator
 
 
-def wrap_errors(new_exception: type[Exception]) -> Callable[[Callable[..., T]], Callable[..., T]]:
+def wrap_errors(
+    new_exception: type[Exception],
+) -> Callable[[Callable[..., T]], Callable[..., T]]:
     """Decorator that wraps errors in a new exception type.
 
     Args:
@@ -157,7 +162,7 @@ class ErrorContext:
         self.log_level = log_level
         self.error: Exception | None = None
 
-    def __enter__(self) -> "ErrorContext":
+    def __enter__(self) -> ErrorContext:
         return self
 
     def __exit__(self, exc_type: Any, exc_val: Any, exc_tb: Any) -> bool:

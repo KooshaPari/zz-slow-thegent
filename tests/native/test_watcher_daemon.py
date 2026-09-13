@@ -35,7 +35,6 @@ from thegent.native.watcher_daemon import (
     WatchSpec,
     _reset_singleton,
     _SpecHandler,
-    _try_get_breaker,
     get_watcher_daemon,
 )
 
@@ -66,7 +65,12 @@ class TestWatchEvent:
 
     def test_fields_stored(self) -> None:
         # @trace BKM-09
-        ev = WatchEvent(event_type="created", src_path="/tmp/a.py", dest_path=None, is_directory=False)
+        ev = WatchEvent(
+            event_type="created",
+            src_path="/tmp/a.py",
+            dest_path=None,
+            is_directory=False,
+        )
         assert ev.event_type == "created"
         assert ev.src_path == "/tmp/a.py"
         assert ev.dest_path is None
@@ -77,7 +81,12 @@ class TestWatchEvent:
         assert ev.dest_path == "/b"
 
     def test_directory_event(self) -> None:
-        ev = WatchEvent(event_type="deleted", src_path="/some/dir", dest_path=None, is_directory=True)
+        ev = WatchEvent(
+            event_type="deleted",
+            src_path="/some/dir",
+            dest_path=None,
+            is_directory=True,
+        )
         assert ev.is_directory is True
 
     def test_frozen_is_dataclass(self) -> None:
@@ -220,7 +229,12 @@ class TestWatchManagement:
         daemon = _make_daemon()
         daemon.start()
         try:
-            spec = WatchSpec(root=tmp_path, patterns=["*.py"], recursive=True, callback=lambda ev: None)
+            spec = WatchSpec(
+                root=tmp_path,
+                patterns=["*.py"],
+                recursive=True,
+                callback=lambda ev: None,
+            )
             wid = daemon.add_watch(spec)
             watches = daemon.list_watches()
             assert len(watches) == 1
@@ -249,7 +263,12 @@ class TestWatchManagement:
             for i in range(3):
                 subdir = tmp_path / f"dir{i}"
                 subdir.mkdir()
-                spec = WatchSpec(root=subdir, patterns=["*"], recursive=False, callback=lambda ev: None)
+                spec = WatchSpec(
+                    root=subdir,
+                    patterns=["*"],
+                    recursive=False,
+                    callback=lambda ev: None,
+                )
                 daemon.add_watch(spec)
             assert len(daemon.list_watches()) == 3
         finally:
@@ -756,7 +775,12 @@ class TestThreadSafety:
             lock = threading.Lock()
 
             def add_one() -> None:
-                spec = WatchSpec(root=tmp_path, patterns=["*"], recursive=False, callback=lambda ev: None)
+                spec = WatchSpec(
+                    root=tmp_path,
+                    patterns=["*"],
+                    recursive=False,
+                    callback=lambda ev: None,
+                )
                 wid = daemon.add_watch(spec)
                 with lock:
                     ids.append(wid)

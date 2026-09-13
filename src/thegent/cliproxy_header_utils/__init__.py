@@ -10,10 +10,10 @@ from typing import Any
 
 def extract_websocket_forward_headers(headers: dict[str, str]) -> dict[str, str]:
     """Extract headers to forward for WebSocket connections.
-    
+
     Args:
         headers: Original headers dictionary.
-        
+
     Returns:
         Filtered headers for WebSocket forwarding.
     """
@@ -22,10 +22,10 @@ def extract_websocket_forward_headers(headers: dict[str, str]) -> dict[str, str]
 
 def filter_inbound_response_headers(headers: dict[str, str]) -> dict[str, str]:
     """Filter inbound response headers.
-    
+
     Args:
         headers: Response headers.
-        
+
     Returns:
         Filtered response headers.
     """
@@ -34,10 +34,10 @@ def filter_inbound_response_headers(headers: dict[str, str]) -> dict[str, str]:
 
 def sanitize_outbound_request_headers(headers: dict[str, str]) -> dict[str, str]:
     """Sanitize outbound request headers.
-    
+
     Args:
         headers: Request headers.
-        
+
     Returns:
         Sanitized request headers.
     """

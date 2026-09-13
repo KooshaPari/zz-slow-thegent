@@ -7,12 +7,14 @@ Quick navigation guide for the complete development package.
 ## 📋 Document Guide
 
 ### **START HERE** → [README.md](README.md) (5 min read)
+
 - Executive summary
 - Key features and benefits
 - Quick start guide
 - 4-week phased timeline
 
 ### **UNDERSTAND THE PROBLEM** → [proposal.md](proposal.md) (15 min read)
+
 - Problem statement and current gaps
 - Solution overview and scope
 - Success criteria and metrics
@@ -20,6 +22,7 @@ Quick navigation guide for the complete development package.
 - Future enhancements
 
 **Sections in proposal.md**:
+
 1. Problem Statement (Current gaps, impact)
 2. Solution Overview (Approach, features)
 3. Scope & Deliverables (In/out of scope)
@@ -34,6 +37,7 @@ Quick navigation guide for the complete development package.
 12. Success Story (User journey)
 
 ### **LEARN THE DESIGN** → [design.md](design.md) (30 min read)
+
 - System architecture and components
 - Data schemas (Idea object, JSONL format)
 - Detection algorithm (patterns, confidence)
@@ -45,6 +49,7 @@ Quick navigation guide for the complete development package.
 - Performance targets and optimization
 
 **Sections in design.md**:
+
 1. System Architecture (High-level, components)
 2. Data Schema (Canonical object, formats, directory structure)
 3. Detection Algorithm (Pattern matching, workflow)
@@ -59,6 +64,7 @@ Quick navigation guide for the complete development package.
 12. Extensibility (Custom patterns, plugins)
 
 ### **IMPLEMENT THE SYSTEM** → [tasks.md](tasks.md) (20 min read)
+
 - 18 implementation tasks organized in 4 phases
 - 26.5 days estimated effort (4 weeks)
 - Task dependencies and critical path
@@ -66,6 +72,7 @@ Quick navigation guide for the complete development package.
 - Notes for implementers
 
 **Task Phases**:
+
 - **Phase 1** (Week 1, 7.5 days): Core detection & storage
   - 1.1 Project structure
   - 1.2 Idea schema
@@ -99,21 +106,25 @@ Quick navigation guide for the complete development package.
 ### For Different Audiences
 
 **Product Managers / Non-Technical Stakeholders**
+
 - Read: README.md → proposal.md (sections 1-3)
 - Time: 15 minutes
 - Focus: Problem, solution, timeline
 
 **Architects / Technical Leads**
+
 - Read: README.md → proposal.md → design.md
 - Time: 60 minutes
 - Focus: Architecture, integration points, design decisions
 
 **Implementers / Developers**
+
 - Read: README.md → design.md → tasks.md
 - Time: 90 minutes
 - Focus: Implementation details, code structure, task breakdown
 
 **QA / Test Engineers**
+
 - Read: README.md → proposal.md (sections 4) → design.md (sections 11) → tasks.md (section 4.2)
 - Time: 45 minutes
 - Focus: Success criteria, error handling, test scenarios
@@ -123,6 +134,7 @@ Quick navigation guide for the complete development package.
 ## 📊 Key Metrics
 
 ### Timeline
+
 - **Total Effort**: 26.5 days (estimated)
 - **Phased Duration**: 4 weeks
 - **Phase 1**: 7.5 days (Core detection & storage)
@@ -131,6 +143,7 @@ Quick navigation guide for the complete development package.
 - **Phase 4**: 9.5 days (Polish & documentation)
 
 ### Quality Targets
+
 - **Test Coverage**: ≥85%
 - **Pattern Accuracy**: ≥95% (explicit), ≥80% (implicit)
 - **Search Performance**: <100ms for 1000+ ideas
@@ -139,6 +152,7 @@ Quick navigation guide for the complete development package.
 - **External Dependencies**: 0 (stdlib only)
 
 ### Features
+
 - **Detection Methods**: 2 (explicit flag + implicit patterns)
 - **Storage Backends**: 1 (JSONL + git)
 - **CLI Commands**: 5 (collect, list, search, get, export)
@@ -151,6 +165,7 @@ Quick navigation guide for the complete development package.
 ## 🔗 Integration Points
 
 ### Existing Systems
+
 - **Prompt History Collection** - Broader system collecting all prompts
 - **Work Stream & Backlog** - Ideas can become work items
 - **Session Registry** - Link ideas to sessions
@@ -158,6 +173,7 @@ Quick navigation guide for the complete development package.
 - **MCP Server** - Register tools and resources
 
 ### File Locations
+
 ```
 Source Code:    src/thegent/ideas/
 Tests:          tests/ideas/
@@ -171,6 +187,7 @@ Change Docs:    docs/changes/research-idea-seed-system/
 ## ✅ Acceptance Criteria
 
 ### Functional
+
 - ✅ Detect ≥95% of explicitly flagged ideas
 - ✅ Detect ≥80% of implicit ideas
 - ✅ Persistent storage in `.thegent/ideas/`
@@ -183,6 +200,7 @@ Change Docs:    docs/changes/research-idea-seed-system/
 - ✅ Hook integration complete
 
 ### Quality
+
 - ✅ ≥85% test coverage
 - ✅ Zero external dependencies
 - ✅ Type hints throughout
@@ -232,12 +250,14 @@ Change Docs:    docs/changes/research-idea-seed-system/
 ## 🚀 Next Steps
 
 ### For Architecture Review
+
 1. Review proposal.md (full document)
 2. Review design.md (full document)
 3. Validate design decisions in README.md section "Key Design Decisions"
 4. Provide feedback and approve
 
 ### For Development Planning
+
 1. Review tasks.md (full document)
 2. Identify task dependencies
 3. Allocate team capacity (26.5 days total)
@@ -245,6 +265,7 @@ Change Docs:    docs/changes/research-idea-seed-system/
 5. Create project in issue tracking system
 
 ### For Implementation
+
 1. Start with Phase 1 (Project Setup → Detection → Storage)
 2. Use tasks.md as implementation checklist
 3. Follow code style guidelines (PEP 8, type hints, docstrings)
@@ -257,6 +278,7 @@ Change Docs:    docs/changes/research-idea-seed-system/
 ## 📞 Questions?
 
 **For clarification on**:
+
 - **Problem & Goals** → See proposal.md
 - **Technical Architecture** → See design.md
 - **Implementation Steps** → See tasks.md

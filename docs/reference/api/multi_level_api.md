@@ -5,21 +5,23 @@
 Multi-level cache: L1 (in-process TTLCache) -&gt; L2 (diskcache on disk).
 
 Architecture:
-  - L1: cachetools.TTLCache -- fastest, in-process, bounded by maxsize + TTL
-  - L2: diskcache.Cache -- persistent, SQLite-backed, optional (graceful L1-only fallback)
 
-Read path:  L1 hit -&gt; return immediately
-            L1 miss -&gt; L2 hit -&gt; promote to L1 -&gt; return
-            L2 miss -&gt; return None (caller computes and calls set())
+- L1: cachetools.TTLCache -- fastest, in-process, bounded by maxsize + TTL
+- L2: diskcache.Cache -- persistent, SQLite-backed, optional (graceful L1-only fallback)
+
+Read path: L1 hit -&gt; return immediately
+L1 miss -&gt; L2 hit -&gt; promote to L1 -&gt; return
+L2 miss -&gt; return None (caller computes and calls set())
 
 Write path: write-through to L1 and L2 simultaneously
 
-Thread safety: cachetools.TTLCache is *not* thread-safe by default; we use threading.Lock
-              for all L1 mutations. diskcache.Cache is process-safe and thread-safe natively.
+Thread safety: cachetools.TTLCache is _not_ thread-safe by default; we use threading.Lock
+for all L1 mutations. diskcache.Cache is process-safe and thread-safe natively.
 
 Library-first compliance (LIBRARY_FIRST_POLICY.md):
-  - L1: cachetools.TTLCache -- no custom TTL logic
-  - L2: diskcache.Cache -- no custom disk serialisation/TTL logic
+
+- L1: cachetools.TTLCache -- no custom TTL logic
+- L2: diskcache.Cache -- no custom disk serialisation/TTL logic
 
 ---
 
@@ -29,7 +31,7 @@ Two-level cache: L1 in-memory TTLCache -&gt; L2 diskcache on disk.
 
 ### Methods
 
-#### MultiLevelCache.__init__
+#### MultiLevelCache.**init**
 
 ```python
 __init__(self: Any, l1_maxsize: int, l1_ttl: float, l2_dir: Any, l2_ttl: float)
@@ -63,7 +65,7 @@ Release resources held by L2 (diskcache file handles).
 delete(self: Any, key: Any)
 ```
 
-Remove *key* from both L1 and L2.
+Remove _key_ from both L1 and L2.
 
 ---
 
@@ -73,7 +75,7 @@ Remove *key* from both L1 and L2.
 get(self: Any, key: Any)
 ```
 
-Return cached value for *key*, or ``None`` on a full miss.
+Return cached value for _key_, or `None` on a full miss.
 
 Read-through order: L1 -&gt; L2.
 On an L2 hit the value is promoted into L1.
@@ -96,7 +98,7 @@ Return True if L2 (diskcache) is active.
 l2_dir(self: Any)
 ```
 
-Return the disk-cache directory path, or ``None`` if L2 is inactive.
+Return the disk-cache directory path, or `None` if L2 is inactive.
 
 ---
 
@@ -106,15 +108,15 @@ Return the disk-cache directory path, or ``None`` if L2 is inactive.
 set(self: Any, key: Any, value: Any, ttl: Any)
 ```
 
-Store *value* for *key* in both L1 and L2 simultaneously (write-through).
+Store _value_ for _key_ in both L1 and L2 simultaneously (write-through).
 
 **Parameters**:
 
 - `key`: Cache key (must be hashable for L1; must be picklable for L2).
 - `value`: Value to store. Must be picklable if L2 is active.
-- `ttl`: Per-entry TTL override in seconds. If ``None``:
-- L1 uses its configured *l1_ttl*.
-- L2 uses its configured *l2_ttl*.
+- `ttl`: Per-entry TTL override in seconds. If `None`:
+- L1 uses its configured _l1_ttl_.
+- L2 uses its configured _l2_ttl_.
 
 ---
 
@@ -136,10 +138,10 @@ Return a snapshot of current cache occupancy.
 cached_multi(cache: MultiLevelCache)
 ```
 
-Decorator that memoises a function's return value via *cache*.
+Decorator that memoises a function's return value via _cache_.
 
 The cache key is built from the function's qualified name and its
-positional and keyword arguments.  Only hashable argument combinations
+positional and keyword arguments. Only hashable argument combinations
 are cached; unhashable arguments cause the function to run uncached.
 
 Example::
@@ -186,7 +188,7 @@ decorator(func: Any)
 delete(self: Any, key: Any)
 ```
 
-Remove *key* from both L1 and L2.
+Remove _key_ from both L1 and L2.
 
 ---
 
@@ -196,7 +198,7 @@ Remove *key* from both L1 and L2.
 get(self: Any, key: Any)
 ```
 
-Return cached value for *key*, or ``None`` on a full miss.
+Return cached value for _key_, or `None` on a full miss.
 
 Read-through order: L1 -&gt; L2.
 On an L2 hit the value is promoted into L1.
@@ -219,7 +221,7 @@ Return True if L2 (diskcache) is active.
 l2_dir(self: Any)
 ```
 
-Return the disk-cache directory path, or ``None`` if L2 is inactive.
+Return the disk-cache directory path, or `None` if L2 is inactive.
 
 ---
 
@@ -229,15 +231,15 @@ Return the disk-cache directory path, or ``None`` if L2 is inactive.
 set(self: Any, key: Any, value: Any, ttl: Any)
 ```
 
-Store *value* for *key* in both L1 and L2 simultaneously (write-through).
+Store _value_ for _key_ in both L1 and L2 simultaneously (write-through).
 
 **Parameters**:
 
 - `key`: Cache key (must be hashable for L1; must be picklable for L2).
 - `value`: Value to store. Must be picklable if L2 is active.
-- `ttl`: Per-entry TTL override in seconds. If ``None``:
-- L1 uses its configured *l1_ttl*.
-- L2 uses its configured *l2_ttl*.
+- `ttl`: Per-entry TTL override in seconds. If `None`:
+- L1 uses its configured _l1_ttl_.
+- L2 uses its configured _l2_ttl_.
 
 ---
 

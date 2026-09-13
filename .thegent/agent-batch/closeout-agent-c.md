@@ -6,6 +6,7 @@ Scope: closeout slice for runtime modularization map + decomposition execution t
 ## What shipped
 
 ### WL-130 (Runtime Modularization Matrix)
+
 - Kept canonical runtime matrix artifact as source of truth:
   - `contracts/runtime/runtime-modularization-matrix.json`
 - Confirmed WL-130 contract tests pass:
@@ -13,6 +14,7 @@ Scope: closeout slice for runtime modularization map + decomposition execution t
 - Updated WORK_STREAM WL-130 status metadata to reflect closeout slice and explicit artifact/test linkage.
 
 ### WL-138 (Execute Decomposition Map)
+
 - Aligned decomposition progress tracker to the canonical WL-130 matrix artifact path:
   - `scripts/wl138_decomposition_progress.py`
   - checkpoint now references `contracts/runtime/runtime-modularization-matrix.json`
@@ -25,6 +27,7 @@ Scope: closeout slice for runtime modularization map + decomposition execution t
 ## WORK_STREAM status updates
 
 Updated in `docs/reference/WORK_STREAM.md`:
+
 - `WL-130`: `in_progress (2026-02-21 closeout slice)` + expanded `Source` references.
 - `WL-138`: `in_progress (2026-02-21 closeout slice)` + expanded `Source` references.
 - CLAIMED table notes updated for both WLs with closeout evidence summaries.
@@ -40,6 +43,7 @@ python -m py_compile scripts/wl138_decomposition_progress.py tests/test_wl130_ru
 ```
 
 Observed results:
+
 - Progress artifact generation: `completion: 5/5 (100.0%)`
 - Focused WL tests: `32 passed in 0.23s`
 

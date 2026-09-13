@@ -26,9 +26,9 @@ unit tests with a temp directory.
 from __future__ import annotations
 
 import json
+from collections.abc import Iterable
 from pathlib import Path
-from typing import Any, Iterable
-
+from typing import Any
 
 # ---------------------------------------------------------------------------
 # Event-type constants (string contract pinned by tests).
@@ -70,7 +70,7 @@ def detect_drift(
 
 def rank_providers_by_parser_quality(
     providers: Iterable[str],
-    telemetry: "ContractTelemetry | None" = None,
+    telemetry: ContractTelemetry | None = None,
 ) -> list[str]:
     """Rank ``providers`` by aggregated parser quality.
 
@@ -102,7 +102,7 @@ def rank_providers_by_parser_quality(
 
 def get_contract_telemetry(
     session_dir: Path | str | None = None,
-) -> "ContractTelemetry":
+) -> ContractTelemetry:
     """Factory mirroring the original global instance API."""
     return ContractTelemetry(session_dir)
 
@@ -338,7 +338,13 @@ class ContractTelemetry:
             provider_name = str(raw.get("provider", "unknown"))
             bucket = by_provider.setdefault(
                 provider_name,
-                {"total": 0, "success": 0, "fallback": 0, "confidence_sum": 0.0, "confidence_count": 0},
+                {
+                    "total": 0,
+                    "success": 0,
+                    "fallback": 0,
+                    "confidence_sum": 0.0,
+                    "confidence_count": 0,
+                },
             )
             bucket["total"] += 1
             if bool(raw.get("success", False)):
@@ -504,7 +510,9 @@ class ContractTelemetry:
             )
             return fallback / len(items)
 
-        def _per_provider_avg_confidence(items: list[dict[str, Any]]) -> dict[str, float]:
+        def _per_provider_avg_confidence(
+            items: list[dict[str, Any]],
+        ) -> dict[str, float]:
             aggregates: dict[str, list[float]] = {}
             for item in items:
                 if not isinstance(item.get("confidence"), (int, float)):

@@ -42,6 +42,7 @@ Data migrations transform how information is stored or structured without losing
 **To:** Unified SQLite database with indexes
 
 **Benefits:**
+
 - 2.4x faster queries through indexing
 - Full-text search capability
 - Reduced disk I/O
@@ -55,6 +56,7 @@ Data migrations transform how information is stored or structured without losing
 **To:** YAML with validation
 
 **Benefits:**
+
 - More human-readable
 - Comments supported
 - Smaller file size
@@ -66,12 +68,14 @@ Data migrations transform how information is stored or structured without losing
 **To:** Modern schema with relationships
 
 **Benefits:**
+
 - Enforced data integrity
 - Better query performance
 - Improved data relationships
 - Normalized structure
 
 **Characteristics:**
+
 - May require versioning
 - Backward compatibility periods
 - Migration scripts for each version
@@ -82,6 +86,7 @@ Data migrations transform how information is stored or structured without losing
 **To:** MessagePack/custom format
 
 **Benefits:**
+
 - Faster serialization
 - Smaller memory footprint
 - Better for large datasets
@@ -119,6 +124,7 @@ sqlite3 source.db ".backup backup.db"
 #### Step 1.3: Plan Validation
 
 Document what success looks like:
+
 - Record count should match
 - Specific field values to spot-check
 - Performance metrics to verify
@@ -148,6 +154,7 @@ ROLLBACK;  -- Don't commit changes
 #### Step 2.3: Make Adjustments
 
 If dry-run reveals issues:
+
 - Fix transformation logic
 - Adjust mapping rules
 - Update field handling
@@ -202,16 +209,16 @@ import json
 from pathlib import Path
 
 # Check specific records
-conn = sqlite3.connect('target.db')
+conn = sqlite3.connect("target.db")
 cursor = conn.cursor()
 
 # Sample verification
-cursor.execute('SELECT * FROM table LIMIT 10')
+cursor.execute("SELECT * FROM table LIMIT 10")
 for row in cursor.fetchall():
     # Verify fields exist and have expected types
-    assert row['id'] is not None
-    assert isinstance(row['timestamp'], (int, float))
-    assert row['content'] is not None
+    assert row["id"] is not None
+    assert isinstance(row["timestamp"], (int, float))
+    assert row["content"] is not None
 ```
 
 #### Step 4.3: Run Test Suite
@@ -356,9 +363,10 @@ pytest tests/ -k "backward_compat" -v
 **Symptom:** Migrated record count < Source record count
 
 **Diagnosis:**
+
 ```sql
 -- Find missing records
-SELECT id FROM source 
+SELECT id FROM source
 WHERE id NOT IN (SELECT id FROM target);
 
 -- Check for filtering issues
@@ -367,6 +375,7 @@ SELECT COUNT(*) FROM target WHERE condition = 'expected';
 ```
 
 **Solution:**
+
 1. Investigate missing records
 2. Fix transformation logic
 3. Restore from backup
@@ -377,10 +386,11 @@ SELECT COUNT(*) FROM target WHERE condition = 'expected';
 **Symptom:** Data looks wrong after migration
 
 **Diagnosis:**
+
 ```python
 # Compare samples
-source_record = source.get('record_id')
-target_record = target.get('record_id')
+source_record = source.get("record_id")
+target_record = target.get("record_id")
 
 if source_record != target_record:
     print(f"Mismatch: {source_record} vs {target_record}")
@@ -388,6 +398,7 @@ if source_record != target_record:
 ```
 
 **Solution:**
+
 1. Check transformation functions
 2. Validate data types
 3. Restore from backup if needed
@@ -397,6 +408,7 @@ if source_record != target_record:
 **Symptom:** Queries slower after migration
 
 **Diagnosis:**
+
 ```sql
 -- Check indexes
 SELECT * FROM sqlite_master WHERE type='index';
@@ -409,6 +421,7 @@ EXPLAIN QUERY PLAN SELECT * FROM table WHERE id = 123;
 ```
 
 **Solution:**
+
 1. Create missing indexes
 2. Rebuild statistics
 3. Optimize schema design
@@ -423,21 +436,25 @@ EXPLAIN QUERY PLAN SELECT * FROM table WHERE id = 123;
 **Scenario:** Migrating agent memory from JSONL files to SQLite
 
 **Step 1: Backup**
+
 ```bash
 cp -r ~/.claude/civilization/agents ~/.claude/civilization/agents.backup.$(date +%Y%m%d)
 ```
 
 **Step 2: Dry-run**
+
 ```bash
 python3 scripts/migrate_memory_jsonl_to_sqlite.py --dry-run
 ```
 
 **Step 3: Execute**
+
 ```bash
 python3 scripts/migrate_memory_jsonl_to_sqlite.py
 ```
 
 **Step 4: Verify**
+
 ```bash
 # Count verification
 JSONL_COUNT=$(find ~/.claude/civilization/agents -name "memory.jsonl" -exec wc -l {} + | tail -1 | awk '{print $1}')
@@ -449,9 +466,11 @@ python3 scripts/verify_migration.py
 ```
 
 **Step 5: Switch**
+
 ```python
 # Update application config
 from data_storage import SQLiteMemoryStorage
+
 storage = SQLiteMemoryStorage()
 ```
 
@@ -460,6 +479,7 @@ storage = SQLiteMemoryStorage()
 **Scenario:** Upgrading from schema v1.0 to v2.0
 
 **Step 1: Create new schema**
+
 ```sql
 BEGIN TRANSACTION;
 
@@ -485,6 +505,7 @@ ROLLBACK;
 ```
 
 **Step 2: Switch tables**
+
 ```sql
 BEGIN TRANSACTION;
 
@@ -500,6 +521,7 @@ COMMIT;
 ```
 
 **Step 3: Cleanup** (after verification)
+
 ```sql
 DROP TABLE users_v1;
 ```

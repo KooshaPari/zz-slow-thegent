@@ -10,6 +10,7 @@ Completed WL-128 closeout by removing remaining duplicate/deprecated Python tool
 ## Changes
 
 1. Task dedup + enforcement (`Taskfile.yml`)
+
 - Made `typecheck` the canonical fast type lane (ty + zuban).
 - Updated `lint` to call `typecheck` and removed duplicate `lint:type` task.
 - Collapsed canonical quality flow into `quality` and removed duplicate aliases `quality_project` and `gate`.
@@ -18,10 +19,12 @@ Completed WL-128 closeout by removing remaining duplicate/deprecated Python tool
 - Added canonical fix entrypoint: `quality:fix:runner`.
 
 2. Alias-audit strictness support (`scripts/check_deprecated_quality_aliases.py`)
+
 - Extended task discovery to include namespaced tasks from included Taskfiles (for canonical `quality:dag*` detection).
 - Kept report/output contracts unchanged.
 
 3. Tests
+
 - `tests/test_wl128_toolchain_dedup.py`
   - Added assertions for removed duplicate aliases (`lint:type`, `quality_project`).
   - Added strict-audit pass assertion via WL-123 checker script.
@@ -31,12 +34,14 @@ Completed WL-128 closeout by removing remaining duplicate/deprecated Python tool
   - Added coverage ensuring canonical commands can be resolved from included Taskfiles.
 
 4. Docs
+
 - `docs/guides/QUALITY_ASSURANCE.md`
   - Updated WL-123 migration note to retired state and documented canonical `quality:fix:runner`.
 - `docs/plans/WL-128-PYTHON-TOOLCHAIN-DEDUP-SLICE.md`
   - Added closeout section listing completed dedup enforcement and test coverage.
 
 5. Workstream status
+
 - `docs/reference/WORK_STREAM.md`
   - Set WL-128 status to `COMPLETED (2026-02-21 closeout)`.
   - Cleared blocker (`Blocked by: none`).
@@ -47,9 +52,11 @@ Completed WL-128 closeout by removing remaining duplicate/deprecated Python tool
 Executed focused validation:
 
 1. `python -m pytest -q tests/test_wl128_toolchain_dedup.py tests/test_wl123_deprecated_quality_aliases.py tests/test_wl122_max_lines_wiring.py`
+
 - Result: `29 passed`
 
 2. `uv run python scripts/check_deprecated_quality_aliases.py --strict`
+
 - Result: pass (exit code 0)
 
 ## Notes

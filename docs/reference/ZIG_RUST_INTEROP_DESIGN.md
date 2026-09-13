@@ -62,6 +62,7 @@ export fn zmx_create(name: [*:0]const u8, cmd: [*:0]const u8) i32 {
 ```
 
 `export fn` in Zig:
+
 - Uses C calling convention (`extern "C"` equivalent)
 - Disables name mangling (symbol name is exactly `zmx_list`, etc.)
 - Is compatible with any language that can call C functions
@@ -83,12 +84,12 @@ public API.
 
 ### 2.3 Type Mapping
 
-| Zig type          | Rust type       | Notes                                     |
-|:------------------|:----------------|:------------------------------------------|
-| `[*]u8`           | `*mut u8`       | Writable byte slice pointer               |
-| `[*:0]const u8`   | `*const u8`     | NUL-terminated C string; use `CString`    |
-| `usize`           | `usize`         | Platform word size; identical ABI         |
-| `i32`             | `i32`           | Return code; negative = errno-style error |
+| Zig type        | Rust type   | Notes                                     |
+| :-------------- | :---------- | :---------------------------------------- |
+| `[*]u8`         | `*mut u8`   | Writable byte slice pointer               |
+| `[*:0]const u8` | `*const u8` | NUL-terminated C string; use `CString`    |
+| `usize`         | `usize`     | Platform word size; identical ABI         |
+| `i32`           | `i32`       | Return code; negative = errno-style error |
 
 ---
 
@@ -163,6 +164,7 @@ pub fn list_sessions() -> Result<Vec<String>, ZmxError> { ... }
 ### 4.2 Buffer Safety for zmx_list
 
 The `zmx_list` function writes into a caller-provided buffer. The safe wrapper:
+
 - Allocates a fixed-size heap buffer (64 KiB) before the call
 - Passes `buf.len()` as the capacity bound, preventing overflows
 - Treats `written > buf.len()` as a protocol error
@@ -196,6 +198,7 @@ after the `unsafe` block completes.
 ### 4.5 Thread Safety
 
 zmx's thread-safety guarantees are not yet documented. Until confirmed:
+
 - Treat `list_sessions()` as non-concurrent-safe
 - Use `Mutex<()>` as a guard if calling from multiple threads
 
@@ -203,12 +206,13 @@ zmx's thread-safety guarantees are not yet documented. Until confirmed:
 
 ## 5. Feature Flag Design
 
-| Feature       | Default | Build outcome                                           |
-|:--------------|:-------:|:--------------------------------------------------------|
-| *(none)*      | yes     | Subprocess fallback; compiles everywhere; no libzmx dep |
-| `zmx-native`  | no      | C ABI FFI path; requires libzmx at link time            |
+| Feature      | Default | Build outcome                                           |
+| :----------- | :-----: | :------------------------------------------------------ |
+| _(none)_     |   yes   | Subprocess fallback; compiles everywhere; no libzmx dep |
+| `zmx-native` |   no    | C ABI FFI path; requires libzmx at link time            |
 
 The subprocess fallback is always the default because:
+
 1. It compiles on any machine without zmx installed (CI, developer laptops)
 2. It provides a working implementation immediately
 3. It allows the native path to be opt-in and tested independently
@@ -232,13 +236,13 @@ cargo test --features zmx-native --include-ignored
 
 All errors are structured via `ZmxError` (a `thiserror::Error` enum):
 
-| Variant              | When                                             |
-|:---------------------|:-------------------------------------------------|
-| `NativeError`        | zmx C function returned a non-zero code          |
-| `NulInName`          | Session name/cmd contained an interior NUL byte  |
-| `Subprocess`         | `Command::new("zmx")` failed to spawn            |
-| `SubprocessFailed`   | zmx subprocess exited non-zero                   |
-| `Utf8`               | zmx output was not valid UTF-8                   |
+| Variant            | When                                            |
+| :----------------- | :---------------------------------------------- |
+| `NativeError`      | zmx C function returned a non-zero code         |
+| `NulInName`        | Session name/cmd contained an interior NUL byte |
+| `Subprocess`       | `Command::new("zmx")` failed to spawn           |
+| `SubprocessFailed` | zmx subprocess exited non-zero                  |
+| `Utf8`             | zmx output was not valid UTF-8                  |
 
 ---
 
@@ -266,13 +270,13 @@ Canonical gate command:
 task quality:runtime-contracts:zig-abi
 ```
 
-| Item                          | Notes                                               |
-|:------------------------------|:----------------------------------------------------|
-| `impl-rust-zmx-wrapper`       | Richer API: session metadata, send keys, capture    |
-| `impl-zmx-c-abi`              | If zmx does not export C ABI yet, add it            |
-| PyO3 bindings                 | Expose `list_sessions()` to Python via PyO3         |
-| `zmx_capture_screen` FFI      | Read terminal screen content natively               |
-| pkg-config crate in build.rs  | Replace manual shell-out with `pkg-config` crate   |
+| Item                         | Notes                                            |
+| :--------------------------- | :----------------------------------------------- |
+| `impl-rust-zmx-wrapper`      | Richer API: session metadata, send keys, capture |
+| `impl-zmx-c-abi`             | If zmx does not export C ABI yet, add it         |
+| PyO3 bindings                | Expose `list_sessions()` to Python via PyO3      |
+| `zmx_capture_screen` FFI     | Read terminal screen content natively            |
+| pkg-config crate in build.rs | Replace manual shell-out with `pkg-config` crate |
 
 ---
 

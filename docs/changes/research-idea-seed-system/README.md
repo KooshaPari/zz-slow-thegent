@@ -27,6 +27,7 @@ This directory contains the complete development specification for the **Idea Se
 ### The Problem
 
 Valuable **idea seeds** (concepts, insights, innovations) that emerge during development are currently **lost** because:
+
 - Ideas exist only in IDE session memory (cleared after ~2 weeks)
 - No systematic way to flag or capture ideas
 - Ideas scattered across multiple sessions, no central repository
@@ -44,15 +45,15 @@ A lightweight **Idea Seed Detection & Storage System** that:
 
 ### Key Features
 
-| Feature | Benefit |
-|---------|---------|
-| **Explicit Flagging** (`$idea: [text]`) | Users opt-in; clear intent |
-| **Pattern Detection** (implicit ideas) | Capture ideas without flag |
-| **Git Audit Trail** | Full history, recovery, integrity |
-| **Full-Text Search** | Find ideas by keyword |
-| **CLI Commands** | Easy access: `thegent ideas search "cache"` |
-| **MCP Integration** | Agents can discover and learn from ideas |
-| **Export** (JSON/MD/CSV) | Share ideas with team or tools |
+| Feature                                 | Benefit                                     |
+| --------------------------------------- | ------------------------------------------- |
+| **Explicit Flagging** (`$idea: [text]`) | Users opt-in; clear intent                  |
+| **Pattern Detection** (implicit ideas)  | Capture ideas without flag                  |
+| **Git Audit Trail**                     | Full history, recovery, integrity           |
+| **Full-Text Search**                    | Find ideas by keyword                       |
+| **CLI Commands**                        | Easy access: `thegent ideas search "cache"` |
+| **MCP Integration**                     | Agents can discover and learn from ideas    |
+| **Export** (JSON/MD/CSV)                | Share ideas with team or tools              |
 
 ### Success Metrics
 
@@ -71,12 +72,12 @@ A lightweight **Idea Seed Detection & Storage System** that:
 
 **Goal**: Detect ideas and persist them durably
 
-| Task | Effort | Status |
-|------|--------|--------|
-| 1.1 Project Setup | 0.5 days | PENDING |
-| 1.2 Idea Schema | 1.5 days | PENDING |
-| 1.3 Detection Engine | 2 days | PENDING |
-| 1.4 Storage Layer (JSONL + Git) | 2 days | PENDING |
+| Task                                | Effort   | Status  |
+| ----------------------------------- | -------- | ------- |
+| 1.1 Project Setup                   | 0.5 days | PENDING |
+| 1.2 Idea Schema                     | 1.5 days | PENDING |
+| 1.3 Detection Engine                | 2 days   | PENDING |
+| 1.4 Storage Layer (JSONL + Git)     | 2 days   | PENDING |
 | 1.5 `thegent ideas collect` Command | 1.5 days | PENDING |
 
 **Deliverable**: Ideas detected, stored persistently, retrievable
@@ -87,12 +88,12 @@ A lightweight **Idea Seed Detection & Storage System** that:
 
 **Goal**: Make ideas searchable and filterable
 
-| Task | Effort | Status |
-|------|--------|--------|
-| 2.1 Full-Text Index | 1.5 days | PENDING |
-| 2.2 Metadata Indices (date, tag, project) | 1 day | PENDING |
-| 2.3 Query Engine | 2 days | PENDING |
-| 2.4 Search/List/Get CLI Commands | 1.5 days | PENDING |
+| Task                                      | Effort   | Status  |
+| ----------------------------------------- | -------- | ------- |
+| 2.1 Full-Text Index                       | 1.5 days | PENDING |
+| 2.2 Metadata Indices (date, tag, project) | 1 day    | PENDING |
+| 2.3 Query Engine                          | 2 days   | PENDING |
+| 2.4 Search/List/Get CLI Commands          | 1.5 days | PENDING |
 
 **Deliverable**: Ideas searchable via CLI
 
@@ -102,11 +103,11 @@ A lightweight **Idea Seed Detection & Storage System** that:
 
 **Goal**: Expose ideas to agents via MCP
 
-| Task | Effort | Status |
-|------|--------|--------|
+| Task                                       | Effort   | Status  |
+| ------------------------------------------ | -------- | ------- |
 | 3.1 MCP Tools (collect, search, get, list) | 1.5 days | PENDING |
-| 3.2 MCP Server Integration | 1.5 days | PENDING |
-| 3.3 MCP Resources (thegent://ideas/*) | 1 day | PENDING |
+| 3.2 MCP Server Integration                 | 1.5 days | PENDING |
+| 3.3 MCP Resources (thegent://ideas/\*)     | 1 day    | PENDING |
 
 **Deliverable**: Agents can discover and access ideas
 
@@ -116,14 +117,14 @@ A lightweight **Idea Seed Detection & Storage System** that:
 
 **Goal**: Production-ready system with documentation
 
-| Task | Effort | Status |
-|------|--------|--------|
-| 4.1 Export Functionality (JSON/MD/CSV) | 1.5 days | PENDING |
-| 4.2 Comprehensive Test Suite (≥85% coverage) | 3 days | PENDING |
-| 4.3 User Guide & API Documentation | 1.5 days | PENDING |
-| 4.4 Integration Testing (E2E) | 1 day | PENDING |
-| 4.5 Hook Integration (UserPromptSubmit) | 1 day | PENDING |
-| 4.6 Performance Optimization | 1.5 days | PENDING |
+| Task                                         | Effort   | Status  |
+| -------------------------------------------- | -------- | ------- |
+| 4.1 Export Functionality (JSON/MD/CSV)       | 1.5 days | PENDING |
+| 4.2 Comprehensive Test Suite (≥85% coverage) | 3 days   | PENDING |
+| 4.3 User Guide & API Documentation           | 1.5 days | PENDING |
+| 4.4 Integration Testing (E2E)                | 1 day    | PENDING |
+| 4.5 Hook Integration (UserPromptSubmit)      | 1 day    | PENDING |
+| 4.6 Performance Optimization                 | 1.5 days | PENDING |
 
 **Deliverable**: Production-ready, documented, tested
 
@@ -165,6 +166,7 @@ A lightweight **Idea Seed Detection & Storage System** that:
 ### tasks.md (4 phases + 18 tasks)
 
 **Phase 1** (5 tasks, 7.5 days):
+
 - 1.1 Project structure
 - 1.2 Schema implementation
 - 1.3 Detection engine
@@ -172,17 +174,20 @@ A lightweight **Idea Seed Detection & Storage System** that:
 - 1.5 CLI collect command
 
 **Phase 2** (4 tasks, 6 days):
+
 - 2.1 Full-text index
 - 2.2 Metadata indices
 - 2.3 Query engine
 - 2.4 Search/list/get commands
 
 **Phase 3** (3 tasks, 4 days):
+
 - 3.1 MCP tools
 - 3.2 MCP server integration
 - 3.3 MCP resources
 
 **Phase 4** (6 tasks, 9.5 days):
+
 - 4.1 Export functionality
 - 4.2 Test suite
 - 4.3 Documentation
@@ -199,6 +204,7 @@ A lightweight **Idea Seed Detection & Storage System** that:
 **Decision**: Use Python stdlib only (json, pathlib, re, sqlite3, hashlib)
 
 **Rationale**:
+
 - Lightweight, self-contained
 - No dependency conflicts
 - Easy to maintain
@@ -209,6 +215,7 @@ A lightweight **Idea Seed Detection & Storage System** that:
 **Decision**: Store ideas in `.thegent/ideas/ideas.jsonl` with git commits
 
 **Rationale**:
+
 - Simple, human-readable format
 - Efficient append (tail write)
 - Natural audit trail (git history)
@@ -220,6 +227,7 @@ A lightweight **Idea Seed Detection & Storage System** that:
 **Decision**: Explicit flag (`$idea`) + regex patterns for implicit ideas
 
 **Rationale**:
+
 - User can opt-in explicitly
 - Pattern matching captures natural language
 - Configurable (users can add custom patterns)
@@ -230,6 +238,7 @@ A lightweight **Idea Seed Detection & Storage System** that:
 **Decision**: Build indices in-memory, persist to JSON
 
 **Rationale**:
+
 - Fast search (<100ms)
 - Simple implementation
 - No SQL database needed
@@ -240,6 +249,7 @@ A lightweight **Idea Seed Detection & Storage System** that:
 **Decision**: Expose via both CLI and MCP tools
 
 **Rationale**:
+
 - CLI for human users
 - MCP for agent access
 - Flexible integration points
@@ -277,6 +287,7 @@ A lightweight **Idea Seed Detection & Storage System** that:
 ## File Locations
 
 ### Source Code
+
 ```
 src/thegent/ideas/
 ├── __init__.py              # Package
@@ -292,6 +303,7 @@ src/thegent/ideas/
 ```
 
 ### Tests
+
 ```
 tests/ideas/
 ├── test_schema.py           # Schema tests
@@ -305,6 +317,7 @@ tests/ideas/
 ```
 
 ### User Data
+
 ```
 .thegent/ideas/
 ├── ideas.jsonl              # Master log
@@ -321,6 +334,7 @@ tests/ideas/
 ```
 
 ### Documentation
+
 ```
 docs/
 ├── guides/
@@ -341,6 +355,7 @@ docs/
 ### User Perspective
 
 #### Flagging an Idea
+
 ```bash
 # User writes prompt with $idea flag:
 $idea: Add lazy-loading to DAG compiler for faster feedback loop
@@ -349,6 +364,7 @@ $idea: Add lazy-loading to DAG compiler for faster feedback loop
 ```
 
 #### Searching Ideas
+
 ```bash
 $ thegent ideas search "lazy loading"
 # Output:
@@ -359,6 +375,7 @@ $ thegent ideas search "cache" --tag performance --since 1w
 ```
 
 #### Listing Ideas
+
 ```bash
 $ thegent ideas list --limit 10
 # Output: 10 most recent ideas
@@ -368,6 +385,7 @@ $ thegent ideas list --tag architecture
 ```
 
 #### Exporting Ideas
+
 ```bash
 $ thegent ideas export --format markdown --output ideas.md
 # Output: Markdown file with all ideas
@@ -428,15 +446,15 @@ implementation_plan = generate_plan(ideas)
 
 ## Risk Mitigation
 
-| Risk | Likelihood | Impact | Mitigation |
-|------|------------|--------|-----------|
-| Pattern matching false positives | Medium | Low | Configurable patterns, manual override |
-| Storage bloat | Low | Low | Archiving, compression, pruning |
-| Git commit overhead | Low | Low | Batch commits, async writes |
-| Search performance degradation | Low | Medium | Caching, incremental indexing |
-| Users forget to flag ideas | Medium | Medium | Auto-detection patterns, reminders |
-| Ideas not actionable | Low | Low | Export to backlog feature |
-| Privacy concerns (sensitive data in ideas) | Low | Medium | Redaction options, local-only storage |
+| Risk                                       | Likelihood | Impact | Mitigation                             |
+| ------------------------------------------ | ---------- | ------ | -------------------------------------- |
+| Pattern matching false positives           | Medium     | Low    | Configurable patterns, manual override |
+| Storage bloat                              | Low        | Low    | Archiving, compression, pruning        |
+| Git commit overhead                        | Low        | Low    | Batch commits, async writes            |
+| Search performance degradation             | Low        | Medium | Caching, incremental indexing          |
+| Users forget to flag ideas                 | Medium     | Medium | Auto-detection patterns, reminders     |
+| Ideas not actionable                       | Low        | Low    | Export to backlog feature              |
+| Privacy concerns (sensitive data in ideas) | Low        | Medium | Redaction options, local-only storage  |
 
 ---
 
@@ -449,6 +467,7 @@ implementation_plan = generate_plan(ideas)
 **Without System**: Scrolling through old IDE sessions, searching transcripts manually, giving up and reimplementing from scratch.
 
 **With System**:
+
 ```bash
 $ thegent ideas search "lazy loading"
 # Finds the original idea with full context, timestamp, related topics
@@ -461,6 +480,7 @@ $ thegent ideas search "lazy loading"
 **Without System**: Each team member searches their own session history, misses ideas from others.
 
 **With System**:
+
 ```bash
 $ thegent ideas list --tag performance
 # Returns all ideas tagged with performance
@@ -475,6 +495,7 @@ $ thegent ideas export --format markdown --tag performance
 **Without System**: Ideas are lost forever.
 
 **With System**:
+
 ```bash
 $ git log .thegent/ideas/
 # Complete history of all ideas they had
@@ -519,20 +540,20 @@ $ thegent ideas export --since 6m
 
 ## Approval & Sign-Off
 
-| Role | Name | Date | Status |
-|------|------|------|--------|
-| **Architect** | TBD | - | PENDING |
-| **Tech Lead** | TBD | - | PENDING |
-| **QA Lead** | TBD | - | PENDING |
+| Role          | Name | Date | Status  |
+| ------------- | ---- | ---- | ------- |
+| **Architect** | TBD  | -    | PENDING |
+| **Tech Lead** | TBD  | -    | PENDING |
+| **QA Lead**   | TBD  | -    | PENDING |
 
 ---
 
 ## Change Log
 
-| Date | Version | Changes | Author |
-|------|---------|---------|--------|
-| 2026-02-16 | 1.0 | Initial proposal, design, and tasks | thegent |
-| - | - | - | - |
+| Date       | Version | Changes                             | Author  |
+| ---------- | ------- | ----------------------------------- | ------- |
+| 2026-02-16 | 1.0     | Initial proposal, design, and tasks | thegent |
+| -          | -       | -                                   | -       |
 
 ---
 

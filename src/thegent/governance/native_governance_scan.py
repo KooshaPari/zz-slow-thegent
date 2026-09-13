@@ -11,15 +11,17 @@ Traces to: FR-GOV-007 (governance violation detection), FR-GOV-006 (native binar
 
 from __future__ import annotations
 
-import orjson as json
 import logging
 import re
 import shutil
 import subprocess
-from thegent.infra.shim_subprocess import run as shim_run
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Final
+
+import orjson as json
+
+from thegent.infra.shim_subprocess import run as shim_run
 
 _log = logging.getLogger(__name__)
 
@@ -366,7 +368,12 @@ class NativeGovernanceScanner:
 
         try:
             return _run_binary_scan(binary, content)
-        except (subprocess.TimeoutExpired, json.JSONDecodeError, KeyError, OSError) as exc:
+        except (
+            subprocess.TimeoutExpired,
+            json.JSONDecodeError,
+            KeyError,
+            OSError,
+        ) as exc:
             _log.warning(
                 "hook-dispatcher governance scan failed (%s); using Python fallback",
                 exc,
@@ -415,7 +422,12 @@ class NativeGovernanceScanner:
 
         try:
             return _run_binary_check_contract(binary, contract_id, content)
-        except (subprocess.TimeoutExpired, json.JSONDecodeError, KeyError, OSError) as exc:
+        except (
+            subprocess.TimeoutExpired,
+            json.JSONDecodeError,
+            KeyError,
+            OSError,
+        ) as exc:
             _log.warning(
                 "hook-dispatcher governance check-contract failed (%s); using Python fallback",
                 exc,

@@ -5,7 +5,6 @@ import pytest
 pytest.importorskip("PySide6")
 
 import ast
-import os
 from pathlib import Path
 
 
@@ -241,9 +240,8 @@ class TestAgentsTabPackage:
 
     def test_tabs_package_exports_agents(self):
         """tabs package exports agents tab."""
-        import os
-        from pathlib import Path
         import sys
+        from pathlib import Path
 
         # Add src to path
         src_path = Path(__file__).parent.parent.parent / "src"

@@ -3,11 +3,13 @@
 from __future__ import annotations
 
 import orjson as json
-
 import pytest
 
 from thegent.protocols import jsonrpc_agent_server as server
-from thegent.protocols.jsonrpc_agent_server import SERVER_STATE, process_jsonrpc_line_full
+from thegent.protocols.jsonrpc_agent_server import (
+    SERVER_STATE,
+    process_jsonrpc_line_full,
+)
 
 
 def _reset_state() -> None:
@@ -70,7 +72,11 @@ def test_wl11032_build_turn_submit_response_resolution_phase_returns_input_shape
 
 def test_wl11033_resolve_turn_submit_response_approval_fields_preserves_none() -> None:
     # @trace WL-11033
-    assert server._resolve_turn_submit_response_approval_fields(None) == (None, None, None)
+    assert server._resolve_turn_submit_response_approval_fields(None) == (
+        None,
+        None,
+        None,
+    )
 
 
 def test_wl11034_resolve_turn_submit_response_target_rejects_missing_turn() -> None:

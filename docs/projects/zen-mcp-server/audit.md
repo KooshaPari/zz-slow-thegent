@@ -77,6 +77,7 @@ type OpenAICompatibilityModel struct {
    - `GlobalModelRegistry().RegisterClient(a.ID, providerKey, models)` with `ModelInfo.ID = modelID`
 
 So `gemini-3-flash` is registered when:
+
 - Config has zen entry with `models[].alias == "gemini-3-flash"`
 - Synthesizer creates Auth for zen
 - `registerModelsForAuth` matches zen Auth to zen compat config
@@ -102,13 +103,13 @@ For each `openai-compatibility` entry with `APIKeyEntries`:
 
 Before testing, ensure:
 
-| Step | Action |
-|------|--------|
-| 1 | Set `THGENT_ZEN_API_KEY` (or `OPENCODE_API_KEY` / `ZEN_API_KEY`) |
-| 2 | Run `thegent cliproxy ensure-config` or `dex` (which triggers ensure-config) |
-| 3 | Confirm zen block in `~/.config/thegent/cliproxy-config.yaml` |
-| 4 | Restart proxy: `thegent cliproxy restart` or `thegent cliproxy start` |
-| 5 | Test: `dex flash -p "hi"` (uses gemini-3-flash) |
+| Step | Action                                                                       |
+| ---- | ---------------------------------------------------------------------------- |
+| 1    | Set `THGENT_ZEN_API_KEY` (or `OPENCODE_API_KEY` / `ZEN_API_KEY`)             |
+| 2    | Run `thegent cliproxy ensure-config` or `dex` (which triggers ensure-config) |
+| 3    | Confirm zen block in `~/.config/thegent/cliproxy-config.yaml`                |
+| 4    | Restart proxy: `thegent cliproxy restart` or `thegent cliproxy start`        |
+| 5    | Test: `dex flash -p "hi"` (uses gemini-3-flash)                              |
 
 ### Config Check
 
@@ -122,11 +123,11 @@ Expected: `name: zen`, `base-url`, `api-key-entries`, and `models` including `al
 
 ## 4. Troubleshooting
 
-| Symptom | Likely Cause | Fix |
-|---------|---------------|-----|
-| "unknown provider for model" | Zen not in config or not registered | Set key, run ensure-config, restart proxy |
-| 502 Bad Gateway | Proxy not running or wrong config path | `thegent cliproxy start` with correct config |
-| Zen missing from config | Key not set or `_has_provider_credentials` already true | Set `THGENT_ZEN_API_KEY`; remove manual zen block if conflicting |
+| Symptom                      | Likely Cause                                            | Fix                                                              |
+| ---------------------------- | ------------------------------------------------------- | ---------------------------------------------------------------- |
+| "unknown provider for model" | Zen not in config or not registered                     | Set key, run ensure-config, restart proxy                        |
+| 502 Bad Gateway              | Proxy not running or wrong config path                  | `thegent cliproxy start` with correct config                     |
+| Zen missing from config      | Key not set or `_has_provider_credentials` already true | Set `THGENT_ZEN_API_KEY`; remove manual zen block if conflicting |
 
 ### Config Path
 
@@ -137,19 +138,19 @@ Expected: `name: zen`, `base-url`, `api-key-entries`, and `models` including `al
 
 ## 5. Relevant Paths
 
-| Purpose | Path |
-|---------|------|
-| Fork root | `CLIProxyAPIPlus-fork/` |
-| "unknown provider" error | `sdk/api/handlers/handlers.go:653` |
-| Provider resolution | `internal/util/provider.go` |
-| Model registry | `internal/registry/model_registry.go` |
-| openai-compat registration | `sdk/cliproxy/service.go:977-1010` |
-| openAICompatInfoFromAuth | `sdk/cliproxy/service.go:350-369` |
-| Config struct | `internal/config/config.go` |
-| Synthesizer (openai-compat) | `internal/watcher/synthesizer/config.go:212-306` |
-| Zen injection (thegent) | `thegent/src/thegent/agents/cliproxy_manager.py:_inject_zen_into_cliproxy` |
-| Provider definitions | `thegent/src/thegent/agents/cliproxy_data/provider_definitions.json` |
-| Cliproxy config | `~/.config/thegent/cliproxy-config.yaml` |
+| Purpose                     | Path                                                                       |
+| --------------------------- | -------------------------------------------------------------------------- |
+| Fork root                   | `CLIProxyAPIPlus-fork/`                                                    |
+| "unknown provider" error    | `sdk/api/handlers/handlers.go:653`                                         |
+| Provider resolution         | `internal/util/provider.go`                                                |
+| Model registry              | `internal/registry/model_registry.go`                                      |
+| openai-compat registration  | `sdk/cliproxy/service.go:977-1010`                                         |
+| openAICompatInfoFromAuth    | `sdk/cliproxy/service.go:350-369`                                          |
+| Config struct               | `internal/config/config.go`                                                |
+| Synthesizer (openai-compat) | `internal/watcher/synthesizer/config.go:212-306`                           |
+| Zen injection (thegent)     | `thegent/src/thegent/agents/cliproxy_manager.py:_inject_zen_into_cliproxy` |
+| Provider definitions        | `thegent/src/thegent/agents/cliproxy_data/provider_definitions.json`       |
+| Cliproxy config             | `~/.config/thegent/cliproxy-config.yaml`                                   |
 
 ---
 

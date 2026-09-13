@@ -208,7 +208,10 @@ class HierarchicalAgentRegistry:
                 heartbeat_stale = (current_time - agent.last_heartbeat) > stale_threshold
 
                 # FINISHED/COMPLETED agents that are stale should be pruned
-                is_terminal = agent.state in (AgentLifecycleState.COMPLETED, AgentLifecycleState.FINISHED)
+                is_terminal = agent.state in (
+                    AgentLifecycleState.COMPLETED,
+                    AgentLifecycleState.FINISHED,
+                )
                 if is_terminal and heartbeat_stale:
                     to_remove.append(agent_id)
                     pruned += 1
@@ -311,9 +314,7 @@ class HierarchicalDispatcher:
         parent = self.registry.get_agent(parent_agent_id)
         if not parent:
             return False
-        if parent.depth >= MAX_HIERARCHY_DEPTH:
-            return False
-        return True
+        return not parent.depth >= MAX_HIERARCHY_DEPTH
 
     def get_agent_tree(self, root_agent_id: str) -> dict[str, Any]:
         """Get the agent tree starting from a root agent."""

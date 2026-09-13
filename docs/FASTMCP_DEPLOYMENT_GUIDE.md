@@ -14,24 +14,24 @@ This guide covers deploying the thegent MCP server in production. Per G-FM-01 Ph
 
 ## 2. Current Capabilities
 
-| Feature | Status | Config |
-|---------|--------|--------|
-| **Stateless HTTP** | ✓ Supported | `stateless_http=True` (default) — per-request JSON-RPC without SSE |
-| **Redis EventStore** | ✓ Supported | `FASTMCP_EVENT_STORE_URL=redis://host:port` |
-| **Session state** | ✓ EventStore | In-memory default; Redis when URL set |
-| **Auth (Bearer/OAuth)** | □ To add | See §4 |
-| **Deployment** | ✓ Uvicorn | `thegent mcp run` or `python -m thegent.mcp_server` |
+| Feature                 | Status       | Config                                                             |
+| ----------------------- | ------------ | ------------------------------------------------------------------ |
+| **Stateless HTTP**      | ✓ Supported  | `stateless_http=True` (default) — per-request JSON-RPC without SSE |
+| **Redis EventStore**    | ✓ Supported  | `FASTMCP_EVENT_STORE_URL=redis://host:port`                        |
+| **Session state**       | ✓ EventStore | In-memory default; Redis when URL set                              |
+| **Auth (Bearer/OAuth)** | □ To add     | See §4                                                             |
+| **Deployment**          | ✓ Uvicorn    | `thegent mcp run` or `python -m thegent.mcp_server`                |
 
 ---
 
 ## 3. Environment Variables
 
-| Variable | Default | Description |
-|----------|---------|-------------|
-| `THGENT_MCP_HOST` | 127.0.0.1 | Bind address |
-| `THGENT_MCP_PORT` | 3847 | Port |
-| `FASTMCP_EVENT_STORE_URL` | — | Redis URL for EventStore; omit for in-memory |
-| `FASTMCP_DOCKET_URL` | — | Task backend for background tasks (optional) |
+| Variable                  | Default   | Description                                  |
+| ------------------------- | --------- | -------------------------------------------- |
+| `THGENT_MCP_HOST`         | 127.0.0.1 | Bind address                                 |
+| `THGENT_MCP_PORT`         | 3847      | Port                                         |
+| `FASTMCP_EVENT_STORE_URL` | —         | Redis URL for EventStore; omit for in-memory |
+| `FASTMCP_DOCKET_URL`      | —         | Task backend for background tasks (optional) |
 
 ---
 
@@ -44,6 +44,7 @@ Add middleware to validate `Authorization: Bearer <token>`:
 ```python
 # In mcp_server.py (future)
 from starlette.middleware.base import BaseHTTPMiddleware
+
 
 class BearerAuthMiddleware(BaseHTTPMiddleware):
     async def dispatch(self, request, call_next):
@@ -70,8 +71,7 @@ from cryptography.fernet import Fernet
 
 auth = GitHubProvider(
     client_storage=FernetEncryptionWrapper(
-        key_value=RedisStore(url=os.environ["REDIS_URL"]),
-        fernet=Fernet(os.environ["STORAGE_ENCRYPTION_KEY"])
+        key_value=RedisStore(url=os.environ["REDIS_URL"]), fernet=Fernet(os.environ["STORAGE_ENCRYPTION_KEY"])
     )
 )
 mcp.add_auth_provider(auth)

@@ -1,13 +1,18 @@
 from __future__ import annotations
 
-import orjson as json
 from pathlib import Path
+
+import orjson as json
 
 from thegent.orchestration.state.session_scraper import SessionScraper
 
 
 def _snapshot_payload(
-    tmp_path: Path, snapshot_id: str, trigger: str, captured_at: str, tags: list[str] | None = None
+    tmp_path: Path,
+    snapshot_id: str,
+    trigger: str,
+    captured_at: str,
+    tags: list[str] | None = None,
 ) -> dict:
     return {
         "snapshot_id": snapshot_id,
@@ -123,7 +128,9 @@ def test_list_snapshots_since_filters_out_older_snapshots(tmp_path: Path) -> Non
     assert [p.name for p in paths] == ["snapshot-new.json", "snapshot-mid.json"]
 
 
-def test_invalid_json_files_are_ignored_by_list_and_prune_helpers(tmp_path: Path) -> None:
+def test_invalid_json_files_are_ignored_by_list_and_prune_helpers(
+    tmp_path: Path,
+) -> None:
     scraper = SessionScraper(project_root=tmp_path)
     root = tmp_path / "snapshots"
     root.mkdir()

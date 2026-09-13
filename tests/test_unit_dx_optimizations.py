@@ -5,10 +5,12 @@ _xml_repair = pytest.importorskip(
     "thegent.tools.xml_repair",
     reason="thegent.tools.xml_repair module removed; dx optimizations tests skipped",
 )
-from thegent.tools.xml_repair import SloppyXMLRepair  # noqa: E402  (importorskip may skip before this)
+from thegent.tools.cache import ResourceCache
+from thegent.tools.xml_repair import (
+    SloppyXMLRepair,  # noqa: E402  (importorskip may skip before this)
+)
 
 from thegent.governance.handoff import HandoffIntegrity
-from thegent.tools.cache import ResourceCache
 
 
 def test_handoff_integrity_analysis(tmp_path):

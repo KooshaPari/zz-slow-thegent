@@ -1,9 +1,9 @@
 from __future__ import annotations
 
+from collections.abc import Iterable
 from dataclasses import dataclass
 from datetime import datetime
-from typing import Any, Iterable, Literal, Protocol, TypedDict
-
+from typing import Any, Literal, Protocol, TypedDict
 
 Capability = Literal["chat_completion", "embeddings", "rerank", "tool_execution"]
 LaneID = Literal["litellm_donut", "bifrost", "native"]
@@ -131,7 +131,13 @@ class RouteCandidate(TypedDict):
     route_id: str
     provider_id: str
     subprovider_id: str
-    provider_class: Literal["local_inference", "cloud_direct", "cloud_aggregator", "account_api", "internal_custom"]
+    provider_class: Literal[
+        "local_inference",
+        "cloud_direct",
+        "cloud_aggregator",
+        "account_api",
+        "internal_custom",
+    ]
     model: str
     priority: int
     constraints: RouteConstraints
@@ -175,7 +181,7 @@ class MetaproviderAdapter(ProviderAdapter, Protocol):
 class Middleware(Protocol):
     def name(self) -> str: ...
 
-    def handle(self, req: ExecutionRequest, next_handler: "Handler") -> ExecutionResponse: ...
+    def handle(self, req: ExecutionRequest, next_handler: Handler) -> ExecutionResponse: ...
 
 
 class Handler(Protocol):

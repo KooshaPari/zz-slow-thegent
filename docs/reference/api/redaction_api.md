@@ -12,7 +12,7 @@ Redacts PII and secrets from text outputs.
 
 ### Methods
 
-#### PIIRedactor.__init__
+#### PIIRedactor.**init**
 
 ```python
 __init__(self: Any, custom_patterns: Any)

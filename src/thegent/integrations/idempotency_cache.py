@@ -11,7 +11,7 @@ across process restarts.
 
 import logging
 from dataclasses import dataclass
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from pathlib import Path
 
 import orjson
@@ -141,7 +141,11 @@ class IdempotencyCache:
         Returns:
             True when an equivalent record exists in the idempotency index.
         """
-        key = (connector.strip().lower(), wl_id.strip().upper(), content_hash.strip().lower())
+        key = (
+            connector.strip().lower(),
+            wl_id.strip().upper(),
+            content_hash.strip().lower(),
+        )
         return key in self._content_index
 
     def record(
@@ -163,7 +167,7 @@ class IdempotencyCache:
             operation_id=operation_id,
             wl_id=wl_id,
             connector=connector,
-            timestamp=datetime.now(timezone.utc).isoformat(),
+            timestamp=datetime.now(UTC).isoformat(),
             content_hash=content_hash,
         )
         self._records[operation_id] = record
@@ -195,10 +199,7 @@ class IdempotencyCache:
         Returns:
             The number of records removed.
         """
-        if isinstance(dt, str):
-            cutoff = datetime.fromisoformat(dt)
-        else:
-            cutoff = dt
+        cutoff = datetime.fromisoformat(dt) if isinstance(dt, str) else dt
 
         removed = 0
         keys_to_remove = []

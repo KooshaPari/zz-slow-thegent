@@ -9,17 +9,17 @@
 
 ## 1. Claude Code Hook Surface (Reference)
 
-| Event | When | Blocking? | Use for thegent |
-|-------|------|-----------|-----------------|
-| **UserPromptSubmit** | Before prompt sent to model | Yes (fail-fast) | $idea save, $defer queue, $block intercept |
-| **Stop** | User ends session | No (parallel) | Flush pending queue, harvest, quality gate |
-| **SessionStart** | New session begins | No | Load pending from previous session |
-| **SessionEnd** | Session cleanup | No | Alternative queue flush |
-| **PreToolUse** | Before each tool call | Yes | Block until resolution |
-| **PostToolUse** | After each tool call | No | Advisory, change tracking |
-| **SubagentStart/Stop** | Subagent lifecycle | No | Coordination |
-| **PreCompact** | Before history compaction | No | Advisory |
-| **TaskCompleted** | Task done | No | Notification |
+| Event                  | When                        | Blocking?       | Use for thegent                            |
+| ---------------------- | --------------------------- | --------------- | ------------------------------------------ |
+| **UserPromptSubmit**   | Before prompt sent to model | Yes (fail-fast) | $idea save, $defer queue, $block intercept |
+| **Stop**               | User ends session           | No (parallel)   | Flush pending queue, harvest, quality gate |
+| **SessionStart**       | New session begins          | No              | Load pending from previous session         |
+| **SessionEnd**         | Session cleanup             | No              | Alternative queue flush                    |
+| **PreToolUse**         | Before each tool call       | Yes             | Block until resolution                     |
+| **PostToolUse**        | After each tool call        | No              | Advisory, change tracking                  |
+| **SubagentStart/Stop** | Subagent lifecycle          | No              | Coordination                               |
+| **PreCompact**         | Before history compaction   | No              | Advisory                                   |
+| **TaskCompleted**      | Task done                   | No              | Notification                               |
 
 **Key capability:** UserPromptSubmit can **block** the prompt (exit 1) and **re-prompt** later. Stop hook can flush pending to handoff file. Next session loads handoff → "re-prompt" flow.
 
@@ -31,13 +31,13 @@
 
 ### 2.1 What Codex Has
 
-| Feature | Purpose | Hook-like? |
-|---------|---------|------------|
-| **`notify`** (config.toml) | Command invoked for notifications; receives JSON payload | Outbound only; event schema unknown |
-| **Skills** (`.codex/skills/`) | Instructions, tool context, `$skill` triggers | No lifecycle hooks |
-| **Automations** | Scheduled background tasks; inbox/triage | Time-based, not event-based |
-| **MCP** | Tool access (thegent, etc.) | No hooks |
-| **config.toml** | Model, sandbox, MCP, `notify` | Config only |
+| Feature                       | Purpose                                                  | Hook-like?                          |
+| ----------------------------- | -------------------------------------------------------- | ----------------------------------- |
+| **`notify`** (config.toml)    | Command invoked for notifications; receives JSON payload | Outbound only; event schema unknown |
+| **Skills** (`.codex/skills/`) | Instructions, tool context, `$skill` triggers            | No lifecycle hooks                  |
+| **Automations**               | Scheduled background tasks; inbox/triage                 | Time-based, not event-based         |
+| **MCP**                       | Tool access (thegent, etc.)                              | No hooks                            |
+| **config.toml**               | Model, sandbox, MCP, `notify`                            | Config only                         |
 
 ### 2.2 What Codex Lacks
 
@@ -49,13 +49,14 @@
 ### 2.3 `notify` Deep Dive
 
 From config reference:
+
 ```toml
 notify = ["command", "arg1", "arg2"]  # Command invoked for notifications; receives JSON payload
 ```
 
 - **Direction:** Codex → external command (outbound).
 - **Schema:** Undocumented. Likely used for desktop/TUI notifications (e.g. `tui.notifications`).
-- **Use case:** If Codex sends "session ended" or "task completed" to `notify`, we could observe and react. We cannot *intercept* or *block* — only observe and run side effects.
+- **Use case:** If Codex sends "session ended" or "task completed" to `notify`, we could observe and react. We cannot _intercept_ or _block_ — only observe and run side effects.
 
 **Action:** Audit Codex source for `notify` payload schema and when it fires.
 
@@ -66,6 +67,7 @@ notify = ["command", "arg1", "arg2"]  # Command invoked for notifications; recei
 ### 3.1 Heavy Wrapping
 
 **Idea:** Wrap `codex` in a script/TUI that **owns the prompt layer**:
+
 - User runs `thegent codex` (or similar) instead of `codex` directly
 - Wrapper receives user input first → intercepts $defer/$block/$idea → queues or blocks before forwarding to Codex
 - Spawns `codex` as subprocess; pipes prompts we choose to forward
@@ -73,12 +75,14 @@ notify = ["command", "arg1", "arg2"]  # Command invoked for notifications; recei
 - On start: injects handoff prompts from queue (we control what gets sent)
 
 **Pros:**
+
 - No Codex modification; works with upstream
 - **We own the LLM layer** — we intercept prompts before they reach Codex
 - Full UserPromptSubmit parity: $defer, $block, $idea all possible
 - Re-prompt: we control stdin; inject handoff on next session start
 
 **Cons:**
+
 - Must replicate or proxy Codex's TUI/UX (or provide our own prompt interface)
 - Brittle if Codex changes its stdin/stdout protocol
 - Wrapper must stay in sync with Codex's expected I/O shape
@@ -90,11 +94,13 @@ notify = ["command", "arg1", "arg2"]  # Command invoked for notifications; recei
 ### 3.2 Patching (patch-package or similar)
 
 **Idea:** Patch Codex's source (e.g. `codex-rs` or `codex-cli`) to add hook invocation at key points:
+
 - Before prompt send → call our script (UserPromptSubmit)
 - On session end → call our script (Stop)
 
 **Pros:** Minimal fork; patches apply on install.
 **Cons:**
+
 - Codex is Rust/TypeScript; patch surface is large
 - Requires deep understanding of Codex internals
 - Patches break on upstream changes
@@ -107,12 +113,14 @@ notify = ["command", "arg1", "arg2"]  # Command invoked for notifications; recei
 ### 3.3 Forking
 
 **Idea:** Full fork of [openai/codex](https://github.com/openai/codex). Add hook system analogous to Claude Code:
+
 - Define hook events (UserPromptSubmit, Stop, SessionStart, etc.)
 - Invoke configurable scripts with JSON input
 - Support blocking (UserPromptSubmit) and non-blocking (Stop)
 
 **Pros:** Full control; can design hook contract to match Claude Code.
 **Cons:**
+
 - Maintenance burden (merge upstream)
 - Distribution (custom binary or npm package)
 - User trust (run forked Codex vs upstream)
@@ -134,6 +142,7 @@ notify = ["command", "arg1", "arg2"]  # Command invoked for notifications; recei
 ### 3.5 Hybrid: `notify` + Wrapper
 
 **Idea:** Use `notify` for observation; wrapper for "on exit" logic.
+
 - Configure `notify = ["thegent", "codex-notify"]` — our CLI receives Codex notifications
 - Document `notify` payload schema (reverse-engineer from source)
 - On "session_end" (if sent): run harvest, flush queue
@@ -151,6 +160,7 @@ notify = ["command", "arg1", "arg2"]  # Command invoked for notifications; recei
 **Current:** Lifecycle loop runs via `thegent_loop` (CLI/MCP). Worker + checker; human/agent takeover via `thegent_loop_takeover` or `thegent orchestrate loop-send`.
 
 **Codex integration:**
+
 - Loop can run inside Codex (Codex invokes `thegent run` or uses `thegent_loop` MCP tool)
 - Session hooks add: harvest on stop, quality gate, pending flush
 - **Without hooks:** Loop works, but no session-boundary coordination (no automatic flush on Codex exit)
@@ -161,12 +171,12 @@ notify = ["command", "arg1", "arg2"]  # Command invoked for notifications; recei
 
 ## 5. Recommendation
 
-| Phase | Action |
-|------|--------|
-| **1. Audit** | Inspect Codex source for `notify` usage, payload schema, and any internal hook points. |
-| **2. notify + wrapper** | If `notify` fires on session end, use it. Add wrapper for process-exit fallback. |
-| **3. Upstream ask** | Open GitHub issue / Discord ask: "Lifecycle hooks (UserPromptSubmit, Stop) for extensibility?" |
-| **4. Patch or fork** | If upstream won't add hooks and we need full parity: patch first (smallest change), fork if patch surface is too large. |
+| Phase                   | Action                                                                                                                  |
+| ----------------------- | ----------------------------------------------------------------------------------------------------------------------- |
+| **1. Audit**            | Inspect Codex source for `notify` usage, payload schema, and any internal hook points.                                  |
+| **2. notify + wrapper** | If `notify` fires on session end, use it. Add wrapper for process-exit fallback.                                        |
+| **3. Upstream ask**     | Open GitHub issue / Discord ask: "Lifecycle hooks (UserPromptSubmit, Stop) for extensibility?"                          |
+| **4. Patch or fork**    | If upstream won't add hooks and we need full parity: patch first (smallest change), fork if patch surface is too large. |
 
 ---
 
@@ -211,6 +221,7 @@ from pathlib import Path
 
 CODEX_NOTIFY_SCRIPT = Path(__file__).parent / "codex_notify_handler.sh"
 
+
 def setup_codex_notify():
     """Configure Codex to invoke our handler for lifecycle events."""
     codex_config = Path.home() / ".codex" / "config.toml"
@@ -224,6 +235,7 @@ def setup_codex_notify():
         content += f'\nnotify = ["{handler}"]\n'
         codex_config.write_text(content)
 
+
 def handle_notify(payload: dict):
     """Process Codex notification events."""
     event = payload.get("event")
@@ -235,6 +247,7 @@ def handle_notify(payload: dict):
         _run_task_complete_handlers(payload)
     elif event == "error":
         _run_error_handlers(payload)
+
 
 def _run_session_end_handlers(payload: dict):
     """Execute session end logic (harvest, quality, queue)."""
@@ -325,6 +338,7 @@ import threading
 from queue import Queue
 from typing import Optional
 
+
 class CodexWrapper:
     def __init__(self):
         self.queue: Queue[str] = Queue()
@@ -339,7 +353,7 @@ class CodexWrapper:
             stdout=subprocess.PIPE,
             stderr=subprocess.PIPE,
             text=True,
-            bufsize=1
+            bufsize=1,
         )
         # Start output reader threads
         threading.Thread(target=self._read_stdout, daemon=True).start()
@@ -377,15 +391,15 @@ class CodexWrapper:
 
 ## 9. DECISION MATRIX: Extension Strategy Selection
 
-| Requirement | notify + Wrapper | Patch | Fork | Plugin |
-|-------------|------------------|-------|------|--------|
-| UserPromptSubmit parity | ✅ | ✅ | ✅ | ⚠️ |
-| Stop/SessionEnd parity | ✅ | ✅ | ✅ | ⚠️ |
-| Blocking support | ✅ | ✅ | ✅ | ❌ |
-| Maintenance burden | Low | High | Very High | Low |
-| Upstream compatibility | ✅ | ❌ | ❌ | ✅ |
-| Time to implement | 2-4 hrs | 4-8 hrs | 2-4 days | 1-2 hrs |
-| User trust | High | Medium | Low | High |
+| Requirement             | notify + Wrapper | Patch   | Fork      | Plugin  |
+| ----------------------- | ---------------- | ------- | --------- | ------- |
+| UserPromptSubmit parity | ✅               | ✅      | ✅        | ⚠️      |
+| Stop/SessionEnd parity  | ✅               | ✅      | ✅        | ⚠️      |
+| Blocking support        | ✅               | ✅      | ✅        | ❌      |
+| Maintenance burden      | Low              | High    | Very High | Low     |
+| Upstream compatibility  | ✅               | ❌      | ❌        | ✅      |
+| Time to implement       | 2-4 hrs          | 4-8 hrs | 2-4 days  | 1-2 hrs |
+| User trust              | High             | Medium  | Low       | High    |
 
 **Recommendation:** Start with **notify + Wrapper** (lowest risk, highest compatibility). If upstream adds hooks, migrate to plugin.
 

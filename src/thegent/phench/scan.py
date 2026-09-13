@@ -4,13 +4,13 @@ import ast
 import hashlib
 import json
 import re
+from collections.abc import Iterable
 from copy import deepcopy
 from pathlib import Path
-from typing import Any, Iterable
+from typing import Any
 
 from .config import (
     DEFAULT_EXCLUDED_REPOS,
-    DEFAULT_SHARED_MODULE_REPO_EXCLUDE,
     SCAN_SHARED_REPOS_DEFAULT_MODULE_PREFIX,
     SCAN_SHARED_REPOS_MANIFEST_AUDIT_FILENAME,
     SCAN_SHARED_REPOS_MANIFEST_INDEX_FILENAME,
@@ -23,7 +23,7 @@ from .config import (
 )
 from .git_ops import sanitize_repo_id
 from .helpers import _repo_id_from_path
-from .modules import build_module_manifest_payload, list_modules
+from .modules import build_module_manifest_payload
 from .paths import module_manifests_root, phenotype_root
 from .store import utc_now_iso
 
@@ -108,7 +108,11 @@ def _build_recommended_modules(
         )
     return sorted(
         recommendations,
-        key=lambda item: (-item["repo_count"], -item["depends_on_count"], item["module"]),
+        key=lambda item: (
+            -item["repo_count"],
+            -item["depends_on_count"],
+            item["module"],
+        ),
     )
 
 
@@ -133,7 +137,9 @@ def _write_json_lines(path: Path, payload: dict[str, Any]) -> None:
         stream.write(json.dumps(payload) + "\n")
 
 
-def _build_candidate_manifest_index_summary(entries: list[dict[str, Any]]) -> dict[str, Any]:
+def _build_candidate_manifest_index_summary(
+    entries: list[dict[str, Any]],
+) -> dict[str, Any]:
     module_names = sorted({str(item.get("module_name", "")) for item in entries if isinstance(item, dict)})
     module_manifest_paths = {
         item.get("module_name", ""): str(item.get("manifest_path", ""))
@@ -223,7 +229,10 @@ def _repos_root_metadata(
     repos_root: Path | None,
     root_mode: str,
 ) -> tuple[Path, list[Path], str, list[str]]:
-    if root_mode not in {SCAN_SHARED_REPOS_ROOT_MODE_REPOS, SCAN_SHARED_REPOS_ROOT_MODE_WORKTREES}:
+    if root_mode not in {
+        SCAN_SHARED_REPOS_ROOT_MODE_REPOS,
+        SCAN_SHARED_REPOS_ROOT_MODE_WORKTREES,
+    }:
         raise ValueError(
             f"repos_root_mode must be one of: {SCAN_SHARED_REPOS_ROOT_MODE_REPOS}, {SCAN_SHARED_REPOS_ROOT_MODE_WORKTREES}"
         )
@@ -245,13 +254,21 @@ def _repos_root_metadata(
             candidate_paths.extend(_collect_worktree_repos(worktree_root))
         hint = "resolved worktree scan roots from phenotype_root/*-wtrees"
         if not candidate_paths:
-            _append_warning(warnings, "no worktree roots found under phenotype_root; verify -wtrees directories exist")
+            _append_warning(
+                warnings,
+                "no worktree roots found under phenotype_root; verify -wtrees directories exist",
+            )
         return phenotype, sorted(candidate_paths), hint, warnings
 
     explicit_root = base_root.expanduser().resolve()
     if not explicit_root.exists():
         _append_warning(warnings, f"repos_root does not exist: {explicit_root}")
-        return explicit_root, [], f"explicit repos_root provided but path missing: {explicit_root}", warnings
+        return (
+            explicit_root,
+            [],
+            f"explicit repos_root provided but path missing: {explicit_root}",
+            warnings,
+        )
     if root_mode == SCAN_SHARED_REPOS_ROOT_MODE_REPOS:
         hint = f"scanning repos mode from explicit root: {explicit_root}"
         if phenotype not in explicit_root.parents and explicit_root != phenotype:

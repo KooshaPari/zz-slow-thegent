@@ -12,18 +12,18 @@
 
 ### 1.1 Plans and Design Docs (Relevant to Hooks / Rust)
 
-| Document | Location | Relevance |
-|----------|----------|-----------|
-| **HOOK_RUNTIME_RUST_DESIGN** | `docs/plans/HOOK_RUNTIME_RUST_DESIGN.md` | Full Rust migration design: `thegent-hooks` binary, subcommands, phases, deprecation of common.sh |
-| **RUST_GO_MIGRATION_PLAN** | `docs/migration/RUST_GO_MIGRATION_PLAN.md` | Shell→Rust/Go: tool detection, PATH resolution, git, fd; `thegent-tool-detect`, `thegent-discovery` |
-| **COMPREHENSIVE_PERFORMANCE_ANALYSIS** | `docs/migration/COMPREHENSIVE_PERFORMANCE_ANALYSIS.md` | Root cause (which timeout, cascade), bottlenecks, target 200ms→20ms hook latency |
-| **HOOK_OPTIMIZATION_STRATEGY** | `docs/reference/HOOK_OPTIMIZATION_STRATEGY.md` | Current hook optimizations (cache, circuit breaker, prewarm, learning, affected-tests); config |
-| **PROCESS_OPTIMIZATION_PLAN** | `docs/plans/PROCESS_OPTIMIZATION_PLAN.md` | MTSP; hook-dispatcher as Rust consolidation; Phase 3: "Native Rust rewrite of critical path shell hooks" |
-| **CACHING_INDEXING_PREWARMING_DEEP_RESEARCH** | `docs/research/CACHING_INDEXING_PREWARMING_DEEP_RESEARCH.md` | Multi-level cache, TTL/LRU/frecency, cache key strategy, invalidation; Rust ecosystem (ripgrep, fd) |
-| **RUNTIME_OPTIMIZATION** | `docs/guides/RUNTIME_OPTIMIZATION.md` | Zsh startup, Bun, fd/rg in hooks (grep/fd wrappers), git-wrapper |
-| **SHELL_CONFIG_AUDIT_AND_CONSOLIDATION_PLAN** | `docs/research/SHELL_CONFIG_AUDIT_AND_CONSOLIDATION_PLAN.md` | Canonical shell config; user vs agent; no common.sh in global git shim (already done) |
-| **CROSS_PLATFORM_EXTENSIONS_WIDER_DEEPER_OPTIMIZATION** | `docs/research/CROSS_PLATFORM_EXTENSIONS_WIDER_DEEPER_OPTIMIZATION.md` | Circuit breaker, error taxonomy, headless/CI; aligns with hook runtime resilience |
-| **00-MASTER-INDEX** | `docs/plans/00-MASTER-INDEX.md` | WBS, phases, source map; hook-dispatcher under `hooks/` |
+| Document                                                | Location                                                               | Relevance                                                                                                |
+| ------------------------------------------------------- | ---------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------- |
+| **HOOK_RUNTIME_RUST_DESIGN**                            | `docs/plans/HOOK_RUNTIME_RUST_DESIGN.md`                               | Full Rust migration design: `thegent-hooks` binary, subcommands, phases, deprecation of common.sh        |
+| **RUST_GO_MIGRATION_PLAN**                              | `docs/migration/RUST_GO_MIGRATION_PLAN.md`                             | Shell→Rust/Go: tool detection, PATH resolution, git, fd; `thegent-tool-detect`, `thegent-discovery`      |
+| **COMPREHENSIVE_PERFORMANCE_ANALYSIS**                  | `docs/migration/COMPREHENSIVE_PERFORMANCE_ANALYSIS.md`                 | Root cause (which timeout, cascade), bottlenecks, target 200ms→20ms hook latency                         |
+| **HOOK_OPTIMIZATION_STRATEGY**                          | `docs/reference/HOOK_OPTIMIZATION_STRATEGY.md`                         | Current hook optimizations (cache, circuit breaker, prewarm, learning, affected-tests); config           |
+| **PROCESS_OPTIMIZATION_PLAN**                           | `docs/plans/PROCESS_OPTIMIZATION_PLAN.md`                              | MTSP; hook-dispatcher as Rust consolidation; Phase 3: "Native Rust rewrite of critical path shell hooks" |
+| **CACHING_INDEXING_PREWARMING_DEEP_RESEARCH**           | `docs/research/CACHING_INDEXING_PREWARMING_DEEP_RESEARCH.md`           | Multi-level cache, TTL/LRU/frecency, cache key strategy, invalidation; Rust ecosystem (ripgrep, fd)      |
+| **RUNTIME_OPTIMIZATION**                                | `docs/guides/RUNTIME_OPTIMIZATION.md`                                  | Zsh startup, Bun, fd/rg in hooks (grep/fd wrappers), git-wrapper                                         |
+| **SHELL_CONFIG_AUDIT_AND_CONSOLIDATION_PLAN**           | `docs/research/SHELL_CONFIG_AUDIT_AND_CONSOLIDATION_PLAN.md`           | Canonical shell config; user vs agent; no common.sh in global git shim (already done)                    |
+| **CROSS_PLATFORM_EXTENSIONS_WIDER_DEEPER_OPTIMIZATION** | `docs/research/CROSS_PLATFORM_EXTENSIONS_WIDER_DEEPER_OPTIMIZATION.md` | Circuit breaker, error taxonomy, headless/CI; aligns with hook runtime resilience                        |
+| **00-MASTER-INDEX**                                     | `docs/plans/00-MASTER-INDEX.md`                                        | WBS, phases, source map; hook-dispatcher under `hooks/`                                                  |
 
 ### 1.2 Hooks and Library Layout
 
@@ -36,19 +36,19 @@
 
 ### 1.3 Existing Rust Crates (Workspace)
 
-| Crate | Path | Role |
-|-------|------|------|
-| **hook-dispatcher** | `hooks/hook-dispatcher/` | Orchestrator: stdin JSON → env → run bash hooks; native doc_location_guard, session_cleanup, prompt_submit_guard, governance_scan |
-| **thegent-git** | `crates/thegent-git/` | libgit2 Python extension: get_head_sha, get_branch_name, is_dirty, get_status_short, get_diff |
-| **thegent-tool-detect** | `crates/thegent-tool-detect/` | CLI: `--export` (shell vars), `--json`; detects jq/jaq, rg, fd, etc.; cache-friendly |
-| **thegent-discovery** | `crates/thegent-discovery/` | Process scanning, PATH resolution (for Python/agents) |
-| **thegent-path-resolve** | `crates/thegent-path-resolve/` | Path resolution |
-| **thegent-parser** | `crates/thegent-parser/` | Parsing utilities |
-| **thegent-crypto** | `crates/thegent-crypto/` | Crypto helpers |
-| **thegent-watcher** | `crates/thegent-watcher/` | File watcher |
-| **thegent-runtime** | `crates/thegent-runtime/` | Runtime/install |
-| **thegent-resources** | `crates/thegent-resources/` | Resources |
-| **thegent-shm** | `crates/thegent-shm/` | Shared memory |
+| Crate                    | Path                           | Role                                                                                                                              |
+| ------------------------ | ------------------------------ | --------------------------------------------------------------------------------------------------------------------------------- |
+| **hook-dispatcher**      | `hooks/hook-dispatcher/`       | Orchestrator: stdin JSON → env → run bash hooks; native doc_location_guard, session_cleanup, prompt_submit_guard, governance_scan |
+| **thegent-git**          | `crates/thegent-git/`          | libgit2 Python extension: get_head_sha, get_branch_name, is_dirty, get_status_short, get_diff                                     |
+| **thegent-tool-detect**  | `crates/thegent-tool-detect/`  | CLI: `--export` (shell vars), `--json`; detects jq/jaq, rg, fd, etc.; cache-friendly                                              |
+| **thegent-discovery**    | `crates/thegent-discovery/`    | Process scanning, PATH resolution (for Python/agents)                                                                             |
+| **thegent-path-resolve** | `crates/thegent-path-resolve/` | Path resolution                                                                                                                   |
+| **thegent-parser**       | `crates/thegent-parser/`       | Parsing utilities                                                                                                                 |
+| **thegent-crypto**       | `crates/thegent-crypto/`       | Crypto helpers                                                                                                                    |
+| **thegent-watcher**      | `crates/thegent-watcher/`      | File watcher                                                                                                                      |
+| **thegent-runtime**      | `crates/thegent-runtime/`      | Runtime/install                                                                                                                   |
+| **thegent-resources**    | `crates/thegent-resources/`    | Resources                                                                                                                         |
+| **thegent-shm**          | `crates/thegent-shm/`          | Shared memory                                                                                                                     |
 
 Workspace root: `crates/Cargo.toml`; hook-dispatcher is included as `"hooks/hook-dispatcher"`.
 
@@ -73,7 +73,7 @@ Workspace root: `crates/Cargo.toml`; hook-dispatcher is included as `"hooks/hook
 - **CACHING_INDEXING_PREWARMING_DEEP_RESEARCH:** Multi-level cache (memory → disk → network), eviction (LRU+TTL, frecency), cache key normalization, version-based invalidation; Rust (ripgrep, fd, bat); recommendation: multi-level cache, file indexing, prewarm, blake3/sha for keys.
 - **SHELL_CONFIG_AUDIT_AND_CONSOLIDATION_PLAN:** Canonical zsh config; user vs agent; no heavy sourcing in global PATH.
 - **CONVERSATION_DUMP_2026-02-16:** Handoff summary; git shim fix, find/ps shim fixes, Rust migration direction.
-- **CROSS_PLATFORM_***:** Broader platform/headless/CI; circuit breaker, error taxonomy — consistent with hook runtime resilience.
+- **CROSS*PLATFORM*\***:\*\* Broader platform/headless/CI; circuit breaker, error taxonomy — consistent with hook runtime resilience.
 
 ### 2.3 Migration Docs (docs/migration/)
 
@@ -105,16 +105,16 @@ Workspace root: `crates/Cargo.toml`; hook-dispatcher is included as `"hooks/hook
 
 ## 4. Alignment Matrix
 
-| Topic | RUST_GO_MIGRATION_PLAN | COMPREHENSIVE_PERFORMANCE | HOOK_RUNTIME_RUST_DESIGN | PROCESS_OPTIMIZATION | Current Code |
-|-------|------------------------|---------------------------|---------------------------|----------------------|--------------|
-| Tool detection | thegent-tool-detect | 60ms→1ms | Use tool-detect or init exports | — | thegent-tool-detect exists |
-| PATH resolution | thegent-discovery | 20ms→0.5ms | init/resolve PROJECT_DIR | — | thegent-path-resolve, discovery |
-| Git read-only | thegent-git (libgit2) | 100ms→10ms | git subcommand: cache + passthrough | MTSP-09 | thegent-git (Python); hooks use git-cache.sh |
-| Hook init | — | — | init subcommand, stdin JSON → env | — | common.sh hook_init_full |
-| Cache key | — | — | cache-key, blake3 | — | common.sh hook_cache_key, hash_for_cache |
-| Changed files | — | — | changed-files subcommand | — | hook_shared_changed_files |
-| Dispatcher | Go binary (planned) | — | Extend hook-dispatcher (Rust) | hook-dispatcher (Rust) | hook-dispatcher Rust, runs bash hooks |
-| common.sh | Migrate to Rust | Source overhead | Replace by thegent-hooks subcommands | — | Still sourced by many hooks |
+| Topic           | RUST_GO_MIGRATION_PLAN | COMPREHENSIVE_PERFORMANCE | HOOK_RUNTIME_RUST_DESIGN             | PROCESS_OPTIMIZATION   | Current Code                                 |
+| --------------- | ---------------------- | ------------------------- | ------------------------------------ | ---------------------- | -------------------------------------------- |
+| Tool detection  | thegent-tool-detect    | 60ms→1ms                  | Use tool-detect or init exports      | —                      | thegent-tool-detect exists                   |
+| PATH resolution | thegent-discovery      | 20ms→0.5ms                | init/resolve PROJECT_DIR             | —                      | thegent-path-resolve, discovery              |
+| Git read-only   | thegent-git (libgit2)  | 100ms→10ms                | git subcommand: cache + passthrough  | MTSP-09                | thegent-git (Python); hooks use git-cache.sh |
+| Hook init       | —                      | —                         | init subcommand, stdin JSON → env    | —                      | common.sh hook_init_full                     |
+| Cache key       | —                      | —                         | cache-key, blake3                    | —                      | common.sh hook_cache_key, hash_for_cache     |
+| Changed files   | —                      | —                         | changed-files subcommand             | —                      | hook_shared_changed_files                    |
+| Dispatcher      | Go binary (planned)    | —                         | Extend hook-dispatcher (Rust)        | hook-dispatcher (Rust) | hook-dispatcher Rust, runs bash hooks        |
+| common.sh       | Migrate to Rust        | Source overhead           | Replace by thegent-hooks subcommands | —                      | Still sourced by many hooks                  |
 
 ---
 
@@ -154,15 +154,18 @@ Local codebase has a clear split: **hook-dispatcher** (Rust) orchestrates and ru
 **Extended by:** Claude Code
 
 ### Changes Made
+
 1. Added Rust hook implementation examples
 2. Added migration phases
 3. Enhanced cross-references
 
 ### Cross-References Added
+
 - LIBRARY_REPLACEMENT_AUDIT_DEEP.md
 - PROACTIVE_GOVERNANCE_EVOLUTION_PLAN.md
 
 ### Practical Additions
+
 - Rust hook templates
 - Migration checklist
 

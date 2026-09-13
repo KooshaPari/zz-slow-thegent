@@ -66,7 +66,11 @@ class OptimisticConcurrencyControl:
     def claim_version(self, file_path: Path, agent_id: str) -> str:
         """Record the version of a file at claim time (SCLI-P6.1)."""
         version = self.get_version(file_path)
-        claim_data = {"agent_id": agent_id, "version": version, "timestamp": str(HLCTimestamp().update())}
+        claim_data = {
+            "agent_id": agent_id,
+            "version": version,
+            "timestamp": str(HLCTimestamp().update()),
+        }
 
         file_id = hashlib.sha256(str(file_path).encode()).hexdigest()
         with open(self.version_dir / f"{file_id}-{agent_id}.json", "w") as f:

@@ -6,6 +6,7 @@ This stub exists for backwards compatibility with existing tests.
 """
 
 from __future__ import annotations
+
 from dataclasses import dataclass, field
 from enum import Enum
 from typing import Any
@@ -13,6 +14,7 @@ from typing import Any
 
 class AuditStatus(Enum):
     """Audit status enumeration."""
+
     PASS = "pass"
     FAIL = "fail"
     WARNING = "warning"
@@ -46,6 +48,7 @@ class AuditResult:
 @dataclass
 class AuditReport:
     """Audit report containing results from multiple checks."""
+
     report_id: str = ""
     timestamp: str = ""
     status: AuditStatus = AuditStatus.PASS

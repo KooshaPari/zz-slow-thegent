@@ -12,7 +12,7 @@ JSONL structured logging (SCLI-P13.1).
 
 ### Methods
 
-#### MeshLogger.__init__
+#### MeshLogger.**init**
 
 ```python
 __init__(self: Any, mesh_root: Path)
@@ -38,7 +38,7 @@ Mesh metrics aggregation (SCLI-P13.2).
 
 ### Methods
 
-#### MetricsAggregator.__init__
+#### MetricsAggregator.**init**
 
 ```python
 __init__(self: Any, mesh_root: Path)

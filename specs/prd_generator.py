@@ -100,9 +100,12 @@ class PRD:
 
         md += "\n## 8. Features\n\n"
         for feature in self.features:
-            priority_badge = {"critical": "🔴", "high": "🟠", "medium": "🟡", "low": "🟢"}.get(
-                feature.get("priority", "medium"), "🟡"
-            )
+            priority_badge = {
+                "critical": "🔴",
+                "high": "🟠",
+                "medium": "🟡",
+                "low": "🟢",
+            }.get(feature.get("priority", "medium"), "🟡")
 
             md += f"### {priority_badge} {feature.get('title', 'Feature')}\n\n"
             md += f"{feature.get('description', '')}\n\n"
@@ -185,7 +188,11 @@ class PRD:
 class PRDGenerator:
     """Generates PRDs from project specs."""
 
-    def __init__(self, project_specs: ProjectSpecs, cross_analyzer: CrossProjectAnalyzer | None = None) -> None:
+    def __init__(
+        self,
+        project_specs: ProjectSpecs,
+        cross_analyzer: CrossProjectAnalyzer | None = None,
+    ) -> None:
         self.project_specs = project_specs
         self.cross_analyzer = cross_analyzer
 
@@ -256,7 +263,11 @@ class PRDGenerator:
             if readme_path.exists():
                 content = readme_path.read_text()
                 # Extract first paragraph or overview section
-                overview_match = re.search(r"##\s+Overview[:\-]?\s*(.+?)(?=##|$)", content, re.DOTALL | re.IGNORECASE)
+                overview_match = re.search(
+                    r"##\s+Overview[:\-]?\s*(.+?)(?=##|$)",
+                    content,
+                    re.DOTALL | re.IGNORECASE,
+                )
                 if overview_match:
                     return overview_match.group(1).strip()[:500]
                 # Or first paragraph
@@ -306,7 +317,9 @@ class PRDGenerator:
         for feature in self.project_specs.features.values():
             # Look for user mentions
             user_matches = re.findall(
-                r"\b(user|developer|admin|operator|end.?user)\b", feature.description, re.IGNORECASE
+                r"\b(user|developer|admin|operator|end.?user)\b",
+                feature.description,
+                re.IGNORECASE,
             )
             users.update(user_matches)
 

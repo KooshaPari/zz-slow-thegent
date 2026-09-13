@@ -1,12 +1,13 @@
 """E2E tests for thegent CLI (read-only, deterministic)."""
 
-import orjson as json
 import sys
 from pathlib import Path
 from unittest.mock import MagicMock
 
+import orjson as json
 import pytest
-from tests.e2e.cli_assertions import expected_trend_health_signature, load_cli_json
+
+from tests.e2e.cli_assertions import load_cli_json
 from tests.e2e.cli_runner_compat import CompatCliRunner
 
 sys.modules.setdefault("thegent_git", MagicMock())
@@ -35,7 +36,16 @@ class TestListAgents:
         # @trace FR-CLI-001
         """Output contains all providers including minimax, glm, antigravity."""
         result = runner.invoke(app, ["list-agents"])
-        for name in ["gemini", "codex", "copilot", "cursor", "claude", "antigravity", "minimax", "glm"]:
+        for name in [
+            "gemini",
+            "codex",
+            "copilot",
+            "cursor",
+            "claude",
+            "antigravity",
+            "minimax",
+            "glm",
+        ]:
             assert name in result.stdout
 
 
@@ -174,7 +184,15 @@ class TestRunWithExplicitCd:
         # Options first (Typer parses options-after-positionals as commands)
         result = runner.invoke(
             app,
-            ["run", "agent", "test prompt", "--agent", "nonexistent-agent-xyz", "-d", str(project_root)],
+            [
+                "run",
+                "agent",
+                "test prompt",
+                "--agent",
+                "nonexistent-agent-xyz",
+                "-d",
+                str(project_root),
+            ],
         )
         assert result.exit_code == 1
         assert result.stdout.strip()
@@ -188,7 +206,15 @@ class TestRunWithExplicitCd:
         """Invoking unknown agent (e.g. plan-orchestrator) suggests agent list."""
         result = runner.invoke(
             app,
-            ["run", "agent", "test prompt", "--agent", "plan-orchestrator", "-d", str(tmp_path)],
+            [
+                "run",
+                "agent",
+                "test prompt",
+                "--agent",
+                "plan-orchestrator",
+                "-d",
+                str(tmp_path),
+            ],
         )
         assert result.exit_code == 1
         assert result.stdout.strip()
@@ -1028,7 +1054,10 @@ class TestResolveModelRouteInvalidPolicy:
     def test_resolve_model_route_invalid_policy_exits_one(self) -> None:
         # @trace FR-CLI-001
         """resolve-model-route with invalid --policy exits 1."""
-        result = runner.invoke(app, ["resolve-model-route", "gemini-3-flash", "--policy", "invalid_policy_xyz"])
+        result = runner.invoke(
+            app,
+            ["resolve-model-route", "gemini-3-flash", "--policy", "invalid_policy_xyz"],
+        )
         assert result.exit_code == 1
         assert "Invalid" in result.stdout or "policy" in result.stdout.lower() or "prefer_direct" in result.stdout
 
@@ -1058,7 +1087,17 @@ class TestDagValidationErrors:
         project = self._project_with_task(tmp_path)
         result = runner.invoke(
             app,
-            ["dag", "add", "T2", "gemini", "prompt", "--depends-on", "T99", "--cd", str(project)],
+            [
+                "dag",
+                "add",
+                "T2",
+                "gemini",
+                "prompt",
+                "--depends-on",
+                "T99",
+                "--cd",
+                str(project),
+            ],
         )
         assert result.exit_code == 2
         assert "does not exist" in result.stdout or "does not exist" in result.stderr
@@ -1172,7 +1211,17 @@ class TestDagAddDependsOn:
 
         result = runner.invoke(
             app,
-            ["dag", "add", "T2", "gemini", "second", "--depends-on", "T1", "--cd", str(project)],
+            [
+                "dag",
+                "add",
+                "T2",
+                "gemini",
+                "second",
+                "--depends-on",
+                "T1",
+                "--cd",
+                str(project),
+            ],
         )
         assert result.exit_code == 0
         assert "Added task T2" in result.stdout

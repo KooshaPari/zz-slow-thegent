@@ -367,7 +367,11 @@ class TestDistributedMockScanning:
 
     @patch("thegent.orchestration.state.audit_log.scan_secrets")
     def test_scan_secrets_finds_secrets_remote(
-        self, mock_scan: MagicMock, initialized_audit: ShadowAuditGit, audit_dir: Path, tmp_path: Path
+        self,
+        mock_scan: MagicMock,
+        initialized_audit: ShadowAuditGit,
+        audit_dir: Path,
+        tmp_path: Path,
     ) -> None:
         """Verify secrets found by scanner are redacted in remote commits."""
         from thegent.governance.native_secret_scan import SecretMatch

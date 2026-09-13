@@ -21,8 +21,9 @@ from __future__ import annotations
 
 import logging
 import time as _time
+from collections.abc import Callable, Iterable, Iterator, Mapping, Sequence
 from dataclasses import dataclass, field
-from typing import Any, Callable, Iterable, Iterator, Mapping, Sequence
+from typing import Any
 
 from ..governance.override_events import OverrideExpiredEvent
 from ..ux.cockpit import (
@@ -35,8 +36,7 @@ from ..ux.explanations import (
     DisclosureLevel,
     render_explanation,
 )
-from ..ux.kpis.traffic import TrafficDashboard, TrafficEvent
-
+from ..ux.kpis.traffic import TrafficDashboard
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -221,7 +221,7 @@ class TrafficCockpitBridge:
             return BridgeResult(errors=[str(exc)])
         return BridgeResult(accepted=1)
 
-    def bind(self, dashboard: TrafficDashboard) -> "TrafficCockpitBridge":
+    def bind(self, dashboard: TrafficDashboard) -> TrafficCockpitBridge:
         """Bind a dashboard so subsequent :meth:`push` calls have a default."""
         self._dashboard = dashboard
         return self

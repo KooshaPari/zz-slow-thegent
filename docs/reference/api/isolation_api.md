@@ -20,7 +20,7 @@ Provides isolation between federated namespaces.
 
 ### Methods
 
-#### TenantIsolationProvider.__init__
+#### TenantIsolationProvider.**init**
 
 ```python
 __init__(self: Any)
@@ -66,7 +66,7 @@ Represents an isolated agent session for a tenant.
 
 ### Methods
 
-#### TenantSession.__init__
+#### TenantSession.**init**
 
 ```python
 __init__(self: Any, tenant_id: str, session_id: str, provider: TenantIsolationProvider)

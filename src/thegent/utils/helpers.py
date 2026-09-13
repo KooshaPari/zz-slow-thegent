@@ -128,7 +128,10 @@ def read_file_chunk(path: str | Path, offset: int = 0, limit: int | None = None,
 
 
 def read_file_lines(
-    path: str | Path, start_line: int = 0, num_lines: int | None = None, encoding: str = "utf-8"
+    path: str | Path,
+    start_line: int = 0,
+    num_lines: int | None = None,
+    encoding: str = "utf-8",
 ) -> list[str] | None:
     """Read specific lines from a file efficiently without loading the whole file into memory.
 
@@ -261,7 +264,10 @@ def read_file_tail(path: str | Path, num_lines: int = 10, encoding: str = "utf-8
 
 
 def safe_write_file(
-    path: str | Path, content: str, expected_version: str | None = None, encoding: str = "utf-8"
+    path: str | Path,
+    content: str,
+    expected_version: str | None = None,
+    encoding: str = "utf-8",
 ) -> bool:
     """Safely write a file with error handling and optional OCC version check.
 

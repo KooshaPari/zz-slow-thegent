@@ -16,16 +16,16 @@ VitePress continues to mature as the premier static documentation generator for 
 
 ### 1.1 Essential Community Plugins
 
-| Plugin | Stars | Purpose | npm Package |
-|--------|-------|---------|-------------|
-| **vitepress-plugin-mermaid** | 171 | Mermaid diagram support in Markdown | `vitepress-plugin-mermaid` |
-| **vitepress-plugin-search** | 250 | Enhanced local search | `vitepress-plugin-search` |
-| **vitepress-sidebar** | 256 | Auto sidebar generator | `vitepress-sidebar` |
-| **vitepress-plugin-llms** | 321 | LLM-friendly documentation output | `vitepress-plugin-llms` |
-| **vitepress-demo-plugin** | 210 | Live code demo rendering (Vue/React) | `vitepress-demo-plugin` |
-| **vitepress-plugin-group-icons** | 175 | Code block tab icons | `vitepress-plugin-group-icons` |
-| **vitepress-demo-preview** | 150 | Vue component demo preview | `vitepress-demo-preview` |
-| **vite-plugin-vitepress-auto-sidebar** | 133 | Directory-based sidebar | `vite-plugin-vitepress-auto-sidebar` |
+| Plugin                                 | Stars | Purpose                              | npm Package                          |
+| -------------------------------------- | ----- | ------------------------------------ | ------------------------------------ |
+| **vitepress-plugin-mermaid**           | 171   | Mermaid diagram support in Markdown  | `vitepress-plugin-mermaid`           |
+| **vitepress-plugin-search**            | 250   | Enhanced local search                | `vitepress-plugin-search`            |
+| **vitepress-sidebar**                  | 256   | Auto sidebar generator               | `vitepress-sidebar`                  |
+| **vitepress-plugin-llms**              | 321   | LLM-friendly documentation output    | `vitepress-plugin-llms`              |
+| **vitepress-demo-plugin**              | 210   | Live code demo rendering (Vue/React) | `vitepress-demo-plugin`              |
+| **vitepress-plugin-group-icons**       | 175   | Code block tab icons                 | `vitepress-plugin-group-icons`       |
+| **vitepress-demo-preview**             | 150   | Vue component demo preview           | `vitepress-demo-preview`             |
+| **vite-plugin-vitepress-auto-sidebar** | 133   | Directory-based sidebar              | `vite-plugin-vitepress-auto-sidebar` |
 
 ### 1.2 Configuration Snippets
 
@@ -37,19 +37,21 @@ npm install vitepress-plugin-mermaid mermaid
 
 ```typescript
 // .vitepress/config.ts
-import { defineConfig } from 'vitepress'
-import { withMermaid } from 'vitepress-plugin-mermaid'
+import { defineConfig } from "vitepress";
+import { withMermaid } from "vitepress-plugin-mermaid";
 
-export default withMermaid(defineConfig({
-  // Your existing config
-  mermaid: {
-    // References mermaid configuration
-    theme: 'base',
-    themeVariables: {
-      primaryColor: '#42b883'
-    }
-  }
-}))
+export default withMermaid(
+  defineConfig({
+    // Your existing config
+    mermaid: {
+      // References mermaid configuration
+      theme: "base",
+      themeVariables: {
+        primaryColor: "#42b883",
+      },
+    },
+  }),
+);
 ```
 
 #### Auto Sidebar Generator
@@ -60,22 +62,24 @@ npm install vitepress-sidebar
 
 ```typescript
 // .vitepress/config.ts
-import { defineConfig } from 'vitepress'
-import { withSidebars } from 'vitepress-sidebar'
+import { defineConfig } from "vitepress";
+import { withSidebars } from "vitepress-sidebar";
 
-export default withSidebars(defineConfig({
-  // Your existing config
-  sidebar: {
-    '/guide/': [
-      {
-        text: 'Guide',
-        items: [
-          // Auto-generated from directory structure
-        ]
-      }
-    ]
-  }
-}))
+export default withSidebars(
+  defineConfig({
+    // Your existing config
+    sidebar: {
+      "/guide/": [
+        {
+          text: "Guide",
+          items: [
+            // Auto-generated from directory structure
+          ],
+        },
+      ],
+    },
+  }),
+);
 ```
 
 #### LLM-Friendly Documentation (for AI chatbots)
@@ -86,12 +90,14 @@ npm install vitepress-plugin-llms
 
 ```typescript
 // .vitepress/config.ts
-import { defineConfig } from 'vitepress'
-import { withLLMs } from 'vitepress-plugin-llms'
+import { defineConfig } from "vitepress";
+import { withLLMs } from "vitepress-plugin-llms";
 
-export default withLLMs(defineConfig({
-  // Generates .llms.txt for AI consumption
-}))
+export default withLLMs(
+  defineConfig({
+    // Generates .llms.txt for AI consumption
+  }),
+);
 ```
 
 ### 1.3 PWA Support
@@ -104,31 +110,31 @@ npm install @vite-pwa/vitepress
 
 ```typescript
 // .vitePress/config.ts
-import { defineConfig } from 'vitepress'
-import { VitePWA } from '@vite-pwa/vitepress'
+import { defineConfig } from "vitepress";
+import { VitePWA } from "@vite-pwa/vitepress";
 
 export default defineConfig({
   vite: {
     plugins: [
       VitePWA({
-        registerType: 'autoUpdate',
+        registerType: "autoUpdate",
         manifest: {
-          name: 'My Docs',
-          short_name: 'Docs',
-          description: 'Documentation site',
-          theme_color: '#42b883',
+          name: "My Docs",
+          short_name: "Docs",
+          description: "Documentation site",
+          theme_color: "#42b883",
           icons: [
             {
-              src: '/icon-192.png',
-              sizes: '192x192',
-              type: 'image/png'
-            }
-          ]
-        }
-      })
-    ]
-  }
-})
+              src: "/icon-192.png",
+              sizes: "192x192",
+              type: "image/png",
+            },
+          ],
+        },
+      }),
+    ],
+  },
+});
 ```
 
 ---
@@ -159,20 +165,20 @@ docs/
 
 ```typescript
 // docs/v2/.vitepress/config.ts
-import { defineConfig } from 'vitepress'
+import { defineConfig } from "vitepress";
 
 export default defineConfig({
-  title: 'Project v2',
-  description: 'Version 2.x Documentation',
-  srcDir: './',            // Relative to this config
-  outDir: '../../dist/v2', // Output to versioned subdirectory
+  title: "Project v2",
+  description: "Version 2.x Documentation",
+  srcDir: "./", // Relative to this config
+  outDir: "../../dist/v2", // Output to versioned subdirectory
   themeConfig: {
     nav: [
-      { text: 'Home', link: '/' },
-      { text: 'v2 Docs', link: '/guide/' }
-    ]
-  }
-})
+      { text: "Home", link: "/" },
+      { text: "v2 Docs", link: "/guide/" },
+    ],
+  },
+});
 ```
 
 ### 2.3 CI/CD Version Building
@@ -184,7 +190,7 @@ name: Deploy Multi-Version Docs
 on:
   push:
     branches: [main]
-    tags: ['v*']
+    tags: ["v*"]
 
 jobs:
   deploy:
@@ -218,9 +224,9 @@ jobs:
 ```vue
 <!-- docs/.vitepress/theme/components/VersionSwitcher.vue -->
 <script setup>
-import { ref } from 'vue'
-const versions = ['v2', 'v1', 'latest']
-const currentVersion = ref('v2')
+import { ref } from "vue";
+const versions = ["v2", "v1", "latest"];
+const currentVersion = ref("v2");
 </script>
 
 <template>
@@ -247,15 +253,15 @@ const currentVersion = ref('v2')
 
 ### 3.1 Comparison Matrix
 
-| Feature | Local Search (MiniSearch) | Algolia DocSearch | Pagefind |
-|---------|-------------------------|-------------------|----------|
-| **Setup Complexity** | Low (native) | Medium | Low |
-| **Cost** | Free | Paid (free tier available) | Free |
-| **Offline Support** | Yes | No | Yes |
-| **Search Quality** | Good | Excellent | Good |
-| **No. of Pages** | < 5,000 | Unlimited | Unlimited |
-| **Maintenance** | None | Requires crawler | None |
-| **AI/LLM Features** | No | Yes (Ask AI) | No |
+| Feature              | Local Search (MiniSearch) | Algolia DocSearch          | Pagefind  |
+| -------------------- | ------------------------- | -------------------------- | --------- |
+| **Setup Complexity** | Low (native)              | Medium                     | Low       |
+| **Cost**             | Free                      | Paid (free tier available) | Free      |
+| **Offline Support**  | Yes                       | No                         | Yes       |
+| **Search Quality**   | Good                      | Excellent                  | Good      |
+| **No. of Pages**     | < 5,000                   | Unlimited                  | Unlimited |
+| **Maintenance**      | None                      | Requires crawler           | None      |
+| **AI/LLM Features**  | No                        | Yes (Ask AI)               | No        |
 
 ### 3.2 Local Search (Recommended for Most Projects)
 
@@ -264,12 +270,12 @@ const currentVersion = ref('v2')
 export default defineConfig({
   themeConfig: {
     search: {
-      provider: 'local',
+      provider: "local",
       options: {
         miniSearch: {
           options: {
             // Customize tokenization
-            tokenize: (str) => str.toLowerCase().split(/\s+/)
+            tokenize: (str) => str.toLowerCase().split(/\s+/),
           },
           searchOptions: {
             fuzzy: 0.2,
@@ -277,14 +283,14 @@ export default defineConfig({
             boost: {
               title: 4,
               text: 2,
-              titles: 1
-            }
-          }
-        }
-      }
-    }
-  }
-})
+              titles: 1,
+            },
+          },
+        },
+      },
+    },
+  },
+});
 ```
 
 ### 3.3 Algolia DocSearch (For Enterprise)
@@ -294,28 +300,28 @@ export default defineConfig({
 export default defineConfig({
   themeConfig: {
     search: {
-      provider: 'algolia',
+      provider: "algolia",
       options: {
-        appId: 'YOUR_APP_ID',
-        apiKey: 'YOUR_SEARCH_API_KEY',
-        indexName: 'your-index',
+        appId: "YOUR_APP_ID",
+        apiKey: "YOUR_SEARCH_API_KEY",
+        indexName: "your-index",
         // Optional: Ask AI feature
         askAi: {
-          assistantId: 'YOUR_ASSISTANT_ID'
+          assistantId: "YOUR_ASSISTANT_ID",
         },
         // Multilingual support
         locales: {
           zh: {
-            placeholder: '搜索文档',
+            placeholder: "搜索文档",
             translations: {
-              button: { buttonText: '搜索文档' }
-            }
-          }
-        }
-      }
-    }
-  }
-})
+              button: { buttonText: "搜索文档" },
+            },
+          },
+        },
+      },
+    },
+  },
+});
 ```
 
 ### 3.4 Algolia Crawler Configuration
@@ -323,31 +329,31 @@ export default defineConfig({
 ```javascript
 // crawlers.config.js
 new Crawler({
-  appId: 'YOUR_APP_ID',
-  apiKey: 'YOUR_API_KEY', // Admin key
+  appId: "YOUR_APP_ID",
+  apiKey: "YOUR_API_KEY", // Admin key
   rateLimit: 8,
-  startUrls: ['https://your-docs.com/'],
+  startUrls: ["https://your-docs.com/"],
   renderJavaScript: false,
-  discoveryPatterns: ['https://your-docs.com/**'],
+  discoveryPatterns: ["https://your-docs.com/**"],
   actions: [
     {
-      indexName: 'your-index',
-      pathsToMatch: ['https://your-docs.com/**'],
+      indexName: "your-index",
+      pathsToMatch: ["https://your-docs.com/**"],
       recordExtractor: ({ $, helpers }) => {
         return helpers.docsearch({
           recordProps: {
-            lvl1: '.content h1',
-            content: '.content p, .content li',
-            lvl0: { selectors: 'section.has-active div h2' },
-            lvl2: '.content h2',
-            lvl3: '.content h3'
+            lvl1: ".content h1",
+            content: ".content p, .content li",
+            lvl0: { selectors: "section.has-active div h2" },
+            lvl2: ".content h2",
+            lvl3: ".content h3",
           },
-          indexHeadings: true
-        })
-      }
-    }
-  ]
-})
+          indexHeadings: true,
+        });
+      },
+    },
+  ],
+});
 ```
 
 ---
@@ -358,18 +364,18 @@ new Crawler({
 
 ```typescript
 // .vitepress/theme/index.ts
-import DefaultTheme from 'vitepress/theme'
-import MyLayout from './MyLayout.vue'
-import './custom.css'
+import DefaultTheme from "vitepress/theme";
+import MyLayout from "./MyLayout.vue";
+import "./custom.css";
 
 export default {
   extends: DefaultTheme,
   Layout: MyLayout,
   enhanceApp({ app }) {
     // Register global components
-    app.component('MyComponent', MyComponent)
-  }
-}
+    app.component("MyComponent", MyComponent);
+  },
+};
 ```
 
 ### 4.2 Layout Slots
@@ -379,8 +385,8 @@ VitePress provides layout slots for content injection:
 ```vue
 <!-- MyLayout.vue -->
 <script setup>
-import DefaultTheme from 'vitepress/theme'
-const { Layout } = DefaultTheme
+import DefaultTheme from "vitepress/theme";
+const { Layout } = DefaultTheme;
 </script>
 
 <template>
@@ -404,37 +410,37 @@ const { Layout } = DefaultTheme
 
 ### 4.3 Available Slots
 
-| Slot | Location |
-|------|----------|
-| `nav-bar-content-before` | Before nav bar content |
-| `nav-bar-content-after` | After nav bar content |
-| `nav-bar-title-before` | Before logo/title |
-| `nav-bar-title-after` | After logo/title |
-| `sidebar-nav-before` | Before sidebar navigation |
-| `sidebar-nav-after` | After sidebar navigation |
-| `aside-outline-before` | Before table of contents |
-| `aside-outline-after` | After table of contents |
-| `doc-before` | Before document content |
-| `doc-after` | After document content |
+| Slot                     | Location                  |
+| ------------------------ | ------------------------- |
+| `nav-bar-content-before` | Before nav bar content    |
+| `nav-bar-content-after`  | After nav bar content     |
+| `nav-bar-title-before`   | Before logo/title         |
+| `nav-bar-title-after`    | After logo/title          |
+| `sidebar-nav-before`     | Before sidebar navigation |
+| `sidebar-nav-after`      | After sidebar navigation  |
+| `aside-outline-before`   | Before table of contents  |
+| `aside-outline-after`    | After table of contents   |
+| `doc-before`             | Before document content   |
+| `doc-after`              | After document content    |
 
 ### 4.4 Popular Component Libraries
 
-| Library | Purpose | Compatibility |
-|---------|---------|---------------|
-| **VueUse** | Vue composition utilities | Native |
-| **@vueuse/core** | Common Vue composables | Native |
-| **Naive UI** | Vue 3 component library | Via custom theme |
-| **Element Plus** | UI components | Via custom theme |
-| **Iconify** | Icon sets | Via `@iconify/vue` |
+| Library          | Purpose                   | Compatibility      |
+| ---------------- | ------------------------- | ------------------ |
+| **VueUse**       | Vue composition utilities | Native             |
+| **@vueuse/core** | Common Vue composables    | Native             |
+| **Naive UI**     | Vue 3 component library   | Via custom theme   |
+| **Element Plus** | UI components             | Via custom theme   |
+| **Iconify**      | Icon sets                 | Via `@iconify/vue` |
 
 ### 4.5 Custom Theme Examples from Community
 
-| Theme | Stars | Features |
-|-------|-------|----------|
-| **vitepress-theme-blog-charles7c-s1** | 344 | Blog, Mermaid, Gitalk comments |
-| **vuejs/theme** | 274 | Official Vue.js docs theme |
-| **vitepress-theme-bluearchive** | 247 | Blog theme with creative design |
-| **vitepress-carbon** | 95 | IBM Carbon design system |
+| Theme                                 | Stars | Features                        |
+| ------------------------------------- | ----- | ------------------------------- |
+| **vitepress-theme-blog-charles7c-s1** | 344   | Blog, Mermaid, Gitalk comments  |
+| **vuejs/theme**                       | 274   | Official Vue.js docs theme      |
+| **vitepress-theme-bluearchive**       | 247   | Blog theme with creative design |
+| **vitepress-carbon**                  | 95    | IBM Carbon design system        |
 
 ---
 
@@ -449,10 +455,10 @@ const { Layout } = DefaultTheme
 export default defineConfig({
   markdown: {
     image: {
-      lazyLoading: true
-    }
-  }
-})
+      lazyLoading: true,
+    },
+  },
+});
 ```
 
 #### Experimental: Meta Chunk (v1.0+)
@@ -461,12 +467,13 @@ export default defineConfig({
 // .vitepress/config.ts
 export default defineConfig({
   experimental: {
-    metaChunk: true  // Extracts metadata to separate chunk
-  }
-})
+    metaChunk: true, // Extracts metadata to separate chunk
+  },
+});
 ```
 
 Benefits:
+
 - Smaller HTML payloads
 - Cacheable metadata
 - Reduced server bandwidth
@@ -477,12 +484,13 @@ Benefits:
 // .vitepress/config.ts
 export default defineConfig({
   experimental: {
-    mpa: true  // Multi-page application mode
-  }
-})
+    mpa: true, // Multi-page application mode
+  },
+});
 ```
 
 Benefits:
+
 - Zero JavaScript by default
 - Faster initial loads
 - Better SEO
@@ -498,13 +506,13 @@ export default defineConfig({
       rollupOptions: {
         output: {
           manualChunks: {
-            'mermaid': ['mermaid']
-          }
-        }
-      }
-    }
-  }
-})
+            mermaid: ["mermaid"],
+          },
+        },
+      },
+    },
+  },
+});
 ```
 
 ### 5.3 Cache Headers
@@ -618,11 +626,13 @@ pages:
 ### 6.3 Vercel Deployment
 
 **Build Settings:**
+
 - Build Command: `npm run docs:build`
 - Output Directory: `docs/.vitepress/dist`
 - Node Version: `20`
 
 **vercel.json:**
+
 ```json
 {
   "buildCommand": "npm run docs:build",
@@ -642,6 +652,7 @@ pages:
 ### 6.4 Cloudflare Pages
 
 **Build Settings:**
+
 - Build Command: `npm run docs:build`
 - Build Output: `docs/.vitepress/dist`
 - Node Version: `20`
@@ -670,7 +681,7 @@ jobs:
           vercel-token: ${{ secrets.VERCEL_TOKEN }}
           vercel-org-id: ${{ secrets.ORG_ID }}
           vercel-project-id: ${{ secrets.PROJECT_ID }}
-          vercel-args: '--prod=false'
+          vercel-args: "--prod=false"
 ```
 
 ---
@@ -687,18 +698,20 @@ npm install vitepress-plugin-rss
 
 ```typescript
 // .vitepress/config.ts
-import { defineConfig } from 'vitepress'
-import { withRSS } from 'vitepress-plugin-rss'
+import { defineConfig } from "vitepress";
+import { withRSS } from "vitepress-plugin-rss";
 
-export default withRSS(defineConfig({
-  title: 'My Docs',
-  // RSS configuration
-  rss: {
-    siteUrl: 'https://your-docs.com',
-    title: 'My Documentation',
-    description: 'Documentation for My Project'
-  }
-}))
+export default withRSS(
+  defineConfig({
+    title: "My Docs",
+    // RSS configuration
+    rss: {
+      siteUrl: "https://your-docs.com",
+      title: "My Documentation",
+      description: "Documentation for My Project",
+    },
+  }),
+);
 ```
 
 ### 7.2 Sitemap Generation
@@ -711,19 +724,19 @@ npm install vite-plugin-sitemap
 
 ```typescript
 // .vitepress/config.ts
-import { defineConfig } from 'vitepress'
-import { SitemapRollup } from 'vite-plugin-sitemap'
+import { defineConfig } from "vitepress";
+import { SitemapRollup } from "vite-plugin-sitemap";
 
 export default defineConfig({
   vite: {
     plugins: [
       SitemapRollup({
-        hostname: 'https://your-docs.com',
-        outDir: 'docs/.vitepress/dist'
-      })
-    ]
-  }
-})
+        hostname: "https://your-docs.com",
+        outDir: "docs/.vitepress/dist",
+      }),
+    ],
+  },
+});
 ```
 
 ---
@@ -737,11 +750,11 @@ export default defineConfig({
 
 ### Search Strategy
 
-| Scenario | Recommendation |
-|----------|---------------|
-| < 5,000 pages, budget-conscious | Use built-in local search |
-| Enterprise, need AI features | Algolia DocSearch + Ask AI |
-| Static hosting, offline-first | Pagefind (external integration) |
+| Scenario                        | Recommendation                  |
+| ------------------------------- | ------------------------------- |
+| < 5,000 pages, budget-conscious | Use built-in local search       |
+| Enterprise, need AI features    | Algolia DocSearch + Ask AI      |
+| Static hosting, offline-first   | Pagefind (external integration) |
 
 ### Versioning
 
@@ -766,7 +779,7 @@ export default defineConfig({
 
 ---
 
-*Report generated from research conducted in February 2026*
+_Report generated from research conducted in February 2026_
 
 ---
 
@@ -776,15 +789,18 @@ export default defineConfig({
 **Extended by:** Claude Code
 
 ### Changes Made
+
 1. Added VitePress configuration patterns
 2. Added enhancement examples
 3. Enhanced cross-references
 
 ### Cross-References Added
+
 - MULTI_PLATFORM_DEEP_DIVE.md
 - CROSS_PLATFORM_RESEARCH_SUMMARY.md
 
 ### Practical Additions
+
 - VitePress config templates
 - Enhancement checklist
 

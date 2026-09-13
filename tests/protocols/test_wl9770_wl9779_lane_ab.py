@@ -3,11 +3,13 @@
 from __future__ import annotations
 
 import orjson as json
-
 import pytest
 
 from thegent.protocols import jsonrpc_agent_server as server
-from thegent.protocols.jsonrpc_agent_server import SERVER_STATE, process_jsonrpc_line_full
+from thegent.protocols.jsonrpc_agent_server import (
+    SERVER_STATE,
+    process_jsonrpc_line_full,
+)
 
 
 def _reset_state() -> None:
@@ -54,7 +56,12 @@ def test_wl9770_parse_phase_builder_carries_parse_and_execution_fields() -> None
         "parse_error": None,
         "approval_id": "approval-1",
         "approval": {"id": "approval-1", "status": "requested", "turn_id": "turn-1"},
-        "turn": {"id": "turn-1", "status": "awaiting_approval", "session_id": "session-1", "input": "x"},
+        "turn": {
+            "id": "turn-1",
+            "status": "awaiting_approval",
+            "session_id": "session-1",
+            "input": "x",
+        },
         "route": "grant",
         "binding": server._bind_approval_resolution_phases("grant"),
     }
@@ -85,7 +92,12 @@ def test_wl9772_execution_phase_builder_resolves_typed_target_tuple() -> None:
         "parse_error": None,
         "approval_id": "approval-1",
         "approval": {"id": "approval-1", "status": "requested", "turn_id": "turn-1"},
-        "turn": {"id": "turn-1", "status": "awaiting_approval", "session_id": "session-1", "input": "x"},
+        "turn": {
+            "id": "turn-1",
+            "status": "awaiting_approval",
+            "session_id": "session-1",
+            "input": "x",
+        },
         "route": "grant",
         "binding": server._bind_approval_resolution_phases("grant"),
     }

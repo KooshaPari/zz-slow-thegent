@@ -57,4 +57,10 @@ def test_run_hook_builds_powershell_file_command(monkeypatch) -> None:
 
     result = run_hook(Path("hooks/example.ps1"))
     assert result.returncode == 0
-    assert calls[0] == ["pwsh", "-NoProfile", "-NonInteractive", "-File", "hooks/example.ps1"]
+    assert calls[0] == [
+        "pwsh",
+        "-NoProfile",
+        "-NonInteractive",
+        "-File",
+        "hooks/example.ps1",
+    ]

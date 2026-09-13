@@ -14,7 +14,7 @@ Dropdown menu widget.
 
 ### Methods
 
-#### MenuDropdown.__init__
+#### MenuDropdown.**init**
 
 ```python
 __init__(self: Any, items: list[tuple[(str, Any)]])

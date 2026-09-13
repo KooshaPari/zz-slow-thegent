@@ -5,11 +5,11 @@
 
 from __future__ import annotations
 
-import orjson as json
 import tempfile
 from pathlib import Path
-from unittest.mock import MagicMock, patch
+from unittest.mock import patch
 
+import orjson as json
 import pytest
 
 from tests.conftest_factories import make_run_result
@@ -83,7 +83,10 @@ class TestInstanceIsolation:
         assert home.exists()
         assert home.is_dir()
 
-    @patch("thegent.agents.codex_proxy.ensure_proxy_running", return_value="http://localhost:8317/v1")
+    @patch(
+        "thegent.agents.codex_proxy.ensure_proxy_running",
+        return_value="http://localhost:8317/v1",
+    )
     @patch("thegent.agents.codex_proxy._resolve_codex", return_value="/usr/bin/codex")
     @patch("thegent.agents.codex_proxy._run_with_retry")
     def test_run_sets_codex_home_env_var(self, mock_retry, mock_resolve, mock_proxy) -> None:
@@ -102,7 +105,10 @@ class TestInstanceIsolation:
             assert "CODEX_HOME" in env
             assert env["CODEX_HOME"] == tmpdir
 
-    @patch("thegent.agents.codex_proxy.ensure_proxy_running", return_value="http://localhost:8317/v1")
+    @patch(
+        "thegent.agents.codex_proxy.ensure_proxy_running",
+        return_value="http://localhost:8317/v1",
+    )
     @patch("thegent.agents.codex_proxy._resolve_codex", return_value="/usr/bin/codex")
     @patch("thegent.agents.codex_proxy._run_with_retry")
     def test_run_creates_default_isolated_home(self, mock_retry, mock_resolve, mock_proxy) -> None:
@@ -163,7 +169,10 @@ class TestResourceAwareSpawning:
         with pytest.raises(CodexInstanceError, match="Concurrent instance limit"):
             _check_and_track_instance(max_concurrent=1)
 
-    @patch("thegent.agents.codex_proxy.ensure_proxy_running", return_value="http://localhost:8317/v1")
+    @patch(
+        "thegent.agents.codex_proxy.ensure_proxy_running",
+        return_value="http://localhost:8317/v1",
+    )
     @patch("thegent.agents.codex_proxy._resolve_codex", return_value="/usr/bin/codex")
     @patch("thegent.agents.codex_proxy._run_with_retry")
     def test_run_respects_max_concurrent(self, mock_retry, mock_resolve, mock_proxy) -> None:
@@ -180,7 +189,10 @@ class TestResourceAwareSpawning:
         assert result.exit_code == 1
         assert "Concurrent instance limit" in result.stderr
 
-    @patch("thegent.agents.codex_proxy.ensure_proxy_running", return_value="http://localhost:8317/v1")
+    @patch(
+        "thegent.agents.codex_proxy.ensure_proxy_running",
+        return_value="http://localhost:8317/v1",
+    )
     @patch("thegent.agents.codex_proxy._resolve_codex", return_value="/usr/bin/codex")
     @patch("thegent.agents.codex_proxy._run_with_retry")
     def test_run_sets_memory_limit_env(self, mock_retry, mock_resolve, mock_proxy) -> None:
@@ -332,7 +344,10 @@ class TestConfigInjection:
             assert "bool_val" in content
             assert "int_val" in content
 
-    @patch("thegent.agents.codex_proxy.ensure_proxy_running", return_value="http://localhost:8317/v1")
+    @patch(
+        "thegent.agents.codex_proxy.ensure_proxy_running",
+        return_value="http://localhost:8317/v1",
+    )
     @patch("thegent.agents.codex_proxy._resolve_codex", return_value="/usr/bin/codex")
     @patch("thegent.agents.codex_proxy._run_with_retry")
     def test_run_injects_config_file(self, mock_retry, mock_resolve, mock_proxy) -> None:
@@ -361,7 +376,10 @@ class TestConfigInjection:
         assert "CODEX_CONFIG_DIR" in env
         # The directory exists during execution, gets cleaned up in finally
 
-    @patch("thegent.agents.codex_proxy.ensure_proxy_running", return_value="http://localhost:8317/v1")
+    @patch(
+        "thegent.agents.codex_proxy.ensure_proxy_running",
+        return_value="http://localhost:8317/v1",
+    )
     @patch("thegent.agents.codex_proxy._resolve_codex", return_value="/usr/bin/codex")
     @patch("thegent.agents.codex_proxy._run_with_retry")
     def test_run_cleans_up_config_dir(self, mock_retry, mock_resolve, mock_proxy) -> None:
@@ -473,7 +491,10 @@ class TestCodexResult:
 class TestMultipleImprovements:
     """Test improvements working together."""
 
-    @patch("thegent.agents.codex_proxy.ensure_proxy_running", return_value="http://localhost:8317/v1")
+    @patch(
+        "thegent.agents.codex_proxy.ensure_proxy_running",
+        return_value="http://localhost:8317/v1",
+    )
     @patch("thegent.agents.codex_proxy._resolve_codex", return_value="/usr/bin/codex")
     @patch("thegent.agents.codex_proxy._run_with_retry")
     def test_all_improvements_together(self, mock_retry, mock_resolve, mock_proxy) -> None:

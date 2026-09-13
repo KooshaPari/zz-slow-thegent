@@ -11,8 +11,9 @@ from __future__ import annotations
 
 import logging
 import time
+from collections.abc import Callable
 from functools import wraps
-from typing import TYPE_CHECKING, Any, Callable, TypeVar
+from typing import TYPE_CHECKING, Any, TypeVar
 
 if TYPE_CHECKING:
     from collections.abc import Iterable
@@ -82,7 +83,7 @@ def transient_retry(
                             e,
                         )
                         raise
-                except Exception as e:
+                except Exception:
                     # Re-raise non-transient exceptions immediately
                     raise
 
@@ -149,7 +150,7 @@ def cas_retry(
                             raise
                     else:
                         raise
-                except Exception as e:
+                except Exception:
                     raise
 
             if last_exception:
@@ -250,7 +251,7 @@ def user_input_retry(
                             e,
                         )
                         raise
-                except Exception as e:
+                except Exception:
                     # Re-raise non-ValueError exceptions immediately
                     raise
 

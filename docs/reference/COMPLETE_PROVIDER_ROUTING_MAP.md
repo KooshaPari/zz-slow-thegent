@@ -8,6 +8,7 @@
 ## Provider Inventory (Subscription-Optimized)
 
 ### Your Subscriptions
+
 - **Claude:** $200/month (20x Pro) → Haiku 4.5, Sonnet 1M, Opus 4.6
 - **Codex:** Included → Spark, 5.3-Med, 5.3-High, XHigh (400K context)
 - **Copilot:** Subscription → GPT-5.3-Codex, Claude Haiku
@@ -46,6 +47,7 @@
 **Use case:** Simple tasks, "add", "fix typo", "update", default when no role detected
 
 **Quota management:**
+
 - MiniMax: 300 prompts / 5 hours (track via SubscriptionQuotaTracker)
 - Gemini: 1500 requests / day
 - Others: Unlimited
@@ -57,16 +59,19 @@
 **Tiers based on category + complexity:**
 
 #### WRITER_FAST (NORMAL category, medium quality)
+
 **Primary:** Codex Spark (180ms, 58% TB2.0)
 **Fallback 1:** Copilot → GPT-5.3-Codex
 **Fallback 2:** MiniMax (workhorse)
 
 #### WRITER_STANDARD (NORMAL category, standard quality)
+
 **Primary:** Codex 5.3-Med+ (200ms, ~65% estimated)
 **Fallback 1:** Copilot → GPT-5.3-Codex
 **Fallback 2:** Codex Spark
 
 #### WRITER_HIGH (COMPLEX category, high quality - SLOW)
+
 **Primary:** Codex 5.3-High (500ms SLOW, 70% TB2.0)
 **Fallback 1:** Codex 5.3-Med
 **Fallback 2:** Copilot → Claude Haiku (if codex unavailable)
@@ -233,45 +238,53 @@ def route_task(
 ## Fallback Chains (Per Role)
 
 ### RESEARCHER
+
 1. Gemini 3-Flash (free, 80ms)
 2. Cursor Composer (very fast)
 3. Haiku 4.5 (unlimited)
 4. Antigravity → Gemini (proxied)
 
 ### WORKHORSE
+
 1. MiniMax M2.5 (if quota available)
 2. Gemini 3-Flash (free fallback)
 3. Haiku 4.5 (unlimited)
 4. Kilo → Budget models
 
 ### WRITER_FAST
+
 1. Codex Spark (180ms)
 2. Copilot → Codex
 3. MiniMax
 
 ### WRITER_HIGH
+
 1. Codex 5.3-High (500ms SLOW)
 2. Copilot → Codex
 3. Codex Spark (quality degradation)
 
 ### PLANNER
+
 1. Opus 4.6 (600ms SLOW)
 2. Roo → Opus (team workflows)
 3. Antigravity → Opus
 4. Codex 5.3-High (fallback if Claude unavailable)
 
 ### LARGE_CONTEXT
+
 1. Sonnet 1M (1M context)
 2. Codex (400K context)
 3. Kilo → Large context models
 4. NIM → Self-hosted (if available)
 
 ### MISSION_CRITICAL
+
 1. Codex XHigh (VERY VERY SLOW, ultra-quality)
 2. GLM-5 (HIGH LATENCY, 78% quality)
 3. Opus 4.6 (reasoning-heavy tasks)
 
 ### EXPERT (explicit only)
+
 1. GLM-5 (BEST quality, too slow for auto)
 2. Codex XHigh
 3. Kilo → GLM-5 (free promo)
@@ -285,21 +298,22 @@ def route_task(
 ```yaml
 ---
 name: code-reviewer
-routing_role: planner  # Routes to Opus 4.6
+routing_role: planner # Routes to Opus 4.6
 ---
 
 ---
 name: atoms-quick-task
-routing_role: writer_fast  # Routes to Codex Spark
+routing_role: writer_fast # Routes to Codex Spark
 ---
 
 ---
 name: research-scout
-routing_role: researcher  # Routes to Gemini 3-Flash
+routing_role: researcher # Routes to Gemini 3-Flash
 ---
 ```
 
 **If agent doesn't specify role:**
+
 - Auto-detect from prompt keywords
 - Default to WORKHORSE (minimax or gemini)
 
@@ -331,6 +345,7 @@ Once I have this data, I'll update the routing system to include ALL providers i
 ---
 
 **Sources:**
+
 - [GitHub Copilot Supported Models](https://docs.github.com/en/copilot/reference/ai-models/supported-models)
 - [Cursor Composer Performance Analysis](https://medium.com/@leucopsis/composer-a-fast-new-ai-coding-model-by-cursor-e1a023614c07)
 - [Gemini 3 Flash Speed Performance](https://blog.google/products/gemini/gemini-3-flash/)
@@ -338,15 +353,12 @@ Once I have this data, I'll update the routing system to include ALL providers i
 - [Kilo Code Model Leaderboard](https://kilo.ai/leaderboard)
 - [NVIDIA NIM Supported Models](https://docs.nvidia.com/nim/large-language-models/latest/supported-models.html)
 
-
-
 ---
+
 ## See also
 
 - [WORK_STREAM.md](../reference/WORK_STREAM.md) — canonical backlog
 - [00-MASTER-INDEX.md](../plans/00-MASTER-INDEX.md) — plan index
-
-
 
 ---
 
@@ -356,15 +368,18 @@ Once I have this data, I'll update the routing system to include ALL providers i
 **Extended by:** Claude Code
 
 ### Changes Made
+
 1. Added practical implementation patterns
 2. Added configuration examples
 3. Enhanced cross-references to related documentation
 
 ### Cross-References Added
+
 - Related research and implementation guides
 - WORK_STREAM.md for tracking
 
 ### Practical Additions
+
 - Implementation templates
 - Configuration examples
 - Best practices

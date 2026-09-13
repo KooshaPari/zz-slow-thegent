@@ -10,11 +10,13 @@
 ## Executive Summary
 
 Build **bidirectional ACP adapters** for thegent:
+
 1. **ACP Server Adapter**: Expose thegent agents as ACP-compatible agents
 2. **ACP Client Adapter**: Allow thegent to spawn/communicate with ACP agents
 3. **MCP ↔ ACP Bridge**: Translate between MCP and ACP protocols
 
 This enables:
+
 - **gsh integration**: Use `@thegent` in gsh REPL to invoke thegent agents
 - **Zed integration**: Use thegent agents in Zed editor
 - **Protocol interoperability**: Bridge MCP and ACP ecosystems
@@ -28,6 +30,7 @@ This enables:
 **Agent Client Protocol (ACP)** standardizes communication between code editors/IDEs and coding agents, similar to how LSP standardized language servers.
 
 **Key Characteristics**:
+
 - **JSON-RPC over stdio** (local agents) or **HTTP/WebSocket** (remote agents)
 - **Reuses MCP JSON representations** where possible
 - **Markdown** as default format for user-readable text
@@ -35,13 +38,13 @@ This enables:
 
 ### ACP vs MCP
 
-| Aspect | MCP (Model Context Protocol) | ACP (Agent Client Protocol) |
-|--------|------------------------------|-----------------------------|
-| **Focus** | Model ↔ Tool communication | Editor ↔ Agent communication |
-| **Use Case** | Tools, resources, prompts | Agent spawns, conversations, edits |
-| **Transport** | stdio, HTTP, WebSocket | stdio (local), HTTP/WebSocket (remote) |
-| **Message Format** | JSON-RPC | JSON-RPC (similar structure) |
-| **Ecosystem** | Anthropic, MCP servers | Zed, gsh, Claude Agent SDK |
+| Aspect             | MCP (Model Context Protocol) | ACP (Agent Client Protocol)            |
+| ------------------ | ---------------------------- | -------------------------------------- |
+| **Focus**          | Model ↔ Tool communication  | Editor ↔ Agent communication          |
+| **Use Case**       | Tools, resources, prompts    | Agent spawns, conversations, edits     |
+| **Transport**      | stdio, HTTP, WebSocket       | stdio (local), HTTP/WebSocket (remote) |
+| **Message Format** | JSON-RPC                     | JSON-RPC (similar structure)           |
+| **Ecosystem**      | Anthropic, MCP servers       | Zed, gsh, Claude Agent SDK             |
 
 **Key Insight**: ACP is **complementary** to MCP, not a replacement. MCP handles tooling; ACP handles agent interactions.
 
@@ -176,9 +179,7 @@ class ACPServerAdapter:
     async def run_stdio(self):
         """Run ACP server over stdio (for local agents)."""
         while True:
-            line = await asyncio.get_event_loop().run_in_executor(
-                None, sys.stdin.readline
-            )
+            line = await asyncio.get_event_loop().run_in_executor(None, sys.stdin.readline)
             if not line:
                 break
 
@@ -212,6 +213,7 @@ if __name__ == "__main__":
 ```
 
 **Usage**:
+
 ```bash
 # Run as ACP agent (stdio)
 thegent-acp-server
@@ -285,7 +287,7 @@ class ACPClientAdapter(AgentRunner):
             "method": "initialize",
             "params": {
                 "capabilities": {},
-            }
+            },
         }
         self.process.stdin.write(json.dumps(init_request) + "\n")
         self.process.stdin.flush()
@@ -298,7 +300,7 @@ class ACPClientAdapter(AgentRunner):
             "params": {
                 "prompt": prompt,
                 "cwd": str(cwd) if cwd else None,
-            }
+            },
         }
         self.process.stdin.write(json.dumps(spawn_request) + "\n")
         self.process.stdin.flush()
@@ -339,6 +341,7 @@ class ACPClientAdapter(AgentRunner):
 ```python
 from thegent.acp.client import ACPClientAdapter
 
+
 def get_acp_runner(acp_config: dict[str, Any]) -> ACPClientAdapter:
     """Create ACP client adapter from config."""
     command = acp_config.get("command", [])
@@ -353,6 +356,7 @@ def get_acp_runner(acp_config: dict[str, Any]) -> ACPClientAdapter:
 ### Purpose
 
 Translate between MCP and ACP protocols, enabling:
+
 - ACP clients to use MCP tools
 - MCP servers to expose ACP agents
 
@@ -416,12 +420,8 @@ acp Thegent {
 ```yaml
 # ~/.config/zed/settings.json
 {
-  "external_agents": {
-    "thegent": {
-      "command": "thegent-acp-server",
-      "args": []
-    }
-  }
+  "external_agents":
+    { "thegent": { "command": "thegent-acp-server", "args": [] } },
 }
 ```
 
@@ -438,6 +438,7 @@ def acp_cmd(
     """ACP protocol integration."""
     if server:
         from thegent.acp.server import main
+
         asyncio.run(main())
     elif client:
         # Spawn ACP client
@@ -453,6 +454,7 @@ def acp_cmd(
 **Goal**: Expose thegent agents as ACP-compatible agents.
 
 **Tasks**:
+
 1. ✅ Research ACP protocol specification
 2. ⏳ Implement `ACPServerAdapter` class
 3. ⏳ Map `AgentRunner.run()` to ACP `agent/spawn` method
@@ -462,6 +464,7 @@ def acp_cmd(
 7. ⏳ Test with gsh (`@thegent` command)
 
 **Deliverables**:
+
 - `src/thegent/acp/server.py`
 - `src/thegent/acp/__main__.py`
 - `docs/guides/GSH_INTEGRATION.md`
@@ -472,6 +475,7 @@ def acp_cmd(
 **Goal**: Allow thegent to spawn external ACP agents.
 
 **Tasks**:
+
 1. ⏳ Implement `ACPClientAdapter` class (extends `AgentRunner`)
 2. ⏳ Spawn ACP agent subprocess
 3. ⏳ Send ACP JSON-RPC requests
@@ -481,6 +485,7 @@ def acp_cmd(
 7. ⏳ Test with `claude-agent-acp`
 
 **Deliverables**:
+
 - `src/thegent/acp/client.py`
 - Integration with `agents/registry.py`
 - Tests for external ACP agents
@@ -490,6 +495,7 @@ def acp_cmd(
 **Goal**: Translate between MCP and ACP protocols.
 
 **Tasks**:
+
 1. ⏳ Implement `MCPACPBridge` class
 2. ⏳ Map MCP tools to ACP capabilities
 3. ⏳ Convert ACP requests to MCP tool calls
@@ -497,6 +503,7 @@ def acp_cmd(
 5. ⏳ Test bidirectional translation
 
 **Deliverables**:
+
 - `src/thegent/acp/mcp_bridge.py`
 - Integration tests
 - Documentation
@@ -506,6 +513,7 @@ def acp_cmd(
 **Goal**: Production-ready ACP adapters.
 
 **Tasks**:
+
 1. ⏳ Error handling and retries
 2. ⏳ Logging and telemetry
 3. ⏳ Performance optimization
@@ -514,6 +522,7 @@ def acp_cmd(
 6. ⏳ Release preparation
 
 **Deliverables**:
+
 - Complete test suite
 - Production documentation
 - Release artifacts
@@ -528,10 +537,7 @@ def acp_cmd(
 # tests/test_acp_server.py
 def test_acp_server_spawn():
     adapter = ACPServerAdapter()
-    request = {
-        "method": "agent/spawn",
-        "params": {"agent": "claude", "prompt": "Hello"}
-    }
+    request = {"method": "agent/spawn", "params": {"agent": "claude", "prompt": "Hello"}}
     response = await adapter.handle_request(request)
     assert "result" in response
 ```
@@ -564,6 +570,7 @@ gsh> @thegent analyze my codebase
 **Question**: How compatible are ACP and MCP JSON-RPC formats?
 
 **Research Needed**:
+
 - Compare ACP `agent/spawn` vs MCP `tools/call`
 - Map ACP message types to MCP equivalents
 - Identify gaps/incompatibilities
@@ -597,21 +604,25 @@ gsh> @thegent analyze my codebase
 ## Success Metrics
 
 ### Phase 1 (ACP Server)
+
 - ✅ `thegent-acp-server` runs without errors
 - ✅ gsh can invoke `@thegent` command
 - ✅ Basic agent spawn works (claude, codex, etc.)
 
 ### Phase 2 (ACP Client)
+
 - ✅ thegent can spawn `claude-agent-acp`
 - ✅ External ACP agents return `RunResult`
 - ✅ Integration with agent registry works
 
 ### Phase 3 (Bridge)
+
 - ✅ MCP tools accessible via ACP
 - ✅ ACP agents can use MCP tools
 - ✅ Bidirectional translation works
 
 ### Phase 4 (Production)
+
 - ✅ Test coverage >80%
 - ✅ Documentation complete
 - ✅ CI/CD passes

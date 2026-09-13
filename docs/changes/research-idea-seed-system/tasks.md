@@ -18,6 +18,7 @@ status: in_progress
 **Description**: Create source directories and package structure for idea-seed system.
 
 **Tasks**:
+
 - [ ] Create `src/thegent/ideas/` directory
 - [ ] Create `src/thegent/ideas/__init__.py` (package marker)
 - [ ] Create `.thegent/ideas/` directory (user data)
@@ -37,26 +38,29 @@ status: in_progress
 **Description**: Define canonical idea data structure and validation.
 
 **Files to Create**:
+
 - `src/thegent/ideas/schema.py` - Pydantic models for idea objects
 
 **Implementation Details**:
+
 ```python
 # IdeaObject
 @dataclass
 class IdeaObject:
-    id: str                    # idea_YYYYMMDD_HHMMSS_hash
-    text: str                  # Main idea text (50-5000 chars)
-    created_at: datetime       # ISO 8601 timestamp
-    source: IdeaSource         # Session metadata
-    detection: DetectionMeta   # How it was detected
-    tags: List[str]           # Auto-detected tags
-    context: str              # Surrounding text (optional)
-    metadata: IdeaMetadata     # Project, status, etc.
-    git: GitMeta              # Git commit info
-    checksum: str             # SHA-256 hash
+    id: str  # idea_YYYYMMDD_HHMMSS_hash
+    text: str  # Main idea text (50-5000 chars)
+    created_at: datetime  # ISO 8601 timestamp
+    source: IdeaSource  # Session metadata
+    detection: DetectionMeta  # How it was detected
+    tags: List[str]  # Auto-detected tags
+    context: str  # Surrounding text (optional)
+    metadata: IdeaMetadata  # Project, status, etc.
+    git: GitMeta  # Git commit info
+    checksum: str  # SHA-256 hash
 ```
 
 **Tasks**:
+
 - [ ] Define all dataclasses (Idea, IdeaSource, DetectionMeta, etc.)
 - [ ] Implement `to_dict()` serialization
 - [ ] Implement `from_dict()` deserialization
@@ -78,9 +82,11 @@ class IdeaObject:
 **Description**: Create pattern matching and extraction logic.
 
 **Files to Create**:
+
 - `src/thegent/ideas/detector.py` - Pattern matching and detection
 
 **Implementation Details**:
+
 ```python
 class IdeaDetector:
     def detect(self, text: str) -> List[IdeaObject]:
@@ -100,6 +106,7 @@ class IdeaDetector:
 ```
 
 **Tasks**:
+
 - [ ] Implement explicit pattern matching (regex: `$idea: (.+?)`)
 - [ ] Implement implicit pattern matching (7+ patterns)
 - [ ] Add confidence scoring (0.7-0.99)
@@ -123,10 +130,12 @@ class IdeaDetector:
 **Description**: Create JSONL-based persistence with git integration.
 
 **Files to Create**:
+
 - `src/thegent/ideas/storage.py` - JSONL write and read
 - `src/thegent/ideas/git.py` - Git audit trail
 
 **Implementation Details**:
+
 ```python
 class IdeaStorage:
     def store(self, idea: IdeaObject) -> str:
@@ -143,12 +152,14 @@ class IdeaStorage:
     def load_all(self) -> List[IdeaObject]:
         """Load all ideas from JSONL."""
 
+
 class GitAudit:
     def commit(self, message: str, metadata: dict) -> str:
         """Create git commit with audit metadata."""
 ```
 
 **Tasks**:
+
 - [ ] Implement JSONL write (append-only)
 - [ ] Implement JSONL read (line-by-line)
 - [ ] Add fsync for durability
@@ -173,13 +184,15 @@ class GitAudit:
 **Description**: Create `thegent ideas collect` command.
 
 **Files to Create**:
+
 - `src/thegent/ideas/cli.py` - CLI command implementation
 
 **Implementation Details**:
+
 ```python
 @click.command()
-@click.option('--since', default='6h', help='Time range')
-@click.option('--git-commit', is_flag=True)
+@click.option("--since", default="6h", help="Time range")
+@click.option("--git-commit", is_flag=True)
 def ideas_collect(since: str, git_commit: bool):
     """Collect ideas from recent sessions."""
     # 1. Find recent prompts (from run_registry or session files)
@@ -189,6 +202,7 @@ def ideas_collect(since: str, git_commit: bool):
 ```
 
 **Tasks**:
+
 - [ ] Create CLI command group `thegent ideas`
 - [ ] Implement `collect` subcommand
 - [ ] Add `--since` option (parse time ranges)
@@ -217,9 +231,11 @@ def ideas_collect(since: str, git_commit: bool):
 **Description**: Build inverted index for fast searching.
 
 **Files to Create**:
+
 - `src/thegent/ideas/index.py` - Indexing logic
 
 **Tasks**:
+
 - [ ] Implement tokenizer (lowercase, stopword removal, stemming)
 - [ ] Implement inverted index data structure
 - [ ] Implement index building (load all ideas)
@@ -241,9 +257,11 @@ def ideas_collect(since: str, git_commit: bool):
 **Description**: Create indices for date, tags, project filtering.
 
 **Files to Create**:
+
 - Extend `src/thegent/ideas/index.py`
 
 **Tasks**:
+
 - [ ] Implement date index (YYYY-MM-DD → idea IDs)
 - [ ] Implement tag index (tag → idea IDs)
 - [ ] Implement project index (project → idea IDs)
@@ -265,9 +283,11 @@ def ideas_collect(since: str, git_commit: bool):
 **Description**: Create query processing and filtering.
 
 **Files to Create**:
+
 - `src/thegent/ideas/query.py` - Query language and execution
 
 **Implementation Details**:
+
 ```python
 class IdeaQuery:
     def search(self, query: str, **filters) -> List[IdeaObject]:
@@ -281,6 +301,7 @@ class IdeaQuery:
 ```
 
 **Tasks**:
+
 - [ ] Implement query parser (tokenize, handle quotes)
 - [ ] Implement search execution (full-text + filters)
 - [ ] Add filtering by tag, date, project, status
@@ -302,9 +323,11 @@ class IdeaQuery:
 **Description**: Create `search`, `list`, `get` commands.
 
 **Files to Create**:
+
 - Extend `src/thegent/ideas/cli.py`
 
 **Tasks**:
+
 - [ ] Implement `ideas search` command with query + filters
 - [ ] Implement `ideas list` command with pagination
 - [ ] Implement `ideas get` command with ID lookup
@@ -332,9 +355,11 @@ class IdeaQuery:
 **Description**: Add MCP tools for idea collection and search.
 
 **Files to Create**:
+
 - `src/thegent/ideas/mcp_tools.py` - MCP tool implementations
 
 **Tasks**:
+
 - [ ] Implement `thegent_idea_collect` tool
 - [ ] Implement `thegent_idea_search` tool
 - [ ] Implement `thegent_idea_get` tool
@@ -356,12 +381,14 @@ class IdeaQuery:
 **Description**: Register tools and resources with FastMCP server.
 
 **Files to Create**:
+
 - Extend existing MCP server code
 
 **Tasks**:
+
 - [ ] Register 4 tools with MCP server
 - [ ] Add tools to MCP manifest
-- [ ] Implement MCP resources (thegent://ideas/*)
+- [ ] Implement MCP resources (thegent://ideas/\*)
 - [ ] Test tool invocation
 - [ ] Test resource access
 - [ ] Add documentation
@@ -379,6 +406,7 @@ class IdeaQuery:
 **Description**: Expose idea data via MCP resources.
 
 **Tasks**:
+
 - [ ] Implement thegent://ideas (list all)
 - [ ] Implement thegent://ideas/{id} (get one)
 - [ ] Implement thegent://ideas/recent (last 10)
@@ -405,9 +433,11 @@ class IdeaQuery:
 **Description**: Create export to JSON, Markdown, CSV.
 
 **Files to Create**:
+
 - `src/thegent/ideas/export.py` - Export logic
 
 **Tasks**:
+
 - [ ] Implement JSON export
 - [ ] Implement Markdown export (formatted list)
 - [ ] Implement CSV export (tabular)
@@ -428,6 +458,7 @@ class IdeaQuery:
 **Description**: Achieve ≥85% test coverage.
 
 **Files to Create**:
+
 - `tests/ideas/` - Test directory structure
   - `test_schema.py`
   - `test_detector.py`
@@ -439,6 +470,7 @@ class IdeaQuery:
   - `test_export.py`
 
 **Tasks**:
+
 - [ ] Write schema tests (all fields, validation)
 - [ ] Write detector tests (pattern matching, accuracy)
 - [ ] Write storage tests (persistence, recovery)
@@ -463,11 +495,13 @@ class IdeaQuery:
 **Description**: Write user guide, CLI reference, and API documentation.
 
 **Files to Create**:
+
 - `docs/guides/idea-seeds.md` - User guide
 - `docs/reference/IDEA_SEEDS_CLI_REFERENCE.md` - CLI reference
 - Code docstrings (Google style)
 
 **Tasks**:
+
 - [ ] Write user guide (how to flag ideas, patterns, best practices)
 - [ ] Write CLI reference (command syntax, examples)
 - [ ] Write Python docstrings (all public functions)
@@ -488,6 +522,7 @@ class IdeaQuery:
 **Description**: End-to-end tests with real workflows.
 
 **Tasks**:
+
 - [ ] Test idea flagging in prompts
 - [ ] Test collection from live sessions (if possible)
 - [ ] Test search + filter workflow
@@ -509,9 +544,11 @@ class IdeaQuery:
 **Description**: Integrate with UserPromptSubmit hook.
 
 **Files to Create**:
+
 - `hooks/idea-seed-detector.sh` - Hook script
 
 **Tasks**:
+
 - [ ] Create hook script (bash)
 - [ ] Call detector on UserPromptSubmit events
 - [ ] Add to hook registry
@@ -532,6 +569,7 @@ class IdeaQuery:
 **Description**: Tune for target performance.
 
 **Tasks**:
+
 - [ ] Benchmark detection (<10ms)
 - [ ] Benchmark storage (<50ms)
 - [ ] Benchmark search (<100ms)
@@ -581,19 +619,20 @@ class IdeaQuery:
 
 ## Effort Summary
 
-| Phase | Tasks | Estimated Effort | Actual |
-|-------|-------|------------------|--------|
-| **Phase 1** | 5 | 7.5 days | TBD |
-| **Phase 2** | 4 | 6 days | TBD |
-| **Phase 3** | 3 | 4 days | TBD |
-| **Phase 4** | 6 | 9.5 days | TBD |
-| **TOTAL** | **18** | **~26.5 days** | **~4 weeks** |
+| Phase       | Tasks  | Estimated Effort | Actual       |
+| ----------- | ------ | ---------------- | ------------ |
+| **Phase 1** | 5      | 7.5 days         | TBD          |
+| **Phase 2** | 4      | 6 days           | TBD          |
+| **Phase 3** | 3      | 4 days           | TBD          |
+| **Phase 4** | 6      | 9.5 days         | TBD          |
+| **TOTAL**   | **18** | **~26.5 days**   | **~4 weeks** |
 
 ---
 
 ## Success Criteria Checklist
 
 ### Phase 1 Completion
+
 - [x] Project structure created
 - [x] Schema implemented and tested
 - [x] Detector with ≥95% accuracy
@@ -601,17 +640,20 @@ class IdeaQuery:
 - [x] `thegent ideas collect` working
 
 ### Phase 2 Completion
+
 - [x] Full-text index <100ms search
 - [x] Metadata indices (date, tag, project)
 - [x] Query engine with filtering/sorting
 - [x] `search`, `list`, `get` commands working
 
 ### Phase 3 Completion
+
 - [x] 4 MCP tools functional
 - [x] MCP server integration complete
 - [x] MCP resources accessible
 
 ### Phase 4 Completion
+
 - [x] Export to JSON/Markdown/CSV
 - [x] ≥85% test coverage
 - [x] Complete documentation
@@ -620,6 +662,7 @@ class IdeaQuery:
 - [x] All performance targets met
 
 ### Overall Goals
+
 - [x] Zero external library dependencies (use stdlib only)
 - [x] <50 lines for detector confidence logic
 - [x] <100 lines for storage layer
@@ -631,6 +674,7 @@ class IdeaQuery:
 ## Notes for Implementers
 
 ### Code Style & Quality
+
 - Follow PEP 8 (Python style)
 - Use type hints throughout
 - Add docstrings (Google style)
@@ -639,6 +683,7 @@ class IdeaQuery:
 - Keep classes <200 lines
 
 ### Testing Strategy
+
 - Test-first: write tests before code
 - Unit tests for each module
 - Integration tests for workflows
@@ -647,11 +692,13 @@ class IdeaQuery:
 - Use pytest framework
 
 ### Git Commit Messages
+
 - Format: `feat(ideas): [brief description]`
 - Example: `feat(ideas): implement pattern matching detector`
 - Include issue/task ID if applicable
 
 ### Documentation
+
 - Update docs/ files as code is completed
 - Add CLI examples to reference docs
 - Keep user guide separate from technical design

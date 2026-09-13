@@ -52,7 +52,6 @@ from thegent.governance.policy_engine import (
     PolicyEngineConfigError,
 )
 
-
 # All tests in this module are unit tests.
 pytestmark = pytest.mark.unit
 
@@ -258,9 +257,7 @@ class TestPolicyEngineEvaluateEndToEndConcurrency:
             t.join()
 
         assert not errors, f"worker raised: {errors!r}"
-        assert non_override_count == 0, (
-            f"{non_override_count} evaluations missed the override"
-        )
+        assert non_override_count == 0, f"{non_override_count} evaluations missed the override"
 
     def test_concurrent_evaluate_uses_decision_cache(
         self,

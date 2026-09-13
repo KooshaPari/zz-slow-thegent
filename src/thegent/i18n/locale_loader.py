@@ -168,10 +168,7 @@ def coverage(
     ``(total, total)``.
     """
     bundle: set[str]
-    if message_ids is None:
-        bundle = bundle_message_ids(directory)
-    else:
-        bundle = set(message_ids)
+    bundle = bundle_message_ids(directory) if message_ids is None else set(message_ids)
     if not bundle:
         return (0, 0)
     try:

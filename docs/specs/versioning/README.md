@@ -3,6 +3,7 @@
 ## Executive Summary
 
 This document specifies a comprehensive versioning system for thegent that operates at multiple granularities:
+
 - **Macro versioning**: Semantic releases, major/minor/patch
 - **Meso versioning**: Worktrees, branches, PRs
 - **Micro versioning**: Session-based, change plans, microcommits
@@ -51,12 +52,12 @@ The system addresses the core problem: **multiple AI agents running change plans
 
 ### Layer Comparison
 
-| Layer | Scope | Trigger | Persistence |
-|-------|-------|---------|-------------|
-| Macro | Release | Human decision | Git tag |
-| Meso | Feature | Branch/PR | Git branch |
-| Micro | Session | Agent run | Manifest file |
-| Nano | Microcommit | File edit | In-session |
+| Layer | Scope       | Trigger        | Persistence   |
+| ----- | ----------- | -------------- | ------------- |
+| Macro | Release     | Human decision | Git tag       |
+| Meso  | Feature     | Branch/PR      | Git branch    |
+| Micro | Session     | Agent run      | Manifest file |
+| Nano  | Microcommit | File edit      | In-session    |
 
 ---
 
@@ -83,10 +84,10 @@ MAJOR.MINOR.PATCH[-PRERELEASE][+BUILD]
 Example: 2.1.0-alpha.3+git.abc123+ci.456
 ```
 
-| Component | Description |
-|-----------|-------------|
+| Component          | Description             |
+| ------------------ | ----------------------- |
 | `git.{short_hash}` | First 7 chars of commit |
-| `build_id` | CI run identifier |
+| `build_id`         | CI run identifier       |
 
 ### Version Schemas
 
@@ -94,6 +95,7 @@ Example: 2.1.0-alpha.3+git.abc123+ci.456
 from dataclasses import dataclass
 from typing import Optional
 import re
+
 
 @dataclass(frozen=True)
 class MacroVersion:
@@ -105,12 +107,12 @@ class MacroVersion:
 
     # Compiled regex for SemVer 2.0
     SEMVER_PATTERN = re.compile(
-        r'^(?P<major>0|[1-9]\d*)\.'
-        r'(?P<minor>0|[1-9]\d*)\.'
-        r'(?P<patch>0|[1-9]\d*)'
-        r'(?:-(?P<prerelease>(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*)'
-        r'(?:\.(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?'
-        r'(?:\+(?P<build>[0-9a-zA-Z-]+(?:\.[0-9a-zA-Z-]+)*))?$'
+        r"^(?P<major>0|[1-9]\d*)\."
+        r"(?P<minor>0|[1-9]\d*)\."
+        r"(?P<patch>0|[1-9]\d*)"
+        r"(?:-(?P<prerelease>(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*)"
+        r"(?:\.(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?"
+        r"(?:\+(?P<build>[0-9a-zA-Z-]+(?:\.[0-9a-zA-Z-]+)*))?$"
     )
 
     @classmethod
@@ -124,7 +126,7 @@ class MacroVersion:
             minor=int(match.group("minor")),
             patch=int(match.group("patch")),
             prerelease=match.group("prerelease"),
-            build=match.group("build")
+            build=match.group("build"),
         )
 
     def __str__(self) -> str:
@@ -161,12 +163,12 @@ main (production)
 
 ### Worktree Integration
 
-| Scenario | Worktree | Microversion |
-|----------|----------|--------------|
-| Production hotfix | No | None |
-| Feature development | Yes | Agent session |
-| Agent parallel runs | Optional | Required |
-| Quick experiments | No | Session only |
+| Scenario            | Worktree | Microversion  |
+| ------------------- | -------- | ------------- |
+| Production hotfix   | No       | None          |
+| Feature development | Yes      | Agent session |
+| Agent parallel runs | Optional | Required      |
+| Quick experiments   | No       | Session only  |
 
 ### Worktree Naming Convention
 
@@ -202,12 +204,12 @@ Micro versioning provides **session-level traceability** without requiring workt
 
 #### Examples
 
-| Microversion | Meaning |
-|--------------|---------|
-| `sess_k8s2m.001.001` | Session `k8s2m`, Plan 1, Microcommit 1 |
+| Microversion         | Meaning                                 |
+| -------------------- | --------------------------------------- |
+| `sess_k8s2m.001.001` | Session `k8s2m`, Plan 1, Microcommit 1  |
 | `sess_k8s2m.001.017` | Session `k8s2m`, Plan 1, Microcommit 17 |
-| `sess_k8s2m.003.005` | Session `k8s2m`, Plan 3, Microcommit 5 |
-| `sess_abc.002.001` | Different session |
+| `sess_k8s2m.003.005` | Session `k8s2m`, Plan 3, Microcommit 5  |
+| `sess_abc.002.001`   | Different session                       |
 
 ### Microcommit Definition
 
@@ -315,11 +317,11 @@ SESSION CREATION
 
 ### Session ID Format
 
-| Format | Example | Use Case |
-|--------|---------|----------|
-| UUID v4 | `sess_a1b2c3d4` | Default |
+| Format    | Example              | Use Case  |
+| --------- | -------------------- | --------- |
+| UUID v4   | `sess_a1b2c3d4`      | Default   |
 | Timestamp | `sess_20260221_1030` | Debugging |
-| Human | `sess_routing-fix` | Readable |
+| Human     | `sess_routing-fix`   | Readable  |
 
 ### Session Directory Structure
 
@@ -352,11 +354,11 @@ A **change plan** is a logical grouping of related file modifications within a s
 ```python
 @dataclass
 class ChangePlan:
-    plan_id: str              # Unique within session, e.g., "plan_001"
-    plan_index: int           # 1-based sequential index
-    session_id: str           # Parent session
-    description: str          # Human-readable goal
-    status: PlanStatus        # pending|running|completed|failed|aborted
+    plan_id: str  # Unique within session, e.g., "plan_001"
+    plan_index: int  # 1-based sequential index
+    session_id: str  # Parent session
+    description: str  # Human-readable goal
+    status: PlanStatus  # pending|running|completed|failed|aborted
 
     # What this plan depends on
     dependencies: list[str]  # Other plan_ids
@@ -368,7 +370,7 @@ class ChangePlan:
     actual_files: list[str]
 
     # Microcommits in this plan
-    microcommits: list[str]   # microversion strings
+    microcommits: list[str]  # microversion strings
 ```
 
 ### Change Plan Dependencies
@@ -395,12 +397,12 @@ Session: sess_abc
 
 ### Conflict Types
 
-| Type | Description | Resolution Strategy |
-|------|-------------|---------------------|
-| File-level | Same file modified | 3-way merge or agent choice |
-| Plan-level | Plans modify same files | Dependency ordering |
-| Session-level | Sessions modify same files | Manifest + git worktree |
-| Semantic | Different changes, same behavior | Preserve both |
+| Type          | Description                      | Resolution Strategy         |
+| ------------- | -------------------------------- | --------------------------- |
+| File-level    | Same file modified               | 3-way merge or agent choice |
+| Plan-level    | Plans modify same files          | Dependency ordering         |
+| Session-level | Sessions modify same files       | Manifest + git worktree     |
+| Semantic      | Different changes, same behavior | Preserve both               |
 
 ### Resolution Strategies
 
@@ -463,11 +465,7 @@ Other files        ──► Manifest only
 ### Conflict Resolution Algorithm
 
 ```python
-def resolve_conflict(
-    manifest_a: SessionManifest,
-    manifest_b: SessionManifest,
-    file_path: str
-) -> ConflictResolution:
+def resolve_conflict(manifest_a: SessionManifest, manifest_b: SessionManifest, file_path: str) -> ConflictResolution:
     """Resolve file conflict between two session manifests."""
 
     # Get microcommits for this file from each session
@@ -481,11 +479,7 @@ def resolve_conflict(
 
     # Both modified - check for semantic equivalence
     if are_semantically_equivalent(commits_a, commits_b):
-        return ConflictResolution(
-            use_a=True,
-            merged=True,
-            reason="semantically_equivalent"
-        )
+        return ConflictResolution(use_a=True, merged=True, reason="semantically_equivalent")
 
     # Check if we have worktrees
     if have_worktrees():
@@ -493,11 +487,7 @@ def resolve_conflict(
         return ConflictResolution(defer_to_git=True)
 
     # No worktrees - prompt for resolution
-    return ConflictResolution(
-        need_human=True,
-        options=[commits_a, commits_b],
-        reason="conflicting_changes"
-    )
+    return ConflictResolution(need_human=True, options=[commits_a, commits_b], reason="conflicting_changes")
 ```
 
 ---
@@ -515,12 +505,14 @@ from typing import Optional
 import uuid
 from datetime import datetime
 
+
 class PlanStatus(Enum):
     PENDING = "pending"
     RUNNING = "running"
     COMPLETED = "completed"
     FAILED = "failed"
     ABORTED = "aborted"
+
 
 class SessionStatus(Enum):
     INITIALIZED = "initialized"
@@ -529,9 +521,11 @@ class SessionStatus(Enum):
     FAILED = "failed"
     ABORTED = "aborted"
 
+
 @dataclass(frozen=True)
 class Microversion:
     """Immutable microversion identifier."""
+
     session_id: str
     plan_index: int
     microcommit_index: int
@@ -544,33 +538,35 @@ class Microversion:
         parts = s.split(".")
         if len(parts) != 3:
             raise ValueError(f"Invalid microversion: {s}")
-        return cls(
-            session_id=parts[0],
-            plan_index=int(parts[1]),
-            microcommit_index=int(parts[2])
-        )
+        return cls(session_id=parts[0], plan_index=int(parts[1]), microcommit_index=int(parts[2]))
+
 
 @dataclass
 class Microcommit:
     """A single atomic file change within a session."""
+
     microversion: Microversion
     timestamp: datetime
     files: list[FileChange]
     parent_microversion: Optional[Microversion] = None
     plan_context: Optional[dict] = None
 
+
 @dataclass
 class FileChange:
     """Represents a single file modification."""
+
     path: str
     operation: str  # create|modify|delete
     hash_before: str
     hash_after: str
     diff_preview: str
 
+
 @dataclass
 class ChangePlan:
     """A logical grouping of related changes."""
+
     plan_id: str
     plan_index: int
     session_id: str
@@ -581,9 +577,11 @@ class ChangePlan:
     actual_files: list[str] = field(default_factory=list)
     microcommits: list[str] = field(default_factory=list)
 
+
 @dataclass
 class SessionManifest:
     """Complete manifest for a session."""
+
     manifest_version: str = "1.0"
     session_id: str = ""
     started_at: Optional[datetime] = None
@@ -608,11 +606,8 @@ from datetime import datetime
 from typing import Optional
 import uuid
 
-from .types import (
-    SessionManifest, SessionStatus,
-    ChangePlan, PlanStatus,
-    Microversion, Microcommit
-)
+from .types import SessionManifest, SessionStatus, ChangePlan, PlanStatus, Microversion, Microcommit
+
 
 class SessionManager:
     """Manages session lifecycle and versioning."""
@@ -624,12 +619,7 @@ class SessionManager:
         self.sessions_dir = root / self.SESSIONS_DIR
         self.current_session: Optional[SessionManifest] = None
 
-    def create_session(
-        self,
-        macro_version: str,
-        parent_macro_version: str,
-        description: str = ""
-    ) -> SessionManifest:
+    def create_session(self, macro_version: str, parent_macro_version: str, description: str = "") -> SessionManifest:
         """Create a new session."""
         session_id = f"sess_{uuid.uuid4().hex[:8]}"
 
@@ -638,7 +628,7 @@ class SessionManager:
             started_at=datetime.utcnow(),
             status=SessionStatus.RUNNING,
             macro_version=macro_version,
-            parent_macro_version=parent_macro_version
+            parent_macro_version=parent_macro_version,
         )
 
         # Create session directory
@@ -651,11 +641,7 @@ class SessionManager:
         self.current_session = manifest
         return manifest
 
-    def create_change_plan(
-        self,
-        description: str,
-        dependencies: list[str] = None
-    ) -> ChangePlan:
+    def create_change_plan(self, description: str, dependencies: list[str] = None) -> ChangePlan:
         """Create a new change plan within current session."""
         if not self.current_session:
             raise RuntimeError("No active session")
@@ -669,7 +655,7 @@ class SessionManager:
             session_id=self.current_session.session_id,
             description=description,
             dependencies=dependencies or [],
-            status=PlanStatus.PENDING
+            status=PlanStatus.PENDING,
         )
 
         self.current_session.change_plans.append(plan)
@@ -677,20 +663,13 @@ class SessionManager:
 
         return plan
 
-    def microcommit(
-        self,
-        plan_id: str,
-        files: list[FileChange]
-    ) -> Microversion:
+    def microcommit(self, plan_id: str, files: list[FileChange]) -> Microversion:
         """Record a microcommit within current session."""
         if not self.current_session:
             raise RuntimeError("No active session")
 
         # Find the plan
-        plan = next(
-            (p for p in self.current_session.change_plans if p.plan_id == plan_id),
-            None
-        )
+        plan = next((p for p in self.current_session.change_plans if p.plan_id == plan_id), None)
         if not plan:
             raise ValueError(f"Plan not found: {plan_id}")
 
@@ -699,9 +678,7 @@ class SessionManager:
 
         # Create microversion
         microversion = Microversion(
-            session_id=self.current_session.session_id,
-            plan_index=plan.plan_index,
-            microcommit_index=microcommit_index
+            session_id=self.current_session.session_id, plan_index=plan.plan_index, microcommit_index=microcommit_index
         )
 
         # Create microcommit record
@@ -710,7 +687,7 @@ class SessionManager:
             timestamp=datetime.utcnow(),
             files=files,
             parent_microversion=self._get_last_microversion(plan),
-            plan_context={"plan_id": plan_id}
+            plan_context={"plan_id": plan_id},
         )
 
         # Update plan
@@ -748,28 +725,33 @@ class SessionManager:
         manifest_path = session_dir / "manifest.jsonl"
 
         with open(manifest_path, "w") as f:
-            f.write(json.dumps({
-                "manifest_version": manifest.manifest_version,
-                "session_id": manifest.session_id,
-                "started_at": manifest.started_at.isoformat() if manifest.started_at else None,
-                "ended_at": manifest.ended_at.isoformat() if manifest.ended_at else None,
-                "status": manifest.status.value,
-                "macro_version": manifest.macro_version,
-                "parent_macro_version": manifest.parent_macro_version,
-                "change_plans": [
+            f.write(
+                json.dumps(
                     {
-                        "plan_id": p.plan_id,
-                        "plan_index": p.plan_index,
-                        "description": p.description,
-                        "status": p.status.value,
-                        "dependencies": p.dependencies,
-                        "expected_files": p.expected_files,
-                        "actual_files": p.actual_files,
-                        "microcommits": p.microcommits
-                    }
-                    for p in manifest.change_plans
-                ]
-            }, indent=2))
+                        "manifest_version": manifest.manifest_version,
+                        "session_id": manifest.session_id,
+                        "started_at": manifest.started_at.isoformat() if manifest.started_at else None,
+                        "ended_at": manifest.ended_at.isoformat() if manifest.ended_at else None,
+                        "status": manifest.status.value,
+                        "macro_version": manifest.macro_version,
+                        "parent_macro_version": manifest.parent_macro_version,
+                        "change_plans": [
+                            {
+                                "plan_id": p.plan_id,
+                                "plan_index": p.plan_index,
+                                "description": p.description,
+                                "status": p.status.value,
+                                "dependencies": p.dependencies,
+                                "expected_files": p.expected_files,
+                                "actual_files": p.actual_files,
+                                "microcommits": p.microcommits,
+                            }
+                            for p in manifest.change_plans
+                        ],
+                    },
+                    indent=2,
+                )
+            )
 
     def _write_microcommit(self, microcommit: Microcommit):
         """Write individual microcommit to disk."""
@@ -780,22 +762,28 @@ class SessionManager:
         filename = f"{microcommit.microversion.plan_index:03d}.{microcommit.microversion.microcommit_index:03d}.json"
 
         with open(microcommits_dir / filename, "w") as f:
-            json.dump({
-                "microversion": str(microcommit.microversion),
-                "timestamp": microcommit.timestamp.isoformat(),
-                "files": [
-                    {
-                        "path": fc.path,
-                        "operation": fc.operation,
-                        "hash_before": fc.hash_before,
-                        "hash_after": fc.hash_after,
-                        "diff_preview": fc.diff_preview
-                    }
-                    for fc in microcommit.files
-                ],
-                "parent_microversion": str(microcommit.parent_microversion) if microcommit.parent_microversion else None,
-                "plan_context": microcommit.plan_context
-            }, f, indent=2)
+            json.dump(
+                {
+                    "microversion": str(microcommit.microversion),
+                    "timestamp": microcommit.timestamp.isoformat(),
+                    "files": [
+                        {
+                            "path": fc.path,
+                            "operation": fc.operation,
+                            "hash_before": fc.hash_before,
+                            "hash_after": fc.hash_after,
+                            "diff_preview": fc.diff_preview,
+                        }
+                        for fc in microcommit.files
+                    ],
+                    "parent_microversion": str(microcommit.parent_microversion)
+                    if microcommit.parent_microversion
+                    else None,
+                    "plan_context": microcommit.plan_context,
+                },
+                f,
+                indent=2,
+            )
 ```
 
 ### Integration with Existing OCC
@@ -809,7 +797,7 @@ def safe_write_file(
     content: str,
     expected_version: Optional[str] = None,  # SHA256 hash
     microversion: Optional[Microversion] = None,  # NEW: session microversion
-    encoding: str = "utf-8"
+    encoding: str = "utf-8",
 ) -> bool:
     """
     Write file with OCC check and microversion tracking.
@@ -835,7 +823,7 @@ def safe_write_file(
             microversion=microversion,
             file_path=str(path),
             hash_before=current_hash,
-            hash_after=hashlib.sha256(content.encode()).hexdigest()
+            hash_after=hashlib.sha256(content.encode()).hexdigest(),
         )
 
     return True
@@ -903,27 +891,23 @@ from thegent.versioning import SessionManager
 
 # Start session
 mgr = SessionManager(root_path)
-session = mgr.create_session(
-    macro_version="2.1.0",
-    parent_macro_version="2.0.0"
-)
+session = mgr.create_session(macro_version="2.1.0", parent_macro_version="2.0.0")
 
 # Create change plan
-plan = mgr.create_change_plan(
-    description="Fix routing bug",
-    dependencies=[]
-)
+plan = mgr.create_change_plan(description="Fix routing bug", dependencies=[])
 
 # Record microcommit
 mv = mgr.microcommit(
     plan_id="plan_001",
-    files=[FileChange(
-        path="src/routing/router.py",
-        operation="modify",
-        hash_before="abc123",
-        hash_after="def456",
-        diff_preview="..."
-    )]
+    files=[
+        FileChange(
+            path="src/routing/router.py",
+            operation="modify",
+            hash_before="abc123",
+            hash_after="def456",
+            diff_preview="...",
+        )
+    ],
 )
 
 # Complete session
@@ -934,13 +918,13 @@ mgr.complete_session()
 
 ## Performance Considerations
 
-| Operation | Target Latency |
-|------------|----------------|
-| Session creation | <10ms |
-| Change plan creation | <5ms |
-| Microcommit record | <20ms |
-| Manifest write | <50ms |
-| Conflict detection | <100ms |
+| Operation            | Target Latency |
+| -------------------- | -------------- |
+| Session creation     | <10ms          |
+| Change plan creation | <5ms           |
+| Microcommit record   | <20ms          |
+| Manifest write       | <50ms          |
+| Conflict detection   | <100ms         |
 
 ---
 
@@ -959,17 +943,17 @@ mgr.complete_session()
 ```typescript
 interface DemoGenerator {
   // Generate from E2E test
-  fromTest(testPath: string): Promise<DemoMedia>
+  fromTest(testPath: string): Promise<DemoMedia>;
 
   // Generate from VHS tape
-  fromTape(tapePath: string): Promise<DemoMedia>
+  fromTape(tapePath: string): Promise<DemoMedia>;
 
   // Generate from user interaction
-  record(interaction: Interaction): Promise<DemoMedia>
+  record(interaction: Interaction): Promise<DemoMedia>;
 
   // Platform-specific recording
-  recordDesktop(): Promise<Media>
-  recordMobile(device: MobileDevice): Promise<Media>
+  recordDesktop(): Promise<Media>;
+  recordMobile(device: MobileDevice): Promise<Media>;
 }
 ```
 
@@ -1009,14 +993,14 @@ name: Generate Demos
 on:
   push:
     paths:
-      - 'docs/demos/*.tape'
+      - "docs/demos/*.tape"
 jobs:
   generate:
     runs-on: ubuntu-latest
     steps:
       - uses: charmantai/vhs@latest
         with:
-          args: 'docs/demos/routing.tape'
+          args: "docs/demos/routing.tape"
       - uses: actions/upload-artifact@v4
         with:
           name: demo-gifs
@@ -1033,7 +1017,7 @@ jobs:
 // Auto-generate screenshots from tests
 async function screenshotFromTest(
   test: Test,
-  options: ScreenshotOptions
+  options: ScreenshotOptions,
 ): Promise<Screenshot> {
   // Run test with recording
   const video = await browser.recordVideo(async () => {
@@ -1046,7 +1030,7 @@ async function screenshotFromTest(
   // Annotate
   return annotate(screenshots, {
     highlight: options.highlight,
-    caption: options.caption
+    caption: options.caption,
   });
 }
 ```
@@ -1057,16 +1041,16 @@ async function screenshotFromTest(
 // playwright.config.ts
 export default defineConfig({
   use: {
-    screenshot: 'only-on-failure',
-    video: 'retain-on-failure',
-    trace: 'on-first-retry',
+    screenshot: "only-on-failure",
+    video: "retain-on-failure",
+    trace: "on-first-retry",
   },
   // Auto-generate docs
   docs: {
-    screenshotDir: 'docs/screenshots',
-    videoDir: 'docs/videos',
-    generateOn: ['test', 'commit', 'merge']
-  }
+    screenshotDir: "docs/screenshots",
+    videoDir: "docs/videos",
+    generateOn: ["test", "commit", "merge"],
+  },
 });
 ```
 
@@ -1160,7 +1144,7 @@ auto_record:
 
 ### Feature Page Template
 
-```markdown
+````markdown
 ---
 title: Cost-Aware Routing
 version: 2.1.0
@@ -1177,6 +1161,7 @@ Cost-aware routing optimizes LLM selection based on budget.
 ## Demo
 
 <!-- Auto-generated from test -->
+
 ![Cost Routing Demo](docs/demos/routing-cost.gif)
 
 ## Code Example
@@ -1193,6 +1178,7 @@ model = await router.route(request)
 ```bash
 thegent route --cost-aware --budget 10.00
 ```
+````
 
 ---
 
@@ -1305,14 +1291,14 @@ demo:
 
 ```vue
 <DemoPlayer
-  :src="demo/routing-cost.gif"
+  :src="demo / routing - cost.gif"
   :chapters="[
     { time: 0, label: 'Initialize' },
     { time: 5, label: 'Route selection' },
-    { time: 10, label: 'Cost tracking' }
+    { time: 10, label: 'Cost tracking' },
   ]"
   :code="routingExample"
-  autoPlay={false}
+  autoPlay="{false}"
 />
 ```
 
@@ -1324,13 +1310,12 @@ demo:
 <InteractiveDemo>
   <DemoPlayer src="routing-cost.gif" />
 
-  <CodeBlock
-    language="python"
-    code={`
-router = CostAwareRouter(budget=10.00)
+<CodeBlock
+language="python"
+code={`router = CostAwareRouter(budget=10.00)
 model = await router.route(request)
-    `}
-  />
+   `}
+/>
 
   <Steps>
     <Step n="1">Initialize router</Step>
@@ -1348,15 +1333,15 @@ model = await router.route(request)
 
 ```typescript
 // .vitepress/plugins/demo.ts
-import { definePlugin } from 'vitepress'
+import { definePlugin } from "vitepress";
 
 export default definePlugin({
   enhanceApp({ app }) {
-    app.component('DemoPlayer', DemoPlayer)
-    app.component('CodeBlock', CodeBlock)
-    app.component('Steps', Steps)
-  }
-})
+    app.component("DemoPlayer", DemoPlayer);
+    app.component("CodeBlock", CodeBlock);
+    app.component("Steps", Steps);
+  },
+});
 ```
 
 ### Config
@@ -1368,17 +1353,17 @@ export default defineConfig({
     // Auto-generate from tests
     autoGenerate: {
       enabled: true,
-      testPattern: 'tests/e2e/**/*.spec.ts',
-      outputDir: 'docs/demos'
+      testPattern: "tests/e2e/**/*.spec.ts",
+      outputDir: "docs/demos",
     },
 
     // VHS integration
     vhs: {
-      theme: 'Catppuccin Mocha',
-      fontSize: 14
-    }
-  }
-})
+      theme: "Catppuccin Mocha",
+      fontSize: 14,
+    },
+  },
+});
 ```
 
 ---
@@ -1399,6 +1384,7 @@ class DemoPipeline:
 
     def add_annotator(self, annotator: Annotator):
         """Add custom annotation."""
+
 
 # Custom step example
 class HighlightAnnotator(Annotator):

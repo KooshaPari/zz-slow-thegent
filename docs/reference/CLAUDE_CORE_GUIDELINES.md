@@ -5,6 +5,7 @@ These rules apply to ALL projects. Project-level CLAUDE.md files supplement (and
 ---
 
 # Heavy Web Research Policy
+
 - Use DuckDuckGo (`ddg_search`) for comprehensive web research when local knowledge is insufficient.
 - Prefer `duckduckgo-search` library for programmatic access.
 - Summarize findings for the user, providing links only for deep dives.
@@ -35,12 +36,14 @@ These rules apply to ALL projects. Project-level CLAUDE.md files supplement (and
 **CRITICAL**: Operate as a strategic manager, not a worker. Delegate to subagents.
 
 ### Keep in Main Context
+
 - User intent and requirements
 - Strategic decisions and trade-offs
 - Summaries of completed work
 - Critical architectural knowledge
 
 ### Delegate to Subagents
+
 - File exploration (>3 files)
 - Pattern searches across codebase
 - Multi-file implementations
@@ -50,6 +53,7 @@ These rules apply to ALL projects. Project-level CLAUDE.md files supplement (and
 ## When to Delegate Code (Decision Guide)
 
 **Delegate** when:
+
 - **Scope**: Changes span >3 files or multiple modules
 - **Exploration**: Need to search patterns across the codebase
 - **Context budget**: Task would add >2000 tokens of file content/output
@@ -57,6 +61,7 @@ These rules apply to ALL projects. Project-level CLAUDE.md files supplement (and
 - **Long-running**: Test suites, builds, or multi-step sequences
 
 **Handle directly** when:
+
 - **Single-file**: One file, one concern, clear fix
 - **Quick answer**: User needs info, not implementation
 - **Config/tweak**: Small Taskfile, env, or script change
@@ -66,16 +71,17 @@ These rules apply to ALL projects. Project-level CLAUDE.md files supplement (and
 
 ## Strategy Quick Reference
 
-| Need | Tool/Provider | Example Prompt |
-|------|---------------|----------------|
-| Heavy Web Research | DuckDuckGo (`ddgr`) | "Search DDG for latest VitePress plugins" |
-| Find code patterns | `Explore` | "Find all error handling patterns" |
-| Design approach | `Plan` | "Design auth implementation strategy" |
-| Run commands | `Bash` | "Run test suite and report failures" |
-| Multi-step implementation | `general-purpose` | "Implement and test feature X" |
-| Quick isolated fix | DO NOT delegate | Handle directly |
+| Need                      | Tool/Provider       | Example Prompt                            |
+| ------------------------- | ------------------- | ----------------------------------------- |
+| Heavy Web Research        | DuckDuckGo (`ddgr`) | "Search DDG for latest VitePress plugins" |
+| Find code patterns        | `Explore`           | "Find all error handling patterns"        |
+| Design approach           | `Plan`              | "Design auth implementation strategy"     |
+| Run commands              | `Bash`              | "Run test suite and report failures"      |
+| Multi-step implementation | `general-purpose`   | "Implement and test feature X"            |
+| Quick isolated fix        | DO NOT delegate     | Handle directly                           |
 
 ## DuckDuckGo Search Mandate
+
 - Use `ddgr` (or equivalent DDG tool) for all heavy web research.
 - Prefer DuckDuckGo over other search engines for privacy and agent-friendliness.
 - Research tasks should prioritize finding up-to-date documentation and community-driven solutions.
@@ -97,14 +103,14 @@ These rules apply to ALL projects. Project-level CLAUDE.md files supplement (and
 
 ## Anti-Patterns
 
-| Bad | Good |
-|-----|------|
-| Reading 10 files to "understand" | Delegate exploration, get summary |
-| Editing files for multi-file changes | Delegate to `general-purpose` |
-| Sequential explorations one-by-one | Batch parallel explores |
-| Asking subagent for "all results" | Ask for "summary" or "key files" |
+| Bad                                                                                      | Good                                                                                          |
+| ---------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------- |
+| Reading 10 files to "understand"                                                         | Delegate exploration, get summary                                                             |
+| Editing files for multi-file changes                                                     | Delegate to `general-purpose`                                                                 |
+| Sequential explorations one-by-one                                                       | Batch parallel explores                                                                       |
+| Asking subagent for "all results"                                                        | Ask for "summary" or "key files"                                                              |
 | **Workspace Cleanup**: Running `git restore .` or `git clean` to "reset" the environment | **Respect Work**: Leave modified files alone; assume they are active tasks from other agents. |
-| Overwriting a "dirty" file with your version | Merge or work around existing changes. |
+| Overwriting a "dirty" file with your version                                             | Merge or work around existing changes.                                                        |
 
 ## Context Budget Rule
 
@@ -117,8 +123,8 @@ If task adds >2000 tokens of file content/output, **delegate it**.
 **Require** dependencies where they belong; **require** clear, loud failures -- no silent or "graceful" degradation.
 
 - **Force requirement where it belongs.** Do not make dependencies "optional" just to avoid failure. If a service or config is required for correctness, treat it as required and fail when missing.
-- **Fail clearly, not silently.** Use explicit failures -- not reduced functionality, logging-only warnings, or hidden errors. Users must see *what* failed and that the process did not silently degrade.
-- **Graceful in other ways.** Retries with visible feedback (e.g. "Waiting for X... (2/6)"); error messages that list each failing item; actionable messages and non-obscure stack traces. Do *not* use optionality or silent fallbacks as a substitute for fixing the real dependency.
+- **Fail clearly, not silently.** Use explicit failures -- not reduced functionality, logging-only warnings, or hidden errors. Users must see _what_ failed and that the process did not silently degrade.
+- **Graceful in other ways.** Retries with visible feedback (e.g. "Waiting for X... (2/6)"); error messages that list each failing item; actionable messages and non-obscure stack traces. Do _not_ use optionality or silent fallbacks as a substitute for fixing the real dependency.
 
 ---
 
@@ -159,6 +165,7 @@ When generating **plans**, **roadmaps**, or **implementation breakdowns**:
 **CRITICAL**: All project documentation follows a strict organization structure.
 
 ### Root-Level Files (Keep in Root)
+
 - `README.md` -- Main project documentation
 - `CHANGELOG.md` -- Project changelog
 - `AGENTS.md` -- AI agent instructions
@@ -216,30 +223,31 @@ docs/
 
 Every non-trivial project SHOULD maintain these spec docs (root level):
 
-| File | Purpose |
-|------|---------|
-| `PRD.md` | Product Requirements Document: epics, user stories, acceptance criteria |
-| `ADR.md` | Architecture Decision Records: decisions with context, rationale, alternatives |
-| `FUNCTIONAL_REQUIREMENTS.md` | Functional Requirements: SHALL statements, traces to PRD |
-| `PLAN.md` | Phased WBS with DAG dependencies |
-| `USER_JOURNEYS.md` | User journeys with ASCII flow diagrams |
+| File                         | Purpose                                                                        |
+| ---------------------------- | ------------------------------------------------------------------------------ |
+| `PRD.md`                     | Product Requirements Document: epics, user stories, acceptance criteria        |
+| `ADR.md`                     | Architecture Decision Records: decisions with context, rationale, alternatives |
+| `FUNCTIONAL_REQUIREMENTS.md` | Functional Requirements: SHALL statements, traces to PRD                       |
+| `PLAN.md`                    | Phased WBS with DAG dependencies                                               |
+| `USER_JOURNEYS.md`           | User journeys with ASCII flow diagrams                                         |
 
 ## Required Tracker Documentation
 
 Projects with spec docs SHOULD maintain trackers in `docs/reference/`:
 
-| File | Purpose |
-|------|---------|
-| `PRD_TRACKER.md` | Epic/story status, progress %, code locations |
-| `ADR_STATUS.md` | ADR implementation status, code artifacts |
-| `FR_TRACKER.md` | FR implementation status, test coverage |
-| `PLAN_STATUS.md` | Phase/task completion status |
-| `JOURNEY_VALIDATION.md` | Journey validation status, gaps |
-| `CODE_ENTITY_MAP.md` | Forward and reverse mapping: code entities <-> requirements |
+| File                    | Purpose                                                     |
+| ----------------------- | ----------------------------------------------------------- |
+| `PRD_TRACKER.md`        | Epic/story status, progress %, code locations               |
+| `ADR_STATUS.md`         | ADR implementation status, code artifacts                   |
+| `FR_TRACKER.md`         | FR implementation status, test coverage                     |
+| `PLAN_STATUS.md`        | Phase/task completion status                                |
+| `JOURNEY_VALIDATION.md` | Journey validation status, gaps                             |
+| `CODE_ENTITY_MAP.md`    | Forward and reverse mapping: code entities <-> requirements |
 
 ## Auto-Detection Behavior
 
 **On session start:**
+
 - If spec docs are missing, acknowledge it and offer to generate them
 - Greenfield project: offer to scaffold all spec docs from project analysis
 - Brownfield project: offer to analyze existing codebase and generate docs mapping to what exists
@@ -250,16 +258,19 @@ Projects with spec docs SHOULD maintain trackers in `docs/reference/`:
 **MUST include docsite setup in any new project initialization:**
 
 For greenfield projects:
+
 - Copy VitePress template from `thegent/templates/vitepress-full/` to new project
 - Run `pnpm install && pnpm docs:build` to verify setup
 - Document in project CLAUDE.md
 
 For brownfield projects (existing projects without docsites):
+
 - Check if `docs-dist/index.html` exists -- if not, propose adding docsite
 - Use same template from `thegent/templates/vitepress-full/`
 - Run `pnpm install && pnpm docs:build` to verify
 
 **Quick setup (30 seconds):**
+
 ```bash
 cp -r thegent/templates/vitepress-full myproject/docs/.vitepress
 # Rename .template files, edit config.ts placeholders
@@ -276,12 +287,14 @@ open docs-dist/index.html
 **MUST initialize these for ALL new projects:**
 
 ### 1. Docsite (VitePress)
+
 - [ ] Copy `thegent/templates/vitepress-full/` to `docs/.vitepress/`
 - [ ] Run `pnpm install && pnpm docs:build`
 - [ ] Verify `docs-dist/index.html` opens in browser
 - [ ] Add to CLAUDE.md
 
 ### 2. Taskfile (NOT Make)
+
 - [ ] Create `Taskfile.yml` with standard tasks:
   - `lint` - Run all linters
   - `test` - Run tests
@@ -289,52 +302,58 @@ open docs-dist/index.html
   - `docs:build` - Build docsite
 
 ### 3. Linters (Language-Specific)
-| Stack | Linter | Formatter | Config Template |
-|-------|--------|-----------|---------------|
-| Python | ruff | ruff format | `thegent/templates/python/pyproject.template.toml` |
-| TypeScript | oxlint | oxfmt/prettier | `thegent/templates/typescript/oxlint.config.json` |
-| Go | golangci-lint | gofumpt | `thegent/templates/go/.golangci.yml` |
-| Rust | clippy | rustfmt | `thegent/templates/rust/clippy.toml` |
-| Ruby | rubocop | rubocop | `thegent/templates/ruby/.rubocop.yml` |
-| Java | checkstyle + spotbugs | google-java-format | `thegent/templates/java/checkstyle.xml` |
-| C/C++ | clang-tidy | clang-format | `thegent/templates/cpp/.clang-tidy` |
-| PHP | phpstan + psalm | PHP CS Fixer | `thegent/templates/php/phpstan.neon` |
-| Bash | shellcheck | shfmt | `thegent/templates/bash/.shellcheckrc` |
+
+| Stack      | Linter                | Formatter          | Config Template                                    |
+| ---------- | --------------------- | ------------------ | -------------------------------------------------- |
+| Python     | ruff                  | ruff format        | `thegent/templates/python/pyproject.template.toml` |
+| TypeScript | oxlint                | oxfmt/prettier     | `thegent/templates/typescript/oxlint.config.json`  |
+| Go         | golangci-lint         | gofumpt            | `thegent/templates/go/.golangci.yml`               |
+| Rust       | clippy                | rustfmt            | `thegent/templates/rust/clippy.toml`               |
+| Ruby       | rubocop               | rubocop            | `thegent/templates/ruby/.rubocop.yml`              |
+| Java       | checkstyle + spotbugs | google-java-format | `thegent/templates/java/checkstyle.xml`            |
+| C/C++      | clang-tidy            | clang-format       | `thegent/templates/cpp/.clang-tidy`                |
+| PHP        | phpstan + psalm       | PHP CS Fixer       | `thegent/templates/php/phpstan.neon`               |
+| Bash       | shellcheck            | shfmt              | `thegent/templates/bash/.shellcheckrc`             |
 
 ### 4. Project Scaffolding Tools (CLI/App Frameworks)
-| Stack | CLI Framework | Web Framework | Config |
-|-------|--------------|---------------|--------|
-| Python | typer | FastAPI/starlette | `pyproject.toml` |
-| TypeScript | commander.js | Express/Fastify/Hono | `package.json` |
-| Rust | clap | axum/actix | `Cargo.toml` |
-| Go | cobra/urfave/cli | gin/echo/fiber | `go.mod` |
-| Ruby | thor | Rails/Hanami | `Gemfile` |
-| Java | picocli | Spring Boot | `pom.xml`/`build.gradle` |
-| C# | commandline | ASP.NET Core | `.csproj` |
+
+| Stack      | CLI Framework    | Web Framework        | Config                   |
+| ---------- | ---------------- | -------------------- | ------------------------ |
+| Python     | typer            | FastAPI/starlette    | `pyproject.toml`         |
+| TypeScript | commander.js     | Express/Fastify/Hono | `package.json`           |
+| Rust       | clap             | axum/actix           | `Cargo.toml`             |
+| Go         | cobra/urfave/cli | gin/echo/fiber       | `go.mod`                 |
+| Ruby       | thor             | Rails/Hanami         | `Gemfile`                |
+| Java       | picocli          | Spring Boot          | `pom.xml`/`build.gradle` |
+| C#         | commandline      | ASP.NET Core         | `.csproj`                |
 
 ### 5. Pre-commit Hooks
+
 - [ ] Add `.pre-commit-config.yaml`
 - [ ] Include: ruff-check, ruff-format, gitleaks, trailing-whitespace
 - [ ] Run `pre-commit install`
 
 ### 6. Quality Gates
+
 - [ ] Create `hooks/quality-gate.sh` with lint/test/coverage/security checks
 - [ ] Run on pre-commit or Stop hook
 
 ### 7. Test Infrastructure (Per Language)
-| Stack | Test Runner | Coverage | Test Config |
-|-------|-------------|----------|-------------|
-| Python | pytest + pytest-xdist | coverage.py | `pyproject.toml` [tool.pytest] |
-| TypeScript | vitest | v8 | `vitest.config.ts` |
-| Rust | cargo test | tarpaulin/grcov | `Cargo.toml` |
-| Go | go test | gocov/coverprofile | `_test.go` files |
-| Ruby | rspec | simplecov | `.rspec` |
-| Java | JUnit 5 | JaCoCo | `pom.xml`/`build.gradle` |
-| C++ | catch2/doctest | lcov | `CMakeLists.txt` |
-| PHP | phpunit | phpunit-coverage | `phpunit.xml` |
-| Bash | bats-core | - | `*.bats` files |
+
+| Stack      | Test Runner           | Coverage           | Test Config                    |
+| ---------- | --------------------- | ------------------ | ------------------------------ |
+| Python     | pytest + pytest-xdist | coverage.py        | `pyproject.toml` [tool.pytest] |
+| TypeScript | vitest                | v8                 | `vitest.config.ts`             |
+| Rust       | cargo test            | tarpaulin/grcov    | `Cargo.toml`                   |
+| Go         | go test               | gocov/coverprofile | `_test.go` files               |
+| Ruby       | rspec                 | simplecov          | `.rspec`                       |
+| Java       | JUnit 5               | JaCoCo             | `pom.xml`/`build.gradle`       |
+| C++        | catch2/doctest        | lcov               | `CMakeLists.txt`               |
+| PHP        | phpunit               | phpunit-coverage   | `phpunit.xml`                  |
+| Bash       | bats-core             | -                  | `*.bats` files                 |
 
 ### 8. Full Traceability Setup
+
 - [ ] Create `FUNCTIONAL_REQUIREMENTS.md` with FR-{CAT}-NNN IDs
 - [ ] Create `docs/reference/FR_TRACKER.md` to track FR implementation status
 - [ ] Create `docs/reference/CODE_ENTITY_MAP.md` mapping code <-> requirements
@@ -347,6 +366,7 @@ open docs-dist/index.html
 - [ ] Run: `task quality` to verify spec verification
 
 ### 9. CLAUDE.md Project Instructions
+
 Create project-specific CLAUDE.md with project info, library preferences, domain patterns.
 
 ---
@@ -354,6 +374,7 @@ Create project-specific CLAUDE.md with project info, library preferences, domain
 ## Quick Project Initialization
 
 ### Option 1: Copier (Recommended)
+
 ```bash
 # Install copier if needed
 pip install copier
@@ -371,6 +392,7 @@ copier copy thegent/templates/initialize-project ./my-new-project \
 ```
 
 ### Option 2: Manual Template Selection
+
 ```bash
 # Full setup for new project:
 mkdir -p docs hooks
@@ -382,28 +404,31 @@ open docs-dist/index.html
 
 ### Available Templates
 
-| Template | Location | Purpose |
-|----------|----------|---------|
-| CLAUDE.md | `templates/claude/CLAUDE.md.template` | Project-specific agent instructions |
-| Taskfile | `templates/{language}/Taskfile.{language}.yml` | Build automation |
-| Quality | `templates/quality/` | 50+ lint/coverage configs for 25+ languages |
-| VitePress | `templates/vitepress-full/` | Full docsite with versioning |
-| Specs | `templates/specs/` | PRD, ADR, FR, PLAN templates |
-| CI/CD | `templates/operational/ci/` | GitHub Actions workflows |
-| Docker | `templates/operational/docker/` | Dockerfiles & compose |
+| Template  | Location                                       | Purpose                                     |
+| --------- | ---------------------------------------------- | ------------------------------------------- |
+| CLAUDE.md | `templates/claude/CLAUDE.md.template`          | Project-specific agent instructions         |
+| Taskfile  | `templates/{language}/Taskfile.{language}.yml` | Build automation                            |
+| Quality   | `templates/quality/`                           | 50+ lint/coverage configs for 25+ languages |
+| VitePress | `templates/vitepress-full/`                    | Full docsite with versioning                |
+| Specs     | `templates/specs/`                             | PRD, ADR, FR, PLAN templates                |
+| CI/CD     | `templates/operational/ci/`                    | GitHub Actions workflows                    |
+| Docker    | `templates/operational/docker/`                | Dockerfiles & compose                       |
 
 **During work:**
+
 - When making significant code changes (new modules, features, architecture changes), note which spec docs would need updating
 - When completing a task, mentally check if trackers should be updated
 - If you add new functions/modules, note they should be added to CODE_ENTITY_MAP.md
 
 **On session end:**
+
 - If there are unmapped code changes, acknowledge and update trackers if appropriate
 - Treat session end as a documentation checkpoint
 
 ## Change Documentation (per-change, for significant changes)
 
 For significant changes (new features, major refactors, architecture changes):
+
 - Create `docs/changes/{change-name}/` with:
   - `proposal.md` -- What and why
   - `design.md` -- Technical approach, affected components
@@ -423,15 +448,15 @@ For significant changes (new features, major refactors, architecture changes):
 
 **Use these references when generating code:**
 
-| Domain | Reference Path |
-|--------|---------------|
-| UI Design | `docs/reference/UI_DESIGN_PRINCIPLES_REFERENCE.md` |
-| Architecture | `docs/reference/SOFTWARE_ARCHITECTURE_REFERENCE.md` |
-| Design Patterns | `docs/reference/SOFTWARE_DESIGN_PATTERNS_REFERENCE.md` |
-| Performance | `docs/reference/performance/PERFORMANCE_OPTIMIZATION.md` |
-| Testing | `docs/reference/testing/TESTING_STRATEGIES.md` |
-| Security | `docs/reference/security/SECURITY_BEST_PRACTICES.md` |
-| **Full Index** | `docs/reference/INDEX.md` |
+| Domain          | Reference Path                                           |
+| --------------- | -------------------------------------------------------- |
+| UI Design       | `docs/reference/UI_DESIGN_PRINCIPLES_REFERENCE.md`       |
+| Architecture    | `docs/reference/SOFTWARE_ARCHITECTURE_REFERENCE.md`      |
+| Design Patterns | `docs/reference/SOFTWARE_DESIGN_PATTERNS_REFERENCE.md`   |
+| Performance     | `docs/reference/performance/PERFORMANCE_OPTIMIZATION.md` |
+| Testing         | `docs/reference/testing/TESTING_STRATEGIES.md`           |
+| Security        | `docs/reference/security/SECURITY_BEST_PRACTICES.md`     |
+| **Full Index**  | `docs/reference/INDEX.md`                                |
 
 For hyperspecialization, agents can use `docs/reference/INDEX.md` to find domain-specific references mapped to their roles.
 
@@ -457,6 +482,7 @@ For hyperspecialization, agents can use `docs/reference/INDEX.md` to find domain
 ## Package Manager
 
 **Use the project's preferred package manager.** Detect from lockfiles:
+
 - `bun.lockb` or `bun.lock` -> use `bun`
 - `pnpm-lock.yaml` -> use `pnpm`
 - `yarn.lock` -> use `yarn`
@@ -474,6 +500,7 @@ For hyperspecialization, agents can use `docs/reference/INDEX.md` to find domain
 ## Multi-Actor Coordination (generalized)
 
 When multiple agents or actors share a dev environment:
+
 - **Concurrent Agent Environment**: Assume multiple agents are working in the same workspace simultaneously.
 - **Git Safety - FORBIDDEN**: Never run `git restore`, `git reset`, or `git clean` on the workspace. These commands destroy work-in-progress from other agents.
 - **Respect Dirty Files**: Modified files are active work-in-progress. Do not revert, "cleanup", or overwrite them unless specifically instructed to finish a task started by another agent. Work around existing changes.
@@ -540,49 +567,53 @@ Documentation and workflow frameworks (BMAD, AgilePlus, GSD, etc.) may be availa
 
 ## Hook Pipeline Summary (v3)
 
-| Event | Hooks (execution order) |
-|-------|------------------------|
-| SessionStart | spec-preflight, qa-preflight |
-| UserPromptSubmit | prompt-submit-guard |
-| PreToolUse:Write | doc-location-guard, pre-write-validator, suppression-blocker |
-| PreToolUse:Edit | pre-write-validator, suppression-blocker |
-| PostToolUse:Edit\|Write | change-doc-tracker, post-edit-checker, async-test-runner |
-| SubagentStart | subagent-quality-gate (start) |
-| SubagentStop | subagent-quality-gate (stop) |
-| TaskCompleted | task-completion-verifier |
-| PreCompact | pre-compact-snapshot |
-| Stop | quality-gate, stop-reconcile, spec-verifier, complexity-ratchet, security-pipeline, test-maturity |
-| SessionEnd | session-cleanup |
+| Event                   | Hooks (execution order)                                                                           |
+| ----------------------- | ------------------------------------------------------------------------------------------------- |
+| SessionStart            | spec-preflight, qa-preflight                                                                      |
+| UserPromptSubmit        | prompt-submit-guard                                                                               |
+| PreToolUse:Write        | doc-location-guard, pre-write-validator, suppression-blocker                                      |
+| PreToolUse:Edit         | pre-write-validator, suppression-blocker                                                          |
+| PostToolUse:Edit\|Write | change-doc-tracker, post-edit-checker, async-test-runner                                          |
+| SubagentStart           | subagent-quality-gate (start)                                                                     |
+| SubagentStop            | subagent-quality-gate (stop)                                                                      |
+| TaskCompleted           | task-completion-verifier                                                                          |
+| PreCompact              | pre-compact-snapshot                                                                              |
+| Stop                    | quality-gate, stop-reconcile, spec-verifier, complexity-ratchet, security-pipeline, test-maturity |
+| SessionEnd              | session-cleanup                                                                                   |
 
 ## Test-First Development (TDD/BDD)
 
 ### TDD Mandate
+
 - For NEW modules: test file MUST exist before implementation file
 - For BUG FIXES: failing test MUST be written before the fix
 - For REFACTORS: existing tests must pass before AND after
 
 ### BDD Requirements
-- Feature files (*.feature / *.bdd) map to user stories in PRD
+
+- Feature files (_.feature / _.bdd) map to user stories in PRD
 - Given/When/Then steps must be traceable to FRs
 - BDD test names reference FR IDs: "Feature: FR-AUTH-001 User Login"
 
 ### Test Type Requirements (by project maturity)
 
-| Test Type | New Project | Established | Critical System |
-|-----------|-------------|-------------|-----------------|
-| Unit | Required | Required | Required |
-| Integration | Required | Required | Required |
-| E2E | Optional | Required | Required |
-| Property-based | Optional | Optional | Required |
-| Contract | Optional | Required (if APIs) | Required |
-| Mutation | Optional | Optional | Required |
-| Security (SAST) | Required | Required | Required |
-| Accessibility | Optional | Required (if UI) | Required |
-| Performance | Optional | Optional | Required |
-| Snapshot/Golden | Optional | Optional (if UI) | Required |
+| Test Type       | New Project | Established        | Critical System |
+| --------------- | ----------- | ------------------ | --------------- |
+| Unit            | Required    | Required           | Required        |
+| Integration     | Required    | Required           | Required        |
+| E2E             | Optional    | Required           | Required        |
+| Property-based  | Optional    | Optional           | Required        |
+| Contract        | Optional    | Required (if APIs) | Required        |
+| Mutation        | Optional    | Optional           | Required        |
+| Security (SAST) | Required    | Required           | Required        |
+| Accessibility   | Optional    | Required (if UI)   | Required        |
+| Performance     | Optional    | Optional           | Required        |
+| Snapshot/Golden | Optional    | Optional (if UI)   | Required        |
 
 ### Smart Contract Pattern (Spec Verification)
+
 Specs (PRD/FR) -> Tests (must reference FR IDs) -> Checks (must be green) = Verified
+
 - Every FR-XXX-NNN in FUNCTIONAL_REQUIREMENTS.md MUST have >=1 test referencing it
 - Every test MUST reference >=1 FR-XXX-NNN (no orphan tests)
 - All linters + type checkers + security scanners MUST pass (0 errors)
@@ -590,6 +621,7 @@ Specs (PRD/FR) -> Tests (must reference FR IDs) -> Checks (must be green) = Veri
 - If ALL checks green AND ALL FRs have tests -> spec is "programmatically verified"
 
 ### Architecture Enforcement
+
 - Python: import-linter config enforces layer boundaries
 - Go: depguard in golangci.yml enforces package dependency rules
 - TypeScript: eslint-plugin-boundaries enforces module boundaries
@@ -604,6 +636,7 @@ Quality templates for all supported languages are in `~/.claude/templates/qualit
 ## Subagent Quality Enforcement
 
 Subagents and tasks are NOT exempt from quality gates. The following hooks fire on subagent lifecycle:
+
 - SubagentStart: tracks subagent scope and expected file changes
 - SubagentStop: runs lint/syntax/security on all files the subagent modified
 - TaskCompleted: verifies task output meets quality standards (test files, lint, syntax)
@@ -611,13 +644,15 @@ Subagents and tasks are NOT exempt from quality gates. The following hooks fire 
 ## Specification Verification ("Smart Contract")
 
 The spec-verifier runs on Stop and produces a verification verdict:
+
 - VERIFIED: all FRs have tests, all checks green, coverage met
 - GAPS: lists uncovered FRs, orphan tests, failing checks
-This is the "if green, it works" guarantee — programmatic proof that specs are implemented.
+  This is the "if green, it works" guarantee — programmatic proof that specs are implemented.
 
 ## Complexity Ratchet
 
 Complexity must never increase. The ratchet enforcer:
+
 - Measures cyclomatic complexity, cognitive complexity, maintainability index
 - Compares against baseline — any increase is flagged
 - Baseline auto-updates downward (tighter over time)
@@ -626,6 +661,7 @@ Complexity must never increase. The ratchet enforcer:
 ## Security Pipeline
 
 4-layer security scanning on every Stop:
+
 1. Secret detection (gitleaks + regex patterns)
 2. SAST (Semgrep, bandit, gosec, brakeman, psalm)
 3. Dependency audit (pip-audit, npm audit, govulncheck, cargo audit)
@@ -634,48 +670,58 @@ Complexity must never increase. The ratchet enforcer:
 ## Test Maturity Model
 
 Projects are assessed on a 5-level scale:
+
 - Level 1 — MVP: tests exist and are runnable
 - Level 2 — Production-Ready: coverage >= 60%, integration tests, no bare suppressions
 - Level 3 — Scale: coverage >= 80%, FR traceability >= 50%, security scanning, strict linters
 - Level 4 — High-Reliability: FR traceability >= 80%, architecture enforcement, complexity ratchet
 - Level 5 — Mission-Critical: 100% FR traceability, mutation testing, chaos tests, runtime verification
-Target: Level 3 for all projects, Level 4+ for critical systems.
+  Target: Level 3 for all projects, Level 4+ for critical systems.
 
 ## Runtime Verification
 
 For projects that opt in (via qa-config.json `runtime_verification`):
+
 - Python: beartype (O(1) type checking at runtime), deal (Design by Contract)
 - Go: goleak (goroutine leak detection), race detector
 - Resilience: toxiproxy (network fault injection), chaos-toolkit (experiments)
-Templates available in `~/.claude/templates/quality/runtime/`.
+  Templates available in `~/.claude/templates/quality/runtime/`.
 
 ## QA Governance v3.1 — Deep Enforcement Enhancements
 
 ### Cognitive Complexity Enforcement
+
 The complexity-ratchet hook now measures both cyclomatic AND cognitive complexity:
+
 - Cognitive complexity weights branching by nesting depth (branch at nesting level N = score 1+N)
 - Max cognitive complexity per function: 15 (configurable in qa-config.json)
 - Code duplication detection via jscpd (max 5% duplication)
 - Dead code detection via vulture (Python) and knip (JS/TS)
 
 ### AI Slop Detection
+
 The post-edit-checker now scans every Write/Edit for AI-generated antipatterns:
+
 - Placeholder TODOs ("TODO: implement", "TODO: add")
 - Lorem ipsum filler text
 - Placeholder domains (example.com in non-test files)
 - LLM leakage ("As an AI", "I cannot", "I apologize")
 - Lazy AI comments ("This function does...", "This is a helper...")
 - Placeholder bodies (pass # TODO, throw new Error("not implemented"))
-Advisory only — prints warnings, does not block.
+  Advisory only — prints warnings, does not block.
 
 ### Dead Import & Dead Code Detection
+
 Quality-gate.sh (Stop) and post-edit-checker.sh (PostToolUse) now detect:
+
 - Dead imports: ruff F401 (Python), oxlint no-unused-vars (JS/TS)
 - Dead code: vulture --min-confidence 80 (Python), knip --no-progress (JS/TS)
 - Code duplication: jscpd with 5% threshold
 
 ### Supply Chain Security (Layer 5)
+
 Security pipeline expanded from 4 to 5 layers:
+
 1. Secrets (gitleaks + regex patterns)
 2. SAST (semgrep, bandit, gosec)
 3. Dependencies (pip-audit, npm audit, govulncheck, cargo-audit, osv-scanner)
@@ -683,13 +729,16 @@ Security pipeline expanded from 4 to 5 layers:
 5. **Supply Chain** (syft SBOM generation, OSV-Scanner, opengrep)
 
 ### Enhanced Test Maturity Model
+
 Test maturity expanded from 16 to 20 criteria across 5 levels:
+
 - **L4 new**: Snapshot/golden tests (3pts), Approval tests (2pts)
 - **L5 new**: Chaos/resilience tests (3pts), Fuzz testing (3pts)
 - Enhanced property-based test detection: hypothesis, fast-check, gopter, proptest
 - Points rebalanced: 20pts per level, 100pts total
 
 ### Hook Stderr Convention
+
 All hooks that exit non-zero now write descriptive failure messages to stderr.
 Format: `HOOK_NAME FAIL: reason` (e.g., "SUPPRESSION BLOCKER FAIL: 2 new lint suppression(s)")
 This ensures Claude Code displays the actual failure reason instead of "No stderr output".
@@ -699,51 +748,55 @@ This ensures Claude Code displays the actual failure reason instead of "No stder
 ## Development Philosophy
 
 ### Proactive Agent Mandate
+
 - **NEVER** ask the user to run a command, search for code, or perform an edit that you have the tools to perform yourself.
 - If a task is clear, execute it. If a dependency is missing and you can install/fix it, do so.
 - Only ask for clarification if the requirements are truly ambiguous or require a strategic decision that only the user can make.
 - "Proactive execution" is the default state. Assume you have permission to use all available tools to achieve the goal.
 
 ### Extend, Never Duplicate
+
 - NEVER create a v2 file. Refactor the original.
 - NEVER create a new class if an existing one can be made generic.
 - NEVER create custom implementations when an OSS library exists.
 - Before writing ANY new code: search the codebase for existing patterns.
 
 ### Primitives First
+
 - Build generic building blocks before application logic.
 - A provider interface + registry is better than N isolated classes.
 - Template strings > hardcoded messages. Config-driven > code-driven.
 
 ### Research Before Implementing
+
 - Check project deps (pyproject.toml) for existing libraries.
 - Search PyPI before writing custom code.
 - For non-trivial algorithms: check GitHub for 80%+ implementations to fork/adapt.
 
 ### Library Preferences (DO NOT REINVENT)
-| Need | Use | NOT |
-|------|-----|-----|
-| Retry/resilience | tenacity | Custom retry loops |
-| HTTP client | httpx | Custom wrappers |
-| Logging | structlog | print() or logging.getLogger |
-| Config | pydantic-settings | Manual env parsing |
-| CLI | typer | argparse |
-| Validation | pydantic | Manual if/else |
-| Rate limiting | tenacity + asyncio.Semaphore | Custom rate limiter class |
+
+| Need             | Use                          | NOT                          |
+| ---------------- | ---------------------------- | ---------------------------- |
+| Retry/resilience | tenacity                     | Custom retry loops           |
+| HTTP client      | httpx                        | Custom wrappers              |
+| Logging          | structlog                    | print() or logging.getLogger |
+| Config           | pydantic-settings            | Manual env parsing           |
+| CLI              | typer                        | argparse                     |
+| Validation       | pydantic                     | Manual if/else               |
+| Rate limiting    | tenacity + asyncio.Semaphore | Custom rate limiter class    |
 
 ### Code Quality Non-Negotiables
+
 - Zero new lint suppressions without inline justification
 - All new code must pass: ruff check, type checker, tests
 - Max function: 40 lines. Max cognitive complexity: 15.
 - No placeholder TODOs in committed code
-
 
 ## thegent-specific and workflow rules are moved to:
 
 - /Users/kooshapari/temp-PRODVERCEL/485/kush/thegent/docs/reference/CLAUDE_THEGENT_RUNTIME_APPENDIX.md
 
 Keep this file aligned with the appendixed doc; load both documents for the full policy set.
-
 
 ---
 
@@ -753,15 +806,18 @@ Keep this file aligned with the appendixed doc; load both documents for the full
 **Extended by:** Claude Code
 
 ### Changes Made
+
 1. Added practical implementation patterns
 2. Added configuration examples
 3. Enhanced cross-references to related documentation
 
 ### Cross-References Added
+
 - Related research and implementation guides
 - WORK_STREAM.md for tracking
 
 ### Practical Additions
+
 - Implementation templates
 - Configuration examples
 - Best practices

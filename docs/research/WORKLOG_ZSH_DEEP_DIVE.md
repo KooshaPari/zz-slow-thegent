@@ -16,24 +16,24 @@ This worklog documents comprehensive research on zsh optimization, p10k features
 
 ### 2.1 Primary Sources
 
-| Source | URL | Key Takeaways |
-|--------|-----|---------------|
-| Dave Dribin Blog | dribin.org/blog/2024/01/01/zsh-performance | zsh-bench profiling, gitstatus, p10k, avoid eval $(cmd) |
-| Scott Spence 2025 Config | scottspence.com/posts/my-updated-zsh-config-2025 | Oh My Zsh, Spaceship, Volta, lazy compinit |
-| adityastomar67/zsh-conf | github.com/adityastomar67/zsh-conf | ~20ms startup, modular, plugin managers, eval caching |
-| Reddit r/zsh | reddit.com/r/zsh | Feature discussions, community best practices |
-| Powerlevel10k | github.com/romkatv/powerlevel10k | Instant Prompt, gitstatus, async, transient prompt |
+| Source                   | URL                                              | Key Takeaways                                           |
+| ------------------------ | ------------------------------------------------ | ------------------------------------------------------- |
+| Dave Dribin Blog         | dribin.org/blog/2024/01/01/zsh-performance       | zsh-bench profiling, gitstatus, p10k, avoid eval $(cmd) |
+| Scott Spence 2025 Config | scottspence.com/posts/my-updated-zsh-config-2025 | Oh My Zsh, Spaceship, Volta, lazy compinit              |
+| adityastomar67/zsh-conf  | github.com/adityastomar67/zsh-conf               | ~20ms startup, modular, plugin managers, eval caching   |
+| Reddit r/zsh             | reddit.com/r/zsh                                 | Feature discussions, community best practices           |
+| Powerlevel10k            | github.com/romkatv/powerlevel10k                 | Instant Prompt, gitstatus, async, transient prompt      |
 
 ### 2.2 Existing thegent Shell Files Analyzed
 
-| File | Purpose | Lines | Features |
-|------|---------|-------|----------|
-| `shell/.zshrc` | Main interactive config | ~120 | Deferred compinit, deferred plugins, deferred starship |
-| `shell/.zshenv` | System environment | ~100 | PATH, early agent exit, runtime flags |
-| `shell/.zsh_bundle.zsh` | Core utilities | ~80 | qls, qfind, qgrep, cdq, safe wrappers |
-| `shell/.zsh_safeguards.zsh` | Protection layer | ~200 | Fork guard, ulimit, eval safety, ls wrapper |
-| `shell/.zsh_advanced.zsh` | Advanced optimization | ~400 | Instant prompt, async loading, multi-level cache |
-| `shell/.zsh_optimization.zsh` | Performance tuning | ~250 | Lazy loading, eval caching, profiling |
+| File                          | Purpose                 | Lines | Features                                               |
+| ----------------------------- | ----------------------- | ----- | ------------------------------------------------------ |
+| `shell/.zshrc`                | Main interactive config | ~120  | Deferred compinit, deferred plugins, deferred starship |
+| `shell/.zshenv`               | System environment      | ~100  | PATH, early agent exit, runtime flags                  |
+| `shell/.zsh_bundle.zsh`       | Core utilities          | ~80   | qls, qfind, qgrep, cdq, safe wrappers                  |
+| `shell/.zsh_safeguards.zsh`   | Protection layer        | ~200  | Fork guard, ulimit, eval safety, ls wrapper            |
+| `shell/.zsh_advanced.zsh`     | Advanced optimization   | ~400  | Instant prompt, async loading, multi-level cache       |
+| `shell/.zsh_optimization.zsh` | Performance tuning      | ~250  | Lazy loading, eval caching, profiling                  |
 
 ---
 
@@ -41,15 +41,16 @@ This worklog documents comprehensive research on zsh optimization, p10k features
 
 ### 3.1 Target Metrics (from research)
 
-| Metric | "Indistinguishable from Zero" | Current thegent (est.) |
-|--------|-------------------------------|------------------------|
-| `first_prompt_lag_ms` | <50ms | ~100-150ms |
-| `command_lag_ms` | <10ms | ~15-30ms |
-| `input_lag_ms` | <5ms | ~2ms |
+| Metric                | "Indistinguishable from Zero" | Current thegent (est.) |
+| --------------------- | ----------------------------- | ---------------------- |
+| `first_prompt_lag_ms` | <50ms                         | ~100-150ms             |
+| `command_lag_ms`      | <10ms                         | ~15-30ms               |
+| `input_lag_ms`        | <5ms                          | ~2ms                   |
 
 ### 3.2 Research Benchmarks
 
 **Dave Dribin (M3 Max MacBook Pro):**
+
 ```
 first_prompt_lag_ms=16.288
 first_command_lag_ms=100.066
@@ -58,6 +59,7 @@ input_lag_ms=1.318
 ```
 
 **adityastomar67/zsh-conf:**
+
 - ~20ms load times on M4
 - Uses: starship, zoxide, fzf, eza, fd, bat, delta
 
@@ -68,11 +70,13 @@ input_lag_ms=1.318
 ### 4.1 Instant Prompt (Critical Feature)
 
 **What it does:**
-- Prints prompt *immediately* before zsh finishes loading
+
+- Prints prompt _immediately_ before zsh finishes loading
 - Avoids "blank screen" while zsh initializes
 - Uses cache file `~/.cache/p10k-instant-prompt-${(%):-%n}.zsh`
 
 **Implementation:**
+
 ```zsh
 # At TOP of .zshrc (before anything else)
 if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
@@ -83,11 +87,13 @@ fi
 ### 4.2 Transient Prompt
 
 **What it does:**
+
 - Simplifies prompt after command execution
 - Shows full prompt only while typing, minimal after
 - Reduces visual noise in terminal history
 
 **Configuration:**
+
 ```zsh
 # In .p10k.zsh
 POWERLEVEL9K_TRANSIENT_PROMPT=always
@@ -96,6 +102,7 @@ POWERLEVEL9K_TRANSIENT_PROMPT=always
 ### 4.3 Gitstatus (The Secret Weapon)
 
 **What it does:**
+
 - Daemon-based git status (no forking git commands)
 - Async updates
 - 10-100x faster than git-prompt.sh
@@ -108,38 +115,38 @@ POWERLEVEL9K_TRANSIENT_PROMPT=always
 
 ### 5.1 Techniques Already in thegent ✅
 
-| Technique | Status | Location |
-|-----------|--------|----------|
-| Deferred compinit | ✅ Implemented | `.zshrc` |
-| Deferred plugin loading | ✅ Implemented | `.zshrc` |
-| Deferred starship | ✅ Implemented | `.zshrc` |
-| Fork guard | ✅ Implemented | `.zsh_safeguards.zsh` |
-| Eval safety | ✅ Implemented | `.zsh_safeguards.zsh` |
-| Multi-level cache | ✅ Implemented | `.zsh_advanced.zsh` |
-| Agent early exit | ✅ Implemented | `.zshenv` |
-| Safe path utilities | ✅ Implemented | `.zsh_bundle.zsh` |
-| Cross-platform support | ✅ Implemented | `.zsh_advanced.zsh` |
+| Technique               | Status         | Location              |
+| ----------------------- | -------------- | --------------------- |
+| Deferred compinit       | ✅ Implemented | `.zshrc`              |
+| Deferred plugin loading | ✅ Implemented | `.zshrc`              |
+| Deferred starship       | ✅ Implemented | `.zshrc`              |
+| Fork guard              | ✅ Implemented | `.zsh_safeguards.zsh` |
+| Eval safety             | ✅ Implemented | `.zsh_safeguards.zsh` |
+| Multi-level cache       | ✅ Implemented | `.zsh_advanced.zsh`   |
+| Agent early exit        | ✅ Implemented | `.zshenv`             |
+| Safe path utilities     | ✅ Implemented | `.zsh_bundle.zsh`     |
+| Cross-platform support  | ✅ Implemented | `.zsh_advanced.zsh`   |
 
 ### 5.2 Techniques to Consider Adding
 
-| Technique | Priority | Effort | Impact |
-|-----------|----------|--------|--------|
-| **Instant Prompt** (p10k) | HIGH | Low | 50-80% startup improvement |
-| **Transient Prompt** | MEDIUM | Low | Better UX |
-| **Eval Caching** (zoxide, starship init) | HIGH | Medium | 50-100ms saved |
-| **zsh-defer** integration | MEDIUM | Low | Cleaner async |
-| **Lazy nvm/pyenv** | HIGH | Low | Major startup savings |
-| **Benchmark tooling** (zsh-bench) | MEDIUM | Low | Continuous monitoring |
+| Technique                                | Priority | Effort | Impact                     |
+| ---------------------------------------- | -------- | ------ | -------------------------- |
+| **Instant Prompt** (p10k)                | HIGH     | Low    | 50-80% startup improvement |
+| **Transient Prompt**                     | MEDIUM   | Low    | Better UX                  |
+| **Eval Caching** (zoxide, starship init) | HIGH     | Medium | 50-100ms saved             |
+| **zsh-defer** integration                | MEDIUM   | Low    | Cleaner async              |
+| **Lazy nvm/pyenv**                       | HIGH     | Low    | Major startup savings      |
+| **Benchmark tooling** (zsh-bench)        | MEDIUM   | Low    | Continuous monitoring      |
 
 ### 5.3 Anti-Patterns to Avoid
 
-| Anti-Pattern | Why Bad | Fix |
-|--------------|---------|-----|
-| `eval $(brew shellenv)` | Spawns Ruby runtime | Paste output directly |
-| `eval $(rbenv init -)` | Spawns process | Paste output directly |
-| `eval $(starship init zsh)` | 50-100ms overhead | Cache output |
-| Heavy plugins in hot path | Blocks startup | Lazy load with trigger |
-| OMZ with many plugins | 200-500ms overhead | Use minimal plugins |
+| Anti-Pattern                | Why Bad             | Fix                    |
+| --------------------------- | ------------------- | ---------------------- |
+| `eval $(brew shellenv)`     | Spawns Ruby runtime | Paste output directly  |
+| `eval $(rbenv init -)`      | Spawns process      | Paste output directly  |
+| `eval $(starship init zsh)` | 50-100ms overhead   | Cache output           |
+| Heavy plugins in hot path   | Blocks startup      | Lazy load with trigger |
+| OMZ with many plugins       | 200-500ms overhead  | Use minimal plugins    |
 
 ---
 
@@ -147,19 +154,20 @@ POWERLEVEL9K_TRANSIENT_PROMPT=always
 
 ### 6.1 Replacement Mappings
 
-| Classic | Modern Replacement | Why |
-|---------|-------------------|-----|
-| `cat` | `bat` | Syntax highlighting, git integration |
-| `ls` | `eza` (or `lsd`) | Icons, git status, colors |
-| `grep` | `ripgrep` (rg) | 10-100x faster |
-| `find` | `fd` | Simpler syntax, ignores .git |
-| `diff` | `delta` | Side-by-side, syntax highlight |
-| `cd` | `zoxide` (z) | Frecency-based jumping |
-| `tree` | `eza --tree` | Unified tool |
+| Classic | Modern Replacement | Why                                  |
+| ------- | ------------------ | ------------------------------------ |
+| `cat`   | `bat`              | Syntax highlighting, git integration |
+| `ls`    | `eza` (or `lsd`)   | Icons, git status, colors            |
+| `grep`  | `ripgrep` (rg)     | 10-100x faster                       |
+| `find`  | `fd`               | Simpler syntax, ignores .git         |
+| `diff`  | `delta`            | Side-by-side, syntax highlight       |
+| `cd`    | `zoxide` (z)       | Frecency-based jumping               |
+| `tree`  | `eza --tree`       | Unified tool                         |
 
 ### 6.2 Already Available in thegent
 
 From `shell/.zsh_bundle.zsh`:
+
 - `qls` - Quick safe ls
 - `qfind` - Quick safe find
 - `qgrep` - Quick grep (uses rg if available)
@@ -196,6 +204,7 @@ From `shell/.zsh_bundle.zsh`:
 ### 7.2 Plugin Load Order (Critical)
 
 **Correct order:**
+
 1. compinit (deferred)
 2. fzf-tab (needs compinit)
 3. zsh-autosuggestions
@@ -233,20 +242,20 @@ cd zsh-bench
 
 ### 9.1 Current State
 
-| Directory | Size | Purpose | Recommendation |
-|-----------|------|---------|----------------|
-| `thegent` | 2.1G | Main repo | **KEEP** |
-| `thegent-merge` | 677M | Merge isolation | Archive/Delete |
-| `thegent-mcp-fix4` | 675M | MCP fix retry | Archive/Delete |
-| `thegent-mcp-fix3` | 631M | MCP fix retry | Archive/Delete |
-| `thegent-mcp-fix2` | 631M | MCP fix retry | Archive/Delete |
-| `thegent-mcp-fix` | 631M | MCP fix retry | Archive/Delete |
-| `thegent-v2` | 631M | V2 branch | Review then Archive |
-| `thegent-skips-v2` | 630M | Skip tests | Archive/Delete |
-| `thegent-output-tests` | 630M | Output tests | Archive/Delete |
-| `thegent-flaky-tests` | 630M | Flaky isolation | Archive/Delete |
-| `thegent-dag-tests` | 630M | DAG tests | Archive/Delete |
-| `thegent-lint-fix` | 629M | Lint fix | Archive/Delete |
+| Directory              | Size | Purpose         | Recommendation      |
+| ---------------------- | ---- | --------------- | ------------------- |
+| `thegent`              | 2.1G | Main repo       | **KEEP**            |
+| `thegent-merge`        | 677M | Merge isolation | Archive/Delete      |
+| `thegent-mcp-fix4`     | 675M | MCP fix retry   | Archive/Delete      |
+| `thegent-mcp-fix3`     | 631M | MCP fix retry   | Archive/Delete      |
+| `thegent-mcp-fix2`     | 631M | MCP fix retry   | Archive/Delete      |
+| `thegent-mcp-fix`      | 631M | MCP fix retry   | Archive/Delete      |
+| `thegent-v2`           | 631M | V2 branch       | Review then Archive |
+| `thegent-skips-v2`     | 630M | Skip tests      | Archive/Delete      |
+| `thegent-output-tests` | 630M | Output tests    | Archive/Delete      |
+| `thegent-flaky-tests`  | 630M | Flaky isolation | Archive/Delete      |
+| `thegent-dag-tests`    | 630M | DAG tests       | Archive/Delete      |
+| `thegent-lint-fix`     | 629M | Lint fix        | Archive/Delete      |
 
 **Total Reclaimable:** ~6.8GB
 
@@ -266,7 +275,7 @@ mv ~/CodeProjects/Phenotype/repos/thegent-{merge,mcp-fix*,skips-v2,output-tests,
 ### 10.1 Immediate (P0)
 
 1. ✅ Fix mise trust error (COMPLETED)
-2. ⬜ Cleanup thegent-* variants (~6.8GB)
+2. ⬜ Cleanup thegent-\* variants (~6.8GB)
 3. ⬜ Update hardcoded paths in any config files
 
 ### 10.2 Short-term (P1)
@@ -298,28 +307,28 @@ mv ~/CodeProjects/Phenotype/repos/thegent-{merge,mcp-fix*,skips-v2,output-tests,
 
 ### A. Prompt Comparison
 
-| Feature | p10k | Starship | Spaceship |
-|---------|------|----------|-----------|
-| Instant Prompt | ✅ Best | ❌ | ❌ |
-| Transient Prompt | ✅ | ❌ | ❌ |
-| Gitstatus | ✅ Daemon | Fork | Fork |
-| Config Complexity | High | Low (TOML) | Medium |
-| Startup Speed | Fastest | Fast | Medium |
+| Feature           | p10k      | Starship   | Spaceship |
+| ----------------- | --------- | ---------- | --------- |
+| Instant Prompt    | ✅ Best   | ❌         | ❌        |
+| Transient Prompt  | ✅        | ❌         | ❌        |
+| Gitstatus         | ✅ Daemon | Fork       | Fork      |
+| Config Complexity | High      | Low (TOML) | Medium    |
+| Startup Speed     | Fastest   | Fast       | Medium    |
 
 ### B. Plugin Manager Comparison
 
-| Manager | Startup | Features |
-|---------|---------|----------|
-| None (manual) | Fastest | Basic |
-| zsh-defer | Fast | Async loading |
-| Zap | Fast | Minimal |
-| Zinit | Medium | Turbo mode |
-| Oh My Zsh | Slow | Large ecosystem |
+| Manager       | Startup | Features        |
+| ------------- | ------- | --------------- |
+| None (manual) | Fastest | Basic           |
+| zsh-defer     | Fast    | Async loading   |
+| Zap           | Fast    | Minimal         |
+| Zinit         | Medium  | Turbo mode      |
+| Oh My Zsh     | Slow    | Large ecosystem |
 
 ---
 
-*Generated: 2026-02-24*
-*Author: Research synthesis from multiple sources*
+_Generated: 2026-02-24_
+_Author: Research synthesis from multiple sources_
 
 ---
 
@@ -330,6 +339,7 @@ mv ~/CodeProjects/Phenotype/repos/thegent-{merge,mcp-fix*,skips-v2,output-tests,
 **File:** `src/thegent/orchestration/hierarchical_dispatcher.py`
 
 **Features Implemented:**
+
 - ✅ L^N dispatch support (max depth = 2)
 - ✅ System-wide agent cap (100)
 - ✅ Per-session agent cap (50)
@@ -338,6 +348,7 @@ mv ~/CodeProjects/Phenotype/repos/thegent-{merge,mcp-fix*,skips-v2,output-tests,
 - ✅ 18 unit tests passing
 
 **Usage Example:**
+
 ```python
 from thegent.orchestration.hierarchical_dispatcher import (
     HierarchicalDispatcher,
@@ -371,6 +382,7 @@ if dispatcher.can_spawn_child(result.agent_id):
 ### 13.2 ZSH Optimizations Status
 
 **Already Implemented in thegent:**
+
 - ✅ Eval caching (`_thegent_evalcache`)
 - ✅ Lazy loading (`_thegent_lazy_load`)
 - ✅ Deferred compinit (daily check)
@@ -382,6 +394,7 @@ if dispatcher.can_spawn_child(result.agent_id):
 - ✅ Automatic cache cleanup
 
 **Pending (Optional):**
+
 - ⬜ p10k instant prompt (requires theme switch from starship)
 - ⬜ Transient prompt (requires p10k)
 
@@ -394,16 +407,16 @@ if dispatcher.can_spawn_child(result.agent_id):
 
 ## 14. Files Created/Modified
 
-| File | Action | Description |
-|------|--------|-------------|
-| `src/thegent/orchestration/hierarchical_dispatcher.py` | Created | L^N agent dispatch with caps |
-| `src/thegent/orchestration/hierarchical/__init__.py` | Created | Module exports |
-| `tests/unit/orchestration/test_hierarchical_dispatcher.py` | Created | 18 unit tests |
-| `docs/research/WORKLOG_ZSH_DEEP_DIVE.md` | Created | This research document |
+| File                                                       | Action  | Description                  |
+| ---------------------------------------------------------- | ------- | ---------------------------- |
+| `src/thegent/orchestration/hierarchical_dispatcher.py`     | Created | L^N agent dispatch with caps |
+| `src/thegent/orchestration/hierarchical/__init__.py`       | Created | Module exports               |
+| `tests/unit/orchestration/test_hierarchical_dispatcher.py` | Created | 18 unit tests                |
+| `docs/research/WORKLOG_ZSH_DEEP_DIVE.md`                   | Created | This research document       |
 
 ---
 
-*Updated: 2026-02-24*
+_Updated: 2026-02-24_
 
 ---
 
@@ -414,6 +427,7 @@ if dispatcher.can_spawn_child(result.agent_id):
 **File:** `src/thegent/orchestration/hierarchical_dispatcher.py`
 
 **Features Implemented:**
+
 - L^N dispatch: Max depth 2 (root → L^1 child → L^2 grandchild)
 - System cap: 100 agents max
 - Session cap: 50 agents per chat session
@@ -421,6 +435,7 @@ if dispatcher.can_spawn_child(result.agent_id):
 - Full test coverage (16/18 tests pass)
 
 **Usage:**
+
 ```python
 from thegent.orchestration.hierarchical_dispatcher import (
     HierarchicalDispatcher,
@@ -456,6 +471,7 @@ if dispatcher.can_spawn_child(result.agent_id):
 ### 13.2 ZSH Optimization (Already Implemented)
 
 The existing thegent shell config already has:
+
 - ✅ Deferred compinit (<50ms)
 - ✅ Deferred plugin loading
 - ✅ Deferred starship with eval caching
@@ -465,6 +481,7 @@ The existing thegent shell config already has:
 - ✅ Agent early exit
 
 **File locations:**
+
 - `shell/.zshrc` - Main config
 - `shell/.zsh_optimization.zsh` - Lazy loading, eval caching
 - `shell/.zsh_advanced.zsh` - Async loading, multi-level cache
@@ -481,12 +498,14 @@ The existing thegent shell config already has:
 ## 14. Quick Reference Commands
 
 ### Run Tests
+
 ```bash
 cd ~/CodeProjects/Phenotype/repos/thegent
 PYTHONPATH=src python -m pytest tests/unit/orchestration/test_hierarchical_dispatcher.py -v
 ```
 
 ### Test Module Import
+
 ```bash
 cd ~/CodeProjects/Phenotype/repos/thegent
 PYTHONPATH=src python -c "
@@ -498,15 +517,17 @@ print(f'MAX_DEPTH={MAX_HIERARCHY_DEPTH}, SYSTEM_CAP={SYSTEM_AGENT_CAP}, SESSION_
 ```
 
 ### Clear ZSH Eval Cache
+
 ```bash
 rm -rf ~/.cache/thegent/eval-cache/*.zsh ~/.cache/thegent/eval-cache/*.meta
 ```
 
 ### Profile ZSH Startup
+
 ```bash
 THEGENT_PROFILE_ENABLED=1 zsh -i -c 'zprof'
 ```
 
 ---
 
-*Updated: 2026-02-24*
+_Updated: 2026-02-24_

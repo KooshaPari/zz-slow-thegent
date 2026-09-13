@@ -6,10 +6,10 @@ and verify_evidence_hash methods.
 
 import hashlib
 import json as std_json
-import orjson as json
 from pathlib import Path
-from unittest.mock import MagicMock, patch
+from unittest.mock import MagicMock
 
+import orjson as json
 import pytest
 
 from thegent.orchestration.strategies.evidence import PromotionGate
@@ -87,7 +87,7 @@ class TestPromotionGateCaptureEvidence:
 
     def test_writes_evidence_file(self, gate: PromotionGate, mock_csm: MagicMock, session_dir: Path) -> None:
         """Verify evidence file is written correctly."""
-        evidence_hash = gate.capture_evidence("run-001", mock_csm)
+        gate.capture_evidence("run-001", mock_csm)
 
         evidence_path = session_dir / "evidence" / "run-001_draft.json"
         assert evidence_path.exists()

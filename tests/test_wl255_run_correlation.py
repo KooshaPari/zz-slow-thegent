@@ -164,5 +164,8 @@ class TestRunCorrelationTracker:
         # Verify isolation
         assert len(tracker.children("parent-1")) == 2
         assert len(tracker.children("parent-2")) == 1
-        assert {c.run_id for c in tracker.children("parent-1")} == {"child-1a", "child-1b"}
+        assert {c.run_id for c in tracker.children("parent-1")} == {
+            "child-1a",
+            "child-1b",
+        }
         assert {c.run_id for c in tracker.children("parent-2")} == {"child-2a"}

@@ -189,7 +189,7 @@ class Offer:
     cost_weight: float
     quality: float
     speed_score: float = 1.0  # Lower = faster; includes conciseness (output_tokens_multiplier)
-    route: "Route | None" = None
+    route: Route | None = None
     effective_cost: float | None = None  # After shadow pricing
 
 

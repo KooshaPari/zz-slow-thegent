@@ -164,7 +164,12 @@ def build_unmapped_deprecated_count(report: dict[str, object]) -> int:
 
 def _parse_args(argv: list[str]) -> argparse.Namespace:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--taskfile", type=Path, default=Path("Taskfile.yml"), help="Taskfile path to audit.")
+    parser.add_argument(
+        "--taskfile",
+        type=Path,
+        default=Path("Taskfile.yml"),
+        help="Taskfile path to audit.",
+    )
     parser.add_argument(
         "--mapping-file",
         type=Path,
@@ -178,7 +183,15 @@ def _parse_args(argv: list[str]) -> argparse.Namespace:
     )
     parser.add_argument(
         "--format",
-        choices=["text", "json", "migration", "migration-md", "migration-json", "migration-jsonl", "summary-json"],
+        choices=[
+            "text",
+            "json",
+            "migration",
+            "migration-md",
+            "migration-json",
+            "migration-jsonl",
+            "summary-json",
+        ],
         default="text",
     )
     return parser.parse_args(argv)

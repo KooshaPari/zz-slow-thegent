@@ -74,8 +74,16 @@ def config_show_cmd(
             ("Cache Directory", settings.cache_dir, "THGENT_CACHE_DIR"),
             ("Default Timeout", settings.default_timeout, "THGENT_DEFAULT_TIMEOUT"),
             ("Default Routing", settings.default_routing, "THGENT_DEFAULT_ROUTING"),
-            ("Budget Hourly Limit", settings.budget_hourly_limit, "THGENT_BUDGET_HOURLY_LIMIT"),
-            ("Budget Daily Limit", settings.budget_daily_limit, "THGENT_BUDGET_DAILY_LIMIT"),
+            (
+                "Budget Hourly Limit",
+                settings.budget_hourly_limit,
+                "THGENT_BUDGET_HOURLY_LIMIT",
+            ),
+            (
+                "Budget Daily Limit",
+                settings.budget_daily_limit,
+                "THGENT_BUDGET_DAILY_LIMIT",
+            ),
             ("Session Backend", settings.session_backend, "THGENT_SESSION_BACKEND"),
         ]
 
@@ -151,7 +159,13 @@ def config_migrate_cmd(
     migrated_content = "\n".join(migrated_lines) + "\n"
 
     if dry_run:
-        console.print(Panel(migrated_content, title="Migration Preview (Dry Run)", border_style="yellow"))
+        console.print(
+            Panel(
+                migrated_content,
+                title="Migration Preview (Dry Run)",
+                border_style="yellow",
+            )
+        )
         console.print("[yellow]Dry run: No changes made. Remove --dry-run to apply migration.[/yellow]")
     else:
         try:

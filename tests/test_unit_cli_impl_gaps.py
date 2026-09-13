@@ -35,13 +35,12 @@ Covers uncovered branches and edge cases in:
 - get_data_protection_status_impl
 """
 
-import orjson as json
 import os
-import time
 from datetime import UTC, datetime
 from pathlib import Path
 from unittest.mock import MagicMock, patch
 
+import orjson as json
 import pytest
 import typer
 
@@ -345,7 +344,10 @@ class TestSessionStatusFor:
     def test_not_found_on_missing_session(self) -> None:
         settings = MagicMock()
         settings.session_dir = Path("/tmp/nonexistent_thegent_test")
-        with patch("thegent.cli.commands.impl._find_session_meta", side_effect=typer.BadParameter("not found")):
+        with patch(
+            "thegent.cli.commands.impl._find_session_meta",
+            side_effect=typer.BadParameter("not found"),
+        ):
             result = _session_status_for("nonexistent", settings)
         assert result == "not_found"
 
@@ -799,7 +801,10 @@ class TestClassifyObserveSummaryTrendHealth:
 class TestLoadObserveSummarySnapshots:
     # @trace FR-CLI-471
     def test_no_file_returns_empty(self) -> None:
-        with patch("thegent.cli.commands.impl._health_snapshot_log_path", return_value=Path("/nonexistent")):
+        with patch(
+            "thegent.cli.commands.impl._health_snapshot_log_path",
+            return_value=Path("/nonexistent"),
+        ):
             result = _load_observe_summary_snapshots("sig1", "{}", 5)
         assert result == []
 
@@ -864,7 +869,12 @@ class TestLoadObserveSummarySnapshots:
         log_path = tmp_path / "snapshots.jsonl"
         lines = [
             json.dumps({"record_type": "health_snapshot", "scope_key": {}}).decode(),
-            json.dumps({"record_type": "observe_summary_snapshot", "trend_scope_signature": "other"}).decode(),
+            json.dumps(
+                {
+                    "record_type": "observe_summary_snapshot",
+                    "trend_scope_signature": "other",
+                }
+            ).decode(),
             "invalid-json",
             "",
         ]
@@ -881,7 +891,10 @@ class TestLoadObserveSummarySnapshots:
 class TestCompactHealthSnapshotLog:
     # @trace FR-CLI-477
     def test_no_file_returns_early(self, tmp_path) -> None:
-        with patch("thegent.cli.commands.impl._health_snapshot_log_path", return_value=tmp_path / "missing.jsonl"):
+        with patch(
+            "thegent.cli.commands.impl._health_snapshot_log_path",
+            return_value=tmp_path / "missing.jsonl",
+        ):
             _compact_health_snapshot_log()
 
     # @trace FR-CLI-478
@@ -973,14 +986,21 @@ class TestCoerceIssueTypes:
 class TestLoadPreviousHealthSnapshot:
     # @trace FR-CLI-490
     def test_no_file_returns_none(self) -> None:
-        with patch("thegent.cli.commands.impl._health_snapshot_log_path", return_value=Path("/nonexistent")):
+        with patch(
+            "thegent.cli.commands.impl._health_snapshot_log_path",
+            return_value=Path("/nonexistent"),
+        ):
             assert _load_previous_health_snapshot({"type": "test"}) is None
 
     # @trace FR-CLI-491
     def test_matching_scope_key_found(self, tmp_path) -> None:
         log_path = tmp_path / "snap.jsonl"
         scope = {"type": "gate", "owner": "alice"}
-        rec = {"record_type": "health_snapshot", "scope_key": scope, "blocked_ratio": 0.1}
+        rec = {
+            "record_type": "health_snapshot",
+            "scope_key": scope,
+            "blocked_ratio": 0.1,
+        }
         log_path.write_text(json.dumps(rec).decode() + "\n")
         with patch("thegent.cli.commands.impl._health_snapshot_log_path", return_value=log_path):
             result = _load_previous_health_snapshot(scope)
@@ -1072,7 +1092,12 @@ class TestHealthScopeKey:
         payload = {
             "payload_type": "session_contract_health_gate",
             "policy_profile": "strict_ci",
-            "generated_query": {"owner": "alice", "all": False, "strict": True, "min_healthy_ratio": 0.95},
+            "generated_query": {
+                "owner": "alice",
+                "all": False,
+                "strict": True,
+                "min_healthy_ratio": 0.95,
+            },
         }
         scope = _health_scope_key(payload)
         assert "min_healthy_ratio" in scope
@@ -1083,7 +1108,12 @@ class TestHealthScopeKey:
         payload = {
             "payload_type": "session_contract_health_report",
             "policy_profile": "custom",
-            "generated_query": {"owner": None, "all": True, "strict": False, "top_blocked": 10},
+            "generated_query": {
+                "owner": None,
+                "all": True,
+                "strict": False,
+                "top_blocked": 10,
+            },
         }
         scope = _health_scope_key(payload)
         assert "top_blocked" in scope
@@ -1108,8 +1138,16 @@ class TestHealthScopeKey:
 class TestHashPayload:
     # @trace FR-CLI-404
     def test_hash_health_payload_ignores_timestamp(self) -> None:
-        p1 = {"key": "val", "generated_at_utc": "2025-01-01T00:00:00Z", "payload_signature": {}}
-        p2 = {"key": "val", "generated_at_utc": "2025-12-31T23:59:59Z", "payload_signature": {"old": "sig"}}
+        p1 = {
+            "key": "val",
+            "generated_at_utc": "2025-01-01T00:00:00Z",
+            "payload_signature": {},
+        }
+        p2 = {
+            "key": "val",
+            "generated_at_utc": "2025-12-31T23:59:59Z",
+            "payload_signature": {"old": "sig"},
+        }
         h1 = _hash_health_payload(p1)
         h2 = _hash_health_payload(p2)
         assert h1["value"] == h2["value"]
@@ -1263,7 +1301,15 @@ class TestValidateDagDoneWithoutEvidence:
     def test_done_without_evidence_flagged(self, mock_agent) -> None:
         doc = DagDocument(
             frontmatter={},
-            tasks=[{"id": "T1", "agent": "claude", "prompt": "x", "depends_on": "-", "status": "done"}],
+            tasks=[
+                {
+                    "id": "T1",
+                    "agent": "claude",
+                    "prompt": "x",
+                    "depends_on": "-",
+                    "status": "done",
+                }
+            ],
             before_table="",
             after_table="",
             table_headers=["id", "agent", "prompt", "depends_on", "status"],
@@ -1456,7 +1502,13 @@ class TestSerializeDag:
         doc = DagDocument(
             frontmatter={},
             tasks=[
-                {"id": "T1", "agent": "claude", "prompt": "do stuff", "depends_on": "-", "status": "pending"},
+                {
+                    "id": "T1",
+                    "agent": "claude",
+                    "prompt": "do stuff",
+                    "depends_on": "-",
+                    "status": "pending",
+                },
             ],
             before_table="## Tasks\n",
             after_table="",

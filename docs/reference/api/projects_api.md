@@ -12,7 +12,7 @@ WP-11002: Bridges context (files, state) across projects.
 
 ### Methods
 
-#### ContextBridger.__init__
+#### ContextBridger.**init**
 
 ```python
 __init__(self: Any, registry: ProjectRegistry)
@@ -38,7 +38,7 @@ Manages a registry of local projects using thegent.
 
 ### Methods
 
-#### ProjectRegistry.__init__
+#### ProjectRegistry.**init**
 
 ```python
 __init__(self: Any, global_config_dir: Path)

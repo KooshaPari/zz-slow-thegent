@@ -3,6 +3,7 @@
 ## Scope Delivered
 
 ### 1) WL-122: strengthen canonical max-lines contract across CI + pre-commit
+
 - Updated pre-commit to call the canonical task path instead of direct script invocation:
   - `.pre-commit-config.yaml`
   - `max-lines-gate` hook now uses `task quality:max-lines`.
@@ -21,6 +22,7 @@
   - Re-added strict WL-122 checker step and canonical max-lines task step.
 
 ### 2) WL-104: expand JSON-RPC/CLI contract coverage for `agent-server`
+
 - Extended protocol contract tests:
   - `tests/protocols/test_jsonrpc_agent_server_contract.py`
   - Added coverage for:
@@ -31,6 +33,7 @@
   - Static passthrough check ensures command exists and exits via `serve_stdio()` return code.
 
 ### 3) WL-106: fail-loud collision guard for session IDs
+
 - Tightened session manager semantics to prevent silent overwrite of existing sessions:
   - `src/thegent/session/manager.py`
   - Added `SessionAlreadyExistsError` for duplicate IDs in both `create_session()` and `fork_session(..., new_session_id=...)`.
@@ -41,6 +44,7 @@
   - New checks for duplicate create/fork target IDs failing loudly.
 
 ### 4) WL-111: tighten skill activation input contract + docs
+
 - Added explicit runtime type validation for `skill_name`:
   - `src/thegent/mcp/server/tools_skills.py`
   - Non-string values now return structured fail-loud error payload instead of raising on `.strip()`.
@@ -51,6 +55,7 @@
   - `docs/reference/MCP_SKILL_TOOL_SCHEMAS.md`
 
 ### 5) WL-117: enforce extension README quickstart contract in metadata checker
+
 - Enhanced metadata checker to validate extension README quickstart contract:
   - `scripts/check_extension_package_metadata.py`
   - Now enforces:
@@ -64,10 +69,12 @@
   - `tests/test_wl117_extension_readme_quickstart.py`
 
 ## Docs Updated
+
 - `docs/guides/QUALITY_ASSURANCE.md`
   - Clarified that pre-commit/CI should use canonical `task quality:max-lines` path rather than direct script invocation.
 
 ## Focused Validation
+
 - `uv run pytest -q tests/test_wl122_max_lines_ci_path.py` (pass: 4 passed)
 - `uv run python scripts/check_wl122_max_lines_canonical_path.py --strict` (pass)
 - `uv run pytest -q tests/protocols/test_jsonrpc_agent_server_contract.py tests/test_wl104_agent_server_cli_wiring.py` (pass: 9 passed)
@@ -79,8 +86,10 @@
 - `uv run python -m py_compile scripts/check_wl122_max_lines_canonical_path.py scripts/check_extension_package_metadata.py src/thegent/session/manager.py src/thegent/mcp/server/tools_skills.py` (pass)
 
 ## Notes
+
 - `tests/mcp/test_tools_skills_registry_smoke.py` passed with existing `PydanticJsonSchemaWarning` warnings from FastMCP dependency defaults; no functional failures in this WL slice.
 
 ## Guardrails
+
 - `docs/reference/WORK_STREAM.md` was not modified.
 - Changes were scoped to WL-122, WL-104, WL-106, WL-111, WL-117 surfaces and left unrelated workspace edits untouched.

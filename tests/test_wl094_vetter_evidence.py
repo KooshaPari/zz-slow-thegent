@@ -31,7 +31,6 @@ from thegent.govern.vetter.models import (
 from thegent.govern.vetter.orchestrator import VetterOrchestrator
 from thegent.governance.compliance import ComplianceEvidence, EvidenceStore
 
-
 # ---------------------------------------------------------------------------
 # Helpers
 # ---------------------------------------------------------------------------
@@ -246,7 +245,9 @@ async def test_evidence_payload_contains_failed_checks(tmp_path: Path) -> None:
 
 
 @pytest.mark.asyncio
-async def test_evidence_payload_failed_passed_checks_capture_exact_details(tmp_path: Path) -> None:
+async def test_evidence_payload_failed_passed_checks_capture_exact_details(
+    tmp_path: Path,
+) -> None:
     """Mixed check outcomes preserve exact failed/passed check-name details. # @trace WL-094"""
     store = _make_store(tmp_path)
     orch = _make_orch(
@@ -272,7 +273,9 @@ async def test_evidence_payload_failed_passed_checks_capture_exact_details(tmp_p
 
 
 @pytest.mark.asyncio
-async def test_evidence_payload_failed_passed_checks_empty_side_is_explicit(tmp_path: Path) -> None:
+async def test_evidence_payload_failed_passed_checks_empty_side_is_explicit(
+    tmp_path: Path,
+) -> None:
     """All-pass verdict writes empty failed_checks list and non-empty passed_checks. # @trace WL-094"""
     store = _make_store(tmp_path)
     orch = _make_orch(
@@ -551,7 +554,9 @@ async def test_append_called_with_exact_kwargs(tmp_path: Path) -> None:
 
 
 @pytest.mark.asyncio
-async def test_append_raises_when_evidence_integrity_check_fails(tmp_path: Path) -> None:
+async def test_append_raises_when_evidence_integrity_check_fails(
+    tmp_path: Path,
+) -> None:
     """evaluate() fails loudly when evidence_store.verify_integrity() returns False. # @trace WL-094"""
     mock_store = MagicMock()
     mock_store.verify_integrity.return_value = False
@@ -883,7 +888,9 @@ async def test_evidence_record_is_valid_compliance_evidence(tmp_path: Path) -> N
 
 
 @pytest.mark.asyncio
-async def test_evidence_append_order_matches_evaluate_order_across_runs(tmp_path: Path) -> None:
+async def test_evidence_append_order_matches_evaluate_order_across_runs(
+    tmp_path: Path,
+) -> None:
     """Evidence append order is stable across multiple evaluate() calls. # @trace WL-094"""
     store = _make_store(tmp_path)
     orch = _make_orch(
@@ -919,7 +926,9 @@ async def test_evidence_append_order_matches_evaluate_order_across_runs(tmp_path
 
 
 @pytest.mark.asyncio
-async def test_evidence_payload_reflects_fail_fast_executed_checks_only(tmp_path: Path) -> None:
+async def test_evidence_payload_reflects_fail_fast_executed_checks_only(
+    tmp_path: Path,
+) -> None:
     """Fail-fast short-circuit is reflected in evidence payload check lists. # @trace WL-094"""
     store = _make_store(tmp_path)
     first_bad = _failing_check("first_bad", "stop early")
@@ -934,7 +943,10 @@ async def test_evidence_payload_reflects_fail_fast_executed_checks_only(tmp_path
     await orch.evaluate(
         result=MagicMock(),
         policy=policy,
-        run_context={"run_id": "run-fail-fast-evidence", "session_id": "sess-fail-fast"},
+        run_context={
+            "run_id": "run-fail-fast-evidence",
+            "session_id": "sess-fail-fast",
+        },
     )
 
     first_bad.check.assert_awaited_once()
@@ -945,7 +957,9 @@ async def test_evidence_payload_reflects_fail_fast_executed_checks_only(tmp_path
 
 
 @pytest.mark.asyncio
-async def test_evidence_append_rejects_whitespace_only_session_id(tmp_path: Path) -> None:
+async def test_evidence_append_rejects_whitespace_only_session_id(
+    tmp_path: Path,
+) -> None:
     """Whitespace-only session_id is rejected before evidence append. # @trace WL-094"""
     store = _make_store(tmp_path)
     orch = _make_orch(tmp_path, {"alpha": _passing_check("alpha")}, store)

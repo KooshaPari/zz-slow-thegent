@@ -123,7 +123,6 @@ from thegent.orchestration.strategies.speculative_strategies import (
     should_terminate_early,
 )
 
-
 # ---------------------------------------------------------------------------
 # Helpers — provider cost table mirrored from the dormant
 # ``test_speculative_strategies.py`` so the spec is hermetic.

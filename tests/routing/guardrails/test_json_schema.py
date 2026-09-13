@@ -14,7 +14,6 @@ from thegent.utils.routing_impl.guardrails.json_schema import (
     validate_json_output,
 )
 
-
 pytestmark = pytest.mark.requirement("FR-GUARD-052")
 
 _SIMPLE_SCHEMA: dict = {

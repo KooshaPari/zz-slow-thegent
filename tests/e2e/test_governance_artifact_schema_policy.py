@@ -2,10 +2,13 @@
 
 from __future__ import annotations
 
-import orjson as json
 from pathlib import Path
 
-from tests.e2e.test_governance_health_artifact import test_governance_health_artifact_schema_and_counts
+import orjson as json
+
+from tests.e2e.test_governance_health_artifact import (
+    test_governance_health_artifact_schema_and_counts,
+)
 from tests.e2e.test_governance_inventory_artifact import _inventory_payload
 
 

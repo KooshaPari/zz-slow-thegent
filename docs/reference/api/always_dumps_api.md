@@ -12,7 +12,7 @@ Writer for conversation dumps.
 
 ### Methods
 
-#### ConversationDumpWriter.__init__
+#### ConversationDumpWriter.**init**
 
 ```python
 __init__(self: Any, output_dir: Any)

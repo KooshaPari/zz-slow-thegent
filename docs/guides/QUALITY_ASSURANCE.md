@@ -8,13 +8,13 @@
 
 ### 1.1 Code Quality Targets
 
-| Metric | Target | Current |
-|--------|--------|---------|
-| Line Coverage | 80% | 78% |
-| Branch Coverage | 70% | 65% |
-| Type Errors | 0 | 12 |
-| Lint Errors | 0 | 3 |
-| Security Issues | 0 | 0 |
+| Metric          | Target | Current |
+| --------------- | ------ | ------- |
+| Line Coverage   | 80%    | 78%     |
+| Branch Coverage | 70%    | 65%     |
+| Type Errors     | 0      | 12      |
+| Lint Errors     | 0      | 3       |
+| Security Issues | 0      | 0       |
 
 ### 1.2 Quality Gates
 
@@ -48,10 +48,12 @@ task lint:architecture  # Architecture validation
 ```
 
 CI parity note:
+
 - `config/quality-dag.yaml` defines `quality` as `task quality`.
 - CI runs that canonical command through the DAG runner (`quality:dag:ci:junit`) to produce `.quality/summary.md`, `.quality/last-run.json`, and JUnit XML.
 
 Quality alias migration note (WL-123):
+
 - Deprecated aliases (for example `quality-a*`, `quality-fix*`) are retired in favor of canonical commands.
 - Replacement mapping is source-controlled in `config/deprecated_quality_aliases.json`.
 - Audit locally with `task quality:deprecated-aliases`.
@@ -65,6 +67,7 @@ Quality alias migration note (WL-123):
 - `summary-json` contract is stable: `{ok, deprecated_count, replacement_count, unmapped_deprecated_count, canonical_missing_count, total_findings}`.
 
 Core boundary checker mode note (WL-121):
+
 - Local/default mode is advisory and non-blocking: `task quality:core-boundary`.
 - CI strict mode is blocking: `task quality:core-boundary:strict` (or `uv run python scripts/check_thegent_core_boundary.py --strict`).
 - Machine-readable output is available for tooling: `uv run python scripts/check_thegent_core_boundary.py --format json`.
@@ -75,15 +78,16 @@ Core boundary checker mode note (WL-121):
 
 Core boundary checker config examples (WL-121):
 
-| Type | Prefix | Example import | Result |
-|------|--------|----------------|--------|
-| allow | `thegent.core` | `from thegent.core import prompt_queue` | Allowed |
-| allow | `thegent.queue` | `from thegent.queue import enqueue` | Allowed |
-| allow | `thegent.config` | `import thegent.config` | Allowed |
-| block | `thegent` | `import thegent` | Blocked unless also allowlisted |
-| block | `thegent` | `from thegent.mcp import server` | Blocked unless also allowlisted |
+| Type  | Prefix           | Example import                          | Result                          |
+| ----- | ---------------- | --------------------------------------- | ------------------------------- |
+| allow | `thegent.core`   | `from thegent.core import prompt_queue` | Allowed                         |
+| allow | `thegent.queue`  | `from thegent.queue import enqueue`     | Allowed                         |
+| allow | `thegent.config` | `import thegent.config`                 | Allowed                         |
+| block | `thegent`        | `import thegent`                        | Blocked unless also allowlisted |
+| block | `thegent`        | `from thegent.mcp import server`        | Blocked unless also allowlisted |
 
 Benchmark regression smoke (WL-078):
+
 - Run `task bench:smoke:ci` for a deterministic benchmark smoke lane in CI.
 - CI calls the same smoke command before broader quality gates.
 - Refresh the committed baseline with `task bench:baseline:refresh` whenever benchmark semantics intentionally change.
@@ -92,6 +96,7 @@ Benchmark regression smoke (WL-078):
 - Benchmark JSON rows must include a non-empty `label`; empty labels fail the regression checker.
 
 CI benchmark smoke command snippet (WL-079):
+
 ```bash
 task bench:smoke:ci
 # current command:
@@ -101,11 +106,13 @@ CARGO_NET_OFFLINE=true cargo bench --locked --manifest-path crates/Cargo.toml -p
 ```
 
 Benchmark workflow contract (WL-079):
+
 - Keep workflow wiring on the task wrapper path (`task bench:smoke:ci`) inside the `Deterministic benchmark smoke` CI step.
 - Keep `bench:smoke:ci` as a single-command wrapper (`uv run pytest -q tests/test_wl079_audit_bench.py`) so smoke coverage remains deterministic.
 - Do not inline raw `cargo bench` commands in `.github/workflows/ci.yml`; task wiring owns benchmark invocation details.
 
 Vetter auditability contract (WL-093/WL-094):
+
 - `vetter_escalation.reason` should remain deterministic and include `failed_checks`, `policy_escalate_on`, and `policy_lane`.
 - Evidence payload check lists (`failed_checks`, `passed_checks`) must reflect executed checks only, including fail-fast short-circuit behavior.
 
@@ -138,6 +145,7 @@ task quality:max-lines
 ```
 
 Notes:
+
 - This task is the supported local entrypoint for max-lines enforcement.
 - `scripts/max-lines-gate.sh` is an internal implementation detail used by task wiring.
 - Pre-commit (`pre-commit`, changed-file scope) and CI should call the canonical task path (`task quality:max-lines`) instead of invoking the script directly.
@@ -160,6 +168,7 @@ uv run pytest -q \
 ```
 
 Notes:
+
 - WL-122 checker now enforces exactly-once execution of both strict checker commands, and order: WL-122 checker -> WL-117 checker -> `task quality:max-lines`.
 - WL-122 checker now also requires CI to install Task via `arduino/setup-task@v2` before running `task quality:max-lines`.
 - WL-122 checker now requires `.pre-commit-config.yaml` to declare `max-lines-gate` exactly once.
@@ -198,6 +207,7 @@ task metrics:slo:emit-stub
 ```
 
 Expected artifacts:
+
 - `.quality/loc-metrics.json` (collector output)
 - `.quality/wl137-ci-summary.json` (CI summary envelope with runtime buckets + drift)
 - `docs/reports/WL-137-weekly-YYYY-MM-DD.md` (weekly diagnosis report)
@@ -221,6 +231,7 @@ task quality:runtime-contracts
 ```
 
 Gate coverage:
+
 - `quality:runtime-contracts:zig-abi` enforces:
   - ABI contract schema/version validation (`scripts/validate_zig_abi_contract.py`)
   - required symbol + error-envelope conformance check (`scripts/check_zig_abi_artifact.py`)
@@ -326,6 +337,7 @@ def test_cli_run_basic():
 ```python
 from pydantic_settings import BaseSettings
 
+
 class Settings(BaseSettings):
     api_key: str = ""
 
@@ -352,18 +364,19 @@ bandit --config .bandit.yaml --recursive src/
 
 ### 6.1 Performance Targets
 
-| Operation | Target | Current |
-|-----------|--------|---------|
-| CLI startup | < 1s | 0.8s |
-| Hook execution | < 100ms | 85ms |
-| MCP tool call | < 50ms | 42ms |
-| Memory usage | < 100MB | 78MB |
+| Operation      | Target  | Current |
+| -------------- | ------- | ------- |
+| CLI startup    | < 1s    | 0.8s    |
+| Hook execution | < 100ms | 85ms    |
+| MCP tool call  | < 50ms  | 42ms    |
+| Memory usage   | < 100MB | 78MB    |
 
 ### 6.2 Performance Testing
 
 ```python
 import pytest
 import time
+
 
 @pytest.mark.performance
 def test_hook_execution_time():
@@ -415,18 +428,23 @@ Every module should have:
 # Module Name
 
 ## Overview
+
 Brief description of module purpose.
 
 ## Usage
+
 Code examples showing how to use.
 
 ## Configuration
+
 Environment variables and settings.
 
 ## Testing
+
 How to run tests for this module.
 
 ## Related
+
 Links to related modules and documentation.
 ```
 
@@ -440,7 +458,7 @@ Links to related modules and documentation.
 - [ ] Deterministic benchmark smoke passed (`task bench:smoke:ci`)
 - [ ] CI benchmark smoke step present in PR checks ("Deterministic benchmark smoke")
 - [ ] Audit benchmark smoke snippet captured in review notes:
-  `task bench:smoke:ci  # wraps CARGO_NET_OFFLINE=true cargo bench --locked -p thegent-router --bench audit_bench`
+      `task bench:smoke:ci  # wraps CARGO_NET_OFFLINE=true cargo bench --locked -p thegent-router --bench audit_bench`
 - [ ] Tests added/updated
 - [ ] Documentation updated
 - [ ] No TODO comments

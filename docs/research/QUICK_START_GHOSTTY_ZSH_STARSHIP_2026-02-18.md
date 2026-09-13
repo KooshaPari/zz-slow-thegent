@@ -233,5 +233,5 @@ zsh -xvic exit 2>&1 | grep -E "^\+\+" | head -20
 
 ---
 
-*Quick Start Date: 2026-02-18*
-*See full guides: GHOSTTY_SETUP_GUIDE_2026-02-18.md, ZSH_STARSHIP_SETUP_GUIDE_2026-02-18.md*
+_Quick Start Date: 2026-02-18_
+_See full guides: GHOSTTY_SETUP_GUIDE_2026-02-18.md, ZSH_STARSHIP_SETUP_GUIDE_2026-02-18.md_

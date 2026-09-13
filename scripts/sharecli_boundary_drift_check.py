@@ -284,7 +284,12 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--config", default=DEFAULT_CONFIG, help="Boundary allowlist config.")
     parser.add_argument("--format", choices=("text", "json", "summary-json"), default="text")
     parser.add_argument("--strict", action="store_true", help="Return nonzero when fail findings exist.")
-    parser.add_argument("--enforce-lane", action="append", default=[], help="Treat a migration lane as enforced.")
+    parser.add_argument(
+        "--enforce-lane",
+        action="append",
+        default=[],
+        help="Treat a migration lane as enforced.",
+    )
     args = parser.parse_args(argv)
 
     root = Path(args.root).resolve()

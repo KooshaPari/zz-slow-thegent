@@ -26,7 +26,7 @@ to the previous record's hash, forming a tamper-evident chain.
 
 ### Methods
 
-#### EvidenceLedger.__init__
+#### EvidenceLedger.**init**
 
 ```python
 __init__(self: Any, session_dir: Path)

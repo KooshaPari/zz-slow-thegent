@@ -4,9 +4,9 @@ import pytest
 
 pytest.importorskip("PySide6")
 
-from unittest.mock import MagicMock, patch
+from unittest.mock import MagicMock
 
-from thegent.tray.core.plugin_system import SidebarItem, TrayPlugin
+from thegent.tray.core.plugin_system import TrayPlugin
 from thegent.tray.plugins.thegent.api_client import ThegentAPIClient
 
 

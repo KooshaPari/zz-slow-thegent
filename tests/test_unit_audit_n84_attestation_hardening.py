@@ -12,11 +12,6 @@ Source: src/thegent/governance/attestation.py
 
 from __future__ import annotations
 
-import json
-from pathlib import Path
-
-import pytest
-
 from thegent.governance.attestation import AttestationGenerator, AuditReportGenerator
 
 

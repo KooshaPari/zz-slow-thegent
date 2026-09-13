@@ -30,6 +30,7 @@ This document consolidates extensive web research on documentation systems, best
 **Key Features Discovered**:
 
 #### Code Block Enhancements
+
 - **Line Highlighting**: `{4}`, `{4,7-13,16,23-27,40}` for highlighting specific lines
 - **Focus Mode**: `// [!code focus]` to blur other parts
 - **Diff Mode**: `// [!code --]` and `// [!code ++]` for colored diffs
@@ -40,6 +41,7 @@ This document consolidates extensive web research on documentation systems, best
 - **VS Code Regions**: Import specific regions using `#region` markers
 
 #### Custom Containers
+
 - **Default Types**: `info`, `tip`, `warning`, `danger`, `details`
 - **Custom Titles**: `::: danger STOP` for custom titles
 - **Additional Attributes**: Support for `{open}` and other HTML attributes
@@ -47,11 +49,13 @@ This document consolidates extensive web research on documentation systems, best
 - **GitHub-Flavored Alerts**: `> [!NOTE]` syntax support
 
 #### Math Support
+
 - **MathJax3 Integration**: `markdown-it-mathjax3` plugin
 - **Inline Math**: `$a \ne 0$` syntax
 - **Block Math**: `$$ x = {-b \pm \sqrt{b^2-4ac} \over 2a} $$`
 
 #### Advanced Features
+
 - **Image Lazy Loading**: Configurable via `markdown.image.lazyLoading`
 - **Markdown File Inclusion**: Include other markdown files with line ranges
 - **Header Anchors**: Custom anchors via `{#my-anchor}` syntax
@@ -70,6 +74,7 @@ This document consolidates extensive web research on documentation systems, best
 **Key Capabilities**:
 
 #### Vue in Markdown
+
 - **Templating**: `{{ 1 + 1 }}` interpolation
 - **Directives**: `v-for`, `v-if`, etc. work directly
 - **Script Setup**: Full `<script setup>` support
@@ -77,11 +82,13 @@ This document consolidates extensive web research on documentation systems, best
 - **Runtime APIs**: `useData()` for page metadata access
 
 #### Component Usage
+
 - **Local Import**: Import components per-page for code splitting
 - **Global Registration**: Register components globally via `enhanceApp`
 - **Components in Headers**: Support for Vue components in headers (with proper escaping)
 
 #### Advanced Features
+
 - **CSS Pre-processors**: Built-in support for SCSS, Less, Stylus
 - **Teleports**: SSG support for teleports to body
 - **VS Code IntelliSense**: Full TypeScript support for `.md` files
@@ -99,6 +106,7 @@ This document consolidates extensive web research on documentation systems, best
 **Advanced Features**:
 
 #### File-Based Routing
+
 - **Clean URLs**: Configurable `.html` suffix removal
 - **Route Rewrites**: Custom path mappings with `path-to-regexp`
 - **Dynamic Routes**: `[pkg].md` with `[pkg].paths.js` loaders
@@ -106,6 +114,7 @@ This document consolidates extensive web research on documentation systems, best
 - **Watching**: Auto-rebuild on template/data file changes
 
 #### Data Loaders
+
 - **Build-Time Loading**: `.data.js` files for arbitrary data
 - **Local Files**: Watch patterns for CSV, JSON, etc.
 - **Remote Data**: Async data fetching at build time
@@ -125,17 +134,20 @@ This document consolidates extensive web research on documentation systems, best
 **Advanced Customization**:
 
 #### Layout Slots
+
 - **Doc Layout**: `aside-outline-before`, `doc-after`, `doc-footer-before`, etc.
 - **Home Layout**: `home-hero-after`, `home-features-before`, etc.
 - **Page Layout**: `page-bottom`, `page-top`
 - **Global Slots**: `layout-top`, `layout-bottom`, `nav-bar-content-after`
 
 #### CSS Customization
+
 - **CSS Variables**: Override theme variables
 - **Font Customization**: Use `vitepress/theme-without-fonts` for custom fonts
 - **PostCSS Isolation**: Style isolation for component libraries
 
 #### View Transitions
+
 - **Appearance Toggle**: Custom transitions for dark mode
 - **Route Change**: Coming soon (not yet available)
 
@@ -150,6 +162,7 @@ This document consolidates extensive web research on documentation systems, best
 **Research Source**: [VitePress SSR Compatibility](https://vitepress.dev/guide/ssr-compat)
 
 **Key Considerations**:
+
 - **Browser APIs**: Only in `beforeMount` or `mounted` hooks
 - **ClientOnly Component**: Built-in wrapper for non-SSR components
 - **Conditional Imports**: `import.meta.env.SSR` flag
@@ -170,17 +183,20 @@ This document consolidates extensive web research on documentation systems, best
 **Advanced Features**:
 
 #### Code Annotations
+
 - **Numeric Markers**: `# (1)!` syntax for annotations
 - **Comment Stripping**: `!` after marker removes comment characters
 - **Custom Selectors**: Per-language selectors for non-comment annotations
 - **Rich Content**: Annotations can contain code, formatted text, images
 
 #### Code Copy & Selection
+
 - **Copy Button**: Automatic copy button on code blocks
 - **Selection Button**: Line range selection for linking
 - **Per-Block Control**: Enable/disable via attribute lists
 
 #### Code Block Features
+
 - **Titles**: `title="filename.py"` for file names
 - **Line Numbers**: `linenums="1"` with custom starting numbers
 - **Highlighting**: `hl_lines="2 3"` or `hl_lines="3-5"` for ranges
@@ -188,6 +204,7 @@ This document consolidates extensive web research on documentation systems, best
 - **VS Code Regions**: Include specific regions
 
 **Comparison with VitePress**:
+
 - ✅ VitePress: Line highlighting, line numbers, code import
 - ❌ VitePress: Code annotations (not available)
 - ❌ VitePress: Copy/selection buttons (not built-in)
@@ -202,6 +219,7 @@ This document consolidates extensive web research on documentation systems, best
 **Research Source**: [MkDocs Material Admonitions](https://squidfunk.github.io/mkdocs-material/reference/admonitions/)
 
 **Advanced Features**:
+
 - **12 Types**: `note`, `abstract`, `info`, `tip`, `success`, `question`, `warning`, `failure`, `danger`, `bug`, `example`, `quote`
 - **Custom Icons**: Per-type icon customization
 - **Nested Admonitions**: Support for nesting
@@ -210,6 +228,7 @@ This document consolidates extensive web research on documentation systems, best
 - **Custom Types**: Create custom admonition types with CSS
 
 **Comparison with VitePress**:
+
 - ✅ VitePress: Basic containers (`info`, `tip`, `warning`, `danger`, `details`)
 - ⚠️ VitePress: Fewer types, no custom icons
 - ✅ VitePress: GitHub-flavored alerts support
@@ -226,6 +245,7 @@ This document consolidates extensive web research on documentation systems, best
 **Advanced Features**:
 
 #### Search Plugin
+
 - **Lunr.js**: Client-side full-text search
 - **Multi-Language**: Support for 25+ languages with stemming
 - **Custom Separators**: Regex-based word splitting
@@ -234,6 +254,7 @@ This document consolidates extensive web research on documentation systems, best
 - **Metadata Control**: `boost` and `exclude` per-page
 
 #### Navigation Features
+
 - **Instant Loading**: SPA-like navigation without full reload
 - **Instant Prefetching**: Prefetch on hover
 - **Progress Indicator**: Loading progress bar
@@ -250,6 +271,7 @@ This document consolidates extensive web research on documentation systems, best
 - **Back-to-Top Button**: Appears on scroll up
 
 **Comparison with VitePress**:
+
 - ✅ VitePress: Basic search (Minisearch)
 - ❌ VitePress: Instant loading (not available)
 - ❌ VitePress: Instant prefetching (not available)
@@ -268,6 +290,7 @@ This document consolidates extensive web research on documentation systems, best
 **Research Source**: [MkDocs Material Colors](https://squidfunk.github.io/mkdocs-material/setup/changing-the-colors/)
 
 **Advanced Features**:
+
 - **Color Schemes**: `default` (light) and `slate` (dark)
 - **Primary/Accent Colors**: 20+ Material Design colors
 - **Color Palette Toggle**: Light/dark mode toggle
@@ -277,6 +300,7 @@ This document consolidates extensive web research on documentation systems, best
 - **Custom Schemes**: Named color schemes
 
 **Comparison with VitePress**:
+
 - ✅ VitePress: Dark mode support
 - ✅ VitePress: System preference detection
 - ✅ VitePress: CSS variable customization
@@ -294,6 +318,7 @@ This document consolidates extensive web research on documentation systems, best
 **Research Source**: [Docusaurus](https://docusaurus.io/)
 
 **Key Features**:
+
 - **MDX Support**: React components in Markdown
 - **Versioning**: Document versioning out-of-the-box
 - **i18n**: Built-in internationalization
@@ -302,11 +327,13 @@ This document consolidates extensive web research on documentation systems, best
 - **Plugin System**: Extensive plugin ecosystem
 
 **Strengths**:
+
 - Mature ecosystem
 - Strong React integration
 - Excellent for large projects
 
 **Weaknesses**:
+
 - React-only (not Vue)
 - Heavier than VitePress
 - More complex setup
@@ -320,6 +347,7 @@ This document consolidates extensive web research on documentation systems, best
 **Research Source**: [Nextra](https://nextra.site/)
 
 **Key Features**:
+
 - **Next.js Based**: Full Next.js power
 - **MDX 3**: Latest MDX with performance boost
 - **i18n**: Easy internationalization
@@ -329,11 +357,13 @@ This document consolidates extensive web research on documentation systems, best
 - **SEO**: Built-in SEO optimization
 
 **Strengths**:
+
 - Next.js ecosystem
 - Modern features (MDX 3, Server Components)
 - Good performance
 
 **Weaknesses**:
+
 - Next.js dependency
 - More complex than VitePress
 - React-only
@@ -347,6 +377,7 @@ This document consolidates extensive web research on documentation systems, best
 **Research Source**: [Starlight](https://starlight.astro.build/)
 
 **Key Features**:
+
 - **Astro Based**: Framework-agnostic
 - **Markdown, Markdoc, MDX**: Multiple formats
 - **TypeScript**: Type-safe frontmatter
@@ -354,11 +385,13 @@ This document consolidates extensive web research on documentation systems, best
 - **Built-in Features**: Navigation, search, i18n, SEO, dark mode
 
 **Strengths**:
+
 - Framework-agnostic
 - Modern architecture
 - Good performance
 
 **Weaknesses**:
+
 - Newer project
 - Smaller ecosystem
 - Astro learning curve
@@ -372,6 +405,7 @@ This document consolidates extensive web research on documentation systems, best
 **Research Source**: [Sphinx](https://sphinx-doc.org/)
 
 **Key Features**:
+
 - **reStructuredText**: Primary format (also supports Markdown)
 - **Cross-Referencing**: Powerful cross-reference system
 - **Multiple Formats**: HTML, LaTeX, ePub, Texinfo
@@ -380,11 +414,13 @@ This document consolidates extensive web research on documentation systems, best
 - **i18n**: Built-in internationalization
 
 **Strengths**:
+
 - Mature and stable
 - Excellent for Python projects
 - Powerful cross-referencing
 
 **Weaknesses**:
+
 - reStructuredText learning curve
 - More complex than Markdown
 - Python-focused
@@ -398,17 +434,20 @@ This document consolidates extensive web research on documentation systems, best
 **Research Source**: [TypeDoc](https://typedoc.org/)
 
 **Key Features**:
+
 - **TypeScript Focus**: Converts TypeScript comments to docs
 - **JSON Model**: Export as JSON
 - **Plugin System**: Extensible
 - **Theme Support**: Multiple themes
 
 **Strengths**:
+
 - Excellent for TypeScript projects
 - Automatic API generation
 - Good for reference docs
 
 **Weaknesses**:
+
 - TypeScript-only
 - Less suitable for narrative docs
 - Limited customization
@@ -424,6 +463,7 @@ This document consolidates extensive web research on documentation systems, best
 **Research Source**: [Swagger](https://www.swagger.io/)
 
 **Key Features**:
+
 - **OpenAPI Standard**: Industry standard API specification
 - **Swagger Editor**: Browser-based editor
 - **Swagger UI**: Interactive API documentation
@@ -439,6 +479,7 @@ This document consolidates extensive web research on documentation systems, best
 **Research Source**: [Redocly](https://redocly.com/)
 
 **Key Features**:
+
 - **Redoc**: Beautiful API docs renderer
 - **Reunite**: Collaboration platform
 - **Revel**: Developer hub
@@ -454,6 +495,7 @@ This document consolidates extensive web research on documentation systems, best
 **Research Source**: [Stoplight](https://stoplight.io/)
 
 **Key Features**:
+
 - **Design-First**: API design workflow
 - **Documentation**: Built-in docs
 - **Testing**: Functional and contract testing
@@ -468,6 +510,7 @@ This document consolidates extensive web research on documentation systems, best
 **Research Source**: [Scalar](https://scalar.com/), [GitHub](https://github.com/scalar/scalar)
 
 **Key Features**:
+
 - **OpenAPI Renderer**: Modern API reference UI
 - **API Client**: Postman alternative
 - **SDK Generation**: TypeScript, Python, Go, PHP, Java, Ruby
@@ -476,6 +519,7 @@ This document consolidates extensive web research on documentation systems, best
 - **Open Source**: Fully open-source
 
 **Strengths**:
+
 - Modern UI
 - Open-source
 - Comprehensive tooling
@@ -494,6 +538,7 @@ This document consolidates extensive web research on documentation systems, best
 **Research Source**: [Read the Docs](https://docs.readthedocs.io/)
 
 **Key Features**:
+
 - **Multiple Formats**: Sphinx, MkDocs, Docusaurus support
 - **Versioning**: Multiple versions automatically
 - **Pull Request Previews**: Preview docs from PRs
@@ -512,6 +557,7 @@ This document consolidates extensive web research on documentation systems, best
 **Research Source**: [GitBook](https://www.gitbook.com/)
 
 **Key Features**:
+
 - **AI-Native**: GitBook Agent for proactive suggestions
 - **Git Sync**: Edit in IDE or visual editor
 - **Visual Editor**: WYSIWYG editing
@@ -521,11 +567,13 @@ This document consolidates extensive web research on documentation systems, best
 - **Customization**: Full HTML/CSS/JS control
 
 **Strengths**:
+
 - Modern AI features
 - Good collaboration
 - Visual editing
 
 **Weaknesses**:
+
 - Proprietary platform
 - Cost for advanced features
 - Less control than self-hosted
@@ -541,6 +589,7 @@ This document consolidates extensive web research on documentation systems, best
 **Research Source**: [Write the Docs Guide](https://www.writethedocs.org/guide/)
 
 **Key Principles**:
+
 - **Docs as Code**: Treat documentation like code
 - **Accessibility**: WCAG compliance
 - **Style Guides**: Consistent writing style
@@ -556,6 +605,7 @@ This document consolidates extensive web research on documentation systems, best
 **Research Source**: [Diátaxis](https://diataxis.fr/)
 
 **Key Framework**:
+
 - **Four Types**: Tutorials, How-to Guides, Reference, Explanation
 - **Systematic Approach**: Organized around user needs
 - **Quality Principle**: Active quality maintenance
@@ -569,6 +619,7 @@ This document consolidates extensive web research on documentation systems, best
 **Research Source**: [Divio Documentation System](https://documentation.divio.com/)
 
 **Key Framework**:
+
 - **Four Types**: Tutorials, How-to Guides, Technical Reference, Explanation
 - **Different Approaches**: Each type requires different approach
 - **Universal Scheme**: Applicable to any field
@@ -584,6 +635,7 @@ This document consolidates extensive web research on documentation systems, best
 **Research Source**: [Stripe Docs](https://www.stripe.com/docs)
 
 **Key Features**:
+
 - **Clear Structure**: Product-based organization
 - **Code Examples**: Multiple languages
 - **Interactive**: Try-it-out functionality
@@ -591,6 +643,7 @@ This document consolidates extensive web research on documentation systems, best
 - **Versioning**: Multiple API versions
 
 **Lessons**:
+
 - Product-based organization works well
 - Interactive examples are valuable
 - Clear navigation is critical
@@ -602,6 +655,7 @@ This document consolidates extensive web research on documentation systems, best
 **Research Source**: [GitHub Docs](https://docs.github.com/en)
 
 **Key Features**:
+
 - **Comprehensive**: Covers all GitHub features
 - **Search**: Excellent search
 - **Versioning**: Multiple versions
@@ -609,6 +663,7 @@ This document consolidates extensive web research on documentation systems, best
 - **Clear Structure**: Well-organized
 
 **Lessons**:
+
 - Comprehensive coverage is important
 - Good search is essential
 - Clear organization helps users
@@ -620,12 +675,14 @@ This document consolidates extensive web research on documentation systems, best
 **Research Source**: [Vercel Docs](https://docs.vercel.com/)
 
 **Key Features**:
+
 - **Framework Support**: Multiple frameworks
 - **Quick References**: Easy-to-find info
 - **AI Integration**: AI-powered features
 - **Clear Structure**: Well-organized
 
 **Lessons**:
+
 - Quick references are valuable
 - Framework-specific docs help
 - AI integration is modern
@@ -639,6 +696,7 @@ This document consolidates extensive web research on documentation systems, best
 **Research Source**: [WCAG Quick Reference](https://www.w3.org/WAI/WCAG21/quickref/)
 
 **Key Requirements**:
+
 - **Perceivable**: Text alternatives, captions, sufficient contrast
 - **Operable**: Keyboard accessible, no seizures, navigable
 - **Understandable**: Readable, predictable, input assistance
@@ -653,6 +711,7 @@ This document consolidates extensive web research on documentation systems, best
 **Research Source**: [Web.dev Performance](https://web.dev/learn/performance/)
 
 **Key Areas**:
+
 - **Core Web Vitals**: LCP, FID, CLS
 - **Code Splitting**: Reduce initial bundle size
 - **Image Optimization**: WebP/AVIF, lazy loading
@@ -742,20 +801,20 @@ This document consolidates extensive web research on documentation systems, best
 
 ## Part 11: Feature Comparison Matrix
 
-| Feature | VitePress | MkDocs Material | Docusaurus | Nextra | Starlight |
-|---------|-----------|-----------------|------------|--------|-----------|
-| **Markdown** | ✅ Rich | ✅ Rich | ✅ MDX | ✅ MDX 3 | ✅ Markdown/MDX |
-| **Code Annotations** | ❌ | ✅ | ❌ | ❌ | ❌ |
-| **Instant Loading** | ❌ | ✅ | ✅ | ✅ | ✅ |
-| **Navigation Tabs** | ⚠️ Basic | ✅ | ✅ | ✅ | ✅ |
-| **Search** | ⚠️ Basic | ✅ Advanced | ✅ Algolia | ✅ Pagefind | ✅ |
-| **API Docs** | ⚠️ Basic | ✅ mkdocstrings | ⚠️ Plugins | ⚠️ Plugins | ⚠️ Plugins |
-| **Versioning** | ❌ | ✅ mike | ✅ Built-in | ⚠️ Manual | ⚠️ Manual |
-| **i18n** | ✅ | ✅ | ✅ | ✅ | ✅ |
-| **Performance** | ✅ Excellent | ✅ Good | ⚠️ Moderate | ✅ Good | ✅ Excellent |
-| **Vue Support** | ✅ Native | ❌ | ❌ | ❌ | ✅ |
-| **React Support** | ⚠️ Possible | ❌ | ✅ Native | ✅ Native | ✅ |
-| **Customization** | ✅ High | ✅ High | ✅ High | ✅ High | ✅ High |
+| Feature              | VitePress    | MkDocs Material | Docusaurus  | Nextra      | Starlight       |
+| -------------------- | ------------ | --------------- | ----------- | ----------- | --------------- |
+| **Markdown**         | ✅ Rich      | ✅ Rich         | ✅ MDX      | ✅ MDX 3    | ✅ Markdown/MDX |
+| **Code Annotations** | ❌           | ✅              | ❌          | ❌          | ❌              |
+| **Instant Loading**  | ❌           | ✅              | ✅          | ✅          | ✅              |
+| **Navigation Tabs**  | ⚠️ Basic     | ✅              | ✅          | ✅          | ✅              |
+| **Search**           | ⚠️ Basic     | ✅ Advanced     | ✅ Algolia  | ✅ Pagefind | ✅              |
+| **API Docs**         | ⚠️ Basic     | ✅ mkdocstrings | ⚠️ Plugins  | ⚠️ Plugins  | ⚠️ Plugins      |
+| **Versioning**       | ❌           | ✅ mike         | ✅ Built-in | ⚠️ Manual   | ⚠️ Manual       |
+| **i18n**             | ✅           | ✅              | ✅          | ✅          | ✅              |
+| **Performance**      | ✅ Excellent | ✅ Good         | ⚠️ Moderate | ✅ Good     | ✅ Excellent    |
+| **Vue Support**      | ✅ Native    | ❌              | ❌          | ❌          | ✅              |
+| **React Support**    | ⚠️ Possible  | ❌              | ✅ Native   | ✅ Native   | ✅              |
+| **Customization**    | ✅ High      | ✅ High         | ✅ High     | ✅ High     | ✅ High         |
 
 ---
 
@@ -798,6 +857,7 @@ This document consolidates extensive web research on documentation systems, best
 **Status**: ✅ **EXTENDED WEB RESEARCH COMPLETE**
 
 **Research Scope**:
+
 - 50+ URLs researched
 - 10+ documentation systems analyzed
 - 5+ API documentation tools reviewed

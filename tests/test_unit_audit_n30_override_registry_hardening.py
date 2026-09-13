@@ -35,7 +35,6 @@ import pytest
 
 from thegent.execution import OverrideRegistry
 
-
 # ---------------------------------------------------------------------------
 # Lane 1 — NEW-1: per-instance RLock + concurrency safety
 # ---------------------------------------------------------------------------

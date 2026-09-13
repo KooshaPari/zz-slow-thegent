@@ -17,26 +17,32 @@
   - `doc-queue analyze` - Analyze a document
 
 **Integration:** Add to main CLI by importing and registering:
+
 ```python
 from thegent.cli_document_queue import doc_queue_app
+
 app.add_typer(doc_queue_app)
 ```
 
 ### ✅ 2. MCP Server Configuration
 
 **Files:**
+
 - `thegent/mcp/document_queue.py` - MCP server implementation
 - `thegent/mcp/server_config.py` - Configuration and startup utilities
 
 **Features:**
+
 - 7 MCP tools for agent interaction
 - Configuration system for queue file paths
 - Server instance creation utilities
 - Import fallback handling
 
 **Usage:**
+
 ```python
 from thegent.mcp.server_config import create_mcp_server_instance
+
 server = create_mcp_server_instance()
 ```
 
@@ -45,6 +51,7 @@ server = create_mcp_server_instance()
 **File:** `thegent/agents/document/processor.py`
 
 **New Processing Stages Added:**
+
 - `extract_frontmatter()` - Extract YAML frontmatter
 - `extract_headings()` - Extract markdown headings with levels
 - `extract_links()` - Extract markdown links and URLs
@@ -52,6 +59,7 @@ server = create_mcp_server_instance()
 - `calculate_readability()` - Calculate readability metrics
 
 **Usage:**
+
 ```python
 from thegent.agents.document.processor import (
     ProcessingPipeline,
@@ -75,6 +83,7 @@ pipeline.add_stage(calculate_readability)
 **File:** `thegent/tests/test_document_queue.py`
 
 **Test Coverage:**
+
 - ✅ Scanner functionality
 - ✅ Queue manager operations
 - ✅ Document processor
@@ -84,6 +93,7 @@ pipeline.add_stage(calculate_readability)
 - ✅ Exclusion patterns
 
 **Run Tests:**
+
 ```bash
 pytest thegent/tests/test_document_queue.py -v
 ```
@@ -110,9 +120,12 @@ thegent doc-queue process path/to/file.md --analyze
 
 ```python
 from thegent.agents.document import (
-    MarkdownScanner, ScanConfig, QueueManager,
-    DocumentProcessor, ProcessingPipeline,
-    DocumentAnalyzer
+    MarkdownScanner,
+    ScanConfig,
+    QueueManager,
+    DocumentProcessor,
+    ProcessingPipeline,
+    DocumentAnalyzer,
 )
 
 # Scan

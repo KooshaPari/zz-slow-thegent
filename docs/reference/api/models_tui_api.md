@@ -34,7 +34,7 @@ TUI for managing custom models.
 
 ### Methods
 
-#### ModelsTUI.__init__
+#### ModelsTUI.**init**
 
 ```python
 __init__(self: Any)

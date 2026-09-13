@@ -27,7 +27,10 @@ class TestGeoGuard:
         # @trace FR-SEC-001
         """Can add and enforce custom sovereignty rules."""
         guard = GeoGuard()
-        new_rule = SovereigntyRule(data_category="FINANCIAL_ASIA", allowed_regions={"ap-east-1", "ap-southeast-1"})
+        new_rule = SovereigntyRule(
+            data_category="FINANCIAL_ASIA",
+            allowed_regions={"ap-east-1", "ap-southeast-1"},
+        )
         guard.add_rule(new_rule)
 
         check = guard.validate_location("tx-999", "FINANCIAL_ASIA", "eu-central-1")

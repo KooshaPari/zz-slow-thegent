@@ -8,8 +8,9 @@ import os
 import re
 import shutil
 import subprocess
-from thegent.infra.shim_subprocess import run as shim_run
 from pathlib import Path
+
+from thegent.infra.shim_subprocess import run as shim_run
 
 _FASTEST_SHELL: str | None = None
 _SHELL_CACHE_ENABLED = True
@@ -159,7 +160,10 @@ def run_shell_command(
 
 
 def popen_shell_command(
-    cmd: str | list[str], shell: str | None = None, optimize_startup: bool = True, **kwargs
+    cmd: str | list[str],
+    shell: str | None = None,
+    optimize_startup: bool = True,
+    **kwargs,
 ) -> subprocess.Popen:
     """
     Open shell process using fastest available shell.

@@ -18,7 +18,6 @@ from thegent.utils.routing_impl.cel_router import (
     evaluate_cel_routes,
 )
 
-
 # ---------------------------------------------------------------------------
 # Helpers
 # ---------------------------------------------------------------------------
@@ -351,7 +350,11 @@ def test_compile_expression_caches() -> None:
 def test_cel_evaluator_direct() -> None:
     """CelEvaluator.evaluate works correctly."""
     routes = [
-        CelRoute(expression='context.tier == "premium"', target="premium-model", name="premium"),
+        CelRoute(
+            expression='context.tier == "premium"',
+            target="premium-model",
+            name="premium",
+        ),
         CelRoute(expression='context.tier == "free"', target="free-model", name="free"),
     ]
     evaluator = CelEvaluator(routes)

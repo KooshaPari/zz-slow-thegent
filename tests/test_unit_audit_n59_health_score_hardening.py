@@ -86,7 +86,7 @@ class TestHSPathGuard:
 
     def test_accepts_absolute_path(self, tmp_path: Path) -> None:
         path = _write_targets(tmp_path)
-        computer = HealthScoreComputer(path)
+        HealthScoreComputer(path)
         assert path.is_absolute()
 
 

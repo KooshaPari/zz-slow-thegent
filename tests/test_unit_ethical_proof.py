@@ -2,7 +2,11 @@
 
 import pytest
 
-from thegent.verification.ethics_proof import EthicalProofGenerator, EthicalProofVerifier, FormalEthicalProof
+from thegent.verification.ethics_proof import (
+    EthicalProofGenerator,
+    EthicalProofVerifier,
+    FormalEthicalProof,
+)
 
 
 @pytest.mark.unit
@@ -43,7 +47,11 @@ class TestEthicalProof:
 
         # Manually create a proof with no evidence
         proof = FormalEthicalProof(
-            verified_principles=["P1"], critique_hash="hash", aligned=True, signature="sig", evidence_ids=[]
+            verified_principles=["P1"],
+            critique_hash="hash",
+            aligned=True,
+            signature="sig",
+            evidence_ids=[],
         )
 
         success = verifier.verify(proof)

@@ -7,7 +7,10 @@ _terminal = pytest.importorskip(
     "thegent.tools.terminal",
     reason="thegent.tools.terminal module removed; tui compositor tests skipped",
 )
-from thegent.tools.terminal import TmuxPane  # noqa: E402  (importorskip may skip before this)
+from thegent.tools.terminal import (
+    TmuxPane,  # noqa: E402  (importorskip may skip before this)
+)
+
 from thegent.ux.compositor import TUICompositor
 
 
@@ -20,7 +23,10 @@ def test_compositor_filters_non_claude_panes(monkeypatch):
     ]
 
     monkeypatch.setattr("thegent.ux.compositor.list_tmux_panes", lambda: panes)
-    monkeypatch.setattr("thegent.ux.compositor.is_claude_code_pane", lambda pane: pane.command == "claude")
+    monkeypatch.setattr(
+        "thegent.ux.compositor.is_claude_code_pane",
+        lambda pane: pane.command == "claude",
+    )
 
     compositor = TUICompositor(include_non_claude=False)
     selected = compositor.collect_panes()
@@ -35,7 +41,10 @@ def test_compositor_renders_layout_with_preview(monkeypatch):
 
     monkeypatch.setattr("thegent.ux.compositor.list_tmux_panes", lambda: panes)
     monkeypatch.setattr("thegent.ux.compositor.is_claude_code_pane", lambda _: True)
-    monkeypatch.setattr("thegent.ux.compositor.capture_tmux_pane", lambda pane_id, last_lines=30: f"preview:{pane_id}")
+    monkeypatch.setattr(
+        "thegent.ux.compositor.capture_tmux_pane",
+        lambda pane_id, last_lines=30: f"preview:{pane_id}",
+    )
 
     compositor = TUICompositor(include_non_claude=True)
     layout = compositor.render(layout_name="balanced")

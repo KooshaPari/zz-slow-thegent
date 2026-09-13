@@ -3,6 +3,7 @@
 ## Completed Slices
 
 ### WL-079
+
 - Added offline-safe verification tests for benchmark wiring:
   - `tests/test_wl079_audit_bench.py`
   - Asserts `crates/thegent-router/Cargo.toml` declares `[[bench]] name = "audit_bench"` with `harness = false`.
@@ -10,18 +11,21 @@
 - Verified benchmark target compiles with `cargo bench --no-run`.
 
 ### WL-093
+
 - Validated escalation slice behavior remains correct with focused tests:
   - escalated verdict emits `vetter_escalation`
   - HITL `await_approval` call path executes
 - No additional code changes required for this wave slice.
 
 ### WL-094
+
 - Validated evidence append slice behavior remains correct with focused tests:
   - evidence appended on approved verdict
   - evidence appended on revision-requested verdict
 - No additional code changes required for this wave slice.
 
 ### WL-095
+
 - Implemented `QualityScoreVetterCheck` in `src/thegent/govern/vetter/checks.py`.
 - Added strict configuration + scoring contract:
   - rubric normalization/validation
@@ -39,6 +43,7 @@
   - auto-model without resolver failure
 
 ### WL-096
+
 - Extended queue schema and enqueue API in `src/thegent/core/prompt_queue.py`:
   - added `QueueItem.metadata: dict[str, Any]`
   - persisted metadata in JSONL serialization
@@ -54,6 +59,7 @@
   - `tests/test_wl092_vetter_orchestrator.py` asserts revision enqueue metadata fields
 
 ## Validation
+
 - `python -m py_compile src/thegent/govern/vetter/checks.py src/thegent/govern/vetter/orchestrator.py src/thegent/core/prompt_queue.py tests/govern/test_vetter_models.py tests/test_wl092_vetter_orchestrator.py tests/test_prompt_queue.py tests/test_wl079_audit_bench.py` (pass)
 - `uv run pytest -q tests/govern/test_vetter_models.py -k "quality_score_check"` (pass: 6 passed)
 - `uv run pytest -q tests/test_prompt_queue.py -k "metadata"` (pass: 2 passed)
@@ -64,9 +70,11 @@
 - `cargo bench --manifest-path crates/Cargo.toml -p thegent-router --bench audit_bench --no-run` (pass; bench executable built)
 
 ## Blockers
+
 - None for this wave slice.
 
 ## Exact Files Touched
+
 - `src/thegent/govern/vetter/checks.py`
 - `src/thegent/govern/vetter/__init__.py`
 - `src/thegent/core/prompt_queue.py`

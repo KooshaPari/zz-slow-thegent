@@ -42,6 +42,7 @@ def _probe_harness_status() -> dict[str, Any]:
     # Check if harness is enabled in config
     try:
         from thegent.config import ThegentSettings
+
         settings = ThegentSettings()
         if not getattr(settings, "sitback_harness", False):
             return {
@@ -82,7 +83,7 @@ def _probe_harness_status() -> dict[str, Any]:
             "last_run": None,
             "details": result,
         }
-    except RuntimeError as e:
+    except RuntimeError:
         return {
             "status": "error",
             "active_probes": 0,

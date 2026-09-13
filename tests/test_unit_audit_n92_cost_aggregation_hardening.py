@@ -11,8 +11,6 @@ Source: src/thegent/governance/cost_aggregation.py
 
 from __future__ import annotations
 
-import pytest
-
 from thegent.governance.cost_aggregation import CostAggregator
 
 

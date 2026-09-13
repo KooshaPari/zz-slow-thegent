@@ -12,7 +12,7 @@ Compute offloading between Mac and PC.
 
 ### Methods
 
-#### ComputeOffload.__init__
+#### ComputeOffload.**init**
 
 ```python
 __init__(self: Any)

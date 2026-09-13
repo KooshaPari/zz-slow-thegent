@@ -178,7 +178,6 @@ class TestHashChainTampering:
         )
 
         # Tamper with artifact data (but keep signature for now)
-        original_signature = artifact.signature
         artifact.agent_id = "hacker"
         # Signature is now invalid because artifact was modified
 

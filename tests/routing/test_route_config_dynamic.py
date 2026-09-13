@@ -9,7 +9,6 @@ import pytest
 
 from thegent.utils.routing_impl.route_config import BudgetLimitRoute, PercentageSplit
 
-
 # ---------------------------------------------------------------------------
 # PercentageSplit
 # ---------------------------------------------------------------------------

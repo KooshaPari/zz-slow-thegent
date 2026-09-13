@@ -10,7 +10,6 @@ from enum import Enum
 from typing import cast
 
 from thegent.infra.shim_subprocess import run as shim_run
-
 from thegent.integrations.base import DataclassConfig
 
 logger = logging.getLogger(__name__)
@@ -35,7 +34,11 @@ class BeadsWrapper:
 
     def _load_config(self) -> BeadsConfig:
         config = cast("BeadsConfig", BeadsConfig.from_env("BEADS_"))
-        config.enabled = os.environ.get("THEGENT_ENABLE_BEADS", "").lower() in ("1", "true", "yes")
+        config.enabled = os.environ.get("THEGENT_ENABLE_BEADS", "").lower() in (
+            "1",
+            "true",
+            "yes",
+        )
         return config
 
     def _check_availability(self):

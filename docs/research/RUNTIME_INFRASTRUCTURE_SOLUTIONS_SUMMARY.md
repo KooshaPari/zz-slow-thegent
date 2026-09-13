@@ -53,16 +53,19 @@ dependencies = [
 ```
 
 **Refactor `resource_monitor.py`:**
+
 - Replace custom `resource` module usage with `psutil`
 - Use `psutil.Process` for process introspection
 - Use `proc.num_fds()` and `proc.open_files()` for FD tracking
 
 **Enhance `process_registry.py`:**
+
 - Add `psutil.Process` integration to `ProcessHandle`
 - Add `cleanup_process_tree()` using `psutil.wait_procs()`
 - Add resource usage tracking per process
 
 **Expected Benefits:**
+
 - ✅ Better cross-platform support
 - ✅ Reduced custom code (~200 lines)
 - ✅ Better process introspection
@@ -84,15 +87,18 @@ test = [
 ```
 
 **Create Leak Detection Tests:**
+
 - Test `SubprocessManager` for leaks
 - Test file operations for FD leaks
 - Test process registry for process leaks
 
 **Add to CI/CD:**
+
 - Run leak detection in CI pipeline
 - Set up alerts for detected leaks
 
 **Expected Benefits:**
+
 - ✅ Automated leak detection
 - ✅ Continuous testing
 - ✅ Early leak detection
@@ -102,14 +108,17 @@ test = [
 ## What We Keep (Custom Implementation)
 
 ### ✅ Process Registry (`process_registry.py`)
+
 **Why:** No library provides global process registry with automatic cleanup
 **Status:** Keep and enhance with `psutil`
 
 ### ✅ Subprocess Manager (`subprocess_manager.py`)
+
 **Why:** No library provides resource-aware wrapper with limits
 **Status:** Keep and enhance with `psutil`
 
 ### ✅ Resource Limits (`resource_limits.py`)
+
 **Why:** Application-specific policy, not generic library concern
 **Status:** Keep as-is
 
@@ -118,11 +127,13 @@ test = [
 ## What We Replace (Use Libraries)
 
 ### ❌ Custom Resource Monitoring → `psutil`
+
 **Current:** Custom `resource_monitor.py` using `resource` module
 **Better:** Use `psutil` for all resource monitoring
 **Impact:** ~200 lines of code removed, better cross-platform support
 
 ### ❌ Manual Leak Detection → `psleak`
+
 **Current:** Manual leak detection in tests
 **Better:** Use `psleak` framework for automated detection
 **Impact:** Better test coverage, continuous leak detection
@@ -149,6 +160,7 @@ import psutil
 import time
 from dataclasses import dataclass
 
+
 @dataclass
 class ResourceStats:
     fd_count: int
@@ -158,6 +170,7 @@ class ResourceStats:
     memory_mb: float
     cpu_percent: float
     timestamp: float
+
 
 class ResourceMonitor:
     def get_stats(self) -> ResourceStats:
@@ -185,12 +198,14 @@ class ResourceMonitor:
 # src/thegent/infra/process_registry.py (additions)
 import psutil
 
+
 class ProcessHandle:
     def get_psutil_process(self) -> Optional[psutil.Process]:
         try:
             return psutil.Process(self.pid)
         except psutil.NoSuchProcess:
             return None
+
 
 class ProcessRegistry:
     def cleanup_process_tree(self, pid: int, timeout: float = 10.0) -> int:
@@ -222,6 +237,7 @@ class ProcessRegistry:
 from psleak import MemoryLeakTestCase, Checkers
 from thegent.infra.subprocess_manager import get_subprocess_manager
 
+
 class TestSubprocessLeaks(MemoryLeakTestCase):
     def test_subprocess_manager_no_leak(self):
         manager = get_subprocess_manager()
@@ -243,12 +259,14 @@ class TestSubprocessLeaks(MemoryLeakTestCase):
 ## Success Metrics
 
 ### Immediate (Week 1)
+
 - ✅ `psutil` integrated and working
 - ✅ Resource monitoring using `psutil`
 - ✅ Process registry enhanced with `psutil`
 - ✅ ~200 lines of custom code removed
 
 ### Testing (Week 2)
+
 - ✅ `psleak` integrated and working
 - ✅ Leak detection tests passing
 - ✅ CI/CD running leak detection
@@ -265,14 +283,14 @@ class TestSubprocessLeaks(MemoryLeakTestCase):
 
 ## Decision Matrix
 
-| Library | Purpose | Priority | Action | Impact |
-|---------|---------|----------|--------|--------|
-| `psutil` | Resource monitoring | HIGH | Add & integrate | Replace custom code, better monitoring |
-| `psleak` | Leak detection | MEDIUM | Add to tests | Automated leak detection |
-| `watchdog` | File watching | LOW | Already have | No action needed |
-| `trio` | Async I/O | LOW | Skip | Not needed (synchronous) |
-| `pexpect` | Interactive subprocess | LOW | Skip | Not needed |
-| `sh` | Pythonic subprocess | LOW | Skip | Unix-only, doesn't solve problems |
+| Library    | Purpose                | Priority | Action          | Impact                                 |
+| ---------- | ---------------------- | -------- | --------------- | -------------------------------------- |
+| `psutil`   | Resource monitoring    | HIGH     | Add & integrate | Replace custom code, better monitoring |
+| `psleak`   | Leak detection         | MEDIUM   | Add to tests    | Automated leak detection               |
+| `watchdog` | File watching          | LOW      | Already have    | No action needed                       |
+| `trio`     | Async I/O              | LOW      | Skip            | Not needed (synchronous)               |
+| `pexpect`  | Interactive subprocess | LOW      | Skip            | Not needed                             |
+| `sh`       | Pythonic subprocess    | LOW      | Skip            | Unix-only, doesn't solve problems      |
 
 ---
 

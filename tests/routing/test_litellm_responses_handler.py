@@ -10,11 +10,10 @@ Coverage:
 
 from __future__ import annotations
 
-import orjson as json
-from collections.abc import AsyncIterator
 from typing import TYPE_CHECKING, Any
 from unittest.mock import AsyncMock, MagicMock, patch
 
+import orjson as json
 import pytest
 
 if TYPE_CHECKING:
@@ -103,14 +102,18 @@ class TestResponsesInputToMessages:
     """@trace FR-ROUTE-001"""
 
     def test_simple_user_string_message(self) -> None:
-        from thegent.utils.routing_impl.litellm_responses_handler import _responses_input_to_messages
+        from thegent.utils.routing_impl.litellm_responses_handler import (
+            _responses_input_to_messages,
+        )
 
         items = [_make_message_item("user", "Hello there")]
         msgs = _responses_input_to_messages(items)
         assert msgs == [{"role": "user", "content": "Hello there"}]
 
     def test_assistant_message(self) -> None:
-        from thegent.utils.routing_impl.litellm_responses_handler import _responses_input_to_messages
+        from thegent.utils.routing_impl.litellm_responses_handler import (
+            _responses_input_to_messages,
+        )
 
         items = [_make_message_item("assistant", "I am an assistant")]
         msgs = _responses_input_to_messages(items)
@@ -118,7 +121,9 @@ class TestResponsesInputToMessages:
 
     def test_multi_part_content_list(self) -> None:
         # OR-16/GW-04: content arrays are preserved (not collapsed to string)
-        from thegent.utils.routing_impl.litellm_responses_handler import _responses_input_to_messages
+        from thegent.utils.routing_impl.litellm_responses_handler import (
+            _responses_input_to_messages,
+        )
 
         content_parts = [
             {"type": "text", "text": "Part one"},
@@ -132,7 +137,9 @@ class TestResponsesInputToMessages:
 
     def test_content_list_preserves_all_part_types(self) -> None:
         # OR-16/GW-04: non-text parts (image_url, cache_control, etc.) are preserved
-        from thegent.utils.routing_impl.litellm_responses_handler import _responses_input_to_messages
+        from thegent.utils.routing_impl.litellm_responses_handler import (
+            _responses_input_to_messages,
+        )
 
         content_parts = [
             {"type": "image_url", "url": "http://example.com/img.png"},
@@ -146,7 +153,9 @@ class TestResponsesInputToMessages:
 
     def test_content_list_strips_thinking_signatures(self) -> None:
         """CLIP-BUG-09/10: cross-provider thinking signatures must not be forwarded."""
-        from thegent.utils.routing_impl.litellm_responses_handler import _responses_input_to_messages
+        from thegent.utils.routing_impl.litellm_responses_handler import (
+            _responses_input_to_messages,
+        )
 
         content_parts = [
             {
@@ -164,7 +173,9 @@ class TestResponsesInputToMessages:
         assert "thought_signature" not in sanitized
 
     def test_content_list_drops_metadata_blocks(self) -> None:
-        from thegent.utils.routing_impl.litellm_responses_handler import _responses_input_to_messages
+        from thegent.utils.routing_impl.litellm_responses_handler import (
+            _responses_input_to_messages,
+        )
 
         content_parts = [{"type": "text", "text": "Caption", "metadata": {"trace": "abc"}}]
         items = [_make_message_item("user", content_parts)]
@@ -172,7 +183,9 @@ class TestResponsesInputToMessages:
         assert msgs == [{"role": "user", "content": [{"type": "text", "text": "Caption"}]}]
 
     def test_non_message_type_items_are_ignored(self) -> None:
-        from thegent.utils.routing_impl.litellm_responses_handler import _responses_input_to_messages
+        from thegent.utils.routing_impl.litellm_responses_handler import (
+            _responses_input_to_messages,
+        )
 
         items = [
             {"type": "tool_result", "content": "tool output"},
@@ -183,14 +196,18 @@ class TestResponsesInputToMessages:
         assert msgs[0]["content"] == "Real message"
 
     def test_non_dict_items_are_ignored(self) -> None:
-        from thegent.utils.routing_impl.litellm_responses_handler import _responses_input_to_messages
+        from thegent.utils.routing_impl.litellm_responses_handler import (
+            _responses_input_to_messages,
+        )
 
         bad_items: list[Any] = ["not a dict", 42]
         msgs = _responses_input_to_messages(bad_items)
         assert msgs == []
 
     def test_multiple_messages_preserved_in_order(self) -> None:
-        from thegent.utils.routing_impl.litellm_responses_handler import _responses_input_to_messages
+        from thegent.utils.routing_impl.litellm_responses_handler import (
+            _responses_input_to_messages,
+        )
 
         items = [
             _make_message_item("user", "First"),
@@ -202,7 +219,9 @@ class TestResponsesInputToMessages:
         assert [m["content"] for m in msgs] == ["First", "Second", "Third"]
 
     def test_none_content_coerced_to_empty_string(self) -> None:
-        from thegent.utils.routing_impl.litellm_responses_handler import _responses_input_to_messages
+        from thegent.utils.routing_impl.litellm_responses_handler import (
+            _responses_input_to_messages,
+        )
 
         items = [{"type": "message", "role": "user", "content": None}]
         msgs = _responses_input_to_messages(items)
@@ -218,7 +237,9 @@ class TestResponsesToChatCompletions:
     """@trace FR-ROUTE-001"""
 
     def test_basic_conversion(self) -> None:
-        from thegent.utils.routing_impl.litellm_responses_handler import _responses_to_chat_completions
+        from thegent.utils.routing_impl.litellm_responses_handler import (
+            _responses_to_chat_completions,
+        )
 
         body = _make_responses_body(model="gpt-4o")
         result = _responses_to_chat_completions(body)
@@ -227,63 +248,81 @@ class TestResponsesToChatCompletions:
         assert result["messages"][0]["role"] == "user"
 
     def test_empty_input_produces_fallback_message(self) -> None:
-        from thegent.utils.routing_impl.litellm_responses_handler import _responses_to_chat_completions
+        from thegent.utils.routing_impl.litellm_responses_handler import (
+            _responses_to_chat_completions,
+        )
 
         body = _make_responses_body(input_items=[])
         result = _responses_to_chat_completions(body)
         assert result["messages"] == [{"role": "user", "content": ""}]
 
     def test_non_list_input_produces_fallback_message(self) -> None:
-        from thegent.utils.routing_impl.litellm_responses_handler import _responses_to_chat_completions
+        from thegent.utils.routing_impl.litellm_responses_handler import (
+            _responses_to_chat_completions,
+        )
 
         body = {"model": "gpt-4o", "input": "bad input type", "stream": False}
         result = _responses_to_chat_completions(body)
         assert result["messages"] == [{"role": "user", "content": ""}]
 
     def test_temperature_included_when_set(self) -> None:
-        from thegent.utils.routing_impl.litellm_responses_handler import _responses_to_chat_completions
+        from thegent.utils.routing_impl.litellm_responses_handler import (
+            _responses_to_chat_completions,
+        )
 
         body = _make_responses_body(temperature=0.7)
         result = _responses_to_chat_completions(body)
         assert result["temperature"] == 0.7
 
     def test_temperature_absent_when_not_set(self) -> None:
-        from thegent.utils.routing_impl.litellm_responses_handler import _responses_to_chat_completions
+        from thegent.utils.routing_impl.litellm_responses_handler import (
+            _responses_to_chat_completions,
+        )
 
         body = _make_responses_body()
         result = _responses_to_chat_completions(body)
         assert "temperature" not in result
 
     def test_max_output_tokens_mapped_to_max_tokens(self) -> None:
-        from thegent.utils.routing_impl.litellm_responses_handler import _responses_to_chat_completions
+        from thegent.utils.routing_impl.litellm_responses_handler import (
+            _responses_to_chat_completions,
+        )
 
         body = _make_responses_body(max_output_tokens=512)
         result = _responses_to_chat_completions(body)
         assert result["max_tokens"] == 512
 
     def test_max_tokens_fallback(self) -> None:
-        from thegent.utils.routing_impl.litellm_responses_handler import _responses_to_chat_completions
+        from thegent.utils.routing_impl.litellm_responses_handler import (
+            _responses_to_chat_completions,
+        )
 
         body = _make_responses_body(max_tokens=256)
         result = _responses_to_chat_completions(body)
         assert result["max_tokens"] == 256
 
     def test_max_tokens_absent_when_not_set(self) -> None:
-        from thegent.utils.routing_impl.litellm_responses_handler import _responses_to_chat_completions
+        from thegent.utils.routing_impl.litellm_responses_handler import (
+            _responses_to_chat_completions,
+        )
 
         body = _make_responses_body()
         result = _responses_to_chat_completions(body)
         assert "max_tokens" not in result
 
     def test_stream_flag_forwarded(self) -> None:
-        from thegent.utils.routing_impl.litellm_responses_handler import _responses_to_chat_completions
+        from thegent.utils.routing_impl.litellm_responses_handler import (
+            _responses_to_chat_completions,
+        )
 
         body = _make_responses_body(stream=True)
         result = _responses_to_chat_completions(body)
         assert result["stream"] is True
 
     def test_custom_tools_and_tool_choice_are_normalized(self) -> None:
-        from thegent.utils.routing_impl.litellm_responses_handler import _responses_to_chat_completions
+        from thegent.utils.routing_impl.litellm_responses_handler import (
+            _responses_to_chat_completions,
+        )
 
         body = _make_responses_body(
             tools=[
@@ -291,7 +330,10 @@ class TestResponsesToChatCompletions:
                     "type": "custom",
                     "name": "run_sql",
                     "description": "Run SQL",
-                    "input_schema": {"type": "object", "properties": {"query": {"type": "string"}}},
+                    "input_schema": {
+                        "type": "object",
+                        "properties": {"query": {"type": "string"}},
+                    },
                 }
             ],
             tool_choice={"type": "custom", "name": "run_sql"},
@@ -303,14 +345,24 @@ class TestResponsesToChatCompletions:
                 "function": {
                     "name": "run_sql",
                     "description": "Run SQL",
-                    "parameters": {"type": "object", "properties": {"query": {"type": "string"}}},
+                    "parameters": {
+                        "type": "object",
+                        "properties": {"query": {"type": "string"}},
+                    },
                 },
             }
         ]
-        assert result["tool_choice"] == {"type": "function", "function": {"name": "run_sql"}}
+        assert result["tool_choice"] == {
+            "type": "function",
+            "function": {"name": "run_sql"},
+        }
 
-    def test_schema_normalization_strips_unsupported_and_nullable_type_arrays(self) -> None:
-        from thegent.utils.routing_impl.litellm_responses_handler import _responses_to_chat_completions
+    def test_schema_normalization_strips_unsupported_and_nullable_type_arrays(
+        self,
+    ) -> None:
+        from thegent.utils.routing_impl.litellm_responses_handler import (
+            _responses_to_chat_completions,
+        )
 
         body = _make_responses_body(
             tools=[
@@ -333,17 +385,24 @@ class TestResponsesToChatCompletions:
         assert params["properties"]["title"] == {"type": "string", "nullable": True}
 
     def test_messages_fallback_preserves_existing_payload(self) -> None:
-        from thegent.utils.routing_impl.litellm_responses_handler import _responses_to_chat_completions
+        from thegent.utils.routing_impl.litellm_responses_handler import (
+            _responses_to_chat_completions,
+        )
 
         messages = [
-            {"role": "assistant", "content": [{"type": "thinking", "thinking": "x", "signature": "sig-1"}]},
+            {
+                "role": "assistant",
+                "content": [{"type": "thinking", "thinking": "x", "signature": "sig-1"}],
+            },
             {"role": "user", "content": "continue"},
         ]
         result = _responses_to_chat_completions({"model": "claude-opus-4-6-thinking", "messages": messages})
         assert result["messages"] == messages
 
     def test_tool_choice_proxy_prefix_is_normalized(self) -> None:
-        from thegent.utils.routing_impl.litellm_responses_handler import _responses_to_chat_completions
+        from thegent.utils.routing_impl.litellm_responses_handler import (
+            _responses_to_chat_completions,
+        )
 
         body = _make_responses_body(
             tools=[{"type": "function", "function": {"name": "search"}}],
@@ -362,7 +421,9 @@ class TestChatCompletionsToResponses:
     """@trace FR-ROUTE-003"""
 
     def test_content_chunk_transformed(self) -> None:
-        from thegent.utils.routing_impl.litellm_responses_handler import _chat_completions_to_responses
+        from thegent.utils.routing_impl.litellm_responses_handler import (
+            _chat_completions_to_responses,
+        )
 
         chunk = _make_chat_chunk("Hello")
         event = _chat_completions_to_responses(chunk)
@@ -372,24 +433,32 @@ class TestChatCompletionsToResponses:
         assert event["item"]["role"] == "assistant"
 
     def test_empty_content_returns_none(self) -> None:
-        from thegent.utils.routing_impl.litellm_responses_handler import _chat_completions_to_responses
+        from thegent.utils.routing_impl.litellm_responses_handler import (
+            _chat_completions_to_responses,
+        )
 
         chunk = _make_chat_chunk("")
         assert _chat_completions_to_responses(chunk) is None
 
     def test_none_content_returns_none(self) -> None:
-        from thegent.utils.routing_impl.litellm_responses_handler import _chat_completions_to_responses
+        from thegent.utils.routing_impl.litellm_responses_handler import (
+            _chat_completions_to_responses,
+        )
 
         chunk = _make_chat_chunk(None)
         assert _chat_completions_to_responses(chunk) is None
 
     def test_no_choices_returns_none(self) -> None:
-        from thegent.utils.routing_impl.litellm_responses_handler import _chat_completions_to_responses
+        from thegent.utils.routing_impl.litellm_responses_handler import (
+            _chat_completions_to_responses,
+        )
 
         assert _chat_completions_to_responses({"choices": []}) is None
 
     def test_missing_choices_key_returns_none(self) -> None:
-        from thegent.utils.routing_impl.litellm_responses_handler import _chat_completions_to_responses
+        from thegent.utils.routing_impl.litellm_responses_handler import (
+            _chat_completions_to_responses,
+        )
 
         assert _chat_completions_to_responses({}) is None
 
@@ -403,32 +472,44 @@ class TestErrorHelpers:
     """@trace FR-ROUTE-004"""
 
     def test_rate_limit_maps_to_429(self) -> None:
-        from thegent.utils.routing_impl.litellm_responses_handler import _error_status_code
+        from thegent.utils.routing_impl.litellm_responses_handler import (
+            _error_status_code,
+        )
 
         assert _error_status_code(Exception("rate limit exceeded")) == 429
 
     def test_too_many_requests_maps_to_429(self) -> None:
-        from thegent.utils.routing_impl.litellm_responses_handler import _error_status_code
+        from thegent.utils.routing_impl.litellm_responses_handler import (
+            _error_status_code,
+        )
 
         assert _error_status_code(Exception("too many requests")) == 429
 
     def test_invalid_model_maps_to_400(self) -> None:
-        from thegent.utils.routing_impl.litellm_responses_handler import _error_status_code
+        from thegent.utils.routing_impl.litellm_responses_handler import (
+            _error_status_code,
+        )
 
         assert _error_status_code(Exception("invalid model gpt-99")) == 400
 
     def test_authentication_maps_to_401(self) -> None:
-        from thegent.utils.routing_impl.litellm_responses_handler import _error_status_code
+        from thegent.utils.routing_impl.litellm_responses_handler import (
+            _error_status_code,
+        )
 
         assert _error_status_code(Exception("authentication failed")) == 401
 
     def test_context_length_exceeded_maps_to_400(self) -> None:
-        from thegent.utils.routing_impl.litellm_responses_handler import _error_status_code
+        from thegent.utils.routing_impl.litellm_responses_handler import (
+            _error_status_code,
+        )
 
         assert _error_status_code(Exception("context_length_exceeded")) == 400
 
     def test_unknown_error_maps_to_500(self) -> None:
-        from thegent.utils.routing_impl.litellm_responses_handler import _error_status_code
+        from thegent.utils.routing_impl.litellm_responses_handler import (
+            _error_status_code,
+        )
 
         assert _error_status_code(Exception("some unexpected failure")) == 500
 
@@ -461,7 +542,9 @@ class TestHandleResponsesRequest:
     async def test_non_streaming_success(self) -> None:
         from starlette.testclient import TestClient
 
-        from thegent.utils.routing_impl.litellm_responses_handler import handle_responses_request
+        from thegent.utils.routing_impl.litellm_responses_handler import (
+            handle_responses_request,
+        )
 
         mock_choice = MagicMock()
         mock_choice.message.content = "Hi from model"
@@ -485,7 +568,11 @@ class TestHandleResponsesRequest:
 
             app = Starlette(routes=[Route("/v1/responses", handle_responses_request, methods=["POST"])])
             client = TestClient(app, raise_server_exceptions=False)
-            resp = client.post("/v1/responses", content=body, headers={"Content-Type": "application/json"})
+            resp = client.post(
+                "/v1/responses",
+                content=body,
+                headers={"Content-Type": "application/json"},
+            )
 
         assert resp.status_code == 200
         data = resp.json()
@@ -496,7 +583,9 @@ class TestHandleResponsesRequest:
     async def test_non_streaming_empty_body(self) -> None:
         from starlette.testclient import TestClient
 
-        from thegent.utils.routing_impl.litellm_responses_handler import handle_responses_request
+        from thegent.utils.routing_impl.litellm_responses_handler import (
+            handle_responses_request,
+        )
 
         mock_choice = MagicMock()
         mock_choice.message.content = "Empty body response"
@@ -518,7 +607,11 @@ class TestHandleResponsesRequest:
 
             app = Starlette(routes=[Route("/v1/responses", handle_responses_request, methods=["POST"])])
             client = TestClient(app, raise_server_exceptions=False)
-            resp = client.post("/v1/responses", content=b"", headers={"Content-Type": "application/json"})
+            resp = client.post(
+                "/v1/responses",
+                content=b"",
+                headers={"Content-Type": "application/json"},
+            )
 
         # Empty body defaults to empty dict; should not crash.
         assert resp.status_code == 200
@@ -527,7 +620,9 @@ class TestHandleResponsesRequest:
     async def test_non_streaming_rate_limit_error_returns_429(self) -> None:
         from starlette.testclient import TestClient
 
-        from thegent.utils.routing_impl.litellm_responses_handler import handle_responses_request
+        from thegent.utils.routing_impl.litellm_responses_handler import (
+            handle_responses_request,
+        )
 
         mock_router = MagicMock()
         mock_router.acompletion = AsyncMock(side_effect=Exception("rate limit exceeded"))
@@ -543,7 +638,11 @@ class TestHandleResponsesRequest:
 
             app = Starlette(routes=[Route("/v1/responses", handle_responses_request, methods=["POST"])])
             client = TestClient(app, raise_server_exceptions=False)
-            resp = client.post("/v1/responses", content=body, headers={"Content-Type": "application/json"})
+            resp = client.post(
+                "/v1/responses",
+                content=body,
+                headers={"Content-Type": "application/json"},
+            )
 
         assert resp.status_code == 429
         data = resp.json()
@@ -554,7 +653,9 @@ class TestHandleResponsesRequest:
     async def test_non_streaming_unknown_error_returns_500(self) -> None:
         from starlette.testclient import TestClient
 
-        from thegent.utils.routing_impl.litellm_responses_handler import handle_responses_request
+        from thegent.utils.routing_impl.litellm_responses_handler import (
+            handle_responses_request,
+        )
 
         mock_router = MagicMock()
         mock_router.acompletion = AsyncMock(side_effect=RuntimeError("unexpected server crash"))
@@ -570,7 +671,11 @@ class TestHandleResponsesRequest:
 
             app = Starlette(routes=[Route("/v1/responses", handle_responses_request, methods=["POST"])])
             client = TestClient(app, raise_server_exceptions=False)
-            resp = client.post("/v1/responses", content=body, headers={"Content-Type": "application/json"})
+            resp = client.post(
+                "/v1/responses",
+                content=body,
+                headers={"Content-Type": "application/json"},
+            )
 
         assert resp.status_code == 500
         data = resp.json()
@@ -581,7 +686,9 @@ class TestHandleResponsesRequest:
         """Verify that router.acompletion receives the right model and messages."""
         from starlette.testclient import TestClient
 
-        from thegent.utils.routing_impl.litellm_responses_handler import handle_responses_request
+        from thegent.utils.routing_impl.litellm_responses_handler import (
+            handle_responses_request,
+        )
 
         mock_choice = MagicMock()
         mock_choice.message.content = "ok"
@@ -607,7 +714,11 @@ class TestHandleResponsesRequest:
 
             app = Starlette(routes=[Route("/v1/responses", handle_responses_request, methods=["POST"])])
             client = TestClient(app, raise_server_exceptions=False)
-            client.post("/v1/responses", content=body, headers={"Content-Type": "application/json"})
+            client.post(
+                "/v1/responses",
+                content=body,
+                headers={"Content-Type": "application/json"},
+            )
 
         mock_router.acompletion.assert_awaited_once()
         call_kwargs = mock_router.acompletion.call_args
@@ -620,7 +731,9 @@ class TestHandleResponsesRequest:
     async def test_temperature_forwarded_to_router(self) -> None:
         from starlette.testclient import TestClient
 
-        from thegent.utils.routing_impl.litellm_responses_handler import handle_responses_request
+        from thegent.utils.routing_impl.litellm_responses_handler import (
+            handle_responses_request,
+        )
 
         mock_choice = MagicMock()
         mock_choice.message.content = "ok"
@@ -641,7 +754,11 @@ class TestHandleResponsesRequest:
 
             app = Starlette(routes=[Route("/v1/responses", handle_responses_request, methods=["POST"])])
             client = TestClient(app, raise_server_exceptions=False)
-            client.post("/v1/responses", content=body, headers={"Content-Type": "application/json"})
+            client.post(
+                "/v1/responses",
+                content=body,
+                headers={"Content-Type": "application/json"},
+            )
 
         call_kwargs = mock_router.acompletion.call_args
         assert call_kwargs.kwargs.get("temperature") == 0.3
@@ -651,7 +768,9 @@ class TestHandleResponsesRequest:
         """None temperature must not appear in acompletion kwargs."""
         from starlette.testclient import TestClient
 
-        from thegent.utils.routing_impl.litellm_responses_handler import handle_responses_request
+        from thegent.utils.routing_impl.litellm_responses_handler import (
+            handle_responses_request,
+        )
 
         mock_choice = MagicMock()
         mock_choice.message.content = "ok"
@@ -672,7 +791,11 @@ class TestHandleResponsesRequest:
 
             app = Starlette(routes=[Route("/v1/responses", handle_responses_request, methods=["POST"])])
             client = TestClient(app, raise_server_exceptions=False)
-            client.post("/v1/responses", content=body, headers={"Content-Type": "application/json"})
+            client.post(
+                "/v1/responses",
+                content=body,
+                headers={"Content-Type": "application/json"},
+            )
 
         call_kwargs = mock_router.acompletion.call_args
         assert "temperature" not in call_kwargs.kwargs
@@ -690,7 +813,9 @@ class TestHandleResponsesStream:
     async def test_streaming_yields_sse_events(self) -> None:
         from starlette.testclient import TestClient
 
-        from thegent.utils.routing_impl.litellm_responses_handler import handle_responses_request
+        from thegent.utils.routing_impl.litellm_responses_handler import (
+            handle_responses_request,
+        )
 
         chunks = [
             _make_chat_chunk("Hello"),
@@ -712,7 +837,11 @@ class TestHandleResponsesStream:
 
             app = Starlette(routes=[Route("/v1/responses", handle_responses_request, methods=["POST"])])
             client = TestClient(app, raise_server_exceptions=False)
-            resp = client.post("/v1/responses", content=body, headers={"Content-Type": "application/json"})
+            resp = client.post(
+                "/v1/responses",
+                content=body,
+                headers={"Content-Type": "application/json"},
+            )
 
         assert resp.status_code == 200
         assert "text/event-stream" in resp.headers["content-type"]
@@ -735,7 +864,9 @@ class TestHandleResponsesStream:
     async def test_streaming_error_yields_error_event(self) -> None:
         from starlette.testclient import TestClient
 
-        from thegent.utils.routing_impl.litellm_responses_handler import handle_responses_request
+        from thegent.utils.routing_impl.litellm_responses_handler import (
+            handle_responses_request,
+        )
 
         mock_router = MagicMock()
         mock_router.acompletion = lambda **kwargs: _AsyncGenRaise(RuntimeError("upstream broke"))
@@ -751,7 +882,11 @@ class TestHandleResponsesStream:
 
             app = Starlette(routes=[Route("/v1/responses", handle_responses_request, methods=["POST"])])
             client = TestClient(app, raise_server_exceptions=False)
-            resp = client.post("/v1/responses", content=body, headers={"Content-Type": "application/json"})
+            resp = client.post(
+                "/v1/responses",
+                content=body,
+                headers={"Content-Type": "application/json"},
+            )
 
         assert resp.status_code == 200  # SSE always starts 200
         assert "text/event-stream" in resp.headers["content-type"]
@@ -767,7 +902,9 @@ class TestHandleResponsesStream:
         """Error messages containing quotes must be properly JSON-encoded."""
         from starlette.testclient import TestClient
 
-        from thegent.utils.routing_impl.litellm_responses_handler import handle_responses_request
+        from thegent.utils.routing_impl.litellm_responses_handler import (
+            handle_responses_request,
+        )
 
         bad_exc = ValueError('She said "hello" and it failed')
         mock_router = MagicMock()
@@ -784,7 +921,11 @@ class TestHandleResponsesStream:
 
             app = Starlette(routes=[Route("/v1/responses", handle_responses_request, methods=["POST"])])
             client = TestClient(app, raise_server_exceptions=False)
-            resp = client.post("/v1/responses", content=body, headers={"Content-Type": "application/json"})
+            resp = client.post(
+                "/v1/responses",
+                content=body,
+                headers={"Content-Type": "application/json"},
+            )
 
         lines = [line for line in resp.text.split("\n\n") if line.strip()]
         payload = lines[0].removeprefix("data: ")
@@ -795,7 +936,9 @@ class TestHandleResponsesStream:
     async def test_streaming_response_headers(self) -> None:
         from starlette.testclient import TestClient
 
-        from thegent.utils.routing_impl.litellm_responses_handler import handle_responses_request
+        from thegent.utils.routing_impl.litellm_responses_handler import (
+            handle_responses_request,
+        )
 
         mock_router = MagicMock()
         mock_router.acompletion = lambda **kwargs: _AsyncGenFromChunks([])
@@ -811,7 +954,11 @@ class TestHandleResponsesStream:
 
             app = Starlette(routes=[Route("/v1/responses", handle_responses_request, methods=["POST"])])
             client = TestClient(app, raise_server_exceptions=False)
-            resp = client.post("/v1/responses", content=body, headers={"Content-Type": "application/json"})
+            resp = client.post(
+                "/v1/responses",
+                content=body,
+                headers={"Content-Type": "application/json"},
+            )
 
         assert resp.status_code == 200
         assert resp.headers.get("cache-control") == "no-cache"
@@ -828,9 +975,10 @@ class TestHandleResponsesWebsocket:
     @pytest.mark.asyncio
     async def test_websocket_streams_events_and_closes_cleanly(self) -> None:
         from starlette.testclient import TestClient
-        from starlette.websockets import WebSocket as StarletteWS
 
-        from thegent.utils.routing_impl.litellm_responses_handler import handle_responses_websocket
+        from thegent.utils.routing_impl.litellm_responses_handler import (
+            handle_responses_websocket,
+        )
 
         chunks = [
             _make_chat_chunk("Hello"),
@@ -872,7 +1020,9 @@ class TestHandleResponsesWebsocket:
     async def test_websocket_error_sends_error_message(self) -> None:
         from starlette.testclient import TestClient
 
-        from thegent.utils.routing_impl.litellm_responses_handler import handle_responses_websocket
+        from thegent.utils.routing_impl.litellm_responses_handler import (
+            handle_responses_websocket,
+        )
 
         bad_exc = ValueError("invalid model xyz")
         mock_router = MagicMock()
@@ -930,7 +1080,9 @@ class TestPersistentHttpClient:
         """
         import httpx
 
-        from thegent.utils.routing_impl.litellm_responses_handler import _get_http_client
+        from thegent.utils.routing_impl.litellm_responses_handler import (
+            _get_http_client,
+        )
 
         client = _get_http_client()
         assert isinstance(client, httpx.AsyncClient)
@@ -940,7 +1092,9 @@ class TestPersistentHttpClient:
 
         @trace WL-071
         """
-        from thegent.utils.routing_impl.litellm_responses_handler import _get_http_client
+        from thegent.utils.routing_impl.litellm_responses_handler import (
+            _get_http_client,
+        )
 
         client1 = _get_http_client()
         client2 = _get_http_client()
@@ -955,7 +1109,9 @@ class TestPersistentHttpClient:
         """
         import asyncio
 
-        from thegent.utils.routing_impl.litellm_responses_handler import _get_http_client
+        from thegent.utils.routing_impl.litellm_responses_handler import (
+            _get_http_client,
+        )
 
         client1 = _get_http_client()
         # Synchronously close via asyncio.run to simulate a closed client
@@ -975,7 +1131,10 @@ class TestPersistentHttpClient:
         @trace WL-071
         """
         import thegent.utils.routing_impl.litellm_responses_handler as _mod
-        from thegent.utils.routing_impl.litellm_responses_handler import _get_http_client, close_http_client
+        from thegent.utils.routing_impl.litellm_responses_handler import (
+            _get_http_client,
+            close_http_client,
+        )
 
         client = _get_http_client()
         assert _mod._http_client is not None
@@ -990,7 +1149,9 @@ class TestPersistentHttpClient:
         @trace WL-071
         """
         import thegent.utils.routing_impl.litellm_responses_handler as _mod
-        from thegent.utils.routing_impl.litellm_responses_handler import close_http_client
+        from thegent.utils.routing_impl.litellm_responses_handler import (
+            close_http_client,
+        )
 
         assert _mod._http_client is None
         # Must not raise

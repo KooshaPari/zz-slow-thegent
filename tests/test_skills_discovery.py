@@ -16,11 +16,11 @@ Covers:
 from __future__ import annotations
 
 import importlib.util
-import orjson as json
 from pathlib import Path
 from typing import Any
 from unittest.mock import patch
 
+import orjson as json
 import pytest
 
 from thegent.agents.base import AgentRunner
@@ -81,7 +81,11 @@ def _error_result(
     }
     if extra:
         payload.update(extra)
-    return ToolResult(content=json.dumps(payload).decode(), structured_content=payload, meta={"execution_time_ms": 0})
+    return ToolResult(
+        content=json.dumps(payload).decode(),
+        structured_content=payload,
+        meta={"execution_time_ms": 0},
+    )
 
 
 # ---------------------------------------------------------------------------
@@ -438,8 +442,20 @@ class TestAgentRunnerActivateSkill:
 class _FakeBackend:
     def list_skills(self) -> list[dict[str, Any]]:
         return [
-            {"name": "alpha", "description": "a", "version": "1.0.0", "entrypoint": "thegent", "path": "/tmp/a"},
-            {"name": "beta", "description": "b", "version": "1.0.0", "entrypoint": "thegent", "path": "/tmp/b"},
+            {
+                "name": "alpha",
+                "description": "a",
+                "version": "1.0.0",
+                "entrypoint": "thegent",
+                "path": "/tmp/a",
+            },
+            {
+                "name": "beta",
+                "description": "b",
+                "version": "1.0.0",
+                "entrypoint": "thegent",
+                "path": "/tmp/b",
+            },
         ]
 
     def activate_skill(self, skill_name: str) -> dict[str, Any] | None:
@@ -497,7 +513,9 @@ class TestMcpSkillTools:
         skills = backend.list_skills()
         assert isinstance(skills, list)
 
-    def test_discovery_skill_backend_activate_skill_returns_none_for_missing(self) -> None:
+    def test_discovery_skill_backend_activate_skill_returns_none_for_missing(
+        self,
+    ) -> None:
         """DiscoverySkillBackend.activate_skill returns None for unknown skill."""
         backend = DiscoverySkillBackend()
         result = backend.activate_skill("__no_such_skill_wl101__")

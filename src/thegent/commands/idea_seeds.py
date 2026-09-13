@@ -10,7 +10,6 @@ from __future__ import annotations
 import os
 import re
 from dataclasses import dataclass
-from typing import Any
 
 
 def _make_slug(text: str) -> str:
@@ -74,6 +73,7 @@ def _try_relative(path: str, base: str) -> str:
 @dataclass
 class IdeaSeed:
     """An idea seed for idea generation."""
+
     id: str
     title: str
     description: str = ""

@@ -7,10 +7,10 @@ Coverage:
 
 from __future__ import annotations
 
-import orjson as json
 from unittest.mock import AsyncMock, patch
 
 import httpx
+import orjson as json
 import pytest
 from starlette.requests import Request
 
@@ -96,7 +96,10 @@ async def test_proxy_request_503_retries_then_returns_normalized_error() -> None
             ),
         ]
     )
-    with patch("httpx.AsyncClient.request", mock_request), patch("asyncio.sleep", AsyncMock()) as sleep_mock:
+    with (
+        patch("httpx.AsyncClient.request", mock_request),
+        patch("asyncio.sleep", AsyncMock()) as sleep_mock,
+    ):
         resp = await _proxy_request(req, "https://openrouter.ai/api/v1", "/chat/completions")
     payload = json.loads(resp.body.decode())
     assert resp.status_code == 503
@@ -123,7 +126,10 @@ async def test_proxy_request_502_retry_then_success() -> None:
             ),
         ]
     )
-    with patch("httpx.AsyncClient.request", mock_request), patch("asyncio.sleep", AsyncMock()) as sleep_mock:
+    with (
+        patch("httpx.AsyncClient.request", mock_request),
+        patch("asyncio.sleep", AsyncMock()) as sleep_mock,
+    ):
         resp = await _proxy_request(req, "https://openrouter.ai/api/v1", "/chat/completions")
     payload = json.loads(resp.body.decode())
     assert resp.status_code == 200

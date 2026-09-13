@@ -4,19 +4,19 @@ Scope: `/Users/kooshapari/CodeProjects/archive` top-level directories **excludin
 
 ## Directory signals
 
-| Directory | Approx size | FS mtime | Git repo | README |
-|-----------|-------------|----------|----------|--------|
-| ai-agents | 59M | 2026-03-24 | no | no |
-| APIAgent | 183M | 2026-03-24 | no | no |
-| dmouse | 2.5G | 2026-03-24 | no | no |
-| Kinfra | 75M | 2025-10-29 | no | no |
-| local2 | 342M | 2025-05-09 | **yes** | yes |
-| localbase | 109M | 2026-02-27 | no | yes |
-| netweave-3 | 213M | 2025-07-15 | **yes** | yes |
-| ProjectManagementPlatform | 134M | 2025-06-22 | no | no |
-| Rust | 4.5G | 2024-09-22 | no | no |
-| TripleM | 201M | 2026-02-27 | **yes** | yes |
-| archived | 0B | 2026-02-24 | no | no |
+| Directory                 | Approx size | FS mtime   | Git repo | README |
+| ------------------------- | ----------- | ---------- | -------- | ------ |
+| ai-agents                 | 59M         | 2026-03-24 | no       | no     |
+| APIAgent                  | 183M        | 2026-03-24 | no       | no     |
+| dmouse                    | 2.5G        | 2026-03-24 | no       | no     |
+| Kinfra                    | 75M         | 2025-10-29 | no       | no     |
+| local2                    | 342M        | 2025-05-09 | **yes**  | yes    |
+| localbase                 | 109M        | 2026-02-27 | no       | yes    |
+| netweave-3                | 213M        | 2025-07-15 | **yes**  | yes    |
+| ProjectManagementPlatform | 134M        | 2025-06-22 | no       | no     |
+| Rust                      | 4.5G        | 2024-09-22 | no       | no     |
+| TripleM                   | 201M        | 2026-02-27 | **yes**  | yes    |
+| archived                  | 0B          | 2026-02-24 | no       | no     |
 
 ## Interpretation
 

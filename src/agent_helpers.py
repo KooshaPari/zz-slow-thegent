@@ -100,7 +100,9 @@ def log_friction(
                 pattern = rf"(### {re.escape(task_id)}.*?)(?=\n### |\n## |\Z)"
                 match = re.search(pattern, existing_content, re.DOTALL)
                 if match:
-                    existing_content = existing_content[: match.start()] + entry_content + existing_content[match.end():]
+                    existing_content = (
+                        existing_content[: match.start()] + entry_content + existing_content[match.end() :]
+                    )
                 else:
                     existing_content += "\n" + entry_content
             else:

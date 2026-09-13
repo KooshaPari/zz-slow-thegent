@@ -4,6 +4,7 @@
 Date: February 23, 2026
 
 ## Scope
+
 - Completed manual deep-read for remaining 25 repos.
 - Lane distribution: 5 lanes x 5 repos.
 - Reports:
@@ -14,12 +15,14 @@ Date: February 23, 2026
   - `docs/research/PHASE2_WAVE3_LANE_5_REPORT.md`
 
 ## Verdict Distribution (Wave 3)
+
 - `adopt`: 5
 - `pilot`: 5
 - `watch`: 6
 - `avoid`: 9
 
 ## Wave 3 `adopt` Candidates
+
 - `https://github.com/zed-industries/zed`
 - `https://github.com/Fission-AI/AgilePlus`
 - `https://github.com/jehna/humanify`
@@ -27,6 +30,7 @@ Date: February 23, 2026
 - `https://github.com/sitbon/magg`
 
 ## Wave 3 `avoid` Candidates
+
 - `https://github.com/GongRzhe/ACP-MCP-Server`
 - `https://github.com/bar181/savant-ai-results`
 - `https://github.com/bar181/aisp-open-core`
@@ -38,5 +42,6 @@ Date: February 23, 2026
 - `https://github.com/iai-group/nordlys`
 
 ## Decision
+
 - Phase 2.3 completed.
 - Phase 2 repo-level manual deep-read coverage is now complete across all repos in the master audit CSV.

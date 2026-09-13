@@ -13,7 +13,6 @@ from hypothesis import strategies as st
 
 from thegent.utils.routing_impl import ParetoRouter, RouteCandidate
 
-
 # ---------------------------------------------------------------------------
 # Helpers
 # ---------------------------------------------------------------------------

@@ -28,7 +28,7 @@ Manages the session audit trail (WP-9005).
 
 ### Methods
 
-#### AuditRegistry.__init__
+#### AuditRegistry.**init**
 
 ```python
 __init__(self: Any, audit_path: Path)
@@ -54,7 +54,7 @@ Provides integrity verification for the run registry.
 
 ### Methods
 
-#### Auditor.__init__
+#### Auditor.**init**
 
 ```python
 __init__(self: Any, registry_path: Path)
@@ -112,7 +112,7 @@ WP-4008: Persists calibration factors and curves for agents (G-GP-09).
 
 ### Methods
 
-#### CalibrationRegistry.__init__
+#### CalibrationRegistry.**init**
 
 ```python
 __init__(self: Any, session_dir: Path)
@@ -156,7 +156,7 @@ Manages structured conversation history for a session (WP-9003).
 
 ### Methods
 
-#### ChatHistory.__init__
+#### ChatHistory.**init**
 
 ```python
 __init__(self: Any, chat_path: Path)
@@ -200,7 +200,7 @@ Manages persistence and retrieval of state checkpoints.
 
 ### Methods
 
-#### CheckpointRegistry.__init__
+#### CheckpointRegistry.**init**
 
 ```python
 __init__(self: Any, session_dir: Path)
@@ -248,7 +248,7 @@ ROB-003: Poison pill detection for repeated identical failures - Stop infinite r
 
 ### Methods
 
-#### CircuitBreakerRegistry.__init__
+#### CircuitBreakerRegistry.**init**
 
 ```python
 __init__(self: Any, session_dir: Path, threshold: int, window_s: int, recovery_s: int)
@@ -285,6 +285,7 @@ ROB-003: Detects poison pills (repeated identical failures) and prevents infinit
 WP-5001: Advanced resource-based adaptive concurrency controller.
 
 Features:
+
 - Extended resource indices (CPU, memory, FD, network, disk, GPU, etc.)
 - Prediction engine for forecasting resource needs
 - Harness card modeling (codex/claude/droid usage profiles)
@@ -294,7 +295,7 @@ Features:
 
 ### Methods
 
-#### ConcurrencyController.__init__
+#### ConcurrencyController.**init**
 
 ```python
 __init__(self: Any, session_dir: Path, max_concurrency: int, use_load_based: bool)
@@ -311,6 +312,7 @@ acquire(self: Any, lane: str, harness_type: Any)
 Acquire a concurrency slot using advanced resource-based limits.
 
 Uses:
+
 - Extended resource monitoring (CPU, memory, FD, network, disk, etc.)
 - Prediction engine for forecasting
 - Harness card modeling for harness-specific limits
@@ -340,7 +342,7 @@ ROB-012: Continuity watchdog with escalation on stale ownership - No orphaned cr
 
 ### Methods
 
-#### ContinuityWatchdog.__init__
+#### ContinuityWatchdog.**init**
 
 ```python
 __init__(self: Any, session_dir: Path)
@@ -388,7 +390,7 @@ WP-Y2: Dead-Letter Queue (DLQ) for permanently failing items.
 
 ### Methods
 
-#### DLQManager.__init__
+#### DLQManager.**init**
 
 ```python
 __init__(self: Any, session_dir: Path)
@@ -434,7 +436,7 @@ WP-5004: Manages non-critical tasks deferred during burst load.
 
 ### Methods
 
-#### DeferralQueue.__init__
+#### DeferralQueue.**init**
 
 ```python
 __init__(self: Any, session_dir: Path)
@@ -460,7 +462,7 @@ WP-3008: Governance queue for blocked decisions with SLA tracking.
 
 ### Methods
 
-#### EscalationQueue.__init__
+#### EscalationQueue.**init**
 
 ```python
 __init__(self: Any, session_dir: Path)
@@ -506,7 +508,7 @@ WP-2007: Checks evidence struct completeness and consistency.
 
 ### Methods
 
-#### EvidenceLinter.__init__
+#### EvidenceLinter.**init**
 
 ```python
 __init__(self: Any, session_dir: Path)
@@ -532,7 +534,7 @@ WP-4005: Detects stale state and enforces refresh logic.
 
 ### Methods
 
-#### FreshnessValidator.__init__
+#### FreshnessValidator.**init**
 
 ```python
 __init__(self: Any, session_dir: Path)
@@ -568,7 +570,7 @@ WP-4006/9004: Manages shift handoffs and continuity snapshots with enforcement.
 
 ### Methods
 
-#### HandoffManager.__init__
+#### HandoffManager.**init**
 
 ```python
 __init__(self: Any, session_dir: Path)
@@ -624,7 +626,7 @@ WP-1003: Ensures idempotent execution using 4-tuple keys.
 
 ### Methods
 
-#### IdempotencyManager.__init__
+#### IdempotencyManager.**init**
 
 ```python
 __init__(self: Any, session_dir: Path)
@@ -668,7 +670,7 @@ WP-4004: Fatigue tracking and interruption controls.
 
 ### Methods
 
-#### InterruptionTracker.__init__
+#### InterruptionTracker.**init**
 
 ```python
 __init__(self: Any, session_dir: Path)
@@ -704,7 +706,7 @@ WP-Y7: TRAFFIC KPI framework (10-metric).
 
 ### Methods
 
-#### KPIManager.__init__
+#### KPIManager.**init**
 
 ```python
 __init__(self: Any, session_dir: Path)
@@ -730,7 +732,7 @@ WP-1002: Priority and urgency lane model for task management.
 
 ### Methods
 
-#### LaneController.__init__
+#### LaneController.**init**
 
 ```python
 __init__(self: Any, session_dir: Path, capacity: int)
@@ -776,7 +778,7 @@ WP-5002: Classifies system load and detects burst conditions.
 
 ### Methods
 
-#### LoadClassifier.__init__
+#### LoadClassifier.**init**
 
 ```python
 __init__(self: Any, session_dir: Path, spike_threshold: Any, surge_threshold: Any)
@@ -793,6 +795,7 @@ get_load_level(self: Any)
 Return current load level: normal, high, burst.
 
 Uses resource-based thresholds when load-based limits are enabled:
+
 - Normal: Below 70% of resource-based limit
 - High: 70-95% of resource-based limit (15% discretionary buffer)
 - Burst: Above 95% of resource-based limit (5% minimum buffer)
@@ -823,7 +826,7 @@ Manages the pending message queue for a session (WP-9004).
 
 ### Methods
 
-#### MessageRegistry.__init__
+#### MessageRegistry.**init**
 
 ```python
 __init__(self: Any, messages_path: Path)
@@ -869,7 +872,7 @@ Stores policy overrides with TTL. WP-3003: revalidation on expiry.
 
 ### Methods
 
-#### OverrideRegistry.__init__
+#### OverrideRegistry.**init**
 
 ```python
 __init__(self: Any, session_dir: Path)
@@ -905,7 +908,7 @@ Evaluates execution requests against governance policies.
 
 ### Methods
 
-#### PolicyEngine.__init__
+#### PolicyEngine.**init**
 
 ```python
 __init__(self: Any, settings: Any)
@@ -934,7 +937,7 @@ WP-Y8/11008: Continuous scoring and learning loop with policy guardrails.
 
 ### Methods
 
-#### ProviderScorer.__init__
+#### ProviderScorer.**init**
 
 ```python
 __init__(self: Any, session_dir: Path)
@@ -970,7 +973,7 @@ WP-4007/9003/9006: Decision replay and rationale snapshots with sandbox and what
 
 ### Methods
 
-#### ReplayManager.__init__
+#### ReplayManager.**init**
 
 ```python
 __init__(self: Any, session_dir: Path)
@@ -1036,7 +1039,7 @@ OPT-019: Uses bloom filter for fast negative lookups on session_id (O(1) session
 
 ### Methods
 
-#### RunRegistry.__init__
+#### RunRegistry.**init**
 
 ```python
 __init__(self: Any, session_dir: Path)
@@ -1163,7 +1166,7 @@ WP-3007: Validates environment transitions (e.g. staging→production).
 
 ### Methods
 
-#### TrustBoundaryValidator.__init__
+#### TrustBoundaryValidator.**init**
 
 ```python
 __init__(self: Any, session_dir: Path)
@@ -1214,6 +1217,7 @@ acquire(self: Any, lane: str, harness_type: Any)
 Acquire a concurrency slot using advanced resource-based limits.
 
 Uses:
+
 - Extended resource monitoring (CPU, memory, FD, network, disk, etc.)
 - Prediction engine for forecasting
 - Harness card modeling for harness-specific limits
@@ -1489,6 +1493,7 @@ get_load_level(self: Any)
 Return current load level: normal, high, burst.
 
 Uses resource-based thresholds when load-based limits are enabled:
+
 - Normal: Below 70% of resource-based limit
 - High: 70-95% of resource-based limit (15% discretionary buffer)
 - Burst: Above 95% of resource-based limit (5% minimum buffer)

@@ -17,12 +17,14 @@
 ### TDD (Test-Driven Development)
 
 #### Rules:
+
 1. **Write tests BEFORE implementation**
 2. **Red → Green → Refactor cycle**
 3. **Tests must pass before code review**
 4. **No code merged without tests**
 
 #### Process:
+
 ```
 1. Write failing test (Red)
 2. Implement minimal code to pass (Green)
@@ -31,6 +33,7 @@
 ```
 
 #### Coverage Requirements:
+
 - **Unit Tests**: 100% of all functions
 - **Integration Tests**: 100% of all workflows
 - **E2E Tests**: 100% of all CLI commands
@@ -40,9 +43,11 @@
 ### BDD (Behavior-Driven Development)
 
 #### Purpose:
+
 Describe agent behavior in human-readable format that serves as both documentation and tests.
 
 #### Structure:
+
 ```gherkin
 Feature: [Feature Name]
   As an agent
@@ -57,11 +62,13 @@ Feature: [Feature Name]
 ```
 
 #### Implementation:
+
 - Use `pytest-bdd` or `behave` for Gherkin parsing
 - Map scenarios to pytest test functions
 - Generate documentation from scenarios
 
 #### Example:
+
 ```python
 @pytest.mark.e2e
 def test_agent_execution_successful():
@@ -114,6 +121,7 @@ def test_agent_execution_successful():
    - **Test Coverage**: 100%
 
 #### SDD Validation:
+
 - Every SDD requirement must have corresponding tests
 - Test results validate SDD accuracy
 - SDD updates trigger test updates
@@ -138,6 +146,7 @@ def test_agent_execution_successful():
 ```
 
 **Key Difference**: In agent-only environments:
+
 - **E2E tests are MORE critical** than unit tests
 - **Integration tests are MORE critical** than unit tests
 - Agents interact at API/CLI boundary - that's what matters
@@ -149,6 +158,7 @@ def test_agent_execution_successful():
 ### A. E2E Test Coverage (100% Required)
 
 **Every CLI command must have:**
+
 1. ✅ Success scenario test
 2. ✅ Error scenario test
 3. ✅ Help/usage test
@@ -159,6 +169,7 @@ def test_agent_execution_successful():
 ### B. Integration Test Coverage (100% Required)
 
 **Every workflow must have:**
+
 1. ✅ Happy path test
 2. ✅ Error path test
 3. ✅ Edge case test
@@ -169,6 +180,7 @@ def test_agent_execution_successful():
 ### C. Unit Test Coverage (100% Required)
 
 **Every function must have:**
+
 1. ✅ Basic functionality test
 2. ✅ Edge case test
 3. ✅ Error handling test
@@ -181,6 +193,7 @@ def test_agent_execution_successful():
 ## 🛠️ Implementation Tools
 
 ### Test Framework
+
 - **Framework**: pytest
 - **BDD**: pytest-bdd or behave
 - **Coverage**: pytest-cov
@@ -188,12 +201,14 @@ def test_agent_execution_successful():
 - **Fixtures**: pytest fixtures
 
 ### Coverage Tools
+
 - **Coverage**: pytest-cov with 100% target
 - **Mutation Testing**: mutmut or cosmic-ray
 - **Static Analysis**: mypy, pyright
 - **Linting**: ruff
 
 ### CI/CD Integration
+
 - **Pre-commit**: Run tests before commit
 - **Pre-merge**: Require 100% coverage
 - **Post-merge**: Run full test suite
@@ -223,36 +238,42 @@ def test_agent_execution_successful():
 ## 🚀 Implementation Roadmap
 
 ### Phase 1: Coverage Analysis (Week 1)
+
 - [x] Create coverage analysis script
 - [ ] Run coverage analysis
 - [ ] Generate coverage gap report
 - [ ] Map all commands to tests
 
 ### Phase 2: BDD Framework Setup (Week 1)
+
 - [ ] Install pytest-bdd
 - [ ] Create BDD test structure
 - [ ] Set up Gherkin parsing
 - [ ] Create test fixtures
 
 ### Phase 3: E2E Test Implementation (Week 2-4)
+
 - [ ] Implement E2E tests for all CLI commands
 - [ ] Cover all user journeys
 - [ ] Add error scenario tests
 - [ ] Validate output assertions
 
 ### Phase 4: Integration Test Expansion (Week 5-6)
+
 - [ ] Expand integration test coverage
 - [ ] Test all workflows end-to-end
 - [ ] Add failure scenario tests
 - [ ] Test cross-component interactions
 
 ### Phase 5: Unit Test Completion (Week 7-8)
+
 - [ ] Complete unit test coverage to 100%
 - [ ] Add edge case tests
 - [ ] Add boundary condition tests
 - [ ] Add error handling tests
 
 ### Phase 6: Continuous Integration (Ongoing)
+
 - [ ] Set up CI/CD with test execution
 - [ ] Require 100% coverage for new code
 - [ ] Block merges without tests
@@ -263,12 +284,14 @@ def test_agent_execution_successful():
 ## ✅ Quality Gates
 
 ### Pre-Commit Gates
+
 - [ ] All tests pass
 - [ ] Coverage >= 100%
 - [ ] No linting errors
 - [ ] No type errors
 
 ### Pre-Merge Gates
+
 - [ ] All tests pass
 - [ ] Coverage >= 100%
 - [ ] E2E tests pass
@@ -276,6 +299,7 @@ def test_agent_execution_successful():
 - [ ] Code review approved
 
 ### Post-Deploy Gates
+
 - [ ] E2E tests pass in production-like environment
 - [ ] Performance tests pass
 - [ ] Load tests pass (if applicable)
@@ -297,12 +321,14 @@ def test_agent_execution_successful():
 ## 🎯 Success Criteria
 
 ### Coverage Targets
+
 - ✅ **E2E Coverage**: 100% of CLI commands
 - ✅ **Integration Coverage**: 100% of workflows
 - ✅ **Unit Coverage**: 100% of functions
 - ✅ **Branch Coverage**: 100% of code paths
 
 ### Quality Targets
+
 - ✅ **Mutation Score**: 80%+
 - ✅ **Test Execution Time**: < 10 minutes
 - ✅ **Test Reliability**: 99.9%+ (no flaky tests)
@@ -333,6 +359,7 @@ def test_agent_execution_successful():
 **Governance**: TDD/BDD/SDD aligned
 
 <!-- PHENOTYPE_GOVERNANCE_OVERLAY_V1 -->
+
 ## Phenotype Governance Overlay v1
 
 - Enforce `TDD + BDD + SDD` for all feature and workflow changes.
@@ -341,4 +368,3 @@ def test_agent_execution_successful():
 - Keep local hot paths deterministic and low-latency; place distributed workflow logic behind durable orchestration boundaries.
 - Require policy gating, auditability, and traceable correlation IDs for agent and workflow actions.
 - Document architectural and protocol decisions before broad rollout changes.
-

@@ -47,11 +47,6 @@ override-dependencies = [ "hf-xet==0.0.0; implementation_name == 'pypy'",]
 [tool.uv.workspace]
 members = [ "packages/*", "modules/*",]
 
-[tool.ruff]
-line-length = 120
-target-version = "py313"
-exclude = [ "templates/*", "src/fastmcp/*", "src/starlette/*", "src/opentelemetry/*", "src/key_value/*", ".worktrees/*", ".shadow-*", ".shadow-run*", "src/thegent/acp/**", "src/thegent/cli/apps/sync.py", "src/thegent/cli/apps/deploy.py", "src/thegent/cli/commands/deploy*.py", "scripts/*.sh", "scripts/strip_ansi.py"]
-
 [tool.basedpyright]
 include = [ "src", "tests",]
 typeCheckingMode = "standard"
@@ -81,10 +76,6 @@ strict_equality = true
 module = [ "tests.*", "scripts.*",]
 disallow_untyped_defs = false
 disallow_incomplete_defs = false
-
-[tool.ruff.lint]
-select = [ "E", "W", "F", "I", "N", "UP", "S", "B", "A", "C4", "DTZ", "T20", "SIM", "TCH", "RUF", "PT", "ERA", "PL", "PERF", "FURB", "PIE", "ARG", "PTH", "ANN", "BLE", "FBT", "RET", "SLF",]
-ignore = [ "E501", "ANN101", "ANN102", "S101", "A002", "PLC0415", "PLR0913", "FBT001", "FBT002", "FBT003", "BLE001", "S603", "S607", "PLR0912", "PLR0915", "ANN001", "ANN201", "ANN202", "ANN401", "PLR2004", "S310", "ARG001", "ARG002", "PTH123", "PTH117", "S606", "RUF002", "RUF001", "S110", "S112", "PLR0911", "SIM102", "ANN003", "PERF401", "DTZ005", "B904", "PLW2901", "B008", "F811", "N818", "ERA001", "INP001", "D103", "SIM117", "E722", "E721", "F403", "W293", "PLW0127", "RUF022", "W291", "F405", "F822", "PTH113", "S604", "RET505", "FURB162", "E999", "E722", "UP017", "UP040", "UP041", "UP042", "UP043", "UP046", "UP047", "UP036", "RET504", "PLW0603", "PLW0602", "S324", "PTH105", "PTH116", "SIM103", "F841", "N806", "F401", "E402", "RUF100", "E741", "ARG005", "ANN204", "ANN002", "S108", "SIM105", "SLF001", "PTH119", "PTH110", "SIM108", "S602", "PTH101", "PLW1510", "N807", "N802", "N801", "I001", "A001", "A004", "ARG004", "DTZ006", "PLC0206", "RUF005", "RUF006", "PTH207", "PTH108", "PTH115", "PTH104", "PTH109", "PTH112", "S105", "S107", "S110", "SIM115", "B905", "B017", "UP031", "N999", "PTH106", "PTH208", "RUF003", "FURB116", "B020", "B018", "RUF034", "ARG003", "PLW1509", "UP045", "UP037", "RUF010", "FURB110", "TC003", "F821", "PLW0108", "DTZ011", "TC001", "TC002", "UP035", "S311", "PIE810", "PERF203", "S608",]
 
 [tool.hatch.metadata]
 allow-direct-references = true
@@ -126,7 +117,4 @@ unresolved-import = "ignore"
 unresolved-attribute = "warn"
 invalid-type-form = "ignore"
 
-[tool.ruff.lint.per-file-ignores]
-"tests/*" = [ "ANN", "ARG001", "ARG002", "ARG003", "ARG005", "PLR2004", "S101", "FBT001", "FBT003", "S108", "SLF001", "ERA001", "SIM117", "PLR0915", "E741", "N806", "S104", "S105", "S106", "PT019", "PERF401", "E402", "PTH101", "S103", "PT011", "PLW2901", "S112", "BLE001", "PLC0415", "PT018",]
-"scripts/*" = [ "ANN", "T201", "W293", "W291", "PTH107", "RUF013", "S603", "S607", "BLE001", "E402", "PLC0415", "PLR0912", "PLR0915", "FBT001", "FBT002", "S110",]
-"src/thegent/governance/heliosShield_bridge.py" = [ "N999",]
+

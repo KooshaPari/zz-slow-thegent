@@ -5,7 +5,6 @@ from __future__ import annotations
 import re
 from pathlib import Path
 
-
 README_PATH = Path(__file__).with_name("README.md")
 
 EXPECTED_GOVERNANCE_ROW_ORDER = (
@@ -440,7 +439,14 @@ def test_governance_goal_labels_are_unique_case_insensitively() -> None:
 
 
 def test_no_extra_governance_like_direct_rows_outside_expected_block() -> None:
-    governance_keywords = ("governance", "alias", "compat", "real-app", "command-surface", "split marker")
+    governance_keywords = (
+        "governance",
+        "alias",
+        "compat",
+        "real-app",
+        "command-surface",
+        "split marker",
+    )
     extras: list[str] = []
 
     for goal in _command_table_goal_rows():

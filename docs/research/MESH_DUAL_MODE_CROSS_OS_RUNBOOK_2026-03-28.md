@@ -58,6 +58,7 @@
 ### 1.3 OrbStack Role (macOS only)
 
 OrbStack replaces Docker Desktop with:
+
 - **Lower overhead** than Docker Desktop (native hypervisor, ~0% CPU when idle vs 5-10% for Docker Desktop)
 - **Linux VMs** (not just containers) — perfect for Headscale server
 - **Docker + K8s** support if needed later
@@ -110,6 +111,7 @@ scoop install tailscale
 ```
 
 **WSL-specific secrets sync**:
+
 ```bash
 # In WSL, access secrets via the Windows-mounted filesystem
 export SOPS_AGE_KEY_FILE=/mnt/c/Users/kooshapari/.config/age/phenotype.key
@@ -122,6 +124,7 @@ export PHENOTYPE_SOPS_SECRETS=/mnt/c/Users/kooshapari/.local/state/phenotype/sec
 ```
 
 **Headscale on Windows** (future, when N > 100):
+
 ```powershell
 # Download Headscale CLI
 # https://github.com/juanfont/headscale/releases
@@ -212,12 +215,12 @@ mesh disconnect
 
 ### 3.3 Scale Triggers
 
-| Device Count | Mode | Action |
-|-------------|------|--------|
-| 1-99 | Tailscale | Free, hosted, zero config |
-| 100 | Tailscale → Headscale | `mesh connect auto` auto-switches |
-| 101+ | Headscale | Self-hosted, unlimited |
-| Future containers | Headscale | Vault agent sidecar |
+| Device Count      | Mode                  | Action                            |
+| ----------------- | --------------------- | --------------------------------- |
+| 1-99              | Tailscale             | Free, hosted, zero config         |
+| 100               | Tailscale → Headscale | `mesh connect auto` auto-switches |
+| 101+              | Headscale             | Self-hosted, unlimited            |
+| Future containers | Headscale             | Vault agent sidecar               |
 
 ---
 
@@ -238,6 +241,7 @@ headscale -c ~/.config/phenotype/mesh/headscale.yaml \
 ### 4.2 Register Each OS
 
 **macOS (to Headscale)**:
+
 ```bash
 export HEADSCALE_URL="http://192.168.139.156:8080"
 tailscale up \
@@ -247,12 +251,14 @@ tailscale up \
 ```
 
 **Windows (to Headscale)**:
+
 ```powershell
 # Install Tailscale, then:
 tailscale up --login-server http://192.168.139.156:8080 --authkey hskey-auth-XXXXXXXXXXXXXXXXXXXXXX --hostname kooshas-desktop-headscale
 ```
 
 **Linux (to Headscale)**:
+
 ```bash
 headscale nodes register \
   --user phenotype \
@@ -272,6 +278,7 @@ WSL2 automatically inherits Windows Tailscale. No extra registration needed.
 The age private key stays on macOS (primary). Other machines need the **public key** to encrypt secrets they share, or the **private key** to decrypt.
 
 **Option A: Private key on all machines (simple)**:
+
 ```bash
 # Copy private key via mesh SSH
 mesh ssh kooshas-laptop
@@ -280,6 +287,7 @@ scp ~/.config/age/phenotype.key kooshas-desktop:~/.config/age/
 ```
 
 **Option B: Private key on primary, others decrypt via mesh**:
+
 ```bash
 # On secondary machines, use sops via mesh access
 # The encrypted file can be accessed via:
@@ -295,14 +303,14 @@ Update `~/.sops.yaml` to include all device public keys:
 ```yaml
 creation_rules:
   - path_regex: secrets/.*
-    age: 
-      - age1e7enhngqnwd9syl2spwrsf5v56m7cjlzxw9dr5mk44dchfyl4ycqxvx83z  # macOS
-      - age1xxxx...  # Windows desktop (after first run, add their pub key)
-      - age1yyyy...  # Linux VPS
+    age:
+      - age1e7enhngqnwd9syl2spwrsf5v56m7cjlzxw9dr5mk44dchfyl4ycqxvx83z # macOS
+      - age1xxxx... # Windows desktop (after first run, add their pub key)
+      - age1yyyy... # Linux VPS
     unencrypted_suffix: .example
 
   - path_regex: \.env$
-    age: 
+    age:
       - age1e7enhngqnwd9syl2spwrsf5v56m7cjlzxw9dr5mk44dchfyl4ycqxvx83z
 ```
 
@@ -319,12 +327,14 @@ age-keygen -y ~/.config/age/device.key  # Print public key
 ### 5.3 Secrets Per-OS Workflow
 
 **macOS (primary, decrypts)**:
+
 ```bash
 source ~/.zshrc.local
 mclaude  # _load_secrets runs automatically
 ```
 
 **Windows (via WSL or PowerShell)**:
+
 ```bash
 # WSL
 export SOPS_AGE_KEY_FILE=~/.config/age/phenotype.key
@@ -332,6 +342,7 @@ sops -d --input-type dotenv ~/.local/state/phenotype/secrets/secrets.env.age
 ```
 
 **Linux VPS**:
+
 ```bash
 export SOPS_AGE_KEY_FILE=~/.config/age/phenotype.key
 source <(sops -d --input-type dotenv ~/.local/state/phenotype/secrets/secrets.env.age)
@@ -341,17 +352,18 @@ source <(sops -d --input-type dotenv ~/.local/state/phenotype/secrets/secrets.en
 
 ## 6. OrbStack vs Docker Desktop
 
-| Feature | OrbStack | Docker Desktop |
-|---------|----------|---------------|
-| Overhead | ~0% idle | 5-10% idle |
-| Linux VMs | ✅ Native | ❌ Containers only |
-| Kubernetes | ✅ Built-in | ✅ |
-| Performance | Native hypervisor | Embedded VM |
-| Cost | Free | $0/mo (personal) / $21/mo (business) |
-| M-series Mac | ✅ Native ARM64 | Rosetta translation |
-| GUI | ✅ | ❌ |
+| Feature      | OrbStack          | Docker Desktop                       |
+| ------------ | ----------------- | ------------------------------------ |
+| Overhead     | ~0% idle          | 5-10% idle                           |
+| Linux VMs    | ✅ Native         | ❌ Containers only                   |
+| Kubernetes   | ✅ Built-in       | ✅                                   |
+| Performance  | Native hypervisor | Embedded VM                          |
+| Cost         | Free              | $0/mo (personal) / $21/mo (business) |
+| M-series Mac | ✅ Native ARM64   | Rosetta translation                  |
+| GUI          | ✅                | ❌                                   |
 
 **OrbStack for Headscale**: OrbStack's Linux VM is ideal for Headscale because:
+
 1. It's a full Linux system (not a container)
 2. WireGuard/Tailscale runs natively
 3. Low overhead (~0% when idle)
@@ -457,35 +469,37 @@ orb bash -c 'cmd'        # Run command in VM
 
 ## 9. File Reference
 
-| File | Purpose |
-|------|---------|
-| `thegent/scripts/shell/phenotype-mesh.sh` | Dual-mode mesh manager |
-| `thegent/scripts/shell/phenotype_minimax_harness.sh` | MiniMax/CLIProxy harness |
-| `~/.config/phenotype/mesh/` | Mesh config directory |
-| `~/.config/age/phenotype.key` | Age private key (keep secret!) |
-| `~/.local/state/phenotype/secrets/secrets.env.age` | Encrypted secrets |
-| `~/.sops.yaml` | SOPS multi-recipient config |
-| `~/.zshrc.local:94-101` | Mesh alias |
+| File                                                 | Purpose                        |
+| ---------------------------------------------------- | ------------------------------ |
+| `thegent/scripts/shell/phenotype-mesh.sh`            | Dual-mode mesh manager         |
+| `thegent/scripts/shell/phenotype_minimax_harness.sh` | MiniMax/CLIProxy harness       |
+| `~/.config/phenotype/mesh/`                          | Mesh config directory          |
+| `~/.config/age/phenotype.key`                        | Age private key (keep secret!) |
+| `~/.local/state/phenotype/secrets/secrets.env.age`   | Encrypted secrets              |
+| `~/.sops.yaml`                                       | SOPS multi-recipient config    |
+| `~/.zshrc.local:94-101`                              | Mesh alias                     |
 
 ---
 
 ## 10. Next Steps
 
 ### Today
+
 - [ ] Verify `mesh status` shows both Tailscale and Headscale VMs
-- [ ] Test `mesh connect auto` 
+- [ ] Test `mesh connect auto`
 - [ ] Fix Windows desktop key expiry (Tailscale admin console → generate new key)
 - [ ] Copy age public key to Windows side
 
 ### This Week
+
 - [ ] Register Windows desktop on Headscale mesh (for self-hosted fallback)
 - [ ] Add Windows machine public key to `~/.sops.yaml` for multi-recipient encryption
 - [ ] Test secrets decryption on Windows/WSL
 - [ ] Register Linux VPS (if deploying Headscale on VPS)
 
 ### This Month
+
 - [ ] Deploy Headscale on VPS for persistent mesh (optional)
 - [ ] Test Vault dev mode for dynamic credentials
 - [ ] Set up GH Actions with Vault JWT auth
 - [ ] Add container secrets via Vault Agent sidecar
-

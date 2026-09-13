@@ -36,7 +36,6 @@ from unittest.mock import MagicMock, patch
 
 import pytest
 
-
 # ---------------------------------------------------------------------------
 # 1. Wire-up regression: every new helper must be referenced from bg_impl_core
 # ---------------------------------------------------------------------------

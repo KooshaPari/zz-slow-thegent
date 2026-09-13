@@ -14,31 +14,31 @@ Formalizes multi-agent orchestration patterns as supported modes per Kush docs D
 
 ## 2. Modes
 
-| Mode | Description | Phases | Use Case | Risk |
-|------|-------------|--------|----------|------|
-| **sequential_delegation** | Step-wise specialization: each agent hands off to the next in sequence | planner → operator → ... | Multi-step workflows where each step requires different expertise | medium |
-| **parallel_consensus** | Independent solution synthesis: multiple agents run in parallel, result aggregated | operator, operator, ... | Critical tasks requiring quorum or consensus (e.g. low-confidence escalation) | low |
-| **review_loop** | Planner/Operator/Reviewer enforcement: explicit phase gates with approval | planner → operator → reviewer | Governance-heavy workflows with explicit review gates | high |
+| Mode                      | Description                                                                        | Phases                        | Use Case                                                                      | Risk   |
+| ------------------------- | ---------------------------------------------------------------------------------- | ----------------------------- | ----------------------------------------------------------------------------- | ------ |
+| **sequential_delegation** | Step-wise specialization: each agent hands off to the next in sequence             | planner → operator → ...      | Multi-step workflows where each step requires different expertise             | medium |
+| **parallel_consensus**    | Independent solution synthesis: multiple agents run in parallel, result aggregated | operator, operator, ...       | Critical tasks requiring quorum or consensus (e.g. low-confidence escalation) | low    |
+| **review_loop**           | Planner/Operator/Reviewer enforcement: explicit phase gates with approval          | planner → operator → reviewer | Governance-heavy workflows with explicit review gates                         | high   |
 
 ---
 
 ## 3. Mode Selection Policy
 
-| Condition | Suggested Mode |
-|-----------|----------------|
-| confidence < 0.5 | parallel_consensus |
-| risk = high, urgency ≠ critical | review_loop |
-| default | sequential_delegation |
+| Condition                       | Suggested Mode        |
+| ------------------------------- | --------------------- |
+| confidence < 0.5                | parallel_consensus    |
+| risk = high, urgency ≠ critical | review_loop           |
+| default                         | sequential_delegation |
 
 ---
 
 ## 4. Implementation Mapping
 
-| Mode | Current thegent Feature |
-|------|-------------------------|
-| parallel_consensus | DAG task `quorum` field; multi-agent runs with leader/follower arbitration |
-| sequential_delegation | DAG `depends_on`; handoff via task completion |
-| review_loop | CSMPhase.REVIEWER; governance gates; `decision_reason_code` validation |
+| Mode                  | Current thegent Feature                                                    |
+| --------------------- | -------------------------------------------------------------------------- |
+| parallel_consensus    | DAG task `quorum` field; multi-agent runs with leader/follower arbitration |
+| sequential_delegation | DAG `depends_on`; handoff via task completion                              |
+| review_loop           | CSMPhase.REVIEWER; governance gates; `decision_reason_code` validation     |
 
 ---
 
@@ -57,8 +57,8 @@ Formalizes multi-agent orchestration patterns as supported modes per Kush docs D
 - **CLI:** `thegent modes` (main.py)
 - **MCP:** `thegent_list_modes` tool, `thegent://modes` resource
 
-
 ---
+
 ## See also
 
 - [WORK_STREAM.md](reference/WORK_STREAM.md) — canonical backlog

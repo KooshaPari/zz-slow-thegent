@@ -11,8 +11,6 @@ Source: src/thegent/governance/config_provider_cp.py
 
 from __future__ import annotations
 
-import pytest
-
 from thegent.governance.config_provider_cp import ControlPlaneConfigProvider
 
 

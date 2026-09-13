@@ -11,12 +11,12 @@ Libraries used (already installed):
 
 from __future__ import annotations
 
-import json
 import hashlib
+import json
+from contextlib import contextmanager
+from functools import wraps
 from pathlib import Path
 from typing import Any, TypeVar
-from functools import wraps
-from contextlib import contextmanager
 
 from cachetools import LRUCache, TTLCache
 from diskcache import Cache as DiskCache
@@ -26,14 +26,14 @@ T = TypeVar("T")
 
 class UnifiedCache:
     """Unified cache with tiered storage.
-    
+
     Tier 1: In-memory LRU (fastest, smallest)
     Tier 2: In-memory TTL (fast, time-bounded)
     Tier 3: Persistent disk cache (slowest, largest)
-    
+
     Replaces: cache_v2.py, cache.py, semantic_cache.py, etc.
     """
-    
+
     def __init__(
         self,
         disk_path: Path | str = ".cache/thegent",
@@ -42,49 +42,43 @@ class UnifiedCache:
     ) -> None:
         self._disk_path = Path(disk_path)
         self._disk_path.mkdir(parents=True, exist_ok=True)
-        
+
         # Tier 1: In-memory LRU
         self._lru: LRUCache[str, Any] = LRUCache(maxsize=lru_size)
-        
+
         # Tier 2: In-memory TTL
         self._ttl: TTLCache[str, Any] = TTLCache(maxsize=1000, ttl=ttl_seconds)
-        
+
         # Tier 3: Persistent disk cache
         self._disk = DiskCache(str(self._disk_path))
-    
+
     def _make_key(self, *args: Any, **kwargs: Any) -> str:
         """Create a cache key from arguments."""
         key_data = json.dumps({"args": args, "kwargs": kwargs}, sort_keys=True)
         return hashlib.sha256(key_data.encode()).hexdigest()
-    
+
     def get(self, key: str) -> Any | None:
         """Get value from cache (checks all tiers)."""
         # Check Tier 1 (LRU) - fastest
         if key in self._lru:
             return self._lru[key]
-        
+
         # Check Tier 2 (TTL)
         if key in self._ttl:
             return self._ttl[key]
-        
+
         # Check Tier 3 (Disk)
         value = self._disk.get(key)
         if value is not None:
             # Promote to in-memory caches
             self._ttl[key] = value
             return value
-        
+
         return None
-    
-    def set(
-        self,
-        key: str,
-        value: Any,
-        tier: str = "ttl",
-        expire: int | None = None
-    ) -> None:
+
+    def set(self, key: str, value: Any, tier: str = "ttl", expire: int | None = None) -> None:
         """Set value in cache.
-        
+
         Args:
             key: Cache key
             value: Value to cache
@@ -100,7 +94,7 @@ class UnifiedCache:
             self._ttl[key] = value  # Also cache in memory
         else:
             raise ValueError(f"Unknown tier: {tier}")
-    
+
     def delete(self, key: str) -> bool:
         """Delete key from all cache tiers."""
         deleted = False
@@ -112,7 +106,7 @@ class UnifiedCache:
             except (KeyError, Exception):
                 pass
         return deleted
-    
+
     def clear(self, tier: str | None = None) -> None:
         """Clear cache (all tiers or specific tier)."""
         if tier is None or tier == "lru":
@@ -121,7 +115,7 @@ class UnifiedCache:
             self._ttl.clear()
         if tier is None or tier == "disk":
             self._disk.clear()
-    
+
     def stats(self) -> dict[str, Any]:
         """Get cache statistics."""
         return {
@@ -129,7 +123,7 @@ class UnifiedCache:
             "ttl": {"size": len(self._ttl), "maxsize": self._ttl.maxsize},
             "disk": {"size": len(self._disk)},
         }
-    
+
     @contextmanager
     def transaction(self):
         """Context manager for cache transactions."""
@@ -140,7 +134,7 @@ class UnifiedCache:
             self._lru.clear()
             self._ttl.clear()
             raise
-    
+
     def close(self) -> None:
         """Close the disk cache (cleanup)."""
         self._disk.close()
@@ -148,41 +142,43 @@ class UnifiedCache:
 
 # Decorator for function-level caching
 def cached(
-    cache: "UnifiedCache" | None = None,
+    cache: UnifiedCache | None = None,
     key_func: Any = None,
     tier: str = "ttl",
-    expire: int = 300
+    expire: int = 300,
 ):
     """Decorator to cache function results.
-    
+
     Args:
         cache: Cache instance (uses global if None)
         key_func: Function to generate cache key
         tier: Cache tier to use
         expire: Expiration in seconds
     """
-    
+
     def decorator(func):
         @wraps(func)
         def wrapper(*args, **kwargs):
             _cache = cache or get_cache()
-            
+
             # Generate cache key
             if key_func:
                 key = key_func(*args, **kwargs)
             else:
                 key = _cache._make_key(func.__name__, *args, **kwargs)
-            
+
             # Try to get from cache
             result = _cache.get(key)
             if result is not None:
                 return result
-            
+
             # Call function and cache result
             result = func(*args, **kwargs)
             _cache.set(key, result, tier=tier, expire=expire)
             return result
+
         return wrapper
+
     return decorator
 
 
@@ -190,10 +186,7 @@ def cached(
 _default_cache: UnifiedCache | None = None
 
 
-def get_cache(
-    disk_path: Path | str = ".cache/thegent",
-    lru_size: int = 1000
-) -> UnifiedCache:
+def get_cache(disk_path: Path | str = ".cache/thegent", lru_size: int = 1000) -> UnifiedCache:
     """Get or create the default cache instance."""
     global _default_cache
     if _default_cache is None:

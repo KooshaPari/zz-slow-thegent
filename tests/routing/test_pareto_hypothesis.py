@@ -10,11 +10,10 @@ Tests verify mathematical properties of Pareto dominance and frontier computatio
 from __future__ import annotations
 
 import pytest
-from hypothesis import given, settings, assume
+from hypothesis import given, settings
 from hypothesis import strategies as st
 
 from thegent.utils.routing_impl.pareto_router import ParetoRouter, RouteCandidate
-
 
 # --- Strategies ---
 
@@ -147,7 +146,12 @@ class TestDominanceProperties:
     def test_strictly_better_dominates(self, cost_a: float, quality_a: float) -> None:
         """A candidate with strictly lower cost AND higher quality dominates."""
         a = RouteCandidate(model="a", provider="p", cost_per_1k=cost_a, quality_score=quality_a)
-        b = RouteCandidate(model="b", provider="p", cost_per_1k=cost_a / 2, quality_score=min(quality_a + 0.01, 1.0))
+        b = RouteCandidate(
+            model="b",
+            provider="p",
+            cost_per_1k=cost_a / 2,
+            quality_score=min(quality_a + 0.01, 1.0),
+        )
         assert ParetoRouter._is_dominated(a, b)
 
 
@@ -174,7 +178,10 @@ class TestSelectByStrategy:
         selected = self.router.select_by_strategy("quality", candidates)
         assert selected.model == "high"
 
-    @given(candidates=candidate_list_st, strategy=st.sampled_from(["cost", "quality", "speed", "balanced"]))
+    @given(
+        candidates=candidate_list_st,
+        strategy=st.sampled_from(["cost", "quality", "speed", "balanced"]),
+    )
     @settings(max_examples=100, deadline=None)
     def test_strategy_always_returns_candidate(self, candidates: list[RouteCandidate], strategy: str) -> None:
         """Any valid strategy returns a candidate from the input."""

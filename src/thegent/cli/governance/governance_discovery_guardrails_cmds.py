@@ -11,7 +11,6 @@ import os
 from pathlib import Path
 
 import typer
-
 from rich.table import Table
 
 from thegent.cli.commands._cli_shared import (
@@ -48,10 +47,17 @@ def guardrails_show_cmd() -> None:
 
     table.add_row("Max Chars", str(rails.prompt_max_chars))
     table.add_row("Blocklist Patterns", str(len(rails.prompt_blocklist_patterns)))
-    table.add_row("Agent Allowlist", ", ".join(rails.agent_allowlist) if rails.agent_allowlist else "None")
-    table.add_row("Model Allowlist", ", ".join(rails.model_allowlist) if rails.model_allowlist else "None")
     table.add_row(
-        "CWD Allowed Prefixes", ", ".join(rails.cwd_allowed_prefixes) if rails.cwd_allowed_prefixes else "None"
+        "Agent Allowlist",
+        ", ".join(rails.agent_allowlist) if rails.agent_allowlist else "None",
+    )
+    table.add_row(
+        "Model Allowlist",
+        ", ".join(rails.model_allowlist) if rails.model_allowlist else "None",
+    )
+    table.add_row(
+        "CWD Allowed Prefixes",
+        ", ".join(rails.cwd_allowed_prefixes) if rails.cwd_allowed_prefixes else "None",
     )
 
     console.print(table)

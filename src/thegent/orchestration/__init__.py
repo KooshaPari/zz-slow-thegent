@@ -35,6 +35,31 @@ from thegent.orchestration.budget_tracker import (
     BudgetExceededError,
     BudgetTracker,
 )
+
+# Consensus submodules — exposed as ``thegent.orchestration.<name>``
+# so tests can patch symbols (e.g. ``_import_redis_sync``) via the
+# canonical package path.  Mirrors the sub_agent_dispatcher re-export
+# pattern.  AUDIT-N+38.
+from thegent.orchestration.consensus.omega_consensus import (  # noqa: E402
+    FinalState,
+    OmegaConsensus,
+)
+from thegent.orchestration.consensus.redis_concurrency import (  # noqa: E402
+    RedisConcurrencyController,
+    RedisConfig,
+    _InMemoryStore,
+    make_redis_concurrency_controller,
+)
+from thegent.orchestration.consensus.redlock_atomic import (  # noqa: E402
+    RedlockAcquireResult,
+    RedlockAtomic,
+    RedlockController,
+    _import_redis_sync,
+    _InMemoryLockState,
+    _parse_node_urls_from_env,
+    _parse_redis_url,
+    make_redlock_controller,
+)
 from thegent.orchestration.inter_agent_protocol import (
     InterAgentMessage,
     InterAgentProtocol,
@@ -55,31 +80,6 @@ from thegent.orchestration.plan import (
 from thegent.orchestration.sub_agent_dispatcher import (
     DispatchResult,
     SubAgentDispatcher,
-)
-
-# Consensus submodules — exposed as ``thegent.orchestration.<name>``
-# so tests can patch symbols (e.g. ``_import_redis_sync``) via the
-# canonical package path.  Mirrors the sub_agent_dispatcher re-export
-# pattern.  AUDIT-N+38.
-from thegent.orchestration.consensus.omega_consensus import (  # noqa: E402
-    FinalState,
-    OmegaConsensus,
-)
-from thegent.orchestration.consensus.redlock_atomic import (  # noqa: E402
-    RedlockAcquireResult,
-    RedlockAtomic,
-    RedlockController,
-    _InMemoryLockState,
-    _import_redis_sync,
-    _parse_node_urls_from_env,
-    _parse_redis_url,
-    make_redlock_controller,
-)
-from thegent.orchestration.consensus.redis_concurrency import (  # noqa: E402
-    RedisConcurrencyController,
-    RedisConfig,
-    _InMemoryStore,
-    make_redis_concurrency_controller,
 )
 
 redlock_atomic = _sys.modules["thegent.orchestration.consensus.redlock_atomic"]

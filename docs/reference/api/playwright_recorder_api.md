@@ -5,6 +5,7 @@
 Playwright-based browser automation and recording for VitePress documentation.
 
 Provides high-level utilities for:
+
 - Browser automation (launch, navigation, interactions)
 - Video recording for feature demonstrations
 - Screenshot capture with annotations
@@ -18,6 +19,7 @@ Provides high-level utilities for:
 High-level wrapper for Playwright browser automation and recording.
 
 Handles:
+
 - Browser lifecycle (launch, close, context management)
 - Navigation and page interactions
 - Video recording with configurable quality
@@ -27,7 +29,7 @@ Handles:
 
 ### Methods
 
-#### PlaywrightRecorder.__init__
+#### PlaywrightRecorder.**init**
 
 ```python
 __init__(self: Any, config: Any)

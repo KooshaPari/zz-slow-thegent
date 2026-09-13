@@ -5,8 +5,8 @@ from collections import OrderedDict
 from dataclasses import dataclass, field
 from typing import Literal, cast, get_args
 
-from thegent.utils.provider_names import normalize_provider_name
 from thegent.infra import get_cache
+from thegent.utils.provider_names import normalize_provider_name
 
 # Canonical model ID -> list of routes (provider, backend, model_alias, priority)
 # Lower priority = prefer first when using prefer_direct
@@ -191,7 +191,14 @@ def normalize_model_id(model_id: str) -> str:
 def normalize_route_policy(policy: str | None) -> RoutePolicy:
     """Validate and normalize routing policy. Raises ValueError on invalid policy."""
     normalized = (policy or "prefer_direct").strip().lower()
-    if normalized in ("prefer_direct", "prefer_proxy", "failover", "round_robin", "cheapest", "pareto"):
+    if normalized in (
+        "prefer_direct",
+        "prefer_proxy",
+        "failover",
+        "round_robin",
+        "cheapest",
+        "pareto",
+    ):
         return cast("RoutePolicy", normalized)
     raise ValueError(
         f"Invalid routing policy '{policy}'. Valid values: prefer_direct, prefer_proxy, failover, round_robin, cheapest, pareto."
@@ -413,7 +420,10 @@ class ModelCatalog:
 
         detail: dict[str, list[dict[str, object]]] = {}
         for model_id in sorted(catalog):
-            routes = sorted(catalog[model_id], key=lambda r: (r.provider, r.backend_type, r.model_alias))
+            routes = sorted(
+                catalog[model_id],
+                key=lambda r: (r.provider, r.backend_type, r.model_alias),
+            )
             route_rows = [
                 {
                     "provider": r.provider,
@@ -481,7 +491,13 @@ def _make_route_cache_key(
     lane: str | None,
 ) -> str:
     """Create cache key for route resolution."""
-    key_parts = [model_id or "", provider_hint or "", policy, str(quality_floor), lane or ""]
+    key_parts = [
+        model_id or "",
+        provider_hint or "",
+        policy,
+        str(quality_floor),
+        lane or "",
+    ]
     key_str = "|".join(key_parts)
     # Use hash prefix for shorter keys (first 16 chars of SHA256)
     return hashlib.sha256(key_str.encode()).hexdigest()[:16]

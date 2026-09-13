@@ -1,10 +1,9 @@
 import orjson as json
-from datetime import UTC, datetime
-from pathlib import Path
-
 import pytest
 
-from thegent.governance.compliance import US_SEC_PROFILE, ComplianceExporter, ComplianceProfileType
+from thegent.governance.compliance import (
+    ComplianceExporter,
+)
 from thegent.governance.forensics import IncidentReplayer
 from thegent.governance.ledger import IncidentLedger
 from thegent.governance.redaction import PIIRedactor
@@ -32,7 +31,11 @@ def test_ec001_siem_egress_mock():
     egress = SIEMEgress(endpoint_url=None)
 
     event = EgressEvent(
-        id="evt-123", severity="high", event_type="access_denied", source="test", payload={"reason": "policy_violation"}
+        id="evt-123",
+        severity="high",
+        event_type="access_denied",
+        source="test",
+        payload={"reason": "policy_violation"},
     )
 
     # Implementation returns False if no endpoint
@@ -41,8 +44,8 @@ def test_ec001_siem_egress_mock():
 
 def test_ec002_ledger_hash_chain(ledger):
     """EC-002: Add artifact to ledger and verify hash chain."""
-    h1 = ledger.record_artifact("run-1", "action1", {"data": 1})
-    h2 = ledger.record_artifact("run-1", "action2", {"data": 2})
+    ledger.record_artifact("run-1", "action1", {"data": 1})
+    ledger.record_artifact("run-1", "action2", {"data": 2})
 
     assert ledger.verify_integrity()
 

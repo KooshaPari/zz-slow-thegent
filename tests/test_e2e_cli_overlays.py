@@ -1,13 +1,13 @@
 """E2E tests for thegent CLI (read-only, deterministic)."""
 
 import hashlib
-import orjson as json
-import re
 import sys
 from pathlib import Path
 from unittest.mock import MagicMock
 
+import orjson as json
 import pytest
+
 from tests.e2e.cli_assertions import expected_trend_health_signature, load_cli_json
 from tests.e2e.cli_runner_compat import CompatCliRunner
 
@@ -399,7 +399,14 @@ class TestOrchestrateRunBgHelpAndUnknownAgent:
         monkeypatch.chdir(project)
         result = runner.invoke(
             app,
-            ["orchestrate", "bg", "test prompt", "nonexistent_agent_xyz", "-d", str(project)],
+            [
+                "orchestrate",
+                "bg",
+                "test prompt",
+                "nonexistent_agent_xyz",
+                "-d",
+                str(project),
+            ],
         )
         # bg may exit 0 immediately (spawns background) or 1 if agent validated upfront
         assert result.exit_code in (0, 1)
@@ -725,7 +732,16 @@ class TestObserveSummaryCustom:
         monkeypatch.setenv("THGENT_HEALTH_SNAPSHOT_PATH", str(snapshot_file))
         result = runner.invoke(
             app,
-            ["observe", "summary", "--format", "json", "--trend-samples", "3", "--limit", "25"],
+            [
+                "observe",
+                "summary",
+                "--format",
+                "json",
+                "--trend-samples",
+                "3",
+                "--limit",
+                "25",
+            ],
         )
         assert result.exit_code == 0
         payload = load_cli_json(result.stdout)
@@ -807,7 +823,9 @@ class TestObserveSummaryCustom:
         assert trend["trend_snapshot_health"] == "disabled"
         assert trend["trend_snapshot_health_breakdown"]["policy_signature"] == trend_health_signature
 
-    def test_observe_summary_trend_samples_large_enables_and_tracks_effective_samples(self) -> None:
+    def test_observe_summary_trend_samples_large_enables_and_tracks_effective_samples(
+        self,
+    ) -> None:
         # @trace FR-CLI-001
         """observe summary accepts large trend sample requests and reflects requested/effective."""
         result = runner.invoke(
@@ -1058,8 +1076,18 @@ class TestObserveSummaryCustom:
         assert trend["trend_snapshot_gap_count"] == 1
         assert trend["trend_snapshot_invalid_timestamps"] == 0
         assert trend["trend_snapshot_coverage_pct"] == 100.0
-        assert trend["trend_snapshot_freshness_bucket"] in {"fresh", "warm", "stale", "critical"}
-        assert trend["trend_snapshot_health"] in {"good", "warning", "degraded", "critical"}
+        assert trend["trend_snapshot_freshness_bucket"] in {
+            "fresh",
+            "warm",
+            "stale",
+            "critical",
+        }
+        assert trend["trend_snapshot_health"] in {
+            "good",
+            "warning",
+            "degraded",
+            "critical",
+        }
         assert trend["trend_snapshot_health_breakdown"]["policy_signature"] == trend_health_signature
         assert trend["trend_snapshot_health_breakdown"]["policy"]["healthy_threshold"] == 95
         assert trend["trend_snapshot_health_breakdown"]["policy"]["warning_threshold"] == 80
@@ -1207,7 +1235,14 @@ class TestHistoryEventsRunId:
         monkeypatch.setenv("THGENT_SESSION_DIR", str(session_dir))
         result = runner.invoke(
             app,
-            ["history", "events", "--run-id", "e2e_nonexistent_run_xyz", "--limit", "5"],
+            [
+                "history",
+                "events",
+                "--run-id",
+                "e2e_nonexistent_run_xyz",
+                "--limit",
+                "5",
+            ],
         )
         assert result.exit_code == 0
 

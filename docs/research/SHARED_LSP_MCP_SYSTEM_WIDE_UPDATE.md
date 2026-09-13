@@ -51,6 +51,7 @@ Total: ~2-2.5GB (shared) + N × (10-50MB per session)
 ### Project Isolation Override
 
 To force project isolation, create:
+
 ```bash
 # .thegent/isolate_servers
 # This file forces project-scoped servers for this project

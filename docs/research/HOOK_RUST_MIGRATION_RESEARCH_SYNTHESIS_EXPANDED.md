@@ -28,6 +28,7 @@
 ### 1.1 Migration Goal
 
 **Objective**: Migrate hook runtime from shell (`common.sh`) to Rust (`thegent-hooks` binary) to achieve:
+
 - **Performance**: 200ms → 20ms hook latency (10x improvement)
 - **Reliability**: Eliminate shell cascade failures, subprocess overhead
 - **Maintainability**: Type-safe, testable Rust code vs. shell scripts
@@ -36,12 +37,14 @@
 ### 1.2 Key Findings
 
 **Current State**:
+
 - `common.sh` (~1685 lines) provides init, cache, git, config, helpers
 - `hook-dispatcher` (Rust) orchestrates but still runs bash hooks
 - Many hooks source `common.sh`, causing cascade failures
 - Subprocess overhead: `which`, `command -v`, `git`, tool detection
 
 **Target State**:
+
 - `thegent-hooks` binary with subcommands: `init`, `cache-key`, `cache-check`, `git`, `changed-files`, `config-get`
 - Hooks call `thegent-hooks` instead of sourcing `common.sh`
 - Native Rust implementations for critical paths
@@ -50,6 +53,7 @@
 ### 1.3 Migration Approach
 
 **Phased Migration**:
+
 1. **Phase 1**: Build `thegent-hooks` binary with core subcommands
 2. **Phase 2**: Migrate hooks to use `thegent-hooks` (opt-in)
 3. **Phase 3**: Make `thegent-hooks` default, deprecate `common.sh`
@@ -86,6 +90,7 @@ Current Architecture:
 ```
 
 **Problems**:
+
 - Shell cascade: `which` → `common.sh` → wrappers → subprocesses
 - Subprocess overhead: Each tool detection spawns process
 - Error propagation: Shell errors cascade through sourcing
@@ -93,16 +98,17 @@ Current Architecture:
 
 ### 2.2 Performance Bottlenecks
 
-| Operation | Current (Shell) | Target (Rust) | Improvement |
-|-----------|----------------|---------------|-------------|
-| **Hook init** | 50-100ms | <5ms | 10-20x |
-| **Cache key** | 20-50ms | <1ms | 20-50x |
-| **Tool detection** | 60ms | 1ms | 60x |
-| **PATH resolution** | 20ms | 0.5ms | 40x |
-| **Git status** | 100ms | 10ms | 10x |
-| **Changed files** | 50-200ms | 5-20ms | 10x |
+| Operation           | Current (Shell) | Target (Rust) | Improvement |
+| ------------------- | --------------- | ------------- | ----------- |
+| **Hook init**       | 50-100ms        | <5ms          | 10-20x      |
+| **Cache key**       | 20-50ms         | <1ms          | 20-50x      |
+| **Tool detection**  | 60ms            | 1ms           | 60x         |
+| **PATH resolution** | 20ms            | 0.5ms         | 40x         |
+| **Git status**      | 100ms           | 10ms          | 10x         |
+| **Changed files**   | 50-200ms        | 5-20ms        | 10x         |
 
 **Root Causes**:
+
 - Subprocess spawning: `which`, `command -v`, `git`, tool detection
 - Shell parsing: Sourcing `common.sh`, function definitions
 - File I/O: Multiple cache reads, config parsing
@@ -111,6 +117,7 @@ Current Architecture:
 ### 2.3 Existing Rust Infrastructure
 
 **Available Crates**:
+
 - `thegent-tool-detect`: Tool detection (jq, rg, fd, etc.)
 - `thegent-path-resolve`: PATH resolution
 - `thegent-discovery`: Process scanning
@@ -118,6 +125,7 @@ Current Architecture:
 - `hook-dispatcher`: Hook orchestration (Rust)
 
 **Gaps**:
+
 - No unified `thegent-hooks` binary
 - No Rust implementation of `hook_init`, `hook_cache_key`, `git_cached`
 - Hooks still source `common.sh`
@@ -164,41 +172,49 @@ Target Architecture:
 ### 3.3 Subcommand Design
 
 **`thegent-hooks init`**:
+
 - Input: JSON stdin (hook_name, project_dir, etc.)
 - Output: Environment variables (PROJECT_DIR, HOOK_CACHE_DIR, etc.)
 - Replaces: `hook_init_full()` from `common.sh`
 
 **`thegent-hooks cache-key`**:
+
 - Input: Hook name, head SHA, changed files
 - Output: Cache key (blake3 hash)
 - Replaces: `hook_cache_key()` from `common.sh`
 
 **`thegent-hooks cache-check`**:
+
 - Input: Cache key
 - Output: Exit code (0 = hit, 1 = miss)
 - Replaces: `hook_cache_check()` from `common.sh`
 
 **`thegent-hooks cache-read`**:
+
 - Input: Cache key
 - Output: Cached data (JSON)
 - Replaces: `hook_cache_read()` from `common.sh`
 
 **`thegent-hooks cache-write`**:
+
 - Input: Cache key, data (JSON)
 - Output: Success/failure
 - Replaces: `hook_cache_write()` from `common.sh`
 
 **`thegent-hooks git`**:
+
 - Input: Git command (status, diff, rev-parse, etc.)
 - Output: Git output (cached or passthrough)
 - Replaces: `git_cached()` from `common.sh`
 
 **`thegent-hooks changed-files`**:
+
 - Input: Git range (optional)
 - Output: Changed files (JSON array)
 - Replaces: `hook_shared_changed_files()` from `common.sh`
 
 **`thegent-hooks config-get`**:
+
 - Input: Config key path
 - Output: Config value (JSON)
 - Replaces: Config parsing from `common.sh`
@@ -210,6 +226,7 @@ Target Architecture:
 ### 4.1 Benchmarks
 
 **Hook Init**:
+
 ```bash
 # Shell (common.sh)
 time source hooks/lib/common.sh && hook_init_full
@@ -221,6 +238,7 @@ time thegent-hooks init < hook_input.json
 ```
 
 **Cache Key**:
+
 ```bash
 # Shell (common.sh)
 time hook_cache_key "test-maturity" "$(git rev-parse HEAD)" "$(git diff --name-only)"
@@ -232,6 +250,7 @@ time thegent-hooks cache-key "test-maturity" "$(git rev-parse HEAD)" "$(git diff
 ```
 
 **Tool Detection**:
+
 ```bash
 # Shell (common.sh)
 time command -v jq && command -v rg && command -v fd
@@ -243,6 +262,7 @@ time thegent-hooks init | grep JQ_CMD
 ```
 
 **Git Status**:
+
 ```bash
 # Shell (git-cache.sh)
 time git_cached status --short
@@ -255,31 +275,35 @@ time thegent-hooks git status --short
 
 ### 4.2 Performance Targets
 
-| Metric | Current | Target | Status |
-|--------|---------|--------|--------|
-| **Hook init latency** | 50-100ms | <5ms | 🔄 In progress |
-| **Cache key generation** | 20-50ms | <1ms | 🔄 In progress |
-| **Tool detection** | 60ms | 1ms | ✅ Achieved (thegent-tool-detect) |
-| **PATH resolution** | 20ms | 0.5ms | ✅ Achieved (thegent-path-resolve) |
-| **Git status** | 100ms | 10ms | 🔄 In progress |
-| **Changed files** | 50-200ms | 5-20ms | 🔄 In progress |
-| **Overall hook latency** | 200ms | 20ms | 🔄 In progress |
+| Metric                   | Current  | Target | Status                             |
+| ------------------------ | -------- | ------ | ---------------------------------- |
+| **Hook init latency**    | 50-100ms | <5ms   | 🔄 In progress                     |
+| **Cache key generation** | 20-50ms  | <1ms   | 🔄 In progress                     |
+| **Tool detection**       | 60ms     | 1ms    | ✅ Achieved (thegent-tool-detect)  |
+| **PATH resolution**      | 20ms     | 0.5ms  | ✅ Achieved (thegent-path-resolve) |
+| **Git status**           | 100ms    | 10ms   | 🔄 In progress                     |
+| **Changed files**        | 50-200ms | 5-20ms | 🔄 In progress                     |
+| **Overall hook latency** | 200ms    | 20ms   | 🔄 In progress                     |
 
 ### 4.3 Performance Analysis
 
 **Subprocess Overhead**:
+
 - Shell: ~10-20ms per subprocess spawn
 - Rust: ~0.1ms per subprocess (when needed), native operations <1ms
 
 **JSON Parsing**:
+
 - Shell: `jq` subprocess (~5-10ms)
 - Rust: `serde_json` (~0.1ms)
 
 **File I/O**:
+
 - Shell: Multiple `read` calls, slow
 - Rust: Single read, optimized buffering
 
 **Hashing**:
+
 - Shell: `sha256sum` subprocess (~5-10ms)
 - Rust: `blake3` (~0.1ms)
 
@@ -290,6 +314,7 @@ time thegent-hooks git status --short
 ### Phase 1: Core Binary & Subcommands (Weeks 1-2)
 
 **Deliverables**:
+
 - [ ] Create `crates/thegent-hooks/` crate
 - [ ] Implement `init` subcommand
 - [ ] Implement `cache-key` subcommand (blake3)
@@ -301,6 +326,7 @@ time thegent-hooks git status --short
 - [ ] Integration tests with hook-dispatcher
 
 **Dependencies**:
+
 - `clap` for CLI parsing
 - `blake3` for hashing
 - `serde_json` for JSON
@@ -309,6 +335,7 @@ time thegent-hooks git status --short
 - Optional: `gix` for Git operations
 
 **Code Structure**:
+
 ```
 crates/thegent-hooks/
 ├── Cargo.toml
@@ -334,6 +361,7 @@ crates/thegent-hooks/
 ### Phase 2: Hook Migration (Weeks 3-4)
 
 **Deliverables**:
+
 - [ ] Migrate 5-10 hooks to use `thegent-hooks` (opt-in)
 - [ ] Update hook templates to use `thegent-hooks`
 - [ ] Documentation for hook authors
@@ -341,6 +369,7 @@ crates/thegent-hooks/
 - [ ] Bug fixes based on real-world usage
 
 **Migration Process**:
+
 1. Identify hooks to migrate (start with simple ones)
 2. Replace `source hooks/lib/common.sh` with `thegent-hooks init`
 3. Replace `hook_cache_key` calls with `thegent-hooks cache-key`
@@ -349,6 +378,7 @@ crates/thegent-hooks/
 6. Measure performance improvement
 
 **Example Migration**:
+
 ```bash
 # Before (common.sh)
 source hooks/lib/common.sh
@@ -369,6 +399,7 @@ fi
 ### Phase 3: Default & Deprecation (Weeks 5-6)
 
 **Deliverables**:
+
 - [ ] Make `thegent-hooks` default for new hooks
 - [ ] Deprecation warnings for `common.sh` usage
 - [ ] Migration guide for existing hooks
@@ -376,6 +407,7 @@ fi
 - [ ] Gradual migration of remaining hooks
 
 **Deprecation Strategy**:
+
 1. Add deprecation warnings to `common.sh`
 2. Document migration path
 3. Provide migration script
@@ -385,12 +417,14 @@ fi
 ### Phase 4: Native Rust Hooks (Optional, Weeks 7-8)
 
 **Deliverables**:
+
 - [ ] Native Rust implementation of `quality-gate` hook
 - [ ] Native Rust implementation of `test-maturity` hook
 - [ ] Performance benchmarks (native vs. bash)
 - [ ] Documentation for native hooks
 
 **Native Hook Example**:
+
 ```rust
 // crates/thegent-hooks/src/hooks/quality_gate.rs
 
@@ -414,14 +448,16 @@ pub fn quality_gate(hook_input: HookInput) -> HookResult {
 ### 6.1 Feature Flags
 
 **Configuration**:
+
 ```yaml
 # hooks/hook-config.yaml
 hooks:
-  use_rust_runtime: false  # Feature flag
-  rust_runtime_path: "thegent-hooks"  # Path to binary
+  use_rust_runtime: false # Feature flag
+  rust_runtime_path: "thegent-hooks" # Path to binary
 ```
 
 **Rollback Process**:
+
 1. Set `use_rust_runtime: false` in config
 2. Hooks fall back to `common.sh`
 3. No code changes needed
@@ -430,18 +466,21 @@ hooks:
 ### 6.2 Gradual Rollout
 
 **Rollout Strategy**:
+
 1. **Week 1**: 10% of hooks use Rust runtime
 2. **Week 2**: 25% of hooks use Rust runtime
 3. **Week 3**: 50% of hooks use Rust runtime
 4. **Week 4**: 100% of hooks use Rust runtime
 
 **Monitoring**:
+
 - Hook failure rates
 - Performance metrics
 - Error logs
 - User feedback
 
 **Rollback Triggers**:
+
 - Failure rate >5%
 - Performance degradation >20%
 - Critical bugs
@@ -450,6 +489,7 @@ hooks:
 ### 6.3 Version Pinning
 
 **Version Strategy**:
+
 - Pin `thegent-hooks` version in `hooks/hook-config.yaml`
 - Test new versions in staging
 - Gradual rollout of new versions
@@ -462,12 +502,14 @@ hooks:
 ### 7.1 Unit Tests
 
 **Coverage Requirements**:
+
 - All subcommands: >90% coverage
 - Cache operations: >95% coverage
 - Git operations: >90% coverage
 - Error handling: >85% coverage
 
 **Test Structure**:
+
 ```rust
 // crates/thegent-hooks/src/commands/cache.rs
 
@@ -495,6 +537,7 @@ mod tests {
 ### 7.2 Integration Tests
 
 **Test Scenarios**:
+
 1. Hook init with various inputs
 2. Cache operations (check, read, write)
 3. Git operations (status, diff, rev-parse)
@@ -502,6 +545,7 @@ mod tests {
 5. Config parsing
 
 **Test Framework**:
+
 - Use `assert_cmd` for CLI testing
 - Use `tempfile` for temporary directories
 - Use `git2` or `gix` for Git testing
@@ -509,12 +553,14 @@ mod tests {
 ### 7.3 Performance Tests
 
 **Benchmark Requirements**:
+
 - Hook init: <5ms (p95)
 - Cache key: <1ms (p95)
 - Git status: <10ms (p95)
 - Changed files: <20ms (p95)
 
 **Benchmark Framework**:
+
 - Use `criterion.rs` for micro-benchmarks
 - Use `hyperfine` for CLI benchmarks
 - Compare with shell baseline
@@ -705,37 +751,40 @@ impl GitCommand {
 
 ### 9.1 Technical Risks
 
-| Risk | Impact | Mitigation |
-|------|--------|------------|
-| **Breaking changes** | High | Backward compatibility, feature flags, gradual rollout |
-| **Performance regression** | Medium | Benchmarking, performance tests, monitoring |
-| **Compatibility issues** | Medium | Cross-platform testing, version pinning |
-| **Cache corruption** | Low | Cache validation, atomic writes, checksums |
-| **Git integration issues** | Medium | Fallback to `git` command, extensive testing |
+| Risk                       | Impact | Mitigation                                             |
+| -------------------------- | ------ | ------------------------------------------------------ |
+| **Breaking changes**       | High   | Backward compatibility, feature flags, gradual rollout |
+| **Performance regression** | Medium | Benchmarking, performance tests, monitoring            |
+| **Compatibility issues**   | Medium | Cross-platform testing, version pinning                |
+| **Cache corruption**       | Low    | Cache validation, atomic writes, checksums             |
+| **Git integration issues** | Medium | Fallback to `git` command, extensive testing           |
 
 ### 9.2 Operational Risks
 
-| Risk | Impact | Mitigation |
-|------|--------|------------|
+| Risk                     | Impact | Mitigation                                              |
+| ------------------------ | ------ | ------------------------------------------------------- |
 | **Migration complexity** | Medium | Phased approach, clear documentation, migration scripts |
-| **User resistance** | Low | Performance benefits, backward compatibility |
-| **Maintenance burden** | Low | Type safety, testability, documentation |
+| **User resistance**      | Low    | Performance benefits, backward compatibility            |
+| **Maintenance burden**   | Low    | Type safety, testability, documentation                 |
 
 ### 9.3 Mitigation Strategies
 
 **Testing**:
+
 - Comprehensive unit tests
 - Integration tests with real hooks
 - Performance benchmarks
 - Cross-platform testing
 
 **Monitoring**:
+
 - Hook failure rates
 - Performance metrics
 - Error logs
 - User feedback
 
 **Rollback**:
+
 - Feature flags for instant rollback
 - Version pinning
 - Gradual rollout with monitoring
@@ -746,34 +795,38 @@ impl GitCommand {
 
 ### Timeline Overview
 
-| Phase | Duration | Start | End |
-|-------|----------|-------|-----|
-| **Phase 1: Core Binary** | 2 weeks | Week 1 | Week 2 |
-| **Phase 2: Hook Migration** | 2 weeks | Week 3 | Week 4 |
-| **Phase 3: Default & Deprecation** | 2 weeks | Week 5 | Week 6 |
-| **Phase 4: Native Hooks** | 2 weeks | Week 7 | Week 8 |
+| Phase                              | Duration | Start  | End    |
+| ---------------------------------- | -------- | ------ | ------ |
+| **Phase 1: Core Binary**           | 2 weeks  | Week 1 | Week 2 |
+| **Phase 2: Hook Migration**        | 2 weeks  | Week 3 | Week 4 |
+| **Phase 3: Default & Deprecation** | 2 weeks  | Week 5 | Week 6 |
+| **Phase 4: Native Hooks**          | 2 weeks  | Week 7 | Week 8 |
 
 **Total Duration**: 8 weeks
 
 ### Milestones
 
 **M1: Core Binary Complete** (Week 2)
+
 - [ ] `thegent-hooks` binary functional
 - [ ] All core subcommands implemented
 - [ ] Unit tests passing
 - [ ] Performance benchmarks meet targets
 
 **M2: First Hooks Migrated** (Week 4)
+
 - [ ] 5-10 hooks migrated
 - [ ] Performance improvement verified
 - [ ] No regressions
 
 **M3: Default Migration** (Week 6)
+
 - [ ] `thegent-hooks` default for new hooks
 - [ ] Deprecation warnings added
 - [ ] Migration guide published
 
 **M4: Native Hooks** (Week 8, Optional)
+
 - [ ] Native Rust hooks implemented
 - [ ] Performance benchmarks
 - [ ] Documentation complete
@@ -784,14 +837,14 @@ impl GitCommand {
 
 Add to [WORK_STREAM.md](../reference/WORK_STREAM.md) BACKLOG:
 
-| ID | Title | Priority | Depends |
-|----|-------|----------|---------|
-| **research-hook-rust-phase1** | Build thegent-hooks binary with core subcommands | P1 | - |
-| **research-hook-rust-phase2** | Migrate hooks to use thegent-hooks (opt-in) | P1 | research-hook-rust-phase1 |
-| **research-hook-rust-phase3** | Make thegent-hooks default, deprecate common.sh | P1 | research-hook-rust-phase2 |
-| **research-hook-rust-phase4** | Native Rust hooks for critical paths | P2 | research-hook-rust-phase3 |
-| **research-hook-rust-gix** | Optional gix integration for Git operations | P2 | research-hook-rust-phase1 |
-| **research-hook-rust-benchmarks** | Performance benchmarks and comparison | P1 | research-hook-rust-phase1 |
+| ID                                | Title                                            | Priority | Depends                   |
+| --------------------------------- | ------------------------------------------------ | -------- | ------------------------- |
+| **research-hook-rust-phase1**     | Build thegent-hooks binary with core subcommands | P1       | -                         |
+| **research-hook-rust-phase2**     | Migrate hooks to use thegent-hooks (opt-in)      | P1       | research-hook-rust-phase1 |
+| **research-hook-rust-phase3**     | Make thegent-hooks default, deprecate common.sh  | P1       | research-hook-rust-phase2 |
+| **research-hook-rust-phase4**     | Native Rust hooks for critical paths             | P2       | research-hook-rust-phase3 |
+| **research-hook-rust-gix**        | Optional gix integration for Git operations      | P2       | research-hook-rust-phase1 |
+| **research-hook-rust-benchmarks** | Performance benchmarks and comparison            | P1       | research-hook-rust-phase1 |
 
 ---
 
@@ -832,15 +885,18 @@ Add to [WORK_STREAM.md](../reference/WORK_STREAM.md) BACKLOG:
 **Extended by:** Claude Code
 
 ### Changes Made
+
 1. Added practical implementation patterns
 2. Added configuration examples
 3. Enhanced cross-references to related docs
 
 ### Cross-References Added
+
 - Related research and implementation guides
 - WORK_STREAM.md for tracking
 
 ### Practical Additions
+
 - Implementation templates
 - Configuration examples
 - Best practices

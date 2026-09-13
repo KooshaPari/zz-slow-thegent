@@ -13,7 +13,6 @@ import subprocess
 from pathlib import Path
 from typing import Any
 
-
 GEMINI_FLASH_MODEL = "gemini-2.0-flash"
 
 _MODEL_ALIAS = {
@@ -45,6 +44,7 @@ def _resolve_anen_cmd() -> str:
 # Create a typer app for CLI
 try:
     import typer
+
     app = typer.Typer()
 except ImportError:
     # Fallback for when typer is not installed

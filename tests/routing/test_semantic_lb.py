@@ -11,11 +11,9 @@ import pytest
 
 from thegent.utils.routing_impl.semantic_lb import (
     ModelCapability,
-    SemanticLbResult,
     SemanticLoadBalancer,
     semantic_route,
 )
-
 
 # ---------------------------------------------------------------------------
 # Deterministic mock embedding provider
@@ -54,8 +52,18 @@ _VEC_ORTH = _unit(0.0, 0.0, 1.0)  # orthogonal
 
 def _coding_capabilities() -> list[ModelCapability]:
     return [
-        ModelCapability(model="code-model", description="coding desc", provider="openai", tags=["coding"]),
-        ModelCapability(model="chat-model", description="chat desc", provider="anthropic", tags=["chat"]),
+        ModelCapability(
+            model="code-model",
+            description="coding desc",
+            provider="openai",
+            tags=["coding"],
+        ),
+        ModelCapability(
+            model="chat-model",
+            description="chat desc",
+            provider="anthropic",
+            tags=["chat"],
+        ),
     ]
 
 

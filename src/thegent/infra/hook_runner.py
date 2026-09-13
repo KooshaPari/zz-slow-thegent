@@ -1,12 +1,16 @@
 """Hook runner with shell detection and cross-platform support."""
 
 import subprocess
-from thegent.infra.shim_subprocess import run as shim_run
 import sys
 from pathlib import Path
 
 from thegent.config import get_settings
-from thegent.infra.shell_detection import ShellType, get_preferred_shell, get_shell_executable
+from thegent.infra.shell_detection import (
+    ShellType,
+    get_preferred_shell,
+    get_shell_executable,
+)
+from thegent.infra.shim_subprocess import run as shim_run
 
 
 def _resolve_shell_type() -> ShellType:
@@ -44,7 +48,14 @@ def run_hook(hook_path: Path, input_data: str | None = None, timeout: int = 60) 
 
     # 4. Execute
     try:
-        result = shim_run(cmd, input=input_data, capture_output=True, text=True, timeout=timeout, check=False)
+        result = shim_run(
+            cmd,
+            input=input_data,
+            capture_output=True,
+            text=True,
+            timeout=timeout,
+            check=False,
+        )
         return result
     except subprocess.TimeoutExpired as e:
         return subprocess.CompletedProcess(

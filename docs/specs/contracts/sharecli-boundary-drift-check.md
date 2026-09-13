@@ -41,17 +41,17 @@ Thegent-owned behavior remains allowed:
 
 ## Check Scope
 
-| Path | Initial mode | Final mode | Reason |
-| --- | --- | --- | --- |
-| `src/thegent/governance/**` | warn | fail | Governance must not grow harness mechanics after adapters exist. |
-| `src/thegent/mesh/cli.py` | warn | fail | User-visible CLI may stay, but substrate work must delegate. |
-| `src/thegent/mesh/main.py` | warn | fail | Mesh entrypoint should present status and commands through adapters. |
-| `src/thegent/mesh/mesh.py` | warn | fail | Mixed queue/process composition is a migration hotspot. |
-| `src/thegent/mesh/agent_patterns.py` | warn | fail | Process inventory should come from sharecli once available. |
-| `src/thegent/mesh/audit.py` | warn | fail | Audit may interpret records, not collect substrate internals. |
-| `src/thegent/mesh/observability.py` | warn | fail | Status may render sharecli health, not own process telemetry. |
-| `tests/**` | report | report | Tests may reference legacy modules until each lane is migrated. |
-| `docs/**` | ignore | ignore | Historical and planning references are allowed. |
+| Path                                 | Initial mode | Final mode | Reason                                                               |
+| ------------------------------------ | ------------ | ---------- | -------------------------------------------------------------------- |
+| `src/thegent/governance/**`          | warn         | fail       | Governance must not grow harness mechanics after adapters exist.     |
+| `src/thegent/mesh/cli.py`            | warn         | fail       | User-visible CLI may stay, but substrate work must delegate.         |
+| `src/thegent/mesh/main.py`           | warn         | fail       | Mesh entrypoint should present status and commands through adapters. |
+| `src/thegent/mesh/mesh.py`           | warn         | fail       | Mixed queue/process composition is a migration hotspot.              |
+| `src/thegent/mesh/agent_patterns.py` | warn         | fail       | Process inventory should come from sharecli once available.          |
+| `src/thegent/mesh/audit.py`          | warn         | fail       | Audit may interpret records, not collect substrate internals.        |
+| `src/thegent/mesh/observability.py`  | warn         | fail       | Status may render sharecli health, not own process telemetry.        |
+| `tests/**`                           | report       | report     | Tests may reference legacy modules until each lane is migrated.      |
+| `docs/**`                            | ignore       | ignore     | Historical and planning references are allowed.                      |
 
 The check should not scan archived BytePort paths listed in `AGENTS.md`.
 
@@ -60,18 +60,18 @@ The check should not scan archived BytePort paths listed in `AGENTS.md`.
 The first implementation should detect direct imports and obvious local growth.
 It does not need full semantic analysis on day one.
 
-| Pattern | Meaning | Initial action | Final action |
-| --- | --- | --- | --- |
-| `from thegent.mesh.task_queue import` outside allowed shims/tests | Queue implementation dependency | warn | fail after queue lane |
-| `from thegent.mesh.smart_merge import` outside allowed shims/tests | Merge implementation dependency | warn | fail after merge lane |
-| `from thegent.mesh.git_parallelism import` outside allowed shims/tests | Worktree pool dependency | warn | fail after worktree lane |
-| `from thegent.mesh.worktree import` outside allowed shims/tests | Worktree lifecycle dependency | warn | fail after worktree lane |
-| `from thegent_gitops` or `import thegent_gitops` outside allowed shims/tests | Gitops substrate dependency | warn | fail after worktree lane |
-| `from thegent.mesh.process_detection import` outside adapters/tests | Process inventory dependency | warn | fail after process lane |
-| `from thegent.mesh.resources import` outside adapters/tests | Resource substrate dependency | warn | fail after execution-safety lane |
-| `from thegent.mesh.sandbox import` outside adapters/tests | Sandbox substrate dependency | warn | fail after execution-safety lane |
-| `from thegent.mesh.injection import` outside policy-gated UX/tests | Shell/session execution dependency | warn | fail after execution-safety lane |
-| New code under `crates/harness-native/**` | Native runtime growth in source repo | warn | fail after native lane |
+| Pattern                                                                      | Meaning                              | Initial action | Final action                     |
+| ---------------------------------------------------------------------------- | ------------------------------------ | -------------- | -------------------------------- |
+| `from thegent.mesh.task_queue import` outside allowed shims/tests            | Queue implementation dependency      | warn           | fail after queue lane            |
+| `from thegent.mesh.smart_merge import` outside allowed shims/tests           | Merge implementation dependency      | warn           | fail after merge lane            |
+| `from thegent.mesh.git_parallelism import` outside allowed shims/tests       | Worktree pool dependency             | warn           | fail after worktree lane         |
+| `from thegent.mesh.worktree import` outside allowed shims/tests              | Worktree lifecycle dependency        | warn           | fail after worktree lane         |
+| `from thegent_gitops` or `import thegent_gitops` outside allowed shims/tests | Gitops substrate dependency          | warn           | fail after worktree lane         |
+| `from thegent.mesh.process_detection import` outside adapters/tests          | Process inventory dependency         | warn           | fail after process lane          |
+| `from thegent.mesh.resources import` outside adapters/tests                  | Resource substrate dependency        | warn           | fail after execution-safety lane |
+| `from thegent.mesh.sandbox import` outside adapters/tests                    | Sandbox substrate dependency         | warn           | fail after execution-safety lane |
+| `from thegent.mesh.injection import` outside policy-gated UX/tests           | Shell/session execution dependency   | warn           | fail after execution-safety lane |
+| New code under `crates/harness-native/**`                                    | Native runtime growth in source repo | warn           | fail after native lane           |
 
 ## Allowed Temporary Imports
 
@@ -81,26 +81,26 @@ manifest should live with the future check implementation, for example
 
 Each allowlist row should include:
 
-| Field | Meaning |
-| --- | --- |
-| `path` | File path containing the temporary import. |
-| `symbol` | Import or module name allowed. |
-| `lane` | `native-harness`, `queue`, `merge-worktree`, `process-health`, or `execution-safety`. |
-| `sunset_gate` | Test or PR condition that removes the allowance. |
-| `reason` | One sentence explaining why the temporary dependency remains. |
+| Field         | Meaning                                                                               |
+| ------------- | ------------------------------------------------------------------------------------- |
+| `path`        | File path containing the temporary import.                                            |
+| `symbol`      | Import or module name allowed.                                                        |
+| `lane`        | `native-harness`, `queue`, `merge-worktree`, `process-health`, or `execution-safety`. |
+| `sunset_gate` | Test or PR condition that removes the allowance.                                      |
+| `reason`      | One sentence explaining why the temporary dependency remains.                         |
 
 An allowlist entry without a sunset gate should fail review even before the
 check is enforcement-grade.
 
 ## Rollout Stages
 
-| Stage | Behavior | Exit gate |
-| --- | --- | --- |
-| Drift 0: Spec only | This document exists and is linked from the audit. | Committed docs. |
-| Drift 1: Reporter | `scripts/sharecli_boundary_drift_check.py` prints current violations with lane labels and allowlist hints. | Reporter output is stable in CI artifacts or local `task quality`. |
-| Drift 2: Lane warnings | Reporter exits non-zero only for new, unallowlisted violations in migrated lanes. | First migrated lane has adapter tests and sharecli owner tests. |
-| Drift 3: Full enforcement | All migrated surfaces fail on direct substrate imports or local implementation growth. | Native, queue, merge/worktree, and execution-safety lanes are complete. |
-| Drift 4: Recurring audit | CI/task quality runs the check and points to remediation docs. | Check is part of the default quality path. |
+| Stage                     | Behavior                                                                                                   | Exit gate                                                               |
+| ------------------------- | ---------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------- |
+| Drift 0: Spec only        | This document exists and is linked from the audit.                                                         | Committed docs.                                                         |
+| Drift 1: Reporter         | `scripts/sharecli_boundary_drift_check.py` prints current violations with lane labels and allowlist hints. | Reporter output is stable in CI artifacts or local `task quality`.      |
+| Drift 2: Lane warnings    | Reporter exits non-zero only for new, unallowlisted violations in migrated lanes.                          | First migrated lane has adapter tests and sharecli owner tests.         |
+| Drift 3: Full enforcement | All migrated surfaces fail on direct substrate imports or local implementation growth.                     | Native, queue, merge/worktree, and execution-safety lanes are complete. |
+| Drift 4: Recurring audit  | CI/task quality runs the check and points to remediation docs.                                             | Check is part of the default quality path.                              |
 
 ## Output Contract
 
@@ -108,14 +108,14 @@ The reporter should emit machine-readable JSON plus a concise text summary.
 
 Minimum JSON fields:
 
-| Field | Meaning |
-| --- | --- |
-| `path` | File containing the finding. |
-| `line` | One-based line number. |
-| `pattern` | Matched import or growth pattern. |
-| `lane` | Migration lane responsible for the finding. |
-| `severity` | `info`, `warn`, or `fail`. |
-| `allowlisted` | Whether an allowlist row matched. |
+| Field         | Meaning                                              |
+| ------------- | ---------------------------------------------------- |
+| `path`        | File containing the finding.                         |
+| `line`        | One-based line number.                               |
+| `pattern`     | Matched import or growth pattern.                    |
+| `lane`        | Migration lane responsible for the finding.          |
+| `severity`    | `info`, `warn`, or `fail`.                           |
+| `allowlisted` | Whether an allowlist row matched.                    |
 | `sunset_gate` | Required condition to remove an allowlisted finding. |
 
 Minimum text summary:
@@ -142,11 +142,11 @@ automatic rewrites. It reports boundary drift only.
 
 ## Reporter Commands
 
-| Command | Meaning |
-| --- | --- |
-| `python scripts/sharecli_boundary_drift_check.py --format summary-json` | Current advisory summary; used by `task quality:sharecli-boundary`. |
-| `python scripts/sharecli_boundary_drift_check.py --format json` | Full machine-readable payload with findings. |
-| `python scripts/sharecli_boundary_drift_check.py --enforce-lane native-harness --strict` | Example migrated-lane enforcement mode. |
+| Command                                                                                  | Meaning                                                             |
+| ---------------------------------------------------------------------------------------- | ------------------------------------------------------------------- |
+| `python scripts/sharecli_boundary_drift_check.py --format summary-json`                  | Current advisory summary; used by `task quality:sharecli-boundary`. |
+| `python scripts/sharecli_boundary_drift_check.py --format json`                          | Full machine-readable payload with findings.                        |
+| `python scripts/sharecli_boundary_drift_check.py --enforce-lane native-harness --strict` | Example migrated-lane enforcement mode.                             |
 
 ## Implemented Reporter Slice
 

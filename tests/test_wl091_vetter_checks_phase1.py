@@ -12,10 +12,8 @@ Every test carries # @trace WL-091
 from __future__ import annotations
 
 import asyncio
-import orjson as json
-from typing import Literal
 
-import pytest
+import orjson as json
 from pydantic import BaseModel
 
 from thegent.govern.vetter.checks import (
@@ -24,7 +22,6 @@ from thegent.govern.vetter.checks import (
     SchemaVetterCheck,
 )
 from thegent.govern.vetter.models import VetterCheck, VetterCheckResult
-
 
 # ---------------------------------------------------------------------------
 # Helpers / shared fixtures
@@ -127,7 +124,13 @@ def test_schema_vetter_check_reads_stderr_when_target_is_stderr():
     # @trace WL-091
     check = SchemaVetterCheck(schema_model=_Item, target="stderr")
     stderr_payload = json.dumps({"name": "err-item", "value": 7}).decode()
-    result = asyncio.run(check.check("run-2", "irrelevant-output", {"stdout": "irrelevant", "stderr": stderr_payload}))
+    result = asyncio.run(
+        check.check(
+            "run-2",
+            "irrelevant-output",
+            {"stdout": "irrelevant", "stderr": stderr_payload},
+        )
+    )
     assert result.passed is True
 
 

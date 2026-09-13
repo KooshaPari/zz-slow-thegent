@@ -18,7 +18,6 @@ import json
 import os
 import subprocess
 from pathlib import Path
-from typing import Optional
 
 import typer
 
@@ -199,6 +198,13 @@ def resume_cmd(
 # Import sub-apps
 from thegent.cli.apps import govern, phench  # noqa: E402
 
+# Phase 3/4 hardening lane: onboarding first-run wizard.
+# Adds `thegent init` (interactive + non-interactive + check + verify)
+# plus a flat `init` sub-app for the L30 onboarding surface. The
+# wizard is idempotent and contract-pinned by
+# ``tests/unit/onboarding/test_init_wizard.py``.
+from thegent.cli.apps.init_app import init_app  # noqa: E402
+
 # Phase 3/4 hardening lane: ``run`` sub-app (model-first + agent/stop/ps/logs).
 from thegent.cli.apps.run_app import run_app  # noqa: E402
 
@@ -212,13 +218,6 @@ from thegent.ux.cli_cockpit import app as cockpit_app  # noqa: E402
 # (json/yaml/toml) and structured report emission (text/json/junitxml)
 # so CI pipelines can ingest replay diffs natively.
 from thegent.ux.cli_sota import app as sota_app  # noqa: E402
-
-# Phase 3/4 hardening lane: onboarding first-run wizard.
-# Adds `thegent init` (interactive + non-interactive + check + verify)
-# plus a flat `init` sub-app for the L30 onboarding surface. The
-# wizard is idempotent and contract-pinned by
-# ``tests/unit/onboarding/test_init_wizard.py``.
-from thegent.cli.apps.init_app import init_app  # noqa: E402
 
 
 @app.command("govern", help="Governance operations.")

@@ -6,10 +6,10 @@ install_to_client dispatcher branches, service lifecycle, process-compose manage
 
 from __future__ import annotations
 
-import orjson as json
 from pathlib import Path
 from unittest.mock import MagicMock, patch
 
+import orjson as json
 import pytest
 
 from thegent.mcp.manage import (
@@ -105,7 +105,10 @@ class TestInstallToClientDispatcher:
     def test_cursor_exception_returns_failure(self) -> None:
         # @trace FR-MCP-003
         """Cursor dispatch that raises returns (False, message)."""
-        with patch("thegent.mcp.manage.install_to_cursor", side_effect=PermissionError("no write")):
+        with patch(
+            "thegent.mcp.manage.install_to_cursor",
+            side_effect=PermissionError("no write"),
+        ):
             ok, msg = install_to_client("cursor", DEFAULT_MCP_URL)
         assert ok is False
         assert "no write" in msg

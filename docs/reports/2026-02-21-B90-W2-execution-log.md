@@ -2,14 +2,14 @@
 
 ## Agent Assignments Completed
 
-| Agent | Items | Report |
-|-------|-------|--------|
+| Agent   | Items                | Report                               |
+| ------- | -------------------- | ------------------------------------ |
 | agent-a | B90-W2-A1 through A5 | [link](2026-02-21-B90-W2-agent-a.md) |
 | agent-b | B90-W2-B1 through B5 | [link](2026-02-21-B90-W2-agent-b.md) |
 | agent-c | B90-W2-C1 through C5 | [link](2026-02-21-B90-W2-agent-c.md) |
 | agent-d | B90-W2-D1 through D5 | [link](2026-02-21-B90-W2-agent-d.md) |
 | agent-e | B90-W2-E1 through E5 | [link](2026-02-21-B90-W2-agent-e.md) |
-| agent-f | B90-W2-F1 through F5 | this report |
+| agent-f | B90-W2-F1 through F5 | this report                          |
 
 ## Artifacts Produced (Wave-2)
 

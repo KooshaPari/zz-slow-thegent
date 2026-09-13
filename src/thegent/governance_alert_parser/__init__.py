@@ -1,4 +1,5 @@
 """Stub module."""
+
 from typing import Any
 
 
@@ -17,4 +18,8 @@ def render_markdown_summary(alerts: list[dict[str, Any]]) -> str:
     return f"## Governance Alert Summary\n\nTotal: {len(alerts)} alerts"
 
 
-__all__ = ["extract_fail_closed_signals", "parse_last_alert_summary", "render_markdown_summary"]
+__all__ = [
+    "extract_fail_closed_signals",
+    "parse_last_alert_summary",
+    "render_markdown_summary",
+]

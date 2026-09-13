@@ -3,6 +3,7 @@
 ## Symptoms
 
 Every command execution results in hundreds of errors like:
+
 ```
 (eval):1: command not found: assets
 (eval):2: command not found: auths
@@ -86,11 +87,13 @@ The fixes I've implemented:
 ## If Issue Persists
 
 1. **Check shell config files**:
+
    ```bash
    grep -n "eval.*ls\|eval.*\$(ls)" ~/.zshrc ~/.zshenv ~/.zprofile 2>/dev/null || echo "No problematic eval found"
    ```
 
 2. **Check for wrapper scripts**:
+
    ```bash
    which cli-proxy-api-plus
    env | grep -i proxy
@@ -102,6 +105,7 @@ The fixes I've implemented:
    - Remove failing MCP entries: `thegent mcp fix --client codex`
 
 4. **Nuclear option** (if nothing else works):
+
    ```bash
    # Backup shell configs
    cp ~/.zshrc ~/.zshrc.backup
@@ -114,7 +118,7 @@ The fixes I've implemented:
 
 ## Zsh Plugin Errors (zsh-nvm-x, prompt.zsh, fzf-tab: no such file)
 
-If you see `no such file or directory` for zsh-nvm-x, prompt.zsh, providers/*, zsh-alias-hinter, fzf-tab:
+If you see `no such file or directory` for zsh-nvm-x, prompt.zsh, providers/\*, zsh-alias-hinter, fzf-tab:
 
 1. Run `thegent install --target system --target user` to get the minimal thegent bundle
 2. Follow **[SHELL_ZSH_PLUGIN_SETUP.md](./SHELL_ZSH_PLUGIN_SETUP.md)** to install fnm/mise, fzf-tab, etc. in `~/.zshrc.local`
@@ -134,7 +138,6 @@ If you see `no such file or directory` for zsh-nvm-x, prompt.zsh, providers/*, z
 - `scripts/start_proxy_dev.sh` - Auto-creates fork config if needed
 - `scripts/fix_shell_corruption.sh` - Diagnostic script
 
-
 ---
 
 ## EXTENSION_SUMMARY
@@ -143,15 +146,18 @@ If you see `no such file or directory` for zsh-nvm-x, prompt.zsh, providers/*, z
 **Extended by:** Claude Code
 
 ### Changes Made
+
 1. Added practical implementation patterns
 2. Added configuration examples
 3. Enhanced cross-references to related documentation
 
 ### Cross-References Added
+
 - Related research and implementation guides
 - WORK_STREAM.md for tracking
 
 ### Practical Additions
+
 - Implementation templates
 - Configuration examples
 - Best practices

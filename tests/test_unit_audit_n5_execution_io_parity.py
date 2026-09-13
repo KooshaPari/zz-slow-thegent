@@ -17,7 +17,6 @@ from pathlib import Path
 
 import pytest
 
-
 # ---------------------------------------------------------------------------
 # AUDIT-N+5 — module-import surface (must resolve cleanly)
 # ---------------------------------------------------------------------------
@@ -59,8 +58,7 @@ def test_audit_n5_execution_io_exports(symbol_name: str) -> None:
     plus the supporting ``LeaseToken`` / ``SpawnResult`` dataclasses."""
     execution_io = importlib.import_module("thegent.adapters.execution_io")
     assert hasattr(execution_io, symbol_name), (
-        f"thegent.adapters.execution_io.{symbol_name} is missing — "
-        f"AUDIT-N+5 shim contract broken."
+        f"thegent.adapters.execution_io.{symbol_name} is missing — AUDIT-N+5 shim contract broken."
     )
 
 
@@ -234,8 +232,7 @@ def test_audit_n5_execution_module_exports(symbol_name: str) -> None:
     that ``run_execution_core_helpers`` references."""
     execution = importlib.import_module("thegent.execution")
     assert hasattr(execution, symbol_name), (
-        f"thegent.execution.{symbol_name} is missing — AUDIT-N+5 "
-        f"extension contract broken."
+        f"thegent.execution.{symbol_name} is missing — AUDIT-N+5 extension contract broken."
     )
 
 

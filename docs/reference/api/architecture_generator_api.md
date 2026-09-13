@@ -12,7 +12,7 @@ Generate architecture diagrams from code structure.
 
 ### Methods
 
-#### ArchitectureGenerator.__init__
+#### ArchitectureGenerator.**init**
 
 ```python
 __init__(self: Any)

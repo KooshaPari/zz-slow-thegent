@@ -2,12 +2,12 @@
 
 ## Summary
 
-| Field | Value |
-|-------|-------|
-| Date | YYYY-MM-DD |
-| Reviewer | Agent ID or Human Name |
-| Environment | staging / production |
-| Connector(s) | comma-separated list |
+| Field        | Value                  |
+| ------------ | ---------------------- |
+| Date         | YYYY-MM-DD             |
+| Reviewer     | Agent ID or Human Name |
+| Environment  | staging / production   |
+| Connector(s) | comma-separated list   |
 
 ## Pre-Enablement Checklist
 
@@ -22,24 +22,24 @@
 
 ## Validation Evidence
 
-| Check | Result | Notes |
-|-------|--------|-------|
-| Auth scope verification | PASS/FAIL | |
-| Startup validation logs | PASS/FAIL | |
-| Mapping validation | PASS/FAIL | |
-| Conflict guardrail test | PASS/FAIL | |
-| Rate limit test (simulated) | PASS/FAIL | |
-| Rollback recovery test | PASS/FAIL | |
-| Compliance baseline | PASS/FAIL | |
-| Drift baseline | PASS/FAIL | |
+| Check                       | Result    | Notes |
+| --------------------------- | --------- | ----- |
+| Auth scope verification     | PASS/FAIL |       |
+| Startup validation logs     | PASS/FAIL |       |
+| Mapping validation          | PASS/FAIL |       |
+| Conflict guardrail test     | PASS/FAIL |       |
+| Rate limit test (simulated) | PASS/FAIL |       |
+| Rollback recovery test      | PASS/FAIL |       |
+| Compliance baseline         | PASS/FAIL |       |
+| Drift baseline              | PASS/FAIL |       |
 
 ## Approval
 
-| Field | Value |
-|-------|-------|
-| Approved By | Agent ID or Human Name |
-| Approval Date | YYYY-MM-DD |
-| Signature / Agent-ID | signature_or_id |
+| Field                | Value                  |
+| -------------------- | ---------------------- |
+| Approved By          | Agent ID or Human Name |
+| Approval Date        | YYYY-MM-DD             |
+| Signature / Agent-ID | signature_or_id        |
 
 ## Rollback Plan
 

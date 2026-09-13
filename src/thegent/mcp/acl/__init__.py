@@ -1,10 +1,12 @@
 """Stub module."""
+
 from dataclasses import dataclass
 
 
 @dataclass
 class AclCheckResult:
     """Result of an ACL check."""
+
     allowed: bool
     reason: str = ""
 
@@ -12,6 +14,7 @@ class AclCheckResult:
 @dataclass
 class AclRule:
     """An ACL rule."""
+
     id: str
     action: str  # allow or deny
     resource: str

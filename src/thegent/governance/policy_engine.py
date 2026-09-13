@@ -38,7 +38,6 @@ import orjson as json
 from cachetools import TTLCache
 
 from thegent.config import ThegentSettings
-
 from thegent.governance.federated_policy import (
     FederatedPolicyEngine,
     PolicyRule,
@@ -593,7 +592,13 @@ class PolicyEngine:
     def _evaluate_local(self, ctx: PolicyContext) -> PolicyDecision:
         agent_or_model = (ctx.model or ctx.agent or "").lower()
         is_unknown = agent_or_model in ("", "unknown", "untrusted")
-        threshold = float(getattr(self.settings, "trust_score_threshold", self.PRODUCTION_CONFIDENCE_MIN_DEFAULT))
+        threshold = float(
+            getattr(
+                self.settings,
+                "trust_score_threshold",
+                self.PRODUCTION_CONFIDENCE_MIN_DEFAULT,
+            )
+        )
         checks: list[PolicyDecision | None] = [
             self._check_critical_low_confidence(ctx),
             self._check_unknown_agent_production(ctx, is_unknown),

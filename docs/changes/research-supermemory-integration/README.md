@@ -28,19 +28,21 @@ docs/changes/research-supermemory-integration/
 
 ### File Purposes
 
-| File | Audience | Purpose |
-|------|----------|---------|
-| **proposal.md** | PM, stakeholders | Why? What? Success criteria? |
-| **design.md** | Tech lead, architects | How? Architecture, data flow, APIs |
-| **tasks.md** | Engineers | What to build? When? In what order? |
-| **README.md** | Everyone | Overview, quick links, status |
+| File            | Audience              | Purpose                             |
+| --------------- | --------------------- | ----------------------------------- |
+| **proposal.md** | PM, stakeholders      | Why? What? Success criteria?        |
+| **design.md**   | Tech lead, architects | How? Architecture, data flow, APIs  |
+| **tasks.md**    | Engineers             | What to build? When? In what order? |
+| **README.md**   | Everyone              | Overview, quick links, status       |
 
 ---
 
 ## Quick Start
 
 ### 1. Review the Proposal
+
 Start with [proposal.md](./proposal.md) to understand:
+
 - Business value
 - Problem statement
 - Proposed solution overview
@@ -49,7 +51,9 @@ Start with [proposal.md](./proposal.md) to understand:
 **Time**: 10-15 minutes
 
 ### 2. Understand the Design
+
 Read [design.md](./design.md) to learn:
+
 - System architecture (4-layer memory model)
 - Component design (client, manager, artifacts)
 - Data flow (read/write paths)
@@ -59,7 +63,9 @@ Read [design.md](./design.md) to learn:
 **Time**: 20-30 minutes
 
 ### 3. Plan Execution
+
 Study [tasks.md](./tasks.md) to:
+
 - Break down work into 5 phases
 - Understand task dependencies
 - Identify parallel tracks
@@ -68,7 +74,9 @@ Study [tasks.md](./tasks.md) to:
 **Time**: 15-20 minutes
 
 ### 4. Start Phase 1
+
 Begin with [tasks.md#phase-1](./tasks.md#phase-1-foundation-weeks-1-2):
+
 - P1.1: Supermemory Client (Rust)
 - P1.2: L1/L2 Cache (Python)
 - P1.3: Configuration
@@ -81,22 +89,22 @@ Begin with [tasks.md#phase-1](./tasks.md#phase-1-foundation-weeks-1-2):
 
 ### Architecture
 
-| Decision | Rationale |
-|----------|-----------|
-| **4-Layer Model** | Progressive fallback: L1 <1ms (hot), L2 <10ms (warm), L3 <50ms (L3 KG), L4 (immutable) |
-| **Cloud-First** | Supermemory provides infinite scale, no operational burden |
-| **Immutable L4** | Cryptographic signatures + hash chains = auditability |
-| **Lazy L3** | Query on-demand; avoid constant syncing |
-| **Circuit Breaker** | Prevent cascading failures; graceful degradation |
+| Decision            | Rationale                                                                              |
+| ------------------- | -------------------------------------------------------------------------------------- |
+| **4-Layer Model**   | Progressive fallback: L1 <1ms (hot), L2 <10ms (warm), L3 <50ms (L3 KG), L4 (immutable) |
+| **Cloud-First**     | Supermemory provides infinite scale, no operational burden                             |
+| **Immutable L4**    | Cryptographic signatures + hash chains = auditability                                  |
+| **Lazy L3**         | Query on-demand; avoid constant syncing                                                |
+| **Circuit Breaker** | Prevent cascading failures; graceful degradation                                       |
 
 ### Implementation Language Choice
 
-| Component | Language | Rationale |
-|-----------|----------|-----------|
-| **Client** | Rust | Performance-critical, FFI-friendly, fits thegent core |
-| **Manager** | Python | Integrates with Python agent layer; simpler deployment |
-| **Artifacts** | Rust | Crypto operations, serialization; performance |
-| **Tests** | Mixed | Rust for unit tests; Python for integration |
+| Component     | Language | Rationale                                              |
+| ------------- | -------- | ------------------------------------------------------ |
+| **Client**    | Rust     | Performance-critical, FFI-friendly, fits thegent core  |
+| **Manager**   | Python   | Integrates with Python agent layer; simpler deployment |
+| **Artifacts** | Rust     | Crypto operations, serialization; performance          |
+| **Tests**     | Mixed    | Rust for unit tests; Python for integration            |
 
 ### Why This Approach?
 
@@ -111,6 +119,7 @@ Begin with [tasks.md#phase-1](./tasks.md#phase-1-foundation-weeks-1-2):
 ## Success Metrics
 
 ### Functional (Phase 1-4)
+
 - ✅ L3 knowledge queries <50ms P95
 - ✅ L4 artifact storage <200ms P95
 - ✅ Hash chain verification prevents tampering
@@ -118,12 +127,14 @@ Begin with [tasks.md#phase-1](./tasks.md#phase-1-foundation-weeks-1-2):
 - ✅ Fallback to L2 on L3 failure
 
 ### Performance (Phase 4)
+
 - ✅ L1 hits: P95 <1ms, throughput 1M req/s
 - ✅ L2 hits: P95 <10ms, throughput 100K req/s
 - ✅ L3 queries: P95 <50ms, throughput 1000 req/s
 - ✅ L4 stores: P95 <200ms, throughput 500 req/s
 
 ### Operational (Phase 5)
+
 - ✅ 99.9% uptime (Supermemory SLA)
 - ✅ <$100/month cost
 - ✅ Monitoring dashboard live
@@ -195,12 +206,12 @@ Phase 5: Deployment
 
 ### High-Risk Items
 
-| Risk | Probability | Mitigation |
-|------|-------------|------------|
-| **Supermemory API unavailable** | Medium | Fallback to L2; queue writes for retry; SLA enforcement |
-| **Cost overrun** | Medium | Budget alerts; auto-throttling; monitoring dashboard |
-| **Hash chain broken** | Low | Verification on every write; quarantine on failure |
-| **Performance misses** | Medium | Benchmark at Phase 1; optimization spikes planned |
+| Risk                            | Probability | Mitigation                                              |
+| ------------------------------- | ----------- | ------------------------------------------------------- |
+| **Supermemory API unavailable** | Medium      | Fallback to L2; queue writes for retry; SLA enforcement |
+| **Cost overrun**                | Medium      | Budget alerts; auto-throttling; monitoring dashboard    |
+| **Hash chain broken**           | Low         | Verification on every write; quarantine on failure      |
+| **Performance misses**          | Medium      | Benchmark at Phase 1; optimization spikes planned       |
 
 ### Mitigation Strategies
 
@@ -215,12 +226,12 @@ Phase 5: Deployment
 
 ### Related Projects
 
-| Work Item | Relationship | Dependency |
-|-----------|--------------|-----------|
-| **WP-1004: Pareto Routing** | Consumes memory queries | After P2 (L3 queries) |
-| **WP-5003: Economic Governance** | Stores cost metrics in L3 | After P2 |
-| **WP-4007: Simulation Replay** | Reads from L3/L4 | After P3 |
-| **WP-3002: MAIF Artifacts** | Supplies artifact structure | Parallel with P3 |
+| Work Item                        | Relationship                | Dependency            |
+| -------------------------------- | --------------------------- | --------------------- |
+| **WP-1004: Pareto Routing**      | Consumes memory queries     | After P2 (L3 queries) |
+| **WP-5003: Economic Governance** | Stores cost metrics in L3   | After P2              |
+| **WP-4007: Simulation Replay**   | Reads from L3/L4            | After P3              |
+| **WP-3002: MAIF Artifacts**      | Supplies artifact structure | Parallel with P3      |
 
 ### WORK_STREAM Updates
 
@@ -247,13 +258,13 @@ When starting Phase 1, add to `WORK_STREAM.md`:
 
 ### Suggested Team Composition
 
-| Role | Responsibility | Duration |
-|------|-----------------|----------|
-| **Rust Engineer** | P1.1, P2.1, P3.1, P3.2 | Weeks 1-6 |
-| **Python Engineer** | P1.2, P2.2, P3.3, P4.1 | Weeks 1-7 |
-| **QA Engineer** | P4.2, P4.3, P4.4 | Weeks 7-8 |
-| **Tech Writer** | P5.1, P5.2, P5.3 | Weeks 9-10 |
-| **Tech Lead** | Design review, unblocking | All weeks |
+| Role                | Responsibility            | Duration   |
+| ------------------- | ------------------------- | ---------- |
+| **Rust Engineer**   | P1.1, P2.1, P3.1, P3.2    | Weeks 1-6  |
+| **Python Engineer** | P1.2, P2.2, P3.3, P4.1    | Weeks 1-7  |
+| **QA Engineer**     | P4.2, P4.3, P4.4          | Weeks 7-8  |
+| **Tech Writer**     | P5.1, P5.2, P5.3          | Weeks 9-10 |
+| **Tech Lead**       | Design review, unblocking | All weeks  |
 
 ### Communication Plan
 
@@ -267,24 +278,28 @@ When starting Phase 1, add to `WORK_STREAM.md`:
 ## How to Use This Pack
 
 ### For Tech Leads
+
 1. Review [proposal.md](./proposal.md) for scope and success criteria
 2. Review [design.md](./design.md) for architecture review
 3. Schedule design review meeting
 4. Approve or request changes
 
 ### For Engineers
+
 1. Read [design.md](./design.md) to understand architecture
 2. Review [tasks.md](./tasks.md) to see your assignments
 3. Start with your Phase 1 task
 4. Update WORK_STREAM.md as you progress
 
 ### For Project Managers
+
 1. Share [proposal.md](./proposal.md) with stakeholders
 2. Use [tasks.md](./tasks.md) for timeline and tracking
 3. Watch [success metrics](#success-metrics) during execution
 4. Escalate risks (use [risk mitigation](#risk-mitigation) table)
 
 ### For Stakeholders
+
 1. Read this README for overview
 2. Skim [proposal.md](./proposal.md) for business value
 3. Return here in 8 weeks for launch checklist
@@ -294,11 +309,13 @@ When starting Phase 1, add to `WORK_STREAM.md`:
 ## Next Steps
 
 ### Immediately (Today)
+
 - [ ] Review this README (5 min)
 - [ ] Share with tech lead for design review
 - [ ] Schedule 1-hour design review meeting
 
 ### This Week
+
 - [ ] Complete design review
 - [ ] Request changes or approve
 - [ ] Set up development environment
@@ -306,6 +323,7 @@ When starting Phase 1, add to `WORK_STREAM.md`:
 - [ ] Schedule team kickoff
 
 ### Next Week
+
 - [ ] Kickoff meeting (30 min team sync)
 - [ ] Start Phase 1.1 (Rust Client)
 - [ ] Daily standups begin
@@ -315,11 +333,13 @@ When starting Phase 1, add to `WORK_STREAM.md`:
 ## Reference Links
 
 ### Within This Change Pack
+
 - [proposal.md](./proposal.md) — Business case and scope
 - [design.md](./design.md) — Technical design
 - [tasks.md](./tasks.md) — Implementation tasks and timeline
 
 ### External References
+
 - [SESSION_RESEARCH_FRAGMENTS_EXPANDED.md](../../research/SESSION_RESEARCH_FRAGMENTS_EXPANDED.md) — Research foundation
 - [WORK_STREAM.md](../../reference/WORK_STREAM.md) — Work tracking
 - [Supermemory.ai Docs](https://supermemory.ai/docs) — API documentation
@@ -328,20 +348,20 @@ When starting Phase 1, add to `WORK_STREAM.md`:
 
 ## Document History
 
-| Date | Author | Change |
-|------|--------|--------|
+| Date       | Author      | Change                          |
+| ---------- | ----------- | ------------------------------- |
 | 2026-02-18 | Claude Code | Initial synthesis from research |
 
 ---
 
 ## Approval Chain
 
-| Role | Status | Date | Notes |
-|------|--------|------|-------|
-| **Tech Lead** | ⏳ Pending | — | Design review required |
-| **Product Manager** | ⏳ Pending | — | Scope/timeline approval |
-| **Engineering Manager** | ⏳ Pending | — | Resource allocation |
-| **Architect** | ⏳ Pending | — | Architecture sign-off |
+| Role                    | Status     | Date | Notes                   |
+| ----------------------- | ---------- | ---- | ----------------------- |
+| **Tech Lead**           | ⏳ Pending | —    | Design review required  |
+| **Product Manager**     | ⏳ Pending | —    | Scope/timeline approval |
+| **Engineering Manager** | ⏳ Pending | —    | Resource allocation     |
+| **Architect**           | ⏳ Pending | —    | Architecture sign-off   |
 
 ---
 

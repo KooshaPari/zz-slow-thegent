@@ -3,9 +3,12 @@
 import tempfile
 from pathlib import Path
 
-import pytest
-
-from thegent.maif.artifacts import MAIFArtifact, generate_key_pair, sign_artifact, verify_artifact
+from thegent.maif.artifacts import (
+    MAIFArtifact,
+    generate_key_pair,
+    sign_artifact,
+    verify_artifact,
+)
 from thegent.maif.manager import MAIFManager
 from thegent.maif.store import MAIFArtifactStore
 

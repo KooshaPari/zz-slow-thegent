@@ -32,7 +32,7 @@ Injects commands into tmux sessions.
 
 ### Methods
 
-#### TmuxInjector.__init__
+#### TmuxInjector.**init**
 
 ```python
 __init__(self: Any, session_prefix: str)

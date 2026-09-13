@@ -1,15 +1,15 @@
 """Test BaseCrawler ABC and CrawlerRegistry."""
 # @trace FR-RE-004
 
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 
 from research_engine.schema import ResearchItem
 
 
 def test_registry_register_and_get() -> None:
     """Test registering a crawler and retrieving it by tier."""
-    from research_engine.crawlers.registry import CrawlerRegistry
     from research_engine.crawlers.base import BaseCrawler
+    from research_engine.crawlers.registry import CrawlerRegistry
 
     class FakeCrawler(BaseCrawler):
         source = "other"
@@ -24,7 +24,7 @@ def test_registry_register_and_get() -> None:
                     summary="fake",
                     score=1,
                     tags=topics[:1],
-                    fetched_at=datetime.now(timezone.utc),
+                    fetched_at=datetime.now(UTC),
                     relevance=0.5,
                 )
             ]
@@ -39,8 +39,8 @@ def test_registry_register_and_get() -> None:
 
 def test_registry_get_all() -> None:
     """Test retrieving all registered crawlers."""
-    from research_engine.crawlers.registry import CrawlerRegistry
     from research_engine.crawlers.base import BaseCrawler
+    from research_engine.crawlers.registry import CrawlerRegistry
 
     class A(BaseCrawler):
         source = "hn"

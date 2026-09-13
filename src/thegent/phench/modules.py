@@ -6,26 +6,21 @@ from pathlib import Path
 from typing import Any
 
 from .config import (
-    DEFAULT_SHARED_MODULE_REPO_EXCLUDE,
-    LOCK_FILE,
-    SUPPORTED_MODULE_MANIFEST_SCHEMA_VERSIONS,
-    DEFAULT_MODULE_REFRESH_CADENCE,
     _REFRESH_CADENCE_RE,
+    DEFAULT_MODULE_REFRESH_CADENCE,
+    DEFAULT_SHARED_MODULE_REPO_EXCLUDE,
+    SUPPORTED_MODULE_MANIFEST_SCHEMA_VERSIONS,
 )
 from .discovery import discover_local_git_repos
-from .git_ops import sanitize_repo_id
 from .helpers import (
-    _repo_id_from_path,
     _select_module_repos,
 )
 from .models import ModuleManifest
 from .paths import (
-    module_manifests_root,
     phenotype_repos_root,
     projects_modules_root,
     validate_family_name,
 )
-from .store import utc_now_iso
 
 
 def _manifest_payload_repo_ids(payload: Any) -> list[str] | None:
@@ -81,10 +76,8 @@ def _normalize_name_set(values: list[str] | None) -> set[str]:
 def _resolve_module_manifest_path(module: str) -> Path:
     from .paths import (
         module_manifest_path,
-        module_manifests_root,
-        projects_modules_root,
-        validate_family_name,
         phenotype_root,
+        projects_modules_root,
     )
 
     normalized_module = module.strip()

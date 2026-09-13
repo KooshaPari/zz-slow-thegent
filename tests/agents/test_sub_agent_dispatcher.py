@@ -6,8 +6,6 @@
 from __future__ import annotations
 
 import asyncio
-from dataclasses import dataclass, field
-from pathlib import Path
 from typing import Any
 from unittest.mock import AsyncMock, MagicMock, patch
 
@@ -21,7 +19,6 @@ from thegent.agents.sub_agent_dispatcher import (
     SubAgentResult,
     SubAgentTask,
 )
-
 
 # ---------------------------------------------------------------------------
 # Helpers / fixtures
@@ -508,13 +505,15 @@ async def test_dispatch_flash_runner_exception_raises_dispatch_error():
 
     task = SubAgentTask(prompt="crash", agent_hint="quick")
 
-    with patch(
-        "thegent.agents.sub_agent_dispatcher.FlashAgent.run",
-        new_callable=AsyncMock,
-        side_effect=RuntimeError("internal flash error"),
+    with (
+        patch(
+            "thegent.agents.sub_agent_dispatcher.FlashAgent.run",
+            new_callable=AsyncMock,
+            side_effect=RuntimeError("internal flash error"),
+        ),
+        pytest.raises(DispatchError, match="internal flash error"),
     ):
-        with pytest.raises(DispatchError, match="internal flash error"):
-            await dispatcher.dispatch(task)
+        await dispatcher.dispatch(task)
 
 
 # ---------------------------------------------------------------------------
@@ -583,7 +582,10 @@ async def test_dispatch_many_parallel_execution():
             call_idx += 1
             return await fn(config)
 
-        with patch("thegent.agents.sub_agent_dispatcher.FlashAgent.run", side_effect=_patched_run):
+        with patch(
+            "thegent.agents.sub_agent_dispatcher.FlashAgent.run",
+            side_effect=_patched_run,
+        ):
             gather_coro = dispatcher.dispatch_many(tasks)
             gather_task = asyncio.create_task(gather_coro)
             # Give a tick for coroutines to start

@@ -133,6 +133,7 @@ thegent/
 ## 📝 Usage Examples
 
 ### Parse a task file:
+
 ```python
 from thegent.task import parse_task_file
 from pathlib import Path
@@ -142,6 +143,7 @@ print(f"Task: {task['id']} - {task['title']}")
 ```
 
 ### Validate a task:
+
 ```python
 from thegent.task import validate_task_file
 from pathlib import Path
@@ -155,6 +157,7 @@ else:
 ```
 
 ### CLI Usage:
+
 ```bash
 # Validate a task
 thegent task validate --file tasks/example-task.md
@@ -179,6 +182,7 @@ thegent task migrate --legacy-file path/to/legacy-task.md
 ```
 
 ### Integration with `thegent plan`:
+
 ```bash
 # Get next work items (now checks tasks/ directory first)
 thegent plan do-next
@@ -221,6 +225,7 @@ thegent plan do-next
 - **Overall**: 30% complete
 
 **Recent Achievements**:
+
 - ✅ Parser correctly extracts markdown sections into structured fields
 - ✅ Validation passes for example task
 - ✅ Task CLI integrated into main thegent CLI
@@ -230,6 +235,7 @@ thegent plan do-next
 - ✅ Verified integration: `do_next_impl` successfully finds tasks from both sources
 
 **Next Steps**:
+
 1. ✅ ~~Complete integration with `thegent plan` commands~~ DONE
 2. ✅ ~~Create migration tool for legacy format~~ DONE
 3. Run full test suite (pytest)

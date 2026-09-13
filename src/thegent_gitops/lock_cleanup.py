@@ -5,10 +5,9 @@ Uses mtime + lsof for safe removal (per GIT_INDEX_LOCK_OS_LEVEL_AND_AGENT_SYSTEM
 """
 
 import platform
-import subprocess
 import shlex
+import subprocess
 from collections.abc import Iterator
-from typing import Optional
 from pathlib import Path
 
 from thegent.infra import run_subprocess_optimized
@@ -57,7 +56,7 @@ def _resolve_git_dir(git_ref: Path) -> Path | None:
     return (git_ref.parent / payload).resolve()
 
 
-def _has_open_holder(lock_path: Path) -> Optional[bool]:
+def _has_open_holder(lock_path: Path) -> bool | None:
     """Return True if any process has the lock file open (lsof)."""
     try:
         result = run_subprocess_optimized(
@@ -221,7 +220,10 @@ def _lock_cleanup_install_launchd() -> tuple[bool, str]:
 """
     plist_path.write_text(plist)
     Path.home().joinpath(".cache/thegent").mkdir(parents=True, exist_ok=True)
-    return True, f"Installed to {plist_path}. Run: thegent git lock-cleanup service start"
+    return (
+        True,
+        f"Installed to {plist_path}. Run: thegent git lock-cleanup service start",
+    )
 
 
 def _lock_cleanup_install_systemd() -> tuple[bool, str]:
@@ -270,11 +272,20 @@ def lock_cleanup_uninstall() -> tuple[bool, str]:
         return True, "Uninstalled"
     if platform.system() == "Linux":
         run_subprocess_optimized(
-            ["systemctl", "--user", "disable", "--now", "thegent-git-lock-cleanup.timer"],
+            [
+                "systemctl",
+                "--user",
+                "disable",
+                "--now",
+                "thegent-git-lock-cleanup.timer",
+            ],
             check=False,
             capture_output=True,
         )
-        for name in ("thegent-git-lock-cleanup.timer", "thegent-git-lock-cleanup.service"):
+        for name in (
+            "thegent-git-lock-cleanup.timer",
+            "thegent-git-lock-cleanup.service",
+        ):
             p = Path.home() / ".config" / "systemd" / "user" / name
             if p.exists():
                 p.unlink()
@@ -292,7 +303,13 @@ def lock_cleanup_start() -> tuple[bool, str]:
         return True, "Started"
     if platform.system() == "Linux":
         run_subprocess_optimized(
-            ["systemctl", "--user", "enable", "--now", "thegent-git-lock-cleanup.timer"],
+            [
+                "systemctl",
+                "--user",
+                "enable",
+                "--now",
+                "thegent-git-lock-cleanup.timer",
+            ],
             capture_output=True,
             check=True,
         )
@@ -310,7 +327,13 @@ def lock_cleanup_stop() -> tuple[bool, str]:
         return True, "Stopped"
     if platform.system() == "Linux":
         run_subprocess_optimized(
-            ["systemctl", "--user", "disable", "--now", "thegent-git-lock-cleanup.timer"],
+            [
+                "systemctl",
+                "--user",
+                "disable",
+                "--now",
+                "thegent-git-lock-cleanup.timer",
+            ],
             check=False,
             capture_output=True,
         )

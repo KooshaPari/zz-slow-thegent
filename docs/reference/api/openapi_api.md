@@ -12,7 +12,7 @@ Generate OpenAPI/Swagger integration for documentation.
 
 ### Methods
 
-#### OpenAPIGenerator.__init__
+#### OpenAPIGenerator.**init**
 
 ```python
 __init__(self: Any, output_format: str)

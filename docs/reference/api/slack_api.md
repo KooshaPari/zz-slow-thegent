@@ -14,7 +14,7 @@ Manages integration with Slack and Discord for real-time agent monitoring.
 
 ### Methods
 
-#### IntegrationBot.__init__
+#### IntegrationBot.**init**
 
 ```python
 __init__(self: Any, platform: str, webhook_url: str)

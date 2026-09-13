@@ -10,9 +10,6 @@ Source: src/thegent/governance/evidence_graph.py
 
 from __future__ import annotations
 
-import json
-from pathlib import Path
-
 from thegent.governance.evidence_graph import EvidenceGraph
 
 

@@ -2,15 +2,19 @@
 
 from __future__ import annotations
 
-import orjson as json
 from pathlib import Path
 from unittest.mock import MagicMock
 
+import orjson as json
 import pytest
 from typer.testing import CliRunner
 
-from thegent.cli.commands.impl import _write_session_state, resume_impl, session_list_impl
 from thegent.cli.apps.main import app
+from thegent.cli.commands.impl import (
+    _write_session_state,
+    resume_impl,
+    session_list_impl,
+)
 
 runner = CliRunner()
 
@@ -124,7 +128,10 @@ def test_resume_impl_registers_resume_and_sends_prompt(tmp_path: Path, monkeypat
 
     mock_registry = MagicMock()
     monkeypatch.setattr("thegent.cli.commands.impl.RunRegistry", lambda *_args, **_kwargs: mock_registry)
-    monkeypatch.setattr("thegent.cli.commands.impl.session_send_impl", lambda *_args, **_kwargs: (True, "queued"))
+    monkeypatch.setattr(
+        "thegent.cli.commands.impl.session_send_impl",
+        lambda *_args, **_kwargs: (True, "queued"),
+    )
 
     result = resume_impl(session_id=session_id, prompt="continue")
 

@@ -12,7 +12,7 @@ Research for always writing dumps.
 
 ### Methods
 
-#### AlwaysWriteDumpsResearch.__init__
+#### AlwaysWriteDumpsResearch.**init**
 
 ```python
 __init__(self: Any)

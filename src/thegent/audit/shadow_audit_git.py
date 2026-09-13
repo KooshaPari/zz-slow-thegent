@@ -8,10 +8,8 @@ from __future__ import annotations
 
 import sqlite3
 from dataclasses import dataclass
-from datetime import datetime, UTC
+from datetime import UTC, datetime
 from pathlib import Path
-from typing import TYPE_CHECKING
-
 
 
 @dataclass
@@ -148,7 +146,13 @@ GitJournal = ShadowAuditGit
 GitJournalAsync = ShadowAuditGit
 
 
-__all__ = ["AuditEntry", "ShadowAuditGit", "GitJournal", "GitJournalAsync", "GitJournalEnhanced"]
+__all__ = [
+    "AuditEntry",
+    "ShadowAuditGit",
+    "GitJournal",
+    "GitJournalAsync",
+    "GitJournalEnhanced",
+]
 
 
 class GitJournalEnhanced(ShadowAuditGit):

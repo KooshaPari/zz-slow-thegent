@@ -40,6 +40,7 @@ Scope: Production-proven patterns for AI agent governance applicable to thegent 
 **Architecture Pattern**: OPA operates as a decoupled policy decision point (PDP). The agent orchestrator sends structured JSON input (action type, agent identity, resource target, risk score, confidence score) to OPA. OPA evaluates Rego policies and returns allow/deny plus decision metadata.
 
 **Deployment Models**:
+
 - **Sidecar**: OPA runs alongside each agent execution pod; evaluates policies locally with sub-millisecond latency. Best for Kubernetes-native deployments.
 - **Library/Embedded**: OPA compiled into the orchestrator process via Go SDK. Eliminates network hop. Best for single-process orchestrators.
 - **Standalone Service**: Central OPA server queried over HTTP. Best for polyglot environments where agents run across heterogeneous runtimes.
@@ -81,6 +82,7 @@ valid_agent_identity {
 ```
 
 **Policy Lifecycle Management**:
+
 - Policies stored in Git, version-controlled, CI/CD tested.
 - OPAL (Open Policy Administration Layer) monitors production branch and auto-deploys approved policies to all OPA instances.
 - GitFlow model: feature branch -> test in staging -> merge to production after all checks pass.
@@ -110,6 +112,7 @@ valid_agent_identity {
 ### Implementation Details
 
 **NeMo Guardrails Architecture**:
+
 - **Colang**: Event-driven interaction modeling language with Python-like syntax. Defines flows for input rails, dialog rails, and output rails.
 - **Rail Types**: Input (pre-processing), Retrieval (context filtering), Dialog (conversation flow), Execution (action gating), Output (post-processing validation).
 - **Parallel Rails**: Recent versions support parallel execution of multiple rails for both standard and streaming scenarios, with OpenTelemetry-based tracing.
@@ -127,6 +130,7 @@ define flow check_action_safety
 ```
 
 **Guardrails AI Validators**:
+
 - Guard objects wrap LLM calls and validate outputs against configurable conditions.
 - Validators test for: PII leakage, topic relevance, hallucination, jailbreak attempts, structured output conformance.
 - Deployment via local API server, Docker containers, or production microservices.
@@ -161,13 +165,13 @@ define flow check_action_safety
 
 **Recommended Model: ABAC + ReBAC Hybrid with Policy-as-Code**:
 
-| Dimension | RBAC | ABAC | ReBAC | Recommended Hybrid |
-|-----------|------|------|-------|-------------------|
-| Static roles | Yes | No | No | Baseline only |
-| Context-aware | No | Yes | Partial | Yes |
-| Relationship-aware | No | No | Yes | Yes |
-| Runtime adaptation | No | Yes | Partial | Yes |
-| Auditability | Basic | Strong | Strong | Full |
+| Dimension          | RBAC  | ABAC   | ReBAC   | Recommended Hybrid |
+| ------------------ | ----- | ------ | ------- | ------------------ |
+| Static roles       | Yes   | No     | No      | Baseline only      |
+| Context-aware      | No    | Yes    | Partial | Yes                |
+| Relationship-aware | No    | No     | Yes     | Yes                |
+| Runtime adaptation | No    | Yes    | Partial | Yes                |
+| Auditability       | Basic | Strong | Strong  | Full               |
 
 **Key Authorization Patterns for Agents**:
 
@@ -255,6 +259,7 @@ Every audit event must contain:
 ```
 
 **Hash Chain Construction (from cryptographic evidence research)**:
+
 - Initialize: `l_0 = 0^256` (all-zero seed)
 - For each event: `l_j = SHA256(l_{j-1} || serialize(event_j))`
 - Final digest anchors the entire sequence; modifying any event invalidates all subsequent digests.
@@ -262,6 +267,7 @@ Every audit event must contain:
 - Throughput: 35,000 events/sec single-threaded, 280,000 events/sec multi-threaded, 400,000 events/sec with GPU batch verification.
 
 **MAIF-Inspired Artifact Structure**:
+
 - Header: file identifier, version, root cryptographic hash.
 - Modality blocks: raw action data, tool outputs, LLM responses.
 - Security metadata: cryptographic proofs, access control lists, provenance records.
@@ -270,6 +276,7 @@ Every audit event must contain:
 - Per-event overhead: 2-3 KB including signatures (for k=8-12 fields at 256-bit security).
 
 **Immutable Storage Implementation**:
+
 - WORM (Write Once Read Many) storage at the infrastructure layer.
 - Application-level append-only APIs with no update/delete operations.
 - Cryptographic chaining (each entry includes hash of previous entry).
@@ -277,6 +284,7 @@ Every audit event must contain:
 - Separate encryption keys for different log sensitivity levels.
 
 **Tiered Storage Strategy**:
+
 - **Hot** (0-7 days): queryable real-time storage for operations.
 - **Warm** (7-90 days): cost-effective indexed storage with higher latency.
 - **Cold** (90+ days): object storage for compliance retention.
@@ -284,12 +292,14 @@ Every audit event must contain:
 - Storage growth: approximately 15% monthly for chatty agents.
 
 **Distributed Tracing for Multi-Agent Workflows**:
+
 - W3C Trace Context standard for interoperable trace propagation.
 - Unique trace ID per user request; root span propagated through all components.
 - Parent-child span relationships represent delegation; sibling spans represent parallel execution.
 - OpenInference format for AI-specific trace data (Tetrate Agent Router integration).
 
 **Data Sensitivity Protection**:
+
 - Log parameter metadata rather than sensitive values.
 - Example: `{"customer_id": "<redacted>", "param_count": 2}` instead of raw values.
 - Field-level encryption for sensitive audit fields.
@@ -334,6 +344,7 @@ CLOSED (normal) --> OPEN (tripped) --> HALF-OPEN (testing)
 - **HALF-OPEN**: Limited probe requests sent. If probe succeeds, transition to CLOSED. If probe fails, transition back to OPEN.
 
 **Monitoring Parameters**:
+
 - Number of failed requests within a sliding window.
 - Rate of failures over time (percentage threshold).
 - Specific failure status codes: 429 (rate limit), 502 (bad gateway), 503 (service unavailable).
@@ -345,11 +356,11 @@ CLOSED (normal) --> OPEN (tripped) --> HALF-OPEN (testing)
 circuit_breaker:
   # Per-subsystem configuration
   model_provider:
-    failure_threshold: 5          # consecutive failures to trip
-    failure_rate_threshold: 0.5   # 50% failure rate to trip
-    window_size_seconds: 60       # sliding window
-    cooldown_seconds: 30          # time in OPEN state
-    half_open_max_requests: 3     # probe requests in HALF-OPEN
+    failure_threshold: 5 # consecutive failures to trip
+    failure_rate_threshold: 0.5 # 50% failure rate to trip
+    window_size_seconds: 60 # sliding window
+    cooldown_seconds: 30 # time in OPEN state
+    half_open_max_requests: 3 # probe requests in HALF-OPEN
     monitored_status_codes: [429, 500, 502, 503]
   tool_execution:
     failure_threshold: 3
@@ -366,12 +377,14 @@ circuit_breaker:
 ```
 
 **Layered Resilience Architecture (bottom to top)**:
+
 1. **Retry with backoff**: First line of defense. Exponential backoff with jitter. Max retry count per failure class.
 2. **Fallback**: Plan B provider or degraded mode. Failover to secondary model provider.
 3. **Circuit breaker**: System-level protection. Prevents retry storms and cascading failures.
 4. **Token budget breaker**: Cost governance circuit breaker. Terminates or pauses any runaway LLM instance exceeding budget threshold.
 
 **Token Budget Circuit Breaker**:
+
 - Per-request token limit: terminate generation exceeding threshold.
 - Per-session budget: pause agent when cumulative spend exceeds allocation.
 - Per-hour/day rate limit: prevent replay attacks and runaway loops.
@@ -411,13 +424,13 @@ circuit_breaker:
 
 **Synchronous vs Asynchronous Approval**:
 
-| Dimension | Synchronous | Asynchronous |
-|-----------|-------------|--------------|
-| Latency | 0.5-2.0 seconds per decision | Near-zero (non-blocking) |
-| Use case | High-risk, irreversible actions | Low-medium risk, auditable actions |
-| Error detection | Immediate | Delayed |
-| Operator fatigue | Higher | Lower |
-| Implementation | LangGraph `interrupt()` | HumanLayer (Slack/email routing) |
+| Dimension        | Synchronous                     | Asynchronous                       |
+| ---------------- | ------------------------------- | ---------------------------------- |
+| Latency          | 0.5-2.0 seconds per decision    | Near-zero (non-blocking)           |
+| Use case         | High-risk, irreversible actions | Low-medium risk, auditable actions |
+| Error detection  | Immediate                       | Delayed                            |
+| Operator fatigue | Higher                          | Lower                              |
+| Implementation   | LangGraph `interrupt()`         | HumanLayer (Slack/email routing)   |
 
 **Risk-Based Routing Decision Matrix**:
 
@@ -461,6 +474,7 @@ confidence < 0.5 OR risk_score >= 0.8   -> mandatory review (queue)
 **LLM Gateway Architecture**:
 
 An AI Gateway sits between applications and LLM providers, exposing a single consistent API while enforcing:
+
 - Multi-provider routing with automatic failover
 - Rate limiting and token budget enforcement
 - Cost tracking and attribution per workspace/team/agent
@@ -494,6 +508,7 @@ cost_governance:
 ```
 
 **Multi-Provider Routing Optimization**:
+
 - Token Usage by Provider tracking enables informed vendor management decisions.
 - Shift workloads to providers with better cost-performance ratios dynamically.
 - Organizations can optimize LLM costs by up to 50% through prompt discipline, model right-sizing, observability, and dynamic routing.
@@ -526,6 +541,7 @@ cost_governance:
 **EU AI Act (Full Enforcement August 2, 2026)**:
 
 High-risk AI systems (affecting fundamental rights) require:
+
 - Risk management systems with documented risk assessments.
 - Technical documentation of system architecture and behavior.
 - Fundamental Rights Impact Assessment (FRIA).
@@ -538,12 +554,14 @@ Key requirement for thegent: "Before launching a PoC, enterprises must prove con
 **SOC 2 Compliance for AI Agents**:
 
 SOC 2 is the de facto requirement for B2B AI applications. Enterprise customers require it for contract signing. Audit verifies controls for:
+
 - **Confidentiality**: Agent access to sensitive data is controlled and logged.
 - **Availability**: Agent systems meet uptime SLOs.
 - **Processing Integrity**: Agent decisions are deterministic and reproducible (replay tests).
 - **Privacy**: Personal data handling follows data minimization principles.
 
 **GDPR Requirements**:
+
 - Transparency: document how agents process personal data.
 - Data minimization: agents access only what is needed for the task.
 - Right to explanation: audit trails must support explaining automated decisions.
@@ -552,26 +570,26 @@ SOC 2 is the de facto requirement for B2B AI applications. Enterprise customers 
 
 **Compliance Evidence Matrix for thegent**:
 
-| Requirement | thegent WP | Evidence Source |
-|-------------|-----------|-----------------|
-| Risk management system | WP-0004, WP-3001 | Risk scoring framework + policy pre-check logs |
-| Technical documentation | WP-0002, WP-6002 | Canonical schemas + security signoff package |
-| Human oversight | WP-3008, WP-4004 | Escalation SLA + interruption taxonomy |
-| Audit trail | WP-3004 | Immutable audit events |
-| Processing integrity | WP-1003, WP-1008 | Idempotent execution + replay-safe history |
-| Incident recovery | WP-2001, WP-2004 | Checkpoint/rollback + recovery playbooks |
-| Signed actions | WP-3002 | Cryptographic signatures on critical ops |
-| Retention | WP-3006 | Evidence retention by domain |
+| Requirement             | thegent WP       | Evidence Source                                |
+| ----------------------- | ---------------- | ---------------------------------------------- |
+| Risk management system  | WP-0004, WP-3001 | Risk scoring framework + policy pre-check logs |
+| Technical documentation | WP-0002, WP-6002 | Canonical schemas + security signoff package   |
+| Human oversight         | WP-3008, WP-4004 | Escalation SLA + interruption taxonomy         |
+| Audit trail             | WP-3004          | Immutable audit events                         |
+| Processing integrity    | WP-1003, WP-1008 | Idempotent execution + replay-safe history     |
+| Incident recovery       | WP-2001, WP-2004 | Checkpoint/rollback + recovery playbooks       |
+| Signed actions          | WP-3002          | Cryptographic signatures on critical ops       |
+| Retention               | WP-3006          | Evidence retention by domain                   |
 
 **Retention Requirements by Framework**:
 
-| Framework | Minimum Retention | Notes |
-|-----------|------------------|-------|
-| GDPR | 6 months (processing logs) | Longer if national law requires |
-| SOC 2 | Aligned with audit period (12 months) | 3+ years recommended |
-| SOX | 7 years | Financial data |
-| PCI-DSS | 1 year (3 months immediately available) | Cardholder data access |
-| EU AI Act | Duration of system operation + post-market | Not yet fully specified |
+| Framework | Minimum Retention                          | Notes                           |
+| --------- | ------------------------------------------ | ------------------------------- |
+| GDPR      | 6 months (processing logs)                 | Longer if national law requires |
+| SOC 2     | Aligned with audit period (12 months)      | 3+ years recommended            |
+| SOX       | 7 years                                    | Financial data                  |
+| PCI-DSS   | 1 year (3 months immediately available)    | Cardholder data access          |
+| EU AI Act | Duration of system operation + post-market | Not yet fully specified         |
 
 ### Application to thegent
 
@@ -599,16 +617,17 @@ SOC 2 is the de facto requirement for B2B AI applications. Enterprise customers 
 
 **Isolation Technology Comparison**:
 
-| Technology | Boot Time | Memory Overhead | Isolation Level | Best For |
-|------------|-----------|-----------------|-----------------|----------|
-| Firecracker MicroVM | ~125ms | <5 MiB | Hardware (separate kernel) | Multi-tenant untrusted code |
-| gVisor | Instant | Moderate | Syscall interception | Single-tenant, I/O-light |
-| Kata Containers | ~200ms | Minimal | VM via container API | Kubernetes-native VM isolation |
-| Docker (standard) | Fast | Low | Namespace (shared kernel) | Trusted code only |
-| macOS Seatbelt | N/A | N/A | Syscall filtering | macOS development |
-| Bubblewrap | Instant | Minimal | Namespace | Lightweight Linux isolation |
+| Technology          | Boot Time | Memory Overhead | Isolation Level            | Best For                       |
+| ------------------- | --------- | --------------- | -------------------------- | ------------------------------ |
+| Firecracker MicroVM | ~125ms    | <5 MiB          | Hardware (separate kernel) | Multi-tenant untrusted code    |
+| gVisor              | Instant   | Moderate        | Syscall interception       | Single-tenant, I/O-light       |
+| Kata Containers     | ~200ms    | Minimal         | VM via container API       | Kubernetes-native VM isolation |
+| Docker (standard)   | Fast      | Low             | Namespace (shared kernel)  | Trusted code only              |
+| macOS Seatbelt      | N/A       | N/A             | Syscall filtering          | macOS development              |
+| Bubblewrap          | Instant   | Minimal         | Namespace                  | Lightweight Linux isolation    |
 
 **Performance Impact**:
+
 - gVisor: 10-30% overhead on I/O-heavy workloads; negligible on compute-heavy tasks.
 - Firecracker: up to 150 VMs per second per host.
 
@@ -629,6 +648,7 @@ SOC 2 is the de facto requirement for B2B AI applications. Enterprise customers 
 **Comprehensive Process Coverage**: Sandboxing must cover ALL agentic operations, not just command-line tool invocations. This includes hooks, MCP local process spawning, skill scripts, file-editing tools, and search tools.
 
 **Tiered Permission Model**:
+
 1. Enterprise-level denylists (never overrideable).
 2. Read-write workspace access without approval.
 3. Specific allowlisted operations for required functionality.
@@ -639,12 +659,14 @@ SOC 2 is the de facto requirement for B2B AI applications. Enterprise customers 
 **WP-3007 (Trust boundary checks for environment transitions)**: Environment transitions (canary -> staging -> production) require re-evaluation of sandbox constraints. Production environments have stricter network egress rules, read-only access to more paths, and shorter credential TTLs. The trust boundary check validates that the agent's sandbox configuration matches the target environment's requirements.
 
 **FR-014 (Trust boundary validation)**: Before an agent operation transitions environments, validate:
+
 - Network egress whitelist matches target environment.
 - Credential scope matches target environment.
 - Filesystem access restrictions match target environment.
 - Sandbox isolation level meets target environment requirements.
 
 **WP-1003 (Idempotent execution envelope)**: The "Bounded Envelope" node in the Core Execution DAG maps to the sandbox boundary. Each execution runs in a sandboxed environment with:
+
 - Pre-defined resource limits (CPU, memory, disk, network bandwidth).
 - Time-bounded execution (timeout kills the sandbox).
 - Idempotency token preventing duplicate execution.
@@ -670,6 +692,7 @@ SOC 2 is the de facto requirement for B2B AI applications. Enterprise customers 
 The core challenge: AI confidence scores must correspond to actual accuracy. Miscalibrated confidence (overconfident or underconfident) degrades human trust and decision quality.
 
 **Calibration Metrics**:
+
 - **Expected Calibration Error (ECE)**: Difference between predicted confidence and actual accuracy across bins.
 - **Maximum Calibration Error (MCE)**: Worst-case bin miscalibration.
 - **Brier Score**: Overall probabilistic prediction accuracy.
@@ -681,11 +704,11 @@ The core challenge: AI confidence scores must correspond to actual accuracy. Mis
 ```python
 @dataclass
 class TrustScore:
-    confidence: float         # 0.0-1.0, model's self-reported confidence
-    calibration_factor: float # historical accuracy / historical confidence
-    risk_impact: float        # potential damage if wrong (0.0-1.0)
+    confidence: float  # 0.0-1.0, model's self-reported confidence
+    calibration_factor: float  # historical accuracy / historical confidence
+    risk_impact: float  # potential damage if wrong (0.0-1.0)
     evidence_strength: float  # completeness and quality of supporting evidence
-    recency: float           # freshness of relevant training/context data
+    recency: float  # freshness of relevant training/context data
 
     @property
     def adjusted_confidence(self) -> float:
@@ -707,11 +730,13 @@ class TrustScore:
 ```
 
 **Confidence Calibration Interventions (August 2025 research)**:
+
 - Transform confidence scores to match human subjective weighting functions.
 - Yields the best human-AI correlation of decisions.
 - Regular model updates boost prediction accuracy by 18-32% compared to static models.
 
 **Behavioral Indicators of Trust**:
+
 - Instructed reliability of a system may be a better predictor of human dependence than self-reported trust.
 - Operator reliance patterns should be monitored: over-reliance on high-confidence scores and under-reliance on legitimate recommendations are both failure modes.
 
@@ -722,6 +747,7 @@ class TrustScore:
 **WP-4008 (Feedback loops and confidence calibration)**: After each action completes, compare the predicted outcome with the actual outcome. Update the calibration factor. Store calibration data per: action type, agent type, environment, and time window. Implement windowed calibration (last N actions) to adapt to changing conditions.
 
 **FR-023 (Role-aware confidence calibration)**: Different operator roles see different trust score presentations:
+
 - **Operators**: simplified traffic-light (green/yellow/red) with one-sentence rationale.
 - **Incident Leads**: full trust score breakdown with historical calibration data.
 - **Governance/Compliance**: audit-ready confidence trail with calibration methodology documentation.
@@ -735,6 +761,7 @@ class TrustScore:
 ### WP-3001: Policy Pre-check and Gate Evaluator
 
 **Recommended Architecture**:
+
 ```
 Action Proposed
   -> NeMo Input Rail (schema/safety validation)
@@ -746,6 +773,7 @@ Action Proposed
 ```
 
 **Key Implementation Decisions**:
+
 - Use OPA as the primary policy decision point. Rego policies are version-controlled, testable, and CI/CD-deployable.
 - NeMo Guardrails as pre-filter for malformed/unsafe inputs before they reach OPA.
 - ABAC attributes include: `risk_score`, `confidence_score`, `action_type`, `owner_id`, `environment`, `evidence_completeness`, `time_of_day`.
@@ -754,6 +782,7 @@ Action Proposed
 ### WP-3002: Signed Action Artifacts
 
 **Recommended Architecture**:
+
 - ECDSA digital signatures on critical action records.
 - MAIF-inspired artifact structure: header + action data + security metadata + lifecycle metadata.
 - Hash binding: `Hash(action_data || evidence_hash || nonce)` links action to evidence.
@@ -763,6 +792,7 @@ Action Proposed
 ### WP-3003: Override Path with TTL and Revalidation
 
 **Recommended Architecture**:
+
 - Override record: `{override_id, approver_id, reason_code, granted_at, expires_at, scope, revalidation_required}`.
 - TTL enforced at the policy layer (OPA checks `time.now_ns() < expires_at_ns`).
 - Approvals MUST NOT be cached or persisted beyond TTL (NVIDIA guidance).
@@ -772,6 +802,7 @@ Action Proposed
 ### WP-3004: Immutable Audit Trail and Query Interface
 
 **Recommended Architecture**:
+
 - Hash-chained event log with WORM storage.
 - Event schema from Section 4 above.
 - W3C Trace Context for distributed tracing.
@@ -783,6 +814,7 @@ Action Proposed
 ### WP-3005: Policy Drift Detection and Sweep Automation
 
 **Recommended Architecture**:
+
 - Sweep job runs on schedule (every 15 minutes) and on-demand.
 - Compares declared policy (OPA Rego) against actual enforcement state.
 - NLP-driven compliance model interprets policy documents and generates PaC rules (from drift detection research: 92% accuracy in predicting critical drift events, 45-minute lead time).
@@ -792,6 +824,7 @@ Action Proposed
 ### WP-3006: Compliance Evidence Retention by Domain
 
 **Recommended Architecture**:
+
 - Tag every audit event with applicable compliance domain(s).
 - Retention policies from Section 8 matrix.
 - Automated tier transitions based on retention requirements.
@@ -801,6 +834,7 @@ Action Proposed
 ### WP-3007: Trust Boundary Checks for Environment Transitions
 
 **Recommended Architecture**:
+
 - Zero Trust model: identity is the boundary, not the network.
 - Environment transition validation: network egress whitelist, credential scope, filesystem access, sandbox isolation level.
 - Re-evaluation of all sandbox constraints on environment transition.
@@ -810,6 +844,7 @@ Action Proposed
 ### WP-3008: Escalation SLA and Governance Queue Operations
 
 **Recommended Architecture**:
+
 - Tiered escalation with configurable SLA per risk level.
 - Risk-based routing: auto-approve (low risk), async review (medium), sync approval (high), mandatory review (critical).
 - Timeout actions: replace approver, escalate to next tier, auto-deny.
@@ -821,18 +856,18 @@ Action Proposed
 
 ## Technology Stack Summary
 
-| Layer | Recommended Tool | Maturity | License |
-|-------|-----------------|----------|---------|
-| Policy Engine | OPA (Rego) | Production (CNCF Graduated) | Apache 2.0 |
-| Policy Admin | OPAL | Production | Apache 2.0 |
-| Authorization Framework | Oso (Polar) | Production | Apache 2.0 |
-| LLM Guardrails | NeMo Guardrails (Colang 2.0) | Production | Apache 2.0 |
-| Output Validation | Guardrails AI | Production | Apache 2.0 |
-| LLM Gateway | Portkey AI Gateway | Production (10B req/mo) | MIT |
-| Audit Storage | WORM-capable object store | Production | N/A |
-| Distributed Tracing | OpenTelemetry + OpenInference | Production (CNCF) | Apache 2.0 |
-| Sandbox (Linux) | Firecracker / gVisor / Kata | Production | Apache 2.0 |
-| Cryptographic Evidence | MAIF-inspired hash chain | Research -> Production | N/A |
+| Layer                   | Recommended Tool              | Maturity                    | License    |
+| ----------------------- | ----------------------------- | --------------------------- | ---------- |
+| Policy Engine           | OPA (Rego)                    | Production (CNCF Graduated) | Apache 2.0 |
+| Policy Admin            | OPAL                          | Production                  | Apache 2.0 |
+| Authorization Framework | Oso (Polar)                   | Production                  | Apache 2.0 |
+| LLM Guardrails          | NeMo Guardrails (Colang 2.0)  | Production                  | Apache 2.0 |
+| Output Validation       | Guardrails AI                 | Production                  | Apache 2.0 |
+| LLM Gateway             | Portkey AI Gateway            | Production (10B req/mo)     | MIT        |
+| Audit Storage           | WORM-capable object store     | Production                  | N/A        |
+| Distributed Tracing     | OpenTelemetry + OpenInference | Production (CNCF)           | Apache 2.0 |
+| Sandbox (Linux)         | Firecracker / gVisor / Kata   | Production                  | Apache 2.0 |
+| Cryptographic Evidence  | MAIF-inspired hash chain      | Research -> Production      | N/A        |
 
 All recommended tools are OSS with permissive licenses. No paid SaaS dependencies are required for the core governance layer. Managed/hosted versions of these tools exist as optional accelerators but are not required.
 
@@ -864,27 +899,27 @@ All recommended tools are OSS with permissive licenses. No paid SaaS dependencie
 
 ### Policy Templates Added
 
-| Template | WP | Purpose |
-|----------|-----|---------|
-| OPA Policy Template | WP-3001 | Policy pre-check gate evaluator |
-| Oso Polar Policy | WP-3003 | Authorization framework integration |
-| Override Record Schema | WP-3003 | Time-bounded override with TTL |
-| Audit Event Schema | WP-3004 | Hash-chained immutable audit events |
-| Policy Drift Schema | WP-3005 | Policy drift detection events |
-| Trust Boundary Schema | WP-3007 | Environment transition validation |
-| Escalation Policy | WP-3008 | SLA-based escalation routing |
+| Template               | WP      | Purpose                             |
+| ---------------------- | ------- | ----------------------------------- |
+| OPA Policy Template    | WP-3001 | Policy pre-check gate evaluator     |
+| Oso Polar Policy       | WP-3003 | Authorization framework integration |
+| Override Record Schema | WP-3003 | Time-bounded override with TTL      |
+| Audit Event Schema     | WP-3004 | Hash-chained immutable audit events |
+| Policy Drift Schema    | WP-3005 | Policy drift detection events       |
+| Trust Boundary Schema  | WP-3007 | Environment transition validation   |
+| Escalation Policy      | WP-3008 | SLA-based escalation routing        |
 
 ### Practical Examples Added
 
-| Example | File | Purpose |
-|---------|------|---------|
-| OPA Rego Policy | `policies/thegent/governance.rego` | Policy pre-check gate |
-| Oso Polar Policy | `policies/authorization.polar` | ABAC authorization |
-| Override Manager | `governance/override_manager.py` | TTL-based overrides |
-| Audit Trail | `governance/audit_trail.py` | Hash-chained events |
-| Drift Detector | `governance/drift_detector.py` | Policy drift detection |
-| Trust Boundary | `governance/trust_boundary.py` | Environment transitions |
-| Escalation Queue | `governance/escalation_queue.py` | SLA-based routing |
+| Example          | File                               | Purpose                 |
+| ---------------- | ---------------------------------- | ----------------------- |
+| OPA Rego Policy  | `policies/thegent/governance.rego` | Policy pre-check gate   |
+| Oso Polar Policy | `policies/authorization.polar`     | ABAC authorization      |
+| Override Manager | `governance/override_manager.py`   | TTL-based overrides     |
+| Audit Trail      | `governance/audit_trail.py`        | Hash-chained events     |
+| Drift Detector   | `governance/drift_detector.py`     | Policy drift detection  |
+| Trust Boundary   | `governance/trust_boundary.py`     | Environment transitions |
+| Escalation Queue | `governance/escalation_queue.py`   | SLA-based routing       |
 
 ### Cross-References Added
 
@@ -910,6 +945,7 @@ All recommended tools are OSS with permissive licenses. No paid SaaS dependencie
 - [RESEARCH_SEED_FRAGMENT_INVENTORY](./RESEARCH_SEED_FRAGMENT_INVENTORY_AND_SPRAWL_TODO.md) - Fragment inventory
 
 <!-- PHENOTYPE_GOVERNANCE_OVERLAY_V1 -->
+
 ## Phenotype Governance Overlay v1
 
 - Enforce `TDD + BDD + SDD` for all feature and workflow changes.
@@ -918,4 +954,3 @@ All recommended tools are OSS with permissive licenses. No paid SaaS dependencie
 - Keep local hot paths deterministic and low-latency; place distributed workflow logic behind durable orchestration boundaries.
 - Require policy gating, auditability, and traceable correlation IDs for agent and workflow actions.
 - Document architectural and protocol decisions before broad rollout changes.
-

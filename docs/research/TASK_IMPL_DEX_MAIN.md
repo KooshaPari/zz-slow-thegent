@@ -11,6 +11,7 @@
 ## Summary
 
 Replace 3 occurrences of `os.environ` access in `src/thegent/dex_main.py`:
+
 1. Remove env mutation for THGENT_CLIPROXY_ADAPTER
 2. Use settings for subprocess env setup
 3. Use settings for cliproxy_backend_url
@@ -23,6 +24,7 @@ Replace 3 occurrences of `os.environ` access in `src/thegent/dex_main.py`:
 **Lines**: 173, 211, 219
 
 ### Line 173: Environment Mutation
+
 ```python
 # BEFORE
 os.environ["THGENT_CLIPROXY_ADAPTER"] = "1"
@@ -33,6 +35,7 @@ os.environ["THGENT_CLIPROXY_ADAPTER"] = "1"
 ```
 
 ### Line 211: Subprocess Env Setup
+
 ```python
 # BEFORE
 env = os.environ.copy()
@@ -45,6 +48,7 @@ if settings.cliproxy_backend_url:
 ```
 
 ### Line 219: PATH Access
+
 ```python
 # BEFORE
 path = os.environ.get("PATH", "")
@@ -60,12 +64,15 @@ path = os.environ.get("PATH", "")  # System var, read-only; keep as-is
 ## Step-by-Step Instructions
 
 ### 1. Understand Current Behavior
+
 - Line 173 mutates os.environ globally
 - Line 211 copies os.environ for subprocess
 - Line 219 reads PATH for subprocess search
 
 ### 2. Refactor Environment Mutation
+
 **Remove line 173 global mutation**. Instead:
+
 ```python
 # At line 211 (subprocess env setup):
 env = os.environ.copy()
@@ -73,30 +80,37 @@ env["THGENT_CLIPROXY_ADAPTER"] = "1"  # Set for THIS subprocess only
 ```
 
 ### 3. Add Cliproxy Backend URL Support
+
 At line 211, after cliproxy adapter setup:
+
 ```python
 if settings.cliproxy_backend_url:
     env["THGENT_CLIPROXY_BACKEND_URL"] = settings.cliproxy_backend_url
 ```
 
 ### 4. Handle PATH Access
+
 Option A (Recommended): Keep as-is (system env var, read-only)
+
 ```python
 path = os.environ.get("PATH", "")
 ```
 
 Option B: Thread through settings if needed later
+
 ```python
 # Add to ThegentSettings if frequently used
 # For now, keep reading from os.environ for system PATH
 ```
 
 ### 5. Verify Settings Parameter
+
 - Ensure `settings` parameter is available in function scope
 - If not, thread through function signature
 - ThegentSettings already imported and used in dex_main.py
 
 ### 6. Test
+
 - Verify DEX CLI still works: `thegent dex --help`
 - Check that subprocess receives correct env vars
 - Run: `python3 -m py_compile src/thegent/dex_main.py`
@@ -118,6 +132,7 @@ Option B: Thread through settings if needed later
 ## Verification
 
 After completion:
+
 ```bash
 # Should not match (except system PATH read)
 grep "os\.environ\[\"THGENT" src/thegent/dex_main.py

@@ -11,6 +11,7 @@
 This guide provides step-by-step instructions for integrating projects across the kush ecosystem. It covers common integration patterns, code examples, best practices, and troubleshooting.
 
 **Target Audience**:
+
 - Developers integrating multiple kush projects
 - Architects designing cross-project solutions
 - DevOps engineers setting up integrated deployments
@@ -34,18 +35,12 @@ from plangent import RootAgent, SubAgent
 orchestrator = AgentOrchestrator()
 
 # Register plangent root agent
-root_agent = RootAgent(config={
-    "adapter": "plangent",
-    "sub_agents": ["code-review", "testing", "documentation"]
-})
+root_agent = RootAgent(config={"adapter": "plangent", "sub_agents": ["code-review", "testing", "documentation"]})
 
 orchestrator.register_agent("plangent-root", root_agent)
 
 # Use in thegent workflow
-result = await orchestrator.execute_task(
-    agent_id="plangent-root",
-    task="Review code and write tests"
-)
+result = await orchestrator.execute_task(agent_id="plangent-root", task="Review code and write tests")
 ```
 
 ---
@@ -91,35 +86,20 @@ research = await mcp.call_tool("web_search", query="Python best practices")
 import subprocess
 from pathlib import Path
 
+
 def analyze_project(project_path: Path):
     """Analyze project using multiple CLI tools."""
 
     # 1. Code analysis with bloc
-    bloc_result = subprocess.run(
-        ["bloc", str(project_path), "--health"],
-        capture_output=True,
-        text=True
-    )
+    bloc_result = subprocess.run(["bloc", str(project_path), "--health"], capture_output=True, text=True)
 
     # 2. Requirements traceability with trace
-    trace_result = subprocess.run(
-        ["trace", "analyze", str(project_path)],
-        capture_output=True,
-        text=True
-    )
+    trace_result = subprocess.run(["trace", "analyze", str(project_path)], capture_output=True, text=True)
 
     # 3. Usage tracking with usage
-    usage_result = subprocess.run(
-        ["usage", "status", "--project", str(project_path)],
-        capture_output=True,
-        text=True
-    )
+    usage_result = subprocess.run(["usage", "status", "--project", str(project_path)], capture_output=True, text=True)
 
-    return {
-        "code_analysis": bloc_result.stdout,
-        "requirements": trace_result.stdout,
-        "usage": usage_result.stdout
-    }
+    return {"code_analysis": bloc_result.stdout, "requirements": trace_result.stdout, "usage": usage_result.stdout}
 ```
 
 ---
@@ -137,13 +117,16 @@ from pheno_sdk import InfrastructureSDK
 # In bloc project
 from pheno_sdk.plugins import HealthCheckPlugin
 
+
 class BlocHealthCheck(HealthCheckPlugin):
     def check(self, path: Path) -> HealthResult:
         # Implementation
         pass
 
+
 # In crun project
 from pheno_sdk.design_patterns import DependencyInjector
+
 
 class CrunContainer(DependencyInjector):
     def configure(self):
@@ -172,14 +155,13 @@ voice = VoiceInterface()
 orchestrator = AgentOrchestrator()
 orchestrator.register_agent("plangent", RootAgent())
 
+
 # Voice command handler
 @voice.command("review code")
 async def review_code_handler():
     # Trigger orchestration
     result = await orchestrator.execute_task(
-        agent_id="plangent",
-        task="Review code in current workspace",
-        sub_agents=["code-review", "testing"]
+        agent_id="plangent", task="Review code in current workspace", sub_agents=["code-review", "testing"]
     )
 
     # Voice response
@@ -198,6 +180,7 @@ from trace import RequirementsManager
 from atoms_mcp import EntityManager
 from jobhunter import TaskManager
 
+
 class UnifiedProjectManager:
     def __init__(self, project_id: str):
         self.project_id = project_id
@@ -210,20 +193,12 @@ class UnifiedProjectManager:
         req = await self.requirements.create(feature_spec)
 
         # 2. Create entity
-        entity = await self.entities.create({
-            "type": "feature",
-            "requirement_id": req.id,
-            **feature_spec
-        })
+        entity = await self.entities.create({"type": "feature", "requirement_id": req.id, **feature_spec})
 
         # 3. Create tasks
         tasks = await self.tasks.create_from_requirement(req.id)
 
-        return {
-            "requirement": req,
-            "entity": entity,
-            "tasks": tasks
-        }
+        return {"requirement": req, "entity": entity, "tasks": tasks}
 ```
 
 ---
@@ -236,32 +211,22 @@ class UnifiedProjectManager:
 # Integration: usage tracking across projects
 from usage import UsageTracker
 
+
 class CrossProjectUsageTracker:
     def __init__(self):
         self.tracker = UsageTracker()
 
     async def track_thegent_usage(self, session_id: str):
         """Track thegent usage."""
-        await self.tracker.track(
-            provider="thegent",
-            session_id=session_id,
-            project="thegent"
-        )
+        await self.tracker.track(provider="thegent", session_id=session_id, project="thegent")
 
     async def track_plangent_usage(self, task_id: str):
         """Track plangent usage."""
-        await self.tracker.track(
-            provider="plangent",
-            session_id=task_id,
-            project="plangent"
-        )
+        await self.tracker.track(provider="plangent", session_id=task_id, project="plangent")
 
     async def get_cross_project_summary(self):
         """Get usage summary across all projects."""
-        return await self.tracker.summary(
-            group_by="project",
-            period="monthly"
-        )
+        return await self.tracker.summary(group_by="project", period="monthly")
 ```
 
 ---
@@ -274,6 +239,7 @@ class CrossProjectUsageTracker:
 # Unified Integration Hub
 from typing import Dict, Any, Optional
 from abc import ABC, abstractmethod
+
 
 class IntegrationHub:
     """Central hub for cross-project integration."""
@@ -336,6 +302,7 @@ class IntegrationHub:
 # Service Mesh for Cross-Project Communication
 from typing import Protocol
 
+
 class ServiceProtocol(Protocol):
     """Protocol for services in the mesh."""
 
@@ -346,6 +313,7 @@ class ServiceProtocol(Protocol):
     async def health_check(self) -> bool:
         """Check service health."""
         ...
+
 
 class ServiceMesh:
     """Service mesh for cross-project communication."""
@@ -387,6 +355,7 @@ from morph import MorphServer
 from usage import UsageTracker
 from trace import RequirementsManager
 
+
 class IntegratedWorkflow:
     """Complete integrated workflow."""
 
@@ -405,41 +374,22 @@ class IntegratedWorkflow:
         req = await self.requirements.create(request)
 
         # 2. Research using morph
-        research = await self.morph_mcp.call_tool(
-            "web_search",
-            query=request["description"]
-        )
+        research = await self.morph_mcp.call_tool("web_search", query=request["description"])
 
         # 3. Create entity in atoms-mcp-prod
-        entity = await self.atoms_mcp.call_tool(
-            "create_entity",
-            type="feature",
-            data={**request, "research": research}
-        )
+        entity = await self.atoms_mcp.call_tool("create_entity", type="feature", data={**request, "research": research})
 
         # 4. Execute with thegent
         result = await self.orchestrator.execute_task(
             agent_id="feature-agent",
             task=f"Implement: {request['title']}",
-            context={
-                "requirement": req,
-                "entity": entity,
-                "research": research
-            }
+            context={"requirement": req, "entity": entity, "research": research},
         )
 
         # 5. Track usage
-        await self.usage_tracker.track(
-            provider="thegent",
-            project="feature-implementation",
-            tokens=result.tokens_used
-        )
+        await self.usage_tracker.track(provider="thegent", project="feature-implementation", tokens=result.tokens_used)
 
-        return {
-            "requirement": req,
-            "entity": entity,
-            "result": result
-        }
+        return {"requirement": req, "entity": entity, "result": result}
 ```
 
 ---
@@ -451,49 +401,38 @@ class IntegratedWorkflow:
 import asyncio
 from pathlib import Path
 
+
 async def comprehensive_analysis(project_path: Path):
     """Comprehensive project analysis using multiple tools."""
 
     results = {}
 
     # Parallel execution
-    tasks = [
-        run_bloc(project_path),
-        run_trace(project_path),
-        run_usage_status(project_path)
-    ]
+    tasks = [run_bloc(project_path), run_trace(project_path), run_usage_status(project_path)]
 
     bloc_result, trace_result, usage_result = await asyncio.gather(*tasks)
 
-    return {
-        "code_analysis": bloc_result,
-        "requirements": trace_result,
-        "usage": usage_result
-    }
+    return {"code_analysis": bloc_result, "requirements": trace_result, "usage": usage_result}
+
 
 async def run_bloc(path: Path):
     """Run bloc analysis."""
-    proc = await asyncio.create_subprocess_exec(
-        "bloc", str(path), "--health",
-        stdout=asyncio.subprocess.PIPE
-    )
+    proc = await asyncio.create_subprocess_exec("bloc", str(path), "--health", stdout=asyncio.subprocess.PIPE)
     stdout, _ = await proc.communicate()
     return stdout.decode()
 
+
 async def run_trace(path: Path):
     """Run trace analysis."""
-    proc = await asyncio.create_subprocess_exec(
-        "trace", "analyze", str(path),
-        stdout=asyncio.subprocess.PIPE
-    )
+    proc = await asyncio.create_subprocess_exec("trace", "analyze", str(path), stdout=asyncio.subprocess.PIPE)
     stdout, _ = await proc.communicate()
     return stdout.decode()
+
 
 async def run_usage_status(path: Path):
     """Run usage status."""
     proc = await asyncio.create_subprocess_exec(
-        "usage", "status", "--project", str(path),
-        stdout=asyncio.subprocess.PIPE
+        "usage", "status", "--project", str(path), stdout=asyncio.subprocess.PIPE
     )
     stdout, _ = await proc.communicate()
     return stdout.decode()
@@ -509,6 +448,7 @@ async def run_usage_status(path: Path):
 # Unified configuration for cross-project integration
 from pydantic_settings import BaseSettings
 from typing import Dict, Any
+
 
 class UnifiedConfig(BaseSettings):
     """Unified configuration for kush ecosystem."""
@@ -565,17 +505,24 @@ import logging
 
 logger = logging.getLogger(__name__)
 
+
 class IntegrationError(Exception):
     """Base exception for integration errors."""
+
     pass
+
 
 class AgentNotFoundError(IntegrationError):
     """Agent not found error."""
+
     pass
+
 
 class MCPServerError(IntegrationError):
     """MCP server error."""
+
     pass
+
 
 async def safe_integration_call(func, *args, **kwargs):
     """Safely call integration function with error handling."""
@@ -604,15 +551,13 @@ async def safe_integration_call(func, *args, **kwargs):
 import pytest
 from integrated_workflow import IntegratedWorkflow
 
+
 @pytest.mark.asyncio
 async def test_integrated_workflow():
     """Test integrated workflow."""
     workflow = IntegratedWorkflow()
 
-    request = {
-        "title": "Test Feature",
-        "description": "Test description"
-    }
+    request = {"title": "Test Feature", "description": "Test description"}
 
     result = await workflow.execute_feature_request(request)
 
@@ -629,7 +574,7 @@ async def test_integrated_workflow():
 
 ```yaml
 # docker-compose.yml for integrated deployment
-version: '3.8'
+version: "3.8"
 
 services:
   thegent:
@@ -675,6 +620,7 @@ from opentelemetry.sdk.trace import TracerProvider
 
 tracer = trace.get_tracer(__name__)
 
+
 @tracer.start_as_current_span("cross_project_operation")
 async def monitored_integration():
     """Integration with monitoring."""
@@ -709,15 +655,19 @@ async def monitored_integration():
 ### 11.1 Common Issues
 
 **Issue**: Agent not found
+
 - **Solution**: Check agent registry, verify agent registration
 
 **Issue**: MCP server connection failed
+
 - **Solution**: Check server URL, verify server is running
 
 **Issue**: Configuration mismatch
+
 - **Solution**: Verify environment variables, check config files
 
 **Issue**: Performance degradation
+
 - **Solution**: Add caching, optimize queries, use async operations
 
 ---

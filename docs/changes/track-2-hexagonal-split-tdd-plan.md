@@ -8,15 +8,15 @@ Track 2 replaces six Python infrastructure modules with production-grade Rust cr
 
 ### Migration Targets
 
-| Python Module | Target Rust Crate | LOC | Test Coverage | Priority |
-|---------------|-------------------|-----|--------|----------|
-| `src/thegent/governance/` | `crates/thegent-policy` | 12,638 | 100% | P0 |
-| `src/thegent/session/` | extend `crates/thegent-zmx` | 896 | 100% | P1 |
-| `src/thegent/verification/` | extend `crates/thegent-crypto` | 711 | 100% | P2 |
-| `src/thegent/audit/` | extend `crates/thegent-jsonl` | 2,342 | 100% | P1 |
-| `src/thegent/metrics/` | `crates/thegent-metrics` (NEW) | 80 | 100% | P3 |
-| `src/thegent/security/` | extend `crates/thegent-crypto` | 1,594 | 100% | P2 |
-| FastMCP tools | Rust PyO3 modules | ~3,000 | 100% | P0 |
+| Python Module               | Target Rust Crate              | LOC    | Test Coverage | Priority |
+| --------------------------- | ------------------------------ | ------ | ------------- | -------- |
+| `src/thegent/governance/`   | `crates/thegent-policy`        | 12,638 | 100%          | P0       |
+| `src/thegent/session/`      | extend `crates/thegent-zmx`    | 896    | 100%          | P1       |
+| `src/thegent/verification/` | extend `crates/thegent-crypto` | 711    | 100%          | P2       |
+| `src/thegent/audit/`        | extend `crates/thegent-jsonl`  | 2,342  | 100%          | P1       |
+| `src/thegent/metrics/`      | `crates/thegent-metrics` (NEW) | 80     | 100%          | P3       |
+| `src/thegent/security/`     | extend `crates/thegent-crypto` | 1,594  | 100%          | P2       |
+| FastMCP tools               | Rust PyO3 modules              | ~3,000 | 100%          | P0       |
 
 **Total scope:** ~23,261 LOC to rewrite into 5 new/extended Rust crates with PyO3 bindings.
 
@@ -31,6 +31,7 @@ The **governance module** is the largest and most critical. It drives policy eva
 **Objective:** Scaffold new crate with proper structure, dependencies, and test infrastructure.
 
 **File paths:**
+
 - `/Users/kooshapari/temp-PRODVERCEL/485/kush/thegent/crates/thegent-policy/Cargo.toml` (NEW)
 - `/Users/kooshapari/temp-PRODVERCEL/485/kush/thegent/crates/thegent-policy/src/lib.rs` (NEW)
 - `/Users/kooshapari/temp-PRODVERCEL/485/kush/thegent/crates/thegent-policy/src/bin/policy-cli.rs` (NEW)
@@ -98,6 +99,7 @@ Create `/Users/kooshapari/temp-PRODVERCEL/485/kush/thegent/tests/unit/test_thege
 
 ```python
 """Test PyO3 bindings for thegent-policy Rust crate."""
+
 import pytest
 from thegent.rust_wrappers import PolicyEngine
 
@@ -117,10 +119,7 @@ def test_policy_engine_new():
 def test_policy_evaluation_result_schema():
     """FAIL: EvaluationResult type is not defined."""
     engine = PolicyEngine("tests/fixtures/test-policy.toml")
-    result = engine.evaluate(
-        rule_id="FR-GOV-001",
-        context={"cost_per_call": 0.005}
-    )
+    result = engine.evaluate(rule_id="FR-GOV-001", context={"cost_per_call": 0.005})
     assert result["passed"] in (True, False)
     assert "reason" in result
     assert "latency_ms" in result
@@ -449,6 +448,7 @@ cargo tarpaulin --lib --out Html --output-dir target/coverage
 ```
 
 **Verification checklist:**
+
 - [ ] All Rust tests pass (`cargo test`)
 - [ ] No warnings with `cargo clippy -D warnings`
 - [ ] Test coverage ≥95% for lib code
@@ -462,6 +462,7 @@ cargo tarpaulin --lib --out Html --output-dir target/coverage
 **Objective:** Expose Rust PolicyEngine to Python via PyO3 bindings.
 
 **File paths:**
+
 - `/Users/kooshapari/temp-PRODVERCEL/485/kush/thegent/src/thegent/rust_wrappers.py` (EDIT)
 - `/Users/kooshapari/temp-PRODVERCEL/485/kush/thegent/pyproject.toml` (EDIT — add maturin build backend)
 - `/Users/kooshapari/temp-PRODVERCEL/485/kush/thegent/Cargo.toml` (NEW — workspace)
@@ -472,6 +473,7 @@ Update `/Users/kooshapari/temp-PRODVERCEL/485/kush/thegent/tests/unit/test_thege
 
 ```python
 """Test PyO3 bindings for thegent-policy Rust crate."""
+
 import pytest
 from pathlib import Path
 
@@ -505,10 +507,7 @@ def test_policy_evaluation_returns_dict(policy_config_path):
     from thegent import policy_engine
 
     engine = policy_engine.PolicyEngine(policy_config_path)
-    result = engine.evaluate(
-        rule_id="FR-GOV-001",
-        context={"cost_per_call": "0.005", "call_count": "100"}
-    )
+    result = engine.evaluate(rule_id="FR-GOV-001", context={"cost_per_call": "0.005", "call_count": "100"})
 
     assert isinstance(result, dict)
     assert "passed" in result
@@ -547,10 +546,7 @@ def test_policy_error_handling(policy_config_path):
 
     # Should raise error for non-existent rule
     with pytest.raises(Exception):  # PyO3 will raise appropriate exception
-        engine.evaluate(
-            rule_id="DOES_NOT_EXIST",
-            context={"cost_per_call": "0.005"}
-        )
+        engine.evaluate(rule_id="DOES_NOT_EXIST", context={"cost_per_call": "0.005"})
 ```
 
 **Update pyproject.toml to add maturin build backend:**
@@ -602,6 +598,7 @@ pytest tests/unit/test_thegent_policy_binding.py -v
 ```
 
 **Verification checklist:**
+
 - [ ] Bindings build without warnings (`maturin develop`)
 - [ ] All Python tests pass
 - [ ] Result dict structure matches expected schema
@@ -616,6 +613,7 @@ pytest tests/unit/test_thegent_policy_binding.py -v
 **Objective:** Port high-value governance functions (compliance checks, cost governance) to Rust.
 
 **Key functions to port (from `/Users/kooshapari/temp-PRODVERCEL/485/kush/thegent/src/thegent/governance/compliance.py`):**
+
 - `check_compliance_rule(rule, context)`
 - `evaluate_cost_policy(call_cost, agent_limits)`
 - `validate_constitution(constitution_dict)`
@@ -689,6 +687,7 @@ Create `/Users/kooshapari/temp-PRODVERCEL/485/kush/thegent/tests/unit/test_compl
 
 ```python
 """Test compliance checking via Rust."""
+
 import pytest
 from thegent import policy_engine
 
@@ -701,10 +700,7 @@ def compliance_checker():
 
 def test_check_cost_compliance(compliance_checker):
     """FAIL: cost compliance checking not implemented."""
-    result = compliance_checker.check_cost(
-        cost_amount=2.5,
-        limit=1.0
-    )
+    result = compliance_checker.check_cost(cost_amount=2.5, limit=1.0)
     assert result["passed"] is False
     assert "exceeded" in result["reason"].lower()
 
@@ -716,10 +712,7 @@ def test_batch_compliance_check(compliance_checker):
         {"id": "call-limit", "limit": 1000},
     ]
 
-    results = compliance_checker.check_batch(rules, context={
-        "cost": 0.5,
-        "calls": 500
-    })
+    results = compliance_checker.check_batch(rules, context={"cost": 0.5, "calls": 500})
 
     assert len(results) == 2
     assert all(r["passed"] for r in results)
@@ -965,6 +958,7 @@ cargo bench -p thegent-policy compliance
 ```
 
 **Verification checklist:**
+
 - [ ] All Rust compliance tests pass
 - [ ] All Python binding tests pass
 - [ ] Compliance checks execute in <1ms (benchmark verify)
@@ -981,6 +975,7 @@ cargo bench -p thegent-policy compliance
 **Objective:** Move session state management from Python to Rust.
 
 **File paths:**
+
 - `/Users/kooshapari/temp-PRODVERCEL/485/kush/thegent/crates/thegent-zmx/Cargo.toml` (EDIT)
 - `/Users/kooshapari/temp-PRODVERCEL/485/kush/thegent/crates/thegent-zmx/src/session.rs` (NEW)
 - `/Users/kooshapari/temp-PRODVERCEL/485/kush/thegent/tests/unit/test_zmx_session_binding.py` (NEW)
@@ -1046,6 +1041,7 @@ Create `/Users/kooshapari/temp-PRODVERCEL/485/kush/thegent/tests/unit/test_zmx_s
 
 ```python
 """Test session management via Rust."""
+
 import pytest
 from thegent import zmx_session
 
@@ -1078,11 +1074,7 @@ def test_session_context_storage():
     """FAIL: Context storage bindings not implemented."""
     session = zmx_session.Session("test")
 
-    context = {
-        "agent_id": "agent-1",
-        "cost_budget": "1.0",
-        "task_id": "task-123"
-    }
+    context = {"agent_id": "agent-1", "cost_budget": "1.0", "task_id": "task-123"}
 
     session.set_context(context)
     retrieved = session.get_context()
@@ -1097,6 +1089,7 @@ def test_session_timeout_tracking():
     assert session.created_at() > 0
 
     import time
+
     time.sleep(0.1)
 
     elapsed = session.elapsed_ms()
@@ -1326,6 +1319,7 @@ pytest tests/unit/test_zmx_session_binding.py -v
 ```
 
 **Verification checklist:**
+
 - [ ] All Rust session tests pass
 - [ ] All Python binding tests pass
 - [ ] State transitions enforced correctly
@@ -1342,6 +1336,7 @@ pytest tests/unit/test_zmx_session_binding.py -v
 **Objective:** Move audit logging from Python to immutable Rust-backed JSONL.
 
 **File paths:**
+
 - `/Users/kooshapari/temp-PRODVERCEL/485/kush/thegent/crates/thegent-jsonl/src/audit.rs` (NEW)
 - `/Users/kooshapari/temp-PRODVERCEL/485/kush/thegent/tests/unit/test_audit_logger.py` (NEW)
 
@@ -1441,6 +1436,7 @@ Create `/Users/kooshapari/temp-PRODVERCEL/485/kush/thegent/tests/unit/test_audit
 
 ```python
 """Test audit logger via Rust."""
+
 import pytest
 import tempfile
 import json
@@ -1458,7 +1454,7 @@ def test_audit_entry_written_to_jsonl():
             timestamp="2026-02-22T00:00:00Z",
             event_type="policy_check",
             agent_id="agent-1",
-            details={"rule_id": "FR-GOV-001", "passed": True}
+            details={"rule_id": "FR-GOV-001", "passed": True},
         )
         logger.flush()
 
@@ -1481,22 +1477,12 @@ def test_audit_logger_immutable_hash():
 
         logger = audit_logger.AuditLogger(str(log_path))
 
-        logger.append(
-            timestamp="2026-02-22T00:00:00Z",
-            event_type="event1",
-            agent_id="agent-1",
-            details={}
-        )
+        logger.append(timestamp="2026-02-22T00:00:00Z", event_type="event1", agent_id="agent-1", details={})
         logger.flush()
 
         hash1 = logger.file_hash()
 
-        logger.append(
-            timestamp="2026-02-22T01:00:00Z",
-            event_type="event2",
-            agent_id="agent-2",
-            details={}
-        )
+        logger.append(timestamp="2026-02-22T01:00:00Z", event_type="event2", agent_id="agent-2", details={})
         logger.flush()
 
         hash2 = logger.file_hash()
@@ -1513,10 +1499,7 @@ def test_audit_logger_range_query():
         # Write 5 entries
         for i in range(5):
             logger.append(
-                timestamp=f"2026-02-22T0{i}:00:00Z",
-                event_type="event",
-                agent_id=f"agent-{i}",
-                details={"index": i}
+                timestamp=f"2026-02-22T0{i}:00:00Z", event_type="event", agent_id=f"agent-{i}", details={"index": i}
             )
         logger.flush()
 
@@ -1746,6 +1729,7 @@ pytest tests/unit/test_audit_logger.py -v
 ```
 
 **Verification checklist:**
+
 - [ ] All Rust audit tests pass
 - [ ] All Python binding tests pass
 - [ ] JSONL entries are valid JSON per line
@@ -1763,6 +1747,7 @@ pytest tests/unit/test_audit_logger.py -v
 **Objective:** High-performance metrics collection and aggregation.
 
 **File paths:**
+
 - `/Users/kooshapari/temp-PRODVERCEL/485/kush/thegent/crates/thegent-metrics/Cargo.toml` (NEW)
 - `/Users/kooshapari/temp-PRODVERCEL/485/kush/thegent/crates/thegent-metrics/src/lib.rs` (NEW)
 - `/Users/kooshapari/temp-PRODVERCEL/485/kush/thegent/tests/unit/test_metrics_binding.py` (NEW)
@@ -1828,6 +1813,7 @@ Create `/Users/kooshapari/temp-PRODVERCEL/485/kush/thegent/tests/unit/test_metri
 
 ```python
 """Test metrics collection via Rust."""
+
 import pytest
 from thegent import metrics
 
@@ -2210,6 +2196,7 @@ pytest tests/unit/test_metrics_binding.py -v
 ```
 
 **Verification checklist:**
+
 - [ ] All Rust metrics tests pass
 - [ ] All Python binding tests pass
 - [ ] Counter increments correctly
@@ -2226,12 +2213,14 @@ pytest tests/unit/test_metrics_binding.py -v
 **Objective:** Verify Rust implementation matches Python behavior before removal.
 
 **File paths:**
+
 - `/Users/kooshapari/temp-PRODVERCEL/485/kush/thegent/tests/integration/test_python_rust_parity.py` (NEW)
 
 **Failing test first:**
 
 ```python
 """Test parity between Python and Rust implementations."""
+
 import pytest
 from thegent.governance import compliance as py_compliance
 from thegent import policy_engine  # Rust binding
@@ -2249,17 +2238,11 @@ def compliance_context():
 def test_compliance_check_parity(compliance_context):
     """FAIL: Python and Rust implementations differ."""
     # Python implementation
-    py_result = py_compliance.check_rule(
-        rule_id="FR-GOV-001",
-        context=compliance_context
-    )
+    py_result = py_compliance.check_rule(rule_id="FR-GOV-001", context=compliance_context)
 
     # Rust implementation
     rust_engine = policy_engine.PolicyEngine("path/to/config.toml")
-    rust_result = rust_engine.evaluate(
-        rule_id="FR-GOV-001",
-        context=compliance_context
-    )
+    rust_result = rust_engine.evaluate(rule_id="FR-GOV-001", context=compliance_context)
 
     # Verify same result
     assert py_result["passed"] == rust_result["passed"]
@@ -2277,12 +2260,15 @@ def test_cost_enforcement_parity():
     assert py_enforcer.remaining() == rust_enforcer.remaining()
 
 
-@pytest.mark.parametrize("cost,limit,expected", [
-    (0.5, 1.0, True),
-    (1.5, 1.0, False),
-    (0.0, 0.0, False),
-    (1.0, 1.0, True),
-])
+@pytest.mark.parametrize(
+    "cost,limit,expected",
+    [
+        (0.5, 1.0, True),
+        (1.5, 1.0, False),
+        (0.0, 0.0, False),
+        (1.0, 1.0, True),
+    ],
+)
 def test_cost_boundary_parity(cost, limit, expected):
     """FAIL: Boundary conditions differ."""
     py_enforcer = py_compliance.CostEnforcer(daily_limit=limit)
@@ -2312,12 +2298,14 @@ pytest tests/integration/test_python_rust_parity.py -vv --tb=short
 **Objective:** Measure performance gains from Rust implementation.
 
 **File paths:**
+
 - `/Users/kooshapari/temp-PRODVERCEL/485/kush/thegent/benchmarks/bench_governance.py` (NEW)
 
 **Failing test first:**
 
 ```python
 """Benchmark Rust vs Python implementations."""
+
 import pytest
 import time
 from thegent.governance import compliance as py_compliance
@@ -2326,15 +2314,13 @@ from thegent import policy_engine  # Rust
 
 @pytest.fixture
 def large_context():
-    return {
-        "cost_per_call": i * 0.001
-        for i in range(1000)
-    } | {"call_count": 10000}
+    return {"cost_per_call": i * 0.001 for i in range(1000)} | {"call_count": 10000}
 
 
 @pytest.mark.benchmark
 def test_compliance_check_performance_python(benchmark, large_context):
     """FAIL: No baseline to compare."""
+
     def check():
         return py_compliance.check_rule("FR-GOV-001", large_context)
 
@@ -2432,13 +2418,13 @@ Closes #WL-XXX"
 
 ### 6.1 Coverage Requirements
 
-| Crate | Unit | Integration | E2E | Target |
-|-------|------|-------------|-----|--------|
-| thegent-policy | 100% | 100% | 95% | 100% |
-| thegent-zmx (session) | 100% | 100% | 95% | 100% |
-| thegent-jsonl (audit) | 100% | 100% | 95% | 100% |
-| thegent-metrics | 100% | 100% | N/A | 100% |
-| thegent-crypto (extended) | 100% | 100% | 95% | 100% |
+| Crate                     | Unit | Integration | E2E | Target |
+| ------------------------- | ---- | ----------- | --- | ------ |
+| thegent-policy            | 100% | 100%        | 95% | 100%   |
+| thegent-zmx (session)     | 100% | 100%        | 95% | 100%   |
+| thegent-jsonl (audit)     | 100% | 100%        | 95% | 100%   |
+| thegent-metrics           | 100% | 100%        | N/A | 100%   |
+| thegent-crypto (extended) | 100% | 100%        | 95% | 100%   |
 
 **Verification command:**
 
@@ -2505,14 +2491,14 @@ echo "✓ All gates passed."
 
 ## Execution Order & Timeline
 
-| Phase | Tasks | Duration | Dependencies |
-|-------|-------|----------|--------------|
-| **P0: Foundation** | 1.1, 1.2, 1.3 | 4-6 hours | None |
-| **P1: Session & Audit** | 2.1, 3.1 | 3-4 hours | P0 complete |
-| **P2: Security** | Extend thegent-crypto | 2-3 hours | P0, P1 complete |
-| **P3: Metrics** | 4.1 | 1-2 hours | P0, P1 complete |
-| **Verification** | 5.1, 5.2, 5.3 | 2-3 hours | All P0-P3 complete |
-| **Cleanup & Removal** | Remove Python modules | 1 hour | Verification pass |
+| Phase                   | Tasks                 | Duration  | Dependencies       |
+| ----------------------- | --------------------- | --------- | ------------------ |
+| **P0: Foundation**      | 1.1, 1.2, 1.3         | 4-6 hours | None               |
+| **P1: Session & Audit** | 2.1, 3.1              | 3-4 hours | P0 complete        |
+| **P2: Security**        | Extend thegent-crypto | 2-3 hours | P0, P1 complete    |
+| **P3: Metrics**         | 4.1                   | 1-2 hours | P0, P1 complete    |
+| **Verification**        | 5.1, 5.2, 5.3         | 2-3 hours | All P0-P3 complete |
+| **Cleanup & Removal**   | Remove Python modules | 1 hour    | Verification pass  |
 
 **Wall-clock estimate:** 13-19 hours (with agent parallelization, 3-5 hours).
 
@@ -2531,4 +2517,3 @@ All tasks complete when:
 7. **Documentation updated** (CHANGELOG, README, API docs)
 
 ---
-

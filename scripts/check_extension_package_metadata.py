@@ -139,13 +139,20 @@ def build_report(extensions_root: Path) -> dict[str, Any]:
         checked_extensions.append(extension_dir.name)
         errors.extend(validate_extension_package(extension_dir))
 
-    return {"ok": len(errors) == 0, "checked_extensions": checked_extensions, "errors": errors}
+    return {
+        "ok": len(errors) == 0,
+        "checked_extensions": checked_extensions,
+        "errors": errors,
+    }
 
 
 def _parse_args(argv: list[str]) -> argparse.Namespace:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument(
-        "--extensions-root", type=Path, default=Path("extensions"), help="Root directory containing extension packages."
+        "--extensions-root",
+        type=Path,
+        default=Path("extensions"),
+        help="Root directory containing extension packages.",
     )
     parser.add_argument("--format", choices=["text", "json"], default="text")
     parser.add_argument("--strict", action="store_true", help="Exit non-zero if metadata checks fail.")

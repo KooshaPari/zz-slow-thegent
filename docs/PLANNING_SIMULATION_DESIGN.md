@@ -24,10 +24,11 @@ Overlay probabilistic confidence on WBS milestones instead of binary done/not-do
 @dataclass
 class PERTNode:
     task_id: str
-    optimistic_days: float   # best-case duration
-    most_likely_days: float # expected duration
+    optimistic_days: float  # best-case duration
+    most_likely_days: float  # expected duration
     pessimistic_days: float  # worst-case duration
     predecessors: list[str]
+
 
 @dataclass
 class PERTResult:
@@ -68,6 +69,7 @@ class ResourceProfile:
     capacity: int | float  # e.g. concurrent runs, API quota
     unit: str  # "concurrent" | "quota_per_hour"
 
+
 @dataclass
 class TaskResourceDemand:
     task_id: str
@@ -75,6 +77,7 @@ class TaskResourceDemand:
     demand: float
     start_float: float
     duration_float: float
+
 
 @dataclass
 class ContentionResult:
@@ -115,6 +118,7 @@ class ContinuityRiskInput:
     snapshot_freshness: dict[str, datetime]
     owner_coverage: dict[str, list[str]]
 
+
 @dataclass
 class ContinuityRiskResult:
     risk_score: float  # 0.0-1.0
@@ -145,11 +149,11 @@ class ContinuityRiskResult:
 
 ## 6. Priority
 
-| Component | Priority | Effort |
-|-----------|----------|--------|
-| D1 PERT overlays | P2 | M (1–2 weeks) |
-| D2 Resource contention | P2 | M (1 week) |
-| D3 Continuity risk | P2 | S (3–5 days) |
+| Component              | Priority | Effort        |
+| ---------------------- | -------- | ------------- |
+| D1 PERT overlays       | P2       | M (1–2 weeks) |
+| D2 Resource contention | P2       | M (1 week)    |
+| D3 Continuity risk     | P2       | S (3–5 days)  |
 
 ---
 

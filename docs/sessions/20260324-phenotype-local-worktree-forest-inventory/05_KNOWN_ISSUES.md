@@ -6,4 +6,3 @@
 - `trace-wtrees` has a locked initializing lane.
 - `trash-cli` has a detached lane under `PROJECT-wtrees`.
 - `thegent` still has a detached dirty legacy lane in `.worktrees` history, even though the specific merge conflict was resolved.
-

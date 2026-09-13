@@ -314,7 +314,10 @@ class TestSelectOfferFunctions:
         assert result is None or (isinstance(result, tuple) and len(result) == 2)
 
     def test_select_offer_with_trace_returns_trace_or_none(self) -> None:
-        from thegent.utils.routing_impl.pareto_router import RouteTrace, select_offer_with_trace
+        from thegent.utils.routing_impl.pareto_router import (
+            RouteTrace,
+            select_offer_with_trace,
+        )
 
         result = select_offer_with_trace(complexity_tier="moderate")
         assert result is None or isinstance(result, RouteTrace)
@@ -328,7 +331,10 @@ class TestSelectOfferFunctions:
 
     def test_select_offer_with_trace_trace_has_required_fields(self) -> None:
         """If a trace is returned, it must have all required fields."""
-        from thegent.utils.routing_impl.pareto_router import RouteTrace, select_offer_with_trace
+        from thegent.utils.routing_impl.pareto_router import (
+            RouteTrace,
+            select_offer_with_trace,
+        )
 
         result = select_offer_with_trace(complexity_tier="complex")
         if result is None:
@@ -473,7 +479,10 @@ class TestLexicographicSelect:
     """Tests for _lexicographic_select function."""
 
     def test_select_highest_quality(self) -> None:
-        from thegent.utils.routing_impl.pareto_router import Offer, _lexicographic_select
+        from thegent.utils.routing_impl.pareto_router import (
+            Offer,
+            _lexicographic_select,
+        )
 
         a = Offer(provider="p", model_alias="a", cost_weight=0.1, quality=0.9, speed_score=1.0)
         b = Offer(provider="p", model_alias="b", cost_weight=0.2, quality=0.8, speed_score=1.0)
@@ -486,7 +495,10 @@ class TestLexicographicSelect:
         assert _lexicographic_select([]) is None
 
     def test_select_lowest_cost_when_cost_order(self) -> None:
-        from thegent.utils.routing_impl.pareto_router import Offer, _lexicographic_select
+        from thegent.utils.routing_impl.pareto_router import (
+            Offer,
+            _lexicographic_select,
+        )
 
         a = Offer(provider="p", model_alias="a", cost_weight=0.5, quality=0.9, speed_score=1.0)
         b = Offer(provider="p", model_alias="b", cost_weight=0.1, quality=0.8, speed_score=1.0)

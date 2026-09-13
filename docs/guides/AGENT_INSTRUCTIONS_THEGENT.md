@@ -56,6 +56,7 @@ MCP tools are registered via the FastMCP pattern. To add a new tool:
 ### Discovery and Registration
 
 Agent personas are markdown files in `agents/`. Each file defines:
+
 - **Name and role** (heading)
 - **Capabilities** (what the agent can do)
 - **Constraints** (what the agent must not do)
@@ -72,6 +73,7 @@ Agent personas are markdown files in `agents/`. Each file defines:
 ### Agent Runner Strategy
 
 The `AgentRunner` uses the strategy pattern: different execution strategies for different agent types. When adding a new execution mode:
+
 - Implement a new strategy, not a new runner
 - Register the strategy in the runner's strategy map
 - Do not fork the runner class
@@ -113,12 +115,12 @@ Session End
 
 ### Hook Naming Convention
 
-| Prefix | When it fires | Examples |
-|--------|-------------|---------|
-| `pre-*` | Before tool execution | `pre-write-validator.sh` |
-| `post-*` | After tool execution | `post-edit-checker.sh` |
-| `qa-*` | Quality assurance gates | `qa-policy-engine.sh`, `qa-artifact-quality-gate.sh` |
-| `agent-*` | Agent-specific hooks | `agent-antipattern-detector.sh` |
+| Prefix    | When it fires           | Examples                                             |
+| --------- | ----------------------- | ---------------------------------------------------- |
+| `pre-*`   | Before tool execution   | `pre-write-validator.sh`                             |
+| `post-*`  | After tool execution    | `post-edit-checker.sh`                               |
+| `qa-*`    | Quality assurance gates | `qa-policy-engine.sh`, `qa-artifact-quality-gate.sh` |
+| `agent-*` | Agent-specific hooks    | `agent-antipattern-detector.sh`                      |
 
 ### Adding a New Hook
 
@@ -147,6 +149,7 @@ source "$(dirname "$0")/lib/linting.sh"
 ### Contract Structure
 
 Governance contracts in `contracts/` are JSON files that define:
+
 - **Cost caps** (token budgets, API call limits)
 - **Quality thresholds** (coverage minimums, complexity limits)
 - **Security policies** (allowed dependencies, secret patterns)
@@ -167,6 +170,7 @@ The `qa-policy-engine.sh` evaluates contracts against current project state. To 
 ## Commands
 
 Commands in `commands/` provide CLI-accessible operations:
+
 - DAG compilation
 - Ledger initialization
 - Spec hashing and verification
@@ -184,6 +188,7 @@ Commands in `commands/` provide CLI-accessible operations:
 ### Boundary Enforcement
 
 thegent uses `tach.toml` for import boundary enforcement:
+
 - The MCP transport layer cannot import domain logic directly
 - Hooks cannot import from the MCP server
 - Domain logic in `src/thegent/` is the shared kernel
@@ -200,23 +205,21 @@ tach.toml                  (architecture boundaries)
 
 ### When to Add What
 
-| I need to... | Create a... | Register in... |
-|-------------|-------------|---------------|
-| Govern agent behavior | Contract JSON | `contracts/`, `qa-policy-engine.sh` |
-| Check code quality at a lifecycle event | Hook script | `hooks/hook-config.yaml` |
-| Expose functionality to MCP clients | MCP tool | FastMCP `@mcp.tool()` |
-| Add a new agent type | Persona markdown | `agents/<name>.md` |
-| Add a CLI operation | Command module | `commands/<name>/` |
-| Share logic between hooks | Library function | `hooks/lib/<name>.sh` |
-
+| I need to...                            | Create a...      | Register in...                      |
+| --------------------------------------- | ---------------- | ----------------------------------- |
+| Govern agent behavior                   | Contract JSON    | `contracts/`, `qa-policy-engine.sh` |
+| Check code quality at a lifecycle event | Hook script      | `hooks/hook-config.yaml`            |
+| Expose functionality to MCP clients     | MCP tool         | FastMCP `@mcp.tool()`               |
+| Add a new agent type                    | Persona markdown | `agents/<name>.md`                  |
+| Add a CLI operation                     | Command module   | `commands/<name>/`                  |
+| Share logic between hooks               | Library function | `hooks/lib/<name>.sh`               |
 
 ---
+
 ## See also
 
 - [WORK_STREAM.md](../reference/WORK_STREAM.md) — canonical backlog
 - [00-MASTER-INDEX.md](../plans/00-MASTER-INDEX.md) — plan index
-
-
 
 ## Error Handling and Actionability
 
@@ -244,15 +247,18 @@ raise ConfigError("Missing API key", remediation_hint="Run 'thegent cliproxy log
 **Extended by:** Claude Code
 
 ### Changes Made
+
 1. Added practical implementation patterns
 2. Added configuration examples
 3. Enhanced cross-references to related documentation
 
 ### Cross-References Added
+
 - Related research and implementation guides
 - WORK_STREAM.md for tracking
 
 ### Practical Additions
+
 - Implementation templates
 - Configuration examples
 - Best practices

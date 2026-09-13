@@ -47,7 +47,9 @@ def test_build_run_event_details_omits_boolean_context_usage_ratio(ratio: bool) 
 
 
 @pytest.mark.parametrize("ratio", [-0.1, 1.0001])
-def test_build_run_event_details_omits_out_of_range_context_usage_ratio(ratio: float) -> None:
+def test_build_run_event_details_omits_out_of_range_context_usage_ratio(
+    ratio: float,
+) -> None:
     details = build_run_event_details(
         grounding_sources=[],
         audio_transcript=None,

@@ -12,6 +12,7 @@ from typing import Any
 @dataclass
 class AutomationResult:
     """Result of an automation operation."""
+
     success: bool
     output: str = ""
     error: str = ""
@@ -20,6 +21,7 @@ class AutomationResult:
 @dataclass
 class DesktopState:
     """State of a virtual desktop."""
+
     id: str
     name: str
     active: bool = False

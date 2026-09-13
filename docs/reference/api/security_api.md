@@ -12,7 +12,7 @@ Cross-platform security hardening and compliance.
 
 ### Methods
 
-#### CrossPlatformSecurity.__init__
+#### CrossPlatformSecurity.**init**
 
 ```python
 __init__(self: Any)

@@ -23,6 +23,7 @@ Health status of a crew or agent.
 Monitoring engine for crew execution.
 
 Tracks:
+
 - Health status
 - Performance metrics
 - Cost metrics
@@ -30,7 +31,7 @@ Tracks:
 
 ### Methods
 
-#### MonitoringEngine.__init__
+#### MonitoringEngine.**init**
 
 ```python
 __init__(self: Any)

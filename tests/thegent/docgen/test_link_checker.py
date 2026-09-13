@@ -1,7 +1,5 @@
 """Tests for documentation link checker."""
 
-from pathlib import Path
-
 import pytest
 
 from thegent.docgen.link_checker import DocLinkChecker

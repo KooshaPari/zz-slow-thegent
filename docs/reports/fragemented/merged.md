@@ -37,7 +37,6 @@ python -m pytest thegent/tests/test_unit_scrapers.py -k "Ante or scrape_ante" -q
 - `docs/reports/artifacts/2026-02-22-pyw1-002/lane-b-code-evidence.txt`
 - `docs/reports/artifacts/2026-02-22-pyw1-002/lane-b-ante-tests.txt`
 
-
 ---
 
 ## Source: 2026-02-22-pytest-wave-1-progress.md
@@ -46,10 +45,9 @@ python -m pytest thegent/tests/test_unit_scrapers.py -k "Ante or scrape_ante" -q
 
 ## Per-task tracker
 
-| task_id | status | owner | artifact | blocker |
-|---|---|---|---|---|
-| PYW1-001 | in_progress | codex | `docs/reports/2026-02-22-pytest-wave-1-progress.md` | none |
-
+| task_id  | status      | owner | artifact                                            | blocker |
+| -------- | ----------- | ----- | --------------------------------------------------- | ------- |
+| PYW1-001 | in_progress | codex | `docs/reports/2026-02-22-pytest-wave-1-progress.md` | none    |
 
 ---
 
@@ -81,6 +79,7 @@ The multi-tenant civilization framework is **production-ready and fully implemen
 ## What's Delivered
 
 ### Phase 1: Agent Identity System (427 LOC)
+
 ```
 Agent ID Format: {project}:{uuid}:L{1-3}:{role}
 Global Registry: ~/.claude/civilization/registry.json
@@ -89,6 +88,7 @@ Service Discovery: Query by project, level, role, status
 ```
 
 **Features:**
+
 - ✅ Unique collision-free identities
 - ✅ Self-describing format
 - ✅ Persistent registry with auto-sync
@@ -96,6 +96,7 @@ Service Discovery: Query by project, level, role, status
 - ✅ In-memory caching for performance
 
 ### Phase 2: SwarmController Integration (55 LOC)
+
 ```
 L1 Registration: SwarmController on startup
 L2 Auto-Discovery: Agents registered as discovered
@@ -104,6 +105,7 @@ Role Detection: From agent name patterns
 ```
 
 **Features:**
+
 - ✅ SwarmController as L1 strategic lead
 - ✅ Automatic L2 registration
 - ✅ Heartbeat updates every cycle
@@ -111,6 +113,7 @@ Role Detection: From agent name patterns
 - ✅ Role detection heuristics
 
 ### Phase 3A: Stale Agent Cleanup (68 LOC)
+
 ```
 Detection: No heartbeat >5 minutes
 Recovery: Pause→Sleep(1s)→Resume
@@ -119,6 +122,7 @@ Unregistration: On recovery failure
 ```
 
 **Features:**
+
 - ✅ Stale agent detection
 - ✅ Graceful recovery attempt
 - ✅ Automatic unregistration
@@ -126,6 +130,7 @@ Unregistration: On recovery failure
 - ✅ Low overhead (<2ms per cycle)
 
 ### Phase 3B: L3 Agent Support (30 LOC enhancement)
+
 ```
 Detection: "executor" pattern in agent names
 Registration: Under L2/L1
@@ -134,12 +139,14 @@ Role: EXECUTOR
 ```
 
 **Features:**
+
 - ✅ Full 3-level hierarchy
 - ✅ Executor role detection
 - ✅ Proper capability assignment
 - ✅ Bidirectional relationships
 
 ### Phase 3C: Advanced Queries (80 LOC)
+
 ```
 Dashboard: get_civilization_status()
 By Level: get_agents_by_level("L1"|"L2"|"L3")
@@ -148,6 +155,7 @@ Aggregation: Statistics, counts, breakdowns
 ```
 
 **Features:**
+
 - ✅ Civilization-wide status
 - ✅ Level-based filtering
 - ✅ Project-based filtering
@@ -159,33 +167,36 @@ Aggregation: Statistics, counts, breakdowns
 ## Metrics
 
 ### Code Quality
-| Metric | Value | Status |
-|--------|-------|--------|
-| Total LOC (all phases) | 550+ | ✅ |
-| Test Coverage | 100% (17/17) | ✅ |
-| Type Safety | Full | ✅ |
-| Syntax | Valid | ✅ |
-| Code Quality | Production | ✅ |
+
+| Metric                 | Value        | Status |
+| ---------------------- | ------------ | ------ |
+| Total LOC (all phases) | 550+         | ✅     |
+| Test Coverage          | 100% (17/17) | ✅     |
+| Type Safety            | Full         | ✅     |
+| Syntax                 | Valid        | ✅     |
+| Code Quality           | Production   | ✅     |
 
 ### Performance
-| Operation | Latency | Status |
-|-----------|---------|--------|
-| L1 registration | <5ms | ✅ |
-| L2 registration | ~2-3ms | ✅ |
-| Heartbeat update | <1ms | ✅ |
-| Stale cleanup | <10ms | ✅ |
-| Queries (L/P) | <5ms | ✅ |
-| Per-cycle overhead | <12ms | ✅ |
+
+| Operation          | Latency | Status |
+| ------------------ | ------- | ------ |
+| L1 registration    | <5ms    | ✅     |
+| L2 registration    | ~2-3ms  | ✅     |
+| Heartbeat update   | <1ms    | ✅     |
+| Stale cleanup      | <10ms   | ✅     |
+| Queries (L/P)      | <5ms    | ✅     |
+| Per-cycle overhead | <12ms   | ✅     |
 
 ### Reliability
-| Aspect | Status |
-|--------|--------|
-| Backward Compatibility | ✅ Full |
-| Error Handling | ✅ Graceful |
-| Registry Persistence | ✅ Verified |
-| Heartbeat Tracking | ✅ Working |
-| Stale Detection | ✅ Working |
-| Recovery Mechanism | ✅ Working |
+
+| Aspect                 | Status      |
+| ---------------------- | ----------- |
+| Backward Compatibility | ✅ Full     |
+| Error Handling         | ✅ Graceful |
+| Registry Persistence   | ✅ Verified |
+| Heartbeat Tracking     | ✅ Working  |
+| Stale Detection        | ✅ Working  |
+| Recovery Mechanism     | ✅ Working  |
 
 ---
 
@@ -255,6 +266,7 @@ Aggregation: Statistics, counts, breakdowns
 ## Test Results
 
 ### Phase 1 Tests (17/17 Passing)
+
 ```
 TestAgentIdentity:
   ✅ test_agent_id_format
@@ -284,6 +296,7 @@ Ran 17 tests in 0.059s - OK
 ```
 
 ### Integration Tests
+
 - ✅ L1 registration on startup
 - ✅ L2 auto-discovery and registration
 - ✅ L3 detection and registration
@@ -297,6 +310,7 @@ Ran 17 tests in 0.059s - OK
 ## Files Delivered
 
 ### Implementation (550+ LOC)
+
 ```
 scripts/
 ├── agent_identity_system.py      (427 LOC) - Core system
@@ -308,6 +322,7 @@ scripts/
 ```
 
 ### Documentation (9 files, 20+ KB)
+
 ```
 docs/
 ├── reports/
@@ -328,6 +343,7 @@ docs/
 ```
 
 ### Memory (1 file)
+
 ```
 ~/.claude/projects/-Users-kooshapari/memory/
 └── SESSION_SUMMARY_2026-02-19.md (updated with all phases)
@@ -338,41 +354,48 @@ docs/
 ## Key Achievements
 
 ✅ **Unique Global Identities**
+
 - Collision-free format
 - Self-describing
 - Human-readable
 - Machine-parseable
 
 ✅ **Global Registry**
+
 - Persistent (disk sync)
 - Cross-project visibility
 - Hierarchical relationships
 - Service discovery
 
 ✅ **Automatic L1 Registration**
+
 - SwarmController startup
 - Strategic lead role
 - Full capabilities
 
 ✅ **Automatic L2 Registration**
+
 - Agent discovery
 - Role detection
 - Heartbeat tracking
 - Local→registry mapping
 
 ✅ **Stale Agent Management**
+
 - Automatic detection
 - Graceful recovery
 - Proper cleanup
 - Low overhead
 
 ✅ **Full 3-Level Hierarchy**
+
 - L1 strategic leads
 - L2 named workers
 - L3 executors
 - Bidirectional relationships
 
 ✅ **Advanced Queries**
+
 - Civilization status
 - Level-based filtering
 - Project-based filtering
@@ -383,29 +406,34 @@ docs/
 ## Quality Assurance
 
 ### Syntax Validation ✅
+
 ```bash
 python3 -m py_compile scripts/swarm_controller.py
 # Result: Success
 ```
 
 ### Type Safety ✅
+
 - Full type hints
 - Proper None checking
 - Error handling
 - Graceful degradation
 
 ### Test Coverage ✅
+
 - 100% (17/17 tests)
 - All phases integrated
 - All code paths verified
 
 ### Performance ✅
+
 - <12ms per-cycle overhead
 - <5ms query time
 - In-memory caching
 - Efficient persistence
 
 ### Backward Compatibility ✅
+
 - No breaking changes
 - All existing features work
 - New features are additive
@@ -435,16 +463,19 @@ python3 -m py_compile scripts/swarm_controller.py
 ## Next Steps (Future Phases)
 
 ### Phase 4: Real-time Sync (MCP Transport)
+
 - Implement MCP server for registry updates
 - Real-time heartbeat sync
 - Cross-civilization communication
 
 ### Phase 5: Advanced Features
+
 - Conflict resolution protocol
 - Agent memory persistence
 - Civilization-wide dashboards
 
 ### Phase 6: Scale & Performance
+
 - Database backend for 1000+ agents
 - Distributed registry sync
 - Load balancing
@@ -456,6 +487,7 @@ python3 -m py_compile scripts/swarm_controller.py
 **The Multi-Tenant Civilization Framework is COMPLETE, TESTED, and PRODUCTION-READY.**
 
 ### What Works
+
 - ✅ Unique global agent identities
 - ✅ Global registry with persistence
 - ✅ SwarmController as L1 strategic lead
@@ -468,6 +500,7 @@ python3 -m py_compile scripts/swarm_controller.py
 - ✅ Service discovery
 
 ### What's Ready
+
 - ✅ Production deployment
 - ✅ Real-world workload testing
 - ✅ MCP transport integration
@@ -486,7 +519,6 @@ python3 -m py_compile scripts/swarm_controller.py
 **Total Session Duration:** ~2.5-3 hours
 **Total Implementation:** 550+ LOC, 100% tested, zero critical issues
 
-
 ---
 
 ## Source: CIVILIZATION_FRAMEWORK_PROGRESS_2026-02-19.md
@@ -504,6 +536,7 @@ python3 -m py_compile scripts/swarm_controller.py
 The Agent Identity System and SwarmController integration are **production-ready**. Phase 1 delivered a global agent identity system with unique IDs, hierarchical relationships, and cross-project discovery. Phase 2 integrated this system with SwarmController for automatic agent registration and monitoring.
 
 **Key Metrics:**
+
 - ✅ 788 LOC implementation (Phase 1)
 - ✅ 17/17 tests passing (100%)
 - ✅ 55 LOC Phase 2 integration (+0 breaking changes)
@@ -517,6 +550,7 @@ The Agent Identity System and SwarmController integration are **production-ready
 ### Deliverables
 
 **Core Implementation (427 LOC)**
+
 - `scripts/agent_identity_system.py`
   - `AgentLevel` enum (L1, L2, L3)
   - `AgentRole` enum (COORDINATOR, RESEARCHER, BUILDER, INTEGRATOR, EXECUTOR, GENERIC)
@@ -525,12 +559,14 @@ The Agent Identity System and SwarmController integration are **production-ready
   - `AgentIdentityFactory` for agent creation
 
 **Test Suite (361 LOC, 17/17 tests)**
+
 - `scripts/test_agent_identity_system.py`
   - `TestAgentIdentity`: 4 tests (ID format, serialization, roundtrip)
   - `TestGlobalAgentRegistry`: 10 tests (registration, filtering, relationships, persistence)
   - `TestAgentIdentityFactory`: 4 tests (L1/L2/L3 creation)
 
 **Documentation (5 guides, 700+ lines)**
+
 1. `PHASE_1_QUICK_REFERENCE.md` - 5-minute overview
 2. `PHASE_1_AGENT_IDENTITY_IMPLEMENTATION.md` - 15-minute spec
 3. `INTEGRATING_AGENT_IDENTITY_WITH_SWARM_CONTROLLER.md` - Integration roadmap
@@ -540,6 +576,7 @@ The Agent Identity System and SwarmController integration are **production-ready
 ### Key Features
 
 **Unique Agent IDs**
+
 ```
 Format: {project}:{uuid}:L{level}:{role}
 Example: "kush:ada0ea7b:L1:coordinator"
@@ -550,12 +587,14 @@ Example: "kush:ada0ea7b:L1:coordinator"
 ```
 
 **Global Registry**
+
 - Location: `~/.claude/civilization/registry.json`
 - Scope: All projects, all agents
 - Persistence: Auto-sync on changes
 - Performance: <1ms queries (in-memory cache)
 
 **Hierarchical Relationships**
+
 ```
 L1 (Strategic Lead)
 ├── Capabilities: health_monitoring, agent_scaling, dynamic_restart
@@ -567,6 +606,7 @@ L1 (Strategic Lead)
 ```
 
 **Service Discovery**
+
 - Query by project: `registry.get_agents_by_project("kush")`
 - Query by level: `registry.get_agents_by_level(AgentLevel.L2)`
 - Query by role: `registry.get_agents_by_role(AgentRole.BUILDER)`
@@ -575,12 +615,12 @@ L1 (Strategic Lead)
 
 ### Test Coverage
 
-| Category | Tests | Status |
-|----------|-------|--------|
-| AgentIdentity | 4 | ✅ All passing |
-| GlobalAgentRegistry | 10 | ✅ All passing |
-| AgentIdentityFactory | 4 | ✅ All passing |
-| **Total** | **17** | **✅ 100%** |
+| Category             | Tests  | Status         |
+| -------------------- | ------ | -------------- |
+| AgentIdentity        | 4      | ✅ All passing |
+| GlobalAgentRegistry  | 10     | ✅ All passing |
+| AgentIdentityFactory | 4      | ✅ All passing |
+| **Total**            | **17** | **✅ 100%**    |
 
 **Test Execution Time:** 0.059s
 
@@ -591,12 +631,14 @@ L1 (Strategic Lead)
 ### Deliverables
 
 **Phase 1 Integration (40 LOC added)**
+
 - L1 registration on monitor startup
 - Heartbeat updates in monitoring cycle
 - Event logging at each step
 - Graceful fallback if registry unavailable
 
 **Phase 2 Integration (55 LOC added)**
+
 - `_register_agent_to_registry()` method (25 LOC)
   - Discovers agents from metrics
   - Detects roles from name patterns
@@ -611,17 +653,19 @@ L1 (Strategic Lead)
 ### Key Features
 
 **L1 Registration**
+
 ```python
 l1_identity = factory.create_l1_agent(
     "kush",
     role=AgentRole.COORDINATOR,
     capabilities=["health_monitoring", "agent_scaling", "dynamic_restart"],
-    scope_tags={"swarm_controller": "true"}
+    scope_tags={"swarm_controller": "true"},
 )
 # Result: kush:ada0ea7b:L1:coordinator
 ```
 
 **L2 Auto-Registration**
+
 ```python
 # Detected in monitoring loop
 for agent_id, metrics in self.metrics.items():
@@ -632,17 +676,19 @@ for agent_id, metrics in self.metrics.items():
             role=role,  # Detected from name
             parent_l1_id=self.l1_agent_id,
             capabilities=["task_execution", "sub_delegation"],
-            scope_tags={"local_id": agent_id}
+            scope_tags={"local_id": agent_id},
         )
 ```
 
 **Role Detection Heuristics**
+
 - Name contains "researcher" → `AgentRole.RESEARCHER`
 - Name contains "builder" → `AgentRole.BUILDER`
 - Name contains "integrator" → `AgentRole.INTEGRATOR`
 - Otherwise → `AgentRole.GENERIC`
 
 **Heartbeat Mechanism**
+
 - L1 heartbeat updated every monitoring cycle (~5s)
 - L2 heartbeats updated when agents present
 - Staleness threshold: 5 minutes (configurable)
@@ -650,12 +696,12 @@ for agent_id, metrics in self.metrics.items():
 
 ### Performance
 
-| Operation | Overhead | Scale |
-|-----------|----------|-------|
-| Agent registration | ~2-3ms | One-time |
-| Heartbeat update | ~0.5ms | Per agent |
-| Registry query | ~0.2ms | In-memory |
-| **Per cycle** | **~5-10ms** | For 5-10 agents |
+| Operation          | Overhead    | Scale           |
+| ------------------ | ----------- | --------------- |
+| Agent registration | ~2-3ms      | One-time        |
+| Heartbeat update   | ~0.5ms      | Per agent       |
+| Registry query     | ~0.2ms      | In-memory       |
+| **Per cycle**      | **~5-10ms** | For 5-10 agents |
 
 **Monitoring Cycle:** ~5 seconds
 **Registry Overhead:** <1% of cycle time
@@ -663,11 +709,13 @@ for agent_id, metrics in self.metrics.items():
 ### Testing
 
 **Execution Test:**
+
 ```bash
 timeout 3 python3 scripts/swarm_controller.py --monitor
 ```
 
 **Output:**
+
 ```
 Phase 1: Agent Identity System initialized ✅
 Phase 1: Registered L1 agent: kush:4fc5bfd8:L1:coordinator ✅
@@ -675,14 +723,15 @@ Phase 2: Registered L2 agent test-agent-1 -> kush:1060e993:L2:generic ✅
 ```
 
 **Registry Verification:**
+
 ```json
 {
-    "L1 coordinator": {
-        "child_agent_ids": ["kush:1060e993:L2:generic"]
-    },
-    "L2 generic": {
-        "parent_agent_id": "kush:4fc5bfd8:L1:coordinator"
-    }
+  "L1 coordinator": {
+    "child_agent_ids": ["kush:1060e993:L2:generic"]
+  },
+  "L2 generic": {
+    "parent_agent_id": "kush:4fc5bfd8:L1:coordinator"
+  }
 }
 ```
 
@@ -690,21 +739,22 @@ Phase 2: Registered L2 agent test-agent-1 -> kush:1060e993:L2:generic ✅
 
 ## Quality Metrics
 
-| Metric | Target | Actual | Status |
-|--------|--------|--------|--------|
-| Test coverage | 100% | 100% (17/17) | ✅ |
-| Code quality | Pyright pass | 0 errors | ✅ |
-| Documentation | Comprehensive | 700+ lines | ✅ |
-| Performance | <5ms/op | ~1ms/op | ✅ |
-| Persistence | Reliable | Tested | ✅ |
-| Backward compat | Full | Yes | ✅ |
-| Integration ready | Clear path | Yes | ✅ |
+| Metric            | Target        | Actual       | Status |
+| ----------------- | ------------- | ------------ | ------ |
+| Test coverage     | 100%          | 100% (17/17) | ✅     |
+| Code quality      | Pyright pass  | 0 errors     | ✅     |
+| Documentation     | Comprehensive | 700+ lines   | ✅     |
+| Performance       | <5ms/op       | ~1ms/op      | ✅     |
+| Persistence       | Reliable      | Tested       | ✅     |
+| Backward compat   | Full          | Yes          | ✅     |
+| Integration ready | Clear path    | Yes          | ✅     |
 
 ---
 
 ## Files Delivered
 
 ### Core Implementation
+
 ```
 scripts/
 ├── agent_identity_system.py              (427 LOC)
@@ -716,6 +766,7 @@ scripts/
 ```
 
 ### Documentation
+
 ```
 docs/
 ├── reference/
@@ -771,29 +822,32 @@ docs/
 
 ## Known Limitations & Mitigations
 
-| Limitation | Risk | Mitigation | Phase |
-|-----------|------|-----------|-------|
-| File-based (1000+ agents) | Medium | Switch to PostgreSQL | Phase 3 |
-| No encryption | Medium | Add file encryption | Phase 3 |
-| No auto-cleanup | Low | Periodic cleanup task | Phase 3 |
-| No locking | Medium | File-based locks | Phase 3 |
+| Limitation                | Risk   | Mitigation            | Phase   |
+| ------------------------- | ------ | --------------------- | ------- |
+| File-based (1000+ agents) | Medium | Switch to PostgreSQL  | Phase 3 |
+| No encryption             | Medium | Add file encryption   | Phase 3 |
+| No auto-cleanup           | Low    | Periodic cleanup task | Phase 3 |
+| No locking                | Medium | File-based locks      | Phase 3 |
 
 ---
 
 ## What's Next: Phase 3
 
 ### Stale Agent Cleanup
+
 - Query registry for agents with no heartbeat >5 min
 - Attempt recovery (pause → resume)
 - Log escalations on failure
 - Unregister dead agents
 
 ### L3 Agent Support
+
 - Register sub-agents under L2
 - Full 3-level hierarchy operational
 - Cascading health checks
 
 ### Advanced Features
+
 - Cross-project queries (by project, level)
 - Civilization-wide status dashboard
 - Conflict resolution protocol
@@ -806,6 +860,7 @@ docs/
 ## Success Criteria ✅
 
 ### Phase 1
+
 - [x] Unique global identities
 - [x] Global registry with discovery
 - [x] Hierarchical relationships (L1→L2→L3)
@@ -818,6 +873,7 @@ docs/
 - [x] Comprehensive documentation
 
 ### Phase 2
+
 - [x] SwarmController L1 registration
 - [x] SwarmController L2 auto-registration
 - [x] Agent discovery in monitoring loop
@@ -836,10 +892,12 @@ docs/
 **Overall Quality: 95% ✅**
 
 **Why 95% (not 100%)?**
+
 - One assumption: Project name detection from directory name
 - One limitation: L2/L3 agents not yet fully tested with real agent workloads
 
 **Why 95% (not lower)?**
+
 - All core functionality working
 - Zero breaking changes
 - Registry verified to persist
@@ -867,6 +925,7 @@ docs/
 ## Getting Started (New Session)
 
 ### Quick Start (5 minutes)
+
 ```bash
 cd /Users/kooshapari/temp-PRODVERCEL/485/kush
 
@@ -881,6 +940,7 @@ cat docs/reference/PHASE_1_QUICK_REFERENCE.md
 ```
 
 ### Run Integration Test
+
 ```bash
 # Start monitor (3 seconds)
 timeout 3 python3 scripts/swarm_controller.py --monitor
@@ -891,6 +951,7 @@ timeout 3 python3 scripts/swarm_controller.py --monitor
 ```
 
 ### Verify Registry
+
 ```bash
 # Check L1 and L2 agents registered
 jq 'keys | length' ~/.claude/civilization/registry.json
@@ -907,12 +968,14 @@ jq '.[] | select(.level=="L1") | .child_agent_ids' ~/.claude/civilization/regist
 **The Multi-Tenant Civilization Framework is ready for production use.**
 
 **Phase 1 delivered:**
+
 - ✅ Unique global agent identities (788 LOC, 100% tested)
 - ✅ Global registry with cross-project discovery
 - ✅ Hierarchical relationship tracking
 - ✅ Comprehensive documentation
 
 **Phase 2 delivered:**
+
 - ✅ SwarmController integration (L1 registration)
 - ✅ Automatic agent discovery and L2 registration
 - ✅ Heartbeat mechanism for all agents
@@ -928,7 +991,6 @@ jq '.[] | select(.level=="L1") | .child_agent_ids' ~/.claude/civilization/regist
 **Test Coverage:** 100% (17/17 passing)
 **Delivery Date:** 2026-02-19
 **Delivered By:** Claude Code (L1 Coordinator)
-
 
 ---
 
@@ -959,7 +1021,9 @@ All infrastructure is in place for **multi-level agent execution** with the 3-le
 ## Deliverables Summary
 
 ### Phase 1: Consolidation ✅ COMPLETE
+
 **Files Created:**
+
 - `docs/reference/WORK_STREAM.md` (28 KB, 431 lines)
   - 186 consolidated tasks from thegent + sharecli
   - Canonical source of truth for all work
@@ -985,6 +1049,7 @@ All infrastructure is in place for **multi-level agent execution** with the 3-le
   - Verified against COORDINATION.md workflows
 
 ### Phase 2: Research Synthesis ✅ COMPLETE
+
 - `docs/research/CONVERSATION_DUMP_2026-02-18.md` (26 KB)
   - Master synthesis of 13 separate CONVERSATION_DUMP files
   - 5 major issues with root causes and fixes
@@ -1003,6 +1068,7 @@ All infrastructure is in place for **multi-level agent execution** with the 3-le
   - Emergency quick links
 
 ### Phase 3: Execution Setup ✅ COMPLETE
+
 - `docs/reference/EXECUTION_KICKOFF_2026-02-18.md` (15 KB)
   - Complete execution plan for Batch 1 (Phase 2-3)
   - L2 teammate agent roles and claim protocol
@@ -1022,6 +1088,7 @@ All infrastructure is in place for **multi-level agent execution** with the 3-le
 ### 3-Level Hierarchy (NOW ACTIVE)
 
 #### Level 1: Claude Code (You)
+
 - **Role:** Strategic Lead, orchestrator, decision-maker
 - **Responsibilities:**
   - Monitor AGENTS_ACTIVE.md for team status
@@ -1032,6 +1099,7 @@ All infrastructure is in place for **multi-level agent execution** with the 3-le
 - **Current Mode:** Standby (awaiting team confirmation)
 
 #### Level 2: Teammate Agents (Ready to launch)
+
 - **researcher-1** → Phase 2 (Async State & Snapshots)
   - Claims TGNT-P2.1 through TGNT-P2.4
   - Execution: `thegent free --do-next --repeat 5`
@@ -1043,6 +1111,7 @@ All infrastructure is in place for **multi-level agent execution** with the 3-le
   - Execution: Phase 4-5 integration and testing
 
 #### Level 3: Thegent Agents (Sub-task support)
+
 - Free tier agents via `thegent free` CLI
 - Launched by L2 teammates as needed for:
   - Code exploration and file analysis (L2 → explore agent)
@@ -1052,6 +1121,7 @@ All infrastructure is in place for **multi-level agent execution** with the 3-le
 ### Work Stream Model (CLAIMED/COMPLETED)
 
 **Before Starting:**
+
 ```
 PENDING: [Task 1, Task 2, ...]
 CLAIMED: []
@@ -1059,6 +1129,7 @@ COMPLETED: [Historical tasks...]
 ```
 
 **During Execution (researcher-1):**
+
 ```
 1. Read WORK_STREAM.md, find TGNT-P2.1 (no dependencies)
 2. Add to CLAIMED: | researcher-1 | TGNT-P2.1 | In Progress | timestamp |
@@ -1068,6 +1139,7 @@ COMPLETED: [Historical tasks...]
 ```
 
 **Parallel Execution (builder-1 independent):**
+
 ```
 Same protocol but for TGNT-P3.1 → TGNT-P3.5 simultaneously
 ```
@@ -1079,6 +1151,7 @@ Same protocol but for TGNT-P3.1 → TGNT-P3.5 simultaneously
 ### What Will Happen
 
 **Phase 2-3 Parallelization:**
+
 - researcher-1 works on Phase 2 (4 items, ~20 min)
 - builder-1 works on Phase 3 (5 items, ~33 min)
 - Both execute independently (no blocking)
@@ -1095,15 +1168,15 @@ Same protocol but for TGNT-P3.1 → TGNT-P3.5 simultaneously
 
 ### Timeline
 
-| Time | Event | Action |
-|------|-------|--------|
-| 13:00 | Kickoff | This document, EXECUTION_KICKOFF ready |
-| 13:05 | Batch 1 Starts | researcher-1 + builder-1 claim first items |
-| 13:10 | Mid-check | L1 monitors: ≥1 item completed? |
-| 13:20 | Progress Check | L1 monitors: ≥50% batch complete? |
-| 13:40 | Batch Complete | Both workers report all items done |
-| 13:45 | Phase Validation | L1 checks quality, SLO compliance |
-| 13:50 | Batch 2 Kickoff | integrator-1 activated for Phase 4-5 |
+| Time  | Event            | Action                                     |
+| ----- | ---------------- | ------------------------------------------ |
+| 13:00 | Kickoff          | This document, EXECUTION_KICKOFF ready     |
+| 13:05 | Batch 1 Starts   | researcher-1 + builder-1 claim first items |
+| 13:10 | Mid-check        | L1 monitors: ≥1 item completed?            |
+| 13:20 | Progress Check   | L1 monitors: ≥50% batch complete?          |
+| 13:40 | Batch Complete   | Both workers report all items done         |
+| 13:45 | Phase Validation | L1 checks quality, SLO compliance          |
+| 13:50 | Batch 2 Kickoff  | integrator-1 activated for Phase 4-5       |
 
 ---
 
@@ -1112,6 +1185,7 @@ Same protocol but for TGNT-P3.1 → TGNT-P3.5 simultaneously
 ### Batch 1 (Phase 2-3)
 
 **Quantitative:**
+
 - ✅ Phase 2: 4/4 items COMPLETED (researcher-1)
 - ✅ Phase 3: 5/5 items COMPLETED (builder-1)
 - ✅ Cycle time avg: ≤ 12 min per item
@@ -1120,6 +1194,7 @@ Same protocol but for TGNT-P3.1 → TGNT-P3.5 simultaneously
 - ✅ Team utilization: ≥ 90%
 
 **Qualitative:**
+
 - ✅ Code follows thegent patterns
 - ✅ Tests added for all new features
 - ✅ Documentation links updated
@@ -1138,6 +1213,7 @@ Same protocol but for TGNT-P3.1 → TGNT-P3.5 simultaneously
 ## How to Monitor
 
 ### Real-Time Status
+
 ```bash
 # Check team status
 cat docs/reference/AGENTS_ACTIVE.md
@@ -1150,6 +1226,7 @@ grep "BLOCKED" docs/reference/WORK_STREAM.md
 ```
 
 ### L1 Responsibilities (You)
+
 1. **Every 5-10 min:** Read AGENTS_ACTIVE.md for status updates
 2. **Every 10 min:** Check WORK_STREAM.md for CLAIMED/COMPLETED counts
 3. **On blocker:** Consult FAILURE_RECOVERY_PLAYBOOK.md for resolution
@@ -1176,12 +1253,14 @@ grep "BLOCKED" docs/reference/WORK_STREAM.md
 ## Next Steps (L1 Execution Checklist)
 
 ### Immediate (Now)
+
 - [ ] Review this summary
 - [ ] Read EXECUTION_KICKOFF_2026-02-18.md
 - [ ] Confirm team roster in AGENTS_ACTIVE.md
 - [ ] Prepare to monitor WORK_STREAM.md
 
 ### After Batch 1 Complete
+
 - [ ] Validate all Phase 2-3 items in COMPLETED
 - [ ] Check cycle time metrics (avg ≤ 12 min)
 - [ ] Review quality gate: any lint errors, missing tests?
@@ -1189,6 +1268,7 @@ grep "BLOCKED" docs/reference/WORK_STREAM.md
 - [ ] Update this summary with actual times
 
 ### After Full Execution
+
 - [ ] Consolidate all work into COMPLETED section
 - [ ] Measure total time: Batch 1 + Batch 2 + Batch 3+
 - [ ] Generate retrospective (learnings, improvements)
@@ -1199,13 +1279,13 @@ grep "BLOCKED" docs/reference/WORK_STREAM.md
 
 ## Key Files to Keep Bookmarked
 
-| File | Purpose | Path |
-|------|---------|------|
-| WORK_STREAM.md | Canonical tasks | `docs/reference/` |
-| EXECUTION_KICKOFF_2026-02-18.md | Current batch plan | `docs/reference/` |
-| AGENTS_ACTIVE.md | Team status | `docs/reference/` |
-| COORDINATION.md | Workflows | `docs/reference/` |
-| FAILURE_RECOVERY_PLAYBOOK.md | Blocker resolutions | `docs/reference/` |
+| File                            | Purpose             | Path              |
+| ------------------------------- | ------------------- | ----------------- |
+| WORK_STREAM.md                  | Canonical tasks     | `docs/reference/` |
+| EXECUTION_KICKOFF_2026-02-18.md | Current batch plan  | `docs/reference/` |
+| AGENTS_ACTIVE.md                | Team status         | `docs/reference/` |
+| COORDINATION.md                 | Workflows           | `docs/reference/` |
+| FAILURE_RECOVERY_PLAYBOOK.md    | Blocker resolutions | `docs/reference/` |
 
 ---
 
@@ -1214,10 +1294,12 @@ grep "BLOCKED" docs/reference/WORK_STREAM.md
 **EXECUTION READINESS: 95%** ✅
 
 **Why 95% (not 100%)?**
+
 - One unknown: Thegent CLI availability in execution environment (confirmed in prior session, should work)
 - One edge case: If circular dependencies detected in live execution (covered by FRP-3)
 
 **Mitigations in place:**
+
 - All 10 failure scenarios documented and have resolution paths
 - CLAIMING protocol prevents race conditions
 - COORDINATION.md provides clear escalation paths
@@ -1236,6 +1318,7 @@ grep "BLOCKED" docs/reference/WORK_STREAM.md
 ✅ Communication protocol (L1/L2/L3)
 
 **To proceed:**
+
 1. Confirm you're ready to monitor the team
 2. Notify L2 teammates (researcher-1, builder-1) to begin Batch 1
 3. Watch AGENTS_ACTIVE.md and WORK_STREAM.md every 5-10 min
@@ -1243,8 +1326,9 @@ grep "BLOCKED" docs/reference/WORK_STREAM.md
 5. Gate Phase 4-5 when Phase 2-3 reach 50% completion
 
 **Expected Outcome:**
+
 - Batch 1 complete in ~40 min
-- 9 tasks executed (TGNT-P2.* + TGNT-P3.*)
+- 9 tasks executed (TGNT-P2._ + TGNT-P3._)
 - Zero SLO breaches
 - 145+ tasks flowing through WORK_STREAM by end of execution
 
@@ -1256,8 +1340,7 @@ grep "BLOCKED" docs/reference/WORK_STREAM.md
 
 ---
 
-*Generated by Claude Code (L1) as part of Phase 6 (Execution & Coordination) of the kush/temp-PRODVERCEL/485 consolidation initiative.*
-
+_Generated by Claude Code (L1) as part of Phase 6 (Execution & Coordination) of the kush/temp-PRODVERCEL/485 consolidation initiative._
 
 ---
 
@@ -1278,24 +1361,24 @@ The Portfolio Modernization Initiative standardized quality tooling, build syste
 
 ## Phases Executed
 
-| Phase | Name | Tasks | Status |
-|-------|------|-------|--------|
-| P1 | Shared Tooling Templates | 1 | Complete |
-| P2 | Taskfile Migration | 4 | Complete |
-| P3 | Quality Gate System | 3 | Complete |
-| P4 | Architecture Enforcement | 2 | Complete |
-| P5 | Agent Instructions | 2 | Complete |
-| P6 | Per-Project Quality Enforcement | 4 | Complete |
-| P7 | Verification + Remediation | 2 + remediation | Complete |
+| Phase | Name                            | Tasks           | Status   |
+| ----- | ------------------------------- | --------------- | -------- |
+| P1    | Shared Tooling Templates        | 1               | Complete |
+| P2    | Taskfile Migration              | 4               | Complete |
+| P3    | Quality Gate System             | 3               | Complete |
+| P4    | Architecture Enforcement        | 2               | Complete |
+| P5    | Agent Instructions              | 2               | Complete |
+| P6    | Per-Project Quality Enforcement | 4               | Complete |
+| P7    | Verification + Remediation      | 2 + remediation | Complete |
 
 ---
 
 ## Verification Scores
 
-| Check | Score | Details |
-|-------|-------|---------|
-| P7.1: Per-project quality gates | 92% | All projects pass lint, typecheck, format, security |
-| P7.2: Cross-project consistency | 86% | Consistent templates, CLAUDE.md structure, Taskfile patterns |
+| Check                           | Score | Details                                                      |
+| ------------------------------- | ----- | ------------------------------------------------------------ |
+| P7.1: Per-project quality gates | 92%   | All projects pass lint, typecheck, format, security          |
+| P7.2: Cross-project consistency | 86%   | Consistent templates, CLAUDE.md structure, Taskfile patterns |
 
 ---
 
@@ -1343,14 +1426,14 @@ The Portfolio Modernization Initiative standardized quality tooling, build syste
 
 ## Team Performance
 
-| Agent | Role | Tasks Completed |
-|-------|------|-----------------|
-| template-creator | Created shared tooling templates | P1.1 |
-| build-systems-engineer | Migrated all projects to Taskfile | P2.1-P2.4 |
-| quality-engineer | Implemented quality gates + hooks | P3.1-P3.3, P6.1-P6.4 |
-| architecture-specialist | Set up architecture enforcement | P4.1-P4.2 |
-| instruction-specialist | Updated CLAUDE.md files | P5.1-P5.2 |
-| completion-specialist | Verification, remediation, documentation | P7.1-P7.2, gaps, docs |
+| Agent                   | Role                                     | Tasks Completed       |
+| ----------------------- | ---------------------------------------- | --------------------- |
+| template-creator        | Created shared tooling templates         | P1.1                  |
+| build-systems-engineer  | Migrated all projects to Taskfile        | P2.1-P2.4             |
+| quality-engineer        | Implemented quality gates + hooks        | P3.1-P3.3, P6.1-P6.4  |
+| architecture-specialist | Set up architecture enforcement          | P4.1-P4.2             |
+| instruction-specialist  | Updated CLAUDE.md files                  | P5.1-P5.2             |
+| completion-specialist   | Verification, remediation, documentation | P7.1-P7.2, gaps, docs |
 
 **Coordination model:** Team lead orchestrated via task system. Agents worked in parallel where tasks had no dependencies. Sequential handoffs for dependent work.
 
@@ -1358,27 +1441,27 @@ The Portfolio Modernization Initiative standardized quality tooling, build syste
 
 ## Identified Gaps and Remediation
 
-| Gap | Severity | Remediation | Status |
-|-----|----------|-------------|--------|
-| ruff line-length inconsistency (120 vs 100) | Low | Standardized trace + thegent to 100 | Fixed |
-| trace CLAUDE.md missing agent instruction sections | Medium | Added Dev Philosophy, Library Prefs, Constraints | Fixed |
-| sharecli duplicate CLAUDE.md/claude.md | Low | macOS case-insensitive FS artifact; single file confirmed | Resolved |
+| Gap                                                | Severity | Remediation                                               | Status   |
+| -------------------------------------------------- | -------- | --------------------------------------------------------- | -------- |
+| ruff line-length inconsistency (120 vs 100)        | Low      | Standardized trace + thegent to 100                       | Fixed    |
+| trace CLAUDE.md missing agent instruction sections | Medium   | Added Dev Philosophy, Library Prefs, Constraints          | Fixed    |
+| sharecli duplicate CLAUDE.md/claude.md             | Low      | macOS case-insensitive FS artifact; single file confirmed | Resolved |
 
 ---
 
 ## Success Metrics
 
-| Metric | Before | After |
-|--------|--------|-------|
-| Lint errors (cross-project) | Inconsistent | 0 (all pass `task lint`) |
-| Type check coverage | Partial | All projects have ty/tsc configured |
-| Test framework | Mixed | Standardized pytest + vitest |
-| Build system | Mixed (Make/none) | Unified Taskfile with shared templates |
-| Line length | Mixed (88/100/120) | 100 across all projects |
-| Security scanning | Ad hoc | Automated via `task security` |
-| Architecture enforcement | None | import-linter/tach in place |
-| Agent instructions | Inconsistent | Standardized CLAUDE.md with required sections |
-| Quality gates | None | 9-gate system in all projects |
+| Metric                      | Before             | After                                         |
+| --------------------------- | ------------------ | --------------------------------------------- |
+| Lint errors (cross-project) | Inconsistent       | 0 (all pass `task lint`)                      |
+| Type check coverage         | Partial            | All projects have ty/tsc configured           |
+| Test framework              | Mixed              | Standardized pytest + vitest                  |
+| Build system                | Mixed (Make/none)  | Unified Taskfile with shared templates        |
+| Line length                 | Mixed (88/100/120) | 100 across all projects                       |
+| Security scanning           | Ad hoc             | Automated via `task security`                 |
+| Architecture enforcement    | None               | import-linter/tach in place                   |
+| Agent instructions          | Inconsistent       | Standardized CLAUDE.md with required sections |
+| Quality gates               | None               | 9-gate system in all projects                 |
 
 ---
 
@@ -1421,7 +1504,6 @@ The Portfolio Modernization Initiative standardized quality tooling, build syste
 - Template versioning and automated drift detection
 - Mutation testing integration (Level 5 maturity)
 
-
 ---
 
 ## Source: PHASE_1_COMPLETION_SUMMARY_2026-02-19.md
@@ -1450,12 +1532,12 @@ Phase 1 of the Multi-Tenant Civilization Framework has been successfully impleme
 
 ### Core Implementation Files
 
-| File | Lines | Purpose | Status |
-|------|-------|---------|--------|
-| `scripts/agent_identity_system.py` | 427 | Core identity & registry system | ✅ Complete |
-| `scripts/test_agent_identity_system.py` | 361 | Unit test suite | ✅ 17/17 passing |
-| `docs/reference/PHASE_1_AGENT_IDENTITY_IMPLEMENTATION.md` | 300+ | Technical implementation guide | ✅ Complete |
-| `docs/guides/INTEGRATING_AGENT_IDENTITY_WITH_SWARM_CONTROLLER.md` | 400+ | Integration roadmap | ✅ Complete |
+| File                                                              | Lines | Purpose                         | Status           |
+| ----------------------------------------------------------------- | ----- | ------------------------------- | ---------------- |
+| `scripts/agent_identity_system.py`                                | 427   | Core identity & registry system | ✅ Complete      |
+| `scripts/test_agent_identity_system.py`                           | 361   | Unit test suite                 | ✅ 17/17 passing |
+| `docs/reference/PHASE_1_AGENT_IDENTITY_IMPLEMENTATION.md`         | 300+  | Technical implementation guide  | ✅ Complete      |
+| `docs/guides/INTEGRATING_AGENT_IDENTITY_WITH_SWARM_CONTROLLER.md` | 400+  | Integration roadmap             | ✅ Complete      |
 
 **Total Code:** 788 LOC (implementation + tests)
 **Total Documentation:** 700+ lines
@@ -1463,11 +1545,13 @@ Phase 1 of the Multi-Tenant Civilization Framework has been successfully impleme
 ### Key Classes & Methods
 
 **AgentIdentity (Dataclass)**
+
 - `agent_id` property: `{project}:{uuid}:L{1-3}:{role}`
 - `to_dict()` / `from_dict()`: Serialization
 - Relationship tracking: parent, children, peers
 
 **GlobalAgentRegistry (Main Class)**
+
 - `register_agent()`: Add/update agents
 - `unregister_agent()`: Remove with cleanup
 - `get_agent()`, `get_agents_by_*()`: Discovery
@@ -1478,6 +1562,7 @@ Phase 1 of the Multi-Tenant Civilization Framework has been successfully impleme
 - Disk persistence: `_load_from_disk()`, `_save_to_disk()`
 
 **AgentIdentityFactory**
+
 - `create_l1_agent()`: Create strategic leaders
 - `create_l2_agent()`: Create named workers with parents
 - `create_l3_agent()`: Create free-tier executors
@@ -1495,14 +1580,15 @@ OK ✅
 
 **Test Breakdown:**
 
-| Category | Tests | Status |
-|----------|-------|--------|
-| AgentIdentity | 4 | ✅ 4/4 passing |
-| GlobalAgentRegistry | 10 | ✅ 10/10 passing |
-| AgentIdentityFactory | 4 | ✅ 4/4 passing |
-| **Total** | **17** | **✅ 100% passing** |
+| Category             | Tests  | Status              |
+| -------------------- | ------ | ------------------- |
+| AgentIdentity        | 4      | ✅ 4/4 passing      |
+| GlobalAgentRegistry  | 10     | ✅ 10/10 passing    |
+| AgentIdentityFactory | 4      | ✅ 4/4 passing      |
+| **Total**            | **17** | **✅ 100% passing** |
 
 **Key Tests:**
+
 - ✅ Agent ID format generation
 - ✅ Dictionary serialization/deserialization
 - ✅ Roundtrip conversion
@@ -1530,6 +1616,7 @@ Examples:
 ```
 
 **Components:**
+
 - `project`: Project name/path
 - `uuid`: 8-character unique identifier
 - `level`: L1 (strategic), L2 (worker), L3 (executor)
@@ -1542,6 +1629,7 @@ Examples:
 **Persistence:** JSON file with full agent metadata
 
 **Content Example:**
+
 ```json
 {
   "thegent:abc123:L1:coordinator": {
@@ -1579,6 +1667,7 @@ L1 Coordinator (Strategic Lead)
 **Recommendation:** Implement SwarmController integration next (3-4 hours)
 
 **Integration Steps:**
+
 1. Add registry imports to swarm_controller.py
 2. Register SwarmController as L1 on startup
 3. Auto-register discovered agents as L2/L3
@@ -1596,32 +1685,38 @@ See: `docs/guides/INTEGRATING_AGENT_IDENTITY_WITH_SWARM_CONTROLLER.md`
 ## Key Features Validated
 
 ✅ **Unique Global Identity**
+
 - Each agent gets deterministic, globally unique ID
 - Format prevents collisions across projects
 - UUID ensures uniqueness even with same project/role
 
 ✅ **Service Discovery**
+
 - Registry enables finding agents without hardcoding
 - Supports filtering by project, level, role, status
 - Cross-project visibility for civilization-wide queries
 
 ✅ **Hierarchical Relationships**
+
 - L1 → L2 → L3 relationships tracked
 - Bidirectional: parent knows children, children know parent
 - Relationship cleanup on agent removal
 
 ✅ **Persistence & Durability**
+
 - Registry persists to disk automatically
 - Survives process restarts
 - JSON format for human readability
 - In-memory cache for performance
 
 ✅ **Heartbeat Tracking**
+
 - Agents can be marked stale if inactive
 - Configurable TTL (default 5 minutes)
 - Enables auto-restart/recovery mechanisms
 
 ✅ **Cross-Project Coordination**
+
 - Multiple projects' agents all visible in one registry
 - No single point of failure per project
 - Enables multi-tenant scenarios
@@ -1630,26 +1725,26 @@ See: `docs/guides/INTEGRATING_AGENT_IDENTITY_WITH_SWARM_CONTROLLER.md`
 
 ## Known Limitations & Mitigations
 
-| Limitation | Risk | Mitigation | Phase |
-|-----------|------|-----------|-------|
+| Limitation                         | Risk   | Mitigation                   | Phase   |
+| ---------------------------------- | ------ | ---------------------------- | ------- |
 | File-based registry (1000+ agents) | Medium | Switch to PostgreSQL backend | Phase 3 |
-| No encryption | Medium | Add file encryption | Phase 2 |
-| No auto-cleanup of stale entries | Low | Implement periodic cleanup | Phase 2 |
-| No transaction/locking | Medium | Add file-based locks | Phase 2 |
-| No MCP integration yet | Low | Add MCP transport in Phase 2 | Phase 2 |
+| No encryption                      | Medium | Add file encryption          | Phase 2 |
+| No auto-cleanup of stale entries   | Low    | Implement periodic cleanup   | Phase 2 |
+| No transaction/locking             | Medium | Add file-based locks         | Phase 2 |
+| No MCP integration yet             | Low    | Add MCP transport in Phase 2 | Phase 2 |
 
 ---
 
 ## Quality Metrics
 
-| Metric | Target | Actual | Status |
-|--------|--------|--------|--------|
-| Test coverage | 100% | 100% (17/17) | ✅ |
-| Code quality | Pyright pass | ✅ No errors | ✅ |
-| Documentation | Complete | 700+ lines | ✅ |
-| Backward compatibility | Full | Yes | ✅ |
-| Performance | <5ms per op | ~1ms measured | ✅ |
-| Persistence | Reliable | Disk sync tested | ✅ |
+| Metric                 | Target       | Actual           | Status |
+| ---------------------- | ------------ | ---------------- | ------ |
+| Test coverage          | 100%         | 100% (17/17)     | ✅     |
+| Code quality           | Pyright pass | ✅ No errors     | ✅     |
+| Documentation          | Complete     | 700+ lines       | ✅     |
+| Backward compatibility | Full         | Yes              | ✅     |
+| Performance            | <5ms per op  | ~1ms measured    | ✅     |
+| Persistence            | Reliable     | Disk sync tested | ✅     |
 
 ---
 
@@ -1746,10 +1841,12 @@ print(json.dumps(hierarchy, indent=2))
 **Phase 1 Completion:** 95% ✅
 
 **Why not 100%?**
+
 - One edge case: Very large registries (1000+ agents) - need database optimization
 - One assumption: Registry file corruption handling - currently manual
 
 **Why 95%?**
+
 - All functional requirements met
 - All tests passing
 - Architecture is sound
@@ -1761,15 +1858,18 @@ print(json.dumps(hierarchy, indent=2))
 ## Files Generated
 
 ### Implementation
+
 - `scripts/agent_identity_system.py` (427 LOC)
 - `scripts/test_agent_identity_system.py` (361 LOC)
 
 ### Documentation
+
 - `docs/reference/PHASE_1_AGENT_IDENTITY_IMPLEMENTATION.md`
 - `docs/guides/INTEGRATING_AGENT_IDENTITY_WITH_SWARM_CONTROLLER.md`
 - `docs/reports/PHASE_1_COMPLETION_SUMMARY_2026-02-19.md` (this file)
 
 ### Registry
+
 - `~/.claude/civilization/registry.json` (created on first use)
 
 ---
@@ -1793,7 +1893,6 @@ The system is ready for integration with SwarmController and provides the founda
 **Review Status:** ✅ Ready for integration
 **Next Phase:** Phase 2 - Service Discovery Protocol (planned)
 
-
 ---
 
 ## Source: PHASE_4_MCP_TRANSPORT_COMPLETION_2026-02-19.md
@@ -1814,17 +1913,20 @@ Phase 4 implementation of the Multi-Tenant Civilization Framework is **complete 
 ### What's Delivered
 
 **Phase 4A: MCP Server Setup (92 LOC)**
+
 - 6 MCP resources for registry data access
 - 6 MCP tools for registry operations
 - Resource and tool definitions with full metadata
 
 **Phase 4B: Real-time Sync (110 LOC)**
+
 - Heartbeat streaming at 1 Hz
 - Subscriber management (subscribe/unsubscribe)
 - Registry change notifications
 - Non-blocking broadcast messaging
 
 **Phase 4C: Cross-Civilization Communication (340 LOC)**
+
 - Agent message broker for inter-agent messaging
 - Direct message routing with ACK mechanism
 - Broadcast messaging to all agents in project
@@ -1841,26 +1943,29 @@ Phase 4 implementation of the Multi-Tenant Civilization Framework is **complete 
 ### Phase 4A: MCP Server Setup
 
 #### Resources (6 total)
-| Resource | URI | Purpose |
-|----------|-----|---------|
-| Agent | `civilization://agents/{agent_id}` | Get single agent metadata |
-| Project | `civilization://projects/{project}` | List all agents in project |
-| Statistics | `civilization://statistics` | Registry-wide statistics |
-| Hierarchy | `civilization://hierarchy/{parent_id}` | Get children of agent |
-| Active | `civilization://active` | List active agents (not stale) |
-| Stale | `civilization://stale` | List stale agents (>5 min) |
+
+| Resource   | URI                                    | Purpose                        |
+| ---------- | -------------------------------------- | ------------------------------ |
+| Agent      | `civilization://agents/{agent_id}`     | Get single agent metadata      |
+| Project    | `civilization://projects/{project}`    | List all agents in project     |
+| Statistics | `civilization://statistics`            | Registry-wide statistics       |
+| Hierarchy  | `civilization://hierarchy/{parent_id}` | Get children of agent          |
+| Active     | `civilization://active`                | List active agents (not stale) |
+| Stale      | `civilization://stale`                 | List stale agents (>5 min)     |
 
 #### Tools (6 total)
-| Tool | Input | Output |
-|------|-------|--------|
-| `update_heartbeat` | `{agent_id}` | `{success, timestamp}` |
-| `register_agent` | Agent metadata | `{agent_id}` |
-| `unregister_agent` | `{agent_id}` | `{success}` |
-| `recover_stale` | `{agent_id}` | `{success, recovered}` |
-| `get_civilization_status` | `{}` | Dashboard JSON |
-| `query_agents` | `{filters}` | Filtered agent list |
+
+| Tool                      | Input          | Output                 |
+| ------------------------- | -------------- | ---------------------- |
+| `update_heartbeat`        | `{agent_id}`   | `{success, timestamp}` |
+| `register_agent`          | Agent metadata | `{agent_id}`           |
+| `unregister_agent`        | `{agent_id}`   | `{success}`            |
+| `recover_stale`           | `{agent_id}`   | `{success, recovered}` |
+| `get_civilization_status` | `{}`           | Dashboard JSON         |
+| `query_agents`            | `{filters}`    | Filtered agent list    |
 
 #### Implementation Details
+
 ```python
 class CivilizationMCPServer:
     """MCP server exposing registry to external clients."""
@@ -1886,6 +1991,7 @@ class CivilizationMCPServer:
 ### Phase 4B: Real-time Sync (Heartbeat Streaming)
 
 #### Stream Protocol
+
 ```
 Heartbeat Stream (1 Hz):
 ├─ Timestamp
@@ -1896,21 +2002,19 @@ Heartbeat Stream (1 Hz):
 ```
 
 #### Implementation Details
+
 ```python
 async def stream_heartbeats(self):
     """Stream heartbeats at 1 Hz to all subscribers."""
     while self.heartbeat_stream_running:
         active_agents = [a for a in registry.agents if a.is_active]
-        heartbeat_msg = {
-            "type": "heartbeats",
-            "timestamp": time.time(),
-            "agents": [...]
-        }
+        heartbeat_msg = {"type": "heartbeats", "timestamp": time.time(), "agents": [...]}
         await self._broadcast_message(heartbeat_msg)
         await asyncio.sleep(1)  # 1 Hz rate
 ```
 
 #### Subscriber Management
+
 ```python
 await server.subscribe_heartbeats("client_1")
 await server.unsubscribe_heartbeats("client_1")
@@ -1922,31 +2026,34 @@ await server.unsubscribe_heartbeats("client_1")
 ### Phase 4C: Cross-Civilization Communication
 
 #### Message Format
+
 ```python
 @dataclass
 class AgentMessage:
-    id: str                      # Unique message ID
-    from_agent: str             # Sender agent ID
-    to_agent: str               # Recipient (or "broadcast")
-    type: str                   # Message type
-    payload: Dict               # Message data
-    timestamp: float            # Unix timestamp
-    ack: bool = False          # Acknowledged?
+    id: str  # Unique message ID
+    from_agent: str  # Sender agent ID
+    to_agent: str  # Recipient (or "broadcast")
+    type: str  # Message type
+    payload: Dict  # Message data
+    timestamp: float  # Unix timestamp
+    ack: bool = False  # Acknowledged?
     ack_timestamp: Optional[float] = None
 ```
 
 #### Message Types
-| Type | Direction | Purpose |
-|------|-----------|---------|
-| `heartbeat_request` | L2→L1 | Health check |
-| `status_query` | L1→L2 | Request status |
-| `task_assignment` | L1→L2 | Assign work |
-| `result_report` | L2→L1 | Report completion |
-| `error_alert` | L2→L1 | Alert to error |
-| `coordination` | L1→L1 | Cross-civilization |
-| `broadcast` | L1/L2→All | Notify all agents |
+
+| Type                | Direction | Purpose            |
+| ------------------- | --------- | ------------------ |
+| `heartbeat_request` | L2→L1     | Health check       |
+| `status_query`      | L1→L2     | Request status     |
+| `task_assignment`   | L1→L2     | Assign work        |
+| `result_report`     | L2→L1     | Report completion  |
+| `error_alert`       | L2→L1     | Alert to error     |
+| `coordination`      | L1→L1     | Cross-civilization |
+| `broadcast`         | L1/L2→All | Notify all agents  |
 
 #### Broker Implementation
+
 ```python
 class AgentMessageBroker:
     """Broker for inter-agent messages."""
@@ -1976,15 +2083,17 @@ class AgentMessageBroker:
 ## Testing Results
 
 ### Phase 1-3 Backward Compatibility
+
 ✅ **All 17 tests passing** (0.025s)
 
-| Test Class | Tests | Status |
-|-----------|-------|--------|
-| TestAgentIdentity | 4 | ✅ |
-| TestGlobalAgentRegistry | 10 | ✅ |
-| TestAgentIdentityFactory | 4 | ✅ |
+| Test Class               | Tests | Status |
+| ------------------------ | ----- | ------ |
+| TestAgentIdentity        | 4     | ✅     |
+| TestGlobalAgentRegistry  | 10    | ✅     |
+| TestAgentIdentityFactory | 4     | ✅     |
 
 ### Phase 4 Integration Testing
+
 ✅ **Comprehensive manual integration tests passing**
 
 - MCP Server initialization: ✅
@@ -2000,6 +2109,7 @@ class AgentMessageBroker:
 ## Code Structure
 
 ### New Files Created
+
 ```
 scripts/
 ├── civilization_mcp_server.py     (442 LOC)
@@ -2017,6 +2127,7 @@ scripts/
 ```
 
 ### Modified Files
+
 ```
 docs/plans/
 └── PHASE_4_MCP_TRANSPORT_SPECIFICATION.md  (420 LOC specification)
@@ -2026,20 +2137,21 @@ docs/plans/
 
 ## Performance Metrics
 
-| Operation | Latency | Status |
-|-----------|---------|--------|
-| Resource read | <2ms | ✅ |
-| Tool call | <3ms | ✅ |
-| Heartbeat stream | 1 Hz | ✅ |
-| Message send (direct) | <5ms | ✅ |
-| Message broadcast | <10ms | ✅ |
-| Handler registration | <1ms | ✅ |
+| Operation             | Latency | Status |
+| --------------------- | ------- | ------ |
+| Resource read         | <2ms    | ✅     |
+| Tool call             | <3ms    | ✅     |
+| Heartbeat stream      | 1 Hz    | ✅     |
+| Message send (direct) | <5ms    | ✅     |
+| Message broadcast     | <10ms   | ✅     |
+| Handler registration  | <1ms    | ✅     |
 
 ---
 
 ## Architecture Impact
 
 ### Full Civilization Framework
+
 ```
 Phase 1: Agent Identity System (427 LOC, 17 tests)
 ├─ Unique agent IDs
@@ -2070,26 +2182,26 @@ Phase 4: MCP Transport (542 LOC) ← NEW
 
 ## Quality Metrics
 
-| Metric | Value | Status |
-|--------|-------|--------|
-| **Code Quality** |
-| Total LOC | 1,330+ | ✅ |
-| Phase 4 LOC | 542 | ✅ |
-| Syntax Valid | 100% | ✅ |
-| Type Safe | Mostly* | ⚠️ |
-| **Test Coverage** |
-| Phase 1-3 Tests | 17/17 | ✅ 100% |
-| Backward Compat | 100% | ✅ |
-| Manual Integration | 15/15 | ✅ 100% |
-| **Performance** |
-| Resource read | <2ms | ✅ |
-| Tool call | <3ms | ✅ |
-| Heartbeat rate | 1 Hz | ✅ |
-| Per-cycle overhead | <15ms | ✅ |
-| **Reliability** |
-| Error handling | Graceful | ✅ |
-| Backward compatible | 100% | ✅ |
-| Persistence | Verified | ✅ |
+| Metric              | Value    | Status  |
+| ------------------- | -------- | ------- |
+| **Code Quality**    |
+| Total LOC           | 1,330+   | ✅      |
+| Phase 4 LOC         | 542      | ✅      |
+| Syntax Valid        | 100%     | ✅      |
+| Type Safe           | Mostly\* | ⚠️      |
+| **Test Coverage**   |
+| Phase 1-3 Tests     | 17/17    | ✅ 100% |
+| Backward Compat     | 100%     | ✅      |
+| Manual Integration  | 15/15    | ✅ 100% |
+| **Performance**     |
+| Resource read       | <2ms     | ✅      |
+| Tool call           | <3ms     | ✅      |
+| Heartbeat rate      | 1 Hz     | ✅      |
+| Per-cycle overhead  | <15ms    | ✅      |
+| **Reliability**     |
+| Error handling      | Graceful | ✅      |
+| Backward compatible | 100%     | ✅      |
+| Persistence         | Verified | ✅      |
 
 \* Type annotations: Pyright reports possible unbound warnings on conditional imports (by design)
 
@@ -2098,6 +2210,7 @@ Phase 4: MCP Transport (542 LOC) ← NEW
 ## Feature Checklist
 
 ### Phase 4A: MCP Server Setup
+
 - [x] MCP resource definitions (6 resources)
 - [x] MCP tool definitions (6 tools)
 - [x] Resource read implementation
@@ -2106,6 +2219,7 @@ Phase 4: MCP Transport (542 LOC) ← NEW
 - [x] Metadata serialization
 
 ### Phase 4B: Real-time Sync
+
 - [x] Heartbeat stream implementation (1 Hz)
 - [x] Subscriber management (add/remove)
 - [x] Async message broadcasting
@@ -2113,6 +2227,7 @@ Phase 4: MCP Transport (542 LOC) ← NEW
 - [x] Error recovery
 
 ### Phase 4C: Cross-Civilization Communication
+
 - [x] Agent message dataclass
 - [x] Message broker initialization
 - [x] Direct message routing
@@ -2123,6 +2238,7 @@ Phase 4: MCP Transport (542 LOC) ← NEW
 - [x] Async message processing
 
 ### Backward Compatibility
+
 - [x] All Phase 1 tests passing (4/4)
 - [x] All Phase 2 tests passing (implicit)
 - [x] All Phase 3 tests passing (implicit)
@@ -2135,14 +2251,16 @@ Phase 4: MCP Transport (542 LOC) ← NEW
 ## Known Limitations & Future Work
 
 ### Current Limitations
-| Issue | Severity | Mitigation | Future Phase |
-|-------|----------|-----------|--------------|
-| Message queue in-memory | Low | Use Redis/RabbitMQ | Phase 5 |
-| No encryption | Medium | Add TLS/encryption | Phase 5 |
-| Single-threaded broker | Low | Use worker pool | Phase 6 |
-| No rate limiting | Low | Add token bucket | Phase 6 |
+
+| Issue                   | Severity | Mitigation         | Future Phase |
+| ----------------------- | -------- | ------------------ | ------------ |
+| Message queue in-memory | Low      | Use Redis/RabbitMQ | Phase 5      |
+| No encryption           | Medium   | Add TLS/encryption | Phase 5      |
+| Single-threaded broker  | Low      | Use worker pool    | Phase 6      |
+| No rate limiting        | Low      | Add token bucket   | Phase 6      |
 
 ### Future Enhancements (Phase 5+)
+
 - [ ] Distributed message broker (Kafka/RabbitMQ)
 - [ ] TLS encryption for MCP connections
 - [ ] Rate limiting on heartbeat stream
@@ -2176,29 +2294,28 @@ heartbeat = server.call_tool("update_heartbeat", {"agent_id": "..."})
 status = server.call_tool("get_civilization_status", {})
 agents = server.call_tool("query_agents", {"filters": {"level": "L1"}})
 
+
 # Subscribe to heartbeats
 async def monitor():
     await server.subscribe_heartbeats("my_client")
     # Receives 1 Hz heartbeat updates
     await server.unsubscribe_heartbeats("my_client")
 
+
 asyncio.run(monitor())
+
 
 # Send messages
 async def communicate():
     success = await server.message_broker.send_message(
-        from_agent="agent_1",
-        to_agent="agent_2",
-        message_type="status_query",
-        payload={"requested_at": time.time()}
+        from_agent="agent_1", to_agent="agent_2", message_type="status_query", payload={"requested_at": time.time()}
     )
 
     # Broadcast to all in project
     await server.message_broker.broadcast_message(
-        from_agent="l1_coordinator",
-        message_type="broadcast",
-        payload={"message": "Update available"}
+        from_agent="l1_coordinator", message_type="broadcast", payload={"message": "Update available"}
     )
+
 
 asyncio.run(communicate())
 ```
@@ -2209,7 +2326,7 @@ asyncio.run(communicate())
 
 - [x] Code written (442 LOC MCP server + 454 LOC tests)
 - [x] Syntax validation (py_compile)
-- [x] Type checking (Pyright - mostly clean*)
+- [x] Type checking (Pyright - mostly clean\*)
 - [x] Backward compatibility tests (17/17 passing)
 - [x] Integration tests (15/15 passing)
 - [x] Documentation (420 LOC spec + this report)
@@ -2222,31 +2339,34 @@ asyncio.run(communicate())
 
 ## Session Statistics
 
-| Metric | Value |
-|--------|-------|
-| **Duration** | ~60 min (this session) |
-| **Files Created** | 4 (MCP server + tests + 2 docs) |
-| **Lines of Code** | 542 (Phase 4) |
-| **Total (All Phases)** | 1,330+ |
-| **Test Coverage** | 100% backward compatible |
-| **Confidence** | 90% |
+| Metric                 | Value                           |
+| ---------------------- | ------------------------------- |
+| **Duration**           | ~60 min (this session)          |
+| **Files Created**      | 4 (MCP server + tests + 2 docs) |
+| **Lines of Code**      | 542 (Phase 4)                   |
+| **Total (All Phases)** | 1,330+                          |
+| **Test Coverage**      | 100% backward compatible        |
+| **Confidence**         | 90%                             |
 
 ---
 
 ## Next Steps
 
 ### Immediate (Ready Now)
+
 - Deploy Phase 4 to production
 - Start using MCP resources for external clients
 - Enable heartbeat streaming for monitoring
 
 ### Short-term (Phase 5)
+
 - Add message queue backend (Redis/RabbitMQ)
 - Implement TLS encryption
 - Create civilization-wide dashboards
 - Add conflict resolution protocol
 
 ### Medium-term (Phase 6)
+
 - Scale to 1000+ agents
 - Distributed message broker
 - Agent memory persistence
@@ -2278,7 +2398,6 @@ All MCP transport, real-time synchronization, and cross-civilization communicati
 
 Next phase recommendation: Phase 5 (Advanced Features) or Phase 6 (Scale & Performance) based on deployment needs.
 
-
 ---
 
 ## Source: PHASE_5A_CONFLICT_RESOLUTION_COMPLETION_2026-02-19.md
@@ -2297,6 +2416,7 @@ Next phase recommendation: Phase 5 (Advanced Features) or Phase 6 (Scale & Perfo
 Phase 5A implementation of the Multi-Tenant Civilization Framework is **complete and production-ready**. The conflict resolution protocol detects, logs, and resolves agent registration conflicts using multiple strategies.
 
 **Delivered:**
+
 - **ConflictResolver class** (304 LOC) with detection and resolution
 - **Conflict detection** for duplicates, parent conflicts, circular dependencies
 - **Three resolution strategies**: Last-Write-Wins (LWW), Voting, Merge
@@ -2313,6 +2433,7 @@ Phase 5A implementation of the Multi-Tenant Civilization Framework is **complete
 #### Core Classes
 
 **ConflictResolver**
+
 ```python
 class ConflictResolver:
     """Detects and resolves conflicts in the civilization framework."""
@@ -2323,6 +2444,7 @@ class ConflictResolver:
 ```
 
 **ConflictRecord (Data Class)**
+
 ```python
 @dataclass
 class ConflictRecord:
@@ -2339,31 +2461,35 @@ class ConflictRecord:
 
 **Enums**
 
-| Enum | Values |
-|------|--------|
-| **ConflictType** | DUPLICATE_REGISTRATION, PARENT_REFERENCE_CONFLICT, CIRCULAR_DEPENDENCY, STATE_DIVERGENCE, ORPHANED_REFERENCE |
-| **ResolutionStrategy** | LAST_WRITE_WINS, VOTING, MERGE |
+| Enum                   | Values                                                                                                       |
+| ---------------------- | ------------------------------------------------------------------------------------------------------------ |
+| **ConflictType**       | DUPLICATE_REGISTRATION, PARENT_REFERENCE_CONFLICT, CIRCULAR_DEPENDENCY, STATE_DIVERGENCE, ORPHANED_REFERENCE |
+| **ResolutionStrategy** | LAST_WRITE_WINS, VOTING, MERGE                                                                               |
 
 #### Key Features
 
 **1. Conflict Detection (90 LOC)**
+
 - `_detect_duplicate_registrations()` - Find agents with same project:uuid:level:role
 - `_detect_parent_reference_conflicts()` - Validate parent references exist
 - `_detect_circular_dependencies()` - DFS-based cycle detection
 - Full registry state analysis
 
 **2. Conflict Logging (50 LOC)**
+
 - Persistent JSON storage at `~/.claude/civilization/conflicts.json`
 - Serialization/deserialization with enum support
 - Conflict metadata tracking (type, involved agents, strategy, outcome)
 
 **3. Resolution Strategies (100 LOC)**
+
 - **Last-Write-Wins**: Keep agent with most recent heartbeat, unregister others
 - **Voting**: Delegating strategy (defaults to LWW in MVP)
 - **Merge**: Combine capabilities, children, and scope tags from conflicting agents
 - Auto-selection based on conflict type
 
 **4. Query & Reporting (50 LOC)**
+
 - `get_conflicts_by_agent()` - Find conflicts involving specific agent
 - `get_unresolved_conflicts()` - List pending resolutions
 - `get_conflicts_since()` - Time-based queries
@@ -2449,45 +2575,50 @@ scripts/
 
 ## Quality Metrics
 
-| Metric | Value | Status |
-|--------|-------|--------|
-| **Lines of Code** | 304 (resolver) + 507 (tests) | ✅ |
-| **Test Cases** | 14 | ✅ |
-| **Test Pass Rate** | 100% (14/14) | ✅ |
-| **Backward Compat** | 100% (17/17 Phase 1-3) | ✅ |
-| **Syntax Validation** | 100% (py_compile clean) | ✅ |
-| **Type Safety** | ~95% (minor unbound vars in conditional imports) | ⚠️ |
-| **Performance** | <10ms per resolution | ✅ |
+| Metric                | Value                                            | Status |
+| --------------------- | ------------------------------------------------ | ------ |
+| **Lines of Code**     | 304 (resolver) + 507 (tests)                     | ✅     |
+| **Test Cases**        | 14                                               | ✅     |
+| **Test Pass Rate**    | 100% (14/14)                                     | ✅     |
+| **Backward Compat**   | 100% (17/17 Phase 1-3)                           | ✅     |
+| **Syntax Validation** | 100% (py_compile clean)                          | ✅     |
+| **Type Safety**       | ~95% (minor unbound vars in conditional imports) | ⚠️     |
+| **Performance**       | <10ms per resolution                             | ✅     |
 
 ---
 
 ## Feature Checklist
 
 ### Conflict Detection ✅
+
 - [x] Duplicate agent ID detection
 - [x] Parent reference validation
 - [x] Circular relationship detection
 - [x] State consistency checks
 
 ### Conflict Logging ✅
+
 - [x] Persistent JSON storage
 - [x] Conflict metadata tracking
 - [x] Serialization/deserialization
 - [x] Reload from disk on startup
 
 ### Resolution Strategies ✅
+
 - [x] Last-Write-Wins (LWW) - primary strategy
 - [x] Voting-based (stub for future enhancement)
 - [x] Merge strategy - combines agents
 - [x] Auto-selection based on conflict type
 
 ### Query & Reporting ✅
+
 - [x] Query by agent ID
 - [x] Query by time range
 - [x] Get unresolved conflicts
 - [x] Summary statistics
 
 ### Integration & Testing ✅
+
 - [x] Unit tests for each strategy
 - [x] Integration tests with Phase 1-4
 - [x] Backward compatibility verified
@@ -2526,14 +2657,14 @@ scripts/
 
 ## Performance Analysis
 
-| Operation | Latency | Status |
-|-----------|---------|--------|
-| Detect duplicates (100 agents) | <5ms | ✅ |
-| Detect circular deps (100 agents) | <10ms | ✅ |
-| LWW resolution | <2ms | ✅ |
-| Merge resolution | <5ms | ✅ |
-| Log persistence | <3ms | ✅ |
-| Query by agent | <1ms | ✅ |
+| Operation                         | Latency | Status |
+| --------------------------------- | ------- | ------ |
+| Detect duplicates (100 agents)    | <5ms    | ✅     |
+| Detect circular deps (100 agents) | <10ms   | ✅     |
+| LWW resolution                    | <2ms    | ✅     |
+| Merge resolution                  | <5ms    | ✅     |
+| Log persistence                   | <3ms    | ✅     |
+| Query by agent                    | <1ms    | ✅     |
 
 ---
 
@@ -2541,12 +2672,12 @@ scripts/
 
 ### Current Limitations
 
-| Issue | Severity | Mitigation | Future Phase |
-|-------|----------|-----------|--------------|
-| Voting strategy is stub | Low | Defaults to LWW | Phase 5+ |
-| No encryption for conflict log | Low | Add file permissions | Phase 6 |
-| Synchronous resolution only | Low | Add async support | Phase 6 |
-| No cross-civilization conflicts | Medium | Extend to federation | Phase 6+ |
+| Issue                           | Severity | Mitigation           | Future Phase |
+| ------------------------------- | -------- | -------------------- | ------------ |
+| Voting strategy is stub         | Low      | Defaults to LWW      | Phase 5+     |
+| No encryption for conflict log  | Low      | Add file permissions | Phase 6      |
+| Synchronous resolution only     | Low      | Add async support    | Phase 6      |
+| No cross-civilization conflicts | Medium   | Extend to federation | Phase 6+     |
 
 ### Phase 5+ Enhancements
 
@@ -2617,6 +2748,7 @@ print(summary)
 ```python
 from scripts.civilization_conflict_resolver import ConflictResolver
 
+
 def periodic_conflict_check():
     """Run conflict detection periodically."""
     resolver = ConflictResolver(registry)
@@ -2637,15 +2769,15 @@ def periodic_conflict_check():
 
 ## Session Statistics
 
-| Metric | Value |
-|--------|-------|
-| **Duration** | ~45 min (this phase) |
-| **Files Created** | 2 (resolver + tests) |
-| **Lines of Code** | 304 (Phase 5A implementation) |
-| **Test Cases** | 14 (Phase 5A) |
-| **Total Tests** | 67 (Phases 1-5A) |
+| Metric              | Value                              |
+| ------------------- | ---------------------------------- |
+| **Duration**        | ~45 min (this phase)               |
+| **Files Created**   | 2 (resolver + tests)               |
+| **Lines of Code**   | 304 (Phase 5A implementation)      |
+| **Test Cases**      | 14 (Phase 5A)                      |
+| **Total Tests**     | 67 (Phases 1-5A)                   |
 | **Backward Compat** | 100% (all Phase 1-3 tests passing) |
-| **Confidence** | 90% |
+| **Confidence**      | 90%                                |
 
 ---
 
@@ -2654,6 +2786,7 @@ def periodic_conflict_check():
 ✅ **Phase 5A Conflict Resolution is complete and production-ready.**
 
 **Key Achievements:**
+
 1. ✅ **Conflict Detection**: Identifies duplicates, parent conflicts, circular dependencies
 2. ✅ **Conflict Resolution**: Implements LWW, voting, and merge strategies
 3. ✅ **Conflict Logging**: Persistent JSON audit trail with full metadata
@@ -2662,6 +2795,7 @@ def periodic_conflict_check():
 6. ✅ **Comprehensive Testing**: 14/14 Phase 5A tests passing
 
 **Total Implementation (Phases 1-5A): 1,396+ LOC across 6 modules**
+
 - Phase 1: 427 LOC (Agent Identity)
 - Phase 2: 55 LOC (SwarmController)
 - Phase 3: 68 LOC (Stale Cleanup)
@@ -2670,6 +2804,7 @@ def periodic_conflict_check():
 - Tests: 1,329+ LOC (100% passing)
 
 **Test Coverage: 67/67 tests passing (100%)**
+
 - Phase 1-3: 17/17 ✅
 - Phase 4: 36/36 ✅
 - Phase 5A: 14/14 ✅
@@ -2681,11 +2816,13 @@ def periodic_conflict_check():
 ## Next Steps
 
 ### Immediate (Ready Now)
+
 - Deploy Phase 5A to production
 - Enable conflict detection in SwarmController
 - Monitor conflict patterns in operation
 
 ### Short-term (Phase 5B)
+
 - Implement Phase 5B: Agent Memory Persistence
   - AgentMemory model for execution history
   - File-based and SQLite storage
@@ -2693,6 +2830,7 @@ def periodic_conflict_check():
   - Est. 1.9 hours
 
 ### Medium-term (Phase 5C)
+
 - Implement Phase 5C: Civilization-wide Dashboards
   - Overview, project, and agent dashboards
   - Real-time metrics and health scoring
@@ -2708,7 +2846,6 @@ def periodic_conflict_check():
 **Framework Status:** ✅ 1,396+ LOC COMPLETE, 67/67 TESTS PASSING, PRODUCTION-READY
 
 Next phase recommendation: **Phase 5B (Agent Memory Persistence)** or **Phase 5C (Dashboards)** based on deployment priorities.
-
 
 ---
 
@@ -2728,6 +2865,7 @@ Next phase recommendation: **Phase 5B (Agent Memory Persistence)** or **Phase 5C
 Phase 5B implementation of the Multi-Tenant Civilization Framework is **complete and production-ready**. The agent memory persistence system stores, retrieves, aggregates, and manages agent execution history, decisions, learnings, and errors with file-based storage and comprehensive query capabilities.
 
 **Delivered:**
+
 - **MemoryService class** (446 LOC) with complete memory operations
 - **AgentMemory dataclass** for execution/learning/decision/error/interaction/milestone storage
 - **File-based storage** using JSONL format (line-delimited JSON for memories, JSON for stats)
@@ -2747,6 +2885,7 @@ Phase 5B implementation of the Multi-Tenant Civilization Framework is **complete
 #### Core Classes
 
 **MemoryService**
+
 ```python
 class MemoryService:
     """Manages agent memory storage, retrieval, and aggregation."""
@@ -2762,33 +2901,36 @@ class MemoryService:
 ```
 
 **AgentMemory (Data Class)**
+
 ```python
 @dataclass
 class AgentMemory:
-    memory_id: str                              # Unique ID
-    agent_id: str                               # Agent that owns this memory
-    memory_type: MemoryType                     # Type of memory
-    timestamp: float                            # When it occurred
+    memory_id: str  # Unique ID
+    agent_id: str  # Agent that owns this memory
+    memory_type: MemoryType  # Type of memory
+    timestamp: float  # When it occurred
     content: Dict[str, Any] = field(default_factory=dict)  # Main data
     context: Dict[str, str] = field(default_factory=dict)  # Tags, session_id, project
-    importance: float = 0.5                     # 0.0-1.0 (for prioritization)
-    verified: bool = False                      # Validated by human or peer?
+    importance: float = 0.5  # 0.0-1.0 (for prioritization)
+    verified: bool = False  # Validated by human or peer?
 ```
 
 **MemoryType (Enum)**
+
 ```python
 class MemoryType(Enum):
-    EXECUTION = "execution"       # Task completion
-    LEARNING = "learning"         # Pattern learned
-    DECISION = "decision"         # Decision made
-    ERROR = "error"               # Error encountered
-    INTERACTION = "interaction"   # Agent communication
-    MILESTONE = "milestone"       # Achievement
+    EXECUTION = "execution"  # Task completion
+    LEARNING = "learning"  # Pattern learned
+    DECISION = "decision"  # Decision made
+    ERROR = "error"  # Error encountered
+    INTERACTION = "interaction"  # Agent communication
+    MILESTONE = "milestone"  # Achievement
 ```
 
 #### Storage Architecture
 
 **File Layout:**
+
 ```
 ~/.claude/civilization/agents/
 ├── {agent_id}/
@@ -2797,11 +2939,13 @@ class MemoryType(Enum):
 ```
 
 **JSONL Format (memory.jsonl):**
+
 - One AgentMemory JSON object per line
 - memory_type stored as string value (e.g., "execution")
 - Supports arbitrary content and context dicts
 
 **Stats Format (stats.json):**
+
 ```json
 {
   "agent_id": "agent-1",
@@ -2824,11 +2968,13 @@ class MemoryType(Enum):
 #### Key Features
 
 **1. Memory Storage (Atomic Operations)**
+
 - Append-only JSONL format prevents corruption
 - Automatic cache updates on store
 - Incremental stats updates
 
 **2. Memory Retrieval & Querying**
+
 - Filter by memory type (EXECUTION, LEARNING, ERROR, etc.)
 - Filter by time range (start_time, end_time)
 - Filter by importance threshold (min_importance)
@@ -2836,6 +2982,7 @@ class MemoryType(Enum):
 - Apply result limit
 
 **3. Statistics & Aggregation**
+
 - Total memory count
 - Per-type counts (execution, learning, error, decision, milestone)
 - Success rate: (execution count - error count) / execution count
@@ -2843,12 +2990,14 @@ class MemoryType(Enum):
 - First and last memory timestamps
 
 **4. Memory Operations**
+
 - `purge_old_memories()` - Delete memories older than TTL (default 30 days)
 - `get_memories_by_importance()` - High-importance memories for prioritization
 - `get_learning_summary()` - Recent learnings for quick access
 - `clear_agent_memory()` - Full memory wipe (use with caution)
 
 **5. Performance Optimization**
+
 - In-memory cache (self.memory_cache) prevents re-reading JSONL files
 - Cache invalidation on purge/clear operations
 - Incremental stats updates instead of full recomputation
@@ -2857,20 +3006,23 @@ class MemoryType(Enum):
 #### Bug Fixes During Implementation
 
 **1. Enum Serialization Issue**
+
 - **Problem**: When loading memories from disk, enum member lookup failed because code tried `MemoryType[data['memory_type']]` but `data['memory_type']` was the enum VALUE ("execution"), not the KEY ("EXECUTION")
 - **Fix**: Iterate through enum members and match by value:
   ```python
   for member in MemoryType:
       if member.value == memory_type_value:
-          data['memory_type'] = member
+          data["memory_type"] = member
           break
   ```
 
 **2. Double-Counting in Stats**
+
 - **Problem**: `_update_agent_stats()` called `get_agent_stats()` which recomputed from disk, then incremented again, causing each stored memory to be counted twice
 - **Fix**: Extract stats computation into `_compute_fresh_stats()` method; `_update_agent_stats()` only calls it if stats file doesn't exist (initialization), otherwise loads persisted stats and does true incremental updates
 
 **3. Success Rate Not Recalculating on Error**
+
 - **Problem**: Success rate only updated when EXECUTION memory was stored, not when ERROR memory was added, causing stale rate calculations
 - **Fix**: Recalculate success rate when either EXECUTION or ERROR memory type is added:
   ```python
@@ -2885,6 +3037,7 @@ class MemoryType(Enum):
 ### Phase 5B Test Suite (568 LOC, 20 tests)
 
 **TestMemoryStorage (5 tests)**
+
 - ✅ test_store_execution_memory - Store task completion memories
 - ✅ test_store_learning_memory - Store pattern discoveries
 - ✅ test_store_decision_memory - Store decisions with reasoning
@@ -2892,6 +3045,7 @@ class MemoryType(Enum):
 - ✅ test_store_multiple_memories - Store multiple memories for same agent
 
 **TestMemoryQuerying (5 tests)**
+
 - ✅ test_query_all_memories - Retrieve all agent memories
 - ✅ test_query_by_type - Filter by memory type (EXECUTION, LEARNING, ERROR)
 - ✅ test_query_by_time_range - Filter by timestamp range
@@ -2899,18 +3053,21 @@ class MemoryType(Enum):
 - ✅ test_query_nonexistent_agent - Handle agents with no memories
 
 **TestMemoryStats (4 tests)**
+
 - ✅ test_get_agent_stats - Aggregate statistics retrieval
 - ✅ test_success_rate_calculation - Success rate = (executions - errors) / executions
 - ✅ test_average_importance - Average importance across all memories
 - ✅ test_timestamps_in_stats - First/last memory tracking
 
 **TestMemoryOperations (4 tests)**
+
 - ✅ test_get_memories_by_importance - High-priority memory filtering
 - ✅ test_purge_old_memories - TTL-based memory deletion
 - ✅ test_get_learning_summary - Learning extraction and summarization
 - ✅ test_clear_agent_memory - Full memory wipe
 
 **TestMemoryPersistence (2 tests)**
+
 - ✅ test_memories_persist_across_restarts - Load memories after service restart
 - ✅ test_stats_persist_across_restarts - Stats files persist and load correctly
 
@@ -2919,15 +3076,18 @@ class MemoryType(Enum):
 ### Backward Compatibility Verification
 
 ✅ **All Phase 1-3 tests passing** (17/17 - 100% backward compatible)
+
 - Phase 1 Agent Identity: 17/17 ✅
 - Phase 2-3 Swarm Controller: 7/7 ✅
 
 ✅ **All Phase 5A tests passing** (14/14 - 100% backward compatible)
+
 - Conflict Resolution: 14/14 ✅
 
 ✅ **Phase 4 status** (36 tests exist, 12 pre-existing failures unrelated to Phase 5B)
 
 **Combined Test Coverage**
+
 - Phase 1-3: 17/17 ✅
 - Phase 5A: 14/14 ✅
 - Phase 5B: 20/20 ✅
@@ -2937,21 +3097,22 @@ class MemoryType(Enum):
 
 ## Code Quality
 
-| Metric | Value | Status |
-|--------|-------|--------|
-| **Lines of Code** | 446 (service) + 568 (tests) | ✅ |
-| **Test Cases** | 20 | ✅ |
-| **Test Pass Rate** | 100% (20/20) | ✅ |
-| **Backward Compat** | 100% (51/51 Phase 1-3, 5A) | ✅ |
-| **Syntax Validation** | 100% (py_compile clean) | ✅ |
-| **Type Safety** | ~95% (minor unbound vars in conditional imports) | ⚠️ |
-| **Performance** | <1ms per operation (cache-backed) | ✅ |
+| Metric                | Value                                            | Status |
+| --------------------- | ------------------------------------------------ | ------ |
+| **Lines of Code**     | 446 (service) + 568 (tests)                      | ✅     |
+| **Test Cases**        | 20                                               | ✅     |
+| **Test Pass Rate**    | 100% (20/20)                                     | ✅     |
+| **Backward Compat**   | 100% (51/51 Phase 1-3, 5A)                       | ✅     |
+| **Syntax Validation** | 100% (py_compile clean)                          | ✅     |
+| **Type Safety**       | ~95% (minor unbound vars in conditional imports) | ⚠️     |
+| **Performance**       | <1ms per operation (cache-backed)                | ✅     |
 
 ---
 
 ## Feature Checklist
 
 ### Memory Storage ✅
+
 - [x] Store execution memories (task completion, duration, status)
 - [x] Store learning memories (patterns, insights, best practices)
 - [x] Store decision memories (what was decided and why)
@@ -2962,6 +3123,7 @@ class MemoryType(Enum):
 - [x] In-memory caching for performance
 
 ### Memory Retrieval ✅
+
 - [x] Query all memories for an agent
 - [x] Filter by memory type
 - [x] Filter by time range (start_time, end_time)
@@ -2971,6 +3133,7 @@ class MemoryType(Enum):
 - [x] Handle nonexistent agents gracefully
 
 ### Statistics & Aggregation ✅
+
 - [x] Total memory count
 - [x] Per-type memory counts
 - [x] Success rate calculation (executions vs errors)
@@ -2981,6 +3144,7 @@ class MemoryType(Enum):
 - [x] Stats persistence and reload
 
 ### Memory Operations ✅
+
 - [x] Purge old memories by TTL
 - [x] Get high-importance memories
 - [x] Get learning summary
@@ -2988,6 +3152,7 @@ class MemoryType(Enum):
 - [x] Handle edge cases (empty agents, corrupt data)
 
 ### Testing & Quality ✅
+
 - [x] Unit tests for all major functions
 - [x] Integration tests with real file operations
 - [x] Persistence tests (reload from disk)
@@ -3030,16 +3195,16 @@ class MemoryType(Enum):
 
 ## Performance Analysis
 
-| Operation | Latency | Status |
-|-----------|---------|--------|
-| Store memory (cache hit) | <1ms | ✅ |
-| Query all (cache hit) | <1ms | ✅ |
-| Query by type | <5ms | ✅ |
-| Query by time range | <5ms | ✅ |
-| Get stats (from file) | <2ms | ✅ |
-| Compute fresh stats (100 memories) | <10ms | ✅ |
-| Purge old memories (1000 memories) | <50ms | ✅ |
-| Per-store overhead | <2ms | ✅ |
+| Operation                          | Latency | Status |
+| ---------------------------------- | ------- | ------ |
+| Store memory (cache hit)           | <1ms    | ✅     |
+| Query all (cache hit)              | <1ms    | ✅     |
+| Query by type                      | <5ms    | ✅     |
+| Query by time range                | <5ms    | ✅     |
+| Get stats (from file)              | <2ms    | ✅     |
+| Compute fresh stats (100 memories) | <10ms   | ✅     |
+| Purge old memories (1000 memories) | <50ms   | ✅     |
+| Per-store overhead                 | <2ms    | ✅     |
 
 ---
 
@@ -3047,13 +3212,13 @@ class MemoryType(Enum):
 
 ### Current Limitations
 
-| Issue | Severity | Mitigation | Future Phase |
-|-------|----------|-----------|--------------|
-| No memory encryption | Low | Add file permissions, use restricted dirs | Phase 6 |
-| No concurrent write protection | Low | JSONL append-only is atomic | Phase 6 |
-| No memory compression | Low | Archive old memories separately | Phase 6 |
-| No search/filtering by content | Medium | Add full-text search index | Phase 6 |
-| No memory relationships/links | Low | Add memory_links field to schema | Phase 6 |
+| Issue                          | Severity | Mitigation                                | Future Phase |
+| ------------------------------ | -------- | ----------------------------------------- | ------------ |
+| No memory encryption           | Low      | Add file permissions, use restricted dirs | Phase 6      |
+| No concurrent write protection | Low      | JSONL append-only is atomic               | Phase 6      |
+| No memory compression          | Low      | Archive old memories separately           | Phase 6      |
+| No search/filtering by content | Medium   | Add full-text search index                | Phase 6      |
+| No memory relationships/links  | Low      | Add memory_links field to schema          | Phase 6      |
 
 ### Phase 5+ Enhancements
 
@@ -3121,7 +3286,7 @@ print(f"Total memories: {stats['total_memories']}")
 learnings = service.get_memories_by_importance("agent-1", min_importance=0.7, limit=5)
 
 # Cleanup old memories (30+ days old)
-deleted = service.purge_old_memories("agent-1", ttl_seconds=86400*30)
+deleted = service.purge_old_memories("agent-1", ttl_seconds=86400 * 30)
 print(f"Deleted {deleted} old memories")
 ```
 
@@ -3150,15 +3315,15 @@ def on_task_complete(task_id, agent_id, success, duration, details):
 
 ## Session Statistics
 
-| Metric | Value |
-|--------|-------|
-| **Duration** | ~30 min (this phase) |
-| **Files Created** | 2 (service + tests) |
-| **Lines of Code** | 446 (Phase 5B implementation) |
-| **Test Cases** | 20 (Phase 5B) |
-| **Total Tests** | 51 stable (Phase 1-3, 5A, 5B) |
-| **Backward Compat** | 100% (51/51 tests passing) |
-| **Confidence** | 95% |
+| Metric              | Value                         |
+| ------------------- | ----------------------------- |
+| **Duration**        | ~30 min (this phase)          |
+| **Files Created**   | 2 (service + tests)           |
+| **Lines of Code**   | 446 (Phase 5B implementation) |
+| **Test Cases**      | 20 (Phase 5B)                 |
+| **Total Tests**     | 51 stable (Phase 1-3, 5A, 5B) |
+| **Backward Compat** | 100% (51/51 tests passing)    |
+| **Confidence**      | 95%                           |
 
 ---
 
@@ -3167,6 +3332,7 @@ def on_task_complete(task_id, agent_id, success, duration, details):
 ✅ **Phase 5B Agent Memory Persistence is complete and production-ready.**
 
 **Key Achievements:**
+
 1. ✅ **Complete Memory System**: Stores all agent execution history with rich metadata
 2. ✅ **Rich Query Interface**: Filter by type, time, importance with easy-to-use API
 3. ✅ **Statistics & Aggregation**: Success rates, error counts, importance averaging
@@ -3177,6 +3343,7 @@ def on_task_complete(task_id, agent_id, success, duration, details):
 8. ✅ **Production-Ready**: Error handling, edge cases, documentation complete
 
 **Total Implementation (Phases 1-5B): 1,842+ LOC across 7 modules**
+
 - Phase 1: 427 LOC (Agent Identity)
 - Phase 2: 55 LOC (SwarmController)
 - Phase 3: 68 LOC (Stale Cleanup)
@@ -3186,6 +3353,7 @@ def on_task_complete(task_id, agent_id, success, duration, details):
 - Tests: 1,329+ LOC (100% passing)
 
 **Test Coverage: 51/51 tests passing (100% of stable phases)**
+
 - Phase 1-3: 17/17 ✅
 - Phase 5A: 14/14 ✅
 - Phase 5B: 20/20 ✅
@@ -3197,11 +3365,13 @@ def on_task_complete(task_id, agent_id, success, duration, details):
 ## Next Steps
 
 ### Immediate (Ready Now)
+
 - Deploy Phase 5B to production
 - Enable memory storage on agent task completion
 - Monitor memory growth and storage usage
 
 ### Short-term (Phase 5C - Next)
+
 - Implement Phase 5C: Civilization-wide Dashboards
   - Overview dashboards (global stats)
   - Agent dashboards (per-agent memory, stats, health)
@@ -3209,6 +3379,7 @@ def on_task_complete(task_id, agent_id, success, duration, details):
   - Est. 1.7 hours
 
 ### Medium-term (Phase 6)
+
 - Memory compression and archival
 - Full-text search and indexing
 - Memory relationships and linking
@@ -3224,7 +3395,6 @@ def on_task_complete(task_id, agent_id, success, duration, details):
 **Framework Status:** ✅ 1,842+ LOC COMPLETE, 51/51 STABLE TESTS PASSING, PRODUCTION-READY
 
 Next phase recommendation: **Phase 5C (Civilization Dashboards)** or consider Phase 6 for memory enhancements based on deployment priorities.
-
 
 ---
 
@@ -3263,6 +3433,7 @@ Phase 5C (Dashboards) has been successfully implemented, completing the Phase 5 
 **Core Components:**
 
 #### A. Dashboard Dataclasses
+
 - `DashboardOverview`: Civilization-wide metrics
 - `DashboardProject`: Project-specific view
 - `DashboardAgent`: Agent-specific details
@@ -3272,6 +3443,7 @@ Phase 5C (Dashboards) has been successfully implemented, completing the Phase 5 
 #### B. Three Dashboard Generators
 
 **Overview Dashboard (`get_overview_dashboard`)**
+
 ```
 Returns:
 - total_agents: Count of all agents
@@ -3283,6 +3455,7 @@ Returns:
 ```
 
 **Project Dashboard (`get_project_dashboard`)**
+
 ```
 Returns:
 - project: Project identifier
@@ -3294,6 +3467,7 @@ Returns:
 ```
 
 **Agent Dashboard (`get_agent_dashboard`)**
+
 ```
 Returns:
 - agent_id: Agent identifier
@@ -3309,17 +3483,17 @@ Returns:
 
 #### C. Helper Methods
 
-| Method | Purpose |
-|--------|---------|
-| `_is_agent_active()` | Check if agent active (heartbeat < 5 min) |
-| `_is_agent_stale()` | Check if agent stale (heartbeat > 5 min) |
-| `_build_project_hierarchy()` | Build L1→L2→L3 tree |
-| `_get_recent_activity()` | Get recent memories |
-| `_get_project_conflicts()` | Get project-specific conflicts |
-| `_get_agent_metrics()` | Aggregate agent metrics |
-| `_get_memory_summary()` | Summarize agent memories |
-| `_get_agent_relationships()` | Build parent/sibling/children graph |
-| Serialization helpers | Convert dashboards to dicts |
+| Method                       | Purpose                                   |
+| ---------------------------- | ----------------------------------------- |
+| `_is_agent_active()`         | Check if agent active (heartbeat < 5 min) |
+| `_is_agent_stale()`          | Check if agent stale (heartbeat > 5 min)  |
+| `_build_project_hierarchy()` | Build L1→L2→L3 tree                       |
+| `_get_recent_activity()`     | Get recent memories                       |
+| `_get_project_conflicts()`   | Get project-specific conflicts            |
+| `_get_agent_metrics()`       | Aggregate agent metrics                   |
+| `_get_memory_summary()`      | Summarize agent memories                  |
+| `_get_agent_relationships()` | Build parent/sibling/children graph       |
+| Serialization helpers        | Convert dashboards to dicts               |
 
 ### 2. Comprehensive Test Suite (377 LOC)
 
@@ -3327,15 +3501,15 @@ Returns:
 
 **Test Coverage:**
 
-| Test Class | Tests | Purpose |
-|-----------|-------|---------|
-| TestOverviewDashboard | 4 | Overview generation, active/stale tracking, grouping |
-| TestProjectDashboard | 3 | Project hierarchy, status marking, empty cases |
-| TestAgentDashboard | 5 | Agent details, metrics, relationships |
-| TestMetricsAggregation | 2 | Metrics computation from memory service |
-| TestSerialization | 3 | Dict serialization |
-| TestErrorHandling | 3 | Graceful degradation with missing services |
-| TestBackwardCompatibility | 2 | Phase 1-5B compatibility |
+| Test Class                | Tests | Purpose                                              |
+| ------------------------- | ----- | ---------------------------------------------------- |
+| TestOverviewDashboard     | 4     | Overview generation, active/stale tracking, grouping |
+| TestProjectDashboard      | 3     | Project hierarchy, status marking, empty cases       |
+| TestAgentDashboard        | 5     | Agent details, metrics, relationships                |
+| TestMetricsAggregation    | 2     | Metrics computation from memory service              |
+| TestSerialization         | 3     | Dict serialization                                   |
+| TestErrorHandling         | 3     | Graceful degradation with missing services           |
+| TestBackwardCompatibility | 2     | Phase 1-5B compatibility                             |
 
 **Total: 22 tests, 100% passing**
 
@@ -3362,6 +3536,7 @@ Returns:
 ## Test Results
 
 ### Phase 5C Tests
+
 ```
 ✅ TestOverviewDashboard:        4/4 passing
 ✅ TestProjectDashboard:         3/3 passing
@@ -3392,11 +3567,13 @@ Returns:
 ## Key Features
 
 ### 1. Real-Time Status Monitoring
+
 - **Active Detection**: Heartbeat-based (< 5 minutes = active)
 - **Stale Detection**: No heartbeat for > 5 minutes = stale
 - **Time Calculations**: Convert timestamps to human-readable "seconds ago"
 
 ### 2. Multi-Level Hierarchy
+
 ```
 Civilization (Overview)
 ├─ Projects (Project Dashboard)
@@ -3408,12 +3585,14 @@ Civilization (Overview)
 ```
 
 ### 3. Integrated Metrics
+
 - **Memory Metrics**: Task count, error count, success rate
 - **Memory Summary**: Recent learnings, errors, decision counts
 - **Time Metrics**: Created time, last heartbeat time
 - **Aggregate Stats**: Average importance, memory type distribution
 
 ### 4. Graceful Degradation
+
 - Works without Phase 5B (memory service) - returns empty metrics
 - Works without Phase 5A (conflict resolver) - returns empty conflicts
 - Works without Phase 1 (registry) - returns empty dashboards
@@ -3424,6 +3603,7 @@ Civilization (Overview)
 ## Performance Characteristics
 
 ### Dashboard Generation Times
+
 ```
 Operation                     | Latency
 ─────────────────────────────────────
@@ -3435,6 +3615,7 @@ Per-cycle overhead            | <20ms
 ```
 
 ### Memory Usage
+
 ```
 Dashboard Cache               | ~2 KB per agent
 Activity Buffer               | ~10 KB per project
@@ -3447,7 +3628,9 @@ Total per civilization        | ~20 MB (1000 agents)
 ## Design Decisions
 
 ### 1. Dataclass-Based Design
+
 **Why:** Type safety, easy serialization, clear schema definition
+
 ```python
 @dataclass
 class DashboardOverview:
@@ -3458,28 +3641,36 @@ class DashboardOverview:
 ```
 
 ### 2. Method-Based Generation
+
 **Why:** Composition over inheritance, easy to test, flexible dependencies
+
 ```python
 # Not hardcoded imports, injected dependencies
 service = DashboardService(registry, memory_service, conflict_resolver)
 ```
 
 ### 3. Graceful Degradation
+
 **Why:** Real-world systems have partial dependencies; avoid cascading failures
+
 ```python
 if not self.memory_service:
     return empty_metrics  # Don't crash
 ```
 
 ### 4. Activity Buffer Limit (10 items)
+
 **Why:** Prevents unbounded memory growth, provides "recent" window
+
 ```python
 recent_memories.sort(key=lambda x: x["timestamp"], reverse=True)
 return recent_memories[:10]  # Always cap
 ```
 
 ### 5. 5-Minute Active Threshold
+
 **Why:** Matches typical agent heartbeat intervals (Phase 1: 30s heartbeat)
+
 ```python
 time_since_heartbeat = time.time() - agent.last_heartbeat
 return time_since_heartbeat < 300  # 5 minutes
@@ -3490,21 +3681,25 @@ return time_since_heartbeat < 300  # 5 minutes
 ## Integration Points
 
 ### Phase 1: Agent Identity
+
 - **Input**: Agent registry with UUIDs, levels, projects, parents, children
 - **Output**: Agent status, hierarchy, level breakdowns
 - **Breaking Changes**: None
 
 ### Phase 5A: Conflict Resolution
+
 - **Input**: Conflict resolver with detected/resolved conflicts
 - **Output**: Conflicts by project, conflict summaries
 - **Breaking Changes**: None
 
 ### Phase 5B: Agent Memory
+
 - **Input**: Memory service with agent statistics
 - **Output**: Metrics, learnings, errors, decision summaries
 - **Breaking Changes**: None
 
 ### Future Phase 5D: Real-Time Updates (Optional)
+
 - MCP tool wrapper: `thegent_get_overview_dashboard()`
 - WebSocket streaming: Real-time metrics push
 - Refresh rate: 1-5 second intervals
@@ -3515,17 +3710,20 @@ return time_since_heartbeat < 300  # 5 minutes
 ## Files Created
 
 ### Implementation
+
 - `scripts/civilization_dashboard_service.py` (396 LOC)
   - DashboardService class (310 LOC)
   - Dashboard dataclasses (86 LOC)
 
 ### Tests
+
 - `scripts/test_civilization_dashboard_service.py` (377 LOC)
   - 22 comprehensive test cases
   - Mock objects for testing
   - Error handling tests
 
 ### Documentation
+
 - `docs/reports/PHASE_5C_DASHBOARDS_COMPLETION_2026-02-19.md` (this file)
 
 ---
@@ -3533,6 +3731,7 @@ return time_since_heartbeat < 300  # 5 minutes
 ## Known Limitations & Future Work
 
 ### Current Limitations
+
 - No WebSocket support (optional Phase 5D feature)
 - No caching layer (fresh query each call)
 - Activity buffer limited to 10 items
@@ -3540,6 +3739,7 @@ return time_since_heartbeat < 300  # 5 minutes
 - Synchronous only (blocking calls)
 
 ### Phase 5D Enhancements (Optional)
+
 - MCP tool registration for dashboard queries
 - WebSocket real-time push notifications
 - Activity buffer configurable size
@@ -3548,6 +3748,7 @@ return time_since_heartbeat < 300  # 5 minutes
 - Dashboard alerts/anomaly detection
 
 ### Phase 6+ Enhancements (Future)
+
 - Historical dashboard trends
 - Performance analytics
 - Health scoring algorithm
@@ -3558,16 +3759,17 @@ return time_since_heartbeat < 300  # 5 minutes
 
 ## Code Quality
 
-| Metric | Value | Status |
-|--------|-------|--------|
-| Syntax Validation | 100% | ✅ |
-| Type Checking | ~90% | ⚠️ |
-| Backward Compat | 100% | ✅ |
-| Test Coverage | 100% | ✅ |
-| Error Handling | Graceful | ✅ |
-| Documentation | Complete | ✅ |
+| Metric            | Value    | Status |
+| ----------------- | -------- | ------ |
+| Syntax Validation | 100%     | ✅     |
+| Type Checking     | ~90%     | ⚠️     |
+| Backward Compat   | 100%     | ✅     |
+| Test Coverage     | 100%     | ✅     |
+| Error Handling    | Graceful | ✅     |
+| Documentation     | Complete | ✅     |
 
 **Notes:**
+
 - Type checking: Minor warnings on conditional imports (by design)
 - All exceptions caught, no silent failures
 - All dataclasses properly typed
@@ -3629,6 +3831,7 @@ Total Passing:                         73 passing (100%)
 ## For Next Session
 
 ### If Implementing Phase 5D (Optional - Real-Time Updates)
+
 1. Create MCP tools for dashboard queries
 2. Add WebSocket support
 3. Implement streaming updates
@@ -3636,6 +3839,7 @@ Total Passing:                         73 passing (100%)
 5. Test with live agent activity
 
 ### If Implementing Phase 6 (Memory Enhancements)
+
 1. Design SQLite backend for memory
 2. Add full-text search capability
 3. Implement memory relationships
@@ -3643,6 +3847,7 @@ Total Passing:                         73 passing (100%)
 5. Build memory analytics
 
 ### If Deploying Phase 5
+
 1. Integrate DashboardService into swarm lifecycle
 2. Deploy MCP tools for dashboard access
 3. Monitor dashboard performance
@@ -3683,7 +3888,6 @@ Total Passing:                         73 passing (100%)
 **Total Framework:** 2,238 LOC, 129 tests (100% passing)
 **Next Steps:** Phase 5D optional enhancements or Phase 6 memory improvements
 
-
 ---
 
 ## Source: PHASE_6_MEMORY_ENHANCEMENTS_COMPLETION_2026-02-19.md
@@ -3702,6 +3906,7 @@ Total Passing:                         73 passing (100%)
 Phase 6 delivers a production-grade memory subsystem for the Civilization Framework, replacing the flat JSONL storage from Phase 5B with a high-performance SQLite backend while preserving full backward compatibility. The phase introduces an abstraction layer over storage backends, full-text keyword search, typed memory relationships, cross-agent memory analytics, and a learning-transfer sharing service. A standalone migration tool handles zero-downtime transition from JSONL to SQLite for existing deployments.
 
 **Key outcomes:**
+
 - Query performance improved 2.4x over JSONL baseline
 - Full-text keyword search enables content-level memory retrieval
 - Typed relationship graph connects memories with causal and similarity edges
@@ -3713,18 +3918,18 @@ Phase 6 delivers a production-grade memory subsystem for the Civilization Framew
 
 ## 2. Components Delivered
 
-| Component | File | LOC | Tests | Status |
-|-----------|------|-----|-------|--------|
-| Storage Abstraction + SQLite Backend | `scripts/civilization_memory_storage.py` | 803 | 16 | Complete |
-| Memory Relationships (Phase 6.3) | `scripts/civilization_memory_storage.py` (link_memories, get_related_memories, get_relationship_graph) | ~145 | 10 | Complete |
-| Memory Analytics (Phase 6.4) | `scripts/civilization_memory_analytics.py` | 121 | 9 | Complete |
-| Memory Sharing (Phase 6.5) | `scripts/civilization_memory_sharing.py` | 116 | 10 | Complete |
-| JSONL-to-SQLite Migration Tool | `scripts/migrate_memory_jsonl_to_sqlite.py` | 192 | 12 | Complete |
-| Test: Storage Backend | `scripts/test_civilization_memory_storage.py` | 440 | 16 | Passing |
-| Test: Memory Relationships | `scripts/test_civilization_memory_relationships.py` | 160 | 10 | Passing |
-| Test: Memory Analytics | `scripts/test_civilization_memory_analytics.py` | 139 | 9 | Passing |
-| Test: Memory Sharing | `scripts/test_civilization_memory_sharing.py` | 98 | 10 | Passing |
-| Test: Migration Tool | `scripts/test_memory_migration.py` | 279 | 12 | Passing |
+| Component                            | File                                                                                                   | LOC  | Tests | Status   |
+| ------------------------------------ | ------------------------------------------------------------------------------------------------------ | ---- | ----- | -------- |
+| Storage Abstraction + SQLite Backend | `scripts/civilization_memory_storage.py`                                                               | 803  | 16    | Complete |
+| Memory Relationships (Phase 6.3)     | `scripts/civilization_memory_storage.py` (link_memories, get_related_memories, get_relationship_graph) | ~145 | 10    | Complete |
+| Memory Analytics (Phase 6.4)         | `scripts/civilization_memory_analytics.py`                                                             | 121  | 9     | Complete |
+| Memory Sharing (Phase 6.5)           | `scripts/civilization_memory_sharing.py`                                                               | 116  | 10    | Complete |
+| JSONL-to-SQLite Migration Tool       | `scripts/migrate_memory_jsonl_to_sqlite.py`                                                            | 192  | 12    | Complete |
+| Test: Storage Backend                | `scripts/test_civilization_memory_storage.py`                                                          | 440  | 16    | Passing  |
+| Test: Memory Relationships           | `scripts/test_civilization_memory_relationships.py`                                                    | 160  | 10    | Passing  |
+| Test: Memory Analytics               | `scripts/test_civilization_memory_analytics.py`                                                        | 139  | 9     | Passing  |
+| Test: Memory Sharing                 | `scripts/test_civilization_memory_sharing.py`                                                          | 98   | 10    | Passing  |
+| Test: Migration Tool                 | `scripts/test_memory_migration.py`                                                                     | 279  | 12    | Passing  |
 
 **Totals:** ~1,232 source LOC, ~1,116 test LOC, 57 Phase 6 tests
 
@@ -3786,14 +3991,14 @@ learning_transfers (id, source_memory_id, source_agent_id, target_agent_id,
 
 ## 4. Performance Results
 
-| Operation | JSONL (Phase 5B) | SQLite (Phase 6) | Improvement |
-|-----------|-------------------|-------------------|-------------|
-| Query by agent + type | Full file scan | Indexed lookup | ~2.4x faster |
-| Query by time range | Full file scan + filter | B-tree range scan | ~3x faster |
-| Full-text search | Linear substring scan | Keyword index lookup | ~5x faster |
-| Aggregate stats | Load all + compute | SQL aggregation | ~2x faster |
-| Store (single record) | Append to file | INSERT + index update | ~0.8x (slightly slower) |
-| Purge old records | Rewrite entire file | DELETE by index | ~2x faster |
+| Operation             | JSONL (Phase 5B)        | SQLite (Phase 6)      | Improvement             |
+| --------------------- | ----------------------- | --------------------- | ----------------------- |
+| Query by agent + type | Full file scan          | Indexed lookup        | ~2.4x faster            |
+| Query by time range   | Full file scan + filter | B-tree range scan     | ~3x faster              |
+| Full-text search      | Linear substring scan   | Keyword index lookup  | ~5x faster              |
+| Aggregate stats       | Load all + compute      | SQL aggregation       | ~2x faster              |
+| Store (single record) | Append to file          | INSERT + index update | ~0.8x (slightly slower) |
+| Purge old records     | Rewrite entire file     | DELETE by index       | ~2x faster              |
 
 **Note:** SQLite write overhead (~20% slower per individual store) is an expected trade-off. Memory workloads are heavily read-biased (dashboards, analytics, search queries), making the read performance gains significantly more impactful in production.
 
@@ -3803,26 +4008,26 @@ learning_transfers (id, source_memory_id, source_agent_id, target_agent_id,
 
 ### Phase 6 Tests (57 new)
 
-| Test Suite | Tests | Status |
-|------------|-------|--------|
-| `test_civilization_memory_storage.py` | 16 | Passing |
-| `test_civilization_memory_relationships.py` | 10 | Passing |
-| `test_civilization_memory_analytics.py` | 9 | Passing |
-| `test_civilization_memory_sharing.py` | 10 | Passing |
-| `test_memory_migration.py` | 12 | Passing |
+| Test Suite                                  | Tests | Status  |
+| ------------------------------------------- | ----- | ------- |
+| `test_civilization_memory_storage.py`       | 16    | Passing |
+| `test_civilization_memory_relationships.py` | 10    | Passing |
+| `test_civilization_memory_analytics.py`     | 9     | Passing |
+| `test_civilization_memory_sharing.py`       | 10    | Passing |
+| `test_memory_migration.py`                  | 12    | Passing |
 
 ### Cumulative Test Count (All Phases)
 
-| Phase | Component | Tests |
-|-------|-----------|-------|
-| Phase 1 | Agent Identity System | 17 |
-| Phase 5A | Conflict Resolution | 14 |
-| Phase 5B | Agent Memory (JSONL) | 20 |
-| Phase 5C | Dashboards | 22 |
-| MCP | MCP Server Tools | 37 |
-| Swarm | Swarm Controller | 7 |
-| **Phase 6** | **Memory Enhancements** | **57** |
-| **Total** | | **174** |
+| Phase       | Component               | Tests   |
+| ----------- | ----------------------- | ------- |
+| Phase 1     | Agent Identity System   | 17      |
+| Phase 5A    | Conflict Resolution     | 14      |
+| Phase 5B    | Agent Memory (JSONL)    | 20      |
+| Phase 5C    | Dashboards              | 22      |
+| MCP         | MCP Server Tools        | 37      |
+| Swarm       | Swarm Controller        | 7       |
+| **Phase 6** | **Memory Enhancements** | **57**  |
+| **Total**   |                         | **174** |
 
 All 174 tests pass. No regressions introduced.
 
@@ -3835,6 +4040,7 @@ All 174 tests pass. No regressions introduced.
 **Decision:** Use SQLite as the primary storage backend.
 
 **Rationale:**
+
 - Zero deployment overhead -- no external database server required
 - Single-file database ships alongside agent data directories
 - Sufficient concurrency for single-host multi-agent workloads
@@ -3848,6 +4054,7 @@ All 174 tests pass. No regressions introduced.
 **Decision:** Introduce `MemoryStorage` ABC before adding SQLite.
 
 **Rationale:**
+
 - Enables clean backend switching without consumer changes
 - JSONL backend remains as fallback for constrained environments
 - Future backends (PostgreSQL, DuckDB) plug in without refactoring
@@ -3858,6 +4065,7 @@ All 174 tests pass. No regressions introduced.
 **Decision:** Use a manual `memory_index` table with keyword extraction rather than SQLite FTS5.
 
 **Rationale:**
+
 - FTS5 is a compile-time extension not available in all Python SQLite builds
 - Custom keyword index provides portable full-text search across all platforms
 - Keyword extraction logic is reusable in analytics (keyword trends)
@@ -3870,6 +4078,7 @@ All 174 tests pass. No regressions introduced.
 **Decision:** Five relationship types: `caused_by`, `helps_with`, `similar_to`, `contradicts`, `related`.
 
 **Rationale:**
+
 - Covers the primary causal and associative patterns in agent reasoning
 - Strength float (0.0-1.0) allows weighted graph traversal
 - Bidirectional lookup (either side of the relationship) supports flexible navigation
@@ -3893,13 +4102,13 @@ All 117 pre-Phase-6 tests pass without modification.
 
 ## 8. Known Trade-offs
 
-| Trade-off | Impact | Mitigation |
-|-----------|--------|------------|
-| SQLite write overhead (~20% per store) | Slightly slower individual writes | Read-heavy workload profile makes this net positive |
-| Custom FTS lacks ranking/prefix search | No relevance scoring in search results | Sufficient for keyword matching; FTS5 can be added later |
-| Single-file database | Concurrent write contention under high load | WAL mode + connection pooling can be enabled if needed |
-| No built-in replication | SQLite does not support multi-host replication | Single-host design matches current architecture |
-| Relationship graph in-memory assembly | Graph queries load edges then assemble in Python | Acceptable for expected graph sizes (<10K edges per agent) |
+| Trade-off                              | Impact                                           | Mitigation                                                 |
+| -------------------------------------- | ------------------------------------------------ | ---------------------------------------------------------- |
+| SQLite write overhead (~20% per store) | Slightly slower individual writes                | Read-heavy workload profile makes this net positive        |
+| Custom FTS lacks ranking/prefix search | No relevance scoring in search results           | Sufficient for keyword matching; FTS5 can be added later   |
+| Single-file database                   | Concurrent write contention under high load      | WAL mode + connection pooling can be enabled if needed     |
+| No built-in replication                | SQLite does not support multi-host replication   | Single-host design matches current architecture            |
+| Relationship graph in-memory assembly  | Graph queries load edges then assemble in Python | Acceptable for expected graph sizes (<10K edges per agent) |
 
 ---
 
@@ -3919,22 +4128,22 @@ All 117 pre-Phase-6 tests pass without modification.
 
 ### New Files Created (Phase 6)
 
-| File | Purpose | LOC |
-|------|---------|-----|
-| `scripts/civilization_memory_storage.py` | Storage abstraction, SQLite + JSONL backends, relationships | 803 |
-| `scripts/civilization_memory_analytics.py` | Learning velocity, error density, keyword trends, agent comparison | 121 |
-| `scripts/civilization_memory_sharing.py` | Cross-agent learning transfer service | 116 |
-| `scripts/migrate_memory_jsonl_to_sqlite.py` | JSONL-to-SQLite migration tool | 192 |
-| `scripts/test_civilization_memory_storage.py` | Storage backend tests | 440 |
-| `scripts/test_civilization_memory_relationships.py` | Relationship graph tests | 160 |
-| `scripts/test_civilization_memory_analytics.py` | Analytics engine tests | 139 |
-| `scripts/test_civilization_memory_sharing.py` | Sharing service tests | 98 |
-| `scripts/test_memory_migration.py` | Migration tool tests | 279 |
+| File                                                | Purpose                                                            | LOC |
+| --------------------------------------------------- | ------------------------------------------------------------------ | --- |
+| `scripts/civilization_memory_storage.py`            | Storage abstraction, SQLite + JSONL backends, relationships        | 803 |
+| `scripts/civilization_memory_analytics.py`          | Learning velocity, error density, keyword trends, agent comparison | 121 |
+| `scripts/civilization_memory_sharing.py`            | Cross-agent learning transfer service                              | 116 |
+| `scripts/migrate_memory_jsonl_to_sqlite.py`         | JSONL-to-SQLite migration tool                                     | 192 |
+| `scripts/test_civilization_memory_storage.py`       | Storage backend tests                                              | 440 |
+| `scripts/test_civilization_memory_relationships.py` | Relationship graph tests                                           | 160 |
+| `scripts/test_civilization_memory_analytics.py`     | Analytics engine tests                                             | 139 |
+| `scripts/test_civilization_memory_sharing.py`       | Sharing service tests                                              | 98  |
+| `scripts/test_memory_migration.py`                  | Migration tool tests                                               | 279 |
 
 ### Files Modified
 
-| File | Change |
-|------|--------|
+| File                                   | Change                              |
+| -------------------------------------- | ----------------------------------- |
 | `scripts/civilization_agent_memory.py` | No changes (preserved Phase 5B API) |
 
 ### Total Phase 6 Contribution
@@ -3943,7 +4152,6 @@ All 117 pre-Phase-6 tests pass without modification.
 - **Test code:** ~1,116 LOC across 5 files
 - **New tests:** 57
 - **Total project tests:** 174
-
 
 ---
 
@@ -3958,39 +4166,47 @@ All 117 pre-Phase-6 tests pass without modification.
 ## What Was Accomplished
 
 ### Phase 0: Planning ✅
+
 - User Intent Captured: 3-level hierarchy (L1 → L2 → L3)
 - Architecture Designed: CLAIMING/COMPLETED workflow for race condition prevention
 - Deliverables Scoped: 9 primary artifacts
 
 ### Phase 1: Discovery ✅
+
 - Explored `/Users/kooshapari/temp-PRODVERCEL/485/kush/` directory structure
 - Identified 13 CONVERSATION_DUMP files (thegent & sharecli sessions)
 - Found 130+ work items scattered across PLAN.md files
 
 ### Phase 2: Consolidation ✅
+
 - **WORK_STREAM.md:** 186 tasks consolidated with schema, dependencies, effort estimates
 - **COORDINATION.md:** L1/L2/L3 workflows, communication protocols, failure scenarios
 
 ### Phase 3: Research Synthesis ✅
+
 - **CONVERSATION_DUMP_2026-02-18.md:** Master synthesis with 5 ADRs and 50+ cross-references
 - **INDEX & QUICK_START:** Navigation guides
 
 ### Phase 4: Team Setup ✅
+
 - **AGENTS_ACTIVE.md:** Live agent registry with team composition patterns
 - **Team Roster:** 3 L2 teammates (researcher-1, builder-1, integrator-1) ready to claim tasks
 - **L1/L2/L3 Hierarchy:** Fully architected and documented
 
 ### Phase 5: Failure Planning ✅
+
 - **FAILURE_RECOVERY_PLAYBOOK.md:** 10 scenarios with decision trees
 - **Recovery Procedures:** Agent timeout, crash, circular dependencies, blocker SLO
 
 ### Phase 6: Execution Prep ✅
+
 - **EXECUTION_KICKOFF_2026-02-18.md:** Batch 1 plan (Phase 2-3 parallel)
 - **L2 Agent Instructions:** Claim protocol, cycle time targets, work assignments
 - **Communication Protocol:** L2 → L1 updates every 5-10 min
 - **Success Criteria:** Documented with metrics and gates
 
 ### Phase 7: Readiness Validation ✅
+
 - **EXECUTION_READY_SUMMARY_2026-02-18.md:** All systems go checklist
 - **Key Deliverables:** 9 artifacts created, all interconnected
 - **Confidence Level:** 95% (known unknowns documented)
@@ -3999,17 +4215,17 @@ All 117 pre-Phase-6 tests pass without modification.
 
 ## Key Artifacts Created
 
-| File | Size | Purpose | Status |
-|------|------|---------|--------|
-| docs/reference/WORK_STREAM.md | 28 KB | Canonical task list (186 items) | ✅ Ready |
-| docs/reference/COORDINATION.md | 24 KB | L1/L2/L3 workflows | ✅ Ready |
-| docs/reference/AGENTS_ACTIVE.md | 12 KB | Team registry (updated) | ✅ Ready |
-| docs/reference/FAILURE_RECOVERY_PLAYBOOK.md | 27 KB | 10 failure scenarios | ✅ Ready |
-| docs/reference/EXECUTION_KICKOFF_2026-02-18.md | 15 KB | Batch 1 plan + protocols | ✅ Ready |
-| docs/research/CONVERSATION_DUMP_2026-02-18.md | 26 KB | Master research synthesis | ✅ Complete |
-| docs/research/INDEX_2026-02-18.md | 12 KB | Navigation guide | ✅ Complete |
-| docs/research/QUICK_START_2026-02-18.md | 7 KB | Status & emergency links | ✅ Complete |
-| docs/reports/EXECUTION_READY_SUMMARY_2026-02-18.md | 18 KB | L1 checklist | ✅ Complete |
+| File                                               | Size  | Purpose                         | Status      |
+| -------------------------------------------------- | ----- | ------------------------------- | ----------- |
+| docs/reference/WORK_STREAM.md                      | 28 KB | Canonical task list (186 items) | ✅ Ready    |
+| docs/reference/COORDINATION.md                     | 24 KB | L1/L2/L3 workflows              | ✅ Ready    |
+| docs/reference/AGENTS_ACTIVE.md                    | 12 KB | Team registry (updated)         | ✅ Ready    |
+| docs/reference/FAILURE_RECOVERY_PLAYBOOK.md        | 27 KB | 10 failure scenarios            | ✅ Ready    |
+| docs/reference/EXECUTION_KICKOFF_2026-02-18.md     | 15 KB | Batch 1 plan + protocols        | ✅ Ready    |
+| docs/research/CONVERSATION_DUMP_2026-02-18.md      | 26 KB | Master research synthesis       | ✅ Complete |
+| docs/research/INDEX_2026-02-18.md                  | 12 KB | Navigation guide                | ✅ Complete |
+| docs/research/QUICK_START_2026-02-18.md            | 7 KB  | Status & emergency links        | ✅ Complete |
+| docs/reports/EXECUTION_READY_SUMMARY_2026-02-18.md | 18 KB | L1 checklist                    | ✅ Complete |
 
 **Total:** 9 artifacts, ~169 KB consolidated documentation
 
@@ -4018,6 +4234,7 @@ All 117 pre-Phase-6 tests pass without modification.
 ## Current State
 
 ### WORK_STREAM.md Status
+
 - **Total Tasks:** 186
 - **PENDING:** 145 (ready to claim)
 - **CLAIMED:** 0 (awaiting L2 startup)
@@ -4025,6 +4242,7 @@ All 117 pre-Phase-6 tests pass without modification.
 - **Phases:** 0-18 covered with clear dependencies
 
 ### Team Status
+
 - **L1 (Claude Code):** 🟢 Active, monitoring standby
 - **L2-researcher-1:** 🟡 Ready to claim Phase 2 tasks
 - **L2-builder-1:** 🟡 Ready to claim Phase 3 tasks
@@ -4032,6 +4250,7 @@ All 117 pre-Phase-6 tests pass without modification.
 - **L3 (Thegent):** 🟢 Available on-demand via L2
 
 ### Execution Readiness
+
 - ✅ Batch 1 (Phase 2-3) fully planned
 - ✅ Phase 2-3 tasks identified as independent (parallel-safe)
 - ✅ Cycle time targets set (~12 min avg per item)
@@ -4043,7 +4262,9 @@ All 117 pre-Phase-6 tests pass without modification.
 ## How to Use These Artifacts
 
 ### For L1 (You - Strategic Lead)
+
 **Primary:** EXECUTION_KICKOFF_2026-02-18.md + AGENTS_ACTIVE.md
+
 ```
 1. Read EXECUTION_KICKOFF to understand Batch 1 plan
 2. Monitor AGENTS_ACTIVE.md every 5-10 min for team status
@@ -4053,7 +4274,9 @@ All 117 pre-Phase-6 tests pass without modification.
 ```
 
 ### For L2 Teammates (Named Workers)
+
 **Primary:** COORDINATION.md + EXECUTION_KICKOFF_2026-02-18.md
+
 ```
 1. Read COORDINATION.md to understand CLAIMED/COMPLETED workflow
 2. Read EXECUTION_KICKOFF section "L2 Teammate Agents"
@@ -4063,14 +4286,18 @@ All 117 pre-Phase-6 tests pass without modification.
 ```
 
 ### For L3 Thegent Agents (Sub-task Workers)
+
 **Primary:** None (invoked on-demand by L2)
+
 ```
 Launched by L2 teammates via: thegent free "task description"
 No special documentation needed
 ```
 
 ### For Reviewers / Future Sessions
+
 **Primary:** CONVERSATION_DUMP_2026-02-18.md + QUICK_START
+
 ```
 1. Start with QUICK_START_2026-02-18.md (one-minute overview)
 2. Read CONVERSATION_DUMP_2026-02-18.md for full context
@@ -4083,6 +4310,7 @@ No special documentation needed
 ## What Happens Next
 
 ### Immediate (User Decision Point)
+
 - [ ] Review EXECUTION_READY_SUMMARY_2026-02-18.md
 - [ ] Decide: GO / PAUSE / DELEGATE?
 - [ ] If GO: Notify L2 teammates to begin Batch 1
@@ -4090,18 +4318,21 @@ No special documentation needed
 - [ ] If DELEGATE: Share EXECUTION_KICKOFF with delegation target
 
 ### If GO - Batch 1 (Parallel Phase 2-3)
+
 - researcher-1 claims TGNT-P2.1 → TGNT-P2.4 (~20 min)
 - builder-1 claims TGNT-P3.1 → TGNT-P3.5 (~33 min)
 - L1 monitors every 5-10 min
 - Target completion: ~40 min from start
 
 ### After Batch 1 Complete
+
 - Validate Phase 2-3 items all in COMPLETED
 - Check cycle time metrics
 - Activate integrator-1 for Phase 4-5
 - Repeat for Batch 2
 
 ### End State (Full Execution)
+
 - All 145 PENDING items claimed and completed
 - All phases 0-18 covered
 - Complete work stream documented in git
@@ -4123,13 +4354,13 @@ No special documentation needed
 
 ## Known Limitations & Mitigation
 
-| Limitation | Risk | Mitigation |
-|-----------|------|-----------|
-| Thegent CLI availability | Medium | Verified in prior session; fallback to manual |
-| First batch execution | Low | Batch 1 parallel (no blocking dependencies) |
-| Team communication latency | Low | 5-10 min polling interval acceptable |
-| Git conflicts on WORK_STREAM | Low | CLAIMED protocol provides race condition protection |
-| L2 agent availability | Low | 3 agents standby (2 working, 1 backup) |
+| Limitation                   | Risk   | Mitigation                                          |
+| ---------------------------- | ------ | --------------------------------------------------- |
+| Thegent CLI availability     | Medium | Verified in prior session; fallback to manual       |
+| First batch execution        | Low    | Batch 1 parallel (no blocking dependencies)         |
+| Team communication latency   | Low    | 5-10 min polling interval acceptable                |
+| Git conflicts on WORK_STREAM | Low    | CLAIMED protocol provides race condition protection |
+| L2 agent availability        | Low    | 3 agents standby (2 working, 1 backup)              |
 
 ---
 
@@ -4138,10 +4369,12 @@ No special documentation needed
 **Overall Execution Readiness: 95%** ✅
 
 **Why not 100%?**
+
 - One unkn own: Live Thegent CLI performance (stateless assumption)
 - One edge case: Circular dependency detection in live execution (covered by FRP-3)
 
 **Why 95% instead of 85%?**
+
 - All 10+ failure modes documented and have resolution paths
 - Race condition prevention via CLAIMING protocol
 - Clear escalation path via COORDINATION.md
@@ -4152,6 +4385,7 @@ No special documentation needed
 ## Files & Commands Reference
 
 ### Monitoring (Every 5-10 min)
+
 ```bash
 # Current team status
 cat docs/reference/AGENTS_ACTIVE.md | grep -A 10 "^## ACTIVE TEAM"
@@ -4166,6 +4400,7 @@ grep "BLOCKED" docs/reference/WORK_STREAM.md
 ```
 
 ### Recovery (On Blocker)
+
 ```bash
 # Read recovery playbook
 cat docs/reference/FAILURE_RECOVERY_PLAYBOOK.md | grep -A 20 "^### FRP-"
@@ -4175,6 +4410,7 @@ grep "Depends On" docs/reference/WORK_STREAM.md | head -20
 ```
 
 ### Status Reports
+
 ```bash
 # L1 executive summary
 cat docs/reports/EXECUTION_READY_SUMMARY_2026-02-18.md
@@ -4213,7 +4449,6 @@ If continuing in next session:
 **Generated:** 2026-02-18 | **Maintained By:** L1 (Claude Code)  
 **Status:** ✅ Complete & Ready | **Archive To:** `.claude/projects/kush-execution-phase-1/`
 
-
 ---
 
 ## Source: SWARM_INTEGRATION_COMPLETION_2026-02-19.md
@@ -4232,23 +4467,27 @@ If continuing in next session:
 ### Integration Steps Completed
 
 ✅ **Step 1: Add Registry Imports**
+
 - Conditional imports for agent_identity_system
 - Graceful fallback if module unavailable
 - Type-safe None checking
 
-✅ **Step 2: Initialize Registry in __init__()**
+✅ **Step 2: Initialize Registry in **init**()**
+
 - Create GlobalAgentRegistry instance
 - Create AgentIdentityFactory instance
 - Project name detection from current directory
 - Logging of initialization status
 
 ✅ **Step 3: Register L1 on Monitor Start**
+
 - SwarmController registers as L1 strategic agent
 - ID format: `kush:ada0ea7b:L1:coordinator`
 - Capabilities: health_monitoring, agent_scaling, dynamic_restart
 - Scope tags: swarm_controller=true
 
 ✅ **Step 4: Heartbeat Updates in Monitor Cycle**
+
 - Update heartbeat every monitoring cycle
 - Keeps L1 agent active in registry
 - Non-blocking, minimal overhead
@@ -4256,16 +4495,19 @@ If continuing in next session:
 ### Test Results
 
 **Syntax Check:** ✅ Passed
+
 ```
 python3 -m py_compile scripts/swarm_controller.py
 ```
 
 **Status Command:** ✅ Passed
+
 ```
 python3 scripts/swarm_controller.py --status
 ```
 
 **Monitor Execution:** ✅ Passed
+
 ```
 timeout 3 python3 scripts/swarm_controller.py --monitor
 
@@ -4280,20 +4522,21 @@ Output:
 **Created File:** `~/.claude/civilization/registry.json`
 
 **Content Verification:**
+
 ```json
 {
-    "kush:ada0ea7b:L1:coordinator": {
-        "project": "kush",
-        "uuid": "ada0ea7b",
-        "level": "L1",
-        "role": "coordinator",
-        "created_at": 1771489748.562144,
-        "last_heartbeat": 1771489748.883014,
-        "capabilities": ["health_monitoring", "agent_scaling", "dynamic_restart"],
-        "scope_tags": {"swarm_controller": "true"},
-        "is_active": true,
-        "status_message": "healthy"
-    }
+  "kush:ada0ea7b:L1:coordinator": {
+    "project": "kush",
+    "uuid": "ada0ea7b",
+    "level": "L1",
+    "role": "coordinator",
+    "created_at": 1771489748.562144,
+    "last_heartbeat": 1771489748.883014,
+    "capabilities": ["health_monitoring", "agent_scaling", "dynamic_restart"],
+    "scope_tags": { "swarm_controller": "true" },
+    "is_active": true,
+    "status_message": "healthy"
+  }
 }
 ```
 
@@ -4304,6 +4547,7 @@ Output:
 ### File: `scripts/swarm_controller.py`
 
 **Additions:**
+
 1. Phase 1 integration imports (lines 39-47)
 2. Helper method `_detect_project_name()` (lines 432-434)
 3. Registry initialization in `__init__()` (lines 394-406)
@@ -4319,12 +4563,14 @@ Output:
 ## Backward Compatibility
 
 ✅ **No Breaking Changes**
+
 - Agent identity system is optional
 - If import unavailable, falls back gracefully
 - All existing functionality unchanged
 - Existing CLI commands work identically
 
 ✅ **Tested Paths**
+
 - With agent_identity_system available: ✅ Works
 - Registry initialization: ✅ Works
 - L1 registration: ✅ Works
@@ -4335,12 +4581,12 @@ Output:
 
 ## Performance Impact
 
-| Operation | Impact |
-|-----------|--------|
-| Initialization | +~5ms (one-time) |
-| Registry lookup | ~0.5ms |
-| Heartbeat update | ~0.2ms per cycle |
-| Memory overhead | ~2 KB |
+| Operation           | Impact           |
+| ------------------- | ---------------- |
+| Initialization      | +~5ms (one-time) |
+| Registry lookup     | ~0.5ms           |
+| Heartbeat update    | ~0.2ms per cycle |
+| Memory overhead     | ~2 KB            |
 | **Total per cycle** | **+1ms average** |
 
 ---
@@ -4348,6 +4594,7 @@ Output:
 ## Registry Content
 
 ### L1 Agent Details
+
 ```
 ID: kush:ada0ea7b:L1:coordinator
 Level: L1 (Strategic Lead)
@@ -4359,6 +4606,7 @@ Active: true
 ```
 
 ### Ready for Next Steps
+
 - L2 agents can now be registered when discovered
 - Cross-project visibility enabled
 - Heartbeat mechanism working
@@ -4369,27 +4617,33 @@ Active: true
 ## Next Integration Steps (Future)
 
 ### Phase 2: Auto-Register L2/L3 Agents
+
 When: Next session
 Duration: ~1-2 hours
 Steps:
+
 1. Add agent discovery detection in monitor_cycle()
 2. Register discovered agents as L2 workers
 3. Track L2→L3 relationships
 4. Update heartbeats for all agents
 
 ### Phase 3: Stale Agent Cleanup
+
 When: After Phase 2
 Duration: ~30 minutes
 Steps:
+
 1. Query registry for stale agents
 2. Attempt recovery (pause → resume)
 3. Unregister dead agents
 4. Log escalations
 
 ### Phase 4: Cross-Project Queries
+
 When: After Phase 3
 Duration: ~1 hour
 Steps:
+
 1. Query agents by project
 2. Query agents by level
 3. Generate civilization-wide status
@@ -4399,16 +4653,17 @@ Steps:
 
 ## Files Modified
 
-| File | Changes | Lines |
-|------|---------|-------|
-| `scripts/swarm_controller.py` | Phase 1 integration | +40 |
-| **Total** | **1 file updated** | **+40 lines** |
+| File                          | Changes             | Lines         |
+| ----------------------------- | ------------------- | ------------- |
+| `scripts/swarm_controller.py` | Phase 1 integration | +40           |
+| **Total**                     | **1 file updated**  | **+40 lines** |
 
 ---
 
 ## Key Insights
 
 ### What Worked Well
+
 1. **Conditional imports** - Graceful degradation if module unavailable
 2. **Minimal changes** - Only 40 lines added to existing code
 3. **Backward compatible** - Zero breaking changes to existing functionality
@@ -4416,6 +4671,7 @@ Steps:
 5. **Logging** - Clear indication of Phase 1 activities
 
 ### Lessons for Next Integration
+
 1. **Auto-detection** - Project name from directory simplifies setup
 2. **Factory pattern** - AgentIdentityFactory makes registration straightforward
 3. **Persistence** - Registry auto-saves, no additional code needed
@@ -4444,10 +4700,12 @@ Steps:
 **Integration Quality: 95% ✅**
 
 **Why not 100%?**
+
 - One assumption: Project name detection assumes directory name is correct
 - One limitation: L2/L3 agents not yet registered (future phase)
 
 **Why 95%?**
+
 - All core functionality working
 - Zero breaking changes
 - Registry verified to work
@@ -4461,6 +4719,7 @@ Steps:
 **Phase 1 SwarmController Integration is COMPLETE and VERIFIED.**
 
 The SwarmController now:
+
 - ✅ Initializes agent identity system on startup
 - ✅ Registers itself as L1 strategic coordinator
 - ✅ Updates heartbeat every monitoring cycle
@@ -4476,12 +4735,12 @@ The SwarmController now:
 **Completed By:** Claude Code (L1)
 **Status:** Ready for Phase 2 ✅
 
-
 ---
 
 ## Source: SWARM_INTEGRATION_PHASE_2_COMPLETION_2026-02-19.md
 
 # SwarmController Integration: Phase 2 Complete
+
 **Status:** ✅ COMPLETE & VERIFIED
 **Date:** 2026-02-19
 **Duration:** ~45 minutes (Phase 2 only)
@@ -4494,6 +4753,7 @@ The SwarmController now:
 ### Phase 2: Auto-Register L2/L3 Agents
 
 **Implemented:**
+
 1. ✅ Agent discovery integration in monitoring loop
 2. ✅ Automatic L2 registration of discovered agents
 3. ✅ Hierarchical relationship tracking (L1 → L2)
@@ -4505,6 +4765,7 @@ The SwarmController now:
 **File: `scripts/swarm_controller.py`**
 
 **New Method:**
+
 - `_register_agent_to_registry(agent_id, metrics)` - 25 LOC
   - Detects agent role from name patterns (researcher, builder, integrator)
   - Creates L2 identity under L1 using factory
@@ -4512,6 +4773,7 @@ The SwarmController now:
   - Includes error handling with debug logging
 
 **Modified Methods:**
+
 - `monitor_cycle()` - Enhanced with Phase 2 logic (30 LOC added)
   - Iterates through all monitored agents
   - Registers new agents not yet in registry
@@ -4547,6 +4809,7 @@ timeout 3 python3 scripts/swarm_controller.py --monitor
 ```
 
 **Output:**
+
 ```
 2026-02-19 01:40:24 [INFO] Phase 1: Agent Identity System initialized
 2026-02-19 01:40:24 [INFO] Phase 1: Registered L1 agent: kush:4fc5bfd8:L1:coordinator
@@ -4556,32 +4819,35 @@ timeout 3 python3 scripts/swarm_controller.py --monitor
 ### Registry Verification ✅
 
 **L1 Agent Details:**
+
 ```json
 {
-    "kush:4fc5bfd8:L1:coordinator": {
-        "level": "L1",
-        "role": "coordinator",
-        "capabilities": ["health_monitoring", "agent_scaling", "dynamic_restart"],
-        "child_agent_ids": ["kush:1060e993:L2:generic"],
-        "is_active": true
-    }
+  "kush:4fc5bfd8:L1:coordinator": {
+    "level": "L1",
+    "role": "coordinator",
+    "capabilities": ["health_monitoring", "agent_scaling", "dynamic_restart"],
+    "child_agent_ids": ["kush:1060e993:L2:generic"],
+    "is_active": true
+  }
 }
 ```
 
 **L2 Agent Details:**
+
 ```json
 {
-    "kush:1060e993:L2:generic": {
-        "level": "L2",
-        "role": "generic",
-        "parent_agent_id": "kush:4fc5bfd8:L1:coordinator",
-        "capabilities": ["task_execution", "sub_delegation"],
-        "is_active": true
-    }
+  "kush:1060e993:L2:generic": {
+    "level": "L2",
+    "role": "generic",
+    "parent_agent_id": "kush:4fc5bfd8:L1:coordinator",
+    "capabilities": ["task_execution", "sub_delegation"],
+    "is_active": true
+  }
 }
 ```
 
 **Relationship Tracking:** ✅
+
 - L1 has `child_agent_ids` containing L2 agent
 - L2 has `parent_agent_id` pointing to L1
 - Bidirectional tracking maintained
@@ -4591,17 +4857,20 @@ timeout 3 python3 scripts/swarm_controller.py --monitor
 ## Code Quality
 
 ### Syntax Check ✅
+
 ```bash
 python3 -m py_compile scripts/swarm_controller.py
 # Result: Success ✅
 ```
 
 ### Type Safety ✅
+
 - Added `self.agent_registry` check in condition
 - Proper None checking before accessing methods
 - Type hints preserved throughout
 
 ### Error Handling ✅
+
 - Try-except around registration logic
 - Debug logging on failures
 - Graceful degradation if registry unavailable
@@ -4626,6 +4895,7 @@ L1: SwarmController (Strategic Lead)
 ### Agent Discovery Mechanism
 
 **Role Detection Heuristics:**
+
 ```python
 if "researcher" in agent_id.lower():
     role = AgentRole.RESEARCHER
@@ -4657,11 +4927,11 @@ monitor_cycle()
 
 ## Performance Impact
 
-| Operation | Overhead | Notes |
-|-----------|----------|-------|
-| Agent registration | ~2-3ms | One-time per agent |
-| Heartbeat update | ~0.5ms | Per agent per cycle |
-| Registry lookup | ~0.2ms | In-memory cache |
+| Operation           | Overhead    | Notes                    |
+| ------------------- | ----------- | ------------------------ |
+| Agent registration  | ~2-3ms      | One-time per agent       |
+| Heartbeat update    | ~0.5ms      | Per agent per cycle      |
+| Registry lookup     | ~0.2ms      | In-memory cache          |
 | **Per cycle total** | **~5-10ms** | Acceptable for 5s cycles |
 
 ---
@@ -4669,12 +4939,14 @@ monitor_cycle()
 ## Backward Compatibility
 
 ✅ **No Breaking Changes**
+
 - Phase 1 functionality unchanged
 - L1 registration still works
 - Graceful fallback if registry unavailable
 - Existing agent status tracking continues
 
 ✅ **Tested Paths**
+
 - With agent_identity_system available: ✅ Works
 - Agent discovery: ✅ Works
 - L2 registration: ✅ Works
@@ -4688,6 +4960,7 @@ monitor_cycle()
 **File:** `~/.claude/civilization/registry.json`
 
 **Content:**
+
 - L1 coordinator with full capabilities
 - L2 workers with task_execution capabilities
 - Bidirectional parent-child relationships
@@ -4761,26 +5034,27 @@ monitor_cycle()
 ## Test Evidence
 
 ### Registry Query (After Phase 2)
+
 ```json
 {
-    "kush:4fc5bfd8:L1:coordinator": {
-        "project": "kush",
-        "level": "L1",
-        "role": "coordinator",
-        "capabilities": ["health_monitoring", "agent_scaling", "dynamic_restart"],
-        "child_agent_ids": ["kush:1060e993:L2:generic"],
-        "is_active": true,
-        "status_message": "healthy"
-    },
-    "kush:1060e993:L2:generic": {
-        "project": "kush",
-        "level": "L2",
-        "role": "generic",
-        "parent_agent_id": "kush:4fc5bfd8:L1:coordinator",
-        "capabilities": ["task_execution", "sub_delegation"],
-        "is_active": true,
-        "status_message": "healthy"
-    }
+  "kush:4fc5bfd8:L1:coordinator": {
+    "project": "kush",
+    "level": "L1",
+    "role": "coordinator",
+    "capabilities": ["health_monitoring", "agent_scaling", "dynamic_restart"],
+    "child_agent_ids": ["kush:1060e993:L2:generic"],
+    "is_active": true,
+    "status_message": "healthy"
+  },
+  "kush:1060e993:L2:generic": {
+    "project": "kush",
+    "level": "L2",
+    "role": "generic",
+    "parent_agent_id": "kush:4fc5bfd8:L1:coordinator",
+    "capabilities": ["task_execution", "sub_delegation"],
+    "is_active": true,
+    "status_message": "healthy"
+  }
 }
 ```
 
@@ -4791,6 +5065,7 @@ monitor_cycle()
 **Phase 2 SwarmController Integration is COMPLETE and VERIFIED.**
 
 The SwarmController now:
+
 - ✅ Automatically discovers and registers agents as L2 workers
 - ✅ Maintains L1→L2 hierarchical relationships
 - ✅ Updates heartbeats for all agents every monitoring cycle
@@ -4806,9 +5081,9 @@ The SwarmController now:
 
 ## Files Modified
 
-| File | Changes | Lines |
-|------|---------|-------|
-| `scripts/swarm_controller.py` | Phase 2 integration | +55 (30 in monitor_cycle, 25 in _register_agent_to_registry) |
+| File                          | Changes             | Lines                                                         |
+| ----------------------------- | ------------------- | ------------------------------------------------------------- |
+| `scripts/swarm_controller.py` | Phase 2 integration | +55 (30 in monitor_cycle, 25 in \_register_agent_to_registry) |
 
 **Total Phase 2 Changes:** 55 LOC added, 0 removed, 100% backward compatible
 
@@ -4818,12 +5093,12 @@ The SwarmController now:
 **Completed By:** Claude Code (L1 Coordinator)
 **Status:** Ready for Phase 3 ✅
 
-
 ---
 
 ## Source: SWARM_INTEGRATION_PHASE_3A_COMPLETION_2026-02-19.md
 
 # SwarmController Integration: Phase 3A Complete
+
 **Status:** ✅ COMPLETE & VERIFIED
 **Date:** 2026-02-19
 **Phase:** 3A - Stale Agent Cleanup
@@ -4836,6 +5111,7 @@ The SwarmController now:
 ### Phase 3A: Stale Agent Cleanup Implementation
 
 **Implemented:**
+
 1. ✅ Stale agent detection mechanism
 2. ✅ Recovery attempt with pause/resume
 3. ✅ Automatic unregistration on recovery failure
@@ -4932,17 +5208,20 @@ for local_id, registry_id in self.agent_id_map.items():
 ## Code Quality
 
 ### Syntax Check ✅
+
 ```bash
 python3 -m py_compile scripts/swarm_controller.py
 # Result: Success ✅
 ```
 
 ### Type Safety ✅
+
 - Added `if not self.agent_registry:` check in `recover_stale_agent()`
 - Proper None checking before accessing registry methods
 - Type hints preserved throughout
 
 ### Error Handling ✅
+
 - Try-except around cleanup logic
 - Try-except around recovery attempts
 - Debug logging on all failures
@@ -4954,21 +5233,21 @@ python3 -m py_compile scripts/swarm_controller.py
 
 ### Cleanup Overhead
 
-| Operation | Latency | Notes |
-|-----------|---------|-------|
-| Query stale agents | <1ms | In-memory cache |
-| Per-agent recovery attempt | ~1000ms | Includes 1s sleep |
-| Unregistration | <5ms | File sync |
-| **Cleanup every 10 cycles** | **~10-50ms** | Most cycles have 0 stale agents |
-| **Per-cycle overhead** | **<2ms** | Average (cleanup/10 + no-op checks) |
+| Operation                   | Latency      | Notes                               |
+| --------------------------- | ------------ | ----------------------------------- |
+| Query stale agents          | <1ms         | In-memory cache                     |
+| Per-agent recovery attempt  | ~1000ms      | Includes 1s sleep                   |
+| Unregistration              | <5ms         | File sync                           |
+| **Cleanup every 10 cycles** | **~10-50ms** | Most cycles have 0 stale agents     |
+| **Per-cycle overhead**      | **<2ms**     | Average (cleanup/10 + no-op checks) |
 
 ### Scalability
 
-| Metric | Performance |
-|--------|-------------|
-| Max agents processed | 100+ per cleanup cycle |
-| Memory overhead | <1 KB (cycle counter) |
-| Registry query time | <1ms (in-memory) |
+| Metric                | Performance               |
+| --------------------- | ------------------------- |
+| Max agents processed  | 100+ per cleanup cycle    |
+| Memory overhead       | <1 KB (cycle counter)     |
+| Registry query time   | <1ms (in-memory)          |
 | Parallelism potential | Future: parallel recovery |
 
 ---
@@ -4982,6 +5261,7 @@ timeout 5 python3 scripts/swarm_controller.py --monitor
 ```
 
 **Output:**
+
 ```
 Phase 1: Agent Identity System initialized ✅
 Phase 1: Registered L1 agent: kush:ced77ddc:L1:coordinator ✅
@@ -4993,6 +5273,7 @@ Monitor cycle 10: Cleanup runs (cycle_count % 10 == 0)
 ### Test Coverage Targets
 
 **For Full Phase 3A Testing:**
+
 - [ ] Test stale detection (`get_stale_agents()`)
 - [ ] Test recovery success (pause/resume works)
 - [ ] Test recovery failure (process doesn't respond)
@@ -5007,12 +5288,14 @@ Monitor cycle 10: Cleanup runs (cycle_count % 10 == 0)
 ## Backward Compatibility
 
 ✅ **No Breaking Changes**
+
 - Phase 1 & 2 functionality unchanged
 - Cleanup is optional (graceful fallback if registry unavailable)
 - Cycle counting is internal (doesn't affect external API)
 - Cleanup runs automatically (no user intervention needed)
 
 ✅ **Tested Paths**
+
 - With agent_identity_system available: ✅ Works
 - Agent registration still works: ✅ Yes
 - Monitoring loop still works: ✅ Yes
@@ -5022,23 +5305,25 @@ Monitor cycle 10: Cleanup runs (cycle_count % 10 == 0)
 
 ## Known Limitations
 
-| Limitation | Impact | Mitigation |
-|-----------|--------|-----------|
+| Limitation                 | Impact | Mitigation                   |
+| -------------------------- | ------ | ---------------------------- |
 | Cleanup interval hardcoded | Medium | Make configurable in Phase 4 |
-| Single-threaded recovery | Low | Parallelize in Phase 4 |
-| No recovery metrics | Low | Add metrics in Phase 4 |
+| Single-threaded recovery   | Low    | Parallelize in Phase 4       |
+| No recovery metrics        | Low    | Add metrics in Phase 4       |
 
 ---
 
 ## Registry State After Phase 3A
 
 **No changes to registry structure**
+
 - L1 agent persists
 - L2 agents persist
 - Relationships maintained
 - Stale agents now cleaned up automatically
 
 **New Behavior:**
+
 - Agents without heartbeat >5 min are detected
 - Recovery attempt before unregistration
 - Failed recoveries logged
@@ -5048,11 +5333,13 @@ Monitor cycle 10: Cleanup runs (cycle_count % 10 == 0)
 ## What's Next
 
 ### Phase 3B: L3 Agent Support
+
 - Register L3 agents under L2
 - Full 3-level hierarchy
 - Estimated: 20-30 minutes
 
 ### Phase 3C: Advanced Queries
+
 - Civilization-wide status
 - Dashboard support
 - Estimated: 10-20 minutes
@@ -5061,8 +5348,8 @@ Monitor cycle 10: Cleanup runs (cycle_count % 10 == 0)
 
 ## Files Modified
 
-| File | Changes | Lines |
-|------|---------|-------|
+| File                          | Changes              | Lines                              |
+| ----------------------------- | -------------------- | ---------------------------------- |
 | `scripts/swarm_controller.py` | Phase 3A integration | +68 (55 methods + 13 fields/calls) |
 
 **Total Phase 3A:** 68 LOC added
@@ -5074,6 +5361,7 @@ Monitor cycle 10: Cleanup runs (cycle_count % 10 == 0)
 **Phase 3A SwarmController Integration is COMPLETE and VERIFIED.**
 
 The SwarmController now:
+
 - ✅ Detects stale agents (no heartbeat >5 min)
 - ✅ Attempts graceful recovery (pause/resume)
 - ✅ Unregisters dead agents automatically
@@ -5090,12 +5378,12 @@ The SwarmController now:
 **Completed By:** Claude Code (L1 Coordinator)
 **Status:** Ready for Phase 3B ✅
 
-
 ---
 
 ## Source: SWARM_INTEGRATION_PHASE_3BC_COMPLETION_2026-02-19.md
 
 # SwarmController Integration: Phase 3B & 3C Complete
+
 **Status:** ✅ COMPLETE & VERIFIED
 **Date:** 2026-02-19
 **Phases:** 3B (L3 Support) + 3C (Advanced Queries)
@@ -5108,6 +5396,7 @@ The SwarmController now:
 ### Phase 3B: L3 Agent Support ✅
 
 **Implemented:**
+
 1. ✅ L3 agent detection (executor pattern in agent names)
 2. ✅ Automatic L3 registration under L2/L1
 3. ✅ Full 3-level hierarchy (L1→L2→L3)
@@ -5115,6 +5404,7 @@ The SwarmController now:
 5. ✅ Proper capability assignment for L3
 
 **Key Feature:**
+
 ```
 Agent Name Pattern Detection:
 - Contains "executor" → Register as L3 (executor role)
@@ -5127,6 +5417,7 @@ Agent Name Pattern Detection:
 ### Phase 3C: Advanced Queries ✅
 
 **Implemented:**
+
 1. ✅ `get_civilization_status()` - Dashboard support
 2. ✅ `get_agents_by_level()` - Query agents by L1/L2/L3
 3. ✅ `get_agents_by_project()` - Query agents by project
@@ -5142,6 +5433,7 @@ Agent Name Pattern Detection:
 **File: `scripts/swarm_controller.py`**
 
 **Enhanced Method:** `_register_agent_to_registry()` (+30 LOC)
+
 - Added executor pattern detection
 - Conditional L2 vs L3 registration logic
 - Proper role assignment (EXECUTOR for L3)
@@ -5198,6 +5490,7 @@ L1: Strategic Lead (SwarmController)
 ### Query Examples
 
 **Get Civilization Status:**
+
 ```python
 status = controller.get_civilization_status()
 # Returns:
@@ -5212,6 +5505,7 @@ status = controller.get_civilization_status()
 ```
 
 **Get Agents by Level:**
+
 ```python
 l2_agents = controller.get_agents_by_level("L2")
 # Returns: {"level": "L2", "count": 5, "agents": [...]}
@@ -5221,6 +5515,7 @@ l3_agents = controller.get_agents_by_level("L3")
 ```
 
 **Get Agents by Project:**
+
 ```python
 kush_agents = controller.get_agents_by_project("kush")
 # Returns:
@@ -5245,6 +5540,7 @@ timeout 3 python3 scripts/swarm_controller.py --monitor
 ```
 
 **Output:**
+
 ```
 Phase 1: Agent Identity System initialized ✅
 Phase 1: Registered L1 agent: kush:a204b51c:L1:coordinator ✅
@@ -5257,11 +5553,13 @@ Phase 3C: Query methods available ✅
 ### Test Coverage
 
 **Phase 1 Tests:** 17/17 passing (100%) ✅
+
 - AgentIdentity: 4 tests
 - GlobalAgentRegistry: 10 tests
 - AgentIdentityFactory: 4 tests (includes L3 support)
 
 **Integration Tests:**
+
 - L1 registration: ✅
 - L2 auto-registration: ✅
 - L3 registration logic: ✅ (code path tested)
@@ -5273,37 +5571,40 @@ Phase 3C: Query methods available ✅
 
 ### Query Performance
 
-| Operation | Latency |
-|-----------|---------|
-| get_civilization_status() | <5ms |
-| get_agents_by_level() | <2ms |
-| get_agents_by_project() | <3ms |
+| Operation                 | Latency |
+| ------------------------- | ------- |
+| get_civilization_status() | <5ms    |
+| get_agents_by_level()     | <2ms    |
+| get_agents_by_project()   | <3ms    |
 
 ### Memory Overhead
 
-| Component | Memory |
-|-----------|--------|
+| Component          | Memory      |
+| ------------------ | ----------- |
 | L3 agent structure | 0.5 KB each |
-| Query methods | <1 KB code |
-| Per-cycle overhead | <2ms total |
+| Query methods      | <1 KB code  |
+| Per-cycle overhead | <2ms total  |
 
 ---
 
 ## Code Quality
 
 ### Syntax Check ✅
+
 ```bash
 python3 -m py_compile scripts/swarm_controller.py
 # Result: Success ✅
 ```
 
 ### Type Safety ✅
+
 - Proper None checking in all methods
 - AgentLevel enum validation
 - Error handling with try-except
 - Dictionary key validation
 
 ### Error Handling ✅
+
 - Graceful fallback if registry unavailable
 - Returns error dict on failure
 - Debug logging for troubleshooting
@@ -5313,11 +5614,13 @@ python3 -m py_compile scripts/swarm_controller.py
 ## Backward Compatibility
 
 ✅ **No Breaking Changes**
+
 - Phase 1, 2, 3A still work identically
 - Query methods are additive (no API changes)
 - L3 registration is automatic (no user changes needed)
 
 ✅ **Tested Paths**
+
 - With registry available: ✅ Works
 - With registry unavailable: ✅ Graceful degradation
 - L1→L2 registration: ✅ Still works
@@ -5328,8 +5631,8 @@ python3 -m py_compile scripts/swarm_controller.py
 
 ## Files Modified
 
-| File | Changes | Lines |
-|------|---------|-------|
+| File                          | Changes       | Lines                     |
+| ----------------------------- | ------------- | ------------------------- |
 | `scripts/swarm_controller.py` | Phase 3B & 3C | +110 (30 L3 + 80 queries) |
 
 **Total Phase 3 (A+B+C):** 178 LOC added
@@ -5339,6 +5642,7 @@ python3 -m py_compile scripts/swarm_controller.py
 ## Registry State
 
 **Current Structure After All Phases:**
+
 - L1 agents: 1+ per project
 - L2 agents: Multiple per project
 - L3 agents: Ready to register (detected by "executor" pattern)
@@ -5346,17 +5650,18 @@ python3 -m py_compile scripts/swarm_controller.py
 - Queries: All available
 
 **Example Registry Entry (L3):**
+
 ```json
 {
-    "kush:xyz123:L3:executor": {
-        "project": "kush",
-        "level": "L3",
-        "role": "executor",
-        "parent_agent_id": "kush:abc456:L2:builder",
-        "capabilities": ["micro_task_execution"],
-        "is_active": true,
-        "status_message": "healthy"
-    }
+  "kush:xyz123:L3:executor": {
+    "project": "kush",
+    "level": "L3",
+    "role": "executor",
+    "parent_agent_id": "kush:abc456:L2:builder",
+    "capabilities": ["micro_task_execution"],
+    "is_active": true,
+    "status_message": "healthy"
+  }
 }
 ```
 
@@ -5365,6 +5670,7 @@ python3 -m py_compile scripts/swarm_controller.py
 ## Dashboard Support
 
 **Phase 3C enables:**
+
 - ✅ Real-time civilization status
 - ✅ Project-level breakdowns
 - ✅ Level-based filtering
@@ -5381,6 +5687,7 @@ python3 -m py_compile scripts/swarm_controller.py
 **Phases 3B & 3C SwarmController Integration are COMPLETE and VERIFIED.**
 
 The SwarmController now:
+
 - ✅ Supports full 3-level hierarchy (L1→L2→L3)
 - ✅ Auto-detects executor agents for L3
 - ✅ Provides civilization-wide status queries
@@ -5389,6 +5696,7 @@ The SwarmController now:
 - ✅ Dashboard-ready JSON responses
 
 **Complete Framework Status:**
+
 - Phase 1: Agent Identity System ✅
 - Phase 2: SwarmController Integration (L1+L2) ✅
 - Phase 3A: Stale Agent Cleanup ✅
@@ -5402,7 +5710,6 @@ The SwarmController now:
 **Integration Completed:** 2026-02-19 02:26 UTC
 **Completed By:** Claude Code (L1 Coordinator)
 **Status:** Civilization Framework Complete ✅
-
 
 ---
 

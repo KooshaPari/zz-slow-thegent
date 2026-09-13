@@ -18,6 +18,7 @@ export PATH="$HOME/.bun/bin:$PATH"
 ```
 
 **Why Bun:**
+
 - 3-4x faster than Node.js for most operations
 - Native TypeScript support (no transpilation)
 - Built-in bundler, test runner, package manager
@@ -26,11 +27,13 @@ export PATH="$HOME/.bun/bin:$PATH"
 ### 2. Optimize Zsh Startup
 
 **Problem:** zsh configs may have:
+
 - `eval $(...)` commands that output file paths (executed as commands)
 - Heavy plugin loading on every shell invocation
 - Synchronous completion initialization
 
 **Solution:** The canonical `.zshrc` is already comprehensive and optimal. It includes:
+
 - Lazy completion loading (`compinit -C` for speed)
 - Async plugin loading (plugins load in background)
 - Early exit for non-interactive shells
@@ -50,6 +53,7 @@ thegent install --target user
 ```
 
 **Key optimizations:**
+
 1. **Lazy-load completions:** Only initialize when needed
 2. **Async plugin loading:** Load plugins in background
 3. **Early exit:** Skip heavy setup for non-interactive shells
@@ -58,6 +62,7 @@ thegent install --target user
 ### 3. Replace Node/npm/pnpm with Bun
 
 **In package.json:**
+
 ```json
 {
   "packageManager": "bun@latest",
@@ -69,6 +74,7 @@ thegent install --target user
 ```
 
 **Aliases (add to ~/.zshrc):**
+
 ```bash
 alias node='bun'
 alias npm='bun'
@@ -76,6 +82,7 @@ alias pnpm='bun'
 ```
 
 **For VitePress docs:**
+
 ```bash
 bun install          # instead of pnpm install
 bun run docs:dev     # instead of pnpm docs:dev
@@ -85,12 +92,14 @@ bun run docs:build   # instead of pnpm docs:build
 ### 4. Optimize Bash Scripts
 
 **Replace slow commands:**
+
 - `find` → `fd` (Rust, faster)
 - `grep` → `rg` (ripgrep, faster)
 - `cat` → `bat` (with syntax highlighting, still fast)
 - `ls` → `exa` or `eza` (Rust, faster)
 
 **Already configured in thegent:**
+
 - `hooks/lib/grep-wrapper.sh` → uses `rg` if available
 - `hooks/lib/fd-wrapper.sh` → uses `fd` if available
 - `hooks/lib/git-wrapper.sh` → optimized git operations
@@ -117,6 +126,7 @@ Run the optimization script:
 ```
 
 This will:
+
 1. Install Bun
 2. Check for problematic eval patterns
 3. Create optimized zsh config
@@ -124,12 +134,12 @@ This will:
 
 ## Expected Performance Improvements
 
-| Operation | Before | After | Improvement |
-|-----------|--------|-------|-------------|
-| zsh startup | 5+ min | <100ms | 3000x faster |
-| JS script execution | Node.js | Bun | 3-4x faster |
-| Package install | pnpm | Bun | 2-3x faster |
-| TypeScript execution | ts-node | Bun | 5-10x faster |
+| Operation            | Before  | After  | Improvement  |
+| -------------------- | ------- | ------ | ------------ |
+| zsh startup          | 5+ min  | <100ms | 3000x faster |
+| JS script execution  | Node.js | Bun    | 3-4x faster  |
+| Package install      | pnpm    | Bun    | 2-3x faster  |
+| TypeScript execution | ts-node | Bun    | 5-10x faster |
 
 ## Verification
 
@@ -154,6 +164,7 @@ time bun -e 'console.log("Hello")'
 **Cause:** Something is `eval`'ing file paths as commands.
 
 **Fix:**
+
 1. Check `~/.zshrc.local` for `eval $(ls)` or `eval $(find)`
 2. Remove or fix problematic eval patterns
 3. Use optimized config: `cp shell/.zshrc.optimized ~/.zshrc`
@@ -161,6 +172,7 @@ time bun -e 'console.log("Hello")'
 ### Bun not found
 
 **Fix:**
+
 ```bash
 export PATH="$HOME/.bun/bin:$PATH"
 # Add to ~/.zshenv for persistence
@@ -171,6 +183,7 @@ export PATH="$HOME/.bun/bin:$PATH"
 **Note:** VitePress may require Node.js. Use Bun for other JS/TS operations, keep Node for VitePress if needed.
 
 **Workaround:**
+
 ```bash
 # Use Bun for most things
 alias npm='bun'
@@ -186,7 +199,6 @@ alias pnpm='bun'
 - [Zsh Optimization Guide](https://blog.jonlu.ca/posts/speeding-up-zsh)
 - [thegent Shell Setup](SHELL_ZSH_PLUGIN_SETUP.md)
 
-
 ---
 
 ## EXTENSION_SUMMARY
@@ -195,15 +207,18 @@ alias pnpm='bun'
 **Extended by:** Claude Code
 
 ### Changes Made
+
 1. Added practical implementation patterns
 2. Added configuration examples
 3. Enhanced cross-references to related documentation
 
 ### Cross-References Added
+
 - Related research and implementation guides
 - WORK_STREAM.md for tracking
 
 ### Practical Additions
+
 - Implementation templates
 - Configuration examples
 - Best practices

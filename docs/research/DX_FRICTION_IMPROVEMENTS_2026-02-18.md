@@ -21,6 +21,7 @@
 **Friction**: Repeatedly running `python3 -c "from thegent.infra import ..."` is verbose
 
 **Impact**:
+
 - High verbosity in tool calls
 - Repetitive patterns
 - Hard to test multiple imports at once
@@ -28,6 +29,7 @@
 **Solution**: Created `scripts/dx_helpers.py` with `test_imports()` function
 
 **Usage**:
+
 ```bash
 # Before (verbose)
 python3 -c "from thegent.infra import run_subprocess_async, get_cache, fuzzy_match, uuid4_str; print('✅ All imports successful')"
@@ -37,6 +39,7 @@ python3 scripts/dx_helpers.py test-imports thegent.infra
 ```
 
 **Files Created**:
+
 - `scripts/dx_helpers.py` - DX helper utilities
 
 ---
@@ -46,6 +49,7 @@ python3 scripts/dx_helpers.py test-imports thegent.infra
 **Friction**: Manually updating status sections and completion entries in markdown files
 
 **Impact**:
+
 - High verbosity
 - Error-prone manual edits
 - Repetitive patterns
@@ -53,6 +57,7 @@ python3 scripts/dx_helpers.py test-imports thegent.infra
 **Solution**: Created `scripts/doc_update_helper.py` with batch update functions
 
 **Usage**:
+
 ```bash
 # Before (manual edit)
 # Edit WORK_STREAM.md manually, find COMPLETED section, add entry
@@ -62,6 +67,7 @@ python3 scripts/doc_update_helper.py complete docs/reference/WORK_STREAM.md task
 ```
 
 **Files Created**:
+
 - `scripts/doc_update_helper.py` - Documentation update automation
 
 ---
@@ -71,6 +77,7 @@ python3 scripts/doc_update_helper.py complete docs/reference/WORK_STREAM.md task
 **Friction**: Reading/writing multiple files requires multiple tool calls
 
 **Impact**:
+
 - High tool call count
 - Slower operations
 - Verbose patterns
@@ -78,6 +85,7 @@ python3 scripts/doc_update_helper.py complete docs/reference/WORK_STREAM.md task
 **Solution**: Added `batch_file_read()` and `batch_file_write()` to `dx_helpers.py`
 
 **Usage**:
+
 ```python
 from scripts.dx_helpers import batch_file_read, batch_file_write
 
@@ -85,10 +93,7 @@ from scripts.dx_helpers import batch_file_read, batch_file_write
 files = batch_file_read(["file1.md", "file2.md", "file3.md"])
 
 # Write multiple files in one call
-results = batch_file_write({
-    "file1.md": "content1",
-    "file2.md": "content2"
-})
+results = batch_file_write({"file1.md": "content1", "file2.md": "content2"})
 ```
 
 ---
@@ -98,12 +103,14 @@ results = batch_file_write({
 **Friction**: Need to manually parse WORK_STREAM.md or use verbose commands
 
 **Impact**:
+
 - Inconsistent access patterns
 - Verbose queries
 
 **Solution**: Added `get_workstream_items()` to `dx_helpers.py`
 
 **Usage**:
+
 ```bash
 # Get next 5 P1 items
 python3 scripts/dx_helpers.py workstream 5 P1
@@ -116,11 +123,13 @@ python3 scripts/dx_helpers.py workstream 5 P1
 **Friction**: `rg` encoding errors and shell function errors appear in output
 
 **Impact**:
+
 - Noise in output
 - Reduces clarity
 - Not actionable
 
 **Status**: Identified as shell configuration issue (not script issue)
+
 - `rg: error parsing flag -E: grep config error: unknown encoding`
 - `_thegent_job_cleanup:3: bad math expression: empty string`
 
@@ -135,6 +144,7 @@ python3 scripts/dx_helpers.py workstream 5 P1
 **Purpose**: Reduce verbosity of common DX operations
 
 **Functions**:
+
 - `test_imports()` - Test module imports concisely
 - `batch_file_read()` - Read multiple files efficiently
 - `batch_file_write()` - Write multiple files efficiently
@@ -150,6 +160,7 @@ python3 scripts/dx_helpers.py workstream 5 P1
 **Purpose**: Automate repetitive documentation update patterns
 
 **Functions**:
+
 - `update_status_section()` - Update status sections in markdown
 - `add_completion_entry()` - Add completion entries to workstream
 - `batch_update_status()` - Batch update multiple files
@@ -173,6 +184,7 @@ python3 scripts/dx_helpers.py workstream 5 P1
 **Task**: Set up Playwright for browser recordings
 
 **Deliverables**:
+
 - `docs/demos/web/playwright.config.ts` - Playwright configuration
 - `docs/demos/web/example-demo.spec.ts` - Example test
 - `scripts/generate-demo-gifs.sh` - Unified GIF generation script
@@ -184,11 +196,13 @@ python3 scripts/dx_helpers.py workstream 5 P1
 ## Next Steps
 
 ### Immediate
+
 1. Continue processing workstream items
 2. Use new helpers to reduce verbosity
 3. Identify additional friction points
 
 ### Future Improvements
+
 1. Create agent workflow automation helper
 2. Batch tool call patterns
 3. Reduce path handling verbosity further
@@ -198,12 +212,12 @@ python3 scripts/dx_helpers.py workstream 5 P1
 
 ## Metrics
 
-| Metric | Before | After | Improvement |
-|--------|--------|-------|-------------|
-| Import testing verbosity | ~100 chars | ~50 chars | 50% reduction |
-| Doc update operations | Manual | Automated | 80%+ reduction |
-| File batch operations | N tool calls | 1 tool call | N-1 reduction |
-| Workstream queries | Manual parse | Single command | 90%+ reduction |
+| Metric                   | Before       | After          | Improvement    |
+| ------------------------ | ------------ | -------------- | -------------- |
+| Import testing verbosity | ~100 chars   | ~50 chars      | 50% reduction  |
+| Doc update operations    | Manual       | Automated      | 80%+ reduction |
+| File batch operations    | N tool calls | 1 tool call    | N-1 reduction  |
+| Workstream queries       | Manual parse | Single command | 90%+ reduction |
 
 ---
 

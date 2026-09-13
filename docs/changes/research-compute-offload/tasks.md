@@ -16,6 +16,7 @@ status: in_progress
 ## Phase 1: Research & Design (Week 1) — **Status: PLANNING**
 
 ### T1.1: Stakeholder Research & Requirements Gathering
+
 - **Objective**: Interview thegent team and users; document use cases
 - **Effort**: 1 agent-day
 - **Owner**: (TBD)
@@ -31,6 +32,7 @@ status: in_progress
   - Go/no-go decision made
 
 ### T1.2: Competitive Analysis
+
 - **Objective**: Research similar systems (Kubernetes federation, Nomad, Temporal, Terraform)
 - **Effort**: 1.5 agent-days
 - **Owner**: (TBD)
@@ -43,6 +45,7 @@ status: in_progress
   - Key patterns identified
 
 ### T1.3: Architecture & Protocol Design
+
 - **Objective**: Design bridge protocol, compute catalog, routing logic
 - **Effort**: 1.5 agent-days
 - **Owner**: (TBD)
@@ -62,6 +65,7 @@ status: in_progress
 ## Phase 2: Prototype Implementation (Week 2-3) — **Status: PENDING**
 
 ### T2.1: Compute Catalog Module
+
 - **Objective**: Implement `ComputeCatalog` + `CapabilityProfile` classes
 - **Effort**: 1.5 agent-days
 - **Owner**: (TBD)
@@ -77,6 +81,7 @@ status: in_progress
   - Example with ≥3 environments populated
 
 ### T2.2: Capability Resolver Module
+
 - **Objective**: Implement `CapabilityResolver` for probing local environment
 - **Effort**: 1.5 agent-days
 - **Owner**: (TBD)
@@ -92,6 +97,7 @@ status: in_progress
   - Handles missing tools gracefully
 
 ### T2.3: Workload Classifier Module
+
 - **Objective**: Implement `WorkloadClassifier` with ≥5 heuristics
 - **Effort**: 2 agent-days
 - **Owner**: (TBD)
@@ -108,6 +114,7 @@ status: in_progress
   - Edge case: empty prompt returns default classification
 
 ### T2.4: Offload Router Module
+
 - **Objective**: Implement `OffloadRouter` with ≥3 routing policies
 - **Effort**: 1.5 agent-days
 - **Owner**: (TBD)
@@ -123,6 +130,7 @@ status: in_progress
   - Cost scoring accurate (vs mock catalog)
 
 ### T2.5: Bridge Protocol Module
+
 - **Objective**: Define `ExecutionRequest` + `ExecutionResponse` Pydantic models
 - **Effort**: 1 agent-day
 - **Owner**: (TBD)
@@ -139,6 +147,7 @@ status: in_progress
   - Examples provided in docstrings
 
 ### T2.6: Remote Executor Server
+
 - **Objective**: Implement FastAPI-based remote executor
 - **Effort**: 2.5 agent-days
 - **Owner**: (TBD)
@@ -157,6 +166,7 @@ status: in_progress
   - Cost computation plausible
 
 ### T2.7: Offload Client Module
+
 - **Objective**: Implement `OffloadClient` for invoking remote executor
 - **Effort**: 1 agent-day
 - **Owner**: (TBD)
@@ -173,6 +183,7 @@ status: in_progress
   - Health check returns bool
 
 ### T2.8: Integration with thegent Agent Runner
+
 - **Objective**: Wire offload into `AgentRunner.run()` decision logic
 - **Effort**: 2 agent-days
 - **Owner**: (TBD)
@@ -190,6 +201,7 @@ status: in_progress
   - ≥80% test coverage for new code
 
 ### T2.9: Unit Tests & Coverage
+
 - **Objective**: Achieve ≥70% coverage across all offload modules
 - **Effort**: 2 agent-days
 - **Owner**: (TBD)
@@ -210,6 +222,7 @@ status: in_progress
 ## Phase 3: Validation & Documentation (Week 3) — **Status: PENDING**
 
 ### T3.1: End-to-End Offload Workflow Test
+
 - **Objective**: Deploy prototype to 2+ environments (Mac + Linux VM); validate real offload
 - **Effort**: 2 agent-days
 - **Owner**: (TBD)
@@ -226,6 +239,7 @@ status: in_progress
   - Output from remote executor matches expected format
 
 ### T3.2: Runbook & Setup Documentation
+
 - **Objective**: Write step-by-step guide for deploying offload infrastructure
 - **Effort**: 1.5 agent-days
 - **Owner**: (TBD)
@@ -246,6 +260,7 @@ status: in_progress
   - Commands copy-pastable
 
 ### T3.3: Findings & Decision Document
+
 - **Objective**: Synthesize research findings; propose next steps
 - **Effort**: 1 agent-day
 - **Owner**: (TBD)
@@ -264,6 +279,7 @@ status: in_progress
   - Next phase roadmap provided
 
 ### T3.4: Code Quality & Documentation
+
 - **Objective**: Add docstrings, type hints, and comments to all code
 - **Effort**: 1 agent-day
 - **Owner**: (TBD)
@@ -283,6 +299,7 @@ status: in_progress
 ## Phase 4: Decision & Handoff (End of Week 3) — **Status: PENDING**
 
 ### T4.1: Presentation & Stakeholder Review
+
 - **Objective**: Present prototype and findings to thegent team
 - **Effort**: 0.5 agent-day
 - **Owner**: (TBD)
@@ -297,6 +314,7 @@ status: in_progress
   - Path forward clear (produce, archive, extend)
 
 ### T4.2: Code Archival & Handoff
+
 - **Objective**: Clean up prototype; mark as @experimental; prepare for handoff or merging
 - **Effort**: 1 agent-day
 - **Owner**: (TBD)
@@ -313,7 +331,8 @@ status: in_progress
   - No tech debt TODOs (document as future work)
 
 ### T4.3: Lessons Learned & Future Roadmap
-- **Objective**: Update docs/research/CONVERSATION_DUMP_*.md with findings
+
+- **Objective**: Update docs/research/CONVERSATION*DUMP*\*.md with findings
 - **Effort**: 0.5 agent-day
 - **Owner**: (TBD)
 - **Dependencies**: T3.3
@@ -357,6 +376,7 @@ T4.1, T4.2 ─→ T4.3 (Lessons Learned)
 **Critical Path**: T1.1 → T1.2 → T1.3 → T2.{1-8} → T2.9 → T3.1 → T3.2 → T3.3 → T4.1 (**~13 days**)
 
 **Parallel Tracks**:
+
 - T2.1, T2.2, T2.5 can start immediately after T1.3
 - T2.3, T2.4 can start after T2.1
 - T2.6, T2.7 can start after T2.5
@@ -366,27 +386,27 @@ T4.1, T4.2 ─→ T4.3 (Lessons Learned)
 
 ## Success Metrics
 
-| Metric | Target | Validation |
-|--------|--------|------------|
-| **Prototype Completeness** | All 7 modules implemented | Code review + tests passing |
-| **Test Coverage** | ≥70% | `pytest --cov` report |
-| **E2E Validation** | ≥3 tasks offloaded successfully | Manual testing + logs |
-| **Performance** | <5s offload latency per task | Measured during T3.1 |
-| **Documentation** | Design + runbook + lessons learned | Reader can follow from scratch |
-| **Code Quality** | No lint/type errors; ≥8/10 readable | ruff + mypy + review |
-| **Research Questions** | All 10 answered | Section in findings doc |
+| Metric                     | Target                              | Validation                     |
+| -------------------------- | ----------------------------------- | ------------------------------ |
+| **Prototype Completeness** | All 7 modules implemented           | Code review + tests passing    |
+| **Test Coverage**          | ≥70%                                | `pytest --cov` report          |
+| **E2E Validation**         | ≥3 tasks offloaded successfully     | Manual testing + logs          |
+| **Performance**            | <5s offload latency per task        | Measured during T3.1           |
+| **Documentation**          | Design + runbook + lessons learned  | Reader can follow from scratch |
+| **Code Quality**           | No lint/type errors; ≥8/10 readable | ruff + mypy + review           |
+| **Research Questions**     | All 10 answered                     | Section in findings doc        |
 
 ---
 
 ## Risk Mitigation
 
-| Risk | Probability | Impact | Mitigation |
-|------|-------------|--------|-----------|
-| Network unreliability | Medium | Task timeouts | Add configurable timeouts; test on LAN only |
-| Integration complexity with policy engine | Medium | Schedule slip | Simplify policy integration; iterate later |
-| Workload classification mismatches | Medium | Wrong platform selected | Start simple; add logging to collect misclassifications |
-| Prototype becomes "tech debt" | Low | Maintenance burden | Mark @experimental; clear handoff doc; no promises |
-| Stakeholder skepticism | Low | Scope reduction | Manage expectations early (research-stage); show working prototype |
+| Risk                                      | Probability | Impact                  | Mitigation                                                         |
+| ----------------------------------------- | ----------- | ----------------------- | ------------------------------------------------------------------ |
+| Network unreliability                     | Medium      | Task timeouts           | Add configurable timeouts; test on LAN only                        |
+| Integration complexity with policy engine | Medium      | Schedule slip           | Simplify policy integration; iterate later                         |
+| Workload classification mismatches        | Medium      | Wrong platform selected | Start simple; add logging to collect misclassifications            |
+| Prototype becomes "tech debt"             | Low         | Maintenance burden      | Mark @experimental; clear handoff doc; no promises                 |
+| Stakeholder skepticism                    | Low         | Scope reduction         | Manage expectations early (research-stage); show working prototype |
 
 ---
 
@@ -395,6 +415,7 @@ T4.1, T4.2 ─→ T4.3 (Lessons Learned)
 **Total Effort**: ~15 agent-days
 
 **Suggested Allocation** (if 2 agents assigned):
+
 - **Agent A** (Infrastructure): T1.1, T2.1, T2.2, T2.5, T2.6, T3.1 (8 days)
 - **Agent B** (Logic): T1.2, T1.3, T2.3, T2.4, T2.7, T2.8, T2.9 (7 days)
 - **Parallel**: T3.2, T3.3, T3.4, T4.1, T4.2, T4.3 (all agents)
@@ -405,19 +426,20 @@ T4.1, T4.2 ─→ T4.3 (Lessons Learned)
 
 ## Approval & Sign-Off
 
-| Item | Owner | Date | Status |
-|------|-------|------|--------|
-| Task breakdown | (auto-generated) | 2026-02-18 | Draft |
-| Phase 1 approval | (TBD) | (TBD) | Pending |
-| Phase 2 approval | (TBD) | (TBD) | Pending |
-| Phase 3 approval | (TBD) | (TBD) | Pending |
-| **Final handoff** | (TBD) | (TBD) | Pending |
+| Item              | Owner            | Date       | Status  |
+| ----------------- | ---------------- | ---------- | ------- |
+| Task breakdown    | (auto-generated) | 2026-02-18 | Draft   |
+| Phase 1 approval  | (TBD)            | (TBD)      | Pending |
+| Phase 2 approval  | (TBD)            | (TBD)      | Pending |
+| Phase 3 approval  | (TBD)            | (TBD)      | Pending |
+| **Final handoff** | (TBD)            | (TBD)      | Pending |
 
 ---
 
 ## Appendix: Task Template for Each Phase
 
 ### Phase 1 Task Template
+
 ```
 [ ] T1.X: Task Name
     - Effort: X agent-days
@@ -432,6 +454,7 @@ T4.1, T4.2 ─→ T4.3 (Lessons Learned)
 ```
 
 ### Phase 2 Task Template
+
 ```
 [ ] T2.X: Module Impl
     - Effort: X agent-days

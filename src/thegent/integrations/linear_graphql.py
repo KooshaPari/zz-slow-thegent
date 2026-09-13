@@ -5,7 +5,7 @@ from __future__ import annotations
 import logging
 import re
 from dataclasses import dataclass
-from datetime import datetime, UTC
+from datetime import UTC, datetime
 from pathlib import Path
 from typing import Any
 
@@ -130,7 +130,12 @@ def _status_to_linear_type(status: str) -> str:
 def _status_from_linear(state: dict[str, Any]) -> str:
     state_type = str(state.get("type") or "").lower()
     state_name = str(state.get("name") or "").lower()
-    if state_type in {"completed", "canceled"} or state_name in {"done", "complete", "completed", "closed"}:
+    if state_type in {"completed", "canceled"} or state_name in {
+        "done",
+        "complete",
+        "completed",
+        "closed",
+    }:
         return "COMPLETED"
     if state_type == "started" or state_name in {"in progress", "review"}:
         return "IN PROGRESS"
@@ -293,7 +298,10 @@ def sync_to_linear(config: LinearGraphQLConfig, workstream_data: list[dict[str, 
               }
             }
             """
-            update_payload: dict[str, Any] = {"title": title, "description": description}
+            update_payload: dict[str, Any] = {
+                "title": title,
+                "description": description,
+            }
             if target_state_id:
                 update_payload["stateId"] = target_state_id
             result = _graphql_request(

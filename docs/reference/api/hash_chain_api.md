@@ -14,13 +14,14 @@ detecting tampering.
 Validator for MAIF artifact chains.
 
 Verifies the integrity of artifact chains by checking:
+
 - Hash chain continuity (each artifact's previous_hash matches prior artifact's hash)
 - Signature validity (each artifact is properly signed)
 - Chain heads (latest artifact hash per session)
 
 ### Methods
 
-#### HashChainValidator.__init__
+#### HashChainValidator.**init**
 
 ```python
 __init__(self: Any, verifying_key: VerifyingKey)
@@ -105,6 +106,7 @@ verify_chain(self: Any, artifacts: list[MAIFArtifact])
 Verify integrity of an artifact chain.
 
 Checks that:
+
 1. Hash chain is continuous (each artifact's previous_hash matches prior)
 2. All signatures are valid
 3. Chain is internally consistent
@@ -210,6 +212,7 @@ verify_chain(self: Any, artifacts: list[MAIFArtifact])
 Verify integrity of an artifact chain.
 
 Checks that:
+
 1. Hash chain is continuous (each artifact's previous_hash matches prior)
 2. All signatures are valid
 3. Chain is internally consistent

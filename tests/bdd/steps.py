@@ -2,18 +2,19 @@
 BDD Step Definitions for Python (behave)
 """
 
-from behave import given, when, then
-from dataclasses import dataclass, field
-from typing import Optional, List, Dict, Any
-from datetime import datetime
-import uuid
 import time
+import uuid
+from dataclasses import dataclass, field
+from datetime import datetime
+from typing import Any
+
+from behave import given, then, when
 
 
 @dataclass
 class TestContext:
-    entity: Optional[dict[str, Any]] = None
-    last_error: Optional[Exception] = None
+    entity: dict[str, Any] | None = None
+    last_error: Exception | None = None
     events: list[dict[str, Any]] = field(default_factory=list)
     config: dict[str, Any] = field(default_factory=dict)
     results: list[Any] = field(default_factory=list)
@@ -36,7 +37,11 @@ def step_invalid_config(context):
 
 @given('an existing entity in state "{state}"')
 def step_entity_in_state(context, state: str):
-    context.test.entity = {"id": str(uuid.uuid4()), "state": state, "created_at": datetime.now().isoformat()}
+    context.test.entity = {
+        "id": str(uuid.uuid4()),
+        "state": state,
+        "created_at": datetime.now().isoformat(),
+    }
 
 
 @given("an unauthenticated user")
@@ -54,7 +59,11 @@ def step_create_entity(context):
     try:
         if not context.test.config.get("valid", True):
             raise ValueError("Invalid configuration")
-        context.test.entity = {"id": str(uuid.uuid4()), "state": "created", "created_at": datetime.now().isoformat()}
+        context.test.entity = {
+            "id": str(uuid.uuid4()),
+            "state": "created",
+            "created_at": datetime.now().isoformat(),
+        }
     except Exception as e:
         context.test.last_error = e
 

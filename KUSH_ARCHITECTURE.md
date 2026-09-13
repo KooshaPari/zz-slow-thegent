@@ -48,20 +48,20 @@
 
 ## Project Catalog
 
-| Project | Type | Purpose | Location |
-|---------|------|---------|----------|
-| **thegent** | Core | Agent orchestration, governance, execution | `~/kush/thegent` |
-| **agentapi++** | HTTP API | Control Claude, Cursor, Aider, Codex via HTTP | `~/kush/agentapi++` |
-| **cliproxy++** | LLM Proxy | Multi-provider routing, rate limiting | `~/kush/cliproxy++` |
-| **tokenledger** | Cost Tracking | Token usage, cost analysis | `~/kush/tokenledger` |
-| **4sgm** | Python Workspace | Python tooling, docs, QA | `~/kush/4sgm` |
-| **civ** | Simulation | Deterministic sim, policy-driven | `~/kush/civ` |
-| **parpour** | Planning | Spec-first planning, architecture | `~/kush/parpour` |
-| **usage** | Usage Tracker | AI usage with native OS integration | `~/kush/usage` |
-| **pheno-sdk** | SDK | Python SDK with credential management | `~/kush/pheno-sdk` |
-| **heliosHarness** | Research | Multi-agent research, command packaging | `~/kush/heliosHarness` |
-| **helios_router_data** | Data | Router analytics, Pareto dashboard | `~/kush/helios_router_data` |
-| **bloc** | CLI | Line counting, code visualization | `~/kush/bloc` |
+| Project                | Type             | Purpose                                       | Location                    |
+| ---------------------- | ---------------- | --------------------------------------------- | --------------------------- |
+| **thegent**            | Core             | Agent orchestration, governance, execution    | `~/kush/thegent`            |
+| **agentapi++**         | HTTP API         | Control Claude, Cursor, Aider, Codex via HTTP | `~/kush/agentapi++`         |
+| **cliproxy++**         | LLM Proxy        | Multi-provider routing, rate limiting         | `~/kush/cliproxy++`         |
+| **tokenledger**        | Cost Tracking    | Token usage, cost analysis                    | `~/kush/tokenledger`        |
+| **4sgm**               | Python Workspace | Python tooling, docs, QA                      | `~/kush/4sgm`               |
+| **civ**                | Simulation       | Deterministic sim, policy-driven              | `~/kush/civ`                |
+| **parpour**            | Planning         | Spec-first planning, architecture             | `~/kush/parpour`            |
+| **usage**              | Usage Tracker    | AI usage with native OS integration           | `~/kush/usage`              |
+| **pheno-sdk**          | SDK              | Python SDK with credential management         | `~/kush/pheno-sdk`          |
+| **heliosHarness**      | Research         | Multi-agent research, command packaging       | `~/kush/heliosHarness`      |
+| **helios_router_data** | Data             | Router analytics, Pareto dashboard            | `~/kush/helios_router_data` |
+| **bloc**               | CLI              | Line counting, code visualization             | `~/kush/bloc`               |
 
 ---
 
@@ -168,11 +168,7 @@ llm:
 # Usage tracking
 from thegent.integrations.token_ledger import track_usage
 
-track_usage(
-    model="gpt-4o",
-    tokens=1000,
-    cost=0.03
-)
+track_usage(model="gpt-4o", tokens=1000, cost=0.03)
 ```
 
 ### thegent → agentapi++
@@ -190,14 +186,14 @@ mcp:
 
 ## Legacy/Archived Projects
 
-| Project | Status | Notes |
-|---------|--------|-------|
-| `cliproxyapi-refactor` | 🔴 Archived | Old refactor branch |
-| `cliproxyapi-circular-fix` | 🔴 Archived | Fix branch |
-| `4sgm-refactor` | 🔴 Archived | Old refactor |
-| `4sgm-updates` | 🔴 Archived | Old updates |
-| `agentapi` | ✅ Merged | Into agentapi++ |
-| `cliproxy-plusplus` | ✅ Merged | SDK into cliproxy++ |
+| Project                    | Status      | Notes               |
+| -------------------------- | ----------- | ------------------- |
+| `cliproxyapi-refactor`     | 🔴 Archived | Old refactor branch |
+| `cliproxyapi-circular-fix` | 🔴 Archived | Fix branch          |
+| `4sgm-refactor`            | 🔴 Archived | Old refactor        |
+| `4sgm-updates`             | 🔴 Archived | Old updates         |
+| `agentapi`                 | ✅ Merged   | Into agentapi++     |
+| `cliproxy-plusplus`        | ✅ Merged   | SDK into cliproxy++ |
 
 ---
 
@@ -207,7 +203,7 @@ mcp:
 ~/kush/
 ├── thegent/           ✅ main (59 commits ahead)
 ├── agentapi++/        ✅ main (merged from agentapi)
-├── cliproxy++/        ✅ main 
+├── cliproxy++/        ✅ main
 ├── tokenledger/       ✅ main (GitHub created)
 ├── 4sgm/             ✅ main
 ├── civ/               ✅ main

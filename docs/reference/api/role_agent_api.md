@@ -14,7 +14,7 @@ Wraps another runner and injects a role-based system prompt.
 
 ### Methods
 
-#### RoleAgentRunner.__init__
+#### RoleAgentRunner.**init**
 
 ```python
 __init__(self: Any, role: TaskRole, base_runner: AgentRunner)

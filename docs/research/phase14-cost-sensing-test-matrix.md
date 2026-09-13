@@ -7,18 +7,19 @@
 > **WORK_STREAM ID:** phase14-cost-sensing
 
 ## 1. Objective
+
 Verify that autonomous learning actions are financially bounded and policy-safe.
 
 ## 2. Test Cases
 
-| ID | Category | Description | Success Criteria |
-|----|----------|-------------|------------------|
-| AL-001 | Bounding | Set cost cap to $5. Attempt a learning action that might exceed it. | Action blocked or throttled. |
-| AL-002 | Selection | Provide objectives: "Cheapest" vs "Fastest". | Selector picks correct model path. |
-| AL-003 | Rollback | Simulate a canary model failure (e.g., latency > 2s). | Automatic rollback to baseline model. |
-| AL-004 | HITL | Attempt to promote a canary model to "default" without approval. | Promotion blocked. |
-| AL-005 | Drift | Policy changes during a learning session. | Learning session re-evaluates against new policy. |
-| AL-006 | Feedback | Record feedback on a learning action. | Trust score/calibration updated for the learning candidate. |
+| ID     | Category  | Description                                                         | Success Criteria                                            |
+| ------ | --------- | ------------------------------------------------------------------- | ----------------------------------------------------------- |
+| AL-001 | Bounding  | Set cost cap to $5. Attempt a learning action that might exceed it. | Action blocked or throttled.                                |
+| AL-002 | Selection | Provide objectives: "Cheapest" vs "Fastest".                        | Selector picks correct model path.                          |
+| AL-003 | Rollback  | Simulate a canary model failure (e.g., latency > 2s).               | Automatic rollback to baseline model.                       |
+| AL-004 | HITL      | Attempt to promote a canary model to "default" without approval.    | Promotion blocked.                                          |
+| AL-005 | Drift     | Policy changes during a learning session.                           | Learning session re-evaluates against new policy.           |
+| AL-006 | Feedback  | Record feedback on a learning action.                               | Trust score/calibration updated for the learning candidate. |
 
 ## 3. Test Implementation
 
@@ -31,9 +32,11 @@ from thegent.governance.costs import CostCap
 from thegent.planning.selector import ObjectiveSelector
 from thegent.agents.registry import LearningRegistry
 
+
 @pytest.fixture
 def cost_cap():
     return CostCap(max_cost=5.0)
+
 
 @pytest.fixture
 def selector():
@@ -64,7 +67,7 @@ def test_al002_objective_selection(selector):
 
     models = [
         {"id": "fast", "latency": 0.1, "quality": 0.9, "cost": 0.5},
-        {"id": "cheap", "latency": 0.5, "quality": 0.7, "cost": 0.1}
+        {"id": "cheap", "latency": 0.5, "quality": 0.7, "cost": 0.1},
     ]
 
     cheapest_selection = selector.select(models, cheapest_profile)
@@ -133,11 +136,7 @@ def test_al006_feedback_recording():
     registry = LearningRegistry()
 
     # Record feedback
-    registry.record_feedback(
-        model_id="canary-v1",
-        success=True,
-        quality_score=0.95
-    )
+    registry.record_feedback(model_id="canary-v1", success=True, quality_score=0.95)
 
     candidate = registry.get_candidate("canary-v1")
     assert candidate.trust_score > 0, "Trust score should be updated"
@@ -189,11 +188,7 @@ def test_cost_prediction_accuracy():
     predictor = CostPredictor()
 
     # Predict cost for a learning action
-    predicted = predictor.predict_cost(
-        model="claude-sonnet-4.5",
-        tokens_estimate=10000,
-        action_type="learning"
-    )
+    predicted = predictor.predict_cost(model="claude-sonnet-4.5", tokens_estimate=10000, action_type="learning")
 
     # Verify prediction is within reasonable bounds
     assert 0.1 <= predicted <= 10.0, "Prediction should be reasonable"
@@ -209,11 +204,11 @@ def test_cost_prediction_accuracy():
 - [ ] All tests passing (pending implementation)
 
 ---
+
 ## See also
 
 - [WORK_STREAM.md](../reference/WORK_STREAM.md) — canonical backlog
 - [00-MASTER-INDEX.md](../plans/00-MASTER-INDEX.md) — plan index
-
 
 ---
 
@@ -223,15 +218,18 @@ def test_cost_prediction_accuracy():
 **Extended by:** Claude Code
 
 ### Changes Made
+
 1. Added practical implementation patterns
 2. Added configuration examples
 3. Enhanced cross-references to related docs
 
 ### Cross-References Added
+
 - Related research and implementation guides
 - WORK_STREAM.md for tracking
 
 ### Practical Additions
+
 - Implementation templates
 - Configuration examples
 - Best practices

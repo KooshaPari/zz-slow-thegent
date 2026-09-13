@@ -18,6 +18,7 @@ status: in_progress
 ### Phase 1.0: Kickoff & Planning (Day 1, 4h)
 
 #### 1.0.1 — Research Kickoff & Context Sharing
+
 - **Objective**: Align team on goals, scope, dependencies
 - **Input**: Proposal & design docs, current hook scripts
 - **Output**: Shared understanding, Q&A captured
@@ -30,6 +31,7 @@ status: in_progress
 - **Owner**: Research Lead
 
 #### 1.0.2 — Set Up Development Environment
+
 - **Objective**: Prepare Rust build, testing, and CI
 - **Input**: Project templates, Cargo.toml patterns
 - **Output**:
@@ -50,6 +52,7 @@ status: in_progress
 ### Phase 1.1: Governance Library PoC (Days 2-3, 12h)
 
 #### 1.1.1 — Extract & Design Common Types
+
 - **Objective**: Define shared data types used across all components
 - **Input**: Existing hook script implementations, QA config samples
 - **Output**:
@@ -66,6 +69,7 @@ status: in_progress
 - **Owner**: Rust Engineer
 
 #### 1.1.2 — Implement PolicyEngine
+
 - **Objective**: Build governance rule loader and evaluator
 - **Input**: Design spec (§1.1 in design.md), existing governance.yaml samples
 - **Output**:
@@ -82,6 +86,7 @@ status: in_progress
 - **Owner**: Rust Engineer
 
 #### 1.1.3 — Implement CostCalculator
+
 - **Objective**: Build token-to-cost estimation engine
 - **Input**: Pricing data (Claude, Gemini, GPT), model list
 - **Output**:
@@ -98,6 +103,7 @@ status: in_progress
 - **Owner**: Rust Engineer
 
 #### 1.1.4 — Implement QualityEvaluator (Core)
+
 - **Objective**: Parse lint output (ruff, oxlint) and aggregate metrics
 - **Input**: Sample ruff/oxlint JSON outputs, coverage.py format
 - **Output**:
@@ -118,6 +124,7 @@ status: in_progress
 ### Phase 1.2: Quality-Gate PoC Implementation (Days 4-5, 12h)
 
 #### 1.2.1 — Create quality-gate Binary Skeleton
+
 - **Objective**: Set up Rust binary that matches Bash interface
 - **Input**: Bash quality-gate.sh script, design spec
 - **Output**:
@@ -134,6 +141,7 @@ status: in_progress
 - **Owner**: Rust Engineer
 
 #### 1.2.2 — Implement quality-gate Logic
+
 - **Objective**: Rewrite Bash quality-gate.sh as Rust using library
 - **Input**:
   - Bash script (~300 LOC)
@@ -153,6 +161,7 @@ status: in_progress
 - **Owner**: Rust Engineer
 
 #### 1.2.3 — Write Integration Tests
+
 - **Objective**: Verify quality-gate works end-to-end
 - **Input**:
   - Sample project directories (pass/fail scenarios)
@@ -169,6 +178,7 @@ status: in_progress
 - **Owner**: Rust Engineer
 
 #### 1.2.4 — Benchmark & Compare
+
 - **Objective**: Measure Rust vs Bash latency, memory, CPU
 - **Input**:
   - Baseline Bash quality-gate.sh timing
@@ -192,6 +202,7 @@ status: in_progress
 ### Phase 1.3: Proof-of-Concept Security-Pipeline (Days 5-6, 8h)
 
 #### 1.3.1 — Implement SecurityScanner
+
 - **Objective**: Build secret detection + SAST integration layer
 - **Input**:
   - Security patterns (from dispatcher main.rs)
@@ -211,6 +222,7 @@ status: in_progress
 - **Owner**: Rust Engineer
 
 #### 1.3.2 — Create security-pipeline Binary
+
 - **Objective**: PoC security-pipeline hook in Rust
 - **Input**:
   - Bash security-pipeline.sh (~250 LOC)
@@ -228,6 +240,7 @@ status: in_progress
 - **Owner**: Rust Engineer
 
 #### 1.3.3 — Cross-Platform Testing (Security)
+
 - **Objective**: Verify security-pipeline on all platforms
 - **Input**:
   - Test project with known secrets
@@ -249,6 +262,7 @@ status: in_progress
 ### Phase 1.4: Technical Specification (Days 6-7, 6h)
 
 #### 1.4.1 — Write Technical Specification
+
 - **Objective**: Document architecture, decisions, trade-offs
 - **Input**:
   - Design doc (design.md)
@@ -269,6 +283,7 @@ status: in_progress
 - **Owner**: Rust Engineer + Governance Expert
 
 #### 1.4.2 — Create Implementation Guide
+
 - **Objective**: Document how to write new Rust hooks
 - **Input**:
   - quality-gate PoC code
@@ -289,6 +304,7 @@ status: in_progress
 - **Owner**: Rust Engineer
 
 #### 1.4.3 — Phase 2 Roadmap & Review
+
 - **Objective**: Plan next phase, document decisions
 - **Input**:
   - Phase 1 completion checklist
@@ -314,6 +330,7 @@ status: in_progress
 ### Phase 1.5: Final Review & Delivery (Day 7, 2h)
 
 #### 1.5.1 — Code Review & QA
+
 - **Objective**: Final quality gate before delivery
 - **Input**:
   - All Phase 1 deliverables (code, tests, docs)
@@ -333,6 +350,7 @@ status: in_progress
 - **Owner**: Code Reviewer
 
 #### 1.5.2 — Deliver & Handoff
+
 - **Objective**: Prepare phase 1 output for team
 - **Input**:
   - Technical spec, implementation guide, PoC code
@@ -383,26 +401,26 @@ status: in_progress
 
 ## Task Status Tracking
 
-| Task ID | Title | Owner | Status | Est. (h) | Actual (h) | % Complete |
-|---------|-------|-------|--------|----------|-----------|-----------|
-| 1.0.1 | Kickoff | Lead | pending | 2 | — | 0% |
-| 1.0.2 | Env Setup | Eng | pending | 2 | — | 0% |
-| 1.1.1 | Common Types | Eng | pending | 3 | — | 0% |
-| 1.1.2 | PolicyEngine | Eng | pending | 4 | — | 0% |
-| 1.1.3 | CostCalculator | Eng | pending | 2 | — | 0% |
-| 1.1.4 | QualityEvaluator | Eng | pending | 3 | — | 0% |
-| 1.2.1 | quality-gate Skeleton | Eng | pending | 2 | — | 0% |
-| 1.2.2 | quality-gate Logic | Eng | pending | 4 | — | 0% |
-| 1.2.3 | quality-gate Tests | Eng | pending | 3 | — | 0% |
-| 1.2.4 | Benchmark & Compare | Eng | pending | 3 | — | 0% |
-| 1.3.1 | SecurityScanner | Eng | pending | 4 | — | 0% |
-| 1.3.2 | security-pipeline Binary | Eng | pending | 2 | — | 0% |
-| 1.3.3 | Cross-Platform Tests | Eng | pending | 2 | — | 0% |
-| 1.4.1 | Technical Spec | Eng+Lead | pending | 3 | — | 0% |
-| 1.4.2 | Implementation Guide | Eng | pending | 2 | — | 0% |
-| 1.4.3 | Phase 2 Roadmap | Lead | pending | 1 | — | 0% |
-| 1.5.1 | Code Review & QA | Reviewer | pending | 1 | — | 0% |
-| 1.5.2 | Delivery & Handoff | Lead | pending | 1 | — | 0% |
+| Task ID | Title                    | Owner    | Status  | Est. (h) | Actual (h) | % Complete |
+| ------- | ------------------------ | -------- | ------- | -------- | ---------- | ---------- |
+| 1.0.1   | Kickoff                  | Lead     | pending | 2        | —          | 0%         |
+| 1.0.2   | Env Setup                | Eng      | pending | 2        | —          | 0%         |
+| 1.1.1   | Common Types             | Eng      | pending | 3        | —          | 0%         |
+| 1.1.2   | PolicyEngine             | Eng      | pending | 4        | —          | 0%         |
+| 1.1.3   | CostCalculator           | Eng      | pending | 2        | —          | 0%         |
+| 1.1.4   | QualityEvaluator         | Eng      | pending | 3        | —          | 0%         |
+| 1.2.1   | quality-gate Skeleton    | Eng      | pending | 2        | —          | 0%         |
+| 1.2.2   | quality-gate Logic       | Eng      | pending | 4        | —          | 0%         |
+| 1.2.3   | quality-gate Tests       | Eng      | pending | 3        | —          | 0%         |
+| 1.2.4   | Benchmark & Compare      | Eng      | pending | 3        | —          | 0%         |
+| 1.3.1   | SecurityScanner          | Eng      | pending | 4        | —          | 0%         |
+| 1.3.2   | security-pipeline Binary | Eng      | pending | 2        | —          | 0%         |
+| 1.3.3   | Cross-Platform Tests     | Eng      | pending | 2        | —          | 0%         |
+| 1.4.1   | Technical Spec           | Eng+Lead | pending | 3        | —          | 0%         |
+| 1.4.2   | Implementation Guide     | Eng      | pending | 2        | —          | 0%         |
+| 1.4.3   | Phase 2 Roadmap          | Lead     | pending | 1        | —          | 0%         |
+| 1.5.1   | Code Review & QA         | Reviewer | pending | 1        | —          | 0%         |
+| 1.5.2   | Delivery & Handoff       | Lead     | pending | 1        | —          | 0%         |
 
 **Total Planned**: 40 hours | **Total Actual**: — | **% Complete**: 0%
 
@@ -410,14 +428,14 @@ status: in_progress
 
 ## Risk Register
 
-| Risk | Impact | Likelihood | Mitigation |
-|------|--------|------------|-----------|
-| Rust learning curve delays 1.1-1.2 | 8h slip | Medium | Pair programming, code templates ready |
-| Dependency version conflicts | Build failure | Low | Use exact pinned versions, pre-audit |
-| Cross-platform test issues (WSL) | 2h slip | Medium | Early testing on WSL in 1.0.2 |
-| Performance targets not met | Scope change | Low | Fallback: profile and document findings |
-| Governance expert unavailable for review | 1h slip | Low | Prep review materials in advance |
-| Benchmark variance (noisy results) | 1h slip | Medium | Run 20× iterations, use statistical tools |
+| Risk                                     | Impact        | Likelihood | Mitigation                                |
+| ---------------------------------------- | ------------- | ---------- | ----------------------------------------- |
+| Rust learning curve delays 1.1-1.2       | 8h slip       | Medium     | Pair programming, code templates ready    |
+| Dependency version conflicts             | Build failure | Low        | Use exact pinned versions, pre-audit      |
+| Cross-platform test issues (WSL)         | 2h slip       | Medium     | Early testing on WSL in 1.0.2             |
+| Performance targets not met              | Scope change  | Low        | Fallback: profile and document findings   |
+| Governance expert unavailable for review | 1h slip       | Low        | Prep review materials in advance          |
+| Benchmark variance (noisy results)       | 1h slip       | Medium     | Run 20× iterations, use statistical tools |
 
 ---
 
@@ -436,12 +454,14 @@ status: in_progress
 ## Appendix: Template Checklist
 
 **Daily Standup** (Each morning):
+
 - [ ] Previous task completion % vs estimate
 - [ ] Blockers encountered
 - [ ] Today's focus
 - [ ] Risk escalation (if any)
 
 **Task Completion** (When done):
+
 - [ ] Code committed and pushed
 - [ ] Tests passing locally + CI
 - [ ] Documentation updated
@@ -449,6 +469,7 @@ status: in_progress
 - [ ] Owner sign-off
 
 **Phase Completion** (End of week):
+
 - [ ] All 18 tasks marked complete
 - [ ] Artifacts in shared location
 - [ ] Delivery meeting scheduled

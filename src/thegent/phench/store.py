@@ -120,16 +120,28 @@ def sync_dual(
 
     if project_path.exists() and not mirror_path.exists():
         _copy_wrapped_json(project_path, mirror_path)
-        return {"source": str(project_path), "synced": str(mirror_path), "status": "repaired"}
+        return {
+            "source": str(project_path),
+            "synced": str(mirror_path),
+            "status": "repaired",
+        }
 
     if mirror_path.exists() and not project_path.exists():
         _copy_wrapped_json(mirror_path, project_path)
-        return {"source": str(mirror_path), "synced": str(project_path), "status": "repaired"}
+        return {
+            "source": str(mirror_path),
+            "synced": str(project_path),
+            "status": "repaired",
+        }
 
     project_raw = project_path.read_text(encoding="utf-8")
     mirror_raw = mirror_path.read_text(encoding="utf-8")
     if project_raw == mirror_raw:
-        return {"status": "in-sync", "project_path": str(project_path), "mirror_path": str(mirror_path)}
+        return {
+            "status": "in-sync",
+            "project_path": str(project_path),
+            "mirror_path": str(mirror_path),
+        }
 
     if prefer not in {None, "projects", "home"}:
         raise ValueError("prefer must be one of: projects, home")

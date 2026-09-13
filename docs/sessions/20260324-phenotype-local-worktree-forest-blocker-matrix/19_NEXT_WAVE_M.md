@@ -3,6 +3,7 @@
 **Follows** `07`–`18`. **Snapshot:** 2026-03-24. **Intent:** Infrastructure & Cloud.
 
 ## Slice 1 — Infrastructure as Code (8)
+
 1. **Terraform**: Audit `main.tf` and `provider.tf` in `infrakit`.
 2. **Kubernetes**: Verify `helm` chart version consistency.
 3. **Container**: Audit `Dockerfile` for multi-stage build size.
@@ -13,6 +14,7 @@
 8. **Logging**: Audit `CloudWatch` or `ELK` ingestion rules.
 
 ## Slice 2 — CI/CD & Automation (8)
+
 9. **Matrix**: Optimize GHA `strategy.matrix` for parallelism.
 10. **Cache**: Optimize `pnpm` or `bun` GHA caches.
 11. **Self-hosted**: Audit `self-hosted` runner labels.
@@ -23,6 +25,7 @@
 16. **Artifacts**: Verify `upload-artifact` retention policies.
 
 ## Slice 3 — Cloud Native & Scalability (8)
+
 17. **Lambda**: Audit `serverless` or `sst` configurations.
 18. **DynamoDB**: Verify `TTL` and `PITR` settings.
 19. **Redis**: Audit `cluster` or `replication` settings.
@@ -33,4 +36,5 @@
 24. **Observability**: Verify `OpenTelemetry` ingestion.
 
 ## Slice 4 — Meta (1)
+
 25. **Task Update**: Record cloud findings in `05_KNOWN_ISSUES.md`.

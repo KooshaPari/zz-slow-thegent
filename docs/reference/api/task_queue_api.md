@@ -21,8 +21,8 @@ Directory layout::
       new/   # ready to be claimed by a worker
       cur/   # claimed by a worker; in-flight
 
-Atomic delivery: write to ``tmp/`` then ``os.rename`` to ``new/``.
-Atomic claim: ``os.rename`` from ``new/`` to ``cur/``.
+Atomic delivery: write to `tmp/` then `os.rename` to `new/`.
+Atomic claim: `os.rename` from `new/` to `cur/`.
 
 Task file format (JSON)::
 
@@ -36,7 +36,7 @@ Task file format (JSON)::
 
 ### Methods
 
-#### MaildirQueue.__init__
+#### MaildirQueue.**init**
 
 ```python
 __init__(self: Any, path: Path)
@@ -50,9 +50,9 @@ __init__(self: Any, path: Path)
 ack(self: Any, task_id: str)
 ```
 
-Acknowledge successful completion of *task_id*.
+Acknowledge successful completion of _task_id_.
 
-Removes the task file from ``cur/``.  Silently ignores a missing file
+Removes the task file from `cur/`. Silently ignores a missing file
 (idempotent — safe to call more than once).
 
 **Parameters**:
@@ -67,16 +67,16 @@ Removes the task file from ``cur/``.  Silently ignores a missing file
 dequeue(self: Any)
 ```
 
-Claim the highest-priority task from ``new/``.
+Claim the highest-priority task from `new/`.
 
-Moves the chosen file from ``new/`` to ``cur/`` atomically.
-Returns ``None`` when the queue is empty.
+Moves the chosen file from `new/` to `cur/` atomically.
+Returns `None` when the queue is empty.
 
-Priority ordering: tasks with a lower ``priority`` value (e.g. 0)
-are returned before higher values.  Ties are broken by
-``created_at`` (oldest first, FIFO within the same priority).
+Priority ordering: tasks with a lower `priority` value (e.g. 0)
+are returned before higher values. Ties are broken by
+`created_at` (oldest first, FIFO within the same priority).
 
-**Returns**: The task envelope dict, or ``None`` if the queue is empty.
+**Returns**: The task envelope dict, or `None` if the queue is empty.
 
 ---
 
@@ -86,16 +86,16 @@ are returned before higher values.  Ties are broken by
 enqueue(self: Any, task: dict[(str, Any)], priority: int)
 ```
 
-Write *task* to the queue atomically.
+Write _task_ to the queue atomically.
 
-1. Serialise the envelope to ``tmp/&lt;id&gt;``.
-2. ``os.rename`` to ``new/&lt;id&gt;`` (atomic on POSIX).
+1. Serialise the envelope to `tmp/&lt;id&gt;`.
+2. `os.rename` to `new/&lt;id&gt;` (atomic on POSIX).
 
 **Parameters**:
 
-- `task`:     Arbitrary JSON-serialisable payload.
+- `task`: Arbitrary JSON-serialisable payload.
 - `priority`: Integer 0-9; lower numbers are consumed first by
-:py:meth:`dequeue`.  Defaults to 5 (middle).
+  :py:meth:`dequeue`. Defaults to 5 (middle).
 
 **Returns**: The unique task ID string.
 
@@ -107,10 +107,10 @@ Write *task* to the queue atomically.
 list_pending(self: Any)
 ```
 
-Return all pending tasks from both ``new/`` and ``cur/``.
+Return all pending tasks from both `new/` and `cur/`.
 
-Tasks in ``cur/`` are in-flight (being processed or stranded after a
-crash).  Tasks in ``new/`` are waiting to be claimed.
+Tasks in `cur/` are in-flight (being processed or stranded after a
+crash). Tasks in `new/` are waiting to be claimed.
 
 **Returns**: List of task envelope dicts, unsorted.
 
@@ -122,9 +122,9 @@ crash).  Tasks in ``new/`` are waiting to be claimed.
 nack(self: Any, task_id: str)
 ```
 
-Negative-acknowledge *task_id*: return it to ``new/`` for retry.
+Negative-acknowledge _task_id_: return it to `new/` for retry.
 
-Moves the file from ``cur/`` back to ``new/`` atomically.
+Moves the file from `cur/` back to `new/` atomically.
 Silently ignores a missing file (idempotent).
 
 **Parameters**:
@@ -141,9 +141,9 @@ Silently ignores a missing file (idempotent).
 ack(self: Any, task_id: str)
 ```
 
-Acknowledge successful completion of *task_id*.
+Acknowledge successful completion of _task_id_.
 
-Removes the task file from ``cur/``.  Silently ignores a missing file
+Removes the task file from `cur/`. Silently ignores a missing file
 (idempotent — safe to call more than once).
 
 **Parameters**:
@@ -158,16 +158,16 @@ Removes the task file from ``cur/``.  Silently ignores a missing file
 dequeue(self: Any)
 ```
 
-Claim the highest-priority task from ``new/``.
+Claim the highest-priority task from `new/`.
 
-Moves the chosen file from ``new/`` to ``cur/`` atomically.
-Returns ``None`` when the queue is empty.
+Moves the chosen file from `new/` to `cur/` atomically.
+Returns `None` when the queue is empty.
 
-Priority ordering: tasks with a lower ``priority`` value (e.g. 0)
-are returned before higher values.  Ties are broken by
-``created_at`` (oldest first, FIFO within the same priority).
+Priority ordering: tasks with a lower `priority` value (e.g. 0)
+are returned before higher values. Ties are broken by
+`created_at` (oldest first, FIFO within the same priority).
 
-**Returns**: The task envelope dict, or ``None`` if the queue is empty.
+**Returns**: The task envelope dict, or `None` if the queue is empty.
 
 ---
 
@@ -177,16 +177,16 @@ are returned before higher values.  Ties are broken by
 enqueue(self: Any, task: dict[(str, Any)], priority: int)
 ```
 
-Write *task* to the queue atomically.
+Write _task_ to the queue atomically.
 
-1. Serialise the envelope to ``tmp/&lt;id&gt;``.
-2. ``os.rename`` to ``new/&lt;id&gt;`` (atomic on POSIX).
+1. Serialise the envelope to `tmp/&lt;id&gt;`.
+2. `os.rename` to `new/&lt;id&gt;` (atomic on POSIX).
 
 **Parameters**:
 
-- `task`:     Arbitrary JSON-serialisable payload.
+- `task`: Arbitrary JSON-serialisable payload.
 - `priority`: Integer 0-9; lower numbers are consumed first by
-:py:meth:`dequeue`.  Defaults to 5 (middle).
+  :py:meth:`dequeue`. Defaults to 5 (middle).
 
 **Returns**: The unique task ID string.
 
@@ -198,10 +198,10 @@ Write *task* to the queue atomically.
 list_pending(self: Any)
 ```
 
-Return all pending tasks from both ``new/`` and ``cur/``.
+Return all pending tasks from both `new/` and `cur/`.
 
-Tasks in ``cur/`` are in-flight (being processed or stranded after a
-crash).  Tasks in ``new/`` are waiting to be claimed.
+Tasks in `cur/` are in-flight (being processed or stranded after a
+crash). Tasks in `new/` are waiting to be claimed.
 
 **Returns**: List of task envelope dicts, unsorted.
 
@@ -213,9 +213,9 @@ crash).  Tasks in ``new/`` are waiting to be claimed.
 nack(self: Any, task_id: str)
 ```
 
-Negative-acknowledge *task_id*: return it to ``new/`` for retry.
+Negative-acknowledge _task_id_: return it to `new/` for retry.
 
-Moves the file from ``cur/`` back to ``new/`` atomically.
+Moves the file from `cur/` back to `new/` atomically.
 Silently ignores a missing file (idempotent).
 
 **Parameters**:

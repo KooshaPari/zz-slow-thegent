@@ -14,26 +14,22 @@ from __future__ import annotations
 
 from pathlib import Path
 from typing import Any
-from unittest.mock import patch
 
 import pytest
 
 from thegent.mcp.lsp_tools import (
     Diagnostic,
     HoverInfo,
-    LspToolAdapter,
     SymbolInfo,
+    _ensure_position,
+    _validate_existing_file,
     lsp_diagnostics,
     lsp_diagnostics_impl,
-    lsp_hover,
     lsp_hover_impl,
     lsp_symbol_lookup,
     lsp_symbol_lookup_impl,
-    _validate_existing_file,
-    _ensure_position,
 )
 from thegent.mcp.server import _server_tools_workstream_lsp
-
 
 # ---------------------------------------------------------------------------
 # Fake LSP adapters
@@ -241,7 +237,9 @@ async def test_lsp_diagnostics_impl_empty_for_clean_file(tmp_path: Path) -> None
 
 
 @pytest.mark.asyncio
-async def test_lsp_diagnostics_impl_raises_for_unavailable_backend(tmp_path: Path) -> None:
+async def test_lsp_diagnostics_impl_raises_for_unavailable_backend(
+    tmp_path: Path,
+) -> None:
     # @trace WL-109 - fail loudly, no silent fallback
     f = tmp_path / "note.txt"
     f.write_text("hello\n")
@@ -250,7 +248,9 @@ async def test_lsp_diagnostics_impl_raises_for_unavailable_backend(tmp_path: Pat
 
 
 @pytest.mark.asyncio
-async def test_lsp_diagnostics_impl_python_syntax_error_detected(tmp_path: Path) -> None:
+async def test_lsp_diagnostics_impl_python_syntax_error_detected(
+    tmp_path: Path,
+) -> None:
     # @trace WL-109 - default Python AST adapter detects syntax errors
     f = tmp_path / "bad.py"
     f.write_text("def broken(:\n")
@@ -308,7 +308,9 @@ async def test_lsp_symbol_lookup_impl_file_not_found(tmp_path: Path) -> None:
 
 
 @pytest.mark.asyncio
-async def test_lsp_symbol_lookup_impl_raises_for_unavailable_backend(tmp_path: Path) -> None:
+async def test_lsp_symbol_lookup_impl_raises_for_unavailable_backend(
+    tmp_path: Path,
+) -> None:
     # @trace WL-109 - fail loudly for non-Python files
     f = tmp_path / "script.sh"
     f.write_text("echo hello\n")
@@ -326,7 +328,9 @@ async def test_lsp_symbol_lookup_impl_python_ast_finds_class(tmp_path: Path) -> 
 
 
 @pytest.mark.asyncio
-async def test_lsp_symbol_lookup_impl_empty_result_for_unknown_symbol(tmp_path: Path) -> None:
+async def test_lsp_symbol_lookup_impl_empty_result_for_unknown_symbol(
+    tmp_path: Path,
+) -> None:
     # @trace WL-109
     f = tmp_path / "c.py"
     f.write_text("x = 1\n")
@@ -395,7 +399,9 @@ async def test_lsp_hover_impl_raises_for_unavailable_backend(tmp_path: Path) -> 
 
 
 @pytest.mark.asyncio
-async def test_lsp_hover_impl_out_of_bounds_line_returns_none_hover(tmp_path: Path) -> None:
+async def test_lsp_hover_impl_out_of_bounds_line_returns_none_hover(
+    tmp_path: Path,
+) -> None:
     # @trace WL-109 - line beyond end of file -> hover is None
     f = tmp_path / "small.py"
     f.write_text("x = 1\n")

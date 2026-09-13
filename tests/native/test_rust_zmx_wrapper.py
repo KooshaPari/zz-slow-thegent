@@ -18,7 +18,6 @@ from __future__ import annotations
 
 import re
 import subprocess
-import sys
 from pathlib import Path
 
 import pytest
@@ -150,7 +149,13 @@ def test_lib_rs_declares_zmx_client_methods():
     # @trace FR-ZMX-006
     """
     content = SRC_LIB.read_text(encoding="utf-8")
-    for method in ("pub fn new", "pub fn list_sessions", "pub fn attach", "pub fn capture", "pub fn send"):
+    for method in (
+        "pub fn new",
+        "pub fn list_sessions",
+        "pub fn attach",
+        "pub fn capture",
+        "pub fn send",
+    ):
         assert method in content, f"Missing ZmxClient method: '{method}'"
 
 

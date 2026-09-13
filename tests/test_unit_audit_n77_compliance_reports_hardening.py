@@ -13,13 +13,10 @@ Source: src/thegent/governance/compliance_reports.py
 from __future__ import annotations
 
 import json
-import tempfile
-from pathlib import Path
 
 import pytest
 
 from thegent.governance.compliance_reports import ComplianceReporter
-
 
 # ---------------------------------------------------------------------------
 # FR-GOV-CR-001 .. FR-GOV-CR-015
@@ -78,7 +75,10 @@ class TestGovernanceRollup:
 
     def test_deterministic_output(self):
         r = ComplianceReporter()
-        evidence = [{"kind": "a", "actor": "x", "severity": "low"}, {"kind": "b", "actor": "y", "severity": "high"}]
+        evidence = [
+            {"kind": "a", "actor": "x", "severity": "low"},
+            {"kind": "b", "actor": "y", "severity": "high"},
+        ]
         r1 = r.generate_governance_rollup(evidence)
         r2 = r.generate_governance_rollup(evidence)
         assert r1 == r2
@@ -89,8 +89,14 @@ class TestBuildGovernanceQueue:
         r = ComplianceReporter()
         queue = r.build_governance_queue(
             [
-                {"payload": {"requires_action": True, "severity": "low"}, "timestamp_utc": "2025-01-01"},
-                {"payload": {"requires_action": True, "severity": "critical"}, "timestamp_utc": "2025-01-02"},
+                {
+                    "payload": {"requires_action": True, "severity": "low"},
+                    "timestamp_utc": "2025-01-01",
+                },
+                {
+                    "payload": {"requires_action": True, "severity": "critical"},
+                    "timestamp_utc": "2025-01-02",
+                },
             ]
         )
         severities = [item["severity"] for item in queue]
@@ -100,8 +106,14 @@ class TestBuildGovernanceQueue:
         r = ComplianceReporter()
         queue = r.build_governance_queue(
             [
-                {"payload": {"requires_action": True, "severity": "unknown_xyz"}, "timestamp_utc": "2025-01-01"},
-                {"payload": {"requires_action": True, "severity": "critical"}, "timestamp_utc": "2025-01-02"},
+                {
+                    "payload": {"requires_action": True, "severity": "unknown_xyz"},
+                    "timestamp_utc": "2025-01-01",
+                },
+                {
+                    "payload": {"requires_action": True, "severity": "critical"},
+                    "timestamp_utc": "2025-01-02",
+                },
             ]
         )
         assert queue[-1]["severity"] == "unknown_xyz"

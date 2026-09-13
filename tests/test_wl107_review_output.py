@@ -3,7 +3,6 @@
 from __future__ import annotations
 
 import orjson as json
-
 import pytest
 from typer.testing import CliRunner
 
@@ -162,10 +161,15 @@ def test_parse_review_output_rejects_invalid_json() -> None:
         parse_review_output("{invalid")
 
 
-def test_review_cli_exit_code_zero_without_issues(monkeypatch: pytest.MonkeyPatch) -> None:
+def test_review_cli_exit_code_zero_without_issues(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
     monkeypatch.setattr(
         "thegent.cli.commands.impl.run_impl",
-        lambda **_kwargs: {"exit_code": 0, "stdout": '{"summary":"ok","overall_rating":100,"issues":[]}'},
+        lambda **_kwargs: {
+            "exit_code": 0,
+            "stdout": '{"summary":"ok","overall_rating":100,"issues":[]}',
+        },
     )
 
     result = runner.invoke(app, ["review", "check this"])
@@ -190,7 +194,9 @@ def test_review_cli_exit_code_one_with_issues(monkeypatch: pytest.MonkeyPatch) -
     assert result.exit_code == 1
 
 
-def test_review_cli_exit_code_one_with_issues_json_mode(monkeypatch: pytest.MonkeyPatch) -> None:
+def test_review_cli_exit_code_one_with_issues_json_mode(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
     monkeypatch.setattr(
         "thegent.cli.commands.impl.run_impl",
         lambda **_kwargs: {
@@ -209,7 +215,9 @@ def test_review_cli_exit_code_one_with_issues_json_mode(monkeypatch: pytest.Monk
     assert payload["issues"][0]["file"] == "a.py"
 
 
-def test_review_cli_exit_code_two_on_contract_violation(monkeypatch: pytest.MonkeyPatch) -> None:
+def test_review_cli_exit_code_two_on_contract_violation(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
     monkeypatch.setattr(
         "thegent.cli.commands.impl.run_impl",
         lambda **_kwargs: {"exit_code": 0, "stdout": "not-json"},
@@ -221,7 +229,9 @@ def test_review_cli_exit_code_two_on_contract_violation(monkeypatch: pytest.Monk
     assert "Review output validation failed" in result.stdout
 
 
-def test_review_cli_propagates_nonzero_run_failure(monkeypatch: pytest.MonkeyPatch) -> None:
+def test_review_cli_propagates_nonzero_run_failure(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
     monkeypatch.setattr(
         "thegent.cli.commands.impl.run_impl",
         lambda **_kwargs: {"exit_code": 7, "stderr": "runner failed"},
@@ -233,13 +243,21 @@ def test_review_cli_propagates_nonzero_run_failure(monkeypatch: pytest.MonkeyPat
     assert "Review run failed" in result.stdout
 
 
-def test_review_cli_json_contract_includes_context_usage(monkeypatch: pytest.MonkeyPatch) -> None:
+def test_review_cli_json_contract_includes_context_usage(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
     monkeypatch.setattr(
         "thegent.cli.commands.impl.run_impl",
         lambda **_kwargs: {
             "exit_code": 0,
             "stdout": '{"summary":"ok","overall_rating":100,"issues":[]}',
-            "context_usage": {"used": 700, "max": 1000, "ratio": 0.7, "display": "700/1k", "level": "yellow"},
+            "context_usage": {
+                "used": 700,
+                "max": 1000,
+                "ratio": 0.7,
+                "display": "700/1k",
+                "level": "yellow",
+            },
         },
     )
 

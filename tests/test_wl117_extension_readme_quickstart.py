@@ -1,8 +1,9 @@
 from __future__ import annotations
 
-import orjson as json
 import re
 from pathlib import Path
+
+import orjson as json
 
 
 def test_vscode_readme_quickstart_commands_exist_in_package_scripts() -> None:

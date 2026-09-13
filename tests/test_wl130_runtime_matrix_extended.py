@@ -10,9 +10,9 @@ Validates that contracts/runtime/runtime-modularization-matrix-v2.json:
 
 from __future__ import annotations
 
-import orjson as json
 from pathlib import Path
 
+import orjson as json
 import pytest
 
 MATRIX_V2_PATH = Path(__file__).parent.parent / "contracts" / "runtime" / "runtime-modularization-matrix-v2.json"

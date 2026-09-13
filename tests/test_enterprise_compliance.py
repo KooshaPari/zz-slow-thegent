@@ -13,11 +13,10 @@ Covers:
 
 from __future__ import annotations
 
-import orjson as json
 from datetime import UTC, datetime, timedelta
 from pathlib import Path
-from unittest.mock import MagicMock, patch
 
+import orjson as json
 import pytest
 from typer.testing import CliRunner
 
@@ -34,7 +33,6 @@ from thegent.governance.key_rotation import (
     ApiKeyRecord,
     KeyRegistry,
     KeyRotationMonitor,
-    KeyRotationWarning,
     KeyRotationWebhook,
     make_expiry_utc,
 )
@@ -152,7 +150,11 @@ class TestEvidenceStore:
     def test_payload_stored_and_retrieved(self, tmp_path: Path) -> None:
         # @trace WL-051
         store = EvidenceStore(tmp_path / "ev.jsonl")
-        store.append(kind="policy_evaluation", actor="engine", payload={"rule": "hitl", "decision": "block"})
+        store.append(
+            kind="policy_evaluation",
+            actor="engine",
+            payload={"rule": "hitl", "decision": "block"},
+        )
         rec = store.list_all()[0]
         assert rec.payload["rule"] == "hitl"
         assert rec.payload["decision"] == "block"
@@ -706,7 +708,15 @@ class TestEnterpriseCLI:
         store.append(kind="agent_decision", actor="old_entry")
         result = _runner.invoke(
             enterprise_app,
-            ["compliance", "evidence", "purge", "--older-than-days", "0", "--evidence", str(evidence_path)],
+            [
+                "compliance",
+                "evidence",
+                "purge",
+                "--older-than-days",
+                "0",
+                "--evidence",
+                str(evidence_path),
+            ],
         )
         assert result.exit_code == 0
         assert "Purged" in result.output

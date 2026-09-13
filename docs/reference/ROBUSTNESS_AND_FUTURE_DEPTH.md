@@ -10,67 +10,78 @@
 These phases are either DONE or in-progress. Robustness ensures they don't fail under multi-agent pressure or platform drift.
 
 ### 1.1 Multi-Platform Rules Sync (WP-5006+)
-*   **Current State**: `thegent rules sync` copies `CLAUDE.md` to `AGENTS.md`.
-*   **Robustness Enhancement**:
-    *   **Atomic Sync**: Write to `.tmp` then rename to avoid partial writes.
-    *   **IDE Support**: Expand to `.cursor/rules/*.mdc` (Cursor) and `.codex/skills/` (Codex).
-    *   **Check Mode**: `thegent rules sync --check` returns 0 if synced, 1 if drift detected (useful for CI/CD or Gardener).
-    *   **Read-Only Protection**: Detection of manual edits in targets; warning if sync would overwrite human-authored rules.
+
+- **Current State**: `thegent rules sync` copies `CLAUDE.md` to `AGENTS.md`.
+- **Robustness Enhancement**:
+  - **Atomic Sync**: Write to `.tmp` then rename to avoid partial writes.
+  - **IDE Support**: Expand to `.cursor/rules/*.mdc` (Cursor) and `.codex/skills/` (Codex).
+  - **Check Mode**: `thegent rules sync --check` returns 0 if synced, 1 if drift detected (useful for CI/CD or Gardener).
+  - **Read-Only Protection**: Detection of manual edits in targets; warning if sync would overwrite human-authored rules.
 
 ### 1.2 Work Stream Atomicity (WP-1006)
-*   **Problem**: Multiple agents claiming/completing work in `WORK_STREAM.md` simultaneously can cause merge conflicts or loss of state.
-*   **Robustness Enhancement**:
-    *   **Advisory Locking**: Create `docs/reference/WORK_STREAM.md.lock` during writes.
-    *   **Content Hash**: Include a `last_hash` in the file; reject writes if the file has changed since the agent last read it (Optimistic Concurrency Control).
-    *   **Recovery**: Gardener automatically removes stale locks (>5 mins).
+
+- **Problem**: Multiple agents claiming/completing work in `WORK_STREAM.md` simultaneously can cause merge conflicts or loss of state.
+- **Robustness Enhancement**:
+  - **Advisory Locking**: Create `docs/reference/WORK_STREAM.md.lock` during writes.
+  - **Content Hash**: Include a `last_hash` in the file; reject writes if the file has changed since the agent last read it (Optimistic Concurrency Control).
+  - **Recovery**: Gardener automatically removes stale locks (>5 mins).
 
 ### 1.3 Governance Policy Breadth (Phase 3)
-*   **Breadth Enhancement**: Move from "policy engine exists" to "robust library of defaults."
-    *   **Policy: Coverage Gate**: Block `COMPLETED` if coverage drops below 80%.
-    *   **Policy: Branch Safety**: Block implementation if not on a feature branch (detect via git).
-    *   **Policy: Budget Cap**: Hard-stop background agents if MTD cost > $X.
+
+- **Breadth Enhancement**: Move from "policy engine exists" to "robust library of defaults."
+  - **Policy: Coverage Gate**: Block `COMPLETED` if coverage drops below 80%.
+  - **Policy: Branch Safety**: Block implementation if not on a feature branch (detect via git).
+  - **Policy: Budget Cap**: Hard-stop background agents if MTD cost > $X.
 
 ### 1.4 MAIF: Signed Action Provenance (WP-3002)
-*   **Problem**: Agent actions lack an immutable, legally admissible audit trail. Ephemeral logs are insufficient for EU AI Act compliance.
-*   **Robustness Enhancement (arXiv:2511.15097)**:
-    *   **MAIF Structure**: Header, Modality Blocks, Semantic Layer, Security Metadata, Lifecycle Metadata.
-    *   **Cryptographic Semantic Binding (CSB)**: Binding action embeddings to raw data to prevent semantic injection.
-    *   **Block-Level Integrity**: Hashing individual blocks for rapid validation and partial-state recovery.
-    *   **ACAM Reasoning**: Weighting agent attention based on the verification status of the provenance chain.
+
+- **Problem**: Agent actions lack an immutable, legally admissible audit trail. Ephemeral logs are insufficient for EU AI Act compliance.
+- **Robustness Enhancement (arXiv:2511.15097)**:
+  - **MAIF Structure**: Header, Modality Blocks, Semantic Layer, Security Metadata, Lifecycle Metadata.
+  - **Cryptographic Semantic Binding (CSB)**: Binding action embeddings to raw data to prevent semantic injection.
+  - **Block-Level Integrity**: Hashing individual blocks for rapid validation and partial-state recovery.
+  - **ACAM Reasoning**: Weighting agent attention based on the verification status of the provenance chain.
 
 ### 1.5 Pareto-Front Provider Routing (WP-1004)
-*   **Current State**: Basic provider selection based on fixed weights.
-*   **Robustness Enhancement**:
-    *   **Pareto Optimization**: Dynamically select the non-dominated set of providers across Cost, Latency, and Accuracy.
-    *   **Confidence Calibration**: Penalize Accuracy scores for providers that consistently over-report confidence vs. actual outcomes.
-    *   **Strategy Slices**: Allow the orchestrator to pivot between "Cost-Optimized" and "Quality-Optimized" slices of the Pareto front.
+
+- **Current State**: Basic provider selection based on fixed weights.
+- **Robustness Enhancement**:
+  - **Pareto Optimization**: Dynamically select the non-dominated set of providers across Cost, Latency, and Accuracy.
+  - **Confidence Calibration**: Penalize Accuracy scores for providers that consistently over-report confidence vs. actual outcomes.
+  - **Strategy Slices**: Allow the orchestrator to pivot between "Cost-Optimized" and "Quality-Optimized" slices of the Pareto front.
 
 ### 1.6 OTel GenAI Observability (WP-Y6)
-*   **Current State**: Basic logging and file-based KPIs.
-*   **Robustness Enhancement**:
-    *   **Semantic Conventions**: Map all `thegent` telemetry to the OpenTelemetry `gen_ai.*` standard.
-    *   **Trace Chaining**: Link MAIF audit events to W3C Trace Context (trace_id/span_id) for deep forensic replay.
+
+- **Current State**: Basic logging and file-based KPIs.
+- **Robustness Enhancement**:
+  - **Semantic Conventions**: Map all `thegent` telemetry to the OpenTelemetry `gen_ai.*` standard.
+  - **Trace Chaining**: Link MAIF audit events to W3C Trace Context (trace_id/span_id) for deep forensic replay.
 
 ### 1.7 Economic Governance (WP-5003)
-*   **Depth**: Token unit economics, cost attribution per WP, and ROI-driven routing strategies using Pareto fronts.
-*   **Budgeting**: Multi-level budget gates (80% warn, 95% soft, 100% hard) to prevent runaway costs.
+
+- **Depth**: Token unit economics, cost attribution per WP, and ROI-driven routing strategies using Pareto fronts.
+- **Budgeting**: Multi-level budget gates (80% warn, 95% soft, 100% hard) to prevent runaway costs.
 
 ### 1.8 Context Compression & 4-Tier Memory (WP-5001)
-*   **Memory Depth**: L1 (Working), L2 (Short-term), L3 (Long-term/MAIF), L4 (Archival/WORM).
-*   **Compression**: Summarization layers and semantic caching to maintain context in long-running sessions.
+
+- **Memory Depth**: L1 (Working), L2 (Short-term), L3 (Long-term/MAIF), L4 (Archival/WORM).
+- **Compression**: Summarization layers and semantic caching to maintain context in long-running sessions.
 
 ### 1.9 Constitutional Enforcement (WP-3001)
-*   **Depth**: machine-readable principles (Constitutional AI) enforced by the `PolicyEngine`.
-*   **Proof of Alignment**: Every MAIF artifact includes a signature from a Critique Agent verifying compliance with the project's ethics and safety rules.
+
+- **Depth**: machine-readable principles (Constitutional AI) enforced by the `PolicyEngine`.
+- **Proof of Alignment**: Every MAIF artifact includes a signature from a Critique Agent verifying compliance with the project's ethics and safety rules.
 
 ### 1.10 Agentic CI/CD & Self-Healing (WP-2004)
-*   **Depth**: Autonomous bug rehabilitation loops where agents detect failures, generate hypotheses, and commit fixes verified in the Replay Sandbox.
-*   **Poison Pill Detection**: Escalation to DLQ after 3 failed rehabilitation attempts to prevent infinite loops.
+
+- **Depth**: Autonomous bug rehabilitation loops where agents detect failures, generate hypotheses, and commit fixes verified in the Replay Sandbox.
+- **Poison Pill Detection**: Escalation to DLQ after 3 failed rehabilitation attempts to prevent infinite loops.
 
 ### 1.11 Supermemory.ai Universal Memory (WP-5001-SM)
-*   **Depth**: Universal Memory API providing cloud-scale RAG, graph-based memory, and user profiles.
-*   **Integration**: Primary provider for L3 (Long-term) and L4 (Archival) memory tiers, replacing local file-based storage.
-*   **MCP**: Integration via `https://mcp.supermemory.ai/mcp` for cross-platform context persistence.
+
+- **Depth**: Universal Memory API providing cloud-scale RAG, graph-based memory, and user profiles.
+- **Integration**: Primary provider for L3 (Long-term) and L4 (Archival) memory tiers, replacing local file-based storage.
+- **MCP**: Integration via `https://mcp.supermemory.ai/mcp` for cross-platform context persistence.
 
 ---
 
@@ -79,72 +90,78 @@ These phases are either DONE or in-progress. Robustness ensures they don't fail 
 These phases are NOT STARTED. We add depth to their design to ensure "implementation readiness."
 
 ### 2.1 Phase 4: UX & Explainability
-*   **WP-4001: Operator Cockpit Model**:
-    *   **Depth**: Standardized 4-pane layout (Queue, Roster, Stream, Details) for situational awareness.
-*   **WP-4007: Decision Replay & Simulation**:
-    *   **Depth**: Implement a **Replay Sandbox** with Virtual File System (VFS) and Tool Side-Effect Mocking.
-*   **WP-4009: HAC & HITL Patterns**:
-    *   **Depth**: Human-Agent Collaboration (HAC) using Supervisory Loops, Active Learning, and "Human-as-a-Tool" patterns.
+
+- **WP-4001: Operator Cockpit Model**:
+  - **Depth**: Standardized 4-pane layout (Queue, Roster, Stream, Details) for situational awareness.
+- **WP-4007: Decision Replay & Simulation**:
+  - **Depth**: Implement a **Replay Sandbox** with Virtual File System (VFS) and Tool Side-Effect Mocking.
+- **WP-4009: HAC & HITL Patterns**:
+  - **Depth**: Human-Agent Collaboration (HAC) using Supervisory Loops, Active Learning, and "Human-as-a-Tool" patterns.
 
 ### 2.2 Phase 5: Scale & Continuity
-*   **WP-5001: Adaptive Concurrency Controller**:
-    *   **Depth**: Mathematical hysteresis model ($T_u=0.8, T_l=0.4$) with dwell-time damping to prevent scaling oscillation.
-*   **WP-5004: Redis Swarm Memory**:
-    *   **Depth**: Use Redis as a **Blackboard** for multi-agent stigmergic coordination and shared-log synchronization.
-*   **WP-1006: Agent Communication Language (JSON-ACL)**:
-    *   **Depth**: Structured negotiation protocol (propose/accept/reject) for conflict resolution and resource locking.
+
+- **WP-5001: Adaptive Concurrency Controller**:
+  - **Depth**: Mathematical hysteresis model ($T_u=0.8, T_l=0.4$) with dwell-time damping to prevent scaling oscillation.
+- **WP-5004: Redis Swarm Memory**:
+  - **Depth**: Use Redis as a **Blackboard** for multi-agent stigmergic coordination and shared-log synchronization.
+- **WP-1006: Agent Communication Language (JSON-ACL)**:
+  - **Depth**: Structured negotiation protocol (propose/accept/reject) for conflict resolution and resource locking.
 
 ### 2.3 Phase 6: Enterprise Readiness
-*   **WP-6004: Agent Identity & Sovereignty**:
-    *   **Depth**: W3C Decentralized Identifiers (DID) and Verifiable Credentials (VC) for non-repudiable agent agency.
-*   **WP-6003: SLO Certification**:
-    *   **Depth**: Forensic audit trails linked to MAIF provenance for compliance with the EU AI Act and SOC 2.
+
+- **WP-6004: Agent Identity & Sovereignty**:
+  - **Depth**: W3C Decentralized Identifiers (DID) and Verifiable Credentials (VC) for non-repudiable agent agency.
+- **WP-6003: SLO Certification**:
+  - **Depth**: Forensic audit trails linked to MAIF provenance for compliance with the EU AI Act and SOC 2.
 
 ---
 
 ## 3. Web Research & Industry Benchmarks (2025–2026)
 
 ### 3.1 Multi-Agent Conflict Resolution
-*   **Benchmark**: Industry uses **Raft-lite** or **Shared-Log** (like Kafka/JSONL) for coordination.
-*   **thegent Path**: JSONL (`run_registry.jsonl`) is our shared log. `WORK_STREAM.md` is our high-level projection. We must treat the JSONL as the source of truth for high-concurrency and the MD as the human-readable cache.
+
+- **Benchmark**: Industry uses **Raft-lite** or **Shared-Log** (like Kafka/JSONL) for coordination.
+- **thegent Path**: JSONL (`run_registry.jsonl`) is our shared log. `WORK_STREAM.md` is our high-level projection. We must treat the JSONL as the source of truth for high-concurrency and the MD as the human-readable cache.
 
 ### 3.2 Chaos Engineering for LLM Agents
-*   **Research**: Frameworks like *AgentChaos* and *AgentErrorTaxonomy* (arXiv 2509.25370) inject:
-    *   **Noisy Tools**: Tools return random errors or slow responses.
-    *   **Model Hallucination**: Intentionally feed the agent slightly wrong context.
-    *   **AgentErrorTaxonomy**: Categorizes failures across Memory, Reflection, Planning, Action, and System levels.
-*   **thegent Path**: Implement `tests/chaos/` (WP-Y3) using these patterns. Add `AgentDebug` (remediation feedback loop) to the recovery playbook (WP-2004).
+
+- **Research**: Frameworks like _AgentChaos_ and _AgentErrorTaxonomy_ (arXiv 2509.25370) inject:
+  - **Noisy Tools**: Tools return random errors or slow responses.
+  - **Model Hallucination**: Intentionally feed the agent slightly wrong context.
+  - **AgentErrorTaxonomy**: Categorizes failures across Memory, Reflection, Planning, Action, and System levels.
+- **thegent Path**: Implement `tests/chaos/` (WP-Y3) using these patterns. Add `AgentDebug` (remediation feedback loop) to the recovery playbook (WP-2004).
 
 ### 3.3 Multi-Agent Failure Attribution
-*   **Research**: Automated failure attribution (OpenReview GazlTYxZss) identifies the specific agent and step responsible for task failures.
-*   **thegent Path**: Enhance the `Dead-Letter Queue` (WP-Y2) to include **Fault Attribution Metadata**. When a multi-agent consensus (WP-1006) fails, the DLQ record must identify the "deviant" agent.
+
+- **Research**: Automated failure attribution (OpenReview GazlTYxZss) identifies the specific agent and step responsible for task failures.
+- **thegent Path**: Enhance the `Dead-Letter Queue` (WP-Y2) to include **Fault Attribution Metadata**. When a multi-agent consensus (WP-1006) fails, the DLQ record must identify the "deviant" agent.
 
 ---
 
 ## 4. Implementation Roadmap (Robustness First)
 
-| Phase | Priority | WP | Robustness/Depth Addition |
-|-------|----------|----|----------------------------|
-| **1.1** | P0 | WP-5006 | **Rule Sync v2**: Support `.cursor/rules` and `.codex/skills`. |
-| **1.2** | P0 | WP-1006 | **Atomic Stream**: File locking for `WORK_STREAM.md`. |
-| **1.4** | P1 | WP-3002 | **MAIF Provenance**: Cryptographic binding of action to evidence. |
-| **1.5** | P1 | WP-1004 | **Pareto Routing**: Multi-objective provider optimization. |
-| **1.7** | P1 | WP-5003 | **Economic Gov**: Token unit economics and ROI routing. |
-| **1.8** | P1 | WP-5001 | **Context Comp**: 4-tier memory and semantic compression. |
-| **Y.6** | P2 | WP-Y6 | **OTel GenAI**: Semantic mapping to GenAI conventions. |
-| **4.1** | P1 | WP-4001 | **Cockpit Schema**: Define `CockpitState` with 4-pane layout. |
-| **4.7** | P1 | WP-4007 | **Replay Sandbox**: VFS and tool mocking for simulations. |
-| **4.9** | P1 | WP-4009 | **HAC/HITL**: Human-Agent Collaboration patterns. |
-| **5.1** | P2 | WP-5001 | **Hysteresis Logic**: Mathematical damping for scale-out. |
-| **5.4** | P2 | WP-5004 | **Swarm Memory**: Stigmergic coordination via Redis Blackboard. |
-| **5.7** | P2 | WP-5007 | **Swarm Hierarchy**: Orchestrating Swarm of Swarms. |
-| **3.1** | P1 | WP-3001 | **Constitutional AI**: Pre-execution critique and Proof of Alignment. |
-| **2.4** | P2 | WP-2004 | **Self-Healing CI**: Autonomous bug rehabilitation and self-patching. |
-| **1.6** | P2 | WP-1006 | **A2A Negotiation**: JSON-ACL protocol for swarm consensus. |
-| **6.4** | P2 | WP-6004 | **Agent Identity**: DID and Verifiable Credentials for droids. |
-| **Y.2** | P2 | WP-Y2 | **Fault Attribution**: Add agent-step mapping to DLQ records. |
-| **Y.3** | P3 | WP-Y3 | **Error Taxonomy**: Implement `AgentErrorTaxonomy` in chaos drills. |
-| **5.1-SM**| P0 | WP-5001 | **Supermemory**: Universal Memory API for L3/L4 tiers. |
+| Phase      | Priority | WP      | Robustness/Depth Addition                                             |
+| ---------- | -------- | ------- | --------------------------------------------------------------------- |
+| **1.1**    | P0       | WP-5006 | **Rule Sync v2**: Support `.cursor/rules` and `.codex/skills`.        |
+| **1.2**    | P0       | WP-1006 | **Atomic Stream**: File locking for `WORK_STREAM.md`.                 |
+| **1.4**    | P1       | WP-3002 | **MAIF Provenance**: Cryptographic binding of action to evidence.     |
+| **1.5**    | P1       | WP-1004 | **Pareto Routing**: Multi-objective provider optimization.            |
+| **1.7**    | P1       | WP-5003 | **Economic Gov**: Token unit economics and ROI routing.               |
+| **1.8**    | P1       | WP-5001 | **Context Comp**: 4-tier memory and semantic compression.             |
+| **Y.6**    | P2       | WP-Y6   | **OTel GenAI**: Semantic mapping to GenAI conventions.                |
+| **4.1**    | P1       | WP-4001 | **Cockpit Schema**: Define `CockpitState` with 4-pane layout.         |
+| **4.7**    | P1       | WP-4007 | **Replay Sandbox**: VFS and tool mocking for simulations.             |
+| **4.9**    | P1       | WP-4009 | **HAC/HITL**: Human-Agent Collaboration patterns.                     |
+| **5.1**    | P2       | WP-5001 | **Hysteresis Logic**: Mathematical damping for scale-out.             |
+| **5.4**    | P2       | WP-5004 | **Swarm Memory**: Stigmergic coordination via Redis Blackboard.       |
+| **5.7**    | P2       | WP-5007 | **Swarm Hierarchy**: Orchestrating Swarm of Swarms.                   |
+| **3.1**    | P1       | WP-3001 | **Constitutional AI**: Pre-execution critique and Proof of Alignment. |
+| **2.4**    | P2       | WP-2004 | **Self-Healing CI**: Autonomous bug rehabilitation and self-patching. |
+| **1.6**    | P2       | WP-1006 | **A2A Negotiation**: JSON-ACL protocol for swarm consensus.           |
+| **6.4**    | P2       | WP-6004 | **Agent Identity**: DID and Verifiable Credentials for droids.        |
+| **Y.2**    | P2       | WP-Y2   | **Fault Attribution**: Add agent-step mapping to DLQ records.         |
+| **Y.3**    | P3       | WP-Y3   | **Error Taxonomy**: Implement `AgentErrorTaxonomy` in chaos drills.   |
+| **5.1-SM** | P0       | WP-5001 | **Supermemory**: Universal Memory API for L3/L4 tiers.                |
 
 ---
 
@@ -170,7 +187,6 @@ These phases are NOT STARTED. We add depth to their design to ensure "implementa
 - [UNIFIED_WORK_STREAM_DESIGN.md](./UNIFIED_WORK_STREAM_DESIGN.md)
 - [TOUCHPOINT_INTEGRATION_DEEP_DIVE.md](./TOUCHPOINT_INTEGRATION_DEEP_DIVE.md)
 
-
 ---
 
 ## EXTENSION_SUMMARY
@@ -179,15 +195,18 @@ These phases are NOT STARTED. We add depth to their design to ensure "implementa
 **Extended by:** Claude Code
 
 ### Changes Made
+
 1. Added practical implementation patterns
 2. Added configuration examples
 3. Enhanced cross-references to related documentation
 
 ### Cross-References Added
+
 - Related research and implementation guides
 - WORK_STREAM.md for tracking
 
 ### Practical Additions
+
 - Implementation templates
 - Configuration examples
 - Best practices

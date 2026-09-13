@@ -14,7 +14,10 @@ def _blocked_payload() -> dict[str, object]:
         "governance_blocked": True,
         "error": "Pre-work hard gate blocked new work start: missing or stale verification evidence.",
         "remediation": "Refresh evidence and retry.",
-        "governance_block": {"gate": "WP-HG-05.pre_work_hard_gate", "remediation_steps": ["step-1"]},
+        "governance_block": {
+            "gate": "WP-HG-05.pre_work_hard_gate",
+            "remediation_steps": ["step-1"],
+        },
         "next_items": [],
         "count": 0,
         "sources_checked": [],
@@ -65,7 +68,12 @@ def test_launch_item_blocks_before_bg_when_claim_gate_fails() -> None:
         patch("thegent.cli.commands.impl.bg_impl") as mock_bg_impl,
     ):
         asyncio.get_event_loop().run_until_complete(
-            system._launch_item({"item_id": "WP-1", "prompt_suggestion": "Do it"}, "critical", "gpt-4o-mini", 0.01)
+            system._launch_item(
+                {"item_id": "WP-1", "prompt_suggestion": "Do it"},
+                "critical",
+                "gpt-4o-mini",
+                0.01,
+            )
         )
 
     mock_bg_impl.assert_not_called()

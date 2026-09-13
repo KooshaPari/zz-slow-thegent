@@ -4,17 +4,17 @@ Scope: `docs/reference/WORK_STREAM_CLIPROXY_ALL.md` items `#119..#127` (QOL/Othe
 
 ## 1) Covered items table
 
-| Global item | QOL/Other item | Issue ID | Title | Status |
-|---|---:|---|---|---|
-| #119 | #40 | unknown (not present in source file) | unavailable in current checkout | blocked (source missing) |
-| #120 | #41 | unknown (not present in source file) | unavailable in current checkout | blocked (source missing) |
-| #121 | #42 | unknown (not present in source file) | unavailable in current checkout | blocked (source missing) |
-| #122 | #43 | unknown (not present in source file) | unavailable in current checkout | blocked (source missing) |
-| #123 | #44 | unknown (not present in source file) | unavailable in current checkout | blocked (source missing) |
-| #124 | #45 | unknown (not present in source file) | unavailable in current checkout | blocked (source missing) |
-| #125 | #46 | unknown (not present in source file) | unavailable in current checkout | blocked (source missing) |
-| #126 | #47 | unknown (not present in source file) | unavailable in current checkout | blocked (source missing) |
-| #127 | #48 | unknown (not present in source file) | unavailable in current checkout | blocked (source missing) |
+| Global item | QOL/Other item | Issue ID                             | Title                           | Status                   |
+| ----------- | -------------: | ------------------------------------ | ------------------------------- | ------------------------ |
+| #119        |            #40 | unknown (not present in source file) | unavailable in current checkout | blocked (source missing) |
+| #120        |            #41 | unknown (not present in source file) | unavailable in current checkout | blocked (source missing) |
+| #121        |            #42 | unknown (not present in source file) | unavailable in current checkout | blocked (source missing) |
+| #122        |            #43 | unknown (not present in source file) | unavailable in current checkout | blocked (source missing) |
+| #123        |            #44 | unknown (not present in source file) | unavailable in current checkout | blocked (source missing) |
+| #124        |            #45 | unknown (not present in source file) | unavailable in current checkout | blocked (source missing) |
+| #125        |            #46 | unknown (not present in source file) | unavailable in current checkout | blocked (source missing) |
+| #126        |            #47 | unknown (not present in source file) | unavailable in current checkout | blocked (source missing) |
+| #127        |            #48 | unknown (not present in source file) | unavailable in current checkout | blocked (source missing) |
 
 Note: In this checkout, `docs/reference/WORK_STREAM_CLIPROXY_ALL.md` ends at QOL/Other `#30`, so QOL/Other `#40..#48` cannot be resolved from local source.
 

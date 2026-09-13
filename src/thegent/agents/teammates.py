@@ -13,7 +13,12 @@ class TeammateAgent:
     """A specialized teammate agent capable of handling delegated sub-tasks."""
 
     def __init__(
-        self, id: str, description: str, expertise: list[str], role: str = "specialist", priority: int = 1
+        self,
+        id: str,
+        description: str,
+        expertise: list[str],
+        role: str = "specialist",
+        priority: int = 1,
     ) -> None:
         self.id = id
         self.description = description

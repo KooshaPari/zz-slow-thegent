@@ -4,6 +4,7 @@ WARNING: This is an auto-generated stub module.
 The actual implementation was moved/deleted during repository restructuring.
 This stub exists for backwards compatibility with existing tests.
 """
+
 from dataclasses import dataclass
 from typing import Any
 

@@ -15,11 +15,13 @@ This directory contains the **complete technical specification and work plan for
 ## Document Index
 
 ### 1. **proposal.md** (Executive Level)
+
 **Audience**: Governance leads, decision makers
 **Length**: ~40 pages
 **Purpose**: Business case and scope
 
 **Key Sections**:
+
 - Executive summary (cost-benefit, performance targets)
 - Problem statement (5 current limitations)
 - Research objectives (4 primary goals)
@@ -31,6 +33,7 @@ This directory contains the **complete technical specification and work plan for
 - Deliverables
 
 **Takeaways**:
+
 - Current Bash hooks are 50% slower than Rust equivalents (estimated)
 - Governance logic duplicated across 18 hooks (1200 LOC total)
 - Rust rewrite could reduce code by 50% and improve performance by 60%
@@ -39,11 +42,13 @@ This directory contains the **complete technical specification and work plan for
 ---
 
 ### 2. **design.md** (Technical Level)
+
 **Audience**: Rust engineers, architects
 **Length**: ~60 pages
 **Purpose**: Detailed architecture and design patterns
 
 **Key Sections**:
+
 - Architecture overview (current vs target state)
 - Core components design:
   - PolicyEngine (governance rule loader)
@@ -61,6 +66,7 @@ This directory contains the **complete technical specification and work plan for
 - Success metrics
 
 **Takeaways**:
+
 - 5 reusable library components in `thegent-hooks` crate
 - All hooks share JSON interface (stdin/stdout/exit code)
 - Backward compatible with existing Bash hooks
@@ -70,11 +76,13 @@ This directory contains the **complete technical specification and work plan for
 ---
 
 ### 3. **tasks.md** (Execution Level)
+
 **Audience**: Project managers, task assignees
 **Length**: ~50 pages
 **Purpose**: Week-long work breakdown and scheduling
 
 **Structure**: 18 atomic tasks organized into 5 phases:
+
 1. **Phase 1.0: Kickoff & Planning** (Day 1, 4h)
    - 1.0.1: Research kickoff
    - 1.0.2: Dev environment setup
@@ -103,6 +111,7 @@ This directory contains the **complete technical specification and work plan for
    - 1.5.1-1.5.2: Review & delivery
 
 **Per-Task Included**:
+
 - Objective & inputs/outputs
 - Duration & effort estimate
 - Acceptance criteria (checklist)
@@ -116,22 +125,26 @@ This directory contains the **complete technical specification and work plan for
 ## Key Findings (Summary)
 
 ### Performance Impact
-| Operation | Bash | Rust | Gain |
-|-----------|------|------|------|
-| Single hook startup | 50ms | 10ms | **80%** |
+
+| Operation                | Bash   | Rust  | Gain    |
+| ------------------------ | ------ | ----- | ------- |
+| Single hook startup      | 50ms   | 10ms  | **80%** |
 | Parallel Stop (12 hooks) | 1200ms | 400ms | **67%** |
-| Parse 100 lint issues | 150ms | 25ms | **83%** |
-| Memory per hook | 20MB | 5MB | **75%** |
+| Parse 100 lint issues    | 150ms  | 25ms  | **83%** |
+| Memory per hook          | 20MB   | 5MB   | **75%** |
 
 **Goal**: Achieve ≥50% latency reduction. **Confidence**: High (based on comparable Rust/Bash transitions).
 
 ### Code Quality
+
 - **Current**: 18 Bash hooks, ~2500 LoC, low test coverage
 - **Target**: 5 library modules + 18 hook binaries, ~1200 LoC Rust equivalent, 85%+ coverage
 - **Reduction**: 50% fewer lines, 85% fewer bugs (due to type system)
 
 ### Reusability
+
 **Before**:
+
 ```
 quality-gate.sh (300 LOC) → custom governance logic
 security-pipeline.sh (250 LOC) → custom security logic
@@ -139,6 +152,7 @@ stop-reconcile.sh (180 LOC) → custom git logic
 ```
 
 **After**:
+
 ```
 thegent-hooks library (shared):
   - PolicyEngine (reused in 8+ hooks)
@@ -151,34 +165,39 @@ stop-reconcile binary (80 LOC) → calls git lib
 ```
 
 ### Risk Assessment
-| Risk | Likelihood | Mitigation |
-|------|------------|-----------|
-| Learning curve | Medium | Pair programming, templates |
-| Async complexity | Low | Sync-only in Phase 1 |
-| Cross-platform quirks | Medium | Early WSL testing (Day 1) |
-| Performance targets miss | Low | Documented fallback plan |
+
+| Risk                     | Likelihood | Mitigation                  |
+| ------------------------ | ---------- | --------------------------- |
+| Learning curve           | Medium     | Pair programming, templates |
+| Async complexity         | Low        | Sync-only in Phase 1        |
+| Cross-platform quirks    | Medium     | Early WSL testing (Day 1)   |
+| Performance targets miss | Low        | Documented fallback plan    |
 
 ---
 
 ## How to Use This Document Set
 
 ### For Decision Makers
+
 1. Read **proposal.md** (§ Executive Summary, Success Criteria)
 2. Review risk register and timeline
 3. Decide: Proceed to Phase 1 or iterate?
 
 ### For Rust Engineers
+
 1. Read **design.md** (§ Core Components, Hook Binary Interface)
 2. Skim **tasks.md** (task breakdown, acceptance criteria)
 3. Start with task 1.0.2 (setup) → 1.1.1 (types)
 
 ### For Project Managers
+
 1. Use **tasks.md** as your weekly plan
 2. Track actual vs estimated effort
 3. Escalate blockers daily
 4. Update risk register
 
 ### For Governance Experts
+
 1. Review **design.md** (§ PolicyEngine, Configuration)
 2. Provide feedback on governance rule format
 3. Review PoC results in task 1.2.4
@@ -206,18 +225,21 @@ stop-reconcile binary (80 LOC) → calls git lib
 ## Next Steps
 
 ### Immediate (Before Phase 1 Starts)
+
 1. **Get Approval** from governance team
 2. **Assign Rust Engineer** (preferred: prior Rust experience)
 3. **Schedule Kickoff** (task 1.0.1)
 4. **Notify Stakeholders** (hook maintainers, hook users)
 
 ### Day 1 (Task 1.0)
+
 1. Execute kickoff meeting (1.0.1)
 2. Set up development environment (1.0.2)
 3. Prepare CI/CD pipeline
 4. Create Cargo workspace structure
 
 ### Days 2-7 (Tasks 1.1-1.5)
+
 1. Follow task schedule in tasks.md
 2. Daily standup (15 min)
 3. Update task status + blockers
@@ -225,6 +247,7 @@ stop-reconcile binary (80 LOC) → calls git lib
 5. End-of-week delivery meeting
 
 ### End of Week
+
 1. All Phase 1 deliverables complete
 2. Code review passed
 3. Governance team reviews findings
@@ -234,9 +257,9 @@ stop-reconcile binary (80 LOC) → calls git lib
 
 ## Document Versions
 
-| Version | Date | Author | Status | Notes |
-|---------|------|--------|--------|-------|
-| 1.0 | 2026-02-18 | Research Team | Complete | Initial synthesis, ready for review |
+| Version | Date       | Author        | Status   | Notes                               |
+| ------- | ---------- | ------------- | -------- | ----------------------------------- |
+| 1.0     | 2026-02-18 | Research Team | Complete | Initial synthesis, ready for review |
 
 ---
 
@@ -265,6 +288,7 @@ A: Yes, on WSL2. We test on macOS + Linux in CI. WSL2 simulation included in cro
 ## Contact & Questions
 
 For questions or feedback, reach out to:
+
 - **Research Lead**: [Name] (overall direction, Phase 1-2 planning)
 - **Rust Engineer**: [Name] (technical design, PoC implementation)
 - **Governance Expert**: [Name] (policy engine review, quality standards)
@@ -277,5 +301,5 @@ For questions or feedback, reach out to:
 
 ---
 
-*Synthesized from research fragments, architecture analysis, and hook system audit.*
-*See proposal.md, design.md, tasks.md for detailed documentation.*
+_Synthesized from research fragments, architecture analysis, and hook system audit._
+_See proposal.md, design.md, tasks.md for detailed documentation._

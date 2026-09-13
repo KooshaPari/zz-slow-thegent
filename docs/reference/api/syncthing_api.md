@@ -11,8 +11,8 @@ Syncthing workspace synchronization for thegent compute offloading.
 Configuration for the Syncthing API client.
 
 Reads from environment variables:
-  THGENT_SYNCTHING_API_KEY — Syncthing GUI/API key
-  THGENT_SYNCTHING_URL     — Base URL of the Syncthing REST API
+THGENT_SYNCTHING_API_KEY — Syncthing GUI/API key
+THGENT_SYNCTHING_URL — Base URL of the Syncthing REST API
 
 **Inherits from**: `BaseSettings`
 
@@ -42,13 +42,13 @@ Represents a Syncthing shared folder.
 
 Manages Syncthing workspace synchronisation via its REST API.
 
-All network calls use ``httpx.AsyncClient``.  The client is created
-lazily and reused across calls.  Call :meth:`close` (or use the
+All network calls use `httpx.AsyncClient`. The client is created
+lazily and reused across calls. Call :meth:`close` (or use the
 async context manager) to release the underlying connection pool.
 
 ### Methods
 
-#### SyncthingManager.__init__
+#### SyncthingManager.**init**
 
 ```python
 __init__(self: Any, config: Any)

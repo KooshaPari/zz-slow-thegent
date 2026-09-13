@@ -25,7 +25,7 @@ Result from a desktop automation operation.
 macOS desktop automation via AppleScript (osascript) and JXA.
 
 Falls back gracefully on non-macOS platforms: every method returns an
-``AutomationResult(success=False, ...)`` rather than raising.
+`AutomationResult(success=False, ...)` rather than raising.
 
 ### Methods
 
@@ -65,7 +65,7 @@ Return the name of the currently frontmost application.
 is_available(self: Any)
 ```
 
-Return True when running on macOS and *osascript* is on PATH.
+Return True when running on macOS and _osascript_ is on PATH.
 
 ---
 
@@ -91,7 +91,7 @@ Activate (open/bring to front) an application by name.
 run_applescript(self: Any, script: str, timeout_s: float)
 ```
 
-Execute an AppleScript snippet via *osascript*.
+Execute an AppleScript snippet via _osascript_.
 
 **Parameters**:
 
@@ -108,7 +108,7 @@ Execute an AppleScript snippet via *osascript*.
 run_jxa(self: Any, script: str, timeout_s: float)
 ```
 
-Execute a JavaScript for Automation (JXA) snippet via *osascript*.
+Execute a JavaScript for Automation (JXA) snippet via _osascript_.
 
 **Parameters**:
 
@@ -157,7 +157,7 @@ Return the name of the currently frontmost application.
 is_available(self: Any)
 ```
 
-Return True when running on macOS and *osascript* is on PATH.
+Return True when running on macOS and _osascript_ is on PATH.
 
 ---
 
@@ -183,7 +183,7 @@ Activate (open/bring to front) an application by name.
 run_applescript(self: Any, script: str, timeout_s: float)
 ```
 
-Execute an AppleScript snippet via *osascript*.
+Execute an AppleScript snippet via _osascript_.
 
 **Parameters**:
 
@@ -200,7 +200,7 @@ Execute an AppleScript snippet via *osascript*.
 run_jxa(self: Any, script: str, timeout_s: float)
 ```
 
-Execute a JavaScript for Automation (JXA) snippet via *osascript*.
+Execute a JavaScript for Automation (JXA) snippet via _osascript_.
 
 **Parameters**:
 

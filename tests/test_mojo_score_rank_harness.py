@@ -7,7 +7,6 @@ import subprocess
 import sys
 from pathlib import Path
 
-
 SCRIPT_PATH = Path("scripts/mojo_score_rank_harness.py")
 
 

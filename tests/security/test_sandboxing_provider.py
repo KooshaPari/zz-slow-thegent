@@ -29,10 +29,15 @@ def test_generate_seatbelt_profile_uses_macos_sandbox(monkeypatch: pytest.Monkey
     assert profile == f"profile:restricted:{tmp_path.resolve()}"
 
 
-def test_seatbelt_wrap_raises_when_sandbox_exec_missing(monkeypatch: pytest.MonkeyPatch) -> None:
+def test_seatbelt_wrap_raises_when_sandbox_exec_missing(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
     provider = SandboxProvider()
 
-    monkeypatch.setattr("thegent.security.sandboxing.MacOSSandbox.is_sandbox_available", lambda _self: False)
+    monkeypatch.setattr(
+        "thegent.security.sandboxing.MacOSSandbox.is_sandbox_available",
+        lambda _self: False,
+    )
     with pytest.raises(RuntimeError, match="sandbox-exec is required"):
         provider._seatbelt_wrap(["echo", "hi"], tier=2)
 
@@ -42,7 +47,10 @@ def test_seatbelt_wrap_delegates_to_macos_sandbox(monkeypatch: pytest.MonkeyPatc
     monkeypatch.setenv("THGENT_SANDBOX_WORKTREE", str(tmp_path))
     captured: dict[str, object] = {}
 
-    monkeypatch.setattr("thegent.security.sandboxing.MacOSSandbox.is_sandbox_available", lambda _self: True)
+    monkeypatch.setattr(
+        "thegent.security.sandboxing.MacOSSandbox.is_sandbox_available",
+        lambda _self: True,
+    )
 
     def _fake_apply(self, cmd, level, project_root):  # noqa: ANN001
         captured["cmd"] = cmd

@@ -5,6 +5,7 @@ Date: 2026-02-22
 Scope: Consolidated research from the long mixed list of Reddit threads, Google-search intents, and vendor docs links provided by the user.
 
 ## Normalization Notes
+
 - Input contained duplicates, cross-posts, typo variants, and placeholders such as `(no title)`.
 - I normalized these into distinct clusters and resolved exact URLs where possible.
 - Google-search intents are preserved as query links when no single canonical target exists.
@@ -12,6 +13,7 @@ Scope: Consolidated research from the long mixed list of Reddit threads, Google-
 ## Cluster A: Ghostty + Agent Workflows
 
 ### Resolved links
+
 - https://www.reddit.com/r/vibecoding/comments/1qy2q7l/he_built_terraform_vagrant_and_ghostty_heres_how/
 - https://www.reddit.com/r/accelerate/comments/1qxz1ac/he_built_terraform_vagrant_and_ghostty_heres_how/
 - https://www.reddit.com/r/Zig/comments/1hod58j/how_i_configure_ghostty/
@@ -24,6 +26,7 @@ Scope: Consolidated research from the long mixed list of Reddit threads, Google-
 - https://www.reddit.com/r/ClaudeAI/comments/1qv5ohc/ghostty_tab_notifications_permission_autoapprove/
 
 ### Google-search intent links (normalized)
+
 - https://www.google.com/search?q=ghostty+features+agents
 - https://www.google.com/search?q=ghostty+extensions
 - https://www.google.com/search?q=ghostty+mods
@@ -36,6 +39,7 @@ Scope: Consolidated research from the long mixed list of Reddit threads, Google-
 - https://www.google.com/search?q=ghosty+ai+agentss
 
 ### Ghostty pattern summary
+
 - Ghostty is primarily used as a fast terminal host for agent CLIs, not as a built-in autonomous agent shell.
 - The recurring stack is: `Ghostty + panes/splits + agent CLI + git worktree + notification hooks`.
 - Practical adoption focus is UX speed, pane ergonomics, and background-run visibility.
@@ -43,6 +47,7 @@ Scope: Consolidated research from the long mixed list of Reddit threads, Google-
 ## Cluster B: Zsh + Guardrails + Context Control
 
 ### Resolved links
+
 - https://www.reddit.com/r/ClaudeAI/comments/1objq3o/give_agents_the_guardrails_they_need_zsh_solution/
 - https://www.reddit.com/r/zsh/comments/1k6qjxe/zsh_ai_helper_do_you_think_this_is_a_good_idea/
 - https://www.reddit.com/r/ClaudeCode/comments/1pphsi2/zshaicmd_natural_language_to_shell_commands_with/
@@ -54,10 +59,12 @@ Scope: Consolidated research from the long mixed list of Reddit threads, Google-
 - https://www.bretfisher.com/blog/shell
 
 ### Google-search intent links
+
 - https://www.google.com/search?q=%22zsh%22+ai+agents+reddit
 - https://www.google.com/search?q=%22zsh%22+ai+agents
 
 ### Zsh/terminal pattern summary
+
 - Strong preference for suggestion-first command UX with explicit human accept.
 - Per-project shell guardrails and wrapper commands are used to constrain risky operations.
 - Context trimming and session reset habits are treated as first-class reliability techniques.
@@ -65,6 +72,7 @@ Scope: Consolidated research from the long mixed list of Reddit threads, Google-
 ## Cluster C: Claude Code Orchestration, Skills, and Agent UX
 
 ### Resolved links
+
 - https://www.reddit.com/r/ClaudeCode/comments/1r89084/selfimprovement_loop_my_favorite_claude_code_skill/
 - https://www.reddit.com/r/ClaudeCode/comments/1r8jv31/brainstorming_an_ultimate_refactoring_optimizer/
 - https://www.reddit.com/r/ClaudeCode/comments/1r8hdyv/idea_create_consumable_plans_so_when_ai_agent/
@@ -79,6 +87,7 @@ Scope: Consolidated research from the long mixed list of Reddit threads, Google-
 - https://www.reddit.com/r/ProductManagement/comments/1qjrjto/what_were_your_ai_built_tools_agents_at_work_that/
 
 ### Orchestration pattern summary
+
 - High-signal posts focus on persistent context, consumable plans, and workflow-bound automation.
 - Useful tools emphasize visibility (`where the session stands`, usage/context bars), not just autonomy claims.
 - Multi-agent claims without reproducible benchmarks remain a recurring weak point.
@@ -86,6 +95,7 @@ Scope: Consolidated research from the long mixed list of Reddit threads, Google-
 ## Cluster D: APIs, Proxies, Benchmarks, Security, and Cost Observability
 
 ### Resolved links
+
 - https://www.reddit.com/r/ClaudeCode/comments/1r7vprk/claudes_programmatic_tool_calling_is_now_ga_37/
 - https://platform.claude.com/docs/en/agents-and-tools/tool-use/programmatic-tool-calling
 - https://www.anthropic.com/engineering/advanced-tool-use
@@ -107,11 +117,13 @@ Scope: Consolidated research from the long mixed list of Reddit threads, Google-
 - https://www.reddit.com/r/VibeCodersNest/comments/1r8mvgg/security_maintainable_first_vibe_coding/
 
 ### Security/observability summary
+
 - Prompt injection concentration is highest where untrusted content meets broad tool permissions.
 - Hook-only defenses are bypass-prone; robust controls need sandboxing, allowlists, scoped permissions, and audit logging.
 - Reliable cost/usage observability requires layered telemetry: limits, token/cost analytics, and trend dashboards.
 
 ## Additional Mentions from Input (Partially Resolved or Ambiguous)
+
 - Serena Dashboard (repeated mention, no canonical thread URL supplied).
 - Rufus Du Sol Phoenix codex cli proxy api (appears as search intent, no clear canonical source in provided text).
 - Oraios Software – Jain & Panchenko Software Solutions GbR (entity mention, no context target).
@@ -120,6 +132,7 @@ Scope: Consolidated research from the long mixed list of Reddit threads, Google-
 - Multiple `(no title)` placeholders with no target references.
 
 ## What Holds Up Across Sources
+
 - Deterministic execution beats free-form autonomy for production reliability.
 - Guardrails and context lifecycle management are more impactful than model-prompt novelty.
 - Best practical stack combines:
@@ -129,6 +142,7 @@ Scope: Consolidated research from the long mixed list of Reddit threads, Google-
   - explicit observability for limits, cost, and failures
 
 ## Actionable Shortlist (Primary Sources First)
+
 1. Programmatic tool calling docs: https://platform.claude.com/docs/en/agents-and-tools/tool-use/programmatic-tool-calling
 2. Anthropic advanced tool use: https://www.anthropic.com/engineering/advanced-tool-use
 3. Terminal-Bench official repo/docs: https://github.com/laude-institute/terminal-bench and https://www.tbench.ai/docs

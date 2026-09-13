@@ -5,7 +5,11 @@ from unittest.mock import MagicMock
 import pytest
 
 from thegent.config import ThegentSettings
-from thegent.governance.escalation import EscalationPriority, EscalationQueue, EscalationStatus
+from thegent.governance.escalation import (
+    EscalationPriority,
+    EscalationQueue,
+    EscalationStatus,
+)
 
 
 @pytest.fixture

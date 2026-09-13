@@ -7,6 +7,7 @@ This directory contains detailed change proposals for modernizing Python infrast
 ## What Are Change Proposals?
 
 Change proposals are comprehensive, implementation-ready documents that provide:
+
 - **Current state analysis** - What exists today
 - **Proposed changes** - What needs to change
 - **Migration steps** - How to implement the changes
@@ -84,24 +85,37 @@ Each change proposal follows this structure:
 **Risk Level:** [HIGH|MEDIUM|LOW]
 
 ## Current State Analysis
+
 ### Strengths
+
 ### Issues
 
 ## Proposed Changes
+
 ### Phase 1: [Name] (X hours)
+
 ### Phase 2: [Name] (X hours)
+
 ### Phase 3: [Name] (X hours)
+
 ### Phase 4: [Name] (X hours)
 
 ## Migration Steps
+
 ### Step 1: [Name]
+
 ### Step 2: [Name]
+
 ...
 
 ## Rollback Plan
+
 ## Success Criteria
+
 ## Risks & Mitigations
+
 ## Dependencies
+
 ## Follow-up Tasks
 ```
 
@@ -110,16 +124,19 @@ Each change proposal follows this structure:
 ## Implementation Priority
 
 ### Tier 1: Production Critical (Weeks 2-4)
+
 1. **atoms-mcp-prod** (Week 2) - ✅ Change proposal complete
 2. **router** (Week 3) - ✅ Change proposal complete
 3. **zen-mcp-server** (Week 4) - 📝 To create
 
 ### Tier 2: SDK/Libraries (Weeks 5-7)
+
 4. **pheno-sdk** (Weeks 5-6) - 📝 To create
 5. **crun** (Week 6) - 📝 To create
 6. **morph** (Week 7) - 📝 To create
 
 ### Tier 3: Tools/Utilities (Weeks 8-9)
+
 7. **atomsAgent** (Week 8) - 📝 To create
 8. **task-tool** (Week 8) - 📝 To create
 9. **bloc** (Week 9) - 📝 To create
@@ -131,18 +148,20 @@ Each change proposal follows this structure:
 ## Common Patterns
 
 ### Pattern 1: Hybrid Configuration (Vercel Projects)
+
 Used by: atoms-mcp-prod, atomsAgent
 
 ```python
 @classmethod
 def load(cls):
-    if os.getenv('VERCEL'):
+    if os.getenv("VERCEL"):
         return cls()  # Environment variables
     else:
         return cls.from_yaml()  # YAML files
 ```
 
 ### Pattern 2: Standard YAML Configuration
+
 Used by: All other projects
 
 ```yaml
@@ -157,6 +176,7 @@ api_keys:
 ```
 
 ### Pattern 3: Hexagonal Architecture
+
 Used by: pheno-sdk, spec_toolkit, router
 
 ```
@@ -172,6 +192,7 @@ project/
 ## Quick Reference
 
 ### Standard Tools
+
 - **uv** - Package manager
 - **ruff** - Linter and formatter
 - **hatch** - Build system
@@ -181,6 +202,7 @@ project/
 - **mypy/zuban** - Type checker
 
 ### Standard Files
+
 - `pyproject.toml` - Project configuration
 - `uv.lock` - Dependency lock file
 - `config.yml` - Non-sensitive configuration
@@ -189,6 +211,7 @@ project/
 - `.pre-commit-config.yaml` - Pre-commit hooks
 
 ### Standard Commands
+
 ```bash
 # Setup
 uv venv
@@ -234,16 +257,19 @@ When creating a new change proposal:
 ## Getting Help
 
 ### Documentation
+
 - Master plan: `../PYTHON_INFRASTRUCTURE_MODERNIZATION_MASTER_PLAN.md`
 - WBS: `../PYTHON_INFRASTRUCTURE_WBS.md`
 - Summary: `../PYTHON_INFRASTRUCTURE_SUMMARY.md`
 - Quick start: `../QUICK_START_IMPLEMENTATION_GUIDE.md`
 
 ### Architecture Patterns
+
 - Hexagonal architecture: `../zen-mcp-server/work-prompts/python-patterns-guide.md`
 - TDD patterns: `../zen-mcp-server/work-prompts/tdd-architecture-prompts.md`
 
 ### Examples
+
 - Completed change proposals in this directory
 - Existing modern projects: zen-mcp-server, crun
 
@@ -264,6 +290,7 @@ When updating change proposals:
 ## Questions?
 
 If you have questions about:
+
 - **Overall strategy** - See the master plan
 - **Specific project** - See that project's change proposal
 - **Implementation** - See the quick start guide
@@ -274,4 +301,3 @@ If you have questions about:
 ## License
 
 These change proposals are part of the kush repository and follow the same license.
-

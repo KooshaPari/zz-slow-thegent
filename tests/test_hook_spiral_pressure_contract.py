@@ -2,12 +2,12 @@
 
 from __future__ import annotations
 
-import orjson as json
 import os
 import subprocess
 import time
 from pathlib import Path
 
+import orjson as json
 import pytest
 
 
@@ -105,7 +105,10 @@ def _run_governance(
                 "missing_required_test_types": [],
                 "detected_test_types": {},
             },
-            "security": {"signed_attestation_present": True, "slsa_provenance_present": True},
+            "security": {
+                "signed_attestation_present": True,
+                "slsa_provenance_present": True,
+            },
         }
         (verify_dir / "qa-attestation.json").write_text(json.dumps(attestation).decode() + "\n", encoding="utf-8")
 
@@ -310,7 +313,11 @@ def test_red_policy_band_forces_interrupt_and_fail_closed(tmp_path: Path) -> Non
     ],
 )
 def test_spiral_directive_parity_by_band(
-    tmp_path: Path, scenario: str, expected_band: str, expected_directive: str, kwargs: dict
+    tmp_path: Path,
+    scenario: str,
+    expected_band: str,
+    expected_directive: str,
+    kwargs: dict,
 ) -> None:
     _, report, metric, state, alert = _run_governance(tmp_path, **kwargs)
     assert report["policy_band"] == expected_band
@@ -333,7 +340,9 @@ def test_spiral_directive_parity_by_band(
 
 
 @pytest.mark.unit
-def test_yellow_retries_escalate_to_red_interrupt_after_threshold(tmp_path: Path) -> None:
+def test_yellow_retries_escalate_to_red_interrupt_after_threshold(
+    tmp_path: Path,
+) -> None:
     now_epoch = int(time.time())
     rc, report, metric, state, alert = _run_governance(
         tmp_path,

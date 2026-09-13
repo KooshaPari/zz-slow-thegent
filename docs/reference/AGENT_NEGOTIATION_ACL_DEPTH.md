@@ -7,17 +7,19 @@ This document defines the structured protocol for inter-agent negotiation and co
 `thegent` uses a JSON-based variant of traditional Agent Communication Languages (like FIPA-ACL) to enable structured "negotiation" between droids.
 
 ### 1.1 Performative Types
+
 Agents use specific "performatives" to signal intent:
 
-| Performative | Description | Example |
-|--------------|-------------|---------|
-| `propose` | Suggest an action or solution. | Propose a code change. |
-| `accept` | Agree to a proposal. | Consensus achieved. |
-| `reject` | Disagree with a proposal. | Quality gate failed. |
-| `counter` | Propose an alternative. | "Use async instead of threads." |
-| `call-for-proposal`| Request solutions from others. | "Who can fix this bug?" |
+| Performative        | Description                    | Example                         |
+| ------------------- | ------------------------------ | ------------------------------- |
+| `propose`           | Suggest an action or solution. | Propose a code change.          |
+| `accept`            | Agree to a proposal.           | Consensus achieved.             |
+| `reject`            | Disagree with a proposal.      | Quality gate failed.            |
+| `counter`           | Propose an alternative.        | "Use async instead of threads." |
+| `call-for-proposal` | Request solutions from others. | "Who can fix this bug?"         |
 
 ### 1.2 Message Schema
+
 ```python
 class ACLMessage(BaseModel):
     sender_id: str
@@ -44,21 +46,21 @@ When multiple agents propose conflicting solutions (e.g., in a Parallel Consensu
 ## 3. Resource Locking (Negotiated Access)
 
 To prevent race conditions, agents must "Negotiate" for file locks:
+
 - An agent sends a `request-lock` message to the **Blackboard**.
 - The `Orchestrator` grants the lock if no high-priority agent is already working on that resource.
 - If denied, the agent receives a `propose-defer` message with a backoff time.
 
 ---
-*Cross-ref: [SWARM_MEMORY_COORDINATION_DEPTH.md](./SWARM_MEMORY_COORDINATION_DEPTH.md) | [MAIF_ARTIFACT_SPEC_DEPTH.md](./MAIF_ARTIFACT_SPEC_DEPTH.md)*
 
+_Cross-ref: [SWARM_MEMORY_COORDINATION_DEPTH.md](./SWARM_MEMORY_COORDINATION_DEPTH.md) | [MAIF_ARTIFACT_SPEC_DEPTH.md](./MAIF_ARTIFACT_SPEC_DEPTH.md)_
 
 ---
+
 ## See also
 
 - [WORK_STREAM.md](../reference/WORK_STREAM.md) — canonical backlog
 - [00-MASTER-INDEX.md](../plans/00-MASTER-INDEX.md) — plan index
-
-
 
 ---
 
@@ -68,15 +70,18 @@ To prevent race conditions, agents must "Negotiate" for file locks:
 **Extended by:** Claude Code
 
 ### Changes Made
+
 1. Added practical implementation patterns
 2. Added configuration examples
 3. Enhanced cross-references to related documentation
 
 ### Cross-References Added
+
 - Related research and implementation guides
 - WORK_STREAM.md for tracking
 
 ### Practical Additions
+
 - Implementation templates
 - Configuration examples
 - Best practices

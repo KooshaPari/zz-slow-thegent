@@ -26,6 +26,7 @@ All recommendations from the existing solutions audit have been implemented:
 ### ✅ Phase 2: New Modules Created
 
 #### 1. `src/thegent/infra/resource_monitor.py`
+
 - **Purpose:** Resource monitoring using `psutil`
 - **Features:**
   - File descriptor tracking using `psutil.Process.num_fds()`
@@ -37,6 +38,7 @@ All recommendations from the existing solutions audit have been implemented:
   - Critical resource usage alerts
 
 #### 2. `src/thegent/infra/resource_limits.py`
+
 - **Purpose:** Resource limits management
 - **Features:**
   - File descriptor limit management
@@ -49,7 +51,9 @@ All recommendations from the existing solutions audit have been implemented:
 ### ✅ Phase 3: Enhanced Existing Modules
 
 #### 1. `src/thegent/infra/process_registry.py`
+
 **Enhancements:**
+
 - Added `psutil` import and integration
 - Added `ProcessHandle.get_psutil_process()` method
 - Added `ProcessHandle.get_resource_usage()` method
@@ -57,6 +61,7 @@ All recommendations from the existing solutions audit have been implemented:
 - Enhanced `get_stats()` to include resource usage per process
 
 **Benefits:**
+
 - Better process introspection
 - Process tree cleanup
 - Resource usage tracking per process
@@ -67,7 +72,9 @@ All recommendations from the existing solutions audit have been implemented:
 ### ✅ Phase 4: Test Suite Created
 
 #### `tests/test_resource_leaks.py`
+
 **Test Classes:**
+
 1. `TestSubprocessLeaks` - Subprocess manager leak detection
 2. `TestFileDescriptorLeaks` - File descriptor leak detection
 3. `TestProcessRegistryLeaks` - Process registry leak detection
@@ -77,6 +84,7 @@ All recommendations from the existing solutions audit have been implemented:
 7. `TestErrorHandlingLeaks` - Error handling leak detection
 
 **Features:**
+
 - Uses `psleak` framework for automated leak detection
 - Tests memory leaks
 - Tests file descriptor leaks
@@ -88,12 +96,15 @@ All recommendations from the existing solutions audit have been implemented:
 ### ✅ Phase 5: Module Exports Updated
 
 #### `src/thegent/infra/__init__.py`
+
 **Added Exports:**
+
 - `ResourceLimits`, `get_resource_limits`
 - `ResourceMonitor`, `ResourceStats`, `get_resource_monitor`
 - `SubprocessManager`, `get_subprocess_manager`
 
 **All modules now accessible via:**
+
 ```python
 from thegent.infra import (
     get_registry,
@@ -108,12 +119,14 @@ from thegent.infra import (
 ## Files Created/Modified
 
 ### Created Files:
+
 1. `src/thegent/infra/resource_monitor.py` (new)
 2. `src/thegent/infra/resource_limits.py` (new)
 3. `tests/test_resource_leaks.py` (new)
 4. `docs/research/RUNTIME_INFRASTRUCTURE_IMPLEMENTATION_COMPLETE.md` (this file)
 
 ### Modified Files:
+
 1. `pyproject.toml` - Added `psutil` and `psleak` dependencies
 2. `src/thegent/infra/process_registry.py` - Enhanced with `psutil` integration
 3. `src/thegent/infra/__init__.py` - Added new module exports
@@ -123,6 +136,7 @@ from thegent.infra import (
 ## Integration Points
 
 ### Using Resource Monitor:
+
 ```python
 from thegent.infra import get_resource_monitor
 
@@ -134,6 +148,7 @@ if stats.is_critical():
 ```
 
 ### Using Resource Limits:
+
 ```python
 from thegent.infra import get_resource_limits
 
@@ -143,6 +158,7 @@ process_limit = limits.get_process_limit()
 ```
 
 ### Using Enhanced Process Registry:
+
 ```python
 from thegent.infra import get_registry
 
@@ -159,17 +175,20 @@ if handle:
 ## Next Steps
 
 ### Immediate:
+
 1. ✅ Install dependencies: `uv sync` or `pip install -e .`
 2. ✅ Run tests: `pytest tests/test_resource_leaks.py`
 3. ✅ Verify integration: Check that `psutil` is working
 
 ### Short-term:
+
 1. Integrate `ResourceMonitor` into main application startup
 2. Add resource monitoring to health checks
 3. Set up CI/CD to run leak detection tests
 4. Monitor resource usage in production
 
 ### Long-term:
+
 1. Migrate all `subprocess` calls to use `SubprocessManager`
 2. Add resource monitoring dashboards
 3. Set up alerts for critical resource usage

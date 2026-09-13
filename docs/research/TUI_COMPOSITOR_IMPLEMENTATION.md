@@ -10,13 +10,13 @@ TUI compositor provides a unified terminal user interface for thegent, combining
 
 ## Framework Comparison
 
-| Framework | Language | Pros | Cons | Recommendation |
-|-----------|----------|------|------|----------------|
-| **Textual** | Python | Rich ecosystem, async native, CSS-like styling | Python-only runtime | ✅ Primary |
-| **Rich** | Python | Beautiful output, progress bars | Limited interactivity | Output only |
-| **Bubble Tea** | Go | Modern, interactive, excellent docs | Requires Go runtime | ❌ Not Python |
-| **blessed** | Python | Mature, cross-platform | Older API, sync only | ❌ Legacy |
-| **prompt_toolkit** | Python | Full-featured, Pythonic | Complex API | Alternative |
+| Framework          | Language | Pros                                           | Cons                  | Recommendation |
+| ------------------ | -------- | ---------------------------------------------- | --------------------- | -------------- |
+| **Textual**        | Python   | Rich ecosystem, async native, CSS-like styling | Python-only runtime   | ✅ Primary     |
+| **Rich**           | Python   | Beautiful output, progress bars                | Limited interactivity | Output only    |
+| **Bubble Tea**     | Go       | Modern, interactive, excellent docs            | Requires Go runtime   | ❌ Not Python  |
+| **blessed**        | Python   | Mature, cross-platform                         | Older API, sync only  | ❌ Legacy      |
+| **prompt_toolkit** | Python   | Full-featured, Pythonic                        | Complex API           | Alternative    |
 
 ## Recommended Approach
 
@@ -67,6 +67,7 @@ from textual.app import App
 from textual.containers import Vertical, Horizontal
 from textual.widgets import Static, Footer
 
+
 class ThegentApp(App):
     """Main TUI application."""
 
@@ -114,6 +115,7 @@ class ThegentApp(App):
 from textual.widgets import RichLog, Button, Input
 from textual.containers import Container
 
+
 class OutputWidget(Container):
     """Agent output stream widget."""
 
@@ -122,9 +124,8 @@ class OutputWidget(Container):
 
     async def on_message(self, message: AgentMessage):
         """Display agent message."""
-        self.query_one("#agent-output", RichLog).write(
-            message.formatted
-        )
+        self.query_one("#agent-output", RichLog).write(message.formatted)
+
 
 class StatusWidget(Container):
     """Agent status display."""
@@ -156,14 +157,14 @@ class InteractiveWidget(Container):
 
 ## Key Components
 
-| Component | Purpose | Features |
-|-----------|---------|----------|
-| `OutputWidget` | Display agent output | Auto-scroll, syntax highlight |
-| `StatusWidget` | Show agent status | Real-time updates |
-| `CommandWidget` | Input commands | History, auto-complete |
-| `ProgressWidget` | Show progress | ETA, percentage |
-| `TimelineWidget` | Session timeline | Scrollback, search |
-| `MetricsWidget` | Display metrics | Charts, graphs |
+| Component        | Purpose              | Features                      |
+| ---------------- | -------------------- | ----------------------------- |
+| `OutputWidget`   | Display agent output | Auto-scroll, syntax highlight |
+| `StatusWidget`   | Show agent status    | Real-time updates             |
+| `CommandWidget`  | Input commands       | History, auto-complete        |
+| `ProgressWidget` | Show progress        | ETA, percentage               |
+| `TimelineWidget` | Session timeline     | Scrollback, search            |
+| `MetricsWidget`  | Display metrics      | Charts, graphs                |
 
 ## Terminal Compatibility
 
@@ -194,7 +195,7 @@ class TerminalAdapter:
 
 ### Changes Made
 
-1. **Created standalone research document** from TUI_COMPOSITOR_*.md
+1. **Created standalone research document** from TUI*COMPOSITOR*\*.md
 2. **Compared frameworks** (Textual, Rich, Bubble Tea, blessed)
 3. **Recommended Textual** as primary framework
 4. **Designed architecture** (3 layers: Compositor, Component, Adapter)

@@ -1,4 +1,5 @@
 """Stub module."""
+
 from dataclasses import dataclass, field
 from typing import Any
 
@@ -6,6 +7,7 @@ from typing import Any
 @dataclass
 class ProjectInfo:
     """Information about a discovered project."""
+
     name: str
     path: str
     metadata: dict[str, Any] = field(default_factory=dict)

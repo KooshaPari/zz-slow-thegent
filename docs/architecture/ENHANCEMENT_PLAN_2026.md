@@ -27,12 +27,14 @@ This document outlines comprehensive enhancements to elevate `thegent` from a fu
 **Current State**: Runtime dispatcher exists but lacks clear documentation of when to use what.
 
 **Enhancements**:
+
 - [ ] **Runtime Selection Guide**: Document when PyPy vs CPython vs Rust vs Mojo should be used
 - [ ] **Performance Decision Tree**: Visual flowchart for choosing optimal runtime per task type
 - [ ] **Contract Documentation**: Clear API contracts for all runtime interfaces
 - [ ] **Migration Paths**: Document how to migrate code between runtimes
 
 **Deliverables**:
+
 - `docs/architecture/RUNTIME_SELECTION_GUIDE.md`
 - `docs/architecture/PERFORMANCE_DECISION_TREE.md`
 - Enhanced docstrings with runtime-specific notes
@@ -42,6 +44,7 @@ This document outlines comprehensive enhancements to elevate `thegent` from a fu
 **Current State**: Doctor command exists but could be more comprehensive.
 
 **Enhancements**:
+
 - [ ] **Multi-Runtime Health Dashboard**: Unified view of PyPy/CPython/Rust/Go/Mojo health
 - [ ] **Performance Profiling Integration**: Built-in profiling hooks for each runtime
 - [ ] **Resource Usage Tracking**: Memory, CPU, I/O per runtime
@@ -49,6 +52,7 @@ This document outlines comprehensive enhancements to elevate `thegent` from a fu
 - [ ] **Network Diagnostics**: Test connectivity between Mac (WiFi) and PC (Ethernet)
 
 **Deliverables**:
+
 - Enhanced `thegent doctor` with multi-runtime checks
 - `thegent doctor --profile` for performance profiling
 - `thegent doctor --network` for cross-node diagnostics
@@ -59,6 +63,7 @@ This document outlines comprehensive enhancements to elevate `thegent` from a fu
 **Current State**: Configuration exists but could be more intuitive.
 
 **Enhancements**:
+
 - [ ] **Configuration Wizard**: Interactive setup for first-time users
 - [ ] **Configuration Validation**: Pre-flight checks before starting services
 - [ ] **Configuration Migration**: Automatic migration of old config formats
@@ -66,6 +71,7 @@ This document outlines comprehensive enhancements to elevate `thegent` from a fu
 - [ ] **Secret Management**: Integration with keychain/credential managers
 
 **Deliverables**:
+
 - `thegent setup --wizard` interactive configuration
 - `thegent config validate` pre-flight checks
 - `thegent config migrate` automatic migration
@@ -80,6 +86,7 @@ This document outlines comprehensive enhancements to elevate `thegent` from a fu
 **Current State**: Errors exist but could be more actionable.
 
 **Enhancements**:
+
 - [ ] **Actionable Error Messages**: Every error includes "What happened", "Why it happened", "How to fix"
 - [ ] **Error Recovery Suggestions**: Automatic suggestions for common errors
 - [ ] **Error Context**: Rich context (file paths, line numbers, relevant config)
@@ -87,6 +94,7 @@ This document outlines comprehensive enhancements to elevate `thegent` from a fu
 - [ ] **Common Solutions Database**: Curated solutions for frequent issues
 
 **Deliverables**:
+
 - Enhanced error handling with rich context
 - `thegent error report` command
 - `docs/troubleshooting/COMMON_ERRORS.md`
@@ -97,6 +105,7 @@ This document outlines comprehensive enhancements to elevate `thegent` from a fu
 **Current State**: Taskfile exists but could be more intuitive.
 
 **Enhancements**:
+
 - [ ] **Task Discovery**: `task --list` with better categorization and descriptions
 - [ ] **Task Aliases**: Shortcuts for common workflows (`task dev`, `task test`, etc.)
 - [ ] **Task Dependencies**: Clear dependency chains
@@ -104,6 +113,7 @@ This document outlines comprehensive enhancements to elevate `thegent` from a fu
 - [ ] **Interactive Task Runner**: `task --interactive` for guided workflows
 
 **Deliverables**:
+
 - Enhanced Taskfile with better organization
 - `task --help <task>` for detailed task help
 - Task timing and dependency visualization
@@ -114,6 +124,7 @@ This document outlines comprehensive enhancements to elevate `thegent` from a fu
 **Current State**: Tests exist but could be more comprehensive.
 
 **Enhancements**:
+
 - [ ] **Test Coverage Dashboard**: Visual coverage reports
 - [ ] **Test Performance**: Track slow tests, optimize hot paths
 - [ ] **Property-Based Testing**: Add Hypothesis for edge case discovery
@@ -121,6 +132,7 @@ This document outlines comprehensive enhancements to elevate `thegent` from a fu
 - [ ] **Mutation Testing**: Ensure tests actually catch bugs
 
 **Deliverables**:
+
 - Coverage dashboard (`task test:coverage --html`)
 - Test performance tracking
 - Property-based test suite
@@ -131,6 +143,7 @@ This document outlines comprehensive enhancements to elevate `thegent` from a fu
 **Current State**: Documentation exists but could be more discoverable.
 
 **Enhancements**:
+
 - [ ] **Inline Documentation**: Rich docstrings with examples
 - [ ] **API Reference**: Auto-generated from docstrings
 - [ ] **Tutorial Series**: Step-by-step guides for common tasks
@@ -138,6 +151,7 @@ This document outlines comprehensive enhancements to elevate `thegent` from a fu
 - [ ] **Video Tutorials**: Screen recordings for complex workflows
 
 **Deliverables**:
+
 - Enhanced docstrings with examples
 - Auto-generated API reference
 - Tutorial series (`docs/tutorials/`)
@@ -152,6 +166,7 @@ This document outlines comprehensive enhancements to elevate `thegent` from a fu
 **Current State**: CLI works but could be more intuitive.
 
 **Enhancements**:
+
 - [ ] **Progress Indicators**: Rich progress bars for long operations
 - [ ] **Interactive Prompts**: `rich.prompt` for better user input
 - [ ] **Command Suggestions**: "Did you mean..." for typos
@@ -160,6 +175,7 @@ This document outlines comprehensive enhancements to elevate `thegent` from a fu
 - [ ] **Color Themes**: Support for light/dark/auto themes
 
 **Deliverables**:
+
 - Rich progress indicators throughout CLI
 - Interactive prompts for user input
 - Shell completion scripts
@@ -171,6 +187,7 @@ This document outlines comprehensive enhancements to elevate `thegent` from a fu
 **Current State**: Setup exists but could be smoother.
 
 **Enhancements**:
+
 - [ ] **First-Run Wizard**: Guided setup for new users
 - [ ] **Quick Start Guide**: 5-minute getting started
 - [ ] **Example Projects**: Pre-built example projects
@@ -178,6 +195,7 @@ This document outlines comprehensive enhancements to elevate `thegent` from a fu
 - [ ] **Success Metrics**: Track onboarding completion
 
 **Deliverables**:
+
 - `thegent setup --wizard` interactive setup
 - `docs/guides/QUICK_START.md` enhanced
 - Example projects in `examples/`
@@ -188,6 +206,7 @@ This document outlines comprehensive enhancements to elevate `thegent` from a fu
 **Current State**: Help exists but could be more contextual.
 
 **Enhancements**:
+
 - [ ] **Contextual Help**: `--help` shows relevant examples
 - [ ] **Command Examples**: Every command has examples
 - [ ] **Error Help**: Errors link to relevant documentation
@@ -195,6 +214,7 @@ This document outlines comprehensive enhancements to elevate `thegent` from a fu
 - [ ] **Community Resources**: Links to Discord, GitHub Discussions, etc.
 
 **Deliverables**:
+
 - Enhanced `--help` with examples
 - Error messages with doc links
 - Feedback mechanism (`thegent feedback`)
@@ -209,6 +229,7 @@ This document outlines comprehensive enhancements to elevate `thegent` from a fu
 **Current State**: Basic error handling exists.
 
 **Enhancements**:
+
 - [ ] **Automatic Retries**: Smart retry logic with exponential backoff
 - [ ] **Circuit Breakers**: Prevent cascading failures
 - [ ] **Graceful Degradation**: Fallback to simpler modes when components fail
@@ -216,6 +237,7 @@ This document outlines comprehensive enhancements to elevate `thegent` from a fu
 - [ ] **Self-Healing**: Automatic recovery from common failures
 
 **Deliverables**:
+
 - Retry logic with exponential backoff
 - Circuit breaker implementation
 - Graceful degradation paths
@@ -227,6 +249,7 @@ This document outlines comprehensive enhancements to elevate `thegent` from a fu
 **Current State**: Some edge cases may not be handled.
 
 **Enhancements**:
+
 - [ ] **Comprehensive Edge Case Tests**: Test all edge cases
 - [ ] **Boundary Testing**: Test limits (max file size, max sessions, etc.)
 - [ ] **Concurrency Testing**: Test race conditions
@@ -234,6 +257,7 @@ This document outlines comprehensive enhancements to elevate `thegent` from a fu
 - [ ] **Network Failures**: Handle WiFi drops, Ethernet issues
 
 **Deliverables**:
+
 - Comprehensive edge case test suite
 - Boundary testing
 - Concurrency testing
@@ -245,6 +269,7 @@ This document outlines comprehensive enhancements to elevate `thegent` from a fu
 **Current State**: Basic data handling exists.
 
 **Enhancements**:
+
 - [ ] **Data Validation**: Validate all inputs
 - [ ] **Data Sanitization**: Sanitize all outputs
 - [ ] **Backup & Recovery**: Automatic backups of critical data
@@ -252,6 +277,7 @@ This document outlines comprehensive enhancements to elevate `thegent` from a fu
 - [ ] **Audit Logging**: Comprehensive audit trail
 
 **Deliverables**:
+
 - Input validation throughout
 - Output sanitization
 - Backup & recovery system
@@ -267,6 +293,7 @@ This document outlines comprehensive enhancements to elevate `thegent` from a fu
 **Current State**: Some inconsistencies exist.
 
 **Enhancements**:
+
 - [ ] **Naming Conventions**: Consistent naming across all code
 - [ ] **Code Style**: Enforced style guide
 - [ ] **Output Formatting**: Consistent output formatting
@@ -274,6 +301,7 @@ This document outlines comprehensive enhancements to elevate `thegent` from a fu
 - [ ] **Documentation Style**: Consistent documentation style
 
 **Deliverables**:
+
 - Style guide enforcement
 - Consistent naming conventions
 - Consistent output formatting
@@ -285,6 +313,7 @@ This document outlines comprehensive enhancements to elevate `thegent` from a fu
 **Current State**: Performance is good but can be better.
 
 **Enhancements**:
+
 - [ ] **Startup Time**: Optimize cold start time
 - [ ] **Memory Usage**: Reduce memory footprint
 - [ ] **I/O Optimization**: Optimize file I/O, network I/O
@@ -292,6 +321,7 @@ This document outlines comprehensive enhancements to elevate `thegent` from a fu
 - [ ] **Lazy Loading**: Load components only when needed
 
 **Deliverables**:
+
 - Startup time optimization
 - Memory usage reduction
 - I/O optimization
@@ -303,6 +333,7 @@ This document outlines comprehensive enhancements to elevate `thegent` from a fu
 **Current State**: Basic accessibility exists.
 
 **Enhancements**:
+
 - [ ] **Screen Reader Support**: Proper ARIA labels
 - [ ] **Keyboard Navigation**: Full keyboard support
 - [ ] **Color Contrast**: WCAG AA compliance
@@ -310,6 +341,7 @@ This document outlines comprehensive enhancements to elevate `thegent` from a fu
 - [ ] **Internationalization**: Support for multiple languages
 
 **Deliverables**:
+
 - Screen reader support
 - Keyboard navigation
 - Color contrast compliance
@@ -321,6 +353,7 @@ This document outlines comprehensive enhancements to elevate `thegent` from a fu
 ## 6. Implementation Priority
 
 ### Phase 1: Foundation (Weeks 1-2)
+
 1. Enhanced error messages with context
 2. Configuration wizard
 3. Enhanced doctor command
@@ -328,6 +361,7 @@ This document outlines comprehensive enhancements to elevate `thegent` from a fu
 5. Shell completion
 
 ### Phase 2: Developer Experience (Weeks 3-4)
+
 1. Enhanced Taskfile
 2. Test coverage dashboard
 3. API reference generation
@@ -335,6 +369,7 @@ This document outlines comprehensive enhancements to elevate `thegent` from a fu
 5. Error recovery suggestions
 
 ### Phase 3: User Experience (Weeks 5-6)
+
 1. Interactive prompts
 2. Command suggestions
 3. Onboarding wizard
@@ -342,6 +377,7 @@ This document outlines comprehensive enhancements to elevate `thegent` from a fu
 5. Contextual help
 
 ### Phase 4: Robustness (Weeks 7-8)
+
 1. Automatic retries
 2. Circuit breakers
 3. Edge case tests
@@ -349,6 +385,7 @@ This document outlines comprehensive enhancements to elevate `thegent` from a fu
 5. Health checks
 
 ### Phase 5: Polish (Weeks 9-10)
+
 1. Consistency improvements
 2. Performance optimizations
 3. Documentation polish
@@ -360,6 +397,7 @@ This document outlines comprehensive enhancements to elevate `thegent` from a fu
 ## 7. Success Metrics
 
 ### Quantitative Metrics
+
 - **Error Rate**: < 1% of commands fail unexpectedly
 - **Setup Time**: < 5 minutes for new users
 - **Documentation Coverage**: 100% of public APIs documented
@@ -367,6 +405,7 @@ This document outlines comprehensive enhancements to elevate `thegent` from a fu
 - **Performance**: < 100ms startup time, < 10ms command execution
 
 ### Qualitative Metrics
+
 - **User Satisfaction**: Positive feedback on UX
 - **Developer Satisfaction**: Positive feedback on DX
 - **Error Clarity**: Users can resolve 80% of errors without help
@@ -378,6 +417,7 @@ This document outlines comprehensive enhancements to elevate `thegent` from a fu
 ## 8. Maintenance & Evolution
 
 ### Continuous Improvement
+
 - Monthly review of error logs for common issues
 - Quarterly user feedback surveys
 - Annual architecture review
@@ -385,6 +425,7 @@ This document outlines comprehensive enhancements to elevate `thegent` from a fu
 - Performance benchmarking
 
 ### Documentation Updates
+
 - Keep docs in sync with code changes
 - Update examples regularly
 - Refresh tutorials as features evolve

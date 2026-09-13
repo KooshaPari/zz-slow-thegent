@@ -64,7 +64,7 @@ Supports persistence to JSON for historical analysis.
 
 ### Methods
 
-#### MetricsCollector.__init__
+#### MetricsCollector.**init**
 
 ```python
 __init__(self: Any, storage_dir: Any)

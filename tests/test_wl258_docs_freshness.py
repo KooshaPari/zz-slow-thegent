@@ -7,7 +7,7 @@ Tests the automatic checker for stale sync docs and command reference drift.
 
 from __future__ import annotations
 
-from datetime import datetime, timedelta, timezone
+from datetime import UTC, datetime, timedelta
 
 import pytest
 
@@ -20,7 +20,7 @@ class TestDocRecord:
         """# @trace WL-258 — DocRecord can be created with default stale=False."""
         from thegent.integrations.docs_freshness import DocRecord
 
-        now = datetime.now(timezone.utc)
+        now = datetime.now(UTC)
         record = DocRecord(doc_path="docs/test.md", last_updated=now)
 
         assert record.doc_path == "docs/test.md"
@@ -31,7 +31,7 @@ class TestDocRecord:
         """# @trace WL-258 — DocRecord can be created with stale=True."""
         from thegent.integrations.docs_freshness import DocRecord
 
-        now = datetime.now(timezone.utc)
+        now = datetime.now(UTC)
         record = DocRecord(doc_path="docs/test.md", last_updated=now, stale=True)
 
         assert record.stale is True
@@ -53,7 +53,7 @@ class TestDocsFreshnessChecker:
         from thegent.integrations.docs_freshness import DocsFreshnessChecker
 
         checker = DocsFreshnessChecker()
-        now = datetime.now(timezone.utc)
+        now = datetime.now(UTC)
         record = checker.register("docs/test.md", now)
 
         assert record.doc_path == "docs/test.md"
@@ -65,7 +65,7 @@ class TestDocsFreshnessChecker:
         from thegent.integrations.docs_freshness import DocsFreshnessChecker
 
         checker = DocsFreshnessChecker()
-        now = datetime.now(timezone.utc)
+        now = datetime.now(UTC)
         r1 = checker.register("docs/test1.md", now)
         r2 = checker.register("docs/test2.md", now)
         r3 = checker.register("docs/test3.md", now)
@@ -79,7 +79,7 @@ class TestDocsFreshnessChecker:
         from thegent.integrations.docs_freshness import DocsFreshnessChecker
 
         checker = DocsFreshnessChecker()
-        now = datetime.now(timezone.utc)
+        now = datetime.now(UTC)
         old_time = now - timedelta(days=100)
 
         checker.register("docs/old.md", old_time)
@@ -94,7 +94,7 @@ class TestDocsFreshnessChecker:
         from thegent.integrations.docs_freshness import DocsFreshnessChecker
 
         checker = DocsFreshnessChecker()
-        now = datetime.now(timezone.utc)
+        now = datetime.now(UTC)
         recent_time = now - timedelta(days=30)
 
         checker.register("docs/recent.md", recent_time)
@@ -107,7 +107,7 @@ class TestDocsFreshnessChecker:
         from thegent.integrations.docs_freshness import DocsFreshnessChecker
 
         checker = DocsFreshnessChecker()
-        now = datetime.now(timezone.utc)
+        now = datetime.now(UTC)
         old = now - timedelta(days=100)
         recent = now - timedelta(days=30)
 
@@ -125,7 +125,7 @@ class TestDocsFreshnessChecker:
         from thegent.integrations.docs_freshness import DocsFreshnessChecker
 
         checker = DocsFreshnessChecker()
-        now = datetime.now(timezone.utc)
+        now = datetime.now(UTC)
         forty_days_old = now - timedelta(days=40)
 
         checker.register("docs/test.md", forty_days_old)
@@ -140,7 +140,7 @@ class TestDocsFreshnessChecker:
         from thegent.integrations.docs_freshness import DocsFreshnessChecker
 
         checker = DocsFreshnessChecker()
-        now = datetime.now(timezone.utc)
+        now = datetime.now(UTC)
         old = now - timedelta(days=100)
 
         checker.register("docs/old1.md", old)
@@ -157,7 +157,7 @@ class TestDocsFreshnessChecker:
         from thegent.integrations.docs_freshness import DocsFreshnessChecker
 
         checker = DocsFreshnessChecker()
-        now = datetime.now(timezone.utc)
+        now = datetime.now(UTC)
 
         checker.register("docs/recent1.md", now)
         checker.register("docs/recent2.md", now)
@@ -172,7 +172,7 @@ class TestDocsFreshnessChecker:
         from thegent.integrations.docs_freshness import DocsFreshnessChecker
 
         checker = DocsFreshnessChecker()
-        now = datetime.now(timezone.utc)
+        now = datetime.now(UTC)
         old = now - timedelta(days=100)
 
         checker.register("docs/old.md", old)
@@ -189,7 +189,7 @@ class TestDocsFreshnessChecker:
         from thegent.integrations.docs_freshness import DocsFreshnessChecker
 
         checker = DocsFreshnessChecker()
-        now = datetime.now(timezone.utc)
+        now = datetime.now(UTC)
 
         checker.register("docs/a.md", now)
         checker.register("docs/b.md", now)
@@ -205,7 +205,7 @@ class TestDocsFreshnessChecker:
         from thegent.integrations.docs_freshness import DocsFreshnessChecker
 
         checker = DocsFreshnessChecker()
-        now = datetime.now(timezone.utc)
+        now = datetime.now(UTC)
         old = now - timedelta(days=100)
 
         for i in range(5):

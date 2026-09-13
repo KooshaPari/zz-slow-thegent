@@ -4,16 +4,16 @@
 
 CLI commands for the shadow audit log.
 
-Provides ``thegent audit log``, ``thegent audit diff``, and ``thegent audit list`` subcommands
+Provides `thegent audit log`, `thegent audit diff`, and `thegent audit list` subcommands
 for inspecting the immutable audit trail of agent git operations.
 
 WBS: wp-71004-audit-cli
 FR Traceability: FR-VER-005 (audit log and diff CLI)
 
 Commands:
-    thegent audit log  [--project NAME] [--limit N]
-    thegent audit diff <sha1> <sha2> [--project NAME]
-    thegent audit list [--agent ID] [--session ID]
+thegent audit log [--project NAME] [--limit N]
+thegent audit diff <sha1> <sha2> [--project NAME]
+thegent audit list [--agent ID] [--session ID]
 
 ---
 

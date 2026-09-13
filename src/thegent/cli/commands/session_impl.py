@@ -23,11 +23,10 @@ legacy ``(session_id, **kwargs)`` call-sites keep working. Pinned by
 
 from __future__ import annotations
 
-import errno
+import contextlib
 import getpass
 import os
 import time
-import uuid
 from datetime import UTC, datetime
 from pathlib import Path
 from typing import Any
@@ -35,7 +34,6 @@ from typing import Any
 import typer
 
 from thegent.config import ThegentSettings
-
 
 # ---------------------------------------------------------------------------
 # Constants
@@ -519,10 +517,8 @@ def _run_background_session_observer(exit_code: int, *, timed_out: bool = False)
     if rc_path_str:
         # AUDIT-N+14: tolerate OSError on the rc write so a missing
         # parent dir or read-only filesystem doesn't crash the observer.
-        try:
+        with contextlib.suppress(OSError):
             Path(rc_path_str).write_text(f"{exit_code}\n", encoding="utf-8")
-        except OSError:
-            pass
 
 
 __all__ = [

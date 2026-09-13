@@ -8,12 +8,12 @@ prompt functions, operations/modes tools, and suggest_prompt.
 from __future__ import annotations
 
 import asyncio
-import orjson as json
 import os
 from pathlib import Path
 from typing import TYPE_CHECKING, Any
 from unittest.mock import AsyncMock, MagicMock, patch
 
+import orjson as json
 import pytest
 
 fastmcp = pytest.importorskip("fastmcp", reason="fastmcp required for MCP server tests")
@@ -275,7 +275,11 @@ class TestResourceSessionMeta:
     @patch("thegent.mcp.server.status_impl")
     def test_returns_json_for_session(self, mock_status: MagicMock) -> None:
         """Returns JSON string with session metadata."""
-        mock_status.return_value = {"session_id": "abc", "status": "running", "pid": 1234}
+        mock_status.return_value = {
+            "session_id": "abc",
+            "status": "running",
+            "pid": 1234,
+        }
         result = _mcp_mod.resource_session_meta(id="abc")
         data = json.loads(result)
         assert data["session_id"] == "abc"
@@ -410,7 +414,10 @@ class TestResourceModes:
     # @trace FR-MCP-081
     def test_list_all_modes(self) -> None:
         """Returns all modes when no filter given."""
-        with patch("thegent.orchestration_modes.list_modes", return_value=[{"mode": "sequential_delegation"}]):
+        with patch(
+            "thegent.orchestration_modes.list_modes",
+            return_value=[{"mode": "sequential_delegation"}],
+        ):
             result = _mcp_mod.resource_modes()
             data = json.loads(result)
             assert len(data) == 1
@@ -538,7 +545,10 @@ class TestThegentListOperationsTool:
     # @trace FR-MCP-093
     def test_list_all_operations(self) -> None:
         """Returns all operations."""
-        with patch("thegent.operations.list_operations", return_value={"orchestrate": [], "govern": []}):
+        with patch(
+            "thegent.operations.list_operations",
+            return_value={"orchestrate": [], "govern": []},
+        ):
             result = _mcp_mod.thegent_list_operations()
             data = _json_content(result)
             assert "orchestrate" in data
@@ -558,7 +568,10 @@ class TestThegentListModesTool:
     # @trace FR-MCP-095
     def test_list_all_modes(self) -> None:
         """Returns all modes."""
-        with patch("thegent.orchestration_modes.list_modes", return_value=[{"mode": "review_loop"}]):
+        with patch(
+            "thegent.orchestration_modes.list_modes",
+            return_value=[{"mode": "review_loop"}],
+        ):
             result = _mcp_mod.thegent_list_modes()
             data = _json_content(result)
             assert len(data) == 1
@@ -706,7 +719,10 @@ class TestThegentDagListDeep:
     @patch("thegent.mcp.server.dag_list_impl")
     def test_dag_list_with_resolved_cwd(self, mock_dag: MagicMock, mock_cwd: MagicMock) -> None:
         """Returns DAG data when CWD resolves successfully."""
-        mock_dag.return_value = {"frontmatter": {"project": "test"}, "tasks": [{"id": "T1"}]}
+        mock_dag.return_value = {
+            "frontmatter": {"project": "test"},
+            "tasks": [{"id": "T1"}],
+        }
 
         async def _run() -> ToolResult:
             ctx = AsyncMock()
@@ -763,7 +779,11 @@ class TestGetEventStore:
     # @trace FR-MCP-057
     def test_redis_store_when_url_set(self) -> None:
         """Returns EventStore with Redis storage when URL is set."""
-        with patch.dict(os.environ, {"FASTMCP_EVENT_STORE_URL": "redis://localhost:6379"}, clear=False):
+        with patch.dict(
+            os.environ,
+            {"FASTMCP_EVENT_STORE_URL": "redis://localhost:6379"},
+            clear=False,
+        ):
             with patch("key_value.aio.stores.redis.RedisStore") as mock_redis:
                 mock_redis.return_value = MagicMock()
                 store = _mcp_mod._get_event_store()
@@ -817,7 +837,10 @@ class TestRunFunction:
     @patch("thegent.config.ThegentSettings")
     @patch.object(_mcp_mod.mcp, "http_app")
     def test_run_default_host_port(
-        self, mock_http_app: MagicMock, mock_settings_cls: MagicMock, mock_uvicorn: MagicMock
+        self,
+        mock_http_app: MagicMock,
+        mock_settings_cls: MagicMock,
+        mock_uvicorn: MagicMock,
     ) -> None:
         """Uses settings.mcp_host and settings.mcp_port when no overrides."""
         with patch.dict(os.environ, {}, clear=False):
@@ -840,7 +863,10 @@ class TestRunFunction:
     @patch("thegent.config.ThegentSettings")
     @patch.object(_mcp_mod.mcp, "http_app")
     def test_run_custom_host_port(
-        self, mock_http_app: MagicMock, mock_settings_cls: MagicMock, mock_uvicorn: MagicMock
+        self,
+        mock_http_app: MagicMock,
+        mock_settings_cls: MagicMock,
+        mock_uvicorn: MagicMock,
     ) -> None:
         """Uses explicit host/port when provided."""
         with patch.dict(os.environ, {}, clear=False):
@@ -931,7 +957,11 @@ class TestResourceSessionContractHealthTrend:
     @patch("thegent.mcp.server.session_contract_health_trend_impl")
     def test_returns_trend_data(self, mock_impl: MagicMock) -> None:
         """Returns trend payload with stable JSON."""
-        mock_impl.return_value = {"snapshots": [], "delta_summary": {}, "payload_type": "trend"}
+        mock_impl.return_value = {
+            "snapshots": [],
+            "delta_summary": {},
+            "payload_type": "trend",
+        }
         result = _mcp_mod.resource_session_contract_health_trend()
         data = json.loads(result)
         assert data["payload_type"] == "trend"

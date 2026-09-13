@@ -1,6 +1,6 @@
 from __future__ import annotations
-import pytest
 
+import pytest
 from typer.testing import CliRunner
 
 from thegent.cli.apps.team import app

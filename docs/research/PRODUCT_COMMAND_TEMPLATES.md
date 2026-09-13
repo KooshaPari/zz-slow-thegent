@@ -5,48 +5,63 @@
 ---
 
 ## 1. Purpose
-*Clearly explain the "Why" behind this task.*
+
+_Clearly explain the "Why" behind this task._
 
 ## 2. End State
-*Describe the physical result of success (e.g., "A functioning search bar with 3 filters").*
+
+_Describe the physical result of success (e.g., "A functioning search bar with 3 filters")._
 
 ## 3. Constraints
-*What the agent MUST NOT do (e.g., "Don't add new dependencies").*
+
+_What the agent MUST NOT do (e.g., "Don't add new dependencies")._
 
 ## 4. Tradeoffs
-*Decisions made for speed vs quality, or cost vs performance.*
+
+_Decisions made for speed vs quality, or cost vs performance._
 
 ## 5. Risk Tolerance
-*How much can the agent "vibe" or assume vs asking for help?*
+
+_How much can the agent "vibe" or assume vs asking for help?_
 
 ## 6. Escalation Conditions
-*When should the agent stop and wait for a human?*
+
+_When should the agent stop and wait for a human?_
 
 ## 7. Verification Steps
-*Physical checks (tests, screenshots, console logs) the agent must perform.*
+
+_Physical checks (tests, screenshots, console logs) the agent must perform._
 
 ---
 
 # After Action Report (AAR) Template
-*Run this after each session to capture analysis.*
+
+_Run this after each session to capture analysis._
 
 ## 1. Context
-*Which session/commit does this cover?*
+
+_Which session/commit does this cover?_
 
 ## 2. Intent
-*Briefly restate what was attempted.*
+
+_Briefly restate what was attempted._
 
 ## 3. What Actually Happened
-*Facts only. Did it work? Did it fail?*
+
+_Facts only. Did it work? Did it fail?_
 
 ## 4. Delta Analysis
-*Why was the result different from the End State?*
+
+_Why was the result different from the End State?_
 
 ## 5. Initiative Assessment
-*Where did the AI make its own decisions?*
+
+_Where did the AI make its own decisions?_
 
 ## 6. Weaknesses in Intent
-*Which parts of the INTENT.md weren't clear enough?*
+
+_Which parts of the INTENT.md weren't clear enough?_
 
 ## 7. Sustain / Improve
-*What worked well? What will we change next time?*
+
+_What worked well? What will we change next time?_

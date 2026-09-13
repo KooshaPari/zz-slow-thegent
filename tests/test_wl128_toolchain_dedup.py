@@ -72,13 +72,17 @@ class TestTaskfileCanonicalEntrypoints:
         text = TASKFILE.read_text()
         assert "  test:cov:" not in text, "test:cov must be removed (duplicate of test:) - WL-128 dedup"
 
-    def test_typecheck_is_canonical_wrapper_and_lint_type_alias_is_removed(self) -> None:
+    def test_typecheck_is_canonical_wrapper_and_lint_type_alias_is_removed(
+        self,
+    ) -> None:
         """typecheck must exist as canonical task and lint:type alias must be removed."""
         text = TASKFILE.read_text()
         assert "\n  typecheck:\n" in text, "Taskfile.yml must keep canonical 'typecheck' task"
         assert "  lint:type:" not in text, "Taskfile.yml must not define deprecated 'lint:type' alias"
 
-    def test_quality_task_is_canonical_and_quality_project_alias_is_removed(self) -> None:
+    def test_quality_task_is_canonical_and_quality_project_alias_is_removed(
+        self,
+    ) -> None:
         """quality must be the canonical quality chain and quality_project alias removed."""
         text = TASKFILE.read_text()
         assert "\n  quality:\n" in text, "Taskfile.yml must keep canonical 'quality' task"

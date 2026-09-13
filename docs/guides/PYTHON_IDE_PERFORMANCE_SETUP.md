@@ -5,6 +5,7 @@ This guide documents the long-term fixes for Pyright/Pylance performance issues 
 ## Problem
 
 Pyright/Pylance can be slow when:
+
 - Indexing large virtual environments (`.venv`, `site-packages`)
 - Scanning git worktrees (`.worktrees`)
 - Analyzing multiple projects in a monorepo
@@ -13,6 +14,7 @@ Pyright/Pylance can be slow when:
 ## Solution
 
 We've created comprehensive configuration templates that:
+
 1. Aggressively exclude unnecessary directories
 2. Configure Pylance (not Jedi) for optimal performance
 3. Optimize file watchers and search exclusions
@@ -23,11 +25,13 @@ We've created comprehensive configuration templates that:
 ### For New Projects
 
 1. **Copy Pyright config:**
+
    ```bash
    cp thegent/templates/quality/pyrightconfig.json ./pyrightconfig.json
    ```
 
 2. **Copy IDE settings:**
+
    ```bash
    cp -r thegent/templates/ide/.vscode ./my-project/.vscode
    ```
@@ -56,12 +60,14 @@ We've created comprehensive configuration templates that:
 **Location:** `templates/quality/pyrightconfig.json`
 
 **Key Features:**
+
 - Aggressive exclusions for `.venv`, `.worktrees`, `site-packages`, etc.
 - Basic type checking mode (balance between performance and safety)
 - Separate execution environments for `src/` and `tests/`
 - Python 3.12 configuration (adjustable)
 
 **Performance Impact:**
+
 - 50-80% faster language server startup
 - Reduced memory usage
 - Faster IntelliSense
@@ -71,6 +77,7 @@ We've created comprehensive configuration templates that:
 **Location:** `templates/ide/.vscode/settings.json`
 
 **Key Features:**
+
 - Pylance language server (not Jedi)
 - File watcher exclusions
 - Search exclusions
@@ -78,6 +85,7 @@ We've created comprehensive configuration templates that:
 - Format on save
 
 **Performance Impact:**
+
 - Faster file indexing
 - Reduced file system monitoring overhead
 - Faster search
@@ -85,6 +93,7 @@ We've created comprehensive configuration templates that:
 ## Excluded Directories
 
 Both configurations exclude:
+
 - Virtual environments: `.venv`, `venv`, `env`
 - Build artifacts: `dist`, `build`, `__pycache__`
 - Cache directories: `.pytest_cache`, `.mypy_cache`, `.ruff_cache`
@@ -98,6 +107,7 @@ Both configurations exclude:
 ### Adjust Python Version
 
 In `pyrightconfig.json`:
+
 ```json
 {
   "pythonVersion": "3.11",
@@ -113,28 +123,28 @@ In `pyrightconfig.json`:
 ### Change Type Checking Strictness
 
 In `pyrightconfig.json`:
+
 ```json
 {
-  "typeCheckingMode": "strict"  // or "off", "basic"
+  "typeCheckingMode": "strict" // or "off", "basic"
 }
 ```
 
 In `.vscode/settings.json`:
+
 ```json
 {
-  "python.analysis.typeCheckingMode": "strict"  // or "off", "basic"
+  "python.analysis.typeCheckingMode": "strict" // or "off", "basic"
 }
 ```
 
 ### Add Project-Specific Exclusions
 
 In `pyrightconfig.json`:
+
 ```json
 {
-  "exclude": [
-    "**/custom-build-dir",
-    "**/generated-code"
-  ]
+  "exclude": ["**/custom-build-dir", "**/generated-code"]
 }
 ```
 
@@ -143,6 +153,7 @@ In `pyrightconfig.json`:
 ### Pylance Not Working
 
 1. Verify `python.languageServer` is `"Pylance"`:
+
    ```json
    {
      "python.languageServer": "Pylance"

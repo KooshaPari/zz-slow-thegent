@@ -53,6 +53,7 @@ This research package establishes a **comprehensive dual-shell strategy** (POSIX
    - Quick reference table
 
 ### Total Documentation
+
 - **~23,500 words** of research, architecture, & implementation planning
 - **3 visual architectures** (layered model, execution flows, component breakdown)
 - **15+ tables** (requirements, components, patterns, timeline, risks)
@@ -72,6 +73,7 @@ Shell Wrapper → Python CLI → Complex Logic → Result
 ```
 
 Example:
+
 ```bash
 # POSIX
 validate_changes() { uv run thegent hooks validate-files "$@"; }
@@ -86,6 +88,7 @@ def validate_files(files):
 ```
 
 **Benefits**:
+
 - Single source of truth (Python)
 - Easier testing (test Python, both shells work)
 - 100% code reuse across platforms
@@ -107,12 +110,12 @@ Python Core (thegent CLI)
 
 ### Implementation Timeline
 
-| Phase | Duration | Hours | Focus |
-|-------|----------|-------|-------|
-| **1** | Weeks 1–2 | 62h | Foundation: Dispatcher, libraries, testing |
-| **2** | Weeks 3–4 | 60h | Integration: Hooks, shims, profiles |
-| **3** | Weeks 5–6 | 62h | Hardening: Performance, security, docs |
-| | **6 weeks** | **184h** | |
+| Phase | Duration    | Hours    | Focus                                      |
+| ----- | ----------- | -------- | ------------------------------------------ |
+| **1** | Weeks 1–2   | 62h      | Foundation: Dispatcher, libraries, testing |
+| **2** | Weeks 3–4   | 60h      | Integration: Hooks, shims, profiles        |
+| **3** | Weeks 5–6   | 62h      | Hardening: Performance, security, docs     |
+|       | **6 weeks** | **184h** |                                            |
 
 ---
 
@@ -135,19 +138,20 @@ After Phase 1 foundation work is complete:
 
 ## Critical Design Decisions
 
-| Decision | Rationale | Trade-off |
-|----------|-----------|-----------|
-| **Rust dispatcher** | Performance, neutral (no shell bias) | Small build step |
-| **Python delegation** | Logic reuse, easier testing | ~100ms startup (acceptable) |
-| **Dual hook files** (.sh + .ps1) | Self-documenting, auto-detect | Mitigated by shared library pattern |
-| **Docker testing** | Reproducible, CI-friendly, scalable | Container overhead (pays off) |
-| **Dual initialization** | Automatic user experience | Platform-specific bootstrapping (well-documented) |
+| Decision                         | Rationale                            | Trade-off                                         |
+| -------------------------------- | ------------------------------------ | ------------------------------------------------- |
+| **Rust dispatcher**              | Performance, neutral (no shell bias) | Small build step                                  |
+| **Python delegation**            | Logic reuse, easier testing          | ~100ms startup (acceptable)                       |
+| **Dual hook files** (.sh + .ps1) | Self-documenting, auto-detect        | Mitigated by shared library pattern               |
+| **Docker testing**               | Reproducible, CI-friendly, scalable  | Container overhead (pays off)                     |
+| **Dual initialization**          | Automatic user experience            | Platform-specific bootstrapping (well-documented) |
 
 ---
 
 ## Risk Mitigation
 
 **Key Risks & Solutions**:
+
 - **PS7+ adoption**: Support PS 5.1 legacy path
 - **Performance**: Early benchmarking (Phase 3); optimize pre-launch
 - **POSIX regression**: Comprehensive regression testing (Task 2.8)
@@ -170,6 +174,7 @@ After Phase 1 foundation work is complete:
 ## What's Included
 
 ### Documentation Structure
+
 ```
 docs/changes/research-cross-platform-shell/
 ├── README.md                  # Navigation & quick reference
@@ -180,6 +185,7 @@ docs/changes/research-cross-platform-shell/
 ```
 
 ### Content Coverage
+
 ✓ Problem statement (why cross-platform?)
 ✓ Architecture design (how it works)
 ✓ Component breakdown (what to build)
@@ -196,18 +202,21 @@ docs/changes/research-cross-platform-shell/
 ## How to Use This Research
 
 ### For Stakeholders
+
 1. Read [README.md](./README.md) (quick overview)
 2. Skim [proposal.md](./proposal.md) (problem & requirements)
 3. Review [tasks.md](./tasks.md) summary table (timeline & effort)
 4. **Decision**: Approve for Phase 1 implementation?
 
 ### For Implementers
+
 1. Start with [design.md](./design.md) (architecture & patterns)
 2. Reference [tasks.md](./tasks.md) (specific tasks, acceptance criteria)
 3. Use code examples as templates (POSIX/PowerShell patterns)
 4. Check [README.md](./README.md) for context questions
 
 ### For Contributors
+
 1. Read [design.md § Shell-Specific Patterns](./design.md#shell-specific-patterns)
 2. Follow [design.md § Library Design](./design.md#library-design)
 3. Check [tasks.md § Task 1.6](./tasks.md#task-16-write-contributor-guide) for contributor guide
@@ -218,6 +227,7 @@ docs/changes/research-cross-platform-shell/
 ## Implementation Readiness
 
 **This research package is ready for**:
+
 - ✓ Stakeholder review & approval
 - ✓ Phase 1 kickoff planning
 - ✓ Task assignment & scheduling
@@ -225,6 +235,7 @@ docs/changes/research-cross-platform-shell/
 - ✓ Dependency identification & procurement
 
 **Not yet ready for** (after Phase 1 approval):
+
 - ✗ Code implementation (Phase 1 tasks)
 - ✗ External communication (wait for approval)
 - ✗ Budget/resource allocation (approval first)
@@ -234,17 +245,20 @@ docs/changes/research-cross-platform-shell/
 ## Next Steps
 
 ### Immediate (This Week)
+
 1. **Circulate** research package to stakeholders
 2. **Gather feedback** on proposal & design
 3. **Schedule** architecture review meeting
 
 ### If Approved (Next Week)
+
 1. **Kick off Phase 1** with task assignments
 2. **Dispatch** dispatcher design task (ADR)
 3. **Begin** Rust implementation
 4. **Start** PowerShell library work
 
 ### If Feedback Required
+
 1. **Incorporate** stakeholder comments
 2. **Revise** affected sections
 3. **Re-circulate** & schedule follow-up
@@ -254,6 +268,7 @@ docs/changes/research-cross-platform-shell/
 ## Document Quality
 
 ### Standards Met
+
 ✓ Professional structure (RFC-like format)
 ✓ Comprehensive (23,500 words; all major topics covered)
 ✓ Code examples (side-by-side POSIX/PowerShell)
@@ -263,6 +278,7 @@ docs/changes/research-cross-platform-shell/
 ✓ Navigation (README ties everything together)
 
 ### Documentation Standards
+
 ✓ Markdown + tables (VCS-friendly)
 ✓ Cross-linked (docs reference each other)
 ✓ Searchable (clear section headers)
@@ -272,12 +288,12 @@ docs/changes/research-cross-platform-shell/
 
 ## Effort Estimation Confidence
 
-| Phase | Hours | Confidence |
-|-------|-------|-----------|
-| **P1** | 62h | 85% (well-defined foundation work) |
-| **P2** | 60h | 75% (integration; unknowns emerge) |
-| **P3** | 62h | 65% (hardening; variable per platform) |
-| | **184h** | **75% overall** |
+| Phase  | Hours    | Confidence                             |
+| ------ | -------- | -------------------------------------- |
+| **P1** | 62h      | 85% (well-defined foundation work)     |
+| **P2** | 60h      | 75% (integration; unknowns emerge)     |
+| **P3** | 62h      | 65% (hardening; variable per platform) |
+|        | **184h** | **75% overall**                        |
 
 **Buffer**: +20% recommended for unknowns = **~220 hours** realistic
 
@@ -286,12 +302,14 @@ docs/changes/research-cross-platform-shell/
 ## Related Assets
 
 ### Documents to Create Post-Approval
+
 - `docs/reference/ADR-CROSS_PLATFORM_SHELL.md` (Architecture Decision Record)
 - `docs/guides/CROSS_PLATFORM_SHELL_PATTERNS.md` (Contributor guide)
 - `docs/guides/CROSS_PLATFORM_INSTALLATION.md` (User installation)
 - `docs/reference/CROSS_PLATFORM_TEST_STRATEGY.md` (Testing approach)
 
 ### Code to Create (Phase 1)
+
 - `hooks/hook-dispatcher/` (Rust binary)
 - `hooks/lib/pwsh_lib/` (PowerShell module)
 - `tests/shell/test_*.sh` + `test_*.ps1` (Test suites)

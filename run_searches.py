@@ -1,10 +1,11 @@
 #!/usr/bin/env python3
 """Run the 6 specific ddgr searches requested."""
 
-import orjson as json
-import sys
 import logging
+import sys
 from pathlib import Path
+
+import orjson as json
 
 sys.path.insert(0, str(Path(__file__).parent / "src"))
 

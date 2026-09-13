@@ -11,6 +11,7 @@
 This audit compares the current VitePress implementation in `thegent` with MkDocs implementations in other kush projects (`API`, `kush`, `pheno-sdk`), researches best practices, and provides a comprehensive improvement plan.
 
 **Key Findings**:
+
 - ✅ VitePress provides modern DX and performance
 - ⚠️ Missing advanced features from MkDocs Material
 - ⚠️ Docgen system needs optimization and feature parity
@@ -24,6 +25,7 @@ This audit compares the current VitePress implementation in `thegent` with MkDoc
 ### 1.1 VitePress Implementation (thegent)
 
 #### Strengths ✅
+
 - Modern Vue 3 + Vite stack
 - Fast HMR and build times
 - SPA navigation after initial load
@@ -34,6 +36,7 @@ This audit compares the current VitePress implementation in `thegent` with MkDoc
 - LLM-friendly output
 
 #### Weaknesses ⚠️
+
 - Limited search capabilities (local only)
 - No versioning support
 - Missing advanced navigation features
@@ -52,6 +55,7 @@ This audit compares the current VitePress implementation in `thegent` with MkDoc
 #### API Project (`/API/mkdocs.yml`)
 
 **Features**:
+
 - ✅ Material theme with extensive customization
 - ✅ Advanced navigation (tabs, sections, expand, indexes)
 - ✅ Enhanced search (suggest, highlight, share)
@@ -67,6 +71,7 @@ This audit compares the current VitePress implementation in `thegent` with MkDoc
 - ✅ Macros plugin
 
 **Structure**:
+
 - Well-organized navigation hierarchy
 - Separate sections for Architecture, Development Guides, API Reference
 - Research & References section
@@ -75,6 +80,7 @@ This audit compares the current VitePress implementation in `thegent` with MkDoc
 #### Kush Project (`/kush/mkdocs.yml`)
 
 **Features**:
+
 - ✅ System preference color scheme detection
 - ✅ Navigation tabs (sticky)
 - ✅ Navigation sections and expand
@@ -90,6 +96,7 @@ This audit compares the current VitePress implementation in `thegent` with MkDoc
 - ✅ Mermaid diagrams
 
 **Structure**:
+
 - Research section with dimensions
 - Planning section with phases
 - Specs section (Architecture, Proposals, Technical)
@@ -99,6 +106,7 @@ This audit compares the current VitePress implementation in `thegent` with MkDoc
 #### Pheno-SDK Project (`/kush/pheno-sdk/mkdocs.yml`)
 
 **Features**:
+
 - ✅ mkdocstrings plugin (auto-generate API docs from Python)
 - ✅ Mermaid2 plugin
 - ✅ Git revision dates
@@ -112,6 +120,7 @@ This audit compares the current VitePress implementation in `thegent` with MkDoc
 - ✅ LLM-friendly access (`/llms.txt`, `/llms-full.txt`)
 
 **Structure**:
+
 - Getting Started section
 - Tutorials section
 - API Reference (auto-generated)
@@ -125,46 +134,46 @@ This audit compares the current VitePress implementation in `thegent` with MkDoc
 
 ## Part 2: Feature Comparison Matrix
 
-| Feature | VitePress (thegent) | MkDocs Material (API) | MkDocs Material (kush) | MkDocs Material (pheno-sdk) |
-|---------|---------------------|----------------------|----------------------|----------------------------|
-| **Core** |
-| Mermaid Diagrams | ✅ | ✅ | ✅ | ✅ |
-| Code Highlighting | ✅ Basic | ✅ Advanced (Pygments) | ✅ Advanced (Pygments) | ✅ Advanced (Pygments) |
-| Code Copy | ✅ | ✅ | ✅ | ✅ |
-| Code Annotation | ❌ | ✅ | ✅ | ✅ |
-| **Navigation** |
-| Auto Sidebar | ✅ | ✅ (awesome-pages) | ✅ (awesome-pages) | ✅ (awesome-pages) |
-| Navigation Tabs | ❌ | ✅ | ✅ | ✅ |
-| Sticky Navigation | ❌ | ✅ | ✅ | ✅ |
-| Navigation Sections | ❌ | ✅ | ✅ | ✅ |
-| Breadcrumbs | ✅ Basic | ✅ Advanced | ✅ Advanced | ✅ Advanced |
-| **Search** |
-| Local Search | ✅ | ✅ | ✅ | ✅ |
-| Search Suggestions | ❌ | ✅ | ✅ | ✅ |
-| Search Highlight | ❌ | ✅ | ✅ | ✅ |
-| Algolia Integration | ❌ | ❌ | ❌ | ❌ |
-| **Content** |
-| Content Tabs | ❌ | ✅ | ✅ | ✅ |
-| Callouts/Admonitions | ✅ Basic | ✅ Advanced | ✅ Advanced | ✅ Advanced |
-| Tooltips | ❌ | ✅ | ✅ | ✅ |
-| Math Support | ❌ | ✅ | ✅ | ✅ |
-| Emoji Support | ❌ | ✅ | ✅ | ✅ |
-| **API Docs** |
-| Auto-generate from Python | ⚠️ Custom script | ❌ | ❌ | ✅ (mkdocstrings) |
-| Auto-generate from TypeScript | ❌ | ❌ | ❌ | ❌ |
-| **Generation** |
-| Watch Mode | ✅ | ✅ | ✅ | ✅ |
-| Minification | ⚠️ Vite handles | ✅ Plugin | ✅ Plugin | ✅ Plugin |
-| **Analytics** |
-| Google Analytics | ❌ | ✅ Ready | ✅ Ready | ✅ Ready |
-| **Versioning** |
-| Version Support | ❌ | ❌ | ❌ | ✅ (mike) |
-| **LLM-Friendly** |
-| LLM Output | ✅ Custom script | ❌ | ❌ | ✅ Built-in |
-| **Performance** |
-| Code Splitting | ✅ | ⚠️ Limited | ⚠️ Limited | ⚠️ Limited |
-| Prefetching | ✅ | ✅ | ✅ | ✅ |
-| Instant Navigation | ✅ | ✅ | ✅ | ✅ |
+| Feature                       | VitePress (thegent) | MkDocs Material (API)  | MkDocs Material (kush) | MkDocs Material (pheno-sdk) |
+| ----------------------------- | ------------------- | ---------------------- | ---------------------- | --------------------------- |
+| **Core**                      |
+| Mermaid Diagrams              | ✅                  | ✅                     | ✅                     | ✅                          |
+| Code Highlighting             | ✅ Basic            | ✅ Advanced (Pygments) | ✅ Advanced (Pygments) | ✅ Advanced (Pygments)      |
+| Code Copy                     | ✅                  | ✅                     | ✅                     | ✅                          |
+| Code Annotation               | ❌                  | ✅                     | ✅                     | ✅                          |
+| **Navigation**                |
+| Auto Sidebar                  | ✅                  | ✅ (awesome-pages)     | ✅ (awesome-pages)     | ✅ (awesome-pages)          |
+| Navigation Tabs               | ❌                  | ✅                     | ✅                     | ✅                          |
+| Sticky Navigation             | ❌                  | ✅                     | ✅                     | ✅                          |
+| Navigation Sections           | ❌                  | ✅                     | ✅                     | ✅                          |
+| Breadcrumbs                   | ✅ Basic            | ✅ Advanced            | ✅ Advanced            | ✅ Advanced                 |
+| **Search**                    |
+| Local Search                  | ✅                  | ✅                     | ✅                     | ✅                          |
+| Search Suggestions            | ❌                  | ✅                     | ✅                     | ✅                          |
+| Search Highlight              | ❌                  | ✅                     | ✅                     | ✅                          |
+| Algolia Integration           | ❌                  | ❌                     | ❌                     | ❌                          |
+| **Content**                   |
+| Content Tabs                  | ❌                  | ✅                     | ✅                     | ✅                          |
+| Callouts/Admonitions          | ✅ Basic            | ✅ Advanced            | ✅ Advanced            | ✅ Advanced                 |
+| Tooltips                      | ❌                  | ✅                     | ✅                     | ✅                          |
+| Math Support                  | ❌                  | ✅                     | ✅                     | ✅                          |
+| Emoji Support                 | ❌                  | ✅                     | ✅                     | ✅                          |
+| **API Docs**                  |
+| Auto-generate from Python     | ⚠️ Custom script    | ❌                     | ❌                     | ✅ (mkdocstrings)           |
+| Auto-generate from TypeScript | ❌                  | ❌                     | ❌                     | ❌                          |
+| **Generation**                |
+| Watch Mode                    | ✅                  | ✅                     | ✅                     | ✅                          |
+| Minification                  | ⚠️ Vite handles     | ✅ Plugin              | ✅ Plugin              | ✅ Plugin                   |
+| **Analytics**                 |
+| Google Analytics              | ❌                  | ✅ Ready               | ✅ Ready               | ✅ Ready                    |
+| **Versioning**                |
+| Version Support               | ❌                  | ❌                     | ❌                     | ✅ (mike)                   |
+| **LLM-Friendly**              |
+| LLM Output                    | ✅ Custom script    | ❌                     | ❌                     | ✅ Built-in                 |
+| **Performance**               |
+| Code Splitting                | ✅                  | ⚠️ Limited             | ⚠️ Limited             | ⚠️ Limited                  |
+| Prefetching                   | ✅                  | ✅                     | ✅                     | ✅                          |
+| Instant Navigation            | ✅                  | ✅                     | ✅                     | ✅                          |
 
 ---
 
@@ -173,6 +182,7 @@ This audit compares the current VitePress implementation in `thegent` with MkDoc
 ### 3.1 VitePress Best Practices
 
 **Performance**:
+
 - SPA model provides fast navigation
 - Static HTML for initial load
 - Vue 3 compiler optimizations
@@ -180,12 +190,14 @@ This audit compares the current VitePress implementation in `thegent` with MkDoc
 - Prefetching for viewport links
 
 **DX**:
+
 - Instant HMR (<100ms)
 - Vue-enhanced markdown
 - Component composition
 - TypeScript support
 
 **Limitations**:
+
 - Search is local-only (no Algolia/Orama)
 - No built-in versioning
 - Limited theme customization vs Material
@@ -193,6 +205,7 @@ This audit compares the current VitePress implementation in `thegent` with MkDoc
 ### 3.2 MkDocs Material Best Practices
 
 **Features**:
+
 - Extensive plugin ecosystem
 - Advanced navigation patterns
 - Rich markdown extensions
@@ -201,6 +214,7 @@ This audit compares the current VitePress implementation in `thegent` with MkDoc
 - Analytics integration
 
 **Performance**:
+
 - Minification plugins
 - Instant navigation
 - Prefetching
@@ -209,6 +223,7 @@ This audit compares the current VitePress implementation in `thegent` with MkDoc
 ### 3.3 Fumadocs Insights
 
 **Strengths**:
+
 - React-based (composable)
 - Headless mode
 - Framework agnostic
@@ -217,6 +232,7 @@ This audit compares the current VitePress implementation in `thegent` with MkDoc
 - Obsidian-style markdown
 
 **Lessons**:
+
 - Composability is key
 - Headless approach enables flexibility
 - Search integration is important
@@ -283,6 +299,7 @@ This audit compares the current VitePress implementation in `thegent` with MkDoc
 ### Phase 1: Enhanced Features (P1)
 
 #### 1.1 Advanced Navigation
+
 - [ ] Add navigation tabs
 - [ ] Implement sticky navigation
 - [ ] Add navigation sections
@@ -290,12 +307,14 @@ This audit compares the current VitePress implementation in `thegent` with MkDoc
 - [ ] Add edit-on-GitHub links
 
 #### 1.2 Enhanced Search
+
 - [ ] Integrate Algolia search
 - [ ] Add Orama search option
 - [ ] Implement search suggestions
 - [ ] Add search highlighting
 
 #### 1.3 Content Enhancements
+
 - [ ] Add content tabs component
 - [ ] Implement code annotation
 - [ ] Add tooltips support
@@ -305,17 +324,20 @@ This audit compares the current VitePress implementation in `thegent` with MkDoc
 ### Phase 2: API Documentation (P1)
 
 #### 2.1 Python API Generation
+
 - [ ] Integrate mkdocstrings-like functionality
 - [ ] Auto-generate from docstrings
 - [ ] Support Google/NumPy docstring styles
 - [ ] Generate type hints documentation
 
 #### 2.2 TypeScript/JavaScript API Generation
+
 - [ ] Create TypeScript API generator
 - [ ] Extract JSDoc comments
 - [ ] Generate API reference pages
 
 #### 2.3 OpenAPI Integration
+
 - [ ] Add OpenAPI/Swagger renderer
 - [ ] Auto-generate from OpenAPI specs
 - [ ] Interactive API explorer
@@ -323,18 +345,21 @@ This audit compares the current VitePress implementation in `thegent` with MkDoc
 ### Phase 3: Performance Optimization (P1)
 
 #### 3.1 Build Optimization
+
 - [ ] Optimize code splitting
 - [ ] Implement lazy loading for components
 - [ ] Optimize Mermaid bundle size
 - [ ] Tree-shake unused code
 
 #### 3.2 Asset Optimization
+
 - [ ] Image optimization (WebP, AVIF)
 - [ ] Font optimization (subset, preload)
 - [ ] CSS optimization (purge, minify)
 - [ ] JavaScript optimization (minify, compress)
 
 #### 3.3 Runtime Optimization
+
 - [ ] Implement virtual scrolling for long pages
 - [ ] Optimize search indexing
 - [ ] Cache API responses
@@ -343,16 +368,19 @@ This audit compares the current VitePress implementation in `thegent` with MkDoc
 ### Phase 4: Developer Experience (P2)
 
 #### 4.1 Versioning
+
 - [ ] Implement version switcher
 - [ ] Add version-specific builds
 - [ ] Support versioned URLs
 
 #### 4.2 Analytics
+
 - [ ] Add Google Analytics
 - [ ] Add Plausible integration option
 - [ ] Implement custom event tracking
 
 #### 4.3 Git Integration
+
 - [ ] Add last updated dates
 - [ ] Add git revision info
 - [ ] Add contributors display
@@ -361,17 +389,20 @@ This audit compares the current VitePress implementation in `thegent` with MkDoc
 ### Phase 5: Advanced Docgen (P2)
 
 #### 5.1 Multi-Language Support
+
 - [ ] Support multiple languages in docgen
 - [ ] Generate docs for Python, TypeScript, Rust, Go
 - [ ] Unified API reference format
 
 #### 5.2 Documentation Testing
+
 - [ ] Link checker
 - [ ] Code example validator
 - [ ] Screenshot testing
 - [ ] Accessibility testing
 
 #### 5.3 Documentation Metrics
+
 - [ ] Coverage metrics
 - [ ] Quality scores
 - [ ] Outdated content detection
@@ -442,12 +473,14 @@ This audit compares the current VitePress implementation in `thegent` with MkDoc
 ### 7.1 From MkDocs to VitePress
 
 **Advantages**:
+
 - Better performance (SPA)
 - Modern DX
 - Vue ecosystem
 - Better TypeScript support
 
 **Challenges**:
+
 - Need to recreate navigation structure
 - Need to migrate plugins
 - Need to adapt markdown extensions
@@ -455,6 +488,7 @@ This audit compares the current VitePress implementation in `thegent` with MkDoc
 ### 7.2 Hybrid Approach
 
 **Option**: Keep VitePress but add MkDocs Material features
+
 - Use VitePress for main site
 - Use MkDocs Material for API docs (via subdomain)
 - Sync content between systems

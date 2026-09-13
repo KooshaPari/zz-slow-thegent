@@ -22,13 +22,13 @@ The civilization must manage finite compute resources (CPU, memory, network) fai
 
 ### Resource Types
 
-| Resource | Unit | Typical Limit | Notes |
-|----------|------|---------------|-------|
-| CPU | percent (0-100) | 80-100% | Share 1 CPU core across civilization |
-| Memory | MB/GB | 8-16 GB total | Per-agent quotas sum to total |
-| Network | Mbps | 10-100 Mbps | Per-project bandwidth limits |
-| Disk I/O | MB/s | Unlimited (local) | Not constrained in this design |
-| Concurrency | tasks | 5-20 parallel | Max L2 agents × max tasks per L2 |
+| Resource    | Unit            | Typical Limit     | Notes                                |
+| ----------- | --------------- | ----------------- | ------------------------------------ |
+| CPU         | percent (0-100) | 80-100%           | Share 1 CPU core across civilization |
+| Memory      | MB/GB           | 8-16 GB total     | Per-agent quotas sum to total        |
+| Network     | Mbps            | 10-100 Mbps       | Per-project bandwidth limits         |
+| Disk I/O    | MB/s            | Unlimited (local) | Not constrained in this design       |
+| Concurrency | tasks           | 5-20 parallel     | Max L2 agents × max tasks per L2     |
 
 ### Resource State
 
@@ -127,6 +127,7 @@ The civilization must manage finite compute resources (CPU, memory, network) fai
 **Goal**: Fair distribution while respecting project importance/activity.
 
 **Factors**:
+
 - Civilization total resources (fixed)
 - Number of projects (variable, 2-10)
 - Project activity level (L1 agents per project)
@@ -136,6 +137,7 @@ The civilization must manage finite compute resources (CPU, memory, network) fai
 ### Quota Allocation Algorithm
 
 **Option 1: Equal Share (Simplest)**
+
 ```
 quota_per_project = total_resources / num_projects
 
@@ -149,6 +151,7 @@ Example (3 projects, 100 CPU):
 **Cons**: Doesn't account for activity, one idle project wastes quota
 
 **Option 2: Usage-Based (Adaptive)**
+
 ```
 historical_usage_per_project = average_last_7_days_usage
 quota_per_project = (historical_usage / sum(historical_usage)) * total_resources
@@ -163,6 +166,7 @@ Example:
 **Cons**: Unused capacity if project slows down, takes time to converge
 
 **Option 3: Priority-Based (Flexible)**
+
 ```
 priority_per_project = {kush: 1.0 (high), atoms: 0.8 (medium), thegent: 0.6 (low)}
 quota_per_project = (priority / sum(priorities)) * total_resources
@@ -180,6 +184,7 @@ Example:
 ### Recommended Approach: Hybrid (Options 2 + 3)
 
 **Strategy**:
+
 1. Start with equal share (safe baseline)
 2. Monitor historical usage for 7 days
 3. Shift to usage-based allocation (adapts automatically)
@@ -202,16 +207,20 @@ def allocate_quota(
 
     # If we have historical usage, weight by it
     if historical_usage and len(historical_usage) == n_projects:
-        total_usage = sum(
-            historical_usage[p]['cpu'] for p in projects
-        )
+        total_usage = sum(historical_usage[p]["cpu"] for p in projects)
         if total_usage > 0:
             # Allocate based on historical usage
             return {
                 project: {
-                    'cpu_percent': (historical_usage[project]['cpu'] / total_usage) * 100,
-                    'memory_mb': (historical_usage[project]['memory'] / sum(u['memory'] for u in historical_usage.values())) * total_resources['memory_mb'],
-                    'network_mbps': (historical_usage[project]['network'] / sum(u['network'] for u in historical_usage.values())) * total_resources['network_mbps'],
+                    "cpu_percent": (historical_usage[project]["cpu"] / total_usage) * 100,
+                    "memory_mb": (
+                        historical_usage[project]["memory"] / sum(u["memory"] for u in historical_usage.values())
+                    )
+                    * total_resources["memory_mb"],
+                    "network_mbps": (
+                        historical_usage[project]["network"] / sum(u["network"] for u in historical_usage.values())
+                    )
+                    * total_resources["network_mbps"],
                 }
                 for project in projects
             }
@@ -221,9 +230,9 @@ def allocate_quota(
         priority_sum = sum(priorities.values())
         return {
             project: {
-                'cpu_percent': (priorities.get(project, 1.0) / priority_sum) * 100,
-                'memory_mb': (priorities.get(project, 1.0) / priority_sum) * total_resources['memory_mb'],
-                'network_mbps': (priorities.get(project, 1.0) / priority_sum) * total_resources['network_mbps'],
+                "cpu_percent": (priorities.get(project, 1.0) / priority_sum) * 100,
+                "memory_mb": (priorities.get(project, 1.0) / priority_sum) * total_resources["memory_mb"],
+                "network_mbps": (priorities.get(project, 1.0) / priority_sum) * total_resources["network_mbps"],
             }
             for project in projects
         }
@@ -241,44 +250,32 @@ def allocate_quota(
 **Goal**: Prefer same-project agents (lower latency, no cross-project coordination).
 
 ```python
-def select_agent_locality_first(
-    task_id: str,
-    required_capability: str,
-    source_project: str
-) -> AgentEntry:
+def select_agent_locality_first(task_id: str, required_capability: str, source_project: str) -> AgentEntry:
     """
     Select agent for task, preferring same project.
     """
     # Try same project first (low latency)
     candidates_same_project = registry.query(
-        project=source_project,
-        capability=required_capability,
-        status='active',
-        availability='idle_or_available'
+        project=source_project, capability=required_capability, status="active", availability="idle_or_available"
     )
 
     if candidates_same_project:
         # Sort by load (least loaded first)
-        sorted_candidates = sorted(
-            candidates_same_project,
-            key=lambda a: a['current_state']['tasks_active']
-        )
+        sorted_candidates = sorted(candidates_same_project, key=lambda a: a["current_state"]["tasks_active"])
         return sorted_candidates[0]
 
     # Try other projects (higher latency, cross-project)
     candidates_other_projects = registry.query(
-        capability=required_capability,
-        status='active',
-        availability='idle_or_available'
+        capability=required_capability, status="active", availability="idle_or_available"
     )
 
     if candidates_other_projects:
         sorted_candidates = sorted(
             candidates_other_projects,
             key=lambda a: (
-                a['project'] != source_project,  # Prefer same project
-                a['current_state']['tasks_active']  # Then least loaded
-            )
+                a["project"] != source_project,  # Prefer same project
+                a["current_state"]["tasks_active"],  # Then least loaded
+            ),
         )
         return sorted_candidates[0]
 
@@ -286,11 +283,13 @@ def select_agent_locality_first(
 ```
 
 **Advantages**:
+
 - Minimizes cross-project overhead (no network crossing)
 - Agents stay focused on their project
 - Easier to reason about (work stays local)
 
 **Disadvantages**:
+
 - May not use idle capacity in other projects
 - Blocks task if no capacity in source project
 
@@ -299,18 +298,11 @@ def select_agent_locality_first(
 **Goal**: Balance load evenly across all agents, regardless of project.
 
 ```python
-def select_agent_load_balanced(
-    task_id: str,
-    required_capability: str
-) -> AgentEntry:
+def select_agent_load_balanced(task_id: str, required_capability: str) -> AgentEntry:
     """
     Select least-loaded agent globally.
     """
-    candidates = registry.query(
-        capability=required_capability,
-        status='active',
-        availability='idle_or_available'
-    )
+    candidates = registry.query(capability=required_capability, status="active", availability="idle_or_available")
 
     if not candidates:
         raise NoAvailableAgents(required_capability)
@@ -319,21 +311,23 @@ def select_agent_load_balanced(
     sorted_candidates = sorted(
         candidates,
         key=lambda a: (
-            a['current_state']['cpu_usage_percent'],
-            a['current_state']['memory_usage_mb'],
-            a['current_state']['tasks_active']
-        )
+            a["current_state"]["cpu_usage_percent"],
+            a["current_state"]["memory_usage_mb"],
+            a["current_state"]["tasks_active"],
+        ),
     )
 
     return sorted_candidates[0]
 ```
 
 **Advantages**:
+
 - Maximizes utilization (no idle agents)
 - Fair distribution of work
 - Better for cross-project optimization
 
 **Disadvantages**:
+
 - Higher latency (cross-project communication)
 - More complex coordination
 - May create cascading failures
@@ -344,16 +338,13 @@ def select_agent_load_balanced(
 
 ```python
 def select_agent_hybrid(
-    task_id: str,
-    required_capability: str,
-    source_project: str,
-    locality_threshold_percent: float = 80.0
+    task_id: str, required_capability: str, source_project: str, locality_threshold_percent: float = 80.0
 ) -> AgentEntry:
     """
     Prefer same-project agents unless overloaded.
     """
     # Check if same-project agents are overloaded
-    same_project_usage = get_project_usage(source_project, 'cpu_percent')
+    same_project_usage = get_project_usage(source_project, "cpu_percent")
 
     # If same-project usage < threshold, use locality-first
     if same_project_usage < locality_threshold_percent:
@@ -367,6 +358,7 @@ def select_agent_hybrid(
 ```
 
 **Parameters**:
+
 - `locality_threshold_percent`: When to abandon locality preference (default: 80%)
 - `capability`: Required agent capability
 - `task_priority`: Higher priority tasks can use cross-project resources
@@ -378,32 +370,33 @@ def select_agent_hybrid(
 ### Admission Control (Accept/Reject Decision)
 
 **When to reject a task:**
+
 ```python
 def can_allocate_task(task: Task, agent: AgentEntry) -> tuple[bool, str]:
     """
     Check if agent has capacity for task.
     Returns (can_allocate, reason).
     """
-    project = agent['project']
+    project = agent["project"]
     resource_state = read_resource_state()
 
     # Check 1: Agent overloaded?
-    if agent['current_state']['tasks_active'] >= agent['resource_quota']['max_concurrent_tasks']:
+    if agent["current_state"]["tasks_active"] >= agent["resource_quota"]["max_concurrent_tasks"]:
         return False, f"Agent already running {agent['current_state']['tasks_active']} tasks"
 
     # Check 2: Project quota available?
-    project_available = resource_state['projects'][project]['available']
-    required = task['resource_request']
+    project_available = resource_state["projects"][project]["available"]
+    required = task["resource_request"]
 
-    if project_available['cpu_percent'] < required['cpu_percent']:
+    if project_available["cpu_percent"] < required["cpu_percent"]:
         return False, f"Project {project} insufficient CPU: {project_available['cpu_percent']}% needed"
 
-    if project_available['memory_mb'] < required['memory_mb']:
+    if project_available["memory_mb"] < required["memory_mb"]:
         return False, f"Project {project} insufficient memory: {project_available['memory_mb']}MB needed"
 
     # Check 3: Civilization quota available?
-    civilization_available = resource_state['available_resources']
-    if civilization_available['cpu_percent'] < required['cpu_percent']:
+    civilization_available = resource_state["available_resources"]
+    if civilization_available["cpu_percent"] < required["cpu_percent"]:
         return False, f"Civilization insufficient CPU: {civilization_available['cpu_percent']}% needed"
 
     # All checks passed
@@ -425,17 +418,16 @@ def dispatch_task_with_queueing(task: Task, agent_id: str) -> DispatchResult:
         return dispatch_task(task, agent_id)
     else:
         # Queue task, set retry policy
-        queue_task(task, {
-            'queue_reason': reason,
-            'queued_at': now(),
-            'retry_after_minutes': 5,  # Check again in 5 min
-            'max_queue_time_minutes': 60  # Fail if queued >1 hour
-        })
-        return DispatchResult(
-            task_id=task.id,
-            status='QUEUED',
-            message=f"Task queued: {reason}. Will retry in 5 min."
+        queue_task(
+            task,
+            {
+                "queue_reason": reason,
+                "queued_at": now(),
+                "retry_after_minutes": 5,  # Check again in 5 min
+                "max_queue_time_minutes": 60,  # Fail if queued >1 hour
+            },
         )
+        return DispatchResult(task_id=task.id, status="QUEUED", message=f"Task queued: {reason}. Will retry in 5 min.")
 ```
 
 ### Queue Draining (When resources become available)
@@ -451,11 +443,7 @@ async def drain_queued_tasks():
     for task in queued_tasks:
         # Find best agent for this task
         try:
-            agent = select_agent_hybrid(
-                task['task_id'],
-                task['required_capability'],
-                task['source_project']
-            )
+            agent = select_agent_hybrid(task["task_id"], task["required_capability"], task["source_project"])
         except NoAvailableAgents:
             continue  # Still no capacity, stay queued
 
@@ -464,8 +452,8 @@ async def drain_queued_tasks():
         if can_allocate:
             # Dispatch from queue
             try:
-                dispatch_task(task, agent['id'])
-                remove_from_queue(task['task_id'])
+                dispatch_task(task, agent["id"])
+                remove_from_queue(task["task_id"])
             except Exception:
                 continue  # Dispatch failed, stay queued
 ```
@@ -484,7 +472,7 @@ def request_resource_borrow(
     resource_type: str,  # 'cpu', 'memory'
     amount: float,
     duration_minutes: int,
-    urgency: str = 'normal'  # 'low', 'normal', 'high'
+    urgency: str = "normal",  # 'low', 'normal', 'high'
 ) -> BorrowApproval:
     """
     Request to borrow resources from idle projects.
@@ -493,26 +481,22 @@ def request_resource_borrow(
 
     # Find idle projects with excess capacity
     idle_projects = []
-    for project, data in resource_state['projects'].items():
+    for project, data in resource_state["projects"].items():
         if project == borrower_project:
             continue  # Can't borrow from self
 
-        available = data['available'][resource_type]
-        usage_percent = (data['usage'][resource_type] / data['quota'][resource_type]) * 100
+        available = data["available"][resource_type]
+        usage_percent = (data["usage"][resource_type] / data["quota"][resource_type]) * 100
 
         if usage_percent < 50:  # Project is idle
-            idle_projects.append({
-                'project': project,
-                'available': available,
-                'usage_percent': usage_percent
-            })
+            idle_projects.append({"project": project, "available": available, "usage_percent": usage_percent})
 
     if not idle_projects:
         raise NoIdleProjectsAvailable()
 
     # Sort by most idle first
-    idle_projects.sort(key=lambda p: p['usage_percent'])
-    lender_project = idle_projects[0]['project']
+    idle_projects.sort(key=lambda p: p["usage_percent"])
+    lender_project = idle_projects[0]["project"]
 
     # Request approval from lender's L1
     approval = send_borrow_request(
@@ -521,23 +505,24 @@ def request_resource_borrow(
         resource_type=resource_type,
         amount=amount,
         duration_minutes=duration_minutes,
-        urgency=urgency
+        urgency=urgency,
     )
 
-    if approval.status == 'APPROVED':
+    if approval.status == "APPROVED":
         # Update quotas temporarily
         update_quota_borrowing(
             lender_project=lender_project,
             borrower_project=borrower_project,
             resource_type=resource_type,
             amount=amount,
-            borrow_until=now() + timedelta(minutes=duration_minutes)
+            borrow_until=now() + timedelta(minutes=duration_minutes),
         )
 
     return approval
 ```
 
 **Message Schema (Borrow Request)**:
+
 ```json
 {
   "message_type": "resource_borrow_request",
@@ -560,6 +545,7 @@ def request_resource_borrow(
 ```
 
 **Approval (with Terms)**:
+
 ```json
 {
   "message_type": "resource_borrow_response",
@@ -586,11 +572,7 @@ def request_resource_borrow(
 ### Quota Reclamation (Lender cancels borrow)
 
 ```python
-def reclaim_borrowed_resources(
-    lender_project: str,
-    borrower_project: str,
-    resource_type: str
-) -> bool:
+def reclaim_borrowed_resources(lender_project: str, borrower_project: str, resource_type: str) -> bool:
     """
     Lender reclaims borrowed resources (if lender needs them).
     Gives borrower 5 minutes notice.
@@ -599,12 +581,12 @@ def reclaim_borrowed_resources(
     send_message(
         receiver_id=f"{borrower_project}:...:L1",
         message={
-            'type': 'resource_reclamation_notice',
-            'lender_project': lender_project,
-            'resource_type': resource_type,
-            'reclaim_at': now() + timedelta(minutes=5),
-            'message': f"Need to reclaim {resource_type} back"
-        }
+            "type": "resource_reclamation_notice",
+            "lender_project": lender_project,
+            "resource_type": resource_type,
+            "reclaim_at": now() + timedelta(minutes=5),
+            "message": f"Need to reclaim {resource_type} back",
+        },
     )
 
     # Borrower must return resources within 5 minutes
@@ -616,9 +598,7 @@ def reclaim_borrowed_resources(
         # Hard reclaim: kill borrower's lowest-priority tasks
         kill_lowest_priority_tasks(borrower_project, num_tasks=3)
         log_incident(
-            type='RESOURCE_RECLAMATION_FORCED',
-            lender_project=lender_project,
-            borrower_project=borrower_project
+            type="RESOURCE_RECLAMATION_FORCED", lender_project=lender_project, borrower_project=borrower_project
         )
 ```
 
@@ -637,22 +617,25 @@ def reclaim_borrowed_resources(
 ```python
 class SharedResultCache:
     def __init__(self):
-        self.cache_dir = Path('~/.claude/civilization/cache')
+        self.cache_dir = Path("~/.claude/civilization/cache")
 
     def store(self, key: str, value: dict, projects: list[str]) -> str:
         """
         Store result in cache, accessible to projects.
         """
         cache_file = self.cache_dir / f"{key}.json"
-        with open(cache_file, 'w') as f:
-            json.dump({
-                'key': key,
-                'value': value,
-                'created_by': 'agent-id',
-                'created_at': now(),
-                'accessible_to_projects': projects,
-                'ttl_hours': 24
-            }, f)
+        with open(cache_file, "w") as f:
+            json.dump(
+                {
+                    "key": key,
+                    "value": value,
+                    "created_by": "agent-id",
+                    "created_at": now(),
+                    "accessible_to_projects": projects,
+                    "ttl_hours": 24,
+                },
+                f,
+            )
         return str(cache_file)
 
     def retrieve(self, key: str, project: str) -> dict:
@@ -664,18 +647,19 @@ class SharedResultCache:
             raise CacheMiss(key)
 
         data = json.load(open(cache_file))
-        if project not in data['accessible_to_projects']:
+        if project not in data["accessible_to_projects"]:
             raise CacheAccessDenied(project, key)
 
         # Check TTL
-        created_at = datetime.fromisoformat(data['created_at'])
-        if (now() - created_at) > timedelta(hours=data['ttl_hours']):
+        created_at = datetime.fromisoformat(data["created_at"])
+        if (now() - created_at) > timedelta(hours=data["ttl_hours"]):
             raise CacheExpired(key)
 
-        return data['value']
+        return data["value"]
 ```
 
 **Cache Locations**:
+
 ```
 ~/.claude/civilization/cache/
 ├── research-http-libs.json       (created by atoms:researcher)
@@ -684,6 +668,7 @@ class SharedResultCache:
 ```
 
 **Cross-Project Cache Hit Example**:
+
 ```
 Task: "research HTTP libraries"
 Requested by: kush:runner-1
@@ -699,6 +684,7 @@ Requested by: kush:runner-1
 **Goal**: Start next task before current task completes (pipelining).
 
 **Example**:
+
 ```
 L2 working on Task A
   ├─ Task A estimated 10 min remaining
@@ -713,6 +699,7 @@ L2 working on Task A
 ```
 
 **Implementation**:
+
 ```python
 def speculative_dispatch(current_task: Task, queue: list[Task]) -> bool:
     """
@@ -724,7 +711,7 @@ def speculative_dispatch(current_task: Task, queue: list[Task]) -> bool:
     next_task = queue[0]
 
     # Check dependencies
-    if next_task['blocked_by'] and current_task['task_id'] in next_task['blocked_by']:
+    if next_task["blocked_by"] and current_task["task_id"] in next_task["blocked_by"]:
         # Dependencies exist, can't start early
         return False
 
@@ -735,7 +722,7 @@ def speculative_dispatch(current_task: Task, queue: list[Task]) -> bool:
 
     # Check if enough time to start before current ends
     time_to_start_speculation = 2  # 2 minutes to setup
-    current_time_remaining = current_task['estimated_completion'] - now()
+    current_time_remaining = current_task["estimated_completion"] - now()
     if current_time_remaining < timedelta(minutes=time_to_start_speculation):
         return False  # Too late to speculate
 
@@ -758,22 +745,22 @@ class AgentMetrics:
     def record_task_completion(self, task: Task, duration_minutes: float):
         """Record task completion metrics."""
         metrics = self.read_metrics()
-        metrics['tasks_completed'] += 1
-        metrics['total_duration_minutes'] += duration_minutes
-        metrics['avg_duration_minutes'] = metrics['total_duration_minutes'] / metrics['tasks_completed']
+        metrics["tasks_completed"] += 1
+        metrics["total_duration_minutes"] += duration_minutes
+        metrics["avg_duration_minutes"] = metrics["total_duration_minutes"] / metrics["tasks_completed"]
         self.write_metrics(metrics)
 
     def get_utilization(self) -> float:
         """Get CPU utilization for this agent."""
         # Read from agent's status
         agent_entry = registry.lookup(self.agent_id)
-        return agent_entry['current_state']['cpu_usage_percent']
+        return agent_entry["current_state"]["cpu_usage_percent"]
 
     def get_queue_depth(self) -> int:
         """Get number of pending tasks for this agent."""
         count = 0
         for task in read_work_stream():
-            if task['assigned_to'] == self.agent_id and task['status'] in ['PENDING', 'CLAIMED']:
+            if task["assigned_to"] == self.agent_id and task["status"] in ["PENDING", "CLAIMED"]:
                 count += 1
         return count
 ```
@@ -822,16 +809,15 @@ class AgentMetrics:
 
 ## Glossary
 
-| Term | Definition |
-|------|-----------|
-| **Quota** | Resource limit for a project (CPU %, memory, network) |
-| **Usage** | Actual resource consumption by agents in project |
-| **Available** | quota - usage = unused capacity |
-| **Headroom** | available - safety_margin = reclaimable |
-| **Locality** | Preferring same-project agents (low latency) |
-| **Load Balancing** | Distributing work across agents evenly |
-| **Backpressure** | Rejecting tasks when overloaded |
-| **Borrowing** | Project A uses Project B's excess capacity temporarily |
-| **Speculation** | Starting next task before current task completes |
-| **Memoization** | Caching results to avoid redundant work |
-
+| Term               | Definition                                             |
+| ------------------ | ------------------------------------------------------ |
+| **Quota**          | Resource limit for a project (CPU %, memory, network)  |
+| **Usage**          | Actual resource consumption by agents in project       |
+| **Available**      | quota - usage = unused capacity                        |
+| **Headroom**       | available - safety_margin = reclaimable                |
+| **Locality**       | Preferring same-project agents (low latency)           |
+| **Load Balancing** | Distributing work across agents evenly                 |
+| **Backpressure**   | Rejecting tasks when overloaded                        |
+| **Borrowing**      | Project A uses Project B's excess capacity temporarily |
+| **Speculation**    | Starting next task before current task completes       |
+| **Memoization**    | Caching results to avoid redundant work                |

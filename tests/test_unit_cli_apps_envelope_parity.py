@@ -62,11 +62,7 @@ Tests cover:
 
 from __future__ import annotations
 
-import io
 import re
-import runpy
-import subprocess
-import sys
 from pathlib import Path
 
 import pytest
@@ -279,11 +275,9 @@ class TestRunAppErrorEnvelopeRichmarkupSafety:
         envelope must surface the literal bracketed text rather
         than coloured output.
         """
-        import typer
         from typer.testing import CliRunner
 
         from thegent.cli.apps import run_app
-        from thegent.cli.commands import cli as _cli
 
         # Force the ``resolve_route`` path to raise — the
         # ``except Exception`` branch is reached and triggers the
@@ -357,14 +351,14 @@ class TestExcTextImportFromCliApps:
     sub-apps follow the same import path."""
 
     def test_run_app_imports_print_exc_from_cli_errors(self) -> None:
-        from thegent.cli.apps import run_app
         import thegent.ux.cli_errors as _cli_errors
+        from thegent.cli.apps import run_app
 
         assert run_app.print_exc is _cli_errors.print_exc
 
     def test_govern_app_imports_print_exc_from_cli_errors(self) -> None:
-        from thegent.cli.apps import govern
         import thegent.ux.cli_errors as _cli_errors
+        from thegent.cli.apps import govern
 
         assert govern.print_exc is _cli_errors.print_exc
 

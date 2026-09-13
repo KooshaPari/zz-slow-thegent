@@ -120,7 +120,11 @@ class BifrostClient:
 
     def _load_config(self) -> BifrostConfig:
         config = cast("BifrostConfig", BifrostConfig.from_env("BIFROST_"))
-        config.enabled = os.environ.get("THEGENT_ENABLE_BIFROST", "").lower() in ("1", "true", "yes")
+        config.enabled = os.environ.get("THEGENT_ENABLE_BIFROST", "").lower() in (
+            "1",
+            "true",
+            "yes",
+        )
         return config
 
     @property

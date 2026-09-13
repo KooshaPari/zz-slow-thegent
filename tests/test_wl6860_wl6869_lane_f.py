@@ -4,15 +4,27 @@ from __future__ import annotations
 
 import builtins
 import io
-import orjson as json
 import sys
 from pathlib import Path
 from types import SimpleNamespace
 
+import orjson as json
 import pytest
 
-from thegent import clode_config_isolation, cliproxy_models_transform, config_provider, execution, thegent_platform
-from thegent.execution import ConcurrencyController, HandoffManager, MessageEntry, RunMeta, RunRegistry
+from thegent import (
+    cliproxy_models_transform,
+    clode_config_isolation,
+    config_provider,
+    execution,
+    thegent_platform,
+)
+from thegent.execution import (
+    ConcurrencyController,
+    HandoffManager,
+    MessageEntry,
+    RunMeta,
+    RunRegistry,
+)
 
 
 @pytest.fixture(autouse=True)
@@ -24,7 +36,9 @@ def _reset_lane_diagnostics() -> None:
     execution.reset_execution_diagnostics()
 
 
-def test_wl6860_control_plane_not_configured_metadata(monkeypatch: pytest.MonkeyPatch) -> None:
+def test_wl6860_control_plane_not_configured_metadata(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
     monkeypatch.delenv("THGENT_CONTROL_PLANE_URL", raising=False)
 
     provider = config_provider.get_config_provider()
@@ -70,7 +84,9 @@ def test_wl6860_control_plane_success_metadata(monkeypatch: pytest.MonkeyPatch) 
     assert metadata["degraded"] is False
 
 
-def test_wl6861_detect_platform_reads_proc_version(monkeypatch: pytest.MonkeyPatch) -> None:
+def test_wl6861_detect_platform_reads_proc_version(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
     monkeypatch.setattr(thegent_platform.platform, "system", lambda: "Linux")
     monkeypatch.setattr(thegent_platform.os.path, "exists", lambda _: True)
     monkeypatch.setattr(builtins, "open", lambda *_args, **_kwargs: io.StringIO("Microsoft WSL"))
@@ -80,7 +96,9 @@ def test_wl6861_detect_platform_reads_proc_version(monkeypatch: pytest.MonkeyPat
     assert detected == thegent_platform.Platform.WSL2
 
 
-def test_wl6861_detect_platform_proc_read_failure_uses_env_fallback(monkeypatch: pytest.MonkeyPatch) -> None:
+def test_wl6861_detect_platform_proc_read_failure_uses_env_fallback(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
     monkeypatch.setattr(thegent_platform.platform, "system", lambda: "Linux")
     monkeypatch.setattr(thegent_platform.os.path, "exists", lambda _: True)
 
@@ -98,7 +116,9 @@ def test_wl6861_detect_platform_proc_read_failure_uses_env_fallback(monkeypatch:
     assert diagnostics["last_proc_version_error_type"] == "OSError"
 
 
-def test_wl6861_detect_platform_proc_read_failure_linux_path(monkeypatch: pytest.MonkeyPatch) -> None:
+def test_wl6861_detect_platform_proc_read_failure_linux_path(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
     monkeypatch.setattr(thegent_platform.platform, "system", lambda: "Linux")
     monkeypatch.setattr(thegent_platform.os.path, "exists", lambda _: True)
     monkeypatch.delenv("WSL_DISTRO_NAME", raising=False)
@@ -310,7 +330,9 @@ def test_wl6866_release_unregister_success(monkeypatch: pytest.MonkeyPatch) -> N
     assert called["count"] == 1
 
 
-def test_wl6866_release_import_failure_records_diagnostics(monkeypatch: pytest.MonkeyPatch) -> None:
+def test_wl6866_release_import_failure_records_diagnostics(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
     _patch_ps_impl(monkeypatch)
     controller = ConcurrencyController(Path("/tmp"), max_concurrency=3, use_load_based=False)
     real_import = builtins.__import__
@@ -328,7 +350,9 @@ def test_wl6866_release_import_failure_records_diagnostics(monkeypatch: pytest.M
     assert diagnostics["import_failures"] == 1
 
 
-def test_wl6866_release_runtime_failure_records_diagnostics(monkeypatch: pytest.MonkeyPatch) -> None:
+def test_wl6866_release_runtime_failure_records_diagnostics(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
     _patch_ps_impl(monkeypatch)
 
     class _BrokenMonitor:

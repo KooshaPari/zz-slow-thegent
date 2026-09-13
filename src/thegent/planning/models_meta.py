@@ -1,11 +1,14 @@
 """Stub module."""
+
 from __future__ import annotations
+
 from dataclasses import dataclass
 
 
 @dataclass
 class ModelMeta:
     """Model metadata."""
+
     name: str
     version: str = "1.0"
 

@@ -3,10 +3,11 @@
 Handles local state persistence, checkpoints, and trends.
 """
 
-import orjson as json
-from datetime import datetime, UTC
+from datetime import UTC, datetime
 from pathlib import Path
 from typing import Any
+
+import orjson as json
 
 
 class StateAdapter:
@@ -97,7 +98,9 @@ class StateAdapter:
         """Compact old snapshots, keeping only the most recent."""
         try:
             snapshots = sorted(
-                self._status_path.parent.glob("autosync_snapshot_*.json"), key=lambda p: p.stat().st_mtime, reverse=True
+                self._status_path.parent.glob("autosync_snapshot_*.json"),
+                key=lambda p: p.stat().st_mtime,
+                reverse=True,
             )
             for old in snapshots[keep_count:]:
                 old.unlink()

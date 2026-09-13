@@ -12,7 +12,7 @@ Test matrix for enterprise compliance.
 
 ### Methods
 
-#### EnterpriseComplianceTestMatrix.__init__
+#### EnterpriseComplianceTestMatrix.**init**
 
 ```python
 __init__(self: Any)

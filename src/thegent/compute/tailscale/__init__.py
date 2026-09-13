@@ -1,4 +1,5 @@
 """Stub module."""
+
 from __future__ import annotations
 
 from dataclasses import dataclass
@@ -8,6 +9,7 @@ from typing import Any
 @dataclass
 class TailscaleConfig:
     """Tailscale configuration."""
+
     auth_key: str = ""
     hostname: str = ""
 
@@ -28,7 +30,13 @@ class TailscaleError(Exception):
     """Exception raised for Tailscale errors."""
 
 
-__all__ = ["TailscaleConfig", "TailscaleClient", "TailscaleError", "TailscaleManager", "TailscaleNode"]
+__all__ = [
+    "TailscaleConfig",
+    "TailscaleClient",
+    "TailscaleError",
+    "TailscaleManager",
+    "TailscaleNode",
+]
 
 
 class TailscaleManager:
@@ -45,6 +53,7 @@ class TailscaleManager:
 @dataclass
 class TailscaleNode:
     """Represents a Tailscale node."""
+
     name: str = ""
     ip_address: str = ""
     online: bool = False

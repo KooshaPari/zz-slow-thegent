@@ -11,30 +11,30 @@
 
 ### 1.1 Proprietary Frontier Models
 
-| Model | Provider | Benchmarks | Strengths |
-|-------|----------|------------|-----------|
-| GPT-5.2 Codex | OpenAI | 89% LiveCodeBench; tops HumanEval/MBPP | Precise code generation, complex architecture planning |
-| Claude Opus 4.6 | Anthropic | ~81% SWE-Bench; 87% LiveCodeBench | Deep reasoning, safe refactoring, multi-file context |
-| Gemini 3 Pro | Google | 92% LiveCodeBench; >3400 Codeforces Elo | UI-centric coding, dominant on algorithmic challenges |
-| MiniMax M2.5 | MiniMax | 80.2% SWE-Bench (≈Claude/GPT-5 parity) | Frontier code quality at low cost |
-| Kimi K2.5 | Moonshot | ~85% LiveCode (est.) | Multimodal, agentic tool use, 262K context |
+| Model           | Provider  | Benchmarks                              | Strengths                                              |
+| --------------- | --------- | --------------------------------------- | ------------------------------------------------------ |
+| GPT-5.2 Codex   | OpenAI    | 89% LiveCodeBench; tops HumanEval/MBPP  | Precise code generation, complex architecture planning |
+| Claude Opus 4.6 | Anthropic | ~81% SWE-Bench; 87% LiveCodeBench       | Deep reasoning, safe refactoring, multi-file context   |
+| Gemini 3 Pro    | Google    | 92% LiveCodeBench; >3400 Codeforces Elo | UI-centric coding, dominant on algorithmic challenges  |
+| MiniMax M2.5    | MiniMax   | 80.2% SWE-Bench (≈Claude/GPT-5 parity)  | Frontier code quality at low cost                      |
+| Kimi K2.5       | Moonshot  | ~85% LiveCode (est.)                    | Multimodal, agentic tool use, 262K context             |
 
 ### 1.2 Cost-Effective Models
 
-| Model | Provider | Benchmarks | Strengths |
-|-------|----------|------------|-----------|
-| Claude Haiku 4.5 | Anthropic | 73.3% SWE-Bench; ~90% of Claude agentic | Fast (2–5× faster), low cost for iterative use |
-| Gemini 3 Flash | Google | ~91% LiveCodeBench | High-speed Q&A, code completions |
-| Claude Sonnet 4.5 | Anthropic | Solid across board | Balanced "daily driver" |
+| Model             | Provider  | Benchmarks                              | Strengths                                      |
+| ----------------- | --------- | --------------------------------------- | ---------------------------------------------- |
+| Claude Haiku 4.5  | Anthropic | 73.3% SWE-Bench; ~90% of Claude agentic | Fast (2–5× faster), low cost for iterative use |
+| Gemini 3 Flash    | Google    | ~91% LiveCodeBench                      | High-speed Q&A, code completions               |
+| Claude Sonnet 4.5 | Anthropic | Solid across board                      | Balanced "daily driver"                        |
 
 ### 1.3 Open-Source / Self-Hosted
 
-| Model | Provider | Benchmarks | Strengths |
-|-------|----------|------------|-----------|
-| GLM-5 (Reasoning) | Zhipu AI | ~89% LiveCodeBench | Open-source, near-SOTA |
-| DeepSeek V3.2 | DeepSeek | ~85–90% coding evals | 90%+ quality at 1/10th cost |
-| Code LLaMA 34B | Meta | ~50% HumanEval | Self-hostable on 48GB GPUs |
-| Qwen-14B Coder | Alibaba | ~48% HumanEval (base) | Lightweight, single GPU |
+| Model             | Provider | Benchmarks            | Strengths                   |
+| ----------------- | -------- | --------------------- | --------------------------- |
+| GLM-5 (Reasoning) | Zhipu AI | ~89% LiveCodeBench    | Open-source, near-SOTA      |
+| DeepSeek V3.2     | DeepSeek | ~85–90% coding evals  | 90%+ quality at 1/10th cost |
+| Code LLaMA 34B    | Meta     | ~50% HumanEval        | Self-hostable on 48GB GPUs  |
+| Qwen-14B Coder    | Alibaba  | ~48% HumanEval (base) | Lightweight, single GPU     |
 
 ---
 
@@ -42,19 +42,19 @@
 
 ### 2.1 Selected Pricing (USD per 1M tokens)
 
-| Model | Max Context | Input/M | Output/M | Access |
-|-------|-------------|---------|---------|--------|
-| Claude Haiku 4.5 | 100K | $1.00 | $5.00 | Anthropic API, Bedrock, Claude.ai |
-| Claude Opus 4.6 | 1M | $5.00 | $25.00 | API, OpenRouter |
-| Claude Sonnet 4.5 | 1M | $3.00 | $15.00 | API, OpenRouter |
-| GPT-5.2 Codex | 128K | $1.75 | $14.00 | OpenAI API, Azure |
-| GPT-5.2 "Pro" | 256K | $21.00 | $168.00 | Limited beta |
-| Gemini 3 Flash | 1.05M | $0.50 | $3.00 | Vertex AI, OpenRouter |
-| Gemini 3 Pro | 1M+ | $2.00 | $12.00 | Early Access |
-| MiniMax M2.5 | 197K | $0.30 | $1.10 | OpenRouter, MiniMax API |
-| Moonshot Kimi K2.5 | 262K | $0.23 | $3.00 | OpenRouter, Moonshot AI |
-| xAI Grok Code 1 | 256K | $0.20 | $1.50 | xAI API, OpenRouter |
-| Trinity-XL (Arcee) | 131K | $0.00 | $0.00 | OpenRouter free tier |
+| Model              | Max Context | Input/M | Output/M | Access                            |
+| ------------------ | ----------- | ------- | -------- | --------------------------------- |
+| Claude Haiku 4.5   | 100K        | $1.00   | $5.00    | Anthropic API, Bedrock, Claude.ai |
+| Claude Opus 4.6    | 1M          | $5.00   | $25.00   | API, OpenRouter                   |
+| Claude Sonnet 4.5  | 1M          | $3.00   | $15.00   | API, OpenRouter                   |
+| GPT-5.2 Codex      | 128K        | $1.75   | $14.00   | OpenAI API, Azure                 |
+| GPT-5.2 "Pro"      | 256K        | $21.00  | $168.00  | Limited beta                      |
+| Gemini 3 Flash     | 1.05M       | $0.50   | $3.00    | Vertex AI, OpenRouter             |
+| Gemini 3 Pro       | 1M+         | $2.00   | $12.00   | Early Access                      |
+| MiniMax M2.5       | 197K        | $0.30   | $1.10    | OpenRouter, MiniMax API           |
+| Moonshot Kimi K2.5 | 262K        | $0.23   | $3.00    | OpenRouter, Moonshot AI           |
+| xAI Grok Code 1    | 256K        | $0.20   | $1.50    | xAI API, OpenRouter               |
+| Trinity-XL (Arcee) | 131K        | $0.00   | $0.00    | OpenRouter free tier              |
 
 ### 2.2 Key Insights
 
@@ -139,11 +139,11 @@
 
 ## 5. Aggregator Comparison
 
-| Platform | Models | Markup | Notes |
-|----------|--------|--------|-------|
-| OpenRouter | 300+ | ~5.5% platform fee | Models API, key status; BYOK |
-| Vercel AI Gateway | Popular APIs | Zero markup | ~$5 credit/mo; includes cloud function time |
-| build.nvidia.com | NIM models | Free (dev) | Limits vary, not published |
+| Platform          | Models       | Markup             | Notes                                       |
+| ----------------- | ------------ | ------------------ | ------------------------------------------- |
+| OpenRouter        | 300+         | ~5.5% platform fee | Models API, key status; BYOK                |
+| Vercel AI Gateway | Popular APIs | Zero markup        | ~$5 credit/mo; includes cloud function time |
+| build.nvidia.com  | NIM models   | Free (dev)         | Limits vary, not published                  |
 
 ---
 

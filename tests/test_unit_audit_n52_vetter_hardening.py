@@ -8,12 +8,9 @@ _extract_changed_py_files, and VetterCheckResult immutability.
 
 from __future__ import annotations
 
-import abc
-import logging
-from dataclasses import asdict
 from pathlib import Path
 from typing import Any
-from unittest.mock import MagicMock, patch
+from unittest.mock import patch
 
 import pytest
 

@@ -21,9 +21,7 @@ Covers:
 from __future__ import annotations
 
 import hashlib
-import json
 import threading
-import time
 
 import pytest
 
@@ -34,10 +32,7 @@ from thegent.mcp.server.mcp_audit_trail import (
     _stable_json,
 )
 from thegent.mcp.server.mcp_server_contracts import (
-    CONTRACTS,
     OBSERVE_SUMMARY_CONTRACT,
-    CONTRACT_HEALTH_GATE_CONTRACT,
-    HEALTH_TREND_CONTRACT,
     SCHEMA_VERSION,
     get_contract,
     list_contracts,
@@ -147,8 +142,18 @@ class TestAuditTrailQuery:
 
     def _populate(self) -> MCPAuditTrail:
         trail = MCPAuditTrail(max_entries=1000)
-        trail.record(kind=AuditEntryKind.TOOL_INVOCATION, operation="run", agent="a", outcome="ok")
-        trail.record(kind=AuditEntryKind.TOOL_INVOCATION, operation="run", agent="b", outcome="error")
+        trail.record(
+            kind=AuditEntryKind.TOOL_INVOCATION,
+            operation="run",
+            agent="a",
+            outcome="ok",
+        )
+        trail.record(
+            kind=AuditEntryKind.TOOL_INVOCATION,
+            operation="run",
+            agent="b",
+            outcome="error",
+        )
         trail.record(kind=AuditEntryKind.GATE_CHECK, operation="gate", agent="a", outcome="pass")
         trail.record(kind=AuditEntryKind.RESOURCE_READ, operation="read", agent="c", outcome="ok")
         return trail
@@ -185,8 +190,20 @@ class TestAuditTrailSummary:
 
     def test_summary_basic(self) -> None:
         trail = MCPAuditTrail(max_entries=500)
-        trail.record(kind=AuditEntryKind.TOOL_INVOCATION, operation="run", agent="a", outcome="ok", duration_ms=10.0)
-        trail.record(kind=AuditEntryKind.ERROR, operation="run", agent="a", outcome="error", duration_ms=5.0)
+        trail.record(
+            kind=AuditEntryKind.TOOL_INVOCATION,
+            operation="run",
+            agent="a",
+            outcome="ok",
+            duration_ms=10.0,
+        )
+        trail.record(
+            kind=AuditEntryKind.ERROR,
+            operation="run",
+            agent="a",
+            outcome="error",
+            duration_ms=5.0,
+        )
 
         s = trail.summary()
         assert s["total_entries"] == 2
@@ -284,16 +301,40 @@ class TestPayloadHashDeterminism:
     def test_deterministic_hash(self) -> None:
         trail = MCPAuditTrail()
         payload = {"status": "ok", "items": [1, 2, 3]}
-        e1 = trail.record(kind=AuditEntryKind.TOOL_INVOCATION, operation="x", agent="a", outcome="ok", payload=payload)
-        e2 = trail.record(kind=AuditEntryKind.TOOL_INVOCATION, operation="x", agent="a", outcome="ok", payload=payload)
+        e1 = trail.record(
+            kind=AuditEntryKind.TOOL_INVOCATION,
+            operation="x",
+            agent="a",
+            outcome="ok",
+            payload=payload,
+        )
+        e2 = trail.record(
+            kind=AuditEntryKind.TOOL_INVOCATION,
+            operation="x",
+            agent="a",
+            outcome="ok",
+            payload=payload,
+        )
         assert e1.payload_hash == e2.payload_hash
         assert e1.payload_hash is not None
         assert len(e1.payload_hash) == 16  # truncated sha256
 
     def test_different_payload_different_hash(self) -> None:
         trail = MCPAuditTrail()
-        e1 = trail.record(kind=AuditEntryKind.TOOL_INVOCATION, operation="x", agent="a", outcome="ok", payload={"a": 1})
-        e2 = trail.record(kind=AuditEntryKind.TOOL_INVOCATION, operation="x", agent="a", outcome="ok", payload={"a": 2})
+        e1 = trail.record(
+            kind=AuditEntryKind.TOOL_INVOCATION,
+            operation="x",
+            agent="a",
+            outcome="ok",
+            payload={"a": 1},
+        )
+        e2 = trail.record(
+            kind=AuditEntryKind.TOOL_INVOCATION,
+            operation="x",
+            agent="a",
+            outcome="ok",
+            payload={"a": 2},
+        )
         assert e1.payload_hash != e2.payload_hash
 
 
@@ -401,7 +442,11 @@ class TestListContracts:
 
     def test_list_contracts(self) -> None:
         result = list_contracts()
-        assert set(result.keys()) == {"observe_summary", "contract_health_gate", "health_trend"}
+        assert set(result.keys()) == {
+            "observe_summary",
+            "contract_health_gate",
+            "health_trend",
+        }
         for info in result.values():
             assert info["schema_version"] == SCHEMA_VERSION
 
@@ -448,5 +493,11 @@ class TestStableJson:
         raw = _stable_json(payload)
         expected = hashlib.sha256(raw.encode("utf-8")).hexdigest()[:16]
         trail = MCPAuditTrail()
-        entry = trail.record(kind=AuditEntryKind.GATE_CHECK, operation="t", agent="a", outcome="ok", payload=payload)
+        entry = trail.record(
+            kind=AuditEntryKind.GATE_CHECK,
+            operation="t",
+            agent="a",
+            outcome="ok",
+            payload=payload,
+        )
         assert entry.payload_hash == expected

@@ -25,6 +25,7 @@ The goal of this document is to define the clean boundary between:
 ### 2.1 Core Feature Set (In Scope)
 
 **Protocol Translation Layer**
+
 - OpenAI-compatible HTTP server (listens on configurable port, default `8317`)
 - `POST /v1/chat/completions` — standard Chat Completions passthrough with provider routing
 - `POST /v1/responses` — Responses API v2 (used by Codex CLI and Claude Code CLI) translated to Chat Completions at the provider side
@@ -33,17 +34,20 @@ The goal of this document is to define the clean boundary between:
 - `GET /v1/metrics/providers` — per-provider metrics (latency, error rate, cost)
 
 **Model Aliasing**
+
 - Call any model by any name: `claude-sonnet-4.5`, `sonnet`, `haiku`, `gpt-4o` all resolve to whatever underlying model you configure
 - Alias table driven by a config file (YAML or JSON); no code changes needed to add aliases
 - Provider-native names always work alongside alias names (e.g., `MiniMax-M2.5` and `minimax-m2.5` both work)
 
 **Provider Routing**
+
 - LiteLLM Router as the routing core (library-first; thin wrapper only)
 - Routing strategies: `cheapest` (cost-based), `fastest` (latency-based), `round_robin`, `latency-based`
 - Configurable fallback chains: if primary model fails, automatically try next model in chain
 - Cooldown tracking: failed providers back off automatically
 
 **Provider Authentication**
+
 - OAuth flow for providers that require it: Claude Code (`-claude-login`), Codex (`-codex-login`), Gemini (`-login`), Copilot (`-github-copilot-login`), Kiro, Kimi, GLM/iFlow, Qwen, Roo, Kilo, Antigravity
 - API-key flow for API-key providers: MiniMax, NVIDIA NIM, OpenRouter, OpenCode Zen, Qwen, Roo
 - Credential storage in auth directory (`~/.cli-proxy-api/`)
@@ -51,6 +55,7 @@ The goal of this document is to define the clean boundary between:
 - `cliproxy login --all` for batch setup
 
 **Configuration**
+
 - Single YAML config file at `~/.cliproxy/config.yaml` (override via `CLIPROXY_CONFIG`)
 - Provider definitions in a bundled JSON (equivalent of the current `provider_definitions.json`)
 - Model alias definitions in a bundled JSON (equivalent of `model_definitions.json`)
@@ -58,12 +63,14 @@ The goal of this document is to define the clean boundary between:
 - Port configurable via `CLIPROXY_PORT` or config file
 
 **Cost Tracking**
+
 - Per-request cost estimation using LiteLLM's built-in cost tracking
 - Per-provider spend aggregated and exposed at `GET /v1/metrics/providers`
 - Optional daily budget cap with hard stop when exceeded
 - Webhook alerting when budget threshold is crossed
 
 **Lifecycle Management**
+
 - Foreground mode: `cliproxy start`
 - Background mode: `cliproxy start --daemon`
 - macOS LaunchAgent service: `cliproxy service install` / `cliproxy service start`
@@ -73,6 +80,7 @@ The goal of this document is to define the clean boundary between:
 - `cliproxy status` — is it running, what port, which providers are active
 
 **Cursor and Kiro Injection**
+
 - Cursor token-file flow (`sk-...` from `/build-key`) and auth-token flow (zero-action)
 - Kiro token import from `~/.kiro/kiro-auth-token.json`
 - Both injected into proxy config automatically when credentials exist
@@ -81,19 +89,19 @@ The goal of this document is to define the clean boundary between:
 
 The following capabilities exist in thegent today but are thegent-specific agent orchestration concerns. They must not be part of the public cliproxy++ product:
 
-| Feature | Why it stays in thegent |
-|---|---|
-| Agent lifecycle management (start/stop agent sessions) | cliproxy++ is infrastructure, not an orchestrator |
-| Work stream integration (`thegent plan`, `thegent free`) | Domain-specific to thegent's task queue |
-| Team/swarm coordination hooks | Agent-to-agent routing logic |
-| Memory systems (`thegent_memory_add`, session scraping) | Agent state management |
-| Governance hooks (kill switch, audit trails, OPA integration) | Enterprise policy layer above the proxy |
-| Pareto routing (multi-objective model selection) | thegent's specialized routing algorithm |
-| Model metadata registry (`model_metadata.py`) | Shared infra but thegent-specific consumers |
-| Donut Architecture adapter (`donut_adapter.py`) | thegent internal observability pattern |
-| Shared MCP server manager | thegent process orchestration |
-| `ThegentSettings` — the settings class itself | Replace with a self-contained `ClipproxySettings` |
-| Factory config lookup (`~/.factory/config.json`) | Factory-platform-specific integration |
+| Feature                                                       | Why it stays in thegent                           |
+| ------------------------------------------------------------- | ------------------------------------------------- |
+| Agent lifecycle management (start/stop agent sessions)        | cliproxy++ is infrastructure, not an orchestrator |
+| Work stream integration (`thegent plan`, `thegent free`)      | Domain-specific to thegent's task queue           |
+| Team/swarm coordination hooks                                 | Agent-to-agent routing logic                      |
+| Memory systems (`thegent_memory_add`, session scraping)       | Agent state management                            |
+| Governance hooks (kill switch, audit trails, OPA integration) | Enterprise policy layer above the proxy           |
+| Pareto routing (multi-objective model selection)              | thegent's specialized routing algorithm           |
+| Model metadata registry (`model_metadata.py`)                 | Shared infra but thegent-specific consumers       |
+| Donut Architecture adapter (`donut_adapter.py`)               | thegent internal observability pattern            |
+| Shared MCP server manager                                     | thegent process orchestration                     |
+| `ThegentSettings` — the settings class itself                 | Replace with a self-contained `ClipproxySettings` |
+| Factory config lookup (`~/.factory/config.json`)              | Factory-platform-specific integration             |
 
 ---
 
@@ -139,15 +147,15 @@ cliproxy/                          # repo root (suggested name: cliproxy)
 
 ### 3.2 Core Dependencies
 
-| Need | Library | Notes |
-|---|---|---|
-| HTTP server | starlette + uvicorn | Minimal ASGI; no FastAPI overhead |
-| Provider routing | litellm (Router) | Do not reimplement; thin config wrapper only |
-| HTTP client | httpx | Async, used for proxy passthrough |
-| CLI | typer | Consistent with thegent conventions |
-| Config | pydantic-settings | Env var + YAML config merging |
-| YAML | ruamel.yaml or PyYAML | Config read/write |
-| Logging | structlog | Structured JSON for aggregation |
+| Need             | Library               | Notes                                        |
+| ---------------- | --------------------- | -------------------------------------------- |
+| HTTP server      | starlette + uvicorn   | Minimal ASGI; no FastAPI overhead            |
+| Provider routing | litellm (Router)      | Do not reimplement; thin config wrapper only |
+| HTTP client      | httpx                 | Async, used for proxy passthrough            |
+| CLI              | typer                 | Consistent with thegent conventions          |
+| Config           | pydantic-settings     | Env var + YAML config merging                |
+| YAML             | ruamel.yaml or PyYAML | Config read/write                            |
+| Logging          | structlog             | Structured JSON for aggregation              |
 
 Do NOT add: custom retry loops (use LiteLLM's built-in `num_retries`), custom cache logic (use LiteLLM's `cache_responses`), custom circuit breaker (LiteLLM handles cooldowns).
 
@@ -229,6 +237,7 @@ thegent should consume cliproxy++ as a library and extend it through three clean
 # thegent/config.py
 from cliproxy.config import ClipproxySettings
 
+
 class ThegentSettings(ClipproxySettings):
     # thegent-specific overrides and additions
     cliproxy_binary: str = "cli-proxy-api-plus"
@@ -245,6 +254,7 @@ cliproxy++ exposes a `RouterStrategy` protocol:
 # cliproxy/router.py
 from typing import Protocol
 
+
 class RouterStrategy(Protocol):
     async def select_model(self, request: dict) -> str:
         """Return model identifier to route to."""
@@ -257,9 +267,11 @@ thegent registers its Pareto router:
 # thegent/routing/pareto_router_strategy.py
 from cliproxy.router import RouterStrategy
 
+
 class ParetoRouterStrategy:
     async def select_model(self, request: dict) -> str:
         from thegent.routing.pareto_router import select_offer
+
         route = select_offer(complexity_tier=request.get("complexity", "moderate"))
         if route:
             return f"{route[0]}/{route[1]}"
@@ -290,6 +302,7 @@ class MetricsEvent:
     latency_ms: float
     is_fallback: bool
 
+
 # thegent registers a callback:
 from cliproxy.metrics import subscribe_metrics
 
@@ -317,14 +330,14 @@ thegent's current `ensure_proxy_running()` and `start_proxy_managed()` map direc
 
 ### 5.1 HTTP Endpoints
 
-| Method | Path | Description |
-|---|---|---|
-| `GET` | `/v1/models` | Unified model list; response in Codex format (`{"models": [...]}`) |
-| `POST` | `/v1/chat/completions` | Standard Chat Completions; routes to configured provider |
-| `POST` | `/v1/responses` | Responses API v2; translated to Chat Completions internally |
-| `WS` | `/v1/responses` | WebSocket Responses API v2; streaming mode for Codex |
-| `GET` | `/v1/metrics/providers` | Per-provider cost, latency, error rate |
-| `GET` | `/health` | Returns `{"status": "ok"}` when proxy is ready |
+| Method | Path                    | Description                                                        |
+| ------ | ----------------------- | ------------------------------------------------------------------ |
+| `GET`  | `/v1/models`            | Unified model list; response in Codex format (`{"models": [...]}`) |
+| `POST` | `/v1/chat/completions`  | Standard Chat Completions; routes to configured provider           |
+| `POST` | `/v1/responses`         | Responses API v2; translated to Chat Completions internally        |
+| `WS`   | `/v1/responses`         | WebSocket Responses API v2; streaming mode for Codex               |
+| `GET`  | `/v1/metrics/providers` | Per-provider cost, latency, error rate                             |
+| `GET`  | `/health`               | Returns `{"status": "ok"}` when proxy is ready                     |
 
 ### 5.2 Python API (for programmatic consumers)
 
@@ -378,15 +391,15 @@ cliproxy metrics               # Print current per-provider metrics
 
 ### 5.4 Environment Variables
 
-| Variable | Default | Description |
-|---|---|---|
-| `CLIPROXY_PORT` | `8317` | Proxy listen port |
-| `CLIPROXY_CONFIG` | `~/.cliproxy/config.yaml` | Config file path |
-| `CLIPROXY_AUTH_DIR` | `~/.cliproxy/auth` | OAuth credential storage |
-| `CLIPROXY_ROUTING` | `cheapest` | Routing strategy |
-| `CLIPROXY_DEBUG` | `0` | Enable debug logging |
-| `CLIPROXY_COST_BUDGET` | unset | Daily cost budget in USD |
-| `CLIPROXY_BINARY` | `cli-proxy-api-plus` | Path to the underlying Go binary |
+| Variable               | Default                   | Description                      |
+| ---------------------- | ------------------------- | -------------------------------- |
+| `CLIPROXY_PORT`        | `8317`                    | Proxy listen port                |
+| `CLIPROXY_CONFIG`      | `~/.cliproxy/config.yaml` | Config file path                 |
+| `CLIPROXY_AUTH_DIR`    | `~/.cliproxy/auth`        | OAuth credential storage         |
+| `CLIPROXY_ROUTING`     | `cheapest`                | Routing strategy                 |
+| `CLIPROXY_DEBUG`       | `0`                       | Enable debug logging             |
+| `CLIPROXY_COST_BUDGET` | unset                     | Daily cost budget in USD         |
+| `CLIPROXY_BINARY`      | `cli-proxy-api-plus`      | Path to the underlying Go binary |
 
 ---
 
@@ -394,13 +407,13 @@ cliproxy metrics               # Print current per-provider metrics
 
 ### 6.1 Market Landscape
 
-| Tool | Strength | Weakness vs cliproxy++ |
-|---|---|---|
-| **LiteLLM Proxy** | Broad provider support, mature | Does not speak Responses API v2; no CLI-tool-native OAuth flows; requires API keys only; no WebSocket Responses bridge |
-| **OpenRouter** | Easy signup, many models | Cloud service (data leaves machine); no self-hosted option; no Codex/Claude Code native support |
-| **Ollama** | Great for local models | Local-only; no routing to cloud providers; no OAuth flows |
-| **Portkey** | Observability focus, cloud | SaaS; no OAuth for CLI tools; no Responses API v2 |
-| **litellm (library)** | Very flexible | Requires custom server code; developer-facing, not end-user-facing |
+| Tool                  | Strength                       | Weakness vs cliproxy++                                                                                                 |
+| --------------------- | ------------------------------ | ---------------------------------------------------------------------------------------------------------------------- |
+| **LiteLLM Proxy**     | Broad provider support, mature | Does not speak Responses API v2; no CLI-tool-native OAuth flows; requires API keys only; no WebSocket Responses bridge |
+| **OpenRouter**        | Easy signup, many models       | Cloud service (data leaves machine); no self-hosted option; no Codex/Claude Code native support                        |
+| **Ollama**            | Great for local models         | Local-only; no routing to cloud providers; no OAuth flows                                                              |
+| **Portkey**           | Observability focus, cloud     | SaaS; no OAuth for CLI tools; no Responses API v2                                                                      |
+| **litellm (library)** | Very flexible                  | Requires custom server code; developer-facing, not end-user-facing                                                     |
 
 ### 6.2 cliproxy++ Differentiators
 
@@ -466,14 +479,14 @@ One proxy. Every AI tool. Any LLM.
 
 ### Files to extract and clean:
 
-| Current thegent path | Target cliproxy path | Changes needed |
-|---|---|---|
-| `src/thegent/agents/cliproxy_manager.py` | `src/cliproxy/lifecycle/daemon.py` + `src/cliproxy/auth/manager.py` | Remove `ThegentSettings` imports; replace with `ClipproxySettings`; remove factory config lookup (`_get_factory_api_key`) — that's Factory-platform-specific |
-| `src/thegent/cliproxy_adapter.py` | `src/cliproxy/server.py` + `src/cliproxy/responses_handler.py` | Remove `use_litellm_router` flag (always use LiteLLM); remove thegent settings import; remove `resolve_model_for_backend` (harness model mapping is thegent-specific) |
-| `src/thegent/routing/litellm_responses_handler.py` | `src/cliproxy/responses_handler.py` | Remove `get_litellm_router()` from thegent; replace with cliproxy's own router init |
-| `src/thegent/routing/litellm_router.py` | `src/cliproxy/router.py` (subset only) | Extract: `build_litellm_model_list`, `build_fallback_chains`, `get_litellm_router`. Remove: `EnhancedRouter` (thegent's wrapper with cost_tracker, alert_manager, donut_adapter), Pareto integration, model metadata validation specific to thegent |
-| `src/thegent/agents/cliproxy_data/provider_definitions.json` | `src/cliproxy/providers/definitions.json` | Portable as-is; remove `base_url_env` entries that reference `THGENT_*` env vars (replace with `CLIPROXY_*`) |
-| `src/thegent/agents/cliproxy_data/model_definitions.json` | `src/cliproxy/providers/model_definitions.json` | Portable as-is |
+| Current thegent path                                         | Target cliproxy path                                                | Changes needed                                                                                                                                                                                                                                      |
+| ------------------------------------------------------------ | ------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `src/thegent/agents/cliproxy_manager.py`                     | `src/cliproxy/lifecycle/daemon.py` + `src/cliproxy/auth/manager.py` | Remove `ThegentSettings` imports; replace with `ClipproxySettings`; remove factory config lookup (`_get_factory_api_key`) — that's Factory-platform-specific                                                                                        |
+| `src/thegent/cliproxy_adapter.py`                            | `src/cliproxy/server.py` + `src/cliproxy/responses_handler.py`      | Remove `use_litellm_router` flag (always use LiteLLM); remove thegent settings import; remove `resolve_model_for_backend` (harness model mapping is thegent-specific)                                                                               |
+| `src/thegent/routing/litellm_responses_handler.py`           | `src/cliproxy/responses_handler.py`                                 | Remove `get_litellm_router()` from thegent; replace with cliproxy's own router init                                                                                                                                                                 |
+| `src/thegent/routing/litellm_router.py`                      | `src/cliproxy/router.py` (subset only)                              | Extract: `build_litellm_model_list`, `build_fallback_chains`, `get_litellm_router`. Remove: `EnhancedRouter` (thegent's wrapper with cost_tracker, alert_manager, donut_adapter), Pareto integration, model metadata validation specific to thegent |
+| `src/thegent/agents/cliproxy_data/provider_definitions.json` | `src/cliproxy/providers/definitions.json`                           | Portable as-is; remove `base_url_env` entries that reference `THGENT_*` env vars (replace with `CLIPROXY_*`)                                                                                                                                        |
+| `src/thegent/agents/cliproxy_data/model_definitions.json`    | `src/cliproxy/providers/model_definitions.json`                     | Portable as-is                                                                                                                                                                                                                                      |
 
 ### What thegent retains after extraction:
 
@@ -482,13 +495,16 @@ One proxy. Every AI tool. Any LLM.
 from cliproxy.lifecycle import start_managed, stop_proxy, is_ready
 from cliproxy.config import ClipproxySettings
 
+
 class ThegentSettings(ClipproxySettings):
     # thegent-specific fields only
     ...
 
+
 # thegent's cliproxy_manager.py becomes:
 def ensure_proxy_running(settings: ThegentSettings) -> str:
     from cliproxy.lifecycle import start_managed
+
     _, base_url = start_managed(settings)
     return base_url
 ```

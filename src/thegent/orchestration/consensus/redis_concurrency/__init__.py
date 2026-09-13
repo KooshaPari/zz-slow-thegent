@@ -104,7 +104,9 @@ class _InMemoryStore:
         return 1 if key in self._data else 0
 
 
-def make_redis_concurrency_controller(config: RedisConfig | None = None) -> RedisConcurrencyController:
+def make_redis_concurrency_controller(
+    config: RedisConfig | None = None,
+) -> RedisConcurrencyController:
     """Create a Redis concurrency controller with the given config.
 
     The factory only clones ``max_concurrent`` from the config; the

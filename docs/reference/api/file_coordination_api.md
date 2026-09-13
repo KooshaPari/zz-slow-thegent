@@ -14,7 +14,7 @@ Registry for file leases using flock-like semantics.
 
 ### Methods
 
-#### FileLeaseRegistry.__init__
+#### FileLeaseRegistry.**init**
 
 ```python
 __init__(self: Any, registry_dir: Path)
@@ -60,7 +60,7 @@ Implementation of Hybrid Logical Clock (HLC).
 
 ### Methods
 
-#### HybridLogicalClock.__init__
+#### HybridLogicalClock.**init**
 
 ```python
 __init__(self: Any)
@@ -86,7 +86,7 @@ Optimistic Concurrency Control manager.
 
 ### Methods
 
-#### OCCManager.__init__
+#### OCCManager.**init**
 
 ```python
 __init__(self: Any, version_db: Path)

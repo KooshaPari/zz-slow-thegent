@@ -18,6 +18,7 @@ The **kush** ecosystem is a sophisticated multi-project codebase containing **40
 - **Specialized Tools** (task-tool, task2, morph, kagentop)
 
 **Key Finding**: The ecosystem demonstrates a **mature, production-ready architecture** with:
+
 - Consistent patterns across projects (CLI-first, MCP-compatible, async-first)
 - Shared infrastructure (pheno-sdk, common tooling)
 - Cross-project dependencies and integrations
@@ -30,6 +31,7 @@ The **kush** ecosystem is a sophisticated multi-project codebase containing **40
 ### 1.1 Agent Orchestration Systems
 
 #### **thegent** (Primary)
+
 - **Type**: Unified agent orchestration CLI
 - **Purpose**: Factory skills and droids management
 - **Tech**: Python 3.12+, FastMCP, Typer, Rich
@@ -43,6 +45,7 @@ The **kush** ecosystem is a sophisticated multi-project codebase containing **40
 - **Documentation**: Comprehensive (VitePress docs)
 
 #### **plangent**
+
 - **Type**: Multi-agent orchestration system
 - **Purpose**: Root agent + sub-agents with verification workflows
 - **Tech**: TypeScript, Node.js
@@ -55,6 +58,7 @@ The **kush** ecosystem is a sophisticated multi-project codebase containing **40
 - **Documentation**: Comprehensive (architecture docs, quick reference)
 
 #### **kimaki**
+
 - **Type**: Multi-agent voice AI system
 - **Purpose**: Voice-based multi-project agent management
 - **Tech**: TypeScript, Discord, LiveKit
@@ -68,6 +72,7 @@ The **kush** ecosystem is a sophisticated multi-project codebase containing **40
 - **Documentation**: Comprehensive planning docs
 
 #### **smolgents**
+
 - **Type**: Microagent delegation platform
 - **Purpose**: Cost-optimal model routing and multi-agent workflows
 - **Tech**: Python, LangGraph
@@ -80,6 +85,7 @@ The **kush** ecosystem is a sophisticated multi-project codebase containing **40
 - **Documentation**: Stage 2 architecture docs
 
 #### **crun**
+
 - **Type**: Multi-agent orchestration with DSL planning
 - **Purpose**: Distributed execution with code quality analysis
 - **Tech**: Python 3.11-3.13, LangGraph, NATS, Redis
@@ -96,6 +102,7 @@ The **kush** ecosystem is a sophisticated multi-project codebase containing **40
 ### 1.2 MCP Servers
 
 #### **atoms-mcp-prod**
+
 - **Type**: FastMCP server for Atoms platform
 - **Purpose**: Knowledge management, entity tracking, workflow automation
 - **Tech**: Python 3.12, FastMCP 2.13.1+, Supabase
@@ -109,11 +116,13 @@ The **kush** ecosystem is a sophisticated multi-project codebase containing **40
 - **Documentation**: Complete architecture docs (50+ guides)
 
 #### **zen-mcp-server**
+
 - **Type**: MCP server
 - **Purpose**: (To be explored)
 - **Status**: Active
 
 #### **4sgm**
+
 - **Type**: LangGraph + MCP Server
 - **Purpose**: FastAPI server with LangGraph agent and 25+ MCP tools
 - **Tech**: Python 3.10+, FastAPI, LangGraph
@@ -128,6 +137,7 @@ The **kush** ecosystem is a sophisticated multi-project codebase containing **40
 ### 1.3 CLI Tools & Utilities
 
 #### **heliosShield**
+
 - **Type**: Unified CLI for agent harness
 - **Purpose**: Agent command interception and orchestration
 - **Tech**: Python 3.11+, Typer, Rich
@@ -140,6 +150,7 @@ The **kush** ecosystem is a sophisticated multi-project codebase containing **40
 - **Documentation**: Comprehensive (unified docs, architecture)
 
 #### **bloc**
+
 - **Type**: Code analysis CLI
 - **Purpose**: Beautiful line counting with tree visualization
 - **Tech**: Python 3.8+, Typer, Rich
@@ -152,6 +163,7 @@ The **kush** ecosystem is a sophisticated multi-project codebase containing **40
 - **Status**: ✅ v0.2.0 Beta
 
 #### **trace** (tracertm)
+
 - **Type**: Requirements traceability and project management
 - **Purpose**: Agent-native RTM system
 - **Tech**: Python 3.12+, Typer, Rich, SQLAlchemy
@@ -163,6 +175,7 @@ The **kush** ecosystem is a sophisticated multi-project codebase containing **40
 - **Status**: ✅ v0.2.0 Alpha
 
 #### **usage** (kusage)
+
 - **Type**: AI Usage Tracker with Native OS Integration
 - **Purpose**: Track AI usage across multiple providers with native OS widgets
 - **Tech**: Python 3.12+, Typer, Rich, Textual, WebSockets
@@ -181,6 +194,7 @@ The **kush** ecosystem is a sophisticated multi-project codebase containing **40
 ### 1.4 SDKs & Libraries
 
 #### **pheno-sdk**
+
 - **Type**: Infrastructure migration and operations SDK
 - **Purpose**: ATOMS-PHENO SDK
 - **Tech**: Python 3.11-3.13, SST SDK
@@ -193,6 +207,7 @@ The **kush** ecosystem is a sophisticated multi-project codebase containing **40
 - **Used By**: bloc, crun (aligned requirements)
 
 #### **smartcp**
+
 - **Type**: Smart CLI proxy/router with MCP integration
 - **Purpose**: MCP server discovery, registry, and routing
 - **Tech**: Python, FastMCP
@@ -210,6 +225,7 @@ The **kush** ecosystem is a sophisticated multi-project codebase containing **40
 ### 1.5 Infrastructure & Specialized Tools
 
 #### **jobhunter**
+
 - **Type**: Full-stack job hunting application
 - **Purpose**: Job hunting automation with Python backend and TypeScript frontend
 - **Tech**: Python, TypeScript, Task (go-task)
@@ -222,6 +238,7 @@ The **kush** ecosystem is a sophisticated multi-project codebase containing **40
 - **Documentation**: `CLAUDE.md` - Comprehensive development guide
 
 #### **knowledgebase**
+
 - **Type**: Knowledge base system
 - **Purpose**: Organized knowledge base with scoped directories, metadata, and indexing
 - **Tech**: (To be explored)
@@ -234,6 +251,7 @@ The **kush** ecosystem is a sophisticated multi-project codebase containing **40
 - **Documentation**: Quick reference, phase completion docs
 
 #### **agentapi**
+
 - **Type**: Agent API platform
 - **Purpose**: Agent API services
 - **Tech**: Python, FastAPI (atomsAgent)
@@ -245,6 +263,7 @@ The **kush** ecosystem is a sophisticated multi-project codebase containing **40
 - **Documentation**: Code quality docs, testing docs, deployment reports
 
 #### **task-tool**
+
 - **Type**: FastMCP server for task management
 - **Purpose**: Production-ready FastMCP server with telemetry and health monitoring
 - **Tech**: Python 3.12+, FastMCP, OpenTelemetry, Typer
@@ -258,6 +277,7 @@ The **kush** ecosystem is a sophisticated multi-project codebase containing **40
 - **Documentation**: Comprehensive README with architecture, deployment, monitoring
 
 #### **task2**
+
 - **Type**: Stdio MCP Task Server
 - **Purpose**: Advanced task server with agent CLI delegation, batch execution, DAG planning
 - **Tech**: Python 3.12+, FastMCP 2.13, uv
@@ -272,6 +292,7 @@ The **kush** ecosystem is a sophisticated multi-project codebase containing **40
 - **Documentation**: Comprehensive README, implementation strategy, testing strategy
 
 #### **morph**
+
 - **Type**: FastMCP stdio server with hexagonal architecture
 - **Purpose**: Workspace operations and research tooling for LLM-driven agents
 - **Tech**: Python 3.10+, FastMCP 2.12.0
@@ -284,6 +305,7 @@ The **kush** ecosystem is a sophisticated multi-project codebase containing **40
 - **Documentation**: `MORPHa.MD` - Complete architecture blueprint
 
 #### **kagentop**
+
 - **Type**: Agent operations platform
 - **Purpose**: Agent operations and management
 - **Tech**: (To be explored)
@@ -295,6 +317,7 @@ The **kush** ecosystem is a sophisticated multi-project codebase containing **40
 - **Documentation**: Implementation docs, performance guides
 
 #### **dphi** (doespythonhaveit-cli)
+
 - **Type**: Multi-language package discovery CLI
 - **Purpose**: Package discovery across 7 languages (Python, Rust, JavaScript, Go, .NET, PHP, Ruby)
 - **Tech**: Python 3.12+, FastAPI, FastMCP, PyTorch, Transformers
@@ -307,6 +330,7 @@ The **kush** ecosystem is a sophisticated multi-project codebase containing **40
 - **Documentation**: Comprehensive README with features and usage
 
 #### **claude-squad**
+
 - **Type**: Multi-workspace agent management
 - **Purpose**: Manage multiple Claude Code instances
 - **Tech**: Terminal app
@@ -319,34 +343,40 @@ The **kush** ecosystem is a sophisticated multi-project codebase containing **40
 ### 2.1 Consistent Patterns Across Projects
 
 #### **CLI-First Architecture**
+
 - **Pattern**: All projects expose CLI interfaces
 - **Tools**: Typer (Python), Commander (TypeScript)
 - **Benefits**: Scriptable, composable, developer-friendly
 - **Examples**: thegent, heliosShield, bloc, trace, crun
 
 #### **MCP Compatibility**
+
 - **Pattern**: Projects integrate with Model Context Protocol
 - **Implementation**: FastMCP servers, MCP tool providers
 - **Benefits**: Standardized agent integration
 - **Examples**: atoms-mcp-prod, 4sgm, zen-mcp-server
 
 #### **Async-First Design**
+
 - **Pattern**: Async/await throughout
 - **Benefits**: Scalability, non-blocking I/O
 - **Examples**: All Python projects use async/await
 
 #### **Rich Output**
+
 - **Pattern**: Beautiful terminal output
 - **Tools**: Rich (Python), Ink (TypeScript)
 - **Benefits**: Better UX, debugging, monitoring
 - **Examples**: thegent, heliosShield, bloc
 
 #### **Type Safety**
+
 - **Pattern**: Strong typing with Pydantic/Zod
 - **Benefits**: Runtime validation, better IDE support
 - **Examples**: All projects use type validation
 
 #### **Configuration Management**
+
 - **Pattern**: Environment-based config with validation
 - **Tools**: pydantic-settings, dotenv
 - **Benefits**: 12-factor app compliance
@@ -357,11 +387,13 @@ The **kush** ecosystem is a sophisticated multi-project codebase containing **40
 ### 2.2 Shared Infrastructure
 
 #### **pheno-sdk**
+
 - **Purpose**: Common infrastructure SDK
 - **Used By**: bloc, crun
 - **Provides**: Plugin system, design patterns, infrastructure tools
 
 #### **Common Dependencies**
+
 - **CLI**: Typer, Rich
 - **Validation**: Pydantic
 - **HTTP**: httpx, FastAPI
@@ -369,6 +401,7 @@ The **kush** ecosystem is a sophisticated multi-project codebase containing **40
 - **Testing**: pytest, pytest-asyncio
 
 #### **Shared Tooling**
+
 - **Linting**: ruff
 - **Type Checking**: mypy, basedpyright, ty
 - **Testing**: pytest, pytest-cov
@@ -418,16 +451,19 @@ crun (Orchestration + DSL)
 ### 3.2 Integration Points
 
 #### **MCP Integration**
+
 - **atoms-mcp-prod** provides MCP tools
 - **thegent** consumes MCP servers
 - **4sgm** provides LangGraph + MCP integration
 
 #### **Agent Registry**
+
 - **kimaki** has agent registry system
 - **plangent** has agent orchestration
 - **heliosShield** manages agent harness
 
 #### **Project Context**
+
 - **kimaki** manages multi-project context
 - **trace** manages project requirements
 - **atoms-mcp-prod** tracks entities/projects
@@ -446,12 +482,14 @@ crun (Orchestration + DSL)
 ### 4.2 Framework Distribution
 
 #### **Python Frameworks**
+
 - **FastAPI**: atoms-mcp-prod, 4sgm
 - **FastMCP**: atoms-mcp-prod, zen-mcp-server
 - **Typer**: thegent, heliosShield, bloc, trace
 - **LangGraph**: crun, smolgents, 4sgm
 
 #### **TypeScript Frameworks**
+
 - **Node.js**: plangent, kimaki
 - **Discord.js**: kimaki
 - **LiveKit**: kimaki
@@ -470,6 +508,7 @@ crun (Orchestration + DSL)
 ### 5.1 Documentation Patterns
 
 #### **Comprehensive Documentation**
+
 - **thegent**: VitePress docs (rich, interactive)
 - **atoms-mcp-prod**: MkDocs (50+ guides)
 - **plangent**: Architecture docs, quick reference
@@ -477,6 +516,7 @@ crun (Orchestration + DSL)
 - **kimaki**: Implementation plans, summaries
 
 #### **Documentation Tools**
+
 - **VitePress**: thegent
 - **MkDocs**: atoms-mcp-prod
 - **Markdown**: All projects
@@ -484,12 +524,14 @@ crun (Orchestration + DSL)
 ### 5.2 Governance & Quality
 
 #### **QA Governance**
+
 - **GitHub Actions**: qa-governance workflows across projects
 - **Testing**: pytest, pytest-asyncio
 - **Linting**: ruff, eslint
 - **Type Checking**: mypy, basedpyright, ty
 
 #### **Code Quality**
+
 - **Coverage**: pytest-cov (80%+ targets)
 - **Static Analysis**: ruff, vulture, radon
 - **Architecture**: tach (dependency analysis)
@@ -501,21 +543,25 @@ crun (Orchestration + DSL)
 ### 6.1 Cross-Project Integrations
 
 #### **Agent Registry Unification**
+
 - **Opportunity**: Unify agent registries (kimaki, plangent, heliosShield)
 - **Benefit**: Single source of truth for agents
 - **Effort**: Medium
 
 #### **MCP Tool Sharing**
+
 - **Opportunity**: Share MCP tools across projects
 - **Benefit**: Reusability, consistency
 - **Effort**: Low
 
 #### **Project Context Sharing**
+
 - **Opportunity**: Share project context (kimaki, trace, atoms-mcp-prod)
 - **Benefit**: Unified project management
 - **Effort**: Medium
 
 #### **CLI Tool Composition**
+
 - **Opportunity**: Compose CLI tools (thegent, heliosShield, bloc, trace)
 - **Benefit**: Unified developer experience
 - **Effort**: Low
@@ -523,16 +569,19 @@ crun (Orchestration + DSL)
 ### 6.2 Shared Infrastructure Opportunities
 
 #### **Common SDK**
+
 - **Opportunity**: Expand pheno-sdk to more projects
 - **Benefit**: Consistency, reduced duplication
 - **Effort**: Medium
 
 #### **Unified Configuration**
+
 - **Opportunity**: Shared config management
 - **Benefit**: Consistency, easier deployment
 - **Effort**: Low
 
 #### **Common Monitoring**
+
 - **Opportunity**: Unified observability (OpenTelemetry)
 - **Benefit**: Cross-project visibility
 - **Effort**: Medium
@@ -619,31 +668,31 @@ crun (Orchestration + DSL)
 
 ## Part 9: Project Status Matrix
 
-| Project | Status | Documentation | Integration | Priority |
-|---------|--------|--------------|-------------|----------|
-| thegent | ✅ Production | ✅ Comprehensive | ✅ High | P0 |
-| atoms-mcp-prod | ✅ Production | ✅ Comprehensive | ✅ High | P0 |
-| heliosShield | ✅ Production | ✅ Comprehensive | ✅ High | P0 |
-| plangent | ✅ Production | ✅ Comprehensive | ✅ Medium | P1 |
-| kimaki | ✅ Complete | ✅ Comprehensive | ✅ Medium | P1 |
-| smolgents | ✅ Production | ✅ Good | ✅ Medium | P1 |
-| crun | ✅ Production | ✅ Good | ✅ Medium | P1 |
-| bloc | ✅ Beta | ⚠️ Basic | ✅ Low | P2 |
-| trace | ✅ Alpha | ⚠️ Basic | ✅ Medium | P2 |
-| 4sgm | ✅ Production | ⚠️ Basic | ✅ Medium | P2 |
-| pheno-sdk | ✅ Beta | ⚠️ Basic | ✅ High | P1 |
-| zen-mcp-server | ✅ Active | ❓ Unknown | ✅ Medium | P2 |
-| usage | ✅ Active | ❓ Unknown | ✅ Low | P3 |
-| jobhunter | ✅ Active | ❓ Unknown | ✅ Low | P3 |
-| knowledgebase | ✅ Active | ❓ Unknown | ✅ Low | P3 |
-| agentapi | ✅ Active | ❓ Unknown | ✅ Low | P3 |
-| smartcp | ✅ Active | ❓ Unknown | ✅ Low | P3 |
-| task-tool | ✅ Active | ❓ Unknown | ✅ Low | P3 |
-| task2 | ✅ Active | ❓ Unknown | ✅ Low | P3 |
-| morph | ✅ Active | ❓ Unknown | ✅ Low | P3 |
-| kagentop | ✅ Active | ❓ Unknown | ✅ Low | P3 |
-| dphi | ✅ Active | ❓ Unknown | ✅ Low | P3 |
-| claude-squad | ✅ Production | ⚠️ Basic | ✅ Low | P2 |
+| Project        | Status        | Documentation    | Integration | Priority |
+| -------------- | ------------- | ---------------- | ----------- | -------- |
+| thegent        | ✅ Production | ✅ Comprehensive | ✅ High     | P0       |
+| atoms-mcp-prod | ✅ Production | ✅ Comprehensive | ✅ High     | P0       |
+| heliosShield   | ✅ Production | ✅ Comprehensive | ✅ High     | P0       |
+| plangent       | ✅ Production | ✅ Comprehensive | ✅ Medium   | P1       |
+| kimaki         | ✅ Complete   | ✅ Comprehensive | ✅ Medium   | P1       |
+| smolgents      | ✅ Production | ✅ Good          | ✅ Medium   | P1       |
+| crun           | ✅ Production | ✅ Good          | ✅ Medium   | P1       |
+| bloc           | ✅ Beta       | ⚠️ Basic         | ✅ Low      | P2       |
+| trace          | ✅ Alpha      | ⚠️ Basic         | ✅ Medium   | P2       |
+| 4sgm           | ✅ Production | ⚠️ Basic         | ✅ Medium   | P2       |
+| pheno-sdk      | ✅ Beta       | ⚠️ Basic         | ✅ High     | P1       |
+| zen-mcp-server | ✅ Active     | ❓ Unknown       | ✅ Medium   | P2       |
+| usage          | ✅ Active     | ❓ Unknown       | ✅ Low      | P3       |
+| jobhunter      | ✅ Active     | ❓ Unknown       | ✅ Low      | P3       |
+| knowledgebase  | ✅ Active     | ❓ Unknown       | ✅ Low      | P3       |
+| agentapi       | ✅ Active     | ❓ Unknown       | ✅ Low      | P3       |
+| smartcp        | ✅ Active     | ❓ Unknown       | ✅ Low      | P3       |
+| task-tool      | ✅ Active     | ❓ Unknown       | ✅ Low      | P3       |
+| task2          | ✅ Active     | ❓ Unknown       | ✅ Low      | P3       |
+| morph          | ✅ Active     | ❓ Unknown       | ✅ Low      | P3       |
+| kagentop       | ✅ Active     | ❓ Unknown       | ✅ Low      | P3       |
+| dphi           | ✅ Active     | ❓ Unknown       | ✅ Low      | P3       |
+| claude-squad   | ✅ Production | ⚠️ Basic         | ✅ Low      | P2       |
 
 ---
 

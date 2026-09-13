@@ -1,7 +1,8 @@
 from __future__ import annotations
 
-import orjson as json
 from pathlib import Path
+
+import orjson as json
 
 import thegent.orchestration.state.session_snapshot_cli_helpers as helpers
 from thegent.orchestration.state.session_scraper import SessionScraper
@@ -65,7 +66,11 @@ def test_daily_index_payload_contains_days_sorted_desc(tmp_path: Path) -> None:
 
     payload = helpers.snapshot_daily_index_payload(scraper, limit=1000)
 
-    assert [item["day"] for item in payload["days"]] == ["2026-02-22", "2026-02-21", "2026-02-20"]
+    assert [item["day"] for item in payload["days"]] == [
+        "2026-02-22",
+        "2026-02-21",
+        "2026-02-20",
+    ]
 
 
 def test_daily_export_payload_returns_json_and_markdown_paths(tmp_path: Path) -> None:

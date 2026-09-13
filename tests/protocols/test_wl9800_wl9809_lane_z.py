@@ -3,11 +3,13 @@
 from __future__ import annotations
 
 import orjson as json
-
 import pytest
 
 from thegent.protocols import jsonrpc_agent_server as server
-from thegent.protocols.jsonrpc_agent_server import SERVER_STATE, process_jsonrpc_line_full
+from thegent.protocols.jsonrpc_agent_server import (
+    SERVER_STATE,
+    process_jsonrpc_line_full,
+)
 
 
 def _reset_state() -> None:
@@ -95,7 +97,13 @@ def test_wl9804_execution_target_resolution_fails_for_unresolved_plan_state() ->
     # @trace WL-9804
     with pytest.raises(ValueError, match="Approval resolution execution target unresolved"):
         server._resolve_approval_resolution_execution_target(
-            {"approval_id": None, "approval": None, "turn": None, "route": "grant", "binding": {}}
+            {
+                "approval_id": None,
+                "approval": None,
+                "turn": None,
+                "route": "grant",
+                "binding": {},
+            }
         )
 
 
@@ -157,7 +165,13 @@ def test_wl9809_notification_grant_executes_side_effects_without_response() -> N
     session_id = _start_session()
     turn_id, approval_id = _submit_turn(session_id)
     grant_response, notifications = process_jsonrpc_line_full(
-        json.dumps({"jsonrpc": "2.0", "method": "approval/grant", "params": {"approval_id": approval_id}})
+        json.dumps(
+            {
+                "jsonrpc": "2.0",
+                "method": "approval/grant",
+                "params": {"approval_id": approval_id},
+            }
+        )
     )
     assert grant_response is None
     assert len(notifications) >= 3

@@ -9,6 +9,7 @@
 ## Priority 1: Critical Commands (Week 1)
 
 ### Batch 1: Core Execution Commands
+
 - [ ] `thegent run` - Main execution command
 - [ ] `thegent bg` - Background execution
 - [ ] `thegent logs` - Log retrieval
@@ -16,6 +17,7 @@
 - [ ] `thegent doctor` - Health checks
 
 ### Batch 2: Crew Management Commands
+
 - [ ] `thegent orchestrate crew create`
 - [ ] `thegent orchestrate crew add-agent`
 - [ ] `thegent orchestrate crew add-task`
@@ -25,6 +27,7 @@
 - [ ] `thegent orchestrate crew status`
 
 ### Batch 3: Team Management Commands
+
 - [ ] `thegent teams create`
 - [ ] `thegent teams list`
 - [ ] `thegent teams show`
@@ -32,6 +35,7 @@
 - [ ] `thegent teams remove-member`
 
 ### Batch 4: Hierarchy Management Commands
+
 - [ ] `thegent hierarchy show`
 - [ ] `thegent hierarchy tree`
 - [ ] `thegent hierarchy relationships`
@@ -41,6 +45,7 @@
 ## Priority 2: Core Workflows (Week 2)
 
 ### Batch 5: Compliance & Governance
+
 - [ ] `thegent compliance export`
 - [ ] `thegent compliance siem-test`
 - [ ] `thegent compliance plugin-check`
@@ -48,11 +53,13 @@
 - [ ] `thegent compliance ledger-verify`
 
 ### Batch 6: Configuration & Research
+
 - [ ] `thegent config check`
 - [ ] `thegent research deep`
 - [ ] `thegent upgrade`
 
 ### Batch 7: Project & Team Commands
+
 - [ ] `thegent project register`
 - [ ] `thegent project list`
 - [ ] `thegent team create`
@@ -64,6 +71,7 @@
 ## Priority 3: Remaining Commands (Week 3-4)
 
 ### Batch 8-20: All other 200+ commands
+
 (To be implemented systematically)
 
 ---

@@ -28,7 +28,6 @@ from thegent.orchestration.resilience.deferral import (
 )
 from thegent.queue.storage import PromptQueue
 
-
 # ---------------------------------------------------------------------------
 # extract_deferred_tasks
 # ---------------------------------------------------------------------------
@@ -340,12 +339,12 @@ class TestCodexProxyRunnerDeferral:
 
         runner = CodexProxyRunner("claude")
         fake_result = RunResult(exit_code=0, stdout="$defer injected", stderr="")
-        with patch.object(runner, "_process_output_deferrals", return_value=fake_result) as mock_pd:
+        with patch.object(runner, "_process_output_deferrals", return_value=fake_result):
             # We need run() to reach the _process_output_deferrals call.
             # Mock LiteLLM router path to avoid subprocess invocations.
             with patch.object(runner, "_run_via_litellm_router", return_value=fake_result):
                 runner._use_litellm_router = True
-                result = runner.run(
+                runner.run(
                     prompt="do work",
                     cwd=None,
                     mode="write",
@@ -384,9 +383,12 @@ class TestCursorApiRunnerDeferral:
 
         runner = CursorApiRunner()
         captured_result = RunResult(exit_code=0, stdout="$defer cursor task", stderr="")
-        with patch.object(runner, "_process_output_deferrals", return_value=captured_result) as mock_pd:
-            with patch("thegent.agents.cursor_api_runner._is_cursor_api_reachable", return_value=False):
-                result = runner.run(
+        with patch.object(runner, "_process_output_deferrals", return_value=captured_result):
+            with patch(
+                "thegent.agents.cursor_api_runner._is_cursor_api_reachable",
+                return_value=False,
+            ):
+                runner.run(
                     prompt="work",
                     cwd=None,
                     mode="write",
@@ -427,8 +429,14 @@ class TestDirectAgentRunnerDeferral:
 
         with patch.object(runner, "_process_output_deferrals", return_value=captured_result) as mock_pd:
             with patch.object(runner, "_run_capture", return_value=captured_result):
-                with patch("thegent.agents.direct_agents._wrap_with_harness", side_effect=lambda c, **kw: c):
-                    with patch("thegent.infra.power.wrap_with_caffeinate", side_effect=lambda c, _: c):
+                with patch(
+                    "thegent.agents.direct_agents._wrap_with_harness",
+                    side_effect=lambda c, **kw: c,
+                ):
+                    with patch(
+                        "thegent.infra.power.wrap_with_caffeinate",
+                        side_effect=lambda c, _: c,
+                    ):
                         # Bypass LiteLLM router
                         runner._use_litellm_router = False
                         with patch("thegent.observability.otel_instrumentation.instrument_genai_call") as mock_instr:

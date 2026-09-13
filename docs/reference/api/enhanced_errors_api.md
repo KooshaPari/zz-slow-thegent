@@ -37,7 +37,7 @@ Base exception class with enhanced error reporting.
 
 ### Methods
 
-#### EnhancedError.__init__
+#### EnhancedError.**init**
 
 ```python
 __init__(self: Any, message: str, context: Any, cause: Any)

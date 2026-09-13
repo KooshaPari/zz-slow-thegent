@@ -13,6 +13,7 @@ Implemented complete type checker setup for Python projects using thegent's dual
 ### 1. Configuration Files
 
 #### Root Project (`thegent/`)
+
 - ✅ Updated `pyproject.toml` with complete type checker configs:
   - `[tool.ty]` - Fast type checker
   - `[tool.basedpyright]` - Strict type checker
@@ -85,12 +86,14 @@ Implemented complete type checker setup for Python projects using thegent's dual
 ### 3. Configuration Updates
 
 #### CLAUDE.md ✅ UPDATED
+
 - Expanded Python type checking section
 - Added dual-approach documentation
 - Listed all type checker templates
 - Added setup instructions
 
 #### pyproject.toml ✅ UPDATED
+
 - Added complete `[tool.ty]` config with rules
 - Enhanced `[tool.basedpyright]` config
 - Added `[tool.mypy]` config with overrides
@@ -98,23 +101,27 @@ Implemented complete type checker setup for Python projects using thegent's dual
 ## Type Checker Strategy
 
 ### IDE (Real-time)
+
 - **Pyright/Pylance**: Optimized with `pyrightconfig.json`
 - Performance: Moderate (optimized with exclusions)
 - Use: Real-time IntelliSense
 
 ### CI Fast Path
+
 - **ty + zuban**: 10-50x faster than Pyright
 - Performance: Very Fast
 - Use: Quick development feedback
 - Task: `task lint:type`
 
 ### CI Strict Path
+
 - **basedpyright + mypy**: Comprehensive checking
 - Performance: Moderate
 - Use: CI/commit validation
 - Task: `task lint:strict`
 
 ### Pre-commit
+
 - **ty + basedpyright**: Fast + strict
 - Performance: Fast (ty) + Moderate (basedpyright)
 - Use: Pre-commit hooks
@@ -122,6 +129,7 @@ Implemented complete type checker setup for Python projects using thegent's dual
 ## Files Created/Updated
 
 ### Created
+
 - `templates/quality/basedpyrightconfig.json`
 - `templates/quality/zuban-config.md`
 - `templates/initialize-project/pyproject.toml.template`
@@ -130,6 +138,7 @@ Implemented complete type checker setup for Python projects using thegent's dual
 - `docs/research/TYPE_CHECKER_IMPLEMENTATION_COMPLETE.md`
 
 ### Updated
+
 - `pyproject.toml` (thegent root)
 - `templates/python/pyproject.template.toml`
 - `templates/initialize-project/Taskfile.yml.template`

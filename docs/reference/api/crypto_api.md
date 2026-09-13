@@ -16,7 +16,7 @@ Uses RSA-2048 with SHA-256 for deterministic, reproducible signatures.
 
 ### Methods
 
-#### SigningKey.__init__
+#### SigningKey.**init**
 
 ```python
 __init__(self: Any, private_key: rsa.RSAPrivateKey)
@@ -108,7 +108,7 @@ Used to verify signatures on MAIF artifacts.
 
 ### Methods
 
-#### VerifyingKey.__init__
+#### VerifyingKey.**init**
 
 ```python
 __init__(self: Any, public_key: rsa.RSAPublicKey)

@@ -15,7 +15,7 @@ Processes documents from the queue.
 
 ### Methods
 
-#### DocumentProcessor.__init__
+#### DocumentProcessor.**init**
 
 ```python
 __init__(self: Any, pipeline: Any)
@@ -61,7 +61,7 @@ Pipeline for processing documents through multiple stages.
 
 ### Methods
 
-#### ProcessingPipeline.__init__
+#### ProcessingPipeline.**init**
 
 ```python
 __init__(self: Any)

@@ -72,11 +72,12 @@ class RetryConfig(BaseSettings):
 
 ```python
 class RetryStrategy(str, Enum):
-    DEFAULT = "default"      # Retry on any Exception
-    HTTP = "http"            # HTTP 5xx, timeouts, connection errors
-    DATABASE = "database"    # DB connection errors, transient locks
-    AGENT = "agent"          # Agent service unavailability
-    CUSTOM = "custom"        # User-provided exception matcher
+    DEFAULT = "default"  # Retry on any Exception
+    HTTP = "http"  # HTTP 5xx, timeouts, connection errors
+    DATABASE = "database"  # DB connection errors, transient locks
+    AGENT = "agent"  # Agent service unavailability
+    CUSTOM = "custom"  # User-provided exception matcher
+
 
 def strategy_matcher(strategy: RetryStrategy) -> Callable[[Exception], bool]:
     """Returns a predicate: Exception -> bool (retry or not)."""
@@ -85,20 +86,21 @@ def strategy_matcher(strategy: RetryStrategy) -> Callable[[Exception], bool]:
 ### 3. Core Decorators
 
 #### Sync Version
+
 ```python
 @retry(strategy="http", max_attempts=3, max_delay_seconds=10)
-def fetch_data(url: str) -> dict:
-    ...
+def fetch_data(url: str) -> dict: ...
 ```
 
 #### Async Version
+
 ```python
 @retry_async(strategy="agent", max_attempts=5)
-async def call_agent(prompt: str) -> str:
-    ...
+async def call_agent(prompt: str) -> str: ...
 ```
 
 #### Context Manager
+
 ```python
 with retry_context(strategy="db", max_attempts=2):
     cursor.execute(query)
@@ -108,6 +110,7 @@ with retry_context(strategy="db", max_attempts=2):
 ### 4. Pre-Built Strategies
 
 #### HTTPStrategy
+
 - **Retryable errors**:
   - 5xx status codes (500, 502, 503, 504)
   - Connection errors (ConnectionError, TimeoutError)
@@ -116,6 +119,7 @@ with retry_context(strategy="db", max_attempts=2):
 - **Default config**: max_attempts=5, exponential_base=2, max_delay=60s
 
 #### DatabaseStrategy
+
 - **Retryable errors**:
   - Database connection errors (psycopg2.OperationalError, etc.)
   - Transient locks (psycopg2.extensions.TransactionRollbackError)
@@ -124,6 +128,7 @@ with retry_context(strategy="db", max_attempts=2):
 - **Default config**: max_attempts=3, exponential_base=2, max_delay=30s
 
 #### AgentStrategy
+
 - **Retryable errors**:
   - Service unavailability (503, 500)
   - Rate limit errors (429)
@@ -133,7 +138,9 @@ with retry_context(strategy="db", max_attempts=2):
 ### 5. Observability Integration
 
 #### Span Events
+
 Each retry attempt emits a span event:
+
 ```json
 {
   "name": "retry_attempt",
@@ -150,6 +157,7 @@ Each retry attempt emits a span event:
 ```
 
 #### Metrics
+
 ```python
 # Counter: number of retry attempts
 retry_attempts = Counter(
@@ -167,7 +175,9 @@ retry_latency = Histogram(
 ```
 
 #### Attributes (in Span)
+
 Every span created in a retried operation includes:
+
 - `retry.strategy`: Strategy name
 - `retry.enabled`: Boolean (true if retries active)
 - `retry.attempt`: Current attempt number (0-indexed)
@@ -178,15 +188,20 @@ Every span created in a retried operation includes:
 ```python
 class RetryException(Exception):
     """Base exception for retry-specific errors."""
+
     pass
+
 
 class RetryExhausted(RetryException):
     """Raised when max attempts reached."""
+
     last_exception: Exception
     attempts: int
 
+
 class RetryTimeout(RetryException):
     """Raised when total_timeout_seconds exceeded."""
+
     last_exception: Exception
     elapsed_seconds: float
 ```
@@ -194,6 +209,7 @@ class RetryTimeout(RetryException):
 ## Configuration
 
 ### Environment Variables (pydantic SettingsConfigDict)
+
 ```bash
 RETRY_STRATEGY=http
 RETRY_MAX_ATTEMPTS=5
@@ -205,6 +221,7 @@ RETRY_EMIT_TRACES=true
 ```
 
 ### Programmatic (Override in Code)
+
 ```python
 retry_config = RetryConfig(
     strategy="agent",
@@ -220,6 +237,7 @@ def call_agent(...):
 ## Integration Points
 
 ### With Agent Services
+
 ```python
 # In agent runner
 @retry_async(strategy="agent")
@@ -228,6 +246,7 @@ async def run_agent(agent_id: str, prompt: str) -> str:
 ```
 
 ### With HTTP Client (httpx)
+
 ```python
 # Wrap httpx.AsyncClient
 class RetryableAsyncClient(httpx.AsyncClient):
@@ -237,6 +256,7 @@ class RetryableAsyncClient(httpx.AsyncClient):
 ```
 
 ### With Database (SQLAlchemy)
+
 ```python
 # Wrap connection/transaction
 @retry(strategy="database")
@@ -248,6 +268,7 @@ def execute_query(query):
 ## Error Handling & Backoff
 
 ### Backoff Strategy
+
 - **Function**: `wait_random_exponential(multiplier=1, max=60)`
 - **Formula**: `min(2^attempt + random(0, 1), 60)`
 - **Example**:
@@ -258,11 +279,13 @@ def execute_query(query):
   - Attempt 5: ~16s + jitter (capped at 60s)
 
 ### Stop Conditions
+
 1. **Max Attempts**: Stop after N attempts (default 5)
 2. **Total Timeout**: Stop if total_timeout_seconds exceeded
 3. **Success**: Stop on first successful attempt
 
 ### Logging & Observability
+
 - **Before attempt**: Log "Attempting [operation], attempt N/M"
 - **After attempt (success)**: Log "Success after N attempts, total latency X.Xs"
 - **After attempt (retry)**: Log "Retrying after error [type], waiting Ns before attempt N"
@@ -271,6 +294,7 @@ def execute_query(query):
 ## Test Strategy
 
 ### Unit Tests
+
 - **Config validation**: Invalid retry configs raise errors
 - **Strategy matching**: Each strategy correctly identifies retryable exceptions
 - **Backoff calculation**: Exponential backoff is correct (no jitter variation)
@@ -278,6 +302,7 @@ def execute_query(query):
 - **Observability**: Span events emitted, metrics recorded
 
 ### Integration Tests
+
 - **HTTP strategy**: Mock HTTP service, test 5xx retry
 - **Database strategy**: Mock DB, test connection error retry
 - **Agent strategy**: Mock agent service, test timeout retry
@@ -285,6 +310,7 @@ def execute_query(query):
 - **Exhaustion**: Verify RetryExhausted raised after max attempts
 
 ### Performance Tests
+
 - **Nominal path** (no retry): <1ms overhead
 - **Backoff calculation**: <100us per attempt
 - **Span events**: <10ms total for 5 retries
@@ -303,21 +329,25 @@ def execute_query(query):
 ## Comparison with Alternatives
 
 ### Option 1: Custom Retry Loop (Manual)
+
 - **Pros**: No dependency, complete control
 - **Cons**: Code duplication, no observability, maintainability burden
 - **Verdict**: ❌ Rejected (CLAUDE.md: "No manual retry loops")
 
 ### Option 2: Existing pybreaker (Circuit Breaker)
+
 - **Pros**: Prevents cascading failures
 - **Cons**: Different concern; doesn't handle backoff/retry logic
 - **Verdict**: ✅ Complementary (pybreaker for circuit breaking, tenacity for retry)
 
 ### Option 3: tenacity (Chosen)
+
 - **Pros**: Battle-tested, well-documented, extensible, already a dependency
 - **Cons**: Requires thin wrapper for project conventions
 - **Verdict**: ✅ Chosen (standard practice across industry)
 
 ### Option 4: asyncio.retry / Stamina
+
 - **Pros**: Alternative libraries with similar features
 - **Cons**: Less mature than tenacity, not in current dependencies
 - **Verdict**: ❌ Rejected (prefer existing dependency)

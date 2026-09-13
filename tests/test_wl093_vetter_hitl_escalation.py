@@ -17,23 +17,21 @@ Covers the full escalation path in VetterOrchestrator:
 
 from __future__ import annotations
 
-import orjson as json
 from pathlib import Path
 from typing import Any
-from unittest.mock import AsyncMock, MagicMock, call
+from unittest.mock import AsyncMock, MagicMock
 
+import orjson as json
 import pytest
 
+from thegent.cli.services import governance as governance_service
 from thegent.govern.vetter.models import (
     VetterCheckResult,
     VetterPolicy,
-    VetterResult,
     VetterVerdict,
 )
 from thegent.govern.vetter.orchestrator import VetterOrchestrator
-from thegent.cli.services import governance as governance_service
-from thegent.governance.hitl import GovernanceEventLog, HITLApprovalWorkflow
-
+from thegent.governance.hitl import HITLApprovalWorkflow
 
 # ---------------------------------------------------------------------------
 # Helpers
@@ -115,7 +113,11 @@ async def test_escalation_event_has_correct_event_type(tmp_path: Path) -> None:
         hitl_workflow=hitl,
     )
     policy = VetterPolicy(checks=["safety"], escalate_on=["safety"])
-    await orch.evaluate(result=MagicMock(output=""), policy=policy, run_context={"run_id": "run-esc-002"})
+    await orch.evaluate(
+        result=MagicMock(output=""),
+        policy=policy,
+        run_context={"run_id": "run-esc-002"},
+    )
 
     ev = _events_of_type(tmp_path, "vetter_escalation")[0]
     assert ev["event_type"] == "vetter_escalation"
@@ -132,7 +134,11 @@ async def test_escalation_event_has_status_pending(tmp_path: Path) -> None:
         hitl_workflow=hitl,
     )
     policy = VetterPolicy(checks=["safety"], escalate_on=["safety"])
-    await orch.evaluate(result=MagicMock(output=""), policy=policy, run_context={"run_id": "run-esc-003"})
+    await orch.evaluate(
+        result=MagicMock(output=""),
+        policy=policy,
+        run_context={"run_id": "run-esc-003"},
+    )
 
     ev = _events_of_type(tmp_path, "vetter_escalation")[0]
     assert ev["status"] == "pending"
@@ -149,7 +155,11 @@ async def test_escalation_event_has_run_id(tmp_path: Path) -> None:
         hitl_workflow=hitl,
     )
     policy = VetterPolicy(checks=["safety"], escalate_on=["safety"])
-    await orch.evaluate(result=MagicMock(output=""), policy=policy, run_context={"run_id": "run-esc-004"})
+    await orch.evaluate(
+        result=MagicMock(output=""),
+        policy=policy,
+        run_context={"run_id": "run-esc-004"},
+    )
 
     ev = _events_of_type(tmp_path, "vetter_escalation")[0]
     assert ev["run_id"] == "run-esc-004"
@@ -166,7 +176,11 @@ async def test_escalation_event_has_timestamp(tmp_path: Path) -> None:
         hitl_workflow=hitl,
     )
     policy = VetterPolicy(checks=["safety"], escalate_on=["safety"])
-    await orch.evaluate(result=MagicMock(output=""), policy=policy, run_context={"run_id": "run-esc-005"})
+    await orch.evaluate(
+        result=MagicMock(output=""),
+        policy=policy,
+        run_context={"run_id": "run-esc-005"},
+    )
 
     ev = _events_of_type(tmp_path, "vetter_escalation")[0]
     assert "timestamp" in ev
@@ -196,7 +210,9 @@ async def test_escalation_event_has_escalation_lane_from_policy(tmp_path: Path) 
 
 
 @pytest.mark.asyncio
-async def test_escalation_event_defaults_escalation_lane_to_standard(tmp_path: Path) -> None:
+async def test_escalation_event_defaults_escalation_lane_to_standard(
+    tmp_path: Path,
+) -> None:
     """When policy has no escalation_lane override, vetter_escalation defaults to 'standard'. # @trace WL-093"""
     bad = _failing_check("safety")
     hitl = _make_hitl_mock()
@@ -227,7 +243,11 @@ async def test_escalation_event_has_reason_field(tmp_path: Path) -> None:
         hitl_workflow=hitl,
     )
     policy = VetterPolicy(checks=["safety"], escalate_on=["safety"])
-    await orch.evaluate(result=MagicMock(output=""), policy=policy, run_context={"run_id": "run-esc-008"})
+    await orch.evaluate(
+        result=MagicMock(output=""),
+        policy=policy,
+        run_context={"run_id": "run-esc-008"},
+    )
 
     ev = _events_of_type(tmp_path, "vetter_escalation")[0]
     assert "reason" in ev
@@ -235,7 +255,9 @@ async def test_escalation_event_has_reason_field(tmp_path: Path) -> None:
 
 
 @pytest.mark.asyncio
-async def test_escalation_event_is_forwarded_to_optional_event_log(tmp_path: Path) -> None:
+async def test_escalation_event_is_forwarded_to_optional_event_log(
+    tmp_path: Path,
+) -> None:
     """vetter_escalation event is emitted to event_log when configured. # @trace WL-093"""
     bad = _failing_check("safety")
     hitl = _make_hitl_mock()
@@ -274,7 +296,11 @@ async def test_hitl_await_approval_called_on_escalation(tmp_path: Path) -> None:
         hitl_workflow=hitl,
     )
     policy = VetterPolicy(checks=["safety"], escalate_on=["safety"])
-    await orch.evaluate(result=MagicMock(output="change_diff"), policy=policy, run_context={"run_id": "run-esc-009"})
+    await orch.evaluate(
+        result=MagicMock(output="change_diff"),
+        policy=policy,
+        run_context={"run_id": "run-esc-009"},
+    )
 
     hitl.await_approval.assert_called_once()
 
@@ -301,7 +327,9 @@ async def test_hitl_await_approval_called_with_correct_run_id(tmp_path: Path) ->
 
 
 @pytest.mark.asyncio
-async def test_hitl_await_approval_called_with_vetter_escalation_policy(tmp_path: Path) -> None:
+async def test_hitl_await_approval_called_with_vetter_escalation_policy(
+    tmp_path: Path,
+) -> None:
     """hitl_workflow.await_approval() receives policy='vetter_escalation'. # @trace WL-093"""
     bad = _failing_check("safety")
     hitl = _make_hitl_mock()
@@ -311,14 +339,20 @@ async def test_hitl_await_approval_called_with_vetter_escalation_policy(tmp_path
         hitl_workflow=hitl,
     )
     policy = VetterPolicy(checks=["safety"], escalate_on=["safety"])
-    await orch.evaluate(result=MagicMock(output=""), policy=policy, run_context={"run_id": "run-esc-011"})
+    await orch.evaluate(
+        result=MagicMock(output=""),
+        policy=policy,
+        run_context={"run_id": "run-esc-011"},
+    )
 
     call_kwargs = hitl.await_approval.call_args.kwargs
     assert call_kwargs["policy"] == "vetter_escalation"
 
 
 @pytest.mark.asyncio
-async def test_hitl_await_approval_called_with_post_execution_checkpoint(tmp_path: Path) -> None:
+async def test_hitl_await_approval_called_with_post_execution_checkpoint(
+    tmp_path: Path,
+) -> None:
     """hitl_workflow.await_approval() uses checkpoint='post_execution'. # @trace WL-093"""
     bad = _failing_check("safety")
     hitl = _make_hitl_mock()
@@ -328,7 +362,11 @@ async def test_hitl_await_approval_called_with_post_execution_checkpoint(tmp_pat
         hitl_workflow=hitl,
     )
     policy = VetterPolicy(checks=["safety"], escalate_on=["safety"])
-    await orch.evaluate(result=MagicMock(output=""), policy=policy, run_context={"run_id": "run-esc-012"})
+    await orch.evaluate(
+        result=MagicMock(output=""),
+        policy=policy,
+        run_context={"run_id": "run-esc-012"},
+    )
 
     call_kwargs = hitl.await_approval.call_args.kwargs
     assert call_kwargs["checkpoint"] == "post_execution"
@@ -367,13 +405,19 @@ async def test_hitl_not_called_when_verdict_is_approved(tmp_path: Path) -> None:
         hitl_workflow=hitl,
     )
     policy = VetterPolicy(checks=["style"], escalate_on=[])
-    await orch.evaluate(result=MagicMock(output=""), policy=policy, run_context={"run_id": "run-esc-014"})
+    await orch.evaluate(
+        result=MagicMock(output=""),
+        policy=policy,
+        run_context={"run_id": "run-esc-014"},
+    )
 
     hitl.await_approval.assert_not_called()
 
 
 @pytest.mark.asyncio
-async def test_hitl_not_called_when_verdict_is_rejected_no_escalate_on(tmp_path: Path) -> None:
+async def test_hitl_not_called_when_verdict_is_rejected_no_escalate_on(
+    tmp_path: Path,
+) -> None:
     """hitl_workflow.await_approval() is NOT called on rejection when check not in escalate_on. # @trace WL-093"""
     bad = _failing_check("style")
     hitl = _make_hitl_mock()
@@ -383,7 +427,11 @@ async def test_hitl_not_called_when_verdict_is_rejected_no_escalate_on(tmp_path:
         hitl_workflow=hitl,
     )
     policy = VetterPolicy(checks=["style"], escalate_on=[])  # style not in escalate_on
-    await orch.evaluate(result=MagicMock(output=""), policy=policy, run_context={"run_id": "run-esc-015"})
+    await orch.evaluate(
+        result=MagicMock(output=""),
+        policy=policy,
+        run_context={"run_id": "run-esc-015"},
+    )
 
     hitl.await_approval.assert_not_called()
 
@@ -394,7 +442,9 @@ async def test_hitl_not_called_when_verdict_is_rejected_no_escalate_on(tmp_path:
 
 
 @pytest.mark.asyncio
-async def test_escalated_verdict_without_hitl_raises_runtime_error(tmp_path: Path) -> None:
+async def test_escalated_verdict_without_hitl_raises_runtime_error(
+    tmp_path: Path,
+) -> None:
     """When verdict is ESCALATED but hitl_workflow is None, RuntimeError is raised. # @trace WL-093"""
     bad = _failing_check("safety")
     orch = VetterOrchestrator(
@@ -405,7 +455,11 @@ async def test_escalated_verdict_without_hitl_raises_runtime_error(tmp_path: Pat
     policy = VetterPolicy(checks=["safety"], escalate_on=["safety"])
 
     with pytest.raises(RuntimeError, match="hitl_workflow"):
-        await orch.evaluate(result=MagicMock(output=""), policy=policy, run_context={"run_id": "run-esc-016"})
+        await orch.evaluate(
+            result=MagicMock(output=""),
+            policy=policy,
+            run_context={"run_id": "run-esc-016"},
+        )
 
 
 # ---------------------------------------------------------------------------
@@ -442,7 +496,9 @@ async def test_escalation_emits_await_approval_event_surfaced_by_govern_list(
 
 
 @pytest.mark.asyncio
-async def test_escalation_await_approval_event_has_status_pending(tmp_path: Path) -> None:
+async def test_escalation_await_approval_event_has_status_pending(
+    tmp_path: Path,
+) -> None:
     """The await_approval event emitted during escalation has status='pending'. # @trace WL-093"""
     bad = _failing_check("safety")
     real_hitl = HITLApprovalWorkflow(session_dir=tmp_path)
@@ -465,7 +521,9 @@ async def test_escalation_await_approval_event_has_status_pending(tmp_path: Path
 
 
 @pytest.mark.asyncio
-async def test_govern_list_shows_escalation_event_type_await_approval(tmp_path: Path) -> None:
+async def test_govern_list_shows_escalation_event_type_await_approval(
+    tmp_path: Path,
+) -> None:
     """govern list entry for escalation has event_type='await_approval'. # @trace WL-093"""
     bad = _failing_check("safety")
     real_hitl = HITLApprovalWorkflow(session_dir=tmp_path)
@@ -492,7 +550,9 @@ async def test_govern_list_shows_escalation_event_type_await_approval(tmp_path: 
 
 
 @pytest.mark.asyncio
-async def test_escalation_emits_both_decision_and_escalation_events(tmp_path: Path) -> None:
+async def test_escalation_emits_both_decision_and_escalation_events(
+    tmp_path: Path,
+) -> None:
     """evaluate() with escalation emits vetter_decision AND vetter_escalation events. # @trace WL-093"""
     bad = _failing_check("safety")
     hitl = _make_hitl_mock()
@@ -502,7 +562,11 @@ async def test_escalation_emits_both_decision_and_escalation_events(tmp_path: Pa
         hitl_workflow=hitl,
     )
     policy = VetterPolicy(checks=["safety"], escalate_on=["safety"])
-    await orch.evaluate(result=MagicMock(output=""), policy=policy, run_context={"run_id": "run-esc-020"})
+    await orch.evaluate(
+        result=MagicMock(output=""),
+        policy=policy,
+        run_context={"run_id": "run-esc-020"},
+    )
 
     all_events = _load_events(tmp_path)
     event_types = {ev["event_type"] for ev in all_events}
@@ -511,7 +575,9 @@ async def test_escalation_emits_both_decision_and_escalation_events(tmp_path: Pa
 
 
 @pytest.mark.asyncio
-async def test_escalation_vetter_decision_event_has_escalated_verdict(tmp_path: Path) -> None:
+async def test_escalation_vetter_decision_event_has_escalated_verdict(
+    tmp_path: Path,
+) -> None:
     """The vetter_decision event has verdict='escalated' when check triggers escalation. # @trace WL-093"""
     bad = _failing_check("safety")
     hitl = _make_hitl_mock()
@@ -521,7 +587,11 @@ async def test_escalation_vetter_decision_event_has_escalated_verdict(tmp_path: 
         hitl_workflow=hitl,
     )
     policy = VetterPolicy(checks=["safety"], escalate_on=["safety"])
-    await orch.evaluate(result=MagicMock(output=""), policy=policy, run_context={"run_id": "run-esc-021"})
+    await orch.evaluate(
+        result=MagicMock(output=""),
+        policy=policy,
+        run_context={"run_id": "run-esc-021"},
+    )
 
     decision_events = _events_of_type(tmp_path, "vetter_decision")
     assert len(decision_events) == 1
@@ -529,7 +599,9 @@ async def test_escalation_vetter_decision_event_has_escalated_verdict(tmp_path: 
 
 
 @pytest.mark.asyncio
-async def test_escalation_decision_event_emitted_before_escalation_event(tmp_path: Path) -> None:
+async def test_escalation_decision_event_emitted_before_escalation_event(
+    tmp_path: Path,
+) -> None:
     """vetter_decision is emitted before vetter_escalation (line order). # @trace WL-093"""
     bad = _failing_check("safety")
     hitl = _make_hitl_mock()
@@ -539,7 +611,11 @@ async def test_escalation_decision_event_emitted_before_escalation_event(tmp_pat
         hitl_workflow=hitl,
     )
     policy = VetterPolicy(checks=["safety"], escalate_on=["safety"])
-    await orch.evaluate(result=MagicMock(output=""), policy=policy, run_context={"run_id": "run-esc-022"})
+    await orch.evaluate(
+        result=MagicMock(output=""),
+        policy=policy,
+        run_context={"run_id": "run-esc-022"},
+    )
 
     all_events = _load_events(tmp_path)
     types_in_order = [ev["event_type"] for ev in all_events]
@@ -564,7 +640,11 @@ async def test_escalated_result_has_escalated_verdict(tmp_path: Path) -> None:
         hitl_workflow=hitl,
     )
     policy = VetterPolicy(checks=["safety"], escalate_on=["safety"])
-    result = await orch.evaluate(result=MagicMock(output=""), policy=policy, run_context={"run_id": "run-esc-023"})
+    result = await orch.evaluate(
+        result=MagicMock(output=""),
+        policy=policy,
+        run_context={"run_id": "run-esc-023"},
+    )
 
     assert result.verdict == VetterVerdict.ESCALATED
 
@@ -580,14 +660,20 @@ async def test_escalated_result_has_escalation_reason(tmp_path: Path) -> None:
         hitl_workflow=hitl,
     )
     policy = VetterPolicy(checks=["safety"], escalate_on=["safety"])
-    result = await orch.evaluate(result=MagicMock(output=""), policy=policy, run_context={"run_id": "run-esc-024"})
+    result = await orch.evaluate(
+        result=MagicMock(output=""),
+        policy=policy,
+        run_context={"run_id": "run-esc-024"},
+    )
 
     assert result.escalation_reason is not None
     assert len(result.escalation_reason) > 0
 
 
 @pytest.mark.asyncio
-async def test_escalated_result_escalation_reason_names_failed_check(tmp_path: Path) -> None:
+async def test_escalated_result_escalation_reason_names_failed_check(
+    tmp_path: Path,
+) -> None:
     """VetterResult.escalation_reason mentions the failed check name. # @trace WL-093"""
     bad = _failing_check("my_safety_check")
     hitl = _make_hitl_mock()
@@ -597,7 +683,11 @@ async def test_escalated_result_escalation_reason_names_failed_check(tmp_path: P
         hitl_workflow=hitl,
     )
     policy = VetterPolicy(checks=["my_safety_check"], escalate_on=["my_safety_check"])
-    result = await orch.evaluate(result=MagicMock(output=""), policy=policy, run_context={"run_id": "run-esc-025"})
+    result = await orch.evaluate(
+        result=MagicMock(output=""),
+        policy=policy,
+        run_context={"run_id": "run-esc-025"},
+    )
 
     assert "my_safety_check" in (result.escalation_reason or "")
 
@@ -611,7 +701,11 @@ async def test_non_escalated_result_has_no_escalation_reason(tmp_path: Path) -> 
         check_registry={"style": good},
     )
     policy = VetterPolicy(checks=["style"])
-    result = await orch.evaluate(result=MagicMock(output=""), policy=policy, run_context={"run_id": "run-esc-026"})
+    result = await orch.evaluate(
+        result=MagicMock(output=""),
+        policy=policy,
+        run_context={"run_id": "run-esc-026"},
+    )
 
     assert result.escalation_reason is None
 
@@ -633,8 +727,16 @@ async def test_multiple_escalations_each_emit_own_events(tmp_path: Path) -> None
     )
     policy = VetterPolicy(checks=["safety"], escalate_on=["safety"])
 
-    await orch.evaluate(result=MagicMock(output=""), policy=policy, run_context={"run_id": "run-multi-esc-1"})
-    await orch.evaluate(result=MagicMock(output=""), policy=policy, run_context={"run_id": "run-multi-esc-2"})
+    await orch.evaluate(
+        result=MagicMock(output=""),
+        policy=policy,
+        run_context={"run_id": "run-multi-esc-1"},
+    )
+    await orch.evaluate(
+        result=MagicMock(output=""),
+        policy=policy,
+        run_context={"run_id": "run-multi-esc-2"},
+    )
 
     esc_events = _events_of_type(tmp_path, "vetter_escalation")
     assert len(esc_events) == 2
@@ -644,7 +746,9 @@ async def test_multiple_escalations_each_emit_own_events(tmp_path: Path) -> None
 
 
 @pytest.mark.asyncio
-async def test_multiple_escalations_govern_list_shows_all_pending(tmp_path: Path) -> None:
+async def test_multiple_escalations_govern_list_shows_all_pending(
+    tmp_path: Path,
+) -> None:
     """After two escalations, govern list returns both pending entries. # @trace WL-093"""
     bad = _failing_check("safety")
     real_hitl = HITLApprovalWorkflow(session_dir=tmp_path)
@@ -700,7 +804,9 @@ async def test_only_checks_in_escalate_on_trigger_escalation(tmp_path: Path) -> 
 
 
 @pytest.mark.asyncio
-async def test_failed_check_not_in_escalate_on_yields_rejected_not_escalated(tmp_path: Path) -> None:
+async def test_failed_check_not_in_escalate_on_yields_rejected_not_escalated(
+    tmp_path: Path,
+) -> None:
     """When a check fails but is not in escalate_on, verdict is REJECTED not ESCALATED. # @trace WL-093"""
     bad_style = _failing_check("style")
     hitl = _make_hitl_mock()
@@ -781,7 +887,9 @@ async def test_escalated_decision_is_queryable_via_govern_list_pending_path(
 
 
 @pytest.mark.asyncio
-async def test_escalation_event_payload_shape_is_json_serializable_for_audit_log(tmp_path: Path) -> None:
+async def test_escalation_event_payload_shape_is_json_serializable_for_audit_log(
+    tmp_path: Path,
+) -> None:
     """Escalation event payload shape is stable and JSON serializable for audit-log sinks. # @trace WL-093"""
     bad = _failing_check("safety", "policy violation")
     hitl = _make_hitl_mock()
@@ -824,7 +932,9 @@ async def test_escalation_event_payload_shape_is_json_serializable_for_audit_log
 
 
 @pytest.mark.asyncio
-async def test_escalation_reason_is_deterministic_and_matches_event_reason(tmp_path: Path) -> None:
+async def test_escalation_reason_is_deterministic_and_matches_event_reason(
+    tmp_path: Path,
+) -> None:
     """Escalation reason is stable for audit trails and matches emitted event reason. # @trace WL-093"""
     alpha = _failing_check("alpha", "alpha failed")
     zeta = _failing_check("zeta", "zeta failed")
@@ -843,7 +953,10 @@ async def test_escalation_reason_is_deterministic_and_matches_event_reason(tmp_p
     result = await orch.evaluate(
         result=MagicMock(output="diff --git a/a.py b/a.py\n+unsafe"),
         policy=policy,
-        run_context={"run_id": "run-esc-reason-stable", "session_id": "sess-reason-stable"},
+        run_context={
+            "run_id": "run-esc-reason-stable",
+            "session_id": "sess-reason-stable",
+        },
     )
 
     assert result.verdict == VetterVerdict.ESCALATED
@@ -857,7 +970,9 @@ async def test_escalation_reason_is_deterministic_and_matches_event_reason(tmp_p
 
 
 @pytest.mark.asyncio
-async def test_escalation_reason_deduplicates_policy_escalate_on_for_audit_stability(tmp_path: Path) -> None:
+async def test_escalation_reason_deduplicates_policy_escalate_on_for_audit_stability(
+    tmp_path: Path,
+) -> None:
     """Escalation reason de-duplicates and sorts policy_escalate_on values. # @trace WL-093"""
     bad = _failing_check("safety", "unsafe output")
     hitl = _make_hitl_mock()
@@ -875,7 +990,10 @@ async def test_escalation_reason_deduplicates_policy_escalate_on_for_audit_stabi
     result = await orch.evaluate(
         result=MagicMock(output="diff --git a/a.py b/a.py\n+unsafe"),
         policy=policy,
-        run_context={"run_id": "run-esc-reason-dedup", "session_id": "sess-reason-dedup"},
+        run_context={
+            "run_id": "run-esc-reason-dedup",
+            "session_id": "sess-reason-dedup",
+        },
     )
 
     reason = result.escalation_reason or ""
@@ -884,7 +1002,9 @@ async def test_escalation_reason_deduplicates_policy_escalate_on_for_audit_stabi
 
 
 @pytest.mark.asyncio
-async def test_escalation_reason_uses_explicit_none_when_policy_escalate_on_empty(tmp_path: Path) -> None:
+async def test_escalation_reason_uses_explicit_none_when_policy_escalate_on_empty(
+    tmp_path: Path,
+) -> None:
     """Escalation reason uses explicit <none> when policy_escalate_on is empty. # @trace WL-093"""
     bad = _failing_check("quality", "quality gate failed")
     hitl = _make_hitl_mock()
@@ -920,7 +1040,9 @@ async def test_escalation_reason_uses_explicit_none_when_policy_escalate_on_empt
 
 
 @pytest.mark.asyncio
-async def test_escalation_event_normalizes_session_id_whitespace(tmp_path: Path) -> None:
+async def test_escalation_event_normalizes_session_id_whitespace(
+    tmp_path: Path,
+) -> None:
     """Escalation event payload trims session_id for canonical audit keys. # @trace WL-093"""
     bad = _failing_check("safety", "unsafe output")
     hitl = _make_hitl_mock()
@@ -934,7 +1056,10 @@ async def test_escalation_event_normalizes_session_id_whitespace(tmp_path: Path)
     await orch.evaluate(
         result=MagicMock(output="diff --git a/a.py b/a.py\n+unsafe"),
         policy=policy,
-        run_context={"run_id": "run-esc-session-normalized", "session_id": "  sess-trimmed  "},
+        run_context={
+            "run_id": "run-esc-session-normalized",
+            "session_id": "  sess-trimmed  ",
+        },
     )
 
     escalation_event = _events_of_type(tmp_path, "vetter_escalation")[0]

@@ -7,10 +7,6 @@ Tests the full integration between:
 - Session state inspection
 """
 
-import os
-import tempfile
-from pathlib import Path
-
 import pytest
 
 from thegent.governance.heliosShield_bridge import heliosShieldBridge
@@ -66,7 +62,7 @@ class TestTeammateManagerheliosShieldIntegration:
     def test_delegation_broadcasts_intent(self, teammate_manager, helios_shield_bridge, harness_root):
         """WP-16003: Delegation should broadcast intent to heliosShield mesh."""
         # Create a delegation
-        req = teammate_manager.delegate(
+        teammate_manager.delegate(
             teammate_id="reviewer-beta",
             parent_run_id="RUN-456",
             prompt="Review the authentication changes.",
@@ -187,7 +183,7 @@ class TestTeammateManagerheliosShieldIntegration:
 
     def test_intent_file_format(self, teammate_manager, helios_shield_bridge, harness_root):
         """WP-16003: Intent files should have correct format."""
-        req = teammate_manager.delegate("coder-alpha", "RUN-FORMAT", "Test format")
+        teammate_manager.delegate("coder-alpha", "RUN-FORMAT", "Test format")
 
         intent_dir = harness_root / "var" / "intents"
         intent_files = list(intent_dir.glob("*"))
@@ -202,7 +198,7 @@ class TestTeammateManagerheliosShieldIntegration:
 
         # Verify content format
         content = intent_file.read_text()
-        lines = content.strip().split("\n")
+        content.strip().split("\n")
         assert "agent=" in content
         assert "type=" in content
         assert "target=" in content

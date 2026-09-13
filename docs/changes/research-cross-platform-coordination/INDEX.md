@@ -9,6 +9,7 @@ This research explores how multi-agent systems can coordinate work across hetero
 **Problem**: Currently, no mechanism exists for agents on different platforms to safely claim work without race conditions or platform-specific side effects.
 
 **Solution**:
+
 1. Enhanced `docs/reference/WORK_STREAM.md` format with platform/shell constraints
 2. File locking for atomic claim/complete operations
 3. Cross-platform session bridges for continuity
@@ -17,6 +18,7 @@ This research explores how multi-agent systems can coordinate work across hetero
 ## Documents
 
 ### 1. [proposal.md](proposal.md) — Problem & Vision
+
 **Audience**: Decision makers, architects
 **Read Time**: 5-10 min
 
@@ -29,6 +31,7 @@ This research explores how multi-agent systems can coordinate work across hetero
 **Answer**: No atomic work claiming mechanism; agents fail silently on unsupported platforms; sessions can't move between OSes.
 
 ### 2. [design.md](design.md) — Technical Architecture
+
 **Audience**: Architects, engineers
 **Read Time**: 15-20 min
 
@@ -41,6 +44,7 @@ This research explores how multi-agent systems can coordinate work across hetero
 **Key Innovation**: File locking as primary coordination mechanism (works cross-platform, Git-safe, auditable).
 
 ### 3. [tasks.md](tasks.md) — Implementation Plan
+
 **Audience**: Implementation team, project leads
 **Read Time**: 10-15 min
 
@@ -55,25 +59,30 @@ This research explores how multi-agent systems can coordinate work across hetero
 ## Quick Start for Implementers
 
 ### Phase 1: Format & Locking (Day 1)
+
 ```bash
 # T1.1: Enhance WORK_STREAM.md format
 # T1.2: Implement file locking (fcntl/msvcrt)
 ```
+
 **Owner**: Agent A
 **Time**: 50 min
 **Dependencies**: None
 
 ### Phase 2: Session & Registry (Day 2)
+
 ```bash
 # T2.1: Session store (jsonl registry)
 # T2.2: Agent registry (metadata + discovery)
 # T2.3: Session bridge (Unix socket + HTTP fallback)
 ```
+
 **Owner**: Agent B
 **Time**: 75 min
 **Dependencies**: Phase 1
 
 ### Phases 3-6: Complete Implementation (Days 3-4)
+
 Follow task checklist in `tasks.md` for detailed steps.
 
 ## Architecture at a Glance
@@ -97,14 +106,14 @@ Follow task checklist in `tasks.md` for detailed steps.
 
 ## Key Concepts
 
-| Concept | Explanation |
-|---------|-------------|
-| **Atomic Claims** | Only one agent can claim work at a time (file lock prevents race conditions) |
+| Concept                  | Explanation                                                                      |
+| ------------------------ | -------------------------------------------------------------------------------- |
+| **Atomic Claims**        | Only one agent can claim work at a time (file lock prevents race conditions)     |
 | **Platform Constraints** | Work can declare supported platforms/shells (e.g., "darwin,linux" or "bash,zsh") |
-| **Session Continuity** | Sessions survive platform changes (Agent on macOS can hand off to Windows) |
-| **DAG Validation** | Dependency graph validated at claim time (prevents circular deps) |
-| **File Locking** | Unix (fcntl) + Windows (msvcrt) + Python fallback; <10ms typical |
-| **Session Bridge** | Unix socket (primary) + HTTP fallback (secondary) for cross-platform hand-offs |
+| **Session Continuity**   | Sessions survive platform changes (Agent on macOS can hand off to Windows)       |
+| **DAG Validation**       | Dependency graph validated at claim time (prevents circular deps)                |
+| **File Locking**         | Unix (fcntl) + Windows (msvcrt) + Python fallback; <10ms typical                 |
+| **Session Bridge**       | Unix socket (primary) + HTTP fallback (secondary) for cross-platform hand-offs   |
 
 ## Success Criteria
 

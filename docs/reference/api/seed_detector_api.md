@@ -8,6 +8,7 @@ Seed ideas are nascent concepts, half-formed requirements, design sketches,
 problem statements that could grow into full features.
 
 Provides:
+
 - Pattern matching for explicit seed signals
 - Optional LLM-based classification for non-obvious seeds
 - Metadata extraction (source, timestamp, confidence)
@@ -46,7 +47,7 @@ Detects idea seeds using pattern matching and optional LLM classification.
 
 ### Methods
 
-#### SeedDetector.__init__
+#### SeedDetector.**init**
 
 ```python
 __init__(self: Any, use_llm: bool)

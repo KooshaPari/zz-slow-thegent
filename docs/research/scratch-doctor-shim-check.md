@@ -42,11 +42,7 @@ def _check_shim_binaries() -> list[CheckResult]:
         if binary_path:
             # Check version
             try:
-                result = run_subprocess_optimized(
-                    [name, "--version"],
-                    capture_output=True,
-                    timeout=5
-                )
+                result = run_subprocess_optimized([name, "--version"], capture_output=True, timeout=5)
                 if result.returncode == 0:
                     version = result.stdout.strip()
                     r.status = "ok"

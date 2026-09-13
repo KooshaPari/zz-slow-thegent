@@ -31,7 +31,6 @@ from thegent.compute.syncthing import SyncthingError, SyncthingWorkspaceSync
 from thegent.compute.tailscale import TailscaleError, TailscaleNode
 from thegent.sitback.watchdog import WatcherDaemon
 
-
 # ---------------------------------------------------------------------------
 # Helpers
 # ---------------------------------------------------------------------------
@@ -489,7 +488,11 @@ class TestSyncthingWorkspaceSync:
 
         syncthing_mgr = AsyncMock()
         syncthing_mgr.get_folders.return_value = [
-            SyncthingFolder(folder_id="thegent-ws-myproject", path="/workspace/myproject", label="ws")
+            SyncthingFolder(
+                folder_id="thegent-ws-myproject",
+                path="/workspace/myproject",
+                label="ws",
+            )
         ]
 
         sync = SyncthingWorkspaceSync(manager=syncthing_mgr)
@@ -674,7 +677,9 @@ class TestWatcherDaemonScaleDown:
         pool_mgr.shrink.assert_not_called()
 
     @pytest.mark.asyncio
-    async def test_scale_down_does_not_fire_when_nodes_not_idle_long_enough(self) -> None:
+    async def test_scale_down_does_not_fire_when_nodes_not_idle_long_enough(
+        self,
+    ) -> None:
         """_check_scale_down defers when remote nodes haven't been idle 5 minutes."""
         pool_mgr = MagicMock()
         # idle for only 60 seconds

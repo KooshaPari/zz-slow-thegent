@@ -55,6 +55,7 @@ async def workspace_operation(
 ```
 
 **Operations:**
+
 - `set_context()` - Set active workspace entity
 - `get_context()` - Get current context
 - `list_workspaces()` - List available workspaces
@@ -79,6 +80,7 @@ async def entity_operation(
 ```
 
 **Supported Entity Types:**
+
 - Documents
 - Requirements
 - Projects
@@ -114,6 +116,7 @@ async def relationship_operation(
 ```
 
 **Relationship Types:**
+
 - `member` - Entity membership
 - `contains` - Containment relationship
 - `references` - Reference relationship
@@ -134,6 +137,7 @@ async def workflow_execute(
 ```
 
 **Benefits:**
+
 - Atomic operations (all or nothing)
 - Ordered execution
 - Built-in error recovery
@@ -163,6 +167,7 @@ async def data_query(
 | **Relationship** | Entity graph navigation |
 
 **Search Modes:**
+
 - `semantic` - Vector similarity only (slow, accurate)
 - `keyword` - BM25 text search (fast, exact)
 - `hybrid` - Combined semantic + keyword (balanced)
@@ -188,11 +193,11 @@ All tools return standardized JSON:
 
 ## Authentication
 
-| Method | Description |
-|--------|-------------|
-| **OAuth 2.0 PKCE** | Recommended for Claude Desktop - browser-based flow |
-| **Bearer Tokens** | For service-to-service - JWT in `auth_token` parameter |
-| **Session Tokens** | Created during OAuth flow, cached in-memory |
+| Method             | Description                                            |
+| ------------------ | ------------------------------------------------------ |
+| **OAuth 2.0 PKCE** | Recommended for Claude Desktop - browser-based flow    |
+| **Bearer Tokens**  | For service-to-service - JWT in `auth_token` parameter |
+| **Session Tokens** | Created during OAuth flow, cached in-memory            |
 
 **RLS Integration:** Server extracts user_id from JWT, sets Supabase context, queries automatically filtered.
 
@@ -218,6 +223,7 @@ Add to Claude's configuration file:
 ## Typical Workflows
 
 **Workflow 1: Create a Project with Documents**
+
 ```
 1. workspace_operation (set_context) → Set active workspace/project
 2. entity_operation (create) → Create project entity
@@ -227,6 +233,7 @@ Add to Claude's configuration file:
 ```
 
 **Workflow 2: Search and Analyze Requirements**
+
 ```
 1. workspace_operation (get_context) → Get current workspace context
 2. data_query (rag_search) → Semantic search for requirements

@@ -5,7 +5,9 @@
 ## 4-Phase Execution Overview
 
 ### Phase 1: Quick Wins & Cleanup (Days 1-3) - 15-18 hours
+
 **12 worklog items focused on removing clutter:**
+
 - WL-1.1: Remove 31 root-level conversation dumps → archive
 - WL-1.2: Archive atoms.tech/docs (366 files), clean high-volume dirs
 - WL-1.3: Consolidate technical/architecture/MCP files
@@ -14,7 +16,9 @@
 **Target**: Root files 67 → ~14-15 (essentials only)
 
 ### Phase 2: Structure Reorganization (Days 4-7) - 25-30 hours
+
 **14 worklog items for creating unified structure:**
+
 - WL-2.1: Design new /docs hierarchy + migrate core docs
 - WL-2.2: Create project navigation & templates
 - WL-2.3: Establish documentation standards & contribution guide
@@ -23,7 +27,9 @@
 **Target**: All docs in unified /docs/ structure with clear governance
 
 ### Phase 3: Critical Documentation Creation (Days 8-15) - 65-80 hours
+
 **25 worklog items creating missing critical docs:**
+
 - **API Reference** (WL-3.1): REST, MCP, CLI docs - 20 hours
 - **Deployment & Operations** (WL-3.2): Deployment guide, runbook, config, scaling - 30 hours
 - **Development** (WL-3.3): Setup, workflow, testing guides - 14 hours
@@ -33,7 +39,9 @@
 **Target**: All critical docs created with examples and tested
 
 ### Phase 4: Polish & Automation (Days 16-20) - 35-45 hours
+
 **13 worklog items for production readiness:**
+
 - WL-4.1: Cross-referencing & navigation (breadcrumbs, matrix)
 - WL-4.2: Search indexing & documentation website
 - WL-4.3: Automation (linting, link validation, audit scripts)
@@ -44,19 +52,20 @@
 
 ## Key Statistics
 
-| Metric | Current | Target |
-|--------|---------|--------|
-| Root markdown files | 67 | 10-15 |
-| Docs directories | 19 | 1 (unified) |
-| Conversation dumps | 227+ | Archived |
-| Quality score | 3.8/10 | 8+/10 |
-| Critical missing docs | 5+ | 0 |
-| Broken links | Unknown | 0 |
-| Automated checks | None | Full suite |
+| Metric                | Current | Target      |
+| --------------------- | ------- | ----------- |
+| Root markdown files   | 67      | 10-15       |
+| Docs directories      | 19      | 1 (unified) |
+| Conversation dumps    | 227+    | Archived    |
+| Quality score         | 3.8/10  | 8+/10       |
+| Critical missing docs | 5+      | 0           |
+| Broken links          | Unknown | 0           |
+| Automated checks      | None    | Full suite  |
 
 ## Execution Checklist
 
 ### To Start Phase 1:
+
 ```
 □ Review DOCUMENTATION_REORGANIZATION_PLAN.md
 □ Create GitHub issues for Phase 1 items (WL-1.1-1.4)
@@ -66,6 +75,7 @@
 ```
 
 ### For Each Worklog Item:
+
 ```
 □ WL-X.X.X: [Title] - READY
 □ Read scope carefully
@@ -78,6 +88,7 @@
 ## Critical Path Items (Do First)
 
 These items unblock many others:
+
 1. **WL-1.1**: Archive conversation dumps (enables structure changes)
 2. **WL-1.2**: Archive atoms.tech/docs (enables project cleanup)
 3. **WL-2.1**: Design new /docs structure (enables all migrations)
@@ -87,6 +98,7 @@ These items unblock many others:
 ## Tools to Create
 
 During execution, these automation tools will be created:
+
 - `/tools/doc-lint.py` - Markdown linting with custom rules
 - `/tools/validate-links.py` - Link validation
 - `/tools/doc-audit.py` - Documentation health audit
@@ -102,6 +114,7 @@ During execution, these automation tools will be created:
 ## After Completion
 
 Once all phases are done:
+
 - Documentation is unified, searchable, and automated
 - Team can maintain docs with simple processes
 - New projects can be onboarded with template
@@ -114,6 +127,7 @@ Refer to the full plan:
 `/Users/kooshapari/temp-PRODVERCEL/485/kush/DOCUMENTATION_REORGANIZATION_PLAN.md`
 
 Each worklog item has:
+
 - Title, scope, deliverable
 - Success criteria (objective measures)
 - Quality checklist (verification steps)

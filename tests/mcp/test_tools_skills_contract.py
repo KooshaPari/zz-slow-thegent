@@ -3,14 +3,12 @@
 from __future__ import annotations
 
 import importlib.util
-import orjson as json
+from pathlib import Path
 from typing import Any
 
+import orjson as json
 import pytest
 from fastmcp.tools.tool import ToolResult
-
-from pathlib import Path
-
 
 MODULE_PATH = Path(__file__).resolve().parents[2] / "src" / "thegent" / "mcp" / "server" / "tools_skills.py"
 SPEC = importlib.util.spec_from_file_location("tools_skills", MODULE_PATH)
@@ -25,8 +23,20 @@ thegent_list_skills_impl = MODULE.thegent_list_skills_impl
 class _FakeBackend:
     def __init__(self) -> None:
         self._skills = [
-            {"name": "alpha", "description": "a", "version": "1.0.0", "entrypoint": "thegent", "path": "/tmp/a"},
-            {"name": "beta", "description": "b", "version": "1.0.0", "entrypoint": "thegent", "path": "/tmp/b"},
+            {
+                "name": "alpha",
+                "description": "a",
+                "version": "1.0.0",
+                "entrypoint": "thegent",
+                "path": "/tmp/a",
+            },
+            {
+                "name": "beta",
+                "description": "b",
+                "version": "1.0.0",
+                "entrypoint": "thegent",
+                "path": "/tmp/b",
+            },
         ]
         self.activate_calls: list[str] = []
 
@@ -40,11 +50,24 @@ class _FakeBackend:
         return None
 
 
-def _error_result(error: str, remediation: str, exit_code: int = 1, extra: dict[str, Any] | None = None) -> ToolResult:
-    payload: dict[str, Any] = {"error": error, "remediation": remediation, "exit_code": exit_code}
+def _error_result(
+    error: str,
+    remediation: str,
+    exit_code: int = 1,
+    extra: dict[str, Any] | None = None,
+) -> ToolResult:
+    payload: dict[str, Any] = {
+        "error": error,
+        "remediation": remediation,
+        "exit_code": exit_code,
+    }
     if extra:
         payload.update(extra)
-    return ToolResult(content=json.dumps(payload).decode(), structured_content=payload, meta={"execution_time_ms": 0})
+    return ToolResult(
+        content=json.dumps(payload).decode(),
+        structured_content=payload,
+        meta={"execution_time_ms": 0},
+    )
 
 
 def test_list_skills_returns_structured_payload() -> None:
@@ -66,9 +89,27 @@ def test_list_skills_is_sorted_by_name() -> None:
 def test_list_skills_is_sorted_case_insensitively() -> None:
     backend = _FakeBackend()
     backend._skills = [
-        {"name": "Zulu", "description": "z", "version": "1.0.0", "entrypoint": "thegent", "path": "/tmp/z"},
-        {"name": "alpha", "description": "a", "version": "1.0.0", "entrypoint": "thegent", "path": "/tmp/a"},
-        {"name": "Bravo", "description": "b", "version": "1.0.0", "entrypoint": "thegent", "path": "/tmp/b"},
+        {
+            "name": "Zulu",
+            "description": "z",
+            "version": "1.0.0",
+            "entrypoint": "thegent",
+            "path": "/tmp/z",
+        },
+        {
+            "name": "alpha",
+            "description": "a",
+            "version": "1.0.0",
+            "entrypoint": "thegent",
+            "path": "/tmp/a",
+        },
+        {
+            "name": "Bravo",
+            "description": "b",
+            "version": "1.0.0",
+            "entrypoint": "thegent",
+            "path": "/tmp/b",
+        },
     ]
     result = thegent_list_skills_impl(backend=backend)
     names = [item["name"] for item in result.structured_content["skills"]]
@@ -78,8 +119,20 @@ def test_list_skills_is_sorted_case_insensitively() -> None:
 def test_list_skills_rejects_duplicate_names_case_insensitively() -> None:
     backend = _FakeBackend()
     backend._skills = [
-        {"name": "Alpha", "description": "a", "version": "1.0.0", "entrypoint": "thegent", "path": "/tmp/a"},
-        {"name": "alpha", "description": "b", "version": "1.0.0", "entrypoint": "thegent", "path": "/tmp/b"},
+        {
+            "name": "Alpha",
+            "description": "a",
+            "version": "1.0.0",
+            "entrypoint": "thegent",
+            "path": "/tmp/a",
+        },
+        {
+            "name": "alpha",
+            "description": "b",
+            "version": "1.0.0",
+            "entrypoint": "thegent",
+            "path": "/tmp/b",
+        },
     ]
     with pytest.raises(ValueError) as exc:
         thegent_list_skills_impl(backend=backend)
@@ -90,8 +143,20 @@ def test_list_skills_rejects_duplicate_names_case_insensitively() -> None:
 def test_list_skills_trims_names_in_output() -> None:
     backend = _FakeBackend()
     backend._skills = [
-        {"name": "  Bravo  ", "description": "b", "version": "1.0.0", "entrypoint": "thegent", "path": "/tmp/b"},
-        {"name": " alpha ", "description": "a", "version": "1.0.0", "entrypoint": "thegent", "path": "/tmp/a"},
+        {
+            "name": "  Bravo  ",
+            "description": "b",
+            "version": "1.0.0",
+            "entrypoint": "thegent",
+            "path": "/tmp/b",
+        },
+        {
+            "name": " alpha ",
+            "description": "a",
+            "version": "1.0.0",
+            "entrypoint": "thegent",
+            "path": "/tmp/a",
+        },
     ]
     result = thegent_list_skills_impl(backend=backend)
     names = [item["name"] for item in result.structured_content["skills"]]
@@ -101,8 +166,20 @@ def test_list_skills_trims_names_in_output() -> None:
 def test_list_skills_rejects_duplicates_after_whitespace_trim() -> None:
     backend = _FakeBackend()
     backend._skills = [
-        {"name": "Alpha ", "description": "a", "version": "1.0.0", "entrypoint": "thegent", "path": "/tmp/a"},
-        {"name": " alpha", "description": "b", "version": "1.0.0", "entrypoint": "thegent", "path": "/tmp/b"},
+        {
+            "name": "Alpha ",
+            "description": "a",
+            "version": "1.0.0",
+            "entrypoint": "thegent",
+            "path": "/tmp/a",
+        },
+        {
+            "name": " alpha",
+            "description": "b",
+            "version": "1.0.0",
+            "entrypoint": "thegent",
+            "path": "/tmp/b",
+        },
     ]
     with pytest.raises(ValueError) as exc:
         thegent_list_skills_impl(backend=backend)
@@ -125,7 +202,9 @@ def test_activate_skill_returns_error_for_missing_skill() -> None:
 
 def test_activate_skill_missing_error_uses_normalized_name() -> None:
     result = thegent_activate_skill_impl(
-        skill_name="  missing  ", backend=_FakeBackend(), error_result_impl=_error_result
+        skill_name="  missing  ",
+        backend=_FakeBackend(),
+        error_result_impl=_error_result,
     )
     data = result.structured_content
     assert "error" in data

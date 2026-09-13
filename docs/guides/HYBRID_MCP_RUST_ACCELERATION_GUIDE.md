@@ -54,11 +54,13 @@ tags: [guide, MCP, FastMCP, Rust, PyO3, maturin, performance]
 ### Tool Categorization
 
 **Stay in FastMCP (Python):**
+
 - I/O-bound: API calls, DB queries, file I/O
 - Governance: hooks, escalation, contracts
 - Dynamic: introspection, discovery, listing
 
 **Move to Rust (PyO3):**
+
 - CPU-bound: diff, search, parse, validate
 - Hot-path: called >100x/sec per server
 - Latency-critical: P99 <5ms required
@@ -81,13 +83,13 @@ pip show pyo3            # Optional, auto-installed by maturin
 
 ### Tool Stack
 
-| Tool | Purpose | Version |
-|------|---------|---------|
-| **Python** | FastMCP server, orchestration | 3.10+ |
-| **Rust** | Hot-path implementation | 1.70+ (stable) |
-| **PyO3** | Rust ↔ Python bindings | 0.21+ |
-| **Maturin** | Build tool for PyO3 wheels | 1.0+ |
-| **Pytest** | Testing | 7.0+ |
+| Tool        | Purpose                       | Version        |
+| ----------- | ----------------------------- | -------------- |
+| **Python**  | FastMCP server, orchestration | 3.10+          |
+| **Rust**    | Hot-path implementation       | 1.70+ (stable) |
+| **PyO3**    | Rust ↔ Python bindings       | 0.21+          |
+| **Maturin** | Build tool for PyO3 wheels    | 1.0+           |
+| **Pytest**  | Testing                       | 7.0+           |
 
 ### Installation
 
@@ -127,9 +129,7 @@ jaeger_exporter = JaegerExporter(
 )
 
 trace.set_tracer_provider(TracerProvider())
-trace.get_tracer_provider().add_span_processor(
-    SimpleSpanProcessor(jaeger_exporter)
-)
+trace.get_tracer_provider().add_span_processor(SimpleSpanProcessor(jaeger_exporter))
 
 logging.basicConfig(level=logging.INFO)
 ```
@@ -144,6 +144,7 @@ Create a load test that simulates 30+ agents calling tools:
 import asyncio
 import time
 from fastmcp import FastMCP
+
 
 async def simulate_agent_calls(num_agents: int = 30, calls_per_agent: int = 100):
     """Simulate realistic agent workload."""
@@ -173,10 +174,12 @@ async def simulate_agent_calls(num_agents: int = 30, calls_per_agent: int = 100)
     print(f"Completed {success}/{len(results)} calls in {elapsed:.1f}s ({qps:.0f} QPS)")
     return qps
 
+
 # Run: pytest tests/load/test_mcp_load.py -v --durations=10
 ```
 
 **Collect metrics:**
+
 - Tool call latency distribution (p50, p95, p99)
 - Throughput (QPS)
 - Top 5 slowest tools
@@ -191,12 +194,12 @@ Create `docs/reference/MCP_BASELINE_METRICS.md`:
 
 ## Load Test Results (30 agents, 100 calls/agent = 3,000 total)
 
-| Metric | Value |
-|--------|-------|
-| Total time | 45.2s |
-| Throughput | 66 QPS |
-| P50 latency | 200ms |
-| P95 latency | 800ms |
+| Metric      | Value   |
+| ----------- | ------- |
+| Total time  | 45.2s   |
+| Throughput  | 66 QPS  |
+| P50 latency | 200ms   |
+| P95 latency | 800ms   |
 | P99 latency | 2,500ms |
 
 ## Slowest Tools
@@ -222,17 +225,19 @@ Expected gain: 2-3x (300+ QPS target)
 #### 2.1 Select 3-5 Tools for Acceleration
 
 Criteria:
+
 - Appears in top-5 slowest tools
 - CPU-bound (not I/O-limited)
 - Stateless (no complex shared state)
 - High call volume (>50 calls/min)
 
 **Recommended for thegent (based on research):**
+
 1. **search_codebase** (800ms) - String search in large codebases
 2. **diff_tool** (500ms) - Diff two documents
 3. **parse_ast** (300ms) - Parse code to AST
-4. *(Optional)* **contract_validate** (150ms) - Complex validation logic
-5. *(Optional)* **format_code** (100ms) - Code formatting
+4. _(Optional)_ **contract_validate** (150ms) - Complex validation logic
+5. _(Optional)_ **format_code** (100ms) - Code formatting
 
 #### 2.2 Define Interface Contract
 
@@ -429,6 +434,7 @@ ls -la target/wheels/
 import pytest
 from thegent_mcp_accelerators import search_codebase, diff_tool, parse_ast
 
+
 def test_search_codebase():
     """Test search_codebase Rust implementation."""
     # Create test file
@@ -445,9 +451,11 @@ def test_search_codebase():
 
         # Verify results
         import json
+
         results = json.loads(results_json)
         assert len(results) == 2
         assert results[0]["line"] == 1
+
 
 def test_search_codebase_performance(benchmark):
     """Benchmark search_codebase (Rust vs Python)."""
@@ -464,6 +472,7 @@ def test_search_codebase_performance(benchmark):
         # Benchmark
         result = benchmark(search_codebase, "500000", limit=10, path=tmpdir)
         assert result is not None
+
 
 # Run with pytest-benchmark
 # pytest tests/test_mcp_accelerators.py --benchmark-only
@@ -501,6 +510,7 @@ try:
         diff_tool as _rust_diff_tool,
         parse_ast as _rust_parse_ast,
     )
+
     _ACCELERATORS_AVAILABLE = True
     _log.info("Rust accelerators loaded successfully")
 except ImportError as e:
@@ -518,6 +528,7 @@ def search_codebase_impl(query: str, limit: int = 10, path: Optional[str] = None
     else:
         # Fallback to Python implementation
         from thegent.mcp.server_research_tools import search_codebase as _py_search
+
         return json.dumps(_py_search(query, limit, path or "."))
 
 
@@ -532,6 +543,7 @@ def diff_tool_impl(file_a: str, file_b: str) -> str:
     else:
         # Fallback to Python implementation
         from thegent.mcp.server_research_tools import diff_tool as _py_diff
+
         return _py_diff(file_a, file_b)
 
 
@@ -546,6 +558,7 @@ def parse_ast_impl(source: str, language: str = "python") -> str:
     else:
         # Fallback to Python implementation
         from thegent.mcp.server_research_tools import parse_ast as _py_parse
+
         return json.dumps(_py_parse(source, language))
 ```
 
@@ -562,6 +575,7 @@ from thegent.mcp.server_accelerators import (
 
 # Existing FastMCP server setup...
 app = FastMCP()
+
 
 # Register accelerated tools
 @app.tool()
@@ -592,6 +606,7 @@ def parse_ast(source: str, language: str = "python") -> str:
     Uses Rust implementation for performance; falls back to Python if not available.
     """
     return parse_ast_impl(source, language)
+
 
 # Continue with existing tool registrations...
 ```
@@ -660,12 +675,12 @@ from thegent.mcp.server import app  # FastMCP app
 NUM_AGENTS = 30
 CALLS_PER_AGENT = 100
 TOOL_MIX = {
-    "search_codebase": 0.15,    # CPU-bound, will use Rust
-    "diff_tool": 0.10,          # CPU-bound, will use Rust
-    "parse_ast": 0.05,          # CPU-bound, will use Rust
-    "run_tool": 0.40,           # I/O-bound, stays Python
-    "list_sessions": 0.15,      # I/O-bound, stays Python
-    "get_resource": 0.15,       # I/O-bound, stays Python
+    "search_codebase": 0.15,  # CPU-bound, will use Rust
+    "diff_tool": 0.10,  # CPU-bound, will use Rust
+    "parse_ast": 0.05,  # CPU-bound, will use Rust
+    "run_tool": 0.40,  # I/O-bound, stays Python
+    "list_sessions": 0.15,  # I/O-bound, stays Python
+    "get_resource": 0.15,  # I/O-bound, stays Python
 }
 
 
@@ -674,6 +689,7 @@ async def run_hybrid_benchmark():
 
     # Scenario 1: Pure FastMCP (disable Rust)
     import thegent.mcp.server_accelerators as accel
+
     original_available = accel._ACCELERATORS_AVAILABLE
 
     # Test Python path
@@ -705,7 +721,7 @@ async def run_hybrid_benchmark():
         "improvement": {
             "qps_gain": (rust_hybrid_qps / python_qps - 1) * 100,
             "p99_reduction": (1 - rust_hybrid_latencies[2] / python_latencies[2]) * 100,
-        }
+        },
     }
 
 
@@ -719,11 +735,8 @@ async def benchmark_server():
         for call_num in range(CALLS_PER_AGENT):
             # Select tool probabilistically
             import random
-            tool = random.choices(
-                list(TOOL_MIX.keys()),
-                weights=list(TOOL_MIX.values()),
-                k=1
-            )[0]
+
+            tool = random.choices(list(TOOL_MIX.keys()), weights=list(TOOL_MIX.values()), k=1)[0]
 
             # Prepare args based on tool
             if tool == "search_codebase":
@@ -764,6 +777,7 @@ async def collect_latencies():
 import json
 from pathlib import Path
 
+
 def generate_report(baseline_metrics, hybrid_metrics):
     """Generate comparison report."""
 
@@ -777,7 +791,7 @@ def generate_report(baseline_metrics, hybrid_metrics):
             "p99_latency_reduction": f"{(1 - hybrid_metrics['p99'] / baseline_metrics['p99']) * 100:.1f}%",
             "memory_overhead": f"+{hybrid_metrics['memory_mb'] - baseline_metrics['memory_mb']:.0f}MB",
         },
-        "recommendation": "PROCEED" if hybrid_metrics['qps'] > baseline_metrics['qps'] * 2 else "EVALUATE",
+        "recommendation": "PROCEED" if hybrid_metrics["qps"] > baseline_metrics["qps"] * 2 else "EVALUATE",
     }
 
     with open("docs/reference/MCP_HYBRID_PERFORMANCE_REPORT.md", "w") as f:
@@ -789,12 +803,12 @@ def generate_report(baseline_metrics, hybrid_metrics):
 
 Expected outcomes after optimization:
 
-| Metric | FastMCP-Only | Hybrid | Target | Status |
-|--------|----------|--------|--------|--------|
-| QPS | 66 | 150-180 | >150 | ✅ Pass |
-| P99 latency | 2,500ms | 800-1,200ms | <1,200ms | ✅ Pass |
-| Memory | 120MB | 130-140MB | <150MB | ✅ Pass |
-| Throughput gain | Baseline | 2.2-2.7x | 2.0x+ | ✅ Pass |
+| Metric          | FastMCP-Only | Hybrid      | Target   | Status  |
+| --------------- | ------------ | ----------- | -------- | ------- |
+| QPS             | 66           | 150-180     | >150     | ✅ Pass |
+| P99 latency     | 2,500ms      | 800-1,200ms | <1,200ms | ✅ Pass |
+| Memory          | 120MB        | 130-140MB   | <150MB   | ✅ Pass |
+| Throughput gain | Baseline     | 2.2-2.7x    | 2.0x+    | ✅ Pass |
 
 ---
 
@@ -868,6 +882,7 @@ rust_usage_gauge = meter.create_observable_gauge(
     unit="1",
 )
 
+
 # Update in tool handlers:
 def record_tool_call(tool_name: str, latency_ms: float):
     tool_latency_histogram.record(latency_ms, {"tool": tool_name})
@@ -918,6 +933,7 @@ pytest tests/load/test_mcp_stress.py -v -s --durations=10
 **Cause:** Rust wheel not built/installed
 
 **Solution:**
+
 ```bash
 cd src/mcp_accelerators
 maturin develop  # Install wheel in dev mode
@@ -930,11 +946,13 @@ python -c "import thegent_mcp_accelerators; print('OK')"
 ### Issue: "Rust tool slower than Python version"
 
 **Cause:** Possible causes:
+
 1. Serialization overhead (JSON) dominates
 2. Algorithm not optimized for Rust
 3. Small input size (Rust overhead not amortized)
 
 **Solution:**
+
 ```rust
 // Optimize serialization
 // Use serde_json::to_value() for direct value passing if possible
@@ -948,6 +966,7 @@ python -c "import thegent_mcp_accelerators; print('OK')"
 **Cause:** Built wheel for one Python version; running on another
 
 **Solution:**
+
 ```bash
 # Build for multiple versions
 for version in 3.10 3.11 3.12; do
@@ -965,6 +984,7 @@ pip install target/wheels/*cp311*.whl  # For Python 3.11
 **Cause:** Tool not actually CPU-bound; bottleneck elsewhere
 
 **Solution:**
+
 1. Re-profile to confirm (OTel traces)
 2. Check if I/O-bound (network latency dominates)
 3. Consider different tool for acceleration
@@ -977,6 +997,7 @@ pip install target/wheels/*cp311*.whl  # For Python 3.11
 ### Go / No-Go Decision (Day 11)
 
 **Proceed to Production If:**
+
 - ✅ Throughput gain ≥ 2.0x (150+ QPS)
 - ✅ P99 latency reduction ≥ 30% (down to <1,800ms)
 - ✅ Memory overhead < 20MB
@@ -984,6 +1005,7 @@ pip install target/wheels/*cp311*.whl  # For Python 3.11
 - ✅ Rust fallback works (Python path still functional)
 
 **Hold / Iterate If:**
+
 - ⚠️ Throughput gain < 1.5x (reconsider tool selection)
 - ⚠️ Rust build takes >2 minutes (optimize build config)
 - ⚠️ Wheel compatibility issues (consider lighter FFI approach)
@@ -993,12 +1015,14 @@ pip install target/wheels/*cp311*.whl  # For Python 3.11
 ## Next Steps
 
 ### If Hybrid is Successful:
+
 1. Deploy to production
 2. Monitor metrics for 4 weeks
 3. Document learnings
 4. Evaluate full Rust migration if gains justify
 
 ### If Hybrid is Insufficient:
+
 1. Keep as proof-of-concept
 2. Revisit bottleneck (may not be CPU-bound)
 3. Consider full Rust migration only if business need justifies 4-week effort

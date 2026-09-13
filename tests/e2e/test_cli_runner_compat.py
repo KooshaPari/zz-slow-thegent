@@ -1,7 +1,7 @@
 from __future__ import annotations
 
-from dataclasses import dataclass
 import re
+from dataclasses import dataclass
 
 import pytest
 import typer
@@ -30,9 +30,13 @@ def _expected_skip_message(argv: list[str]) -> str:
     return f"{COMMAND_SURFACE_DRIFT_SKIP_MESSAGE} {ATTEMPTED_ARGV_COMMAND_PATH_PREFIX} {attempted_command_path}"
 
 
-def test_invoke_skips_when_no_such_command_in_stdout(monkeypatch: pytest.MonkeyPatch) -> None:
+def test_invoke_skips_when_no_such_command_in_stdout(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
     monkeypatch.setattr(
-        cli_runner_compat_module.CliRunner, "invoke", lambda *args, **kwargs: DummyResult(stdout="No such command: foo")
+        cli_runner_compat_module.CliRunner,
+        "invoke",
+        lambda *args, **kwargs: DummyResult(stdout="No such command: foo"),
     )
 
     runner = CompatCliRunner()
@@ -43,9 +47,13 @@ def test_invoke_skips_when_no_such_command_in_stdout(monkeypatch: pytest.MonkeyP
         runner.invoke(None, argv)
 
 
-def test_invoke_skips_when_no_such_command_in_stderr(monkeypatch: pytest.MonkeyPatch) -> None:
+def test_invoke_skips_when_no_such_command_in_stderr(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
     monkeypatch.setattr(
-        cli_runner_compat_module.CliRunner, "invoke", lambda *args, **kwargs: DummyResult(stderr="No such command: bar")
+        cli_runner_compat_module.CliRunner,
+        "invoke",
+        lambda *args, **kwargs: DummyResult(stderr="No such command: bar"),
     )
 
     runner = CompatCliRunner()
@@ -56,7 +64,9 @@ def test_invoke_skips_when_no_such_command_in_stderr(monkeypatch: pytest.MonkeyP
         runner.invoke(None, argv)
 
 
-def test_invoke_does_not_skip_for_normal_result(monkeypatch: pytest.MonkeyPatch) -> None:
+def test_invoke_does_not_skip_for_normal_result(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
     expected = DummyResult(stdout="ok", stderr="")
     monkeypatch.setattr(cli_runner_compat_module.CliRunner, "invoke", lambda *args, **kwargs: expected)
 

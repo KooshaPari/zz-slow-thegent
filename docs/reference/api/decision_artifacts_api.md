@@ -5,6 +5,7 @@
 Decision-Related Artifacts - Agent decisions and branching points.
 
 Provides specialized artifacts for:
+
 - Planning and decision making
 - Branching points (conditional choices)
 - Strategy selection
@@ -16,6 +17,7 @@ Provides specialized artifacts for:
 Artifact for branching points in execution.
 
 Specialized tracking for:
+
 - Conditional branching
 - Loop/iteration decisions
 - Path selection
@@ -53,6 +55,7 @@ Create branching point artifact.
 Artifact for agent decision points.
 
 Tracks:
+
 - Decision context and options
 - Rationale for choice
 - Metrics used in decision

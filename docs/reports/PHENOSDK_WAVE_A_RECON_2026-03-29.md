@@ -11,24 +11,24 @@ Full inventory: `__init__.py`, `authentication.py`, `database.py`, `inference.py
 
 ## Imports of `pheno.ports` in adapters / infra
 
-| Area | Finding |
-|------|---------|
-| `src/pheno/adapters/` | **`pheno.ports.auth.providers`** only — `AuthProvider`, `MFAAdapter` in `adapters/auth/**`. |
-| `src/pheno/infra/` | No direct `pheno.ports` imports found. |
-| `src/pheno/infrastructure/` | No direct `pheno.ports` imports found. |
-| **Outside those paths** | **`pheno.ports.mcp`** implemented under **`src/pheno/mcp/adapters/`** (not under `adapters/`). **`pheno.ports.stream`** used from `stream.py`, dev utils, examples. |
+| Area                        | Finding                                                                                                                                                             |
+| --------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `src/pheno/adapters/`       | **`pheno.ports.auth.providers`** only — `AuthProvider`, `MFAAdapter` in `adapters/auth/**`.                                                                         |
+| `src/pheno/infra/`          | No direct `pheno.ports` imports found.                                                                                                                              |
+| `src/pheno/infrastructure/` | No direct `pheno.ports` imports found.                                                                                                                              |
+| **Outside those paths**     | **`pheno.ports.mcp`** implemented under **`src/pheno/mcp/adapters/`** (not under `adapters/`). **`pheno.ports.stream`** used from `stream.py`, dev utils, examples. |
 
 **Comment drift:** `adapters/llm/__init__.py` mentions `pheno.ports.llm` (no such package); `adapters/events/__init__.py` mentions `pheno.ports.events` (missing).
 
 ## Port ↔ adapter clarity
 
-| Port area | Clarity |
-|-----------|---------|
-| `ports.mcp` | **Clear** — `mcp/adapters/*`, schemes, manager, tests. |
-| `ports.auth.providers` | **Clear** — `adapters/auth/**`, `application/auth/manager.py`. |
-| `ports.stream` | **Mixed** — embedded in feature code, no `adapters/stream/`. |
+| Port area                                                                           | Clarity                                                                                                        |
+| ----------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------- |
+| `ports.mcp`                                                                         | **Clear** — `mcp/adapters/*`, schemes, manager, tests.                                                         |
+| `ports.auth.providers`                                                              | **Clear** — `adapters/auth/**`, `application/auth/manager.py`.                                                 |
+| `ports.stream`                                                                      | **Mixed** — embedded in feature code, no `adapters/stream/`.                                                   |
 | `database`, `inference`, `messaging`, `observability`, `registry`, `authentication` | **Unclear** — little/no `from pheno.ports.<x>` usage; persistence/LLM use `application.ports` / `adapter_kit`. |
-| `port_allocation`, `tunneling`, `tunnels` | **Unclear** — weak coupling to port protocols. |
+| `port_allocation`, `tunneling`, `tunnels`                                           | **Unclear** — weak coupling to port protocols.                                                                 |
 
 ## Existing contract artifacts
 

@@ -48,7 +48,11 @@ class InProcessAgentRunner:
         **kwargs: Any,
     ) -> dict[str, Any]:
         """Run the agent with isolated cwd."""
-        _log.info("MTSP-02: Running agent %s in-process with isolated cwd: %s", self.agent_name, cd)
+        _log.info(
+            "MTSP-02: Running agent %s in-process with isolated cwd: %s",
+            self.agent_name,
+            cd,
+        )
 
         # Ensure directory exists
         cd.mkdir(parents=True, exist_ok=True)

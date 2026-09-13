@@ -17,13 +17,13 @@ import os
 import platform
 import shutil
 import subprocess
-from thegent.infra.shim_subprocess import run as shim_run
 import tempfile
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
 
 from thegent.infra.cache_v2 import CacheV2
+from thegent.infra.shim_subprocess import run as shim_run
 
 logger = logging.getLogger(__name__)
 

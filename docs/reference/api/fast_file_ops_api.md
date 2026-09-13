@@ -6,11 +6,13 @@ Fast file operations with platform-specific optimizations.
 
 This module provides optimized file operations that use platform-specific
 optimizations for better performance:
+
 - Linux: os.sendfile() for large file copies (zero-copy)
 - All platforms: Optimized shutil operations
 - Batch operations where possible
 
 Performance improvements:
+
 - sendfile() on Linux: Zero-copy for large files (10-100MB+)
 - Optimized directory operations
 - Batch file operations

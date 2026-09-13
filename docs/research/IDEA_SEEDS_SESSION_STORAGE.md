@@ -31,30 +31,30 @@ See [CLAUDE_CODE_QUEUE_PENDING_BLOCKING.md](./CLAUDE_CODE_QUEUE_PENDING_BLOCKING
 
 ### Claude Code
 
-| Path | Schema | Retention |
-|------|--------|-----------|
-| `~/.claude/history.jsonl` | `{"display":"<prompt>","project":"<path>","timestamp":<ms>,"sessionId":"<uuid>"}` | `cleanupPeriodDays` (default 30) in settings |
-| `~/.claude/tasks/<session>/` | Per-session task JSON files | Same |
-| `~/.claude/projects/` | Project metadata | Same |
+| Path                         | Schema                                                                            | Retention                                    |
+| ---------------------------- | --------------------------------------------------------------------------------- | -------------------------------------------- |
+| `~/.claude/history.jsonl`    | `{"display":"<prompt>","project":"<path>","timestamp":<ms>,"sessionId":"<uuid>"}` | `cleanupPeriodDays` (default 30) in settings |
+| `~/.claude/tasks/<session>/` | Per-session task JSON files                                                       | Same                                         |
+| `~/.claude/projects/`        | Project metadata                                                                  | Same                                         |
 
 **Parsing:** Each line is a JSON object. `display` = user prompt text; `project` = workspace path. Filter for `$idea` in `display`. Seeds are written to `$project/docs/research/idea-seeds/` (git root resolved when in repo).
 
 ### Codex
 
-| Path | Schema | Retention |
-|------|--------|-----------|
-| `~/.codex/history.jsonl` | `{"session_id":"<uuid>","ts":<unix>,"text":"<prompt>"}` | Varies (check config.toml) |
-| `~/.codex/sessions/` | Session metadata JSONL | Same |
-| `~/.codex/state_5.sqlite` | `threads(id, cwd, ...)` — maps session_id → cwd | Same |
+| Path                      | Schema                                                  | Retention                  |
+| ------------------------- | ------------------------------------------------------- | -------------------------- |
+| `~/.codex/history.jsonl`  | `{"session_id":"<uuid>","ts":<unix>,"text":"<prompt>"}` | Varies (check config.toml) |
+| `~/.codex/sessions/`      | Session metadata JSONL                                  | Same                       |
+| `~/.codex/state_5.sqlite` | `threads(id, cwd, ...)` — maps session_id → cwd         | Same                       |
 
 **Parsing:** Each line is a JSON object. `text` = user prompt. Filter for `$idea` in `text`. Lookup `cwd` via `SELECT cwd FROM threads WHERE id=<session_id>`. Seeds are written to `$cwd/docs/research/idea-seeds/` (git root resolved when in repo).
 
 ### Cursor (agent CLI)
 
-| Path | Schema | Retention |
-|------|--------|-----------|
+| Path                                                                | Schema                                                                      | Retention  |
+| ------------------------------------------------------------------- | --------------------------------------------------------------------------- | ---------- |
 | `~/.cursor/projects/<project-id>/agent-transcripts/<session>.jsonl` | `{"role":"user","message":{"content":[{"type":"text","text":"<prompt>"}]}}` | Per Cursor |
-| `~/.cursor/projects/<project-id>/agent-tools/` | Tool output (contains workspace paths) | Same |
+| `~/.cursor/projects/<project-id>/agent-tools/`                      | Tool output (contains workspace paths)                                      | Same       |
 
 **Parsing:** Each line is a JSON object. Filter for `role=="user"` and `$idea` in `message.content[].text`. Project path is resolved from folder name (decode) or by grepping agent-tools for paths. Seeds are written to `$project/docs/research/idea-seeds/`.
 
@@ -75,6 +75,7 @@ OUTPUT_DIR=/path/to/docs/research/idea-seeds PROJECT_DIR=/path/to/repo ./scripts
 **State:** Tracks last processed line offset in `~/.claude/.idea-harvest-claude-offset` and `~/.claude/.idea-harvest-codex-offset` to avoid duplicates.
 
 **When to run:** Before sessions expire (~2 weeks if cleanup is aggressive; Claude default is 30 days). The harvest runs automatically on **Stop** (session end). Also:
+
 - `task harvest-idea-seeds` — manual run
 - Cron: daily or weekly for extra safety
 - First run with large history (~7k+ lines) may take 30–60s; subsequent runs are fast (offset-based)
@@ -89,8 +90,8 @@ Each seed file:
 ---
 saved_at: 2026-02-16T12:00:00Z
 source: UserPromptSubmit | claude_history | codex_history
-project: /path/to/project  # Claude only
-session_id: uuid           # when available
+project: /path/to/project # Claude only
+session_id: uuid # when available
 ---
 
 <exact prompt text>
@@ -100,15 +101,15 @@ session_id: uuid           # when available
 
 ## Configuration
 
-| Env | Default | Purpose |
-|-----|---------|---------|
-| `CLAUDE_HISTORY` | `~/.claude/history.jsonl` | Claude history path |
-| `CODEX_HISTORY` | `~/.codex/history.jsonl` | Codex history path |
-| `CODEX_STATE_DB` | `~/.codex/state_5.sqlite` | Codex sqlite (threads.cwd lookup) |
-| `CURSOR_PROJECTS` | `~/.cursor/projects` | Cursor agent-transcripts root; set empty to skip |
-| `OUTPUT_DIR` | (unset) | Override: send all seeds here instead of per-project |
-| `PROJECT_DIR` | (unset) | Not used for routing; per-entry project/cwd used |
-| `STATE_DIR` | `~/.claude` | Offset file location |
+| Env               | Default                   | Purpose                                              |
+| ----------------- | ------------------------- | ---------------------------------------------------- |
+| `CLAUDE_HISTORY`  | `~/.claude/history.jsonl` | Claude history path                                  |
+| `CODEX_HISTORY`   | `~/.codex/history.jsonl`  | Codex history path                                   |
+| `CODEX_STATE_DB`  | `~/.codex/state_5.sqlite` | Codex sqlite (threads.cwd lookup)                    |
+| `CURSOR_PROJECTS` | `~/.cursor/projects`      | Cursor agent-transcripts root; set empty to skip     |
+| `OUTPUT_DIR`      | (unset)                   | Override: send all seeds here instead of per-project |
+| `PROJECT_DIR`     | (unset)                   | Not used for routing; per-entry project/cwd used     |
+| `STATE_DIR`       | `~/.claude`               | Offset file location                                 |
 
 **Note:** Cursor harvest scans all project agent-transcripts; with many projects it can take 1–2 min. Use `CURSOR_PROJECTS=` to skip.
 

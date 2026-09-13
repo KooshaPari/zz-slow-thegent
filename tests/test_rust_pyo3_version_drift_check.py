@@ -37,7 +37,9 @@ def _init_workspace(tmp_path: Path, *, workspace_pyo3: str | None = None) -> Non
     )
 
 
-def test_build_report_passes_with_uniform_version_including_optional_and_target_tables(tmp_path: Path) -> None:
+def test_build_report_passes_with_uniform_version_including_optional_and_target_tables(
+    tmp_path: Path,
+) -> None:
     mod = _load_module()
     _init_workspace(tmp_path)
     _write_manifest(
@@ -113,7 +115,9 @@ def test_build_report_fails_when_versions_drift(tmp_path: Path) -> None:
     assert report["versions"] == ["0.23.4", "0.24.0"]
 
 
-def test_build_report_resolves_workspace_version_and_package_alias(tmp_path: Path) -> None:
+def test_build_report_resolves_workspace_version_and_package_alias(
+    tmp_path: Path,
+) -> None:
     mod = _load_module()
     _init_workspace(tmp_path, workspace_pyo3="0.23.4")
     _write_manifest(
@@ -134,7 +138,9 @@ def test_build_report_resolves_workspace_version_and_package_alias(tmp_path: Pat
     assert any(ref["dependency"] == "py" for ref in report["references"])
 
 
-def test_build_report_fails_for_workspace_true_without_workspace_version(tmp_path: Path) -> None:
+def test_build_report_fails_for_workspace_true_without_workspace_version(
+    tmp_path: Path,
+) -> None:
     mod = _load_module()
     _init_workspace(tmp_path, workspace_pyo3=None)
     _write_manifest(

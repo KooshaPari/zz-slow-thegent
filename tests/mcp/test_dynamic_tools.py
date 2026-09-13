@@ -192,7 +192,9 @@ def test_clear_session_rejects_empty_session_id() -> None:
         registry.clear_session("\t")
 
 
-def test_expired_call_is_removed_and_raises_timeout(monkeypatch: pytest.MonkeyPatch) -> None:
+def test_expired_call_is_removed_and_raises_timeout(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
     registry = DynamicToolRegistry(default_timeout_seconds=0.1)
     registry.register_dynamic_tool("s1", _spec("alpha"))
 

@@ -19,11 +19,13 @@
 ## Current State
 
 **Existing Routing**:
+
 - Provider selection based on reliability, latency
 - Cost-aware routing partially implemented (WP-5003)
 - Economic governance framework exists
 
 **What's Deferred**:
+
 - Advanced cost-to-value ratio routing
 - Real-time cost tracking and optimization
 - Budget-aware routing with hard limits
@@ -99,10 +101,12 @@
 ### Option A: Defer Completely
 
 **Pros**:
+
 - Focus on higher-priority features
 - Avoid premature optimization
 
 **Cons**:
+
 - Miss potential cost savings
 - May need to retrofit later
 
@@ -111,10 +115,12 @@
 ### Option B: Implement Now
 
 **Pros**:
+
 - Early cost optimization
 - Competitive advantage
 
 **Cons**:
+
 - Diverts resources from higher priorities
 - May introduce complexity prematurely
 
@@ -123,10 +129,12 @@
 ### Option C: Phased Implementation
 
 **Pros**:
+
 - Gradual rollout
 - Lower risk
 
 **Cons**:
+
 - Longer timeline
 - More coordination needed
 
@@ -141,6 +149,7 @@
 **Review Criteria**: Check unblock criteria status
 
 **Metrics to Track**:
+
 - Cost tracking infrastructure status
 - Historical cost data availability
 - User cost concerns (support tickets, feedback)
@@ -150,9 +159,9 @@
 
 ## BACKLOG Item
 
-| ID | Title | Priority | Depends | Unblock Criteria |
-|----|-------|----------|---------|------------------|
-| **research-cost-routing-implementation** | Implement advanced cost routing | P2 | WP-5003, research-economic-governance | See unblock criteria above |
+| ID                                       | Title                           | Priority | Depends                               | Unblock Criteria           |
+| ---------------------------------------- | ------------------------------- | -------- | ------------------------------------- | -------------------------- |
+| **research-cost-routing-implementation** | Implement advanced cost routing | P2       | WP-5003, research-economic-governance | See unblock criteria above |
 
 **Status**: Deferred until unblock criteria met
 
@@ -174,6 +183,7 @@ When unblocked, the cost routing implementation will provide:
 from thegent.governance.costs import CostTracker
 from thegent.planning.selector import ObjectiveSelector
 
+
 class CostRouter:
     """Cost-aware routing for model selection."""
 
@@ -181,21 +191,13 @@ class CostRouter:
         self.cost_tracker = cost_tracker
         self.selector = ObjectiveSelector()
 
-    def select_model(
-        self,
-        requirements: dict,
-        budget: float,
-        objective: str = "cost_quality"
-    ) -> str:
+    def select_model(self, requirements: dict, budget: float, objective: str = "cost_quality") -> str:
         """Select model based on cost and quality requirements."""
         # Get available models with cost estimates
         models = self._get_available_models(requirements)
 
         # Filter by budget
-        affordable_models = [
-            m for m in models
-            if m["estimated_cost"] <= budget
-        ]
+        affordable_models = [m for m in models if m["estimated_cost"] <= budget]
 
         if not affordable_models:
             raise BudgetExceededError(f"No models within budget: {budget}")
@@ -216,6 +218,7 @@ class CostRouter:
 **Current Status**: Monitoring unblock criteria
 
 **Metrics to Track**:
+
 - [ ] Cost tracking infrastructure complete (WP-5003)
 - [ ] Historical cost data available (30+ days)
 - [ ] User cost concerns identified (support tickets)
@@ -256,14 +259,17 @@ class CostRouter:
 **Extended by:** Claude Code
 
 ### Changes Made
+
 1. Added planning patterns
 2. Added implementation roadmap
 3. Enhanced cross-references
 
 ### Cross-References Added
+
 - WORK_STREAM.md
 - Implementation guides
 
 ### Practical Additions
+
 - Planning templates
 - Roadmap configurations

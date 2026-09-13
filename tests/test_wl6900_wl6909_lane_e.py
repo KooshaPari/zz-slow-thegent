@@ -2,7 +2,6 @@
 
 from __future__ import annotations
 
-import orjson as json
 import subprocess
 import sys
 from datetime import UTC, datetime, timedelta
@@ -12,9 +11,10 @@ from types import SimpleNamespace
 from unittest.mock import MagicMock
 
 import httpx
+import orjson as json
 import pytest
 
-from thegent import doctor_setup_checks, shell_cli, shared_mcp_manager, summary
+from thegent import doctor_setup_checks, shared_mcp_manager, shell_cli, summary
 from thegent.resources.network import NetworkMonitor
 
 
@@ -81,7 +81,9 @@ def test_wl6900_shell_doctor_records_probe_timeout(monkeypatch: pytest.MonkeyPat
     assert any("Alias probe timed out" in message and "timeout" in message for message in collector.messages)
 
 
-def test_wl6901_shell_platform_reports_success_version(monkeypatch: pytest.MonkeyPatch) -> None:
+def test_wl6901_shell_platform_reports_success_version(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
     collector = _PrintCollector()
     table = _FakeTable("Platform Information")
     monkeypatch.setattr(shell_cli, "console", collector)
@@ -166,7 +168,9 @@ def test_wl6902_get_git_commits_empty_window_keeps_empty_status(
     start = datetime.now(UTC) - timedelta(days=1)
     end = datetime.now(UTC)
     monkeypatch.setattr(
-        summary.subprocess, "run", lambda *args, **kwargs: subprocess.CompletedProcess(args[0], 0, stdout="", stderr="")
+        summary.subprocess,
+        "run",
+        lambda *args, **kwargs: subprocess.CompletedProcess(args[0], 0, stdout="", stderr=""),
     )
 
     payload = summary.get_git_commits(tmp_path, start, end)
@@ -175,13 +179,26 @@ def test_wl6902_get_git_commits_empty_window_keeps_empty_status(
     assert payload.commits == []
 
 
-def test_wl6903_read_log_file_tracks_malformed_json_and_out_of_window(tmp_path: Path) -> None:
+def test_wl6903_read_log_file_tracks_malformed_json_and_out_of_window(
+    tmp_path: Path,
+) -> None:
     start = datetime(2026, 1, 1, tzinfo=UTC)
     end = datetime(2026, 1, 31, tzinfo=UTC)
     path = tmp_path / "chat.jsonl"
-    valid = {"type": "user", "timestamp": "2026-01-10T12:00:00+00:00", "message": {"content": "ok"}}
-    old = {"type": "assistant", "timestamp": "2025-12-10T12:00:00+00:00", "message": {"content": "old"}}
-    path.write_text(json.dumps(valid).decode() + "\nnot-json\n" + json.dumps(old).decode() + "\n", encoding="utf-8")
+    valid = {
+        "type": "user",
+        "timestamp": "2026-01-10T12:00:00+00:00",
+        "message": {"content": "ok"},
+    }
+    old = {
+        "type": "assistant",
+        "timestamp": "2025-12-10T12:00:00+00:00",
+        "message": {"content": "old"},
+    }
+    path.write_text(
+        json.dumps(valid).decode() + "\nnot-json\n" + json.dumps(old).decode() + "\n",
+        encoding="utf-8",
+    )
 
     payload = summary._read_log_file(path, start, end, include_diagnostics=True)
 
@@ -191,7 +208,9 @@ def test_wl6903_read_log_file_tracks_malformed_json_and_out_of_window(tmp_path: 
     assert payload["parse_counts"]["out_of_window"] == 1
 
 
-def test_wl6904_read_log_file_missing_file_reports_explicit_status(tmp_path: Path) -> None:
+def test_wl6904_read_log_file_missing_file_reports_explicit_status(
+    tmp_path: Path,
+) -> None:
     start = datetime(2026, 1, 1, tzinfo=UTC)
     end = datetime(2026, 1, 31, tzinfo=UTC)
 
@@ -221,7 +240,9 @@ def test_wl6904_read_log_file_permission_denied_reports_status(monkeypatch: pyte
     assert payload["error"]["type"] == "PermissionError"
 
 
-def test_wl6905_ensure_mcp_running_healthy_preflight_short_circuits(monkeypatch: pytest.MonkeyPatch) -> None:
+def test_wl6905_ensure_mcp_running_healthy_preflight_short_circuits(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
     settings = SimpleNamespace(mcp_host="127.0.0.1", mcp_port=3847)
     collector = _PrintCollector()
     monkeypatch.setattr(
@@ -233,10 +254,16 @@ def test_wl6905_ensure_mcp_running_healthy_preflight_short_circuits(monkeypatch:
     assert doctor_setup_checks.ensure_mcp_running(settings=settings, console=collector) is True
 
 
-def test_wl6905_ensure_mcp_running_records_timeout_preflight(monkeypatch: pytest.MonkeyPatch) -> None:
+def test_wl6905_ensure_mcp_running_records_timeout_preflight(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
     settings = SimpleNamespace(mcp_host="127.0.0.1", mcp_port=3847)
     collector = _PrintCollector()
-    monkeypatch.setattr(doctor_setup_checks.httpx, "get", MagicMock(side_effect=httpx.ReadTimeout("timeout")))
+    monkeypatch.setattr(
+        doctor_setup_checks.httpx,
+        "get",
+        MagicMock(side_effect=httpx.ReadTimeout("timeout")),
+    )
     fake_manage = SimpleNamespace(mcp_up=lambda: (False, "not started"))
     monkeypatch.setitem(sys.modules, "thegent.mcp.manage", fake_manage)
 
@@ -264,10 +291,16 @@ def test_wl6906_ensure_mcp_running_retry_diagnostics_transient_then_success(
     assert any("retry diagnostics" in message and "connection_error=1" in message for message in collector.messages)
 
 
-def test_wl6906_ensure_mcp_running_retry_diagnostics_persistent_failure(monkeypatch: pytest.MonkeyPatch) -> None:
+def test_wl6906_ensure_mcp_running_retry_diagnostics_persistent_failure(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
     settings = SimpleNamespace(mcp_host="127.0.0.1", mcp_port=3847)
     collector = _PrintCollector()
-    monkeypatch.setattr(doctor_setup_checks.httpx, "get", MagicMock(side_effect=httpx.ConnectError("refused")))
+    monkeypatch.setattr(
+        doctor_setup_checks.httpx,
+        "get",
+        MagicMock(side_effect=httpx.ConnectError("refused")),
+    )
     fake_manage = SimpleNamespace(mcp_up=lambda: (True, "started"))
     monkeypatch.setitem(sys.modules, "thegent.mcp.manage", fake_manage)
     monkeypatch.setattr(doctor_setup_checks.time, "sleep", lambda *_args, **_kwargs: None)
@@ -279,7 +312,10 @@ def test_wl6906_ensure_mcp_running_retry_diagnostics_persistent_failure(monkeypa
 @pytest.mark.parametrize(
     ("proxy_behavior", "expected_message"),
     [
-        (httpx.Response(503, request=httpx.Request("GET", "http://127.0.0.1:8317/v1/models")), "returned 503"),
+        (
+            httpx.Response(503, request=httpx.Request("GET", "http://127.0.0.1:8317/v1/models")),
+            "returned 503",
+        ),
         (httpx.ReadTimeout("timeout"), "request timed out"),
         (httpx.ConnectError("refused"), "connection error"),
     ],
@@ -320,11 +356,14 @@ def test_wl6908_shared_mcp_cleans_only_stale_lockfile(monkeypatch: pytest.Monkey
     _scope, lockfile = shared_mcp_manager.get_server_scope()
     lockfile.write_text(json.dumps({"pid": 424242, "port": 3847}).decode(), encoding="utf-8")
     monkeypatch.setattr(
-        shared_mcp_manager.os, "kill", lambda *_args, **_kwargs: (_ for _ in ()).throw(OSError(ESRCH, ""))
+        shared_mcp_manager.os,
+        "kill",
+        lambda *_args, **_kwargs: (_ for _ in ()).throw(OSError(ESRCH, "")),
     )
 
     fake_manage = SimpleNamespace(
-        mcp_up=lambda: (True, "started"), _get_mcp_url=lambda *_args, **_kwargs: "http://127.0.0.1:3847/mcp"
+        mcp_up=lambda: (True, "started"),
+        _get_mcp_url=lambda *_args, **_kwargs: "http://127.0.0.1:3847/mcp",
     )
     monkeypatch.setitem(sys.modules, "thegent.mcp.manage", fake_manage)
 
@@ -373,7 +412,9 @@ def test_wl6908_shared_mcp_read_error_does_not_delete_lockfile(monkeypatch: pyte
     assert lockfile.exists()
 
 
-def test_wl6909_network_interface_diagnostics_distinguish_error_from_empty(monkeypatch: pytest.MonkeyPatch) -> None:
+def test_wl6909_network_interface_diagnostics_distinguish_error_from_empty(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
     monitor = NetworkMonitor()
     mock_psutil = MagicMock()
     monkeypatch.setattr("thegent.resources.network._PSUTIL_AVAILABLE", True)

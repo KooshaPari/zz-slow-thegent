@@ -58,6 +58,7 @@ bash pre_startup_check.sh
 ```
 
 **Expected Output:**
+
 ```
 === System Resource Check ===
 Free Memory: 8192MB (Minimum required: 2GB/2000MB)
@@ -129,10 +130,10 @@ echo "✓ CRUN installed: $(crun --version)"
 # For PostgreSQL deployments
 if [ "$CRUN_DB_HOST" != "" ]; then
     echo "Checking database connectivity..."
-    
+
     psql -h $CRUN_DB_HOST -U $CRUN_DB_USERNAME -d $CRUN_DB_NAME \
         -c "SELECT 1" > /dev/null 2>&1
-    
+
     if [ $? -eq 0 ]; then
         echo "✓ Database connected"
     else
@@ -419,11 +420,13 @@ ps aux | grep crun | grep gui
 ### Issue 1: Virtual Environment Not Activated
 
 **Symptom:**
+
 ```
 bash: crun: command not found
 ```
 
 **Solution:**
+
 ```bash
 # Activate virtual environment
 source venv/bin/activate
@@ -438,11 +441,13 @@ which crun
 ### Issue 2: Python Version Incompatible
 
 **Symptom:**
+
 ```
 ERROR: This project requires Python 3.11+
 ```
 
 **Solution:**
+
 ```bash
 # Check Python version
 python3 --version
@@ -458,11 +463,13 @@ pip install -e ".[all]"
 ### Issue 3: API Key Not Found
 
 **Symptom:**
+
 ```
 Error: API key not configured for model
 ```
 
 **Solution:**
+
 ```bash
 # Set API key
 export OPENAI_API_KEY=sk-your-key
@@ -480,11 +487,13 @@ echo $OPENAI_API_KEY
 ### Issue 4: Port Already in Use
 
 **Symptom:**
+
 ```
 ERROR: Address already in use 0.0.0.0:8000
 ```
 
 **Solution:**
+
 ```bash
 # Find process using port
 lsof -ti:8000
@@ -501,11 +510,13 @@ CRUN_PORT=8001 crun gui
 ### Issue 5: Out of Memory
 
 **Symptom:**
+
 ```
 MemoryError: Unable to allocate memory
 ```
 
 **Solution:**
+
 ```bash
 # Reduce worker count
 CRUN_AGENTS_MAX_WORKERS=2 crun gui
@@ -519,11 +530,13 @@ ulimit -v unlimited
 ### Issue 6: Database Connection Failed
 
 **Symptom:**
+
 ```
 ERROR: Can't connect to database
 ```
 
 **Solution:**
+
 ```bash
 # Verify database is running
 systemctl status postgresql

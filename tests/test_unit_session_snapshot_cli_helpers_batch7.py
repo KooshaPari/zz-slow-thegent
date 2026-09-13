@@ -1,7 +1,8 @@
 from __future__ import annotations
 
-import orjson as json
 from pathlib import Path
+
+import orjson as json
 
 from thegent.orchestration.state.session_scraper import SessionScraper
 from thegent.orchestration.state.session_snapshot_cli_helpers import (
@@ -39,7 +40,9 @@ def _write_snapshot(
     return path
 
 
-def test_snapshot_daily_index_payload_includes_summary_and_days_list_shape(tmp_path: Path) -> None:
+def test_snapshot_daily_index_payload_includes_summary_and_days_list_shape(
+    tmp_path: Path,
+) -> None:
     scraper = SessionScraper(project_root=tmp_path)
     _write_snapshot(
         scraper,
@@ -76,7 +79,9 @@ def test_snapshot_daily_index_day_items_include_required_keys(tmp_path: Path) ->
     assert required.issubset(set(day_item.keys()))
 
 
-def test_snapshot_daily_export_payload_returns_source_json_and_source_md(tmp_path: Path) -> None:
+def test_snapshot_daily_export_payload_returns_source_json_and_source_md(
+    tmp_path: Path,
+) -> None:
     scraper = SessionScraper(project_root=tmp_path)
     _write_snapshot(
         scraper,
@@ -93,7 +98,9 @@ def test_snapshot_daily_export_payload_returns_source_json_and_source_md(tmp_pat
     assert "source_md" in payload
 
 
-def test_snapshot_daily_export_payload_returns_alias_paths_matching_source_keys(tmp_path: Path) -> None:
+def test_snapshot_daily_export_payload_returns_alias_paths_matching_source_keys(
+    tmp_path: Path,
+) -> None:
     scraper = SessionScraper(project_root=tmp_path)
     _write_snapshot(
         scraper,
@@ -110,7 +117,9 @@ def test_snapshot_daily_export_payload_returns_alias_paths_matching_source_keys(
     assert payload["markdown_path"] == payload["source_md"]
 
 
-def test_snapshot_daily_export_json_contains_generated_at_in_summary(tmp_path: Path) -> None:
+def test_snapshot_daily_export_json_contains_generated_at_in_summary(
+    tmp_path: Path,
+) -> None:
     scraper = SessionScraper(project_root=tmp_path)
     _write_snapshot(
         scraper,

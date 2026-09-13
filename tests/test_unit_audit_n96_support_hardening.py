@@ -10,7 +10,7 @@ Source: src/thegent/governance/support.py
 
 from __future__ import annotations
 
-from thegent.governance.support import SupportRedactor, SupportModeSession
+from thegent.governance.support import SupportModeSession, SupportRedactor
 
 
 class TestSupportRedactor:

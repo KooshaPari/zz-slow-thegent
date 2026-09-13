@@ -9,7 +9,7 @@ import logging
 import time
 from contextlib import suppress
 from dataclasses import dataclass
-from enum import Enum
+from enum import StrEnum
 from pathlib import Path
 from typing import TYPE_CHECKING, Any
 
@@ -21,7 +21,7 @@ if TYPE_CHECKING:
 _log = logging.getLogger(__name__)
 
 
-class SandboxStatus(str, Enum):
+class SandboxStatus(StrEnum):
     """Lifecycle status of a Wasm sandbox."""
 
     INITIALIZED = "initialized"
@@ -32,7 +32,7 @@ class SandboxStatus(str, Enum):
     TERMINATED = "terminated"
 
 
-class SandboxFeature(str, Enum):
+class SandboxFeature(StrEnum):
     """Optional capabilities that a sandbox may expose."""
 
     NETWORK = "network"

@@ -36,7 +36,6 @@ Items covered (FR-GOV-SCR-001 .. FR-GOV-SCR-025):
 
 from __future__ import annotations
 
-import math
 from abc import ABC
 
 import pytest
@@ -44,7 +43,6 @@ import pytest
 from thegent.governance.scoring import (
     DefaultProviderScorer,
     ProviderMetrics,
-    ProviderScore,
     ProviderScorer,
 )
 

@@ -106,7 +106,10 @@ class SSHIdentityProxy:
 
     def get_env(self) -> dict[str, str]:
         """Return the environment variable for L2 agents to use this proxy."""
-        return {"SSH_AUTH_SOCK": str(self.proxy_socket_path), "THEGENT_IDENTITY_PROXY": "1"}
+        return {
+            "SSH_AUTH_SOCK": str(self.proxy_socket_path),
+            "THEGENT_IDENTITY_PROXY": "1",
+        }
 
     @staticmethod
     def require_actor_identity(

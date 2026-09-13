@@ -23,7 +23,7 @@ Verifies safety invariants across tool execution chains.
 
 ### Methods
 
-#### ToolSafetyChecker.__init__
+#### ToolSafetyChecker.**init**
 
 ```python
 __init__(self: Any)

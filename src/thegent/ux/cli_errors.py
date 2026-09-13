@@ -87,7 +87,7 @@ def exc_text(value: object) -> str:
 
 
 def print_exc(
-    console: "Console",
+    console: Console,
     prefix: str,
     value: object,
     *,

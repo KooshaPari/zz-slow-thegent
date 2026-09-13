@@ -14,6 +14,7 @@
 ### Context
 
 thegent must support 10+ AI agents (Claude, Codex, Gemini, Copilot, Cursor, etc.) with heterogeneous invocation methods:
+
 - Some expose native CLIs (claude-code, cursor-agent)
 - Some require HTTP proxies (CLIProxyAPIPlus for minimax, GLM)
 - Some use OpenAI-compatible APIs (cursor-api)
@@ -29,6 +30,7 @@ Implement a **three-tier agent runner architecture** with protocol-specific runn
 3. **CursorApiRunner** — HTTP backend via OpenAI-compatible endpoint
 
 Each runner implements a common `AgentRunner` interface with:
+
 - `run(prompt, cwd, mode, timeout, streaming, stdout_cb, stderr_cb) -> RunResult`
 - Consistent return values: `exit_code`, `stdout`, `stderr`, `timed_out`
 
@@ -122,10 +124,12 @@ def run_agent(...) -> RunResult:
 ```
 
 Retries only on `TransientAgentError` classified as:
+
 - `rate_limit` (429 → use fallback instead)
 - `transient` (502/503/504/network timeout)
 
 Do NOT retry:
+
 - `usage_limit` (quota exhausted → use fallback)
 - `permanent_error` (bad request, auth failure)
 - `unknown` (propagate to user for manual investigation)
@@ -162,12 +166,12 @@ Agent processes emit unstructured stderr. Distinguishing transient failures (ret
 
 Define **canonical regex patterns** for each failure category:
 
-| Category | Pattern Example |
-|----------|-----------------|
-| RATE_LIMIT | `429\|too.many.requests\|rate.limit` |
-| TRANSIENT | `502\|503\|504\|reconnecting\|timeout\|ECONNRESET` |
-| USAGE_LIMIT | `quota.exceeded\|subscription\|billing\|expired` |
-| UNKNOWN | (no match) |
+| Category    | Pattern Example                                    |
+| ----------- | -------------------------------------------------- |
+| RATE_LIMIT  | `429\|too.many.requests\|rate.limit`               |
+| TRANSIENT   | `502\|503\|504\|reconnecting\|timeout\|ECONNRESET` |
+| USAGE_LIMIT | `quota.exceeded\|subscription\|billing\|expired`   |
+| UNKNOWN     | (no match)                                         |
 
 Match patterns case-insensitive across both `stderr` and `stdout`. First match wins; return `FailureKind` enum.
 
@@ -202,6 +206,7 @@ Maintain pattern registry in config with version history and match frequency met
 ### Context
 
 Agent CLIs (especially Node.js-based) emit non-error noise to stderr:
+
 - Node deprecation warnings
 - Hook registry messages
 - Usage/telemetry messages
@@ -220,6 +225,7 @@ NOISE_PATTERNS = [
     r"(collecting.*usage.*stats)",
     r"(.*/copilot.*info:.*)",
 ]
+
 
 def filter_stderr(stderr: str) -> str:
     for pattern in NOISE_PATTERNS:
@@ -255,6 +261,7 @@ def filter_stderr(stderr: str) -> str:
 ### Context
 
 Agents requiring proxy routing (minimax, GLM, antigravity) use CLIProxyAPIPlus, a separate binary with:
+
 - Configuration (YAML with provider blocks, base URL, auth)
 - Process startup (fork + keep alive)
 - Health checks (must respond to `/v1/models` before ready)
@@ -301,6 +308,7 @@ Manager holds process handle; automatic cleanup on context exit prevents zombie 
 ### Context
 
 Agent metadata scattered:
+
 - Names in CLI argument parsers
 - Models in runner implementations
 - Aliases in multiple places
@@ -330,6 +338,7 @@ AGENT_REGISTRY = {
 ```
 
 Single source of truth:
+
 - `get_runner(agent_name)` → appropriate runner
 - `resolve_alias(alias)` → canonical name
 - `get_fallback_agents(agent_name)` → ordered chain
@@ -361,6 +370,7 @@ Single source of truth:
 ### Context
 
 thegent combines three concerns:
+
 1. **Agent selection & invocation** (runners, registries, fallbacks)
 2. **Conversation memory** (session state, history, context window management)
 3. **Task orchestration** (multi-turn workflows, error recovery, output parsing)
@@ -389,6 +399,7 @@ Separate into **three independent modules**:
 ```
 
 Each module has:
+
 - Clear interface (ports)
 - Minimal dependencies on others
 - Independent unit tests
@@ -416,26 +427,27 @@ Each module has:
 
 ## Summary Table
 
-| ADR | Title | Status | Impact |
-|-----|-------|--------|--------|
-| 001 | Multi-Agent Orchestration | ✅ ACCEPTED | Architecture foundation |
-| 002 | Fallback Chains | ✅ ACCEPTED | Resilience & cost control |
-| 003 | Exponential Backoff Retry | ✅ ACCEPTED | Reliability improvement |
-| 004 | Failure Classification | ✅ ACCEPTED | Automation & observability |
-| 005 | Stderr Noise Filtering | ✅ ACCEPTED | UX improvement |
-| 006 | Proxy Lifecycle Management | ✅ ACCEPTED | Resource safety |
-| 007 | Agent Registry | ✅ ACCEPTED | Single source of truth |
-| 008 | Separation of Concerns | ✅ ACCEPTED | Modularity & extensibility |
+| ADR | Title                      | Status      | Impact                     |
+| --- | -------------------------- | ----------- | -------------------------- |
+| 001 | Multi-Agent Orchestration  | ✅ ACCEPTED | Architecture foundation    |
+| 002 | Fallback Chains            | ✅ ACCEPTED | Resilience & cost control  |
+| 003 | Exponential Backoff Retry  | ✅ ACCEPTED | Reliability improvement    |
+| 004 | Failure Classification     | ✅ ACCEPTED | Automation & observability |
+| 005 | Stderr Noise Filtering     | ✅ ACCEPTED | UX improvement             |
+| 006 | Proxy Lifecycle Management | ✅ ACCEPTED | Resource safety            |
+| 007 | Agent Registry             | ✅ ACCEPTED | Single source of truth     |
+| 008 | Separation of Concerns     | ✅ ACCEPTED | Modularity & extensibility |
 
 ---
 
 ## Traceability
 
 All ADRs link to Functional Requirements:
-- **FR-AGT-*** (Agents): ADR-001, ADR-002, ADR-003, ADR-004, ADR-005, ADR-006, ADR-007
-- **FR-CTR-*** (Contracts): ADR-008
-- **FR-PLN-*** (Planning): ADR-008
-- **FR-OPS-*** (Operations): ADR-006, ADR-008
+
+- **FR-AGT-\*** (Agents): ADR-001, ADR-002, ADR-003, ADR-004, ADR-005, ADR-006, ADR-007
+- **FR-CTR-\*** (Contracts): ADR-008
+- **FR-PLN-\*** (Planning): ADR-008
+- **FR-OPS-\*** (Operations): ADR-006, ADR-008
 
 ---
 

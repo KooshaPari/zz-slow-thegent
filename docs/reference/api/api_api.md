@@ -5,6 +5,7 @@
 Artifact Verification and Retrieval API - High-level interface for artifact operations.
 
 Provides:
+
 - Artifact creation and storage
 - Verification and validation
 - Retrieval and querying
@@ -17,6 +18,7 @@ Provides:
 High-level API for artifact operations.
 
 Provides:
+
 - Artifact creation with generators
 - Storage and retrieval
 - Verification and validation
@@ -24,7 +26,7 @@ Provides:
 
 ### Methods
 
-#### ArtifactAPI.__init__
+#### ArtifactAPI.**init**
 
 ```python
 __init__(self: Any, signing_key: SigningKey, verifying_key: VerifyingKey, storage: Any, registry: Any)

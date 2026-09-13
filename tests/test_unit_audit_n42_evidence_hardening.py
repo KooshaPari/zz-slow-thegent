@@ -94,7 +94,6 @@ hermetic and never execute production code paths.
 from __future__ import annotations
 
 import ast
-import textwrap
 from pathlib import Path
 
 import pytest

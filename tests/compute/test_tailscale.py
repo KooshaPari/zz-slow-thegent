@@ -13,11 +13,11 @@ Covers:
 
 from __future__ import annotations
 
-import orjson as json
 import subprocess
 from typing import Any
 from unittest.mock import MagicMock, patch
 
+import orjson as json
 import pytest
 
 from thegent.compute import TailscaleConfig as ExportedConfig
@@ -221,7 +221,8 @@ class TestListNodes:
     # @trace FR-COMPUTE-004
     @patch("thegent.compute.tailscale.shutil.which", return_value="/usr/bin/tailscale")
     @patch(
-        "thegent.compute.tailscale.subprocess.run", side_effect=subprocess.TimeoutExpired(cmd="tailscale", timeout=10)
+        "thegent.compute.tailscale.subprocess.run",
+        side_effect=subprocess.TimeoutExpired(cmd="tailscale", timeout=10),
     )
     def test_raises_on_timeout(self, _run: MagicMock, _which: MagicMock) -> None:
         """list_nodes raises TailscaleError when subprocess times out."""
@@ -273,7 +274,15 @@ class TestParseStatus:
     def test_peer_missing_hostname_uses_key(self) -> None:
         """Peer with no HostName falls back to the peer key."""
         raw = json.dumps(
-            {"Peer": {"nodekey:fallback": {"TailscaleIPs": ["100.1.2.3"], "OS": "linux", "Online": True}}}
+            {
+                "Peer": {
+                    "nodekey:fallback": {
+                        "TailscaleIPs": ["100.1.2.3"],
+                        "OS": "linux",
+                        "Online": True,
+                    }
+                }
+            }
         ).decode()
         nodes = TailscaleManager._parse_status(raw)
         assert nodes[0].hostname == "nodekey:fallback"
@@ -281,7 +290,14 @@ class TestParseStatus:
     # @trace FR-COMPUTE-005
     def test_peer_no_ips(self) -> None:
         """Peer with no TailscaleIPs gets an empty ip string."""
-        peers = {"nodekey:x": {"HostName": "noip", "TailscaleIPs": [], "OS": "linux", "Online": True}}
+        peers = {
+            "nodekey:x": {
+                "HostName": "noip",
+                "TailscaleIPs": [],
+                "OS": "linux",
+                "Online": True,
+            }
+        }
         nodes = TailscaleManager._parse_status(json.dumps({"Peer": peers}).decode())
         assert nodes[0].ip == ""
 

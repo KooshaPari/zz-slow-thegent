@@ -72,7 +72,10 @@ class TestCodexProxyRunnerInit:
 
 @pytest.mark.unit
 class TestCommandBuilding:
-    @patch("thegent.agents.codex_proxy.ensure_proxy_running", return_value="http://localhost:8317/v1")
+    @patch(
+        "thegent.agents.codex_proxy.ensure_proxy_running",
+        return_value="http://localhost:8317/v1",
+    )
     @patch("thegent.agents.codex_proxy._resolve_codex", return_value="/usr/bin/codex")
     @patch("thegent.agents.codex_proxy._run_with_retry")
     def test_basic_command_structure(self, mock_retry, mock_resolve, mock_proxy) -> None:
@@ -90,7 +93,10 @@ class TestCommandBuilding:
         assert "--json" in cmd  # use_stream=True by default
         assert "--model" in cmd
 
-    @patch("thegent.agents.codex_proxy.ensure_proxy_running", return_value="http://localhost:8317/v1")
+    @patch(
+        "thegent.agents.codex_proxy.ensure_proxy_running",
+        return_value="http://localhost:8317/v1",
+    )
     @patch("thegent.agents.codex_proxy._resolve_codex", return_value="/usr/bin/codex")
     @patch("thegent.agents.codex_proxy._run_with_retry")
     def test_write_mode_adds_sandbox(self, mock_retry, mock_resolve, mock_proxy) -> None:
@@ -104,7 +110,10 @@ class TestCommandBuilding:
         assert "--sandbox" in cmd
         assert "workspace-write" in cmd
 
-    @patch("thegent.agents.codex_proxy.ensure_proxy_running", return_value="http://localhost:8317/v1")
+    @patch(
+        "thegent.agents.codex_proxy.ensure_proxy_running",
+        return_value="http://localhost:8317/v1",
+    )
     @patch("thegent.agents.codex_proxy._resolve_codex", return_value="/usr/bin/codex")
     @patch("thegent.agents.codex_proxy._run_with_retry")
     def test_full_mode_adds_full_auto(self, mock_retry, mock_resolve, mock_proxy) -> None:
@@ -117,7 +126,10 @@ class TestCommandBuilding:
         cmd = mock_retry.call_args.args[0]
         assert "--full-auto" in cmd
 
-    @patch("thegent.agents.codex_proxy.ensure_proxy_running", return_value="http://localhost:8317/v1")
+    @patch(
+        "thegent.agents.codex_proxy.ensure_proxy_running",
+        return_value="http://localhost:8317/v1",
+    )
     @patch("thegent.agents.codex_proxy._resolve_codex", return_value="/usr/bin/codex")
     @patch("thegent.agents.codex_proxy._run_with_retry")
     def test_cwd_adds_cd_flag(self, mock_retry, mock_resolve, mock_proxy, tmp_path: Path) -> None:
@@ -131,7 +143,10 @@ class TestCommandBuilding:
         assert "--cd" in cmd
         assert str(tmp_path) in cmd
 
-    @patch("thegent.agents.codex_proxy.ensure_proxy_running", return_value="http://localhost:8317/v1")
+    @patch(
+        "thegent.agents.codex_proxy.ensure_proxy_running",
+        return_value="http://localhost:8317/v1",
+    )
     @patch("thegent.agents.codex_proxy._resolve_codex", return_value="/usr/bin/codex")
     @patch("thegent.agents.codex_proxy._run_with_retry")
     def test_image_paths_add_repeatable_image_flags(self, mock_retry, mock_resolve, mock_proxy) -> None:
@@ -173,7 +188,10 @@ class TestRunMethod:
         assert result.exit_code == 1
         assert "cli-proxy-api-plus not found" in result.stderr
 
-    @patch("thegent.agents.codex_proxy.ensure_proxy_running", return_value="http://localhost:8317/v1")
+    @patch(
+        "thegent.agents.codex_proxy.ensure_proxy_running",
+        return_value="http://localhost:8317/v1",
+    )
     @patch("thegent.agents.codex_proxy._resolve_codex", return_value="/usr/bin/codex")
     @patch("thegent.agents.codex_proxy._run_with_retry")
     def test_env_sets_openai_base_url(self, mock_retry, mock_resolve, mock_proxy) -> None:
@@ -195,7 +213,10 @@ class TestRunMethod:
 
 @pytest.mark.unit
 class TestTimeoutHandling:
-    @patch("thegent.agents.codex_proxy.ensure_proxy_running", return_value="http://localhost:8317/v1")
+    @patch(
+        "thegent.agents.codex_proxy.ensure_proxy_running",
+        return_value="http://localhost:8317/v1",
+    )
     @patch("thegent.agents.codex_proxy._resolve_codex", return_value="/usr/bin/codex")
     @patch("thegent.agents.codex_proxy._run_with_retry")
     def test_timeout_expired_returns_timed_out_result(self, mock_retry, mock_resolve, mock_proxy) -> None:
@@ -211,7 +232,10 @@ class TestTimeoutHandling:
         assert result.timed_out is True
         assert "timed out" in result.stderr
 
-    @patch("thegent.agents.codex_proxy.ensure_proxy_running", return_value="http://localhost:8317/v1")
+    @patch(
+        "thegent.agents.codex_proxy.ensure_proxy_running",
+        return_value="http://localhost:8317/v1",
+    )
     @patch("thegent.agents.codex_proxy._resolve_codex", return_value="/usr/bin/codex")
     @patch("thegent.agents.codex_proxy._run_with_retry")
     def test_codex_not_found_returns_install_message(self, mock_retry, mock_resolve, mock_proxy) -> None:
@@ -224,7 +248,10 @@ class TestTimeoutHandling:
         assert result.exit_code == 1
         assert "codex CLI not found" in result.stderr
 
-    @patch("thegent.agents.codex_proxy.ensure_proxy_running", return_value="http://localhost:8317/v1")
+    @patch(
+        "thegent.agents.codex_proxy.ensure_proxy_running",
+        return_value="http://localhost:8317/v1",
+    )
     @patch("thegent.agents.codex_proxy._resolve_codex", return_value="/usr/bin/codex")
     @patch("thegent.agents.codex_proxy._run_with_retry")
     def test_transient_error_returns_result(self, mock_retry, mock_resolve, mock_proxy) -> None:

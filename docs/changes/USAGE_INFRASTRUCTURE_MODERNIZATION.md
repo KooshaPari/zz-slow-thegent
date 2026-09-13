@@ -17,11 +17,13 @@ Hybrid Python/TypeScript project for usage tracking.
 ## Proposed Changes (Python Side Only)
 
 ### Phase 1: Foundation (4 hours)
+
 - Modern pyproject.toml for Python side
 - Install uv
 - Configure ruff
 
 ### Phase 2: Configuration (6 hours)
+
 ```python
 class UsageSettings(BaseSettings):
     app_name: str = "usage"
@@ -30,6 +32,7 @@ class UsageSettings(BaseSettings):
 ```
 
 **config.yml:**
+
 ```yaml
 app:
   name: "usage"
@@ -39,6 +42,7 @@ tracking:
 ```
 
 ### Phase 3: Quality (5 hours)
+
 - Add quality tools
 - Setup pre-commit
 - Test Python side
@@ -61,4 +65,3 @@ tracking:
 - [ ] YAML config
 - [ ] Quality tools passing
 - [ ] TypeScript side unchanged
-

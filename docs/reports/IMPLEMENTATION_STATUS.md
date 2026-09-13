@@ -7,12 +7,12 @@
 
 ## Executive Summary
 
-| Category | Count | Status |
-|----------|-------|--------|
-| **Fully Implemented (Complete)** | 34 | ✓ |
-| **Partially Implemented** | 18 | ⚠ |
-| **Not Yet Implemented** | 22 | ✗ |
-| **Untracked Code** | 5 | ✓ |
+| Category                         | Count | Status |
+| -------------------------------- | ----- | ------ |
+| **Fully Implemented (Complete)** | 34    | ✓      |
+| **Partially Implemented**        | 18    | ⚠     |
+| **Not Yet Implemented**          | 22    | ✗      |
+| **Untracked Code**               | 5     | ✓      |
 
 **Overall Progress:** ~58% of planned WBS work packages have code implementations in place.
 
@@ -32,6 +32,7 @@
 - Session lifecycle management
 
 **Related Files:**
+
 - `src/thegent/cli.py` (3,863 LOC) — Command implementations
 - `src/thegent/cli_impl.py` (2,343 LOC) — Implementation layer
 
@@ -49,6 +50,7 @@
 - Label mapping for display vs CLI names
 
 **Agents Implemented:**
+
 - DirectAgentRunner: cursor-agent, gemini, codex, copilot, claude
 - CodexProxyRunner: antigravity, minimax, glm, cliproxy, roo, kilo
 - CursorApiRunner: cursor-api
@@ -61,6 +63,7 @@
 **Status:** ✓ **Complete**
 
 **RunMeta Model:**
+
 - Core fields: `run_id`, `correlation_id`, `agent`, `model`, `mode`, `prompt`, `cwd`, `owner`
 - Lifecycle tracking: `started_at_utc`, `ended_at_utc`, `duration_s`, `exit_code`, `status`
 - Error classification: `error_class` (usage_limit, timeout, logic_error, api_error)
@@ -72,11 +75,13 @@
 - Route contract context: `route_contract`, `route_request`
 
 **RunRegistry:**
+
 - Persistent storage of execution runs (foundation for WP-0001)
 - JSON serialization for history
 - Registry path resolution from config or environment
 
 **CheckpointMeta:**
+
 - Checkpoint ID, creation timestamp, reason
 - DAG content snapshot, session directory reference, owner tracking
 
@@ -124,6 +129,7 @@
 - Routing policy normalization: `normalize_route_policy()` (prefer_direct, prefer_proxy, failover)
 
 **Scrapers:**
+
 - `scrape_cursor_agent()` — via `cursor --list-models`
 - `scrape_gemini()` — via `gemini models list` with fallback to static
 - `scrape_claude()` — via `claude models list` with fallback
@@ -151,6 +157,7 @@
 **Status:** ✓ **Complete (Core) + ⚠ Partial (Advanced)**
 
 **Implemented:**
+
 - FastMCP server setup with HTTP transport
 - 15+ MCP tools: thegent_run, thegent_bg, thegent_ps, thegent_status, thegent_logs, thegent_stop, thegent_wait, thegent_list_agents, thegent_list_models, thegent_dag_list, thegent_inspect, thegent_resolve_model_route, etc.
 - 6 MCP resources: sessions, session/meta, session/logs, dag, agents, models
@@ -161,6 +168,7 @@
 - Route contract persistence in session metadata
 
 **Partial:**
+
 - ResponseCachingMiddleware (declared, verify implementation)
 - RateLimitingMiddleware (declared, verify implementation)
 - ResponseLimitingMiddleware for thegent_logs
@@ -239,12 +247,14 @@
 **Status:** ✓ **Complete** (Foundation for WP-X1)
 
 **ContractRegistry:**
+
 - Contract versioning: `CONTRACT_SCHEMA_VERSION` = "1.0.0"
 - Version compatibility tracking
 - Migration window tracking (migration_window_end field)
 - Registry lifecycle: get_registry(), version_compatible()
 
 **Related:** `src/thegent/contracts/csm.py` (115 LOC)
+
 - CanonicalStructuredMessage model
 - CSMStatus enum: parsing, validation, execution, result
 - CSMPhase enum: ingestion, routing, execution, promotion, completion
@@ -258,16 +268,19 @@
 **Status:** ✓ **Complete** (WP-X2, WP-X5 foundation)
 
 **OutputAdapter Protocol:**
+
 - `normalize(raw_output)` → AdapterResult
 - AdapterResult fields: canonical_message, model, provider, errors, warnings, metadata
 
 **ADAPTER_REGISTRY:**
+
 - Provider-specific adapters: cursor-agent, gemini, codex, copilot, claude, proxy
 - normalize_output() dispatcher function
 - Fallback handling with error accumulation
 - Extensible adapter registration
 
 **Adapters Implemented:**
+
 - CursorAgentAdapter: XML-based output parsing (WP-X5)
 - GeminiAdapter: stream-json parsing
 - CodexAdapter: JSON envelope handling
@@ -295,6 +308,7 @@
 **Status:** ✓ **Complete** (WP-X3)
 
 **IncrementalXMLParser:**
+
 - Streaming XML parsing with buffer management
 - Partial state recovery (`get_partial_state()`)
 - Tag tracking and nesting depth
@@ -322,6 +336,7 @@
 **Status:** ✓ **Complete** (WP-X8 foundation)
 
 **ContractTelemetry:**
+
 - Normalization event tracking
 - Parse quality metrics
 - Provider performance statistics
@@ -410,6 +425,7 @@
 **Status:** ✓ **Complete**
 
 **Session Management:**
+
 - `bg` (background run) command with session registration
 - `ps` (list sessions) with owner scope filtering
 - `status` command with session lookup
@@ -428,6 +444,7 @@
 **Status:** ✓ **Complete** (WP-1001 foundation)
 
 **DAG Commands:**
+
 - `dag list` — List all tasks
 - `dag add` — Add new task with dependencies
 - `dag remove` — Remove task
@@ -440,6 +457,7 @@
 - `dag cancel` — Cancel running task
 
 **DAG Features:**
+
 - Dependency tracking (depends_on)
 - Task status: pending, ready, running, completed, failed, cancelled
 - Retry count management
@@ -455,12 +473,14 @@
 **Status:** ✓ **Complete** (WP-2001)
 
 **Commands:**
+
 - `dag checkpoint` — Create named checkpoint
 - `dag checkpoints` — List all checkpoints
 - `dag rollback` — Restore from checkpoint
 - `dag recover` — Apply recovery actions (retry-failed, clear-stuck, reset-retries)
 
 **Features:**
+
 - Atomic checkpoint creation
 - Content hashing for integrity
 - Rollback with state restoration
@@ -474,11 +494,13 @@
 **Status:** ✓ **Complete** (WP-3004 foundation)
 
 **Commands:**
+
 - `history list` — Show execution history
 - `history verify` — Verify hash chain integrity
 - `history events` — Raw telemetry events
 
 **Features:**
+
 - Hash-chained audit trail (prev_hash, hash fields in RunMeta)
 - Event serialization to JSON
 - Registry correlation by run_id
@@ -492,6 +514,7 @@
 **Status:** ✓ **Partial**
 
 **Commands Implemented:**
+
 - `policy show` — Display active policies
 - `contracts registry` — Show contract registry
 - `contracts conformance` — Run conformance suite
@@ -499,6 +522,7 @@
 - `closure-pack` — Generate launch closure pack
 
 **Partial:**
+
 - No external policy provider integration (OPA/OPAL) yet
 - Manual policy definition only
 - No governance queue operations
@@ -511,6 +535,7 @@
 **Status:** ✓ **Complete**
 
 **Commands:**
+
 - `list-agents` — Show available agents
 - `list-droids` — Show available droids
 - `list-models` — Show models per provider (with contract view)
@@ -567,12 +592,14 @@
 **Status:** ⚠ **Partial**
 
 **Implemented:**
+
 - `--include-contract` flag for list-models, list-models, run, bg
 - ResolvedRoute dataclass with schema version
 - Contract metadata persistence in session (route_contract, route_request)
 - MCP contract view exposure
 
 **Gaps:**
+
 - No contract version negotiation (WP-X1) between client/server
 - No dual-read/dual-write migration support (WP-X7)
 
@@ -584,12 +611,14 @@
 **Status:** ⚠ **Partial**
 
 **Implemented:**
+
 - PolicyEngine stub with override reason codes
 - Override flag in `run`, `bg` commands
 - TTL calculation for temporary approvals
 - Signature field in RunMeta
 
 **Gaps:**
+
 - No external policy provider integration (OPA/OPAL/NeMo)
 - No signed artifact generation (MAIF format)
 - No policy pre-check enforcement before execution
@@ -602,11 +631,13 @@
 **Status:** ⚠ **Partial**
 
 **Implemented:**
+
 - confidence field in RunMeta (0.0-1.0)
 - feedback_score and feedback_note fields
 - feedback_cmd for collecting scores
 
 **Gaps:**
+
 - No scoring algorithm or framework
 - No confidence calibration per role (WP-4008)
 - No risk scoring implementation
@@ -619,6 +650,7 @@
 **Status:** ✓ **Complete (WP-4006)**
 
 **Implemented:**
+
 - owner field in RunMeta
 - Owner tag composition for scope
 - Session ownership tracking
@@ -627,6 +659,7 @@
 - Escalation backlog included in handoff; confirmation logged
 
 **Gaps:**
+
 - No continuity snapshot generation
 - No stale ownership watchdog
 - No shift handoff summaries
@@ -640,9 +673,11 @@
 **Status:** ⚠ **Partial**
 
 **Implemented:**
+
 - lane field in RunMeta (standard, critical, recovery)
 
 **Gaps:**
+
 - No adaptive concurrency controller
 - No cost-aware routing
 - No non-critical deferral rules
@@ -656,12 +691,14 @@
 **Status:** ⚠ **Partial**
 
 **Implemented:**
+
 - RetryStrategy and CircuitBreaker classes
 - Exponential backoff with jitter
 - Agent fallback chains (PROVIDER_FALLBACK_CHAIN)
 - Recovery playbook hints in state machine
 
 **Gaps:**
+
 - No failure taxonomy/clustering (WP-2005)
 - No recovery playbook automation
 - No regression prevention probes (WP-2006)
@@ -676,10 +713,12 @@
 **Status:** ⚠ **Partial**
 
 **Implemented:**
+
 - rationale field in RunMeta
 - cockpit_cmd (placeholder) for summary
 
 **Gaps:**
+
 - No concise/detailed explanation tiers
 - No decision replay with snapshots
 - No operator cockpit UI implementation
@@ -692,11 +731,13 @@
 **Status:** ⚠ **Partial**
 
 **Implemented:**
+
 - lane field for lane routing (WP-1002, WP-5001 foundation)
 - WP-5002: LoadClassifier (normal/spike/surge), safe-mode, overload rejection, traffic shaping
 - DeferralQueue for burst deferral; `observe load-status` CLI
 
 **Gaps:**
+
 - No actual concurrency control (WP-5001)
 - No cost-aware routing (WP-5003)
 - No deferral with ETA (WP-5004)
@@ -976,17 +1017,17 @@ Code modules that exist but aren't explicitly mapped to WBS work packages:
 
 ## 5. Code Statistics
 
-| Metric | Value |
-|--------|-------|
-| Total Python files | 40 |
-| Total LOC (source) | 14,235 |
-| Largest module | cli.py (3,863) |
-| Test files | 20+ |
-| Contracts modules | 9 |
-| Agent runners | 5 |
-| CLI commands | 50+ |
-| MCP tools | 15+ |
-| MCP resources | 6 |
+| Metric             | Value          |
+| ------------------ | -------------- |
+| Total Python files | 40             |
+| Total LOC (source) | 14,235         |
+| Largest module     | cli.py (3,863) |
+| Test files         | 20+            |
+| Contracts modules  | 9              |
+| Agent runners      | 5              |
+| CLI commands       | 50+            |
+| MCP tools          | 15+            |
+| MCP resources      | 6              |
 
 ---
 
@@ -1013,6 +1054,7 @@ Code modules that exist but aren't explicitly mapped to WBS work packages:
 - test_resilience.py — Retry/circuit breaker tests
 
 **Markers:**
+
 - `@pytest.mark.integration` — Real agent calls
 - `@pytest.mark.e2e` — End-to-end tests
 - `@pytest.mark.slow` — Long-running tests
@@ -1137,17 +1179,17 @@ Code modules that exist but aren't explicitly mapped to WBS work packages:
 
 ## 9. Summary Table: WBS Coverage
 
-| Phase | WPs | Implemented | Partial | Not Done | % Complete |
-|-------|-----|-------------|---------|----------|------------|
-| **Phase 0** | 5 | 3 | 1 | 1 | **60%** |
-| **Phase 1** | 8 | 0 | 3 | 5 | **38%** |
-| **Phase 2** | 8 | 1 | 2 | 5 | **25%** |
-| **Phase 3** | 8 | 1 | 3 | 4 | **25%** |
-| **Phase 4** | 8 | 0 | 2 | 6 | **12%** |
-| **Phase 5** | 8 | 0 | 1 | 7 | **6%** |
-| **Phase 6** | 8 | 1 | 0 | 7 | **12%** |
-| **Contract (X)** | 8 | 5 | 1 | 2 | **69%** |
-| **TOTAL** | 61 | 11 | 13 | 37 | **34%** |
+| Phase            | WPs | Implemented | Partial | Not Done | % Complete |
+| ---------------- | --- | ----------- | ------- | -------- | ---------- |
+| **Phase 0**      | 5   | 3           | 1       | 1        | **60%**    |
+| **Phase 1**      | 8   | 0           | 3       | 5        | **38%**    |
+| **Phase 2**      | 8   | 1           | 2       | 5        | **25%**    |
+| **Phase 3**      | 8   | 1           | 3       | 4        | **25%**    |
+| **Phase 4**      | 8   | 0           | 2       | 6        | **12%**    |
+| **Phase 5**      | 8   | 0           | 1       | 7        | **6%**     |
+| **Phase 6**      | 8   | 1           | 0       | 7        | **12%**    |
+| **Contract (X)** | 8   | 5           | 1       | 2        | **69%**    |
+| **TOTAL**        | 61  | 11          | 13      | 37       | **34%**    |
 
 ---
 
@@ -1218,14 +1260,18 @@ Code modules that exist but aren't explicitly mapped to WBS work packages:
 ## Extension Phases (2026-02-15)
 
 ### Phase 13: Policy Federation — ✓ **Complete**
+
 **Work Packages:** WP-13001, WP-13002, WP-13003, WP-13004, WP-13005
+
 - Implemented hierarchical namespace model with inheritance.
 - Added jurisdiction profile mapping (EU-AI-ACT, US-SEC).
 - Implemented cross-org consent and approval relay.
 - Added policy conflict arbitration and federation health engine.
 
 ### Phase 14: Autonomous Learning — ✓ **Complete**
+
 **Work Packages:** WP-14001, WP-14002, WP-14003, WP-14004, WP-14005
+
 - Implemented cost-aware objective selector with weighted optimization.
 - Created learning model registry for canary tracking and promotion.
 - Added CLI commands for human-in-loop promotion and rollback.
@@ -1233,7 +1279,9 @@ Code modules that exist but aren't explicitly mapped to WBS work packages:
 - Developed policy-safe exploration harness for controlled simulations.
 
 ### Phase 15: Enterprise Lifecycle & Compliance — ✓ **Complete**
+
 **Work Packages:** WP-15001, WP-15002, WP-15003, WP-15004, WP-15005
+
 - Implemented external SIEM/SOC event egress mechanism.
 - Created immutable, hash-chained incident artifact ledger.
 - Added RSA-based plugin contract verification for marketplaces.
@@ -1241,7 +1289,9 @@ Code modules that exist but aren't explicitly mapped to WBS work packages:
 - Developed automatic PII/Secret redaction for support mode sessions.
 
 ### Phase 16: Multi-Agent Teammates & Swarm — ✓ **Implemented**
+
 **Work Packages:** WP-16001, WP-16002, WP-16003, WP-16004, WP-16005
+
 - Expanded PersonaManager with teammate auto-discovery from markdown agents.
 - Implemented `thegent teammates delegate` for asynchronous sub-task orchestration.
 - Created heliosShield bridge for Phase 11 task coordination and intent broadcasting.

@@ -63,7 +63,10 @@ class AdapterAdmissionPolicy:
         if not cap:
             result = {"allowed": False, "reason": "Adapter not registered."}
         elif lane == "critical" and cap.trust_level < 4:
-            result = {"allowed": False, "reason": f"Trust level {cap.trust_level} insufficient for critical lane."}
+            result = {
+                "allowed": False,
+                "reason": f"Trust level {cap.trust_level} insufficient for critical lane.",
+            }
         else:
             result = {"allowed": True, "trust_level": cap.trust_level}
 

@@ -6,8 +6,7 @@ from unittest.mock import MagicMock, patch
 import pytest
 from typer.testing import CliRunner
 
-from thegent.fanta_main import GEMINI_FLASH_MODEL, _MODEL_ALIAS, default_fanta
-from thegent.fanta_main import app
+from thegent.fanta_main import _MODEL_ALIAS, GEMINI_FLASH_MODEL, app, default_fanta
 
 runner = CliRunner()
 
@@ -80,12 +79,21 @@ def test_fanta_default_routes_to_flash(mock_run: MagicMock, _mock_resolve: Magic
     [
         (["high"], ["anen", "--model", "gpt-5.3-codex-high"]),
         (["xhigh"], ["anen", "--model", "gpt-5.3-codex-xhigh"]),
-        (["exec", "-m", "high", "hello world"], ["anen", "exec", "-m", "gpt-5.3-codex-high", "hello world"]),
-        (["exec", "-m", "xhigh", "hello world"], ["anen", "exec", "-m", "gpt-5.3-codex-xhigh", "hello world"]),
+        (
+            ["exec", "-m", "high", "hello world"],
+            ["anen", "exec", "-m", "gpt-5.3-codex-high", "hello world"],
+        ),
+        (
+            ["exec", "-m", "xhigh", "hello world"],
+            ["anen", "exec", "-m", "gpt-5.3-codex-xhigh", "hello world"],
+        ),
     ],
 )
 def test_fanta_high_xhigh_use_expected_canonical_models(
-    mock_run: MagicMock, _mock_resolve: MagicMock, runner_args: list[str], expected_cmd: list[str]
+    mock_run: MagicMock,
+    _mock_resolve: MagicMock,
+    runner_args: list[str],
+    expected_cmd: list[str],
 ) -> None:
     mock_run.return_value = _mock_completed(0)
 

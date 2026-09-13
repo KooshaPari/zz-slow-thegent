@@ -81,7 +81,6 @@ class TestPluginRegistry:
 
     def test_register_plugin(self) -> None:
         """PluginRegistry can register a plugin."""
-        from abc import ABC
         from typing import Any
 
         from thegent.tray.core.plugin_system import PluginRegistry, TrayPlugin
@@ -112,7 +111,6 @@ class TestPluginRegistry:
 
     def test_get_plugin(self) -> None:
         """PluginRegistry can retrieve a registered plugin."""
-        from abc import ABC
         from typing import Any
 
         from thegent.tray.core.plugin_system import PluginRegistry, TrayPlugin

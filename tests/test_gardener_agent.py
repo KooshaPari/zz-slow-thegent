@@ -12,23 +12,21 @@ Covers:
 
 from __future__ import annotations
 
-import orjson as json
 import time
 from pathlib import Path
-from collections.abc import Generator
 from unittest.mock import MagicMock, patch
 
+import orjson as json
 import pytest
 
 from thegent.agents.gardener import (
-    GardenResult,
     GardenerAgent,
+    GardenResult,
     SourceDocument,
     StaleDoc,
     _extract_completed_wl_ids,
     _extract_pending_wl_ids,
 )
-
 
 # ---------------------------------------------------------------------------
 # Fixtures
@@ -514,6 +512,7 @@ class TestGardeningIntegration:
         """GardeningManager.run_step has a handler registered for 'garden'."""
         # @trace WL-060
         import asyncio
+
         from thegent.sitback.gardening import GardeningManager
 
         manager = GardeningManager()
@@ -535,6 +534,7 @@ class TestGardeningIntegration:
         """GardeningManager.run_step returns error dict for unknown steps."""
         # @trace WL-060
         import asyncio
+
         from thegent.sitback.gardening import GardeningManager
 
         manager = GardeningManager()

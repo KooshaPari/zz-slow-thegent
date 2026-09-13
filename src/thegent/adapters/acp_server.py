@@ -14,8 +14,8 @@ from typing import Any, ClassVar
 
 import typer
 from starlette.applications import Starlette
-from starlette.routing import Route
 from starlette.responses import JSONResponse, PlainTextResponse
+from starlette.routing import Route
 
 # Import RunResult for type checking
 from thegent.agents.base import RunResult
@@ -213,14 +213,20 @@ class ACPServerAdapter:
             if agent_name is None:
                 return {
                     "type": "error",
-                    "error": {"code": "MISSING_AGENT", "message": "Agent name required"},
+                    "error": {
+                        "code": "MISSING_AGENT",
+                        "message": "Agent name required",
+                    },
                     "agent_id": agent_id,
                 }
             runner = self._resolve_runner(agent_name)
             if runner is None:
                 return {
                     "type": "error",
-                    "error": {"code": "AGENT_NOT_FOUND", "message": f"Agent {agent_name} not found"},
+                    "error": {
+                        "code": "AGENT_NOT_FOUND",
+                        "message": f"Agent {agent_name} not found",
+                    },
                     "agent_id": agent_id,
                 }
 
@@ -256,7 +262,10 @@ class ACPServerAdapter:
 
         return {
             "type": "error",
-            "error": {"code": "UNSUPPORTED_TYPE", "message": f"Type {msg_type} not supported"},
+            "error": {
+                "code": "UNSUPPORTED_TYPE",
+                "message": f"Type {msg_type} not supported",
+            },
             "agent_id": agent_id,
         }
 
@@ -435,7 +444,11 @@ class ACPServerAdapter:
             # Return 422 for validation errors
             if response.get("type") == "error":
                 error_code = response.get("error", {}).get("code", "")
-                if error_code in ("MISSING_AGENT", "AGENT_NOT_FOUND", "UNSUPPORTED_TYPE"):
+                if error_code in (
+                    "MISSING_AGENT",
+                    "AGENT_NOT_FOUND",
+                    "UNSUPPORTED_TYPE",
+                ):
                     return JSONResponse(response, status_code=422)
                 return JSONResponse(response, status_code=200)
 
@@ -451,17 +464,17 @@ class ACPServerAdapter:
 
     async def run_stdio(self) -> None:
         """Run the server in stdio mode."""
-        import sys
         import json
+        import sys
 
         for line in sys.stdin:
             try:
                 msg = json.loads(line)
                 if msg.get("type") == "task":
-                    resp = await self.handle_acp_message(msg)
+                    await self.handle_acp_message(msg)
             except json.JSONDecodeError:
                 pass
-            except Exception as e:
+            except Exception:
                 pass
 
     async def run_http(

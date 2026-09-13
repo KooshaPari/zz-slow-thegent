@@ -20,6 +20,7 @@ You are a testing expert specializing in Mock Service Worker (MSW), integration 
 ## Context Scope
 
 Primary focus areas:
+
 ```
 frontend/apps/web/src/__tests__/mocks/**
 frontend/apps/web/src/__tests__/setup.ts
@@ -30,11 +31,13 @@ frontend/apps/web/vitest.config.ts
 ## Auto-Invoke Patterns
 
 Automatically invoke this agent when the user mentions:
+
 - "msw", "mock service worker", "integration test", "api mock"
 - "test fixture", "test data", "mock handler"
 - "vitest setup", "test configuration"
 
 Also auto-invoke on:
+
 - MSW errors or failures ("MSW worker failed to start")
 - File changes in `__tests__/mocks/**`
 - Integration test failures with HTTP requests
@@ -53,21 +56,21 @@ MSW's `http.get()`, `http.post()`, etc. handlers require hoisting to work correc
 ```typescript
 // frontend/apps/web/src/__tests__/setup.ts
 
-import { setupServer } from 'msw/node';
-import { http, HttpResponse } from 'msw';
+import { setupServer } from "msw/node";
+import { http, HttpResponse } from "msw";
 
 // ✅ CORRECT: Define handlers in setup.ts
 export const handlers = [
-  http.get('/api/projects', () => {
+  http.get("/api/projects", () => {
     return HttpResponse.json([
-      { id: '1', name: 'Project 1' },
-      { id: '2', name: 'Project 2' },
+      { id: "1", name: "Project 1" },
+      { id: "2", name: "Project 2" },
     ]);
   }),
 
-  http.post('/api/items', async ({ request }) => {
+  http.post("/api/items", async ({ request }) => {
     const body = await request.json();
-    return HttpResponse.json({ id: '123', ...body }, { status: 201 });
+    return HttpResponse.json({ id: "123", ...body }, { status: 201 });
   }),
 ];
 
@@ -77,12 +80,12 @@ let server: ReturnType<typeof setupServer> | null = null;
 try {
   server = setupServer(...handlers);
 
-  beforeAll(() => server?.listen({ onUnhandledRequest: 'warn' }));
+  beforeAll(() => server?.listen({ onUnhandledRequest: "warn" }));
   afterEach(() => server?.resetHandlers());
   afterAll(() => server?.close());
 } catch (error) {
-  console.warn('MSW server setup failed:', error);
-  console.warn('Tests will run without HTTP mocking');
+  console.warn("MSW server setup failed:", error);
+  console.warn("Tests will run without HTTP mocking");
 }
 
 export { server };
@@ -93,13 +96,13 @@ export { server };
 ```typescript
 // Try-catch for ESM/CommonJS compatibility issues
 try {
-  const { setupServer } = await import('msw/node');
-  const { http } = await import('msw');
+  const { setupServer } = await import("msw/node");
+  const { http } = await import("msw");
   // ... setup server
 } catch (error) {
-  if (error.code === 'ERR_REQUIRE_ESM') {
-    console.warn('MSW ESM/CommonJS incompatibility detected');
-    console.warn('Falling back to no-op mocking');
+  if (error.code === "ERR_REQUIRE_ESM") {
+    console.warn("MSW ESM/CommonJS incompatibility detected");
+    console.warn("Falling back to no-op mocking");
   } else {
     throw error;
   }
@@ -113,8 +116,8 @@ try {
 ```typescript
 // src/__tests__/factories/project.factory.ts
 
-import { faker } from '@faker-js/faker';
-import type { Project } from '@/types';
+import { faker } from "@faker-js/faker";
+import type { Project } from "@/types";
 
 export const createProject = (overrides?: Partial<Project>): Project => ({
   id: faker.string.uuid(),
@@ -138,14 +141,11 @@ afterEach(() => {
 });
 
 // Per-test handler overrides
-test('handles 404 error', async () => {
+test("handles 404 error", async () => {
   server.use(
-    http.get('/api/projects/:id', () => {
-      return HttpResponse.json(
-        { error: 'Not found' },
-        { status: 404 }
-      );
-    })
+    http.get("/api/projects/:id", () => {
+      return HttpResponse.json({ error: "Not found" }, { status: 404 });
+    }),
   );
 
   // ... test logic
@@ -161,7 +161,7 @@ const waitForElement = async (selector: string, timeout = 5000) => {
   while (Date.now() - start < timeout) {
     const element = document.querySelector(selector);
     if (element) return element;
-    await new Promise(resolve => setTimeout(resolve, 100));
+    await new Promise((resolve) => setTimeout(resolve, 100));
   }
   throw new Error(`Element "${selector}" not found after ${timeout}ms`);
 };
@@ -170,14 +170,14 @@ const waitForElement = async (selector: string, timeout = 5000) => {
 const waitFor = async (
   condition: () => boolean,
   timeout = 5000,
-  interval = 100
+  interval = 100,
 ) => {
   const start = Date.now();
   while (Date.now() - start < timeout) {
     if (condition()) return;
-    await new Promise(resolve => setTimeout(resolve, interval));
+    await new Promise((resolve) => setTimeout(resolve, interval));
   }
-  throw new Error('Condition not met within timeout');
+  throw new Error("Condition not met within timeout");
 };
 ```
 
@@ -187,13 +187,13 @@ const waitFor = async (
 
 ```typescript
 // ❌ BAD: vi.mock() in test file (doesn't hoist correctly)
-import { vi } from 'vitest';
+import { vi } from "vitest";
 
-vi.mock('axios', () => ({
+vi.mock("axios", () => ({
   get: vi.fn(() => Promise.resolve({ data: [] })),
 }));
 
-test('fetches data', async () => {
+test("fetches data", async () => {
   // May not work due to hoisting issues
 });
 ```
@@ -204,13 +204,13 @@ test('fetches data', async () => {
 
 ```typescript
 // ❌ BAD: Shared mutable state
-const mockData = [{ id: '1', name: 'Item 1' }];
+const mockData = [{ id: "1", name: "Item 1" }];
 
-test('test 1', () => {
-  mockData.push({ id: '2', name: 'Item 2' }); // Mutates shared state
+test("test 1", () => {
+  mockData.push({ id: "2", name: "Item 2" }); // Mutates shared state
 });
 
-test('test 2', () => {
+test("test 2", () => {
   expect(mockData).toHaveLength(1); // Fails due to mutation in test 1
 });
 ```
@@ -221,10 +221,10 @@ test('test 2', () => {
 
 ```typescript
 // ❌ BAD: Over-mocking makes tests brittle
-vi.mock('@/hooks/useProjects');
-vi.mock('@/hooks/useItems');
-vi.mock('@/lib/api');
-vi.mock('@/components/ProjectCard');
+vi.mock("@/hooks/useProjects");
+vi.mock("@/hooks/useItems");
+vi.mock("@/lib/api");
+vi.mock("@/components/ProjectCard");
 
 // ✅ GOOD: Only mock external dependencies
 // Use MSW for HTTP, let components render naturally
@@ -298,10 +298,10 @@ http.delete('/api/projects/:id', ({ request, params }) => {
 ### GraphQL Handlers
 
 ```typescript
-import { graphql, HttpResponse } from 'msw';
+import { graphql, HttpResponse } from "msw";
 
 export const graphqlHandlers = [
-  graphql.query('GetProjects', ({ variables }) => {
+  graphql.query("GetProjects", ({ variables }) => {
     return HttpResponse.json({
       data: {
         projects: mockProjects,
@@ -309,7 +309,7 @@ export const graphqlHandlers = [
     });
   }),
 
-  graphql.mutation('CreateProject', ({ variables }) => {
+  graphql.mutation("CreateProject", ({ variables }) => {
     const project = createProject(variables.input);
     mockProjects.push(project);
 
@@ -356,10 +356,10 @@ http.get('/api/projects', () => {
 
 ```typescript
 // In test file
-import { server } from './__tests__/setup';
+import { server } from "./__tests__/setup";
 
-test('debug MSW', () => {
-  console.log('Server listening:', server?.listHandlers());
+test("debug MSW", () => {
+  console.log("Server listening:", server?.listHandlers());
 });
 ```
 
@@ -369,17 +369,17 @@ test('debug MSW', () => {
 // In setup.ts
 beforeAll(() =>
   server?.listen({
-    onUnhandledRequest: 'warn', // Log unhandled requests
-  })
+    onUnhandledRequest: "warn", // Log unhandled requests
+  }),
 );
 
 // Or enable all request logging
 beforeAll(() =>
   server?.listen({
     onUnhandledRequest(req) {
-      console.log('Unhandled request:', req.method, req.url);
+      console.log("Unhandled request:", req.method, req.url);
     },
-  })
+  }),
 );
 ```
 
@@ -387,9 +387,9 @@ beforeAll(() =>
 
 ```typescript
 // Check registered handlers
-test('verify handlers', () => {
+test("verify handlers", () => {
   const handlers = server?.listHandlers();
-  console.log('Registered handlers:', handlers);
+  console.log("Registered handlers:", handlers);
 });
 ```
 
@@ -422,14 +422,14 @@ src/__tests__/
 ```typescript
 // src/__tests__/mocks/handlers/projects.handlers.ts
 
-import { http, HttpResponse } from 'msw';
-import { createProject } from '../../factories/project.factory';
+import { http, HttpResponse } from "msw";
+import { createProject } from "../../factories/project.factory";
 
 export const projectHandlers = [
-  http.get('/api/projects', ({ request }) => {
+  http.get("/api/projects", ({ request }) => {
     const url = new URL(request.url);
-    const limit = Number(url.searchParams.get('limit')) || 10;
-    const offset = Number(url.searchParams.get('offset')) || 0;
+    const limit = Number(url.searchParams.get("limit")) || 10;
+    const offset = Number(url.searchParams.get("offset")) || 0;
 
     const projects = mockProjects.slice(offset, offset + limit);
 
@@ -441,7 +441,7 @@ export const projectHandlers = [
     });
   }),
 
-  http.post('/api/projects', async ({ request }) => {
+  http.post("/api/projects", async ({ request }) => {
     const body = await request.json();
     const project = createProject(body);
     mockProjects.push(project);
@@ -454,6 +454,7 @@ export const projectHandlers = [
 ## Value Proposition
 
 **Time Savings:**
+
 - Session 6 MSW blocker: 2+ hours debugging → 10 min fix with pattern knowledge
 - Gap 5.3 (Integration tests): 30 min/test → 10 min with templates
 - Test data setup: 20 min → 2 min with factories
@@ -463,16 +464,19 @@ export const projectHandlers = [
 ## Quick Reference
 
 **Critical Rules:**
+
 - MSW handlers in `setup.ts` (NOT test files)
 - Lazy initialization with try-catch
 - `afterEach(() => server.resetHandlers())`
 
 **Common Commands:**
+
 - `bun test` - Run all tests
 - `bun test --reporter=verbose` - Detailed output
 - `bun test --run` - Single run (no watch)
 
 **File Paths:**
+
 - Setup: `frontend/apps/web/src/__tests__/setup.ts`
 - Mocks: `frontend/apps/web/src/__tests__/mocks/**`
 - Tests: `frontend/apps/web/src/__tests__/**/*.test.ts`

@@ -7,10 +7,10 @@
 
 ## Executive Summary
 
-| Benchmark | Primary Task | Best Model | 2nd Best | 3rd Best | Use Case for thegent |
-|-----------|---|---|---|---|---|
-| **SWE-Bench** | Code editing, debugging, refactoring in IDE | Claude Opus (80.8%) | MiniMax (80.2%) | Gemini Flash (78%) | General reasoning; NOT relevant |
-| **Terminal Bench 2.0** | CLI, shell scripts, tool dispatch, environment awareness | GPT-5.3-Codex (64.7%) | Codex-Spark (58.4%) | MiniMax (51.7%) | **RELEVANT** — thegent is terminal/MCP |
+| Benchmark              | Primary Task                                             | Best Model            | 2nd Best            | 3rd Best           | Use Case for thegent                   |
+| ---------------------- | -------------------------------------------------------- | --------------------- | ------------------- | ------------------ | -------------------------------------- |
+| **SWE-Bench**          | Code editing, debugging, refactoring in IDE              | Claude Opus (80.8%)   | MiniMax (80.2%)     | Gemini Flash (78%) | General reasoning; NOT relevant        |
+| **Terminal Bench 2.0** | CLI, shell scripts, tool dispatch, environment awareness | GPT-5.3-Codex (64.7%) | Codex-Spark (58.4%) | MiniMax (51.7%)    | **RELEVANT** — thegent is terminal/MCP |
 
 **Key Difference:** Code reasoning ≠ Tool dispatch. Opus is great at reasoning; Codex is great at "what tool to run next."
 
@@ -20,28 +20,28 @@
 
 ### Ranking by SWE-Bench
 
-| Rank | Model | SWE-Bench | Terminal Bench 2.0 | Change | Winner |
-|------|-------|-----------|-------------------|--------|--------|
-| 1 | Claude Opus 4.6 | **80.8%** | 62.9% | -18% | SWE-Bench (reasoning) |
-| 2 | MiniMax M2.5 | **80.2%** | 51.7% | -28% | SWE-Bench (general code) |
-| 3 | Gemini 3 Flash | **78.0%** | 51.7% | -26% | SWE-Bench (balanced) |
-| 4 | Claude Sonnet 4.5 | **77.2%** | 42.8% | -35% | SWE-Bench (reasoning) |
-| 5 | Claude Haiku 4.5 | **73.3%** | 28.3% | -61% | SWE-Bench (quick reasoning) |
-| 6 | GPT-5.3-Codex | 56.8% | **64.7%** | +13.6% | Terminal Bench 2.0 (tool dispatch) |
-| 7 | GLM-5 (AIME) | ~92.7% | 56.2% | -36% | Math reasoning; not comparable |
+| Rank | Model             | SWE-Bench | Terminal Bench 2.0 | Change | Winner                             |
+| ---- | ----------------- | --------- | ------------------ | ------ | ---------------------------------- |
+| 1    | Claude Opus 4.6   | **80.8%** | 62.9%              | -18%   | SWE-Bench (reasoning)              |
+| 2    | MiniMax M2.5      | **80.2%** | 51.7%              | -28%   | SWE-Bench (general code)           |
+| 3    | Gemini 3 Flash    | **78.0%** | 51.7%              | -26%   | SWE-Bench (balanced)               |
+| 4    | Claude Sonnet 4.5 | **77.2%** | 42.8%              | -35%   | SWE-Bench (reasoning)              |
+| 5    | Claude Haiku 4.5  | **73.3%** | 28.3%              | -61%   | SWE-Bench (quick reasoning)        |
+| 6    | GPT-5.3-Codex     | 56.8%     | **64.7%**          | +13.6% | Terminal Bench 2.0 (tool dispatch) |
+| 7    | GLM-5 (AIME)      | ~92.7%    | 56.2%              | -36%   | Math reasoning; not comparable     |
 
 ### Ranking by Terminal Bench 2.0
 
-| Rank | Model | Terminal Bench 2.0 | SWE-Bench | Change | Winner |
-|------|-------|-------------------|-----------|--------|--------|
-| 1 | **GPT-5.3-Codex** | **64.7%** | 56.8% | +13.6% | Terminal tasks |
-| 2 | Claude Opus 4.6 | 62.9% | 80.8% | -18% | Reasoning (not terminal-specific) |
-| 3 | Codex-Spark | **58.4%** | ~50% | +8-16% | Speed + terminals |
-| 4 | GLM-5 | 56.2% | ~92.7% (AIME) | -36% | Reasoning-heavy; poor on terminals |
-| 5 | Gemini 3 Flash | 51.7% | 78% | -26% | Balanced; weak on terminals |
-| 5 | MiniMax M2.5 | 51.7% | 80.2% | -28% | General code; weak on terminals |
-| 7 | Claude Sonnet 4.5 | 42.8% | 77.2% | -35% | Reasoning-heavy; poor on terminals |
-| 8 | Claude Haiku 4.5 | 28.3% | 73.3% | -61% | Reasoning-heavy; very poor on terminals |
+| Rank | Model             | Terminal Bench 2.0 | SWE-Bench     | Change | Winner                                  |
+| ---- | ----------------- | ------------------ | ------------- | ------ | --------------------------------------- |
+| 1    | **GPT-5.3-Codex** | **64.7%**          | 56.8%         | +13.6% | Terminal tasks                          |
+| 2    | Claude Opus 4.6   | 62.9%              | 80.8%         | -18%   | Reasoning (not terminal-specific)       |
+| 3    | Codex-Spark       | **58.4%**          | ~50%          | +8-16% | Speed + terminals                       |
+| 4    | GLM-5             | 56.2%              | ~92.7% (AIME) | -36%   | Reasoning-heavy; poor on terminals      |
+| 5    | Gemini 3 Flash    | 51.7%              | 78%           | -26%   | Balanced; weak on terminals             |
+| 5    | MiniMax M2.5      | 51.7%              | 80.2%         | -28%   | General code; weak on terminals         |
+| 7    | Claude Sonnet 4.5 | 42.8%              | 77.2%         | -35%   | Reasoning-heavy; poor on terminals      |
+| 8    | Claude Haiku 4.5  | 28.3%              | 73.3%         | -61%   | Reasoning-heavy; very poor on terminals |
 
 ---
 
@@ -83,6 +83,7 @@ find /src -name "*.py" -type f
 ### Why This Matters for thegent
 
 thegent is fundamentally:
+
 - **MCP server** — speak exactly the right protocol; no fluff
 - **Hook executor** — bash scripts; conciseness matters
 - **Agent dispatcher** — pick the right tool fast
@@ -97,14 +98,17 @@ thegent is fundamentally:
 ### 1. Claude Opus 4.6 (-18% penalty on Terminal Bench 2.0)
 
 **SWE-Bench strength:** Detailed reasoning, context awareness, low hallucination
+
 - Excels at: "Understand this codebase, find the bug, fix it"
 - Score: 80.8% (best reasoning)
 
 **Terminal Bench 2.0 weakness:** Verbose, slow, unnecessary explanations
+
 - Fails at: "Run this command right now"
 - Score: 62.9% (good, but penalized for verbosity)
 
 **Implication for thegent:**
+
 - Use Opus for: Rare reasoning-heavy tasks (non-terminal)
 - Avoid Opus for: Hook dispatch, MCP tool invocation, agent routing
 
@@ -113,13 +117,16 @@ thegent is fundamentally:
 ### 2. MiniMax M2.5 (-28% penalty on Terminal Bench 2.0)
 
 **SWE-Bench strength:** Balanced general coding, good cost-quality ratio
+
 - Score: 80.2% (best value on code tasks)
 
 **Terminal Bench 2.0 weakness:** General-purpose model; not specialized for CLI
+
 - Too much reasoning, not enough tool-dispatch expertise
 - Score: 51.7% (budget tier; weak on terminals)
 
 **Implication for thegent:**
+
 - Use MiniMax for: High-volume, low-stakes tasks (FAST tier)
 - Avoid MiniMax for: Complex terminal work
 
@@ -128,13 +135,16 @@ thegent is fundamentally:
 ### 3. GPT-5.3-Codex (+13.6% gain on Terminal Bench 2.0)
 
 **SWE-Bench weakness:** Code generation is outdated (Codex from 2021), doesn't understand modern patterns
+
 - Score: 56.8% (rejected tier)
 
 **Terminal Bench 2.0 strength:** Trained on terminal sessions, GitHub CLI, bash scripting, tool usage
+
 - "I've seen 10M terminal sessions; I know what tool to run"
 - Score: 64.7% (top of frontier)
 
 **Implication for thegent:**
+
 - Use Codex for: Terminal tasks, hook execution, agent dispatch (PRIMARY)
 - Avoid Codex for: Complex reasoning, novel problem-solving
 
@@ -143,13 +153,16 @@ thegent is fundamentally:
 ### 4. Gemini 3 Flash (-26% penalty on Terminal Bench 2.0)
 
 **SWE-Bench strength:** Balanced, fast, multi-modal (handles code + images)
+
 - Score: 78% (good general purpose)
 
 **Terminal Bench 2.0 weakness:** Multi-modal optimization hurts pure CLI performance
+
 - Gemini optimized for images + text; not specialized for bash
 - Score: 51.7% (tied with MiniMax; weak)
 
 **Implication for thegent:**
+
 - Use Gemini for: Image-related tasks (rare for thegent)
 - Avoid Gemini for: Standard terminal work (MiniMax is cheaper with same quality)
 
@@ -158,14 +171,17 @@ thegent is fundamentally:
 ### 5. Claude Haiku 4.5 (-61% penalty; WORST drop)
 
 **SWE-Bench strength:** Fast general-purpose reasoning
+
 - Score: 73.3% (good for quick tasks)
 
 **Terminal Bench 2.0 weakness:** Small model; bad at precise tool invocation
+
 - Hallucinates tool names, wrong flags, incorrect syntax
 - Also still verbose (Haiku inherits Claude's reasoning style)
 - Score: 28.3% (VERY poor; avoid)
 
 **Implication for thegent:**
+
 - Use Haiku for: Never; dominated on both benchmarks
 - Alternative: Use MiniMax (51.7%) instead
 
@@ -175,14 +191,14 @@ thegent is fundamentally:
 
 ### Test Cases by thegent Task Type
 
-| Task | Category | Example | Benchmark Used | Optimal Model |
-|------|----------|---------|-----------------|--------------|
-| **Agent dispatch** | Terminal | "Route to X agent based on request" | Terminal Bench 2.0 | Codex (64.7%) |
-| **Hook execution** | Terminal | "Run pre-commit hook to lint code" | Terminal Bench 2.0 | Codex (64.7%) |
-| **MCP tool invoke** | Terminal | "Call git clone with these args" | Terminal Bench 2.0 | Codex (64.7%) |
-| **Policy enforcement** | Terminal/Logic | "Check if call exceeds cost limit" | Terminal Bench 2.0 (logic) | Codex (64.7%) |
-| **Complex reasoning** | Non-terminal | "Design architecture for feature X" | SWE-Bench | Opus (80.8%) |
-| **Code review** | SWE-Bench | "Review this PR for bugs" | SWE-Bench | Opus (80.8%) |
+| Task                   | Category       | Example                             | Benchmark Used             | Optimal Model |
+| ---------------------- | -------------- | ----------------------------------- | -------------------------- | ------------- |
+| **Agent dispatch**     | Terminal       | "Route to X agent based on request" | Terminal Bench 2.0         | Codex (64.7%) |
+| **Hook execution**     | Terminal       | "Run pre-commit hook to lint code"  | Terminal Bench 2.0         | Codex (64.7%) |
+| **MCP tool invoke**    | Terminal       | "Call git clone with these args"    | Terminal Bench 2.0         | Codex (64.7%) |
+| **Policy enforcement** | Terminal/Logic | "Check if call exceeds cost limit"  | Terminal Bench 2.0 (logic) | Codex (64.7%) |
+| **Complex reasoning**  | Non-terminal   | "Design architecture for feature X" | SWE-Bench                  | Opus (80.8%)  |
+| **Code review**        | SWE-Bench      | "Review this PR for bugs"           | SWE-Bench                  | Opus (80.8%)  |
 
 **Verdict:** **Terminal Bench 2.0 is PRIMARY for thegent** (85% of work is terminal/system). SWE-Bench is fallback for rare reasoning tasks.
 
@@ -235,11 +251,13 @@ Quality (%)
 ### Before (SWE-Bench)
 
 **Frontier:**
+
 1. GPT-4o mini ($0.375, 70%) — fallback
 2. MiniMax M2.5 ($0.79, 80.2%) — **PRIMARY**
 3. Claude Opus ($17.50, 80.8%) — premium
 
 **Task Assignments:**
+
 - FAST → MiniMax
 - NORMAL → MiniMax
 - COMPLEX → MiniMax (or Opus)
@@ -248,12 +266,14 @@ Quality (%)
 ### After (Terminal Bench 2.0)
 
 **Frontier:**
+
 1. MiniMax M2.5 ($0.79, 51.7%) — budget
 2. Codex-Spark ($1.00, 58.4%) — speed
 3. GPT-5.3-Codex ($1.25, 64.7%) — **PRIMARY**
 4. Claude Opus ($17.50, 62.9%) — premium (dominated)
 
 **Task Assignments:**
+
 - FAST → MiniMax (51.7%; cheap, simple tasks)
 - NORMAL → Codex (64.7%; best quality)
 - COMPLEX → Codex (64.7%; best quality)
@@ -265,13 +285,13 @@ Quality (%)
 
 ## Key Takeaway Table
 
-| Dimension | SWE-Bench Winner | Terminal Bench 2.0 Winner | Winner for thegent |
-|-----------|---|---|---|
-| **Best Quality** | Claude Opus (80.8%) | GPT-5.3-Codex (64.7%) | Codex ✓ (system-focused) |
-| **Best Value** | MiniMax (80.2% at $0.79) | Codex ($1.25, 64.7%) | Codex ✓ (only +$0.46 for +13%) |
-| **Fastest** | Gemini Flash (218 tok/s) | Codex-Spark (very-fast) | Codex-Spark ✓ |
-| **Cheapest** | GPT-4o mini ($0.375) | MiniMax ($0.79) | MiniMax (but weak at 51.7%) |
-| **Relevance to thegent** | ✗ Code editing is rare | ✓ CLI/MCP is primary | Terminal Bench 2.0 |
+| Dimension                | SWE-Bench Winner         | Terminal Bench 2.0 Winner | Winner for thegent             |
+| ------------------------ | ------------------------ | ------------------------- | ------------------------------ |
+| **Best Quality**         | Claude Opus (80.8%)      | GPT-5.3-Codex (64.7%)     | Codex ✓ (system-focused)       |
+| **Best Value**           | MiniMax (80.2% at $0.79) | Codex ($1.25, 64.7%)      | Codex ✓ (only +$0.46 for +13%) |
+| **Fastest**              | Gemini Flash (218 tok/s) | Codex-Spark (very-fast)   | Codex-Spark ✓                  |
+| **Cheapest**             | GPT-4o mini ($0.375)     | MiniMax ($0.79)           | MiniMax (but weak at 51.7%)    |
+| **Relevance to thegent** | ✗ Code editing is rare   | ✓ CLI/MCP is primary      | Terminal Bench 2.0             |
 
 ---
 
@@ -299,7 +319,6 @@ Quality (%)
 **Date**: 2026-02-15
 **Recommendation**: Adopt Terminal Bench 2.0 immediately
 
-
 ---
 
 ## EXTENSION_SUMMARY
@@ -308,15 +327,18 @@ Quality (%)
 **Extended by:** Claude Code
 
 ### Changes Made
+
 1. Added practical implementation patterns
 2. Added configuration examples
 3. Enhanced cross-references to related documentation
 
 ### Cross-References Added
+
 - Related research and implementation guides
 - WORK_STREAM.md for tracking
 
 ### Practical Additions
+
 - Implementation templates
 - Configuration examples
 - Best practices

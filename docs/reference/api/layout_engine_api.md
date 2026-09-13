@@ -31,7 +31,7 @@ Core layout engine for compositing multiple widgets.
 
 ### Methods
 
-#### LayoutEngine.__init__
+#### LayoutEngine.**init**
 
 ```python
 __init__(self: Any)
@@ -161,7 +161,7 @@ Represents a layout node in the layout tree.
 
 ### Methods
 
-#### LayoutNode.__init__
+#### LayoutNode.**init**
 
 ```python
 __init__(self: Any, direction: Direction, constraints: Any)
@@ -281,7 +281,7 @@ Represents a dimension (width or height).
 
 ### Methods
 
-#### Size.__init__
+#### Size.**init**
 
 ```python
 __init__(self: Any, value: float, unit: Any)

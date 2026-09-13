@@ -14,6 +14,7 @@
 **Purpose**: Manage multiple LSP servers in headless mode.
 
 **Features**:
+
 - ✅ Support for 9 languages (Python, TypeScript, Rust, Go, Java, C++, Bash, YAML, JSON)
 - ✅ Process lifecycle management (start, stop, status)
 - ✅ State persistence (lockfile-based)
@@ -21,6 +22,7 @@
 - ✅ Auto-detection of missing servers with install instructions
 
 **Supported Languages**:
+
 - Python (`pyright-langserver`)
 - TypeScript (`typescript-language-server`)
 - Rust (`rust-analyzer`)
@@ -36,6 +38,7 @@
 **Purpose**: Integrate JetBrains IDE Ultimate CLI tools.
 
 **Features**:
+
 - ✅ Auto-detect IntelliJ IDEA installation (macOS, Linux, PATH)
 - ✅ Format files (`idea format`)
 - ✅ Code inspections (`idea inspect`)
@@ -43,6 +46,7 @@
 - ✅ File merge (`idea merge`)
 
 **Auto-Detection**:
+
 - Checks PATH for `idea` command
 - Checks macOS: `/Applications/IntelliJ IDEA.app/Contents/MacOS/idea`
 - Checks Linux: `/opt/idea/bin/idea.sh`, `~/.local/share/JetBrains/Toolbox/scripts/idea`
@@ -50,6 +54,7 @@
 ### 3. CLI Commands (`src/thegent/main.py`)
 
 **Added**:
+
 - ✅ `thegent lsp start <language>` - Start LSP server
 - ✅ `thegent lsp stop <language>` - Stop LSP server
 - ✅ `thegent lsp list` - List running servers
@@ -193,6 +198,7 @@ thegent lsp inspect /path/to/project --profile "Default"
 ## Files Created/Modified
 
 ### New Files
+
 - `src/thegent/lsp/__init__.py`
 - `src/thegent/lsp/headless_manager.py`
 - `src/thegent/lsp/jetbrains_cli.py`
@@ -200,6 +206,7 @@ thegent lsp inspect /path/to/project --profile "Default"
 - `docs/research/HEADLESS_LSP_IMPLEMENTATION_SUMMARY_2026-02-18.md`
 
 ### Modified Files
+
 - `src/thegent/main.py` (added `lsp_app` and commands)
 
 ---

@@ -10,13 +10,13 @@ Covers: run_impl, bg_impl, status_impl, stop_impl, wait_impl,
         _run_background_session_observer).
 """
 
-import orjson as json
 import os
 import signal
 from datetime import UTC, datetime
 from pathlib import Path
 from unittest.mock import MagicMock, patch
 
+import orjson as json
 import pytest
 import typer
 
@@ -593,9 +593,15 @@ class TestWaitImpl:
 
         with (
             patch("thegent.cli.commands.impl.ThegentSettings", return_value=settings),
-            patch("thegent.cli.commands.impl._is_pid_running", side_effect=_fake_pid_running),
+            patch(
+                "thegent.cli.commands.impl._is_pid_running",
+                side_effect=_fake_pid_running,
+            ),
             patch("thegent.cli.commands.impl.time.sleep"),
-            patch("thegent.cli.commands.impl.time.time", side_effect=[0.0, 0.0, 0.5, 1.0, 1.5, 2.0]),
+            patch(
+                "thegent.cli.commands.impl.time.time",
+                side_effect=[0.0, 0.0, 0.5, 1.0, 1.5, 2.0],
+            ),
         ):
             result = cli_impl.wait_impl("sess-wt", timeout=1)
         assert result["timed_out"] is True
@@ -695,7 +701,10 @@ class TestPsImpl:
         )
         with (
             patch("thegent.cli.commands.impl.ThegentSettings", return_value=settings),
-            patch("thegent.cli.commands.impl._default_owner_tag", return_value="alice:proj"),
+            patch(
+                "thegent.cli.commands.impl._default_owner_tag",
+                return_value="alice:proj",
+            ),
             patch("thegent.cli.commands.impl._is_pid_running", return_value=False),
         ):
             rows = cli_impl.ps_impl()
@@ -886,7 +895,10 @@ class TestInspectImpl:
         (scope_dir / "s1.stdout.log").write_text("hi\n", encoding="utf-8")
         with (
             patch("thegent.cli.commands.impl.ThegentSettings", return_value=settings),
-            patch("thegent.cli.commands.impl._default_owner_tag", return_value="alice:proj"),
+            patch(
+                "thegent.cli.commands.impl._default_owner_tag",
+                return_value="alice:proj",
+            ),
             patch("thegent.cli.commands.impl._is_pid_running", return_value=False),
         ):
             results = cli_impl.inspect_impl([], owner="alice:proj")
@@ -1134,7 +1146,10 @@ class TestBgImpl:
         mock_popen.return_value = mock_proc
 
         migrator_mock = MagicMock()
-        migrator_mock.evaluate_version.return_value = {"allowed": True, "status": "active"}
+        migrator_mock.evaluate_version.return_value = {
+            "allowed": True,
+            "status": "active",
+        }
         mock_migration_cls.return_value = migrator_mock
 
         result = cli_impl.bg_impl(
@@ -1189,7 +1204,10 @@ class TestBgImpl:
         mock_popen.return_value = mock_proc
 
         migrator_mock = MagicMock()
-        migrator_mock.evaluate_version.return_value = {"allowed": True, "status": "active"}
+        migrator_mock.evaluate_version.return_value = {
+            "allowed": True,
+            "status": "active",
+        }
         mock_migration_cls.return_value = migrator_mock
 
         result = cli_impl.bg_impl(
@@ -1214,7 +1232,10 @@ class TestBgImpl:
         mock_settings_cls.return_value = settings
 
         migrator_mock = MagicMock()
-        migrator_mock.evaluate_version.return_value = {"allowed": True, "status": "active"}
+        migrator_mock.evaluate_version.return_value = {
+            "allowed": True,
+            "status": "active",
+        }
         mock_migration_cls.return_value = migrator_mock
 
         result = cli_impl.bg_impl(
@@ -1263,7 +1284,10 @@ class TestBgImpl:
     @patch("thegent.cli.commands.impl.resolve_agent", side_effect=lambda a: a)
     @patch("thegent.cli.commands.impl._resolve_cwd")
     @patch("thegent.cli.commands.impl._default_owner_tag", return_value="u:p:1")
-    @patch("thegent.cli.commands.impl._build_continuation_prompt", return_value="continued prompt")
+    @patch(
+        "thegent.cli.commands.impl._build_continuation_prompt",
+        return_value="continued prompt",
+    )
     @patch("thegent.contracts.migration.MigrationController")
     def test_bg_with_continuation(
         self,
@@ -1296,7 +1320,10 @@ class TestBgImpl:
         mock_popen.return_value = mock_proc
 
         migrator_mock = MagicMock()
-        migrator_mock.evaluate_version.return_value = {"allowed": True, "status": "active"}
+        migrator_mock.evaluate_version.return_value = {
+            "allowed": True,
+            "status": "active",
+        }
         mock_migration_cls.return_value = migrator_mock
 
         result = cli_impl.bg_impl(
@@ -1374,7 +1401,10 @@ class TestRunImpl:
         mock_fsm.state = fsm_state
 
         migrator_mock = MagicMock()
-        migrator_mock.evaluate_version.return_value = {"allowed": True, "status": "active"}
+        migrator_mock.evaluate_version.return_value = {
+            "allowed": True,
+            "status": "active",
+        }
 
         mock_trust = MagicMock()
         mock_trust.get_last_environment.return_value = "development"
@@ -1389,15 +1419,24 @@ class TestRunImpl:
             patch("thegent.cli.commands.impl.get_fallback_agents", return_value=[]),
             patch("thegent.cli.commands.impl.extract_condensed", return_value="condensed"),
             patch("thegent.cli.commands.impl.is_usage_limit", return_value=False),
-            patch("thegent.contracts.migration.MigrationController", return_value=migrator_mock),
+            patch(
+                "thegent.contracts.migration.MigrationController",
+                return_value=migrator_mock,
+            ),
             patch("thegent.execution.Auditor", return_value=mock_auditor),
             patch("thegent.execution.PolicyEngine", return_value=mock_pe),
             patch("thegent.execution.CircuitBreakerRegistry"),
             patch("thegent.execution.TrustBoundaryValidator", return_value=mock_trust),
             patch("thegent.execution.OverrideRegistry", return_value=mock_override_reg),
-            patch("thegent.agents.state_machine.FallbackStateMachine", return_value=mock_fsm),
+            patch(
+                "thegent.agents.state_machine.FallbackStateMachine",
+                return_value=mock_fsm,
+            ),
             patch("thegent.contracts.telemetry.ContractTelemetry"),
-            patch("thegent.contracts.telemetry.rank_providers_by_parser_quality", side_effect=lambda a, t, limit: a),
+            patch(
+                "thegent.contracts.telemetry.rank_providers_by_parser_quality",
+                side_effect=lambda a, t, limit: a,
+            ),
             patch("thegent.contracts.policy.FallbackPolicy"),
         ):
             return cli_impl.run_impl(
@@ -1454,13 +1493,19 @@ class TestRunImpl:
         settings.default_timeout_claude = 300
 
         migrator_mock = MagicMock()
-        migrator_mock.evaluate_version.return_value = {"allowed": True, "status": "active"}
+        migrator_mock.evaluate_version.return_value = {
+            "allowed": True,
+            "status": "active",
+        }
 
         with (
             patch("thegent.cli.commands.impl.ThegentSettings", return_value=settings),
             patch("thegent.cli.commands.impl.resolve_agent", side_effect=lambda a: a),
             patch("thegent.cli.commands.impl._resolve_cwd", return_value=None),
-            patch("thegent.contracts.migration.MigrationController", return_value=migrator_mock),
+            patch(
+                "thegent.contracts.migration.MigrationController",
+                return_value=migrator_mock,
+            ),
         ):
             result = cli_impl.run_impl(agent="claude", prompt="task")
         assert "error" in result
@@ -1499,7 +1544,10 @@ class TestRunImpl:
         mock_fsm.state = fsm_state
 
         migrator_mock = MagicMock()
-        migrator_mock.evaluate_version.return_value = {"allowed": True, "status": "active"}
+        migrator_mock.evaluate_version.return_value = {
+            "allowed": True,
+            "status": "active",
+        }
 
         mock_auditor = MagicMock()
         mock_auditor.sign_run.return_value = "sig"
@@ -1519,7 +1567,10 @@ class TestRunImpl:
             patch("thegent.cli.commands.impl.get_fallback_agents", return_value=[]),
             patch("thegent.cli.commands.impl.extract_condensed", return_value="condensed"),
             patch("thegent.cli.commands.impl.is_usage_limit", return_value=False),
-            patch("thegent.contracts.migration.MigrationController", return_value=migrator_mock),
+            patch(
+                "thegent.contracts.migration.MigrationController",
+                return_value=migrator_mock,
+            ),
             patch("thegent.models.normalize_model_id", return_value="gpt-4"),
             patch("thegent.models.catalog.resolve_route", return_value=mock_route),
             patch("thegent.execution.Auditor", return_value=mock_auditor),
@@ -1527,9 +1578,15 @@ class TestRunImpl:
             patch("thegent.execution.CircuitBreakerRegistry"),
             patch("thegent.execution.TrustBoundaryValidator", return_value=mock_trust),
             patch("thegent.execution.OverrideRegistry"),
-            patch("thegent.agents.state_machine.FallbackStateMachine", return_value=mock_fsm),
+            patch(
+                "thegent.agents.state_machine.FallbackStateMachine",
+                return_value=mock_fsm,
+            ),
             patch("thegent.contracts.telemetry.ContractTelemetry"),
-            patch("thegent.contracts.telemetry.rank_providers_by_parser_quality", side_effect=lambda a, t, limit: a),
+            patch(
+                "thegent.contracts.telemetry.rank_providers_by_parser_quality",
+                side_effect=lambda a, t, limit: a,
+            ),
             patch("thegent.contracts.policy.FallbackPolicy"),
         ):
             result = cli_impl.run_impl(
@@ -1560,7 +1617,10 @@ class TestRunImpl:
         with (
             patch("thegent.cli.commands.impl.ThegentSettings", return_value=settings),
             patch("thegent.cli.commands.impl.resolve_agent", side_effect=lambda a: a),
-            patch("thegent.contracts.migration.MigrationController", return_value=migrator_mock),
+            patch(
+                "thegent.contracts.migration.MigrationController",
+                return_value=migrator_mock,
+            ),
             patch("thegent.execution.TrustBoundaryValidator", return_value=mock_trust),
         ):
             result = cli_impl.run_impl(

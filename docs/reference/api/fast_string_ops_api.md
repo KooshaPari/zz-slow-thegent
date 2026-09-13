@@ -5,11 +5,13 @@
 Fast string operations with optimized backends.
 
 This module provides optimized string operations:
+
 - rapidfuzz for fuzzy matching (already installed!)
 - regex for advanced regex patterns (already installed!)
 - Optimized string operations
 
 Performance improvements:
+
 - rapidfuzz: 10-100x faster fuzzy matching
 - regex: Faster complex regex patterns
 - Optimized string operations

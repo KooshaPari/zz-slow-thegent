@@ -10,6 +10,7 @@
 ## Executive Summary
 
 This document provides **ultra-comprehensive** analysis of LLM router and aggregator solutions, incorporating:
+
 - **OpenRouter** (Commercial, 300+ models) - Complete feature analysis
 - **LiteLLM Router** (OSS, Netflix-proven) - Deep technical dive
 - **Portkey Gateway** (OSS, 250+ models) - Guardrails & enterprise features
@@ -47,42 +48,43 @@ This document provides **ultra-comprehensive** analysis of LLM router and aggreg
 
 ### Commercial Solutions (Feature Matrix)
 
-| Feature | OpenRouter | Together AI Router | Anthropic Router |
-|---------|------------|-------------------|-------------------|
-| **Models** | 300+ | 100+ | Claude-only |
-| **Routing Strategies** | Price/Latency/Throughput | Cost-based | Provider-based |
-| **Guardrails** | ✅ Multi-level | ⚠️ Basic | ❌ None |
-| **Observability** | ✅ 15+ platforms | ⚠️ Basic | ❌ None |
-| **Plugins** | ✅ Web/PDF/Healing | ❌ None | ❌ None |
-| **Prompt Caching** | ✅ Cross-provider | ⚠️ Provider-specific | ⚠️ Provider-specific |
-| **ZDR Support** | ✅ Built-in | ⚠️ Limited | ✅ Built-in |
-| **EU Data Residency** | ✅ Enterprise | ❌ None | ✅ Built-in |
-| **Responses API** | ✅ Native | ❌ None | ❌ None |
-| **Structured Outputs** | ✅ JSON Schema | ⚠️ Limited | ✅ Built-in |
-| **Message Transforms** | ✅ Middle-out | ❌ None | ❌ None |
-| **Zero Completion Insurance** | ✅ Built-in | ❌ None | ❌ None |
-| **Performance Thresholds** | ✅ Percentile-based | ❌ None | ❌ None |
+| Feature                       | OpenRouter               | Together AI Router   | Anthropic Router     |
+| ----------------------------- | ------------------------ | -------------------- | -------------------- |
+| **Models**                    | 300+                     | 100+                 | Claude-only          |
+| **Routing Strategies**        | Price/Latency/Throughput | Cost-based           | Provider-based       |
+| **Guardrails**                | ✅ Multi-level           | ⚠️ Basic             | ❌ None              |
+| **Observability**             | ✅ 15+ platforms         | ⚠️ Basic             | ❌ None              |
+| **Plugins**                   | ✅ Web/PDF/Healing       | ❌ None              | ❌ None              |
+| **Prompt Caching**            | ✅ Cross-provider        | ⚠️ Provider-specific | ⚠️ Provider-specific |
+| **ZDR Support**               | ✅ Built-in              | ⚠️ Limited           | ✅ Built-in          |
+| **EU Data Residency**         | ✅ Enterprise            | ❌ None              | ✅ Built-in          |
+| **Responses API**             | ✅ Native                | ❌ None              | ❌ None              |
+| **Structured Outputs**        | ✅ JSON Schema           | ⚠️ Limited           | ✅ Built-in          |
+| **Message Transforms**        | ✅ Middle-out            | ❌ None              | ❌ None              |
+| **Zero Completion Insurance** | ✅ Built-in              | ❌ None              | ❌ None              |
+| **Performance Thresholds**    | ✅ Percentile-based      | ❌ None              | ❌ None              |
 
 ### Open Source Solutions (Feature Matrix)
 
-| Feature | LiteLLM Router | Portkey Gateway | Helicone | Semantic Router |
-|---------|----------------|-----------------|----------|-----------------|
-| **Models** | 100+ | 250+ | 100+ | N/A (routing layer) |
-| **Routing Strategies** | 6 strategies | 3 strategies | Basic | Intent-based |
-| **Guardrails** | ⚠️ Custom needed | ✅ 40+ built-in | ⚠️ Basic | ❌ None |
-| **Observability** | ⚠️ Custom callbacks | ✅ Built-in | ✅ Full platform | ❌ None |
-| **Caching** | ✅ Redis + Memory | ✅ Simple + Semantic | ✅ Built-in | ❌ None |
-| **Load Balancing** | ✅ Advanced | ✅ Weighted | ✅ Basic | ❌ None |
-| **Fallbacks** | ✅ Automatic | ✅ Automatic | ✅ Automatic | ❌ None |
-| **Cost Tracking** | ✅ Built-in | ✅ Built-in | ✅ Built-in | ❌ None |
-| **Responses API** | ❌ Adapter needed | ⚠️ Limited | ⚠️ Limited | ❌ None |
-| **Zero-Cost Routing** | ❌ None | ❌ None | ❌ None | ✅ Vector-based |
-| **Multi-modal** | ✅ Supported | ✅ Supported | ✅ Supported | ⚠️ Limited |
-| **MCP Gateway** | ❌ None | ✅ Built-in | ⚠️ Limited | ❌ None |
+| Feature                | LiteLLM Router      | Portkey Gateway      | Helicone         | Semantic Router     |
+| ---------------------- | ------------------- | -------------------- | ---------------- | ------------------- |
+| **Models**             | 100+                | 250+                 | 100+             | N/A (routing layer) |
+| **Routing Strategies** | 6 strategies        | 3 strategies         | Basic            | Intent-based        |
+| **Guardrails**         | ⚠️ Custom needed    | ✅ 40+ built-in      | ⚠️ Basic         | ❌ None             |
+| **Observability**      | ⚠️ Custom callbacks | ✅ Built-in          | ✅ Full platform | ❌ None             |
+| **Caching**            | ✅ Redis + Memory   | ✅ Simple + Semantic | ✅ Built-in      | ❌ None             |
+| **Load Balancing**     | ✅ Advanced         | ✅ Weighted          | ✅ Basic         | ❌ None             |
+| **Fallbacks**          | ✅ Automatic        | ✅ Automatic         | ✅ Automatic     | ❌ None             |
+| **Cost Tracking**      | ✅ Built-in         | ✅ Built-in          | ✅ Built-in      | ❌ None             |
+| **Responses API**      | ❌ Adapter needed   | ⚠️ Limited           | ⚠️ Limited       | ❌ None             |
+| **Zero-Cost Routing**  | ❌ None             | ❌ None              | ❌ None          | ✅ Vector-based     |
+| **Multi-modal**        | ✅ Supported        | ✅ Supported         | ✅ Supported     | ⚠️ Limited          |
+| **MCP Gateway**        | ❌ None             | ✅ Built-in          | ⚠️ Limited       | ❌ None             |
 
 ### Hybrid Architecture Recommendation
 
 **Best-of-Breed Combination**:
+
 ```
 ┌─────────────────────────────────────────────────────────────┐
 │                    Application Layer                         │
@@ -134,6 +136,7 @@ This document provides **ultra-comprehensive** analysis of LLM router and aggreg
 #### Price-Based Load Balancing (Default)
 
 **Algorithm**:
+
 ```python
 def select_provider(providers: list[Provider], model: str) -> Provider:
     """
@@ -143,10 +146,7 @@ def select_provider(providers: list[Provider], model: str) -> Provider:
     Probability = weight / sum(all_weights)
     """
     # Filter by model support and uptime
-    eligible = [
-        p for p in providers
-        if p.supports_model(model) and p.uptime_30s > 0.95
-    ]
+    eligible = [p for p in providers if p.supports_model(model) and p.uptime_30s > 0.95]
 
     if not eligible:
         # Fallback to all providers
@@ -156,7 +156,7 @@ def select_provider(providers: list[Provider], model: str) -> Provider:
     weights = []
     for p in eligible:
         price = p.get_price(model)
-        weight = 1 / (price ** 2)
+        weight = 1 / (price**2)
         weights.append((p, weight))
 
     # Weighted random selection
@@ -173,22 +173,26 @@ def select_provider(providers: list[Provider], model: str) -> Provider:
 ```
 
 **Example**:
+
 - Provider A: $1/M tokens → weight = 1 / (1^2) = 1.0
 - Provider B: $2/M tokens → weight = 1 / (2^2) = 0.25
 - Provider C: $3/M tokens → weight = 1 / (3^2) = 0.111
 
 **Selection Probability**:
+
 - Provider A: 1.0 / (1.0 + 0.25 + 0.111) = **73.3%**
 - Provider B: 0.25 / 1.361 = **18.4%**
 - Provider C: 0.111 / 1.361 = **8.2%**
 
 **Uptime Consideration**:
+
 - Providers with outages in last 30 seconds are deprioritized
 - Automatic recovery after stability period
 
 #### Performance Threshold Routing
 
 **Percentile-Based Thresholds**:
+
 ```python
 class PerformanceThresholdRouter:
     def __init__(self):
@@ -197,9 +201,7 @@ class PerformanceThresholdRouter:
 
     def get_provider_metrics(self, provider: str, model: str) -> dict:
         """Get percentile metrics for provider/model."""
-        recent_requests = self.get_recent_requests(
-            provider, model, window=self.metrics_window
-        )
+        recent_requests = self.get_recent_requests(provider, model, window=self.metrics_window)
 
         latencies = [r.latency for r in recent_requests]
         throughputs = [r.throughput for r in recent_requests]
@@ -216,7 +218,7 @@ class PerformanceThresholdRouter:
                 "p75": np.percentile(throughputs, 75),
                 "p90": np.percentile(throughputs, 90),
                 "p99": np.percentile(throughputs, 99),
-            }
+            },
         }
 
     def filter_by_thresholds(
@@ -257,6 +259,7 @@ class PerformanceThresholdRouter:
 ```
 
 **Use Cases**:
+
 - **Cost optimization**: Find cheapest provider meeting p90 latency < 3s
 - **SLA compliance**: Ensure p99 latency < 5s for all requests
 - **Batch processing**: Prefer p50 throughput > 100 tokens/sec
@@ -265,20 +268,21 @@ class PerformanceThresholdRouter:
 #### Provider Selection Controls
 
 **Complete Control API**:
+
 ```python
 class ProviderPreferences:
     def __init__(
         self,
         order: list[str] | None = None,  # Try providers in order
-        allow_fallbacks: bool = True,     # Allow backup providers
-        require_parameters: bool = False, # Only providers supporting all params
-        data_collection: str = "allow",   # "allow" | "deny"
-        zdr: bool = False,                # Zero Data Retention only
+        allow_fallbacks: bool = True,  # Allow backup providers
+        require_parameters: bool = False,  # Only providers supporting all params
+        data_collection: str = "allow",  # "allow" | "deny"
+        zdr: bool = False,  # Zero Data Retention only
         enforce_distillable_text: bool = False,  # Only distillable models
-        only: list[str] | None = None,    # Only these providers
+        only: list[str] | None = None,  # Only these providers
         ignore: list[str] | None = None,  # Skip these providers
         quantizations: list[str] | None = None,  # Filter by quantization
-        sort: str | dict | None = None,    # Sort by price/latency/throughput
+        sort: str | dict | None = None,  # Sort by price/latency/throughput
         preferred_min_throughput: dict | None = None,
         preferred_max_latency: dict | None = None,
         max_price: dict | None = None,
@@ -319,24 +323,15 @@ class ProviderPreferences:
 
         # Apply quantization filter
         if self.quantizations:
-            filtered = [
-                p for p in filtered
-                if any(q in p.quantizations for q in self.quantizations)
-            ]
+            filtered = [p for p in filtered if any(q in p.quantizations for q in self.quantizations)]
 
         # Apply parameter support filter
         if self.require_parameters:
-            filtered = [
-                p for p in filtered
-                if p.supports_all_parameters(self.required_params)
-            ]
+            filtered = [p for p in filtered if p.supports_all_parameters(self.required_params)]
 
         # Apply price filter
         if self.max_price:
-            filtered = [
-                p for p in filtered
-                if p.get_price() <= self.max_price
-            ]
+            filtered = [p for p in filtered if p.get_price() <= self.max_price]
 
         return filtered
 ```
@@ -344,6 +339,7 @@ class ProviderPreferences:
 ### 2. Message Transforms
 
 **Middle-Out Compression**:
+
 ```python
 class MiddleOutCompressor:
     """
@@ -413,10 +409,12 @@ class MiddleOutCompressor:
             target_tokens = tokens - (tokens_to_remove - removed)
             truncated_content = self.truncate_to_tokens(content, target_tokens)
 
-            compressed.append({
-                **msg,
-                "content": truncated_content,
-            })
+            compressed.append(
+                {
+                    **msg,
+                    "content": truncated_content,
+                }
+            )
             removed += tokens - target_tokens
 
         return compressed
@@ -437,6 +435,7 @@ class MiddleOutCompressor:
 ```
 
 **Context Window Optimization**:
+
 ```python
 class ContextWindowOptimizer:
     """
@@ -463,18 +462,11 @@ class ContextWindowOptimizer:
         # Find models with at least 50% of required tokens
         min_context = required_tokens // 2
 
-        eligible_models = [
-            m for m in model_preferences
-            if self.get_context_window(m) >= min_context
-        ]
+        eligible_models = [m for m in model_preferences if self.get_context_window(m) >= min_context]
 
         if not eligible_models:
             # Fallback to largest context window
-            eligible_models = sorted(
-                model_preferences,
-                key=lambda m: self.get_context_window(m),
-                reverse=True
-            )
+            eligible_models = sorted(model_preferences, key=lambda m: self.get_context_window(m), reverse=True)
             model = eligible_models[0]
             # Compress to fit
             compressor = MiddleOutCompressor()
@@ -505,6 +497,7 @@ class ContextWindowOptimizer:
 ### 3. Structured Outputs
 
 **JSON Schema Validation**:
+
 ```python
 class StructuredOutputValidator:
     """
@@ -562,16 +555,16 @@ class StructuredOutputValidator:
         - Unclosed brackets
         """
         # Remove trailing commas
-        json_str = re.sub(r',(\s*[}\]])', r'\1', json_str)
+        json_str = re.sub(r",(\s*[}\]])", r"\1", json_str)
 
         # Fix unclosed brackets
-        open_brackets = json_str.count('{') - json_str.count('}')
-        open_square = json_str.count('[') - json_str.count(']')
+        open_brackets = json_str.count("{") - json_str.count("}")
+        open_square = json_str.count("[") - json_str.count("]")
 
         if open_brackets > 0:
-            json_str += '}' * open_brackets
+            json_str += "}" * open_brackets
         if open_square > 0:
-            json_str += ']' * open_square
+            json_str += "]" * open_square
 
         # Try parsing
         try:
@@ -582,6 +575,7 @@ class StructuredOutputValidator:
 ```
 
 **Response Healing Integration**:
+
 ```python
 class ResponseHealingPlugin:
     """
@@ -622,6 +616,7 @@ class ResponseHealingPlugin:
 ### 4. Prompt Caching (Advanced)
 
 **Cross-Provider Caching**:
+
 ```python
 class CrossProviderCache:
     """
@@ -642,9 +637,7 @@ class CrossProviderCache:
         """Generate cache key from messages."""
         # Use first N messages (typically system + initial user message)
         cacheable_messages = messages[:2]  # System + first user message
-        return hashlib.sha256(
-            json.dumps(cacheable_messages, sort_keys=True).encode()
-        ).hexdigest()
+        return hashlib.sha256(json.dumps(cacheable_messages, sort_keys=True).encode()).hexdigest()
 
     def get_cached_response(
         self,
@@ -704,6 +697,7 @@ class CrossProviderCache:
 ```
 
 **Provider-Specific Caching**:
+
 ```python
 class ProviderCacheManager:
     """
@@ -722,22 +716,22 @@ class ProviderCacheManager:
             # Opus 4.5, Haiku 4.5: 4096 tokens
             "read_multiplier": 0.20,  # 20% of input price
             "write_cost_5min": 1.25,  # 1.25x input price
-            "write_cost_1h": 2.0,     # 2x input price
-            "auto_enable": False,     # Requires cache_control breakpoints
+            "write_cost_1h": 2.0,  # 2x input price
+            "auto_enable": False,  # Requires cache_control breakpoints
             "max_breakpoints": 4,
         },
         "deepseek": {
             "min_tokens": 0,
             "read_multiplier": 0.20,  # 20% of input price
-            "write_cost": 1.0,        # Same as input price
+            "write_cost": 1.0,  # Same as input price
             "auto_enable": True,
         },
         "google": {
             "min_tokens": 4096,  # Gemini 2.5 Pro/Flash
             "read_multiplier": 0.20,  # 20% of input price
-            "write_cost": 0,     # No write cost
+            "write_cost": 0,  # No write cost
             "auto_enable": True,  # Implicit caching
-            "ttl_avg": 180,      # 3-5 minutes average
+            "ttl_avg": 180,  # 3-5 minutes average
         },
     }
 
@@ -799,6 +793,7 @@ class ProviderCacheManager:
 ### 5. Zero Completion Insurance
 
 **Implementation**:
+
 ```python
 class ZeroCompletionInsurance:
     """
@@ -863,6 +858,7 @@ class ZeroCompletionInsurance:
 ### 6. Guardrails System (Multi-Level)
 
 **Complete Implementation**:
+
 ```python
 class GuardrailSystem:
     """
@@ -879,8 +875,8 @@ class GuardrailSystem:
         self.guardrails = {
             "account": None,
             "organizations": {},  # org_id -> Guardrail
-            "members": {},        # member_id -> Guardrail
-            "api_keys": {},       # key_id -> Guardrail
+            "members": {},  # member_id -> Guardrail
+            "api_keys": {},  # key_id -> Guardrail
         }
 
     def check_request(
@@ -999,6 +995,7 @@ class GuardrailSystem:
 ### Advanced Configuration
 
 **Production-Ready Router Setup**:
+
 ```python
 from litellm import Router
 from litellm.router import RetryPolicy, AllowedFailsPolicy, AlertingConfig
@@ -1099,9 +1096,11 @@ router = Router(
 ### Custom Callbacks for Observability
 
 **Complete Observability Integration**:
+
 ```python
 from litellm.integrations.custom_logger import CustomLogger
 import logging
+
 
 class ProductionLogger(CustomLogger):
     """
@@ -1158,15 +1157,17 @@ class ProductionLogger(CustomLogger):
         )
 
         # Send to observability platform (async)
-        self._send_to_observability({
-            "event": "success",
-            "model": model,
-            "provider": provider,
-            "cost": response_cost,
-            "tokens": total_tokens,
-            "latency": latency,
-            "timestamp": end_time,
-        })
+        self._send_to_observability(
+            {
+                "event": "success",
+                "model": model,
+                "provider": provider,
+                "cost": response_cost,
+                "tokens": total_tokens,
+                "latency": latency,
+                "timestamp": end_time,
+            }
+        )
 
     def log_failure_event(
         self,
@@ -1184,23 +1185,24 @@ class ProductionLogger(CustomLogger):
         error = str(response_obj) if response_obj else "unknown error"
 
         # Log
-        self.logger.error(
-            f"Failure: model={model}, error={error}"
-        )
+        self.logger.error(f"Failure: model={model}, error={error}")
 
         # Send to observability platform (async)
-        self._send_to_observability({
-            "event": "failure",
-            "model": model,
-            "error": error,
-            "timestamp": end_time,
-        })
+        self._send_to_observability(
+            {
+                "event": "failure",
+                "model": model,
+                "error": error,
+                "timestamp": end_time,
+            }
+        )
 
     def _send_to_observability(self, data: dict):
         """Send metrics to observability platform."""
         # In production, send to Langfuse, Datadog, etc.
         # For now, just log
         pass
+
 
 # Register logger
 litellm.callbacks = [ProductionLogger()]
@@ -1213,6 +1215,7 @@ litellm.callbacks = [ProductionLogger()]
 ### Guardrails System
 
 **40+ Pre-Built Guardrails**:
+
 ```python
 class PortkeyGuardrails:
     """
@@ -1241,7 +1244,6 @@ class PortkeyGuardrails:
             "action": "block",
             "patterns": ["spam", "phishing"],
         },
-
         # Output guardrails
         "output.contains": {
             "type": "contains_check",
@@ -1336,6 +1338,7 @@ class PortkeyGuardrails:
 ### Semantic Caching
 
 **Advanced Semantic Caching**:
+
 ```python
 class SemanticCache:
     """
@@ -1403,9 +1406,11 @@ class SemanticCache:
 ### Complete Implementation
 
 **Production-Ready Semantic Router**:
+
 ```python
 from semantic_router import Route, RouteLayer
 from semantic_router.encoders import CohereEncoder, OpenAIEncoder
+
 
 class IntentRouter:
     """
@@ -1498,6 +1503,7 @@ class IntentRouter:
 ```
 
 **Performance Characteristics**:
+
 - **Latency**: 10-50ms (vector similarity only)
 - **Cost**: Zero (no LLM calls)
 - **Accuracy**: 85-95% (with well-defined routes)
@@ -1510,6 +1516,7 @@ class IntentRouter:
 ### 1. Complexity-Based Routing (Production)
 
 **Complete Implementation**:
+
 ```python
 class ComplexityRouter:
     """
@@ -1578,8 +1585,16 @@ class ComplexityEstimator:
 
         # Reasoning steps (heuristic)
         reasoning_indicators = [
-            "because", "therefore", "analyze", "compare", "evaluate",
-            "design", "architect", "optimize", "debug", "refactor",
+            "because",
+            "therefore",
+            "analyze",
+            "compare",
+            "evaluate",
+            "design",
+            "architect",
+            "optimize",
+            "debug",
+            "refactor",
         ]
         reasoning_count = sum(1 for word in reasoning_indicators if word in prompt.lower())
         factors["reasoning"] = min(reasoning_count / 5, 1.0)
@@ -1626,6 +1641,7 @@ class ComplexityEstimator:
 ### 2. Cascade Routing (Production)
 
 **Complete Implementation**:
+
 ```python
 class CascadeRouter:
     """
@@ -1636,12 +1652,12 @@ class CascadeRouter:
 
     def __init__(self):
         self.model_chain = [
-            "gpt-3.5-turbo",      # $0.50/M
-            "gpt-4o-mini",        # $0.15/M
-            "claude-haiku-4.5",   # $0.80/M
-            "gpt-4o",             # $2.50/M
+            "gpt-3.5-turbo",  # $0.50/M
+            "gpt-4o-mini",  # $0.15/M
+            "claude-haiku-4.5",  # $0.80/M
+            "gpt-4o",  # $2.50/M
             "claude-sonnet-4.5",  # $3.00/M
-            "claude-opus-4.6",    # $15.00/M
+            "claude-opus-4.6",  # $15.00/M
         ]
         self.quality_threshold = 0.7
         self.quality_estimator = QualityEstimator()
@@ -1740,6 +1756,7 @@ class QualityEstimator:
 ### 1. Latency Optimization
 
 **Strategies**:
+
 1. **Pre-call checks** - Avoid failed requests
 2. **Connection pooling** - Reuse HTTP connections
 3. **Parallel requests** - Batch when possible
@@ -1747,6 +1764,7 @@ class QualityEstimator:
 5. **Route to lowest latency** - Use percentile-based routing
 
 **Implementation**:
+
 ```python
 class LatencyOptimizer:
     """
@@ -1798,12 +1816,14 @@ class LatencyOptimizer:
 ### 2. Throughput Optimization
 
 **Strategies**:
+
 1. **Load balancing** - Distribute across providers
 2. **Parallel processing** - Process multiple requests simultaneously
 3. **Batch requests** - Group similar requests
 4. **Streaming** - Start processing before full response
 
 **Implementation**:
+
 ```python
 class ThroughputOptimizer:
     """
@@ -1843,10 +1863,8 @@ class ThroughputOptimizer:
         results = []
 
         for i in range(0, len(requests), max_parallel):
-            batch = requests[i:i + max_parallel]
-            batch_results = await asyncio.gather(*[
-                self.process_request(req) for req in batch
-            ])
+            batch = requests[i : i + max_parallel]
+            batch_results = await asyncio.gather(*[self.process_request(req) for req in batch])
             results.extend(batch_results)
 
         return results
@@ -1859,6 +1877,7 @@ class ThroughputOptimizer:
 ### Complete Cost Optimization Framework
 
 **Multi-Strategy Cost Optimization**:
+
 ```python
 class CostOptimizer:
     """
@@ -1894,9 +1913,7 @@ class CostOptimizer:
             return {"cached": True, "response": cached_response}
 
         # 2. Optimize prompt
-        optimized["messages"] = self.prompt_optimizer.optimize(
-            request["messages"]
-        )
+        optimized["messages"] = self.prompt_optimizer.optimize(request["messages"])
 
         # 3. Select model (tiered routing)
         optimized["model"] = self.model_selector.select(
@@ -1931,6 +1948,7 @@ class CostOptimizer:
 ```
 
 **Expected Results**:
+
 - **Model selection**: 30-50% savings
 - **Prompt optimization**: 10-20% savings
 - **Caching**: 20-40% savings (for repeated queries)
@@ -1945,6 +1963,7 @@ class CostOptimizer:
 ### Complete Security Framework
 
 **Production-Ready Security**:
+
 ```python
 class SecurityFramework:
     """
@@ -1976,11 +1995,13 @@ class SecurityFramework:
         encrypted_request = self.encryption.encrypt(secured_request)
 
         # 4. Audit log
-        self.audit_logger.log({
-            "api_key": api_key[:10] + "...",
-            "request_hash": hashlib.sha256(json.dumps(encrypted_request).encode()).hexdigest(),
-            "timestamp": time.time(),
-        })
+        self.audit_logger.log(
+            {
+                "api_key": api_key[:10] + "...",
+                "request_hash": hashlib.sha256(json.dumps(encrypted_request).encode()).hexdigest(),
+                "timestamp": time.time(),
+            }
+        )
 
         # 5. Compliance check
         compliance_status = self.compliance_checker.check(encrypted_request)
@@ -2035,6 +2056,7 @@ class SecurityFramework:
 ### Complete Production Setup
 
 **Recommended Architecture**:
+
 ```
 ┌─────────────────────────────────────────────────────────────┐
 │                    Load Balancer (NGINX/Cloudflare)          │
@@ -2094,30 +2116,35 @@ class SecurityFramework:
 ## Implementation Roadmap
 
 ### Phase 1: Core Router (Week 1-2)
+
 - ✅ LiteLLM Router setup
 - ✅ Responses API adapter
 - ✅ Basic caching (Redis)
 - ✅ Fallback chains
 
 ### Phase 2: Advanced Routing (Week 3-4)
+
 - ✅ Semantic Router integration
 - ✅ Complexity-based routing
 - ✅ Cascade routing
 - ✅ Performance threshold routing
 
 ### Phase 3: Enterprise Features (Week 5-6)
+
 - ✅ Guardrails system (Portkey-inspired)
 - ✅ Observability integration (Helicone + custom)
 - ✅ Plugin system (web search, PDF, response healing)
 - ✅ Zero Data Retention support
 
 ### Phase 4: Optimization (Week 7-8)
+
 - ✅ Cost optimization (multi-strategy)
 - ✅ Latency optimization
 - ✅ Throughput optimization
 - ✅ Advanced caching (semantic + cross-provider)
 
 ### Phase 5: Production Hardening (Week 9-10)
+
 - ✅ Security framework
 - ✅ Compliance (GDPR, HIPAA, SOC2)
 - ✅ Monitoring & alerting
@@ -2137,6 +2164,7 @@ class SecurityFramework:
 6. **Combined architecture** exceeds commercial solutions while remaining OSS
 
 **Expected Results**:
+
 - **Cost reduction**: 80-95% (multi-strategy optimization)
 - **Latency**: <100ms P95 (with caching and optimization)
 - **Reliability**: 99.9%+ uptime (with fallbacks and health monitoring)

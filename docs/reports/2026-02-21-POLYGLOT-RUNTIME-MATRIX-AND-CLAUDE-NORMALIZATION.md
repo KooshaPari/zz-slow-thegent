@@ -10,12 +10,15 @@
 ## Changes completed
 
 1. Added canonical governance matrix:
+
 - `docs/governance/POLYGLOT_RUNTIME_COVERAGE_AND_CONVERSION_MATRIX_2026-02-21.md`
 
 2. Updated governance summary linkage:
+
 - `docs/governance/GOVERNANCE_SUMMARY.md`
 
 3. Updated root `CLAUDE.md` with:
+
 - runtime/test baseline,
 - conversion/refactor rules,
 - frontmatter/backmatter defaults,
@@ -23,12 +26,15 @@
 - `CLAUDE.md` >20k token split policy to `docs/docsets/claude/`.
 
 4. Updated project template `CLAUDE.md` with same policy baseline:
+
 - `templates/initialize-project/'{{cookiecutter.project_name}}'/CLAUDE.md`
 
 5. Added template governance doc:
+
 - `templates/initialize-project/docs/governance/POLYGLOT_RUNTIME_DECISION_MATRIX.md`
 
 6. Updated template docs/readme links:
+
 - `templates/initialize-project/docs/index.md`
 - `templates/initialize-project/README.md`
 
@@ -37,13 +43,16 @@
 Repository-wide within `thegent`:
 
 1. Canonical files found:
+
 - `CLAUDE.md`
 - `templates/initialize-project/'{{cookiecutter.project_name}}'/CLAUDE.md`
 
 2. `calude.md` typo files found:
+
 - none
 
 3. Lowercase `claude.md` files found:
+
 - none inside `thegent` root scope (outside this repo there are lowercase files in other projects).
 
 ## Size/split policy check

@@ -22,6 +22,7 @@ This document audits existing Python libraries and tools for runtime resource ma
 **Key Finding:** Several mature libraries exist that can replace or enhance our custom implementations, particularly for process monitoring (`psutil`), async subprocess management (`trio`), and leak detection (`psleak`). Additionally, Python's standard library (`tracemalloc`, `resource`) and CPython's test infrastructure provide proven patterns for resource management and leak detection.
 
 **Research Methodology:** This audit combines:
+
 - Web research via DuckDuckGo searches
 - Analysis of CPython standard library implementations (`subprocess`, `multiprocessing`, `concurrent.futures`)
 - Review of CPython test suite patterns (`test.support.os_helper`, `test.libregrtest.refleak`)
@@ -37,6 +38,7 @@ This document audits existing Python libraries and tools for runtime resource ma
 #### psutil (⭐ 11k stars, actively maintained)
 
 **What it does:**
+
 - Cross-platform process and system monitoring
 - Process management (create, terminate, wait)
 - Resource monitoring (CPU, memory, disk, network)
@@ -44,6 +46,7 @@ This document audits existing Python libraries and tools for runtime resource ma
 - Process tree navigation
 
 **Key Features:**
+
 ```python
 import psutil
 
@@ -61,10 +64,11 @@ proc.connections()  # Network connections
 # System-wide
 psutil.virtual_memory()
 psutil.cpu_percent()
-psutil.disk_usage('/')
+psutil.disk_usage("/")
 ```
 
 **Integration Opportunities:**
+
 - ✅ **Replace custom resource monitoring** - Use `psutil` instead of custom `resource_monitor.py`
 - ✅ **Enhance process registry** - Use `psutil.Process` for better process introspection
 - ✅ **File descriptor tracking** - Use `proc.num_fds()` and `proc.open_files()` for leak detection
@@ -79,14 +83,17 @@ psutil.disk_usage('/')
 #### psleak (⭐ 9 stars, experimental)
 
 **What it does:**
+
 - Memory leak detection framework
 - Resource leak detection (FDs, handles, threads)
 - Test framework for leak detection
 - Heap introspection
 
 **Key Features:**
+
 ```python
 from psleak import MemoryLeakTestCase
+
 
 class TestLeaks(MemoryLeakTestCase):
     def test_fun(self):
@@ -94,6 +101,7 @@ class TestLeaks(MemoryLeakTestCase):
 ```
 
 **Integration Opportunities:**
+
 - ✅ **Add leak detection tests** - Use `psleak` for automated leak detection in test suite
 - ✅ **Memory leak detection** - Use heap introspection APIs
 - ✅ **FD leak detection** - Use built-in FD tracking
@@ -107,6 +115,7 @@ class TestLeaks(MemoryLeakTestCase):
 #### fdleaky (⭐ 0 stars, specialized tool)
 
 **What it does:**
+
 - File descriptor leak detection utility
 - Monitors file and socket operations
 - Reports resources that remain open longer than expected
@@ -114,6 +123,7 @@ class TestLeaks(MemoryLeakTestCase):
 - Interactive debugging (press 'p' to print stack traces)
 
 **Key Features:**
+
 ```python
 # Run with fdleaky monitoring
 python -m fdleaky your_module
@@ -126,12 +136,14 @@ poetry run python -m fdleaky uvicorn my_app:app
 ```
 
 **How it works:**
+
 - Patches built-in file and socket operations
 - Tracks all open file descriptors
 - Monitors for resources that remain open too long (default 180 seconds)
 - Provides stack traces to help identify the source of leaks
 
 **Integration Opportunities:**
+
 - ✅ **Development-time leak detection** - Use `fdleaky` during development to catch FD leaks early
 - ✅ **Interactive debugging** - Press 'p' in terminal to print stack traces for open FDs
 - ✅ **Long-running application monitoring** - Monitor applications for FD leaks over time
@@ -142,6 +154,7 @@ poetry run python -m fdleaky uvicorn my_app:app
 **Recommendation:** **MEDIUM PRIORITY** - Use `fdleaky` for development-time leak detection, complementing `psleak` in tests.
 
 **Comparison with psleak:**
+
 - `fdleaky`: Runtime monitoring, interactive debugging, focuses on FDs
 - `psleak`: Test framework, automated detection, covers memory + FDs + threads
 
@@ -150,6 +163,7 @@ poetry run python -m fdleaky uvicorn my_app:app
 #### Python Standard Library: `tracemalloc` (Python 3.4+)
 
 **What it does:**
+
 - Built-in memory allocation tracing
 - Tracks where memory blocks were allocated
 - Computes differences between snapshots to detect leaks
@@ -157,6 +171,7 @@ poetry run python -m fdleaky uvicorn my_app:app
 - Zero external dependencies
 
 **Key Features:**
+
 ```python
 import tracemalloc
 
@@ -169,7 +184,7 @@ snapshot1 = tracemalloc.take_snapshot()
 snapshot2 = tracemalloc.take_snapshot()
 
 # Compare to find leaks
-top_stats = snapshot2.compare_to(snapshot1, 'lineno')
+top_stats = snapshot2.compare_to(snapshot1, "lineno")
 for stat in top_stats[:10]:
     print(stat)
 
@@ -178,6 +193,7 @@ current, peak = tracemalloc.get_traced_memory()
 ```
 
 **Integration Opportunities:**
+
 - ✅ **Memory leak detection** - Use `tracemalloc` for memory leak detection in tests
 - ✅ **Memory profiling** - Profile memory usage during development
 - ✅ **Zero dependencies** - Built into Python, no external library needed
@@ -188,11 +204,13 @@ current, peak = tracemalloc.get_traced_memory()
 **Recommendation:** **HIGH PRIORITY** - Use `tracemalloc` for memory leak detection in tests, complementing `psleak`.
 
 **CPython Test Pattern:**
+
 ```python
 # From CPython test suite (pythonspeed.com article)
 import tracemalloc
 import gc
 import pytest
+
 
 @pytest.fixture(autouse=True)
 def check_for_memory_leaks():
@@ -206,9 +224,7 @@ def check_for_memory_leaks():
         finally:
             gc.collect()
             final_mem_usage = tracemalloc.get_traced_memory()[0]
-            assert (
-                final_mem_usage - current_mem_usage < 10_000
-            ), "memory was leaked"
+            assert final_mem_usage - current_mem_usage < 10_000, "memory was leaked"
             tracemalloc.stop()
 ```
 
@@ -217,6 +233,7 @@ def check_for_memory_leaks():
 #### memray (⭐ 14.8k stars, Bloomberg)
 
 **What it does:**
+
 - Memory profiler for Python
 - Traces every function call (not sampling)
 - Handles native C/C++ calls
@@ -224,6 +241,7 @@ def check_for_memory_leaks():
 - Works with threads and native threads
 
 **Key Features:**
+
 ```python
 import memray
 
@@ -238,6 +256,7 @@ memray flamegraph output.bin
 ```
 
 **Integration Opportunities:**
+
 - ⚠️ **Memory profiling** - Use for deep memory profiling during development
 - ⚠️ **Production profiling** - Can profile in production (Linux/macOS only)
 - ⚠️ **Native code tracking** - Tracks C extensions (numpy, pandas)
@@ -252,12 +271,14 @@ memray flamegraph output.bin
 #### Fil Profiler (⭐ 894 stars, pythonspeed.com)
 
 **What it does:**
+
 - Memory profiler designed for data processing
 - Native support for Jupyter
 - Finds peak memory usage and allocation sources
 - Cross-platform (Linux, macOS)
 
 **Key Features:**
+
 ```python
 # Automatic profiling
 filprofile run my_script.py
@@ -267,6 +288,7 @@ filprofile run my_script.py
 ```
 
 **Integration Opportunities:**
+
 - ⚠️ **Data processing profiling** - If we do heavy data processing
 - ⚠️ **Jupyter support** - If we use Jupyter notebooks
 - ❌ **Not for leak detection** - Focused on profiling, not automated detection
@@ -280,12 +302,14 @@ filprofile run my_script.py
 #### memory-profiler (⭐ 4.5k stars, unmaintained)
 
 **What it does:**
+
 - Line-by-line memory profiling
 - Time-based memory usage reports
 - IPython integration
 - Process memory tracking
 
 **Key Features:**
+
 ```python
 from memory_profiler import profile
 
@@ -299,6 +323,7 @@ python -m memory_profiler script.py
 ```
 
 **Integration Opportunities:**
+
 - ⚠️ **Line-by-line profiling** - If we need detailed line-level memory info
 - ⚠️ **Time-based reports** - Memory usage over time
 - ❌ **Unmaintained** - Author notes it's no longer actively maintained
@@ -315,6 +340,7 @@ python -m memory_profiler script.py
 #### Standard Library `subprocess` (Python 3.5+)
 
 **What it does:**
+
 - Process creation and management
 - Stream handling (stdout, stderr, stdin)
 - Timeout support
@@ -323,6 +349,7 @@ python -m memory_profiler script.py
 **Current Usage:** ✅ Used extensively throughout codebase
 
 **Issues:**
+
 - ❌ No automatic cleanup registry
 - ❌ No resource limits enforcement
 - ❌ No leak detection
@@ -331,6 +358,7 @@ python -m memory_profiler script.py
 **Recommendation:** Keep using, but wrap with our `SubprocessManager` for lifecycle management.
 
 **CPython Best Practices (from `test_subprocess.py`):**
+
 ```python
 # Always use context manager
 with subprocess.Popen(...) as p:
@@ -352,6 +380,7 @@ subprocess.Popen(..., stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
 ```
 
 **Key Patterns from CPython:**
+
 - ✅ Always use context manager (`with Popen(...)`)
 - ✅ Explicitly close pipes before `wait()`
 - ✅ Use `DEVNULL` for unused streams
@@ -363,6 +392,7 @@ subprocess.Popen(..., stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
 #### multiprocessing.Pool (Python Standard Library)
 
 **What it does:**
+
 - Process pool management
 - Automatic worker lifecycle management
 - Task queue and result handling
@@ -370,6 +400,7 @@ subprocess.Popen(..., stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
 - Resource tracking
 
 **Key Features:**
+
 ```python
 from multiprocessing import Pool
 
@@ -379,6 +410,7 @@ with Pool(processes=4) as pool:
 ```
 
 **CPython Implementation Insights:**
+
 - Uses `_active` list to track processes
 - Implements `_cleanup()` to reap zombie processes
 - Uses `atexit` and signal handlers for cleanup
@@ -386,6 +418,7 @@ with Pool(processes=4) as pool:
 - Uses `util.Finalize` for automatic cleanup
 
 **Integration Opportunities:**
+
 - ⚠️ **Process pool pattern** - If we need process pools, use `multiprocessing.Pool`
 - ✅ **Cleanup patterns** - Learn from CPython's cleanup implementation
 - ✅ **Resource tracking** - See how CPython tracks active processes
@@ -399,12 +432,14 @@ with Pool(processes=4) as pool:
 #### concurrent.futures.ProcessPoolExecutor (Python Standard Library)
 
 **What it does:**
+
 - Higher-level process pool interface
 - Future-based API
 - Automatic cleanup
 - Better error handling than `multiprocessing.Pool`
 
 **Key Features:**
+
 ```python
 from concurrent.futures import ProcessPoolExecutor
 
@@ -414,6 +449,7 @@ with ProcessPoolExecutor(max_workers=4) as executor:
 ```
 
 **CPython Implementation Insights:**
+
 - Uses `multiprocessing` under the hood
 - Implements `_ThreadWakeup` for thread communication
 - Uses `weakref` for executor cleanup
@@ -421,6 +457,7 @@ with ProcessPoolExecutor(max_workers=4) as executor:
 - Handles broken process pools gracefully
 
 **Integration Opportunities:**
+
 - ⚠️ **Process pool pattern** - If we need process pools, use `ProcessPoolExecutor`
 - ✅ **Cleanup patterns** - Learn from CPython's cleanup implementation
 - ✅ **Error handling** - See how CPython handles broken pools
@@ -434,14 +471,17 @@ with ProcessPoolExecutor(max_workers=4) as executor:
 #### trio (⭐ 7k stars, production-ready)
 
 **What it does:**
+
 - Modern async/await I/O library
 - Structured concurrency
 - Subprocess management with automatic cleanup
 - Resource-aware process handling
 
 **Key Features:**
+
 ```python
 import trio
+
 
 async def run_command():
     async with trio.open_process(["cmd", "args"]) as proc:
@@ -450,6 +490,7 @@ async def run_command():
 ```
 
 **Integration Opportunities:**
+
 - ⚠️ **Async subprocess wrapper** - If we migrate to async, use `trio.open_process`
 - ⚠️ **Structured concurrency** - Better process lifecycle management
 - ⚠️ **Resource-aware** - Built-in resource limits
@@ -457,6 +498,7 @@ async def run_command():
 - ✅ **Signal handling** - Proper SIGTERM/SIGKILL handling with timeouts
 
 **Trio Implementation Insights:**
+
 - Uses `pidfd_open` on Linux (kernel 5.3+) for efficient process waiting
 - Falls back to `waitid` on other platforms
 - Implements proper cancellation with `deliver_cancel` callback
@@ -464,6 +506,7 @@ async def run_command():
 - Handles process cleanup in `__exit__` automatically
 
 **Key Pattern from Trio:**
+
 ```python
 # Trio's process cleanup pattern
 async def _posix_deliver_cancel(p: Process) -> None:
@@ -484,12 +527,14 @@ async def _posix_deliver_cancel(p: Process) -> None:
 #### pexpect (⭐ 2.8k stars, mature)
 
 **What it does:**
+
 - Interactive program control
 - Pseudo-terminal management
 - Pattern matching on output
 - Process lifecycle management
 
 **Key Features:**
+
 ```python
 import pexpect
 
@@ -500,6 +545,7 @@ child.close()
 ```
 
 **Integration Opportunities:**
+
 - ⚠️ **Interactive subprocesses** - If we need interactive control
 - ⚠️ **PTY management** - For terminal emulation
 
@@ -512,11 +558,13 @@ child.close()
 #### sh (⭐ 7.2k stars, mature)
 
 **What it does:**
+
 - Pythonic subprocess interface
 - Command execution as functions
 - Automatic stream handling
 
 **Key Features:**
+
 ```python
 from sh import ls, git
 
@@ -526,6 +574,7 @@ git("status")
 ```
 
 **Integration Opportunities:**
+
 - ⚠️ **Simplified subprocess calls** - More Pythonic interface
 - ❌ **Unix-only** - Doesn't work on Windows
 - ❌ **No resource management** - Still needs our wrapper
@@ -541,19 +590,23 @@ git("status")
 #### watchdog (⭐ 7.2k stars, actively maintained)
 
 **What it does:**
+
 - File system event monitoring
 - Cross-platform (Linux, macOS, Windows)
 - Efficient event-driven watching
 - Process management for watchers
 
 **Key Features:**
+
 ```python
 from watchdog.observers import Observer
 from watchdog.events import FileSystemEventHandler
 
+
 class Handler(FileSystemEventHandler):
     def on_modified(self, event):
         print(f"File modified: {event.src_path}")
+
 
 observer = Observer()
 observer.schedule(Handler(), ".", recursive=True)
@@ -561,6 +614,7 @@ observer.start()
 ```
 
 **Integration Opportunities:**
+
 - ✅ **File watching** - If we need file system monitoring
 - ✅ **Resource-aware** - Uses efficient OS APIs (inotify, FSEvents)
 - ⚠️ **Not directly related** - Doesn't solve subprocess leaks
@@ -574,12 +628,14 @@ observer.start()
 #### watchman (⭐ 13.5k stars, Facebook)
 
 **What it does:**
+
 - High-performance file watching service
 - Scalable to millions of files
 - Process-based architecture
 - Used by Facebook/Meta
 
 **Integration Opportunities:**
+
 - ⚠️ **Enterprise file watching** - Overkill for our needs
 - ❌ **External service** - Requires separate daemon
 - ❌ **Not directly related** - Doesn't solve our problems
@@ -595,11 +651,13 @@ observer.start()
 #### aiofiles (⭐ 3.2k stars, actively maintained)
 
 **What it does:**
+
 - Async file I/O for asyncio
 - Thread pool delegation
 - Context manager support
 
 **Key Features:**
+
 ```python
 import aiofiles
 
@@ -608,6 +666,7 @@ async with aiofiles.open("file.txt") as f:
 ```
 
 **Integration Opportunities:**
+
 - ⚠️ **Async file operations** - If we migrate to async
 - ❌ **Not directly related** - Doesn't solve subprocess leaks
 
@@ -622,6 +681,7 @@ async with aiofiles.open("file.txt") as f:
 #### `resource` Module (Python Standard Library, Unix-only)
 
 **What it does:**
+
 - System resource limit management
 - Process resource usage information
 - File descriptor limits (`RLIMIT_NOFILE`)
@@ -629,6 +689,7 @@ async with aiofiles.open("file.txt") as f:
 - Memory limits (`RLIMIT_AS`, `RLIMIT_RSS`)
 
 **Key Features:**
+
 ```python
 import resource
 
@@ -644,12 +705,14 @@ print(f"Memory: {usage.ru_maxrss} KB")
 ```
 
 **CPython Test Patterns (`test_resource.py`):**
+
 - Always restore original limits in `finally` blocks
 - Check platform support before using limits
 - Handle `ValueError` and `OSError` exceptions
 - Use `RLIM_INFINITY` for unlimited resources
 
 **Integration Opportunities:**
+
 - ✅ **Already using** - We use `resource` in `resource_limits.py`
 - ✅ **Best practices** - Follow CPython's patterns for limit management
 - ✅ **Cross-platform** - Handle Windows gracefully (no `resource` module)
@@ -663,6 +726,7 @@ print(f"Memory: {usage.ru_maxrss} KB")
 #### `test.support.os_helper.fd_count()` (CPython Test Infrastructure)
 
 **What it does:**
+
 - Cross-platform file descriptor counting
 - Uses `/proc/self/fd` on Linux
 - Uses `/dev/fd` on macOS
@@ -670,6 +734,7 @@ print(f"Memory: {usage.ru_maxrss} KB")
 - Handles Windows gracefully
 
 **Key Features:**
+
 ```python
 from test.support.os_helper import fd_count
 
@@ -678,10 +743,11 @@ count = fd_count()
 ```
 
 **CPython Implementation:**
+
 ```python
 def fd_count():
     """Count the number of open file descriptors."""
-    if sys.platform.startswith(('linux', 'android', 'freebsd')):
+    if sys.platform.startswith(("linux", "android", "freebsd")):
         fd_path = "/proc/self/fd"
     elif support.is_apple:
         fd_path = "/dev/fd"
@@ -705,6 +771,7 @@ def fd_count():
 ```
 
 **Integration Opportunities:**
+
 - ✅ **FD counting** - Use `fd_count()` pattern for leak detection
 - ✅ **Cross-platform** - Works on Linux, macOS, Windows
 - ✅ **Test infrastructure** - Proven pattern from CPython test suite
@@ -718,6 +785,7 @@ def fd_count():
 #### `test.libregrtest.refleak` (CPython Reference Leak Detection)
 
 **What it does:**
+
 - Reference leak detection framework
 - Memory block leak detection
 - File descriptor leak detection
@@ -725,6 +793,7 @@ def fd_count():
 - Uses `sys.gettotalrefcount()` (debug builds only)
 
 **Key Features:**
+
 ```python
 # From CPython's refleak.py
 def runtest_refleak(test_name, test_func, hunt_refleak, quiet):
@@ -752,6 +821,7 @@ def runtest_refleak(test_name, test_func, hunt_refleak, quiet):
 ```
 
 **Integration Opportunities:**
+
 - ✅ **Leak detection pattern** - Use CPython's pattern for leak detection
 - ✅ **Multiple runs** - Run tests multiple times to detect leaks
 - ✅ **Warmup runs** - Use warmup runs to stabilize caches
@@ -768,9 +838,11 @@ def runtest_refleak(test_name, test_func, hunt_refleak, quiet):
 #### Subprocess Cleanup Patterns
 
 **From `subprocess.py` (`_cleanup()` function):**
+
 ```python
 # CPython's cleanup pattern
 _active = []  # List of Popen instances
+
 
 def _cleanup():
     """Clean up zombie processes."""
@@ -784,6 +856,7 @@ def _cleanup():
 ```
 
 **Key Insights:**
+
 - ✅ Track active processes in a global list
 - ✅ Clean up on new `Popen` creation (prevents zombie accumulation)
 - ✅ Use `poll()` to check if process exited
@@ -796,6 +869,7 @@ def _cleanup():
 #### Process Pool Cleanup Patterns
 
 **From `multiprocessing/pool.py`:**
+
 ```python
 # CPython's process pool cleanup
 def _terminate_pool(cls, taskqueue, inqueue, outqueue, pool, ...):
@@ -817,6 +891,7 @@ def _terminate_pool(cls, taskqueue, inqueue, outqueue, pool, ...):
 ```
 
 **Key Insights:**
+
 - ✅ Send sentinel to stop workers
 - ✅ Terminate before joining
 - ✅ Close queues after processes exit
@@ -829,6 +904,7 @@ def _terminate_pool(cls, taskqueue, inqueue, outqueue, pool, ...):
 #### Concurrent Futures Cleanup Patterns
 
 **From `concurrent/futures/process.py`:**
+
 ```python
 # CPython's executor cleanup
 def _join_executor_internals(self, broken=False):
@@ -849,6 +925,7 @@ def _join_executor_internals(self, broken=False):
 ```
 
 **Key Insights:**
+
 - ✅ Close communication channels first
 - ✅ Terminate broken processes
 - ✅ Join all processes
@@ -867,6 +944,7 @@ def _join_executor_internals(self, broken=False):
 **Replace:** Custom `resource_monitor.py` implementation
 
 **Benefits:**
+
 - ✅ Mature, well-tested library
 - ✅ Cross-platform support
 - ✅ Rich process introspection
@@ -874,6 +952,7 @@ def _join_executor_internals(self, broken=False):
 - ✅ Memory monitoring
 
 **Implementation:**
+
 ```python
 # src/thegent/infra/resource_monitor.py
 import psutil
@@ -881,9 +960,11 @@ import time
 from dataclasses import dataclass
 from typing import Optional
 
+
 @dataclass
 class ResourceStats:
     """Resource usage statistics."""
+
     fd_count: int
     fd_limit: int
     fd_usage_percent: float
@@ -891,6 +972,7 @@ class ResourceStats:
     memory_mb: float
     cpu_percent: float
     timestamp: float
+
 
 class ResourceMonitor:
     """Monitor system resources using psutil."""
@@ -911,6 +993,7 @@ class ResourceMonitor:
         # FD limit
         try:
             import resource
+
             fd_limit = resource.getrlimit(resource.RLIMIT_NOFILE)[0]
         except Exception:
             fd_limit = 1024
@@ -962,6 +1045,7 @@ class ResourceMonitor:
 ```
 
 **Action Items:**
+
 - [ ] Add `psutil` to `pyproject.toml` dependencies
 - [ ] Refactor `resource_monitor.py` to use `psutil`
 - [ ] Update `ProcessRegistry` to use `psutil.Process` for introspection
@@ -974,17 +1058,20 @@ class ResourceMonitor:
 **Enhance:** Existing `process_registry.py`
 
 **Benefits:**
+
 - ✅ Better process introspection
 - ✅ Process tree navigation
 - ✅ Cross-platform process management
 - ✅ Resource usage per process
 
 **Implementation:**
+
 ```python
 # src/thegent/infra/process_registry.py (additions)
 
 import psutil
 from thegent.infra.process_registry import ProcessHandle, ProcessRegistry
+
 
 class ProcessHandle:
     """Enhanced with psutil integration."""
@@ -1013,6 +1100,7 @@ class ProcessHandle:
             }
         except (psutil.AccessDenied, AttributeError):
             return None
+
 
 class ProcessRegistry:
     """Enhanced with psutil integration."""
@@ -1061,6 +1149,7 @@ class ProcessRegistry:
 ```
 
 **Action Items:**
+
 - [ ] Add `psutil` integration to `ProcessHandle`
 - [ ] Add `cleanup_process_tree` method using `psutil`
 - [ ] Update cleanup logic to use process trees
@@ -1075,6 +1164,7 @@ class ProcessRegistry:
 **Add:** Leak detection tests using `psleak`
 
 **Benefits:**
+
 - ✅ Automated leak detection
 - ✅ Memory leak detection
 - ✅ FD leak detection
@@ -1082,12 +1172,14 @@ class ProcessRegistry:
 - ✅ Continuous testing
 
 **Implementation:**
+
 ```python
 # tests/test_resource_leaks.py
 
 import pytest
 from psleak import MemoryLeakTestCase, Checkers
 from thegent.infra.subprocess_manager import get_subprocess_manager
+
 
 class TestSubprocessLeaks(MemoryLeakTestCase):
     """Test for subprocess resource leaks."""
@@ -1108,11 +1200,13 @@ class TestSubprocessLeaks(MemoryLeakTestCase):
             checkers=Checkers.only("memory", "fds"),
         )
 
+
 class TestFileDescriptorLeaks(MemoryLeakTestCase):
     """Test for file descriptor leaks."""
 
     def test_file_operations_no_leak(self):
         """Test that file operations don't leak FDs."""
+
         def open_files():
             for i in range(100):
                 with open(f"/tmp/test-{i}.txt", "w") as f:
@@ -1126,6 +1220,7 @@ class TestFileDescriptorLeaks(MemoryLeakTestCase):
 ```
 
 **Action Items:**
+
 - [ ] Add `psleak` to test dependencies
 - [ ] Create leak detection test suite
 - [ ] Add to CI/CD pipeline
@@ -1138,12 +1233,14 @@ class TestFileDescriptorLeaks(MemoryLeakTestCase):
 **Add:** Memory leak detection using Python's built-in `tracemalloc`
 
 **Benefits:**
+
 - ✅ Zero dependencies (built into Python)
 - ✅ Detailed allocation tracking
 - ✅ Snapshot comparison for leak detection
 - ✅ Proven pattern from CPython test suite
 
 **Implementation (CPython Pattern):**
+
 ```python
 # tests/conftest.py
 
@@ -1153,6 +1250,7 @@ import tracemalloc
 import pytest
 
 if os.getenv("CHECK_LEAKS") == "1":
+
     @pytest.fixture(autouse=True)
     def check_for_memory_leaks():
         """Check for memory leaks using tracemalloc."""
@@ -1166,18 +1264,20 @@ if os.getenv("CHECK_LEAKS") == "1":
             gc.collect()
             final_mem_usage = tracemalloc.get_traced_memory()[0]
             # Fail if more than 10KB leaked
-            assert (
-                final_mem_usage - current_mem_usage < 10_000
-            ), f"memory was leaked: {final_mem_usage - current_mem_usage} bytes"
+            assert final_mem_usage - current_mem_usage < 10_000, (
+                f"memory was leaked: {final_mem_usage - current_mem_usage} bytes"
+            )
             tracemalloc.stop()
 ```
 
 **Advanced Usage (Snapshot Comparison):**
+
 ```python
 # tests/test_memory_leaks.py
 
 import tracemalloc
 import pytest
+
 
 class TestMemoryLeaks:
     """Test for memory leaks using tracemalloc snapshots."""
@@ -1197,7 +1297,7 @@ class TestMemoryLeaks:
         snapshot2 = tracemalloc.take_snapshot()
 
         # Compare snapshots
-        top_stats = snapshot2.compare_to(snapshot1, 'lineno')
+        top_stats = snapshot2.compare_to(snapshot1, "lineno")
 
         # Check for significant leaks (>1MB)
         total_leaked = sum(stat.size_diff for stat in top_stats)
@@ -1207,6 +1307,7 @@ class TestMemoryLeaks:
 ```
 
 **Action Items:**
+
 - [ ] Add `tracemalloc`-based leak detection fixtures
 - [ ] Create memory leak test suite
 - [ ] Add snapshot comparison tests
@@ -1219,12 +1320,14 @@ class TestMemoryLeaks:
 **Add:** File descriptor leak detection during development
 
 **Benefits:**
+
 - ✅ Interactive debugging (press 'p' for stack traces)
 - ✅ Real-time FD monitoring
 - ✅ Stack trace for leak sources
 - ✅ Long-running application monitoring
 
 **Usage:**
+
 ```bash
 # Run application with fdleaky
 python -m fdleaky thegent serve
@@ -1234,11 +1337,13 @@ python -m fdleaky uvicorn app:app
 ```
 
 **Integration:**
+
 - Add to development workflow
 - Use for debugging FD leaks
 - Complement `psleak` tests with runtime monitoring
 
 **Action Items:**
+
 - [ ] Add `fdleaky` to dev dependencies
 - [ ] Document usage in development guide
 - [ ] Add to development workflow
@@ -1250,12 +1355,14 @@ python -m fdleaky uvicorn app:app
 **Add:** Reference leak detection pattern from CPython
 
 **Benefits:**
+
 - ✅ Proven pattern from CPython test suite
 - ✅ Detects reference leaks, memory leaks, FD leaks
 - ✅ Multiple runs with warmup
 - ✅ Comprehensive leak detection
 
 **Implementation:**
+
 ```python
 # tests/test_refleak.py
 
@@ -1263,6 +1370,7 @@ import gc
 import os
 import sys
 from test.support import os_helper
+
 
 def runtest_refleak(test_func, warmups=3, runs=5):
     """Run a test multiple times, looking for resource leaks."""
@@ -1295,6 +1403,7 @@ def runtest_refleak(test_func, warmups=3, runs=5):
 ```
 
 **Action Items:**
+
 - [ ] Implement CPython-style leak detection
 - [ ] Add to test suite
 - [ ] Use for critical resource operations
@@ -1302,6 +1411,7 @@ def runtest_refleak(test_func, warmups=3, runs=5):
 **Add:** Leak detection tests using `psleak`
 
 **Benefits:**
+
 - ✅ Automated leak detection
 - ✅ Memory leak detection
 - ✅ FD leak detection
@@ -1309,12 +1419,14 @@ def runtest_refleak(test_func, warmups=3, runs=5):
 - ✅ Continuous testing
 
 **Implementation:**
+
 ```python
 # tests/test_resource_leaks.py
 
 import pytest
 from psleak import MemoryLeakTestCase, Checkers
 from thegent.infra.subprocess_manager import get_subprocess_manager
+
 
 class TestSubprocessLeaks(MemoryLeakTestCase):
     """Test for subprocess resource leaks."""
@@ -1335,11 +1447,13 @@ class TestSubprocessLeaks(MemoryLeakTestCase):
             checkers=Checkers.only("memory", "fds"),
         )
 
+
 class TestFileDescriptorLeaks(MemoryLeakTestCase):
     """Test for file descriptor leaks."""
 
     def test_file_operations_no_leak(self):
         """Test that file operations don't leak FDs."""
+
         def open_files():
             for i in range(100):
                 with open(f"/tmp/test-{i}.txt", "w") as f:
@@ -1353,6 +1467,7 @@ class TestFileDescriptorLeaks(MemoryLeakTestCase):
 ```
 
 **Action Items:**
+
 - [ ] Add `psleak` to test dependencies
 - [ ] Create leak detection test suite
 - [ ] Add to CI/CD pipeline
@@ -1367,11 +1482,13 @@ class TestFileDescriptorLeaks(MemoryLeakTestCase):
 **If:** We migrate to async/await
 
 **Benefits:**
+
 - ✅ Structured concurrency
 - ✅ Better process lifecycle
 - ✅ Resource-aware by design
 
 **Action Items:**
+
 - [ ] Evaluate async migration feasibility
 - [ ] If migrating, use `trio.open_process` instead of custom wrapper
 
@@ -1382,11 +1499,13 @@ class TestFileDescriptorLeaks(MemoryLeakTestCase):
 **If:** We add file system monitoring features
 
 **Benefits:**
+
 - ✅ Efficient event-driven watching
 - ✅ Cross-platform support
 - ✅ Mature library
 
 **Action Items:**
+
 - [ ] Evaluate need for file watching
 - [ ] If needed, integrate `watchdog`
 
@@ -1399,11 +1518,13 @@ class TestFileDescriptorLeaks(MemoryLeakTestCase):
 **Enhance:** Our FD counting to use CPython's proven pattern
 
 **Benefits:**
+
 - ✅ Cross-platform compatibility
 - ✅ Proven pattern from CPython
 - ✅ Handles edge cases (Windows, macOS, Linux)
 
 **Implementation:**
+
 ```python
 # src/thegent/infra/resource_monitor.py
 
@@ -1411,11 +1532,12 @@ import sys
 import os
 import errno
 
+
 def fd_count() -> int:
     """Count the number of open file descriptors (CPython pattern)."""
-    if sys.platform.startswith(('linux', 'android', 'freebsd', 'emscripten')):
+    if sys.platform.startswith(("linux", "android", "freebsd", "emscripten")):
         fd_path = "/proc/self/fd"
-    elif sys.platform == 'darwin':
+    elif sys.platform == "darwin":
         fd_path = "/dev/fd"
     else:
         fd_path = None
@@ -1430,7 +1552,7 @@ def fd_count() -> int:
 
     # Fallback: scan with os.dup()
     MAXFD = 256
-    if hasattr(os, 'sysconf'):
+    if hasattr(os, "sysconf"):
         try:
             MAXFD = os.sysconf("SC_OPEN_MAX")
         except OSError:
@@ -1449,6 +1571,7 @@ def fd_count() -> int:
 ```
 
 **Action Items:**
+
 - [ ] Add `fd_count()` helper using CPython pattern
 - [ ] Use as fallback when `psutil` unavailable
 - [ ] Test cross-platform compatibility
@@ -1460,17 +1583,20 @@ def fd_count() -> int:
 **Enhance:** Our `resource_limits.py` to follow CPython patterns
 
 **Benefits:**
+
 - ✅ Proven error handling
 - ✅ Cross-platform compatibility
 - ✅ Proper limit restoration
 
 **Implementation (from CPython `test_resource.py`):**
+
 ```python
 # src/thegent/infra/resource_limits.py (enhancements)
 
 import resource
 import sys
 from contextlib import contextmanager
+
 
 @contextmanager
 def temp_rlimit(resource_type, limits):
@@ -1498,6 +1624,7 @@ def temp_rlimit(resource_type, limits):
 ```
 
 **Action Items:**
+
 - [ ] Add `temp_rlimit` context manager
 - [ ] Use for temporary limit changes
 - [ ] Ensure proper restoration
@@ -1549,6 +1676,7 @@ def temp_rlimit(resource_type, limits):
 **Impact:** ✅ Reduces code, improves cross-platform support, better introspection
 
 **Replacement Strategy:**
+
 - Keep `resource` module for limit setting (still needed)
 - Use `psutil` for all monitoring and introspection
 - Use `psutil.Process` for per-process resource usage
@@ -1564,6 +1692,7 @@ def temp_rlimit(resource_type, limits):
 **Impact:** ✅ Better process information, process tree navigation, resource usage per process
 
 **Replacement Strategy:**
+
 - Keep `subprocess.Popen` for process creation
 - Use `psutil.Process` for introspection and monitoring
 - Use `psutil` for process tree navigation
@@ -1579,12 +1708,14 @@ def temp_rlimit(resource_type, limits):
 **Impact:** ✅ Automated testing, continuous leak detection, better coverage
 
 **Multi-Tool Strategy:**
+
 - **`psleak`**: Automated test framework for memory + FD + thread leaks
 - **`tracemalloc`**: Built-in memory allocation tracking (zero dependencies)
 - **`fdleaky`**: Development-time FD leak monitoring (interactive debugging)
 - **CPython patterns**: Reference leak detection for comprehensive coverage
 
 **Combined Approach:**
+
 ```python
 # Comprehensive leak detection strategy
 
@@ -1593,6 +1724,7 @@ class TestLeaks(MemoryLeakTestCase):
     def test_no_leak(self):
         self.execute(my_function, checkers=Checkers.all())
 
+
 # 2. Memory tracking with tracemalloc
 @pytest.fixture(autouse=True)
 def check_memory():
@@ -1600,6 +1732,7 @@ def check_memory():
     yield
     # Check for leaks
     tracemalloc.stop()
+
 
 # 3. Development-time monitoring with fdleaky
 # Run: python -m fdleaky my_script.py
@@ -1619,6 +1752,7 @@ def check_memory():
 **Impact:** ✅ More robust FD counting, works even if `psutil` unavailable
 
 **Strategy:**
+
 - Primary: Use `psutil.num_fds()` (fast, cross-platform)
 - Fallback: Use CPython's `fd_count()` pattern (no dependencies)
 - Use in tests and monitoring code
@@ -1634,6 +1768,7 @@ def check_memory():
 **Impact:** ✅ More efficient cleanup, handles edge cases, cross-platform
 
 **Strategy:**
+
 - Use `psutil.Process.children(recursive=True)` for tree traversal
 - Use `psutil.wait_procs()` for efficient waiting
 - Handle `psutil.NoSuchProcess` exceptions gracefully
@@ -1645,6 +1780,7 @@ def check_memory():
 ### 4.1 Complete Resource Monitoring with psutil
 
 **Full Implementation:**
+
 ```python
 # src/thegent/infra/resource_monitor.py (complete)
 
@@ -1663,6 +1799,7 @@ logger = logging.getLogger(__name__)
 @dataclass
 class ResourceStats:
     """Resource usage statistics."""
+
     fd_count: int
     fd_limit: int
     fd_usage_percent: float
@@ -1677,9 +1814,7 @@ class ResourceStats:
     def is_critical(self) -> bool:
         """Check if resource usage is critical."""
         return (
-            self.fd_usage_percent > 80.0
-            or self.process_count > 100
-            or self.memory_mb > 2048  # 2GB
+            self.fd_usage_percent > 80.0 or self.process_count > 100 or self.memory_mb > 2048  # 2GB
         )
 
 
@@ -1817,11 +1952,13 @@ class ResourceMonitor:
 ### 4.2 Enhanced Process Registry with psutil
 
 **Full Implementation:**
+
 ```python
 # src/thegent/infra/process_registry.py (enhancements)
 
 import psutil
 from typing import Optional, List, Dict
+
 
 class ProcessHandle:
     """Enhanced with psutil integration."""
@@ -1928,6 +2065,7 @@ class ProcessRegistry:
 ### 4.3 Comprehensive Leak Detection Test Suite
 
 **Full Implementation:**
+
 ```python
 # tests/test_resource_leaks.py (complete)
 
@@ -2022,7 +2160,7 @@ class TestMemoryLeaksTracemalloc:
             my_function()
 
         snapshot2 = tracemalloc.take_snapshot()
-        top_stats = snapshot2.compare_to(snapshot1, 'lineno')
+        top_stats = snapshot2.compare_to(snapshot1, "lineno")
 
         # Check for significant leaks (>1MB)
         total_leaked = sum(stat.size_diff for stat in top_stats if stat.size_diff > 0)
@@ -2081,9 +2219,9 @@ def check_for_memory_leaks():
             gc.collect()
             final_mem_usage = tracemalloc.get_traced_memory()[0]
             # Fail if more than 10KB leaked
-            assert (
-                final_mem_usage - current_mem_usage < 10_000
-            ), f"memory was leaked: {final_mem_usage - current_mem_usage} bytes"
+            assert final_mem_usage - current_mem_usage < 10_000, (
+                f"memory was leaked: {final_mem_usage - current_mem_usage} bytes"
+            )
             tracemalloc.stop()
 ```
 
@@ -2110,6 +2248,7 @@ def check_for_memory_leaks():
    - [ ] Add resource usage tracking per process
 
 **Expected Impact:**
+
 - ✅ Better resource monitoring
 - ✅ Cross-platform improvements
 - ✅ Reduced custom code
@@ -2144,6 +2283,7 @@ def check_for_memory_leaks():
    - [ ] Run with `CHECK_LEAKS=1` environment variable
 
 **Expected Impact:**
+
 - ✅ Automated leak detection (multiple tools)
 - ✅ Continuous testing
 - ✅ Early leak detection
@@ -2164,6 +2304,7 @@ def check_for_memory_leaks():
    - [ ] If needed, use `watchdog`
 
 **Expected Impact:**
+
 - ✅ Better architecture if async is needed
 - ✅ File watching if needed
 
@@ -2197,19 +2338,19 @@ dev = [
 
 ### 6.2 Dependency Justification
 
-| Dependency | Purpose | Justification |
-|------------|---------|---------------|
-| `psutil` | Resource monitoring, process introspection | Mature, cross-platform, well-maintained. Replaces custom resource monitoring code. |
-| `psleak` | Leak detection tests | Specialized framework for leak detection. Better than manual testing. |
-| `fdleaky` | Development-time FD leak detection | Interactive debugging tool for FD leaks. Complements `psleak` tests. |
+| Dependency | Purpose                                    | Justification                                                                      |
+| ---------- | ------------------------------------------ | ---------------------------------------------------------------------------------- |
+| `psutil`   | Resource monitoring, process introspection | Mature, cross-platform, well-maintained. Replaces custom resource monitoring code. |
+| `psleak`   | Leak detection tests                       | Specialized framework for leak detection. Better than manual testing.              |
+| `fdleaky`  | Development-time FD leak detection         | Interactive debugging tool for FD leaks. Complements `psleak` tests.               |
 
 ### 6.3 Built-in Tools (No Dependencies)
 
-| Tool | Purpose | Usage |
-|------|---------|-------|
-| `tracemalloc` | Memory leak detection | Built into Python 3.4+. Zero dependencies. Use in tests. |
-| `resource` | Resource limit management | Built into Python (Unix). Already using. |
-| `test.support.os_helper.fd_count()` | FD counting pattern | CPython pattern. Use as fallback. |
+| Tool                                | Purpose                   | Usage                                                    |
+| ----------------------------------- | ------------------------- | -------------------------------------------------------- |
+| `tracemalloc`                       | Memory leak detection     | Built into Python 3.4+. Zero dependencies. Use in tests. |
+| `resource`                          | Resource limit management | Built into Python (Unix). Already using.                 |
+| `test.support.os_helper.fd_count()` | FD counting pattern       | CPython pattern. Use as fallback.                        |
 
 ---
 
@@ -2268,11 +2409,13 @@ dev = [
 ### Libraries
 
 #### High Priority
+
 - **psutil**: https://github.com/giampaolo/psutil — Process and system monitoring
 - **psleak**: https://github.com/giampaolo/psleak — Leak detection framework
 - **fdleaky**: https://github.com/tofarr/fdleaky — File descriptor leak detection
 
 #### Standard Library
+
 - **tracemalloc**: https://docs.python.org/3/library/tracemalloc.html — Built-in memory tracing
 - **resource**: https://docs.python.org/3/library/resource.html — Resource limit management
 - **subprocess**: https://docs.python.org/3/library/subprocess.html — Process management
@@ -2280,6 +2423,7 @@ dev = [
 - **concurrent.futures**: https://docs.python.org/3/library/concurrent.futures.html — Process pool executor
 
 #### Low Priority / Reference
+
 - **trio**: https://github.com/python-trio/trio — Async subprocess management
 - **pexpect**: https://github.com/pexpect/pexpect — Interactive subprocess control
 - **sh**: https://github.com/amoffat/sh — Pythonic subprocess interface
@@ -2321,6 +2465,7 @@ dev = [
 ### 10.1 Process Management
 
 **DO:**
+
 - ✅ Always use context managers (`with Popen(...)`)
 - ✅ Explicitly close pipes before `wait()`
 - ✅ Use `DEVNULL` for unused streams
@@ -2329,6 +2474,7 @@ dev = [
 - ✅ Clean up process trees recursively
 
 **DON'T:**
+
 - ❌ Leave `Popen` objects without cleanup
 - ❌ Forget to close pipes
 - ❌ Ignore `TimeoutExpired` exceptions
@@ -2340,6 +2486,7 @@ dev = [
 ### 10.2 Resource Monitoring
 
 **DO:**
+
 - ✅ Use `psutil` for all resource monitoring
 - ✅ Monitor FD count, memory, CPU, processes
 - ✅ Track resource usage per process
@@ -2347,6 +2494,7 @@ dev = [
 - ✅ Use `tracemalloc` for memory tracking
 
 **DON'T:**
+
 - ❌ Use custom resource monitoring when `psutil` available
 - ❌ Ignore resource limits
 - ❌ Skip leak detection in tests
@@ -2357,6 +2505,7 @@ dev = [
 ### 10.3 Leak Detection
 
 **DO:**
+
 - ✅ Use `psleak` for automated test leak detection
 - ✅ Use `tracemalloc` for memory leak detection
 - ✅ Use `fdleaky` for development-time monitoring
@@ -2365,6 +2514,7 @@ dev = [
 - ✅ Check for leaks in CI/CD
 
 **DON'T:**
+
 - ❌ Skip leak detection in tests
 - ❌ Ignore increasing resource trends
 - ❌ Forget to clean up in tests
@@ -2375,12 +2525,14 @@ dev = [
 ### 10.4 Cross-Platform Considerations
 
 **DO:**
+
 - ✅ Use `psutil` for cross-platform compatibility
 - ✅ Handle Windows gracefully (no `resource` module)
 - ✅ Use platform-specific optimizations when available
 - ✅ Test on all target platforms
 
 **DON'T:**
+
 - ❌ Assume Unix-only APIs work everywhere
 - ❌ Ignore platform differences
 - ❌ Skip Windows testing
@@ -2393,6 +2545,7 @@ dev = [
 ### 11.1 Good Patterns
 
 #### Pattern 1: Context Manager for Processes
+
 ```python
 # GOOD: Automatic cleanup
 with subprocess.Popen(...) as proc:
@@ -2401,6 +2554,7 @@ with subprocess.Popen(...) as proc:
 ```
 
 #### Pattern 2: Registry-Based Tracking
+
 ```python
 # GOOD: Centralized tracking
 registry = get_registry()
@@ -2410,6 +2564,7 @@ with manager.popen(["cmd"], name="task") as proc:
 ```
 
 #### Pattern 3: Process Tree Cleanup
+
 ```python
 # GOOD: Clean up entire tree
 proc = psutil.Process(pid)
@@ -2420,6 +2575,7 @@ psutil.wait_procs(children, timeout=10)
 ```
 
 #### Pattern 4: Resource Monitoring
+
 ```python
 # GOOD: Use psutil for monitoring
 proc = psutil.Process(pid)
@@ -2432,6 +2588,7 @@ fd_count = proc.num_fds()
 ### 11.2 Anti-Patterns
 
 #### Anti-Pattern 1: Unmanaged Processes
+
 ```python
 # BAD: Process not tracked or cleaned up
 proc = subprocess.Popen(["cmd"])
@@ -2439,6 +2596,7 @@ proc = subprocess.Popen(["cmd"])
 ```
 
 #### Anti-Pattern 2: Unclosed Pipes
+
 ```python
 # BAD: Pipes not closed
 proc = subprocess.Popen(["cmd"], stdout=subprocess.PIPE)
@@ -2446,13 +2604,16 @@ proc.wait()  # Pipe still open!
 ```
 
 #### Anti-Pattern 3: Manual Resource Monitoring
+
 ```python
 # BAD: Custom resource monitoring
 import os
+
 fd_count = len(os.listdir("/proc/self/fd"))  # Unix-only!
 ```
 
 #### Anti-Pattern 4: No Leak Detection
+
 ```python
 # BAD: No leak detection in tests
 def test_function():
@@ -2466,12 +2627,14 @@ def test_function():
 ### 12.1 psutil Performance
 
 **Overhead:**
+
 - `psutil.Process()`: ~0.1ms per call
 - `proc.memory_info()`: ~0.5ms per call
 - `proc.num_fds()`: ~1ms per call (may scan /proc)
 - `proc.children()`: ~2ms per call (process tree traversal)
 
 **Optimization:**
+
 - Cache `psutil.Process` objects (they're lightweight)
 - Batch resource queries
 - Use `proc.memory_info()` sparingly (expensive)
@@ -2482,11 +2645,13 @@ def test_function():
 ### 12.2 Leak Detection Performance
 
 **Overhead:**
+
 - `psleak`: ~10-20% overhead (runs tests multiple times)
 - `tracemalloc`: ~5-10% overhead (tracks all allocations)
 - `fdleaky`: ~5-15% overhead (patches file operations)
 
 **Optimization:**
+
 - Run leak detection only in CI/CD or with `CHECK_LEAKS=1`
 - Use `tracemalloc` with limited frame count (default 1)
 - Use `psleak` with appropriate `times` parameter
@@ -2499,11 +2664,13 @@ def test_function():
 ### 13.1 Process Management Security
 
 **Risks:**
+
 - Process injection attacks
 - Resource exhaustion attacks
 - Process tree manipulation
 
 **Mitigations:**
+
 - ✅ Limit concurrent processes (`MAX_CONCURRENT_PROCESSES`)
 - ✅ Set resource limits (`RLIMIT_NOFILE`, `RLIMIT_NPROC`)
 - ✅ Monitor resource usage
@@ -2515,10 +2682,12 @@ def test_function():
 ### 13.2 Resource Monitoring Security
 
 **Risks:**
+
 - Information disclosure (process details)
 - Resource exhaustion (monitoring overhead)
 
 **Mitigations:**
+
 - ✅ Handle `psutil.AccessDenied` gracefully
 - ✅ Limit monitoring frequency
 - ✅ Don't log sensitive process information

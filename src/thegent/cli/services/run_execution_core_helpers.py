@@ -29,17 +29,10 @@ from thegent.ux.cli_errors import print_exc
 err_console = Console(stderr=True)
 
 # Import decomposed modules
-from thegent.use_cases.execute_task import ExecutionOrchestrator
-from thegent.adapters.execution_io import (
-    ShadowWorkspaceManager,
-    ResourceLockManager,
-    ProcessEnvironmentBuilder,
-    ProcessSpawner,
-)
 
 from thegent.agents import get_fallback_agents, get_runner, resolve_agent
-from thegent.agents.resilience import is_usage_limit
 from thegent.agents.base import AgentRunner, RunResult
+from thegent.agents.resilience import is_usage_limit
 
 
 # Lazy import wrapper to avoid circular dependency
@@ -64,35 +57,38 @@ class _LazyImpl:
 _impl_lazy = _LazyImpl()
 
 # These are now accessed via _impl_lazy._apply_pareto_routing etc.
-from thegent.cli.commands.observability_impl import escalate_add_impl
-from thegent.cli.services import run_session_helpers as _rsh
-from thegent.cli.services.run_session_helpers import resolve_cwd as _resolve_cwd
-from thegent.config import ThegentSettings
-from thegent.execution import AgentSource, InteractivityMode, RunMeta, RunRegistry
-from thegent.execution import (  # noqa: F401 — surfaced via _bind_impl_namespace
-    Auditor,
-    CircuitBreakerRegistry,
-    ConcurrencyController,
-    FreshnessValidator,
-    InterruptionTracker,
-    LoadClassifier,
-    OverrideRegistry,
-    PolicyEngine,
-    TrustBoundaryValidator,
-)
-from thegent.maif import MAIFRunner
-from thegent.agents.registry import list_agent_names
-from thegent.output_parser import condense_stream_to_display, extract_condensed
-from thegent.cli.commands.session_meta_impl import (
-    _build_continuation_prompt,
-    _save_session_meta,
-)
-
-from thegent.cli.services import run_session_helpers as _rsh_impl
 import os
 import platform
 import socket
 import subprocess
+
+from thegent.agents.registry import list_agent_names
+from thegent.cli.commands.observability_impl import escalate_add_impl
+from thegent.cli.commands.session_meta_impl import (
+    _build_continuation_prompt,
+    _save_session_meta,
+)
+from thegent.cli.services import run_session_helpers as _rsh
+from thegent.cli.services import run_session_helpers as _rsh_impl
+from thegent.cli.services.run_session_helpers import resolve_cwd as _resolve_cwd
+from thegent.config import ThegentSettings
+from thegent.execution import (  # noqa: F401 — surfaced via _bind_impl_namespace
+    AgentSource,
+    Auditor,
+    CircuitBreakerRegistry,
+    ConcurrencyController,
+    FreshnessValidator,
+    InteractivityMode,
+    InterruptionTracker,
+    LoadClassifier,
+    OverrideRegistry,
+    PolicyEngine,
+    RunMeta,
+    RunRegistry,
+    TrustBoundaryValidator,
+)
+from thegent.maif import MAIFRunner
+from thegent.output_parser import condense_stream_to_display, extract_condensed
 
 _log = structlog.get_logger(__name__)
 console = Console()
@@ -323,7 +319,10 @@ def _phase_resolve_effective_timeout(
     )
     if agent == "claude":
         _min_claude = (
-            _config.get("default_timeout_claude", getattr(settings, "default_timeout_claude", 300))
+            _config.get(
+                "default_timeout_claude",
+                getattr(settings, "default_timeout_claude", 300),
+            )
             if _config
             else getattr(settings, "default_timeout_claude", 300)
         )
@@ -331,7 +330,11 @@ def _phase_resolve_effective_timeout(
             _min_claude = float(_min_claude)
             effective_timeout = max(float(effective_timeout), _min_claude)
         except (TypeError, ValueError) as exc:
-            _log.debug("Invalid claude timeout override '%s'; using existing timeout: %s", _min_claude, exc)
+            _log.debug(
+                "Invalid claude timeout override '%s'; using existing timeout: %s",
+                _min_claude,
+                exc,
+            )
     return int(effective_timeout)
 
 
@@ -398,7 +401,6 @@ def _phase_acquire_concurrency(
     rid: str,
 ) -> dict[str, Any] | None:
     """Concurrency controller acquisition (WP-5001)."""
-    from thegent.execution import ConcurrencyController
 
     cc = ConcurrencyController(
         settings.session_dir,
@@ -413,7 +415,9 @@ def _phase_acquire_concurrency(
 
             mgr = TeammateManager(settings.cache_dir / "teammates.json")
             mgr.update_status(
-                task_id, "failed", summary="Run blocked: Concurrency limit reached (resource contention)."
+                task_id,
+                "failed",
+                summary="Run blocked: Concurrency limit reached (resource contention).",
             )
         except Exception as e:
             _log.debug("Failed to update teammate delegation status: %s", e)
@@ -485,9 +489,6 @@ def _phase_fatigue_freshness_burst(
     """Combined fatigue + freshness + burst checks (WP-4004 / WP-4005 / WP-5002)."""
     from thegent.execution import (
         DeferralQueue,
-        FreshnessValidator,
-        InterruptionTracker,
-        LoadClassifier,
     )
 
     it = InterruptionTracker(settings.session_dir)
@@ -496,7 +497,10 @@ def _phase_fatigue_freshness_burst(
         _log.warning("High fatigue detected (%.2f); recommending non-critical deferral.", fatigue)
         if lane != "critical":
             console.print("[bold yellow]ADVISORY:[/bold yellow] High system fatigue. Deferring non-critical task.")
-            return {"error": "System fatigue limit reached. Task deferred.", "exit_code": 1}
+            return {
+                "error": "System fatigue limit reached. Task deferred.",
+                "exit_code": 1,
+            }
     fv = FreshnessValidator(settings.session_dir)
     freshness_issues: list[str] = []
     if registry_path is not None:
@@ -515,7 +519,11 @@ def _phase_fatigue_freshness_burst(
         burst_rid = rid or f"run_def_{uuid.uuid4().hex[:8]}"
         dq.defer(burst_rid, "System in burst mode; non-critical deferral active")
         console.print("[bold yellow]BURST MODE:[/bold yellow] Non-critical task deferred to queue.")
-        return {"error": "System in burst mode. Task deferred.", "exit_code": 1, "run_id": burst_rid}
+        return {
+            "error": "System in burst mode. Task deferred.",
+            "exit_code": 1,
+            "run_id": burst_rid,
+        }
     return None
 
 
@@ -691,8 +699,14 @@ def _phase_acquire_resource_leases(
             acquired.append((path, token))
             _log.info("Acquired lease for %s", resource)
         else:
-            _log.error("Failed to acquire lease for %s; already locked by another agent.", resource)
-            return {"error": f"Resource {resource} is locked by another agent.", "exit_code": 1}
+            _log.error(
+                "Failed to acquire lease for %s; already locked by another agent.",
+                resource,
+            )
+            return {
+                "error": f"Resource {resource} is locked by another agent.",
+                "exit_code": 1,
+            }
     return acquired
 
 
@@ -931,7 +945,11 @@ def _phase_resolve_task_metadata(
         from thegent.models.task_io import TaskInput, TaskSpec
         from thegent.task import parse_task_file
     except Exception as exc:  # pragma: no cover - defensive
-        _log.warning("TaskSpec imports unavailable; skipping task metadata for %s: %s", task_id, exc)
+        _log.warning(
+            "TaskSpec imports unavailable; skipping task metadata for %s: %s",
+            task_id,
+            exc,
+        )
         return None, None
 
     tasks_dir = cwd / "tasks" if cwd else Path("tasks")
@@ -985,7 +1003,10 @@ def _phase_dispatch_grounded_run(
         run_id=run_id,
         _google_grounding_requested=google_grounding,
     )
-    from thegent.agents.grounding import GEMINI_GROUNDING_AGENTS, run_gemini_with_grounding
+    from thegent.agents.grounding import (
+        GEMINI_GROUNDING_AGENTS,
+        run_gemini_with_grounding,
+    )
 
     if agent not in GEMINI_GROUNDING_AGENTS:
         return {
@@ -1032,9 +1053,11 @@ def _phase_build_fallback_plan(
     """
     from thegent.agents.state_machine import FallbackStateMachine
     from thegent.contracts.policy import FallbackPolicy
-    from thegent.contracts.telemetry import ContractTelemetry, rank_providers_by_parser_quality
+    from thegent.contracts.telemetry import (
+        ContractTelemetry,
+        rank_providers_by_parser_quality,
+    )
 
-    use_stream = not full
     agents_to_try: list[str] = [agent] if agent else []
     if model:
         try:
@@ -1494,7 +1517,6 @@ def _phase_build_execution_services(
     """
     from thegent.execution import (
         Auditor,
-        CircuitBreakerRegistry,
         OverrideRegistry,
         PolicyEngine,
         TrustBoundaryValidator,
@@ -2007,12 +2029,10 @@ def run_impl_core(
     # the orchestrator stays a thin composer (CC ↓, inlined 18 lines).
     services = _phase_build_execution_services(settings, registry)
     circuit_breaker = services.circuit_breaker
-    trust_boundary = services.trust_boundary
     override_registry = services.override_registry
     policy_engine = services.policy_engine
     auditor = services.auditor
     maif_runner = services.maif_runner
-    escalation_sla_minutes = services.escalation_sla_minutes
 
     # WP-3007: Trust Boundary Checks — delegated to ``_phase_apply_trust_boundary``
     # so the canonical failure-payload shape (with ``run_id``) lives in one
@@ -2411,7 +2431,6 @@ def _phase_bg_init_services(
     """
     from thegent.execution import (
         Auditor,
-        CircuitBreakerRegistry,
         OverrideRegistry,
         PolicyEngine,
         TrustBoundaryValidator,
@@ -2498,7 +2517,12 @@ def _bg_handle_policy_result(
         return _phase_register_policy_denial(run_meta, escalation_sla_minutes, pol_reason, registry)
     if pol_res == "pause":
         return _phase_register_hitl_pause(
-            settings, run_meta, registry, escalation_sla_minutes, pol_reason, suffix=" (bg)"
+            settings,
+            run_meta,
+            registry,
+            escalation_sla_minutes,
+            pol_reason,
+            suffix=" (bg)",
         )
     return None
 
@@ -2517,16 +2541,19 @@ def _phase_bg_remote_dispatch(
     """
     if not remote:
         return None
-    from thegent.research.remote_compute import RemoteComputeClient
-
     import sys
     import tempfile
+
+    from thegent.research.remote_compute import RemoteComputeClient
 
     client = RemoteComputeClient(remote)
     remote_path = Path(tempfile.gettempdir()) / f"thegent-run-{run_meta.run_id}"
     _log.info("Offloading background execution to remote host: %s", remote)
     if not client.transfer_files(cwd, str(remote_path)):
-        return {"error": f"Failed to sync project to remote host: {remote}", "exit_code": 1}
+        return {
+            "error": f"Failed to sync project to remote host: {remote}",
+            "exit_code": 1,
+        }
     remote_args = [a for a in sys.argv if not a.startswith("--remote")]
     remote_command = " ".join(f'"{a}"' if " " in a else a for a in remote_args)
     _log.info("Running remote background command in %s", remote_path)
@@ -2571,8 +2598,24 @@ def _phase_bg_build_command(
     place when ``settings.use_holdpty`` is True; the canonical sock path
     is derived from the ``in`` session path.
     """
-    cmd: list[str] = [sys.executable, "-m", "thegent.main", "run", "agent", effective_prompt]
-    cmd.extend(["--cd", str(cwd), "--timeout", str(effective_timeout), "--lane", lane or "standard"])
+    cmd: list[str] = [
+        sys.executable,
+        "-m",
+        "thegent.main",
+        "run",
+        "agent",
+        effective_prompt,
+    ]
+    cmd.extend(
+        [
+            "--cd",
+            str(cwd),
+            "--timeout",
+            str(effective_timeout),
+            "--lane",
+            lane or "standard",
+        ]
+    )
     if agent:
         cmd.extend(["--agent", agent])
     if full:
@@ -2849,7 +2892,6 @@ def bg_impl_core(
     if impl_ns is None:
         raise ValueError("impl_ns is required")
     _bind_impl_namespace(impl_ns)
-    import sys
 
     settings = ThegentSettings()
     rid, _tracker = _phase_bg_init_tracker(settings, run_id)

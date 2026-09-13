@@ -1,11 +1,10 @@
 """Unit tests for the modular CLI app entrypoints."""
 
-import orjson as json
-import pytest
-from types import SimpleNamespace
-from unittest.mock import ANY, patch
 from pathlib import Path
+from types import SimpleNamespace
+from unittest.mock import patch
 
+import orjson as json
 from typer.testing import CliRunner
 
 from thegent.cli.apps.main import app
@@ -18,7 +17,15 @@ def test_top_level_ps_shortcut_routes_to_run_ps() -> None:
     with patch("thegent.cli.apps.run.run_ps") as mock_run_ps:
         result = runner.invoke(
             app,
-            ["ps", "--all", "--owner", "alice", "--format", "json", "--include-contract"],
+            [
+                "ps",
+                "--all",
+                "--owner",
+                "alice",
+                "--format",
+                "json",
+                "--include-contract",
+            ],
         )
 
     assert result.exit_code == 0
@@ -1187,8 +1194,8 @@ def test_phench_projects_run_module_repo_ref_merges_cli_and_manifest_overrides()
         patch("thegent.cli.apps.phench.list_targets") as mock_list_targets,
         patch("thegent.cli.apps.phench.load_target_lock") as mock_load_target_lock,
         patch("thegent.cli.apps.phench_projects.load_module_manifest") as mock_load_module_manifest,
-        patch("thegent.cli.apps.phench.lock_target") as mock_lock_target,
-        patch("thegent.cli.apps.phench.materialize_target") as mock_materialize_target,
+        patch("thegent.cli.apps.phench.lock_target"),
+        patch("thegent.cli.apps.phench.materialize_target"),
         patch("thegent.cli.apps.phench.run_target") as mock_run_target,
     ):
         mock_list_targets.return_value = ["alpha"]
@@ -1633,7 +1640,10 @@ def test_phench_tui_all_repos_no_interactive_allows_policy_defaults() -> None:
 
 def test_phench_snapshot_create_routes_to_service() -> None:
     with patch("thegent.cli.apps.phench.create_target_snapshot") as mock_create_snapshot:
-        mock_create_snapshot.return_value = {"snapshot_id": "snap-001", "target": "alpha"}
+        mock_create_snapshot.return_value = {
+            "snapshot_id": "snap-001",
+            "target": "alpha",
+        }
         result = runner.invoke(
             app,
             [
@@ -1669,7 +1679,10 @@ def test_phench_snapshot_list_routes_to_service() -> None:
 
 def test_phench_snapshot_show_routes_to_service() -> None:
     with patch("thegent.cli.apps.phench.show_target_snapshot") as mock_show_snapshot:
-        mock_show_snapshot.return_value = {"snapshot_id": "snap-001", "target_name": "alpha"}
+        mock_show_snapshot.return_value = {
+            "snapshot_id": "snap-001",
+            "target_name": "alpha",
+        }
         result = runner.invoke(
             app,
             [

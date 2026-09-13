@@ -42,24 +42,21 @@ Covers:
 from __future__ import annotations
 
 import asyncio
-import orjson as json
-from types import SimpleNamespace
 from typing import Any
 from unittest.mock import AsyncMock, MagicMock, patch
 
+import orjson as json
 import pytest
 
 from thegent.agents.plangent import (
     LLMPlangentPlanner,
     Plan,
     PlangentPlanner,
-    PlanNode,
     _LLMNodeSpec,
     _parse_llm_response,
     _specs_to_plan_nodes,
 )
 from thegent.orchestration.plan import OrchestrationPlan
-
 
 # ---------------------------------------------------------------------------
 # Helpers
@@ -149,8 +146,20 @@ class TestParseLlmResponseValid:
         raw = json.dumps(
             {
                 "nodes": [
-                    {"id": "t1", "task": "Step 1", "agent_hint": None, "deps": [], "budget_tokens": None},
-                    {"id": "t2", "task": "Step 2", "agent_hint": "coder", "deps": ["t1"], "budget_tokens": 200},
+                    {
+                        "id": "t1",
+                        "task": "Step 1",
+                        "agent_hint": None,
+                        "deps": [],
+                        "budget_tokens": None,
+                    },
+                    {
+                        "id": "t2",
+                        "task": "Step 2",
+                        "agent_hint": "coder",
+                        "deps": ["t1"],
+                        "budget_tokens": 200,
+                    },
                 ]
             }
         )
@@ -161,7 +170,17 @@ class TestParseLlmResponseValid:
     def test_strips_whitespace_from_id_and_task(self) -> None:
         """_parse_llm_response strips leading/trailing whitespace from id and task."""
         raw = json.dumps(
-            {"nodes": [{"id": " t1 ", "task": "  do it  ", "agent_hint": None, "deps": [], "budget_tokens": None}]}
+            {
+                "nodes": [
+                    {
+                        "id": " t1 ",
+                        "task": "  do it  ",
+                        "agent_hint": None,
+                        "deps": [],
+                        "budget_tokens": None,
+                    }
+                ]
+            }
         )
         specs = _parse_llm_response(raw)
         assert specs[0].id == "t1"
@@ -218,7 +237,17 @@ class TestParseLlmResponseErrors:
     def test_raises_on_blank_node_id(self) -> None:
         """_parse_llm_response raises ValueError for a blank 'id' field."""
         raw = json.dumps(
-            {"nodes": [{"id": "   ", "task": "do", "agent_hint": None, "deps": [], "budget_tokens": None}]}
+            {
+                "nodes": [
+                    {
+                        "id": "   ",
+                        "task": "do",
+                        "agent_hint": None,
+                        "deps": [],
+                        "budget_tokens": None,
+                    }
+                ]
+            }
         )
         with pytest.raises(ValueError, match="non-empty string"):
             _parse_llm_response(raw)
@@ -226,7 +255,17 @@ class TestParseLlmResponseErrors:
     def test_raises_on_blank_node_task(self) -> None:
         """_parse_llm_response raises ValueError for a blank 'task' field."""
         raw = json.dumps(
-            {"nodes": [{"id": "t1", "task": "", "agent_hint": None, "deps": [], "budget_tokens": None}]}
+            {
+                "nodes": [
+                    {
+                        "id": "t1",
+                        "task": "",
+                        "agent_hint": None,
+                        "deps": [],
+                        "budget_tokens": None,
+                    }
+                ]
+            }
         ).decode()
         with pytest.raises(ValueError, match="non-empty string"):
             _parse_llm_response(raw)
@@ -234,7 +273,17 @@ class TestParseLlmResponseErrors:
     def test_raises_on_non_str_agent_hint(self) -> None:
         """_parse_llm_response raises ValueError when agent_hint is non-string non-null."""
         raw = json.dumps(
-            {"nodes": [{"id": "t1", "task": "do", "agent_hint": 42, "deps": [], "budget_tokens": None}]}
+            {
+                "nodes": [
+                    {
+                        "id": "t1",
+                        "task": "do",
+                        "agent_hint": 42,
+                        "deps": [],
+                        "budget_tokens": None,
+                    }
+                ]
+            }
         ).decode()
         with pytest.raises(ValueError, match="agent_hint must be a string or null"):
             _parse_llm_response(raw)
@@ -242,7 +291,17 @@ class TestParseLlmResponseErrors:
     def test_raises_on_non_list_deps(self) -> None:
         """_parse_llm_response raises ValueError when deps is not a list."""
         raw = json.dumps(
-            {"nodes": [{"id": "t1", "task": "do", "agent_hint": None, "deps": "t0", "budget_tokens": None}]}
+            {
+                "nodes": [
+                    {
+                        "id": "t1",
+                        "task": "do",
+                        "agent_hint": None,
+                        "deps": "t0",
+                        "budget_tokens": None,
+                    }
+                ]
+            }
         )
         with pytest.raises(ValueError, match="deps must be a list"):
             _parse_llm_response(raw)
@@ -250,7 +309,17 @@ class TestParseLlmResponseErrors:
     def test_raises_on_non_str_dep_entry(self) -> None:
         """_parse_llm_response raises ValueError when a dep entry is not a string."""
         raw = json.dumps(
-            {"nodes": [{"id": "t1", "task": "do", "agent_hint": None, "deps": [123], "budget_tokens": None}]}
+            {
+                "nodes": [
+                    {
+                        "id": "t1",
+                        "task": "do",
+                        "agent_hint": None,
+                        "deps": [123],
+                        "budget_tokens": None,
+                    }
+                ]
+            }
         )
         with pytest.raises(ValueError, match="deps entries must be strings"):
             _parse_llm_response(raw)
@@ -258,7 +327,17 @@ class TestParseLlmResponseErrors:
     def test_raises_on_float_budget_tokens(self) -> None:
         """_parse_llm_response raises ValueError when budget_tokens is a float."""
         raw = json.dumps(
-            {"nodes": [{"id": "t1", "task": "do", "agent_hint": None, "deps": [], "budget_tokens": 1.5}]}
+            {
+                "nodes": [
+                    {
+                        "id": "t1",
+                        "task": "do",
+                        "agent_hint": None,
+                        "deps": [],
+                        "budget_tokens": 1.5,
+                    }
+                ]
+            }
         ).decode()
         with pytest.raises(ValueError, match="budget_tokens must be an int or null"):
             _parse_llm_response(raw)
@@ -297,7 +376,15 @@ class TestSpecsToPlanNodes:
 
     def test_agent_hint_stored_in_metadata(self) -> None:
         """_specs_to_plan_nodes stores agent_hint in node.metadata."""
-        specs = [_LLMNodeSpec(id="t1", task="do it", agent_hint="researcher", deps=[], budget_tokens=None)]
+        specs = [
+            _LLMNodeSpec(
+                id="t1",
+                task="do it",
+                agent_hint="researcher",
+                deps=[],
+                budget_tokens=None,
+            )
+        ]
         nodes = _specs_to_plan_nodes(specs)
         assert nodes[0].metadata.get("agent_hint") == "researcher"
 
@@ -315,7 +402,15 @@ class TestSpecsToPlanNodes:
 
     def test_unknown_dep_reference_silently_dropped(self) -> None:
         """_specs_to_plan_nodes drops dep references to unknown LLM ids."""
-        specs = [_LLMNodeSpec(id="t1", task="do it", agent_hint=None, deps=["unknown_id"], budget_tokens=None)]
+        specs = [
+            _LLMNodeSpec(
+                id="t1",
+                task="do it",
+                agent_hint=None,
+                deps=["unknown_id"],
+                budget_tokens=None,
+            )
+        ]
         nodes = _specs_to_plan_nodes(specs)
         assert nodes[0].depends_on == []
 
@@ -390,7 +485,13 @@ class TestLLMPlangentPlannerDecomposeSuccess:
                         "deps": [],
                         "budget_tokens": 300,
                     },
-                    {"id": "t2", "task": "Write the code", "agent_hint": "coder", "deps": ["t1"], "budget_tokens": 700},
+                    {
+                        "id": "t2",
+                        "task": "Write the code",
+                        "agent_hint": "coder",
+                        "deps": ["t1"],
+                        "budget_tokens": 700,
+                    },
                 ]
             }
         ).decode()
@@ -507,8 +608,20 @@ class TestLLMPlangentPlannerOrchestrationPlan:
         return json.dumps(
             {
                 "nodes": [
-                    {"id": "a1", "task": "Analyse", "agent_hint": "analyst", "deps": [], "budget_tokens": 200},
-                    {"id": "a2", "task": "Implement", "agent_hint": "coder", "deps": ["a1"], "budget_tokens": 600},
+                    {
+                        "id": "a1",
+                        "task": "Analyse",
+                        "agent_hint": "analyst",
+                        "deps": [],
+                        "budget_tokens": 200,
+                    },
+                    {
+                        "id": "a2",
+                        "task": "Implement",
+                        "agent_hint": "coder",
+                        "deps": ["a1"],
+                        "budget_tokens": 600,
+                    },
                 ]
             }
         ).decode()

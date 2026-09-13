@@ -20,7 +20,9 @@ from thegent.governance.semantic_firewall import SemanticFirewall
 from thegent.governance.tee_check import TEEChecker
 from thegent.orchestration.plan import OrchestrationPlan
 from thegent.orchestration.sub_agent_dispatcher.dispatch_result import DispatchResult
-from thegent.orchestration.sub_agent_dispatcher.topological_sort import topological_order
+from thegent.orchestration.sub_agent_dispatcher.topological_sort import (
+    topological_order,
+)
 
 pytestmark = pytest.mark.performance
 
@@ -196,7 +198,12 @@ class TestBenchmarkSemanticFirewall:
         def inspect():
             firewall.inspect_output(output)
 
-        result = _benchmark("SemanticFirewall.inspect_output (clean)", iterations, inspect, threshold_ms=500)
+        result = _benchmark(
+            "SemanticFirewall.inspect_output (clean)",
+            iterations,
+            inspect,
+            threshold_ms=500,
+        )
         _assert_within_threshold(result["name"], result["elapsed_s"], 500)
 
     def test_inspect_output_with_redact_match(self, firewall: SemanticFirewall) -> None:
@@ -206,7 +213,12 @@ class TestBenchmarkSemanticFirewall:
         def inspect():
             firewall.inspect_output(output)
 
-        result = _benchmark("SemanticFirewall.inspect_output (redact match)", iterations, inspect, threshold_ms=1000)
+        result = _benchmark(
+            "SemanticFirewall.inspect_output (redact match)",
+            iterations,
+            inspect,
+            threshold_ms=1000,
+        )
         _assert_within_threshold(result["name"], result["elapsed_s"], 1000)
 
 

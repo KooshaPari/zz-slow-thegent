@@ -19,7 +19,7 @@ for task coordination.
 
 ### Methods
 
-#### RecursiveRewardModel.__init__
+#### RecursiveRewardModel.**init**
 
 ```python
 __init__(self: Any)

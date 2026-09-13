@@ -12,7 +12,7 @@ Distributed resource coordination.
 
 ### Methods
 
-#### DistributedResourceCoordination.__init__
+#### DistributedResourceCoordination.**init**
 
 ```python
 __init__(self: Any)

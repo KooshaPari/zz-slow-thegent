@@ -1,10 +1,10 @@
 from __future__ import annotations
 
 import asyncio
-import orjson as json
 from pathlib import Path
 from types import SimpleNamespace
 
+import orjson as json
 import pytest
 
 from thegent.commands.sync import SyncCommand, SyncOperationStatus
@@ -31,7 +31,12 @@ def test_wl6810_sync_configs_merges_conflicts_and_persists(tmp_path: Path) -> No
     ws.write_text("---\nproviders:\n  anthropic: opus\n---\n# ws\n", encoding="utf-8")
     pl.write_text("---\nproviders:\n  anthropic: mini\n---\n# plan\n", encoding="utf-8")
 
-    manager.config_sources = [("thegent", tg), ("manage", mg), ("workstream", ws), ("plan", pl)]
+    manager.config_sources = [
+        ("thegent", tg),
+        ("manage", mg),
+        ("workstream", ws),
+        ("plan", pl),
+    ]
     manager.unified_config = {
         "thegent": {"providers": {"anthropic": "sonnet"}},
         "manage": {"providers": {"anthropic": "haiku"}},
@@ -51,15 +56,21 @@ def test_wl6810_sync_configs_merges_conflicts_and_persists(tmp_path: Path) -> No
     assert mg.read_text(encoding="utf-8") == first
 
 
-def test_wl6811_sync_loop_collects_real_state_and_validates_payload(tmp_path: Path) -> None:
+def test_wl6811_sync_loop_collects_real_state_and_validates_payload(
+    tmp_path: Path,
+) -> None:
     class _Registry:
         def list_projects(self):
-            return [{"id": "local", "path": str(tmp_path)}, {"id": "peer", "path": str(tmp_path / "peer")}]
+            return [
+                {"id": "local", "path": str(tmp_path)},
+                {"id": "peer", "path": str(tmp_path / "peer")},
+            ]
 
     loop = SyncLoop(registry=_Registry(), sync_dir=tmp_path / "sync")
     (tmp_path / ".thegent").mkdir()
     (tmp_path / ".thegent" / "team_registry.json").write_text(
-        json.dumps({"teams": [{"id": "a", "active": True}, {"id": "b", "active": False}]}).decode(), encoding="utf-8"
+        json.dumps({"teams": [{"id": "a", "active": True}, {"id": "b", "active": False}]}).decode(),
+        encoding="utf-8",
     )
     (tmp_path / ".thegent" / "handoff_registry.jsonl").write_text(
         json.dumps({"snapshot_id": "s1"}).decode() + "\n", encoding="utf-8"
@@ -129,7 +140,9 @@ def test_wl6813_push_success_partial_failure_and_unreachable(tmp_path: Path, mon
     assert bad.status == SyncOperationStatus.FAILED
 
 
-def test_wl6814_gateway_exec_success_unknown_server_tool_and_transport_failure(monkeypatch: pytest.MonkeyPatch) -> None:
+def test_wl6814_gateway_exec_success_unknown_server_tool_and_transport_failure(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
     gw = McpGateway()
     gw.register_server(McpServerConfig(server_id="fs", command="fake-cmd", env={}))
 
@@ -165,7 +178,9 @@ def test_wl6814_gateway_exec_success_unknown_server_tool_and_transport_failure(m
     assert fail.error.startswith("transport_error")
 
 
-def test_wl6897_gateway_exec_accepts_transport_and_invalid_response(monkeypatch: pytest.MonkeyPatch) -> None:
+def test_wl6897_gateway_exec_accepts_transport_and_invalid_response(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
     captured = {}
 
     def _transport(
@@ -444,7 +459,9 @@ def test_wl6817_kpis_from_telemetry_and_sparse_behavior(tmp_path: Path, monkeypa
     assert 0.0 <= kpis["kpi_confidence"] <= 1.0
 
 
-def test_wl6818_model_promotion_persists_with_audit_and_idempotency(tmp_path: Path) -> None:
+def test_wl6818_model_promotion_persists_with_audit_and_idempotency(
+    tmp_path: Path,
+) -> None:
     from thegent.config import ThegentSettings
 
     settings = ThegentSettings(

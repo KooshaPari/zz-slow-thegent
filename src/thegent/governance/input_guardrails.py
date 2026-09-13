@@ -126,7 +126,9 @@ class InputGuardrails:
         return None
 
 
-def guardrails_from_settings(settings: ThegentSettings | None = None) -> InputGuardrails:
+def guardrails_from_settings(
+    settings: ThegentSettings | None = None,
+) -> InputGuardrails:
     """Build InputGuardrails from ThegentSettings."""
     from thegent.config import ThegentSettings
 

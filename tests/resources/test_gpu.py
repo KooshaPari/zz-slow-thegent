@@ -185,8 +185,22 @@ class TestParseNvidiaSmiOutput:
     def test_multiple_gpus(self, monitor: GpuMonitor) -> None:
         output = _nvidia_smi_output(
             [
-                {"index": 0, "name": "GPU-0", "util": 10, "mem_used": 1024, "mem_total": 8192, "temp": 55},
-                {"index": 1, "name": "GPU-1", "util": 80, "mem_used": 6000, "mem_total": 8192, "temp": 85},
+                {
+                    "index": 0,
+                    "name": "GPU-0",
+                    "util": 10,
+                    "mem_used": 1024,
+                    "mem_total": 8192,
+                    "temp": 55,
+                },
+                {
+                    "index": 1,
+                    "name": "GPU-1",
+                    "util": 80,
+                    "mem_used": 6000,
+                    "mem_total": 8192,
+                    "temp": 85,
+                },
             ]
         )
         gpus = monitor._parse_nvidia_smi_output(output)
@@ -384,12 +398,14 @@ class TestGetGpusNvidiaSmi:
         assert gpus[0].utilization_pct == 30.0
 
     def test_no_gpu_returns_empty_list(self, monitor: GpuMonitor) -> None:
-        with self._patch_no_pynvml():
-            with patch(
+        with (
+            self._patch_no_pynvml(),
+            patch(
                 "thegent.resources.gpu._run_subprocess",
                 side_effect=FileNotFoundError("nvidia-smi not found"),
-            ):
-                gpus = monitor.get_gpus()
+            ),
+        ):
+            gpus = monitor.get_gpus()
         assert gpus == []
 
     def test_nonzero_returncode_returns_empty(self, monitor: GpuMonitor) -> None:
@@ -400,13 +416,15 @@ class TestGetGpusNvidiaSmi:
         assert gpus == []
 
     def test_timeout_raises_gpu_monitor_error(self, monitor: GpuMonitor) -> None:
-        with self._patch_no_pynvml():
-            with patch(
+        with (
+            self._patch_no_pynvml(),
+            patch(
                 "thegent.resources.gpu._run_subprocess",
                 side_effect=subprocess.TimeoutExpired(cmd="nvidia-smi", timeout=10),
-            ):
-                with pytest.raises(GpuMonitorError, match="timed out"):
-                    monitor.get_gpus()
+            ),
+            pytest.raises(GpuMonitorError, match="timed out"),
+        ):
+            monitor.get_gpus()
 
     def test_smi_multiple_gpus(self, monitor: GpuMonitor) -> None:
         smi_out = _nvidia_smi_output(

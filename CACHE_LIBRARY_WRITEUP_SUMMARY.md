@@ -73,14 +73,18 @@ A standardized caching library research writeup with **4 core documents + 3 supp
 ## Key Findings
 
 ### 1. Problem ✅
+
 Multiple custom cache implementations scattered across the codebase cause:
+
 - Code duplication (~80-120 LOC)
 - Maintenance burden (difficult to audit, extend)
 - Inconsistency (different cache behaviors)
 - Governance gap (violates Library-First Policy)
 
 ### 2. Solution ✅
+
 Replace with `cachetools` v6.0.0:
+
 - **Already a dependency** (present in `pyproject.toml`, v≥5.3.3)
 - **Mature**: 10+ years old, 100M+ downloads
 - **Zero external dependencies**
@@ -89,7 +93,9 @@ Replace with `cachetools` v6.0.0:
 - **Performance**: Expected 1-10% faster (C implementation)
 
 ### 3. Implementation Plan ✅
+
 **Phased approach with 13-15 tasks:**
+
 - Phase 1: Setup (2 min)
 - Phase 2: Wrapper creation (5 min)
 - Phase 3: Discovery (3 min)
@@ -100,7 +106,9 @@ Replace with `cachetools` v6.0.0:
 **Total**: 30-35 min wall clock, 20-25 min critical path
 
 ### 4. Wrapper Design ✅
+
 Thin wrapper in `src/lib/project_cache.py` (<50 LOC):
+
 ```python
 def get_cache_ttl(maxsize: int, ttl: int) -> TTLCache: ...
 def get_cache_lru(maxsize: int) -> LRUCache: ...
@@ -108,7 +116,9 @@ def get_cache_lfu(maxsize: int) -> LFUCache: ...
 ```
 
 ### 5. Success Criteria ✅
+
 All 10 criteria defined:
+
 - [ ] All custom cache classes removed (100%)
 - [ ] All cache usages replaced with cachetools
 - [ ] Wrapper follows conventions (<50 LOC)
@@ -121,7 +131,9 @@ All 10 criteria defined:
 - [ ] Change archived (post-merge)
 
 ### 6. Risk Assessment ✅
+
 **Overall: 🟢 Low Risk**
+
 - Isolated change (caching only)
 - Well-tested library (cachetools)
 - Comprehensive test coverage planned
@@ -133,6 +145,7 @@ All 10 criteria defined:
 ## Architecture Overview
 
 ### Wrapper Pattern
+
 ```
 Calling Code
     ↓
@@ -150,11 +163,13 @@ cachetools Library
 ### Usage Patterns
 
 **Pattern 1: TTL Cache**
+
 ```python
 from src.lib.project_cache import get_cache_ttl
 from cachetools import cached
 
 _cache = get_cache_ttl(maxsize=100, ttl=300)
+
 
 @cached(cache=_cache)
 def get_data(item_id: str):
@@ -162,9 +177,11 @@ def get_data(item_id: str):
 ```
 
 **Pattern 2: LRU Cache**
+
 ```python
 from src.lib.project_cache import get_cache_lru
 from cachetools import cached
+
 
 class DataManager:
     _cache = get_cache_lru(maxsize=50)
@@ -175,6 +192,7 @@ class DataManager:
 ```
 
 **Pattern 3: Thread-Safe**
+
 ```python
 from src.lib.project_cache import get_cache_ttl
 from cachetools import cached
@@ -182,6 +200,7 @@ from threading import RLock
 
 _cache = get_cache_ttl(maxsize=100, ttl=300)
 _lock = RLock()
+
 
 @cached(cache=_cache, lock=_lock)
 def get_data_threadsafe(item_id: str):
@@ -193,6 +212,7 @@ def get_data_threadsafe(item_id: str):
 ## Implementation Readiness
 
 ### Prerequisites Met ✅
+
 - ✅ cachetools already a dependency
 - ✅ Test infrastructure ready (pytest, coverage)
 - ✅ Quality tools configured (ruff, type checking)
@@ -200,12 +220,14 @@ def get_data_threadsafe(item_id: str):
 - ✅ Documentation structure in place
 
 ### Blockers: None 🟢
+
 - No dependency conflicts
 - No architectural conflicts
 - No governance conflicts
 - No test infrastructure gaps
 
 ### Decision Points: All Resolved ✅
+
 - ✅ Library choice: cachetools (vs custom/diskcache)
 - ✅ Wrapper location: src/lib/project_cache.py
 - ✅ Wrapper complexity: <50 LOC target
@@ -216,13 +238,13 @@ def get_data_threadsafe(item_id: str):
 
 ## Quality Assessment
 
-| Aspect | Rating | Evidence |
-|--------|--------|----------|
-| Completeness | ⭐⭐⭐⭐⭐ | All phases, tasks, criteria defined |
-| Clarity | ⭐⭐⭐⭐⭐ | Clear problem → solution → implementation |
-| Actionability | ⭐⭐⭐⭐⭐ | 13-15 tasks with acceptance criteria |
-| Risk Analysis | ⭐⭐⭐⭐⭐ | All risks identified with mitigations |
-| Governance | ⭐⭐⭐⭐⭐ | Aligns with Library-First Policy |
+| Aspect        | Rating     | Evidence                                  |
+| ------------- | ---------- | ----------------------------------------- |
+| Completeness  | ⭐⭐⭐⭐⭐ | All phases, tasks, criteria defined       |
+| Clarity       | ⭐⭐⭐⭐⭐ | Clear problem → solution → implementation |
+| Actionability | ⭐⭐⭐⭐⭐ | 13-15 tasks with acceptance criteria      |
+| Risk Analysis | ⭐⭐⭐⭐⭐ | All risks identified with mitigations     |
+| Governance    | ⭐⭐⭐⭐⭐ | Aligns with Library-First Policy          |
 
 **Overall Quality**: ⭐⭐⭐⭐⭐ (Excellent)
 
@@ -231,23 +253,27 @@ def get_data_threadsafe(item_id: str):
 ## How to Use This Package
 
 ### For Quick Understanding (15 min)
+
 1. Read `proposal.md` (5 min) — What's the problem?
 2. Skim `design.md` sections (5 min) — How are we solving it?
 3. Review `tasks.md` summary (5 min) — What's the work?
 
 ### For Implementation (40 min execution)
+
 1. Read all docs: proposal → design → tasks (20 min)
 2. Follow `tasks.md` phases 1-6 (15-20 min)
 3. Validate: Run tests & quality gates (5 min)
 4. Handoff: Archive documentation
 
 ### For Review/Verification
+
 1. Use `design.md` as specification
 2. Verify `tasks.md` acceptance criteria met
 3. Check test output and coverage
 4. Confirm success metrics from `proposal.md`
 
 ### For Quick Reference
+
 1. Use `CACHE_LIBRARY_IMPLEMENTATION_INDEX.md`
 2. Command cheatsheet in `synthesis.md`
 3. Q&A section in `README.md`
@@ -257,6 +283,7 @@ def get_data_threadsafe(item_id: str):
 ## Key Files
 
 ### Documentation
+
 - ✅ `docs/changes/research-library-cache/proposal.md` (70 L)
 - ✅ `docs/changes/research-library-cache/design.md` (241 L)
 - ✅ `docs/changes/research-library-cache/tasks.md` (245 L)
@@ -266,6 +293,7 @@ def get_data_threadsafe(item_id: str):
 - ✅ `docs/research/CACHE_RESEARCH_COMPLETION_REPORT.md` (310 L)
 
 ### To Be Created (During Implementation)
+
 - ⭕ `src/lib/project_cache.py` (~30 LOC) — Wrapper module
 - ⭕ `tests/test_project_cache.py` — Unit tests
 - ⭕ Per-module cache replacements (3-5 modules)
@@ -276,26 +304,28 @@ def get_data_threadsafe(item_id: str):
 
 ## Timeline
 
-| Phase | Effort | Critical Path |
-|-------|--------|----------------|
-| Setup | 2 min | 2 min |
-| Wrapper | 5 min | 5 min |
-| Discovery | 3 min | 3 min |
-| Migration | 10-15 min | ⚡ Parallel (5-8 min) |
-| Validation | 5 min | 5 min |
-| Docs | 5 min | ⚡ Parallel (2 min) |
-| **Total** | **30-35 min** | **20-25 min** |
+| Phase      | Effort        | Critical Path         |
+| ---------- | ------------- | --------------------- |
+| Setup      | 2 min         | 2 min                 |
+| Wrapper    | 5 min         | 5 min                 |
+| Discovery  | 3 min         | 3 min                 |
+| Migration  | 10-15 min     | ⚡ Parallel (5-8 min) |
+| Validation | 5 min         | 5 min                 |
+| Docs       | 5 min         | ⚡ Parallel (2 min)   |
+| **Total**  | **30-35 min** | **20-25 min**         |
 
 ---
 
 ## Next Steps
 
 ### Immediate (Ready Now)
+
 1. ✅ Review this package (10 min)
 2. ✅ Verify cachetools installed: `python -c "import cachetools; print(cachetools.__version__)"`
 3. ✅ Begin Phase 1 (setup)
 
 ### Follow-Up (Phases 2-6)
+
 4. Create wrapper module (Phase 2)
 5. Discover custom caches (Phase 3)
 6. Replace each cache (Phase 4, parallelizable)
@@ -319,18 +349,18 @@ def get_data_threadsafe(item_id: str):
 
 ## Summary Statistics
 
-| Metric | Value |
-|--------|-------|
-| Total Documentation | 1,630+ lines |
-| Documents Created | 7 files |
-| Proposal Sections | Complete (problem, goals, criteria) |
-| Design Sections | Complete (architecture, patterns, files) |
-| Tasks Defined | 13-15 with acceptance criteria |
-| Implementation Phases | 6 (parallelizable) |
-| Success Criteria | 10 measurable checkpoints |
-| Risk Assessment | Low (with mitigations) |
-| Prerequisites Met | 100% ✅ |
-| Blockers | 0 🟢 |
+| Metric                | Value                                    |
+| --------------------- | ---------------------------------------- |
+| Total Documentation   | 1,630+ lines                             |
+| Documents Created     | 7 files                                  |
+| Proposal Sections     | Complete (problem, goals, criteria)      |
+| Design Sections       | Complete (architecture, patterns, files) |
+| Tasks Defined         | 13-15 with acceptance criteria           |
+| Implementation Phases | 6 (parallelizable)                       |
+| Success Criteria      | 10 measurable checkpoints                |
+| Risk Assessment       | Low (with mitigations)                   |
+| Prerequisites Met     | 100% ✅                                  |
+| Blockers              | 0 🟢                                     |
 
 ---
 

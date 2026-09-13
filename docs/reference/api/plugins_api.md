@@ -64,7 +64,7 @@ Get a built-in plugin by name.
 
 ### Methods
 
-#### DialogPlugin.__init__
+#### DialogPlugin.**init**
 
 ```python
 __init__(self: Any, info: PluginInfo)
@@ -84,7 +84,7 @@ Plugin that extends compositor functionality.
 
 ### Methods
 
-#### ExtensionPlugin.__init__
+#### ExtensionPlugin.**init**
 
 ```python
 __init__(self: Any, info: PluginInfo)
@@ -120,7 +120,7 @@ Base class for TUI plugins.
 
 ### Methods
 
-#### Plugin.__init__
+#### Plugin.**init**
 
 ```python
 __init__(self: Any, info: PluginInfo)
@@ -228,7 +228,7 @@ Loads and manages plugins.
 
 ### Methods
 
-#### PluginLoader.__init__
+#### PluginLoader.**init**
 
 ```python
 __init__(self: Any, plugin_dir: Any)
@@ -326,7 +326,7 @@ Unload a plugin.
 
 ### Methods
 
-#### StatusPlugin.__init__
+#### StatusPlugin.**init**
 
 ```python
 __init__(self: Any, info: PluginInfo)
@@ -344,7 +344,7 @@ __init__(self: Any, info: PluginInfo)
 
 ### Methods
 
-#### TerminalPlugin.__init__
+#### TerminalPlugin.**init**
 
 ```python
 __init__(self: Any, info: PluginInfo)
@@ -364,7 +364,7 @@ Plugin that provides custom widgets.
 
 ### Methods
 
-#### WidgetPlugin.__init__
+#### WidgetPlugin.**init**
 
 ```python
 __init__(self: Any, info: PluginInfo)

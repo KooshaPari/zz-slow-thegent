@@ -1,6 +1,7 @@
 # tests/research_engine/test_deps.py
 # @trace FR-RE-001
 import importlib
+
 import pytest
 
 

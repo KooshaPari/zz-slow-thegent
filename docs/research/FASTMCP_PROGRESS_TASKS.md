@@ -14,6 +14,7 @@ async def report_progress(
 ```
 
 **Usage:**
+
 ```python
 await ctx.report_progress(i, 100, f"Step {i}/100")
 ```
@@ -31,6 +32,7 @@ from fastmcp.dependencies import Progress
 **Protocol (ProgressLike):** `current`, `total`, `message` (props); `set_total()`, `increment()`, `set_message()` (async).
 
 **Usage:**
+
 ```python
 @mcp.tool()
 async def my_tool(progress: ProgressLike = Progress()) -> str:
@@ -48,11 +50,11 @@ TaskMode = Literal["forbidden", "optional", "required"]
 TaskConfig(mode="optional", poll_interval=timedelta(seconds=5))
 ```
 
-| Mode | Behavior |
-|------|----------|
+| Mode      | Behavior                             |
+| --------- | ------------------------------------ |
 | forbidden | No task support; -32601 if requested |
-| optional | Sync or task; client chooses |
-| required | Must use task; -32601 if not |
+| optional  | Sync or task; client chooses         |
+| required  | Must use task; -32601 if not         |
 
 ---
 
@@ -81,15 +83,18 @@ async def thegent_run(...) -> dict:
 **Extended by:** Claude Code
 
 ### Changes Made
+
 1. Added progress tracking patterns
 2. Added task implementation examples
 3. Enhanced cross-references
 
 ### Cross-References Added
+
 - FASTMCP_IMPLEMENTATION_GUIDE.md
 - FASTMCP_SPEC_DEEP_DIVE.md
 
 ### Practical Additions
+
 - Progress callback templates
 - Task configuration examples
 

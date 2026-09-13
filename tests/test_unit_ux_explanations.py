@@ -12,7 +12,6 @@ from thegent.ux.explanations import (
     render_explanation,
 )
 
-
 pytestmark = pytest.mark.unit
 
 

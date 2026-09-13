@@ -2,11 +2,7 @@
 
 from __future__ import annotations
 
-import sqlite3
 from pathlib import Path
-from unittest.mock import MagicMock, patch
-
-import pytest
 
 
 class TestWorkstreamDBInit:
@@ -219,7 +215,11 @@ class TestEntityOperation:
 
         db_path = tmp_path / "test.db"
         entity_operation(
-            "upsert", "workstream_items", entity_id="WL-001", properties={"title": "Task"}, db_path=db_path
+            "upsert",
+            "workstream_items",
+            entity_id="WL-001",
+            properties={"title": "Task"},
+            db_path=db_path,
         )
         result = entity_operation("list", "workstream_items", limit=10, db_path=db_path)
         assert result["operation"] == "list"
@@ -231,7 +231,11 @@ class TestEntityOperation:
 
         db_path = tmp_path / "test.db"
         entity_operation(
-            "upsert", "workstream_items", entity_id="WL-001", properties={"title": "UniqueTitle"}, db_path=db_path
+            "upsert",
+            "workstream_items",
+            entity_id="WL-001",
+            properties={"title": "UniqueTitle"},
+            db_path=db_path,
         )
         result = entity_operation("search", "workstream_items", query="Unique", db_path=db_path)
         assert result["count"] == 1
@@ -250,7 +254,11 @@ class TestEntityOperation:
 
         db_path = tmp_path / "test.db"
         entity_operation(
-            "upsert", "workstream_items", entity_id="WL-001", properties={"title": "Task"}, db_path=db_path
+            "upsert",
+            "workstream_items",
+            entity_id="WL-001",
+            properties={"title": "Task"},
+            db_path=db_path,
         )
         result = entity_operation("delete", "workstream_items", entity_id="WL-001", db_path=db_path)
         assert result["deleted"] is True

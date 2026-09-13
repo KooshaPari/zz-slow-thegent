@@ -21,7 +21,11 @@ class CognitiveRefactorer:
         _log.info("Analyzing reasoning efficiency for agent: %s", self.agent_id)
 
         # Simulated metrics: steps per success, token efficiency
-        return {"avg_steps_to_goal": 4.2, "token_redundancy": 0.15, "logic_branching_factor": 2.1}
+        return {
+            "avg_steps_to_goal": 4.2,
+            "token_redundancy": 0.15,
+            "logic_branching_factor": 2.1,
+        }
 
     def propose_refactor(self, efficiency_report: dict[str, float]) -> str:
         """WP-37002: Generate a refactored 'cognitive template' (refined prompt instructions)."""
@@ -33,7 +37,11 @@ class CognitiveRefactorer:
             refactor = "REFACTOR: Add more explicit verification steps at logic branches."
 
         self.refactor_history.append(
-            {"timestamp": datetime.now(UTC).isoformat(), "efficiency": efficiency_report, "refactor": refactor}
+            {
+                "timestamp": datetime.now(UTC).isoformat(),
+                "efficiency": efficiency_report,
+                "refactor": refactor,
+            }
         )
 
         return refactor

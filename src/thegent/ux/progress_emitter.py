@@ -25,8 +25,9 @@ import logging
 import math
 import threading
 import time as _time
+from collections.abc import Callable, Iterable, Iterator, Mapping
 from dataclasses import dataclass, field
-from typing import Callable, Iterable, Iterator, Mapping, Protocol, runtime_checkable
+from typing import Protocol, runtime_checkable
 
 from .cockpit import OperatorCockpit, _progress_bar
 
@@ -320,7 +321,7 @@ class ProgressTickEmitter:
 
     # ------------------------------------------------------------- mutators
 
-    def bind(self, sink: ProgressSink | OperatorCockpit | None) -> "ProgressTickEmitter":
+    def bind(self, sink: ProgressSink | OperatorCockpit | None) -> ProgressTickEmitter:
         """Bind or rebind the sink. Returns ``self`` for chaining.
 
         The emitter retains a strong reference for the lifetime of the
@@ -334,7 +335,7 @@ class ProgressTickEmitter:
             self._sink = sink
         return self
 
-    def release(self) -> "ProgressTickEmitter":
+    def release(self) -> ProgressTickEmitter:
         """Drop the reference to the current sink.
 
         Convenience wrapper around ``bind(None)`` that makes the

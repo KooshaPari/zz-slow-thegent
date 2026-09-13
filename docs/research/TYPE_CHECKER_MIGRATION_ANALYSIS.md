@@ -4,11 +4,13 @@
 ## Current State
 
 ### IDE (Real-time IntelliSense)
+
 - **Pylance** (VS Code/Cursor extension)
 - **Pyright** (language server backend)
 - Configuration: `pyrightconfig.json` + `.vscode/settings.json`
 
 ### CI/Linting (Batch Checking)
+
 - **Fast**: `ty` + `zuban` (`task lint:type`)
 - **Strict**: `basedpyright` + `mypy` (`task lint:strict`)
 - Pre-commit: `ty` + `basedpyright`
@@ -16,6 +18,7 @@
 ## Tool Comparison
 
 ### ty
+
 - **Purpose**: Fast type checker (Rust-based)
 - **Use Case**: Quick feedback during development
 - **Speed**: Very fast (10-50x faster than Pyright)
@@ -24,6 +27,7 @@
 - **IDE Integration**: ❌ Not supported by Pylance
 
 ### zuban
+
 - **Purpose**: Fast type checker (complementary to ty)
 - **Use Case**: Additional checks alongside ty
 - **Speed**: Fast
@@ -32,6 +36,7 @@
 - **IDE Integration**: ❌ Not supported by Pylance
 
 ### basedpyright
+
 - **Purpose**: Fork/variant of Pyright with additional features
 - **Use Case**: Strict type checking (CI/commit)
 - **Speed**: Similar to Pyright (slower than ty/zuban)
@@ -40,6 +45,7 @@
 - **IDE Integration**: ✅ Can replace Pyright in Pylance
 
 ### Pyright (Current)
+
 - **Purpose**: Microsoft's official Python type checker
 - **Use Case**: IDE IntelliSense + batch checking
 - **Speed**: Moderate (slower than ty/zuban)
@@ -50,34 +56,40 @@
 ## Migration Options
 
 ### Option 1: Keep Dual Approach (Recommended)
+
 **Status**: Current approach
 
 **IDE**: Pyright/Pylance (for real-time IntelliSense)
 **CI/Linting**: ty + zuban (fast) + basedpyright + mypy (strict)
 
 **Pros**:
+
 - ✅ Best of both worlds: fast IDE feedback + fast CI checks
 - ✅ No IDE disruption (Pylance works perfectly)
 - ✅ Fast CI feedback (ty/zuban are 10-50x faster)
 - ✅ Strict checking when needed (basedpyright + mypy)
 
 **Cons**:
+
 - ⚠️ Two different type checkers (potential inconsistency)
 - ⚠️ Need to maintain both configs
 
 **Recommendation**: ✅ **Keep this approach**
 
 ### Option 2: Migrate IDE to basedpyright
+
 **Status**: Possible but not recommended
 
 **IDE**: basedpyright (replace Pyright)
 **CI/Linting**: ty + zuban (fast) + basedpyright + mypy (strict)
 
 **Pros**:
+
 - ✅ Single type checker for IDE and strict checking
 - ✅ Consistent behavior between IDE and CI
 
 **Cons**:
+
 - ❌ basedpyright may not be fully compatible with Pylance
 - ❌ Risk of breaking IDE IntelliSense
 - ❌ No clear benefit (Pyright works fine for IDE)
@@ -86,15 +98,18 @@
 **Recommendation**: ❌ **Not recommended** (high risk, low benefit)
 
 ### Option 3: Migrate IDE to ty/zuban
+
 **Status**: Not possible
 
 **IDE**: ty/zuban
 **CI/Linting**: ty + zuban
 
 **Pros**:
+
 - ✅ Single fast type checker everywhere
 
 **Cons**:
+
 - ❌ ty/zuban don't have LSP support
 - ❌ No IDE integration possible
 - ❌ Lose real-time IntelliSense
@@ -128,24 +143,29 @@ CI:
 ## Configuration Alignment
 
 ### Current Configs
+
 - `pyrightconfig.json` - IDE (Pyright/Pylance)
 - `pyproject.toml` - `[tool.ty]`, `[tool.basedpyright]` - CI/Linting
 
 ### Recommendation: Keep Separate
+
 - IDE config (`pyrightconfig.json`) optimized for IntelliSense performance
 - CI config (`pyproject.toml`) optimized for batch checking speed/strictness
 
 ## Future Considerations
 
 ### If basedpyright adds significant features
+
 - Could migrate IDE to basedpyright if it becomes a strict superset of Pyright
 - Would need to verify Pylance compatibility first
 
 ### If ty/zuban add LSP support
+
 - Could consider migrating IDE to ty/zuban for speed
 - Would need to verify IntelliSense quality
 
 ### Current State is Optimal
+
 - No migration needed
 - Each tool serves its purpose well
 - Performance is already optimized

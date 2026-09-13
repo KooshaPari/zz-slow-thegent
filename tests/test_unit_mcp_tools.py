@@ -6,11 +6,11 @@ thegent.mcp.server, mocking the underlying *_impl functions from cli_impl.
 
 from __future__ import annotations
 
-import orjson as json
 from pathlib import Path
 from typing import TYPE_CHECKING, Any
 from unittest.mock import AsyncMock, MagicMock, patch
 
+import orjson as json
 import pytest
 
 fastmcp = pytest.importorskip("fastmcp", reason="fastmcp required for MCP server tests")
@@ -97,7 +97,12 @@ class TestThegentRun:
     @patch("thegent.mcp.server.run_impl")
     async def test_run_basic_with_agent(self, mock_run_impl: MagicMock, mock_cwd: MagicMock) -> None:
         # @trace FR-MCP-001
-        mock_run_impl.return_value = {"exit_code": 0, "stdout": "done", "stderr": "", "timed_out": False}
+        mock_run_impl.return_value = {
+            "exit_code": 0,
+            "stdout": "done",
+            "stderr": "",
+            "timed_out": False,
+        }
         from thegent.mcp.server import thegent_run
 
         ctx = AsyncMock()
@@ -121,7 +126,12 @@ class TestThegentRun:
     @patch("thegent.mcp.server.run_impl")
     async def test_run_with_model_and_agent(self, mock_run_impl: MagicMock, mock_cwd: MagicMock) -> None:
         # @trace FR-MCP-002
-        mock_run_impl.return_value = {"exit_code": 0, "stdout": "model-run", "stderr": "", "timed_out": False}
+        mock_run_impl.return_value = {
+            "exit_code": 0,
+            "stdout": "model-run",
+            "stderr": "",
+            "timed_out": False,
+        }
         from thegent.mcp.server import thegent_run
 
         ctx = AsyncMock()
@@ -130,7 +140,10 @@ class TestThegentRun:
         ctx.close_sse_stream = AsyncMock()
         with patch("thegent.config.ThegentSettings") as mock_settings:
             mock_settings.return_value.default_routing = "prefer_direct"
-            with patch("thegent.models.resolve_route", return_value=("claude", "claude-sonnet-4")):
+            with patch(
+                "thegent.models.resolve_route",
+                return_value=("claude", "claude-sonnet-4"),
+            ):
                 result = await thegent_run(
                     prompt="test model routing",
                     agent="claude",
@@ -185,7 +198,12 @@ class TestThegentRun:
     @patch("thegent.mcp.server.run_impl")
     async def test_run_with_timeout_and_mode(self, mock_run_impl: MagicMock, mock_cwd: MagicMock) -> None:
         # @trace FR-MCP-005
-        mock_run_impl.return_value = {"exit_code": 0, "stdout": "ok", "stderr": "", "timed_out": False}
+        mock_run_impl.return_value = {
+            "exit_code": 0,
+            "stdout": "ok",
+            "stderr": "",
+            "timed_out": False,
+        }
         from thegent.mcp.server import thegent_run
 
         ctx = AsyncMock()
@@ -218,7 +236,11 @@ class TestThegentBg:
     @patch("thegent.mcp.server.bg_impl")
     async def test_bg_basic(self, mock_bg_impl: MagicMock, mock_owner: MagicMock, mock_cwd: MagicMock) -> None:
         # @trace FR-MCP-006
-        mock_bg_impl.return_value = {"session_id": "abc-123", "log_path": "/tmp/log", "owner": "test-owner"}
+        mock_bg_impl.return_value = {
+            "session_id": "abc-123",
+            "log_path": "/tmp/log",
+            "owner": "test-owner",
+        }
         from thegent.mcp.server import thegent_bg
 
         ctx = AsyncMock()
@@ -243,7 +265,11 @@ class TestThegentBg:
         self, mock_bg_impl: MagicMock, mock_owner: MagicMock, mock_cwd: MagicMock
     ) -> None:
         # @trace FR-MCP-007
-        mock_bg_impl.return_value = {"session_id": "def-456", "log_path": "/tmp/log", "owner": "my-owner"}
+        mock_bg_impl.return_value = {
+            "session_id": "def-456",
+            "log_path": "/tmp/log",
+            "owner": "my-owner",
+        }
         from thegent.mcp.server import thegent_bg
 
         ctx = AsyncMock()
@@ -268,7 +294,11 @@ class TestThegentBg:
         self, mock_bg_impl: MagicMock, mock_owner: MagicMock, mock_cwd: MagicMock
     ) -> None:
         # @trace FR-MCP-008
-        mock_bg_impl.return_value = {"session_id": "ghi-789", "log_path": "/tmp/log", "owner": "auto-owner"}
+        mock_bg_impl.return_value = {
+            "session_id": "ghi-789",
+            "log_path": "/tmp/log",
+            "owner": "auto-owner",
+        }
         from thegent.mcp.server import thegent_bg
 
         ctx = AsyncMock()
@@ -296,7 +326,11 @@ class TestThegentStatus:
     @patch("thegent.mcp.server.status_impl")
     def test_status_returns_session_info(self, mock_status: MagicMock) -> None:
         # @trace FR-MCP-009
-        mock_status.return_value = {"session_id": "s1", "status": "running", "pid": 1234}
+        mock_status.return_value = {
+            "session_id": "s1",
+            "status": "running",
+            "pid": 1234,
+        }
         from thegent.mcp.server import thegent_status
 
         result = thegent_status(session_id="s1")
@@ -308,7 +342,11 @@ class TestThegentStatus:
     @patch("thegent.mcp.server.status_impl")
     def test_status_with_include_contract(self, mock_status: MagicMock) -> None:
         # @trace FR-MCP-010
-        mock_status.return_value = {"session_id": "s2", "status": "done", "contract": {"model": "x"}}
+        mock_status.return_value = {
+            "session_id": "s2",
+            "status": "done",
+            "contract": {"model": "x"},
+        }
         from thegent.mcp.server import thegent_status
 
         result = thegent_status(session_id="s2", include_contract=True)
@@ -418,7 +456,11 @@ class TestThegentInspect:
         data = _json_content(result)
         assert data["sessions"][0]["session_id"] == "s1"
         mock_inspect.assert_called_once_with(
-            session_ids=["s1"], owner=None, tail=50, stderr=False, include_contract=False
+            session_ids=["s1"],
+            owner=None,
+            tail=50,
+            stderr=False,
+            include_contract=False,
         )
 
     @patch("thegent.mcp.server.inspect_impl")
@@ -525,7 +567,14 @@ class TestThegentDagList:
         # @trace FR-MCP-026
         mock_dag_list.return_value = {
             "frontmatter": {"project": "test"},
-            "tasks": [{"id": "T1", "agent": "claude", "prompt": "do stuff", "status": "pending"}],
+            "tasks": [
+                {
+                    "id": "T1",
+                    "agent": "claude",
+                    "prompt": "do stuff",
+                    "status": "pending",
+                }
+            ],
         }
         from thegent.mcp.server import thegent_dag_list
 
@@ -787,7 +836,12 @@ class TestResourceObserveSummary:
     @patch("thegent.mcp.server.observe_summary_impl")
     def test_observe_summary_resource_custom_params(self, mock_impl: MagicMock) -> None:
         # @trace FR-MCP-042
-        mock_impl.return_value = {"status": "degraded", "kpis": {}, "drift": {}, "escalation": {}}
+        mock_impl.return_value = {
+            "status": "degraded",
+            "kpis": {},
+            "drift": {},
+            "escalation": {},
+        }
         from thegent.mcp.server import resource_observe_summary
 
         resource_observe_summary(

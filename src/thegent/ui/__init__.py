@@ -6,6 +6,7 @@ This stub exists for backwards compatibility with existing tests.
 """
 
 from __future__ import annotations
+
 from dataclasses import dataclass
 from typing import Any
 
@@ -27,6 +28,7 @@ class CompositorProfiler:
 @dataclass
 class RenderProfile:
     """Profile data for a render operation."""
+
     duration_ms: float = 0.0
     components_rendered: int = 0
     cache_hits: int = 0

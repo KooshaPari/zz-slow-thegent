@@ -7,7 +7,14 @@ from enum import StrEnum
 from typing import Any
 
 from pydantic import BaseModel
-from rich.progress import BarColumn, Progress, SpinnerColumn, TaskProgressColumn, TextColumn, TimeRemainingColumn
+from rich.progress import (
+    BarColumn,
+    Progress,
+    SpinnerColumn,
+    TaskProgressColumn,
+    TextColumn,
+    TimeRemainingColumn,
+)
 
 # Type for verification callback: (task_id, result) -> Any
 VerificationCallback = Callable[[str, Any], Any]
@@ -113,7 +120,11 @@ class LifecycleController:
         session_dir = self.settings.session_dir / self.state.session_id
         session_dir.mkdir(parents=True, exist_ok=True)
 
-        _log.info("Starting Lifecycle loop session=%s mode=%s", self.state.session_id, self.mode)
+        _log.info(
+            "Starting Lifecycle loop session=%s mode=%s",
+            self.state.session_id,
+            self.mode,
+        )
 
         with Progress(
             SpinnerColumn(),
@@ -140,7 +151,11 @@ class LifecycleController:
                 )
 
                 if on_progress:
-                    on_progress(self.state.iteration, self.max_iterations, f"Starting iteration {self.state.iteration}")
+                    on_progress(
+                        self.state.iteration,
+                        self.max_iterations,
+                        f"Starting iteration {self.state.iteration}",
+                    )
 
                 # 1. Takeover/Stop Check (Phase 4: Human Takeover)
                 # Check for external stop signal file
@@ -159,7 +174,9 @@ class LifecycleController:
                         _log.info("Human takeover detected. Injecting prompt.")
                         if on_progress:
                             on_progress(
-                                self.state.iteration, self.max_iterations, "Human takeover detected. Injecting prompt."
+                                self.state.iteration,
+                                self.max_iterations,
+                                "Human takeover detected. Injecting prompt.",
                             )
                         takeover_file.unlink()
                     except Exception as e:
@@ -191,7 +208,11 @@ class LifecycleController:
                     gov_report = {"status": "ok", "denials": [], "warnings": []}
 
                 if on_progress:
-                    on_progress(self.state.iteration, self.max_iterations, f"Policy check: {effect}")
+                    on_progress(
+                        self.state.iteration,
+                        self.max_iterations,
+                        f"Policy check: {effect}",
+                    )
 
                 if effect == "deny":
                     self.state.stopped = True
@@ -199,14 +220,20 @@ class LifecycleController:
                     from thegent.governance.escalation import EscalationQueue
 
                     eq = EscalationQueue(self.settings)
-                    eq.add(run_id=self.state.session_id, reason=f"Policy denial: {reason}", priority=3)
+                    eq.add(
+                        run_id=self.state.session_id,
+                        reason=f"Policy denial: {reason}",
+                        priority=3,
+                    )
                     break
 
                 # 3. Run Worker Agent with Retry (WP-2002, tenacity)
                 try:
                     if on_progress:
                         on_progress(
-                            self.state.iteration, self.max_iterations, f"Running worker agent: {self.worker_agent_name}"
+                            self.state.iteration,
+                            self.max_iterations,
+                            f"Running worker agent: {self.worker_agent_name}",
                         )
                     result = self._run_worker_with_retry(current_prompt)
                     if result.get("exit_code") != 0:
@@ -215,7 +242,8 @@ class LifecycleController:
                         break
                 except TransientAgentError as e:
                     _log.warning(
-                        "Worker failed after retries: %s", e.result.stderr[:200] if e.result.stderr else str(e)
+                        "Worker failed after retries: %s",
+                        e.result.stderr[:200] if e.result.stderr else str(e),
                     )
                     self.state.stopped = True
                     self.state.stop_reason = f"Worker failed after retries (code {e.result.exit_code})"
@@ -240,11 +268,10 @@ class LifecycleController:
                     on_worker_output(combined)
 
                 # 4. Soft Loop Check: allow human override/stop (SOFT mode)
-                if self.mode == LoopMode.SOFT:
-                    if "STOP" in combined:
-                        self.state.stopped = True
-                        self.state.stop_reason = "Human stop signal detected (SOFT mode)"
-                        break
+                if self.mode == LoopMode.SOFT and "STOP" in combined:
+                    self.state.stopped = True
+                    self.state.stop_reason = "Human stop signal detected (SOFT mode)"
+                    break
 
                 # 5. Preset Prompt Routing (WP-1201 Phase 1)
                 matched_preset = match_preset(combined)
@@ -252,7 +279,11 @@ class LifecycleController:
                     current_prompt = matched_preset.prompt
                     _log.info("Matched output to preset: %s", matched_preset.id)
                     if on_progress:
-                        on_progress(self.state.iteration, self.max_iterations, f"Matched preset: {matched_preset.id}")
+                        on_progress(
+                            self.state.iteration,
+                            self.max_iterations,
+                            f"Matched preset: {matched_preset.id}",
+                        )
                     continue
 
                 # 6. Invoke Checker Agent (WP-1201 Phase 2/3 - LLM Fallback)
@@ -279,10 +310,16 @@ class LifecycleController:
                     _log.error("Checker failed: %s. Using default CONTINUE.", e)
                     decision_result = CheckerResult(decision=CheckerDecision.CONTINUE, reason=str(e))
 
-                _log.info("Checker decision: %s (reason: %s)", decision_result.decision, decision_result.reason)
+                _log.info(
+                    "Checker decision: %s (reason: %s)",
+                    decision_result.decision,
+                    decision_result.reason,
+                )
                 if on_progress:
                     on_progress(
-                        self.state.iteration, self.max_iterations, f"Checker decision: {decision_result.decision}"
+                        self.state.iteration,
+                        self.max_iterations,
+                        f"Checker decision: {decision_result.decision}",
                     )
 
                 if decision_result.decision == CheckerDecision.KILL:
@@ -292,7 +329,10 @@ class LifecycleController:
                     if any(
                         kw in (decision_result.reason or "").lower() for kw in ["security", "cost", "risk", "policy"]
                     ):
-                        from thegent.governance.escalation import EscalationPriority, EscalationQueue
+                        from thegent.governance.escalation import (
+                            EscalationPriority,
+                            EscalationQueue,
+                        )
 
                         eq = EscalationQueue(self.settings)
                         eq.escalate(

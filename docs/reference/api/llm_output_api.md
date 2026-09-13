@@ -12,7 +12,7 @@ Generate LLM-friendly documentation format.
 
 ### Methods
 
-#### LLMOutputGenerator.__init__
+#### LLMOutputGenerator.**init**
 
 ```python
 __init__(self: Any, output_dir: Any)

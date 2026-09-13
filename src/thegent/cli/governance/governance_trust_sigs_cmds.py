@@ -11,7 +11,6 @@ import json
 import sys
 
 import typer
-
 from rich.console import Console
 from rich.table import Table
 
@@ -68,7 +67,11 @@ def signatures_list_cmd(limit: int = 50, format: str | None = None) -> None:
 
     artifacts = []
     if artifacts_dir.exists():
-        for p in sorted(artifacts_dir.glob("maif.json"), key=lambda x: x.stat().st_mtime, reverse=True)[:limit]:
+        for p in sorted(
+            artifacts_dir.glob("maif.json"),
+            key=lambda x: x.stat().st_mtime,
+            reverse=True,
+        )[:limit]:
             _load_artifact(artifacts, p)
 
     fmt = _normalize_output_format(format)

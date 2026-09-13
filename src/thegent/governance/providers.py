@@ -14,7 +14,6 @@ from enum import Enum
 from typing import ClassVar
 
 # Re-export ProviderMetrics from scoring for backwards compatibility
-from thegent.governance.scoring import ProviderMetrics
 
 
 class ProviderType(Enum):

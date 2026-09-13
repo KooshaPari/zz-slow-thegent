@@ -60,5 +60,5 @@ def test_smart_merge_fallback(tmp_path):
 
     # This might fail if 'git' is not in path or not a repo,
     # but we test the logic branch.
-    success = merge.merge_files(base, ours, theirs, output)
+    merge.merge_files(base, ours, theirs, output)
     # Even if it fails due to environment, we've covered the code branch

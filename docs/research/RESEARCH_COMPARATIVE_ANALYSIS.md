@@ -9,28 +9,28 @@
 
 ## 1. Design Validation Summary
 
-| Design Element | Research Support | Recommendation |
-|----------------|------------------|-----------------|
-| **3-level hierarchy** (Exec→Lead→Spec) | CrewAI hierarchical processes; smolgents manager/worker | ✅ **Validated** — Proceed |
-| **Parent-child relationships** | MetaGPT _watch; Claude Code team lead→teammates | ✅ **Validated** — Add cause-by tracking |
-| **Team organization** | MetaGPT Team.hire; kimaki Project Context | ✅ **Validated** — Functional/Project/Ad-Hoc |
-| **Escalation tiers** | heliosShield agent-mesh (Tier 0–5) | ✅ **Validated** — Integrate |
-| **blockedBy dependencies** | Claude Code task files | ✅ **Add** — Not in current design |
-| **Model heterogeneity** | CP-WBFT, DecentLLMs | ✅ **Add** — For consensus/debate |
-| **Debate cap (3 rounds)** | ACL 2025, Martingale proof | ✅ **Add** — For multi-agent consensus |
+| Design Element                         | Research Support                                        | Recommendation                               |
+| -------------------------------------- | ------------------------------------------------------- | -------------------------------------------- |
+| **3-level hierarchy** (Exec→Lead→Spec) | CrewAI hierarchical processes; smolgents manager/worker | ✅ **Validated** — Proceed                   |
+| **Parent-child relationships**         | MetaGPT \_watch; Claude Code team lead→teammates        | ✅ **Validated** — Add cause-by tracking     |
+| **Team organization**                  | MetaGPT Team.hire; kimaki Project Context               | ✅ **Validated** — Functional/Project/Ad-Hoc |
+| **Escalation tiers**                   | heliosShield agent-mesh (Tier 0–5)                      | ✅ **Validated** — Integrate                 |
+| **blockedBy dependencies**             | Claude Code task files                                  | ✅ **Add** — Not in current design           |
+| **Model heterogeneity**                | CP-WBFT, DecentLLMs                                     | ✅ **Add** — For consensus/debate            |
+| **Debate cap (3 rounds)**              | ACL 2025, Martingale proof                              | ✅ **Add** — For multi-agent consensus       |
 
 ---
 
 ## 2. Pattern Comparison Matrix
 
-| Pattern | MetaGPT | CrewAI | AutoGen | LangGraph | thegent (design) |
-|---------|---------|--------|---------|-----------|------------------|
-| **Hierarchy levels** | Implicit (pipeline) | Explicit | Flexible | User-defined | 3-level explicit |
-| **Dependency declaration** | _watch(Action) | Task ordering | Events | Graph edges | AgentRelationship |
-| **Team structure** | Flat Team.hire | Tasks/Processes | GroupChat | Nodes | AgentTeam |
-| **Coordination** | Message routing | Flows | Events | State transitions | TeamCoordinator |
-| **Human escalation** | — | Triggers | — | Interrupts | Tier 4–5 |
-| **Persistence** | Memory | State persist | — | Durable exec | DelegationRequest |
+| Pattern                    | MetaGPT             | CrewAI          | AutoGen   | LangGraph         | thegent (design)  |
+| -------------------------- | ------------------- | --------------- | --------- | ----------------- | ----------------- |
+| **Hierarchy levels**       | Implicit (pipeline) | Explicit        | Flexible  | User-defined      | 3-level explicit  |
+| **Dependency declaration** | \_watch(Action)     | Task ordering   | Events    | Graph edges       | AgentRelationship |
+| **Team structure**         | Flat Team.hire      | Tasks/Processes | GroupChat | Nodes             | AgentTeam         |
+| **Coordination**           | Message routing     | Flows           | Events    | State transitions | TeamCoordinator   |
+| **Human escalation**       | —                   | Triggers        | —         | Interrupts        | Tier 4–5          |
+| **Persistence**            | Memory              | State persist   | —         | Durable exec      | DelegationRequest |
 
 ---
 
@@ -73,6 +73,7 @@
 ### 4.1 Design Updates
 
 1. **Extend DelegationRequest** (or equivalent Task model):
+
    ```python
    blocked_by: list[str] = []  # Task IDs that must complete first
    ```
@@ -88,14 +89,14 @@
 
 ### 4.2 Implementation Priority
 
-| Phase | Deliverable | Dependencies |
-|-------|-------------|--------------|
-| **1** | AgentHierarchyManager, AgentNode, AgentRelationship | None |
-| **2** | TeammateManager hierarchy integration | Phase 1 |
-| **3** | TeamCoordinator, AgentTeam | Phase 1 |
-| **4** | blockedBy in delegation | Phase 2 |
-| **5** | Escalation tiers | Phase 1, 2 |
-| **6** | Lazy-agent detection (optional) | Phase 2 |
+| Phase | Deliverable                                         | Dependencies |
+| ----- | --------------------------------------------------- | ------------ |
+| **1** | AgentHierarchyManager, AgentNode, AgentRelationship | None         |
+| **2** | TeammateManager hierarchy integration               | Phase 1      |
+| **3** | TeamCoordinator, AgentTeam                          | Phase 1      |
+| **4** | blockedBy in delegation                             | Phase 2      |
+| **5** | Escalation tiers                                    | Phase 1, 2   |
+| **6** | Lazy-agent detection (optional)                     | Phase 2      |
 
 ### 4.3 Adopt from Local Codebase
 
@@ -106,7 +107,7 @@
 
 ### 4.4 Adopt from Web Research
 
-- **MetaGPT**: _watch-style upstream dependency declaration
+- **MetaGPT**: \_watch-style upstream dependency declaration
 - **CrewAI**: Hierarchical process patterns (fetch full spec for details)
 - **LangGraph**: Durable execution for long delegations
 - **Claude Code**: JSON inbox pattern for peer messaging (if needed)
@@ -115,28 +116,28 @@
 
 ## 5. Risk Assessment
 
-| Risk | Mitigation |
-|------|-------------|
-| **Over-engineering** | Phase 1–3 first; defer lazy-agent, full consensus |
+| Risk                           | Mitigation                                               |
+| ------------------------------ | -------------------------------------------------------- |
+| **Over-engineering**           | Phase 1–3 first; defer lazy-agent, full consensus        |
 | **Conflict with heliosShield** | Mesh treats CLI as opaque; hierarchy internal to thegent |
-| **Token overhead** | Claude Code has this; optimize handoff context size |
-| **Nested teams** | Claude Code doesn't support; document as future work |
+| **Token overhead**             | Claude Code has this; optimize handoff context size      |
+| **Nested teams**               | Claude Code doesn't support; document as future work     |
 
 ---
 
 ## 6. Success Criteria (from Research Plan)
 
-| Criterion | Status |
-|-----------|--------|
-| All local research documents reviewed | ✅ |
-| All relevant code patterns identified | ✅ |
-| Top 5 frameworks analyzed | ✅ (CrewAI, MetaGPT, AutoGen, LangGraph, Claude Code) |
-| 10+ academic papers reviewed | ⚠️ Partial (via heliosShield agent-mesh) |
-| 5+ production systems analyzed | ✅ |
-| Comprehensive pattern library | ✅ (this doc + audits) |
-| Design validated against research | ✅ |
-| Gaps and risks identified | ✅ |
-| Recommendations documented | ✅ |
+| Criterion                             | Status                                                |
+| ------------------------------------- | ----------------------------------------------------- |
+| All local research documents reviewed | ✅                                                    |
+| All relevant code patterns identified | ✅                                                    |
+| Top 5 frameworks analyzed             | ✅ (CrewAI, MetaGPT, AutoGen, LangGraph, Claude Code) |
+| 10+ academic papers reviewed          | ⚠️ Partial (via heliosShield agent-mesh)              |
+| 5+ production systems analyzed        | ✅                                                    |
+| Comprehensive pattern library         | ✅ (this doc + audits)                                |
+| Design validated against research     | ✅                                                    |
+| Gaps and risks identified             | ✅                                                    |
+| Recommendations documented            | ✅                                                    |
 
 ---
 

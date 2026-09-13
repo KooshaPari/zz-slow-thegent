@@ -28,7 +28,6 @@ from pydantic import SecretStr
 
 from thegent.config import ThegentSettings
 
-
 # ---------------------------------------------------------------------------
 # Canonical six (audit pin — must match WL152's SECRET_FIELDS surface)
 # ---------------------------------------------------------------------------

@@ -5,6 +5,7 @@
 Code-Related Artifacts - Code changes and file operations.
 
 Provides specialized artifacts for:
+
 - Code edits and modifications
 - File operations (create, delete, move)
 
@@ -15,6 +16,7 @@ Provides specialized artifacts for:
 Artifact for code modifications.
 
 Tracks:
+
 - File path and language
 - Change type and description
 - Affected functions/classes
@@ -59,6 +61,7 @@ Types of code changes.
 Artifact for file system operations.
 
 Tracks:
+
 - Operation type (create, delete, rename, etc.)
 - Source and destination paths
 - File metadata (size, type)

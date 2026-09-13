@@ -10,8 +10,6 @@ from __future__ import annotations
 
 from pathlib import Path
 
-import pytest
-
 from thegent.commands.idea_seeds import (
     DEFAULT_EXTENSIONS,
     SEED_PATTERNS,
@@ -273,7 +271,12 @@ class TestToWorkStreamItems:
     """FR-SEEDS-018: to_work_stream_items returns valid WBS-format rows."""
 
     def _make_seed(self, tmp_path: Path, ptype: str = "TODO", content: str = "do it") -> IdeaSeed:
-        return IdeaSeed(file=(tmp_path / "a.py").resolve(), line=1, pattern_type=ptype, content=content)
+        return IdeaSeed(
+            file=(tmp_path / "a.py").resolve(),
+            line=1,
+            pattern_type=ptype,
+            content=content,
+        )
 
     def test_returns_list_of_dicts(self, tmp_path: Path) -> None:
         # @trace FR-SEEDS-018
@@ -333,7 +336,12 @@ class TestExportMarkdown:
 
     def test_markdown_contains_seed_content(self, tmp_path: Path) -> None:
         scanner = IdeaSeedScanner()
-        seed = IdeaSeed(file=tmp_path / "a.py", line=5, pattern_type="IDEA", content="unique-xyz-content")
+        seed = IdeaSeed(
+            file=tmp_path / "a.py",
+            line=5,
+            pattern_type="IDEA",
+            content="unique-xyz-content",
+        )
         out = tmp_path / "seeds.md"
         scanner.export_markdown([seed], out)
         assert "unique-xyz-content" in out.read_text()

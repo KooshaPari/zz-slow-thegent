@@ -3,11 +3,13 @@
 from __future__ import annotations
 
 import orjson as json
-
 import pytest
 
 from thegent.protocols import jsonrpc_agent_server as server
-from thegent.protocols.jsonrpc_agent_server import SERVER_STATE, process_jsonrpc_line_full
+from thegent.protocols.jsonrpc_agent_server import (
+    SERVER_STATE,
+    process_jsonrpc_line_full,
+)
 
 
 def _reset_state() -> None:
@@ -84,7 +86,13 @@ def test_wl10974_commit_turn_submit_plan_mutates_session_and_turns() -> None:
 
 def test_wl10975_handle_turn_submit_parse_failure_bubbles_error_payload() -> None:
     # @trace WL-10975
-    parse_error = {"error": {"code": -32602, "message": "Invalid params", "data": {"reason": "input_must_be_string"}}}
+    parse_error = {
+        "error": {
+            "code": -32602,
+            "message": "Invalid params",
+            "data": {"reason": "input_must_be_string"},
+        }
+    }
     response = server._handle_turn_submit_parse_failure(parse_error)
     assert response == parse_error
 

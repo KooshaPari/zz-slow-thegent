@@ -15,7 +15,7 @@ Provides quantum-resistant digital signatures for agent artifacts.
 
 ### Methods
 
-#### PQCSigner.__init__
+#### PQCSigner.**init**
 
 ```python
 __init__(self: Any, algorithm: str)

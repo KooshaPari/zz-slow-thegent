@@ -12,7 +12,7 @@ Generate automated compliance reports.
 
 ### Methods
 
-#### ComplianceReporter.__init__
+#### ComplianceReporter.**init**
 
 ```python
 __init__(self: Any)

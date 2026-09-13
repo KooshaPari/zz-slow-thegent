@@ -20,6 +20,7 @@ All 5 research writeups launched using `thegent research` (flash agents):
 5. **research-library-http** → `HTTP_LIBRARY_MIGRATION_PLAN.md`
 
 **Sessions Running:**
+
 - Session 1: 20260218T082651Z-research-p45186-b162443d
 - Session 2: 20260218T082704Z-research-p50222-91f3c0b2
 - Session 3: 20260218T082712Z-research-p55306-c99117fa
@@ -50,6 +51,7 @@ thegent free --do-next --repeat 5
 ## Monitoring
 
 ### Check Writeup Status
+
 ```bash
 # List generated writeups
 ls -lh docs/research/*_PLAN.md
@@ -59,6 +61,7 @@ find docs/research -name "*_PLAN.md" | wc -l
 ```
 
 ### Check Session Status
+
 ```bash
 # List all sessions
 thegent mcp list
@@ -68,6 +71,7 @@ thegent mcp list | grep research
 ```
 
 ### Monitor Implementation Progress
+
 ```bash
 # Show recent runs
 thegent plan progress

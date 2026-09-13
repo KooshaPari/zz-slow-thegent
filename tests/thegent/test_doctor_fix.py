@@ -11,17 +11,13 @@ Tests the auto-fix capabilities including:
 
 from __future__ import annotations
 
-import os
-from pathlib import Path
 from typing import TYPE_CHECKING
 from unittest.mock import MagicMock, patch
-
-import pytest
 
 from thegent.doctor import CheckResult, _apply_fixes, _display_fix_report
 
 if TYPE_CHECKING:
-    from collections.abc import Callable
+    pass
 
 
 # ---------------------------------------------------------------------------
@@ -270,15 +266,29 @@ class TestRunDoctorFix:
                             with patch("thegent.doctor._check_shim_binaries", return_value=[]):
                                 with patch("thegent.doctor._check_shell", return_value=[]):
                                     with patch("thegent.doctor._check_nix", return_value=[]):
-                                        with patch("thegent.doctor._check_providers", return_value=[]):
-                                            with patch("thegent.doctor._check_headless", return_value=[]):
+                                        with patch(
+                                            "thegent.doctor._check_providers",
+                                            return_value=[],
+                                        ):
+                                            with patch(
+                                                "thegent.doctor._check_headless",
+                                                return_value=[],
+                                            ):
                                                 with patch(
-                                                    "thegent.doctor._check_runtime_infrastructure", return_value=[]
+                                                    "thegent.doctor._check_runtime_infrastructure",
+                                                    return_value=[],
                                                 ):
-                                                    with patch("thegent.doctor._check_process_leaks", return_value=[]):
-                                                        with patch("thegent.doctor._check_mcp_tools", return_value=[]):
+                                                    with patch(
+                                                        "thegent.doctor._check_process_leaks",
+                                                        return_value=[],
+                                                    ):
+                                                        with patch(
+                                                            "thegent.doctor._check_mcp_tools",
+                                                            return_value=[],
+                                                        ):
                                                             with patch(
-                                                                "thegent.doctor._check_sessions", return_value=[]
+                                                                "thegent.doctor._check_sessions",
+                                                                return_value=[],
                                                             ):
                                                                 with patch(
                                                                     "thegent.doctor._check_project_hints",
@@ -289,8 +299,14 @@ class TestRunDoctorFix:
                                                                         return_value=[],
                                                                     ):
                                                                         # Test that dry_run parameter is accepted
-                                                                        result = run_doctor(fix=False, dry_run=True)
-                                                                        assert isinstance(result, bool)
+                                                                        result = run_doctor(
+                                                                            fix=False,
+                                                                            dry_run=True,
+                                                                        )
+                                                                        assert isinstance(
+                                                                            result,
+                                                                            bool,
+                                                                        )
 
     def test_run_doctor_with_fix_and_dry_run(self) -> None:
         """Test that run_doctor works with both fix and dry_run=True."""
@@ -304,15 +320,29 @@ class TestRunDoctorFix:
                             with patch("thegent.doctor._check_shim_binaries", return_value=[]):
                                 with patch("thegent.doctor._check_shell", return_value=[]):
                                     with patch("thegent.doctor._check_nix", return_value=[]):
-                                        with patch("thegent.doctor._check_providers", return_value=[]):
-                                            with patch("thegent.doctor._check_headless", return_value=[]):
+                                        with patch(
+                                            "thegent.doctor._check_providers",
+                                            return_value=[],
+                                        ):
+                                            with patch(
+                                                "thegent.doctor._check_headless",
+                                                return_value=[],
+                                            ):
                                                 with patch(
-                                                    "thegent.doctor._check_runtime_infrastructure", return_value=[]
+                                                    "thegent.doctor._check_runtime_infrastructure",
+                                                    return_value=[],
                                                 ):
-                                                    with patch("thegent.doctor._check_process_leaks", return_value=[]):
-                                                        with patch("thegent.doctor._check_mcp_tools", return_value=[]):
+                                                    with patch(
+                                                        "thegent.doctor._check_process_leaks",
+                                                        return_value=[],
+                                                    ):
+                                                        with patch(
+                                                            "thegent.doctor._check_mcp_tools",
+                                                            return_value=[],
+                                                        ):
                                                             with patch(
-                                                                "thegent.doctor._check_sessions", return_value=[]
+                                                                "thegent.doctor._check_sessions",
+                                                                return_value=[],
                                                             ):
                                                                 with patch(
                                                                     "thegent.doctor._check_project_hints",
@@ -323,8 +353,14 @@ class TestRunDoctorFix:
                                                                         return_value=[],
                                                                     ):
                                                                         # Test fix=True with dry_run=True
-                                                                        result = run_doctor(fix=True, dry_run=True)
-                                                                        assert isinstance(result, bool)
+                                                                        result = run_doctor(
+                                                                            fix=True,
+                                                                            dry_run=True,
+                                                                        )
+                                                                        assert isinstance(
+                                                                            result,
+                                                                            bool,
+                                                                        )
 
 
 # ---------------------------------------------------------------------------
@@ -338,6 +374,7 @@ class TestDoctorCLI:
     def test_clode_doctor_accepts_dry_run_param(self) -> None:
         """Test that clode_doctor accepts the dry_run parameter."""
         import inspect
+
         from thegent import clode_main
 
         # Get the signature of the doctor function
@@ -348,6 +385,7 @@ class TestDoctorCLI:
     def test_dex_doctor_accepts_dry_run_param(self) -> None:
         """Test that dex_doctor accepts the dry_run parameter."""
         import inspect
+
         from thegent import dex_main
 
         # Get the signature of the doctor function
@@ -358,6 +396,7 @@ class TestDoctorCLI:
     def test_roid_doctor_accepts_dry_run_param(self) -> None:
         """Test that roid_doctor accepts the dry_run parameter."""
         import inspect
+
         from thegent import roid_main
 
         # Get the signature of the doctor function
@@ -368,6 +407,7 @@ class TestDoctorCLI:
     def test_anen_doctor_accepts_dry_run_param(self) -> None:
         """Test that anen_doctor accepts the dry_run parameter."""
         import inspect
+
         from thegent import anen_main
 
         # Get the signature of the doctor function

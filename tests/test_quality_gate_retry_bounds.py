@@ -8,7 +8,6 @@ from __future__ import annotations
 import importlib.util
 import os
 import subprocess
-import sys
 import threading
 import time
 from pathlib import Path
@@ -80,11 +79,9 @@ class TestWorkerCap:
         runner_mod._resolve_paths(root=tmp_project)
 
         peak_concurrent: list[int] = []
-        active = threading.Semaphore(0)
+        threading.Semaphore(0)
         lock = threading.Lock()
         running_count = [0]
-
-        original_run_step = runner_mod.run_step
 
         def counting_run_step(step_name, command, cwd, verbose=False):
             with lock:

@@ -20,6 +20,7 @@ The controller operates in one of two modes:
 
 from __future__ import annotations
 
+import contextlib
 import os
 import time
 import uuid
@@ -178,18 +179,14 @@ def _parse_redis_url(url: str) -> dict[str, Any]:
                 result["password"] = auth.split(":", 1)[1]
         if "/" in remainder:
             host_port, db = remainder.rsplit("/", 1)
-            try:
+            with contextlib.suppress(ValueError):
                 result["db"] = int(db)
-            except ValueError:
-                pass
             remainder = host_port
         if ":" in remainder:
             host, port = remainder.split(":", 1)
             result["host"] = host
-            try:
+            with contextlib.suppress(ValueError):
                 result["port"] = int(port)
-            except ValueError:
-                pass
         else:
             result["host"] = remainder
     return result

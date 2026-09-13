@@ -15,6 +15,7 @@
 **Goal**: Pick best offer under constraints, execute, log, fallback if needed.
 
 **Flow**:
+
 1. Client sends request with role, hardConstraints, prompt/messages, optional budgets
 2. Router loads latest snapshot: offers + capabilities, pricing + shadow prices, telemetry + predicted latency, quality indices per role
 3. Router filters hard constraints
@@ -31,6 +32,7 @@
 **Goal**: Integrate a new provider with minimal effort.
 
 **Flow**:
+
 1. Implement adapter interface (metadata + usage + execution)
 2. Register adapter + credentials in secrets manager
 3. Run "adapter validation" job: list models, fetch pricing, execute test request
@@ -44,6 +46,7 @@
 **Goal**: Keep effective costs accurate and prevent quota blowups.
 
 **Flow**:
+
 1. Subscription adapter scrapes usage/quota/renewal date
 2. Commercial Engine recomputes: remaining quotas, throttling risk, shadow prices
 3. Budget allocator may: tighten per-role caps, enable cheaper offers, enter degraded mode if nearing burn limit
@@ -54,6 +57,7 @@
 **Goal**: Keep service alive within budget.
 
 **Flow**:
+
 1. Budget burn crosses threshold (e.g. 85% of monthly)
 2. Router policy flips: disables premium offers, forces cache-first behavior, prioritizes self-host / low-cost API models
 3. User receives responses with "degraded mode" metadata
@@ -65,6 +69,7 @@
 ### POST /v1/route — Route + Execute (One Stop)
 
 **Request**:
+
 ```json
 {
   "role": "code_complex",
@@ -90,6 +95,7 @@
 ```
 
 **Response**:
+
 ```json
 {
   "response": {...},
@@ -119,10 +125,12 @@ Returns route decision only (no execution). Used for debugging, testing, CI.
 ### Optional: Plan-Only Router (Agent Frameworks)
 
 For complex agents:
+
 - Route each step differently (planner vs coder vs reviewer)
 - Or run N candidates cheap then validate with strong model
 
 **Endpoints**:
+
 - `POST /v1/route/planOnly`
 - `POST /v1/route/executeSelected`
 
@@ -130,12 +138,12 @@ For complex agents:
 
 ## 3. Admin APIs
 
-| Endpoint | Purpose |
-|----------|---------|
-| `POST /v1/admin/providers/:providerId/enable` | Enable provider offers (optionally scoped by roles) |
-| `POST /v1/admin/offers/:offerId/state` | Set active \| inactive \| canary \| blocked |
-| `POST /v1/admin/policies` | Update role policies (constraints + opt order) |
-| `GET /v1/admin/health` | Shows provider health, error rates, disabled offers, budget burn |
+| Endpoint                                      | Purpose                                                          |
+| --------------------------------------------- | ---------------------------------------------------------------- |
+| `POST /v1/admin/providers/:providerId/enable` | Enable provider offers (optionally scoped by roles)              |
+| `POST /v1/admin/offers/:offerId/state`        | Set active \| inactive \| canary \| blocked                      |
+| `POST /v1/admin/policies`                     | Update role policies (constraints + opt order)                   |
+| `GET /v1/admin/health`                        | Shows provider health, error rates, disabled offers, budget burn |
 
 ---
 
@@ -146,12 +154,14 @@ For complex agents:
 **Goal**: Keep offer registry accurate.
 
 **Inputs**:
+
 - OpenRouter models/pricing API
 - Vercel AI Gateway model mappings
 - Direct provider docs/APIs
 - Self-host registry (inference fleet inventory)
 
 **Stages**:
+
 1. Fetch raw model lists and pricing
 2. Normalize to canonical Offer
 3. Deduplicate and assign stable offerId
@@ -159,6 +169,7 @@ For complex agents:
 5. Write to Offer Registry + version snapshot
 
 **ASCII**:
+
 ```
 [Provider APIs]     [Docs/HTML]     [Self-host Fleet]
       |                 |                |
@@ -179,16 +190,19 @@ For complex agents:
 **Goal**: Build speed/reliability predictors and online quality stats.
 
 **Inputs**:
+
 - Router execution traces
 - Gateway logs (Vercel, LiteLLM, OpenRouter metadata)
 - Local inference metrics (vLLM, TGI, etc.)
 
 **Stages**:
+
 1. Log per-request metrics: latency (TTFT, total), tokens in/out, cache hit/miss, errors + retries, output schema validity
 2. Aggregate into rolling windows (5m, 1h, 24h): p50/p95, error rate, adherence rate
 3. Publish "Telemetry Snapshot" used by router hot path
 
 **ASCII**:
+
 ```
   [Router Calls]
        |
@@ -207,6 +221,7 @@ For complex agents:
 **Goal**: Convert messy subscription rules into effective marginal cost.
 
 **Inputs**:
+
 - Subscription dashboards (scraped)
 - Provider billing usage endpoints
 - Your metering (truth source)
@@ -214,12 +229,14 @@ For complex agents:
 - Manual overrides ("freeze spending on provider X")
 
 **Stages**:
+
 1. Scrape/ingest current plan status: remaining quota, renewal date, throttle regime
 2. Compute: remaining_ratio vs expected_remaining (time-based), shadow price per plan/model
 3. Produce effectiveUnitCost function parameters per offer
 4. Budget allocator: sets role budgets and per-day burn caps, triggers degraded mode flags
 
 **ASCII**:
+
 ```
 [Sub Dashboards] [Billing APIs] [Your Metering]
        |              |             |
@@ -242,14 +259,15 @@ For complex agents:
 
 Router runs purely off **snapshots** (fast, deterministic):
 
-| Snapshot | Contents |
-|----------|----------|
-| OfferSnapshot | Capabilities + base pricing |
-| TelemetrySnapshot | Latency/errors/adherence |
+| Snapshot          | Contents                                     |
+| ----------------- | -------------------------------------------- |
+| OfferSnapshot     | Capabilities + base pricing                  |
+| TelemetrySnapshot | Latency/errors/adherence                     |
 | EconomicsSnapshot | Effective cost + shadow price + budget state |
-| QualitySnapshot | Per-role quality indices |
+| QualitySnapshot   | Per-role quality indices                     |
 
 **ASCII**:
+
 ```
                    ┌────────────────────────┐
 Request + Role ---> │ Router Hot Path        │
@@ -269,12 +287,12 @@ Request + Role ---> │ Router Hot Path        │
 
 ### Failure Types → Fallback Action
 
-| Failure Type | Fallback Action |
-|--------------|-----------------|
-| Rate limit / 429 | Switch provider/offer immediately |
-| Timeout | Switch to fastest offer on Pareto set |
-| Schema/tool failure | Switch to "high adherence" offer |
-| Bad output quality (tests) | Escalate to higher quality tier |
+| Failure Type               | Fallback Action                       |
+| -------------------------- | ------------------------------------- |
+| Rate limit / 429           | Switch provider/offer immediately     |
+| Timeout                    | Switch to fastest offer on Pareto set |
+| Schema/tool failure        | Switch to "high adherence" offer      |
+| Bad output quality (tests) | Escalate to higher quality tier       |
 
 ### Fallback Chain Generator
 

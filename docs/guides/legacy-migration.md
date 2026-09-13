@@ -6,12 +6,14 @@
 ## ✅ Completed Replacements
 
 ### Rust Dependencies
+
 - ✅ `lazy_static` → Removed (use `std::sync::OnceLock`)
 - ✅ `md5` → `sha2` (security fix)
 - ✅ `hex 0.4` → `base16ct 1.0` (4 files)
 - ✅ `thiserror 1.0` → `thiserror 2.0` (3 files)
 
 ### Go Dependencies
+
 - ✅ `github.com/lib/pq` → `github.com/jackc/pgx/v5` (3 files)
 
 ---
@@ -21,6 +23,7 @@
 ### 1. lazy_static → std::sync::OnceLock
 
 **Before:**
+
 ```rust
 use lazy_static::lazy_static;
 use std::collections::HashMap;
@@ -39,6 +42,7 @@ fn main() {
 ```
 
 **After:**
+
 ```rust
 use std::sync::OnceLock;
 use std::collections::HashMap;
@@ -59,6 +63,7 @@ fn main() {
 ```
 
 **Files to update:**
+
 - `thegent/hooks/hook-dispatcher/src/**/*.rs`
 - `thegent/crates/thegent-hooks/src/**/*.rs`
 
@@ -67,6 +72,7 @@ fn main() {
 ### 2. md5 → sha2
 
 **Before:**
+
 ```rust
 use md5::{Md5, Digest};
 
@@ -77,6 +83,7 @@ fn hash_data(data: &[u8]) -> String {
 ```
 
 **After:**
+
 ```rust
 use sha2::{Sha256, Digest};
 
@@ -96,6 +103,7 @@ fn hash_data_blake3(data: &[u8]) -> String {
 ```
 
 **Files to update:**
+
 - `thegent/crates/thegent-runtime/src/**/*.rs`
 
 **Note:** MD5 is cryptographically broken. Use SHA-256 for compatibility or BLAKE3 for speed.
@@ -105,6 +113,7 @@ fn hash_data_blake3(data: &[u8]) -> String {
 ### 3. hex → base16ct
 
 **Before:**
+
 ```rust
 use hex;
 
@@ -118,6 +127,7 @@ fn decode(s: &str) -> Result<Vec<u8>, hex::FromHexError> {
 ```
 
 **After:**
+
 ```rust
 use base16ct::{lower, Upper};
 
@@ -138,12 +148,14 @@ fn encode_upper(data: &[u8]) -> String {
 ```
 
 **Files to update:**
+
 - `thegent/crates/thegent-runtime/src/**/*.rs`
 - `thegent/crates/thegent-crypto/src/**/*.rs`
 - `thegent/crates/thegent-memory/src/**/*.rs`
 - `thegent/crates/thegent-hooks/src/**/*.rs`
 
 **Benefits:**
+
 - Constant-time operations (security)
 - Faster performance
 - Better maintained
@@ -155,10 +167,12 @@ fn encode_upper(data: &[u8]) -> String {
 **Mostly drop-in replacement.** Check for:
 
 **Breaking changes:**
+
 - Const generics improvements (better performance)
 - Some attribute syntax changes
 
 **Before (1.0):**
+
 ```rust
 use thiserror::Error;
 
@@ -170,6 +184,7 @@ pub enum MyError {
 ```
 
 **After (2.0):**
+
 ```rust
 use thiserror::Error;
 
@@ -182,6 +197,7 @@ pub enum MyError {
 ```
 
 **Files updated:**
+
 - `thegent/crates/thegent-router/Cargo.toml`
 - `thegent/crates/supermemory-rs/Cargo.toml`
 - `thegent/crates/thegent-memory/Cargo.toml`
@@ -193,6 +209,7 @@ pub enum MyError {
 ### 5. lib/pq → pgx/v5 (Go)
 
 **Before:**
+
 ```go
 import (
     "database/sql"
@@ -215,6 +232,7 @@ func query(db *sql.DB) error {
 ```
 
 **After:**
+
 ```go
 import (
     "context"
@@ -244,11 +262,13 @@ func connectPool(ctx context.Context) (*pgxpool.Pool, error) {
 ```
 
 **Files updated:**
+
 - `trace/backend/go.mod`
 - `trace/backend/tests/go.mod`
 - `claude-squad/go.mod`
 
 **Migration steps:**
+
 1. Replace `sql.Open()` with `pgx.Connect()`
 2. Add `context.Context` to all database operations
 3. Update query methods (pgx uses different API)
@@ -256,6 +276,7 @@ func connectPool(ctx context.Context) (*pgxpool.Pool, error) {
 5. Update error handling (pgx has better error types)
 
 **Benefits:**
+
 - Faster performance
 - Better type safety
 - Modern API
@@ -298,6 +319,7 @@ grep -r "database/sql" --include="*.go" .
 After making code changes:
 
 ### Rust
+
 - [ ] Run `cargo check --workspace`
 - [ ] Run `cargo test --workspace`
 - [ ] Check for compilation errors
@@ -307,6 +329,7 @@ After making code changes:
 - [ ] Test thiserror 2.0 compatibility
 
 ### Go
+
 - [ ] Run `go mod tidy`
 - [ ] Run `go build ./...`
 - [ ] Run `go test ./...`
@@ -319,13 +342,13 @@ After making code changes:
 
 ## 📊 Impact Summary
 
-| Replacement | Files Changed | Code Changes Needed | Risk Level |
-|-------------|---------------|---------------------|------------|
-| lazy_static | 2 | Medium | Low |
-| md5 → sha2 | 1 | Low | Low |
-| hex → base16ct | 4 | Low | Low |
-| thiserror 1→2 | 3 | Low | Low |
-| lib/pq → pgx | 3 | Medium-High | Medium |
+| Replacement    | Files Changed | Code Changes Needed | Risk Level |
+| -------------- | ------------- | ------------------- | ---------- |
+| lazy_static    | 2             | Medium              | Low        |
+| md5 → sha2     | 1             | Low                 | Low        |
+| hex → base16ct | 4             | Low                 | Low        |
+| thiserror 1→2  | 3             | Low                 | Low        |
+| lib/pq → pgx   | 3             | Medium-High         | Medium     |
 
 **Total:** 13 dependency files updated, code changes required in ~10-15 source files.
 
@@ -334,6 +357,7 @@ After making code changes:
 ## 🚀 Next Steps
 
 1. **Update Rust source code:**
+
    ```bash
    cd thegent/crates
    cargo check --workspace  # Find errors
@@ -342,6 +366,7 @@ After making code changes:
    ```
 
 2. **Update Go source code:**
+
    ```bash
    cd trace/backend
    go mod tidy

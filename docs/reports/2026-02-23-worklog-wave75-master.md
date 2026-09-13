@@ -4,6 +4,7 @@ Date: 2026-02-23
 Method: child-output-only synthesis from 6 lane reports (A-F), 10 researched items each (60 total).
 
 ## Input Lanes
+
 - `docs/reports/2026-02-23-worklog-wave75-lane-a.md`
 - `docs/reports/2026-02-23-worklog-wave75-lane-b.md`
 - `docs/reports/2026-02-23-worklog-wave75-lane-c.md`
@@ -12,6 +13,7 @@ Method: child-output-only synthesis from 6 lane reports (A-F), 10 researched ite
 - `docs/reports/2026-02-23-worklog-wave75-lane-f.md`
 
 ## Cross-Lane Findings
+
 1. The fastest practical win is not one tool, it is a layered quality pipeline: fast lint/type gates, security scanning, and focused test lanes.
 2. Pytest performance gains come from collection control, selective execution, and tuned parallel modes, not blanket `-n auto`.
 3. FR/user-story traceability is mature enough to enforce now via strict markers plus generated traceability artifacts.
@@ -21,6 +23,7 @@ Method: child-output-only synthesis from 6 lane reports (A-F), 10 researched ite
 7. Reliability needs explicit flake handling and telemetry to avoid masking systemic instability with retries.
 
 ## Consolidated Priority Actions
+
 1. Establish a unified baseline gate in `thegent`:
    - Python: Ruff + (Mypy or Pyright)
    - Go: golangci-lint
@@ -48,6 +51,7 @@ Method: child-output-only synthesis from 6 lane reports (A-F), 10 researched ite
    - Prompt-injection-safe boundaries for agent-triggered operations
 
 ## Implementation Sequence (Recommended)
+
 1. Phase 0: Baseline and observability
    - Add unified command contract (`task quality`) and publish output schema.
    - Emit JSON + SARIF from current checks.
@@ -65,6 +69,7 @@ Method: child-output-only synthesis from 6 lane reports (A-F), 10 researched ite
    - Keep explicit human approval before patch application.
 
 ## Adopt/Watch/Avoid Snapshot
+
 - Adopt Now:
   - Strict marker governance + FR trace artifacts
   - Ruff/Mypy|Pyright + Semgrep + CodeQL baseline
@@ -77,6 +82,7 @@ Method: child-output-only synthesis from 6 lane reports (A-F), 10 researched ite
   - Claims of autonomy without deterministic controls, auditability, and rollback
 
 ## Immediate Backlog Candidates (Wave 76 seed)
+
 1. `quality-contract`: define canonical outputs (JSON + SARIF + markdown summary).
 2. `fr-trace-extractor`: generate requirement/test mapping and coverage gaps.
 3. `quality-graph`: DAG planner with impacted-node execution.

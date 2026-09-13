@@ -39,7 +39,11 @@ class Context7Provider:
 
     def _load_config(self) -> Context7Config:
         config = cast("Context7Config", Context7Config.from_env("CONTEXT7_"))
-        config.enabled = os.environ.get("THEGENT_ENABLE_CONTEXT7", "").lower() in ("1", "true", "yes")
+        config.enabled = os.environ.get("THEGENT_ENABLE_CONTEXT7", "").lower() in (
+            "1",
+            "true",
+            "yes",
+        )
         return config
 
     @property

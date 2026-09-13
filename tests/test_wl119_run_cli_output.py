@@ -2,7 +2,10 @@
 
 from __future__ import annotations
 
-from thegent.cli.commands.cli import _format_grounding_sources_lines, _format_transcript_summary_line
+from thegent.cli.commands.cli import (
+    _format_grounding_sources_lines,
+    _format_transcript_summary_line,
+)
 
 
 def test_format_transcript_summary_line_from_audio_metadata() -> None:
@@ -57,7 +60,12 @@ def test_format_grounding_sources_lines_includes_count_and_truncation() -> None:
 
 def test_format_grounding_sources_lines_deduplicates_repeated_urls() -> None:
     lines = _format_grounding_sources_lines(
-        ["https://a.example/1", "https://a.example/1", " https://b.example/2 ", "https://b.example/2"]
+        [
+            "https://a.example/1",
+            "https://a.example/1",
+            " https://b.example/2 ",
+            "https://b.example/2",
+        ]
     )
     assert lines[0] == "Grounding sources: showing 2/2"
     assert lines.count("  - https://a.example/1") == 1

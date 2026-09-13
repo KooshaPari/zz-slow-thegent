@@ -319,7 +319,11 @@ class _Parser:
             # segment of the path.
             # e.g. "context.model.contains" followed by "(" "arg" ")"
             base_path, _, method = ident.rpartition(".")
-            if self._peek().kind == _TK_LPAREN and method in ("contains", "startsWith", "endsWith"):
+            if self._peek().kind == _TK_LPAREN and method in (
+                "contains",
+                "startsWith",
+                "endsWith",
+            ):
                 self._consume()  # '('
                 arg = self._parse_ternary()
                 if self._peek().kind != _TK_RPAREN:
@@ -519,7 +523,11 @@ class CelEvaluator:
                 if result is True or (not isinstance(result, bool) and result):
                     # For ternary expressions that return a string target
                     if isinstance(result, str):
-                        _log.debug("CEL route matched: name=%r target=%r (ternary)", route.name, result)
+                        _log.debug(
+                            "CEL route matched: name=%r target=%r (ternary)",
+                            route.name,
+                            result,
+                        )
                         return CelEvalResult(
                             matched=True,
                             target=result,

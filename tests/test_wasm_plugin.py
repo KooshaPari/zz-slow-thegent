@@ -7,10 +7,10 @@ These tests verify the Wasm plugin functionality including:
 - Fallback handling
 """
 
-import orjson as json
 import tempfile
 from pathlib import Path
 
+import orjson as json
 import pytest
 
 from thegent.infra.wasm_plugin import (
@@ -314,7 +314,11 @@ class TestWasmPluginLoading:
 
     def test_extism_plugin_load_without_wasm_file(self):
         """Test loading a plugin with non-existent wasm file."""
-        from thegent.infra.wasm_plugin import ExtismPlugin, ResourceLimits, WasmPluginMetadata
+        from thegent.infra.wasm_plugin import (
+            ExtismPlugin,
+            ResourceLimits,
+            WasmPluginMetadata,
+        )
 
         metadata = WasmPluginMetadata(name="nonexistent-plugin")
         limits = ResourceLimits()
@@ -333,7 +337,11 @@ class TestWasmPluginLoading:
 
     def test_extism_plugin_double_load(self):
         """Test loading a plugin twice."""
-        from thegent.infra.wasm_plugin import ExtismPlugin, ResourceLimits, WasmPluginMetadata
+        from thegent.infra.wasm_plugin import (
+            ExtismPlugin,
+            ResourceLimits,
+            WasmPluginMetadata,
+        )
 
         with tempfile.NamedTemporaryFile(suffix=".wasm", delete=False) as f:
             wasm_path = Path(f.name)
@@ -350,7 +358,6 @@ class TestWasmPluginLoading:
 
             # First load attempt
             plugin.load()
-            initial_status = plugin.status
 
             # Second load - should return True if already loaded
             # (depends on implementation - some may reload)
@@ -363,7 +370,11 @@ class TestWasmPluginLoading:
 
     def test_extism_plugin_execute_without_load(self):
         """Test executing a plugin that hasn't been loaded."""
-        from thegent.infra.wasm_plugin import ExtismPlugin, ResourceLimits, WasmPluginMetadata
+        from thegent.infra.wasm_plugin import (
+            ExtismPlugin,
+            ResourceLimits,
+            WasmPluginMetadata,
+        )
 
         with tempfile.NamedTemporaryFile(suffix=".wasm", delete=False) as f:
             wasm_path = Path(f.name)
@@ -389,7 +400,11 @@ class TestWasmPluginLoading:
 
     def test_extism_plugin_unload_twice(self):
         """Test unloading a plugin twice."""
-        from thegent.infra.wasm_plugin import ExtismPlugin, ResourceLimits, WasmPluginMetadata
+        from thegent.infra.wasm_plugin import (
+            ExtismPlugin,
+            ResourceLimits,
+            WasmPluginMetadata,
+        )
 
         with tempfile.NamedTemporaryFile(suffix=".wasm", delete=False) as f:
             wasm_path = Path(f.name)
@@ -416,7 +431,11 @@ class TestWasmPluginLoading:
 
     def test_extism_plugin_execute_with_string_input(self):
         """Test executing plugin with string input."""
-        from thegent.infra.wasm_plugin import ExtismPlugin, ResourceLimits, WasmPluginMetadata
+        from thegent.infra.wasm_plugin import (
+            ExtismPlugin,
+            ResourceLimits,
+            WasmPluginMetadata,
+        )
 
         with tempfile.NamedTemporaryFile(suffix=".wasm", delete=False) as f:
             wasm_path = Path(f.name)
@@ -441,7 +460,11 @@ class TestWasmPluginLoading:
 
     def test_extism_plugin_execute_with_bytes_input(self):
         """Test executing plugin with bytes input."""
-        from thegent.infra.wasm_plugin import ExtismPlugin, ResourceLimits, WasmPluginMetadata
+        from thegent.infra.wasm_plugin import (
+            ExtismPlugin,
+            ResourceLimits,
+            WasmPluginMetadata,
+        )
 
         with tempfile.NamedTemporaryFile(suffix=".wasm", delete=False) as f:
             wasm_path = Path(f.name)

@@ -16,7 +16,7 @@ class AutoSyncRunner:
 
     def run(self) -> dict[str, Any]:
         """Run the sync.
-        
+
         Returns:
             Run result dictionary.
         """

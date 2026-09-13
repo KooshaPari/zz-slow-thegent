@@ -26,7 +26,9 @@ def _write_python(root: Path, relative_path: str, source: str) -> Path:
     return path
 
 
-def test_allowlisted_violation_is_warning_and_advisory_exit_zero(tmp_path: Path) -> None:
+def test_allowlisted_violation_is_warning_and_advisory_exit_zero(
+    tmp_path: Path,
+) -> None:
     config_path = _write_config(
         tmp_path,
         """
@@ -41,7 +43,11 @@ def test_allowlisted_violation_is_warning_and_advisory_exit_zero(tmp_path: Path)
         reason = "fixture"
         """,
     )
-    _write_python(tmp_path, "src/thegent/governance/policy.py", "from thegent.mesh.sandbox import Sandboxing\n")
+    _write_python(
+        tmp_path,
+        "src/thegent/governance/policy.py",
+        "from thegent.mesh.sandbox import Sandboxing\n",
+    )
 
     findings = MODULE.collect_findings(tmp_path, config_path)
     exit_code = MODULE.main(["--root", str(tmp_path), "--config", str(config_path)])
@@ -53,7 +59,9 @@ def test_allowlisted_violation_is_warning_and_advisory_exit_zero(tmp_path: Path)
     assert findings[0].sunset_gate == "execution safety adapter lands"
 
 
-def test_enforced_lane_unallowlisted_violation_fails_in_strict_mode(tmp_path: Path) -> None:
+def test_enforced_lane_unallowlisted_violation_fails_in_strict_mode(
+    tmp_path: Path,
+) -> None:
     config_path = _write_config(
         tmp_path,
         """
@@ -61,7 +69,11 @@ def test_enforced_lane_unallowlisted_violation_fails_in_strict_mode(tmp_path: Pa
         enforced_lanes = ["queue"]
         """,
     )
-    _write_python(tmp_path, "src/thegent/mesh/mesh.py", "from thegent.mesh.task_queue import MaildirQueue\n")
+    _write_python(
+        tmp_path,
+        "src/thegent/mesh/mesh.py",
+        "from thegent.mesh.task_queue import MaildirQueue\n",
+    )
 
     findings = MODULE.collect_findings(tmp_path, config_path)
     exit_code = MODULE.main(["--root", str(tmp_path), "--config", str(config_path), "--strict"])
@@ -74,7 +86,7 @@ def test_enforced_lane_unallowlisted_violation_fails_in_strict_mode(tmp_path: Pa
 
 
 def test_legacy_cli_share_import_is_rejected(tmp_path: Path) -> None:
-    config_path = _write_config(tmp_path, "[sharecli_boundary]\nenforced_lanes = [\"queue\"]")
+    config_path = _write_config(tmp_path, '[sharecli_boundary]\nenforced_lanes = ["queue"]')
     _write_python(tmp_path, "src/thegent/mesh/cli.py", "import thegent_cli_share\n")
     findings = MODULE.collect_findings(tmp_path, config_path)
     assert len(findings) == 1
@@ -112,8 +124,12 @@ def test_json_payload_contains_required_finding_fields(tmp_path: Path, capsys) -
 
 
 def test_docs_paths_are_ignored(tmp_path: Path) -> None:
-    config_path = _write_config(tmp_path, "[sharecli_boundary]\nenforced_lanes = [\"queue\"]")
-    _write_python(tmp_path, "docs/example.py", "from thegent.mesh.task_queue import MaildirQueue\n")
+    config_path = _write_config(tmp_path, '[sharecli_boundary]\nenforced_lanes = ["queue"]')
+    _write_python(
+        tmp_path,
+        "docs/example.py",
+        "from thegent.mesh.task_queue import MaildirQueue\n",
+    )
 
     findings = MODULE.collect_findings(tmp_path, config_path)
 

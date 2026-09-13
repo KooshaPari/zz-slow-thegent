@@ -15,7 +15,7 @@ Scans directories for markdown files and organizes by date/location.
 
 ### Methods
 
-#### MarkdownScanner.__init__
+#### MarkdownScanner.**init**
 
 ```python
 __init__(self: Any, config: ScanConfig)

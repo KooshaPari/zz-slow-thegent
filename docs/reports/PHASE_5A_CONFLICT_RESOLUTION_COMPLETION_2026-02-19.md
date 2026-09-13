@@ -12,6 +12,7 @@
 Phase 5A implementation of the Multi-Tenant Civilization Framework is **complete and production-ready**. The conflict resolution protocol detects, logs, and resolves agent registration conflicts using multiple strategies.
 
 **Delivered:**
+
 - **ConflictResolver class** (304 LOC) with detection and resolution
 - **Conflict detection** for duplicates, parent conflicts, circular dependencies
 - **Three resolution strategies**: Last-Write-Wins (LWW), Voting, Merge
@@ -28,6 +29,7 @@ Phase 5A implementation of the Multi-Tenant Civilization Framework is **complete
 #### Core Classes
 
 **ConflictResolver**
+
 ```python
 class ConflictResolver:
     """Detects and resolves conflicts in the civilization framework."""
@@ -38,6 +40,7 @@ class ConflictResolver:
 ```
 
 **ConflictRecord (Data Class)**
+
 ```python
 @dataclass
 class ConflictRecord:
@@ -54,31 +57,35 @@ class ConflictRecord:
 
 **Enums**
 
-| Enum | Values |
-|------|--------|
-| **ConflictType** | DUPLICATE_REGISTRATION, PARENT_REFERENCE_CONFLICT, CIRCULAR_DEPENDENCY, STATE_DIVERGENCE, ORPHANED_REFERENCE |
-| **ResolutionStrategy** | LAST_WRITE_WINS, VOTING, MERGE |
+| Enum                   | Values                                                                                                       |
+| ---------------------- | ------------------------------------------------------------------------------------------------------------ |
+| **ConflictType**       | DUPLICATE_REGISTRATION, PARENT_REFERENCE_CONFLICT, CIRCULAR_DEPENDENCY, STATE_DIVERGENCE, ORPHANED_REFERENCE |
+| **ResolutionStrategy** | LAST_WRITE_WINS, VOTING, MERGE                                                                               |
 
 #### Key Features
 
 **1. Conflict Detection (90 LOC)**
+
 - `_detect_duplicate_registrations()` - Find agents with same project:uuid:level:role
 - `_detect_parent_reference_conflicts()` - Validate parent references exist
 - `_detect_circular_dependencies()` - DFS-based cycle detection
 - Full registry state analysis
 
 **2. Conflict Logging (50 LOC)**
+
 - Persistent JSON storage at `~/.claude/civilization/conflicts.json`
 - Serialization/deserialization with enum support
 - Conflict metadata tracking (type, involved agents, strategy, outcome)
 
 **3. Resolution Strategies (100 LOC)**
+
 - **Last-Write-Wins**: Keep agent with most recent heartbeat, unregister others
 - **Voting**: Delegating strategy (defaults to LWW in MVP)
 - **Merge**: Combine capabilities, children, and scope tags from conflicting agents
 - Auto-selection based on conflict type
 
 **4. Query & Reporting (50 LOC)**
+
 - `get_conflicts_by_agent()` - Find conflicts involving specific agent
 - `get_unresolved_conflicts()` - List pending resolutions
 - `get_conflicts_since()` - Time-based queries
@@ -164,45 +171,50 @@ scripts/
 
 ## Quality Metrics
 
-| Metric | Value | Status |
-|--------|-------|--------|
-| **Lines of Code** | 304 (resolver) + 507 (tests) | ✅ |
-| **Test Cases** | 14 | ✅ |
-| **Test Pass Rate** | 100% (14/14) | ✅ |
-| **Backward Compat** | 100% (17/17 Phase 1-3) | ✅ |
-| **Syntax Validation** | 100% (py_compile clean) | ✅ |
-| **Type Safety** | ~95% (minor unbound vars in conditional imports) | ⚠️ |
-| **Performance** | <10ms per resolution | ✅ |
+| Metric                | Value                                            | Status |
+| --------------------- | ------------------------------------------------ | ------ |
+| **Lines of Code**     | 304 (resolver) + 507 (tests)                     | ✅     |
+| **Test Cases**        | 14                                               | ✅     |
+| **Test Pass Rate**    | 100% (14/14)                                     | ✅     |
+| **Backward Compat**   | 100% (17/17 Phase 1-3)                           | ✅     |
+| **Syntax Validation** | 100% (py_compile clean)                          | ✅     |
+| **Type Safety**       | ~95% (minor unbound vars in conditional imports) | ⚠️     |
+| **Performance**       | <10ms per resolution                             | ✅     |
 
 ---
 
 ## Feature Checklist
 
 ### Conflict Detection ✅
+
 - [x] Duplicate agent ID detection
 - [x] Parent reference validation
 - [x] Circular relationship detection
 - [x] State consistency checks
 
 ### Conflict Logging ✅
+
 - [x] Persistent JSON storage
 - [x] Conflict metadata tracking
 - [x] Serialization/deserialization
 - [x] Reload from disk on startup
 
 ### Resolution Strategies ✅
+
 - [x] Last-Write-Wins (LWW) - primary strategy
 - [x] Voting-based (stub for future enhancement)
 - [x] Merge strategy - combines agents
 - [x] Auto-selection based on conflict type
 
 ### Query & Reporting ✅
+
 - [x] Query by agent ID
 - [x] Query by time range
 - [x] Get unresolved conflicts
 - [x] Summary statistics
 
 ### Integration & Testing ✅
+
 - [x] Unit tests for each strategy
 - [x] Integration tests with Phase 1-4
 - [x] Backward compatibility verified
@@ -241,14 +253,14 @@ scripts/
 
 ## Performance Analysis
 
-| Operation | Latency | Status |
-|-----------|---------|--------|
-| Detect duplicates (100 agents) | <5ms | ✅ |
-| Detect circular deps (100 agents) | <10ms | ✅ |
-| LWW resolution | <2ms | ✅ |
-| Merge resolution | <5ms | ✅ |
-| Log persistence | <3ms | ✅ |
-| Query by agent | <1ms | ✅ |
+| Operation                         | Latency | Status |
+| --------------------------------- | ------- | ------ |
+| Detect duplicates (100 agents)    | <5ms    | ✅     |
+| Detect circular deps (100 agents) | <10ms   | ✅     |
+| LWW resolution                    | <2ms    | ✅     |
+| Merge resolution                  | <5ms    | ✅     |
+| Log persistence                   | <3ms    | ✅     |
+| Query by agent                    | <1ms    | ✅     |
 
 ---
 
@@ -256,12 +268,12 @@ scripts/
 
 ### Current Limitations
 
-| Issue | Severity | Mitigation | Future Phase |
-|-------|----------|-----------|--------------|
-| Voting strategy is stub | Low | Defaults to LWW | Phase 5+ |
-| No encryption for conflict log | Low | Add file permissions | Phase 6 |
-| Synchronous resolution only | Low | Add async support | Phase 6 |
-| No cross-civilization conflicts | Medium | Extend to federation | Phase 6+ |
+| Issue                           | Severity | Mitigation           | Future Phase |
+| ------------------------------- | -------- | -------------------- | ------------ |
+| Voting strategy is stub         | Low      | Defaults to LWW      | Phase 5+     |
+| No encryption for conflict log  | Low      | Add file permissions | Phase 6      |
+| Synchronous resolution only     | Low      | Add async support    | Phase 6      |
+| No cross-civilization conflicts | Medium   | Extend to federation | Phase 6+     |
 
 ### Phase 5+ Enhancements
 
@@ -332,6 +344,7 @@ print(summary)
 ```python
 from scripts.civilization_conflict_resolver import ConflictResolver
 
+
 def periodic_conflict_check():
     """Run conflict detection periodically."""
     resolver = ConflictResolver(registry)
@@ -352,15 +365,15 @@ def periodic_conflict_check():
 
 ## Session Statistics
 
-| Metric | Value |
-|--------|-------|
-| **Duration** | ~45 min (this phase) |
-| **Files Created** | 2 (resolver + tests) |
-| **Lines of Code** | 304 (Phase 5A implementation) |
-| **Test Cases** | 14 (Phase 5A) |
-| **Total Tests** | 67 (Phases 1-5A) |
+| Metric              | Value                              |
+| ------------------- | ---------------------------------- |
+| **Duration**        | ~45 min (this phase)               |
+| **Files Created**   | 2 (resolver + tests)               |
+| **Lines of Code**   | 304 (Phase 5A implementation)      |
+| **Test Cases**      | 14 (Phase 5A)                      |
+| **Total Tests**     | 67 (Phases 1-5A)                   |
 | **Backward Compat** | 100% (all Phase 1-3 tests passing) |
-| **Confidence** | 90% |
+| **Confidence**      | 90%                                |
 
 ---
 
@@ -369,6 +382,7 @@ def periodic_conflict_check():
 ✅ **Phase 5A Conflict Resolution is complete and production-ready.**
 
 **Key Achievements:**
+
 1. ✅ **Conflict Detection**: Identifies duplicates, parent conflicts, circular dependencies
 2. ✅ **Conflict Resolution**: Implements LWW, voting, and merge strategies
 3. ✅ **Conflict Logging**: Persistent JSON audit trail with full metadata
@@ -377,6 +391,7 @@ def periodic_conflict_check():
 6. ✅ **Comprehensive Testing**: 14/14 Phase 5A tests passing
 
 **Total Implementation (Phases 1-5A): 1,396+ LOC across 6 modules**
+
 - Phase 1: 427 LOC (Agent Identity)
 - Phase 2: 55 LOC (SwarmController)
 - Phase 3: 68 LOC (Stale Cleanup)
@@ -385,6 +400,7 @@ def periodic_conflict_check():
 - Tests: 1,329+ LOC (100% passing)
 
 **Test Coverage: 67/67 tests passing (100%)**
+
 - Phase 1-3: 17/17 ✅
 - Phase 4: 36/36 ✅
 - Phase 5A: 14/14 ✅
@@ -396,11 +412,13 @@ def periodic_conflict_check():
 ## Next Steps
 
 ### Immediate (Ready Now)
+
 - Deploy Phase 5A to production
 - Enable conflict detection in SwarmController
 - Monitor conflict patterns in operation
 
 ### Short-term (Phase 5B)
+
 - Implement Phase 5B: Agent Memory Persistence
   - AgentMemory model for execution history
   - File-based and SQLite storage
@@ -408,6 +426,7 @@ def periodic_conflict_check():
   - Est. 1.9 hours
 
 ### Medium-term (Phase 5C)
+
 - Implement Phase 5C: Civilization-wide Dashboards
   - Overview, project, and agent dashboards
   - Real-time metrics and health scoring

@@ -7,6 +7,7 @@
 **Status:** Complete
 **Sprawl:** ✅ **Complete** - Consolidated into [CROSS_PLATFORM_RESEARCH_CONSOLIDATED.md](./CROSS_PLATFORM_RESEARCH_CONSOLIDATED.md). See [RESEARCH_SEED_FRAGMENT_INVENTORY_AND_SPRAWL_TODO.md](./RESEARCH_SEED_FRAGMENT_INVENTORY_AND_SPRAWL_TODO.md) for research/seed catalog.
 **Related:**
+
 - `CROSS_PLATFORM_MULTI_TENANT_DESKTOP_AUTOMATION_RESEARCH.md` (Main research)
 - `CROSS_PLATFORM_ADVANCED_PATTERNS.md` (Advanced patterns)
 - `CROSS_PLATFORM_MULTI_TENANT_IMPLEMENTATION_PLAN.md` (Implementation plan)
@@ -20,6 +21,7 @@
 **Recommendation:** Implement hybrid model (sub-user default + OS user opt-in)
 
 **Rationale:**
+
 - **Sub-user (default):** Fast, no permissions required, sufficient for development
 - **OS user (opt-in):** True isolation, requires admin/root, suitable for production
 - **Docker (future):** Strongest isolation, container-based
@@ -31,11 +33,13 @@
 **Recommendation:** User priority policy with FIFO for agent-agent conflicts
 
 **Mechanisms:**
+
 - **File-level:** Tenant-aware edit leases (extend existing `EditLeaseManager`)
 - **UI Automation:** Desktop automation coordinator + user activity detection
 - **Process:** Tenant-aware concurrency limits (extend existing `ConcurrencyController`)
 
 **Coordination APIs:**
+
 - macOS: `CGEventSourceSecondsSinceLastEventType()` (CoreGraphics)
 - Linux: `XScreenSaverQueryInfo()` (X11) or `loginctl` (systemd)
 - Windows: `GetLastInputInfo()` (User32.dll)
@@ -45,6 +49,7 @@
 **Recommendation:** Native providers with CUA integration option
 
 **Providers:**
+
 - **macOS:** AppleScript/Apple Events (`py-applescript`)
 - **Windows:** UI Automation (`pywinauto` or `uiautomation`)
 - **Linux:** AT-SPI (`pyatspi` or `dogtail`)
@@ -54,6 +59,7 @@
 ### 4. Existing Solutions: CUA Framework
 
 **Discovery:** [CUA (Computer-Use Agent)](https://github.com/trycua/cua) provides:
+
 - Cross-platform desktop automation
 - MCP server integration (`libs/mcp-server`)
 - Sandboxed execution environments
@@ -66,26 +72,31 @@
 ## Architecture Decisions
 
 ### Decision 1: User Isolation Model
+
 - **Chosen:** Hybrid (sub-user + OS user + Docker)
 - **Rationale:** Flexibility for different use cases (dev vs production)
 - **Implementation:** `isolation_mode` configuration option
 
 ### Decision 2: Multi-Tenant Coordination
+
 - **Chosen:** User priority + FIFO + resource limits
 - **Rationale:** User experience priority, predictable agent behavior
 - **Implementation:** Extend existing coordination systems
 
 ### Decision 3: Desktop Automation Providers
+
 - **Chosen:** Native providers with CUA option
 - **Rationale:** Lightweight for common cases, comprehensive for advanced
 - **Implementation:** Abstract `DesktopAutomationProvider` with platform implementations
 
 ### Decision 4: Error Handling
+
 - **Chosen:** Retry with exponential backoff + fallback + escalation
 - **Rationale:** Leverage existing thegent retry system (WP-2002)
 - **Implementation:** Integrate with `resilience.py` retry logic
 
 ### Decision 5: Monitoring & Observability
+
 - **Chosen:** Run registry + OpenTelemetry spans
 - **Rationale:** Leverage existing observability infrastructure
 - **Implementation:** Add automation events to run registry, OTel spans
@@ -95,29 +106,34 @@
 ## Implementation Phases
 
 ### Phase 1: User Isolation Foundation (2 weeks)
+
 - SystemUser abstraction
 - OS user creation (macOS/Linux/Windows)
 - AgentUserPool
 - AgentRunner integration
 
 ### Phase 2: Multi-Tenant Coordination (2 weeks)
+
 - Tenant-aware edit leases
 - User activity detection
 - Desktop automation coordinator
 - Conflict resolver
 
 ### Phase 3: Desktop Automation Primitives (3 weeks)
+
 - DesktopAutomationProvider abstraction
 - Platform-specific providers (macOS/Windows/Linux)
 - CUA integration evaluation
 - Cross-platform testing
 
 ### Phase 4: MCP Integration (1 week)
+
 - MCP tools registration
 - MCP resources
 - Example workflows
 
 ### Phase 5: Testing & Polish (1 week)
+
 - Cross-platform testing
 - Performance benchmarking
 - Documentation updates
@@ -173,14 +189,14 @@
 
 ## Risk Assessment
 
-| Risk | Probability | Impact | Mitigation |
-|------|------------|--------|------------|
-| **OS user creation requires admin** | High | Medium | Make opt-in (sub-user default), document requirements |
-| **Desktop automation permissions** | High | High | Clear documentation, permission check utilities |
-| **Platform API differences** | Medium | Medium | Abstract layer, platform-specific tests |
-| **Performance overhead** | Medium | Low | Benchmarking, optimization, caching |
-| **User experience disruption** | Low | High | User activity detection, coordination locks |
-| **CUA integration complexity** | Low | Low | Evaluate first, optional integration |
+| Risk                                | Probability | Impact | Mitigation                                            |
+| ----------------------------------- | ----------- | ------ | ----------------------------------------------------- |
+| **OS user creation requires admin** | High        | Medium | Make opt-in (sub-user default), document requirements |
+| **Desktop automation permissions**  | High        | High   | Clear documentation, permission check utilities       |
+| **Platform API differences**        | Medium      | Medium | Abstract layer, platform-specific tests               |
+| **Performance overhead**            | Medium      | Low    | Benchmarking, optimization, caching                   |
+| **User experience disruption**      | Low         | High   | User activity detection, coordination locks           |
+| **CUA integration complexity**      | Low         | Low    | Evaluate first, optional integration                  |
 
 ---
 
@@ -217,6 +233,7 @@
 ### Research Documents
 
 **Core Research:**
+
 - **Main Research:** `docs/research/CROSS_PLATFORM_MULTI_TENANT_DESKTOP_AUTOMATION_RESEARCH.md` (50+ sections, 3000+ lines, comprehensive)
   - Architecture decisions, platform support, multi-tenant coordination
   - Desktop automation integration, MCP tools, error handling
@@ -225,17 +242,20 @@
   - Advanced patterns, optimization strategies, best practices
 
 **Deep-Dive Documents:**
+
 - **Advanced Patterns:** `docs/research/CROSS_PLATFORM_ADVANCED_PATTERNS.md` (Theoretical approaches, advanced coordination)
 - **Performance Benchmarks:** `docs/research/CROSS_PLATFORM_PERFORMANCE_BENCHMARKS.md` (SLAs, optimization strategies, benchmarking methodology)
 - **Security Deep Dive:** `docs/research/CROSS_PLATFORM_SECURITY_DEEP_DIVE.md` (Threat modeling, security controls, compliance)
 - **Integration Guide:** `docs/research/CROSS_PLATFORM_INTEGRATION_GUIDE.md` (Integration with existing thegent systems)
 
 **Planning & Reference:**
+
 - **Implementation Plan:** `docs/plans/CROSS_PLATFORM_MULTI_TENANT_IMPLEMENTATION_PLAN.md` (5-phase WBS, detailed tasks)
 - **Quick Reference:** `docs/reference/CROSS_PLATFORM_MULTI_TENANT_QUICK_REFERENCE.md` (Quick lookup, CLI usage, config)
 - **Research Summary:** `docs/research/CROSS_PLATFORM_RESEARCH_SUMMARY.md` (This document - executive overview)
 
 ### External Resources
+
 - [CUA Framework](https://github.com/trycua/cua) — Computer-Use Agent
 - [MCP Servers Registry](https://registry.modelcontextprotocol.io/) — MCP ecosystem
 - [macOS Accessibility Guide](https://developer.apple.com/library/archive/documentation/Accessibility/Conceptual/AccessibilityMacOSX/)
@@ -243,6 +263,7 @@
 - [Linux AT-SPI](https://developer.gnome.org/libatspi/)
 
 ### Internal References
+
 - `docs/governance/SANDBOXING_DESIGN.md` — Sandboxing design
 - `docs/research/SWARM_PROCESS_AUTOMATION_DEEP_RESEARCH.md` — Process optimization
 - `docs/plans/MULTI_PLATFORM_PARITY_MASTER_PLAN.md` — Platform parity
@@ -263,6 +284,7 @@
 **Status:** Research complete with comprehensive deep-dive documents. Ready for implementation planning and execution.
 
 **Documentation Status:**
+
 - ✅ Main research document (50+ sections, 3000+ lines)
 - ✅ Advanced patterns document (500+ lines)
 - ✅ Performance benchmarks & SLAs (800+ lines)
@@ -295,15 +317,18 @@
 **Extended by:** Claude Code
 
 ### Changes Made
+
 1. Added practical implementation patterns
 2. Added configuration examples
 3. Enhanced cross-references to related docs
 
 ### Cross-References Added
+
 - Related research and implementation guides
 - WORK_STREAM.md for tracking
 
 ### Practical Additions
+
 - Implementation templates
 - Configuration examples
 - Best practices

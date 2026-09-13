@@ -11,10 +11,10 @@ from __future__ import annotations
 
 import logging
 import subprocess
-from thegent.infra.shim_subprocess import run as shim_run
 from pathlib import Path
 from typing import Any
 
+from thegent.infra.shim_subprocess import run as shim_run
 
 _log = logging.getLogger(__name__)
 
@@ -130,7 +130,11 @@ class GitNative:
                         insertions = int(part.split()[0])
                     elif "deletion" in part:
                         deletions = int(part.split()[0])
-                return {"files_changed": files_changed, "insertions": insertions, "deletions": deletions}
+                return {
+                    "files_changed": files_changed,
+                    "insertions": insertions,
+                    "deletions": deletions,
+                }
         except (ValueError, IndexError):
             pass
 

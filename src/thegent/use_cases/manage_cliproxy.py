@@ -17,7 +17,7 @@ import httpx
 
 from thegent.config import ThegentSettings
 from thegent.domain.provider_config import OAUTH_ONLY_PROVIDERS
-from thegent.infra.fast_yaml_parser import yaml_load, yaml_dumps
+from thegent.infra.fast_yaml_parser import yaml_dumps, yaml_load
 
 _LOG = logging.getLogger(__name__)
 
@@ -168,11 +168,7 @@ class ProxyHealthChecker:
     def is_reachable(base_url: str, timeout: float = 2.0) -> bool:
         """Check if proxy is reachable at base_url."""
         base = base_url.rstrip("/")
-        paths = (
-            ("/models", "/")
-            if base.endswith("/v1")
-            else ("/v1/models", "/models", "/")
-        )
+        paths = ("/models", "/") if base.endswith("/v1") else ("/v1/models", "/models", "/")
 
         for path in paths:
             try:
@@ -192,9 +188,7 @@ class ProxyHealthChecker:
         """Check if server at base_url is the adapter (has /v1/responses)."""
         try:
             base = base_url.rstrip("/")
-            url = (
-                f"{base}/models" if base.endswith("/v1") else f"{base}/v1/models"
-            )
+            url = f"{base}/models" if base.endswith("/v1") else f"{base}/v1/models"
             resp = httpx.get(url, timeout=2)
             if not resp.is_success:
                 return False

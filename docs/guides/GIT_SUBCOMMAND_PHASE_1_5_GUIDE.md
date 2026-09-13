@@ -18,6 +18,7 @@ thegent-hooks git --ttl 1 status --porcelain
 ```
 
 **When to use custom TTLs:**
+
 - High-churn repos: Use 1-5 seconds
 - Stable repos: Use 30-60 seconds
 - CI/CD pipelines: Use 10-15 seconds
@@ -43,6 +44,7 @@ THEGENT_GIT_LOCK_TIMEOUT=120 thegent-hooks git push
 ```
 
 **Diagnostic output:**
+
 ```
 GIT-LOCK-DETECTED: .git/index.lock (age: 15.2s, stale: true)
 GIT-MUTEX: Stealing stale lock (15 seconds old) from crashed process...
@@ -71,6 +73,7 @@ git config user.thegent_correlation # Output: deploy-456
 ```
 
 **Audit trail example:**
+
 ```bash
 # View who made changes
 git log --format="%an <%ae> - %s" -n 5
@@ -207,6 +210,7 @@ export SESSION_ID="$(uuidgen)"
 **Symptoms:** `git status` takes >1s even with caching enabled
 
 **Debug:**
+
 ```bash
 # Enable verbose output
 THEGENT_CACHE_DIR=/tmp/debug-cache \
@@ -217,6 +221,7 @@ ls -la /tmp/debug-cache/
 ```
 
 **Solutions:**
+
 1. Increase TTL: `--ttl 30` instead of `--ttl 5`
 2. Check cache directory permissions
 3. Verify `GIT_CACHE_TTL` environment variable
@@ -226,12 +231,14 @@ ls -la /tmp/debug-cache/
 **Symptoms:** `git add` hangs for 30 seconds then fails
 
 **Debug:**
+
 ```bash
 ls -la .git/index.lock
 stat .git/index.lock | grep Modify
 ```
 
 **Solutions:**
+
 1. Increase timeout: `--wait-timeout 60`
 2. Remove stale lock manually: `rm .git/index.lock`
 3. Set lower timeout if lock is stuck: `--wait-timeout 5`
@@ -242,11 +249,13 @@ stat .git/index.lock | grep Modify
 **Symptoms:** Metadata variables set but not appearing in commits
 
 **Debug:**
+
 ```bash
 git config --local --list | grep thegent
 ```
 
 **Solutions:**
+
 1. Ensure variables exported: `export THEGENT_AGENT_ID=...`
 2. Check git user config isn't overriding: `git config user.name`
 3. Verify thegent-hooks binary is being used: `which thegent-hooks`
@@ -394,6 +403,7 @@ jobs:
 **Q: Can I disable caching for specific commands?**
 
 A: Set `--ttl 0` to skip caching for that operation:
+
 ```bash
 thegent-hooks git --ttl 0 status  # Always fresh
 ```
@@ -401,6 +411,7 @@ thegent-hooks git --ttl 0 status  # Always fresh
 **Q: How do I clear the cache?**
 
 A: Remove the cache directory:
+
 ```bash
 rm -rf ~/.git-cache/
 ```
@@ -412,6 +423,7 @@ A: No, metadata is just config values. Negligible overhead (<1ms).
 **Q: Can I use different metadata for different branches?**
 
 A: Yes, set variables before each operation:
+
 ```bash
 THEGENT_CORRELATION_ID=main thegent-hooks git checkout main
 THEGENT_CORRELATION_ID=feature thegent-hooks git checkout feature

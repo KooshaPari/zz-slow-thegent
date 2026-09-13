@@ -16,6 +16,7 @@
 **Summary**: Implement a TUI (Text User Interface) compositor system for thegent. This involves creating a compositor that can manage multiple TUI panes, handle layout management, and provide a unified interface for terminal-based interactions. The compositor should support dynamic layouts, pane management, and integration with existing terminal tools.
 
 **What needs to be done**:
+
 - Research existing TUI compositor frameworks (e.g., tmux, zellij, dvtm)
 - Design compositor architecture for thegent's needs
 - Implement core compositor functionality (pane management, layout engine)
@@ -33,6 +34,7 @@
 **Summary**: Implement user isolation mechanisms for cross-platform support, ensuring that different users or tenants can operate independently without interference. This involves creating isolation boundaries, resource quotas, and access controls that work across macOS, Windows, and Linux platforms.
 
 **What needs to be done**:
+
 - Design isolation model (process isolation, file system isolation, network isolation)
 - Implement platform-specific isolation mechanisms
 - Create resource quota system
@@ -50,6 +52,7 @@
 **Summary**: Develop a strategy for supporting both POSIX-compliant shells (bash, zsh) and PowerShell across different platforms. This involves creating abstraction layers, command translation, and unified execution interfaces that work seamlessly regardless of the underlying shell.
 
 **What needs to be done**:
+
 - Design shell abstraction layer
 - Implement POSIX shell support (bash, zsh)
 - Implement PowerShell support (Windows PowerShell, PowerShell Core)
@@ -68,6 +71,7 @@
 **Summary**: Create a Rust-based binary (`thegent-hooks`) that provides core hook functionality as a standalone executable. This binary will replace shell-based hook implementations with a faster, more reliable Rust implementation, providing core subcommands for hook execution, validation, and management.
 
 **What needs to be done**:
+
 - Set up Rust project structure for thegent-hooks
 - Implement core hook subcommands (execute, validate, list, enable, disable)
 - Create hook configuration parser
@@ -86,6 +90,7 @@
 **Summary**: Migrate from Python's built-in `urllib` library to `httpx` for HTTP operations across 7 files in the codebase. This migration will provide better async support, improved error handling, and modern HTTP/2 capabilities while maintaining backward compatibility.
 
 **What needs to be done**:
+
 - Identify all files using urllib (7 files total)
 - Replace urllib imports with httpx
 - Update HTTP request/response handling code
@@ -99,12 +104,14 @@
 ## Summary
 
 All 5 items are **P1 priority** with **no dependencies**, making them ready for immediate work. They cover:
+
 - **TUI/UI**: TUI compositor implementation
 - **Cross-platform**: Isolation and shell support
 - **Infrastructure**: Rust hooks binary
 - **Library migration**: HTTP library replacement
 
 **Next Steps**:
+
 1. Prioritize items based on current project needs
 2. Assign to agents or work on sequentially
 3. Use `thegent free` for parallel execution once fully functional

@@ -9,6 +9,7 @@
 ## Executive Summary
 
 This document provides comprehensive architecture diagrams for the kush ecosystem, showing:
+
 - **System Architecture**: High-level view of all projects
 - **Layer Architecture**: Layered view by responsibility
 - **Integration Architecture**: How projects integrate
@@ -599,6 +600,7 @@ graph TB
 ## Part 11: Key Architectural Patterns
 
 ### Pattern 1: Hub-and-Spoke (Current)
+
 ```
         Orchestrator (Hub)
               |
@@ -610,6 +612,7 @@ graph TB
 ```
 
 ### Pattern 2: Mesh (Proposed)
+
 ```
   Agent1 <--> Agent2
     |           |
@@ -621,6 +624,7 @@ graph TB
 ```
 
 ### Pattern 3: Hybrid (Recommended)
+
 ```
         Root Orchestrator
               |

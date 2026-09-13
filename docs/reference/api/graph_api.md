@@ -12,7 +12,7 @@ Interface to Supermemory.ai knowledge graph.
 
 ### Methods
 
-#### KnowledgeGraph.__init__
+#### KnowledgeGraph.**init**
 
 ```python
 __init__(self: Any, api_token: str)

@@ -1,4 +1,5 @@
 """Stub module."""
+
 from dataclasses import dataclass
 from typing import Any
 
@@ -6,6 +7,7 @@ from typing import Any
 @dataclass
 class ContextBudget:
     """Budget for context usage."""
+
     max_tokens: int = 100000
     used_tokens: int = 0
 

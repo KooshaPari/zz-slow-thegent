@@ -2,19 +2,19 @@
 
 from __future__ import annotations
 
-import orjson as json
 from pathlib import Path
 from typing import Any
 
+import orjson as json
 import pytest
 
+from thegent.integrations.connector_mapping_cache import ConnectorMappingCache
 from thegent.integrations.gh_project_sync import (
     GHProjectConfig,
     GHProjectSyncError,
     sync_from_github,
     sync_to_github,
 )
-from thegent.integrations.connector_mapping_cache import ConnectorMappingCache
 
 
 @pytest.fixture
@@ -38,7 +38,18 @@ def test_wl178_push_upsert_path(monkeypatch: pytest.MonkeyPatch, wl178_config: G
         _ = capture
         calls.append(args)
         if args[:3] == ["project", "view", "42"]:
-            return 0, json.dumps({"id": "PVT_1", "title": "Ops", "url": "https://example", "items": []}).decode(), ""
+            return (
+                0,
+                json.dumps(
+                    {
+                        "id": "PVT_1",
+                        "title": "Ops",
+                        "url": "https://example",
+                        "items": [],
+                    }
+                ).decode(),
+                "",
+            )
         if args[:3] == ["project", "item-list", "42"]:
             payload = [{"id": "ITM_1", "content": {"title": "[WL-1780] Existing item"}}]
             return 0, json.dumps(payload).decode(), ""
@@ -146,7 +157,13 @@ def test_wl178_sync_to_github_fails_fast_on_missing_status_field(
             return (
                 0,
                 json.dumps(
-                    [{"id": "F_PRIORITY", "name": "Priority", "options": [{"id": "P1", "name": "P1"}]}],
+                    [
+                        {
+                            "id": "F_PRIORITY",
+                            "name": "Priority",
+                            "options": [{"id": "P1", "name": "P1"}],
+                        }
+                    ],
                 ).decode(),
                 "",
             )

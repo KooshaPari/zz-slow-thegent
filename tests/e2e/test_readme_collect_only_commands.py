@@ -2,14 +2,13 @@
 
 from __future__ import annotations
 
-from pathlib import Path
 import re
 import shlex
 import subprocess
 import sys
+from pathlib import Path
 
 import pytest
-
 
 README_PATH = Path(__file__).with_name("README.md")
 REPO_ROOT = README_PATH.parents[2]
@@ -44,7 +43,9 @@ def _direct_readme_e2e_pytest_commands(text: str) -> list[list[str]]:
 
 
 @pytest.mark.parametrize("snippet_tokens", _direct_readme_e2e_pytest_commands(_readme_text()))
-def test_readme_direct_e2e_pytest_commands_collect_only(snippet_tokens: list[str]) -> None:
+def test_readme_direct_e2e_pytest_commands_collect_only(
+    snippet_tokens: list[str],
+) -> None:
     paths = snippet_tokens[2:]
     command = [sys.executable, "-m", "pytest", "-q", *paths, "--collect-only"]
     result = subprocess.run(

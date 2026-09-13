@@ -14,7 +14,7 @@ Adapts disparate tools to the unified operation surface.
 
 ### Methods
 
-#### UniversalToolAdapter.__init__
+#### UniversalToolAdapter.**init**
 
 ```python
 __init__(self: Any)

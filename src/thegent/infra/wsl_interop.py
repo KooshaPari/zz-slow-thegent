@@ -3,8 +3,9 @@
 import os
 import platform
 import re
-from thegent.infra.shim_subprocess import run as shim_run
 from hashlib import sha256
+
+from thegent.infra.shim_subprocess import run as shim_run
 
 
 class WslInterop:
@@ -60,7 +61,12 @@ class WslInterop:
         # Fallback: call wslpath if available
         if self.is_wsl:
             try:
-                result = shim_run(["wslpath", "-a", windows_path], capture_output=True, text=True, check=True)
+                result = shim_run(
+                    ["wslpath", "-a", windows_path],
+                    capture_output=True,
+                    text=True,
+                    check=True,
+                )
                 return result.stdout.strip()
             except Exception:
                 pass
@@ -86,7 +92,12 @@ class WslInterop:
         # Fallback: call wslpath if available
         if self.is_wsl:
             try:
-                result = shim_run(["wslpath", "-w", wsl_path], capture_output=True, text=True, check=True)
+                result = shim_run(
+                    ["wslpath", "-w", wsl_path],
+                    capture_output=True,
+                    text=True,
+                    check=True,
+                )
                 return result.stdout.strip()
             except Exception:
                 pass
@@ -103,7 +114,10 @@ class WslInterop:
             # or by calling powershell.exe $env:USERPROFILE
             try:
                 result = shim_run(
-                    ["powershell.exe", "-Command", "$env:USERPROFILE"], capture_output=True, text=True, check=True
+                    ["powershell.exe", "-Command", "$env:USERPROFILE"],
+                    capture_output=True,
+                    text=True,
+                    check=True,
                 )
                 win_path = result.stdout.strip()
                 return self.to_wsl_path(win_path)

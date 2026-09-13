@@ -45,6 +45,7 @@ No source code changes required beyond the already-wired `_append_evidence()` in
 `tests/test_wl094_vetter_evidence.py` — 21 integration tests, all passing.
 
 Tests cover:
+
 1. Evidence appended on approved verdict (real EvidenceStore)
 2. Evidence appended on rejected verdict
 3. actor field is always "vetter_orchestrator"

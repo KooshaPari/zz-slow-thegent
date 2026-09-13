@@ -93,7 +93,12 @@ class ComplianceReporter:
                     "reason": payload.get("reason", ""),
                 }
             )
-        queue.sort(key=lambda x: (severity_rank.get(str(x["severity"]), 99), str(x["timestamp_utc"])))
+        queue.sort(
+            key=lambda x: (
+                severity_rank.get(str(x["severity"]), 99),
+                str(x["timestamp_utc"]),
+            )
+        )
         return queue
 
     def generate_governance_telemetry(self, *, rollup: dict[str, Any], queue: list[dict[str, Any]]) -> dict[str, Any]:

@@ -8,14 +8,14 @@ When **zero data retention (ZDR)** is enabled on provider harnesses, org policy 
 
 ## Core tokens (write these in specs and runbooks)
 
-| Token | Meaning | Resolved by |
-|-------|---------|-------------|
-| `CredentialRef::MINIMAX_BYOK` | MiniMax bring-your-own key used for Anthropic- and OpenAI-compatible endpoints | Factory `custom_models` / env `MINIMAX_API_KEY` / SOPS |
-| `CredentialRef::CLIPROXY_DUMMY` | Placeholder key when CLIProxy authenticates upstream | literal `dummy-not-used` where applicable |
-| `ModelRef::MINIMAX_M27_HS` | Default high-speed MiniMax model id | `minimax-m2.7-highspeed` unless catalog differs |
-| `EndpointRef::MINIMAX_ANTHROPIC` | Anthropic-compatible base URL | `https://api.minimax.io/anthropic` |
-| `EndpointRef::MINIMAX_OPENAI` | OpenAI-compatible base URL | `https://api.minimax.io/v1` |
-| `EndpointRef::CLIPROXY_V1` | Local adapter + proxy | `http://127.0.0.1:8317/v1` |
+| Token                            | Meaning                                                                        | Resolved by                                            |
+| -------------------------------- | ------------------------------------------------------------------------------ | ------------------------------------------------------ |
+| `CredentialRef::MINIMAX_BYOK`    | MiniMax bring-your-own key used for Anthropic- and OpenAI-compatible endpoints | Factory `custom_models` / env `MINIMAX_API_KEY` / SOPS |
+| `CredentialRef::CLIPROXY_DUMMY`  | Placeholder key when CLIProxy authenticates upstream                           | literal `dummy-not-used` where applicable              |
+| `ModelRef::MINIMAX_M27_HS`       | Default high-speed MiniMax model id                                            | `minimax-m2.7-highspeed` unless catalog differs        |
+| `EndpointRef::MINIMAX_ANTHROPIC` | Anthropic-compatible base URL                                                  | `https://api.minimax.io/anthropic`                     |
+| `EndpointRef::MINIMAX_OPENAI`    | OpenAI-compatible base URL                                                     | `https://api.minimax.io/v1`                            |
+| `EndpointRef::CLIPROXY_V1`       | Local adapter + proxy                                                          | `http://127.0.0.1:8317/v1`                             |
 
 In **Markdown**, prefer backticked tokens, e.g. `` `CredentialRef::MINIMAX_BYOK` ``, so Vale and search can treat them as proper nouns.
 

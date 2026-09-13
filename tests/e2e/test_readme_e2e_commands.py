@@ -3,11 +3,10 @@
 # noqa: PT018
 from __future__ import annotations
 
-from collections import Counter
-from pathlib import Path
 import re
 import shlex
-
+from collections import Counter
+from pathlib import Path
 
 README_PATH = Path(__file__).with_name("README.md")
 REPO_ROOT = README_PATH.parents[2]
@@ -464,7 +463,10 @@ def test_governance_command_table_rows_have_valid_markdown_two_cell_shape() -> N
     text = _readme_text()
     lines = text.splitlines()
 
-    table_start = next((idx for idx, line in enumerate(lines) if line.strip() == "| Goal | Command |"), None)
+    table_start = next(
+        (idx for idx, line in enumerate(lines) if line.strip() == "| Goal | Command |"),
+        None,
+    )
     assert table_start is not None, "README governance command table header row must exist"
 
     table_lines: list[str] = []

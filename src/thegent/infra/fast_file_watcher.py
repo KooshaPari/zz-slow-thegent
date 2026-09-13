@@ -15,9 +15,9 @@ from collections.abc import Callable
 from pathlib import Path
 from typing import Any
 
-from watchfiles import watch
 from watchdog.events import FileSystemEvent, FileSystemEventHandler
 from watchdog.observers import Observer
+from watchfiles import watch
 
 WATCHFILES_AVAILABLE = True
 WATCHDOG_AVAILABLE = True
@@ -110,7 +110,10 @@ class FastFileWatcher:
 
 # Convenience function for watchfiles (recommended)
 def watch_files(
-    path: str | Path, callback: Callable[[list[tuple[Any, str]]], None], recursive: bool = True, **kwargs
+    path: str | Path,
+    callback: Callable[[list[tuple[Any, str]]], None],
+    recursive: bool = True,
+    **kwargs,
 ) -> None:
     """Watch files using fastest available backend (watchfiles preferred).
 

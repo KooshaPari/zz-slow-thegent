@@ -1,11 +1,13 @@
 # ADR-002: CLI Framework Selection
 
 ## Status
+
 Proposed
 
 ## Context
 
 TehGent needs a CLI framework that supports:
+
 - Multiple subcommands (review, config, version)
 - Flag parsing (global and command-specific)
 - Configuration file integration
@@ -13,6 +15,7 @@ TehGent needs a CLI framework that supports:
 - Help generation
 
 Popular Go CLI frameworks:
+
 - Cobra (most popular)
 - urfave/cli
 - Kong
@@ -22,6 +25,7 @@ Popular Go CLI frameworks:
 We will use **Cobra** for the CLI framework.
 
 ### Rationale
+
 1. Most widely used in Go ecosystem
 2. Excellent documentation
 3. Built-in shell completion
@@ -29,6 +33,7 @@ We will use **Cobra** for the CLI framework.
 5. Large community support
 
 ### Structure
+
 ```
 cmd/
   tehgent/
@@ -42,15 +47,18 @@ cmd/
 ## Consequences
 
 ### Positive
+
 - Familiar to Go developers
 - Good documentation
 - Shell completion for bash/zsh/fish
 - Easy to add commands
 
 ### Negative
+
 - Verbose command definitions
 - Large dependency tree
 
 ## Related Issues
+
 - #2 Core CLI & Commands
 - #16 Implement CLI Framework with Cobra

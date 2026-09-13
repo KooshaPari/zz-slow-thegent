@@ -55,7 +55,13 @@ class TestBoardSyncConflictResolution:
             work_stream_items: list[dict[str, str]],
             write_batch_size: int = 50,
         ) -> dict[str, object]:
-            calls.append({"board_id": board_id, "source": source, "status": work_stream_items[0]["status"]})
+            calls.append(
+                {
+                    "board_id": board_id,
+                    "source": source,
+                    "status": work_stream_items[0]["status"],
+                }
+            )
             return {
                 "synced": 1,
                 "failed": 0,
@@ -117,7 +123,13 @@ class TestBoardSyncConflictResolution:
             work_stream_items: list[dict[str, str]],
             write_batch_size: int = 50,
         ) -> dict[str, object]:
-            calls.append({"board_id": board_id, "source": source, "status": work_stream_items[0]["status"]})
+            calls.append(
+                {
+                    "board_id": board_id,
+                    "source": source,
+                    "status": work_stream_items[0]["status"],
+                }
+            )
             return {
                 "synced": 1,
                 "failed": 0,

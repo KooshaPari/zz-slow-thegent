@@ -3,6 +3,7 @@
 ## Scope Delivered
 
 ### 1) WL-122: Canonical CI wiring reinforcement (Task runner contract)
+
 - Tightened fail-closed checker behavior in:
   - `scripts/check_wl122_max_lines_canonical_path.py`
 - Added requirement:
@@ -13,6 +14,7 @@
   - Missing Task setup action fails canonical CI contract check.
 
 ### 2) WL-104: JSON-RPC request contract reinforcement
+
 - Tightened daemon contract in:
   - `src/thegent/protocols/jsonrpc_agent_server.py`
 - Added fail-loud checks:
@@ -25,6 +27,7 @@
   - Invalid request `id` object is rejected with `-32600` invalid request.
 
 ### 3) WL-106: Session CLI boundary contract reinforcement
+
 - Tightened command-boundary validation in:
   - `src/thegent/cli/commands/session_cmds.py`
   - `src/thegent/cli/commands/cli.py`
@@ -38,6 +41,7 @@
   - Blank `session_id` fork/rollback paths fail with exit code `2` and do not call SessionManager.
 
 ### 4) WL-111: MCP skill list ordering contract reinforcement
+
 - Tightened deterministic ordering in:
   - `src/thegent/mcp/server/tools_skills.py`
 - Added canonical rule:
@@ -48,6 +52,7 @@
   - `docs/reference/MCP_SKILL_TOOL_SCHEMAS.md`
 
 ### 5) WL-117: Extension quickstart metadata contract reinforcement
+
 - Tightened metadata checker in:
   - `scripts/check_extension_package_metadata.py`
 - Added canonical README Run Steps requirements:
@@ -58,11 +63,13 @@
   - `tests/test_wl117_extension_readme_quickstart.py`
 
 ### 6) QA docs reinforcement
+
 - Updated bundle notes in:
   - `docs/guides/QUALITY_ASSURANCE.md`
 - Captured new WL-122/WL-104/WL-106/WL-111/WL-117 contract expectations.
 
 ## Focused Validation
+
 - `uv run python scripts/check_wl122_max_lines_canonical_path.py --strict`
   - Pass: `ok: True`, `canonical invocations: 1`
 - `uv run python scripts/check_extension_package_metadata.py --strict`
@@ -75,6 +82,7 @@
   - Pass: `29 passed in 27.76s`
 
 ## Guardrails
+
 - `docs/reference/WORK_STREAM.md` was not modified.
 - Edits were scoped to WL-122, WL-104, WL-106, WL-111, WL-117 surfaces + focused QA docs.
 - Unrelated dirty workspace changes were left untouched.

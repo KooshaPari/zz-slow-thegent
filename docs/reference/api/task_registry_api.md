@@ -7,9 +7,8 @@ FastMCP task mode support for thegent.
 Provides an asyncio-based task registry that allows long-running MCP tool calls
 to be tracked, status-polled, and cancelled by MCP clients.
 
-Usage:
-    # Wrap a long-running call as a background task
-    task_id = _TASK_REGISTRY.create(asyncio.create_task(some_coroutine()))
+Usage: # Wrap a long-running call as a background task
+task_id = \_TASK_REGISTRY.create(asyncio.create_task(some_coroutine()))
 
     # Client polls status
     status = _TASK_REGISTRY.status(task_id)
@@ -18,7 +17,7 @@ Usage:
     _TASK_REGISTRY.cancel(task_id)
 
 The registry is module-level (process singleton) and is safe for concurrent
-asyncio access.  It does NOT persist across process restarts.
+asyncio access. It does NOT persist across process restarts.
 
 ---
 
@@ -31,7 +30,7 @@ All mutations happen within the event loop; no locks are required.
 
 ### Methods
 
-#### AsyncTaskRegistry.__init__
+#### AsyncTaskRegistry.**init**
 
 ```python
 __init__(self: Any)
@@ -90,14 +89,14 @@ status(self: Any, task_id: str)
 Return status dict for task_id.
 
 **Returns**: {
-    "task_id": str,
-    "status": "running" | "done" | "error" | "cancelled",
-    "progress": float,
-    "total": float | None,
-    "message": str,
-    "result": Any | None,   # only when done
-    "error": str | None,    # only when error
-    "elapsed_s": float,
+"task_id": str,
+"status": "running" | "done" | "error" | "cancelled",
+"progress": float,
+"total": float | None,
+"message": str,
+"result": Any | None, # only when done
+"error": str | None, # only when error
+"elapsed_s": float,
 }
 
 ---
@@ -114,13 +113,13 @@ Update progress metadata for an in-flight task (called from within the task).
 
 ---
 
-## _TaskEntry
+## \_TaskEntry
 
 Internal record for a tracked asyncio task.
 
 ### Methods
 
-#### _TaskEntry.__init__
+#### \_TaskEntry.**init**
 
 ```python
 __init__(self: Any, task_id: str, task: asyncio.Task[Any])
@@ -187,14 +186,14 @@ status(self: Any, task_id: str)
 Return status dict for task_id.
 
 **Returns**: {
-    "task_id": str,
-    "status": "running" | "done" | "error" | "cancelled",
-    "progress": float,
-    "total": float | None,
-    "message": str,
-    "result": Any | None,   # only when done
-    "error": str | None,    # only when error
-    "elapsed_s": float,
+"task_id": str,
+"status": "running" | "done" | "error" | "cancelled",
+"progress": float,
+"total": float | None,
+"message": str,
+"result": Any | None, # only when done
+"error": str | None, # only when error
+"elapsed_s": float,
 }
 
 ---

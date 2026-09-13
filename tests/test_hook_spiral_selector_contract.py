@@ -2,10 +2,10 @@
 
 from __future__ import annotations
 
-import orjson as json
 import subprocess
 from pathlib import Path
 
+import orjson as json
 import pytest
 
 
@@ -21,7 +21,14 @@ def _run_selector_json(selector_input: str) -> dict:
     dispatcher = _dispatcher_bin()
     assert dispatcher.exists(), f"Missing dispatcher binary: {dispatcher}"
     proc = subprocess.run(
-        [str(dispatcher), "governance", "spiral-selector", "--format", "json", selector_input],
+        [
+            str(dispatcher),
+            "governance",
+            "spiral-selector",
+            "--format",
+            "json",
+            selector_input,
+        ],
         cwd=_repo_root(),
         capture_output=True,
         text=True,

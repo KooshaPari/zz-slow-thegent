@@ -64,31 +64,31 @@
 
 ### Priority 1 (Critical) - 3 Tasks
 
-| Task ID | Title | Files | Effort |
-|---------|-------|-------|--------|
-| IMPL-LIB-001 | Replace urllib with httpx | 7+ | 2-3 hrs |
-| IMPL-LIB-002 | Migrate retry to tenacity | 4 | 4-6 hrs |
-| IMPL-LIB-003 | Replace polling with watchdog | 1 | 2-4 hrs |
+| Task ID      | Title                         | Files | Effort  |
+| ------------ | ----------------------------- | ----- | ------- |
+| IMPL-LIB-001 | Replace urllib with httpx     | 7+    | 2-3 hrs |
+| IMPL-LIB-002 | Migrate retry to tenacity     | 4     | 4-6 hrs |
+| IMPL-LIB-003 | Replace polling with watchdog | 1     | 2-4 hrs |
 
 ### Priority 2 (High Value) - 6 Tasks
 
-| Task ID | Title | Files | Effort |
-|---------|-------|-------|--------|
-| IMPL-LIB-101 | Replace custom caching with cachetools | 5+ | 2-3 hrs |
-| IMPL-LIB-102 | Replace circuit breaker with pybreaker | 1 | 2-3 hrs |
-| IMPL-LIB-103 | Replace PyYAML with ruamel.yaml | 15+ | 3-4 hrs |
-| IMPL-LIB-104 | Replace ANSI stripping with rich | 5 | 1 hr |
-| IMPL-LIB-105 | Replace scrapers cache with diskcache | 1 | 1 hr |
-| IMPL-LIB-106 | Add psutil for resource monitoring | 2 | 2-3 hrs |
+| Task ID      | Title                                  | Files | Effort  |
+| ------------ | -------------------------------------- | ----- | ------- |
+| IMPL-LIB-101 | Replace custom caching with cachetools | 5+    | 2-3 hrs |
+| IMPL-LIB-102 | Replace circuit breaker with pybreaker | 1     | 2-3 hrs |
+| IMPL-LIB-103 | Replace PyYAML with ruamel.yaml        | 15+   | 3-4 hrs |
+| IMPL-LIB-104 | Replace ANSI stripping with rich       | 5     | 1 hr    |
+| IMPL-LIB-105 | Replace scrapers cache with diskcache  | 1     | 1 hr    |
+| IMPL-LIB-106 | Add psutil for resource monitoring     | 2     | 2-3 hrs |
 
 ### Priority 3 (Quick Wins) - 4 Tasks
 
-| Task ID | Title | Files | Effort |
-|---------|-------|-------|--------|
-| IMPL-LIB-201 | Replace md5 with sha256 | 1 | 0.5 hr |
-| IMPL-LIB-202 | Consolidate os.environ → ThegentSettings | 15+ | 2-3 hrs |
-| IMPL-LIB-203 | Replace _CWD_CACHE with cachetools | 1 | 0.5 hr |
-| IMPL-LIB-204 | Add tomlkit to dependencies | 1 | 0.5 hr |
+| Task ID      | Title                                    | Files | Effort  |
+| ------------ | ---------------------------------------- | ----- | ------- |
+| IMPL-LIB-201 | Replace md5 with sha256                  | 1     | 0.5 hr  |
+| IMPL-LIB-202 | Consolidate os.environ → ThegentSettings | 15+   | 2-3 hrs |
+| IMPL-LIB-203 | Replace \_CWD_CACHE with cachetools      | 1     | 0.5 hr  |
+| IMPL-LIB-204 | Add tomlkit to dependencies              | 1     | 0.5 hr  |
 
 **Total Effort**: ~23-36 hours
 
@@ -125,7 +125,7 @@ Added missing tasks to `docs/reference/WORK_STREAM.md`:
 1. **IMPL-LIB-204** - Add tomlkit (5 min) - No code changes
 2. **IMPL-LIB-201** - md5→sha256 (5 min) - Simple replacement
 3. **IMPL-LIB-104** - ANSI strip (1 hr) - Straightforward
-4. **IMPL-LIB-203** - _CWD_CACHE (30 min) - Quick win
+4. **IMPL-LIB-203** - \_CWD_CACHE (30 min) - Quick win
 
 **Total**: ~2 hours for 4 tasks
 
@@ -146,6 +146,7 @@ All P2 tasks can be done in parallel or sequentially based on dependencies.
 ## Key Migration Patterns
 
 ### HTTP (urllib → httpx)
+
 ```python
 # Before
 req = urllib.request.Request(url)
@@ -158,6 +159,7 @@ data = resp.content
 ```
 
 ### Retry (Manual → tenacity)
+
 ```python
 # Before
 for attempt in range(3):
@@ -167,7 +169,8 @@ for attempt in range(3):
     except Exception:
         if attempt == 2:
             raise
-        time.sleep(2 ** attempt)
+        time.sleep(2**attempt)
+
 
 # After
 @retry(stop=stop_after_attempt(3), wait=wait_exponential())
@@ -176,6 +179,7 @@ def do_work():
 ```
 
 ### File Watching (Polling → watchdog)
+
 ```python
 # Before
 while True:

@@ -14,7 +14,7 @@ Manages compatibility between different API versions.
 
 ### Methods
 
-#### APIEvolutionManager.__init__
+#### APIEvolutionManager.**init**
 
 ```python
 __init__(self: Any, current_version: str)

@@ -41,7 +41,9 @@ class DiscoverySystem:
 
     def _load_native_extension(self) -> None:
         try:
-            from thegent_discovery import DiscoveryInterface  # type: ignore[import-untyped]
+            from thegent_discovery import (
+                DiscoveryInterface,  # type: ignore[import-untyped]
+            )
 
             self._interface = DiscoveryInterface()
             logger.info("Native discovery extension loaded successfully")

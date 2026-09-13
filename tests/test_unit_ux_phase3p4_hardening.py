@@ -30,7 +30,6 @@ from thegent.ux.cockpit import DecisionNotice
 from thegent.ux.decision_audit import DecisionAuditAppender
 from thegent.ux.kpis.traffic import TrafficDashboard, TrafficEvent, TrafficWindow
 
-
 pytestmark = pytest.mark.unit
 
 
@@ -172,7 +171,15 @@ class TestDecisionAuditRotation:
         appender = DecisionAuditAppender(audit_path=path, max_bytes=0, max_lines=0)
         snap = appender.audit_stats()
         # Surface contract: every documented key is present.
-        for key in ("line_count", "bytes_written", "rotation_count", "fsync", "max_bytes", "max_lines", "max_backups"):
+        for key in (
+            "line_count",
+            "bytes_written",
+            "rotation_count",
+            "fsync",
+            "max_bytes",
+            "max_lines",
+            "max_backups",
+        ):
             assert key in snap
 
 

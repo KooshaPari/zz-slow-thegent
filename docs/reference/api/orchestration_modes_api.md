@@ -15,7 +15,7 @@ WP-1006: Arbitration rules and quorum policy for multi-agent consensus.
 
 ### Methods
 
-#### ConflictArbitrator.__init__
+#### ConflictArbitrator.**init**
 
 ```python
 __init__(self: Any, quorum_threshold: float)

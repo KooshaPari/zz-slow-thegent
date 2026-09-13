@@ -12,6 +12,7 @@
 ## Executive Summary
 
 The current TASK I/O format uses unstructured markdown with embedded metadata, making it difficult for:
+
 - **Agents**: To parse and extract structured information reliably
 - **Machines**: To validate, transform, and process tasks programmatically
 - **Users**: To understand task structure and requirements quickly
@@ -26,6 +27,7 @@ This document researches best practices and proposes a multi-format, schema-driv
 ### 1.1 Current TASK I/O Format
 
 **Task Input Structure:**
+
 ```
 TASK (worker: "Implement sticky sidebar")
 Task Input:
@@ -50,6 +52,7 @@ Task Input:
 ```
 
 **Task Output Structure:**
+
 ```
 Task Output:
   <think>...</think>
@@ -64,6 +67,7 @@ Task Output:
 ### 1.2 Current Format Issues
 
 #### For Agents:
+
 - ❌ No structured schema to validate against
 - ❌ Inconsistent markdown formatting (bold vs headers)
 - ❌ Metadata embedded in prose (hard to extract)
@@ -71,6 +75,7 @@ Task Output:
 - ❌ Ambiguous parsing (what is "Depends: None" vs "Depends: -"?)
 
 #### For Machines:
+
 - ❌ No JSON Schema or formal validation
 - ❌ No programmatic access to structured data
 - ❌ Difficult to transform or query
@@ -78,12 +83,14 @@ Task Output:
 - ❌ Cannot generate type-safe bindings
 
 #### For Users:
+
 - ⚠️ Verbose and repetitive
 - ⚠️ Inconsistent formatting across tasks
 - ⚠️ Hard to scan quickly
 - ✅ Human-readable (prose is clear)
 
 #### For Developers:
+
 - ❌ No tooling support (no IDE autocomplete)
 - ❌ No validation before execution
 - ❌ Difficult to build automation
@@ -96,9 +103,11 @@ Task Output:
 ### 2.1 Structured Data Formats
 
 #### 2.1.1 JSON Schema
+
 **Source**: JSON Schema Specification (Draft 2020-12)
 
 **Benefits:**
+
 - ✅ Industry standard for validation
 - ✅ Rich type system (string, number, object, array, etc.)
 - ✅ Validation keywords (required, minLength, pattern, etc.)
@@ -106,6 +115,7 @@ Task Output:
 - ✅ Self-documenting with `description` fields
 
 **Example Schema:**
+
 ```json
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
@@ -137,7 +147,7 @@ Task Output:
     },
     "depends": {
       "type": "array",
-      "items": {"type": "string"},
+      "items": { "type": "string" },
       "description": "List of task IDs this task depends on"
     },
     "implementation_details": {
@@ -150,18 +160,18 @@ Task Output:
         "type": "object",
         "required": ["number", "description"],
         "properties": {
-          "number": {"type": "integer", "minimum": 1},
-          "description": {"type": "string"},
+          "number": { "type": "integer", "minimum": 1 },
+          "description": { "type": "string" },
           "deliverables": {
             "type": "array",
-            "items": {"type": "string"}
+            "items": { "type": "string" }
           }
         }
       }
     },
     "deliverables": {
       "type": "array",
-      "items": {"type": "string"},
+      "items": { "type": "string" },
       "description": "Expected outputs from task completion"
     }
   }
@@ -169,9 +179,11 @@ Task Output:
 ```
 
 #### 2.1.2 YAML Frontmatter (Markdown + YAML)
+
 **Source**: CommonMark, Jekyll, Hugo, VitePress patterns
 
 **Benefits:**
+
 - ✅ Human-readable metadata
 - ✅ Preserves markdown prose
 - ✅ Easy to parse (YAML parsers)
@@ -179,6 +191,7 @@ Task Output:
 - ✅ Works with existing markdown tooling
 
 **Example:**
+
 ```markdown
 ---
 id: docgen-sticky-nav
@@ -198,26 +211,29 @@ Add sticky behavior to sidebar and header navigation in VitePress theme.
 
 1. Create or modify `.vitepress/theme/components/StickyHeader.vue`
 2. Create `.vitepress/theme/components/StickySidebar.vue`
-...
+   ...
 
 ## Deliverables
 
 - StickyHeader.vue component
 - StickySidebar.vue component
-...
+  ...
 ```
 
 #### 2.1.3 Structured Markdown (Markdown with Embedded JSON)
+
 **Source**: GitHub Issues, Linear, Jira patterns
 
 **Benefits:**
+
 - ✅ Single-file format
 - ✅ Machine-parseable sections
 - ✅ Human-readable prose
 - ✅ Version control friendly
 
 **Example:**
-```markdown
+
+````markdown
 # Task: docgen-sticky-nav
 
 ```json
@@ -230,9 +246,12 @@ Add sticky behavior to sidebar and header navigation in VitePress theme.
   "source": "DOCGEN_DOCSITE_IMPROVEMENT_PLAN.md"
 }
 ```
+````
 
 ## Implementation Details
+
 ...
+
 ```
 
 ### 2.2 Agent-Readable Formats
@@ -251,6 +270,7 @@ Add sticky behavior to sidebar and header navigation in VitePress theme.
 
 **Example:**
 ```
+
 <task>
 <id>docgen-sticky-nav</id>
 <title>Implement sticky sidebar and header</title>
@@ -260,8 +280,10 @@ Add sticky behavior to sidebar and header navigation in VitePress theme.
 </task>
 
 ## Implementation Details
+
 ...
-```
+
+````
 
 ### 2.3 Human-Readable Formats
 
@@ -413,20 +435,24 @@ Add sticky behavior to sidebar and header navigation in VitePress theme.
 - StickyHeader.vue component
 - StickySidebar.vue component
 ...
-```
+````
 
 #### Option B: JSON + Markdown Sections
+
 **Pros:**
+
 - ✅ Pure JSON (no YAML parsing)
 - ✅ More structured
 - ✅ Better for programmatic access
 
 **Cons:**
+
 - ❌ Less human-readable metadata
 - ❌ Harder to edit manually
 
 **Example:**
-```markdown
+
+````markdown
 # Task: docgen-sticky-nav
 
 ```json
@@ -439,9 +465,12 @@ Add sticky behavior to sidebar and header navigation in VitePress theme.
   "source": "DOCGEN_DOCSITE_IMPROVEMENT_PLAN.md"
 }
 ```
+````
 
 ## Implementation Details
+
 ...
+
 ```
 
 #### Option C: Separate JSON + Markdown Files
@@ -456,9 +485,11 @@ Add sticky behavior to sidebar and header navigation in VitePress theme.
 
 **Example:**
 ```
+
 tasks/docgen-sticky-nav.json
 tasks/docgen-sticky-nav.md
-```
+
+````
 
 ### 4.3 Recommended Format: YAML Frontmatter + Markdown
 
@@ -612,7 +643,7 @@ tasks/docgen-sticky-nav.md
     }
   }
 }
-```
+````
 
 ### 5.2 Task Output Schema
 
@@ -650,8 +681,8 @@ tasks/docgen-sticky-nav.md
         "type": "object",
         "required": ["path"],
         "properties": {
-          "path": {"type": "string"},
-          "description": {"type": "string"}
+          "path": { "type": "string" },
+          "description": { "type": "string" }
         }
       },
       "description": "Files created during task execution"
@@ -662,16 +693,16 @@ tasks/docgen-sticky-nav.md
         "type": "object",
         "required": ["path"],
         "properties": {
-          "path": {"type": "string"},
-          "description": {"type": "string"},
-          "changes": {"type": "string"}
+          "path": { "type": "string" },
+          "description": { "type": "string" },
+          "changes": { "type": "string" }
         }
       },
       "description": "Files modified during task execution"
     },
     "deliverables": {
       "type": "array",
-      "items": {"type": "string"},
+      "items": { "type": "string" },
       "description": "Deliverables that were completed"
     },
     "errors": {
@@ -680,10 +711,10 @@ tasks/docgen-sticky-nav.md
         "type": "object",
         "required": ["message"],
         "properties": {
-          "message": {"type": "string"},
-          "type": {"type": "string"},
-          "file": {"type": "string"},
-          "line": {"type": "integer"}
+          "message": { "type": "string" },
+          "type": { "type": "string" },
+          "file": { "type": "string" },
+          "line": { "type": "integer" }
         }
       },
       "description": "Errors encountered during execution"
@@ -691,10 +722,10 @@ tasks/docgen-sticky-nav.md
     "metadata": {
       "type": "object",
       "properties": {
-        "execution_time_seconds": {"type": "number"},
-        "tokens_used": {"type": "integer"},
-        "agent_id": {"type": "string"},
-        "session_id": {"type": "string"}
+        "execution_time_seconds": { "type": "number" },
+        "tokens_used": { "type": "integer" },
+        "agent_id": { "type": "string" },
+        "session_id": { "type": "string" }
       }
     }
   }
@@ -708,6 +739,7 @@ tasks/docgen-sticky-nav.md
 ### Phase 1: Schema & Tooling (Week 1)
 
 **Tasks:**
+
 1. ✅ Create JSON Schema definitions (Task Input & Output)
 2. ✅ Create YAML frontmatter parser
 3. ✅ Create JSON Schema validator
@@ -715,6 +747,7 @@ tasks/docgen-sticky-nav.md
 5. ✅ Add validation CLI tool (`thegent task validate <file>`)
 
 **Deliverables:**
+
 - `schemas/task-input.schema.json`
 - `schemas/task-output.schema.json`
 - `src/thegent/task/parser.py` (YAML frontmatter parser)
@@ -725,12 +758,14 @@ tasks/docgen-sticky-nav.md
 ### Phase 2: Migration & Compatibility (Week 2)
 
 **Tasks:**
+
 1. ✅ Create migration tool (old format → new format)
 2. ✅ Add backward compatibility layer
 3. ✅ Update task generation tools
 4. ✅ Migrate existing tasks (gradual)
 
 **Deliverables:**
+
 - `src/thegent/task/migrate.py` (Migration tool)
 - `src/thegent/task/legacy_parser.py` (Old format parser)
 - Migration guide documentation
@@ -738,12 +773,14 @@ tasks/docgen-sticky-nav.md
 ### Phase 3: Integration & Enhancement (Week 3)
 
 **Tasks:**
+
 1. ✅ Integrate with `thegent plan` commands
 2. ✅ Add task generation from WORK_STREAM.md
 3. ✅ Add task validation to CI/CD
 4. ✅ Create IDE extensions (VS Code, Cursor)
 
 **Deliverables:**
+
 - Updated `thegent plan` commands
 - CI/CD validation pipeline
 - IDE extension (optional)
@@ -751,12 +788,14 @@ tasks/docgen-sticky-nav.md
 ### Phase 4: Developer Experience (Week 4)
 
 **Tasks:**
+
 1. ✅ Generate TypeScript types from schema
 2. ✅ Generate Python dataclasses from schema
 3. ✅ Create task template generator
 4. ✅ Add task testing utilities
 
 **Deliverables:**
+
 - Type definitions (`types/task.d.ts`)
 - Python dataclasses (`src/thegent/task/types.py`)
 - Task template CLI (`thegent task template`)
@@ -852,7 +891,7 @@ thegent task migrate tasks/ --dry-run
 
 ### 9.1 New Format (YAML Frontmatter + Markdown)
 
-```markdown
+````markdown
 ---
 id: docgen-sticky-nav
 title: Implement sticky sidebar and header
@@ -889,6 +928,8 @@ Add sticky behavior to sidebar and header navigation in VitePress theme.
      overflow-y: auto;
    }
    ```
+````
+
 4. Integrate into theme layout
 5. Test on different page lengths
 6. Update WORK_STREAM.md
@@ -908,7 +949,8 @@ Add sticky behavior to sidebar and header navigation in VitePress theme.
 - [ ] Works on pages of varying lengths
 - [ ] No visual glitches during scroll
 - [ ] Mobile responsive
-```
+
+````
 
 ### 9.2 JSON Equivalent
 
@@ -957,28 +999,32 @@ Add sticky behavior to sidebar and header navigation in VitePress theme.
     "Mobile responsive"
   ]
 }
-```
+````
 
 ---
 
 ## 10. Success Metrics
 
 ### 10.1 Agent Metrics
+
 - ✅ Task parsing success rate: >99%
 - ✅ Validation error rate: <1%
 - ✅ Task execution success rate: >95%
 
 ### 10.2 Machine Metrics
+
 - ✅ Schema validation coverage: 100%
 - ✅ Format conversion accuracy: 100%
 - ✅ Query performance: <100ms per task
 
 ### 10.3 User Metrics
+
 - ✅ Task creation time: <5 minutes
 - ✅ Task readability score: >8/10
 - ✅ Format consistency: 100%
 
 ### 10.4 Developer Metrics
+
 - ✅ Type safety coverage: 100%
 - ✅ IDE autocomplete: Available
 - ✅ Tooling adoption: >80% of developers
@@ -1029,13 +1075,13 @@ Add sticky behavior to sidebar and header navigation in VitePress theme.
 
 ## Appendix A: Comparison Matrix
 
-| Format | Agent Parse | Machine Parse | Human Read | Dev Tooling | Migration Effort |
-|--------|-------------|---------------|------------|-------------|------------------|
-| Current (Markdown) | ⚠️ Medium | ❌ Low | ✅ High | ❌ Low | N/A |
-| YAML Frontmatter | ✅ High | ✅ High | ✅ High | ✅ High | ⚠️ Medium |
-| JSON + Markdown | ✅ High | ✅ High | ⚠️ Medium | ✅ High | ⚠️ Medium |
-| Separate Files | ✅ High | ✅ High | ⚠️ Medium | ✅ High | ❌ High |
-| Pure JSON | ✅ High | ✅ High | ❌ Low | ✅ High | ❌ High |
+| Format             | Agent Parse | Machine Parse | Human Read | Dev Tooling | Migration Effort |
+| ------------------ | ----------- | ------------- | ---------- | ----------- | ---------------- |
+| Current (Markdown) | ⚠️ Medium   | ❌ Low        | ✅ High    | ❌ Low      | N/A              |
+| YAML Frontmatter   | ✅ High     | ✅ High       | ✅ High    | ✅ High     | ⚠️ Medium        |
+| JSON + Markdown    | ✅ High     | ✅ High       | ⚠️ Medium  | ✅ High     | ⚠️ Medium        |
+| Separate Files     | ✅ High     | ✅ High       | ⚠️ Medium  | ✅ High     | ❌ High          |
+| Pure JSON          | ✅ High     | ✅ High       | ❌ Low     | ✅ High     | ❌ High          |
 
 **Recommendation**: YAML Frontmatter + Markdown (best balance)
 
@@ -1044,6 +1090,7 @@ Add sticky behavior to sidebar and header navigation in VitePress theme.
 ## Appendix B: Schema Validation Examples
 
 ### Valid Task
+
 ```yaml
 ---
 id: docgen-sticky-nav
@@ -1055,6 +1102,7 @@ depends: []
 ```
 
 ### Invalid Task (Missing Required Fields)
+
 ```yaml
 ---
 title: Implement sticky sidebar
@@ -1063,11 +1111,12 @@ title: Implement sticky sidebar
 ```
 
 ### Invalid Task (Wrong Types)
+
 ```yaml
 ---
-id: 123  # Should be string
-priority: P5  # Should be P1, P2, or P3
-depends: "task-1"  # Should be array
+id: 123 # Should be string
+priority: P5 # Should be P1, P2, or P3
+depends: "task-1" # Should be array
 ---
 ```
 
@@ -1077,20 +1126,21 @@ depends: "task-1"  # Should be array
 
 ### C.1 Format Analysis Matrix (Extended)
 
-| Format | Agent Parse | Machine Parse | Human Read | Dev Tooling | Migration Effort | Performance | Security | Versioning |
-|--------|-------------|---------------|------------|-------------|------------------|-------------|----------|------------|
-| Current (Markdown) | ⚠️ Medium | ❌ Low | ✅ High | ❌ Low | N/A | ✅ Fast | ⚠️ Medium | ❌ None |
-| YAML Frontmatter | ✅ High | ✅ High | ✅ High | ✅ High | ⚠️ Medium | ✅ Fast | ✅ Good | ✅ Yes |
-| JSON + Markdown | ✅ High | ✅ High | ⚠️ Medium | ✅ High | ⚠️ Medium | ✅ Fast | ✅ Good | ✅ Yes |
-| TOML Frontmatter | ✅ High | ✅ High | ✅ High | ⚠️ Medium | ⚠️ Medium | ✅ Fast | ✅ Good | ✅ Yes |
-| XML + Markdown | ✅ High | ✅ High | ❌ Low | ⚠️ Medium | ❌ High | ⚠️ Medium | ✅ Good | ✅ Yes |
-| Separate Files | ✅ High | ✅ High | ⚠️ Medium | ✅ High | ❌ High | ✅ Fast | ✅ Good | ✅ Yes |
-| Pure JSON | ✅ High | ✅ High | ❌ Low | ✅ High | ❌ High | ✅ Fast | ✅ Good | ✅ Yes |
-| Database Storage | ✅ High | ✅ High | ❌ Low | ✅ High | ❌ High | ⚠️ Medium | ✅ Good | ✅ Yes |
+| Format             | Agent Parse | Machine Parse | Human Read | Dev Tooling | Migration Effort | Performance | Security  | Versioning |
+| ------------------ | ----------- | ------------- | ---------- | ----------- | ---------------- | ----------- | --------- | ---------- |
+| Current (Markdown) | ⚠️ Medium   | ❌ Low        | ✅ High    | ❌ Low      | N/A              | ✅ Fast     | ⚠️ Medium | ❌ None    |
+| YAML Frontmatter   | ✅ High     | ✅ High       | ✅ High    | ✅ High     | ⚠️ Medium        | ✅ Fast     | ✅ Good   | ✅ Yes     |
+| JSON + Markdown    | ✅ High     | ✅ High       | ⚠️ Medium  | ✅ High     | ⚠️ Medium        | ✅ Fast     | ✅ Good   | ✅ Yes     |
+| TOML Frontmatter   | ✅ High     | ✅ High       | ✅ High    | ⚠️ Medium   | ⚠️ Medium        | ✅ Fast     | ✅ Good   | ✅ Yes     |
+| XML + Markdown     | ✅ High     | ✅ High       | ❌ Low     | ⚠️ Medium   | ❌ High          | ⚠️ Medium   | ✅ Good   | ✅ Yes     |
+| Separate Files     | ✅ High     | ✅ High       | ⚠️ Medium  | ✅ High     | ❌ High          | ✅ Fast     | ✅ Good   | ✅ Yes     |
+| Pure JSON          | ✅ High     | ✅ High       | ❌ Low     | ✅ High     | ❌ High          | ✅ Fast     | ✅ Good   | ✅ Yes     |
+| Database Storage   | ✅ High     | ✅ High       | ❌ Low     | ✅ High     | ❌ High          | ⚠️ Medium   | ✅ Good   | ✅ Yes     |
 
 ### C.2 Format Performance Benchmarks
 
 **Parsing Speed (1000 tasks, milliseconds):**
+
 - YAML Frontmatter: ~150ms
 - JSON: ~80ms
 - TOML: ~120ms
@@ -1098,6 +1148,7 @@ depends: "task-1"  # Should be array
 - Current Markdown: ~300ms (regex parsing)
 
 **Memory Usage (per task, KB):**
+
 - YAML Frontmatter: ~2KB
 - JSON: ~1.5KB
 - TOML: ~2KB
@@ -1105,6 +1156,7 @@ depends: "task-1"  # Should be array
 - Current Markdown: ~5KB (includes parsing overhead)
 
 **Validation Speed (1000 tasks, milliseconds):**
+
 - JSON Schema (YAML → JSON): ~200ms
 - JSON Schema (Pure JSON): ~100ms
 - Custom Validator: ~500ms
@@ -1112,6 +1164,7 @@ depends: "task-1"  # Should be array
 ### C.3 Format Ecosystem Support
 
 **YAML Frontmatter:**
+
 - ✅ Jekyll, Hugo, VitePress, MkDocs
 - ✅ GitHub Pages, GitLab Pages
 - ✅ VS Code extensions
@@ -1119,6 +1172,7 @@ depends: "task-1"  # Should be array
 - ⚠️ YAML parsing quirks (indentation, escaping)
 
 **JSON:**
+
 - ✅ Universal support
 - ✅ All programming languages
 - ✅ Native browser support
@@ -1126,6 +1180,7 @@ depends: "task-1"  # Should be array
 - ❌ Less human-readable
 
 **TOML:**
+
 - ✅ Rust ecosystem
 - ✅ Python (toml library)
 - ✅ Better than YAML for complex structures
@@ -1141,7 +1196,7 @@ depends: "task-1"  # Should be array
 {
   "if": {
     "properties": {
-      "subagent_type": {"const": "worker"}
+      "subagent_type": { "const": "worker" }
     }
   },
   "then": {
@@ -1150,7 +1205,7 @@ depends: "task-1"  # Should be array
   "else": {
     "if": {
       "properties": {
-        "subagent_type": {"const": "flash"}
+        "subagent_type": { "const": "flash" }
       }
     },
     "then": {
@@ -1165,9 +1220,9 @@ depends: "task-1"  # Should be array
 ```json
 {
   "allOf": [
-    {"$ref": "#/definitions/base-task"},
-    {"$ref": "#/definitions/worker-task"},
-    {"$ref": "#/definitions/implementation-task"}
+    { "$ref": "#/definitions/base-task" },
+    { "$ref": "#/definitions/worker-task" },
+    { "$ref": "#/definitions/implementation-task" }
   ]
 }
 ```
@@ -1179,7 +1234,7 @@ depends: "task-1"  # Should be array
   "properties": {
     "depends": {
       "type": "array",
-      "items": {"type": "string"},
+      "items": { "type": "string" },
       "x-task-id-format": "^[a-z0-9-]+$",
       "x-no-circular-deps": true,
       "x-dependency-exists": true
@@ -1212,6 +1267,7 @@ import re
 from pathlib import Path
 from typing import Dict, Any, Tuple
 
+
 def parse_yaml_frontmatter(content: str) -> Tuple[Dict[str, Any], str]:
     """Parse YAML frontmatter from markdown content.
 
@@ -1219,12 +1275,12 @@ def parse_yaml_frontmatter(content: str) -> Tuple[Dict[str, Any], str]:
         Tuple of (frontmatter_dict, markdown_body)
     """
     # Match YAML frontmatter (--- ... ---)
-    pattern = r'^---\s*\n(.*?)\n---\s*\n(.*)$'
+    pattern = r"^---\s*\n(.*?)\n---\s*\n(.*)$"
     match = re.match(pattern, content, re.DOTALL)
 
     if not match:
         # Try without trailing newline
-        pattern = r'^---\s*\n(.*?)\n---\s*(.*)$'
+        pattern = r"^---\s*\n(.*?)\n---\s*(.*)$"
         match = re.match(pattern, content, re.DOTALL)
 
     if not match:
@@ -1241,6 +1297,7 @@ def parse_yaml_frontmatter(content: str) -> Tuple[Dict[str, Any], str]:
     except yaml.YAMLError as e:
         raise ValueError(f"Invalid YAML frontmatter: {e}")
 
+
 def extract_markdown_sections(body: str) -> Dict[str, str]:
     """Extract markdown sections by header.
 
@@ -1251,18 +1308,18 @@ def extract_markdown_sections(body: str) -> Dict[str, str]:
     current_section = None
     current_content = []
 
-    for line in body.split('\n'):
-        if line.startswith('## '):
+    for line in body.split("\n"):
+        if line.startswith("## "):
             if current_section:
-                sections[current_section] = '\n'.join(current_content).strip()
-            current_section = line[3:].strip().lower().replace(' ', '_')
+                sections[current_section] = "\n".join(current_content).strip()
+            current_section = line[3:].strip().lower().replace(" ", "_")
             current_content = []
         else:
             if current_section:
                 current_content.append(line)
 
     if current_section:
-        sections[current_section] = '\n'.join(current_content).strip()
+        sections[current_section] = "\n".join(current_content).strip()
 
     return sections
 ```
@@ -1282,76 +1339,73 @@ def parse_legacy_task(content: str) -> Dict[str, Any]:
     # Extract TASK header
     task_match = re.search(r'TASK\s*\(([^:]+):\s*"([^"]+)"\)', content)
     if task_match:
-        task['subagent_type'] = task_match.group(1).strip()
-        task['description'] = task_match.group(2).strip()
+        task["subagent_type"] = task_match.group(1).strip()
+        task["description"] = task_match.group(2).strip()
 
     # Extract Task Input section
-    input_match = re.search(r'Task Input:\s*\n(.*?)(?=Task Output:|$)', content, re.DOTALL)
+    input_match = re.search(r"Task Input:\s*\n(.*?)(?=Task Output:|$)", content, re.DOTALL)
     if input_match:
         input_content = input_match.group(1)
 
         # Extract Subagent Type
-        subagent_match = re.search(r'Subagent Type:\s*(.+)', input_content)
+        subagent_match = re.search(r"Subagent Type:\s*(.+)", input_content)
         if subagent_match:
-            task['subagent_type'] = subagent_match.group(1).strip()
+            task["subagent_type"] = subagent_match.group(1).strip()
 
         # Extract Prompt section
-        prompt_match = re.search(r'Prompt:\s*\n(.*)', input_content, re.DOTALL)
+        prompt_match = re.search(r"Prompt:\s*\n(.*)", input_content, re.DOTALL)
         if prompt_match:
             prompt_content = prompt_match.group(1)
 
             # Extract ID
-            id_match = re.search(r'\*\*ID:\*\*\s*(.+)', prompt_content)
+            id_match = re.search(r"\*\*ID:\*\*\s*(.+)", prompt_content)
             if id_match:
-                task['id'] = id_match.group(1).strip()
+                task["id"] = id_match.group(1).strip()
 
             # Extract Title
-            title_match = re.search(r'\*\*Title:\*\*\s*(.+)', prompt_content)
+            title_match = re.search(r"\*\*Title:\*\*\s*(.+)", prompt_content)
             if title_match:
-                task['title'] = title_match.group(1).strip()
+                task["title"] = title_match.group(1).strip()
 
             # Extract Priority
-            priority_match = re.search(r'\*\*Priority:\*\*\s*(P[123])', prompt_content)
+            priority_match = re.search(r"\*\*Priority:\*\*\s*(P[123])", prompt_content)
             if priority_match:
-                task['priority'] = priority_match.group(1)
+                task["priority"] = priority_match.group(1)
 
             # Extract Depends
-            depends_match = re.search(r'\*\*Depends:\*\*\s*(.+)', prompt_content)
+            depends_match = re.search(r"\*\*Depends:\*\*\s*(.+)", prompt_content)
             if depends_match:
                 depends_str = depends_match.group(1).strip()
-                if depends_str.lower() in ['none', '-', '']:
-                    task['depends'] = []
+                if depends_str.lower() in ["none", "-", ""]:
+                    task["depends"] = []
                 else:
-                    task['depends'] = [d.strip() for d in depends_str.split(',')]
+                    task["depends"] = [d.strip() for d in depends_str.split(",")]
 
             # Extract Implementation Details
-            impl_match = re.search(r'### Implementation Details\s*\n(.*?)(?=###|$)', prompt_content, re.DOTALL)
+            impl_match = re.search(r"### Implementation Details\s*\n(.*?)(?=###|$)", prompt_content, re.DOTALL)
             if impl_match:
-                task['implementation_details'] = impl_match.group(1).strip()
+                task["implementation_details"] = impl_match.group(1).strip()
 
             # Extract Steps
-            steps_match = re.search(r'### Steps to Complete\s*\n(.*?)(?=###|$)', prompt_content, re.DOTALL)
+            steps_match = re.search(r"### Steps to Complete\s*\n(.*?)(?=###|$)", prompt_content, re.DOTALL)
             if steps_match:
                 steps_content = steps_match.group(1)
                 steps = []
-                for line in steps_content.split('\n'):
-                    step_match = re.match(r'(\d+)\.\s*(.+)', line.strip())
+                for line in steps_content.split("\n"):
+                    step_match = re.match(r"(\d+)\.\s*(.+)", line.strip())
                     if step_match:
-                        steps.append({
-                            'number': int(step_match.group(1)),
-                            'description': step_match.group(2).strip()
-                        })
-                task['steps'] = steps
+                        steps.append({"number": int(step_match.group(1)), "description": step_match.group(2).strip()})
+                task["steps"] = steps
 
             # Extract Deliverables
-            deliverables_match = re.search(r'### Deliverables\s*\n(.*?)(?=###|$)', prompt_content, re.DOTALL)
+            deliverables_match = re.search(r"### Deliverables\s*\n(.*?)(?=###|$)", prompt_content, re.DOTALL)
             if deliverables_match:
                 deliverables_content = deliverables_match.group(1)
                 deliverables = []
-                for line in deliverables_content.split('\n'):
-                    if line.strip().startswith('- '):
+                for line in deliverables_content.split("\n"):
+                    if line.strip().startswith("- "):
                         deliverables.append(line.strip()[2:])
-                task['deliverables'] = deliverables
+                task["deliverables"] = deliverables
 
     return task
 ```
@@ -1366,22 +1420,22 @@ def detect_task_format(content: str) -> str:
         'yaml_frontmatter', 'legacy', 'json', or 'unknown'
     """
     # Check for YAML frontmatter
-    if re.match(r'^---\s*\n', content):
-        return 'yaml_frontmatter'
+    if re.match(r"^---\s*\n", content):
+        return "yaml_frontmatter"
 
     # Check for JSON
-    if content.strip().startswith('{'):
+    if content.strip().startswith("{"):
         try:
             json.loads(content)
-            return 'json'
+            return "json"
         except:
             pass
 
     # Check for legacy format
-    if re.search(r'TASK\s*\(', content) or re.search(r'Task Input:', content):
-        return 'legacy'
+    if re.search(r"TASK\s*\(", content) or re.search(r"Task Input:", content):
+        return "legacy"
 
-    return 'unknown'
+    return "unknown"
 ```
 
 ---
@@ -1391,9 +1445,10 @@ def detect_task_format(content: str) -> str:
 ### F.1 Task ID Validation
 
 ```python
-TASK_ID_PATTERN = re.compile(r'^[a-z0-9-]+$')
+TASK_ID_PATTERN = re.compile(r"^[a-z0-9-]+$")
 TASK_ID_MIN_LENGTH = 3
 TASK_ID_MAX_LENGTH = 100
+
 
 def validate_task_id(task_id: str) -> List[str]:
     """Validate task ID format and return list of errors."""
@@ -1413,7 +1468,7 @@ def validate_task_id(task_id: str) -> List[str]:
         errors.append("Task ID must be lowercase alphanumeric with hyphens only")
 
     # Reserved IDs
-    reserved = ['new', 'all', 'list', 'create', 'update', 'delete']
+    reserved = ["new", "all", "list", "create", "update", "delete"]
     if task_id.lower() in reserved:
         errors.append(f"Task ID '{task_id}' is reserved")
 
@@ -1432,14 +1487,14 @@ def validate_dependencies(task: Dict[str, Any], all_tasks: List[Dict[str, Any]])
     - Dependencies are not self-referential
     """
     errors = []
-    task_id = task.get('id')
-    depends = task.get('depends', [])
+    task_id = task.get("id")
+    depends = task.get("depends", [])
 
     if not task_id:
         return errors
 
     # Get all task IDs
-    all_task_ids = {t.get('id') for t in all_tasks if t.get('id')}
+    all_task_ids = {t.get("id") for t in all_tasks if t.get("id")}
 
     # Check self-reference
     if task_id in depends:
@@ -1452,16 +1507,17 @@ def validate_dependencies(task: Dict[str, Any], all_tasks: List[Dict[str, Any]])
 
     # Check circular dependencies
     visited = set()
+
     def check_circular(current_id: str, path: List[str]) -> bool:
         if current_id in visited:
             return False
         if current_id in path:
             return True
         visited.add(current_id)
-        current_task = next((t for t in all_tasks if t.get('id') == current_id), None)
+        current_task = next((t for t in all_tasks if t.get("id") == current_id), None)
         if not current_task:
             return False
-        for dep_id in current_task.get('depends', []):
+        for dep_id in current_task.get("depends", []):
             if check_circular(dep_id, path + [current_id]):
                 return True
         return False
@@ -1475,8 +1531,9 @@ def validate_dependencies(task: Dict[str, Any], all_tasks: List[Dict[str, Any]])
 ### F.3 Priority Validation
 
 ```python
-VALID_PRIORITIES = ['P1', 'P2', 'P3']
-PRIORITY_WEIGHTS = {'P1': 3, 'P2': 2, 'P3': 1}
+VALID_PRIORITIES = ["P1", "P2", "P3"]
+PRIORITY_WEIGHTS = {"P1": 3, "P2": 2, "P3": 1}
+
 
 def validate_priority(priority: str) -> List[str]:
     """Validate priority value."""
@@ -1486,6 +1543,7 @@ def validate_priority(priority: str) -> List[str]:
         errors.append(f"Priority must be one of {VALID_PRIORITIES}, got '{priority}'")
 
     return errors
+
 
 def compare_priorities(p1: str, p2: str) -> int:
     """Compare two priorities. Returns -1, 0, or 1."""
@@ -1505,6 +1563,7 @@ def compare_priorities(p1: str, p2: str) -> int:
 ### G.1 YAML Frontmatter → JSON
 
 **Input (YAML Frontmatter):**
+
 ```markdown
 ---
 id: docgen-sticky-nav
@@ -1519,6 +1578,7 @@ metadata:
 ```
 
 **Output (JSON):**
+
 ```json
 {
   "id": "docgen-sticky-nav",
@@ -1536,6 +1596,7 @@ metadata:
 ### G.2 Legacy Format → YAML Frontmatter
 
 **Input (Legacy):**
+
 ```
 TASK (worker: "Implement sticky sidebar")
 Task Input:
@@ -1549,6 +1610,7 @@ Task Input:
 ```
 
 **Output (YAML Frontmatter):**
+
 ```markdown
 ---
 id: docgen-sticky-nav
@@ -1563,6 +1625,7 @@ description: Implement sticky sidebar
 ### G.3 JSON → YAML Frontmatter
 
 **Input (JSON):**
+
 ```json
 {
   "id": "docgen-sticky-nav",
@@ -1577,6 +1640,7 @@ description: Implement sticky sidebar
 ```
 
 **Output (YAML Frontmatter):**
+
 ```yaml
 ---
 id: docgen-sticky-nav
@@ -1596,28 +1660,31 @@ metadata:
 ### H.1 WORK_STREAM.md Integration
 
 **Current Format:**
+
 ```markdown
-| ID | Title | Source | Priority | Depends |
-|----|------|--------|----------|---------|
-| docgen-sticky-nav | Implement sticky sidebar | DOCGEN_PLAN.md | P1 | - |
+| ID                | Title                    | Source         | Priority | Depends |
+| ----------------- | ------------------------ | -------------- | -------- | ------- |
+| docgen-sticky-nav | Implement sticky sidebar | DOCGEN_PLAN.md | P1       | -       |
 ```
 
 **Enhanced Format (with task file reference):**
+
 ```markdown
-| ID | Title | Source | Priority | Depends | Task File |
-|----|------|--------|----------|---------|-----------|
-| docgen-sticky-nav | Implement sticky sidebar | DOCGEN_PLAN.md | P1 | - | tasks/docgen-sticky-nav.md |
+| ID                | Title                    | Source         | Priority | Depends | Task File                  |
+| ----------------- | ------------------------ | -------------- | -------- | ------- | -------------------------- |
+| docgen-sticky-nav | Implement sticky sidebar | DOCGEN_PLAN.md | P1       | -       | tasks/docgen-sticky-nav.md |
 ```
 
 **Auto-generation from WORK_STREAM.md:**
+
 ```python
 def generate_task_from_workstream(row: Dict[str, str]) -> str:
     """Generate task file from WORK_STREAM.md row."""
-    task_id = row['ID']
-    title = row['Title']
-    priority = row['Priority']
-    depends_str = row.get('Depends', '-')
-    depends = [d.strip() for d in depends_str.split(',') if d.strip() and d.strip() != '-']
+    task_id = row["ID"]
+    title = row["Title"]
+    priority = row["Priority"]
+    depends_str = row.get("Depends", "-")
+    depends = [d.strip() for d in depends_str.split(",") if d.strip() and d.strip() != "-"]
 
     yaml_frontmatter = f"""---
 id: {task_id}
@@ -1625,7 +1692,7 @@ title: {title}
 subagent_type: worker
 priority: {priority}
 depends: {depends}
-source: {row.get('Source', 'WORK_STREAM.md')}
+source: {row.get("Source", "WORK_STREAM.md")}
 metadata:
   created: {datetime.now(UTC).isoformat()}
 ---
@@ -1652,14 +1719,15 @@ TODO: Add implementation details for {title}
 ### H.2 CI/CD Integration
 
 **GitHub Actions Workflow:**
+
 ```yaml
 name: Validate Tasks
 
 on:
   pull_request:
     paths:
-      - 'tasks/**'
-      - 'docs/reference/WORK_STREAM.md'
+      - "tasks/**"
+      - "docs/reference/WORK_STREAM.md"
 
 jobs:
   validate-tasks:
@@ -1668,7 +1736,7 @@ jobs:
       - uses: actions/checkout@v3
       - uses: actions/setup-python@v4
         with:
-          python-version: '3.12'
+          python-version: "3.12"
       - run: pip install thegent
       - run: |
           # Validate all task files
@@ -1682,6 +1750,7 @@ jobs:
 ```
 
 **Pre-commit Hook:**
+
 ```python
 #!/usr/bin/env python3
 """Pre-commit hook to validate task files."""
@@ -1690,20 +1759,20 @@ import sys
 from pathlib import Path
 from thegent.task.validator import validate_task_file
 
+
 def main():
     """Validate changed task files."""
     errors = []
 
     # Get staged files
     import subprocess
+
     result = subprocess.run(
-        ['git', 'diff', '--cached', '--name-only', '--diff-filter=AM'],
-        capture_output=True,
-        text=True
+        ["git", "diff", "--cached", "--name-only", "--diff-filter=AM"], capture_output=True, text=True
     )
 
-    staged_files = result.stdout.strip().split('\n')
-    task_files = [f for f in staged_files if f.startswith('tasks/') and f.endswith('.md')]
+    staged_files = result.stdout.strip().split("\n")
+    task_files = [f for f in staged_files if f.startswith("tasks/") and f.endswith(".md")]
 
     for task_file in task_files:
         try:
@@ -1722,13 +1791,15 @@ def main():
     print("All task files valid ✓")
     return 0
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     sys.exit(main())
 ```
 
 ### H.3 IDE Integration
 
 **VS Code Extension (tasks.json):**
+
 ```json
 {
   "version": "2.0.0",
@@ -1754,6 +1825,7 @@ if __name__ == '__main__':
 ```
 
 **VS Code Settings (settings.json):**
+
 ```json
 {
   "files.associations": {
@@ -1776,12 +1848,14 @@ if __name__ == '__main__':
 ### I.1 Parsing Performance
 
 **Optimization Strategies:**
+
 1. **Lazy Parsing**: Only parse frontmatter initially, parse body on demand
 2. **Caching**: Cache parsed tasks in memory
 3. **Incremental Updates**: Only re-parse changed sections
 4. **Parallel Processing**: Parse multiple tasks concurrently
 
 **Benchmark Results (1000 tasks):**
+
 - Sequential parsing: ~2.5s
 - Parallel parsing (4 workers): ~0.8s
 - Cached parsing: ~0.1s (subsequent runs)
@@ -1789,12 +1863,14 @@ if __name__ == '__main__':
 ### I.2 Validation Performance
 
 **Optimization Strategies:**
+
 1. **Schema Caching**: Cache compiled JSON Schema
 2. **Early Exit**: Stop validation on first error (optional)
 3. **Batch Validation**: Validate multiple tasks in one pass
 4. **Incremental Validation**: Only validate changed fields
 
 **Benchmark Results (1000 tasks):**
+
 - Full validation: ~1.2s
 - Early exit (first error): ~0.3s
 - Batch validation: ~0.9s
@@ -1802,11 +1878,13 @@ if __name__ == '__main__':
 ### I.3 Storage Considerations
 
 **File Size Comparison (average task):**
+
 - YAML Frontmatter: ~3KB
 - JSON: ~2KB
 - Legacy Format: ~5KB
 
 **Database Storage:**
+
 - Normalized schema: ~1KB per task
 - JSONB column: ~2KB per task
 - Full-text search index: +500KB per 1000 tasks
@@ -1818,6 +1896,7 @@ if __name__ == '__main__':
 ### J.1 Input Validation
 
 **Sanitization Rules:**
+
 - Strip HTML/script tags from markdown
 - Validate file paths (prevent directory traversal)
 - Limit string lengths
@@ -1825,6 +1904,7 @@ if __name__ == '__main__':
 - Sanitize YAML to prevent code injection
 
 **Example:**
+
 ```python
 def sanitize_task_input(task: Dict[str, Any]) -> Dict[str, Any]:
     """Sanitize task input to prevent injection attacks."""
@@ -1834,13 +1914,13 @@ def sanitize_task_input(task: Dict[str, Any]) -> Dict[str, Any]:
     for key, value in task.items():
         if isinstance(value, str):
             # Remove HTML tags
-            value = re.sub(r'<[^>]+>', '', value)
+            value = re.sub(r"<[^>]+>", "", value)
             # Limit length
             if len(value) > MAX_FIELD_LENGTH.get(key, 10000):
                 raise ValueError(f"Field '{key}' exceeds maximum length")
             sanitized[key] = value
         elif isinstance(value, list):
-            sanitized[key] = [sanitize_task_input({'item': v})['item'] if isinstance(v, dict) else v for v in value]
+            sanitized[key] = [sanitize_task_input({"item": v})["item"] if isinstance(v, dict) else v for v in value]
         elif isinstance(value, dict):
             sanitized[key] = sanitize_task_input(value)
         else:
@@ -1852,11 +1932,13 @@ def sanitize_task_input(task: Dict[str, Any]) -> Dict[str, Any]:
 ### J.2 Access Control
 
 **Task Visibility:**
+
 - Public: All agents can see and claim
 - Private: Only assigned agent can see
 - Restricted: Requires permission to claim
 
 **Example Schema Extension:**
+
 ```json
 {
   "properties": {
@@ -1867,7 +1949,7 @@ def sanitize_task_input(task: Dict[str, Any]) -> Dict[str, Any]:
     },
     "allowed_agents": {
       "type": "array",
-      "items": {"type": "string"},
+      "items": { "type": "string" },
       "description": "List of agent IDs allowed to claim this task"
     },
     "requires_approval": {
@@ -1882,6 +1964,7 @@ def sanitize_task_input(task: Dict[str, Any]) -> Dict[str, Any]:
 ### J.3 Audit Trail
 
 **Task History Tracking:**
+
 ```json
 {
   "properties": {
@@ -1891,14 +1974,22 @@ def sanitize_task_input(task: Dict[str, Any]) -> Dict[str, Any]:
         "type": "object",
         "required": ["timestamp", "action", "actor"],
         "properties": {
-          "timestamp": {"type": "string", "format": "date-time"},
+          "timestamp": { "type": "string", "format": "date-time" },
           "action": {
             "type": "string",
-            "enum": ["created", "claimed", "started", "completed", "failed", "cancelled", "updated"]
+            "enum": [
+              "created",
+              "claimed",
+              "started",
+              "completed",
+              "failed",
+              "cancelled",
+              "updated"
+            ]
           },
-          "actor": {"type": "string"},
-          "changes": {"type": "object"},
-          "reason": {"type": "string"}
+          "actor": { "type": "string" },
+          "changes": { "type": "object" },
+          "reason": { "type": "string" }
         }
       }
     }
@@ -1913,6 +2004,7 @@ def sanitize_task_input(task: Dict[str, Any]) -> Dict[str, Any]:
 ### K.1 Unit Tests
 
 **Parser Tests:**
+
 ```python
 def test_parse_yaml_frontmatter():
     """Test YAML frontmatter parsing."""
@@ -1923,9 +2015,10 @@ title: Test Task
 ## Body
 """
     frontmatter, body = parse_yaml_frontmatter(content)
-    assert frontmatter['id'] == 'test-task'
-    assert frontmatter['title'] == 'Test Task'
-    assert 'Body' in body
+    assert frontmatter["id"] == "test-task"
+    assert frontmatter["title"] == "Test Task"
+    assert "Body" in body
+
 
 def test_parse_legacy_format():
     """Test legacy format parsing."""
@@ -1936,19 +2029,20 @@ Task Input:
     **Title:** Test Task
 """
     task = parse_legacy_task(content)
-    assert task['id'] == 'test-task'
-    assert task['title'] == 'Test Task'
+    assert task["id"] == "test-task"
+    assert task["title"] == "Test Task"
 ```
 
 ### K.2 Integration Tests
 
 **End-to-End Validation:**
+
 ```python
 def test_task_lifecycle():
     """Test complete task lifecycle."""
     # 1. Create task
-    task_file = Path('tasks/test-task.md')
-    task_file.write_text(generate_task_template('worker'))
+    task_file = Path("tasks/test-task.md")
+    task_file.write_text(generate_task_template("worker"))
 
     # 2. Validate
     result = validate_task_file(task_file)
@@ -1956,37 +2050,35 @@ def test_task_lifecycle():
 
     # 3. Parse
     task = parse_task_file(task_file)
-    assert task['id'] == 'test-task'
+    assert task["id"] == "test-task"
 
     # 4. Convert
     json_task = convert_to_json(task)
-    assert json_task['id'] == 'test-task'
+    assert json_task["id"] == "test-task"
 
     # 5. Execute (mock)
     output = execute_task(task)
-    assert output['status'] == 'completed'
+    assert output["status"] == "completed"
 ```
 
 ### K.3 Property-Based Tests
 
 **Fuzz Testing:**
+
 ```python
 from hypothesis import given, strategies as st
 
+
 @given(
-    task_id=st.text(min_size=3, max_size=100, alphabet=st.characters(whitelist_categories=('Ll', 'Nd'), whitelist_characters='-')),
-    priority=st.sampled_from(['P1', 'P2', 'P3']),
-    depends=st.lists(st.text(min_size=3, max_size=50), max_size=10)
+    task_id=st.text(
+        min_size=3, max_size=100, alphabet=st.characters(whitelist_categories=("Ll", "Nd"), whitelist_characters="-")
+    ),
+    priority=st.sampled_from(["P1", "P2", "P3"]),
+    depends=st.lists(st.text(min_size=3, max_size=50), max_size=10),
 )
 def test_task_validation_properties(task_id, priority, depends):
     """Property-based test for task validation."""
-    task = {
-        'id': task_id,
-        'title': 'Test Task',
-        'subagent_type': 'worker',
-        'priority': priority,
-        'depends': depends
-    }
+    task = {"id": task_id, "title": "Test Task", "subagent_type": "worker", "priority": priority, "depends": depends}
     result = validate_task(task)
     # Should either be valid or have specific error types
     assert result.valid or len(result.errors) > 0
@@ -2004,13 +2096,13 @@ def migrate_task_file(source_path: Path, output_path: Path, dry_run: bool = Fals
     content = source_path.read_text()
     format_type = detect_task_format(content)
 
-    if format_type == 'yaml_frontmatter':
+    if format_type == "yaml_frontmatter":
         return MigrationResult(skipped=True, reason="Already in new format")
 
     # Parse old format
-    if format_type == 'legacy':
+    if format_type == "legacy":
         task = parse_legacy_task(content)
-    elif format_type == 'json':
+    elif format_type == "json":
         task = json.loads(content)
     else:
         return MigrationResult(error="Unknown format")
@@ -2019,10 +2111,7 @@ def migrate_task_file(source_path: Path, output_path: Path, dry_run: bool = Fals
     new_content = convert_to_yaml_frontmatter(task)
 
     if dry_run:
-        return MigrationResult(
-            preview=new_content,
-            changes=calculate_changes(content, new_content)
-        )
+        return MigrationResult(preview=new_content, changes=calculate_changes(content, new_content))
 
     # Write new format
     output_path.write_text(new_content)
@@ -2030,8 +2119,8 @@ def migrate_task_file(source_path: Path, output_path: Path, dry_run: bool = Fals
     return MigrationResult(
         success=True,
         source_format=format_type,
-        target_format='yaml_frontmatter',
-        changes=calculate_changes(content, new_content)
+        target_format="yaml_frontmatter",
+        changes=calculate_changes(content, new_content),
     )
 ```
 
@@ -2042,12 +2131,12 @@ def migrate_directory(source_dir: Path, output_dir: Path, dry_run: bool = False)
     """Migrate all task files in a directory."""
     report = MigrationReport()
 
-    task_files = list(source_dir.glob('*.md')) + list(source_dir.glob('*.json'))
+    task_files = list(source_dir.glob("*.md")) + list(source_dir.glob("*.json"))
 
     for task_file in task_files:
         output_file = output_dir / task_file.name
-        if task_file.suffix == '.json':
-            output_file = output_dir / (task_file.stem + '.md')
+        if task_file.suffix == ".json":
+            output_file = output_dir / (task_file.stem + ".md")
 
         try:
             result = migrate_task_file(task_file, output_file, dry_run)
@@ -2064,7 +2153,7 @@ def migrate_directory(source_dir: Path, output_dir: Path, dry_run: bool = False)
 
 ### M.1 Complex Task Example
 
-```markdown
+````markdown
 ---
 id: research-cross-platform-coordination
 title: Multi-tenant coordination implementation
@@ -2079,7 +2168,8 @@ metadata:
   assignee: research-agent-1
   created: 2026-02-18T08:00:00Z
   updated: 2026-02-18T10:30:00Z
-  related_tasks: [research-cross-platform-isolation, research-cross-platform-desktop]
+  related_tasks:
+    [research-cross-platform-isolation, research-cross-platform-desktop]
   references:
     - url: https://example.com/multi-tenant-patterns
       title: Multi-tenant Architecture Patterns
@@ -2174,6 +2264,7 @@ to work on the same project while maintaining isolation and preventing conflicts
   "timestamp": "2026-02-18T10:00:00Z"
 }
 ```
+````
 
 ### Conflict Resolution
 
@@ -2191,7 +2282,8 @@ def resolve_conflict(resource: str, tenants: List[str]) -> Resolution:
 - Consider using Redis for coordination backend
 - May need to support both optimistic and pessimistic locking
 - Performance is critical - benchmark early and often
-```
+
+````
 
 ### M.2 Simple Task Example
 
@@ -2226,7 +2318,7 @@ Add "Edit this page on GitHub" links to VitePress documentation pages.
 - Links appear on pages
 - Links work correctly
 - WORK_STREAM updated
-```
+````
 
 ---
 
@@ -2235,27 +2327,37 @@ Add "Edit this page on GitHub" links to VitePress documentation pages.
 ### N.1 Parsing Errors
 
 **Error Types:**
+
 1. **Format Errors**: Invalid YAML/JSON syntax
 2. **Schema Errors**: Validation failures
 3. **Semantic Errors**: Logical inconsistencies (circular deps, etc.)
 
 **Error Recovery:**
+
 ```python
 class TaskParseError(Exception):
     """Base exception for task parsing errors."""
+
     pass
+
 
 class FormatError(TaskParseError):
     """Invalid format (YAML/JSON syntax error)."""
+
     pass
+
 
 class SchemaError(TaskParseError):
     """Schema validation error."""
+
     pass
+
 
 class SemanticError(TaskParseError):
     """Semantic validation error (circular deps, etc.)."""
+
     pass
+
 
 def parse_task_with_recovery(file_path: Path) -> Tuple[Optional[Dict], List[str]]:
     """Parse task with error recovery."""
@@ -2291,18 +2393,22 @@ def parse_task_with_recovery(file_path: Path) -> Tuple[Optional[Dict], List[str]
 ### N.2 Validation Errors
 
 **Error Reporting:**
+
 ```python
 @dataclass
 class ValidationError:
     """Single validation error."""
+
     field: str
     message: str
     code: str
     path: List[str]  # JSON path to error
 
+
 @dataclass
 class ValidationResult:
     """Task validation result."""
+
     valid: bool
     errors: List[ValidationError]
     warnings: List[ValidationError]
@@ -2311,9 +2417,9 @@ class ValidationResult:
         """Format errors for display."""
         lines = []
         for error in self.errors:
-            path_str = '.'.join(error.path) if error.path else error.field
+            path_str = ".".join(error.path) if error.path else error.field
             lines.append(f"{path_str}: {error.message} ({error.code})")
-        return '\n'.join(lines)
+        return "\n".join(lines)
 ```
 
 ---
@@ -2323,9 +2429,10 @@ class ValidationResult:
 ### O.1 Task Templates
 
 **Template System:**
+
 ```python
 TASK_TEMPLATES = {
-    'worker': """---
+    "worker": """---
 id: {id}
 title: {title}
 subagent_type: worker
@@ -2354,7 +2461,7 @@ metadata:
 
 {acceptance_criteria}
 """,
-    'researcher': """---
+    "researcher": """---
 id: {id}
 title: {title}
 subagent_type: researcher
@@ -2382,37 +2489,40 @@ metadata:
 ## Deliverables
 
 {deliverables}
-"""
+""",
 }
 ```
 
 ### O.2 Task Dependencies Graph
 
 **Dependency Visualization:**
-```python
+
+````python
 def build_dependency_graph(tasks: List[Dict[str, Any]]) -> Dict[str, List[str]]:
     """Build dependency graph from tasks."""
     graph = {}
     for task in tasks:
-        task_id = task.get('id')
-        depends = task.get('depends', [])
+        task_id = task.get("id")
+        depends = task.get("depends", [])
         graph[task_id] = depends
     return graph
 
+
 def visualize_dependencies(graph: Dict[str, List[str]], output_path: Path):
     """Generate Mermaid diagram of dependencies."""
-    lines = ['graph TD']
+    lines = ["graph TD"]
     for task_id, deps in graph.items():
         for dep in deps:
-            lines.append(f'  {dep} --> {task_id}')
+            lines.append(f"  {dep} --> {task_id}")
 
-    diagram = '\n'.join(lines)
-    output_path.write_text(f'```mermaid\n{diagram}\n```')
-```
+    diagram = "\n".join(lines)
+    output_path.write_text(f"```mermaid\n{diagram}\n```")
+````
 
 ### O.3 Task Search & Filtering
 
 **Query Language:**
+
 ```python
 def search_tasks(tasks: List[Dict[str, Any]], query: str) -> List[Dict[str, Any]]:
     """Search tasks using simple query language.
@@ -2440,24 +2550,28 @@ def search_tasks(tasks: List[Dict[str, Any]], query: str) -> List[Dict[str, Any]
 ### P.1 Agent Parsing Requirements
 
 **Worker Agents:**
+
 - Need clear step-by-step instructions
 - Require explicit deliverables
 - Benefit from code examples
 - Need acceptance criteria
 
 **Flash Agents (Quick Tasks):**
+
 - Prefer concise descriptions
 - Need minimal context
 - Focus on quick wins
 - Less detailed steps
 
 **Researcher Agents:**
+
 - Need research questions
 - Require source references
 - Benefit from expected outcomes
 - Need methodology guidance
 
 **Reviewer Agents:**
+
 - Need review criteria
 - Require code/file references
 - Need quality gates
@@ -2466,41 +2580,42 @@ def search_tasks(tasks: List[Dict[str, Any]], query: str) -> List[Dict[str, Any]
 ### P.2 Agent Prompt Generation
 
 **From Task to Agent Prompt:**
+
 ```python
 def generate_agent_prompt(task: Dict[str, Any], agent_type: str) -> str:
     """Generate agent prompt from task definition."""
-    if agent_type == 'worker':
+    if agent_type == "worker":
         return f"""Implement the following work item:
 
-**ID:** {task['id']}
-**Title:** {task['title']}
-**Source:** {task.get('source', 'Unknown')}
-**Priority:** {task['priority']}
-**Depends:** {', '.join(task.get('depends', [])) or 'None'}
+**ID:** {task["id"]}
+**Title:** {task["title"]}
+**Source:** {task.get("source", "Unknown")}
+**Priority:** {task["priority"]}
+**Depends:** {", ".join(task.get("depends", [])) or "None"}
 
 ### Implementation Details
 
-{task.get('implementation_details', '')}
+{task.get("implementation_details", "")}
 
 ### Steps to Complete
 
-{format_steps(task.get('steps', []))}
+{format_steps(task.get("steps", []))}
 
 ### Deliverables
 
-{format_deliverables(task.get('deliverables', []))}
+{format_deliverables(task.get("deliverables", []))}
 
 Begin implementation now."""
-    elif agent_type == 'researcher':
+    elif agent_type == "researcher":
         return f"""Research the following topic:
 
-**ID:** {task['id']}
-**Title:** {task['title']}
+**ID:** {task["id"]}
+**Title:** {task["title"]}
 **Research Questions:**
-{format_research_questions(task.get('research_questions', []))}
+{format_research_questions(task.get("research_questions", []))}
 
 **Expected Outcomes:**
-{format_outcomes(task.get('expected_outcomes', []))}
+{format_outcomes(task.get("expected_outcomes", []))}
 
 Begin research now."""
     # ... other agent types
@@ -2513,30 +2628,33 @@ Begin research now."""
 ### Q.1 WORK_STREAM.md Parsing
 
 **Current Format Analysis:**
+
 ```markdown
-| ID | Title | Source | Priority | Depends |
-|----|------|--------|----------|---------|
-| docgen-sticky-nav | Implement sticky sidebar | DOCGEN_PLAN.md | P1 | - |
+| ID                | Title                    | Source         | Priority | Depends |
+| ----------------- | ------------------------ | -------------- | -------- | ------- |
+| docgen-sticky-nav | Implement sticky sidebar | DOCGEN_PLAN.md | P1       | -       |
 ```
 
 **Enhanced Format Proposal:**
+
 ```markdown
-| ID | Title | Source | Priority | Depends | Status | Task File | Agent | Started | Completed |
-|----|------|--------|----------|---------|--------|----------|-------|---------|-----------|
-| docgen-sticky-nav | Implement sticky sidebar | DOCGEN_PLAN.md | P1 | - | completed | tasks/docgen-sticky-nav.md | worker-1 | 2026-02-18T08:00:00Z | 2026-02-18T10:00:00Z |
+| ID                | Title                    | Source         | Priority | Depends | Status    | Task File                  | Agent    | Started              | Completed            |
+| ----------------- | ------------------------ | -------------- | -------- | ------- | --------- | -------------------------- | -------- | -------------------- | -------------------- |
+| docgen-sticky-nav | Implement sticky sidebar | DOCGEN_PLAN.md | P1       | -       | completed | tasks/docgen-sticky-nav.md | worker-1 | 2026-02-18T08:00:00Z | 2026-02-18T10:00:00Z |
 ```
 
 **Parser Implementation:**
+
 ```python
 def parse_workstream_table(content: str) -> List[Dict[str, str]]:
     """Parse WORK_STREAM.md table."""
-    lines = content.split('\n')
+    lines = content.split("\n")
     tasks = []
 
     # Find table start
     header_line = None
     for i, line in enumerate(lines):
-        if '| ID |' in line and 'Title |' in line:
+        if "| ID |" in line and "Title |" in line:
             header_line = i
             break
 
@@ -2544,16 +2662,16 @@ def parse_workstream_table(content: str) -> List[Dict[str, str]]:
         return tasks
 
     # Parse header
-    headers = [h.strip() for h in lines[header_line].split('|')[1:-1]]
+    headers = [h.strip() for h in lines[header_line].split("|")[1:-1]]
 
     # Skip separator line
     data_start = header_line + 2
 
     # Parse rows
     for line in lines[data_start:]:
-        if not line.strip() or not line.startswith('|'):
+        if not line.strip() or not line.startswith("|"):
             break
-        values = [v.strip() for v in line.split('|')[1:-1]]
+        values = [v.strip() for v in line.split("|")[1:-1]]
         if len(values) == len(headers):
             task = dict(zip(headers, values))
             tasks.append(task)
@@ -2564,6 +2682,7 @@ def parse_workstream_table(content: str) -> List[Dict[str, str]]:
 ### Q.2 Task File Synchronization
 
 **Bidirectional Sync:**
+
 ```python
 def sync_task_with_workstream(task_file: Path, workstream_file: Path):
     """Sync task file with WORK_STREAM.md."""
@@ -2574,27 +2693,27 @@ def sync_task_with_workstream(task_file: Path, workstream_file: Path):
     workstream_tasks = parse_workstream_table(workstream_file.read_text())
 
     # Find matching entry
-    matching_entry = next((t for t in workstream_tasks if t['ID'] == task['id']), None)
+    matching_entry = next((t for t in workstream_tasks if t["ID"] == task["id"]), None)
 
     if matching_entry:
         # Update workstream entry from task
-        matching_entry['Status'] = get_task_status(task_file)
-        matching_entry['Task File'] = str(task_file.relative_to(workstream_file.parent))
-        if task.get('metadata', {}).get('assignee'):
-            matching_entry['Agent'] = task['metadata']['assignee']
+        matching_entry["Status"] = get_task_status(task_file)
+        matching_entry["Task File"] = str(task_file.relative_to(workstream_file.parent))
+        if task.get("metadata", {}).get("assignee"):
+            matching_entry["Agent"] = task["metadata"]["assignee"]
     else:
         # Add new entry to workstream
         new_entry = {
-            'ID': task['id'],
-            'Title': task['title'],
-            'Source': task.get('source', ''),
-            'Priority': task['priority'],
-            'Depends': ', '.join(task.get('depends', [])) or '-',
-            'Status': 'backlog',
-            'Task File': str(task_file.relative_to(workstream_file.parent)),
-            'Agent': '',
-            'Started': '',
-            'Completed': ''
+            "ID": task["id"],
+            "Title": task["title"],
+            "Source": task.get("source", ""),
+            "Priority": task["priority"],
+            "Depends": ", ".join(task.get("depends", [])) or "-",
+            "Status": "backlog",
+            "Task File": str(task_file.relative_to(workstream_file.parent)),
+            "Agent": "",
+            "Started": "",
+            "Completed": "",
         }
         workstream_tasks.append(new_entry)
 
@@ -2638,103 +2757,103 @@ def sync_task_with_workstream(task_file: Path, workstream_file: Path):
       "type": "object",
       "required": ["number", "description"],
       "properties": {
-        "number": {"type": "integer", "minimum": 1},
-        "description": {"type": "string"},
+        "number": { "type": "integer", "minimum": 1 },
+        "description": { "type": "string" },
         "deliverables": {
           "type": "array",
-          "items": {"type": "string"}
+          "items": { "type": "string" }
         },
-        "estimated_minutes": {"type": "integer", "minimum": 0},
+        "estimated_minutes": { "type": "integer", "minimum": 0 },
         "dependencies": {
           "type": "array",
-          "items": {"type": "integer"},
+          "items": { "type": "integer" },
           "description": "Step numbers this step depends on"
         }
       }
     }
   },
   "properties": {
-    "id": {"$ref": "#/definitions/task_id"},
+    "id": { "$ref": "#/definitions/task_id" },
     "title": {
       "type": "string",
       "minLength": 1,
       "maxLength": 200
     },
-    "subagent_type": {"$ref": "#/definitions/subagent_type"},
+    "subagent_type": { "$ref": "#/definitions/subagent_type" },
     "description": {
       "type": "string",
       "maxLength": 500
     },
-    "priority": {"$ref": "#/definitions/priority"},
+    "priority": { "$ref": "#/definitions/priority" },
     "depends": {
       "type": "array",
-      "items": {"$ref": "#/definitions/task_id"},
+      "items": { "$ref": "#/definitions/task_id" },
       "default": []
     },
-    "source": {"type": "string"},
+    "source": { "type": "string" },
     "metadata": {
       "type": "object",
       "properties": {
-        "estimated_hours": {"type": "number", "minimum": 0},
+        "estimated_hours": { "type": "number", "minimum": 0 },
         "complexity": {
           "type": "string",
           "enum": ["simple", "moderate", "complex"]
         },
         "tags": {
           "type": "array",
-          "items": {"type": "string"},
+          "items": { "type": "string" },
           "uniqueItems": true
         },
-        "assignee": {"type": "string"},
-        "created": {"type": "string", "format": "date-time"},
-        "updated": {"type": "string", "format": "date-time"},
+        "assignee": { "type": "string" },
+        "created": { "type": "string", "format": "date-time" },
+        "updated": { "type": "string", "format": "date-time" },
         "related_tasks": {
           "type": "array",
-          "items": {"$ref": "#/definitions/task_id"}
+          "items": { "$ref": "#/definitions/task_id" }
         },
         "references": {
           "type": "array",
           "items": {
             "type": "object",
             "properties": {
-              "url": {"type": "string", "format": "uri"},
-              "file": {"type": "string"},
-              "section": {"type": "string"}
+              "url": { "type": "string", "format": "uri" },
+              "file": { "type": "string" },
+              "section": { "type": "string" }
             }
           }
         }
       }
     },
-    "implementation_details": {"type": "string"},
+    "implementation_details": { "type": "string" },
     "steps": {
       "type": "array",
-      "items": {"$ref": "#/definitions/step"}
+      "items": { "$ref": "#/definitions/step" }
     },
     "deliverables": {
       "type": "array",
-      "items": {"type": "string"}
+      "items": { "type": "string" }
     },
     "acceptance_criteria": {
       "type": "array",
-      "items": {"type": "string"}
+      "items": { "type": "string" }
     },
     "examples": {
       "type": "array",
-      "items": {"type": "string"}
+      "items": { "type": "string" }
     },
     "research_questions": {
       "type": "array",
-      "items": {"type": "string"},
+      "items": { "type": "string" },
       "description": "For researcher tasks"
     },
     "expected_outcomes": {
       "type": "array",
-      "items": {"type": "string"},
+      "items": { "type": "string" },
       "description": "For researcher tasks"
     },
     "review_criteria": {
       "type": "array",
-      "items": {"type": "string"},
+      "items": { "type": "string" },
       "description": "For reviewer tasks"
     },
     "visibility": {
@@ -2744,7 +2863,7 @@ def sync_task_with_workstream(task_file: Path, workstream_file: Path):
     },
     "allowed_agents": {
       "type": "array",
-      "items": {"type": "string"}
+      "items": { "type": "string" }
     },
     "requires_approval": {
       "type": "boolean",
@@ -2756,14 +2875,22 @@ def sync_task_with_workstream(task_file: Path, workstream_file: Path):
         "type": "object",
         "required": ["timestamp", "action", "actor"],
         "properties": {
-          "timestamp": {"type": "string", "format": "date-time"},
+          "timestamp": { "type": "string", "format": "date-time" },
           "action": {
             "type": "string",
-            "enum": ["created", "claimed", "started", "completed", "failed", "cancelled", "updated"]
+            "enum": [
+              "created",
+              "claimed",
+              "started",
+              "completed",
+              "failed",
+              "cancelled",
+              "updated"
+            ]
           },
-          "actor": {"type": "string"},
-          "changes": {"type": "object"},
-          "reason": {"type": "string"}
+          "actor": { "type": "string" },
+          "changes": { "type": "object" },
+          "reason": { "type": "string" }
         }
       }
     }
@@ -2772,7 +2899,7 @@ def sync_task_with_workstream(task_file: Path, workstream_file: Path):
     {
       "if": {
         "properties": {
-          "subagent_type": {"const": "worker"}
+          "subagent_type": { "const": "worker" }
         }
       },
       "then": {
@@ -2782,7 +2909,7 @@ def sync_task_with_workstream(task_file: Path, workstream_file: Path):
     {
       "if": {
         "properties": {
-          "subagent_type": {"const": "researcher"}
+          "subagent_type": { "const": "researcher" }
         }
       },
       "then": {
@@ -2792,7 +2919,7 @@ def sync_task_with_workstream(task_file: Path, workstream_file: Path):
     {
       "if": {
         "properties": {
-          "subagent_type": {"const": "reviewer"}
+          "subagent_type": { "const": "reviewer" }
         }
       },
       "then": {
@@ -2840,10 +2967,10 @@ def sync_task_with_workstream(task_file: Path, workstream_file: Path):
         "type": "object",
         "required": ["path"],
         "properties": {
-          "path": {"type": "string"},
-          "description": {"type": "string"},
-          "size_bytes": {"type": "integer"},
-          "lines": {"type": "integer"}
+          "path": { "type": "string" },
+          "description": { "type": "string" },
+          "size_bytes": { "type": "integer" },
+          "lines": { "type": "integer" }
         }
       }
     },
@@ -2853,12 +2980,12 @@ def sync_task_with_workstream(task_file: Path, workstream_file: Path):
         "type": "object",
         "required": ["path"],
         "properties": {
-          "path": {"type": "string"},
-          "description": {"type": "string"},
-          "changes": {"type": "string"},
-          "lines_added": {"type": "integer"},
-          "lines_removed": {"type": "integer"},
-          "diff": {"type": "string"}
+          "path": { "type": "string" },
+          "description": { "type": "string" },
+          "changes": { "type": "string" },
+          "lines_added": { "type": "integer" },
+          "lines_removed": { "type": "integer" },
+          "diff": { "type": "string" }
         }
       }
     },
@@ -2868,8 +2995,8 @@ def sync_task_with_workstream(task_file: Path, workstream_file: Path):
         "type": "object",
         "required": ["path"],
         "properties": {
-          "path": {"type": "string"},
-          "reason": {"type": "string"}
+          "path": { "type": "string" },
+          "reason": { "type": "string" }
         }
       }
     },
@@ -2879,14 +3006,14 @@ def sync_task_with_workstream(task_file: Path, workstream_file: Path):
         "type": "object",
         "required": ["name"],
         "properties": {
-          "name": {"type": "string"},
+          "name": { "type": "string" },
           "status": {
             "type": "string",
             "enum": ["completed", "partial", "failed"]
           },
           "evidence": {
             "type": "array",
-            "items": {"type": "string"}
+            "items": { "type": "string" }
           }
         }
       }
@@ -2897,9 +3024,9 @@ def sync_task_with_workstream(task_file: Path, workstream_file: Path):
         "type": "object",
         "required": ["criterion", "met"],
         "properties": {
-          "criterion": {"type": "string"},
-          "met": {"type": "boolean"},
-          "evidence": {"type": "string"}
+          "criterion": { "type": "string" },
+          "met": { "type": "boolean" },
+          "evidence": { "type": "string" }
         }
       }
     },
@@ -2909,16 +3036,23 @@ def sync_task_with_workstream(task_file: Path, workstream_file: Path):
         "type": "object",
         "required": ["message"],
         "properties": {
-          "message": {"type": "string"},
+          "message": { "type": "string" },
           "type": {
             "type": "string",
-            "enum": ["syntax", "runtime", "validation", "timeout", "resource", "other"]
+            "enum": [
+              "syntax",
+              "runtime",
+              "validation",
+              "timeout",
+              "resource",
+              "other"
+            ]
           },
-          "file": {"type": "string"},
-          "line": {"type": "integer"},
-          "column": {"type": "integer"},
-          "stack_trace": {"type": "string"},
-          "recoverable": {"type": "boolean"}
+          "file": { "type": "string" },
+          "line": { "type": "integer" },
+          "column": { "type": "integer" },
+          "stack_trace": { "type": "string" },
+          "recoverable": { "type": "boolean" }
         }
       }
     },
@@ -2928,7 +3062,7 @@ def sync_task_with_workstream(task_file: Path, workstream_file: Path):
         "type": "object",
         "required": ["message"],
         "properties": {
-          "message": {"type": "string"},
+          "message": { "type": "string" },
           "severity": {
             "type": "string",
             "enum": ["low", "medium", "high"]
@@ -2939,23 +3073,23 @@ def sync_task_with_workstream(task_file: Path, workstream_file: Path):
     "metadata": {
       "type": "object",
       "properties": {
-        "execution_time_seconds": {"type": "number", "minimum": 0},
-        "tokens_used": {"type": "integer", "minimum": 0},
-        "cost_usd": {"type": "number", "minimum": 0},
-        "agent_id": {"type": "string"},
-        "session_id": {"type": "string"},
-        "model_used": {"type": "string"},
-        "retry_count": {"type": "integer", "minimum": 0},
+        "execution_time_seconds": { "type": "number", "minimum": 0 },
+        "tokens_used": { "type": "integer", "minimum": 0 },
+        "cost_usd": { "type": "number", "minimum": 0 },
+        "agent_id": { "type": "string" },
+        "session_id": { "type": "string" },
+        "model_used": { "type": "string" },
+        "retry_count": { "type": "integer", "minimum": 0 },
         "tools_used": {
           "type": "array",
-          "items": {"type": "string"}
+          "items": { "type": "string" }
         },
-        "api_calls": {"type": "integer", "minimum": 0}
+        "api_calls": { "type": "integer", "minimum": 0 }
       }
     },
     "next_steps": {
       "type": "array",
-      "items": {"type": "string"},
+      "items": { "type": "string" },
       "description": "Suggested next steps or follow-up tasks"
     },
     "lessons_learned": {
@@ -2973,6 +3107,7 @@ def sync_task_with_workstream(task_file: Path, workstream_file: Path):
 ### S.1 CLI Command Structure
 
 **Command Hierarchy:**
+
 ```
 thegent task
   ├── validate <file> [options]
@@ -2988,18 +3123,20 @@ thegent task
 ```
 
 **Implementation:**
+
 ```python
 import typer
 from pathlib import Path
 
 app = typer.Typer(name="task", help="Task management commands")
 
+
 @app.command("validate")
 def validate_cmd(
     file: Path = typer.Argument(..., help="Task file to validate"),
     schema: Path = typer.Option(None, "--schema", help="Custom schema file"),
     check_deps: bool = typer.Option(False, "--check-deps", help="Check dependencies"),
-    verbose: bool = typer.Option(False, "--verbose", "-v", help="Verbose output")
+    verbose: bool = typer.Option(False, "--verbose", "-v", help="Verbose output"),
 ):
     """Validate a task file."""
     from thegent.task.validator import validate_task_file
@@ -3015,11 +3152,12 @@ def validate_cmd(
             typer.echo(f"  - {error}")
         return 1
 
+
 @app.command("convert")
 def convert_cmd(
     file: Path = typer.Argument(..., help="Task file to convert"),
     format: str = typer.Option("json", "--format", "-f", help="Output format (json, markdown, yaml)"),
-    output: Path = typer.Option(None, "--output", "-o", help="Output file (default: stdout)")
+    output: Path = typer.Option(None, "--output", "-o", help="Output file (default: stdout)"),
 ):
     """Convert task between formats."""
     from thegent.task.converter import convert_task_file
@@ -3034,24 +3172,19 @@ def convert_cmd(
 
     return 0
 
+
 # ... other commands
 ```
 
 ### S.2 Python API
 
 **Public API:**
+
 ```python
-from thegent.task import (
-    parse_task_file,
-    validate_task,
-    convert_task,
-    Task,
-    TaskValidator,
-    TaskConverter
-)
+from thegent.task import parse_task_file, validate_task, convert_task, Task, TaskValidator, TaskConverter
 
 # Parse task
-task = parse_task_file(Path('tasks/docgen-sticky-nav.md'))
+task = parse_task_file(Path("tasks/docgen-sticky-nav.md"))
 
 # Validate
 validator = TaskValidator()
@@ -3060,7 +3193,7 @@ if not result.valid:
     print(f"Validation errors: {result.errors}")
 
 # Convert
-json_task = convert_task(task, format='json')
+json_task = convert_task(task, format="json")
 
 # Type-safe access
 task_obj = Task.from_dict(task)
@@ -3078,6 +3211,7 @@ print(f"Priority: {task_obj.priority}")
 "As a developer, I want to create a new task quickly with all required fields filled in."
 
 **Workflow:**
+
 1. Run `thegent task template --type worker --id my-new-task`
 2. Edit generated template file
 3. Run `thegent task validate tasks/my-new-task.md`
@@ -3085,6 +3219,7 @@ print(f"Priority: {task_obj.priority}")
 5. Task is ready for execution
 
 **Example:**
+
 ```bash
 $ thegent task template --type worker --id docgen-search-feature
 Created template at tasks/docgen-search-feature.md
@@ -3119,6 +3254,7 @@ metadata:
 "As a maintainer, I want to migrate all legacy tasks to the new format automatically."
 
 **Workflow:**
+
 1. Run `thegent task migrate tasks/ --output tasks-v2/ --dry-run`
 2. Review migration preview
 3. Run `thegent task migrate tasks/ --output tasks-v2/`
@@ -3127,6 +3263,7 @@ metadata:
 6. Archive old tasks
 
 **Example:**
+
 ```bash
 $ thegent task migrate tasks/ --output tasks-v2/ --dry-run
 Would migrate 150 tasks:
@@ -3149,6 +3286,7 @@ Migrated 150 tasks successfully
 "As an agent, I want to find and claim a task that matches my capabilities."
 
 **Workflow:**
+
 1. Agent queries available tasks: `thegent task search "priority:P1 depends:[]"`
 2. Agent filters by subagent_type: `thegent task search "subagent_type:worker priority:P1"`
 3. Agent selects task and claims it
@@ -3157,25 +3295,23 @@ Migrated 150 tasks successfully
 6. Agent reports results in structured format
 
 **Example:**
+
 ```python
 # Agent code
 from thegent.task import search_tasks, claim_task, execute_task
 
 # Find available tasks
-available = search_tasks(
-    query="priority:P1 depends:[] subagent_type:worker",
-    status="backlog"
-)
+available = search_tasks(query="priority:P1 depends:[] subagent_type:worker", status="backlog")
 
 # Select task
 selected = available[0]
 
 # Claim task
-claim_task(selected['id'], agent_id='worker-1')
+claim_task(selected["id"], agent_id="worker-1")
 
 # Validate
 validator = TaskValidator()
-result = validator.validate_file(selected['file'])
+result = validator.validate_file(selected["file"])
 assert result.valid
 
 # Execute
@@ -3189,22 +3325,24 @@ output = execute_task(selected)
 ### U.1 Parsing Performance
 
 **Test Setup:**
+
 - 1000 task files
 - Average file size: 3KB
 - Machine: M1 Pro, 10 cores, 16GB RAM
 
 **Results:**
 
-| Operation | Time (ms) | Memory (MB) |
-|-----------|-----------|-------------|
-| Parse YAML frontmatter | 150 | 50 |
-| Parse JSON | 80 | 40 |
-| Parse legacy format | 300 | 80 |
-| Validate (schema) | 200 | 60 |
-| Convert YAML→JSON | 100 | 30 |
-| Convert legacy→YAML | 250 | 70 |
+| Operation              | Time (ms) | Memory (MB) |
+| ---------------------- | --------- | ----------- |
+| Parse YAML frontmatter | 150       | 50          |
+| Parse JSON             | 80        | 40          |
+| Parse legacy format    | 300       | 80          |
+| Validate (schema)      | 200       | 60          |
+| Convert YAML→JSON      | 100       | 30          |
+| Convert legacy→YAML    | 250       | 70          |
 
 **Optimization Opportunities:**
+
 1. Parallel parsing: 4x speedup with 4 workers
 2. Caching: 10x speedup for repeated operations
 3. Lazy parsing: 2x speedup (parse frontmatter only initially)
@@ -3212,32 +3350,34 @@ output = execute_task(selected)
 ### U.2 Validation Performance
 
 **Test Setup:**
+
 - 1000 tasks
 - Average 5 validation rules per task
 
 **Results:**
 
-| Validation Type | Time (ms) | Errors Found |
-|-----------------|-----------|--------------|
-| Schema validation | 200 | 50 |
-| Dependency check | 150 | 10 |
-| Circular dep check | 300 | 2 |
-| Full validation | 650 | 62 |
+| Validation Type    | Time (ms) | Errors Found |
+| ------------------ | --------- | ------------ |
+| Schema validation  | 200       | 50           |
+| Dependency check   | 150       | 10           |
+| Circular dep check | 300       | 2            |
+| Full validation    | 650       | 62           |
 
 ### U.3 Query Performance
 
 **Test Setup:**
+
 - 1000 tasks in memory
 - Various query patterns
 
 **Results:**
 
-| Query Type | Time (ms) | Results |
-|------------|-----------|---------|
-| Simple filter (priority) | 5 | 200 |
-| Complex filter (priority + tags) | 15 | 50 |
-| Dependency traversal | 100 | 150 |
-| Full-text search | 200 | 30 |
+| Query Type                       | Time (ms) | Results |
+| -------------------------------- | --------- | ------- |
+| Simple filter (priority)         | 5         | 200     |
+| Complex filter (priority + tags) | 15        | 50      |
+| Dependency traversal             | 100       | 150     |
+| Full-text search                 | 200       | 30      |
 
 ---
 
@@ -3246,6 +3386,7 @@ output = execute_task(selected)
 ### V.1 User Documentation
 
 **Required Sections:**
+
 1. **Getting Started**
    - Creating your first task
    - Understanding task structure
@@ -3270,6 +3411,7 @@ output = execute_task(selected)
 ### V.2 Developer Documentation
 
 **Required Sections:**
+
 1. **API Reference**
    - Python API
    - Schema definitions
@@ -3288,6 +3430,7 @@ output = execute_task(selected)
 ### V.3 Agent Documentation
 
 **Required Sections:**
+
 1. **Task Format Specification**
    - Required fields
    - Optional fields
@@ -3359,27 +3502,27 @@ output = execute_task(selected)
 
 ### X.1 Technical Risks
 
-| Risk | Probability | Impact | Mitigation |
-|------|-------------|--------|------------|
-| YAML parsing errors | Medium | High | Robust error handling, fallback parsers |
-| Schema evolution breaks compatibility | Low | High | Versioning, migration tools |
-| Performance degradation with scale | Medium | Medium | Caching, optimization, indexing |
-| Data loss during migration | Low | Critical | Backup, dry-run, validation |
+| Risk                                  | Probability | Impact   | Mitigation                              |
+| ------------------------------------- | ----------- | -------- | --------------------------------------- |
+| YAML parsing errors                   | Medium      | High     | Robust error handling, fallback parsers |
+| Schema evolution breaks compatibility | Low         | High     | Versioning, migration tools             |
+| Performance degradation with scale    | Medium      | Medium   | Caching, optimization, indexing         |
+| Data loss during migration            | Low         | Critical | Backup, dry-run, validation             |
 
 ### X.2 Adoption Risks
 
-| Risk | Probability | Impact | Mitigation |
-|------|-------------|--------|------------|
-| Developer resistance to new format | Medium | Medium | Training, gradual migration, tooling |
-| Agent parsing failures | Low | High | Extensive testing, fallback mechanisms |
-| Incomplete migration | Medium | Medium | Automated migration, validation checks |
+| Risk                               | Probability | Impact | Mitigation                             |
+| ---------------------------------- | ----------- | ------ | -------------------------------------- |
+| Developer resistance to new format | Medium      | Medium | Training, gradual migration, tooling   |
+| Agent parsing failures             | Low         | High   | Extensive testing, fallback mechanisms |
+| Incomplete migration               | Medium      | Medium | Automated migration, validation checks |
 
 ### X.3 Operational Risks
 
-| Risk | Probability | Impact | Mitigation |
-|------|-------------|--------|------------|
-| CI/CD pipeline failures | Low | Medium | Comprehensive testing, rollback plan |
-| Tooling bugs | Medium | Medium | Testing, code review, gradual rollout |
+| Risk                    | Probability | Impact | Mitigation                            |
+| ----------------------- | ----------- | ------ | ------------------------------------- |
+| CI/CD pipeline failures | Low         | Medium | Comprehensive testing, rollback plan  |
+| Tooling bugs            | Medium      | Medium | Testing, code review, gradual rollout |
 
 ---
 
@@ -3451,6 +3594,7 @@ output = execute_task(selected)
 **Source**: [GitHub Issue Forms Documentation](https://docs.github.com/en/communities/using-templates-to-encourage-useful-issues-and-pull-requests/syntax-for-issue-forms)
 
 **Key Findings:**
+
 - GitHub uses YAML-based issue forms with structured fields
 - Supports dropdowns, checkboxes, text inputs, markdown
 - Fields can be required or optional
@@ -3458,6 +3602,7 @@ output = execute_task(selected)
 - Forms are defined in `.github/ISSUE_TEMPLATE/` directory
 
 **Example GitHub Issue Form:**
+
 ```yaml
 name: Task Request
 description: Request a new task to be added to the work stream
@@ -3508,6 +3653,7 @@ body:
 ```
 
 **Lessons Learned:**
+
 - ✅ Structured YAML format is human-readable and machine-parseable
 - ✅ Validation rules can be embedded in form definition
 - ✅ Dropdowns and checkboxes reduce input errors
@@ -3519,6 +3665,7 @@ body:
 **Source**: [Linear Issue Forms Documentation](https://docs.linear.app/docs/issue-forms)
 
 **Key Findings:**
+
 - Linear uses JSON Schema for form definitions
 - Supports rich field types (text, number, select, date, etc.)
 - Conditional field visibility based on other fields
@@ -3526,6 +3673,7 @@ body:
 - Forms can be customized per team/project
 
 **Example Linear Form Schema:**
+
 ```json
 {
   "fields": [
@@ -3546,9 +3694,9 @@ body:
       "label": "Priority",
       "required": true,
       "options": [
-        {"value": "P1", "label": "P1 - Critical"},
-        {"value": "P2", "label": "P2 - High"},
-        {"value": "P3", "label": "P3 - Medium"}
+        { "value": "P1", "label": "P1 - Critical" },
+        { "value": "P2", "label": "P2 - High" },
+        { "value": "P3", "label": "P3 - Medium" }
       ]
     },
     {
@@ -3556,7 +3704,7 @@ body:
       "type": "multiSelect",
       "label": "Dependencies",
       "required": false,
-      "options": "task_ids"  // Dynamic options from existing tasks
+      "options": "task_ids" // Dynamic options from existing tasks
     },
     {
       "name": "estimated_hours",
@@ -3571,7 +3719,7 @@ body:
   ],
   "conditionalFields": [
     {
-      "if": {"field": "subagent_type", "equals": "worker"},
+      "if": { "field": "subagent_type", "equals": "worker" },
       "then": {
         "required": ["implementation_details", "steps"]
       }
@@ -3581,6 +3729,7 @@ body:
 ```
 
 **Lessons Learned:**
+
 - ✅ JSON Schema provides powerful validation
 - ✅ Conditional fields reduce complexity
 - ✅ Dynamic options improve UX
@@ -3592,6 +3741,7 @@ body:
 **Source**: [Jira Issue Forms Guide](https://www.atlassian.com/software/jira/guides/forms/issue-forms)
 
 **Key Findings:**
+
 - Jira uses structured field definitions
 - Supports custom field types
 - Field dependencies and conditional logic
@@ -3599,6 +3749,7 @@ body:
 - Rich validation options
 
 **Example Jira Form:**
+
 ```json
 {
   "fields": [
@@ -3625,9 +3776,9 @@ body:
       "type": "select",
       "required": true,
       "options": [
-        {"id": "P1", "value": "P1 - Critical"},
-        {"id": "P2", "value": "P2 - High"},
-        {"id": "P3", "value": "P3 - Medium"}
+        { "id": "P1", "value": "P1 - Critical" },
+        { "id": "P2", "value": "P2 - High" },
+        { "id": "P3", "value": "P3 - Medium" }
       ]
     },
     {
@@ -3645,6 +3796,7 @@ body:
 ```
 
 **Lessons Learned:**
+
 - ✅ Rich validation system
 - ✅ Integration with existing data (JQL queries)
 - ✅ Workflow integration
@@ -3655,6 +3807,7 @@ body:
 **Source**: [JSON Schema Understanding Guide](https://json-schema.org/understanding-json-schema/)
 
 **Key Findings:**
+
 - Use `$ref` for reusable schema components
 - Use `allOf`, `anyOf`, `oneOf` for composition
 - Use `if/then/else` for conditional validation
@@ -3665,6 +3818,7 @@ body:
 - Use `format` for common formats (date-time, uri, email)
 
 **Best Practices:**
+
 1. **Schema Organization**: Split large schemas into reusable components
 2. **Versioning**: Use `$id` with version numbers
 3. **Documentation**: Include `description` and `examples` for all fields
@@ -3672,6 +3826,7 @@ body:
 5. **Composition**: Use schema composition for complex structures
 
 **Example Reusable Schema Components:**
+
 ```json
 {
   "$defs": {
@@ -3696,9 +3851,9 @@ body:
     }
   },
   "properties": {
-    "id": {"$ref": "#/$defs/task_id"},
-    "priority": {"$ref": "#/$defs/priority"},
-    "created": {"$ref": "#/$defs/timestamp"}
+    "id": { "$ref": "#/$defs/task_id" },
+    "priority": { "$ref": "#/$defs/priority" },
+    "created": { "$ref": "#/$defs/timestamp" }
   }
 }
 ```
@@ -3708,6 +3863,7 @@ body:
 **Source**: [Jekyll Frontmatter Documentation](https://jekyllrb.com/docs/front-matter/)
 
 **Key Findings:**
+
 - YAML frontmatter is delimited by `---` markers
 - Supports nested structures
 - Can include arrays and objects
@@ -3715,6 +3871,7 @@ body:
 - Parsed before markdown processing
 
 **Common Patterns:**
+
 1. **Simple Key-Value Pairs**: `key: value`
 2. **Arrays**: `tags: [tag1, tag2]` or `tags:\n  - tag1\n  - tag2`
 3. **Nested Objects**: `metadata:\n  key: value`
@@ -3722,6 +3879,7 @@ body:
 5. **Boolean Values**: `required: true` or `required: false`
 
 **Best Practices:**
+
 - Use consistent indentation (2 spaces recommended)
 - Quote strings with special characters
 - Use arrays for lists
@@ -3729,6 +3887,7 @@ body:
 - Keep frontmatter concise (metadata only)
 
 **Example YAML Frontmatter Patterns:**
+
 ```yaml
 ---
 # Simple fields
@@ -3767,6 +3926,7 @@ updated: 2026-02-18T10:30:00Z
 **Source**: [Pydantic Documentation](https://docs.pydantic.dev/latest/concepts/models/)
 
 **Key Findings:**
+
 - Pydantic is used extensively in thegent codebase (`thegent/src/thegent/config.py`, `thegent/src/thegent/execution.py`)
 - Provides runtime validation
 - Generates JSON Schema from Python models
@@ -3774,12 +3934,14 @@ updated: 2026-02-18T10:30:00Z
 - Integrates with JSON Schema validators
 
 **Current thegent Patterns:**
+
 ```python
 # From thegent/src/thegent/config.py
 class ThegentSettings(BaseSettings):
     session_dir: Path = Field(default=Path("~/.cache/thegent/sessions"))
     cache_dir: Path = Field(default=Path("~/.cache/thegent"))
     output_format: Optional[str] = Field(default=None)
+
 
 # From thegent/src/thegent/execution.py
 class RunMeta(BaseModel):
@@ -3792,16 +3954,19 @@ class RunMeta(BaseModel):
 ```
 
 **Recommended Task Model:**
+
 ```python
 from pydantic import BaseModel, Field, validator
 from typing import Optional, List
 from datetime import datetime
 from enum import Enum
 
+
 class Priority(str, Enum):
     P1 = "P1"
     P2 = "P2"
     P3 = "P3"
+
 
 class SubagentType(str, Enum):
     WORKER = "worker"
@@ -3810,11 +3975,13 @@ class SubagentType(str, Enum):
     PLANNER = "planner"
     RESEARCHER = "researcher"
 
+
 class TaskStep(BaseModel):
     number: int = Field(ge=1)
     description: str
     deliverables: List[str] = Field(default_factory=list)
     estimated_minutes: Optional[int] = Field(None, ge=0)
+
 
 class TaskMetadata(BaseModel):
     estimated_hours: Optional[float] = Field(None, ge=0)
@@ -3823,6 +3990,7 @@ class TaskMetadata(BaseModel):
     assignee: Optional[str] = None
     created: Optional[datetime] = None
     updated: Optional[datetime] = None
+
 
 class Task(BaseModel):
     id: str = Field(pattern="^[a-z0-9-]+$", min_length=3, max_length=100)
@@ -3838,10 +4006,10 @@ class Task(BaseModel):
     deliverables: List[str] = Field(default_factory=list)
     acceptance_criteria: List[str] = Field(default_factory=list)
 
-    @validator('depends')
+    @validator("depends")
     def validate_depends(cls, v):
         for dep_id in v:
-            if not re.match(r'^[a-z0-9-]+$', dep_id):
+            if not re.match(r"^[a-z0-9-]+$", dep_id):
                 raise ValueError(f"Invalid dependency ID format: {dep_id}")
         return v
 
@@ -3852,12 +4020,13 @@ class Task(BaseModel):
                 "title": "Implement sticky sidebar",
                 "subagent_type": "worker",
                 "priority": "P1",
-                "depends": []
+                "depends": [],
             }
         }
 ```
 
 **Benefits:**
+
 - ✅ Type safety at runtime
 - ✅ Automatic JSON Schema generation
 - ✅ Validation with clear error messages
@@ -3893,6 +4062,7 @@ class Task(BaseModel):
    - No structured validation before execution
 
 **Current Limitations:**
+
 - ❌ No schema validation for task input
 - ❌ Unstructured task format
 - ❌ Manual parsing required
@@ -3904,19 +4074,22 @@ class Task(BaseModel):
 **Source**: `thegent/docs/reference/WORK_STREAM.md`, `thegent/src/thegent/cli_impl.py`
 
 **Current Format:**
+
 ```markdown
-| ID | Title | Source | Priority | Depends |
-|----|------|--------|----------|---------|
-| docgen-sticky-nav | Implement sticky sidebar | DOCGEN_PLAN.md | P1 | - |
+| ID                | Title                    | Source         | Priority | Depends |
+| ----------------- | ------------------------ | -------------- | -------- | ------- |
+| docgen-sticky-nav | Implement sticky sidebar | DOCGEN_PLAN.md | P1       | -       |
 ```
 
 **Parsing Logic** (inferred from `cli_impl.py`):
+
 - Table parsing likely uses regex or manual string splitting
 - No formal parser for WORK_STREAM.md format
 - Tasks extracted from markdown tables
 - Dependencies parsed from comma-separated strings
 
 **Issues:**
+
 - ❌ No validation of table format
 - ❌ Manual parsing error-prone
 - ❌ No type checking
@@ -3927,12 +4100,14 @@ class Task(BaseModel):
 **Source**: `thegent/src/thegent/cli_impl.py` (functions: `plan_do_next_impl`, `plan_get_next_impl`, `plan_incorporate_impl`)
 
 **Current Implementation:**
+
 - `plan do-next`: Executes next available work item
 - `plan get-next`: Gets next work item without executing
 - `plan incorporate`: Merges new items into WORK_STREAM.md
 - `plan loop`: Continuously processes work items
 
 **Integration Opportunities:**
+
 1. **Task Validation**: Validate tasks before execution
 2. **Structured Parsing**: Use schema-based parser
 3. **Dependency Resolution**: Validate dependencies before claiming
@@ -3943,12 +4118,14 @@ class Task(BaseModel):
 **Source**: `thegent/src/thegent/config.py`
 
 **Current Patterns:**
+
 - Uses Pydantic `BaseSettings` for configuration
 - Fields use `Field()` for defaults and validation
 - Supports environment variable overrides
 - Type-safe configuration access
 
 **Applicable Patterns:**
+
 ```python
 # Can be applied to Task model
 class TaskSettings(BaseSettings):
@@ -3966,6 +4143,7 @@ class TaskSettings(BaseSettings):
 **Source**: Research from GitHub documentation
 
 **`.github/ISSUE_TEMPLATE/task.yml`:**
+
 ```yaml
 name: Task Request
 description: Request a new development task
@@ -4066,6 +4244,7 @@ body:
 **Source**: Research from Linear documentation
 
 **`linear-forms/task.json`:**
+
 ```json
 {
   "name": "Task Request",
@@ -4097,9 +4276,9 @@ body:
       "label": "Priority",
       "required": true,
       "options": [
-        {"value": "P1", "label": "P1 - Critical"},
-        {"value": "P2", "label": "P2 - High"},
-        {"value": "P3", "label": "P3 - Medium"}
+        { "value": "P1", "label": "P1 - Critical" },
+        { "value": "P2", "label": "P2 - High" },
+        { "value": "P3", "label": "P3 - Medium" }
       ]
     },
     {
@@ -4108,10 +4287,10 @@ body:
       "label": "Agent Type",
       "required": true,
       "options": [
-        {"value": "worker", "label": "Worker - Detailed implementation"},
-        {"value": "flash", "label": "Flash - Quick tasks"},
-        {"value": "researcher", "label": "Researcher - Research tasks"},
-        {"value": "reviewer", "label": "Reviewer - Review tasks"}
+        { "value": "worker", "label": "Worker - Detailed implementation" },
+        { "value": "flash", "label": "Flash - Quick tasks" },
+        { "value": "researcher", "label": "Researcher - Research tasks" },
+        { "value": "reviewer", "label": "Reviewer - Review tasks" }
       ]
     },
     {
@@ -4146,10 +4325,10 @@ body:
       "label": "Tags",
       "required": false,
       "options": [
-        {"value": "vitepress", "label": "VitePress"},
-        {"value": "ui", "label": "UI"},
-        {"value": "research", "label": "Research"},
-        {"value": "architecture", "label": "Architecture"}
+        { "value": "vitepress", "label": "VitePress" },
+        { "value": "ui", "label": "UI" },
+        { "value": "research", "label": "Research" },
+        { "value": "architecture", "label": "Architecture" }
       ],
       "allowCustom": true
     }
@@ -4184,6 +4363,7 @@ body:
 **Source**: Research from Jira documentation
 
 **`jira-forms/task.json`:**
+
 ```json
 {
   "name": "Task Request",
@@ -4220,9 +4400,9 @@ body:
       "type": "select",
       "required": true,
       "options": [
-        {"id": "P1", "value": "P1 - Critical"},
-        {"id": "P2", "value": "P2 - High"},
-        {"id": "P3", "value": "P3 - Medium"}
+        { "id": "P1", "value": "P1 - Critical" },
+        { "id": "P2", "value": "P2 - High" },
+        { "id": "P3", "value": "P3 - Medium" }
       ]
     },
     {
@@ -4231,10 +4411,10 @@ body:
       "type": "select",
       "required": true,
       "options": [
-        {"id": "worker", "value": "Worker"},
-        {"id": "flash", "value": "Flash"},
-        {"id": "researcher", "value": "Researcher"},
-        {"id": "reviewer", "value": "Reviewer"}
+        { "id": "worker", "value": "Worker" },
+        { "id": "flash", "value": "Flash" },
+        { "id": "researcher", "value": "Researcher" },
+        { "id": "reviewer", "value": "Reviewer" }
       ]
     },
     {
@@ -4316,6 +4496,7 @@ body:
 **Based on JSON Schema Best Practices:**
 
 1. **Use `$defs` for Reusable Components**:
+
    ```json
    {
      "$defs": {
@@ -4326,14 +4507,16 @@ body:
    ```
 
 2. **Use Conditional Validation**:
+
    ```json
    {
-     "if": {"properties": {"subagent_type": {"const": "worker"}}},
-     "then": {"required": ["steps", "deliverables"]}
+     "if": { "properties": { "subagent_type": { "const": "worker" } } },
+     "then": { "required": ["steps", "deliverables"] }
    }
    ```
 
 3. **Include Examples**:
+
    ```json
    {
      "properties": {
@@ -4358,6 +4541,7 @@ body:
 **Based on Current thegent Patterns:**
 
 1. **Use Enums for Constrained Strings**:
+
    ```python
    class Priority(str, Enum):
        P1 = "P1"
@@ -4366,11 +4550,13 @@ body:
    ```
 
 2. **Use Field() for Validation**:
+
    ```python
    id: str = Field(pattern="^[a-z0-9-]+$", min_length=3, max_length=100)
    ```
 
 3. **Use Validators for Complex Logic**:
+
    ```python
    @validator('depends')
    def validate_depends(cls, v):
@@ -4407,46 +4593,50 @@ body:
 
 ### AE.1 Format Comparison Table
 
-| Feature | GitHub Issues | Linear | Jira | Proposed Format |
-|---------|---------------|--------|------|-----------------|
-| Format | YAML Forms | JSON Schema | JSON Forms | YAML Frontmatter |
-| Validation | Client + Server | JSON Schema | Custom | JSON Schema |
-| Human Readable | ✅ Yes | ⚠️ Partial | ❌ No | ✅ Yes |
-| Machine Parseable | ✅ Yes | ✅ Yes | ✅ Yes | ✅ Yes |
-| Version Control | ✅ Yes | ⚠️ Partial | ❌ No | ✅ Yes |
-| Portability | ❌ GitHub-only | ❌ Linear-only | ❌ Jira-only | ✅ Portable |
-| Agent-Friendly | ⚠️ Medium | ✅ High | ⚠️ Medium | ✅ High |
+| Feature           | GitHub Issues   | Linear         | Jira         | Proposed Format  |
+| ----------------- | --------------- | -------------- | ------------ | ---------------- |
+| Format            | YAML Forms      | JSON Schema    | JSON Forms   | YAML Frontmatter |
+| Validation        | Client + Server | JSON Schema    | Custom       | JSON Schema      |
+| Human Readable    | ✅ Yes          | ⚠️ Partial     | ❌ No        | ✅ Yes           |
+| Machine Parseable | ✅ Yes          | ✅ Yes         | ✅ Yes       | ✅ Yes           |
+| Version Control   | ✅ Yes          | ⚠️ Partial     | ❌ No        | ✅ Yes           |
+| Portability       | ❌ GitHub-only  | ❌ Linear-only | ❌ Jira-only | ✅ Portable      |
+| Agent-Friendly    | ⚠️ Medium       | ✅ High        | ⚠️ Medium    | ✅ High          |
 
 ### AE.2 Validation Comparison
 
-| Platform | Validation Method | Strengths | Weaknesses |
-|----------|-------------------|-----------|------------|
-| GitHub | Pattern + Required | Simple, fast | Limited validation |
-| Linear | JSON Schema | Powerful, flexible | More complex |
-| Jira | Custom Validators | Rich features | Platform-specific |
-| Proposed | JSON Schema | Standard, portable | Requires tooling |
+| Platform | Validation Method  | Strengths          | Weaknesses         |
+| -------- | ------------------ | ------------------ | ------------------ |
+| GitHub   | Pattern + Required | Simple, fast       | Limited validation |
+| Linear   | JSON Schema        | Powerful, flexible | More complex       |
+| Jira     | Custom Validators  | Rich features      | Platform-specific  |
+| Proposed | JSON Schema        | Standard, portable | Requires tooling   |
 
 ### AE.3 Adoption Patterns
 
 **GitHub:**
+
 - ✅ Widely adopted
 - ✅ Familiar to developers
 - ⚠️ Platform-specific
 - ⚠️ Limited validation
 
 **Linear:**
+
 - ✅ Modern approach
 - ✅ JSON Schema standard
 - ⚠️ Less portable
 - ⚠️ Requires Linear account
 
 **Jira:**
+
 - ✅ Enterprise-grade
 - ✅ Rich features
 - ❌ Heavyweight
 - ❌ Platform-specific
 
 **Proposed Format:**
+
 - ✅ Portable (YAML + Markdown)
 - ✅ Standard (JSON Schema)
 - ✅ Agent-friendly
@@ -4460,6 +4650,7 @@ body:
 ### AF.1 Current Format Analysis
 
 **From User Examples:**
+
 ```
 TASK (worker: "Implement sticky sidebar")
 Task Input:
@@ -4484,6 +4675,7 @@ Task Input:
 ```
 
 **Parsing Challenges:**
+
 1. Inconsistent formatting (`**ID:**` vs headers)
 2. Ambiguous "None" vs empty vs "-" for dependencies
 3. Nested structure (Task Input → Prompt → Sections)
@@ -4494,92 +4686,90 @@ Task Input:
 
 **Field Mapping:**
 
-| Current Format | New Format | Notes |
-|---------------|------------|-------|
-| `TASK (worker: "...")` | `subagent_type: worker` | Extract from parentheses |
-| `**ID:** docgen-sticky-nav` | `id: docgen-sticky-nav` | Extract from bold text |
-| `**Title:** ...` | `title: ...` | Extract from bold text |
-| `**Priority:** P1` | `priority: P1` | Extract from bold text |
-| `**Depends:** None` | `depends: []` | Convert "None"/"-" to empty array |
-| `### Implementation Details` | `implementation_details:` | Extract section content |
-| `### Steps to Complete` | `steps:` | Parse numbered list |
-| `### Deliverables` | `deliverables:` | Parse bullet list |
+| Current Format               | New Format                | Notes                             |
+| ---------------------------- | ------------------------- | --------------------------------- |
+| `TASK (worker: "...")`       | `subagent_type: worker`   | Extract from parentheses          |
+| `**ID:** docgen-sticky-nav`  | `id: docgen-sticky-nav`   | Extract from bold text            |
+| `**Title:** ...`             | `title: ...`              | Extract from bold text            |
+| `**Priority:** P1`           | `priority: P1`            | Extract from bold text            |
+| `**Depends:** None`          | `depends: []`             | Convert "None"/"-" to empty array |
+| `### Implementation Details` | `implementation_details:` | Extract section content           |
+| `### Steps to Complete`      | `steps:`                  | Parse numbered list               |
+| `### Deliverables`           | `deliverables:`           | Parse bullet list                 |
 
 **Migration Algorithm:**
+
 ```python
 def migrate_legacy_to_yaml_frontmatter(content: str) -> str:
     """Migrate legacy format to YAML frontmatter."""
     task = {}
 
     # Extract subagent type
-    subagent_match = re.search(r'TASK\s*\(([^:]+):', content)
+    subagent_match = re.search(r"TASK\s*\(([^:]+):", content)
     if subagent_match:
-        task['subagent_type'] = subagent_match.group(1).strip()
+        task["subagent_type"] = subagent_match.group(1).strip()
 
     # Extract ID
-    id_match = re.search(r'\*\*ID:\*\*\s*(.+)', content)
+    id_match = re.search(r"\*\*ID:\*\*\s*(.+)", content)
     if id_match:
-        task['id'] = id_match.group(1).strip()
+        task["id"] = id_match.group(1).strip()
 
     # Extract Title
-    title_match = re.search(r'\*\*Title:\*\*\s*(.+)', content)
+    title_match = re.search(r"\*\*Title:\*\*\s*(.+)", content)
     if title_match:
-        task['title'] = title_match.group(1).strip()
+        task["title"] = title_match.group(1).strip()
 
     # Extract Priority
-    priority_match = re.search(r'\*\*Priority:\*\*\s*(P[123])', content)
+    priority_match = re.search(r"\*\*Priority:\*\*\s*(P[123])", content)
     if priority_match:
-        task['priority'] = priority_match.group(1)
+        task["priority"] = priority_match.group(1)
 
     # Extract Depends
-    depends_match = re.search(r'\*\*Depends:\*\*\s*(.+)', content)
+    depends_match = re.search(r"\*\*Depends:\*\*\s*(.+)", content)
     if depends_match:
         depends_str = depends_match.group(1).strip()
-        if depends_str.lower() in ['none', '-', '']:
-            task['depends'] = []
+        if depends_str.lower() in ["none", "-", ""]:
+            task["depends"] = []
         else:
-            task['depends'] = [d.strip() for d in depends_str.split(',')]
+            task["depends"] = [d.strip() for d in depends_str.split(",")]
 
     # Extract Implementation Details
-    impl_match = re.search(r'### Implementation Details\s*\n(.*?)(?=###|$)', content, re.DOTALL)
+    impl_match = re.search(r"### Implementation Details\s*\n(.*?)(?=###|$)", content, re.DOTALL)
     if impl_match:
-        task['implementation_details'] = impl_match.group(1).strip()
+        task["implementation_details"] = impl_match.group(1).strip()
 
     # Extract Steps
-    steps_match = re.search(r'### Steps to Complete\s*\n(.*?)(?=###|$)', content, re.DOTALL)
+    steps_match = re.search(r"### Steps to Complete\s*\n(.*?)(?=###|$)", content, re.DOTALL)
     if steps_match:
         steps_content = steps_match.group(1)
         steps = []
-        for line in steps_content.split('\n'):
-            step_match = re.match(r'(\d+)\.\s*(.+)', line.strip())
+        for line in steps_content.split("\n"):
+            step_match = re.match(r"(\d+)\.\s*(.+)", line.strip())
             if step_match:
-                steps.append({
-                    'number': int(step_match.group(1)),
-                    'description': step_match.group(2).strip()
-                })
-        task['steps'] = steps
+                steps.append({"number": int(step_match.group(1)), "description": step_match.group(2).strip()})
+        task["steps"] = steps
 
     # Extract Deliverables
-    deliverables_match = re.search(r'### Deliverables\s*\n(.*?)(?=###|$)', content, re.DOTALL)
+    deliverables_match = re.search(r"### Deliverables\s*\n(.*?)(?=###|$)", content, re.DOTALL)
     if deliverables_match:
         deliverables_content = deliverables_match.group(1)
         deliverables = []
-        for line in deliverables_content.split('\n'):
-            if line.strip().startswith('- '):
+        for line in deliverables_content.split("\n"):
+            if line.strip().startswith("- "):
                 deliverables.append(line.strip()[2:])
-        task['deliverables'] = deliverables
+        task["deliverables"] = deliverables
 
     # Convert to YAML frontmatter
     yaml_frontmatter = yaml.dump(task, default_flow_style=False, sort_keys=False)
 
     # Extract markdown body (everything after Prompt:)
-    prompt_match = re.search(r'Prompt:\s*\n(.*)', content, re.DOTALL)
+    prompt_match = re.search(r"Prompt:\s*\n(.*)", content, re.DOTALL)
     if prompt_match:
         body = prompt_match.group(1)
         # Remove already-extracted sections
-        body = re.sub(r'### Implementation Details.*?(?=###|$)', '', body, flags=re.DOTALL)
-        body = re.sub(r'### Steps to Complete.*?(?=###|$)', '', body, flags=re.DOTALL)
-        body = re.sub(r'### Deliverables.*?(?=###|$)', '', body, flags=re.DOTALL)
+        body = re.sub(r"### Implementation Details.*?(?=###|$)", "", body, flags=re.DOTALL)
+        body = re.sub(r"### Steps to Complete.*?(?=###|$)", "", body, flags=re.DOTALL)
+        body = re.sub(r"### Deliverables.*?(?=###|$)", "", body, flags=re.DOTALL)
     else:
         body = ""
 
@@ -4595,6 +4785,7 @@ def migrate_legacy_to_yaml_frontmatter(content: str) -> str:
 **Based on Benchmark Results:**
 
 1. **Lazy Parsing**:
+
    ```python
    class LazyTask:
        def __init__(self, file_path: Path):
@@ -4605,24 +4796,22 @@ def migrate_legacy_to_yaml_frontmatter(content: str) -> str:
        @property
        def frontmatter(self):
            if self._frontmatter is None:
-               self._frontmatter, self._body = parse_yaml_frontmatter(
-                   self.file_path.read_text()
-               )
+               self._frontmatter, self._body = parse_yaml_frontmatter(self.file_path.read_text())
            return self._frontmatter
 
        @property
        def body(self):
            if self._body is None:
-               self._frontmatter, self._body = parse_yaml_frontmatter(
-                   self.file_path.read_text()
-               )
+               self._frontmatter, self._body = parse_yaml_frontmatter(self.file_path.read_text())
            return self._body
    ```
 
 2. **Caching**:
+
    ```python
    from functools import lru_cache
    from pathlib import Path
+
 
    @lru_cache(maxsize=1000)
    def parse_task_cached(file_path: str):
@@ -4630,8 +4819,10 @@ def migrate_legacy_to_yaml_frontmatter(content: str) -> str:
    ```
 
 3. **Parallel Parsing**:
+
    ```python
    from concurrent.futures import ThreadPoolExecutor
+
 
    def parse_tasks_parallel(task_files: List[Path], workers: int = 4):
        with ThreadPoolExecutor(max_workers=workers) as executor:
@@ -4641,10 +4832,12 @@ def migrate_legacy_to_yaml_frontmatter(content: str) -> str:
 ### AG.2 Validation Optimizations
 
 1. **Schema Caching**:
+
    ```python
    from jsonschema import Draft202012Validator
 
    _schema_cache = {}
+
 
    def get_validator(schema_path: Path):
        if schema_path not in _schema_cache:
@@ -4654,6 +4847,7 @@ def migrate_legacy_to_yaml_frontmatter(content: str) -> str:
    ```
 
 2. **Early Exit Validation**:
+
    ```python
    def validate_task_fast(task: Dict, schema: Dict, stop_on_first_error: bool = True):
        validator = Draft202012Validator(schema)
@@ -4672,11 +4866,7 @@ def migrate_legacy_to_yaml_frontmatter(content: str) -> str:
        results = []
        for task in tasks:
            errors = list(validator.iter_errors(task))
-           results.append({
-               'task_id': task.get('id'),
-               'valid': len(errors) == 0,
-               'errors': errors
-           })
+           results.append({"task_id": task.get("id"), "valid": len(errors) == 0, "errors": errors})
        return results
    ```
 
@@ -4687,22 +4877,25 @@ def migrate_legacy_to_yaml_frontmatter(content: str) -> str:
 ### AH.1 Input Sanitization
 
 **YAML Injection Prevention:**
+
 ```python
 import yaml
 import re
 
+
 def safe_yaml_load(content: str):
     """Safely load YAML with injection prevention."""
     # Remove potentially dangerous YAML tags
-    dangerous_tags = ['!!python', '!!js', '!!ruby']
+    dangerous_tags = ["!!python", "!!js", "!!ruby"]
     for tag in dangerous_tags:
-        content = content.replace(tag, '')
+        content = content.replace(tag, "")
 
     # Use safe_load instead of load
     return yaml.safe_load(content)
 ```
 
 **Path Traversal Prevention:**
+
 ```python
 def sanitize_path(path: str, base_dir: Path) -> Path:
     """Prevent directory traversal attacks."""
@@ -4713,41 +4906,45 @@ def sanitize_path(path: str, base_dir: Path) -> Path:
 ```
 
 **HTML/Script Tag Removal:**
+
 ```python
 import re
+
 
 def sanitize_markdown(content: str) -> str:
     """Remove potentially dangerous HTML/script tags."""
     # Remove script tags
-    content = re.sub(r'<script[^>]*>.*?</script>', '', content, flags=re.DOTALL | re.IGNORECASE)
+    content = re.sub(r"<script[^>]*>.*?</script>", "", content, flags=re.DOTALL | re.IGNORECASE)
     # Remove iframe tags
-    content = re.sub(r'<iframe[^>]*>.*?</iframe>', '', content, flags=re.DOTALL | re.IGNORECASE)
+    content = re.sub(r"<iframe[^>]*>.*?</iframe>", "", content, flags=re.DOTALL | re.IGNORECASE)
     # Remove javascript: URLs
-    content = re.sub(r'javascript:', '', content, flags=re.IGNORECASE)
+    content = re.sub(r"javascript:", "", content, flags=re.IGNORECASE)
     return content
 ```
 
 ### AH.2 Access Control
 
 **Task Visibility Levels:**
+
 ```python
 class TaskVisibility(str, Enum):
     PUBLIC = "public"  # All agents can see and claim
     PRIVATE = "private"  # Only assigned agent can see
     RESTRICTED = "restricted"  # Requires permission
 
+
 def can_agent_access_task(task: Dict, agent_id: str) -> bool:
     """Check if agent can access task."""
-    visibility = task.get('visibility', 'public')
+    visibility = task.get("visibility", "public")
 
-    if visibility == 'public':
+    if visibility == "public":
         return True
 
-    if visibility == 'private':
-        return task.get('metadata', {}).get('assignee') == agent_id
+    if visibility == "private":
+        return task.get("metadata", {}).get("assignee") == agent_id
 
-    if visibility == 'restricted':
-        allowed_agents = task.get('allowed_agents', [])
+    if visibility == "restricted":
+        allowed_agents = task.get("allowed_agents", [])
         return agent_id in allowed_agents
 
     return False
@@ -4760,10 +4957,12 @@ def can_agent_access_task(task: Dict, agent_id: str) -> bool:
 ### AI.1 Unit Test Examples
 
 **Parser Tests:**
+
 ```python
 import pytest
 from pathlib import Path
 from thegent.task.parser import parse_yaml_frontmatter, parse_legacy_task
+
 
 def test_parse_yaml_frontmatter_valid():
     """Test parsing valid YAML frontmatter."""
@@ -4775,10 +4974,11 @@ priority: P1
 ## Body
 """
     frontmatter, body = parse_yaml_frontmatter(content)
-    assert frontmatter['id'] == 'test-task'
-    assert frontmatter['title'] == 'Test Task'
-    assert frontmatter['priority'] == 'P1'
-    assert 'Body' in body
+    assert frontmatter["id"] == "test-task"
+    assert frontmatter["title"] == "Test Task"
+    assert frontmatter["priority"] == "P1"
+    assert "Body" in body
+
 
 def test_parse_yaml_frontmatter_invalid():
     """Test parsing invalid YAML frontmatter."""
@@ -4790,6 +4990,7 @@ invalid: yaml: syntax: error
     with pytest.raises(ValueError):
         parse_yaml_frontmatter(content)
 
+
 def test_parse_legacy_format():
     """Test parsing legacy format."""
     content = """TASK (worker: "Test")
@@ -4800,60 +5001,59 @@ Task Input:
     **Priority:** P1
 """
     task = parse_legacy_task(content)
-    assert task['id'] == 'test-task'
-    assert task['title'] == 'Test Task'
-    assert task['priority'] == 'P1'
+    assert task["id"] == "test-task"
+    assert task["title"] == "Test Task"
+    assert task["priority"] == "P1"
 ```
 
 **Validator Tests:**
+
 ```python
 from thegent.task.validator import validate_task, ValidationResult
 
+
 def test_validate_task_valid():
     """Test validation of valid task."""
-    task = {
-        'id': 'test-task',
-        'title': 'Test Task',
-        'subagent_type': 'worker',
-        'priority': 'P1',
-        'depends': []
-    }
+    task = {"id": "test-task", "title": "Test Task", "subagent_type": "worker", "priority": "P1", "depends": []}
     result = validate_task(task)
     assert result.valid
     assert len(result.errors) == 0
 
+
 def test_validate_task_missing_required():
     """Test validation of task with missing required fields."""
     task = {
-        'title': 'Test Task'
+        "title": "Test Task"
         # Missing: id, subagent_type, priority
     }
     result = validate_task(task)
     assert not result.valid
     assert len(result.errors) > 0
-    assert any('id' in str(e) for e in result.errors)
+    assert any("id" in str(e) for e in result.errors)
+
 
 def test_validate_task_invalid_id():
     """Test validation of task with invalid ID."""
     task = {
-        'id': 'INVALID_ID',  # Uppercase not allowed
-        'title': 'Test Task',
-        'subagent_type': 'worker',
-        'priority': 'P1'
+        "id": "INVALID_ID",  # Uppercase not allowed
+        "title": "Test Task",
+        "subagent_type": "worker",
+        "priority": "P1",
     }
     result = validate_task(task)
     assert not result.valid
-    assert any('id' in str(e).lower() for e in result.errors)
+    assert any("id" in str(e).lower() for e in result.errors)
 ```
 
 ### AI.2 Integration Test Examples
 
 **End-to-End Workflow:**
+
 ```python
 def test_task_lifecycle_integration(tmp_path):
     """Test complete task lifecycle."""
     # 1. Create task file
-    task_file = tmp_path / 'test-task.md'
+    task_file = tmp_path / "test-task.md"
     task_file.write_text("""---
 id: test-task
 title: Test Task
@@ -4867,7 +5067,7 @@ Test implementation
 
     # 2. Parse
     task = parse_task_file(task_file)
-    assert task['id'] == 'test-task'
+    assert task["id"] == "test-task"
 
     # 3. Validate
     result = validate_task(task)
@@ -4875,55 +5075,43 @@ Test implementation
 
     # 4. Convert to JSON
     json_task = convert_to_json(task)
-    assert json_task['id'] == 'test-task'
+    assert json_task["id"] == "test-task"
 
     # 5. Convert back to YAML
     yaml_task = convert_to_yaml_frontmatter(json_task)
-    assert 'id: test-task' in yaml_task
+    assert "id: test-task" in yaml_task
 
     # 6. Parse again (round-trip)
     task2 = parse_yaml_frontmatter(yaml_task)[0]
-    assert task2['id'] == task['id']
+    assert task2["id"] == task["id"]
 ```
 
 ### AI.3 Property-Based Test Examples
 
 **Using Hypothesis:**
+
 ```python
 from hypothesis import given, strategies as st
 import re
 
+
 @given(
     task_id=st.text(
-        min_size=3,
-        max_size=100,
-        alphabet=st.characters(
-            whitelist_categories=('Ll', 'Nd'),
-            whitelist_characters='-'
-        )
+        min_size=3, max_size=100, alphabet=st.characters(whitelist_categories=("Ll", "Nd"), whitelist_characters="-")
     ),
-    priority=st.sampled_from(['P1', 'P2', 'P3']),
-    depends=st.lists(
-        st.text(min_size=3, max_size=50),
-        max_size=10
-    )
+    priority=st.sampled_from(["P1", "P2", "P3"]),
+    depends=st.lists(st.text(min_size=3, max_size=50), max_size=10),
 )
 def test_task_validation_properties(task_id, priority, depends):
     """Property-based test for task validation."""
-    task = {
-        'id': task_id,
-        'title': 'Test Task',
-        'subagent_type': 'worker',
-        'priority': priority,
-        'depends': depends
-    }
+    task = {"id": task_id, "title": "Test Task", "subagent_type": "worker", "priority": priority, "depends": depends}
 
     result = validate_task(task)
 
     # Should either be valid or have specific error types
     if result.valid:
-        assert task['id'] == task_id
-        assert task['priority'] == priority
+        assert task["id"] == task_id
+        assert task["priority"] == priority
     else:
         # Errors should be about specific fields
         error_fields = {e.field for e in result.errors}
@@ -5048,6 +5236,7 @@ metadata:
 Add "Edit this page on GitHub" links to VitePress documentation pages.
 
 The links should:
+
 - Appear in the page footer
 - Point to the correct file in the GitHub repository
 - Use the pattern: `https://github.com/kooshapari/temp-PRODVERCEL/485/kush/thegent/edit/main/docs/:path`
@@ -5128,6 +5317,7 @@ quality_gates:
 ## Review Objectives
 
 Review the session monitor implementation for:
+
 - Code quality and style
 - Correctness and completeness
 - Performance and efficiency
@@ -5207,6 +5397,7 @@ Review the session monitor implementation for:
 ### AK.1 Complete CLI Implementation
 
 **`src/thegent/task/__init__.py`:**
+
 ```python
 """Task management module for thegent."""
 
@@ -5217,23 +5408,24 @@ from thegent.task.migrate import migrate_task_file, migrate_directory
 from thegent.task.types import Task, TaskStep, TaskMetadata
 
 __all__ = [
-    'parse_task_file',
-    'parse_yaml_frontmatter',
-    'parse_legacy_task',
-    'validate_task',
-    'validate_task_file',
-    'TaskValidator',
-    'convert_task',
-    'convert_task_file',
-    'migrate_task_file',
-    'migrate_directory',
-    'Task',
-    'TaskStep',
-    'TaskMetadata',
+    "parse_task_file",
+    "parse_yaml_frontmatter",
+    "parse_legacy_task",
+    "validate_task",
+    "validate_task_file",
+    "TaskValidator",
+    "convert_task",
+    "convert_task_file",
+    "migrate_task_file",
+    "migrate_directory",
+    "Task",
+    "TaskStep",
+    "TaskMetadata",
 ]
 ```
 
 **`src/thegent/task/parser.py`:**
+
 ```python
 """Task parsing implementation."""
 
@@ -5242,6 +5434,7 @@ import re
 import json
 from pathlib import Path
 from typing import Dict, Any, Tuple, Optional
+
 
 def parse_yaml_frontmatter(content: str) -> Tuple[Dict[str, Any], str]:
     """Parse YAML frontmatter from markdown content.
@@ -5256,12 +5449,12 @@ def parse_yaml_frontmatter(content: str) -> Tuple[Dict[str, Any], str]:
         ValueError: If frontmatter is invalid or missing
     """
     # Match YAML frontmatter (--- ... ---)
-    pattern = r'^---\s*\n(.*?)\n---\s*\n(.*)$'
+    pattern = r"^---\s*\n(.*?)\n---\s*\n(.*)$"
     match = re.match(pattern, content, re.DOTALL)
 
     if not match:
         # Try without trailing newline
-        pattern = r'^---\s*\n(.*?)\n---\s*(.*)$'
+        pattern = r"^---\s*\n(.*?)\n---\s*(.*)$"
         match = re.match(pattern, content, re.DOTALL)
 
     if not match:
@@ -5278,6 +5471,7 @@ def parse_yaml_frontmatter(content: str) -> Tuple[Dict[str, Any], str]:
     except yaml.YAMLError as e:
         raise ValueError(f"Invalid YAML frontmatter: {e}")
 
+
 def parse_task_file(file_path: Path) -> Dict[str, Any]:
     """Parse a task file (auto-detects format).
 
@@ -5290,35 +5484,37 @@ def parse_task_file(file_path: Path) -> Dict[str, Any]:
     Raises:
         ValueError: If file cannot be parsed
     """
-    content = file_path.read_text(encoding='utf-8')
+    content = file_path.read_text(encoding="utf-8")
     format_type = detect_task_format(content)
 
-    if format_type == 'yaml_frontmatter':
+    if format_type == "yaml_frontmatter":
         frontmatter, body = parse_yaml_frontmatter(content)
         # Extract markdown sections
         sections = extract_markdown_sections(body)
         task = {**frontmatter, **sections}
         return task
-    elif format_type == 'legacy':
+    elif format_type == "legacy":
         return parse_legacy_task(content)
-    elif format_type == 'json':
+    elif format_type == "json":
         return json.loads(content)
     else:
         raise ValueError(f"Unknown task format: {format_type}")
 
+
 def detect_task_format(content: str) -> str:
     """Auto-detect task format."""
-    if re.match(r'^---\s*\n', content):
-        return 'yaml_frontmatter'
-    if content.strip().startswith('{'):
+    if re.match(r"^---\s*\n", content):
+        return "yaml_frontmatter"
+    if content.strip().startswith("{"):
         try:
             json.loads(content)
-            return 'json'
+            return "json"
         except:
             pass
-    if re.search(r'TASK\s*\(', content) or re.search(r'Task Input:', content):
-        return 'legacy'
-    return 'unknown'
+    if re.search(r"TASK\s*\(", content) or re.search(r"Task Input:", content):
+        return "legacy"
+    return "unknown"
+
 
 def extract_markdown_sections(body: str) -> Dict[str, str]:
     """Extract markdown sections by header."""
@@ -5326,20 +5522,21 @@ def extract_markdown_sections(body: str) -> Dict[str, str]:
     current_section = None
     current_content = []
 
-    for line in body.split('\n'):
-        if line.startswith('## '):
+    for line in body.split("\n"):
+        if line.startswith("## "):
             if current_section:
-                sections[current_section] = '\n'.join(current_content).strip()
-            current_section = line[3:].strip().lower().replace(' ', '_')
+                sections[current_section] = "\n".join(current_content).strip()
+            current_section = line[3:].strip().lower().replace(" ", "_")
             current_content = []
         else:
             if current_section:
                 current_content.append(line)
 
     if current_section:
-        sections[current_section] = '\n'.join(current_content).strip()
+        sections[current_section] = "\n".join(current_content).strip()
 
     return sections
+
 
 def parse_legacy_task(content: str) -> Dict[str, Any]:
     """Parse legacy task format (backward compatibility)."""
@@ -5348,81 +5545,79 @@ def parse_legacy_task(content: str) -> Dict[str, Any]:
     # Extract TASK header
     task_match = re.search(r'TASK\s*\(([^:]+):\s*"([^"]+)"\)', content)
     if task_match:
-        task['subagent_type'] = task_match.group(1).strip()
-        task['description'] = task_match.group(2).strip()
+        task["subagent_type"] = task_match.group(1).strip()
+        task["description"] = task_match.group(2).strip()
 
     # Extract Task Input section
-    input_match = re.search(r'Task Input:\s*\n(.*?)(?=Task Output:|$)', content, re.DOTALL)
+    input_match = re.search(r"Task Input:\s*\n(.*?)(?=Task Output:|$)", content, re.DOTALL)
     if input_match:
         input_content = input_match.group(1)
 
         # Extract Subagent Type
-        subagent_match = re.search(r'Subagent Type:\s*(.+)', input_content)
+        subagent_match = re.search(r"Subagent Type:\s*(.+)", input_content)
         if subagent_match:
-            task['subagent_type'] = subagent_match.group(1).strip()
+            task["subagent_type"] = subagent_match.group(1).strip()
 
         # Extract Prompt section
-        prompt_match = re.search(r'Prompt:\s*\n(.*)', input_content, re.DOTALL)
+        prompt_match = re.search(r"Prompt:\s*\n(.*)", input_content, re.DOTALL)
         if prompt_match:
             prompt_content = prompt_match.group(1)
 
             # Extract ID
-            id_match = re.search(r'\*\*ID:\*\*\s*(.+)', prompt_content)
+            id_match = re.search(r"\*\*ID:\*\*\s*(.+)", prompt_content)
             if id_match:
-                task['id'] = id_match.group(1).strip()
+                task["id"] = id_match.group(1).strip()
 
             # Extract Title
-            title_match = re.search(r'\*\*Title:\*\*\s*(.+)', prompt_content)
+            title_match = re.search(r"\*\*Title:\*\*\s*(.+)", prompt_content)
             if title_match:
-                task['title'] = title_match.group(1).strip()
+                task["title"] = title_match.group(1).strip()
 
             # Extract Priority
-            priority_match = re.search(r'\*\*Priority:\*\*\s*(P[123])', prompt_content)
+            priority_match = re.search(r"\*\*Priority:\*\*\s*(P[123])", prompt_content)
             if priority_match:
-                task['priority'] = priority_match.group(1)
+                task["priority"] = priority_match.group(1)
 
             # Extract Depends
-            depends_match = re.search(r'\*\*Depends:\*\*\s*(.+)', prompt_content)
+            depends_match = re.search(r"\*\*Depends:\*\*\s*(.+)", prompt_content)
             if depends_match:
                 depends_str = depends_match.group(1).strip()
-                if depends_str.lower() in ['none', '-', '']:
-                    task['depends'] = []
+                if depends_str.lower() in ["none", "-", ""]:
+                    task["depends"] = []
                 else:
-                    task['depends'] = [d.strip() for d in depends_str.split(',')]
+                    task["depends"] = [d.strip() for d in depends_str.split(",")]
 
             # Extract Implementation Details
-            impl_match = re.search(r'### Implementation Details\s*\n(.*?)(?=###|$)', prompt_content, re.DOTALL)
+            impl_match = re.search(r"### Implementation Details\s*\n(.*?)(?=###|$)", prompt_content, re.DOTALL)
             if impl_match:
-                task['implementation_details'] = impl_match.group(1).strip()
+                task["implementation_details"] = impl_match.group(1).strip()
 
             # Extract Steps
-            steps_match = re.search(r'### Steps to Complete\s*\n(.*?)(?=###|$)', prompt_content, re.DOTALL)
+            steps_match = re.search(r"### Steps to Complete\s*\n(.*?)(?=###|$)", prompt_content, re.DOTALL)
             if steps_match:
                 steps_content = steps_match.group(1)
                 steps = []
-                for line in steps_content.split('\n'):
-                    step_match = re.match(r'(\d+)\.\s*(.+)', line.strip())
+                for line in steps_content.split("\n"):
+                    step_match = re.match(r"(\d+)\.\s*(.+)", line.strip())
                     if step_match:
-                        steps.append({
-                            'number': int(step_match.group(1)),
-                            'description': step_match.group(2).strip()
-                        })
-                task['steps'] = steps
+                        steps.append({"number": int(step_match.group(1)), "description": step_match.group(2).strip()})
+                task["steps"] = steps
 
             # Extract Deliverables
-            deliverables_match = re.search(r'### Deliverables\s*\n(.*?)(?=###|$)', prompt_content, re.DOTALL)
+            deliverables_match = re.search(r"### Deliverables\s*\n(.*?)(?=###|$)", prompt_content, re.DOTALL)
             if deliverables_match:
                 deliverables_content = deliverables_match.group(1)
                 deliverables = []
-                for line in deliverables_content.split('\n'):
-                    if line.strip().startswith('- '):
+                for line in deliverables_content.split("\n"):
+                    if line.strip().startswith("- "):
                         deliverables.append(line.strip()[2:])
-                task['deliverables'] = deliverables
+                task["deliverables"] = deliverables
 
     return task
 ```
 
 **`src/thegent/task/validator.py`:**
+
 ```python
 """Task validation implementation."""
 
@@ -5432,17 +5627,21 @@ from typing import Dict, Any, List, Optional
 from jsonschema import Draft202012Validator, ValidationError
 from dataclasses import dataclass
 
+
 @dataclass
 class ValidationError:
     """Single validation error."""
+
     field: str
     message: str
     code: str
     path: List[str]
 
+
 @dataclass
 class ValidationResult:
     """Task validation result."""
+
     valid: bool
     errors: List[ValidationError]
     warnings: List[ValidationError]
@@ -5451,9 +5650,10 @@ class ValidationResult:
         """Format errors for display."""
         lines = []
         for error in self.errors:
-            path_str = '.'.join(error.path) if error.path else error.field
+            path_str = ".".join(error.path) if error.path else error.field
             lines.append(f"{path_str}: {error.message} ({error.code})")
-        return '\n'.join(lines)
+        return "\n".join(lines)
+
 
 class TaskValidator:
     """Task validator using JSON Schema."""
@@ -5461,7 +5661,7 @@ class TaskValidator:
     def __init__(self, schema_path: Optional[Path] = None):
         """Initialize validator with schema."""
         if schema_path is None:
-            schema_path = Path(__file__).parent.parent.parent / 'schemas' / 'task-input.schema.json'
+            schema_path = Path(__file__).parent.parent.parent / "schemas" / "task-input.schema.json"
 
         self.schema = json.loads(schema_path.read_text())
         self.validator = Draft202012Validator(self.schema)
@@ -5473,22 +5673,20 @@ class TaskValidator:
 
         # Schema validation
         for error in self.validator.iter_errors(task):
-            errors.append(ValidationError(
-                field=error.path[0] if error.path else 'root',
-                message=error.message,
-                code=error.validator,
-                path=list(error.path)
-            ))
+            errors.append(
+                ValidationError(
+                    field=error.path[0] if error.path else "root",
+                    message=error.message,
+                    code=error.validator,
+                    path=list(error.path),
+                )
+            )
 
         # Custom validation
         custom_errors = self._validate_custom(task)
         errors.extend(custom_errors)
 
-        return ValidationResult(
-            valid=len(errors) == 0,
-            errors=errors,
-            warnings=warnings
-        )
+        return ValidationResult(valid=len(errors) == 0, errors=errors, warnings=warnings)
 
     def validate_file(self, file_path: Path) -> ValidationResult:
         """Validate a task file."""
@@ -5500,13 +5698,10 @@ class TaskValidator:
         except Exception as e:
             return ValidationResult(
                 valid=False,
-                errors=[ValidationError(
-                    field='file',
-                    message=f"Failed to parse file: {e}",
-                    code='parse_error',
-                    path=[]
-                )],
-                warnings=[]
+                errors=[
+                    ValidationError(field="file", message=f"Failed to parse file: {e}", code="parse_error", path=[])
+                ],
+                warnings=[],
             )
 
     def _validate_custom(self, task: Dict[str, Any]) -> List[ValidationError]:
@@ -5514,14 +5709,16 @@ class TaskValidator:
         errors = []
 
         # Validate task ID format
-        task_id = task.get('id', '')
-        if task_id and not re.match(r'^[a-z0-9-]+$', task_id):
-            errors.append(ValidationError(
-                field='id',
-                message=f"Task ID must be lowercase alphanumeric with hyphens, got '{task_id}'",
-                code='invalid_format',
-                path=['id']
-            ))
+        task_id = task.get("id", "")
+        if task_id and not re.match(r"^[a-z0-9-]+$", task_id):
+            errors.append(
+                ValidationError(
+                    field="id",
+                    message=f"Task ID must be lowercase alphanumeric with hyphens, got '{task_id}'",
+                    code="invalid_format",
+                    path=["id"],
+                )
+            )
 
         # Validate dependencies exist (if we have access to all tasks)
         # This would require additional context
@@ -5538,6 +5735,7 @@ class TaskValidator:
 **Source**: `thegent/src/thegent/cli_impl.py` (`do_next_impl` function, lines 135-209)
 
 **Current Parsing Logic:**
+
 ```python
 def do_next_impl(cd: Path | None = None, limit: int = 5) -> dict[str, Any]:
     """Find next actionable work items from WORK_STREAM, PLAN_STATUS, FR_TRACKER, docs/plans/, escalation queue."""
@@ -5558,15 +5756,18 @@ def do_next_impl(cd: Path | None = None, limit: int = 5) -> dict[str, Any]:
                     item_id = parts[1]
                     description = parts[2] if len(parts) > 2 else ""
                     prompt = parts[3] if len(parts) > 3 else f"Complete {item_id}: {description}"
-                    items.append({
-                        "id": item_id,
-                        "description": description,
-                        "source": "WORK_STREAM",
-                        "prompt_suggestion": prompt,
-                    })
+                    items.append(
+                        {
+                            "id": item_id,
+                            "description": description,
+                            "source": "WORK_STREAM",
+                            "prompt_suggestion": prompt,
+                        }
+                    )
 ```
 
 **Issues Identified:**
+
 1. ❌ **No validation**: Doesn't validate ID format, priority, dependencies
 2. ❌ **Fragile parsing**: Relies on exact markdown table format
 3. ❌ **No type safety**: Returns dicts without schema validation
@@ -5575,6 +5776,7 @@ def do_next_impl(cd: Path | None = None, limit: int = 5) -> dict[str, Any]:
 6. ❌ **No metadata extraction**: Doesn't parse priority, source, depends columns
 
 **Improvements Needed:**
+
 - Use structured parser (YAML frontmatter or JSON Schema validation)
 - Validate task IDs against schema
 - Check dependencies before returning items
@@ -5586,9 +5788,11 @@ def do_next_impl(cd: Path | None = None, limit: int = 5) -> dict[str, Any]:
 **Source**: `thegent/src/thegent/execution.py` (lines 512-562)
 
 **Current Model:**
+
 ```python
 class RunMeta(BaseModel):
     """Metadata for a single agent/droid execution run."""
+
     run_id: str = Field(default_factory=lambda: f"run_{uuid.uuid4().hex[:8]}")
     correlation_id: str | None = None
     agent: str
@@ -5607,6 +5811,7 @@ class RunMeta(BaseModel):
 ```
 
 **Observations:**
+
 - ✅ Uses Pydantic `BaseModel` (good pattern to follow)
 - ✅ Uses `Field()` for defaults and validation
 - ✅ Supports optional fields with `| None`
@@ -5616,6 +5821,7 @@ class RunMeta(BaseModel):
 
 **Recommendation:**
 Add `task_id` field to `RunMeta` to enable task → execution traceability:
+
 ```python
 task_id: str | None = None  # Link to task in WORK_STREAM.md or task files
 task_metadata: dict[str, Any] | None = None  # Cached task metadata
@@ -5626,6 +5832,7 @@ task_metadata: dict[str, Any] | None = None  # Cached task metadata
 **Source**: `thegent/src/thegent/config.py`
 
 **Patterns Observed:**
+
 - ✅ Uses `BaseSettings` for configuration
 - ✅ Environment variable support via `env_prefix`
 - ✅ Type-safe configuration with Pydantic
@@ -5633,30 +5840,23 @@ task_metadata: dict[str, Any] | None = None  # Cached task metadata
 - ✅ Complex types (dict, list) with `default_factory`
 
 **Applicable to Task Configuration:**
+
 ```python
 class TaskSettings(BaseSettings):
     """Task management configuration."""
+
     model_config = SettingsConfigDict(
         env_prefix="THGENT_TASK_",
         env_file=".env",
     )
 
-    task_dir: Path = Field(
-        default_factory=lambda: Path("tasks"),
-        description="Directory for task files"
-    )
+    task_dir: Path = Field(default_factory=lambda: Path("tasks"), description="Directory for task files")
     schema_path: Path = Field(
         default_factory=lambda: Path("schemas/task-input.schema.json"),
-        description="Path to JSON Schema for task validation"
+        description="Path to JSON Schema for task validation",
     )
-    validate_on_load: bool = Field(
-        default=True,
-        description="Validate tasks when loading"
-    )
-    auto_migrate: bool = Field(
-        default=False,
-        description="Automatically migrate legacy tasks"
-    )
+    validate_on_load: bool = Field(default=True, description="Validate tasks when loading")
+    auto_migrate: bool = Field(default=False, description="Automatically migrate legacy tasks")
 ```
 
 ---
@@ -5666,6 +5866,7 @@ class TaskSettings(BaseSettings):
 ### AM.1 Integration with `thegent plan` Commands
 
 **Current Commands:**
+
 - `thegent plan do-next`: Get next work items
 - `thegent plan get-next`: Get next without executing
 - `thegent plan incorporate`: Merge items into WORK_STREAM.md
@@ -5674,6 +5875,7 @@ class TaskSettings(BaseSettings):
 **Enhanced Integration:**
 
 **1. `thegent plan do-next` Enhancement:**
+
 ```python
 def plan_do_next_impl(
     cd: Path | None = None,
@@ -5712,6 +5914,7 @@ def plan_do_next_impl(
 ```
 
 **2. `thegent plan incorporate` Enhancement:**
+
 ```python
 def plan_incorporate_impl(
     cd: Path | None = None,
@@ -5738,18 +5941,22 @@ def plan_incorporate_impl(
             if validate:
                 result = validate_task_file(source_path)
                 if not result.valid:
-                    errors.append({
-                        "source": str(source_path),
-                        "errors": result.errors,
-                    })
+                    errors.append(
+                        {
+                            "source": str(source_path),
+                            "errors": result.errors,
+                        }
+                    )
                     continue
 
             tasks.append(task)
         except Exception as e:
-            errors.append({
-                "source": str(source_path),
-                "error": str(e),
-            })
+            errors.append(
+                {
+                    "source": str(source_path),
+                    "error": str(e),
+                }
+            )
 
     # Merge into WORK_STREAM.md
     if not dry_run:
@@ -5765,11 +5972,13 @@ def plan_incorporate_impl(
 ### AM.2 Integration with Agent Execution
 
 **Current Flow:**
+
 1. Agent receives prompt
 2. Executes task
 3. Stores result in `RunMeta`
 
 **Enhanced Flow:**
+
 1. Agent receives task ID or task file path
 2. Parse and validate task
 3. Extract structured requirements
@@ -5778,6 +5987,7 @@ def plan_incorporate_impl(
 6. Update task status in WORK_STREAM.md
 
 **Implementation:**
+
 ```python
 def execute_task_with_metadata(
     task_id: str,
@@ -5869,6 +6079,7 @@ def session_with_task(
 ### AN.1 Parsing Performance
 
 **Benchmark Setup:**
+
 - 1000 tasks in YAML frontmatter format
 - 1000 tasks in legacy format
 - 1000 tasks in JSON format
@@ -5876,14 +6087,15 @@ def session_with_task(
 
 **Results:**
 
-| Format | Parse Time (1000 tasks) | Memory (MB) | Error Rate |
-|--------|------------------------|-------------|------------|
-| YAML Frontmatter | ~150ms | ~25MB | <0.1% |
-| Legacy Markdown | ~300ms | ~30MB | ~2% |
-| JSON | ~80ms | ~20MB | <0.1% |
-| Current (regex) | ~250ms | ~28MB | ~5% |
+| Format           | Parse Time (1000 tasks) | Memory (MB) | Error Rate |
+| ---------------- | ----------------------- | ----------- | ---------- |
+| YAML Frontmatter | ~150ms                  | ~25MB       | <0.1%      |
+| Legacy Markdown  | ~300ms                  | ~30MB       | ~2%        |
+| JSON             | ~80ms                   | ~20MB       | <0.1%      |
+| Current (regex)  | ~250ms                  | ~28MB       | ~5%        |
 
 **Conclusion:**
+
 - YAML frontmatter: Best balance (human-readable, fast parsing)
 - JSON: Fastest but less human-readable
 - Legacy: Slowest and most error-prone
@@ -5891,19 +6103,21 @@ def session_with_task(
 ### AN.2 Validation Performance
 
 **Benchmark Setup:**
+
 - Validate 1000 tasks against JSON Schema
 - Using `jsonschema` library (Draft202012Validator)
 
 **Results:**
 
-| Operation | Time (1000 tasks) | Memory (MB) |
-|-----------|-------------------|-------------|
-| Schema load | ~50ms (one-time) | ~5MB |
-| Validation | ~200ms | ~10MB |
-| Error collection | ~50ms | ~5MB |
-| **Total** | **~300ms** | **~20MB** |
+| Operation        | Time (1000 tasks) | Memory (MB) |
+| ---------------- | ----------------- | ----------- |
+| Schema load      | ~50ms (one-time)  | ~5MB        |
+| Validation       | ~200ms            | ~10MB       |
+| Error collection | ~50ms             | ~5MB        |
+| **Total**        | **~300ms**        | **~20MB**   |
 
 **Optimization Opportunities:**
+
 - Cache schema validator (one-time cost)
 - Parallel validation (4 workers: ~75ms)
 - Early exit on first error (~100ms)
@@ -5911,19 +6125,21 @@ def session_with_task(
 ### AN.3 Query Performance
 
 **Benchmark Setup:**
+
 - Query 10,000 tasks
 - Filter by priority, tags, dependencies
 
 **Results:**
 
-| Query Type | Time (10k tasks) | Memory (MB) |
-|------------|------------------|-------------|
-| Filter by priority | ~10ms | ~5MB |
-| Filter by tags | ~15ms | ~5MB |
-| Filter by dependencies | ~20ms | ~5MB |
-| Complex query (priority + tags + deps) | ~30ms | ~5MB |
+| Query Type                             | Time (10k tasks) | Memory (MB) |
+| -------------------------------------- | ---------------- | ----------- |
+| Filter by priority                     | ~10ms            | ~5MB        |
+| Filter by tags                         | ~15ms            | ~5MB        |
+| Filter by dependencies                 | ~20ms            | ~5MB        |
+| Complex query (priority + tags + deps) | ~30ms            | ~5MB        |
 
 **Optimization Opportunities:**
+
 - Index tasks by priority, tags (pre-computed)
 - Use SQLite for large datasets (>10k tasks)
 - Cache query results (TTL: 60s)
@@ -5935,6 +6151,7 @@ def session_with_task(
 ### AO.1 Migration Phases
 
 **Phase 1: Preparation (Week 1)**
+
 1. Create JSON Schema definitions
 2. Implement parser for YAML frontmatter
 3. Implement validator
@@ -5942,6 +6159,7 @@ def session_with_task(
 5. Test on sample tasks
 
 **Phase 2: Parallel Support (Week 2-3)**
+
 1. Update `do_next_impl` to support both formats
 2. Auto-detect format (legacy vs new)
 3. Validate new format tasks
@@ -5949,6 +6167,7 @@ def session_with_task(
 5. Document migration process
 
 **Phase 3: Gradual Migration (Week 4-8)**
+
 1. Migrate high-priority tasks first
 2. Migrate frequently-used tasks
 3. Migrate new tasks automatically
@@ -5956,6 +6175,7 @@ def session_with_task(
 5. Fix any issues
 
 **Phase 4: Deprecation (Week 9-12)**
+
 1. Mark legacy format as deprecated
 2. Provide migration tool for remaining tasks
 3. Update all documentation
@@ -5964,11 +6184,13 @@ def session_with_task(
 ### AO.2 Migration Tool Implementation
 
 **CLI Command:**
+
 ```bash
 thegent task migrate [--dry-run] [--task-id TASK_ID] [--all]
 ```
 
 **Implementation:**
+
 ```python
 def migrate_task_cmd(
     task_id: str | None = None,
@@ -6029,9 +6251,10 @@ def parse_task_auto(content: str, file_path: Path) -> dict[str, Any]:
     else:
         raise ValueError(f"Unknown format: {format_type}")
 
+
 def detect_task_format(content: str) -> str:
     """Auto-detect task format."""
-    if re.match(r'^---\s*\n', content):
+    if re.match(r"^---\s*\n", content):
         return "yaml_frontmatter"
     if content.strip().startswith("{"):
         try:
@@ -6039,12 +6262,13 @@ def detect_task_format(content: str) -> str:
             return "json"
         except:
             pass
-    if re.search(r'TASK\s*\(', content) or re.search(r'Task Input:', content):
+    if re.search(r"TASK\s*\(", content) or re.search(r"Task Input:", content):
         return "legacy"
     return "unknown"
 ```
 
 **Benefits:**
+
 - ✅ No breaking changes
 - ✅ Gradual migration
 - ✅ Easy rollback
@@ -6208,6 +6432,7 @@ Add "Edit this page on GitHub" links to VitePress documentation pages.
 ### AQ.1 Unit Tests
 
 **Test Parser:**
+
 ```python
 def test_parse_yaml_frontmatter():
     """Test parsing YAML frontmatter."""
@@ -6223,6 +6448,7 @@ priority: P1
     assert frontmatter["title"] == "Test Task"
     assert "Body" in body
 
+
 def test_parse_legacy_format():
     """Test parsing legacy format."""
     content = """TASK (worker: "Test")
@@ -6237,6 +6463,7 @@ Task Input:
 ```
 
 **Test Validator:**
+
 ```python
 def test_validate_task():
     """Test task validation."""
@@ -6249,6 +6476,7 @@ def test_validate_task():
     result = validate_task(task)
     assert result.valid
     assert len(result.errors) == 0
+
 
 def test_validate_task_invalid_id():
     """Test validation with invalid ID."""
@@ -6266,6 +6494,7 @@ def test_validate_task_invalid_id():
 ### AQ.2 Integration Tests
 
 **Test WORK_STREAM.md Integration:**
+
 ```python
 def test_workstream_integration(tmp_path):
     """Test integration with WORK_STREAM.md."""
@@ -6297,6 +6526,7 @@ priority: P1
 ### AQ.3 End-to-End Tests
 
 **Test Full Workflow:**
+
 ```python
 def test_full_task_lifecycle(tmp_path):
     """Test complete task lifecycle."""
@@ -6368,22 +6598,27 @@ from enum import Enum
 from dataclasses import dataclass
 from typing import Optional
 
+
 class ErrorSeverity(str, Enum):
     """Error severity levels."""
+
     LOW = "low"  # Warning, can continue
     MEDIUM = "medium"  # Error, can recover
     HIGH = "high"  # Error, cannot recover
     CRITICAL = "critical"  # System failure
 
+
 @dataclass
 class TaskError:
     """Structured error information."""
+
     code: str
     message: str
     severity: ErrorSeverity
     field: Optional[str] = None
     recoverable: bool = True
     suggestion: Optional[str] = None
+
 
 class TaskParser:
     """Robust task parser with comprehensive error handling."""
@@ -6397,32 +6632,38 @@ class TaskParser:
             frontmatter, body = parse_yaml_frontmatter(content)
             return frontmatter, errors
         except ValueError as e:
-            errors.append(TaskError(
-                code="yaml_parse_failed",
-                message=f"YAML parsing failed: {e}",
-                severity=ErrorSeverity.MEDIUM,
-                recoverable=True,
-                suggestion="Trying legacy format parser",
-            ))
+            errors.append(
+                TaskError(
+                    code="yaml_parse_failed",
+                    message=f"YAML parsing failed: {e}",
+                    severity=ErrorSeverity.MEDIUM,
+                    recoverable=True,
+                    suggestion="Trying legacy format parser",
+                )
+            )
 
         # Fallback to legacy parser
         try:
             task = parse_legacy_task(content)
-            errors.append(TaskError(
-                code="legacy_format_detected",
-                message="Using legacy format (deprecated)",
-                severity=ErrorSeverity.LOW,
-                recoverable=True,
-                suggestion="Migrate to YAML frontmatter format",
-            ))
+            errors.append(
+                TaskError(
+                    code="legacy_format_detected",
+                    message="Using legacy format (deprecated)",
+                    severity=ErrorSeverity.LOW,
+                    recoverable=True,
+                    suggestion="Migrate to YAML frontmatter format",
+                )
+            )
             return task, errors
         except Exception as e:
-            errors.append(TaskError(
-                code="parse_failed",
-                message=f"All parsers failed: {e}",
-                severity=ErrorSeverity.HIGH,
-                recoverable=False,
-            ))
+            errors.append(
+                TaskError(
+                    code="parse_failed",
+                    message=f"All parsers failed: {e}",
+                    severity=ErrorSeverity.HIGH,
+                    recoverable=False,
+                )
+            )
             raise TaskParseError(f"Failed to parse task: {file_path}", errors)
 
     def validate_with_partial(self, task: dict) -> tuple[bool, list[TaskError]]:
@@ -6432,14 +6673,16 @@ class TaskParser:
 
         # Collect all validation errors
         for error in validator.iter_errors(task):
-            errors.append(TaskError(
-                code=error.validator,
-                message=error.message,
-                severity=self._classify_severity(error),
-                field=".".join(str(p) for p in error.path),
-                recoverable=self._is_recoverable(error),
-                suggestion=self._suggest_fix(error),
-            ))
+            errors.append(
+                TaskError(
+                    code=error.validator,
+                    message=error.message,
+                    severity=self._classify_severity(error),
+                    field=".".join(str(p) for p in error.path),
+                    recoverable=self._is_recoverable(error),
+                    suggestion=self._suggest_fix(error),
+                )
+            )
 
         # Classify errors
         critical_errors = [e for e in errors if e.severity == ErrorSeverity.CRITICAL]
@@ -6477,6 +6720,7 @@ class TaskParser:
 **Edge Cases Covered:**
 
 1. **Empty/Malformed Files**
+
    ```python
    def parse_task_file_robust(file_path: Path) -> dict:
        """Parse task file with edge case handling."""
@@ -6500,6 +6744,7 @@ class TaskParser:
    ```
 
 2. **Circular Dependencies**
+
    ```python
    def validate_dependencies_robust(tasks: list[dict]) -> list[TaskError]:
        """Validate dependencies, detecting cycles."""
@@ -6513,12 +6758,14 @@ class TaskParser:
        for task_id, deps in graph.items():
            missing = deps - task_ids
            if missing:
-               errors.append(TaskError(
-                   code="missing_dependency",
-                   message=f"Task {task_id} depends on non-existent tasks: {missing}",
-                   severity=ErrorSeverity.HIGH,
-                   field="depends",
-               ))
+               errors.append(
+                   TaskError(
+                       code="missing_dependency",
+                       message=f"Task {task_id} depends on non-existent tasks: {missing}",
+                       severity=ErrorSeverity.HIGH,
+                       field="depends",
+                   )
+               )
 
        # Detect cycles using DFS
        def has_cycle(node: str, visited: set, rec_stack: set) -> bool:
@@ -6539,20 +6786,24 @@ class TaskParser:
        for task_id in graph:
            if task_id not in visited:
                if has_cycle(task_id, visited, set()):
-                   errors.append(TaskError(
-                       code="circular_dependency",
-                       message=f"Circular dependency detected involving {task_id}",
-                       severity=ErrorSeverity.CRITICAL,
-                       field="depends",
-                   ))
+                   errors.append(
+                       TaskError(
+                           code="circular_dependency",
+                           message=f"Circular dependency detected involving {task_id}",
+                           severity=ErrorSeverity.CRITICAL,
+                           field="depends",
+                       )
+                   )
 
        return errors
    ```
 
 3. **Concurrent Access**
+
    ```python
    import fcntl
    from pathlib import Path
+
 
    class TaskFileLock:
        """File locking for concurrent access."""
@@ -6579,6 +6830,7 @@ class TaskParser:
    ```
 
 4. **Large Files**
+
    ```python
    def parse_large_task_file(file_path: Path, max_size_mb: int = 10) -> dict:
        """Parse task file with size limits."""
@@ -6586,8 +6838,7 @@ class TaskParser:
 
        if size_mb > max_size_mb:
            raise ValueError(
-               f"Task file too large: {size_mb:.1f}MB (max: {max_size_mb}MB). "
-               "Consider splitting into multiple tasks."
+               f"Task file too large: {size_mb:.1f}MB (max: {max_size_mb}MB). Consider splitting into multiple tasks."
            )
 
        # Stream parsing for very large files
@@ -6601,19 +6852,20 @@ class TaskParser:
 
 **Failure Mode Matrix:**
 
-| Failure Mode | Detection | Recovery Strategy | Fallback |
-|--------------|----------|-------------------|----------|
-| Parse failure | Exception | Try legacy parser | Return error |
-| Validation failure | Error list | Partial validation | Skip invalid fields |
-| File I/O error | Exception | Retry with backoff | Use cache |
-| Memory exhaustion | OSError | Stream parsing | Fail gracefully |
-| Corrupted data | Validation | Repair attempt | Manual intervention |
-| Concurrent write | Lock timeout | Wait and retry | Conflict resolution |
+| Failure Mode       | Detection    | Recovery Strategy  | Fallback            |
+| ------------------ | ------------ | ------------------ | ------------------- |
+| Parse failure      | Exception    | Try legacy parser  | Return error        |
+| Validation failure | Error list   | Partial validation | Skip invalid fields |
+| File I/O error     | Exception    | Retry with backoff | Use cache           |
+| Memory exhaustion  | OSError      | Stream parsing     | Fail gracefully     |
+| Corrupted data     | Validation   | Repair attempt     | Manual intervention |
+| Concurrent write   | Lock timeout | Wait and retry     | Conflict resolution |
 
 **Recovery Implementation:**
 
 ```python
 from tenacity import retry, stop_after_attempt, wait_exponential, retry_if_exception_type
+
 
 class RobustTaskManager:
     """Task manager with comprehensive failure recovery."""
@@ -6677,6 +6929,7 @@ class RobustTaskManager:
 **Optimization Strategies:**
 
 1. **Lazy Parsing**
+
    ```python
    class LazyTask:
        """Lazy-loading task wrapper."""
@@ -6712,10 +6965,12 @@ class RobustTaskManager:
    ```
 
 2. **Caching**
+
    ```python
    from functools import lru_cache
    from pathlib import Path
    import hashlib
+
 
    class TaskCache:
        """LRU cache for parsed tasks."""
@@ -6756,9 +7011,11 @@ class RobustTaskManager:
    ```
 
 3. **Parallel Parsing**
+
    ```python
    from concurrent.futures import ThreadPoolExecutor, as_completed
    from typing import Iterator
+
 
    def parse_tasks_parallel(
        task_files: list[Path],
@@ -6770,10 +7027,7 @@ class RobustTaskManager:
 
        with ThreadPoolExecutor(max_workers=workers) as executor:
            # Submit all tasks
-           futures = {
-               executor.submit(parse_task_file_cached, f, cache): f
-               for f in task_files
-           }
+           futures = {executor.submit(parse_task_file_cached, f, cache): f for f in task_files}
 
            # Yield results as they complete
            for future in as_completed(futures):
@@ -6783,6 +7037,7 @@ class RobustTaskManager:
                    yield (file_path, task, None)
                except Exception as e:
                    yield (file_path, {}, e)
+
 
    def parse_task_file_cached(file_path: Path, cache: Optional[TaskCache]) -> dict:
        """Parse task file with caching."""
@@ -6804,11 +7059,13 @@ class RobustTaskManager:
 **Optimization Strategies:**
 
 1. **Schema Caching**
+
    ```python
    from jsonschema import Draft202012Validator
    import json
 
    _schema_cache: dict[str, Draft202012Validator] = {}
+
 
    def get_validator(schema_path: Path) -> Draft202012Validator:
        """Get cached validator."""
@@ -6822,6 +7079,7 @@ class RobustTaskManager:
    ```
 
 2. **Early Exit Validation**
+
    ```python
    def validate_task_fast(
        task: dict,
@@ -6833,12 +7091,14 @@ class RobustTaskManager:
        errors = []
 
        for error in validator.iter_errors(task):
-           errors.append(TaskError(
-               code=error.validator,
-               message=error.message,
-               severity=ErrorSeverity.MEDIUM,
-               field=".".join(str(p) for p in error.path),
-           ))
+           errors.append(
+               TaskError(
+                   code=error.validator,
+                   message=error.message,
+                   severity=ErrorSeverity.MEDIUM,
+                   field=".".join(str(p) for p in error.path),
+               )
+           )
 
            if stop_on_first_error:
                break
@@ -6847,6 +7107,7 @@ class RobustTaskManager:
    ```
 
 3. **Incremental Validation**
+
    ```python
    def validate_task_incremental(
        task: dict,
@@ -6865,12 +7126,14 @@ class RobustTaskManager:
 
            # Only validate requested fields
            if any(field in error_field for field in fields_to_validate):
-               errors.append(TaskError(
-                   code=error.validator,
-                   message=error.message,
-                   severity=ErrorSeverity.MEDIUM,
-                   field=error_field,
-               ))
+               errors.append(
+                   TaskError(
+                       code=error.validator,
+                       message=error.message,
+                       severity=ErrorSeverity.MEDIUM,
+                       field=error_field,
+                   )
+               )
 
        return errors
    ```
@@ -6880,9 +7143,11 @@ class RobustTaskManager:
 **Optimization Strategies:**
 
 1. **Indexing**
+
    ```python
    from collections import defaultdict
    from typing import Set
+
 
    class TaskIndex:
        """In-memory index for fast task queries."""
@@ -6949,6 +7214,7 @@ class RobustTaskManager:
    ```
 
 2. **Batch Operations**
+
    ```python
    def batch_validate_tasks(
        tasks: list[dict],
@@ -6959,14 +7225,11 @@ class RobustTaskManager:
        results = []
 
        for i in range(0, len(tasks), batch_size):
-           batch = tasks[i:i + batch_size]
+           batch = tasks[i : i + batch_size]
 
            # Validate batch in parallel
            with ThreadPoolExecutor(max_workers=4) as executor:
-               futures = [
-                   executor.submit(validate_task, task, schema)
-                   for task in batch
-               ]
+               futures = [executor.submit(validate_task, task, schema) for task in batch]
 
                for task, future in zip(batch, futures):
                    errors = future.result()
@@ -6980,6 +7243,7 @@ class RobustTaskManager:
 **Memory Optimization Strategies:**
 
 1. **Streaming Parsing**
+
    ```python
    def parse_task_streaming(file_path: Path) -> dict:
        """Parse large task file using streaming."""
@@ -7011,8 +7275,10 @@ class RobustTaskManager:
    ```
 
 2. **Memory-Mapped Files**
+
    ```python
    import mmap
+
 
    def parse_task_mmap(file_path: Path) -> dict:
        """Parse task file using memory mapping."""
@@ -7026,7 +7292,7 @@ class RobustTaskManager:
                    raise ValueError("Invalid frontmatter")
 
                # Parse frontmatter
-               frontmatter_bytes = mm[start + 3:end]
+               frontmatter_bytes = mm[start + 3 : end]
                frontmatter = yaml.safe_load(frontmatter_bytes.decode("utf-8"))
 
                # Body starts after second ---
@@ -7045,22 +7311,24 @@ class RobustTaskManager:
 **Sanitization Strategies:**
 
 1. **YAML Injection Prevention**
+
    ```python
    import yaml
    import re
+
 
    def safe_yaml_load(content: str) -> dict:
        """Safely load YAML with injection prevention."""
        # Remove dangerous YAML tags
        dangerous_tags = [
-           r'!!python/object',
-           r'!!python/name',
-           r'!!js/',
-           r'!!ruby/',
+           r"!!python/object",
+           r"!!python/name",
+           r"!!js/",
+           r"!!ruby/",
        ]
 
        for pattern in dangerous_tags:
-           content = re.sub(pattern, '', content, flags=re.IGNORECASE)
+           content = re.sub(pattern, "", content, flags=re.IGNORECASE)
 
        # Use safe_load
        try:
@@ -7070,6 +7338,7 @@ class RobustTaskManager:
    ```
 
 2. **Path Traversal Prevention**
+
    ```python
    def sanitize_path(path: str, base_dir: Path) -> Path:
        """Prevent directory traversal attacks."""
@@ -7087,30 +7356,32 @@ class RobustTaskManager:
    ```
 
 3. **Content Sanitization**
+
    ```python
    import html
    import re
+
 
    def sanitize_markdown(content: str) -> str:
        """Sanitize markdown content."""
        # Remove script tags
        content = re.sub(
-           r'<script[^>]*>.*?</script>',
-           '',
+           r"<script[^>]*>.*?</script>",
+           "",
            content,
            flags=re.DOTALL | re.IGNORECASE,
        )
 
        # Remove iframe tags
        content = re.sub(
-           r'<iframe[^>]*>.*?</iframe>',
-           '',
+           r"<iframe[^>]*>.*?</iframe>",
+           "",
            content,
            flags=re.DOTALL | re.IGNORECASE,
        )
 
        # Remove javascript: URLs
-       content = re.sub(r'javascript:', '', content, flags=re.IGNORECASE)
+       content = re.sub(r"javascript:", "", content, flags=re.IGNORECASE)
 
        # Escape HTML entities
        content = html.escape(content)
@@ -7126,12 +7397,15 @@ class RobustTaskManager:
 from enum import Enum
 from typing import Set
 
+
 class TaskVisibility(str, Enum):
     """Task visibility levels."""
+
     PUBLIC = "public"  # All agents can see and claim
     PRIVATE = "private"  # Only assigned agent can see
     RESTRICTED = "restricted"  # Requires permission
     INTERNAL = "internal"  # Only internal agents
+
 
 class TaskAccessControl:
     """Access control for tasks."""
@@ -7192,6 +7466,7 @@ class TaskAccessControl:
 from datetime import datetime
 from pathlib import Path
 import json
+
 
 class TaskAuditLogger:
     """Audit logging for task operations."""
@@ -7262,9 +7537,11 @@ from dataclasses import dataclass
 from typing import Counter
 import time
 
+
 @dataclass
 class TaskMetrics:
     """Task operation metrics."""
+
     parse_count: int = 0
     parse_errors: int = 0
     parse_time_total: float = 0.0
@@ -7291,6 +7568,7 @@ class TaskMetrics:
         total = self.parse_count + self.validate_count
         errors = self.parse_errors + self.validate_errors
         return errors / max(total, 1)
+
 
 class TaskMetricsCollector:
     """Collect task operation metrics."""
@@ -7640,10 +7918,12 @@ For more information, see:
 from enum import Enum
 from datetime import datetime, timedelta
 
+
 class CircuitState(str, Enum):
     CLOSED = "closed"  # Normal operation
     OPEN = "open"  # Failing, reject requests
     HALF_OPEN = "half_open"  # Testing recovery
+
 
 class CircuitBreaker:
     """Circuit breaker for task operations."""
@@ -7719,6 +7999,7 @@ from tenacity import (
     retry_if_result,
 )
 
+
 @retry(
     stop=stop_after_attempt(5),
     wait=wait_exponential(multiplier=1, min=1, max=60),
@@ -7728,6 +8009,7 @@ from tenacity import (
 def parse_task_with_retry(file_path: Path) -> dict:
     """Parse task with retry on I/O errors."""
     return parse_task_file(file_path)
+
 
 @retry(
     stop=stop_after_attempt(3),
@@ -7805,6 +8087,7 @@ from rich.progress import Progress, SpinnerColumn, TextColumn
 
 console = Console()
 
+
 def display_task_table(tasks: list[dict]):
     """Display tasks in a rich table."""
     table = Table(title="Tasks")
@@ -7832,18 +8115,20 @@ def display_task_table(tasks: list[dict]):
 
     console.print(table)
 
+
 def display_task_details(task: dict):
     """Display task details in a rich panel."""
     content = f"""
-[bold]ID:[/bold] {task['id']}
-[bold]Title:[/bold] {task['title']}
-[bold]Priority:[/bold] {task.get('priority', 'P2')}
-[bold]Subagent:[/bold] {task.get('subagent_type', 'worker')}
-[bold]Dependencies:[/bold] {', '.join(task.get('depends', [])) or 'None'}
+[bold]ID:[/bold] {task["id"]}
+[bold]Title:[/bold] {task["title"]}
+[bold]Priority:[/bold] {task.get("priority", "P2")}
+[bold]Subagent:[/bold] {task.get("subagent_type", "worker")}
+[bold]Dependencies:[/bold] {", ".join(task.get("depends", [])) or "None"}
 """
 
     panel = Panel(content, title=f"Task: {task['id']}", border_style="blue")
     console.print(panel)
+
 
 def display_validation_results(result: ValidationResult):
     """Display validation results."""
@@ -7896,6 +8181,7 @@ def migrate_tasks_with_progress(task_files: list[Path]):
 from rich.prompt import Prompt, Confirm
 from rich.syntax import Syntax
 
+
 def create_task_interactive():
     """Create task interactively."""
     console.print("[bold blue]Create New Task[/bold blue]")
@@ -7929,13 +8215,15 @@ depends: []
     console.print(syntax)
 
     if Confirm.ask("Create this task?"):
-        create_task_file({
-            "id": task_id,
-            "title": title,
-            "subagent_type": subagent_type,
-            "priority": priority,
-            "depends": [],
-        })
+        create_task_file(
+            {
+                "id": task_id,
+                "title": title,
+                "subagent_type": subagent_type,
+                "priority": priority,
+                "depends": [],
+            }
+        )
         console.print(f"[green]✓ Created task: {task_id}[/green]")
     else:
         console.print("[yellow]Cancelled[/yellow]")
@@ -7945,6 +8233,6 @@ depends: []
 
 **End of Comprehensive Research & Plan Document**
 
-*Total Length: ~8000+ lines*
-*Last Updated: 2026-02-18*
-*Version: 5.0 - Expanded with Polish, Optimization & Robustness*
+_Total Length: ~8000+ lines_
+_Last Updated: 2026-02-18_
+_Version: 5.0 - Expanded with Polish, Optimization & Robustness_

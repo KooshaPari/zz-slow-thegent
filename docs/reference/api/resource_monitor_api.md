@@ -12,7 +12,7 @@ Monitor system resources using psutil and detect leaks.
 
 ### Methods
 
-#### ResourceMonitor.__init__
+#### ResourceMonitor.**init**
 
 ```python
 __init__(self: Any, check_interval: float)
@@ -111,6 +111,7 @@ get_suspicion_level(self: Any)
 Get suspicion level and optimization suggestions.
 
 Returns (level, suggestions) where level is one of:
+
 - "low": Normal usage, no concerns
 - "medium": Elevated usage, monitor
 - "high": High usage, investigate
@@ -127,6 +128,7 @@ is_critical(self: Any)
 Check if resource usage is critical.
 
 Critical thresholds:
+
 - FD usage > 80% (file descriptor exhaustion risk)
 - Process count > 500 (very high, may indicate leak)
 - Memory > 2048MB (2GB) for this process
@@ -198,6 +200,7 @@ get_suspicion_level(self: Any)
 Get suspicion level and optimization suggestions.
 
 Returns (level, suggestions) where level is one of:
+
 - "low": Normal usage, no concerns
 - "medium": Elevated usage, monitor
 - "high": High usage, investigate
@@ -214,6 +217,7 @@ is_critical(self: Any)
 Check if resource usage is critical.
 
 Critical thresholds:
+
 - FD usage > 80% (file descriptor exhaustion risk)
 - Process count > 500 (very high, may indicate leak)
 - Memory > 2048MB (2GB) for this process

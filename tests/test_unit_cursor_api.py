@@ -209,7 +209,10 @@ class TestCursorApiRunnerInitEdgeCases:
 
 @pytest.mark.unit
 class TestResolveCodex:
-    @patch("thegent.agents.cursor_api_runner.shutil.which", return_value="/usr/local/bin/codex")
+    @patch(
+        "thegent.agents.cursor_api_runner.shutil.which",
+        return_value="/usr/local/bin/codex",
+    )
     def test_finds_codex_on_path(self, mock_which) -> None:
         # @trace FR-AGT-005
         """Returns path from shutil.which when codex is on PATH."""
@@ -265,7 +268,10 @@ class TestStripAnsiCursorApi:
 
 @pytest.mark.unit
 class TestIsCursorApiReachable:
-    @patch("thegent.agents.cursor_api_runner._check_cursor_api_reachable", return_value=(True, False, 200))
+    @patch(
+        "thegent.agents.cursor_api_runner._check_cursor_api_reachable",
+        return_value=(True, False, 200),
+    )
     def test_reachable_returns_true(self, mock_check) -> None:
         # @trace FR-AGT-005
         """Returns True when reachability check succeeds."""
@@ -273,7 +279,10 @@ class TestIsCursorApiReachable:
 
         assert _is_cursor_api_reachable("http://127.0.0.1:3000", "token") is True
 
-    @patch("thegent.agents.cursor_api_runner._check_cursor_api_reachable", return_value=(False, False, 500))
+    @patch(
+        "thegent.agents.cursor_api_runner._check_cursor_api_reachable",
+        return_value=(False, False, 500),
+    )
     def test_unreachable_returns_false(self, mock_check) -> None:
         # @trace FR-AGT-005
         """Returns False when HTTP check is unsuccessful."""
@@ -281,7 +290,10 @@ class TestIsCursorApiReachable:
 
         assert _is_cursor_api_reachable("http://127.0.0.1:3000", "token") is False
 
-    @patch("thegent.agents.cursor_api_runner._check_cursor_api_reachable", return_value=(False, True, None))
+    @patch(
+        "thegent.agents.cursor_api_runner._check_cursor_api_reachable",
+        return_value=(False, True, None),
+    )
     def test_empty_token_still_sends_request(self, mock_check) -> None:
         # @trace FR-AGT-005
         """Empty token still attempts the request without auth header."""
@@ -322,7 +334,13 @@ class TestCommandBuildingExtended:
         mock_retry.return_value = make_run_result(exit_code=0, stdout="ok")
 
         runner = CursorApiRunner(model="default-model")
-        runner.run(prompt="test", cwd=None, mode="read-only", timeout=60, agent_model="override-model")
+        runner.run(
+            prompt="test",
+            cwd=None,
+            mode="read-only",
+            timeout=60,
+            agent_model="override-model",
+        )
 
         cmd = mock_retry.call_args.args[0]
         idx = cmd.index("--model")

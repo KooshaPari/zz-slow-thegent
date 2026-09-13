@@ -14,8 +14,7 @@ from __future__ import annotations
 
 import time
 from pathlib import Path
-from typing import Any
-from unittest.mock import MagicMock, patch
+from unittest.mock import patch
 
 import pytest
 
@@ -25,7 +24,7 @@ import pytest
 # dep) while still skipping every test when diskcache is missing.
 pytest.importorskip("diskcache", reason="diskcache dependency is required for diskcache migration tests")
 
-from thegent.cache.multi_level import _DISKCACHE_AVAILABLE, MultiLevelCache
+from thegent.cache.multi_level import MultiLevelCache
 
 # ---------------------------------------------------------------------------
 # Helpers
@@ -287,7 +286,11 @@ class TestScrapersCache:
 
     def test_invalidate_models_cache_clears_data(self) -> None:
         # @trace FR-CACHE-002
-        from thegent.models.scrapers import _MODELS_CACHE, _save_cache, invalidate_models_cache
+        from thegent.models.scrapers import (
+            _MODELS_CACHE,
+            _save_cache,
+            invalidate_models_cache,
+        )
 
         _MODELS_CACHE.clear()
         _save_cache({"cursor-agent": ["gpt-4"]})

@@ -9,6 +9,7 @@ from unittest.mock import patch
 import psutil
 import pytest
 from rich.console import Console
+
 from thegent.ux.session_tui import SessionTUI
 
 
@@ -17,10 +18,19 @@ def test_subagent_probe_failure_sets_degraded_diagnostics() -> None:
     tui = SessionTUI()
 
     with (
-        patch("thegent.ux.session_tui.session_meta_impl", return_value={"pid": 123, "status": "running"}),
+        patch(
+            "thegent.ux.session_tui.session_meta_impl",
+            return_value={"pid": 123, "status": "running"},
+        ),
         patch("thegent.ux.session_tui._is_pid_running", return_value=True),
-        patch("thegent.ux.session_tui.psutil.Process", side_effect=psutil.AccessDenied(pid=123)),
-        patch("thegent.ux.session_tui._find_session_meta", return_value=Path("/tmp/sess-1.json")),
+        patch(
+            "thegent.ux.session_tui.psutil.Process",
+            side_effect=psutil.AccessDenied(pid=123),
+        ),
+        patch(
+            "thegent.ux.session_tui._find_session_meta",
+            return_value=Path("/tmp/sess-1.json"),
+        ),
     ):
         details = tui._get_session_details("sess-1")
 
@@ -63,10 +73,16 @@ def test_subagent_probe_success_returns_entries_without_degraded_state() -> None
             return [_ChildProc()]
 
     with (
-        patch("thegent.ux.session_tui.session_meta_impl", return_value={"pid": 123, "status": "running"}),
+        patch(
+            "thegent.ux.session_tui.session_meta_impl",
+            return_value={"pid": 123, "status": "running"},
+        ),
         patch("thegent.ux.session_tui._is_pid_running", return_value=True),
         patch("thegent.ux.session_tui.psutil.Process", return_value=_ParentProc()),
-        patch("thegent.ux.session_tui._find_session_meta", return_value=Path("/tmp/sess-1.json")),
+        patch(
+            "thegent.ux.session_tui._find_session_meta",
+            return_value=Path("/tmp/sess-1.json"),
+        ),
     ):
         details = tui._get_session_details("sess-1")
 
@@ -83,12 +99,24 @@ def test_render_sessions_list_marks_subagent_probe_failures() -> None:
         patch(
             "thegent.ux.session_tui.ps_impl",
             return_value=[
-                {"id": "sess-fail", "status": "running", "agent": "dex", "pid": 333, "prompt_preview": "running work"}
+                {
+                    "id": "sess-fail",
+                    "status": "running",
+                    "agent": "dex",
+                    "pid": 333,
+                    "prompt_preview": "running work",
+                }
             ],
         ),
-        patch("thegent.ux.session_tui.session_meta_impl", return_value={"pid": 333, "status": "running"}),
+        patch(
+            "thegent.ux.session_tui.session_meta_impl",
+            return_value={"pid": 333, "status": "running"},
+        ),
         patch("thegent.ux.session_tui._is_pid_running", return_value=True),
-        patch("thegent.ux.session_tui.psutil.Process", side_effect=psutil.AccessDenied(pid=333)),
+        patch(
+            "thegent.ux.session_tui.psutil.Process",
+            side_effect=psutil.AccessDenied(pid=333),
+        ),
     ):
         layout = tui.render_sessions_list()
 
@@ -104,9 +132,15 @@ def test_log_path_resolution_failure_sets_degraded_diagnostics() -> None:
     tui = SessionTUI()
 
     with (
-        patch("thegent.ux.session_tui.session_meta_impl", return_value={"pid": 0, "status": "exited"}),
+        patch(
+            "thegent.ux.session_tui.session_meta_impl",
+            return_value={"pid": 0, "status": "exited"},
+        ),
         patch.object(SessionTUI, "_get_subagents_for_session", return_value=[]),
-        patch("thegent.ux.session_tui._find_session_meta", side_effect=RuntimeError("bad meta path")),
+        patch(
+            "thegent.ux.session_tui._find_session_meta",
+            side_effect=RuntimeError("bad meta path"),
+        ),
     ):
         details = tui._get_session_details("sess-2")
 
@@ -137,7 +171,13 @@ def test_render_session_view_shows_degraded_badge() -> None:
     with patch.object(
         SessionTUI,
         "_get_session_details",
-        return_value={"status": "running", "agent": "dex", "pid": 101, "degraded": True, "subagents": []},
+        return_value={
+            "status": "running",
+            "agent": "dex",
+            "pid": 101,
+            "degraded": True,
+            "subagents": [],
+        },
     ):
         layout = tui.render_session_view("sess-3")
 

@@ -11,14 +11,14 @@ tags: [wl-126, b90, monolith-split, mcp]
 ## Problem Statement
 
 `src/thegent/mcp/server.py` grew to 3,944 lines pre-wave-2 (3,939 post-wave-2), well
-above the 500-line module ceiling.  The file contained registration logic for 13+
+above the 500-line module ceiling. The file contained registration logic for 13+
 independent tool groups (sessions, queue, terminal, escalation, governance, research,
-planning, contract_observe, locking_planning, skills, coordination, runtime, batch4)
-each with its own `_load_server_tools_<group>_module()` factory and registration
+planning, contract*observe, locking_planning, skills, coordination, runtime, batch4)
+each with its own `\_load_server_tools*<group>\_module()` factory and registration
 handler.
 
 These tool groups are independent domains — sessions tooling has no logical dependency
-on escalation tooling, for example.  Keeping them in a single file causes:
+on escalation tooling, for example. Keeping them in a single file causes:
 
 1. **Review friction**: Any change to one tool group requires parsing 3.9k lines.
 2. **Merge conflicts**: Parallel agents modifying different tool groups always conflict.
@@ -28,7 +28,7 @@ on escalation tooling, for example.  Keeping them in a single file causes:
 ## Why This Extraction
 
 1. **Tool group isolation**: Each tool group is a coherent domain (sessions, queue,
-   governance, research, planning, etc.).  Extracting them to `mcp/server/<group>.py`
+   governance, research, planning, etc.). Extracting them to `mcp/server/<group>.py`
    enables independent development and testing.
 
 2. **LOC reduction**: The `server/` subdirectory pattern already exists — 24 tool
@@ -41,8 +41,8 @@ on escalation tooling, for example.  Keeping them in a single file causes:
 
 ## Decision
 
-Keep `server.py` as the registrar/lifespan/middleware entry point.  All tool group
-implementations live in `src/thegent/mcp/server/<group>.py`.  The `server.py`
+Keep `server.py` as the registrar/lifespan/middleware entry point. All tool group
+implementations live in `src/thegent/mcp/server/<group>.py`. The `server.py`
 module loads each group at startup via the `_load_server_tools_<group>_module()`
 pattern (already in place post-extraction).
 

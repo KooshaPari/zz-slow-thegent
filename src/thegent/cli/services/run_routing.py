@@ -18,7 +18,7 @@ def build_route_candidates(
     model: str | None,
     provider: str | None,
     agent: str | None,
-    settings: "ThegentSettings",
+    settings: ThegentSettings,
 ) -> list[dict[str, Any]]:
     """Build list of route candidates for Pareto routing.
 

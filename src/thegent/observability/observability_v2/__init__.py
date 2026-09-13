@@ -9,6 +9,7 @@ from typing import Any
 @dataclass
 class AdvancedMetrics:
     """Advanced metrics for observability."""
+
     total_events: int = 0
     success_rate: float = 1.0
 

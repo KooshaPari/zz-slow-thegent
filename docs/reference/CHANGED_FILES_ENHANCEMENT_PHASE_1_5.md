@@ -9,11 +9,13 @@ This document describes the Phase 1.5 enhancement to the thegent-hooks `changed-
 ### Completed Components
 
 #### 1. Core Module: `changed_files.rs`
+
 Location: `/Users/kooshapari/temp-PRODVERCEL/485/kush/thegent/crates/thegent-hooks/src/changed_files.rs`
 
 This module provides:
 
 **Types:**
+
 - `ChangeStatus`: Enum representing git change status (Modified, Added, Deleted, Untracked)
 - `ImpactType`: Enum classifying file impact (CodeImpacting, DocsOnly, Config, Tests, Build, Other)
 - `ChangedFile`: Struct containing path, status, and impact type
@@ -54,6 +56,7 @@ This module provides:
    - Proper propagation and context
 
 #### 2. CLI Integration
+
 Location: `/Users/kooshapari/temp-PRODVERCEL/485/kush/thegent/crates/thegent-hooks/src/main.rs`
 
 **New Subcommands Added:**
@@ -82,11 +85,13 @@ thegent-hooks changed-files-deps [range] [--dependents]
 **Output Formats:**
 
 1. `changed-files`: JSON array of strings (file paths)
+
    ```json
    ["src/main.py", "tests/test_main.py", "README.md"]
    ```
 
 2. `changed-files-filter`: JSON array of objects with metadata
+
    ```json
    [
      {
@@ -103,6 +108,7 @@ thegent-hooks changed-files-deps [range] [--dependents]
    ```
 
 3. `changed-files-impact`: JSON array of code-impacting file paths
+
    ```json
    ["src/main.py", "tests/test_main.py", "src/utils.py"]
    ```
@@ -151,6 +157,7 @@ let impact = graph.get_impact_closure(&paths);
 ## Use Cases
 
 ### 1. CI/CD: Only run tests for code changes
+
 ```bash
 # Get code-impacting files only
 FILES=$(thegent-hooks changed-files-impact)
@@ -160,6 +167,7 @@ fi
 ```
 
 ### 2. Selective Linting
+
 ```bash
 # Get only Python files changed
 FILES=$(thegent-hooks changed-files-filter \
@@ -170,6 +178,7 @@ ruff check $FILES
 ```
 
 ### 3. Impact Analysis
+
 ```bash
 # Get all files impacted by changes (including transitive)
 DEPS=$(thegent-hooks changed-files-deps --dependents)
@@ -177,6 +186,7 @@ echo "Files impacted by changes: $DEPS"
 ```
 
 ### 4. Multi-language Testing
+
 ```bash
 # Run Python tests for Python changes
 PY_FILES=$(thegent-hooks changed-files-filter --extension py)
@@ -195,23 +205,25 @@ fi
 
 ### Comparison: find vs git ls-files
 
-| Operation | Command | Speed | Notes |
-|-----------|---------|-------|-------|
-| List tracked files | `git ls-files` | ~100ms | Very fast, respects .gitignore |
-| List untracked files | `git ls-files --others --exclude-standard` | ~50ms | Respects .gitignore |
-| List all files | `find .` | ~500ms-2s | Slow on large repos, no ignore |
-| Diff analysis | `git diff --name-status` | ~20ms | Very fast, only changed files |
+| Operation            | Command                                    | Speed     | Notes                          |
+| -------------------- | ------------------------------------------ | --------- | ------------------------------ |
+| List tracked files   | `git ls-files`                             | ~100ms    | Very fast, respects .gitignore |
+| List untracked files | `git ls-files --others --exclude-standard` | ~50ms     | Respects .gitignore            |
+| List all files       | `find .`                                   | ~500ms-2s | Slow on large repos, no ignore |
+| Diff analysis        | `git diff --name-status`                   | ~20ms     | Very fast, only changed files  |
 
 **Phase 1.5 uses git ls-files exclusively**, avoiding slow find/grep patterns.
 
 ### Caching Strategy
 
 While caching is mentioned in the design, the current implementation prioritizes:
+
 1. Direct git operations (cached by git internally)
 2. File hash computation (done on-demand)
 3. Regex-based import parsing (done per file)
 
 For production, consider:
+
 - Caching dependency graphs per commit SHA
 - Invalidating on file changes via git hooks
 - Using hashmap for repeated lookups
@@ -238,6 +250,7 @@ fn test_extract_imports_python() { ... }
 ```
 
 To run tests:
+
 ```bash
 cd crates
 cargo test -p thegent-hooks --lib changed_files
@@ -246,19 +259,25 @@ cargo test -p thegent-hooks --lib changed_files
 ## Integration Points
 
 ### 1. Hook Pipeline
+
 The enhanced `changed-files` subcommand integrates with the hook dispatcher:
+
 - Used in `pre-write-validator` to detect impacted domains
 - Used in `post-edit-checker` to identify changed file categories
 - Used in `quality-gate` for selective linting
 
 ### 2. Agent Awareness
+
 The output format includes structured metadata for agent consumption:
+
 - Status enables agent routing (skip if only docs changed)
 - Impact classification for domain-specific handling
 - Dependency graph for transitive impact
 
 ### 3. Work Stream Integration
+
 Changed files are used by work stream tools to:
+
 - Filter work items by impact type
 - Schedule tests based on change scope
 - Identify migration/refactor opportunities
@@ -281,16 +300,19 @@ Changed files are used by work stream tools to:
 ## Future Enhancements
 
 ### Phase 2: Advanced Caching
+
 - Cache dependency graphs per commit
 - Invalidation via git hooks
 - Memory-mapped cache for large repos
 
 ### Phase 3: Language-Specific Analysis
+
 - Use language servers for accurate import resolution
 - Support for more languages (Go, Rust modules, etc.)
 - Handle dynamic imports and conditional logic
 
 ### Phase 4: Impact Visualization
+
 - Generate dependency graphs in GraphML format
 - Visualize impact closures in terminal
 - Export to plantuml/mermaid for documentation
@@ -311,6 +333,7 @@ Changed files are used by work stream tools to:
 This is a pre-existing issue not related to the Phase 1.5 changes.
 
 **To Fix Existing Build Issues**:
+
 1. Add missing dependencies to Cargo.toml:
    ```toml
    lazy_static = "1.4"
@@ -319,6 +342,7 @@ This is a pre-existing issue not related to the Phase 1.5 changes.
 3. Fix ExitStatus API issue in `git_ops.rs` (use conditional compilation for platform-specific APIs)
 
 **Phase 1.5 Code Quality**:
+
 - ✓ No unsafe code
 - ✓ Full error handling with `thiserror`
 - ✓ Comprehensive unit tests included

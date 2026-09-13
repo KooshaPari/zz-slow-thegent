@@ -1,8 +1,8 @@
 from __future__ import annotations
 
-import orjson as json
 from pathlib import Path
 
+import orjson as json
 import yaml
 
 from conftest import _load_script_module
@@ -127,7 +127,11 @@ def test_build_report_contains_policy_and_scan_counts(tmp_path: Path) -> None:
     report = MODULE.build_report(core_dir=core_dir, config_path=config_path)
 
     assert report["ok"] is True
-    assert report["allowed_prefixes"] == ["thegent.core", "thegent.queue", "thegent.config"]
+    assert report["allowed_prefixes"] == [
+        "thegent.core",
+        "thegent.queue",
+        "thegent.config",
+    ]
     assert report["blocked_prefixes"] == ["thegent"]
     assert report["file_count"] == 1
     assert report["import_count"] == 1
@@ -140,7 +144,16 @@ def test_main_summary_json_format_emits_compact_counts(tmp_path: Path, capsys) -
     _write_boundary_config(config_path)
     (core_dir / "bad.py").write_text("import thegent\n", encoding="utf-8")
 
-    exit_code = MODULE.main(["--core-dir", str(core_dir), "--config", str(config_path), "--format", "summary-json"])
+    exit_code = MODULE.main(
+        [
+            "--core-dir",
+            str(core_dir),
+            "--config",
+            str(config_path),
+            "--format",
+            "summary-json",
+        ]
+    )
 
     assert exit_code == 0
     payload = json.loads(capsys.readouterr().out)
@@ -240,7 +253,12 @@ def test_build_violation_entries_returns_ordered_jsonl_payload() -> None:
 
     entries = MODULE.build_violation_entries(report)
 
-    assert entries == [{"kind": "violation", "message": "src/thegent/core/a.py: blocked import 'thegent.mcp'"}]
+    assert entries == [
+        {
+            "kind": "violation",
+            "message": "src/thegent/core/a.py: blocked import 'thegent.mcp'",
+        }
+    ]
 
 
 def test_main_violations_jsonl_format_emits_line_delimited_entries(tmp_path: Path, capsys) -> None:
@@ -250,7 +268,16 @@ def test_main_violations_jsonl_format_emits_line_delimited_entries(tmp_path: Pat
     _write_boundary_config(config_path)
     (core_dir / "bad.py").write_text("import thegent\n", encoding="utf-8")
 
-    exit_code = MODULE.main(["--core-dir", str(core_dir), "--config", str(config_path), "--format", "violations-jsonl"])
+    exit_code = MODULE.main(
+        [
+            "--core-dir",
+            str(core_dir),
+            "--config",
+            str(config_path),
+            "--format",
+            "violations-jsonl",
+        ]
+    )
 
     assert exit_code == 0
     lines = [json.loads(line) for line in capsys.readouterr().out.strip().splitlines()]

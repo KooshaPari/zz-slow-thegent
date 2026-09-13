@@ -5,7 +5,7 @@ Common formatting functions for consistent output across the codebase.
 
 from __future__ import annotations
 
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from typing import Any
 
 
@@ -17,7 +17,7 @@ def format_timestamp(ts: datetime | float | int, fmt: str = "%Y-%m-%d %H:%M:%S")
         fmt: strftime format string
     """
     if isinstance(ts, (int, float)):
-        ts = datetime.fromtimestamp(ts, tz=timezone.utc)
+        ts = datetime.fromtimestamp(ts, tz=UTC)
     return ts.strftime(fmt)
 
 
@@ -122,6 +122,6 @@ def format_table_row(columns: list[str], widths: list[int]) -> str:
         widths: Column widths
     """
     parts = []
-    for col, width in zip(columns, widths):
+    for col, width in zip(columns, widths, strict=False):
         parts.append(str(col)[:width].ljust(width))
     return " | ".join(parts)

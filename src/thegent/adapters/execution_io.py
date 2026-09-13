@@ -27,7 +27,7 @@ from __future__ import annotations
 import os
 import subprocess  # noqa: F401  (re-exported for downstream callers)
 from collections.abc import Callable, Mapping, Sequence
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 from pathlib import Path
 
 __all__ = [
@@ -204,4 +204,7 @@ class ProcessSpawner:
             stdout=stdout,
             stderr=stderr,
         )
-        return SpawnResult(pid=getattr(proc, "pid", -1), stdin_fd=stdin if isinstance(stdin, int) else None)
+        return SpawnResult(
+            pid=getattr(proc, "pid", -1),
+            stdin_fd=stdin if isinstance(stdin, int) else None,
+        )

@@ -75,28 +75,34 @@ Detect which tests are affected by code changes using three complementary strate
 ### Features
 
 #### 1. Pattern-Based Detection
+
 Maps changed files to test files using language-specific patterns.
 
 **Python**:
+
 ```
 src/config.py → tests/test_config.py, tests/config_test.py
 ```
 
 **Rust**:
+
 ```
 src/lib.rs → tests/integration_tests.rs
 src/utils.rs → tests/utils_test.rs
 ```
 
 **TypeScript**:
+
 ```
 src/auth.ts → src/auth.test.ts, tests/auth.test.ts
 ```
 
 #### 2. Import-Based Detection
+
 Parses imports to find tests that directly or indirectly depend on changed modules.
 
 **Example**:
+
 ```python
 # src/auth.py changes
 # tests/test_api.py imports auth via api module
@@ -104,6 +110,7 @@ Parses imports to find tests that directly or indirectly depend on changed modul
 ```
 
 #### 3. Transitive Dependency Resolution
+
 Uses BFS to find all tests affected by transitive dependencies.
 
 ### API
@@ -199,11 +206,13 @@ for test in affected {
 ### Implementation Details
 
 #### Pattern Matching
+
 - Regex-based matching for file extensions
 - Template strings for common patterns
 - Language-aware test naming conventions
 
 #### Import Analysis
+
 - Recursive directory scanning
 - Language-specific import parsing
   - Python: `import`, `from ... import`
@@ -212,6 +221,7 @@ for test in affected {
 - Bidirectional dependency graph
 
 #### Transitive Resolution
+
 - BFS (breadth-first search) for efficiency
 - Early termination when no new dependencies found
 - Cycle detection via visited set
@@ -227,6 +237,7 @@ Pre-compute and cache expensive operations to improve hook performance.
 ### Features
 
 #### 1. Shared Data Prewarming
+
 Scans project for file lists that are needed by multiple hooks.
 
 ```json
@@ -240,9 +251,11 @@ Scans project for file lists that are needed by multiple hooks.
 ```
 
 #### 2. Tool Configuration Caching
+
 Captures tool versions and configurations.
 
 **Ruff**:
+
 ```json
 {
   "version": "0.1.0",
@@ -252,6 +265,7 @@ Captures tool versions and configurations.
 ```
 
 **Shellcheck**:
+
 ```json
 {
   "version": "0.9.0",
@@ -261,6 +275,7 @@ Captures tool versions and configurations.
 ```
 
 #### 3. System Information Caching
+
 Detects available tools and system capabilities.
 
 ```json
@@ -321,16 +336,19 @@ for component in report.successful {
 ### Caching Strategy
 
 #### File-Based Persistence
+
 - Each cache stored as separate JSON file
 - Named: `{component}.json` (e.g., `shared-data.json`)
 - Atomic writes with temporary files
 
 #### TTL Validation
+
 - Default TTL: 3600 seconds (1 hour)
 - Age checked via file modification time
 - Configurable per cache type
 
 #### Directory Structure
+
 ```
 /tmp/thegent-hooks-cache-{uid}/
 ├── shared-data.json
@@ -350,6 +368,7 @@ Track hook execution metrics, issues, and performance data for debugging and opt
 ### Features
 
 #### 1. Execution Reports
+
 Comprehensive tracking of single hook runs.
 
 ```json
@@ -369,6 +388,7 @@ Comprehensive tracking of single hook runs.
 ```
 
 #### 2. Issue Tracking
+
 Type-safe issue representation with severity levels.
 
 ```rust
@@ -391,6 +411,7 @@ pub enum IssueType {
 ```
 
 #### 3. Performance Metrics
+
 Detailed timing and resource usage tracking.
 
 ```rust
@@ -406,6 +427,7 @@ pub struct PerformanceMetrics {
 ```
 
 #### 4. Summary Reporting
+
 Aggregate view across multiple hooks.
 
 ```json
@@ -495,6 +517,7 @@ thegent-hooks affected-tests <project_dir> [strategy] [changed_files...]
 ```
 
 **Arguments**:
+
 - `project_dir`: Root of project to analyze
 - `strategy`: Detection strategy (default: pattern)
   - `pattern`: Fast, language-specific patterns
@@ -504,16 +527,19 @@ thegent-hooks affected-tests <project_dir> [strategy] [changed_files...]
 - `changed_files`: Files changed (or JSON from stdin)
 
 **Input**: JSON array via stdin (optional)
+
 ```json
 ["src/config.py", "src/utils.py"]
 ```
 
 **Output**: JSON array of test file paths
+
 ```json
 ["tests/test_config.py", "tests/test_utils.py"]
 ```
 
 **Example**:
+
 ```bash
 $ git diff --name-only HEAD | jq -R -s -c 'split("\n")[:-1]' | \
   thegent-hooks affected-tests . all
@@ -527,9 +553,11 @@ thegent-hooks prewarm [project_dir]
 ```
 
 **Arguments**:
+
 - `project_dir`: Root of project (default: current directory)
 
 **Output**: JSON report
+
 ```json
 {
   "successful": ["shared-data", "ruff", "shellcheck", "system-info"],
@@ -538,6 +566,7 @@ thegent-hooks prewarm [project_dir]
 ```
 
 **Example**:
+
 ```bash
 $ thegent-hooks prewarm .
 {
@@ -553,17 +582,20 @@ thegent-hooks report <hook_name> <session_id> <status> <exit_code>
 ```
 
 **Arguments**:
+
 - `hook_name`: Name of hook
 - `session_id`: Session identifier
 - `status`: Execution status (success/failed/timeout)
 - `exit_code`: Process exit code
 
 **Output**: Path to report file
+
 ```
 /path/to/docs/reports/quality-gate_1000000_abc123.json
 ```
 
 **Example**:
+
 ```bash
 $ thegent-hooks report quality-gate abc123 failed 1
 /path/to/docs/reports/quality-gate_1000000_abc123.json
@@ -578,18 +610,21 @@ $ thegent-hooks report quality-gate abc123 failed 1
 Each module includes comprehensive unit tests covering:
 
 **affected_tests.rs**:
+
 - Pattern detection for each language
 - Import analysis
 - Dependency graph construction
 - Edge cases (empty files, cycles, etc.)
 
 **prewarm.rs**:
+
 - Cache directory creation
 - File discovery with exclusions
 - Tool detection
 - TTL validation
 
 **report.rs**:
+
 - Report serialization
 - Issue tracking
 - Metrics aggregation
@@ -600,18 +635,21 @@ Each module includes comprehensive unit tests covering:
 Separate test files verify end-to-end workflows:
 
 **affected_tests_integration.rs** (12 tests):
+
 - Project structure creation
 - Pattern-based test detection
 - Transitive dependencies
 - Multiple file types
 
 **prewarm_integration.rs** (15 tests):
+
 - Cache structure
 - File discovery
 - Configuration detection
 - Expiration validation
 
 **report_integration.rs** (16 tests):
+
 - Report persistence
 - Issue aggregation
 - Performance metrics
@@ -620,6 +658,7 @@ Separate test files verify end-to-end workflows:
 ### Test Coverage
 
 Total: 43 unit/integration tests covering:
+
 - ✅ Core functionality
 - ✅ Error handling
 - ✅ Edge cases
@@ -632,32 +671,32 @@ Total: 43 unit/integration tests covering:
 
 ### Affected Tests
 
-| Operation | Complexity | Time |
-|-----------|-----------|------|
-| Pattern detection | O(n) | ~1ms per file |
-| Import parsing | O(n log n) | ~50ms per file |
-| Transitive BFS | O(n + e) | ~10ms per file |
+| Operation         | Complexity | Time           |
+| ----------------- | ---------- | -------------- |
+| Pattern detection | O(n)       | ~1ms per file  |
+| Import parsing    | O(n log n) | ~50ms per file |
+| Transitive BFS    | O(n + e)   | ~10ms per file |
 
 **Recommended**: Use pattern for speed, import for accuracy, all for thoroughness.
 
 ### Prewarm
 
-| Operation | Complexity | Time |
-|-----------|-----------|------|
-| Shared data scan | O(n) | ~500ms per 10K files |
-| Tool detection | O(k) | ~50ms (k = tools) |
-| System info | O(1) | ~10ms |
+| Operation        | Complexity | Time                 |
+| ---------------- | ---------- | -------------------- |
+| Shared data scan | O(n)       | ~500ms per 10K files |
+| Tool detection   | O(k)       | ~50ms (k = tools)    |
+| System info      | O(1)       | ~10ms                |
 
 **Recommended**: Run once per session, cache for 1 hour.
 
 ### Report
 
-| Operation | Complexity | Time |
-|-----------|-----------|------|
-| Report write | O(1) | ~5ms |
-| Report read | O(1) | ~2ms |
-| Summary gen | O(m) | ~50ms (m = reports) |
-| Cleanup | O(m) | ~100ms per 100 reports |
+| Operation    | Complexity | Time                   |
+| ------------ | ---------- | ---------------------- |
+| Report write | O(1)       | ~5ms                   |
+| Report read  | O(1)       | ~2ms                   |
+| Summary gen  | O(m)       | ~50ms (m = reports)    |
+| Cleanup      | O(m)       | ~100ms per 100 reports |
 
 **Recommended**: Write per-hook, summarize periodically, cleanup daily.
 
@@ -708,6 +747,7 @@ Total: 43 unit/integration tests covering:
 If you have shell scripts using these operations:
 
 **Before** (shell):
+
 ```bash
 # Detect affected tests
 python scripts/find_affected_tests.py src/config.py
@@ -720,6 +760,7 @@ prewarm_caches .
 ```
 
 **After** (Rust):
+
 ```bash
 # Detect affected tests
 thegent-hooks affected-tests . pattern src/config.py
@@ -737,14 +778,17 @@ thegent-hooks prewarm .
 ### Common Issues
 
 **Q: "No test files found"**
+
 - A: Ensure test files match expected patterns
 - Check: `tests/test_*.py`, `src/*.test.ts`, `tests/*_test.rs`
 
 **Q: "Prewarm reports errors"**
+
 - A: Check tool availability
 - Command: `which ruff shellcheck python`
 
 **Q: "Report file not created"**
+
 - A: Verify report directory exists
 - Command: `mkdir -p docs/reports`
 

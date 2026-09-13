@@ -6,12 +6,17 @@ import json
 
 import pytest
 
-from thegent.integrations.workstream_autosync import WorkstreamAutosyncConfig, WorkstreamAutosyncRunner
+from thegent.integrations.workstream_autosync import (
+    WorkstreamAutosyncConfig,
+    WorkstreamAutosyncRunner,
+)
 
 
 @pytest.mark.asyncio
 @pytest.mark.requirement("WL-324")
-async def test_connector_diff_workflow_output_includes_dry_run_artifact_path(tmp_path) -> None:
+async def test_connector_diff_workflow_output_includes_dry_run_artifact_path(
+    tmp_path,
+) -> None:
     """Cycle/status outputs expose connector diff workflow schema with dry-run artifact path."""
     work_stream_path = tmp_path / "WORK_STREAM.md"
     work_stream_path.write_text(

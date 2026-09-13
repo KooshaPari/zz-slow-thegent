@@ -11,6 +11,7 @@ Platform-specific path resolution following OS conventions.
 Get platform-specific configuration directory.
 
 Follows OS conventions:
+
 - macOS: ~/Library/Application Support/thegent
 - Linux: ~/.config/thegent
 - Windows: %APPDATA%/thegent

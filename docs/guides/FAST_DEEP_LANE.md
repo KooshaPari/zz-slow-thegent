@@ -55,14 +55,18 @@ uv run pytest -c pytest-fast.ini
 ```python
 import pytest
 
+
 @pytest.mark.fast
 def test_unit_thing(): ...
+
 
 @pytest.mark.deep
 def test_integration_thing(): ...
 
+
 @pytest.mark.gate
 def test_gate_thing(): ...
+
 
 @pytest.mark.slow
 def test_expensive_computation(): ...
@@ -76,9 +80,9 @@ def test_expensive_computation(): ...
 
 ## Lane Summary
 
-| Lane | Trigger | Markers included | Target time |
-|------|---------|-----------------|-------------|
-| fast | Default / CI fast | not slow, not integration, not e2e, not load | < 30s |
-| deep | On demand / nightly | `@pytest.mark.deep` | < 5 min |
-| gate | Pre-promotion | fast then deep | < 6 min |
-| nightly | Nightly CI | slow or integration or e2e or load | Unrestricted |
+| Lane    | Trigger             | Markers included                             | Target time  |
+| ------- | ------------------- | -------------------------------------------- | ------------ |
+| fast    | Default / CI fast   | not slow, not integration, not e2e, not load | < 30s        |
+| deep    | On demand / nightly | `@pytest.mark.deep`                          | < 5 min      |
+| gate    | Pre-promotion       | fast then deep                               | < 6 min      |
+| nightly | Nightly CI          | slow or integration or e2e or load           | Unrestricted |

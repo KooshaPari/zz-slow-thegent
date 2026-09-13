@@ -35,7 +35,7 @@ from thegent.utils.shell import run_shell_command, get_fastest_shell
 shell = get_fastest_shell()  # Returns '/bin/zsh'
 
 # Run command with optimized shell
-result = run_shell_command('chmod +x script.sh')
+result = run_shell_command("chmod +x script.sh")
 ```
 
 ## Next Steps
@@ -55,12 +55,15 @@ subprocess.run(cmd, shell=True)
 
 # After:
 import subprocess
-subprocess.run(cmd, shell=True, executable='/bin/zsh')
+
+subprocess.run(cmd, shell=True, executable="/bin/zsh")
 ```
 
 Or use the utility:
+
 ```python
 from thegent.utils.shell import run_shell_command
+
 run_shell_command(cmd)
 ```
 

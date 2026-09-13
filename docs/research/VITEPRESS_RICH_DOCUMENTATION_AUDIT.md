@@ -10,28 +10,28 @@
 
 ### ✅ What's Configured
 
-| Feature | Status | Details |
-|---------|--------|---------|
-| **VitePress Setup** | ✅ Configured | Basic config in `docs/.vitepress/config.ts` |
-| **DemoGif Component** | ✅ Available | `DemoGif.vue` component for GIFs |
-| **Callout Component** | ✅ Available | Callout component for tips/warnings |
-| **Local Search** | ✅ Configured | Built-in local search enabled |
-| **Dark/Light Mode** | ✅ Configured | Appearance toggle enabled |
-| **Cross-Project Links** | ✅ Configured | Plugin for linking between projects |
-| **Auto-Build Hook** | ✅ Available | Pre-commit hook for docs build |
+| Feature                 | Status        | Details                                     |
+| ----------------------- | ------------- | ------------------------------------------- |
+| **VitePress Setup**     | ✅ Configured | Basic config in `docs/.vitepress/config.ts` |
+| **DemoGif Component**   | ✅ Available  | `DemoGif.vue` component for GIFs            |
+| **Callout Component**   | ✅ Available  | Callout component for tips/warnings         |
+| **Local Search**        | ✅ Configured | Built-in local search enabled               |
+| **Dark/Light Mode**     | ✅ Configured | Appearance toggle enabled                   |
+| **Cross-Project Links** | ✅ Configured | Plugin for linking between projects         |
+| **Auto-Build Hook**     | ✅ Available  | Pre-commit hook for docs build              |
 
 ### ✅ What's Implemented
 
-| Feature | Status | Priority | Impact |
-|---------|--------|----------|--------|
-| **Mermaid Diagrams** | ✅ Configured | P1 | High - Diagrams are essential for architecture docs |
-| **Tryable Code Playgrounds** | ✅ Configured | P1 | High - Interactive code examples |
-| **VHS/Playwright GIF Generation** | ✅ Configured | P1 | High - Automated demo recordings |
-| **Agent Doc Writing Workflows** | ✅ Configured | P1 | High - Auto-population from code/docs |
-| **Auto Sidebar Generation** | ✅ Configured | P2 | Medium - Better navigation |
-| **LLM-Friendly Output** | ✅ Configured | P2 | Medium - Better AI consumption |
-| **API Reference Auto-Gen** | ✅ Configured | P2 | Medium - SDK documentation |
-| **Versioned Docs** | ⏳ Future | P3 | Low - Multi-version support |
+| Feature                           | Status        | Priority | Impact                                              |
+| --------------------------------- | ------------- | -------- | --------------------------------------------------- |
+| **Mermaid Diagrams**              | ✅ Configured | P1       | High - Diagrams are essential for architecture docs |
+| **Tryable Code Playgrounds**      | ✅ Configured | P1       | High - Interactive code examples                    |
+| **VHS/Playwright GIF Generation** | ✅ Configured | P1       | High - Automated demo recordings                    |
+| **Agent Doc Writing Workflows**   | ✅ Configured | P1       | High - Auto-population from code/docs               |
+| **Auto Sidebar Generation**       | ✅ Configured | P2       | Medium - Better navigation                          |
+| **LLM-Friendly Output**           | ✅ Configured | P2       | Medium - Better AI consumption                      |
+| **API Reference Auto-Gen**        | ✅ Configured | P2       | Medium - SDK documentation                          |
+| **Versioned Docs**                | ⏳ Future     | P3       | Low - Multi-version support                         |
 
 ---
 
@@ -43,29 +43,34 @@
 **Status**: Mermaid plugin installed, configured, and ready to use
 
 **Implementation**:
+
 ```typescript
 // Install: npm install vitepress-plugin-mermaid mermaid
-import { withMermaid } from 'vitepress-plugin-mermaid'
+import { withMermaid } from "vitepress-plugin-mermaid";
 
-export default withMermaid(defineConfig({
-  mermaid: {
-    theme: 'base',
-    themeVariables: {
-      primaryColor: '#42b883',
-      background: 'var(--vp-c-bg)',
-    }
-  }
-}))
+export default withMermaid(
+  defineConfig({
+    mermaid: {
+      theme: "base",
+      themeVariables: {
+        primaryColor: "#42b883",
+        background: "var(--vp-c-bg)",
+      },
+    },
+  }),
+);
 ```
 
 **Usage in MD**:
-```markdown
+
+````markdown
 ```mermaid
 graph TD
     A[Agent Request] --> B{Router}
     B -->|Fast| C[Lifecycle Loop]
     B -->|Complex| D[The Gent]
 ```
+````
 
 ### 2. Tryable Code Playgrounds
 
@@ -73,20 +78,17 @@ graph TD
 **Needed**: Interactive code examples, API try-it-out, CLI command playgrounds
 
 **Implementation Options**:
+
 - **vitepress-demo-plugin** - Vue/React component demos
 - **@vue/repl** - Vue SFC playground
 - **Custom component** - Python/CLI code execution (via API)
 
 **Example**:
-```vue
-<CodePlayground lang="python" endpoint="/api/execute">
-```python
-from thegent import Agent
 
-agent = Agent("codex")
-result = agent.run("Fix this bug")
-print(result)
+```vue
+<CodePlayground lang="python" endpoint="/api/execute"></CodePlayground>
 ```
+
 </CodePlayground>
 ```
 
@@ -96,11 +98,13 @@ print(result)
 **Needed**: Automated terminal recordings, UI automation demos
 
 **Implementation**:
+
 - **VHS** (Terminal GIFs): Record terminal sessions
 - **Playwright** (Browser GIFs): Record browser automation
 - **Agent Workflow**: Auto-generate GIFs from demo scripts
 
 **Workflow**:
+
 ```bash
 # Agent workflow
 1. Detect demo script in docs
@@ -114,12 +118,14 @@ print(result)
 
 **Current**: ❌ Not configured
 **Needed**: Auto-populate VitePress from:
+
 - Code docstrings → API docs
 - Architecture docs → Diagrams
 - CLI commands → Interactive examples
 - Research docs → Wiki pages
 
 **Implementation**:
+
 - **Docstring Parser**: Extract API docs from Python
 - **Architecture Analyzer**: Generate Mermaid from code structure
 - **CLI Command Extractor**: Generate tryable examples
@@ -132,6 +138,7 @@ print(result)
 ### Phase 1: Core Rich Elements (Week 1)
 
 **Tasks**:
+
 1. ✅ Install and configure Mermaid plugin
 2. ✅ Create CodePlayground component
 3. ✅ Set up VHS for terminal recordings
@@ -139,6 +146,7 @@ print(result)
 5. ✅ Create agent workflow for GIF generation
 
 **Deliverables**:
+
 - Mermaid diagrams working in all docs
 - Tryable code playgrounds for API/CLI
 - Automated GIF generation pipeline
@@ -146,6 +154,7 @@ print(result)
 ### Phase 2: Agent Workflows (Week 2)
 
 **Tasks**:
+
 1. ✅ Docstring → API docs generator
 2. ✅ Architecture → Diagram generator
 3. ✅ CLI → Interactive examples generator
@@ -153,6 +162,7 @@ print(result)
 5. ✅ Auto-sidebar generation
 
 **Deliverables**:
+
 - Auto-generated API reference
 - Auto-generated architecture diagrams
 - Auto-populated sidebar
@@ -161,6 +171,7 @@ print(result)
 ### Phase 3: Advanced Features (Week 3)
 
 **Tasks**:
+
 1. ✅ Versioned documentation
 2. ✅ LLM-friendly output (.llms.txt)
 3. ✅ Search enhancements
@@ -168,6 +179,7 @@ print(result)
 5. ✅ Feedback system
 
 **Deliverables**:
+
 - Multi-version docs
 - AI-optimized documentation
 - Enhanced search
@@ -178,6 +190,7 @@ print(result)
 ## Rich Elements Checklist
 
 ### Diagrams
+
 - [ ] Mermaid flowcharts
 - [ ] Sequence diagrams
 - [ ] State machines
@@ -186,6 +199,7 @@ print(result)
 - [ ] Network diagrams
 
 ### Interactive Code
+
 - [ ] Python playground
 - [ ] CLI command runner
 - [ ] API try-it-out
@@ -193,6 +207,7 @@ print(result)
 - [ ] Query builder
 
 ### Visual Demos
+
 - [ ] Terminal recordings (VHS)
 - [ ] Browser recordings (Playwright)
 - [ ] Animated GIFs
@@ -200,6 +215,7 @@ print(result)
 - [ ] Screenshot galleries
 
 ### Auto-Generated Content
+
 - [ ] API reference from docstrings
 - [ ] Architecture diagrams from code
 - [ ] CLI examples from commands
@@ -274,10 +290,10 @@ print(result)
 ### 2. Update VitePress Config
 
 ```typescript
-import { defineConfig } from 'vitepress'
-import { withMermaid } from 'vitepress-plugin-mermaid'
-import { withSidebars } from 'vitepress-sidebar'
-import { withLLMs } from 'vitepress-plugin-llms'
+import { defineConfig } from "vitepress";
+import { withMermaid } from "vitepress-plugin-mermaid";
+import { withSidebars } from "vitepress-sidebar";
+import { withLLMs } from "vitepress-plugin-llms";
 
 export default withMermaid(
   withSidebars(
@@ -287,11 +303,11 @@ export default withMermaid(
 
         // Mermaid config
         mermaid: {
-          theme: 'base',
+          theme: "base",
           themeVariables: {
-            primaryColor: '#42b883',
-            background: 'var(--vp-c-bg)',
-          }
+            primaryColor: "#42b883",
+            background: "var(--vp-c-bg)",
+          },
         },
 
         // Auto sidebar
@@ -301,41 +317,42 @@ export default withMermaid(
 
         // LLM-friendly output
         llms: {
-          outputDir: '.llms',
+          outputDir: ".llms",
           includeCode: true,
-        }
-      })
-    )
-  )
-)
+        },
+      }),
+    ),
+  ),
+);
 ```
 
 ### 3. Create Components
 
 **CodePlayground.vue**:
+
 ```vue
 <script setup>
-import { ref } from 'vue'
+import { ref } from "vue";
 
 const props = defineProps({
-  lang: { type: String, default: 'python' },
-  endpoint: { type: String, default: '/api/execute' },
-  code: { type: String, required: true }
-})
+  lang: { type: String, default: "python" },
+  endpoint: { type: String, default: "/api/execute" },
+  code: { type: String, required: true },
+});
 
-const output = ref('')
-const running = ref(false)
+const output = ref("");
+const running = ref(false);
 
 async function run() {
-  running.value = true
+  running.value = true;
   try {
     const res = await fetch(props.endpoint, {
-      method: 'POST',
-      body: JSON.stringify({ lang: props.lang, code: props.code })
-    })
-    output.value = await res.text()
+      method: "POST",
+      body: JSON.stringify({ lang: props.lang, code: props.code }),
+    });
+    output.value = await res.text();
   } finally {
-    running.value = false
+    running.value = false;
   }
 }
 </script>
@@ -350,6 +367,7 @@ async function run() {
 ```
 
 **DemoGif.vue** (already exists, enhance):
+
 - Add auto-generation from VHS/Playwright
 - Add lazy loading
 - Add captions from metadata
@@ -413,18 +431,18 @@ def generate_demo_gifs():
 
 ## Next Actions (WORK_STREAM IDs)
 
-| ID | Action | Priority | Depends |
-|----|--------|----------|---------|
-| `vitepress-mermaid` | Install and configure Mermaid plugin | P1 | - |
-| `vitepress-code-playground` | Create CodePlayground component | P1 | - |
-| `vitepress-vhs-integration` | Set up VHS for terminal recordings | P1 | - |
-| `vitepress-playwright-integration` | Set up Playwright for browser recordings | P1 | - |
-| `vitepress-agent-workflows` | Create agent workflows for auto-population | P1 | vitepress-mermaid |
-| `vitepress-api-docs-generator` | Auto-generate API docs from docstrings | P2 | vitepress-agent-workflows |
-| `vitepress-architecture-generator` | Auto-generate architecture diagrams | P2 | vitepress-agent-workflows |
-| `vitepress-cli-examples-generator` | Auto-generate CLI examples | P2 | vitepress-code-playground |
-| `vitepress-demo-gif-generator` | Auto-generate demo GIFs | P2 | vitepress-vhs-integration |
-| `vitepress-auto-sidebar` | Auto-generate sidebar from structure | P2 | - |
+| ID                                 | Action                                     | Priority | Depends                   |
+| ---------------------------------- | ------------------------------------------ | -------- | ------------------------- |
+| `vitepress-mermaid`                | Install and configure Mermaid plugin       | P1       | -                         |
+| `vitepress-code-playground`        | Create CodePlayground component            | P1       | -                         |
+| `vitepress-vhs-integration`        | Set up VHS for terminal recordings         | P1       | -                         |
+| `vitepress-playwright-integration` | Set up Playwright for browser recordings   | P1       | -                         |
+| `vitepress-agent-workflows`        | Create agent workflows for auto-population | P1       | vitepress-mermaid         |
+| `vitepress-api-docs-generator`     | Auto-generate API docs from docstrings     | P2       | vitepress-agent-workflows |
+| `vitepress-architecture-generator` | Auto-generate architecture diagrams        | P2       | vitepress-agent-workflows |
+| `vitepress-cli-examples-generator` | Auto-generate CLI examples                 | P2       | vitepress-code-playground |
+| `vitepress-demo-gif-generator`     | Auto-generate demo GIFs                    | P2       | vitepress-vhs-integration |
+| `vitepress-auto-sidebar`           | Auto-generate sidebar from structure       | P2       | -                         |
 
 **See Also**: [WORK_STREAM.md](../reference/WORK_STREAM.md) for full backlog
 
@@ -440,13 +458,12 @@ def generate_demo_gifs():
 
 **Status**: ❌ **NOT FULLY CONFIGURED** - Rich elements and agent workflows need implementation
 
-
 ---
+
 ## See also
 
 - [WORK_STREAM.md](../reference/WORK_STREAM.md) — canonical backlog
 - [00-MASTER-INDEX.md](../plans/00-MASTER-INDEX.md) — plan index
-
 
 ---
 
@@ -456,14 +473,17 @@ def generate_demo_gifs():
 **Extended by:** Claude Code
 
 ### Changes Made
+
 1. Added planning patterns
 2. Added implementation roadmap
 3. Enhanced cross-references
 
 ### Cross-References Added
+
 - WORK_STREAM.md
 - Implementation guides
 
 ### Practical Additions
+
 - Planning templates
 - Roadmap configurations

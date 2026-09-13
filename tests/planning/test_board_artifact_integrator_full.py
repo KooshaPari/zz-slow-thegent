@@ -3,9 +3,6 @@
 from __future__ import annotations
 
 from pathlib import Path
-from unittest.mock import MagicMock, patch
-
-import pytest
 
 try:
     import orjson as json
@@ -80,7 +77,18 @@ class TestBoardArtifactParserJson:
         from thegent.planning.board_artifact_integrator import BoardArtifactParser
 
         json_file = tmp_path / "test.json"
-        json_file.write_text(json.dumps([{"id": "TST-001", "title": "Task1", "status": "BACKLOG", "priority": "P0"}]).decode("utf-8"))
+        json_file.write_text(
+            json.dumps(
+                [
+                    {
+                        "id": "TST-001",
+                        "title": "Task1",
+                        "status": "BACKLOG",
+                        "priority": "P0",
+                    }
+                ]
+            ).decode("utf-8")
+        )
         parser = BoardArtifactParser()
         items = parser.parse_json(json_file)
         assert len(items) == 1
@@ -314,7 +322,10 @@ class TestCreateBoardArtifactIntegrator:
 
     def test_creates_integrator(self, tmp_path: Path) -> None:
         """Factory creates BoardArtifactIntegrator instance."""
-        from thegent.planning.board_artifact_integrator import create_board_artifact_integrator, BoardArtifactIntegrator
+        from thegent.planning.board_artifact_integrator import (
+            BoardArtifactIntegrator,
+            create_board_artifact_integrator,
+        )
 
         integrator = create_board_artifact_integrator(board_artifacts_dir=tmp_path)
         assert isinstance(integrator, BoardArtifactIntegrator)

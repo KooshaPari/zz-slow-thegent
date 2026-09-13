@@ -26,7 +26,6 @@ from contextlib import contextmanager
 from dataclasses import dataclass
 from typing import Any
 
-
 # ---------------------------------------------------------------------------
 # Exception
 # ---------------------------------------------------------------------------
@@ -239,7 +238,7 @@ def get_perf_summary() -> dict[str, Any]:
 
 
 @contextmanager
-def budget_context(label: str) -> Generator[BudgetResult, None, None]:
+def budget_context(label: str) -> Generator[BudgetResult]:
     """Context manager that records wall-clock time and peak RSS.
 
     Yields a :class:`BudgetResult` dataclass.  Timing and memory

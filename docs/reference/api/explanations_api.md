@@ -12,7 +12,7 @@ Generates explanations for agent decisions at different levels of detail.
 
 ### Methods
 
-#### ExplanationGenerator.__init__
+#### ExplanationGenerator.**init**
 
 ```python
 __init__(self: Any, settings: ThegentSettings)

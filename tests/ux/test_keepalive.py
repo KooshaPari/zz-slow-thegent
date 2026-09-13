@@ -29,7 +29,6 @@ Covers (FR-UX-KEEPALIVE-*):
 from __future__ import annotations
 
 import io
-import sys
 import time
 from contextlib import contextmanager
 from typing import TYPE_CHECKING, cast
@@ -62,14 +61,14 @@ class _NonTtyStringIO(io.StringIO):
 
 
 @contextmanager
-def _tty_stdout(buf: _TtyStringIO) -> Generator[_TtyStringIO, None, None]:
+def _tty_stdout(buf: _TtyStringIO) -> Generator[_TtyStringIO]:
     """Patch sys.stdout with a TTY-reporting StringIO."""
     with patch("sys.stdout", buf):
         yield buf
 
 
 @contextmanager
-def _non_tty_stdout(buf: _NonTtyStringIO) -> Generator[_NonTtyStringIO, None, None]:
+def _non_tty_stdout(buf: _NonTtyStringIO) -> Generator[_NonTtyStringIO]:
     """Patch sys.stdout with a non-TTY StringIO."""
     with patch("sys.stdout", buf):
         yield buf
@@ -77,7 +76,12 @@ def _non_tty_stdout(buf: _NonTtyStringIO) -> Generator[_NonTtyStringIO, None, No
 
 def _fast_config(**kwargs: object) -> KeepaliveConfig:
     """KeepaliveConfig with a very short interval for test speed."""
-    defaults: dict[str, object] = {"interval_s": 0.05, "message": ".", "newline_every": 10, "enabled": True}
+    defaults: dict[str, object] = {
+        "interval_s": 0.05,
+        "message": ".",
+        "newline_every": 10,
+        "enabled": True,
+    }
     defaults.update(kwargs)
     return KeepaliveConfig(
         interval_s=cast("float", defaults["interval_s"]),
@@ -310,9 +314,8 @@ def test_exception_inside_context_stops_thread():
     with _tty_stdout(buf):
         cfg = _fast_config(interval_s=10.0)
         ka = TerminalKeepalive(cfg)
-        with pytest.raises(RuntimeError, match="intentional"):
-            with ka:
-                raise RuntimeError("intentional")
+        with pytest.raises(RuntimeError, match="intentional"), ka:
+            raise RuntimeError("intentional")
     # Thread must be stopped despite the exception
     assert ka._thread is None or not ka._thread.is_alive()
 
@@ -345,9 +348,8 @@ def test_stdout_oserror_swallowed():
 def test_keepalive_cm_yields_instance():
     """@trace FR-UX-KEEPALIVE-015"""
     buf = _TtyStringIO()
-    with _tty_stdout(buf):
-        with keepalive(interval_s=10.0, message=".") as ka:
-            assert isinstance(ka, TerminalKeepalive)
+    with _tty_stdout(buf), keepalive(interval_s=10.0, message=".") as ka:
+        assert isinstance(ka, TerminalKeepalive)
 
 
 # ---------------------------------------------------------------------------
@@ -358,10 +360,9 @@ def test_keepalive_cm_yields_instance():
 def test_keepalive_cm_propagates_config():
     """@trace FR-UX-KEEPALIVE-016"""
     buf = _TtyStringIO()
-    with _tty_stdout(buf):
-        with keepalive(interval_s=7.5, message="~") as ka:
-            assert ka._config.interval_s == 7.5
-            assert ka._config.message == "~"
+    with _tty_stdout(buf), keepalive(interval_s=7.5, message="~") as ka:
+        assert ka._config.interval_s == 7.5
+        assert ka._config.message == "~"
 
 
 # ---------------------------------------------------------------------------
@@ -372,9 +373,8 @@ def test_keepalive_cm_propagates_config():
 def test_keepalive_cm_no_tty_no_output():
     """@trace FR-UX-KEEPALIVE-017"""
     buf = _NonTtyStringIO()
-    with _non_tty_stdout(buf):
-        with keepalive(interval_s=0.01) as ka:
-            time.sleep(0.1)
+    with _non_tty_stdout(buf), keepalive(interval_s=0.01) as ka:
+        time.sleep(0.1)
     assert buf.getvalue() == ""
     assert ka._thread is None
 
@@ -387,10 +387,9 @@ def test_keepalive_cm_no_tty_no_output():
 def test_keepalive_cm_exception_stops_cleanly():
     """@trace FR-UX-KEEPALIVE-018"""
     buf = _TtyStringIO()
-    with _tty_stdout(buf):
-        with pytest.raises(ValueError, match="boom"):
-            with keepalive(interval_s=10.0) as ka:
-                raise ValueError("boom")
+    with _tty_stdout(buf), pytest.raises(ValueError, match="boom"):
+        with keepalive(interval_s=10.0) as ka:
+            raise ValueError("boom")
     assert ka._thread is None or not ka._thread.is_alive()
 
 

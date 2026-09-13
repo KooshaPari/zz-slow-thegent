@@ -17,9 +17,8 @@ Design constraints:
 
 from __future__ import annotations
 
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 from typing import Any
-
 
 SCHEMA_VERSION = "2026.07-aud15"
 
@@ -27,6 +26,7 @@ SCHEMA_VERSION = "2026.07-aud15"
 # ------------------------------------------------------------------
 # Base gate contract
 # ------------------------------------------------------------------
+
 
 @dataclass(frozen=True, slots=True)
 class GateContract:

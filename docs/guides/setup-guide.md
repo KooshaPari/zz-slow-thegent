@@ -24,19 +24,19 @@ Before installing CRUN, ensure you have the following:
 
 ### Required Software
 
-| Component | Version | Purpose |
-|-----------|---------|---------|
-| Python | 3.11 - 3.13 | CRUN requires Python 3.11+ |
-| pip or uv | Latest | Package manager for Python dependencies |
-| Git | 2.0+ | Optional, for version control integration |
+| Component | Version     | Purpose                                   |
+| --------- | ----------- | ----------------------------------------- |
+| Python    | 3.11 - 3.13 | CRUN requires Python 3.11+                |
+| pip or uv | Latest      | Package manager for Python dependencies   |
+| Git       | 2.0+        | Optional, for version control integration |
 
 ### Optional Components (for full features)
 
-| Component | Version | Purpose |
-|-----------|---------|---------|
-| NATS | 2.10+ | For distributed agent coordination |
-| Redis | 7.0+ | For caching and state management |
-| PostgreSQL | 12+ | For persistent planning data (SQLite is default) |
+| Component  | Version | Purpose                                          |
+| ---------- | ------- | ------------------------------------------------ |
+| NATS       | 2.10+   | For distributed agent coordination               |
+| Redis      | 7.0+    | For caching and state management                 |
+| PostgreSQL | 12+     | For persistent planning data (SQLite is default) |
 
 ### Check Your Python Version
 
@@ -46,6 +46,7 @@ python3 --version
 ```
 
 If you don't have a compatible Python version, install it:
+
 - **macOS:** `brew install python@3.12`
 - **Ubuntu/Debian:** `apt-get install python3.12 python3.12-venv`
 - **Windows:** Download from [python.org](https://www.python.org/downloads/)
@@ -216,6 +217,7 @@ crun --help
 ```
 
 **Expected Output:**
+
 ```
 Usage: crun [OPTIONS] COMMAND [ARGS]...
 
@@ -260,6 +262,7 @@ crun ai-plan generate-massive sample_project.txt -o test_plan.md
 ```
 
 **Expected Outcome:**
+
 - A file `test_plan.md` is created with a multi-thousand line plan
 - Plan includes tasks, subtasks, dependencies, and timelines
 
@@ -272,6 +275,7 @@ crun ai-plan generate-massive sample_project.txt -o test_plan.md
 **Problem:** `ERROR: Python 3.9 is not compatible. Requires Python 3.11+`
 
 **Solution:**
+
 ```bash
 # Check your Python version
 python3 --version
@@ -290,6 +294,7 @@ source venv/bin/activate
 **Problem:** `command not found: crun` or `pip: not found`
 
 **Solution:**
+
 ```bash
 # Make sure virtual environment is activated
 # macOS/Linux:
@@ -304,6 +309,7 @@ source venv/bin/activate
 **Problem:** `ImportError: No module named 'pheno'`
 
 **Solution:**
+
 ```bash
 # Reinstall in editable mode
 pip install -e ".[all]"
@@ -317,6 +323,7 @@ pip install -e ".[dev]"
 **Problem:** When running `crun ai-plan generate-massive`: `Error: API key required`
 
 **Solution:**
+
 ```bash
 # Set API key as environment variable
 export OPENROUTER_API_KEY=or-your-key-here
@@ -330,6 +337,7 @@ export OPENROUTER_API_KEY=or-your-key-here
 **Problem:** When launching GUI/server: `Address already in use: 0.0.0.0:8000`
 
 **Solution:**
+
 ```bash
 # Either kill the process using the port:
 lsof -ti:8000 | xargs kill -9
@@ -343,6 +351,7 @@ CRUN_PORT=8001 crun gui
 **Problem:** `MemoryError` or `OSError: too many open files`
 
 **Solution:**
+
 ```bash
 # Increase file descriptor limit (macOS/Linux)
 ulimit -n 10240
@@ -357,6 +366,7 @@ CRUN_RESOURCES_TARGET_FD_LIMIT=10240
 **Problem:** `No display available` or GUI window doesn't appear
 
 **Solution:**
+
 ```bash
 # Use TUI instead of GUI
 crun tui

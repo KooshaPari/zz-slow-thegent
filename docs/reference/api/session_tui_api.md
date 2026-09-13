@@ -12,7 +12,7 @@ Rich-based TUI for session management with subagent monitoring.
 
 ### Methods
 
-#### SessionTUI.__init__
+#### SessionTUI.**init**
 
 ```python
 __init__(self: Any, session_id: Any)

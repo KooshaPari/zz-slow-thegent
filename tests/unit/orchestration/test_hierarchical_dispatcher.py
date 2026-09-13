@@ -9,16 +9,14 @@ from unittest.mock import AsyncMock, MagicMock
 import pytest
 
 from thegent.orchestration.hierarchical_dispatcher import (
+    MAX_HIERARCHY_DEPTH,
     AgentCapExceededError,
     AgentLifecycleState,
     HierarchicalAgent,
     HierarchicalAgentRegistry,
     HierarchicalDispatcher,
     HierarchicalDispatchRequest,
-    MAX_HIERARCHY_DEPTH,
     MaxDepthExceededError,
-    SESSION_AGENT_CAP,
-    SYSTEM_AGENT_CAP,
     SessionAgentRegistry,
     get_global_registry,
     reset_global_registry,

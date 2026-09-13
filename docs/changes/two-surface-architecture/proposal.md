@@ -37,7 +37,7 @@ runtimes.
 The **tooling** surface contains development utilities, research helpers, benchmarks,
 audit commands, and QA workflows:
 
-- **DAG CLI commands**: `src/thegent/cli/commands/cli_dag.py` — dag_* orchestration
+- **DAG CLI commands**: `src/thegent/cli/commands/cli_dag.py` — dag\_\* orchestration
   commands for managing DAG sessions. These are developer and orchestration tooling.
 - **Tooling CLI commands**: `src/thegent/cli/commands/cli_tooling.py` — audit_verify,
   benchmark, deep_research, drift_monitor, roadmap commands.

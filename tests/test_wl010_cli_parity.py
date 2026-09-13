@@ -14,7 +14,6 @@ from typer.testing import CliRunner
 
 from thegent.cli.apps.project import install_app, setup_project_app, update_app
 
-
 BROWNFIELD_VARIANTS = ("brownfield", "ag-dd", "none")
 PROJECT_SURFACES: tuple[tuple[str, Typer], ...] = (
     ("sys setup project", setup_project_app),
@@ -33,7 +32,9 @@ def _command_names(app: Typer) -> set[str]:
 
 
 @pytest.mark.requirement("WL-010")
-def test_brownfield_variants_present_across_setup_install_update_help(runner: CliRunner) -> None:
+def test_brownfield_variants_present_across_setup_install_update_help(
+    runner: CliRunner,
+) -> None:
     for surface_name, surface_app in PROJECT_SURFACES:
         result = runner.invoke(surface_app, ["--help"])
 

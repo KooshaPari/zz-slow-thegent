@@ -10,16 +10,19 @@
 Multi-agent orchestration across heterogeneous platforms (macOS/Linux/Windows, bash/PowerShell, multiple shells) requires a **single source of truth** that all agents can access, coordinate through, and update atomically. Current approaches have three critical gaps:
 
 ### Gap 1: Work Attribution and Isolation
+
 - Agents on different platforms cannot safely claim work without race conditions
 - No clear assignment model for tracking which agent owns which task
 - File-based coordination prone to concurrent-write corruption
 
 ### Gap 2: Platform-Specific Command Execution
+
 - Agents running bash cannot coordinate with PowerShell agents
 - Platform-specific hooks/scripts create isolated silos
 - No cross-platform abstraction for common operations (claiming, completing, status)
 
 ### Gap 3: Session Continuity Across Platforms
+
 - Sessions started on macOS cannot be resumed on Windows
 - State lives in process memory or platform-specific locations (registry, ~/.)
 - Workstreams disconnected from session lifecycle
@@ -36,6 +39,7 @@ Multi-agent orchestration across heterogeneous platforms (macOS/Linux/Windows, b
 ## 3. Scope
 
 ### In Scope
+
 - Unified work stream format (enhanced WORK_STREAM.md design)
 - Atomic claim/complete/release operations (file locking + Git-based conflict resolution)
 - Cross-platform session store (JSON ledger per project)
@@ -44,6 +48,7 @@ Multi-agent orchestration across heterogeneous platforms (macOS/Linux/Windows, b
 - Handoff protocols (session transfer, resume, rollback)
 
 ### Out of Scope
+
 - Desktop automation (covered by research-cross-platform-desktop)
 - Shell abstraction layer (covered by research-cross-platform-shell)
 - Remote compute (covered by research-cross-platform-remote)
@@ -51,16 +56,16 @@ Multi-agent orchestration across heterogeneous platforms (macOS/Linux/Windows, b
 
 ## 4. Design Principles
 
-| Principle | Rationale |
-|-----------|-----------|
-| **Single Source of Truth** | All agents read from one canonical file (WORK_STREAM.md) |
-| **Atomic Operations** | Claim/complete are transactions; no partial state |
-| **Human-Readable** | Markdown format remains editable; machine sections clearly marked |
-| **Git-Native Conflict Resolution** | Use Git's merge strategy; no custom conflict resolution |
-| **No Polling** | Use file system events and blocking wait, not busy loops |
-| **Platform-Agnostic** | Works on macOS, Linux, Windows; bash, PowerShell, zsh |
-| **Session-Aware** | Links to session registry for continuity |
-| **Fail-Fast** | Explicit errors, no silent degradation |
+| Principle                          | Rationale                                                         |
+| ---------------------------------- | ----------------------------------------------------------------- |
+| **Single Source of Truth**         | All agents read from one canonical file (WORK_STREAM.md)          |
+| **Atomic Operations**              | Claim/complete are transactions; no partial state                 |
+| **Human-Readable**                 | Markdown format remains editable; machine sections clearly marked |
+| **Git-Native Conflict Resolution** | Use Git's merge strategy; no custom conflict resolution           |
+| **No Polling**                     | Use file system events and blocking wait, not busy loops          |
+| **Platform-Agnostic**              | Works on macOS, Linux, Windows; bash, PowerShell, zsh             |
+| **Session-Aware**                  | Links to session registry for continuity                          |
+| **Fail-Fast**                      | Explicit errors, no silent degradation                            |
 
 ## 5. Core Components
 
@@ -91,6 +96,7 @@ Multi-agent orchestration across heterogeneous platforms (macOS/Linux/Windows, b
 **File**: `.thegent/agents/registry.json`
 
 Declares per-agent:
+
 - ID, type (researcher/coder/reviewer)
 - Platform (macOS/Linux/Windows)
 - Shell (bash/zsh/PowerShell)
@@ -99,15 +105,15 @@ Declares per-agent:
 
 ## 6. Benefits
 
-| Benefit | Impact |
-|---------|--------|
-| **Atomic claims** | No race conditions; work never duplicated or lost |
-| **Cross-platform** | macOS + Windows + Linux agents coordinate via same WORK_STREAM |
+| Benefit                | Impact                                                                |
+| ---------------------- | --------------------------------------------------------------------- |
+| **Atomic claims**      | No race conditions; work never duplicated or lost                     |
+| **Cross-platform**     | macOS + Windows + Linux agents coordinate via same WORK_STREAM        |
 | **Session continuity** | Agent on Platform A can pause; Agent on Platform B resumes seamlessly |
-| **Git-native** | Conflicts resolved via `git merge` logic; no custom resolution |
-| **Human-readable** | Managers can read WORK_STREAM.md directly |
-| **Fail-fast** | Errors are explicit; no silent claims |
-| **Scalable** | Handles 50+ concurrent agents; linear O(n) claim time |
+| **Git-native**         | Conflicts resolved via `git merge` logic; no custom resolution        |
+| **Human-readable**     | Managers can read WORK_STREAM.md directly                             |
+| **Fail-fast**          | Errors are explicit; no silent claims                                 |
+| **Scalable**           | Handles 50+ concurrent agents; linear O(n) claim time                 |
 
 ## 7. Success Criteria
 

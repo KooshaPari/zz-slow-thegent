@@ -13,7 +13,6 @@ Covers:
 
 from __future__ import annotations
 
-import contextlib
 from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
@@ -388,7 +387,10 @@ class TestRunImplMemoryIntegration:
         with patch("thegent.memory.memory_manager.SupermemoryClient"):
             mgr = MemoryManager(api_key="sm_rt_test")
 
-        entries = [_make_entry("e1", "prior result A"), _make_entry("e2", "prior result B")]
+        entries = [
+            _make_entry("e1", "prior result A"),
+            _make_entry("e2", "prior result B"),
+        ]
         client_mock = _make_client_mock(search_result=entries, add_result="new-id")
         mgr._client = client_mock
 

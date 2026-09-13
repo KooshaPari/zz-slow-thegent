@@ -6,7 +6,8 @@ from pathlib import Path
 from unittest.mock import MagicMock
 
 import pytest
-from tests.e2e.cli_assertions import expected_trend_health_signature, load_cli_json
+
+from tests.e2e.cli_assertions import load_cli_json
 from tests.e2e.cli_runner_compat import CompatCliRunner
 
 sys.modules.setdefault("thegent_git", MagicMock())
@@ -292,7 +293,10 @@ class TestInspectIncludeContract:
         session_dir = tmp_path / "sessions"
         session_dir.mkdir(parents=True)
         monkeypatch.setenv("THGENT_SESSION_DIR", str(session_dir))
-        result = runner.invoke(app, ["inspect", "--owner", "e2e_inspect_inc_contract", "--include-contract"])
+        result = runner.invoke(
+            app,
+            ["inspect", "--owner", "e2e_inspect_inc_contract", "--include-contract"],
+        )
         assert result.exit_code == 0
         assert "No sessions" in result.stdout
 

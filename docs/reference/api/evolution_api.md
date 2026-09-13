@@ -14,7 +14,7 @@ Orchestrates the continuous evolution of the Work Breakdown Structure and DAG.
 
 ### Methods
 
-#### PlanEvolver.__init__
+#### PlanEvolver.**init**
 
 ```python
 __init__(self: Any, current_dag: Any)

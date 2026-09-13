@@ -6,20 +6,20 @@ This directory contains product requirements and specifications for **thegent**.
 
 ## Core PRD
 
-| Document | Version | Status | Description |
-|----------|---------|--------|-------------|
-| [plans/PRD.md](./plans/PRD.md) | 1.0 | In Development | Claude Code Hooks System Optimization |
+| Document                       | Version | Status         | Description                           |
+| ------------------------------ | ------- | -------------- | ------------------------------------- |
+| [plans/PRD.md](./plans/PRD.md) | 1.0     | In Development | Claude Code Hooks System Optimization |
 
 ---
 
 ## Phase PRDs
 
-| Phase | Document | Status |
-|-------|----------|--------|
-| Phase 3-6 | [docset/thegent-phase3-6-full-depth-execution-prd.md](./docset/thegent-phase3-6-full-depth-execution-prd.md) | Complete |
-| Phase 7-9 | [docset/thegent-phase7-9-next-wave-prd.md](./docset/thegent-phase7-9-next-wave-prd.md) | Complete |
-| Phase 10-12 | [docset/thegent-phase10-12-optimal-design-prd.md](./docset/thegent-phase10-12-optimal-design-prd.md) | Complete |
-| Final | [docset/thegent-prd-final.md](./docset/thegent-prd-final.md) | Complete |
+| Phase       | Document                                                                                                     | Status   |
+| ----------- | ------------------------------------------------------------------------------------------------------------ | -------- |
+| Phase 3-6   | [docset/thegent-phase3-6-full-depth-execution-prd.md](./docset/thegent-phase3-6-full-depth-execution-prd.md) | Complete |
+| Phase 7-9   | [docset/thegent-phase7-9-next-wave-prd.md](./docset/thegent-phase7-9-next-wave-prd.md)                       | Complete |
+| Phase 10-12 | [docset/thegent-phase10-12-optimal-design-prd.md](./docset/thegent-phase10-12-optimal-design-prd.md)         | Complete |
+| Final       | [docset/thegent-prd-final.md](./docset/thegent-prd-final.md)                                                 | Complete |
 
 ---
 
@@ -127,13 +127,13 @@ See [SPEC.md](./SPEC.md) for technical architecture details.
 
 ## Milestones
 
-| Milestone | Target | Status |
-|-----------|--------|--------|
-| Phase 1: Foundation | 2026-01 | ✅ Complete |
-| Phase 2: Quality Gates | 2026-02 | ✅ Complete |
+| Milestone                  | Target  | Status         |
+| -------------------------- | ------- | -------------- |
+| Phase 1: Foundation        | 2026-01 | ✅ Complete    |
+| Phase 2: Quality Gates     | 2026-02 | ✅ Complete    |
 | Phase 3: Hook Optimization | 2026-02 | 🟡 In Progress |
-| Phase 4: Scale Testing | 2026-03 | 🔴 Pending |
-| Phase 5: Production | 2026-04 | 🔴 Pending |
+| Phase 4: Scale Testing     | 2026-03 | 🔴 Pending     |
+| Phase 5: Production        | 2026-04 | 🔴 Pending     |
 
 ---
 
@@ -146,4 +146,4 @@ See [SPEC.md](./SPEC.md) for technical architecture details.
 
 ---
 
-*Last updated: 2026-02-23*
+_Last updated: 2026-02-23_

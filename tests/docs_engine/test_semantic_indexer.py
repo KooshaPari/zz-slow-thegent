@@ -4,6 +4,7 @@
 """
 
 from pathlib import Path
+
 from docs_engine.semantic.indexer import SemanticIndexer
 
 
@@ -15,7 +16,10 @@ def _write_dump(docs_root: Path, content: str) -> None:
 
 def test_extracts_decisions(tmp_path):
     docs_root = tmp_path / "docs"
-    _write_dump(docs_root, "## Decisions\n\n- Use SQLite for doc index\n- Prefer VitePress over MkDocs\n")
+    _write_dump(
+        docs_root,
+        "## Decisions\n\n- Use SQLite for doc index\n- Prefer VitePress over MkDocs\n",
+    )
     indexer = SemanticIndexer(docs_root=docs_root, db_path=tmp_path / "test.db")
     items = indexer.extract()
     assert len(items) >= 2

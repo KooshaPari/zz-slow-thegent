@@ -55,4 +55,11 @@ class MAIFAgentRunner(AgentRunner):
             started_at_utc=datetime.now(UTC).isoformat(),
         )
 
-        return self.engine.execute(runner=self.runner, run_meta=run_meta, cwd=cwd, mode=mode, timeout=timeout, **kwargs)
+        return self.engine.execute(
+            runner=self.runner,
+            run_meta=run_meta,
+            cwd=cwd,
+            mode=mode,
+            timeout=timeout,
+            **kwargs,
+        )

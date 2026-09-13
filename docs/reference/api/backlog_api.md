@@ -26,7 +26,7 @@ for audit trail but are excluded from get_pending() results.
 
 ### Methods
 
-#### BacklogManager.__init__
+#### BacklogManager.**init**
 
 ```python
 __init__(self: Any, session_dir: Path)

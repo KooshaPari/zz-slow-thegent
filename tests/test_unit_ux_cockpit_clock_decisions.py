@@ -11,11 +11,11 @@ import time
 import pytest
 
 from thegent.ux.cockpit import (
+    OVERRIDE_BANNER_MAX_AGE_S,
     CockpitConfig,
     DecisionNotice,
     OperatorCockpit,
     OverrideExpiryNotice,
-    OVERRIDE_BANNER_MAX_AGE_S,
     render_cockpit,
 )
 from thegent.ux.cockpit_bridge import (
@@ -24,7 +24,6 @@ from thegent.ux.cockpit_bridge import (
     _decision_notice_for,
 )
 from thegent.ux.kpis.traffic import TrafficDashboard, TrafficEvent, TrafficWindow
-
 
 pytestmark = pytest.mark.unit
 

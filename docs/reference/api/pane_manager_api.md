@@ -12,7 +12,7 @@ Manages pane tree structure and operations.
 
 ### Methods
 
-#### PaneManager.__init__
+#### PaneManager.**init**
 
 ```python
 __init__(self: Any)

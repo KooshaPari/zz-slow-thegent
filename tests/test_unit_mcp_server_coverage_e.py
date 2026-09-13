@@ -10,11 +10,11 @@ elicitation.
 from __future__ import annotations
 
 import asyncio
-import orjson as json
 from pathlib import Path
 from typing import TYPE_CHECKING, Any
 from unittest.mock import AsyncMock, MagicMock, patch
 
+import orjson as json
 import pytest
 
 fastmcp = pytest.importorskip("fastmcp", reason="fastmcp required for MCP server tests")
@@ -179,7 +179,10 @@ class TestThegentRunModelFirst:
         ctx = _make_ctx()
         with (
             patch("thegent.config.ThegentSettings") as mock_settings_cls,
-            patch("thegent.models.resolve_route", return_value=("gemini", "gemini-3-flash")),
+            patch(
+                "thegent.models.resolve_route",
+                return_value=("gemini", "gemini-3-flash"),
+            ),
         ):
             mock_settings_cls.return_value.default_routing = "prefer_direct"
             result = await _mcp_mod.thegent_run(
@@ -236,7 +239,10 @@ class TestThegentRunModelFirst:
         ctx = _make_ctx()
         with (
             patch("thegent.config.ThegentSettings") as mock_settings_cls,
-            patch("thegent.models.resolve_route", return_value=("claude", "claude-sonnet-4")),
+            patch(
+                "thegent.models.resolve_route",
+                return_value=("claude", "claude-sonnet-4"),
+            ),
             patch("thegent.models.resolve_route_contract", return_value=rr),
         ):
             mock_settings_cls.return_value.default_routing = "prefer_direct"
@@ -272,7 +278,10 @@ class TestThegentRunModelFirst:
         ctx = _make_ctx()
         with (
             patch("thegent.config.ThegentSettings") as mock_settings_cls,
-            patch("thegent.models.resolve_route", return_value=("claude", "claude-sonnet-4")),
+            patch(
+                "thegent.models.resolve_route",
+                return_value=("claude", "claude-sonnet-4"),
+            ),
             patch("thegent.models.resolve_route_contract", return_value=None),
         ):
             mock_settings_cls.return_value.default_routing = "prefer_direct"
@@ -409,7 +418,10 @@ class TestThegentRunModelAndAgent:
         ctx = _make_ctx()
         with (
             patch("thegent.config.ThegentSettings") as mock_settings_cls,
-            patch("thegent.models.resolve_route", return_value=("claude", "claude-sonnet-4")),
+            patch(
+                "thegent.models.resolve_route",
+                return_value=("claude", "claude-sonnet-4"),
+            ),
             patch("thegent.models.resolve_route_contract", return_value=rr),
         ):
             mock_settings_cls.return_value.default_routing = "prefer_direct"
@@ -599,7 +611,11 @@ class TestThegentBgCwdElicitation:
         self, mock_bg_impl: MagicMock, mock_owner: MagicMock, mock_cwd: MagicMock
     ) -> None:
         """Accepted CWD elicitation in bg, then owner elicitation triggers."""
-        mock_bg_impl.return_value = {"session_id": "s1", "log_path": "/tmp/log", "owner": "auto-owner"}
+        mock_bg_impl.return_value = {
+            "session_id": "s1",
+            "log_path": "/tmp/log",
+            "owner": "auto-owner",
+        }
         accepted_cwd = _make_elicitation("accepted", data="/tmp/elicited")
         accepted_owner = _make_elicitation("accepted", data="my-owner")
         ctx = _make_ctx()
@@ -694,7 +710,11 @@ class TestThegentBgRoutePolicy:
         self, mock_bg_impl: MagicMock, mock_owner: MagicMock, mock_cwd: MagicMock
     ) -> None:
         """Invalid normalize_route_policy falls back to prefer_direct."""
-        mock_bg_impl.return_value = {"session_id": "s1", "log_path": "/tmp", "owner": "owner"}
+        mock_bg_impl.return_value = {
+            "session_id": "s1",
+            "log_path": "/tmp",
+            "owner": "owner",
+        }
         ctx = _make_ctx()
         with patch("thegent.models.normalize_route_policy", side_effect=ValueError("bad")):
             result = await _mcp_mod.thegent_bg(
@@ -718,7 +738,11 @@ class TestThegentBgRoutePolicy:
         self, mock_bg_impl: MagicMock, mock_owner: MagicMock, mock_cwd: MagicMock
     ) -> None:
         """When routing param is set, it propagates to routing_for_child."""
-        mock_bg_impl.return_value = {"session_id": "s2", "log_path": "/tmp", "owner": "owner"}
+        mock_bg_impl.return_value = {
+            "session_id": "s2",
+            "log_path": "/tmp",
+            "owner": "owner",
+        }
         ctx = _make_ctx()
         with patch("thegent.models.normalize_route_policy", return_value="prefer_proxy"):
             result = await _mcp_mod.thegent_bg(
@@ -742,7 +766,11 @@ class TestThegentBgRoutePolicy:
         self, mock_bg_impl: MagicMock, mock_owner: MagicMock, mock_cwd: MagicMock
     ) -> None:
         """Failover policy sets failover=True and falls back to prefer_direct."""
-        mock_bg_impl.return_value = {"session_id": "s3", "log_path": "/tmp", "owner": "owner"}
+        mock_bg_impl.return_value = {
+            "session_id": "s3",
+            "log_path": "/tmp",
+            "owner": "owner",
+        }
         ctx = _make_ctx()
         with patch("thegent.models.normalize_route_policy", return_value="failover"):
             result = await _mcp_mod.thegent_bg(
@@ -780,7 +808,11 @@ class TestThegentBgOwnerElicitation:
         self, mock_bg_impl: MagicMock, mock_owner_tag: MagicMock, mock_cwd: MagicMock
     ) -> None:
         """Declined owner elicitation uses _default_owner_tag."""
-        mock_bg_impl.return_value = {"session_id": "s1", "log_path": "/tmp", "owner": "fallback-owner"}
+        mock_bg_impl.return_value = {
+            "session_id": "s1",
+            "log_path": "/tmp",
+            "owner": "fallback-owner",
+        }
         accepted_cwd = _make_elicitation("accepted", data="/tmp/elicited")
         declined_owner = _make_elicitation("declined")
         ctx = _make_ctx()
@@ -826,7 +858,11 @@ class TestThegentBgOwnerElicitation:
         self, mock_bg_impl: MagicMock, mock_owner_tag: MagicMock, mock_cwd: MagicMock
     ) -> None:
         """Ambiguous owner elicitation falls back to _default_owner_tag."""
-        mock_bg_impl.return_value = {"session_id": "s1", "log_path": "/tmp", "owner": "default-owner"}
+        mock_bg_impl.return_value = {
+            "session_id": "s1",
+            "log_path": "/tmp",
+            "owner": "default-owner",
+        }
         accepted_cwd = _make_elicitation("accepted", data="/tmp/elicited")
         ambiguous_owner = _make_elicitation("ambiguous")
         ctx = _make_ctx()
@@ -861,7 +897,11 @@ class TestThegentBgIncludeContract:
         self, mock_bg_impl: MagicMock, mock_owner: MagicMock, mock_cwd: MagicMock
     ) -> None:
         """include_contract with model resolves contract successfully."""
-        mock_bg_impl.return_value = {"session_id": "s1", "log_path": "/tmp", "owner": "owner"}
+        mock_bg_impl.return_value = {
+            "session_id": "s1",
+            "log_path": "/tmp",
+            "owner": "owner",
+        }
         rr = _make_resolved_route()
         ctx = _make_ctx()
         with (
@@ -890,7 +930,11 @@ class TestThegentBgIncludeContract:
         self, mock_bg_impl: MagicMock, mock_owner: MagicMock, mock_cwd: MagicMock
     ) -> None:
         """include_contract with model: exception in lookup still proceeds."""
-        mock_bg_impl.return_value = {"session_id": "s1", "log_path": "/tmp", "owner": "owner"}
+        mock_bg_impl.return_value = {
+            "session_id": "s1",
+            "log_path": "/tmp",
+            "owner": "owner",
+        }
         ctx = _make_ctx()
         with patch("thegent.models.resolve_route_contract", side_effect=RuntimeError("boom")):
             result = await _mcp_mod.thegent_bg(
@@ -1090,7 +1134,10 @@ class TestThegentDagListAcceptedElicitation:
     @patch("thegent.mcp.server.dag_list_impl")
     async def test_dag_list_accepted_elicitation(self, mock_dag: MagicMock, mock_cwd: MagicMock) -> None:
         """Accepted CWD elicitation proceeds with DAG list."""
-        mock_dag.return_value = {"frontmatter": {"project": "test"}, "tasks": [{"id": "T1"}]}
+        mock_dag.return_value = {
+            "frontmatter": {"project": "test"},
+            "tasks": [{"id": "T1"}],
+        }
         accepted = _make_elicitation("accepted", data="/tmp/project")
         ctx = _make_ctx()
         ctx.elicit = AsyncMock(return_value=accepted)

@@ -1,10 +1,14 @@
 from __future__ import annotations
 
-import orjson as json
 from pathlib import Path
 
+import orjson as json
+
 from thegent.mcp.server.tools_locking_planning import thegent_plan_incorporate_impl
-from thegent.mcp.server.tools_workstream_lsp import workstream_claim_tool_impl, workstream_complete_tool_impl
+from thegent.mcp.server.tools_workstream_lsp import (
+    workstream_claim_tool_impl,
+    workstream_complete_tool_impl,
+)
 
 
 def _extract_json_content(content: object) -> dict[str, object]:
@@ -27,7 +31,11 @@ def test_workstream_claim_tool_impl_wraps_claim_result() -> None:
     result = workstream_claim_tool_impl(item_id="WL-9", agent_id="agent-sync", claim_impl=_claim)
 
     assert calls == [("WL-9", "agent-sync")]
-    assert result.structured_content == {"success": True, "item_id": "WL-9", "agent_id": "agent-sync"}
+    assert result.structured_content == {
+        "success": True,
+        "item_id": "WL-9",
+        "agent_id": "agent-sync",
+    }
     assert _extract_json_content(result.content) == result.structured_content
     assert result.meta and result.meta["execution_time_ms"] >= 0
 
@@ -42,7 +50,11 @@ def test_workstream_complete_tool_impl_wraps_complete_result() -> None:
     result = workstream_complete_tool_impl(item_id="WL-10", agent_id="agent-sync", complete_impl=_complete)
 
     assert calls == [("WL-10", "agent-sync")]
-    assert result.structured_content == {"success": True, "completed": "WL-10", "agent": "agent-sync"}
+    assert result.structured_content == {
+        "success": True,
+        "completed": "WL-10",
+        "agent": "agent-sync",
+    }
     assert _extract_json_content(result.content) == result.structured_content
     assert result.meta and result.meta["execution_time_ms"] >= 0
 

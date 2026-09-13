@@ -1,7 +1,6 @@
 """In-memory queue adapter for task queue operations."""
 
-from typing import Optional
-from ..domain.entities import TaskQueueItem, QueuePriority
+from ..domain.entities import QueuePriority, TaskQueueItem
 
 
 class InMemoryQueueAdapter:
@@ -14,14 +13,20 @@ class InMemoryQueueAdapter:
         """Add item to queue."""
         self._queue.append(item)
         # Sort by priority
-        self._queue.sort(key=lambda x: (
-            0 if x.priority == QueuePriority.CRITICAL else
-            1 if x.priority == QueuePriority.HIGH else
-            2 if x.priority == QueuePriority.NORMAL else 3
-        ))
+        self._queue.sort(
+            key=lambda x: (
+                0
+                if x.priority == QueuePriority.CRITICAL
+                else 1
+                if x.priority == QueuePriority.HIGH
+                else 2
+                if x.priority == QueuePriority.NORMAL
+                else 3
+            )
+        )
         return item
 
-    def dequeue(self) -> Optional[TaskQueueItem]:
+    def dequeue(self) -> TaskQueueItem | None:
         """Remove and return next item."""
         if not self._queue:
             return None
@@ -29,7 +34,7 @@ class InMemoryQueueAdapter:
         item.status = "dequeued"
         return item
 
-    def peek(self) -> Optional[TaskQueueItem]:
+    def peek(self) -> TaskQueueItem | None:
         """View next item without removing."""
         if not self._queue:
             return None

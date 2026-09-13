@@ -16,7 +16,7 @@ Manages clusters of idea seeds for long-term memory synthesis.
 
 ### Methods
 
-#### MemoryGarden.__init__
+#### MemoryGarden.**init**
 
 ```python
 __init__(self: Any, garden_path: Path)

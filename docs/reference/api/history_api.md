@@ -15,7 +15,7 @@ Manages the persistent store for context-aware shell history.
 
 ### Methods
 
-#### ContextHistory.__init__
+#### ContextHistory.**init**
 
 ```python
 __init__(self: Any, db_path: Any)

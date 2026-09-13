@@ -10,9 +10,11 @@ This directory contains documentation for all major projects in the system. Each
 ### Core Projects
 
 #### [TheGent](./thegent/) - Agent Framework
+
 The core agent framework for building AI-powered applications with lifecycle management, hooks, memory systems, and tool integration.
 
 **Key Areas:**
+
 - Agent registry and discovery
 - Hook system for event-driven patterns
 - Memory management (JSONL/SQLite)
@@ -23,9 +25,11 @@ The core agent framework for building AI-powered applications with lifecycle man
 ---
 
 #### [Zen MCP Server](./zen-mcp-server/) - Model Context Protocol Server
+
 Complete MCP server implementation with protocol compliance, tool management, resource handling, and optimization.
 
 **Key Areas:**
+
 - MCP protocol implementation
 - Tool registration and execution
 - Resource management
@@ -36,9 +40,11 @@ Complete MCP server implementation with protocol compliance, tool management, re
 ---
 
 #### [Atoms MCP Prod](./atoms-mcp-prod/) - Production MCP Tools
+
 Production-ready MCP tools and integrations with authentication, live/mock architecture, and comprehensive examples.
 
 **Key Areas:**
+
 - Tool integrations
 - Authentication system
 - Agent demonstrations
@@ -49,9 +55,11 @@ Production-ready MCP tools and integrations with authentication, live/mock archi
 ---
 
 #### [Pheno SDK](./pheno-sdk/) - Agent Development SDK
+
 Comprehensive SDK for agent development with modern CLI framework, authentication, and migration support.
 
 **Key Areas:**
+
 - Agent framework
 - CLI tools (Typer/Click)
 - Authentication system
@@ -64,9 +72,11 @@ Comprehensive SDK for agent development with modern CLI framework, authenticatio
 ### Supporting Projects
 
 #### [4SGM](./4sgm/) - LangFuse Integration
+
 LangFuse monitoring and integration for agent performance tracking, tracing, and analytics.
 
 **Key Areas:**
+
 - LangFuse integration
 - Agent monitoring
 - Trace management
@@ -77,9 +87,11 @@ LangFuse monitoring and integration for agent performance tracking, tracing, and
 ---
 
 #### [Bloc](./bloc/) - Business Logic & Components
+
 Business logic and component management for application workflows and state handling.
 
 **Key Areas:**
+
 - Component lifecycle
 - Business logic patterns
 - State management
@@ -89,9 +101,11 @@ Business logic and component management for application workflows and state hand
 ---
 
 #### [AgentAPI](./agentapi/) - Agent API Framework
+
 REST API framework for exposing agent services with authentication and auto-generated documentation.
 
 **Key Areas:**
+
 - REST endpoints
 - Agent management
 - Service integration
@@ -115,16 +129,19 @@ Each project directory contains:
 ## Cross-Project References
 
 ### Migration Guides
+
 - **[Migration Overview](../guides/migration-overview.md)** - General migration strategies
 - **[Legacy Migration](../guides/legacy-migration.md)** - Dependency and code migrations
 - **[Data Migration](../guides/data-migration.md)** - Data format and storage migrations
 
 ### Architecture & Design
+
 - **[System Architecture](../architecture/)** - Overall system design
 - **[Concepts](../concepts/)** - Core concepts and patterns
 - **[API Reference](../api/)** - Unified API documentation
 
 ### Development
+
 - **[Development Setup](../development/)** - Environment setup
 - **[Testing](../reference/)** - Testing strategies
 - **[Deployment](../deployment/)** - Deployment guides
@@ -134,16 +151,19 @@ Each project directory contains:
 ### By Task
 
 **Getting started with agents:**
+
 1. Start with [TheGent](./thegent/) for core framework
 2. Check [Pheno SDK](./pheno-sdk/) for development tools
 3. See [Atoms MCP Prod](./atoms-mcp-prod/) for tool integration
 
 **Building an API:**
+
 1. Use [AgentAPI](./agentapi/) framework
 2. Reference [Atoms MCP Prod](./atoms-mcp-prod/) for tools
 3. Check [Zen MCP Server](./zen-mcp-server/) for protocol details
 
 **Monitoring and analytics:**
+
 1. Use [4SGM](./4sgm/) for LangFuse integration
 2. Check TheGent monitoring capabilities
 3. Reference agent metrics documentation
@@ -151,9 +171,11 @@ Each project directory contains:
 ### By Technology
 
 **Rust projects:**
+
 - [TheGent](./thegent/) - Core agent framework
 
 **Python projects:**
+
 - [Zen MCP Server](./zen-mcp-server/)
 - [Atoms MCP Prod](./atoms-mcp-prod/)
 - [Pheno SDK](./pheno-sdk/)

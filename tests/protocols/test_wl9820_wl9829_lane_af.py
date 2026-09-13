@@ -30,15 +30,17 @@ def test_wl9821_commit_target_resolution_is_typed_and_stable() -> None:
             "session": {"id": "session-1", "turn_ids": ["turn-1"]},
         }
     )
-    assert resolved == ("turn-1", {"id": "turn-1", "session_id": "session-1", "input": "x"}, {"id": "session-1", "turn_ids": ["turn-1"]})
+    assert resolved == (
+        "turn-1",
+        {"id": "turn-1", "session_id": "session-1", "input": "x"},
+        {"id": "session-1", "turn_ids": ["turn-1"]},
+    )
 
 
 def test_wl9822_commit_target_fails_loudly_on_invalid_shape() -> None:
     # @trace WL-9822
     with pytest.raises(ValueError, match="commit_target"):
-        server._resolve_turn_submit_commit_target(
-            {"turn": "not-a-dict"}
-        )
+        server._resolve_turn_submit_commit_target({"turn": "not-a-dict"})
 
 
 def test_wl9823_side_effects_phase_extracts_approval_tuple() -> None:
@@ -78,9 +80,7 @@ def test_wl9825_side_effects_target_fails_on_missing_approval() -> None:
 def test_wl9826_response_phase_preserves_turn_and_optional_approval_payload() -> None:
     # @trace WL-9826
     turn = {"id": "turn-1"}
-    resolved = server._resolve_turn_submit_response_target(
-        {"turn": turn, "approval": None}
-    )
+    resolved = server._resolve_turn_submit_response_target({"turn": turn, "approval": None})
     assert resolved == (turn, None)
 
 
@@ -92,9 +92,7 @@ def test_wl9827_response_target_fails_on_missing_turn() -> None:
 
 def test_wl9828_commit_resolution_phase_routes_to_execution_target() -> None:
     # @trace WL-9828
-    phase = server._build_turn_submit_commit_resolution_phase(
-        "commit", "req-1", {"id": "turn-1"}, {"id": "session-1"}
-    )
+    phase = server._build_turn_submit_commit_resolution_phase("commit", "req-1", {"id": "turn-1"}, {"id": "session-1"})
     assert phase["route"] == "commit"
     assert phase["request_id"] == "req-1"
     assert phase["turn"] == {"id": "turn-1"}

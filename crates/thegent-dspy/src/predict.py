@@ -1,4 +1,5 @@
-from typing import Any, Dict, Optional
+from typing import Any
+
 from .module import DSPyModule
 
 
@@ -10,7 +11,7 @@ class Predict(DSPyModule):
         self.agent_role = agent_role
         self.prompt_template = prompt_template
 
-    def forward(self, input_data: str, context: Optional[Dict[str, Any]] = None) -> str:
+    def forward(self, input_data: str, context: dict[str, Any] | None = None) -> str:
         """Invoke a thegent agent to predict output for the given input.
 
         Args:

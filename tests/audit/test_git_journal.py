@@ -28,8 +28,18 @@ def git_repo(tmp_path: Path) -> Path:
     repo = tmp_path / "test_repo"
     repo.mkdir()
     subprocess.run(["git", "init"], cwd=repo, check=True, capture_output=True)
-    subprocess.run(["git", "config", "user.email", "test@example.com"], cwd=repo, check=True, capture_output=True)
-    subprocess.run(["git", "config", "user.name", "Test User"], cwd=repo, check=True, capture_output=True)
+    subprocess.run(
+        ["git", "config", "user.email", "test@example.com"],
+        cwd=repo,
+        check=True,
+        capture_output=True,
+    )
+    subprocess.run(
+        ["git", "config", "user.name", "Test User"],
+        cwd=repo,
+        check=True,
+        capture_output=True,
+    )
     (repo / "README.md").write_text("# Test\n")
     subprocess.run(["git", "add", "README.md"], cwd=repo, check=True, capture_output=True)
     subprocess.run(["git", "commit", "-m", "initial"], cwd=repo, check=True, capture_output=True)
@@ -115,11 +125,16 @@ class TestSessionPruning:
         new_j.finalize_session("new")
 
         initial_sha = subprocess.run(
-            ["git", "rev-list", "--max-parents=0", "HEAD"], cwd=git_repo, capture_output=True, text=True
+            ["git", "rev-list", "--max-parents=0", "HEAD"],
+            cwd=git_repo,
+            capture_output=True,
+            text=True,
         ).stdout.strip()
         if initial_sha:
             subprocess.run(
-                ["git", "update-ref", "refs/audit/old-session", initial_sha], cwd=git_repo, capture_output=True
+                ["git", "update-ref", "refs/audit/old-session", initial_sha],
+                cwd=git_repo,
+                capture_output=True,
             )
 
         pruned = GitJournal.prune_old_sessions(git_repo, max_age_days=0)
@@ -153,7 +168,7 @@ class TestInterruptedSessionRecovery:
         """Test recovery from interrupted session."""
         journal = GitJournal(git_repo, session_id="interrupt-recovery")
         (git_repo / "important.txt").write_text("important data\n")
-        sha1 = journal.record_file_change("important.txt", b"important data\n", action="created")
+        journal.record_file_change("important.txt", b"important data\n", action="created")
         stored_parent = journal._parent_sha
 
         recovery_journal = GitJournal(git_repo, session_id="interrupt-recovery")
@@ -172,18 +187,27 @@ class TestRealGitOperations:
         """Test GitJournal works with git worktree operations."""
         worktree_path = git_repo.parent / "test_worktree"
         subprocess.run(
-            ["git", "worktree", "add", str(worktree_path), "HEAD"], cwd=git_repo, check=True, capture_output=True
+            ["git", "worktree", "add", str(worktree_path), "HEAD"],
+            cwd=git_repo,
+            check=True,
+            capture_output=True,
         )
         try:
             journal = GitJournal(worktree_path, session_id="worktree-test")
             (worktree_path / "file.txt").write_text("worktree content\n")
             sha = journal.record_file_change("file.txt", b"worktree content\n", action="created")
             assert sha
-            result = subprocess.run(["git", "show-ref", "refs/audit/worktree-test"], cwd=git_repo, capture_output=True)
+            result = subprocess.run(
+                ["git", "show-ref", "refs/audit/worktree-test"],
+                cwd=git_repo,
+                capture_output=True,
+            )
             assert result.returncode == 0
         finally:
             subprocess.run(
-                ["git", "worktree", "remove", "--force", str(worktree_path)], cwd=git_repo, capture_output=True
+                ["git", "worktree", "remove", "--force", str(worktree_path)],
+                cwd=git_repo,
+                capture_output=True,
             )
 
     def test_file_deletion_tracking(self, git_repo: Path) -> None:

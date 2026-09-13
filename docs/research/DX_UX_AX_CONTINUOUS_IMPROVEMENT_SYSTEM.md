@@ -50,6 +50,7 @@ This system ensures that **all agents** continuously identify and fix friction p
 ### 1.2 Friction Detection Patterns
 
 **Pattern 1: Repetitive Tool Calls**
+
 ```python
 # ❌ Verbose
 read_file("file1.md")
@@ -61,6 +62,7 @@ read_files(["file1.md", "file2.md", "file3.md"])
 ```
 
 **Pattern 2: Large File Reading**
+
 ```python
 # ❌ Inefficient
 read_file("large_file.md")  # Reads entire file
@@ -70,6 +72,7 @@ read_file("large_file.md", offset=100, limit=50)  # Reads specific section
 ```
 
 **Pattern 3: Path Handling**
+
 ```python
 # ❌ Inconsistent
 read_file("./docs/file.md")
@@ -80,6 +83,7 @@ normalize_path("docs/file.md")  # Always absolute
 ```
 
 **Pattern 4: Error Handling**
+
 ```python
 # ❌ Silent failure
 try:
@@ -104,8 +108,10 @@ except Exception as e:
 When friction is identified:
 
 1. **Log the Friction**:
+
    ```markdown
    ## Friction Point Identified
+
    - **Type**: Verbosity/Complexity/DX/UX/AX
    - **Location**: [file/function/pattern]
    - **Impact**: [time saved, complexity reduced]
@@ -128,6 +134,7 @@ When friction is identified:
 #### DX Improvements (Developer Experience)
 
 **Examples**:
+
 - Batch file operations
 - Path normalization utilities
 - File reading helpers (offset/limit)
@@ -141,6 +148,7 @@ When friction is identified:
 #### UX Improvements (User Experience)
 
 **Examples**:
+
 - Clearer error messages
 - Progress indicators
 - Summary outputs
@@ -154,6 +162,7 @@ When friction is identified:
 #### AX Improvements (Agent Experience)
 
 **Examples**:
+
 - Reusable skills/commands
 - Pattern libraries
 - Workflow templates
@@ -182,6 +191,7 @@ Add to **all agent instructions**:
 5. **AX**: Create reusable components for other agents
 
 **When friction is identified**:
+
 - Log it immediately
 - Create improvement task (prefix: `dx-improve-`, `ux-improve-`, `ax-improve-`)
 - Delegate to specialized agent if needed
@@ -196,16 +206,19 @@ Add to **all agent instructions**:
 ### 3.2 Skill-Specific Instructions
 
 **For Code Agents**:
+
 - Identify repetitive code patterns → create generators
 - Identify verbose operations → create helpers
 - Identify complex logic → simplify
 
 **For Documentation Agents**:
+
 - Identify repetitive markdown operations → create templates
 - Identify verbose formatting → create helpers
 - Identify complex structures → simplify
 
 **For Planning Agents**:
+
 - Identify repetitive planning patterns → create templates
 - Identify verbose planning → create generators
 - Identify complex workflows → simplify
@@ -252,10 +265,10 @@ def normalize_path(path: str, base: str = None) -> str:
 # scripts/friction_logger.py
 def log_friction(
     category: str,  # dx/ux/ax
-    type: str,      # verbosity/complexity/etc
+    type: str,  # verbosity/complexity/etc
     location: str,
     impact: str,
-    solution: str
+    solution: str,
 ):
     """Log friction point for improvement."""
     # Implementation
@@ -271,11 +284,7 @@ def log_friction(
 
 ```python
 # scripts/generate_improvement_task.py
-def create_improvement_task(
-    category: str,
-    description: str,
-    priority: str = "P2"
-):
+def create_improvement_task(category: str, description: str, priority: str = "P2"):
     """Auto-create improvement task in WORK_STREAM.md."""
     # Implementation
 ```
@@ -349,14 +358,14 @@ def create_improvement_task(
 
 ### 6.1 Current Friction Points
 
-| Category | Friction | Impact | Solution | Status |
-|----------|----------|--------|----------|--------|
-| **Verbosity** | Multiple `read_file` calls | High | Batch operations | 🚧 Creating |
-| **Verbosity** | Multiple `grep` calls | Medium | Batch grep | 🚧 Creating |
-| **Complexity** | Path handling inconsistency | Medium | Normalize paths | 🚧 Creating |
-| **DX** | Large file reading inefficiency | Medium | Offset/limit helpers | 🚧 Creating |
-| **AX** | Repetitive markdown operations | Medium | Markdown helpers | 🚧 Creating |
-| **UX** | Error messages not actionable | Low | Improve error format | 📋 Planned |
+| Category       | Friction                        | Impact | Solution             | Status      |
+| -------------- | ------------------------------- | ------ | -------------------- | ----------- |
+| **Verbosity**  | Multiple `read_file` calls      | High   | Batch operations     | 🚧 Creating |
+| **Verbosity**  | Multiple `grep` calls           | Medium | Batch grep           | 🚧 Creating |
+| **Complexity** | Path handling inconsistency     | Medium | Normalize paths      | 🚧 Creating |
+| **DX**         | Large file reading inefficiency | Medium | Offset/limit helpers | 🚧 Creating |
+| **AX**         | Repetitive markdown operations  | Medium | Markdown helpers     | 🚧 Creating |
+| **UX**         | Error messages not actionable   | Low    | Improve error format | 📋 Planned  |
 
 ---
 
@@ -437,6 +446,7 @@ def create_improvement_task(
 **Location**: `thegent/docs/improvements/`
 
 **Structure**:
+
 ```
 improvements/
 ├── dx/

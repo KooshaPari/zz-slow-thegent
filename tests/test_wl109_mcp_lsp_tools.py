@@ -6,19 +6,31 @@ from pathlib import Path
 
 import pytest
 
-from thegent.mcp.server import _server_tools_workstream_lsp
 from thegent.mcp.lsp_tools import lsp_diagnostics, lsp_hover, lsp_symbol_lookup
+from thegent.mcp.server import _server_tools_workstream_lsp
 
 
 class _FakeAdapter:
     def diagnostics(self, *, file_path: str) -> list[dict[str, object]]:
-        return [{"message": "unused variable", "line": 3, "severity": "warning", "file": file_path}]
+        return [
+            {
+                "message": "unused variable",
+                "line": 3,
+                "severity": "warning",
+                "file": file_path,
+            }
+        ]
 
     def symbol_lookup(self, *, symbol_name: str, file_path: str | None) -> list[dict[str, object]]:
         return [{"name": symbol_name, "kind": "function", "file_path": file_path}]
 
     def hover(self, *, file_path: str, line: int, character: int) -> dict[str, object] | None:
-        return {"contents": "hover text", "line": line, "character": character, "file_path": file_path}
+        return {
+            "contents": "hover text",
+            "line": line,
+            "character": character,
+            "file_path": file_path,
+        }
 
 
 def test_lsp_diagnostics_requires_existing_file(tmp_path: Path) -> None:
@@ -43,7 +55,12 @@ def test_lsp_diagnostics_normalizes_mixed_diagnostic_shapes(tmp_path: Path) -> N
     class _ShapeAdapter:
         def diagnostics(self, *, file_path: str) -> list[dict[str, object]]:
             return [
-                {"message": "bad import", "line": "0", "character": "-2", "severity": "HIGH"},
+                {
+                    "message": "bad import",
+                    "line": "0",
+                    "character": "-2",
+                    "severity": "HIGH",
+                },
                 {"message": "nits", "line": 2, "severity": "low", "source": "pylint"},
             ]
 
@@ -102,7 +119,14 @@ def test_lsp_symbol_lookup_rejects_empty_symbol() -> None:
 def test_lsp_symbol_lookup_normalizes_match_shape(tmp_path: Path) -> None:
     class _ShapeAdapter:
         def symbol_lookup(self, *, symbol_name: str, file_path: str | None) -> list[dict[str, object]]:
-            return [{"name": symbol_name, "kind": "function", "line": "0", "character": "-2"}]
+            return [
+                {
+                    "name": symbol_name,
+                    "kind": "function",
+                    "line": "0",
+                    "character": "-2",
+                }
+            ]
 
     file_path = tmp_path / "a.py"
     file_path.write_text("def f():\n    pass\n", encoding="utf-8")
@@ -121,7 +145,14 @@ def test_lsp_symbol_lookup_normalizes_match_shape(tmp_path: Path) -> None:
 def test_lsp_symbol_lookup_strips_file_path_whitespace(tmp_path: Path) -> None:
     class _ShapeAdapter:
         def symbol_lookup(self, *, symbol_name: str, file_path: str | None) -> list[dict[str, object]]:
-            return [{"name": symbol_name, "kind": "function", "file_path": " /tmp/example.py ", "line": 1}]
+            return [
+                {
+                    "name": symbol_name,
+                    "kind": "function",
+                    "file_path": " /tmp/example.py ",
+                    "line": 1,
+                }
+            ]
 
     file_path = tmp_path / "a.py"
     file_path.write_text("def f():\n    pass\n", encoding="utf-8")
@@ -154,7 +185,15 @@ def test_lsp_symbol_lookup_rejects_match_without_name(tmp_path: Path) -> None:
 def test_lsp_symbol_lookup_rejects_fractional_float_positions(tmp_path: Path) -> None:
     class _BadAdapter:
         def symbol_lookup(self, *, symbol_name: str, file_path: str | None) -> list[dict[str, object]]:
-            return [{"name": symbol_name, "kind": "function", "file_path": file_path, "line": 2.5, "character": 1}]
+            return [
+                {
+                    "name": symbol_name,
+                    "kind": "function",
+                    "file_path": file_path,
+                    "line": 2.5,
+                    "character": 1,
+                }
+            ]
 
     file_path = tmp_path / "a.py"
     file_path.write_text("x = 1\n", encoding="utf-8")

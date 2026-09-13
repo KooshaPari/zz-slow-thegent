@@ -11,7 +11,10 @@ def test_wl125_resolve_audio_transcript_wrapper_delegates(monkeypatch) -> None:
         captured["result"] = result_audio_transcript
         return "resolved"
 
-    monkeypatch.setattr("thegent.cli.commands.impl.run_event_helpers.resolve_audio_transcript_for_output", _fake)
+    monkeypatch.setattr(
+        "thegent.cli.commands.impl.run_event_helpers.resolve_audio_transcript_for_output",
+        _fake,
+    )
 
     output = impl._resolve_audio_transcript_for_output(
         injected_audio_transcript="from-flag",

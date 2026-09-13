@@ -6,6 +6,7 @@ from pathlib import Path
 import typer
 from rich.console import Console
 from rich.table import Table
+
 from thegent.config import ThegentSettings
 from thegent.infra.shim_subprocess import run as shim_run
 from thegent.mesh.agent_patterns import run_detection
@@ -353,7 +354,10 @@ def run_agent(
 
     try:
         result = shim_run(
-            ["bash", str(script_path), agent_type, prompt, str(workdir)], capture_output=True, text=True, check=True
+            ["bash", str(script_path), agent_type, prompt, str(workdir)],
+            capture_output=True,
+            text=True,
+            check=True,
         )
         console.print(result.stdout)
     except subprocess.CalledProcessError as e:

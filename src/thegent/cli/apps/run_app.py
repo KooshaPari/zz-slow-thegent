@@ -215,7 +215,7 @@ def _run_callback(
 # Subcommands — registered AFTER the callback so _SUBCOMMANDS plus the
 # ``_cli_subcommands`` dispatch table can be populated once.
 # ---------------------------------------------------------------------------
-def _register_subcommand_table() -> dict[str, "click.Command"]:
+def _register_subcommand_table() -> dict[str, click.Command]:
     """Snapshot the registered Typer subcommands after decorator-time binding.
 
     Typer stores subcommands as ``CommandInfo`` metadata until

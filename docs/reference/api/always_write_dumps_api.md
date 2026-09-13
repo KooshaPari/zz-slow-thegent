@@ -12,7 +12,7 @@ Always write conversation dumps to docs/.
 
 ### Methods
 
-#### ConversationDumper.__init__
+#### ConversationDumper.**init**
 
 ```python
 __init__(self: Any, docs_dir: Path)

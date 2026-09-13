@@ -7,13 +7,13 @@ Verifies blackout window management, membership testing, and active window queri
 
 from __future__ import annotations
 
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 
 import pytest
 
 
 def _utc_dt(year: int, month: int, day: int, hour: int, minute: int) -> datetime:
-    return datetime(year, month, day, hour, minute, tzinfo=timezone.utc)
+    return datetime(year, month, day, hour, minute, tzinfo=UTC)
 
 
 @pytest.mark.requirement("WL-222")

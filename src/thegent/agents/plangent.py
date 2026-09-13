@@ -25,13 +25,14 @@ path only, where partial decomposition is worse than no decomposition.
 from __future__ import annotations
 
 import asyncio
-import orjson as json
 import logging
 import uuid
 from collections.abc import Callable
 from dataclasses import dataclass, field
 from datetime import UTC, datetime
 from typing import TYPE_CHECKING, Any, Literal
+
+import orjson as json
 
 from thegent.agents.flash_agent import FlashAgent, FlashAgentConfig
 
@@ -435,7 +436,11 @@ class PlangentExecutor:
                     _log.error("Node %s failed: %s", node.id, error_msg)
                     self.planner.mark_failed(plan, node.id, error_msg)
                     if self.fail_fast:
-                        _log.info("fail_fast=True; stopping plan %s after node %s failure", plan.id, node.id)
+                        _log.info(
+                            "fail_fast=True; stopping plan %s after node %s failure",
+                            plan.id,
+                            node.id,
+                        )
                         return plan
 
         _log.info(
@@ -641,7 +646,12 @@ class PlangentExecutor:
                     node_id=node.id,
                 )
                 self.planner.mark_failed(plan, node.id, error_msg)
-                _log.error("Node %s failed in orchestration plan %s: %s", node.id, plan.id, error_msg)
+                _log.error(
+                    "Node %s failed in orchestration plan %s: %s",
+                    node.id,
+                    plan.id,
+                    error_msg,
+                )
                 if self.fail_fast:
                     plan.metadata["aggregation"] = aggregator.aggregate()
                     _log.info(
@@ -926,7 +936,7 @@ class LLMPlangentPlanner(PlangentPlanner):
     # Async helper — can be called directly for OrchestrationPlan output
     # ------------------------------------------------------------------
 
-    async def decompose_to_orchestration_plan(self, goal: str, max_depth: int = 3) -> "Any":
+    async def decompose_to_orchestration_plan(self, goal: str, max_depth: int = 3) -> Any:
         """Decompose *goal* directly into an OrchestrationPlan with full metadata.
 
         Unlike :meth:`decompose`, which loses agent_hint / budget_tokens when

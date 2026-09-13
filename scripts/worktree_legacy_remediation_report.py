@@ -71,12 +71,14 @@ def _git_ahead_behind(path: str, branch: str, base_branch: str) -> tuple[int | N
     try:
         ahead = int(
             subprocess.check_output(
-                ["git", "-C", path, "rev-list", "--count", f"{base_branch}..{branch}"], text=True
+                ["git", "-C", path, "rev-list", "--count", f"{base_branch}..{branch}"],
+                text=True,
             ).strip()
         )
         behind = int(
             subprocess.check_output(
-                ["git", "-C", path, "rev-list", "--count", f"{branch}..{base_branch}"], text=True
+                ["git", "-C", path, "rev-list", "--count", f"{branch}..{base_branch}"],
+                text=True,
             ).strip()
         )
     except Exception:

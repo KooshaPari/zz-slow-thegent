@@ -26,6 +26,7 @@ Static "pick a model" logic fails because pricing, availability, and speed claim
 ### 1.3 Scope (v1.1)
 
 **In scope**:
+
 - Offer-first routing (provider+model+plan).
 - Unified plan economics: PAYG, fixed bucket, daily quota bucket, weighted unit bucket, prompt rate-limited, volatile free, compute-metered.
 - Speed index: TTFT + ITL + throughput profile.
@@ -33,19 +34,20 @@ Static "pick a model" logic fails because pricing, availability, and speed claim
 - Patch-based coding DAG: Reason → Apply → Validate → Escalate.
 
 **Out of scope**:
+
 - Fully learned routing policy (bandits/RL) — keep Pareto + lexicographic.
 - Automated benchmark OCR.
 
 ### 1.4 Functional Requirements
 
-| ID | Requirement |
-|----|-------------|
+| ID   | Requirement                                      |
+| ---- | ------------------------------------------------ |
 | FR-1 | Offer-first catalog (provider+model+plan+region) |
-| FR-2 | Plan/economics engine: all plan types |
-| FR-3 | Speed index uses TTFT+ITL |
-| FR-4 | Quality index stable under missing benchmarks |
-| FR-5 | Patch-based coding DAG |
-| FR-6 | Fallback + circuit breakers |
+| FR-2 | Plan/economics engine: all plan types            |
+| FR-3 | Speed index uses TTFT+ITL                        |
+| FR-4 | Quality index stable under missing benchmarks    |
+| FR-5 | Patch-based coding DAG                           |
+| FR-6 | Fallback + circuit breakers                      |
 
 ### 1.5 Non-Functional Requirements
 
@@ -157,15 +159,15 @@ Static "pick a model" logic fails because pricing, availability, and speed claim
 
 ## 4. ADR Docket (v1.1)
 
-| ID | Decision | Status |
-|----|----------|--------|
-| ADR-001 | Offer-first routing (provider+model+plan) | Accepted |
-| ADR-002 | Pareto frontier + lexicographic tie-break | Accepted |
-| ADR-003 | Copilot = weighted unit bucket + 0× included models | Accepted |
-| ADR-004 | Speed profile uses TTFT+ITL (not "tok/s") | Accepted |
-| ADR-005 | Cerebras Code modeled as daily_quota_bucket | Accepted |
-| ADR-006 | NVIDIA build.nvidia.com classified as volatile_free | Accepted |
-| ADR-007 | Apply/Patch models are separate role + DAG stage | Accepted |
+| ID      | Decision                                                | Status   |
+| ------- | ------------------------------------------------------- | -------- |
+| ADR-001 | Offer-first routing (provider+model+plan)               | Accepted |
+| ADR-002 | Pareto frontier + lexicographic tie-break               | Accepted |
+| ADR-003 | Copilot = weighted unit bucket + 0× included models     | Accepted |
+| ADR-004 | Speed profile uses TTFT+ITL (not "tok/s")               | Accepted |
+| ADR-005 | Cerebras Code modeled as daily_quota_bucket             | Accepted |
+| ADR-006 | NVIDIA build.nvidia.com classified as volatile_free     | Accepted |
+| ADR-007 | Apply/Patch models are separate role + DAG stage        | Accepted |
 | ADR-008 | Vendor speed claims are priors; measured telemetry wins | Accepted |
 
 ---
@@ -174,9 +176,11 @@ Static "pick a model" logic fails because pricing, availability, and speed claim
 
 ```python
 for offer in offers:
-    if not hard_constraints_ok(offer): continue
+    if not hard_constraints_ok(offer):
+        continue
     cost = effective_cost(offer)
-    if cost > maxCost: continue
+    if cost > maxCost:
+        continue
     speed = speed_score(offer)
     quality = quality_score(offer)
     candidates.append((offer, cost, speed, quality))

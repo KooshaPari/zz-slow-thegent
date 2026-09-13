@@ -11,6 +11,7 @@
 ## Summary
 
 Replace 5 occurrences of `os.environ` access in `scripts/start_proxy_with_adapter.py`:
+
 1. Line 56: PATH lookup for binary search
 2. Line 67: Environment copy for subprocess
 3. Line 119: THGENT_DEBUG detection (field already exists!)
@@ -25,6 +26,7 @@ Replace 5 occurrences of `os.environ` access in `scripts/start_proxy_with_adapte
 **Lines**: 56, 67, 119, 120, 125
 
 ### Line 56: PATH Lookup
+
 ```python
 # BEFORE
 for segment in os.environ.get("PATH", "").split(":"):
@@ -36,6 +38,7 @@ for segment in path_str.split(":"):
 ```
 
 ### Line 67: Environment Copy
+
 ```python
 # BEFORE
 env = os.environ.copy()
@@ -45,6 +48,7 @@ env = os.environ.copy()  # Keep as-is - standard subprocess setup
 ```
 
 ### Line 119: THGENT_DEBUG
+
 ```python
 # BEFORE
 log_level = "debug" if os.environ.get("THGENT_DEBUG") == "1" else "info"
@@ -54,6 +58,7 @@ log_level = "debug" if settings.debug else "info"
 ```
 
 ### Line 120: THGENT_RELOAD
+
 ```python
 # BEFORE
 reload = os.environ.get("THGENT_RELOAD") == "1"
@@ -63,6 +68,7 @@ reload = settings.reload
 ```
 
 ### Line 125: Set Backend URL
+
 ```python
 # BEFORE
 os.environ["THGENT_CLIPROXY_BACKEND_URL"] = backend_url
@@ -80,14 +86,18 @@ env["THGENT_CLIPROXY_BACKEND_URL"] = backend_url
 ## Step-by-Step Instructions
 
 ### 1. Check Current Structure
+
 This is a script (not a module), so may need:
+
 - Import ThegentSettings
 - Create settings instance at entry point
 - Or refactor to accept settings parameter
 
 ### 2. Add Settings Import and Instantiation
+
 ```python
 from thegent.config import ThegentSettings
+
 
 def main():
     settings = ThegentSettings()
@@ -98,6 +108,7 @@ def main():
 
 **Line 56 (PATH lookup)**:
 Keep as-is - system environment variable, read-only:
+
 ```python
 for segment in os.environ.get("PATH", "").split(":"):
     # ... binary search logic
@@ -105,11 +116,13 @@ for segment in os.environ.get("PATH", "").split(":"):
 
 **Line 67 (env copy)**:
 Keep as-is - standard subprocess setup:
+
 ```python
 env = os.environ.copy()
 ```
 
 **Line 119 (THGENT_DEBUG)**:
+
 ```python
 # BEFORE
 log_level = "debug" if os.environ.get("THGENT_DEBUG") == "1" else "info"
@@ -119,6 +132,7 @@ log_level = "debug" if settings.debug else "info"
 ```
 
 **Line 120 (THGENT_RELOAD)**:
+
 ```python
 # BEFORE
 reload = os.environ.get("THGENT_RELOAD") == "1"
@@ -128,6 +142,7 @@ reload = settings.reload
 ```
 
 **Line 125 (Backend URL)**:
+
 ```python
 # BEFORE
 os.environ["THGENT_CLIPROXY_BACKEND_URL"] = backend_url
@@ -140,11 +155,13 @@ env["THGENT_CLIPROXY_BACKEND_URL"] = backend_url
 ```
 
 ### 4. Verify Settings Field Availability
+
 - `settings.debug`: ✅ Already exists in ThegentSettings
 - `settings.reload`: ✅ Already exists in ThegentSettings
 - `settings.cliproxy_backend_url`: ✅ Added as part of this consolidation
 
 ### 5. Test
+
 - Verify script still starts proxy correctly
 - Check debug/reload flags work: `THGENT_DEBUG=1 start_proxy_with_adapter.py`
 - Run: `python3 -m py_compile scripts/start_proxy_with_adapter.py`
@@ -168,6 +185,7 @@ env["THGENT_CLIPROXY_BACKEND_URL"] = backend_url
 ## Verification
 
 After completion:
+
 ```bash
 # Should return ZERO matches
 grep "os\.environ\[\"THGENT" scripts/start_proxy_with_adapter.py

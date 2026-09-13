@@ -1,4 +1,5 @@
 """Watcher daemon module for file system watching."""
+
 from __future__ import annotations
 
 from dataclasses import dataclass, field
@@ -8,6 +9,7 @@ from typing import Any
 
 class WatchEvent(Enum):
     """Watch event types."""
+
     CREATED = "created"
     MODIFIED = "modified"
     DELETED = "deleted"
@@ -16,9 +18,9 @@ class WatchEvent(Enum):
 class WatcherDaemon:
     """Watcher daemon for file system watching."""
 
-    _instance: "WatcherDaemon | None" = None
+    _instance: WatcherDaemon | None = None
 
-    def __new__(cls, config: dict[str, Any] | None = None) -> "WatcherDaemon":
+    def __new__(cls, config: dict[str, Any] | None = None) -> WatcherDaemon:
         if cls._instance is None:
             cls._instance = super().__new__(cls)
             cls._instance._initialized = False
@@ -75,12 +77,21 @@ def get_watcher_daemon() -> WatcherDaemon:
     return WatcherDaemon()
 
 
-__all__ = ["WatcherDaemon", "WatchEvent", "WatchSpec", "_reset_singleton", "_SpecHandler", "_try_get_breaker", "get_watcher_daemon"]
+__all__ = [
+    "WatcherDaemon",
+    "WatchEvent",
+    "WatchSpec",
+    "_reset_singleton",
+    "_SpecHandler",
+    "_try_get_breaker",
+    "get_watcher_daemon",
+]
 
 
 @dataclass
 class WatchSpec:
     """Specification for a watch operation."""
+
     path: str
     recursive: bool = False
     patterns: list[str] = field(default_factory=list)

@@ -7,12 +7,12 @@ Provides report sensitivity levels and field redaction for confidential data.
 from __future__ import annotations
 
 import re
-from datetime import datetime, UTC
-from enum import Enum
+from datetime import UTC, datetime
+from enum import StrEnum
 from typing import Any, ClassVar, cast
 
 
-class ReportSensitivity(str, Enum):
+class ReportSensitivity(StrEnum):
     """Report sensitivity classification."""
 
     PUBLIC = "public"

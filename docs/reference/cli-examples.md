@@ -1889,10 +1889,10 @@ Unified setup: configure providers (same flow as cliproxy login) and install sho
 Unified setup: configure providers (same flow as cliproxy login) and install shortcuts.
 
 Examples:
-  thegent setup                    # Interactive wizard
-  thegent setup --full             # Full setup: install, shims, services, harness
-  thegent setup --harness          # Install/update heliosShield harness only
-  thegent setup --hooks --skills   # Project: git hooks + skills
+thegent setup # Interactive wizard
+thegent setup --full # Full setup: install, shims, services, harness
+thegent setup --harness # Install/update heliosShield harness only
+thegent setup --hooks --skills # Project: git hooks + skills
 
 </details>
 
@@ -1910,9 +1910,9 @@ Bootstrap a new project from initialize-project presets.
 Preset scaffold command with profile defaults and optional tenancy/runtime wiring.
 
 Examples:
-  thegent sys setup project scaffold ./my-service --profile service_api
-  thegent sys setup project scaffold ./my-service --profile service_api --dry-run --json
-  thegent sys setup project scaffold ./my-service --profile service_api --register --install-runtime
+thegent sys setup project scaffold ./my-service --profile service_api
+thegent sys setup project scaffold ./my-service --profile service_api --dry-run --json
+thegent sys setup project scaffold ./my-service --profile service_api --register --install-runtime
 
 </details>
 
@@ -1930,8 +1930,8 @@ List available scaffold preset profiles.
 Show supported profile names and optionally emit JSON.
 
 Examples:
-  thegent sys setup project scaffold-profiles
-  thegent sys setup project scaffold-profiles --json
+thegent sys setup project scaffold-profiles
+thegent sys setup project scaffold-profiles --json
 
 </details>
 

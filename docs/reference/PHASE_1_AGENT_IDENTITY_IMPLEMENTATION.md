@@ -34,6 +34,7 @@ Example: "thegent:abc123:L2:builder"
 ```
 
 **Components:**
+
 - `project` - Project name/path (e.g., "thegent", "kush")
 - `uuid` - 8-character unique identifier
 - `level` - Hierarchy level (L1, L2, L3)
@@ -44,6 +45,7 @@ Example: "thegent:abc123:L2:builder"
 **Location:** `~/.claude/civilization/registry.json`
 
 **Structure:**
+
 ```json
 {
   "thegent:abc123:L1:coordinator": {
@@ -122,11 +124,13 @@ Core implementation with:
 Comprehensive test suite with 17 passing tests:
 
 **TestAgentIdentity (4 tests):**
+
 - Agent ID format string generation
 - Dictionary serialization/deserialization
 - Roundtrip conversion
 
 **TestGlobalAgentRegistry (10 tests):**
+
 - Agent registration/retrieval
 - Unregistration with cleanup
 - Filtering by project, level, role
@@ -136,10 +140,12 @@ Comprehensive test suite with 17 passing tests:
 - Registry statistics
 
 **TestAgentIdentityFactory (4 tests):**
+
 - L1, L2, L3 agent creation
 - Full hierarchy creation
 
 **Test Results:**
+
 ```
 Ran 17 tests in 0.187s
 OK ✅
@@ -165,17 +171,11 @@ print(f"L1 Agent: {l1.agent_id}")
 
 # Create L2 workers
 l2_researcher = factory.create_l2_agent(
-    "thegent",
-    AgentRole.RESEARCHER,
-    l1.agent_id,
-    capabilities=["research", "analysis"]
+    "thegent", AgentRole.RESEARCHER, l1.agent_id, capabilities=["research", "analysis"]
 )
 
 l2_builder = factory.create_l2_agent(
-    "thegent",
-    AgentRole.BUILDER,
-    l1.agent_id,
-    capabilities=["implementation", "testing"]
+    "thegent", AgentRole.BUILDER, l1.agent_id, capabilities=["implementation", "testing"]
 )
 
 # Create L3 executors
@@ -227,17 +227,20 @@ The agent identity system integrates with the existing `SwarmController`:
 **swarm_controller.py should be updated to:**
 
 1. **On Agent Registration:**
+
    ```python
    identity = factory.create_l3_agent(project, l2_parent_id)
    self.agent_identities[identity.agent_id] = identity
    ```
 
 2. **On Heartbeat Update:**
+
    ```python
    registry.update_heartbeat(agent_id)
    ```
 
 3. **On Agent Stale Detection:**
+
    ```python
    stale = registry.get_stale_agents()
    for agent in stale:
@@ -290,12 +293,12 @@ Phase 2 will implement:
 
 ## Key Files
 
-| File | Purpose | Status |
-|------|---------|--------|
-| `scripts/agent_identity_system.py` | Core implementation | ✅ 427 LOC |
-| `scripts/test_agent_identity_system.py` | Test suite | ✅ 361 LOC, 17 tests passing |
-| `docs/reference/PHASE_1_AGENT_IDENTITY_IMPLEMENTATION.md` | This file | ✅ Documentation |
-| `~/.claude/civilization/registry.json` | Global registry | Created on first use |
+| File                                                      | Purpose             | Status                       |
+| --------------------------------------------------------- | ------------------- | ---------------------------- |
+| `scripts/agent_identity_system.py`                        | Core implementation | ✅ 427 LOC                   |
+| `scripts/test_agent_identity_system.py`                   | Test suite          | ✅ 361 LOC, 17 tests passing |
+| `docs/reference/PHASE_1_AGENT_IDENTITY_IMPLEMENTATION.md` | This file           | ✅ Documentation             |
+| `~/.claude/civilization/registry.json`                    | Global registry     | Created on first use         |
 
 ---
 
@@ -328,6 +331,7 @@ test_create_full_hierarchy ✅
 ## Summary
 
 Phase 1 establishes the foundational agent identity and discovery system that enables:
+
 - **Unique global identities** for all agents across projects
 - **Hierarchical relationships** tracking (L1→L2→L3)
 - **Service discovery** via global registry

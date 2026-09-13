@@ -44,23 +44,23 @@ CostAggregator.daily_total(owner) → sum
 
 ## 4. Cost Estimation
 
-| Source | Method |
-|-------|--------|
-| Provider pricing table | Static $/1k tokens per model |
-| Run metadata | tokens_in, tokens_out from runner (if available) |
-| Fallback | Heuristic: prompt_length * 1.3 + 500 for output |
+| Source                 | Method                                           |
+| ---------------------- | ------------------------------------------------ |
+| Provider pricing table | Static $/1k tokens per model                     |
+| Run metadata           | tokens_in, tokens_out from runner (if available) |
+| Fallback               | Heuristic: prompt_length \* 1.3 + 500 for output |
 
 ---
 
 ## 5. Implementation Phases
 
-| Phase | Deliverable | Effort |
-|-------|-------------|--------|
-| P1 | Design doc (this) | Done |
-| P2 | CostEstimator; pricing table (config) | 2–3 days |
-| P3 | RunRegistry cost fields; register_end cost | 1–2 days |
-| P4 | CostAggregator; daily rollup; budget config | 2–3 days |
-| P5 | Alert emission; optional pre-run budget check | 1–2 days |
+| Phase | Deliverable                                   | Effort   |
+| ----- | --------------------------------------------- | -------- |
+| P1    | Design doc (this)                             | Done     |
+| P2    | CostEstimator; pricing table (config)         | 2–3 days |
+| P3    | RunRegistry cost fields; register_end cost    | 1–2 days |
+| P4    | CostAggregator; daily rollup; budget config   | 2–3 days |
+| P5    | Alert emission; optional pre-run budget check | 1–2 days |
 
 ---
 
@@ -71,7 +71,7 @@ governance:
   cost:
     enabled: false
     daily_budget_usd: 10.0
-    budget_scope: owner  # owner | global
+    budget_scope: owner # owner | global
     alert_on_exceed: true
     block_on_exceed: false
   pricing:
@@ -89,6 +89,7 @@ governance:
 - `docs/research/COST_ROUTING_DEFERRED.md`
 
 <!-- PHENOTYPE_GOVERNANCE_OVERLAY_V1 -->
+
 ## Phenotype Governance Overlay v1
 
 - Enforce `TDD + BDD + SDD` for all feature and workflow changes.
@@ -97,4 +98,3 @@ governance:
 - Keep local hot paths deterministic and low-latency; place distributed workflow logic behind durable orchestration boundaries.
 - Require policy gating, auditability, and traceable correlation IDs for agent and workflow actions.
 - Document architectural and protocol decisions before broad rollout changes.
-

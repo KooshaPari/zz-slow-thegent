@@ -704,7 +704,10 @@ class EnhancedRouter:
             if "/" in selected_model:
                 provider_model = selected_model.split("/", 1)[1]
                 if not has_model_metadata(provider_model):
-                    logger.debug("Model metadata not found for %s (using fallback)", selected_model)
+                    logger.debug(
+                        "Model metadata not found for %s (using fallback)",
+                        selected_model,
+                    )
             else:
                 logger.debug("Model metadata not found for %s (using fallback)", selected_model)
 
@@ -971,7 +974,11 @@ class EnhancedRouter:
                                     found = True
                                     break
                             if not found:
-                                logger.debug("Model metadata not found for %s (alias: %s)", provider_model, model_name)
+                                logger.debug(
+                                    "Model metadata not found for %s (alias: %s)",
+                                    provider_model,
+                                    model_name,
+                                )
                     else:
                         logger.debug("Model metadata not found for %s", model_name)
         except Exception as e:

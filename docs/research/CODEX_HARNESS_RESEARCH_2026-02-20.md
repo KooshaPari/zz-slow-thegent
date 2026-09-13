@@ -51,6 +51,7 @@ pub struct ResponsesApiRequest {
 ```
 
 Key parameters:
+
 - `stream` is always `true`; Codex never uses non-streaming Responses API
 - `store` is provider-dependent (true for Azure, false for direct OpenAI)
 - `text.format` is set to `json_schema` with `strict: true` when `output_schema` is provided
@@ -85,6 +86,7 @@ There is a `ResponsesWebsocketClient` and `ResponsesWebsocketConnection` type, i
 ### 2.4 Internal Tool Definitions
 
 Codex registers these tools with the Responses API (inferred from protocol and exec policy sources):
+
 - `apply_patch` — file editing using unified diff format
 - `container_exec` / `shell_exec` — command execution in sandbox
 - `web_search` — live/cached web search
@@ -116,6 +118,7 @@ RequestId = String | Integer
 ### 3.2 Protocol Versioning: v1 (deprecated) vs v2 (current)
 
 There are two protocol namespaces in the schema:
+
 - **v1**: Original API (camelCase methods like `newConversation`, `sendUserTurn`, etc.) — kept for backward compat, actively deprecated
 - **v2**: Current API (resource-path methods like `thread/start`, `turn/start`, etc.) — the correct target for all new integrations
 
@@ -125,114 +128,114 @@ There are two protocol namespaces in the schema:
 
 #### Thread Lifecycle (v2)
 
-| Wire Method | Params | Response | Notes |
-|---|---|---|---|
-| `thread/start` | `ThreadStartParams` | `ThreadStartResponse` | Create new thread |
-| `thread/resume` | `ThreadResumeParams` | `ThreadResumeResponse` | Resume by id, path, or history |
-| `thread/fork` | `ThreadForkParams` | `ThreadForkResponse` | Fork existing thread |
-| `thread/archive` | `ThreadArchiveParams` | `ThreadArchiveResponse` | Archive thread |
-| `thread/unarchive` | `ThreadUnarchiveParams` | `ThreadUnarchiveResponse` | Unarchive thread |
-| `thread/name/set` | `ThreadSetNameParams` | `ThreadSetNameResponse` | Rename thread |
-| `thread/rollback` | `ThreadRollbackParams` | `ThreadRollbackResponse` | Drop last N turns |
-| `thread/list` | `ThreadListParams` | `ThreadListResponse` | Paginated list |
-| `thread/loaded/list` | `ThreadLoadedListParams` | `ThreadLoadedListResponse` | In-memory threads |
-| `thread/read` | `ThreadReadParams` | `ThreadReadResponse` | Read with optional turns |
+| Wire Method          | Params                   | Response                   | Notes                          |
+| -------------------- | ------------------------ | -------------------------- | ------------------------------ |
+| `thread/start`       | `ThreadStartParams`      | `ThreadStartResponse`      | Create new thread              |
+| `thread/resume`      | `ThreadResumeParams`     | `ThreadResumeResponse`     | Resume by id, path, or history |
+| `thread/fork`        | `ThreadForkParams`       | `ThreadForkResponse`       | Fork existing thread           |
+| `thread/archive`     | `ThreadArchiveParams`    | `ThreadArchiveResponse`    | Archive thread                 |
+| `thread/unarchive`   | `ThreadUnarchiveParams`  | `ThreadUnarchiveResponse`  | Unarchive thread               |
+| `thread/name/set`    | `ThreadSetNameParams`    | `ThreadSetNameResponse`    | Rename thread                  |
+| `thread/rollback`    | `ThreadRollbackParams`   | `ThreadRollbackResponse`   | Drop last N turns              |
+| `thread/list`        | `ThreadListParams`       | `ThreadListResponse`       | Paginated list                 |
+| `thread/loaded/list` | `ThreadLoadedListParams` | `ThreadLoadedListResponse` | In-memory threads              |
+| `thread/read`        | `ThreadReadParams`       | `ThreadReadResponse`       | Read with optional turns       |
 
 #### Turn Execution (v2)
 
-| Wire Method | Params | Response | Notes |
-|---|---|---|---|
-| `turn/start` | `TurnStartParams` | `TurnStartResponse` | Submit user input |
+| Wire Method      | Params                | Response                | Notes                 |
+| ---------------- | --------------------- | ----------------------- | --------------------- |
+| `turn/start`     | `TurnStartParams`     | `TurnStartResponse`     | Submit user input     |
 | `turn/interrupt` | `TurnInterruptParams` | `TurnInterruptResponse` | Cancel in-flight turn |
-| `review/start` | `ReviewStartParams` | `ReviewStartResponse` | Code review turn |
+| `review/start`   | `ReviewStartParams`   | `ReviewStartResponse`   | Code review turn      |
 
 #### System/Config (v2)
 
-| Wire Method | Params | Response | Notes |
-|---|---|---|---|
-| `model/list` | `ModelListParams` | `ModelListResponse` | Paginated model list |
-| `collaborationMode/list` | — | `CollaborationModeListResponse` | Experimental |
-| `config/read` | `ConfigReadParams` | `ConfigReadResponse` | Read layered config |
-| `config/value/write` | `ConfigValueWriteParams` | `ConfigWriteResponse` | Write config key |
-| `config/batchWrite` | `ConfigBatchWriteParams` | `ConfigWriteResponse` | Batch config write |
-| `configRequirements/read` | — | `ConfigRequirementsReadResponse` | MDM/managed requirements |
-| `skills/list` | `SkillsListParams` | `SkillsListResponse` | List SKILL.md files |
-| `skills/config/write` | `SkillsConfigWriteParams` | `SkillsConfigWriteResponse` | Enable/disable skill |
-| `app/list` | `AppsListParams` | `AppsListResponse` | App marketplace |
-| `mcpServerStatus/list` | `ListMcpServerStatusParams` | `ListMcpServerStatusResponse` | MCP server health |
-| `config/mcpServer/reload` | — | `McpServerRefreshResponse` | Hot reload MCP config |
-| `mcpServer/oauth/login` | `McpServerOauthLoginParams` | `McpServerOauthLoginResponse` | MCP OAuth |
-| `command/exec` | `CommandExecParams` | `CommandExecResponse` | One-off shell command |
+| Wire Method               | Params                      | Response                         | Notes                    |
+| ------------------------- | --------------------------- | -------------------------------- | ------------------------ |
+| `model/list`              | `ModelListParams`           | `ModelListResponse`              | Paginated model list     |
+| `collaborationMode/list`  | —                           | `CollaborationModeListResponse`  | Experimental             |
+| `config/read`             | `ConfigReadParams`          | `ConfigReadResponse`             | Read layered config      |
+| `config/value/write`      | `ConfigValueWriteParams`    | `ConfigWriteResponse`            | Write config key         |
+| `config/batchWrite`       | `ConfigBatchWriteParams`    | `ConfigWriteResponse`            | Batch config write       |
+| `configRequirements/read` | —                           | `ConfigRequirementsReadResponse` | MDM/managed requirements |
+| `skills/list`             | `SkillsListParams`          | `SkillsListResponse`             | List SKILL.md files      |
+| `skills/config/write`     | `SkillsConfigWriteParams`   | `SkillsConfigWriteResponse`      | Enable/disable skill     |
+| `app/list`                | `AppsListParams`            | `AppsListResponse`               | App marketplace          |
+| `mcpServerStatus/list`    | `ListMcpServerStatusParams` | `ListMcpServerStatusResponse`    | MCP server health        |
+| `config/mcpServer/reload` | —                           | `McpServerRefreshResponse`       | Hot reload MCP config    |
+| `mcpServer/oauth/login`   | `McpServerOauthLoginParams` | `McpServerOauthLoginResponse`    | MCP OAuth                |
+| `command/exec`            | `CommandExecParams`         | `CommandExecResponse`            | One-off shell command    |
 
 #### Account/Auth (v2)
 
-| Wire Method | Params | Response | Notes |
-|---|---|---|---|
-| `account/login/start` | `LoginAccountParams` | `LoginAccountResponse` | Login: apiKey, chatgpt, chatgptAuthTokens |
-| `account/login/cancel` | `CancelLoginAccountParams` | `CancelLoginAccountResponse` | Cancel OAuth flow |
-| `account/logout` | — | `LogoutAccountResponse` | Logout |
-| `account/read` | `GetAccountParams` | `GetAccountResponse` | Get account info |
-| `account/rateLimits/read` | — | `GetAccountRateLimitsResponse` | Rate limit snapshot |
+| Wire Method               | Params                     | Response                       | Notes                                     |
+| ------------------------- | -------------------------- | ------------------------------ | ----------------------------------------- |
+| `account/login/start`     | `LoginAccountParams`       | `LoginAccountResponse`         | Login: apiKey, chatgpt, chatgptAuthTokens |
+| `account/login/cancel`    | `CancelLoginAccountParams` | `CancelLoginAccountResponse`   | Cancel OAuth flow                         |
+| `account/logout`          | —                          | `LogoutAccountResponse`        | Logout                                    |
+| `account/read`            | `GetAccountParams`         | `GetAccountResponse`           | Get account info                          |
+| `account/rateLimits/read` | —                          | `GetAccountRateLimitsResponse` | Rate limit snapshot                       |
 
 #### Misc (v2)
 
-| Wire Method | Params | Response | Notes |
-|---|---|---|---|
-| `feedback/upload` | `FeedbackUploadParams` | `FeedbackUploadResponse` | Send feedback |
+| Wire Method       | Params                  | Response                  | Notes           |
+| ----------------- | ----------------------- | ------------------------- | --------------- |
+| `feedback/upload` | `FeedbackUploadParams`  | `FeedbackUploadResponse`  | Send feedback   |
 | `fuzzyFileSearch` | `FuzzyFileSearchParams` | `FuzzyFileSearchResponse` | IDE file picker |
 
 #### Init
 
-| Wire Method | Params | Response | Notes |
-|---|---|---|---|
+| Wire Method       | Params             | Response             | Notes                     |
+| ----------------- | ------------------ | -------------------- | ------------------------- |
 | `initialize` (v1) | `InitializeParams` | `InitializeResponse` | Handshake; still required |
 
 ### 3.4 Server Requests (server → client, requires response)
 
-| Wire Method | Params | Response | Notes |
-|---|---|---|---|
-| `item/commandExecution/requestApproval` | `CommandExecutionRequestApprovalParams` | `CommandExecutionRequestApprovalResponse` | Human-in-the-loop exec approval |
-| `item/fileChange/requestApproval` | `FileChangeRequestApprovalParams` | `FileChangeRequestApprovalResponse` | Human-in-the-loop patch approval |
-| `item/tool/requestUserInput` | `ToolRequestUserInputParams` | `ToolRequestUserInputResponse` | EXPERIMENTAL: user input elicitation |
-| `item/tool/call` | `DynamicToolCallParams` | `DynamicToolCallResponse` | Client-side dynamic tool execution |
-| `account/chatgptAuthTokens/refresh` | `ChatgptAuthTokensRefreshParams` | `ChatgptAuthTokensRefreshResponse` | For external-auth hosts (unstable, OpenAI-internal) |
+| Wire Method                             | Params                                  | Response                                  | Notes                                               |
+| --------------------------------------- | --------------------------------------- | ----------------------------------------- | --------------------------------------------------- |
+| `item/commandExecution/requestApproval` | `CommandExecutionRequestApprovalParams` | `CommandExecutionRequestApprovalResponse` | Human-in-the-loop exec approval                     |
+| `item/fileChange/requestApproval`       | `FileChangeRequestApprovalParams`       | `FileChangeRequestApprovalResponse`       | Human-in-the-loop patch approval                    |
+| `item/tool/requestUserInput`            | `ToolRequestUserInputParams`            | `ToolRequestUserInputResponse`            | EXPERIMENTAL: user input elicitation                |
+| `item/tool/call`                        | `DynamicToolCallParams`                 | `DynamicToolCallResponse`                 | Client-side dynamic tool execution                  |
+| `account/chatgptAuthTokens/refresh`     | `ChatgptAuthTokensRefreshParams`        | `ChatgptAuthTokensRefreshResponse`        | For external-auth hosts (unstable, OpenAI-internal) |
 
 ### 3.5 Server Notifications (server → client, no response)
 
-| Wire Method | Payload | Notes |
-|---|---|---|
-| `error` | `ErrorNotification` | Transient or fatal errors |
-| `thread/started` | `ThreadStartedNotification` | Thread created |
-| `thread/name/updated` | `ThreadNameUpdatedNotification` | Auto-name update |
-| `thread/tokenUsage/updated` | `ThreadTokenUsageUpdatedNotification` | Per-turn token usage |
-| `turn/started` | `TurnStartedNotification` | Turn began |
-| `turn/completed` | `TurnCompletedNotification` | Turn finished |
-| `turn/diff/updated` | `TurnDiffUpdatedNotification` | Unified diff update |
-| `turn/plan/updated` | `TurnPlanUpdatedNotification` | Plan streaming update |
-| `item/started` | `ItemStartedNotification` | Item lifecycle started |
-| `item/completed` | `ItemCompletedNotification` | Item lifecycle completed |
-| `rawResponseItem/completed` | `RawResponseItemCompletedNotification` | Internal (Codex Cloud) |
-| `item/agentMessage/delta` | `AgentMessageDeltaNotification` | Streaming text delta |
-| `item/plan/delta` | `PlanDeltaNotification` | EXPERIMENTAL plan streaming |
-| `item/commandExecution/outputDelta` | `CommandExecutionOutputDeltaNotification` | Streaming shell output |
-| `item/commandExecution/terminalInteraction` | `TerminalInteractionNotification` | PTY interaction |
-| `item/fileChange/outputDelta` | `FileChangeOutputDeltaNotification` | Streaming patch delta |
-| `item/mcpToolCall/progress` | `McpToolCallProgressNotification` | MCP tool progress |
-| `item/reasoning/summaryTextDelta` | `ReasoningSummaryTextDeltaNotification` | Reasoning summary stream |
-| `item/reasoning/summaryPartAdded` | `ReasoningSummaryPartAddedNotification` | Reasoning part |
-| `item/reasoning/textDelta` | `ReasoningTextDeltaNotification` | Raw reasoning text |
-| `account/updated` | `AccountUpdatedNotification` | Auth state changed |
-| `account/rateLimits/updated` | `AccountRateLimitsUpdatedNotification` | Rate limit change |
-| `account/login/completed` | `AccountLoginCompletedNotification` | OAuth/login done |
-| `thread/compacted` | `ContextCompactedNotification` | Deprecated; use item type |
-| `deprecationNotice` | `DeprecationNoticeNotification` | API deprecation warning |
-| `configWarning` | `ConfigWarningNotification` | Config parse warning |
-| `windows/worldWritableWarning` | `WindowsWorldWritableWarningNotification` | Windows security warning |
+| Wire Method                                 | Payload                                   | Notes                       |
+| ------------------------------------------- | ----------------------------------------- | --------------------------- |
+| `error`                                     | `ErrorNotification`                       | Transient or fatal errors   |
+| `thread/started`                            | `ThreadStartedNotification`               | Thread created              |
+| `thread/name/updated`                       | `ThreadNameUpdatedNotification`           | Auto-name update            |
+| `thread/tokenUsage/updated`                 | `ThreadTokenUsageUpdatedNotification`     | Per-turn token usage        |
+| `turn/started`                              | `TurnStartedNotification`                 | Turn began                  |
+| `turn/completed`                            | `TurnCompletedNotification`               | Turn finished               |
+| `turn/diff/updated`                         | `TurnDiffUpdatedNotification`             | Unified diff update         |
+| `turn/plan/updated`                         | `TurnPlanUpdatedNotification`             | Plan streaming update       |
+| `item/started`                              | `ItemStartedNotification`                 | Item lifecycle started      |
+| `item/completed`                            | `ItemCompletedNotification`               | Item lifecycle completed    |
+| `rawResponseItem/completed`                 | `RawResponseItemCompletedNotification`    | Internal (Codex Cloud)      |
+| `item/agentMessage/delta`                   | `AgentMessageDeltaNotification`           | Streaming text delta        |
+| `item/plan/delta`                           | `PlanDeltaNotification`                   | EXPERIMENTAL plan streaming |
+| `item/commandExecution/outputDelta`         | `CommandExecutionOutputDeltaNotification` | Streaming shell output      |
+| `item/commandExecution/terminalInteraction` | `TerminalInteractionNotification`         | PTY interaction             |
+| `item/fileChange/outputDelta`               | `FileChangeOutputDeltaNotification`       | Streaming patch delta       |
+| `item/mcpToolCall/progress`                 | `McpToolCallProgressNotification`         | MCP tool progress           |
+| `item/reasoning/summaryTextDelta`           | `ReasoningSummaryTextDeltaNotification`   | Reasoning summary stream    |
+| `item/reasoning/summaryPartAdded`           | `ReasoningSummaryPartAddedNotification`   | Reasoning part              |
+| `item/reasoning/textDelta`                  | `ReasoningTextDeltaNotification`          | Raw reasoning text          |
+| `account/updated`                           | `AccountUpdatedNotification`              | Auth state changed          |
+| `account/rateLimits/updated`                | `AccountRateLimitsUpdatedNotification`    | Rate limit change           |
+| `account/login/completed`                   | `AccountLoginCompletedNotification`       | OAuth/login done            |
+| `thread/compacted`                          | `ContextCompactedNotification`            | Deprecated; use item type   |
+| `deprecationNotice`                         | `DeprecationNoticeNotification`           | API deprecation warning     |
+| `configWarning`                             | `ConfigWarningNotification`               | Config parse warning        |
+| `windows/worldWritableWarning`              | `WindowsWorldWritableWarningNotification` | Windows security warning    |
 
 ### 3.6 Client Notification (client → server)
 
-| Wire Method | Notes |
-|---|---|
+| Wire Method   | Notes                            |
+| ------------- | -------------------------------- |
 | `initialized` | Sent after `initialize` response |
 
 ### 3.7 TurnStartParams — Key Fields
@@ -299,84 +302,90 @@ The SDK wraps the bundled `codex` binary by spawning `codex exec --experimental-
 
 ```typescript
 class Codex {
-    constructor(options: CodexOptions = {})
-    startThread(options: ThreadOptions = {}): Thread
-    resumeThread(id: string, options: ThreadOptions = {}): Thread
+  constructor(options: CodexOptions = {});
+  startThread(options: ThreadOptions = {}): Thread;
+  resumeThread(id: string, options: ThreadOptions = {}): Thread;
 }
 
 class Thread {
-    get id(): string | null
-    async run(input: Input, turnOptions: TurnOptions = {}): Promise<Turn>
-    async runStreamed(input: Input, turnOptions: TurnOptions = {}): Promise<StreamedTurn>
+  get id(): string | null;
+  async run(input: Input, turnOptions: TurnOptions = {}): Promise<Turn>;
+  async runStreamed(
+    input: Input,
+    turnOptions: TurnOptions = {},
+  ): Promise<StreamedTurn>;
 }
 
 // Input types
-type Input = string | UserInput[]
-type UserInput = { type: "text"; text: string } | { type: "local_image"; path: string }
+type Input = string | UserInput[];
+type UserInput =
+  | { type: "text"; text: string }
+  | { type: "local_image"; path: string };
 
 // Turn result
-type Turn = { items: ThreadItem[]; finalResponse: string; usage: Usage | null }
-type StreamedTurn = { events: AsyncGenerator<ThreadEvent> }
+type Turn = { items: ThreadItem[]; finalResponse: string; usage: Usage | null };
+type StreamedTurn = { events: AsyncGenerator<ThreadEvent> };
 
 // Options
 type CodexOptions = {
-    codexPathOverride?: string
-    env?: Record<string, string>
-    config?: CodexConfigObject    // flattened to --config key=val flags
-    baseUrl?: string
-    apiKey?: string
-}
+  codexPathOverride?: string;
+  env?: Record<string, string>;
+  config?: CodexConfigObject; // flattened to --config key=val flags
+  baseUrl?: string;
+  apiKey?: string;
+};
 
 type ThreadOptions = {
-    model?: string
-    sandboxMode?: "read-only" | "workspace-write" | "danger-full-access"
-    workingDirectory?: string
-    skipGitRepoCheck?: boolean
-    modelReasoningEffort?: "minimal" | "low" | "medium" | "high" | "xhigh"
-    networkAccessEnabled?: boolean
-    webSearchMode?: "disabled" | "cached" | "live"
-    webSearchEnabled?: boolean
-    approvalPolicy?: "never" | "on-request" | "on-failure" | "untrusted"
-    additionalDirectories?: string[]
-}
+  model?: string;
+  sandboxMode?: "read-only" | "workspace-write" | "danger-full-access";
+  workingDirectory?: string;
+  skipGitRepoCheck?: boolean;
+  modelReasoningEffort?: "minimal" | "low" | "medium" | "high" | "xhigh";
+  networkAccessEnabled?: boolean;
+  webSearchMode?: "disabled" | "cached" | "live";
+  webSearchEnabled?: boolean;
+  approvalPolicy?: "never" | "on-request" | "on-failure" | "untrusted";
+  additionalDirectories?: string[];
+};
 
 type TurnOptions = {
-    outputSchema?: object    // JSON Schema for structured output
-    signal?: AbortSignal     // for cancellation
-}
+  outputSchema?: object; // JSON Schema for structured output
+  signal?: AbortSignal; // for cancellation
+};
 ```
 
 ### 4.2 SDK Event Types (exec JSONL stream)
 
 ```typescript
 type ThreadEvent =
-    | { type: "thread.started"; thread_id: string }
-    | { type: "turn.started" }
-    | { type: "turn.completed"; usage: Usage }
-    | { type: "turn.failed"; error: ThreadError }
-    | { type: "item.started"; item: ThreadItem }
-    | { type: "item.updated"; item: ThreadItem }
-    | { type: "item.completed"; item: ThreadItem }
-    | { type: "error"; message: string }
+  | { type: "thread.started"; thread_id: string }
+  | { type: "turn.started" }
+  | { type: "turn.completed"; usage: Usage }
+  | { type: "turn.failed"; error: ThreadError }
+  | { type: "item.started"; item: ThreadItem }
+  | { type: "item.updated"; item: ThreadItem }
+  | { type: "item.completed"; item: ThreadItem }
+  | { type: "error"; message: string };
 ```
 
 ### 4.3 SDK ThreadItem Types
 
 ```typescript
 type ThreadItem =
-    | AgentMessageItem       // { type: "agent_message"; id; text }
-    | ReasoningItem          // { type: "reasoning"; id; text }
-    | CommandExecutionItem   // { type: "command_execution"; id; command; aggregated_output; exit_code; status }
-    | FileChangeItem         // { type: "file_change"; id; changes; status }
-    | McpToolCallItem        // { type: "mcp_tool_call"; id; server; tool; arguments; result?; error?; status }
-    | WebSearchItem          // { type: "web_search"; id; query }
-    | TodoListItem           // { type: "todo_list"; id; items }
-    | ErrorItem              // { type: "error"; id; message }
+  | AgentMessageItem // { type: "agent_message"; id; text }
+  | ReasoningItem // { type: "reasoning"; id; text }
+  | CommandExecutionItem // { type: "command_execution"; id; command; aggregated_output; exit_code; status }
+  | FileChangeItem // { type: "file_change"; id; changes; status }
+  | McpToolCallItem // { type: "mcp_tool_call"; id; server; tool; arguments; result?; error?; status }
+  | WebSearchItem // { type: "web_search"; id; query }
+  | TodoListItem // { type: "todo_list"; id; items }
+  | ErrorItem; // { type: "error"; id; message }
 ```
 
 ### 4.4 How the SDK Invokes the Binary
 
 The SDK calls:
+
 ```bash
 codex exec --experimental-json \
     [--config key=val]... \
@@ -408,32 +417,41 @@ Starts a new Codex session.
 
 ```json
 {
-    "name": "codex",
-    "description": "Run a Codex session. Accepts configuration parameters matching the Codex Config struct.",
-    "inputSchema": {
-        "type": "object",
-        "required": ["prompt"],
-        "properties": {
-            "prompt": { "type": "string", "description": "The initial user prompt to start the Codex conversation." },
-            "model": { "type": "string" },
-            "profile": { "type": "string" },
-            "cwd": { "type": "string" },
-            "approval-policy": { "type": "string", "enum": ["untrusted","on-failure","on-request","never"] },
-            "sandbox": { "type": "string", "enum": ["read-only","workspace-write","danger-full-access"] },
-            "config": { "type": "object", "additionalProperties": true },
-            "base-instructions": { "type": "string" },
-            "developer-instructions": { "type": "string" },
-            "compact-prompt": { "type": "string" }
-        }
-    },
-    "outputSchema": {
-        "type": "object",
-        "required": ["threadId", "content"],
-        "properties": {
-            "threadId": { "type": "string" },
-            "content": { "type": "string" }
-        }
+  "name": "codex",
+  "description": "Run a Codex session. Accepts configuration parameters matching the Codex Config struct.",
+  "inputSchema": {
+    "type": "object",
+    "required": ["prompt"],
+    "properties": {
+      "prompt": {
+        "type": "string",
+        "description": "The initial user prompt to start the Codex conversation."
+      },
+      "model": { "type": "string" },
+      "profile": { "type": "string" },
+      "cwd": { "type": "string" },
+      "approval-policy": {
+        "type": "string",
+        "enum": ["untrusted", "on-failure", "on-request", "never"]
+      },
+      "sandbox": {
+        "type": "string",
+        "enum": ["read-only", "workspace-write", "danger-full-access"]
+      },
+      "config": { "type": "object", "additionalProperties": true },
+      "base-instructions": { "type": "string" },
+      "developer-instructions": { "type": "string" },
+      "compact-prompt": { "type": "string" }
     }
+  },
+  "outputSchema": {
+    "type": "object",
+    "required": ["threadId", "content"],
+    "properties": {
+      "threadId": { "type": "string" },
+      "content": { "type": "string" }
+    }
+  }
 }
 ```
 
@@ -443,17 +461,20 @@ Continues an existing Codex session.
 
 ```json
 {
-    "name": "codex-reply",
-    "description": "Continue a Codex conversation by providing the thread id and prompt.",
-    "inputSchema": {
-        "type": "object",
-        "required": ["prompt"],
-        "properties": {
-            "threadId": { "type": "string" },
-            "conversationId": { "type": "string", "description": "DEPRECATED: use threadId instead." },
-            "prompt": { "type": "string" }
-        }
+  "name": "codex-reply",
+  "description": "Continue a Codex conversation by providing the thread id and prompt.",
+  "inputSchema": {
+    "type": "object",
+    "required": ["prompt"],
+    "properties": {
+      "threadId": { "type": "string" },
+      "conversationId": {
+        "type": "string",
+        "description": "DEPRECATED: use threadId instead."
+      },
+      "prompt": { "type": "string" }
     }
+  }
 }
 ```
 
@@ -471,61 +492,63 @@ Continues an existing Codex session.
 
 ### 6.1 Primary Subcommands
 
-| Command | Description |
-|---|---|
-| `codex` | Interactive TUI |
-| `codex exec` | Non-interactive (alias: `codex e`) |
-| `codex app` | Launch macOS desktop app |
-| `codex apply` | Apply cloud task diffs |
-| `codex cloud` | Cloud task interaction |
-| `codex completion` | Shell completions |
-| `codex execpolicy` | Evaluate policy rule files |
-| `codex features` | Manage feature flags |
-| `codex fork` | Fork previous session |
-| `codex login` | Authenticate |
-| `codex logout` | Remove credentials |
-| `codex mcp` | MCP server management |
-| `codex resume` | Continue previous session |
-| `codex sandbox` | Run commands under sandbox |
+| Command            | Description                        |
+| ------------------ | ---------------------------------- |
+| `codex`            | Interactive TUI                    |
+| `codex exec`       | Non-interactive (alias: `codex e`) |
+| `codex app`        | Launch macOS desktop app           |
+| `codex apply`      | Apply cloud task diffs             |
+| `codex cloud`      | Cloud task interaction             |
+| `codex completion` | Shell completions                  |
+| `codex execpolicy` | Evaluate policy rule files         |
+| `codex features`   | Manage feature flags               |
+| `codex fork`       | Fork previous session              |
+| `codex login`      | Authenticate                       |
+| `codex logout`     | Remove credentials                 |
+| `codex mcp`        | MCP server management              |
+| `codex resume`     | Continue previous session          |
+| `codex sandbox`    | Run commands under sandbox         |
 
 ### 6.2 Key Global Flags
 
-| Flag | Values | Purpose |
-|---|---|---|
-| `--model, -m` | string | Override model |
-| `--sandbox, -s` | `read-only` / `workspace-write` / `danger-full-access` | Sandbox policy |
-| `--ask-for-approval, -a` | `untrusted` / `on-request` / `never` | Approval policy |
-| `--cd, -C` | path | Working directory |
-| `--add-dir` | path | Additional writable dir |
-| `--config, -c` | `key=value` | Config override (TOML) |
-| `--profile, -p` | string | Config profile |
-| `--image, -i` | path(s) | Attach images |
-| `--full-auto` | bool | Low-friction workspace-write |
-| `--dangerously-bypass-approvals-and-sandbox` | — | No approvals, no sandbox |
-| `--oss` | — | Use local/OSS model provider |
-| `--search` | — | Enable live web search |
+| Flag                                         | Values                                                 | Purpose                      |
+| -------------------------------------------- | ------------------------------------------------------ | ---------------------------- |
+| `--model, -m`                                | string                                                 | Override model               |
+| `--sandbox, -s`                              | `read-only` / `workspace-write` / `danger-full-access` | Sandbox policy               |
+| `--ask-for-approval, -a`                     | `untrusted` / `on-request` / `never`                   | Approval policy              |
+| `--cd, -C`                                   | path                                                   | Working directory            |
+| `--add-dir`                                  | path                                                   | Additional writable dir      |
+| `--config, -c`                               | `key=value`                                            | Config override (TOML)       |
+| `--profile, -p`                              | string                                                 | Config profile               |
+| `--image, -i`                                | path(s)                                                | Attach images                |
+| `--full-auto`                                | bool                                                   | Low-friction workspace-write |
+| `--dangerously-bypass-approvals-and-sandbox` | —                                                      | No approvals, no sandbox     |
+| `--oss`                                      | —                                                      | Use local/OSS model provider |
+| `--search`                                   | —                                                      | Enable live web search       |
 
 ### 6.3 Exec-Specific Flags
 
-| Flag | Values | Purpose |
-|---|---|---|
-| `--experimental-json` | — | JSONL event output (required for SDK) |
-| `--ephemeral` | — | Skip session persistence |
-| `--output-schema` | path | JSON Schema for structured output |
-| `--skip-git-repo-check` | — | Allow running outside git repos |
-| `--output-last-message, -o` | path | Write final message to file |
-| `--color` | `always` / `never` / `auto` | ANSI output |
+| Flag                        | Values                      | Purpose                               |
+| --------------------------- | --------------------------- | ------------------------------------- |
+| `--experimental-json`       | —                           | JSONL event output (required for SDK) |
+| `--ephemeral`               | —                           | Skip session persistence              |
+| `--output-schema`           | path                        | JSON Schema for structured output     |
+| `--skip-git-repo-check`     | —                           | Allow running outside git repos       |
+| `--output-last-message, -o` | path                        | Write final message to file           |
+| `--color`                   | `always` / `never` / `auto` | ANSI output                           |
 
 ---
 
 ## 7. Input/Output Modalities
 
 ### 7.1 Text Input
+
 - Plain string prompt via stdin (exec mode) or `UserInput::Text` (app-server)
 - Supports `text_elements` spans for IDE-side annotations (file mentions, skill references)
 - Skill invocations: `UserInput::Skill { name, path }` triggers SKILL.md execution
 
 ### 7.2 Image Input
+
 - `--image path` CLI flag (one or more)
 - `UserInput::LocalImage { path }` in app-server
 - `UserInput::Image { url: String }` in app-server (remote URL)
@@ -533,23 +556,27 @@ Continues an existing Codex session.
 - Images are passed to the model as multimodal content items
 
 ### 7.3 Structured Output (JSON Schema)
+
 - `--output-schema <json-schema-file>` in exec mode
 - `output_schema: Option<JsonValue>` in `TurnStartParams`
 - `outputSchema` in SDK `TurnOptions`
 - Translated to `text.format = { type: "json_schema", strict: true, schema: ... }` in Responses API request
 
 ### 7.4 Web Search
+
 - Config: `web_search = "disabled" | "cached" | "live"`
 - Legacy: `features.web_search_request = true/false`
 - Tool registered as `web_search` with model
 
 ### 7.5 Reasoning Control
+
 - `model_reasoning_effort`: `minimal | low | medium | high | xhigh`
 - `model_reasoning_summary`: controls summary verbosity
 - `model_verbosity`: controls output verbosity
 - Maps to `reasoning: { effort, summary }` in Responses API
 
 ### 7.6 Computer Use / Operator Mode
+
 Codex does NOT have a dedicated "computer-use" or CUA modality in the current source. There is no `computer_use` tool in the protocol. The "operator" positioning is marketing terminology — Codex operates on files and shell. The `collaboration_mode` experimental field in `TurnStartParams` is a preset that combines model, reasoning effort, and developer instructions but is not computer-use.
 
 ---
@@ -585,11 +612,11 @@ Client must respond with:
 
 ```json
 {
-    "id": 42,
-    "result": {
-        "output": "tool result text",
-        "success": true
-    }
+  "id": 42,
+  "result": {
+    "output": "tool result text",
+    "success": true
+  }
 }
 ```
 
@@ -602,6 +629,7 @@ This is how IDE extensions implement IDE-specific tools (e.g., file picker, diag
 Codex can also _consume_ MCP servers as a client. The `config/mcpServer/reload` endpoint and `mcpServerStatus/list` endpoint reflect this. When MCP servers are configured, their tools are forwarded to the model as regular tool definitions. Results flow back through `McpToolCall` items in the event stream.
 
 The v2 `ListMcpServerStatusResponse` includes per-server status with:
+
 - `name`: server name
 - `tools`: tool definitions (MCP Tool schema)
 - `resources`, `resource_templates`: MCP resource definitions
@@ -612,6 +640,7 @@ The v2 `ListMcpServerStatusResponse` includes per-server status with:
 ## 10. IDE Integration Architecture
 
 ### 10.1 VS Code Extension
+
 - Bundles platform-specific `codex` binary as a vendored asset
 - Spawns the App Server as a child process on extension activation
 - Communicates via the bidirectional JSON-RPC protocol (section 3)
@@ -619,11 +648,13 @@ The v2 `ListMcpServerStatusResponse` includes per-server status with:
 - Supports Cursor, Windsurf (VS Code forks) automatically
 
 ### 10.2 JetBrains / Xcode
+
 - "Decoupled partners" model: these IDEs maintain stable clients but point to newer server versions
 - Clients implement the app-server protocol; binaries are updated separately
 - This is the recommended pattern for third-party harnesses
 
 ### 10.3 Web App / Codex Cloud
+
 - Browser communicates via HTTP/SSE with containerized App Server instances
 - The App Server binary is the same crate; a different transport (HTTP instead of stdio) wraps it
 - The `experimental_raw_events` flag in `ThreadStartParams` is for Codex Cloud internal use
@@ -631,6 +662,7 @@ The v2 `ListMcpServerStatusResponse` includes per-server status with:
 ### 10.4 Authentication Modes for IDE Hosts
 
 Three auth modes exist:
+
 1. **`apiKey`**: API key stored by Codex directly
 2. **`chatgpt`**: OAuth managed by Codex (token refresh handled internally)
 3. **`chatgptAuthTokens`** (UNSTABLE, OpenAI-internal): Tokens supplied by host app, not stored; server sends `account/chatgptAuthTokens/refresh` requests when tokens expire. For Codex app/web only.
@@ -678,6 +710,7 @@ approval_policy = "never"
 ### 11.3 Requirements (enterprise MDM enforcement)
 
 `configRequirements/read` returns `ConfigRequirements`:
+
 - `allowed_approval_policies`: restrict which approval policies users can set
 - `allowed_sandbox_modes`: restrict sandbox modes
 - `enforce_residency`: `"us"` for data residency enforcement
@@ -750,26 +783,26 @@ Based on source analysis and web research, these are new/changed since the v1 pr
 
 ### 16.1 Feature Parity Matrix
 
-| Feature | Codex | Claude Code | Gemini CLI | Ante (thegent) |
-|---|---|---|---|---|
-| Streaming agent output | Yes (SSE + app-server) | Yes | Yes | Via harness |
-| Structured JSON output | Yes (`output_schema`) | Yes | Yes | Via harness |
-| Image input | Yes (local + URL) | Yes | Yes | Partial |
-| Web search | Yes (native tool) | Yes | Yes | Via MCP |
-| Programmatic SDK | Yes (`@openai/codex-sdk`) | No (CLI only) | No | Via CLI |
-| Multi-agent collab | Yes (`CollabAgentToolCall`) | No | No | Planned |
-| App-server embedding protocol | Yes (JSON-RPC stdio) | No | No | Partial |
-| MCP client | Yes | Yes | Yes | Yes |
-| MCP server | Yes (2 tools) | No | No | Yes (full) |
-| Thread persistence/rollback | Yes | Yes | Limited | Limited |
-| Skills/extensions | Yes (SKILL.md) | Yes (CLAUDE.md) | No | Yes (skills) |
-| Dynamic client tools | Yes | No | No | No |
-| Code review mode | Yes (`review/start`) | No | No | No |
-| Config layer system | Yes (MDM + system + user + project) | Limited | Limited | Partial |
-| Model reasoning control | Yes (effort + summary + verbosity) | Yes | No | Via config |
-| Context compaction | Yes (automated) | Yes | No | Via harness |
-| Approval flows | Yes (per-command, per-file) | Yes | No | Via hooks |
-| Sandbox modes | Yes (read-only, workspace-write, full) | Limited | No | Via OS |
+| Feature                       | Codex                                  | Claude Code     | Gemini CLI | Ante (thegent) |
+| ----------------------------- | -------------------------------------- | --------------- | ---------- | -------------- |
+| Streaming agent output        | Yes (SSE + app-server)                 | Yes             | Yes        | Via harness    |
+| Structured JSON output        | Yes (`output_schema`)                  | Yes             | Yes        | Via harness    |
+| Image input                   | Yes (local + URL)                      | Yes             | Yes        | Partial        |
+| Web search                    | Yes (native tool)                      | Yes             | Yes        | Via MCP        |
+| Programmatic SDK              | Yes (`@openai/codex-sdk`)              | No (CLI only)   | No         | Via CLI        |
+| Multi-agent collab            | Yes (`CollabAgentToolCall`)            | No              | No         | Planned        |
+| App-server embedding protocol | Yes (JSON-RPC stdio)                   | No              | No         | Partial        |
+| MCP client                    | Yes                                    | Yes             | Yes        | Yes            |
+| MCP server                    | Yes (2 tools)                          | No              | No         | Yes (full)     |
+| Thread persistence/rollback   | Yes                                    | Yes             | Limited    | Limited        |
+| Skills/extensions             | Yes (SKILL.md)                         | Yes (CLAUDE.md) | No         | Yes (skills)   |
+| Dynamic client tools          | Yes                                    | No              | No         | No             |
+| Code review mode              | Yes (`review/start`)                   | No              | No         | No             |
+| Config layer system           | Yes (MDM + system + user + project)    | Limited         | Limited    | Partial        |
+| Model reasoning control       | Yes (effort + summary + verbosity)     | Yes             | No         | Via config     |
+| Context compaction            | Yes (automated)                        | Yes             | No         | Via harness    |
+| Approval flows                | Yes (per-command, per-file)            | Yes             | No         | Via hooks      |
+| Sandbox modes                 | Yes (read-only, workspace-write, full) | Limited         | No         | Via OS         |
 
 ### 16.2 Key Gaps in thegent's Codex Harness
 
@@ -824,12 +857,14 @@ Implementing the App Server client is non-trivial but well-specified. The protoc
 ### 17.4 Recommended Approach for thegent
 
 **Tier 1 (Config/Env — implement immediately):**
+
 - Ensure `OPENAI_BASE_URL` and `CODEX_API_KEY` are forwarded correctly for proxy routing
 - Map thegent model aliases to Codex `--model` flag values
 - Expose sandbox and approval policy as thegent config options
 - Use `--config web_search=...` for web search toggle
 
 **Tier 2 (TypeScript SDK wrapper — short term):**
+
 - Write a thin Node.js wrapper using `@openai/codex-sdk`
 - Implement `run()` / `runStreamed()` with proper event forwarding
 - Add thread persistence (store/restore `thread.id`)
@@ -837,11 +872,13 @@ Implementing the App Server client is non-trivial but well-specified. The protoc
 - Add image input support
 
 **Tier 3 (App Server protocol client — medium term):**
+
 - Implement a Rust or Python JSON-RPC client against the app-server protocol
 - Gain access to approval flows, dynamic tools, diff streaming, full thread management
 - The TypeScript schema exports from the protocol crate enable code generation
 
 **Do NOT fork the binary** unless:
+
 - Custom tools beyond MCP/dynamic tools are needed at the core level
 - Provider routing at the API level (not proxy) is required
 - The response is required before OpenAI provides it via config

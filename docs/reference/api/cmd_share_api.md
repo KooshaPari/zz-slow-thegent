@@ -17,7 +17,7 @@ If a command is already running, subsequent agents attach to its output.
 
 ### Methods
 
-#### CommandSharer.__init__
+#### CommandSharer.**init**
 
 ```python
 __init__(self: Any, session_dir: Path)

@@ -12,8 +12,10 @@
 This architecture is documented across 5 comprehensive design documents:
 
 ### 1. **MULTI_TENANT_AGENT_CIVILIZATION_ARCHITECTURE.md**
+
 **Purpose**: System overview, core components, communication patterns
 **Key Sections**:
+
 - Executive summary and architecture diagram
 - Civilization Control Plane (agent registry, work orchestrator, resource manager, event bus)
 - Project-scoped layer (work stream, task state machine, metadata)
@@ -28,8 +30,10 @@ This architecture is documented across 5 comprehensive design documents:
 **Read First**: Start here for system understanding.
 
 ### 2. **AGENT_IDENTITY_AND_DISCOVERY.md**
+
 **Purpose**: Agent naming scheme, registry architecture, service discovery
 **Key Sections**:
+
 - Agent ID format: `{project}:{uuid}:L{tier}:{role-slug}`
 - UUID generation and persistence (`~/.claude/civilization/{project}/{role}.agent-id`)
 - Global registry schema (JSON structure with 100+ fields per agent)
@@ -43,8 +47,10 @@ This architecture is documented across 5 comprehensive design documents:
 **When Needed**: Understanding agent identity and how agents find each other.
 
 ### 3. **CROSS_PROJECT_COORDINATION_PATTERNS.md**
+
 **Purpose**: Communication protocols for inter-agent coordination
 **Key Sections**:
+
 - Pattern 1: Task Dispatch (L1 → L2/L3, sync + async)
 - Pattern 2: Cross-Project Requests (L2 ↔ L2 negotiated work)
 - Pattern 3: Peer-to-Peer Negotiation (L2 ↔ L2 semaphore-based resource sharing)
@@ -58,8 +64,10 @@ This architecture is documented across 5 comprehensive design documents:
 **When Needed**: Understanding how agents communicate and coordinate.
 
 ### 4. **CIVILIZATION_SCALE_PERFORMANCE.md**
+
 **Purpose**: Resource orchestration and load balancing
 **Key Sections**:
+
 - Global resource model (CPU %, memory MB, network Mbps)
 - Per-project quota allocation (equal share, usage-based, priority-based)
 - Load balancing strategies (3 options: locality-first, load-balanced, hybrid)
@@ -71,8 +79,10 @@ This architecture is documented across 5 comprehensive design documents:
 **When Needed**: Understanding resource management and load balancing.
 
 ### 5. **MULTI_TENANT_CONTROLLER_IMPLEMENTATION_PLAN.md**
+
 **Purpose**: Step-by-step implementation roadmap
 **Key Sections**:
+
 - Phase 1 (Week 1-2): Foundation (identity, registry, heartbeat, work stream)
 - Phase 2 (Week 2-3): Single-project multi-agent (task dispatch, execution)
 - Phase 3 (Week 3-4): Cross-project coordination (requests, global state, events)
@@ -90,22 +100,27 @@ This architecture is documented across 5 comprehensive design documents:
 ## Quick Reference Guide
 
 ### For System Architects
+
 → Read: **MULTI_TENANT_AGENT_CIVILIZATION_ARCHITECTURE.md** (15 min)
 → Then: **CIVILIZATION_SCALE_PERFORMANCE.md** (10 min)
 
 ### For Engineers Implementing Phase 1
+
 → Read: **AGENT_IDENTITY_AND_DISCOVERY.md** (Agent IDs, registry)
 → Then: **MULTI_TENANT_CONTROLLER_IMPLEMENTATION_PLAN.md** (Phase 1 tasks)
 
 ### For Engineers Implementing Phase 2+
+
 → Read: **CROSS_PROJECT_COORDINATION_PATTERNS.md** (communication protocols)
 → Then: **CIVILIZATION_SCALE_PERFORMANCE.md** (resource orchestration)
 
 ### For Ops/SRE
+
 → Read: **CIVILIZATION_SCALE_PERFORMANCE.md** (metrics, quotas)
 → Then: **CROSS_PROJECT_COORDINATION_PATTERNS.md** (failure modes)
 
 ### For QA/Testing
+
 → Read: **MULTI_TENANT_CONTROLLER_IMPLEMENTATION_PLAN.md** (testing strategy)
 → Then: **CROSS_PROJECT_COORDINATION_PATTERNS.md** (error scenarios)
 
@@ -114,26 +129,31 @@ This architecture is documented across 5 comprehensive design documents:
 ## Key Architecture Decisions
 
 ### 1. Distributed Eventual Consistency
+
 **Decision**: Git-based state (not centralized backend)
 **Rationale**: Decentralized, works offline, simple integration
 **Trade-off**: ~30-second propagation delay vs centralized <100ms
 
 ### 2. Hybrid Communication
+
 **Decision**: MCP (real-time) + File-based (reliable fallback)
 **Rationale**: Best of both worlds (speed + reliability)
 **Trade-off**: More complex than single approach
 
 ### 3. Soft Resource Limits
+
 **Decision**: Queue tasks when overloaded, don't kill
 **Rationale**: Fair scheduling, no task loss
 **Trade-off**: May temporarily exceed quota
 
 ### 4. Agent-Centric Identity
+
 **Decision**: UUID generated per agent, immutable
 **Rationale**: Unique identity persists across restarts
 **Trade-off**: Requires local storage of UUID
 
 ### 5. Multi-Tier Hierarchy
+
 **Decision**: L1 (supervisor) → L2 (worker) → L3 (simulated)
 **Rationale**: Matches existing Claude Code structure
 **Trade-off**: Asymmetric (only L1 creates L2/L3)
@@ -142,16 +162,16 @@ This architecture is documented across 5 comprehensive design documents:
 
 ## Core Concepts
 
-| Concept | Definition | Example |
-|---------|-----------|---------|
-| **Civilization** | Entire ecosystem of agents across all projects | All 20 agents working together |
-| **Agent ID** | Global unique identifier | `kush:8d3f2c1a-...:L2:runner-1` |
-| **Work Stream** | Unified task list (git-based, shared) | `WORK_STREAM.md` in `~/.claude/civilization/` |
-| **Registry** | Golden source of agent identity/location | `registry.json` with all agents |
-| **Task Dispatch** | L1 assigns work to L2/L3 | Synchronous (MCP) or async (queue) |
-| **Cross-Project Request** | L2 asks L2 in different project for help | Negotiated, with deadline sharing |
-| **Backpressure** | Rejecting tasks when overloaded | Return NACK to dispatcher |
-| **Deadlock** | Cyclic blocking (Project A → B → A) | Detect every 60s, alert + recommend resolution |
+| Concept                   | Definition                                     | Example                                        |
+| ------------------------- | ---------------------------------------------- | ---------------------------------------------- |
+| **Civilization**          | Entire ecosystem of agents across all projects | All 20 agents working together                 |
+| **Agent ID**              | Global unique identifier                       | `kush:8d3f2c1a-...:L2:runner-1`                |
+| **Work Stream**           | Unified task list (git-based, shared)          | `WORK_STREAM.md` in `~/.claude/civilization/`  |
+| **Registry**              | Golden source of agent identity/location       | `registry.json` with all agents                |
+| **Task Dispatch**         | L1 assigns work to L2/L3                       | Synchronous (MCP) or async (queue)             |
+| **Cross-Project Request** | L2 asks L2 in different project for help       | Negotiated, with deadline sharing              |
+| **Backpressure**          | Rejecting tasks when overloaded                | Return NACK to dispatcher                      |
+| **Deadlock**              | Cyclic blocking (Project A → B → A)            | Detect every 60s, alert + recommend resolution |
 
 ---
 
@@ -211,6 +231,7 @@ Agent Lifecycle:
 ## Communication Flows
 
 ### Synchronous Task Dispatch
+
 ```
 L1 (kush:claude-code)
   │
@@ -229,6 +250,7 @@ L1 (kush:claude-code)
 ```
 
 ### Cross-Project Request
+
 ```
 kush:runner-1 (L2)
   │
@@ -253,43 +275,43 @@ kush:runner-1 (L2)
 
 ## Failure Modes & Recovery
 
-| Failure Mode | Detection | Recovery |
-|--------------|-----------|----------|
-| Agent crash | Heartbeat timeout (3 missed) | Reassign tasks to available agent |
-| Task timeout | Task active > deadline | Escalate to L1, mark FAILED |
+| Failure Mode          | Detection                            | Recovery                               |
+| --------------------- | ------------------------------------ | -------------------------------------- |
+| Agent crash           | Heartbeat timeout (3 missed)         | Reassign tasks to available agent      |
+| Task timeout          | Task active > deadline               | Escalate to L1, mark FAILED            |
 | Cross-project blocked | Task.time_blocked > deadline - 30min | Escalate (normal), suggest alternative |
-| Deadlock (cycle) | Transitive blocking check | Alert L1, recommend kill+retry |
-| Resource exhaustion | Admission control rejects | Queue task, retry when available |
-| Network partition | MCP timeout | Fall back to file-based communication |
-| Registry corruption | Git conflict | Manual reconciliation (rare) |
+| Deadlock (cycle)      | Transitive blocking check            | Alert L1, recommend kill+retry         |
+| Resource exhaustion   | Admission control rejects            | Queue task, retry when available       |
+| Network partition     | MCP timeout                          | Fall back to file-based communication  |
+| Registry corruption   | Git conflict                         | Manual reconciliation (rare)           |
 
 ---
 
 ## Performance Characteristics
 
-| Metric | Value | Notes |
-|--------|-------|-------|
-| Task dispatch (sync) | <1 second | MCP real-time |
-| Task dispatch (async) | 1-5 seconds | File poll-based |
-| Registry lookup (cache hit) | ~10 ms | In-memory |
-| Registry lookup (file) | ~50 ms | Disk read |
-| Registry lookup (git pull) | ~1 second | Network + merge |
-| Cross-project request ack | ~5-10 seconds | Negotiation |
-| Event propagation | ~30 seconds | Git commit + push |
-| Deadlock detection | ~60 seconds | Periodic check |
-| Resource quota rebalance | ~10 seconds | Recalculate on tick |
+| Metric                      | Value         | Notes               |
+| --------------------------- | ------------- | ------------------- |
+| Task dispatch (sync)        | <1 second     | MCP real-time       |
+| Task dispatch (async)       | 1-5 seconds   | File poll-based     |
+| Registry lookup (cache hit) | ~10 ms        | In-memory           |
+| Registry lookup (file)      | ~50 ms        | Disk read           |
+| Registry lookup (git pull)  | ~1 second     | Network + merge     |
+| Cross-project request ack   | ~5-10 seconds | Negotiation         |
+| Event propagation           | ~30 seconds   | Git commit + push   |
+| Deadlock detection          | ~60 seconds   | Periodic check      |
+| Resource quota rebalance    | ~10 seconds   | Recalculate on tick |
 
 ---
 
 ## Scaling Characteristics
 
-| Aspect | 5 Agents | 20 Agents | 100+ Agents |
-|--------|----------|-----------|------------|
-| **Registry size** | ~10 KB | ~50 KB | ~500 KB |
-| **Lookup latency** | ~50 ms | ~50 ms | ~500 ms (git pull) |
-| **Task dispatch** | <1 sec | <1 sec | ~2 sec (contention) |
-| **Event propagation** | ~30 sec | ~30 sec | ~60 sec (merge conflicts) |
-| **Recommended arch** | File-based + MCP | File-based + MCP | Central service |
+| Aspect                | 5 Agents         | 20 Agents        | 100+ Agents               |
+| --------------------- | ---------------- | ---------------- | ------------------------- |
+| **Registry size**     | ~10 KB           | ~50 KB           | ~500 KB                   |
+| **Lookup latency**    | ~50 ms           | ~50 ms           | ~500 ms (git pull)        |
+| **Task dispatch**     | <1 sec           | <1 sec           | ~2 sec (contention)       |
+| **Event propagation** | ~30 sec          | ~30 sec          | ~60 sec (merge conflicts) |
+| **Recommended arch**  | File-based + MCP | File-based + MCP | Central service           |
 
 **Inflection point**: Beyond ~50 agents, consider migrating to centralized backend.
 
@@ -327,21 +349,22 @@ kush:runner-1 (L2)
 
 ## Architecture Quality Attributes
 
-| Attribute | Achieved | How |
-|-----------|----------|-----|
-| **Scalability** | 5-20 agents → 100+ (future) | Decentralized, horizontal scaling |
-| **Resilience** | Agent failures don't cascade | Isolation, task reassignment |
-| **Simplicity** | No central service needed | Git-based state, file-based queues |
-| **Observability** | Full visibility into civilization | Registry, metrics, event log, audit trail |
-| **Backwards Compatibility** | Existing swarms work unchanged | Opt-in global features |
-| **Correctness** | Deadlock detection, eventual consistency | Regular validation checks |
-| **Fairness** | Resources allocated per quota | Soft limits, queue-based backpressure |
+| Attribute                   | Achieved                                 | How                                       |
+| --------------------------- | ---------------------------------------- | ----------------------------------------- |
+| **Scalability**             | 5-20 agents → 100+ (future)              | Decentralized, horizontal scaling         |
+| **Resilience**              | Agent failures don't cascade             | Isolation, task reassignment              |
+| **Simplicity**              | No central service needed                | Git-based state, file-based queues        |
+| **Observability**           | Full visibility into civilization        | Registry, metrics, event log, audit trail |
+| **Backwards Compatibility** | Existing swarms work unchanged           | Opt-in global features                    |
+| **Correctness**             | Deadlock detection, eventual consistency | Regular validation checks                 |
+| **Fairness**                | Resources allocated per quota            | Soft limits, queue-based backpressure     |
 
 ---
 
 ## Assumptions & Constraints
 
 ### Assumptions
+
 1. Git available and stable (core dependency)
 2. Agents have persistent local storage (~/.claude/civilization/)
 3. Network available for MCP (but fallback works offline)
@@ -349,6 +372,7 @@ kush:runner-1 (L2)
 5. < 100 agents in initial deployment
 
 ### Constraints
+
 1. Eventual consistency (not strong consistency)
 2. ~30 second event propagation delay
 3. File-based scalability limit at ~50 agents
@@ -364,6 +388,7 @@ kush:runner-1 (L2)
 **Status**: Ready for implementation review
 
 **Reviewers Needed**:
+
 - [ ] Architecture lead (validate design decisions)
 - [ ] Implementation lead (validate feasibility)
 - [ ] Ops/SRE lead (validate observability)
@@ -374,6 +399,7 @@ kush:runner-1 (L2)
 ## Glossary
 
 See individual documents for detailed glossaries:
+
 - **AGENT_IDENTITY_AND_DISCOVERY.md** - Identity & discovery terms
 - **CROSS_PROJECT_COORDINATION_PATTERNS.md** - Communication & coordination terms
 - **CIVILIZATION_SCALE_PERFORMANCE.md** - Resource & performance terms
@@ -384,9 +410,9 @@ See individual documents for detailed glossaries:
 ## Contact & Questions
 
 For questions about specific aspects:
+
 - **Architecture/Design**: See MULTI_TENANT_AGENT_CIVILIZATION_ARCHITECTURE.md
 - **Agent Identity**: See AGENT_IDENTITY_AND_DISCOVERY.md
 - **Communication**: See CROSS_PROJECT_COORDINATION_PATTERNS.md
 - **Performance**: See CIVILIZATION_SCALE_PERFORMANCE.md
 - **Implementation**: See MULTI_TENANT_CONTROLLER_IMPLEMENTATION_PLAN.md
-

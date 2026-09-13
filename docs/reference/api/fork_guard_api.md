@@ -20,7 +20,7 @@ Monitors and limits the creation of sub-tasks to prevent cascading execution.
 
 ### Methods
 
-#### ForkExplosionGuard.__init__
+#### ForkExplosionGuard.**init**
 
 ```python
 __init__(self: Any)

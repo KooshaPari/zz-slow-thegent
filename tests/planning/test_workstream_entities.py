@@ -94,10 +94,12 @@ def test_entity_operation_sync_dispatches_source_batches(tmp_path: Path, monkeyp
 
     monkeypatch.setattr("thegent.planning.workstream_entities.WorkstreamDB", _FakeDB)
     monkeypatch.setattr(
-        "thegent.planning.workstream_entities.ThegentSettings", lambda: type("S", (), {"session_dir": tmp_path})()
+        "thegent.planning.workstream_entities.ThegentSettings",
+        lambda: type("S", (), {"session_dir": tmp_path})(),
     )
     monkeypatch.setattr(
-        "thegent.cli.services.run_workstream_helpers.parse_work_stream_md", lambda path: {"backlog": []}
+        "thegent.cli.services.run_workstream_helpers.parse_work_stream_md",
+        lambda path: {"backlog": []},
     )
 
     result = entity_operation("sync", "sessions", source="all", cd=tmp_path, db_path=db_path)

@@ -10,6 +10,7 @@
 This change package contains the complete specification for implementing **MAIF (Multi-Agent Immutable Framework) Action Artifacts** — a cryptographically signed artifact system for recording, auditing, and replaying agent actions.
 
 **Key Features**:
+
 - ✅ Cryptographic signatures (RSA-2048) for non-repudiation
 - ✅ Hash chain verification for tamper detection
 - ✅ Supermemory L4 storage for immutable, replicated persistence
@@ -22,6 +23,7 @@ This change package contains the complete specification for implementing **MAIF 
 ## Contents
 
 ### 📋 [proposal.md](proposal.md)
+
 **Executive summary and business case**
 
 - Executive summary with business value
@@ -33,6 +35,7 @@ This change package contains the complete specification for implementing **MAIF 
 - Related work items
 
 ### 🏗️ [design.md](design.md)
+
 **Technical architecture and design decisions**
 
 - System architecture (block diagram)
@@ -49,6 +52,7 @@ This change package contains the complete specification for implementing **MAIF 
 - Security considerations (crypto, tamper detection, access control)
 
 ### ✅ [tasks.md](tasks.md)
+
 **Detailed implementation checklist**
 
 - 5 phases: Foundation → Artifact Gen → Storage → Hooks → APIs → Testing
@@ -77,15 +81,19 @@ This change package contains the complete specification for implementing **MAIF 
 ## Key Decisions
 
 ### Why Hash Chain?
+
 Sequential hash linking detects ANY tampering (any artifact change breaks all subsequent chains). Simple, provable security.
 
 ### Why Supermemory L4?
+
 Immutable, replicated, multi-tenant isolation, easy integration, cost-effective (~$0.002/artifact).
 
 ### Why RSA-2048?
+
 NIST-approved, widely supported, good balance of security and performance. Can upgrade to Ed25519 later if needed.
 
 ### Why 4-Layer Memory?
+
 - L1: Hot artifacts (in-memory LRU)
 - L2: Warm artifacts (local disk)
 - L3: Decision context (Supermemory Knowledge Graph)
@@ -96,10 +104,12 @@ NIST-approved, widely supported, good balance of security and performance. Can u
 ## Related Work Items
 
 **Dependencies**:
+
 - WP-5001-SM: Supermemory integration (provides L3/L4 client)
 - WP-5001: Lifecycle loop (agent orchestration)
 
 **Enabled By**:
+
 - WP-4007: Simulation & replay engine (uses artifacts for deterministic replay)
 - WP-AUDIT: Audit system (uses artifact chain for compliance)
 

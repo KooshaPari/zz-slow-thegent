@@ -41,13 +41,13 @@ from . import *
 
 ### Naming
 
-| Type | Style | Example |
-|------|-------|---------|
-| Module | `snake_case` | `user_service.py` |
-| Class | `PascalCase` | `UserService` |
-| Function | `snake_case` | `get_user_by_id()` |
-| Constant | `UPPER_SNAKE_CASE` | `MAX_RETRIES = 3` |
-| Private | `_leading_underscore` | `_internal_method()` |
+| Type     | Style                 | Example              |
+| -------- | --------------------- | -------------------- |
+| Module   | `snake_case`          | `user_service.py`    |
+| Class    | `PascalCase`          | `UserService`        |
+| Function | `snake_case`          | `get_user_by_id()`   |
+| Constant | `UPPER_SNAKE_CASE`    | `MAX_RETRIES = 3`    |
+| Private  | `_leading_underscore` | `_internal_method()` |
 
 ### Functions
 
@@ -148,15 +148,22 @@ import logging
 
 logger = logging.getLogger(__name__)
 
-logger.info("User login attempt", extra={
-    "user_id": user_id,
-    "timestamp": datetime.now(),
-})
+logger.info(
+    "User login attempt",
+    extra={
+        "user_id": user_id,
+        "timestamp": datetime.now(),
+    },
+)
 
-logger.error("Database connection failed", exc_info=True, extra={
-    "host": db_host,
-    "port": db_port,
-})
+logger.error(
+    "Database connection failed",
+    exc_info=True,
+    extra={
+        "host": db_host,
+        "port": db_port,
+    },
+)
 ```
 
 ```python
@@ -180,25 +187,25 @@ See [testing-standards.md](testing-standards.md)
 
 ```typescript
 // ✅ Good: Grouped, sorted
-import { Router } from 'express';
-import fs from 'fs';
+import { Router } from "express";
+import fs from "fs";
 
-import { z } from 'zod';
-import axios from 'axios';
+import { z } from "zod";
+import axios from "axios";
 
-import { User } from './types';
-import { userService } from './services';
+import { User } from "./types";
+import { userService } from "./services";
 ```
 
 ### Naming
 
-| Type | Style | Example |
-|------|-------|---------|
-| File | `kebab-case` | `user-service.ts` |
-| Class | `PascalCase` | `UserService` |
-| Function | `camelCase` | `getUserById()` |
-| Constant | `UPPER_SNAKE_CASE` | `MAX_RETRIES` |
-| React Component | `PascalCase` | `UserProfile` |
+| Type            | Style              | Example           |
+| --------------- | ------------------ | ----------------- |
+| File            | `kebab-case`       | `user-service.ts` |
+| Class           | `PascalCase`       | `UserService`     |
+| Function        | `camelCase`        | `getUserById()`   |
+| Constant        | `UPPER_SNAKE_CASE` | `MAX_RETRIES`     |
+| React Component | `PascalCase`       | `UserProfile`     |
 
 ### Types & Interfaces
 
@@ -214,7 +221,7 @@ interface User {
 type Result<T> = { success: true; data: T } | { success: false; error: string };
 
 async function getUser(userId: number): Promise<User | null> {
-  const user = await db.query('SELECT * FROM users WHERE id = ?', [userId]);
+  const user = await db.query("SELECT * FROM users WHERE id = ?", [userId]);
   return user || null;
 }
 ```
@@ -222,7 +229,9 @@ async function getUser(userId: number): Promise<User | null> {
 ```typescript
 // ❌ Bad: `any`, implicit types
 async function getUser(userId: any): Promise<any> {
-  const user: any = await db.query('SELECT * FROM users WHERE id = ?', [userId]);
+  const user: any = await db.query("SELECT * FROM users WHERE id = ?", [
+    userId,
+  ]);
   return user;
 }
 ```
@@ -240,7 +249,7 @@ async function fetchData(url: string): Promise<void> {
     const data = await response.json();
     console.log(data);
   } catch (error) {
-    logger.error('Failed to fetch data', { url, error });
+    logger.error("Failed to fetch data", { url, error });
     throw error;
   }
 }
@@ -399,6 +408,7 @@ cargo clippy -- -D warnings
 ## No AI Slop
 
 Avoid:
+
 - Placeholder TODOs: "TODO: implement", "TODO: add"
 - Lorem ipsum filler text
 - Generic comments: "This function does...", "This is a helper..."

@@ -8,51 +8,69 @@ Architecture:
 - adapters.driven: Outbound adapters (HTTP, cache, metrics)
 - adapters.driving: Inbound adapters (CLI, API handlers)
 - adapters.plugin_host_adapter: WASM plugin host integration
+
+All re-exports are lazy to avoid pulling heavy transitive dependencies
+(wasm, httpx, cachetools, …) at package-import time.
 """
 
-from thegent.adapters.ports import (
-    # Driven (Outbound) Ports
-    HTTPClientPort,
-    CachePort,
-    MetricsPort,
-    AuthPort,
-    # Driving (Inbound) Ports
-    ProviderExecutionPort,
-    RoutingPort,
-    GovernancePort,
-    # Unified Registry
-    AdapterRegistry,
-    PluginInterface,
-    DriverPlugin,
-    RouterPlugin,
-    PluginHost,
-    # Registration Decorators
-    register_driver,
-    register_router,
-    register_cache,
-)
+from __future__ import annotations
 
-# Plugin Host Adapter - WASM/Extism integration
-from thegent.adapters.plugin_host_adapter import (
-    PluginHostAdapter,
-    PluginHostConfig,
-    LoadedPlugin,
-    get_plugin_host,
-)
+import importlib
+from typing import Any
 
-# Execution I/O adapters — decomposition seams for the run/bg orchestrators.
-# See ``thegent.adapters.execution_io`` for the AUDIT-N+5 hand-off context.
-from thegent.adapters.execution_io import (
-    LeaseToken,
-    ProcessEnvironmentBuilder,
-    ProcessSpawner,
-    ResourceLockManager,
-    ShadowWorkspaceManager,
-    SpawnResult,
-)
+_LAZY_IMPORTS: dict[str, tuple[str, str]] = {
+    # Execution I/O adapters (AUDIT-N+5)
+    "LeaseToken": ("thegent.adapters.execution_io", "LeaseToken"),
+    "ProcessEnvironmentBuilder": (
+        "thegent.adapters.execution_io",
+        "ProcessEnvironmentBuilder",
+    ),
+    "ProcessSpawner": ("thegent.adapters.execution_io", "ProcessSpawner"),
+    "ResourceLockManager": ("thegent.adapters.execution_io", "ResourceLockManager"),
+    "ShadowWorkspaceManager": (
+        "thegent.adapters.execution_io",
+        "ShadowWorkspaceManager",
+    ),
+    "SpawnResult": ("thegent.adapters.execution_io", "SpawnResult"),
+    # Plugin Host Adapter
+    "LoadedPlugin": ("thegent.adapters.plugin_host_adapter", "LoadedPlugin"),
+    "PluginHostAdapter": ("thegent.adapters.plugin_host_adapter", "PluginHostAdapter"),
+    "PluginHostConfig": ("thegent.adapters.plugin_host_adapter", "PluginHostConfig"),
+    "get_plugin_host": ("thegent.adapters.plugin_host_adapter", "get_plugin_host"),
+    # Ports
+    "AdapterRegistry": ("thegent.adapters.ports", "AdapterRegistry"),
+    "AuthPort": ("thegent.adapters.ports", "AuthPort"),
+    "CachePort": ("thegent.adapters.ports", "CachePort"),
+    "DriverPlugin": ("thegent.adapters.ports", "DriverPlugin"),
+    "GovernancePort": ("thegent.adapters.ports", "GovernancePort"),
+    "HTTPClientPort": ("thegent.adapters.ports", "HTTPClientPort"),
+    "MetricsPort": ("thegent.adapters.ports", "MetricsPort"),
+    "PluginHost": ("thegent.adapters.ports", "PluginHost"),
+    "PluginInterface": ("thegent.adapters.ports", "PluginInterface"),
+    "ProviderExecutionPort": ("thegent.adapters.ports", "ProviderExecutionPort"),
+    "RouterPlugin": ("thegent.adapters.ports", "RouterPlugin"),
+    "RoutingPort": ("thegent.adapters.ports", "RoutingPort"),
+    "register_cache": ("thegent.adapters.ports", "register_cache"),
+    "register_driver": ("thegent.adapters.ports", "register_driver"),
+    "register_router": ("thegent.adapters.ports", "register_router"),
+}
+
+
+def __getattr__(name: str) -> Any:
+    if name in _LAZY_IMPORTS:
+        module_path, attr = _LAZY_IMPORTS[name]
+        mod = importlib.import_module(module_path)
+        val = getattr(mod, attr)
+        globals()[name] = val
+        return val
+    raise AttributeError(f"module {__name__!r} has no attribute {name!r}")
+
+
+def __dir__() -> list[str]:
+    return list(_LAZY_IMPORTS.keys())
+
 
 __all__ = [
-    # Ports
     "HTTPClientPort",
     "CachePort",
     "MetricsPort",
@@ -60,26 +78,21 @@ __all__ = [
     "ProviderExecutionPort",
     "RoutingPort",
     "GovernancePort",
-    # Registry
     "AdapterRegistry",
-    # Plugins
     "PluginInterface",
     "DriverPlugin",
     "RouterPlugin",
     "PluginHost",
-    # Plugin Host
     "PluginHostAdapter",
     "PluginHostConfig",
     "LoadedPlugin",
     "get_plugin_host",
-    # Execution I/O seams (AUDIT-N+5)
     "LeaseToken",
     "ProcessEnvironmentBuilder",
     "ProcessSpawner",
     "ResourceLockManager",
     "ShadowWorkspaceManager",
     "SpawnResult",
-    # Decorators
     "register_driver",
     "register_router",
     "register_cache",

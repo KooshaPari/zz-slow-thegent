@@ -18,30 +18,30 @@ Supermemory.ai is a cloud-scale RAG + Knowledge Graph solution that can serve as
 
 ### Knowledge Graph API (L3)
 
-| Endpoint | Method | Description |
-|----------|--------|-------------|
-| `/api/knowledge/graph` | POST | Store entity with relationships |
-| `/api/knowledge/query` | POST | Query knowledge graph |
-| `/api/knowledge/search` | GET | Semantic search |
+| Endpoint                | Method | Description                     |
+| ----------------------- | ------ | ------------------------------- |
+| `/api/knowledge/graph`  | POST   | Store entity with relationships |
+| `/api/knowledge/query`  | POST   | Query knowledge graph           |
+| `/api/knowledge/search` | GET    | Semantic search                 |
 
 ### Documents API (L4)
 
-| Endpoint | Method | Description |
-|----------|--------|-------------|
-| `/api/documents` | POST | Store immutable document |
-| `/api/documents/{id}` | GET | Retrieve document |
-| `/api/documents/search` | GET | Full-text search |
+| Endpoint                | Method | Description              |
+| ----------------------- | ------ | ------------------------ |
+| `/api/documents`        | POST   | Store immutable document |
+| `/api/documents/{id}`   | GET    | Retrieve document        |
+| `/api/documents/search` | GET    | Full-text search         |
 
 ## Integration Architecture
 
 ### Memory Layers
 
-| Layer | Purpose | Provider |
-|-------|---------|----------|
-| L1 | Hot cache | Local LRU |
-| L2 | Warm cache | Local file |
-| L3 | Long-term | Supermemory KG |
-| L4 | Archival | Supermemory Docs |
+| Layer | Purpose    | Provider         |
+| ----- | ---------- | ---------------- |
+| L1    | Hot cache  | Local LRU        |
+| L2    | Warm cache | Local file       |
+| L3    | Long-term  | Supermemory KG   |
+| L4    | Archival   | Supermemory Docs |
 
 ### Data Flow
 
@@ -52,16 +52,19 @@ Request → L1 (cache hit?) → L2 (cache hit?) → L3 (query KG) → L4 (fallba
 ## Implementation Plan
 
 ### Phase 1: Read-only Sync
+
 - Query Supermemory for context
 - No write operations
 - Validate data quality
 
 ### Phase 2: Bidirectional Sync
+
 - Write to Supermemory
 - Handle conflicts
 - Sync back to local
 
 ### Phase 3: Auto-learning
+
 - Automatic context extraction
 - Relationship inference
 - Knowledge consolidation
@@ -72,36 +75,26 @@ Request → L1 (cache hit?) → L2 (cache hit?) → L3 (query KG) → L4 (fallba
 import httpx
 from typing import List, Dict, Optional
 
+
 class SupermemoryClient:
     BASE_URL = "https://mcp.supermemory.ai/mcp"
 
     def __init__(self, api_key: str, project_id: str):
-        self.headers = {
-            "Authorization": f"Bearer {api_key}",
-            "x-sm-project": project_id
-        }
+        self.headers = {"Authorization": f"Bearer {api_key}", "x-sm-project": project_id}
 
-    async def store_knowledge(
-        self,
-        entity: str,
-        relationships: List[Dict]
-    ) -> str:
+    async def store_knowledge(self, entity: str, relationships: List[Dict]) -> str:
         async with httpx.AsyncClient() as client:
             resp = await client.post(
                 f"{self.BASE_URL}/knowledge/graph",
                 json={"entity": entity, "relationships": relationships},
-                headers=self.headers
+                headers=self.headers,
             )
             resp.raise_for_status()
             return resp.json()["id"]
 
     async def query_knowledge(self, query: str) -> List[Dict]:
         async with httpx.AsyncClient() as client:
-            resp = await client.post(
-                f"{self.BASE_URL}/knowledge/query",
-                json={"query": query},
-                headers=self.headers
-            )
+            resp = await client.post(f"{self.BASE_URL}/knowledge/query", json={"query": query}, headers=self.headers)
             resp.raise_for_status()
             return resp.json()["results"]
 ```

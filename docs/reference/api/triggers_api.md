@@ -5,6 +5,7 @@
 AgilePlus trigger modes: watchdog, timer, and manual.
 
 Provides three ways to trigger governance cycles:
+
 - Watchdog: File system watcher with debounce (uses watchfiles for 5-10x performance)
 - Timer: Periodic interval-based triggering
 - Manual: One-shot CLI invocation
@@ -17,7 +18,7 @@ Trigger governance cycle when health drops below threshold.
 
 ### Methods
 
-#### HealthThresholdTrigger.__init__
+#### HealthThresholdTrigger.**init**
 
 ```python
 __init__(self: Any, loop: Any, threshold: float, check_interval: int)
@@ -55,7 +56,7 @@ Runs a single governance cycle and exits.
 
 ### Methods
 
-#### ManualTrigger.__init__
+#### ManualTrigger.**init**
 
 ```python
 __init__(self: Any, loop: Any)
@@ -83,7 +84,7 @@ Triggers governance cycles at fixed intervals.
 
 ### Methods
 
-#### TimerTrigger.__init__
+#### TimerTrigger.**init**
 
 ```python
 __init__(self: Any, loop: Any, config: TriggerConfig)
@@ -156,7 +157,7 @@ for changes and triggers cycles after a debounce period without new changes.
 
 ### Methods
 
-#### WatchdogTrigger.__init__
+#### WatchdogTrigger.**init**
 
 ```python
 __init__(self: Any, loop: Any, config: TriggerConfig)
@@ -186,7 +187,7 @@ Stop the watchdog trigger.
 
 ---
 
-## _WatchdogEventHandler
+## \_WatchdogEventHandler
 
 Event handler for watchdog file system events (fallback).
 
@@ -197,7 +198,7 @@ Only used when watchfiles is not available.
 
 ### Methods
 
-#### _WatchdogEventHandler.__init__
+#### \_WatchdogEventHandler.**init**
 
 ```python
 __init__(self: Any, on_change: Any, exclude_dirs: frozenset[str], watch_extensions: frozenset[str])
@@ -205,7 +206,7 @@ __init__(self: Any, on_change: Any, exclude_dirs: frozenset[str], watch_extensio
 
 ---
 
-#### _WatchdogEventHandler.on_created
+#### \_WatchdogEventHandler.on_created
 
 ```python
 on_created(self: Any, event: Any)
@@ -215,7 +216,7 @@ Called when a file is created.
 
 ---
 
-#### _WatchdogEventHandler.on_deleted
+#### \_WatchdogEventHandler.on_deleted
 
 ```python
 on_deleted(self: Any, event: Any)
@@ -225,7 +226,7 @@ Called when a file is deleted.
 
 ---
 
-#### _WatchdogEventHandler.on_modified
+#### \_WatchdogEventHandler.on_modified
 
 ```python
 on_modified(self: Any, event: Any)

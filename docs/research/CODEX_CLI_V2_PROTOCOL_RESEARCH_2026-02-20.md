@@ -13,6 +13,7 @@
 Codex CLI 0.104.0 hardwires **`WireApi::Responses`** as the only supported upstream wire protocol. The `"chat"` wire API (i.e., `/v1/chat/completions`) was **fully removed** as of February 2026 (deprecation began early 2025; hard removal was February 1, 2026). The binary no longer contains a chat-completions path at all — the deserializer for `wire_api` explicitly rejects `"chat"` with an error message directing users to `"responses"`. Any proxy that only speaks `/v1/chat/completions` will fail silently or cause the "reconnecting" + "no model metadata" loop.
 
 The Codex CLI now only calls:
+
 1. **`POST /v1/responses`** — for all inference (HTTP SSE streaming or non-streaming)
 2. **`GET /v1/models`** — for model discovery (with strict response schema requirements)
 3. **`WebSocket ws://…/v1/responses`** — for streaming when `supports_websockets: true` in provider config (OpenAI built-in has this enabled)
@@ -51,6 +52,7 @@ ModelProviderInfo {
 ### Config precedence for custom proxies
 
 If a user sets `OPENAI_BASE_URL=http://proxy:port`, Codex uses that URL with the same `WireApi::Responses` and `supports_websockets: true`. This means the proxy at `http://proxy:port` must support BOTH:
+
 - `POST /v1/responses` (HTTP, non-streaming)
 - `POST /v1/responses` (HTTP SSE streaming, `stream: true`)
 - `WebSocket /v1/responses` (WebSocket streaming) — **if proxy is the OpenAI provider**
@@ -66,6 +68,7 @@ For a custom `model_provider` definition in config.toml with `wire_api = "respon
 Called on startup and periodically for cache invalidation.
 
 **Request:**
+
 ```
 GET /v1/models HTTP/1.1
 Authorization: Bearer <token>
@@ -73,6 +76,7 @@ codex-cli-version: <version>
 ```
 
 **Required response format (strict):**
+
 ```json
 {
   "object": "list",
@@ -90,6 +94,7 @@ codex-cli-version: <version>
 ```
 
 **Critical requirements (0.103+ changes):**
+
 - The key MUST be `"data"` (not `"models"`) — OpenAI-standard format
 - `"object": "list"` MUST be present at the top level
 - **`x-models-etag` response header** — SHA256 of sorted model IDs. Codex 0.104.0 uses this for ETag-based caching. Without it, the model list is re-fetched on every request, and the cache never becomes valid
@@ -105,6 +110,7 @@ The Codex binary has a built-in static list of models it knows about (gpt-5, gpt
 This is the ONLY inference endpoint. The proxy MUST implement it.
 
 **Request body:**
+
 ```json
 {
   "model": "gpt-5.2-codex",
@@ -140,6 +146,7 @@ This is the ONLY inference endpoint. The proxy MUST implement it.
 ```
 
 **Key differences from Chat Completions:**
+
 - `input` array (not `messages`) with typed content items (`input_text`, `input_image`, `input_file`)
 - `max_output_tokens` (not `max_tokens`)
 - `reasoning.effort` for o-series/codex models
@@ -147,6 +154,7 @@ This is the ONLY inference endpoint. The proxy MUST implement it.
 - `instructions` for system-level guidance (replaces `system` role message)
 
 **Non-streaming response (stream: false):**
+
 ```json
 {
   "id": "resp_67ccfcdd16748190a91872c75d38539e09e4d4aac714747c",
@@ -205,6 +213,7 @@ data: {"type":"response.completed","response":{"id":"resp_abc","object":"respons
 ```
 
 **Full event type catalog:**
+
 - `response.created` — Response object with `status: "in_progress"`
 - `response.in_progress` — Heartbeat while processing
 - `response.output_item.added` — New output item (message, function_call, reasoning)
@@ -254,6 +263,7 @@ Authorization: Bearer <token>
 The WebSocket protocol is **NOT** JSON-RPC. It is the same SSE event payload format sent as WebSocket text frames.
 
 **Client sends (single JSON message per request):**
+
 ```json
 {
   "model": "gpt-5.2-codex",
@@ -266,6 +276,7 @@ The WebSocket protocol is **NOT** JSON-RPC. It is the same SSE event payload for
 ```
 
 **Server sends (one JSON message per event frame):**
+
 ```json
 {"type": "response.created", "response": {...}}
 {"type": "response.output_text.delta", "item_id": "...", "delta": "Hello", "sequence_number": 1}
@@ -320,24 +331,29 @@ This is part of the **app-server v2 protocol** for the `turn/steer` method:
 ## 4. Version-by-Version Changelog (0.99 → 0.104)
 
 ### rust-v0.99.0
+
 - Removed `remote_models` feature flag — model metadata is now ALWAYS fetched from the upstream `/v1/models` endpoint. Previously the flag could suppress this and use only local defaults. Now if `/v1/models` doesn't return proper metadata, Codex has no fallback.
 
 ### rust-v0.100.0 / v0.101.0
+
 - App-server WebSocket transport reintroduced with split inbound/outbound architecture
 - `js_repl` runtime with persistent state across tool calls
 - Multiple simultaneous rate limits support
 - Memory management slash commands
 
 ### rust-v0.102.0
+
 - `model/rerouted` notification for detecting model reroutes
 - Structured network approval handling
 - App-server fuzzy file search with explicit session-complete signaling
 
 ### rust-v0.103.0 (2026-02-17)
+
 - App listing responses include richer app details
 - Commit co-author attribution improvements
 
 ### rust-v0.104.0 (2026-02-18) — **CURRENT BREAKING VERSION**
+
 - Added `WS_PROXY`/`WSS_PROXY` environment support for WebSocket proxying
 - App-server v2 emits thread archive/unarchive notifications
 - Command approvals now carry distinct approval IDs for multiple approvals
@@ -350,6 +366,7 @@ This is part of the **app-server v2 protocol** for the `turn/steer` method:
 ## 5. What Our Proxy (`cliproxy_adapter.py`) Currently Does
 
 ### What works
+
 - Accepts `POST /v1/responses` and translates to `POST /v1/chat/completions` on the backend
 - Translates Responses API input format to Chat Completions messages
 - Transforms Chat Completions SSE back to Responses API events (partially)
@@ -361,6 +378,7 @@ This is part of the **app-server v2 protocol** for the `turn/steer` method:
 **Problem 1: Streaming event sequence is missing required leading events**
 
 The proxy emits only `response.output_item.added` deltas and a final `response.completed`. It does NOT emit:
+
 - `response.created` (CRITICAL — Codex needs the response ID from this event)
 - `response.in_progress`
 - `response.content_part.added`
@@ -374,6 +392,7 @@ The `_chat_completions_to_responses()` function wraps every token delta in a `re
 **Problem 2: Missing `response.created` with response ID**
 
 `response.created` MUST be the first event and MUST contain a `response.id`. Without this:
+
 - Codex cannot chain conversations with `previous_response_id`
 - After 0.99 removed `remote_models` flag, Codex may rely on the response ID to track model association
 - The "reconnecting" loop may be triggered by the absence of this initialization event
@@ -381,6 +400,7 @@ The `_chat_completions_to_responses()` function wraps every token delta in a `re
 **Problem 3: Model metadata format for `/v1/models` may be missing Codex-specific fields**
 
 Codex 0.104.0 checks for specific fields in model objects. Missing fields cause "no model metadata." Required fields per model object:
+
 ```json
 {
   "id": "model-id",
@@ -401,10 +421,13 @@ The proxy's `model_metadata.py` has `gpt-5-mini` listed with `context_window: 12
 **Problem 5: WebSocket streaming event format**
 
 The WebSocket handler at line 442 sends:
+
 ```python
 await websocket.send_json({"type": "response.completed"})
 ```
+
 But Codex expects `response.completed` to include the full response object:
+
 ```json
 {"type": "response.completed", "response": {"id": "...", "output": [...], "usage": {...}}}
 ```
@@ -424,37 +447,38 @@ The proxy must emit the following minimal valid sequence for a text response:
 ```python
 import uuid, time, json
 
+
 def make_responses_stream(model: str, content_chunks):
     resp_id = f"resp_{uuid.uuid4().hex}"
     item_id = f"item_{uuid.uuid4().hex}"
     now = int(time.time())
 
     # 1. response.created
-    yield f'data: {json.dumps({"type":"response.created","response":{"id":resp_id,"object":"response","created_at":now,"status":"in_progress","model":model,"output":[]}})}\n\n'
+    yield f"data: {json.dumps({'type': 'response.created', 'response': {'id': resp_id, 'object': 'response', 'created_at': now, 'status': 'in_progress', 'model': model, 'output': []}})}\n\n"
 
     # 2. response.output_item.added (once, at start of message)
-    yield f'data: {json.dumps({"type":"response.output_item.added","output_index":0,"item":{"id":item_id,"type":"message","role":"assistant","content":[],"status":"in_progress"}})}\n\n'
+    yield f"data: {json.dumps({'type': 'response.output_item.added', 'output_index': 0, 'item': {'id': item_id, 'type': 'message', 'role': 'assistant', 'content': [], 'status': 'in_progress'}})}\n\n"
 
     # 3. response.content_part.added (once)
-    yield f'data: {json.dumps({"type":"response.content_part.added","item_id":item_id,"output_index":0,"content_index":0,"part":{"type":"output_text","text":""}})}\n\n'
+    yield f"data: {json.dumps({'type': 'response.content_part.added', 'item_id': item_id, 'output_index': 0, 'content_index': 0, 'part': {'type': 'output_text', 'text': ''}})}\n\n"
 
     # 4. response.output_text.delta (one per token chunk)
     full_text = ""
     for i, chunk in enumerate(content_chunks, 1):
         full_text += chunk
-        yield f'data: {json.dumps({"type":"response.output_text.delta","item_id":item_id,"output_index":0,"content_index":0,"delta":chunk,"sequence_number":i})}\n\n'
+        yield f"data: {json.dumps({'type': 'response.output_text.delta', 'item_id': item_id, 'output_index': 0, 'content_index': 0, 'delta': chunk, 'sequence_number': i})}\n\n"
 
     # 5. response.output_text.done
-    yield f'data: {json.dumps({"type":"response.output_text.done","item_id":item_id,"output_index":0,"content_index":0,"text":full_text})}\n\n'
+    yield f"data: {json.dumps({'type': 'response.output_text.done', 'item_id': item_id, 'output_index': 0, 'content_index': 0, 'text': full_text})}\n\n"
 
     # 6. response.content_part.done
-    yield f'data: {json.dumps({"type":"response.content_part.done","item_id":item_id,"output_index":0,"content_index":0,"part":{"type":"output_text","text":full_text}})}\n\n'
+    yield f"data: {json.dumps({'type': 'response.content_part.done', 'item_id': item_id, 'output_index': 0, 'content_index': 0, 'part': {'type': 'output_text', 'text': full_text}})}\n\n"
 
     # 7. response.output_item.done
-    yield f'data: {json.dumps({"type":"response.output_item.done","output_index":0,"item":{"id":item_id,"type":"message","role":"assistant","content":[{"type":"output_text","text":full_text}],"status":"completed"}})}\n\n'
+    yield f"data: {json.dumps({'type': 'response.output_item.done', 'output_index': 0, 'item': {'id': item_id, 'type': 'message', 'role': 'assistant', 'content': [{'type': 'output_text', 'text': full_text}], 'status': 'completed'}})}\n\n"
 
     # 8. response.completed (with full response object)
-    yield f'data: {json.dumps({"type":"response.completed","response":{"id":resp_id,"object":"response","created_at":now,"status":"completed","model":model,"output":[{"id":item_id,"type":"message","role":"assistant","content":[{"type":"output_text","text":full_text}],"status":"completed"}],"usage":{"input_tokens":0,"output_tokens":len(full_text.split()),"total_tokens":len(full_text.split())}}})}\n\n'
+    yield f"data: {json.dumps({'type': 'response.completed', 'response': {'id': resp_id, 'object': 'response', 'created_at': now, 'status': 'completed', 'model': model, 'output': [{'id': item_id, 'type': 'message', 'role': 'assistant', 'content': [{'type': 'output_text', 'text': full_text}], 'status': 'completed'}], 'usage': {'input_tokens': 0, 'output_tokens': len(full_text.split()), 'total_tokens': len(full_text.split())}}})}\n\n"
 ```
 
 ### Priority 2 (Model metadata)
@@ -466,7 +490,7 @@ headers = {
     "Content-Type": "text/event-stream",
     "Cache-Control": "no-cache",
     "Connection": "keep-alive",
-    "openai-model": model_name,   # 0.104.0 reads model from header, not body
+    "openai-model": model_name,  # 0.104.0 reads model from header, not body
     "x-request-id": request_id,
 }
 ```
@@ -501,7 +525,7 @@ If the user is using `OPENAI_BASE_URL`, Codex uses the built-in OpenAI provider 
       "id": "item_<uuid>",
       "type": "message",
       "role": "assistant",
-      "content": [{"type": "output_text", "text": "..."}],
+      "content": [{ "type": "output_text", "text": "..." }],
       "status": "completed"
     }
   ],
@@ -517,27 +541,27 @@ If the user is using `OPENAI_BASE_URL`, Codex uses the built-in OpenAI provider 
 
 ## 7. Protocol Summary Table
 
-| Endpoint | Method | Purpose | Notes |
-|----------|--------|---------|-------|
-| `/v1/models` | GET | Model discovery | Must return `{"object":"list","data":[...]}` with `x-models-etag` header |
-| `/v1/responses` | POST | Inference (HTTP) | Accepts Responses API format; returns SSE stream or full response object |
-| `/v1/responses` | WebSocket | Inference (WS) | Same format over WebSocket frames; persistent connection |
+| Endpoint        | Method    | Purpose          | Notes                                                                    |
+| --------------- | --------- | ---------------- | ------------------------------------------------------------------------ |
+| `/v1/models`    | GET       | Model discovery  | Must return `{"object":"list","data":[...]}` with `x-models-etag` header |
+| `/v1/responses` | POST      | Inference (HTTP) | Accepts Responses API format; returns SSE stream or full response object |
+| `/v1/responses` | WebSocket | Inference (WS)   | Same format over WebSocket frames; persistent connection                 |
 
-| Wire format | Used when |
-|-------------|-----------|
+| Wire format              | Used when                                    |
+| ------------------------ | -------------------------------------------- |
 | `wire_api = "responses"` | **Always** (only valid value as of Feb 2026) |
-| `wire_api = "chat"` | **REMOVED** — hard error |
+| `wire_api = "chat"`      | **REMOVED** — hard error                     |
 
-| Event | Required | Notes |
-|-------|----------|-------|
-| `response.created` | **Yes** | First event; contains `response.id` |
-| `response.output_item.added` | Yes | Once per output item |
-| `response.content_part.added` | Yes | Once per content part |
-| `response.output_text.delta` | Yes | Per token; needs `sequence_number` |
-| `response.output_text.done` | Yes | Completes text part |
-| `response.content_part.done` | Yes | Completes content part |
-| `response.output_item.done` | Yes | Completes output item |
-| `response.completed` | **Yes** | Must include full response object |
+| Event                         | Required | Notes                               |
+| ----------------------------- | -------- | ----------------------------------- |
+| `response.created`            | **Yes**  | First event; contains `response.id` |
+| `response.output_item.added`  | Yes      | Once per output item                |
+| `response.content_part.added` | Yes      | Once per content part               |
+| `response.output_text.delta`  | Yes      | Per token; needs `sequence_number`  |
+| `response.output_text.done`   | Yes      | Completes text part                 |
+| `response.content_part.done`  | Yes      | Completes content part              |
+| `response.output_item.done`   | Yes      | Completes output item               |
+| `response.completed`          | **Yes**  | Must include full response object   |
 
 ---
 

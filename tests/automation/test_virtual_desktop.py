@@ -1,14 +1,15 @@
 """Tests for virtual desktop automation module."""
 
 import platform
-import pytest
 import time
-from unittest.mock import AsyncMock, MagicMock, patch
+from unittest.mock import AsyncMock, MagicMock
+
+import pytest
 
 from thegent.automation.virtual_desktop import (
     DesktopConfig,
-    DesktopState,
     DesktopSession,
+    DesktopState,
     InputEvent,
     ScreenFrame,
     VirtualDesktopManager,
@@ -202,7 +203,7 @@ class TestDesktopSession:
             config=config,
         )
 
-        result = await session.click(100, 200)
+        await session.click(100, 200)
 
         # Should inject 3 events: move, down, up
         assert mock_provider.inject_input.call_count == 3

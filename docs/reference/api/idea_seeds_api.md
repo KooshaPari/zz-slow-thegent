@@ -8,10 +8,11 @@ Scans codebases for embedded idea seeds — improvement opportunities, TODOs
 with context, refactoring hints, and similar code-level annotations.
 
 Provides:
+
 - IdeaSeed dataclass representing a found seed with surrounding context
 - IdeaSeedScanner for recursive directory and single-file scanning
 - Export to markdown and WORK_STREAM.md compatible rows
-- Typer CLI sub-application (registered under ``thegent seeds``)
+- Typer CLI sub-application (registered under `thegent seeds`)
 
 ---
 
@@ -39,7 +40,7 @@ Scan source files for embedded idea seeds.
 
 ### Methods
 
-#### IdeaSeedScanner.__init__
+#### IdeaSeedScanner.**init**
 
 ```python
 __init__(self: Any, context_lines: int)
@@ -68,7 +69,7 @@ Export seeds to a markdown file grouped by pattern type.
 filter_by_type(self: Any, seeds: list[IdeaSeed], types: list[str])
 ```
 
-Keep only seeds whose pattern_type is in *types*.
+Keep only seeds whose pattern*type is in \_types*.
 
 **Parameters**:
 
@@ -91,7 +92,7 @@ Recursively scan a directory for idea seeds.
 
 - `root`: Root directory to scan.
 - `extensions`: File extensions to include (e.g. [".py", ".ts"]).
-Defaults to DEFAULT_EXTENSIONS when None.
+  Defaults to DEFAULT_EXTENSIONS when None.
 
 **Returns**: Ordered list of IdeaSeed objects across all matched files.
 
@@ -154,7 +155,7 @@ Export seeds to a markdown file grouped by pattern type.
 filter_by_type(self: Any, seeds: list[IdeaSeed], types: list[str])
 ```
 
-Keep only seeds whose pattern_type is in *types*.
+Keep only seeds whose pattern*type is in \_types*.
 
 **Parameters**:
 
@@ -177,7 +178,7 @@ Recursively scan a directory for idea seeds.
 
 - `root`: Root directory to scan.
 - `extensions`: File extensions to include (e.g. [".py", ".ts"]).
-Defaults to DEFAULT_EXTENSIONS when None.
+  Defaults to DEFAULT_EXTENSIONS when None.
 
 **Returns**: Ordered list of IdeaSeed objects across all matched files.
 

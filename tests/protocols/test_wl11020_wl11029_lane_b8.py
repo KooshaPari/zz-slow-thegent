@@ -3,11 +3,13 @@
 from __future__ import annotations
 
 import orjson as json
-
 import pytest
 
 from thegent.protocols import jsonrpc_agent_server as server
-from thegent.protocols.jsonrpc_agent_server import SERVER_STATE, process_jsonrpc_line_full
+from thegent.protocols.jsonrpc_agent_server import (
+    SERVER_STATE,
+    process_jsonrpc_line_full,
+)
 
 
 def _reset_state() -> None:
@@ -59,9 +61,13 @@ def test_wl11023_build_turn_submit_execution_phase_returns_execution_target() ->
     session_id = _start_session()
     plan = server._build_turn_submit_phase_plan("req", {"session_id": session_id, "input": "x"})
     parse_phase = server._build_turn_submit_parse_phase(plan)
-    session_id_out, session_out, user_input_out, requires_approval_out, approval_diff_out = (
-        server._build_turn_submit_execution_phase(parse_phase)
-    )
+    (
+        session_id_out,
+        session_out,
+        user_input_out,
+        requires_approval_out,
+        approval_diff_out,
+    ) = server._build_turn_submit_execution_phase(parse_phase)
     assert session_id_out == session_id
     assert session_out["id"] == session_id
     assert user_input_out == "x"

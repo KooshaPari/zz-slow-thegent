@@ -10,12 +10,12 @@
 
 This plan extends and harmonizes with:
 
-| Plan | Alignment |
-|------|-----------|
-| **CATALOG_CLIPROXY_FORK_ALIGNMENT** | Provider mapping (nim, zen, kilo), catalog vs fork, model-first routing. Zen via openai-compatibility; nim needs openai-compat entry. |
-| **LITELLM_HARNESS_MASTER_PLAN** | CLIProxyAPIPlus = core execution layer. LiteLLM Router = optional front door for Responses API, fallback chains, cost tracking. Not interchangeable—different auth (OAuth vs API key). |
-| **LITELLM_CLIPROXY_BIFROST_HARMONY** | Option A: CLIProxyAPIPlus as single proxy (8317). Bifrost out (no Python SDK; agent-scale doesn't need 50x speed). |
-| **CLIPROXY_API_AND_THGENT_UNIFIED_PLAN** | Equal parity for all providers (dedicated blocks, token-file, OAuth). Cursor, MiniMax, Roo, Kilo = same pattern as Kiro, Gemini, Claude, Codex. |
+| Plan                                      | Alignment                                                                                                                                                                               |
+| ----------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **CATALOG_CLIPROXY_FORK_ALIGNMENT**       | Provider mapping (nim, zen, kilo), catalog vs fork, model-first routing. Zen via openai-compatibility; nim needs openai-compat entry.                                                   |
+| **LITELLM_HARNESS_MASTER_PLAN**           | CLIProxyAPIPlus = core execution layer. LiteLLM Router = optional front door for Responses API, fallback chains, cost tracking. Not interchangeable—different auth (OAuth vs API key).  |
+| **LITELLM_CLIPROXY_BIFROST_HARMONY**      | Option A: CLIProxyAPIPlus as single proxy (8317). Bifrost out (no Python SDK; agent-scale doesn't need 50x speed).                                                                      |
+| **CLIPROXY_API_AND_THGENT_UNIFIED_PLAN**  | Equal parity for all providers (dedicated blocks, token-file, OAuth). Cursor, MiniMax, Roo, Kilo = same pattern as Kiro, Gemini, Claude, Codex.                                         |
 | **OPENROUTER_STYLE_ROUTING_AND_CLIPROXY** | CLIProxy holds auth, routing, execution. Metrics endpoint (`GET /v1/metrics/providers`) for cost/latency/TPS. thegent uses metrics for routing policy when available. LiteLLM optional. |
 
 **Unified principle:** CLIProxyAPIPlus is the core LLM layer. Routing, auth, credential resolution live in the proxy (or extracted Go lib). thegent orchestrates (config path, lifecycle, dex aliases); agents delegate.
@@ -36,13 +36,14 @@ This plan extends and harmonizes with:
 
 ### 1.1 Go LLM Libraries
 
-| Library | Stars | Purpose | Multi-Provider | Routing | Auth |
-|---------|-------|---------|----------------|----------|------|
-| **go-openai** (sashabaranov) | 10.5k | OpenAI client for Go | No (OpenAI/Azure) | No | API key only |
-| **langchaingo** | 8.7k | LangChain for Go | Yes (via llms/) | Via chains | Per-provider |
-| **CLIProxyAPI** (current) | — | Proxy + routing + auth | Yes | Yes | OAuth + API key |
+| Library                      | Stars | Purpose                | Multi-Provider    | Routing    | Auth            |
+| ---------------------------- | ----- | ---------------------- | ----------------- | ---------- | --------------- |
+| **go-openai** (sashabaranov) | 10.5k | OpenAI client for Go   | No (OpenAI/Azure) | No         | API key only    |
+| **langchaingo**              | 8.7k  | LangChain for Go       | Yes (via llms/)   | Via chains | Per-provider    |
+| **CLIProxyAPI** (current)    | —     | Proxy + routing + auth | Yes               | Yes        | OAuth + API key |
 
 **Findings:**
+
 - **go-openai**: Single-provider client. BaseURL + API key. No routing, no multi-provider. Good for raw HTTP calls to OpenAI-compatible endpoints.
 - **langchaingo**: Agent/chains framework. Has `llms/openai`, `llms/ollama`, `llms/gemini`, etc. Each LLM impl is separate; no unified credential/routing layer. Agentic focus.
 - **No Go lib** provides: multi-provider routing + credential resolution (OAuth + API key) + model registry + config synthesis. CLIProxyAPI is the closest.
@@ -53,18 +54,20 @@ This plan extends and harmonizes with:
 
 ### 1.2 Framework Options (Python)
 
-| Framework | Language | Role | Multi-Provider | Proxy |
-|-----------|----------|------|----------------|-------|
-| **LiteLLM** | Python | SDK + AI Gateway | 100+ | Yes |
-| **Ollama** | Go | Local model runner | No (local) | No |
+| Framework   | Language | Role               | Multi-Provider | Proxy |
+| ----------- | -------- | ------------------ | -------------- | ----- |
+| **LiteLLM** | Python   | SDK + AI Gateway   | 100+           | Yes   |
+| **Ollama**  | Go       | Local model runner | No (local)     | No    |
 
 **LiteLLM Architecture (from ARCHITECTURE.md):**
+
 - **SDK** (`litellm/`): `completion()`, `acompletion()` → `get_llm_provider()` → `BaseLLMHTTPHandler` → provider `transform_request`/`transform_response` → HTTP.
 - **Proxy** (`proxy/`): Auth, rate limiting, budgets, routing on top of SDK.
 - **Provider pattern**: Each provider has `Config` with `transform_request()` and `transform_response()`. Translation layer is per-provider.
 - **Key insight**: LiteLLM separates (1) proxy/auth/routing from (2) SDK/translation. CLIProxyAPI combines both in one service.
 
 **LiteLLM vs CLIProxyAPI:**
+
 - LiteLLM: Python, 100+ providers, enterprise features (Postgres, Redis, spend tracking).
 - CLIProxyAPI: Go, OAuth-first (Claude, Codex, Gemini CLI), file-based auth, embeddable SDK.
 - **Not interchangeable**: Different auth model (OAuth token files vs API keys), different deployment target.
@@ -76,6 +79,7 @@ This plan extends and harmonizes with:
 **LiteLLM:** `ProviderConfig` with `transform_request` / `transform_response`. Credential comes from `litellm_params` (api_key, etc.). No unified credential primitive.
 
 **CLIProxyAPI (current):** Two credential sources:
+
 1. **OAuth** (FileSynthesizer): JSON files in auth-dir, `access_token` or `api_key` in JSON.
 2. **API key** (ConfigSynthesizer): `api-key` in YAML config.
 
@@ -95,11 +99,11 @@ This plan extends and harmonizes with:
 
 **Source:** `LITELLM_HARNESS_MASTER_PLAN.md`, `COMPLETE_PLAN_AND_RESEARCH.md`
 
-| Harness | Flow | Translation |
-|---------|------|-------------|
-| Codex CLI | Responses API → cliproxy_adapter → CLIProxyAPIPlus | Double (adapter + proxy) |
-| Claude Code | Chat Completions → CodexProxyRunner → CLIProxyAPIPlus | Single |
-| Factory Droid | Chat Completions → Factory API → Providers | Separate stack |
+| Harness       | Flow                                                  | Translation              |
+| ------------- | ----------------------------------------------------- | ------------------------ |
+| Codex CLI     | Responses API → cliproxy_adapter → CLIProxyAPIPlus    | Double (adapter + proxy) |
+| Claude Code   | Chat Completions → CodexProxyRunner → CLIProxyAPIPlus | Single                   |
+| Factory Droid | Chat Completions → Factory API → Providers            | Separate stack           |
 
 **LiteLLM Router option:** Unify harnesses via LiteLLM Router as front door. `litellm_responses_handler.py` translates Responses API → Chat Completions; Router handles routing, fallback chains, caching, cost tracking. CLIProxyAPIPlus can be backend for OAuth providers (antigravity, iflow, kiro) when LiteLLM routes `minimax/*` → `http://127.0.0.1:8317/v1`.
 
@@ -114,6 +118,7 @@ This plan extends and harmonizes with:
 **CLIProxy responsibilities:** Auth, execution, model→provider routing, per-request metrics (latency, tokens, success/failure).
 
 **Metrics endpoint (implemented):** `GET /v1/metrics/providers` returns per-provider rolling stats:
+
 - `latency_p50_ms`, `latency_p95_ms`, `tps_1m`, `cost_per_1k`, `success_rate`
 
 **thegent routing policy:** `_fetch_provider_metrics()` calls proxy; policy `cheapest` uses measured cost when available; tie-break by `success_rate`.
@@ -124,11 +129,11 @@ This plan extends and harmonizes with:
 
 ### 1.7 Bifrost, Pareto Router, Semantic Router
 
-| System | Role | Fit for CLIProxy/thegent |
-|--------|------|--------------------------|
-| **Bifrost** (Go) | 50x faster than LiteLLM, 15+ providers | Out: no Python SDK; agent-scale doesn't need 50x speed |
-| **Pareto Router** (research) | Hard constraints → Pareto frontier → lexicographic selection; Offer abstraction | Conceptual alignment; implementation TBD |
-| **Semantic Router** | Zero-cost intent routing (10ms, vector-based) | Future: complexity-based routing, cascade |
+| System                       | Role                                                                            | Fit for CLIProxy/thegent                               |
+| ---------------------------- | ------------------------------------------------------------------------------- | ------------------------------------------------------ |
+| **Bifrost** (Go)             | 50x faster than LiteLLM, 15+ providers                                          | Out: no Python SDK; agent-scale doesn't need 50x speed |
+| **Pareto Router** (research) | Hard constraints → Pareto frontier → lexicographic selection; Offer abstraction | Conceptual alignment; implementation TBD               |
+| **Semantic Router**          | Zero-cost intent routing (10ms, vector-based)                                   | Future: complexity-based routing, cascade              |
 
 **Conclusion:** Focus on CLIProxyAPIPlus extraction and codegen. LiteLLM optional. Bifrost/Pareto/Semantic are research references, not immediate dependencies.
 
@@ -138,14 +143,14 @@ This plan extends and harmonizes with:
 
 ### 2.1 Provider Taxonomy
 
-| Category | Providers | Config Block | Auth Source | Executor | Synthesizer |
-|----------|-----------|---------------|-------------|----------|-------------|
-| **OAuth (file)** | Claude, Codex, Gemini, Qwen, iFlow, Kiro, GitHub Copilot | auth-dir JSON | FileSynthesizer | ClaudeExecutor, CodexExecutor, etc. | FileSynthesizer |
-| **OAuth + API key** | MiniMax, Roo, Kilo | minimax, roo, kilo | Config + token-file | OpenAICompatExecutor | ConfigSynthesizer |
-| **API key only** | DeepSeek, Groq, Mistral, SiliconFlow, OpenRouter, Together, Fireworks, Novita | dedicated blocks | Config | OpenAICompatExecutor | ConfigSynthesizer |
-| **API key (config)** | Gemini, Claude, Codex | gemini-api-key, etc. | Config | GeminiExecutor, etc. | ConfigSynthesizer |
-| **Generic OAI-compat** | zen, glm, nim, custom | openai-compatibility | Config (or thegent inject) | OpenAICompatExecutor | ConfigSynthesizer |
-| **Special** | Cursor, Kiro, AI Studio, Antigravity, Vertex | cursor, kiro, etc. | Mixed | Custom executors | ConfigSynthesizer / FileSynthesizer |
+| Category               | Providers                                                                     | Config Block         | Auth Source                | Executor                            | Synthesizer                         |
+| ---------------------- | ----------------------------------------------------------------------------- | -------------------- | -------------------------- | ----------------------------------- | ----------------------------------- |
+| **OAuth (file)**       | Claude, Codex, Gemini, Qwen, iFlow, Kiro, GitHub Copilot                      | auth-dir JSON        | FileSynthesizer            | ClaudeExecutor, CodexExecutor, etc. | FileSynthesizer                     |
+| **OAuth + API key**    | MiniMax, Roo, Kilo                                                            | minimax, roo, kilo   | Config + token-file        | OpenAICompatExecutor                | ConfigSynthesizer                   |
+| **API key only**       | DeepSeek, Groq, Mistral, SiliconFlow, OpenRouter, Together, Fireworks, Novita | dedicated blocks     | Config                     | OpenAICompatExecutor                | ConfigSynthesizer                   |
+| **API key (config)**   | Gemini, Claude, Codex                                                         | gemini-api-key, etc. | Config                     | GeminiExecutor, etc.                | ConfigSynthesizer                   |
+| **Generic OAI-compat** | zen, glm, nim, custom                                                         | openai-compatibility | Config (or thegent inject) | OpenAICompatExecutor                | ConfigSynthesizer                   |
+| **Special**            | Cursor, Kiro, AI Studio, Antigravity, Vertex                                  | cursor, kiro, etc.   | Mixed                      | Custom executors                    | ConfigSynthesizer / FileSynthesizer |
 
 **Catalog alignment:** zen (gemini-3-flash via OpenCode), nim (glm-5, step-3.5-flash via NVIDIA NIM). See `CATALOG_CLIPROXY_FORK_ALIGNMENT.md`.
 
@@ -167,6 +172,7 @@ type XxxKey struct {
 Used by: MiniMaxKey, RooKey, KiloKey, DeepSeekKey, GroqKey, MistralKey, SiliconFlowKey, OpenRouterKey, TogetherKey, FireworksKey, NovitaKey.
 
 **Variants:**
+
 - **GeminiKey, ClaudeKey, CodexKey**: APIKey + BaseURL only (no TokenFile in config; OAuth is file-based).
 - **OpenAICompatibility**: Name, BaseURL, APIKeyEntries, Models. No TokenFile (API key only).
 - **VertexCompatKey**: APIKey + BaseURL.
@@ -199,21 +205,21 @@ func (s *ConfigSynthesizer) synthesizeXxxKeys(ctx *SynthesisContext) []*coreauth
 
 ### 2.4 Executor Taxonomy
 
-| Executor | Providers | Backend |
-|----------|-----------|---------|
-| **OpenAICompatExecutor** | minimax, roo, kilo, deepseek, groq, mistral, siliconflow, openrouter, together, fireworks, novita, cursor, zen, glm, nim, custom | HTTP to base_url + /chat/completions |
-| **GeminiExecutor** | gemini | Generative Language API |
-| **ClaudeExecutor** | claude | Anthropic API |
-| **CodexExecutor** | codex | OpenAI API |
-| **GeminiVertexExecutor** | vertex | Vertex AI |
-| **GeminiCLIExecutor** | gemini-cli | Gemini CLI |
-| **AIStudioExecutor** | aistudio | AI Studio |
-| **AntigravityExecutor** | antigravity | Antigravity |
-| **IFlowExecutor** | iflow | iFlow |
-| **QwenExecutor** | qwen | Qwen |
-| **KimiExecutor** | kimi | Kimi |
-| **KiroExecutor** | kiro | AWS CodeWhisperer |
-| **GitHubCopilotExecutor** | github-copilot | GitHub Copilot |
+| Executor                  | Providers                                                                                                                        | Backend                              |
+| ------------------------- | -------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------ |
+| **OpenAICompatExecutor**  | minimax, roo, kilo, deepseek, groq, mistral, siliconflow, openrouter, together, fireworks, novita, cursor, zen, glm, nim, custom | HTTP to base_url + /chat/completions |
+| **GeminiExecutor**        | gemini                                                                                                                           | Generative Language API              |
+| **ClaudeExecutor**        | claude                                                                                                                           | Anthropic API                        |
+| **CodexExecutor**         | codex                                                                                                                            | OpenAI API                           |
+| **GeminiVertexExecutor**  | vertex                                                                                                                           | Vertex AI                            |
+| **GeminiCLIExecutor**     | gemini-cli                                                                                                                       | Gemini CLI                           |
+| **AIStudioExecutor**      | aistudio                                                                                                                         | AI Studio                            |
+| **AntigravityExecutor**   | antigravity                                                                                                                      | Antigravity                          |
+| **IFlowExecutor**         | iflow                                                                                                                            | iFlow                                |
+| **QwenExecutor**          | qwen                                                                                                                             | Qwen                                 |
+| **KimiExecutor**          | kimi                                                                                                                             | Kimi                                 |
+| **KiroExecutor**          | kiro                                                                                                                             | AWS CodeWhisperer                    |
+| **GitHubCopilotExecutor** | github-copilot                                                                                                                   | GitHub Copilot                       |
 
 **Key finding:** 12+ providers use **OpenAICompatExecutor** with different provider keys. Same executor, different config source. Dedicated executors exist only for non–OpenAI-compatible APIs (Gemini, Claude, Codex, Vertex, etc.).
 
@@ -251,6 +257,7 @@ Config (YAML)                    Auth Dir (JSON)
 ### 2.6 thegent Provider Definitions
 
 `provider_definitions.json` defines: minimax, nim, openrouter, zen. Each has:
+
 - `base_url`, `base_url_env`, `model`, `extra_aliases`, `login` (url, display_name, instructions).
 
 **Gap:** thegent has provider metadata; proxy has no equivalent. Proxy config is structural (YAML blocks); thegent adds semantic layer (which providers exist, how to log in). **Alignment:** PremadeOAICompat registry (Phase 1) can be seeded from or synced with `provider_definitions.json` for zen, nim, glm.
@@ -318,13 +325,14 @@ providers:
     base_url: https://api.minimax.io/v1
     credential: [api_key, token_file]
   - name: zen
-    yaml_key: openai-compatibility  # or dedicated zen
+    yaml_key: openai-compatibility # or dedicated zen
     base_url: https://opencode.ai/zen/v1
     credential: [api_key]
     env_vars: [ZEN_API_KEY, OPENCODE_API_KEY]
 ```
 
 **Codegen output:**
+
 - Config struct field (if dedicated block)
 - Synthesizer function (or generic loop)
 - Executor registration (all use OpenAICompatExecutor)
@@ -373,12 +381,12 @@ func (e *Executor) Execute(ctx context.Context, auth *Auth, req Request) (Respon
 
 ### 3.5 Delegation Model
 
-| Layer | Responsibility | Implementation |
-|-------|----------------|----------------|
-| **Go lib** | Config load, auth synthesis, model registry, routing, credential resolution, execution | `pkg/llmproxy` |
-| **Proxy service** | HTTP server, middleware, management API | `internal/api`, `cmd/` |
-| **thegent (Python)** | Config path, proxy lifecycle, dex model aliases (flash→gemini-3-flash), IDE/MCP | Delegates to proxy via HTTP |
-| **Other agents** | Agent logic, tools, UI | Delegate to proxy or lib |
+| Layer                | Responsibility                                                                         | Implementation              |
+| -------------------- | -------------------------------------------------------------------------------------- | --------------------------- |
+| **Go lib**           | Config load, auth synthesis, model registry, routing, credential resolution, execution | `pkg/llmproxy`              |
+| **Proxy service**    | HTTP server, middleware, management API                                                | `internal/api`, `cmd/`      |
+| **thegent (Python)** | Config path, proxy lifecycle, dex model aliases (flash→gemini-3-flash), IDE/MCP        | Delegates to proxy via HTTP |
+| **Other agents**     | Agent logic, tools, UI                                                                 | Delegate to proxy or lib    |
 
 **Critical:** Routing (model→provider), credential resolution, config synthesis must live in Go lib. Python only orchestrates (start proxy, pass config path).
 
@@ -410,29 +418,34 @@ thegent can still inject for other reasons (e.g. ensure-config before first run)
 ### 3.7 Phased Implementation
 
 #### Phase 1: Consolidate OAI-compat (4–6 weeks)
+
 - [ ] Introduce `OAICompatProviderConfig` (or unify under `openai-compatibility` with optional TokenFile).
 - [ ] Add generic `synthesizeOAICompatFromDedicatedBlocks()` that iterates minimax, roo, kilo, etc. using a provider registry.
 - [ ] Deprecate per-provider synthesizers one by one.
 - [ ] Add premade env injection for zen (and optionally glm, nim).
 
 #### Phase 2: Codegen (3–4 weeks)
+
 - [ ] Define provider spec format (YAML or Go struct).
 - [ ] Implement codegen to produce config structs and synthesizer registration.
 - [ ] Migrate all OAI-compat providers to codegen.
 - [ ] Document provider addition process.
 
 #### Phase 3: Lib Extraction (4–6 weeks)
+
 - [ ] Create `pkg/llmproxy` with config, auth, registry, executor, router.
 - [ ] Refactor `internal/` to use `pkg/llmproxy`.
 - [ ] Publish lib as separate module or submodule.
 - [ ] Update SDK docs.
 
 #### Phase 4: Delegation Hardening (2–3 weeks)
+
 - [ ] Audit thegent for any routing/auth logic; move to proxy.
 - [ ] Define clear API contract (HTTP or lib) for agents.
 - [ ] Document delegation model for Rust/Go/Zig/Nim agents.
 
 #### Phase 5: Metrics & Routing Policy (1–2 weeks, optional)
+
 - [ ] Ensure `GET /v1/metrics/providers` is stable and documented.
 - [ ] thegent routing policy uses metrics when `cheapest` or `fastest`; fallback to static costs.
 - [ ] Optional: `X-Provider-Hint` header support in proxy for thegent-driven routing.
@@ -441,12 +454,12 @@ thegent can still inject for other reasons (e.g. ensure-config before first run)
 
 ### 3.8 Risks & Mitigations
 
-| Risk | Mitigation |
-|------|------------|
+| Risk                   | Mitigation                                                                         |
+| ---------------------- | ---------------------------------------------------------------------------------- |
 | Breaking config format | Maintain backward compatibility; support both old and new blocks during transition |
-| Lib API churn | Version lib (v1, v2); proxy pins version |
-| Codegen complexity | Start with small set of providers; expand incrementally |
-| thegent coupling | Keep thegent as thin orchestrator; all logic in proxy/lib |
+| Lib API churn          | Version lib (v1, v2); proxy pins version                                           |
+| Codegen complexity     | Start with small set of providers; expand incrementally                            |
+| thegent coupling       | Keep thegent as thin orchestrator; all logic in proxy/lib                          |
 
 ---
 
@@ -463,18 +476,18 @@ thegent can still inject for other reasons (e.g. ensure-config before first run)
 
 ## Appendix A: File Reference
 
-| Purpose | Path |
-|---------|------|
-| Config structs | `CLIProxyAPIPlus-fork/internal/config/config.go` |
-| Config synthesizer | `CLIProxyAPIPlus-fork/internal/watcher/synthesizer/config.go` |
-| File synthesizer | `CLIProxyAPIPlus-fork/internal/watcher/synthesizer/file.go` |
-| resolveAPIKeyFromEntry | `config.go:860` |
-| OpenAICompatExecutor | `CLIProxyAPIPlus-fork/internal/runtime/executor/openai_compat_executor.go` |
-| registerModelsForAuth | `CLIProxyAPIPlus-fork/sdk/cliproxy/service.go:756` |
-| ensureExecutorsForAuth | `service.go:371` |
+| Purpose                 | Path                                                                       |
+| ----------------------- | -------------------------------------------------------------------------- |
+| Config structs          | `CLIProxyAPIPlus-fork/internal/config/config.go`                           |
+| Config synthesizer      | `CLIProxyAPIPlus-fork/internal/watcher/synthesizer/config.go`              |
+| File synthesizer        | `CLIProxyAPIPlus-fork/internal/watcher/synthesizer/file.go`                |
+| resolveAPIKeyFromEntry  | `config.go:860`                                                            |
+| OpenAICompatExecutor    | `CLIProxyAPIPlus-fork/internal/runtime/executor/openai_compat_executor.go` |
+| registerModelsForAuth   | `CLIProxyAPIPlus-fork/sdk/cliproxy/service.go:756`                         |
+| ensureExecutorsForAuth  | `service.go:371`                                                           |
 | Zen injection (thegent) | `thegent/src/thegent/agents/cliproxy_manager.py:_inject_zen_into_cliproxy` |
-| Provider definitions | `thegent/src/thegent/agents/cliproxy_data/provider_definitions.json` |
-| SDK usage | `CLIProxyAPIPlus-fork/docs/sdk-usage.md` |
+| Provider definitions    | `thegent/src/thegent/agents/cliproxy_data/provider_definitions.json`       |
+| SDK usage               | `CLIProxyAPIPlus-fork/docs/sdk-usage.md`                                   |
 
 ---
 
@@ -494,26 +507,26 @@ CLIProxyAPI equivalent: `Executor` interface with `Execute()`. Translation in `s
 
 ## Appendix C: Prior Plans Reference
 
-| Document | Path | Key Content |
-|----------|------|-------------|
-| Catalog–Fork Alignment | `thegent/docs/plans/CATALOG_CLIPROXY_FORK_ALIGNMENT.md` | Provider mapping, nim/zen setup, model-first routing |
-| LiteLLM Harness Master Plan | `thegent/docs/research/LITELLM_HARNESS_MASTER_PLAN.md` | Unified harness via LiteLLM Router, Responses API handler |
-| LiteLLM + CLIProxy Bifrost Harmony | `thegent/docs/plans/LITELLM_CLIPROXY_BIFROST_HARMONY.md` | Option A (CLIProxy single), Bifrost out |
-| CLIProxy + Thegent Unified Plan | `thegent/docs/plans/CLIPROXY_API_AND_THGENT_UNIFIED_PLAN.md` | Provider parity (Cursor, MiniMax, Roo, Kilo) |
-| OpenRouter-Style Routing | `thegent/docs/plans/OPENROUTER_STYLE_ROUTING_AND_CLIPROXY.md` | Metrics endpoint, routing policy, LiteLLM optional |
-| Complete Plan and Research | `thegent/docs/research/COMPLETE_PLAN_AND_RESEARCH.md` | Research index, Pareto router, Ultra advanced |
+| Document                           | Path                                                          | Key Content                                               |
+| ---------------------------------- | ------------------------------------------------------------- | --------------------------------------------------------- |
+| Catalog–Fork Alignment             | `thegent/docs/plans/CATALOG_CLIPROXY_FORK_ALIGNMENT.md`       | Provider mapping, nim/zen setup, model-first routing      |
+| LiteLLM Harness Master Plan        | `thegent/docs/research/LITELLM_HARNESS_MASTER_PLAN.md`        | Unified harness via LiteLLM Router, Responses API handler |
+| LiteLLM + CLIProxy Bifrost Harmony | `thegent/docs/plans/LITELLM_CLIPROXY_BIFROST_HARMONY.md`      | Option A (CLIProxy single), Bifrost out                   |
+| CLIProxy + Thegent Unified Plan    | `thegent/docs/plans/CLIPROXY_API_AND_THGENT_UNIFIED_PLAN.md`  | Provider parity (Cursor, MiniMax, Roo, Kilo)              |
+| OpenRouter-Style Routing           | `thegent/docs/plans/OPENROUTER_STYLE_ROUTING_AND_CLIPROXY.md` | Metrics endpoint, routing policy, LiteLLM optional        |
+| Complete Plan and Research         | `thegent/docs/research/COMPLETE_PLAN_AND_RESEARCH.md`         | Research index, Pareto router, Ultra advanced             |
 
 ---
 
 ## Appendix D: Timeline Summary
 
-| Phase | Duration | Scope |
-|-------|----------|-------|
-| 1. Consolidate OAI-compat | 4–6 weeks | OAICompatProviderConfig, generic synthesizer, zen env injection |
-| 2. Codegen | 3–4 weeks | Provider spec → config, synthesizer, registration |
-| 3. Lib Extraction | 4–6 weeks | `pkg/llmproxy`, refactor internal |
-| 4. Delegation Hardening | 2–3 weeks | thegent audit, API contract, docs |
-| 5. Metrics & Routing (optional) | 1–2 weeks | Metrics stability, thegent policy |
+| Phase                           | Duration  | Scope                                                           |
+| ------------------------------- | --------- | --------------------------------------------------------------- |
+| 1. Consolidate OAI-compat       | 4–6 weeks | OAICompatProviderConfig, generic synthesizer, zen env injection |
+| 2. Codegen                      | 3–4 weeks | Provider spec → config, synthesizer, registration               |
+| 3. Lib Extraction               | 4–6 weeks | `pkg/llmproxy`, refactor internal                               |
+| 4. Delegation Hardening         | 2–3 weeks | thegent audit, API contract, docs                               |
+| 5. Metrics & Routing (optional) | 1–2 weeks | Metrics stability, thegent policy                               |
 
 **Total:** 14–21 weeks (core 14–19; Phase 5 optional).
 
@@ -521,8 +534,8 @@ CLIProxyAPI equivalent: `Executor` interface with `Execute()`. Translation in `s
 
 ## Quick Wins (Pre-Phase 1)
 
-| Action | Effort | Impact |
-|--------|--------|--------|
-| Document nim setup in CLAUDE.md | 1 hr | Users can add openai-compatibility for NIM |
-| Add zen to PremadeOAICompat (env injection) | 2–4 hrs | Zen works without thegent injection |
-| Verify `GET /v1/metrics/providers` is documented | 1 hr | thegent routing policy can use metrics |
+| Action                                           | Effort  | Impact                                     |
+| ------------------------------------------------ | ------- | ------------------------------------------ |
+| Document nim setup in CLAUDE.md                  | 1 hr    | Users can add openai-compatibility for NIM |
+| Add zen to PremadeOAICompat (env injection)      | 2–4 hrs | Zen works without thegent injection        |
+| Verify `GET /v1/metrics/providers` is documented | 1 hr    | thegent routing policy can use metrics     |

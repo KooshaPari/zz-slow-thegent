@@ -42,7 +42,12 @@ class MeshLogger:
 
     def log(self, agent_id: str, event: str, data: dict | None = None):
         """Append a structured log entry."""
-        entry = {"timestamp": time.time(), "agent_id": agent_id, "event": event, "data": data or {}}
+        entry = {
+            "timestamp": time.time(),
+            "agent_id": agent_id,
+            "event": event,
+            "data": data or {},
+        }
         # PIPE_BUF aware atomic append (SCLI-P13.1)
         line = json.dumps(entry).decode() + "\n"
         if len(line) <= 4096:  # PIPE_BUF limit for atomic write

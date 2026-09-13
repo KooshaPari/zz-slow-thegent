@@ -47,7 +47,6 @@ from thegent.contracts.csm.v1 import CanonicalStructuredMessage, CSMPhase, CSMSt
 from thegent.contracts.parser import IncrementalXMLParser, extract_tags
 from thegent.contracts.validation import SemanticValidationError
 
-
 __all__ = [
     "ADAPTER_REGISTRY",
     "ADAPTER_REGISTRY_VERSION",
@@ -259,9 +258,8 @@ class XMLOutputAdapter(OutputAdapter):
             if summary_key in tags:
                 kwargs["summary"] = tags[summary_key]
                 break
-        if "summary" not in kwargs:
-            if "summary" in tags:
-                kwargs["summary"] = tags["summary"]
+        if "summary" not in kwargs and "summary" in tags:
+            kwargs["summary"] = tags["summary"]
 
         # OBJECTIVE / task_objective
         for obj_key in ("OBJECTIVE", "TASK_OBJECTIVE"):

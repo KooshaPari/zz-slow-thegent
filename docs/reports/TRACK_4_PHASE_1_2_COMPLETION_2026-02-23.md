@@ -8,6 +8,7 @@
 ## Phase 1: Infrastructure (P1.1 - P1.3)
 
 ### P1.1: IPC & MCP Contracts
+
 - ✅ Created `src/thegent/contracts/mcp_contracts.json`
   - 6 tools for CLI ↔ Agents interface
   - 2 resources (task://queue, agent://status)
@@ -15,11 +16,13 @@
   - SLO targets
 
 ### P1.2: Workspace Configs
+
 - ✅ Created `config/workspaces/workspace_boundaries.yaml`
   - Defined boundaries for thegent-cli, thegent-agents, thegent-mcp
   - Shared modules list
 
 ### P1.3: Tach.toml Updates
+
 - ✅ Updated `tach.toml`
   - Added thegent-cli.commands module
   - Added thegent-agents.pool and executor modules
@@ -31,20 +34,24 @@
 ## Phase 2: Extract Sub-Projects (P2.1 - P2.3)
 
 ### P2.1: thegent-cli Extraction
+
 - ✅ Created `cli/__init__.py`
 - ✅ Created `cli/commands.py`
 
 ### P2.2: thegent-agents Extraction
+
 - ✅ Created `agents/__init__.py`
 - ✅ Created `agents/executor.py`
 - ✅ Created `agents/pool.py`
 
 ### P2.3: thegent-mcp Extraction
+
 - ✅ Created `mcp/__init__.py`
 - ✅ Created `mcp/server.py`
 - ✅ Created `mcp/tools.py`
 
 ### Additional Contracts
+
 - ✅ Created `contracts/ipc.py` (IPC request/response classes)
 
 ---
@@ -81,11 +88,13 @@ tach.toml (updated)
 ## Remaining Work
 
 ### Phase 3: Integration (P3.1 - P3.3)
+
 - [ ] Full test suite for all sub-projects
 - [ ] Documentation updates
 - [ ] Integration tests between sub-projects
 
 ### Phase 4: Completion (P4.1)
+
 - [ ] CI/CD integration
 - [ ] Final validation
 

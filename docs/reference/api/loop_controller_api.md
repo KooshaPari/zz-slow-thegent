@@ -12,7 +12,7 @@ Handles agent execution loops (Ralph Wiggum loops) with Checker Agent oversight.
 
 ### Methods
 
-#### LifecycleController.__init__
+#### LifecycleController.**init**
 
 ```python
 __init__(self: Any, settings: ThegentSettings, worker_agent_name: str, checker_agent_name: str, mode: LoopMode, max_iterations: int, worker_model: Any, task_id: Any, verification_callback: Any)

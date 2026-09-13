@@ -14,13 +14,13 @@ Agents run `ls -l`, `grep`, `rg` as separate shell commands. Each has different 
 
 ## 2. Current Landscape
 
-| Tool | Replaces | Respects .gitignore | Exclusions | Speed |
-|------|----------|---------------------|------------|-------|
-| **ls** | — | No | No | Slow in large dirs |
-| **find** | — | No | Manual | Slow |
-| **grep** | — | No | Manual | Medium |
-| **fd** | ls, find | Yes | -E flag, .gitignore | 10–35x faster |
-| **rg** (ripgrep) | grep | Yes | -g, .gitignore | 10x faster |
+| Tool             | Replaces | Respects .gitignore | Exclusions          | Speed              |
+| ---------------- | -------- | ------------------- | ------------------- | ------------------ |
+| **ls**           | —        | No                  | No                  | Slow in large dirs |
+| **find**         | —        | No                  | Manual              | Slow               |
+| **grep**         | —        | No                  | Manual              | Medium             |
+| **fd**           | ls, find | Yes                 | -E flag, .gitignore | 10–35x faster      |
+| **rg** (ripgrep) | grep     | Yes                 | -g, .gitignore      | 10x faster         |
 
 **thegent hooks** already use fd (find) and rg (grep) via `common.sh` — but hooks run in thegent's context. Agent shells (IDE terminals) may not have these.
 
@@ -32,11 +32,11 @@ Agents run `ls -l`, `grep`, `rg` as separate shell commands. Each has different 
 
 **Recommendation**: Standardize on **fd** (discovery) + **rg** (content search).
 
-| Task | Use | Example |
-|------|-----|---------|
-| List files in dir | `fd -t f -d 1` or `fd -t d -d 1` | `fd -t f -d 1 -E node_modules -E .venv` |
-| Find files by name | `fd pattern` | `fd "test_" -e py` |
-| Search file content | `rg pattern` | `rg "def main" --type py` |
+| Task                | Use                              | Example                                 |
+| ------------------- | -------------------------------- | --------------------------------------- |
+| List files in dir   | `fd -t f -d 1` or `fd -t d -d 1` | `fd -t f -d 1 -E node_modules -E .venv` |
+| Find files by name  | `fd pattern`                     | `fd "test_" -e py`                      |
+| Search file content | `rg pattern`                     | `rg "def main" --type py`               |
 
 **Pros**: Both respect .gitignore; fd has -E for extra exclusions; fast; OSS; cross-platform.
 **Cons**: Two tools; agents must learn both.
@@ -57,11 +57,11 @@ thegent_files(mode="list"|"search", path=".", depth=1, pattern=None, exclude=Non
 
 ### 3.3 IDE-Native Tools (Cursor, Claude Code)
 
-| Platform | Built-in | Use case |
-|----------|----------|----------|
-| **Cursor** | @codebase, @file, semantic search | Prefer over shell when available |
+| Platform        | Built-in                             | Use case                         |
+| --------------- | ------------------------------------ | -------------------------------- |
+| **Cursor**      | @codebase, @file, semantic search    | Prefer over shell when available |
 | **Claude Code** | read_file, list_dir, codebase_search | Prefer over shell when available |
-| **Codex** | Varies | May need shell fallback |
+| **Codex**       | Varies                               | May need shell fallback          |
 
 **Recommendation**: When IDE provides file/codebase tools, use those first. Fall back to fd + rg (or thegent_files) for terminal/shell.
 
@@ -76,11 +76,11 @@ thegent_files(mode="list"|"search", path=".", depth=1, pattern=None, exclude=Non
 
 ## 4. Recommended Strategy
 
-| Layer | Tool | When |
-|-------|------|------|
-| **IDE (Cursor, Claude Code)** | Native @codebase, read_file, list_dir | First choice when available |
-| **MCP (thegent serve)** | `thegent_files` (future) | When agent uses MCP tools |
-| **Shell (all platforms)** | **fd** (list/find) + **rg** (search) | Terminal fallback; document as canonical |
+| Layer                         | Tool                                  | When                                     |
+| ----------------------------- | ------------------------------------- | ---------------------------------------- |
+| **IDE (Cursor, Claude Code)** | Native @codebase, read_file, list_dir | First choice when available              |
+| **MCP (thegent serve)**       | `thegent_files` (future)              | When agent uses MCP tools                |
+| **Shell (all platforms)**     | **fd** (list/find) + **rg** (search)  | Terminal fallback; document as canonical |
 
 **Agent instruction (add to skills, CLAUDE.md):**
 
@@ -90,12 +90,12 @@ thegent_files(mode="list"|"search", path=".", depth=1, pattern=None, exclude=Non
 
 ## 5. Implementation Roadmap
 
-| Task | Effort | Impact |
-|------|--------|--------|
-| Document fd + rg as canonical in skills, CLAUDE.md | 1–2 edits | High |
-| Add `thegent_files` MCP tool (list + search) | 15–25 tool calls | High — unified across platforms |
-| Ensure fd, rg in agent PATH (Brewfile, setup) | 1–2 edits | Medium |
-| .agentignore support for thegent_files | 4–6 tool calls | Medium |
+| Task                                               | Effort           | Impact                          |
+| -------------------------------------------------- | ---------------- | ------------------------------- |
+| Document fd + rg as canonical in skills, CLAUDE.md | 1–2 edits        | High                            |
+| Add `thegent_files` MCP tool (list + search)       | 15–25 tool calls | High — unified across platforms |
+| Ensure fd, rg in agent PATH (Brewfile, setup)      | 1–2 edits        | Medium                          |
+| .agentignore support for thegent_files             | 4–6 tool calls   | Medium                          |
 
 ---
 
@@ -123,54 +123,56 @@ rg "TODO" -g "!node_modules" -g "!.venv"
 
 ### 7.1 File Discovery Tools
 
-| Tool | Speed | .gitignore | Exclusions | Cross-platform | Maintenance |
-|------|-------|------------|------------|----------------|-------------|
-| **fd** | 10-35x ls | Yes | -E flag | Linux/macOS/Windows | Active |
-| **find** | Slow | No | Manual | Yes | Legacy |
-| **ls** | Slowest | No | No | Yes | Native |
-| **ripgrep -l** | Fast | Yes | -g | Yes | Active |
-| **ugrep -g** | Fast | Yes | -g | Yes | Active |
-| **lsd** | Medium | No | No | Linux/macOS | Active |
+| Tool           | Speed     | .gitignore | Exclusions | Cross-platform      | Maintenance |
+| -------------- | --------- | ---------- | ---------- | ------------------- | ----------- |
+| **fd**         | 10-35x ls | Yes        | -E flag    | Linux/macOS/Windows | Active      |
+| **find**       | Slow      | No         | Manual     | Yes                 | Legacy      |
+| **ls**         | Slowest   | No         | No         | Yes                 | Native      |
+| **ripgrep -l** | Fast      | Yes        | -g         | Yes                 | Active      |
+| **ugrep -g**   | Fast      | Yes        | -g         | Yes                 | Active      |
+| **lsd**        | Medium    | No         | No         | Linux/macOS         | Active      |
 
 ### 7.2 Content Search Tools
 
-| Tool | Speed | .gitignore | Exclusions | Regex | Maintenance |
-|------|-------|------------|------------|-------|-------------|
-| **rg** | 10x grep | Yes | -g | PCRE2 | Active |
-| **grep** | Baseline | No | Manual | Basic | Legacy |
-| **ugrep** | Fast | Yes | -g | PCRE++ | Active |
-| **ack** | Medium | Yes | --ignore-dir | Perl | Moderate |
-| **ag** | Fast | Yes | --ignore-dir | Rust | Moderate |
+| Tool      | Speed    | .gitignore | Exclusions   | Regex  | Maintenance |
+| --------- | -------- | ---------- | ------------ | ------ | ----------- |
+| **rg**    | 10x grep | Yes        | -g           | PCRE2  | Active      |
+| **grep**  | Baseline | No         | Manual       | Basic  | Legacy      |
+| **ugrep** | Fast     | Yes        | -g           | PCRE++ | Active      |
+| **ack**   | Medium   | Yes        | --ignore-dir | Perl   | Moderate    |
+| **ag**    | Fast     | Yes        | --ignore-dir | Rust   | Moderate    |
 
 ### 7.3 Unified/Bundled Tools
 
-| Tool | Replaces | Pros | Cons | Agent Fit |
-|------|----------|------|------|-----------|
-| **ugrep** | find + grep + ls | Single binary, fast | Learning curve | Medium |
-| **fd + rg** | find + grep | Industry standard, well-documented | Two tools | High |
-| **thegent_files** | MCP wrapper | Built-in exclusions, MCP native | MCP-only | High (if MCP) |
-| **IDE native** | @codebase | Semantic awareness | IDE-specific | High (if IDE) |
+| Tool              | Replaces         | Pros                               | Cons           | Agent Fit     |
+| ----------------- | ---------------- | ---------------------------------- | -------------- | ------------- |
+| **ugrep**         | find + grep + ls | Single binary, fast                | Learning curve | Medium        |
+| **fd + rg**       | find + grep      | Industry standard, well-documented | Two tools      | High          |
+| **thegent_files** | MCP wrapper      | Built-in exclusions, MCP native    | MCP-only       | High (if MCP) |
+| **IDE native**    | @codebase        | Semantic awareness                 | IDE-specific   | High (if IDE) |
 
 ### 7.4 Performance Comparison (Relative)
 
-| Operation | ls | find | fd | rg | ugrep |
-|-----------|-----|------|----|----|-------|
-| `ls -l` in large dir | 1x | N/A | 10x | N/A | N/A |
-| Find .py files | N/A | 1x | 15x | 8x | 10x |
-| Search "TODO" in code | N/A | N/A | N/A | 10x | 8x |
-| Find + Search combined | N/A | 1x | 5x | 5x | 4x |
+| Operation              | ls  | find | fd  | rg  | ugrep |
+| ---------------------- | --- | ---- | --- | --- | ----- |
+| `ls -l` in large dir   | 1x  | N/A  | 10x | N/A | N/A   |
+| Find .py files         | N/A | 1x   | 15x | 8x  | 10x   |
+| Search "TODO" in code  | N/A | N/A  | N/A | 10x | 8x    |
+| Find + Search combined | N/A | 1x   | 5x  | 5x  | 4x    |
 
 ---
 
 ## 8. Implementation Checklist
 
 ### 8.1 Immediate Actions
+
 - [ ] Document fd + rg as canonical in skills/
 - [ ] Add fd + rg to Brewfile (ensure in PATH)
 - [ ] Update CLAUDE.md with tool recommendations
 - [ ] Create quick reference card for agents
 
 ### 8.2 MCP Tool Development
+
 - [ ] Design `thegent_files` MCP tool interface
 - [ ] Implement `list` mode (fd wrapper)
 - [ ] Implement `search` mode (rg wrapper)
@@ -179,12 +181,14 @@ rg "TODO" -g "!node_modules" -g "!.venv"
 - [ ] Test on Linux, macOS, Windows
 
 ### 8.3 Agent Integration
+
 - [ ] Update SKILL.md templates to use fd + rg
 - [ ] Add fd + rg examples to agent training data
 - [ ] Create fallback logic (IDE native → MCP → fd/rg → ls/grep)
 - [ ] Document agent instruction for file operations
 
 ### 8.4 Verification
+
 - [ ] Benchmark fd vs ls in node_modules-heavy project
 - [ ] Benchmark rg vs grep in large codebase
 - [ ] Test thegent_files MCP tool performance
@@ -194,14 +198,15 @@ rg "TODO" -g "!node_modules" -g "!.venv"
 
 ## 9. Cross-References
 
-| Doc | Relevance |
-|-----|-----------|
+| Doc                                                                                       | Relevance                 |
+| ----------------------------------------------------------------------------------------- | ------------------------- |
 | [INDEXING_AND_OPTIMIZATION_SYSTEMS.md](../reference/INDEXING_AND_OPTIMIZATION_SYSTEMS.md) | Indexing systems overview |
-| [PROCESS_OPTIMIZATION_PLAN.md](../plans/PROCESS_OPTIMIZATION_PLAN.md) | Process optimization |
-| [SWARM_PROCESS_AUTOMATION_DEEP_RESEARCH.md](./SWARM_PROCESS_AUTOMATION_DEEP_RESEARCH.md) | Process automation |
+| [PROCESS_OPTIMIZATION_PLAN.md](../plans/PROCESS_OPTIMIZATION_PLAN.md)                     | Process optimization      |
+| [SWARM_PROCESS_AUTOMATION_DEEP_RESEARCH.md](./SWARM_PROCESS_AUTOMATION_DEEP_RESEARCH.md)  | Process automation        |
 
 ---
-*Cross-ref: [INDEXING_AND_OPTIMIZATION_SYSTEMS.md](../reference/INDEXING_AND_OPTIMIZATION_SYSTEMS.md) · [PROCESS_OPTIMIZATION_PLAN.md](../plans/PROCESS_OPTIMIZATION_PLAN.md)*
+
+_Cross-ref: [INDEXING_AND_OPTIMIZATION_SYSTEMS.md](../reference/INDEXING_AND_OPTIMIZATION_SYSTEMS.md) · [PROCESS_OPTIMIZATION_PLAN.md](../plans/PROCESS_OPTIMIZATION_PLAN.md)_
 
 ---
 
@@ -210,13 +215,13 @@ rg "TODO" -g "!node_modules" -g "!.venv"
 **Extended on**: 2026-02-17
 **Extensions added**: Tool comparison matrix (§7), Implementation checklist (§8)
 
-| Section | Added Content |
-|---------|---------------|
-| §7.1 | File Discovery Tools Comparison (fd, find, ls, ripgrep, ugrep, lsd) |
-| §7.2 | Content Search Tools Comparison (rg, grep, ugrep, ack, ag) |
-| §7.3 | Unified/Bundled Tools Matrix (ugrep, fd+rg, thegent_files, IDE native) |
-| §7.4 | Performance Comparison (relative speeds) |
-| §8 | Implementation Checklist (Immediate, MCP, Agent, Verification) |
+| Section | Added Content                                                          |
+| ------- | ---------------------------------------------------------------------- |
+| §7.1    | File Discovery Tools Comparison (fd, find, ls, ripgrep, ugrep, lsd)    |
+| §7.2    | Content Search Tools Comparison (rg, grep, ugrep, ack, ag)             |
+| §7.3    | Unified/Bundled Tools Matrix (ugrep, fd+rg, thegent_files, IDE native) |
+| §7.4    | Performance Comparison (relative speeds)                               |
+| §8      | Implementation Checklist (Immediate, MCP, Agent, Verification)         |
 
 ---
 

@@ -1,11 +1,12 @@
 """Observability service helpers split out of CLI impl."""
 
 import hashlib
-import orjson as json
 from collections.abc import Callable
 from datetime import UTC, datetime
 from pathlib import Path
 from typing import Any
+
+import orjson as json
 
 from thegent.config import ThegentSettings
 
@@ -26,7 +27,14 @@ def get_server_meta_impl(
     result: dict[str, Any] = {
         "server": "thegent",
         "version": "1.0",
-        "capabilities": ["tools", "resources", "prompts", "progress", "elicitation", "event_store"],
+        "capabilities": [
+            "tools",
+            "resources",
+            "prompts",
+            "progress",
+            "elicitation",
+            "event_store",
+        ],
         "health_payload_schema_version": health_payload_schema_version,
         "health_payload_types": list(health_payload_types),
         "observe_summary_payload_schema_version": observe_summary_payload_schema_version,

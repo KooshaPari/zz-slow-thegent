@@ -23,7 +23,14 @@ from dataclasses import dataclass, field
 
 _log = logging.getLogger(__name__)
 
-TASK_TYPES: tuple[str, ...] = ("coding", "reasoning", "summarization", "creative", "retrieval", "general")
+TASK_TYPES: tuple[str, ...] = (
+    "coding",
+    "reasoning",
+    "summarization",
+    "creative",
+    "retrieval",
+    "general",
+)
 
 # Keyword patterns compiled with IGNORECASE for each task type.
 _PATTERNS: dict[str, re.Pattern[str]] = {
@@ -136,7 +143,11 @@ def select_model(
     # Sort by priority ascending (lower = higher priority)
     candidates.sort(key=lambda p: p.priority)
     chosen = candidates[0]
-    _log.debug("select_model: chose %r for task_type=%r", chosen.model, classification.task_type)
+    _log.debug(
+        "select_model: chose %r for task_type=%r",
+        chosen.model,
+        classification.task_type,
+    )
     return chosen
 
 

@@ -337,9 +337,9 @@
 
 ## Notes
 
-**Date Started:** _______________
+**Date Started:** **\*\***\_\_\_**\*\***
 
-**Date Completed:** _______________
+**Date Completed:** **\*\***\_\_\_**\*\***
 
 **Issues Encountered:**
 

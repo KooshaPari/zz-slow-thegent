@@ -10,7 +10,6 @@ and tmp_path-backed managers to validate behavior end-to-end with no mocks.
 
 from __future__ import annotations
 
-import json
 import os
 import time
 from pathlib import Path
@@ -356,7 +355,12 @@ class TestAdaptiveCoordinationDispatchesByComplexity:
 
     def test_low_complexity_dispatches_collaborative(self, hierarchy_manager: AgentHierarchyManager):
         """complexity < 0.5 (short task) → ADAPTIVE delegates to COLLABORATIVE (P2P)."""
-        _build_team(hierarchy_manager, team_id="t-low", mode=CoordinationMode.ADAPTIVE, members=3)
+        _build_team(
+            hierarchy_manager,
+            team_id="t-low",
+            mode=CoordinationMode.ADAPTIVE,
+            members=3,
+        )
         coord = TeamCoordinator(hierarchy_manager)
         result = coord.coordinate_team_task("t-low", task="do X", context={"complexity": 0.0})
         assert result["status"] == "success"
@@ -371,7 +375,12 @@ class TestAdaptiveCoordinationDispatchesByComplexity:
         Note: _evaluate_task_complexity weights user-supplied complexity at 0.5,
         so a manual_score of 1.0 is required to push the aggregate over 0.5.
         """
-        _build_team(hierarchy_manager, team_id="t-high", mode=CoordinationMode.ADAPTIVE, members=3)
+        _build_team(
+            hierarchy_manager,
+            team_id="t-high",
+            mode=CoordinationMode.ADAPTIVE,
+            members=3,
+        )
         coord = TeamCoordinator(hierarchy_manager)
         result = coord.coordinate_team_task("t-high", task="do X", context={"complexity": 1.0})
         assert result["status"] == "success"
@@ -387,7 +396,12 @@ class TestAdaptiveCoordinationDispatchesByComplexity:
         - complexity=0.99 → score ~0.495 → collaborative
         - complexity=1.0 → score=0.5 → hierarchical
         """
-        _build_team(hierarchy_manager, team_id="t-mid", mode=CoordinationMode.ADAPTIVE, members=3)
+        _build_team(
+            hierarchy_manager,
+            team_id="t-mid",
+            mode=CoordinationMode.ADAPTIVE,
+            members=3,
+        )
 
         coord = TeamCoordinator(hierarchy_manager)
         low = coord.coordinate_team_task("t-mid", task="do X", context={"complexity": 0.99})
@@ -401,7 +415,11 @@ class TestAdaptiveCoordinationDispatchesByComplexity:
         coord = TeamCoordinator(hierarchy_manager)
         result = coord.coordinate_team_task("t-swarm", task="t")
         assert result["coordination_mode"] == "swarm"
-        assert set(result["assignments"]) == {"lead-t-swarm", "spec-t-swarm-0", "spec-t-swarm-1"}
+        assert set(result["assignments"]) == {
+            "lead-t-swarm",
+            "spec-t-swarm-0",
+            "spec-t-swarm-1",
+        }
 
     def test_no_active_members_returns_error(self, hierarchy_manager: AgentHierarchyManager):
         """A team with zero active members yields status=error."""
@@ -425,8 +443,18 @@ class TestCrossTeamDelegation:
 
     def test_cross_team_creates_collaboration_relationship(self, hierarchy_manager: AgentHierarchyManager):
         """delegate_cross_team() creates a CROSS_TEAM_COLLABORATION relationship."""
-        _build_team(hierarchy_manager, team_id="team-a", mode=CoordinationMode.HIERARCHICAL, members=1)
-        _build_team(hierarchy_manager, team_id="team-b", mode=CoordinationMode.HIERARCHICAL, members=1)
+        _build_team(
+            hierarchy_manager,
+            team_id="team-a",
+            mode=CoordinationMode.HIERARCHICAL,
+            members=1,
+        )
+        _build_team(
+            hierarchy_manager,
+            team_id="team-b",
+            mode=CoordinationMode.HIERARCHICAL,
+            members=1,
+        )
 
         coord = TeamCoordinator(hierarchy_manager)
         rel = coord.delegate_cross_team(
@@ -443,7 +471,12 @@ class TestCrossTeamDelegation:
 
     def test_cross_team_rejects_same_team_agents(self, hierarchy_manager: AgentHierarchyManager):
         """delegate_cross_team() raises ValueError when both agents are in the same team."""
-        _build_team(hierarchy_manager, team_id="team-x", mode=CoordinationMode.HIERARCHICAL, members=2)
+        _build_team(
+            hierarchy_manager,
+            team_id="team-x",
+            mode=CoordinationMode.HIERARCHICAL,
+            members=2,
+        )
         coord = TeamCoordinator(hierarchy_manager)
         with pytest.raises(ValueError, match="same team"):
             coord.delegate_cross_team(
@@ -454,7 +487,12 @@ class TestCrossTeamDelegation:
 
     def test_delegate_within_team_creates_membership_relationship(self, hierarchy_manager: AgentHierarchyManager):
         """delegate_within_team() creates a TEAM_MEMBERSHIP relationship."""
-        _build_team(hierarchy_manager, team_id="team-w", mode=CoordinationMode.HIERARCHICAL, members=2)
+        _build_team(
+            hierarchy_manager,
+            team_id="team-w",
+            mode=CoordinationMode.HIERARCHICAL,
+            members=2,
+        )
         coord = TeamCoordinator(hierarchy_manager)
         rel = coord.delegate_within_team(
             from_agent_id="lead-team-w",

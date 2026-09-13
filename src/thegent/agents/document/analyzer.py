@@ -60,11 +60,21 @@ class DocumentAnalyzer:
 
     # Category patterns
     CATEGORY_PATTERNS: ClassVar[dict[DocumentCategory, list[str]]] = {
-        DocumentCategory.RESEARCH: [r"research", r"study", r"analysis", r"investigation"],
+        DocumentCategory.RESEARCH: [
+            r"research",
+            r"study",
+            r"analysis",
+            r"investigation",
+        ],
         DocumentCategory.PLAN: [r"plan", r"roadmap", r"strategy", r"proposal"],
         DocumentCategory.REPORT: [r"report", r"summary", r"audit", r"review"],
         DocumentCategory.GUIDE: [r"guide", r"tutorial", r"how.?to", r"walkthrough"],
-        DocumentCategory.SPECIFICATION: [r"spec", r"specification", r"requirements", r"design"],
+        DocumentCategory.SPECIFICATION: [
+            r"spec",
+            r"specification",
+            r"requirements",
+            r"design",
+        ],
         DocumentCategory.README: [r"readme", r"read.?me"],
         DocumentCategory.CHANGELOG: [r"changelog", r"changes", r"history"],
     }

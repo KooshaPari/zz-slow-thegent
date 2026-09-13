@@ -15,15 +15,15 @@ class NotificationBridge:
         self.project_id = project_id
         self.fcm_url = f"https://fcm.googleapis.com/v1/projects/{project_id}/messages:send"
 
-    async def send_push(self, device_token: str, title: str, body: str, data: dict[str, str] | None = None) -> bool:
+    async def send_push(
+        self,
+        device_token: str,
+        title: str,
+        body: str,
+        data: dict[str, str] | None = None,
+    ) -> bool:
         """Send a push notification to a specific device."""
         _log.info("Sending push notification to device: %s", device_token[:10] + "...")
-
-        message = {
-            "message": {"token": device_token, "notification": {"title": title, "body": body}, "data": data or {}}
-        }
-
-        headers = {"Authorization": f"Bearer {self.fcm_api_key}", "Content-Type": "application/json"}
 
         try:
             # Simulated HTTP call

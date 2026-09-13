@@ -21,8 +21,8 @@ GenAI semantic convention attributes:
 
 import logging
 import threading
-from importlib import import_module
 from dataclasses import dataclass
+from importlib import import_module
 from typing import Any
 
 _log = logging.getLogger(__name__)
@@ -140,7 +140,11 @@ def configure_otel(config: OtelConfig) -> None:
 
     _provider = provider
     _tracer = _otel_trace.get_tracer("thegent.gateway")
-    _log.info("OTel OTLP exporter configured: endpoint=%s service=%s", config.endpoint, config.service_name)
+    _log.info(
+        "OTel OTLP exporter configured: endpoint=%s service=%s",
+        config.endpoint,
+        config.service_name,
+    )
 
 
 def get_tracer() -> Any:

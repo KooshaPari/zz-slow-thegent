@@ -18,6 +18,7 @@ This architecture provides **multi-tier isolation** for agent execution with **p
 - **Seamless Fallback** - Automatic tier escalation/degradation based on availability and requirements
 
 **Key Innovations:**
+
 - **Capability-Based Security** (WASI Preview 2) - Fine-grained permissions
 - **Zero-Dependency Runtimes** - Pure Go (wazero), Rust (wasmtime), C++ (wasmedge)
 - **Rootless Containers** - No daemon, no root privileges (Podman, Bubblewrap)
@@ -76,6 +77,7 @@ This architecture provides **multi-tier isolation** for agent execution with **p
 **Technology:** WebAssembly System Interface (WASI Preview 2)
 
 **Core Principles:**
+
 - **Capability-Based Security** - Explicit grants required for all system access
 - **Memory Safety** - Bounds checking, no buffer overflows
 - **Sandboxed Execution** - No direct system calls, all via WASI
@@ -83,16 +85,17 @@ This architecture provides **multi-tier isolation** for agent execution with **p
 
 **Runtime Options (Comprehensive):**
 
-| Runtime | Language | Performance | WASI Support | Best For |
-|---------|----------|------------|--------------|----------|
-| **wasmtime** | Rust | Excellent | Preview 2 | Production, embedding |
-| **wasmer** | Rust | Excellent | Preview 2 | Universal apps, cloud |
-| **wazero** | Go | Good | Preview 1/2 | Go projects, zero deps |
-| **wasmedge** | C++ | Excellent | Preview 2 + extensions | Edge computing, ML |
-| **wasm3** | C | Good | Preview 1 | Embedded, IoT |
-| **wasmtime-py** | Python | Good | Preview 2 | Python integration |
+| Runtime         | Language | Performance | WASI Support           | Best For               |
+| --------------- | -------- | ----------- | ---------------------- | ---------------------- |
+| **wasmtime**    | Rust     | Excellent   | Preview 2              | Production, embedding  |
+| **wasmer**      | Rust     | Excellent   | Preview 2              | Universal apps, cloud  |
+| **wazero**      | Go       | Good        | Preview 1/2            | Go projects, zero deps |
+| **wasmedge**    | C++      | Excellent   | Preview 2 + extensions | Edge computing, ML     |
+| **wasm3**       | C        | Good        | Preview 1              | Embedded, IoT          |
+| **wasmtime-py** | Python   | Good        | Preview 2              | Python integration     |
 
 **Performance Characteristics:**
+
 - **Startup Time:** <10ms (wasmtime), <5ms (wasmer), <20ms (wazero)
 - **Runtime Overhead:** <5% (wasmtime), <3% (wasmer), <8% (wazero)
 - **Memory Overhead:** ~1MB base + module size
@@ -106,24 +109,22 @@ capabilities = {
     "filesystem": {
         "read": ["/workspace/src", "/workspace/docs"],
         "write": ["/workspace/.sandbox/wasm/output"],
-        "create": ["/workspace/.sandbox/wasm/temp"]
+        "create": ["/workspace/.sandbox/wasm/temp"],
     },
-    "network": {
-        "tcp": ["api.example.com:443"],
-        "dns": ["8.8.8.8"]
-    },
+    "network": {"tcp": ["api.example.com:443"], "dns": ["8.8.8.8"]},
     "environment": {
         "read": ["PATH", "HOME", "LANG"],
-        "write": []  # No env writes allowed
+        "write": [],  # No env writes allowed
     },
     "process": {
         "spawn": False,  # No subprocess spawning
-        "signal": ["SIGTERM"]  # Only allow termination
-    }
+        "signal": ["SIGTERM"],  # Only allow termination
+    },
 }
 ```
 
 **Use Cases:**
+
 - ✅ Script execution (Python/Node.js compiled to WASM)
 - ✅ Lightweight tool execution (grep, sed, awk equivalents)
 - ✅ Fast iteration cycles (<100ms round-trip)
@@ -134,6 +135,7 @@ capabilities = {
 - ❌ System-level operations (use containers/VMs)
 
 **WASI Preview 2 Features:**
+
 - **Component Model** - Composable WASM modules
 - **Virtualization** - Run WASI apps in WASI hosts
 - **Async I/O** - Non-blocking system calls
@@ -141,13 +143,14 @@ capabilities = {
 - **Sockets** - Network capability grants
 
 **Example:**
+
 ```python
 # Agent code compiled to WASM
 wasm_binary = compile_to_wasm(agent_code)
 sandbox = WasmSandbox(
     project_path=Path("thegent/.sandbox/wasm"),
     max_memory_mb=128,
-    capabilities=["filesystem:read:thegent/src", "network:https:api.example.com"]
+    capabilities=["filesystem:read:thegent/src", "network:https:api.example.com"],
 )
 result = sandbox.run(wasm_binary, function="main", args=[])
 ```
@@ -158,20 +161,21 @@ result = sandbox.run(wasm_binary, function="main", args=[])
 
 **Container Runtime Landscape (No Docker):**
 
-| Runtime | Type | Rootless | Daemon | Isolation | Performance | Best For |
-|---------|------|----------|--------|-----------|-------------|----------|
-| **Podman** | OCI | ✅ Yes | ❌ No | Namespaces | 5-10% overhead | Development, CI/CD |
-| **containerd** | OCI | ✅ Yes | ✅ Yes | Namespaces | 5-8% overhead | Kubernetes, production |
-| **gVisor** | OCI | ✅ Yes | ✅ Yes | User-space kernel | 10-30% overhead | Untrusted code |
-| **Bubblewrap** | Namespace | ✅ Yes | ❌ No | Namespaces | <5% overhead | Desktop apps, Flatpak |
-| **Kata Containers** | VM | ⚠️ Partial | ✅ Yes | Hardware VM | 10-15% overhead | K8s VM isolation |
-| **Firecracker** | MicroVM | ✅ Yes | ✅ Yes | Hardware VM | <5% overhead | Serverless, Lambda |
+| Runtime             | Type      | Rootless   | Daemon | Isolation         | Performance     | Best For               |
+| ------------------- | --------- | ---------- | ------ | ----------------- | --------------- | ---------------------- |
+| **Podman**          | OCI       | ✅ Yes     | ❌ No  | Namespaces        | 5-10% overhead  | Development, CI/CD     |
+| **containerd**      | OCI       | ✅ Yes     | ✅ Yes | Namespaces        | 5-8% overhead   | Kubernetes, production |
+| **gVisor**          | OCI       | ✅ Yes     | ✅ Yes | User-space kernel | 10-30% overhead | Untrusted code         |
+| **Bubblewrap**      | Namespace | ✅ Yes     | ❌ No  | Namespaces        | <5% overhead    | Desktop apps, Flatpak  |
+| **Kata Containers** | VM        | ⚠️ Partial | ✅ Yes | Hardware VM       | 10-15% overhead | K8s VM isolation       |
+| **Firecracker**     | MicroVM   | ✅ Yes     | ✅ Yes | Hardware VM       | <5% overhead    | Serverless, Lambda     |
 
 **Detailed Runtime Analysis:**
 
 #### 2.1 Podman (Recommended Primary)
 
 **Why Podman:**
+
 - ✅ **Rootless by default** - No setuid, no daemon
 - ✅ **Docker-compatible** - Drop-in replacement
 - ✅ **Daemonless** - Direct fork-exec model
@@ -179,17 +183,20 @@ result = sandbox.run(wasm_binary, function="main", args=[])
 - ✅ **Production-ready** - Used by Red Hat, IBM
 
 **Performance:**
+
 - **Startup:** 100-300ms (cold), 50-100ms (warm)
 - **Overhead:** 5-10% CPU, 5-15% memory
 - **Throughput:** 90-95% of native
 
 **Security:**
+
 - **Namespaces:** PID, mount, network, IPC, UTS, user
 - **Capabilities:** Dropped by default (no CAP_SYS_ADMIN)
 - **Seccomp:** Default profile blocks dangerous syscalls
 - **SELinux/AppArmor:** Integration support
 
 **Implementation:**
+
 ```python
 class PodmanSandbox:
     """Podman-based container sandbox (rootless, daemonless)."""
@@ -204,12 +211,7 @@ class PodmanSandbox:
     def _verify_podman(self):
         """Verify Podman is installed and rootless mode works."""
         try:
-            result = subprocess.run(
-                ["podman", "info", "--format", "json"],
-                capture_output=True,
-                text=True,
-                check=True
-            )
+            result = subprocess.run(["podman", "info", "--format", "json"], capture_output=True, text=True, check=True)
             info = json.loads(result.stdout)
             if info.get("host", {}).get("security", {}).get("rootless") != True:
                 raise RuntimeError("Podman must run in rootless mode")
@@ -220,23 +222,37 @@ class PodmanSandbox:
         """Execute command in Podman container."""
         # Build podman command with security hardening
         cmd = [
-            "podman", "run",
+            "podman",
+            "run",
             "--rm",  # Auto-remove after execution
-            "--name", self.container_name,
-            "--memory", f"{self.config.get('memory_limit_mb', 512)}m",
-            "--memory-swap", f"{self.config.get('memory_limit_mb', 512)}m",  # No swap
-            "--cpus", str(self.config.get('cpu_limit', 2)),
-            "--network", self.config.get("network", "none"),  # No network by default
-            "--security-opt", "seccomp=unconfined",  # Or use custom profile
-            "--security-opt", "label=disable",  # Or use SELinux/AppArmor
-            "--volume", f"{self.project_path.absolute()}:/workspace:rw,Z",  # Z = SELinux relabel
-            "--workdir", "/workspace",
-            "--env", "HOME=/workspace",  # Override HOME
-            "--env", "USER=agent",  # Non-root user
-            "--user", "1000:1000",  # Run as non-root
+            "--name",
+            self.container_name,
+            "--memory",
+            f"{self.config.get('memory_limit_mb', 512)}m",
+            "--memory-swap",
+            f"{self.config.get('memory_limit_mb', 512)}m",  # No swap
+            "--cpus",
+            str(self.config.get("cpu_limit", 2)),
+            "--network",
+            self.config.get("network", "none"),  # No network by default
+            "--security-opt",
+            "seccomp=unconfined",  # Or use custom profile
+            "--security-opt",
+            "label=disable",  # Or use SELinux/AppArmor
+            "--volume",
+            f"{self.project_path.absolute()}:/workspace:rw,Z",  # Z = SELinux relabel
+            "--workdir",
+            "/workspace",
+            "--env",
+            "HOME=/workspace",  # Override HOME
+            "--env",
+            "USER=agent",  # Non-root user
+            "--user",
+            "1000:1000",  # Run as non-root
             "--read-only",  # Read-only rootfs (if base image supports)
-            "--tmpfs", "/tmp:rw,noexec,nosuid,size=100m",  # Secure tmpfs
-            self.image
+            "--tmpfs",
+            "/tmp:rw,noexec,nosuid,size=100m",  # Secure tmpfs
+            self.image,
         ]
 
         # Add environment variables
@@ -253,7 +269,7 @@ class PodmanSandbox:
                 capture_output=True,
                 text=True,
                 timeout=self.config.get("timeout", 300),
-                check=False  # Don't raise on non-zero exit
+                check=False,  # Don't raise on non-zero exit
             )
 
             return {
@@ -264,34 +280,32 @@ class PodmanSandbox:
                 "tier": "container",
                 "runtime": "podman",
                 "container_id": self.container_name,
-                "duration_ms": (time.time() - start_time) * 1000
+                "duration_ms": (time.time() - start_time) * 1000,
             }
         except subprocess.TimeoutExpired:
             # Force kill container
             subprocess.run(["podman", "kill", self.container_name], check=False)
             subprocess.run(["podman", "rm", self.container_name], check=False)
-            return {
-                "status": "timeout",
-                "exit_code": -1,
-                "error": "Container execution timed out",
-                "tier": "container"
-            }
+            return {"status": "timeout", "exit_code": -1, "error": "Container execution timed out", "tier": "container"}
 ```
 
 #### 2.2 containerd (CNCF Standard)
 
 **Why containerd:**
+
 - ✅ **CNCF standard** - Industry standard runtime
 - ✅ **Kubernetes-native** - CRI (Container Runtime Interface)
 - ✅ **Production-proven** - Used by Docker, Kubernetes, AWS ECS
 - ✅ **OCI-compliant** - Works with any OCI image
 
 **Performance:**
+
 - **Startup:** 150-400ms (cold), 80-150ms (warm)
 - **Overhead:** 5-8% CPU, 5-10% memory
 - **Throughput:** 92-95% of native
 
 **Implementation:**
+
 ```python
 class ContainerdSandbox:
     """containerd-based container sandbox (CNCF standard)."""
@@ -300,14 +314,20 @@ class ContainerdSandbox:
         """Execute command in containerd container."""
         # containerd uses ctr CLI or gRPC API
         cmd = [
-            "ctr", "--namespace", "thegent", "run",
+            "ctr",
+            "--namespace",
+            "thegent",
+            "run",
             "--rm",
-            "--mount", f"type=bind,src={self.project_path.absolute()},dst=/workspace,options=rbind:rw",
+            "--mount",
+            f"type=bind,src={self.project_path.absolute()},dst=/workspace,options=rbind:rw",
             "--net-host=false",  # Isolated network
-            "--memory-limit", f"{self.config.get('memory_limit_mb', 512)}m",
-            "--cpu-quota", str(self.config.get('cpu_limit', 2) * 100000),  # CPU quota in microseconds
+            "--memory-limit",
+            f"{self.config.get('memory_limit_mb', 512)}m",
+            "--cpu-quota",
+            str(self.config.get("cpu_limit", 2) * 100000),  # CPU quota in microseconds
             self.image,
-            self.container_name
+            self.container_name,
         ] + command
 
         result = subprocess.run(cmd, capture_output=True, text=True)
@@ -317,29 +337,34 @@ class ContainerdSandbox:
 #### 2.3 gVisor (User-Space Kernel)
 
 **Why gVisor:**
+
 - ✅ **Strong isolation** - User-space kernel intercepts syscalls
 - ✅ **Defense-in-depth** - Multiple security layers
 - ✅ **Production-proven** - Used by Google Cloud Run
 - ✅ **Kubernetes integration** - runsc runtime
 
 **Performance:**
+
 - **Startup:** 200-500ms (cold), 100-200ms (warm)
 - **Overhead:** 10-30% CPU (I/O-heavy), <5% (compute-heavy)
 - **Throughput:** 70-90% of native (I/O), 95-98% (compute)
 
 **Security:**
+
 - **Syscall interception** - All syscalls go through user-space kernel
 - **Seccomp filters** - Additional syscall filtering
 - **Network isolation** - Virtual network stack
 - **Filesystem isolation** - Virtual filesystem
 
 **Use Cases:**
+
 - ✅ Untrusted code execution
 - ✅ Multi-tenant environments
 - ✅ I/O-light workloads (compute-heavy)
 - ❌ I/O-heavy workloads (high overhead)
 
 **Implementation:**
+
 ```python
 class GVisorSandbox:
     """gVisor-based sandbox (user-space kernel)."""
@@ -355,8 +380,9 @@ class GVisorSandbox:
             "--file-access=exclusive",  # Exclusive file access
             "--fsgofer-host-uds=false",  # No host UDS
             "run",
-            "--bundle", str(self.project_path / ".sandbox" / "container" / "bundle"),
-            self.container_name
+            "--bundle",
+            str(self.project_path / ".sandbox" / "container" / "bundle"),
+            self.container_name,
         ] + command
 
         result = subprocess.run(cmd, capture_output=True, text=True)
@@ -366,22 +392,26 @@ class GVisorSandbox:
 #### 2.4 Bubblewrap (Lightweight Namespace Tool)
 
 **Why Bubblewrap:**
+
 - ✅ **Ultra-lightweight** - Minimal overhead
 - ✅ **Rootless** - Uses user namespaces
 - ✅ **No daemon** - Direct execution
 - ✅ **Production-proven** - Used by Flatpak, GNOME
 
 **Performance:**
+
 - **Startup:** <50ms
 - **Overhead:** <5% CPU, <3% memory
 - **Throughput:** 95-98% of native
 
 **Limitations:**
+
 - ⚠️ **Linux only** - No macOS/Windows support
 - ⚠️ **Requires user namespaces** - May not be available on all systems
 - ⚠️ **Manual setup** - More configuration required
 
 **Implementation:**
+
 ```python
 class BubblewrapSandbox:
     """Bubblewrap-based sandbox (lightweight namespace tool)."""
@@ -391,20 +421,33 @@ class BubblewrapSandbox:
         # Bubblewrap uses bwrap command
         cmd = [
             "bwrap",
-            "--ro-bind", "/usr", "/usr",  # Read-only /usr
-            "--ro-bind", "/lib", "/lib",  # Read-only /lib
-            "--ro-bind", "/lib64", "/lib64",  # Read-only /lib64
-            "--bind", str(self.project_path), "/workspace",  # Read-write workspace
-            "--proc", "/proc",  # Process namespace
-            "--dev", "/dev",  # Device namespace
+            "--ro-bind",
+            "/usr",
+            "/usr",  # Read-only /usr
+            "--ro-bind",
+            "/lib",
+            "/lib",  # Read-only /lib
+            "--ro-bind",
+            "/lib64",
+            "/lib64",  # Read-only /lib64
+            "--bind",
+            str(self.project_path),
+            "/workspace",  # Read-write workspace
+            "--proc",
+            "/proc",  # Process namespace
+            "--dev",
+            "/dev",  # Device namespace
             "--unshare-pid",  # PID namespace
             "--unshare-net",  # Network namespace
             "--unshare-ipc",  # IPC namespace
             "--unshare-uts",  # UTS namespace
             "--new-session",  # New session (prevents TIOCSTI attacks)
             "--die-with-parent",  # Die when parent dies
-            "--chdir", "/workspace",
-            "bash", "-c", " ".join(command)
+            "--chdir",
+            "/workspace",
+            "bash",
+            "-c",
+            " ".join(command),
         ]
 
         result = subprocess.run(cmd, capture_output=True, text=True)
@@ -414,17 +457,20 @@ class BubblewrapSandbox:
 #### 2.5 Kata Containers (VM via Container API)
 
 **Why Kata Containers:**
+
 - ✅ **VM isolation** - Hardware virtualization
 - ✅ **Container API** - OCI-compatible
 - ✅ **Kubernetes-native** - CRI-O integration
 - ✅ **Multiple hypervisors** - QEMU, Cloud-Hypervisor, Firecracker
 
 **Performance:**
+
 - **Startup:** 200-500ms (QEMU), 125-200ms (Firecracker)
 - **Overhead:** 10-15% CPU, 50-100MB memory per VM
 - **Throughput:** 85-90% of native
 
 **Use Cases:**
+
 - ✅ Multi-tenant Kubernetes
 - ✅ Compliance requirements
 - ✅ Strong isolation needs
@@ -433,22 +479,26 @@ class BubblewrapSandbox:
 #### 2.6 Firecracker (MicroVM)
 
 **Why Firecracker:**
+
 - ✅ **Ultra-fast startup** - <125ms cold start
 - ✅ **Low overhead** - <5MB memory per VM
 - ✅ **Production-proven** - Used by AWS Lambda
 - ✅ **High density** - 150 VMs/second per host
 
 **Performance:**
+
 - **Startup:** 125ms (cold), 50ms (warm)
 - **Overhead:** <5% CPU, <5MB memory
 - **Throughput:** 90-95% of native
 
 **Limitations:**
+
 - ⚠️ **Linux only** - No macOS/Windows
 - ⚠️ **Minimal device model** - Only 5 devices (virtio-net, virtio-block, etc.)
 - ⚠️ **No GUI** - Headless only
 
 **Use Cases:**
+
 - ✅ Serverless functions
 - ✅ High-density multi-tenant
 - ✅ Fast VM startup required
@@ -457,6 +507,7 @@ class BubblewrapSandbox:
 **Implementation Options:**
 
 #### Option A: Podman (Recommended)
+
 ```bash
 # Rootless, daemonless, Docker-compatible
 podman run --rm \
@@ -468,6 +519,7 @@ podman run --rm \
 ```
 
 #### Option B: containerd
+
 ```bash
 # CNCF standard, Kubernetes-compatible
 ctr run --rm \
@@ -479,6 +531,7 @@ ctr run --rm \
 ```
 
 #### Option C: gVisor
+
 ```bash
 # User-space kernel, stronger isolation
 runsc --network=none \
@@ -494,36 +547,40 @@ runsc --network=none \
 
 **VM Technology Landscape:**
 
-| VM Technology | Platform | Startup | Memory | Isolation | Best For |
-|---------------|----------|---------|--------|-----------|----------|
-| **QEMU/KVM** | Linux | 2-5s | 512MB+ | Hardware | Full VMs, development |
-| **Hyper-V** | Windows | 3-8s | 512MB+ | Hardware | Windows workloads |
-| **Firecracker** | Linux | 125ms | 5MB | Hardware | MicroVMs, serverless |
-| **Cloud-Hypervisor** | Linux | 200ms | 10MB | Hardware | Cloud-native VMs |
-| **VirtualBox** | Cross-platform | 5-15s | 256MB+ | Software | Development, testing |
+| VM Technology        | Platform       | Startup | Memory | Isolation | Best For              |
+| -------------------- | -------------- | ------- | ------ | --------- | --------------------- |
+| **QEMU/KVM**         | Linux          | 2-5s    | 512MB+ | Hardware  | Full VMs, development |
+| **Hyper-V**          | Windows        | 3-8s    | 512MB+ | Hardware  | Windows workloads     |
+| **Firecracker**      | Linux          | 125ms   | 5MB    | Hardware  | MicroVMs, serverless  |
+| **Cloud-Hypervisor** | Linux          | 200ms   | 10MB   | Hardware  | Cloud-native VMs      |
+| **VirtualBox**       | Cross-platform | 5-15s   | 256MB+ | Software  | Development, testing  |
 
 **Detailed VM Analysis:**
 
 #### 3.1 QEMU/KVM (Full Virtualization)
 
 **Why QEMU/KVM:**
+
 - ✅ **Mature** - Production-proven, 20+ years
 - ✅ **Feature-rich** - Full device emulation
 - ✅ **Flexible** - Supports many guest OSes
 - ✅ **Performance** - Hardware acceleration (KVM)
 
 **Performance:**
+
 - **Startup:** 2-5 seconds (full VM), 500ms-2s (micro-VM with initrd)
 - **Overhead:** 10-20% CPU, 50-200MB memory
 - **Throughput:** 80-90% of native
 
 **Security:**
+
 - **Hardware isolation** - Complete separation
 - **Encrypted disks** - LUKS/dm-crypt support
 - **Secure boot** - UEFI Secure Boot support
 - **TPM passthrough** - Hardware security module
 
 **Micro-VM Optimization:**
+
 ```bash
 # Minimal QEMU/KVM setup for fast startup
 qemu-system-x86_64 \
@@ -544,17 +601,20 @@ qemu-system-x86_64 \
 #### 3.2 Hyper-V (Windows)
 
 **Why Hyper-V:**
+
 - ✅ **Native Windows** - Built into Windows 10/11 Pro
 - ✅ **Production-ready** - Used by Azure
 - ✅ **PowerShell integration** - Easy automation
 - ✅ **Generation 2 VMs** - UEFI, faster boot
 
 **Performance:**
+
 - **Startup:** 3-8 seconds (full VM), 1-3s (optimized)
 - **Overhead:** 10-25% CPU, 100-300MB memory
 - **Throughput:** 75-85% of native
 
 **Implementation:**
+
 ```powershell
 # Create optimized Hyper-V VM
 New-VM -Name "agent-vm" `
@@ -587,22 +647,26 @@ Invoke-Command -VMName "agent-vm" -ScriptBlock {
 #### 3.3 Firecracker (MicroVM - Recommended for Speed)
 
 **Why Firecracker:**
+
 - ✅ **Ultra-fast** - <125ms startup
 - ✅ **Low overhead** - <5MB memory
 - ✅ **Production-proven** - AWS Lambda
 - ✅ **High density** - 150 VMs/second
 
 **Performance:**
+
 - **Startup:** 125ms (cold), 50ms (warm)
 - **Overhead:** <5% CPU, <5MB memory
 - **Throughput:** 90-95% of native
 
 **Limitations:**
+
 - ⚠️ **Minimal devices** - Only virtio-net, virtio-block, virtio-vsock, serial, keyboard
 - ⚠️ **Linux guests only** - No Windows support
 - ⚠️ **No GUI** - Headless only
 
 **Implementation:**
+
 ```python
 class FirecrackerSandbox:
     """Firecracker microVM sandbox (AWS Lambda-style)."""
@@ -624,7 +688,7 @@ class FirecrackerSandbox:
             "vcpu_count": self.config.get("cpu_count", 1),
             "mem_size_mib": self.config.get("memory_mb", 128),
             "ht_enabled": False,
-            "track_dirty_pages": False
+            "track_dirty_pages": False,
         }
 
         requests_unixsocket.patch()
@@ -634,26 +698,17 @@ class FirecrackerSandbox:
         boot_source = {
             "kernel_image_path": str(self.vm_image),
             "boot_args": "console=ttyS0 reboot=k panic=1 pci=off",
-            "initrd_path": None
+            "initrd_path": None,
         }
 
-        session.put(
-            f"http+unix://{self.socket}/boot-source",
-            json=boot_source
-        )
+        session.put(f"http+unix://{self.socket}/boot-source", json=boot_source)
 
         # Configure rootfs
-        drives = [{
-            "drive_id": "rootfs",
-            "path_on_host": str(self.rootfs),
-            "is_root_device": True,
-            "is_read_only": False
-        }]
+        drives = [
+            {"drive_id": "rootfs", "path_on_host": str(self.rootfs), "is_root_device": True, "is_read_only": False}
+        ]
 
-        session.put(
-            f"http+unix://{self.socket}/drives/rootfs",
-            json=drives[0]
-        )
+        session.put(f"http+unix://{self.socket}/drives/rootfs", json=drives[0])
 
         # Start VM
         session.put(f"http+unix://{self.socket}/actions", json={"action_type": "InstanceStart"})
@@ -666,17 +721,20 @@ class FirecrackerSandbox:
 #### 3.4 Cloud-Hypervisor (Modern Alternative)
 
 **Why Cloud-Hypervisor:**
+
 - ✅ **Modern** - Built for cloud-native (2019+)
 - ✅ **Fast** - <200ms startup
 - ✅ **Rust-based** - Memory-safe
 - ✅ **Kata integration** - Used by Kata Containers
 
 **Performance:**
+
 - **Startup:** 200-400ms
 - **Overhead:** 5-10% CPU, 10-50MB memory
 - **Throughput:** 90-95% of native
 
 **Use Cases:**
+
 - ✅ Cloud-native workloads
 - ✅ Kubernetes (via Kata)
 - ✅ Fast VM startup needed
@@ -684,6 +742,7 @@ class FirecrackerSandbox:
 **Implementation:**
 
 #### QEMU/KVM (Linux)
+
 ```bash
 # Lightweight micro-VM
 qemu-system-x86_64 \
@@ -699,6 +758,7 @@ qemu-system-x86_64 \
 ```
 
 #### Hyper-V (Windows)
+
 ```powershell
 # PowerShell Direct
 New-VM -Name "agent-vm" -MemoryStartupBytes 512MB -Generation 2
@@ -778,11 +838,7 @@ project-root/
   },
   "native_fallback": {
     "enabled": true,
-    "conditions": [
-      "wasm_not_available",
-      "container_failed",
-      "user_override"
-    ]
+    "conditions": ["wasm_not_available", "container_failed", "user_override"]
   }
 }
 ```
@@ -883,6 +939,7 @@ class SandboxRouter:
 ### WASM Runtime Setup
 
 **Requirements:**
+
 - `wasmtime` or `wasmer` installed
 - WASI Preview 2 support
 - Capability-based filesystem
@@ -892,6 +949,7 @@ class SandboxRouter:
 ```python
 from wasmtime import Engine, Store, Module, Linker, Config
 from wasmtime import WasiConfig
+
 
 class WasmSandbox:
     """WASM-based sandbox using WASI."""
@@ -904,14 +962,8 @@ class WasmSandbox:
 
         # Configure WASI with capabilities
         wasi_config = WasiConfig()
-        wasi_config.preopen_dir(
-            str(project_path / "src"),
-            "/workspace/src"
-        )
-        wasi_config.preopen_dir(
-            str(project_path / ".sandbox" / "wasm"),
-            "/workspace/output"
-        )
+        wasi_config.preopen_dir(str(project_path / "src"), "/workspace/src")
+        wasi_config.preopen_dir(str(project_path / ".sandbox" / "wasm"), "/workspace/output")
 
         # Network capability (if allowed)
         if "network:https:api.example.com" in config.get("capabilities", []):
@@ -930,17 +982,13 @@ class WasmSandbox:
 
         result = func(self.store, *args)
 
-        return {
-            "status": "success",
-            "result": result,
-            "tier": "wasm",
-            "memory_used_mb": self._get_memory_usage()
-        }
+        return {"status": "success", "result": result, "tier": "wasm", "memory_used_mb": self._get_memory_usage()}
 ```
 
 ### Compiling Agent Code to WASM
 
 **Python → WASM:**
+
 ```bash
 # Using Pyodide or PyScript
 python -m pyodide build --output-dir .sandbox/wasm/modules agent.py
@@ -950,6 +998,7 @@ python -m wasmtime compile agent.py -o agent.wasm
 ```
 
 **Node.js → WASM:**
+
 ```bash
 # Using wasm-pack
 wasm-pack build --target web --out-dir .sandbox/wasm/modules
@@ -962,6 +1011,7 @@ wasm-pack build --target web --out-dir .sandbox/wasm/modules
 ### Podman Setup
 
 **Installation:**
+
 ```bash
 # Linux
 sudo dnf install podman  # Fedora/RHEL
@@ -975,6 +1025,7 @@ choco install podman
 ```
 
 **Rootless Configuration:**
+
 ```bash
 # Enable rootless mode
 podman machine init
@@ -990,6 +1041,7 @@ podman info
 import subprocess
 from pathlib import Path
 
+
 class PodmanSandbox:
     """Podman-based container sandbox."""
 
@@ -1003,22 +1055,25 @@ class PodmanSandbox:
         """Execute command in Podman container."""
         # Build podman command
         cmd = [
-            "podman", "run", "--rm",
-            "--name", self.container_name,
-            "--memory", f"{self.config.get('memory_limit_mb', 512)}m",
-            "--cpus", str(self.config.get('cpu_limit', 2)),
-            "--network", self.config.get("network", "none"),
-            "--volume", f"{self.project_path}:/workspace:rw",
-            "--workdir", "/workspace",
-            self.image
+            "podman",
+            "run",
+            "--rm",
+            "--name",
+            self.container_name,
+            "--memory",
+            f"{self.config.get('memory_limit_mb', 512)}m",
+            "--cpus",
+            str(self.config.get("cpu_limit", 2)),
+            "--network",
+            self.config.get("network", "none"),
+            "--volume",
+            f"{self.project_path}:/workspace:rw",
+            "--workdir",
+            "/workspace",
+            self.image,
         ] + command
 
-        result = subprocess.run(
-            cmd,
-            capture_output=True,
-            text=True,
-            timeout=self.config.get("timeout", 300)
-        )
+        result = subprocess.run(cmd, capture_output=True, text=True, timeout=self.config.get("timeout", 300))
 
         return {
             "status": "success" if result.returncode == 0 else "failed",
@@ -1026,13 +1081,14 @@ class PodmanSandbox:
             "stdout": result.stdout,
             "stderr": result.stderr,
             "tier": "container",
-            "runtime": "podman"
+            "runtime": "podman",
         }
 ```
 
 ### containerd Setup
 
 **Installation:**
+
 ```bash
 # Linux
 sudo apt install containerd  # Debian/Ubuntu
@@ -1048,17 +1104,21 @@ sudo systemctl enable containerd
 ```python
 import subprocess
 
+
 class ContainerdSandbox:
     """containerd-based container sandbox."""
 
     def run(self, command: list[str]) -> dict:
         """Execute command in containerd container."""
         cmd = [
-            "ctr", "run", "--rm",
-            "--mount", f"type=bind,src={self.project_path},dst=/workspace,options=rbind",
+            "ctr",
+            "run",
+            "--rm",
+            "--mount",
+            f"type=bind,src={self.project_path},dst=/workspace,options=rbind",
             "--net-host=false",
             self.image,
-            self.container_name
+            self.container_name,
         ] + command
 
         result = subprocess.run(cmd, capture_output=True, text=True)
@@ -1068,6 +1128,7 @@ class ContainerdSandbox:
 ### gVisor Setup
 
 **Installation:**
+
 ```bash
 # Linux only
 curl -fsSL https://gvisor.dev/install | sh
@@ -1084,14 +1145,7 @@ class GVisorSandbox:
 
     def run(self, command: list[str]) -> dict:
         """Execute command in gVisor sandbox."""
-        cmd = [
-            "runsc",
-            "--network=none",
-            "--rootless",
-            "--overlay",
-            "run",
-            self.container_name
-        ] + command
+        cmd = ["runsc", "--network=none", "--rootless", "--overlay", "run", self.container_name] + command
 
         result = subprocess.run(cmd, capture_output=True, text=True)
         return self._parse_result(result)
@@ -1104,6 +1158,7 @@ class GVisorSandbox:
 ### QEMU/KVM Setup
 
 **Installation:**
+
 ```bash
 # Linux
 sudo apt install qemu-kvm libvirt-daemon-system  # Debian/Ubuntu
@@ -1145,15 +1200,24 @@ class QemuSandbox:
         # Mount project directory as 9p filesystem
         cmd = [
             "qemu-system-x86_64",
-            "-machine", "q35,accel=kvm",
-            "-cpu", "host",
-            "-m", f"{self.config.get('memory_mb', 512)}M",
-            "-drive", f"file={self.vm_image},format=qcow2",
-            "-fsdev", f"local,id=workspace,path={self.project_path},security_model=mapped",
-            "-device", "virtio-9p-pci,fsdev=workspace,mount_tag=workspace",
-            "-kernel", "vmlinuz",
-            "-initrd", "initrd.img",
-            "-append", "root=/dev/sda1 rw"
+            "-machine",
+            "q35,accel=kvm",
+            "-cpu",
+            "host",
+            "-m",
+            f"{self.config.get('memory_mb', 512)}M",
+            "-drive",
+            f"file={self.vm_image},format=qcow2",
+            "-fsdev",
+            f"local,id=workspace,path={self.project_path},security_model=mapped",
+            "-device",
+            "virtio-9p-pci,fsdev=workspace,mount_tag=workspace",
+            "-kernel",
+            "vmlinuz",
+            "-initrd",
+            "initrd.img",
+            "-append",
+            "root=/dev/sda1 rw",
         ]
 
         # Execute command via SSH or console
@@ -1164,6 +1228,7 @@ class QemuSandbox:
 ### Hyper-V Setup (Windows)
 
 **Installation:**
+
 ```powershell
 # Enable Hyper-V
 Enable-WindowsOptionalFeature -Online -FeatureName Microsoft-Hyper-V -All
@@ -1177,6 +1242,7 @@ Get-VMHost
 ```python
 import subprocess
 
+
 class HyperVSandbox:
     """Hyper-V-based VM sandbox (Windows)."""
 
@@ -1187,15 +1253,11 @@ class HyperVSandbox:
         $vm = Get-VM -Name "agent-vm"
         Invoke-Command -VMName "agent-vm" -ScriptBlock {{
             cd /workspace
-            {' '.join(command)}
+            {" ".join(command)}
         }}
         """
 
-        result = subprocess.run(
-            ["powershell", "-Command", ps_script],
-            capture_output=True,
-            text=True
-        )
+        result = subprocess.run(["powershell", "-Command", ps_script], capture_output=True, text=True)
 
         return self._parse_result(result)
 ```
@@ -1230,12 +1292,7 @@ class NativeSandbox:
         cwd = self.project_path
 
         result = subprocess.run(
-            command,
-            cwd=cwd,
-            env=env,
-            capture_output=True,
-            text=True,
-            timeout=self.config.get("timeout", 300)
+            command, cwd=cwd, env=env, capture_output=True, text=True, timeout=self.config.get("timeout", 300)
         )
 
         return {
@@ -1244,7 +1301,7 @@ class NativeSandbox:
             "stdout": result.stdout,
             "stderr": result.stderr,
             "tier": "native",
-            "warning": "No isolation applied"
+            "warning": "No isolation applied",
         }
 
     def _filter_env(self) -> dict:
@@ -1287,16 +1344,13 @@ class SandboxAgentRunner(AgentRunner):
     def run(self, prompt: str, cwd: Path, **kwargs) -> RunResult:
         """Run agent with sandbox isolation."""
         # Route to appropriate tier
-        result = self.router.route(
-            agent_code=self._prepare_code(prompt),
-            requirements=kwargs
-        )
+        result = self.router.route(agent_code=self._prepare_code(prompt), requirements=kwargs)
 
         return RunResult(
             exit_code=result.get("exit_code", 0),
             stdout=result.get("stdout", ""),
             stderr=result.get("stderr", ""),
-            metadata={"tier": result.get("tier"), "sandbox": result}
+            metadata={"tier": result.get("tier"), "sandbox": result},
         )
 ```
 
@@ -1323,7 +1377,7 @@ class PersistentEnvironment:
             "default_tier": tier,
             "fallback_to_native": fallback,
             "persistent": True,
-            "tiers": self._default_tier_configs()
+            "tiers": self._default_tier_configs(),
         }
 
         self.config_path.write_text(json.dumps(config, indent=2))
@@ -1360,99 +1414,102 @@ class PersistentEnvironment:
 
 ### 11.1 Startup Time Comparison
 
-| Tier | Runtime | Cold Start | Warm Start | Hot Start | Notes |
-|------|---------|------------|------------|-----------|-------|
-| **WASM** | wasmtime | 5-10ms | 2-5ms | <1ms | Module caching |
-| **WASM** | wasmer | 3-8ms | 1-3ms | <1ms | Universal binaries |
-| **WASM** | wazero | 15-25ms | 5-10ms | 2-5ms | Pure Go, slower |
-| **Container** | Podman | 100-300ms | 50-100ms | 20-50ms | Rootless, daemonless |
-| **Container** | containerd | 150-400ms | 80-150ms | 30-80ms | CNCF standard |
-| **Container** | gVisor | 200-500ms | 100-200ms | 50-100ms | User-space kernel |
-| **Container** | Bubblewrap | <50ms | <20ms | <10ms | Ultra-lightweight |
-| **VM** | QEMU/KVM | 2-5s | 500ms-2s | 200-500ms | Full VM |
-| **VM** | Firecracker | 125ms | 50ms | 20-30ms | MicroVM |
-| **VM** | Hyper-V | 3-8s | 1-3s | 500ms-1s | Windows native |
-| **Native** | Host OS | <1ms | <1ms | <1ms | Direct execution |
+| Tier          | Runtime     | Cold Start | Warm Start | Hot Start | Notes                |
+| ------------- | ----------- | ---------- | ---------- | --------- | -------------------- |
+| **WASM**      | wasmtime    | 5-10ms     | 2-5ms      | <1ms      | Module caching       |
+| **WASM**      | wasmer      | 3-8ms      | 1-3ms      | <1ms      | Universal binaries   |
+| **WASM**      | wazero      | 15-25ms    | 5-10ms     | 2-5ms     | Pure Go, slower      |
+| **Container** | Podman      | 100-300ms  | 50-100ms   | 20-50ms   | Rootless, daemonless |
+| **Container** | containerd  | 150-400ms  | 80-150ms   | 30-80ms   | CNCF standard        |
+| **Container** | gVisor      | 200-500ms  | 100-200ms  | 50-100ms  | User-space kernel    |
+| **Container** | Bubblewrap  | <50ms      | <20ms      | <10ms     | Ultra-lightweight    |
+| **VM**        | QEMU/KVM    | 2-5s       | 500ms-2s   | 200-500ms | Full VM              |
+| **VM**        | Firecracker | 125ms      | 50ms       | 20-30ms   | MicroVM              |
+| **VM**        | Hyper-V     | 3-8s       | 1-3s       | 500ms-1s  | Windows native       |
+| **Native**    | Host OS     | <1ms       | <1ms       | <1ms      | Direct execution     |
 
 **Benchmark Methodology:**
+
 - **Cold Start:** First execution after system boot
 - **Warm Start:** Execution with runtime already loaded
 - **Hot Start:** Execution with module/image already cached
 
 ### 11.2 Runtime Overhead Comparison
 
-| Tier | CPU Overhead | Memory Overhead | I/O Overhead | Network Overhead |
-|------|--------------|-----------------|--------------|-----------------|
-| **WASM** | <5% | <5MB | <10% | <5% |
-| **Container** | 5-15% | 50-200MB | 10-20% | 10-15% |
-| **VM** | 10-30% | 100-500MB | 20-40% | 15-25% |
-| **Native** | 0% | 0MB | 0% | 0% |
+| Tier          | CPU Overhead | Memory Overhead | I/O Overhead | Network Overhead |
+| ------------- | ------------ | --------------- | ------------ | ---------------- |
+| **WASM**      | <5%          | <5MB            | <10%         | <5%              |
+| **Container** | 5-15%        | 50-200MB        | 10-20%       | 10-15%           |
+| **VM**        | 10-30%       | 100-500MB       | 20-40%       | 15-25%           |
+| **Native**    | 0%           | 0MB             | 0%           | 0%               |
 
 **Workload-Specific Overheads:**
 
-| Workload Type | WASM | Container | VM | Notes |
-|---------------|------|-----------|-----|-------|
-| **CPU-Bound** | <3% | 5-8% | 10-15% | Compute-heavy |
-| **I/O-Bound** | 5-10% | 10-20% | 20-40% | Disk/network heavy |
-| **Memory-Bound** | <5% | 8-12% | 15-25% | Large allocations |
-| **Network-Bound** | 5-8% | 12-18% | 18-30% | High network I/O |
+| Workload Type     | WASM  | Container | VM     | Notes              |
+| ----------------- | ----- | --------- | ------ | ------------------ |
+| **CPU-Bound**     | <3%   | 5-8%      | 10-15% | Compute-heavy      |
+| **I/O-Bound**     | 5-10% | 10-20%    | 20-40% | Disk/network heavy |
+| **Memory-Bound**  | <5%   | 8-12%     | 15-25% | Large allocations  |
+| **Network-Bound** | 5-8%  | 12-18%    | 18-30% | High network I/O   |
 
 ### 11.3 Memory Usage Comparison
 
-| Tier | Base Memory | Per-Instance | Max Instances (8GB) | Max Instances (64GB) |
-|------|-------------|--------------|---------------------|----------------------|
-| **WASM** | 1-5MB | 10-50MB | 150-800 | 1200-6400 |
-| **Container** | 50-100MB | 100-500MB | 15-80 | 120-640 |
-| **VM** | 100-500MB | 512MB-2GB | 4-16 | 32-128 |
-| **Native** | 0MB | Variable | N/A | N/A |
+| Tier          | Base Memory | Per-Instance | Max Instances (8GB) | Max Instances (64GB) |
+| ------------- | ----------- | ------------ | ------------------- | -------------------- |
+| **WASM**      | 1-5MB       | 10-50MB      | 150-800             | 1200-6400            |
+| **Container** | 50-100MB    | 100-500MB    | 15-80               | 120-640              |
+| **VM**        | 100-500MB   | 512MB-2GB    | 4-16                | 32-128               |
+| **Native**    | 0MB         | Variable     | N/A                 | N/A                  |
 
 **Memory Efficiency Ranking:**
+
 1. **WASM** - Highest density (1000+ instances)
 2. **Container** - Medium density (100+ instances)
 3. **VM** - Lowest density (10-100 instances)
 
 ### 11.4 Throughput Comparison (Operations/Second)
 
-| Operation | WASM | Container | VM | Native |
-|-----------|------|-----------|-----|--------|
-| **Simple Math** | 95-98% | 92-95% | 85-90% | 100% |
-| **String Processing** | 90-95% | 88-92% | 80-85% | 100% |
-| **File I/O** | 85-90% | 80-85% | 70-80% | 100% |
-| **Network I/O** | 80-85% | 75-80% | 65-75% | 100% |
-| **Database Queries** | 85-90% | 80-85% | 70-80% | 100% |
+| Operation             | WASM   | Container | VM     | Native |
+| --------------------- | ------ | --------- | ------ | ------ |
+| **Simple Math**       | 95-98% | 92-95%    | 85-90% | 100%   |
+| **String Processing** | 90-95% | 88-92%    | 80-85% | 100%   |
+| **File I/O**          | 85-90% | 80-85%    | 70-80% | 100%   |
+| **Network I/O**       | 80-85% | 75-80%    | 65-75% | 100%   |
+| **Database Queries**  | 85-90% | 80-85%    | 70-80% | 100%   |
 
 ### 11.5 Latency Comparison (P50, P95, P99)
 
-| Tier | P50 Latency | P95 Latency | P99 Latency | Tail Latency |
-|------|-------------|-------------|-------------|--------------|
-| **WASM** | <1ms | <5ms | <10ms | <20ms |
-| **Container** | 1-5ms | 10-50ms | 50-200ms | 200-500ms |
-| **VM** | 5-20ms | 50-200ms | 200-1000ms | 1-5s |
-| **Native** | <0.1ms | <1ms | <5ms | <10ms |
+| Tier          | P50 Latency | P95 Latency | P99 Latency | Tail Latency |
+| ------------- | ----------- | ----------- | ----------- | ------------ |
+| **WASM**      | <1ms        | <5ms        | <10ms       | <20ms        |
+| **Container** | 1-5ms       | 10-50ms     | 50-200ms    | 200-500ms    |
+| **VM**        | 5-20ms      | 50-200ms    | 200-1000ms  | 1-5s         |
+| **Native**    | <0.1ms      | <1ms        | <5ms        | <10ms        |
 
 ### 11.6 Cost Comparison (Per 1M Executions)
 
-| Tier | Compute Cost | Storage Cost | Network Cost | Total Cost |
-|------|--------------|--------------|--------------|------------|
-| **WASM** | $0.10 | $0.01 | $0.05 | $0.16 |
-| **Container** | $0.50 | $0.10 | $0.10 | $0.70 |
-| **VM** | $2.00 | $0.50 | $0.20 | $2.70 |
-| **Native** | $0.05 | $0.00 | $0.05 | $0.10 |
+| Tier          | Compute Cost | Storage Cost | Network Cost | Total Cost |
+| ------------- | ------------ | ------------ | ------------ | ---------- |
+| **WASM**      | $0.10        | $0.01        | $0.05        | $0.16      |
+| **Container** | $0.50        | $0.10        | $0.10        | $0.70      |
+| **VM**        | $2.00        | $0.50        | $0.20        | $2.70      |
+| **Native**    | $0.05        | $0.00        | $0.05        | $0.10      |
 
-*Assumptions: AWS pricing, 100ms average execution time, 128MB memory*
+_Assumptions: AWS pricing, 100ms average execution time, 128MB memory_
 
 ### 11.7 Scalability Comparison
 
-| Tier | Max Concurrent | Max Throughput | Horizontal Scale | Vertical Scale |
-|------|----------------|-----------------|------------------|----------------|
-| **WASM** | 10,000+ | 100K ops/s | Excellent | Limited (memory) |
-| **Container** | 1,000+ | 10K ops/s | Good | Good |
-| **VM** | 100+ | 1K ops/s | Moderate | Excellent |
-| **Native** | Unlimited | Unlimited | Excellent | Excellent |
+| Tier          | Max Concurrent | Max Throughput | Horizontal Scale | Vertical Scale   |
+| ------------- | -------------- | -------------- | ---------------- | ---------------- |
+| **WASM**      | 10,000+        | 100K ops/s     | Excellent        | Limited (memory) |
+| **Container** | 1,000+         | 10K ops/s      | Good             | Good             |
+| **VM**        | 100+           | 1K ops/s       | Moderate         | Excellent        |
+| **Native**    | Unlimited      | Unlimited      | Excellent        | Excellent        |
 
 ### 11.8 Performance Decision Matrix
 
 **Choose WASM when:**
+
 - ✅ Startup time critical (<10ms)
 - ✅ High concurrency needed (1000+ instances)
 - ✅ Low memory footprint required (<100MB)
@@ -1460,6 +1517,7 @@ class PersistentEnvironment:
 - ✅ Fast iteration cycles
 
 **Choose Container when:**
+
 - ✅ Full application execution needed
 - ✅ Multi-process applications
 - ✅ Standard isolation sufficient
@@ -1467,6 +1525,7 @@ class PersistentEnvironment:
 - ✅ I/O-heavy workloads
 
 **Choose VM when:**
+
 - ✅ Maximum isolation required
 - ✅ Untrusted code execution
 - ✅ Compliance requirements
@@ -1474,6 +1533,7 @@ class PersistentEnvironment:
 - ✅ Full OS features needed
 
 **Choose Native when:**
+
 - ✅ Trusted code execution
 - ✅ Maximum performance needed
 - ✅ Zero overhead required
@@ -1486,6 +1546,7 @@ class PersistentEnvironment:
 ### 12.1 Threat Model
 
 **Attack Vectors:**
+
 1. **Code Injection** - Malicious agent code execution
 2. **Privilege Escalation** - Gaining root/host access
 3. **Data Exfiltration** - Reading sensitive files
@@ -1496,6 +1557,7 @@ class PersistentEnvironment:
 ### 12.2 WASM Security Model
 
 **Strengths:**
+
 - ✅ **Memory Safety** - Bounds checking prevents buffer overflows
 - ✅ **Capability-Based** - Explicit permissions required
 - ✅ **No Direct Syscalls** - All via WASI (controlled)
@@ -1503,50 +1565,53 @@ class PersistentEnvironment:
 - ✅ **Type Safety** - WebAssembly type system
 
 **Weaknesses:**
+
 - ⚠️ **Spectre/Meltdown** - CPU vulnerabilities (mitigated by runtime)
 - ⚠️ **WASI Implementation Bugs** - Runtime vulnerabilities
 - ⚠️ **Limited Filesystem** - May need host access for some operations
 
 **Mitigations:**
+
 ```python
 # WASM security configuration
 wasm_security = {
     "memory": {
         "max_pages": 2048,  # 128MB max
         "guard_pages": 1,  # Guard pages for overflow detection
-        "bounds_check": True  # Runtime bounds checking
+        "bounds_check": True,  # Runtime bounds checking
     },
     "capabilities": {
         "filesystem": {
             "read": ["/workspace/src"],  # Explicit read paths
             "write": ["/workspace/.sandbox/wasm/output"],  # Explicit write paths
-            "create": False  # No file creation outside allowed paths
+            "create": False,  # No file creation outside allowed paths
         },
         "network": {
             "allow": ["api.example.com:443"],  # Explicit allowlist
             "deny": ["*"],  # Default deny
-            "dns": ["8.8.8.8"]  # Trusted DNS only
+            "dns": ["8.8.8.8"],  # Trusted DNS only
         },
         "environment": {
             "read": ["PATH", "HOME"],  # Limited env vars
-            "write": []  # No env writes
+            "write": [],  # No env writes
         },
         "process": {
             "spawn": False,  # No subprocess spawning
-            "signal": ["SIGTERM"]  # Only termination signals
-        }
+            "signal": ["SIGTERM"],  # Only termination signals
+        },
     },
     "runtime": {
         "spectre_mitigation": True,  # Enable Spectre mitigations
         "stack_overflow_protection": True,  # Stack canaries
-        "control_flow_integrity": True  # CFI protection
-    }
+        "control_flow_integrity": True,  # CFI protection
+    },
 }
 ```
 
 ### 12.3 Container Security Model
 
 **Strengths:**
+
 - ✅ **Namespace Isolation** - Process, network, filesystem separation
 - ✅ **Resource Limits** - CPU, memory, I/O quotas
 - ✅ **Capability Dropping** - No CAP_SYS_ADMIN by default
@@ -1554,12 +1619,14 @@ wasm_security = {
 - ✅ **Read-Only Rootfs** - Immutable base image
 
 **Weaknesses:**
+
 - ⚠️ **Kernel Sharing** - Shared kernel attack surface
 - ⚠️ **Container Escapes** - CVE-2019-5736, CVE-2021-30465
 - ⚠️ **Volume Mounts** - Host filesystem access
 - ⚠️ **Network Namespace** - May allow host network access
 
 **Mitigations:**
+
 ```python
 # Container security hardening
 container_security = {
@@ -1569,49 +1636,48 @@ container_security = {
         "mount": True,  # Mount namespace
         "ipc": True,  # IPC namespace
         "uts": True,  # UTS namespace
-        "user": True  # User namespace (rootless)
+        "user": True,  # User namespace (rootless)
     },
     "capabilities": {
         "drop": ["ALL"],  # Drop all capabilities
-        "add": []  # No capabilities added
+        "add": [],  # No capabilities added
     },
     "seccomp": {
         "profile": "default.json",  # Seccomp profile
         "allow": ["read", "write", "open", "close", "stat"],  # Minimal syscalls
-        "deny": ["mount", "umount", "chroot", "ptrace"]  # Dangerous syscalls
+        "deny": ["mount", "umount", "chroot", "ptrace"],  # Dangerous syscalls
     },
     "apparmor": {
         "profile": "thegent-agent",  # AppArmor profile
-        "enforce": True
+        "enforce": True,
     },
     "selinux": {
         "type": "container_t",  # SELinux type
-        "enforce": True
+        "enforce": True,
     },
     "resources": {
         "memory": {"limit": "512m", "swap": "0"},  # No swap
         "cpu": {"quota": "200000", "period": "100000"},  # 2 CPUs max
         "pids": {"limit": 100},  # Max 100 processes
-        "devices": {"allow": [], "deny": ["*"]}  # No device access
+        "devices": {"allow": [], "deny": ["*"]},  # No device access
     },
     "filesystem": {
         "read_only": True,  # Read-only rootfs
         "tmpfs": ["/tmp", "/var/tmp"],  # Temporary filesystems
-        "volumes": {
-            "/workspace": {"source": ".", "read_only": False, "bind": True}
-        }
+        "volumes": {"/workspace": {"source": ".", "read_only": False, "bind": True}},
     },
     "network": {
         "mode": "none",  # No network
         "dns": [],  # No DNS
-        "ports": []  # No port mappings
-    }
+        "ports": [],  # No port mappings
+    },
 }
 ```
 
 ### 12.4 VM Security Model
 
 **Strengths:**
+
 - ✅ **Hardware Isolation** - Complete separation
 - ✅ **Separate Kernel** - No kernel sharing
 - ✅ **Encrypted Disks** - LUKS/dm-crypt
@@ -1619,12 +1685,14 @@ container_security = {
 - ✅ **TPM Support** - Hardware security module
 
 **Weaknesses:**
+
 - ⚠️ **Hypervisor Vulnerabilities** - CVE-2018-12126, CVE-2018-12127 (MDS)
 - ⚠️ **Side-Channel Attacks** - Spectre, Meltdown, MDS
 - ⚠️ **Resource Overhead** - Higher memory/CPU usage
 - ⚠️ **VM Escape** - CVE-2015-7504, CVE-2019-3016
 
 **Mitigations:**
+
 ```python
 # VM security hardening
 vm_security = {
@@ -1632,45 +1700,45 @@ vm_security = {
         "type": "kvm",  # KVM (hardware acceleration)
         "spectre_mitigation": True,  # Spectre mitigations
         "meltdown_mitigation": True,  # Meltdown mitigations
-        "mds_mitigation": True  # MDS mitigations
+        "mds_mitigation": True,  # MDS mitigations
     },
     "disk": {
         "encryption": "luks",  # LUKS encryption
         "key_management": "tpm",  # TPM key management
-        "secure_erase": True  # Secure erase on destroy
+        "secure_erase": True,  # Secure erase on destroy
     },
     "network": {
         "mode": "isolated",  # Isolated virtual network
         "firewall": True,  # VM-level firewall
-        "macvtap": False  # No macvtap (prevents host network access)
+        "macvtap": False,  # No macvtap (prevents host network access)
     },
     "memory": {
         "encryption": True,  # Memory encryption (AMD SEV, Intel TDX)
         "secure_boot": True,  # UEFI Secure Boot
-        "tpm": True  # TPM passthrough
+        "tpm": True,  # TPM passthrough
     },
     "devices": {
         "passthrough": False,  # No PCI passthrough
         "usb": False,  # No USB devices
-        "audio": False  # No audio devices
-    }
+        "audio": False,  # No audio devices
+    },
 }
 ```
 
 ### 12.5 Security Comparison Matrix
 
-| Security Feature | WASM | Container | VM |
-|------------------|------|-----------|-----|
-| **Memory Safety** | ✅ Yes | ⚠️ Partial | ⚠️ Partial |
-| **Kernel Isolation** | ✅ Yes | ❌ No (shared) | ✅ Yes (separate) |
-| **Hardware Isolation** | ❌ No | ❌ No | ✅ Yes |
-| **Capability-Based** | ✅ Yes | ⚠️ Partial | ❌ No |
-| **Resource Limits** | ✅ Yes | ✅ Yes | ✅ Yes |
-| **Network Isolation** | ✅ Yes | ✅ Yes | ✅ Yes |
-| **Filesystem Isolation** | ✅ Yes | ✅ Yes | ✅ Yes |
-| **Process Isolation** | ✅ Yes | ✅ Yes | ✅ Yes |
-| **Spectre/Meltdown Protection** | ⚠️ Runtime-dependent | ❌ No | ⚠️ Hypervisor-dependent |
-| **Attack Surface** | Small | Medium | Large (hypervisor) |
+| Security Feature                | WASM                 | Container      | VM                      |
+| ------------------------------- | -------------------- | -------------- | ----------------------- |
+| **Memory Safety**               | ✅ Yes               | ⚠️ Partial     | ⚠️ Partial              |
+| **Kernel Isolation**            | ✅ Yes               | ❌ No (shared) | ✅ Yes (separate)       |
+| **Hardware Isolation**          | ❌ No                | ❌ No          | ✅ Yes                  |
+| **Capability-Based**            | ✅ Yes               | ⚠️ Partial     | ❌ No                   |
+| **Resource Limits**             | ✅ Yes               | ✅ Yes         | ✅ Yes                  |
+| **Network Isolation**           | ✅ Yes               | ✅ Yes         | ✅ Yes                  |
+| **Filesystem Isolation**        | ✅ Yes               | ✅ Yes         | ✅ Yes                  |
+| **Process Isolation**           | ✅ Yes               | ✅ Yes         | ✅ Yes                  |
+| **Spectre/Meltdown Protection** | ⚠️ Runtime-dependent | ❌ No          | ⚠️ Hypervisor-dependent |
+| **Attack Surface**              | Small                | Medium         | Large (hypervisor)      |
 
 ### 12.6 Mandatory Security Controls (NVIDIA Guidance)
 
@@ -1718,6 +1786,7 @@ Based on research from `docs/research/GOVERNANCE_POLICY_AUDIT_RESEARCH.md`:
 ### Phase 1: WASM Foundation (Week 1-2, ~40 hours)
 
 **Goals:**
+
 - Establish WASM as primary lightweight isolation tier
 - Implement capability-based security model
 - Create per-project WASM environment management
@@ -1725,6 +1794,7 @@ Based on research from `docs/research/GOVERNANCE_POLICY_AUDIT_RESEARCH.md`:
 **Tasks:**
 
 #### Week 1: Core WASM Infrastructure
+
 - [ ] **Day 1-2: Runtime Integration**
   - [ ] Install and test wasmtime, wasmer, wazero
   - [ ] Create `WasmSandbox` class with runtime abstraction
@@ -1747,6 +1817,7 @@ Based on research from `docs/research/GOVERNANCE_POLICY_AUDIT_RESEARCH.md`:
   - [ ] **Deliverable:** `src/thegent/infra/wasm_environment.py`
 
 #### Week 2: Router & Integration
+
 - [ ] **Day 1-2: Sandbox Router**
   - [ ] Create `SandboxRouter` class
   - [ ] Implement tier selection logic
@@ -1769,6 +1840,7 @@ Based on research from `docs/research/GOVERNANCE_POLICY_AUDIT_RESEARCH.md`:
   - [ ] **Deliverable:** Test suite + docs
 
 **Success Criteria:**
+
 - ✅ WASM sandbox executes Python/Node.js code successfully
 - ✅ Capability system restricts filesystem/network access
 - ✅ Router selects WASM tier automatically
@@ -1778,6 +1850,7 @@ Based on research from `docs/research/GOVERNANCE_POLICY_AUDIT_RESEARCH.md`:
 ### Phase 2: Container Support (Week 3-4, ~40 hours)
 
 **Goals:**
+
 - Add Podman as primary container runtime
 - Support containerd for Kubernetes integration
 - Implement container image management
@@ -1785,6 +1858,7 @@ Based on research from `docs/research/GOVERNANCE_POLICY_AUDIT_RESEARCH.md`:
 **Tasks:**
 
 #### Week 3: Podman Integration
+
 - [ ] **Day 1-2: Podman Setup**
   - [ ] Verify Podman installation (Linux/macOS/Windows)
   - [ ] Test rootless mode configuration
@@ -1807,6 +1881,7 @@ Based on research from `docs/research/GOVERNANCE_POLICY_AUDIT_RESEARCH.md`:
   - [ ] **Deliverable:** `src/thegent/infra/container_images.py`
 
 #### Week 4: Alternative Runtimes & Polish
+
 - [ ] **Day 1-2: containerd Integration**
   - [ ] Create `ContainerdSandbox` class
   - [ ] Implement CRI (Container Runtime Interface) client
@@ -1829,6 +1904,7 @@ Based on research from `docs/research/GOVERNANCE_POLICY_AUDIT_RESEARCH.md`:
   - [ ] **Deliverable:** Updated router + tests
 
 **Success Criteria:**
+
 - ✅ Podman executes containers in rootless mode
 - ✅ Containers have proper namespace isolation
 - ✅ Resource limits enforced (CPU, memory)
@@ -1838,6 +1914,7 @@ Based on research from `docs/research/GOVERNANCE_POLICY_AUDIT_RESEARCH.md`:
 ### Phase 3: VM Support (Week 5-6, ~40 hours)
 
 **Goals:**
+
 - Add QEMU/KVM for Linux VM support
 - Add Hyper-V for Windows VM support
 - Implement Firecracker microVM for speed
@@ -1845,6 +1922,7 @@ Based on research from `docs/research/GOVERNANCE_POLICY_AUDIT_RESEARCH.md`:
 **Tasks:**
 
 #### Week 5: QEMU/KVM Integration
+
 - [ ] **Day 1-2: QEMU Setup**
   - [ ] Verify KVM availability (hardware virtualization)
   - [ ] Create base VM image builder
@@ -1867,6 +1945,7 @@ Based on research from `docs/research/GOVERNANCE_POLICY_AUDIT_RESEARCH.md`:
   - [ ] **Deliverable:** `src/thegent/infra/firecracker_sandbox.py`
 
 #### Week 6: Windows & Polish
+
 - [ ] **Day 1-2: Hyper-V Integration**
   - [ ] Verify Hyper-V availability (Windows)
   - [ ] Create `HyperVSandbox` class
@@ -1889,6 +1968,7 @@ Based on research from `docs/research/GOVERNANCE_POLICY_AUDIT_RESEARCH.md`:
   - [ ] **Deliverable:** Updated router + tests
 
 **Success Criteria:**
+
 - ✅ QEMU/KVM creates and executes VMs successfully
 - ✅ Firecracker achieves <125ms startup
 - ✅ Hyper-V works on Windows hosts
@@ -1898,6 +1978,7 @@ Based on research from `docs/research/GOVERNANCE_POLICY_AUDIT_RESEARCH.md`:
 ### Phase 4: Native Fallback (Week 7, ~20 hours)
 
 **Goals:**
+
 - Implement safe native OS execution path
 - Add environment filtering and CWD restrictions
 - Create seamless fallback mechanism
@@ -1933,6 +2014,7 @@ Based on research from `docs/research/GOVERNANCE_POLICY_AUDIT_RESEARCH.md`:
   - [ ] **Deliverable:** Test suite
 
 **Success Criteria:**
+
 - ✅ Native execution works when sandboxes unavailable
 - ✅ Environment filtering prevents PATH manipulation
 - ✅ CWD restricted to project root
@@ -1942,6 +2024,7 @@ Based on research from `docs/research/GOVERNANCE_POLICY_AUDIT_RESEARCH.md`:
 ### Phase 5: Polish & Optimization (Week 8, ~20 hours)
 
 **Goals:**
+
 - Performance optimization
 - Comprehensive error handling
 - Monitoring and observability
@@ -1978,6 +2061,7 @@ Based on research from `docs/research/GOVERNANCE_POLICY_AUDIT_RESEARCH.md`:
   - [ ] **Deliverable:** Complete documentation + tests
 
 **Success Criteria:**
+
 - ✅ <10ms WASM startup (target achieved)
 - ✅ <300ms container startup (target achieved)
 - ✅ <125ms Firecracker startup (target achieved)
@@ -2070,8 +2154,10 @@ thegent run "task" --sandbox=auto
 from enum import Enum
 from typing import Optional
 
+
 class SandboxErrorType(Enum):
     """Sandbox execution error types."""
+
     TIMEOUT = "timeout"  # Execution exceeded time limit
     RESOURCE_EXHAUSTION = "resource_exhaustion"  # Memory/CPU/disk limits exceeded
     RUNTIME_UNAVAILABLE = "runtime_unavailable"  # WASM/container/VM runtime not available
@@ -2082,8 +2168,10 @@ class SandboxErrorType(Enum):
     RUNTIME_ERROR = "runtime_error"  # Runtime internal error
     UNKNOWN = "unknown"  # Unknown error
 
+
 class SandboxError(Exception):
     """Base exception for sandbox errors."""
+
     def __init__(
         self,
         error_type: SandboxErrorType,
@@ -2091,7 +2179,7 @@ class SandboxError(Exception):
         tier: str,
         runtime: Optional[str] = None,
         recoverable: bool = True,
-        retry_after: Optional[int] = None
+        retry_after: Optional[int] = None,
     ):
         self.error_type = error_type
         self.tier = tier
@@ -2110,6 +2198,7 @@ import time
 import random
 from tenacity import retry, stop_after_attempt, wait_exponential, retry_if_exception_type
 
+
 class SandboxExecutor:
     """Sandbox executor with retry logic."""
 
@@ -2117,7 +2206,7 @@ class SandboxExecutor:
         stop=stop_after_attempt(3),
         wait=wait_exponential(multiplier=1, min=1, max=10),
         retry=retry_if_exception_type((SandboxError, TimeoutError)),
-        reraise=True
+        reraise=True,
     )
     def execute_with_retry(self, command: list[str], tier: str) -> dict:
         """Execute command with automatic retry on transient errors."""
@@ -2134,8 +2223,8 @@ class SandboxExecutor:
                     "error_type": e.error_type.value,
                     "tier": tier,
                     "recoverable": e.recoverable,
-                    "retry_after": e.retry_after
-                }
+                    "retry_after": e.retry_after,
+                },
             )
 
             if e.retry_after:
@@ -2160,20 +2249,13 @@ from pybreaker import CircuitBreaker
 wasm_breaker = CircuitBreaker(
     fail_max=5,  # Open after 5 failures
     timeout_duration=60,  # Open for 60 seconds
-    expected_exception=SandboxError
+    expected_exception=SandboxError,
 )
 
-container_breaker = CircuitBreaker(
-    fail_max=3,
-    timeout_duration=120,
-    expected_exception=SandboxError
-)
+container_breaker = CircuitBreaker(fail_max=3, timeout_duration=120, expected_exception=SandboxError)
 
-vm_breaker = CircuitBreaker(
-    fail_max=2,
-    timeout_duration=300,
-    expected_exception=SandboxError
-)
+vm_breaker = CircuitBreaker(fail_max=2, timeout_duration=300, expected_exception=SandboxError)
+
 
 class SandboxRouter:
     """Sandbox router with circuit breakers."""
@@ -2281,56 +2363,40 @@ from prometheus_client import Counter, Histogram, Gauge
 
 # Sandbox execution metrics
 sandbox_executions_total = Counter(
-    "sandbox_executions_total",
-    "Total sandbox executions",
-    ["tier", "runtime", "status"]
+    "sandbox_executions_total", "Total sandbox executions", ["tier", "runtime", "status"]
 )
 
 sandbox_startup_time = Histogram(
     "sandbox_startup_time_seconds",
     "Sandbox startup time",
     ["tier", "runtime"],
-    buckets=[0.001, 0.005, 0.01, 0.05, 0.1, 0.5, 1.0, 5.0, 10.0]
+    buckets=[0.001, 0.005, 0.01, 0.05, 0.1, 0.5, 1.0, 5.0, 10.0],
 )
 
 sandbox_execution_time = Histogram(
     "sandbox_execution_time_seconds",
     "Sandbox execution time",
     ["tier", "runtime"],
-    buckets=[0.1, 0.5, 1.0, 5.0, 10.0, 30.0, 60.0, 300.0]
+    buckets=[0.1, 0.5, 1.0, 5.0, 10.0, 30.0, 60.0, 300.0],
 )
 
 sandbox_overhead = Histogram(
     "sandbox_overhead_percent",
     "Sandbox overhead percentage",
     ["tier", "runtime"],
-    buckets=[0, 1, 2, 5, 10, 15, 20, 30, 50]
+    buckets=[0, 1, 2, 5, 10, 15, 20, 30, 50],
 )
 
-sandbox_memory_usage = Gauge(
-    "sandbox_memory_usage_bytes",
-    "Sandbox memory usage",
-    ["tier", "runtime", "sandbox_id"]
-)
+sandbox_memory_usage = Gauge("sandbox_memory_usage_bytes", "Sandbox memory usage", ["tier", "runtime", "sandbox_id"])
 
-sandbox_cpu_usage = Gauge(
-    "sandbox_cpu_usage_percent",
-    "Sandbox CPU usage",
-    ["tier", "runtime", "sandbox_id"]
-)
+sandbox_cpu_usage = Gauge("sandbox_cpu_usage_percent", "Sandbox CPU usage", ["tier", "runtime", "sandbox_id"])
 
 # Circuit breaker metrics
 circuit_breaker_state = Gauge(
-    "circuit_breaker_state",
-    "Circuit breaker state (0=closed, 1=open, 2=half-open)",
-    ["tier", "runtime"]
+    "circuit_breaker_state", "Circuit breaker state (0=closed, 1=open, 2=half-open)", ["tier", "runtime"]
 )
 
-circuit_breaker_failures = Counter(
-    "circuit_breaker_failures_total",
-    "Circuit breaker failures",
-    ["tier", "runtime"]
-)
+circuit_breaker_failures = Counter("circuit_breaker_failures_total", "Circuit breaker failures", ["tier", "runtime"])
 ```
 
 ### 17.2 Structured Logging
@@ -2341,6 +2407,7 @@ circuit_breaker_failures = Counter(
 import structlog
 
 logger = structlog.get_logger()
+
 
 class SandboxExecutor:
     """Sandbox executor with structured logging."""
@@ -2355,7 +2422,7 @@ class SandboxExecutor:
             tier=tier,
             runtime=self.runtime,
             command=command,
-            project_path=str(self.project_path)
+            project_path=str(self.project_path),
         )
 
         start_time = time.time()
@@ -2372,7 +2439,7 @@ class SandboxExecutor:
                 runtime=self.runtime,
                 duration_ms=duration * 1000,
                 exit_code=result.get("exit_code"),
-                status="success"
+                status="success",
             )
 
             return result
@@ -2389,7 +2456,7 @@ class SandboxExecutor:
                 error_type=e.error_type.value,
                 error_message=str(e),
                 recoverable=e.recoverable,
-                status="failed"
+                status="failed",
             )
 
             raise
@@ -2406,6 +2473,7 @@ from opentelemetry.sdk.trace.export import BatchSpanProcessor
 from opentelemetry.exporter.otlp.proto.grpc.trace_exporter import OTLPSpanExporter
 
 tracer = trace.get_tracer(__name__)
+
 
 class SandboxExecutor:
     """Sandbox executor with distributed tracing."""
@@ -2463,7 +2531,7 @@ class SandboxHealth:
             "status": "healthy",
             "runtime_available": False,
             "last_check": time.time(),
-            "issues": []
+            "issues": [],
         }
 
         # Check runtime availability
@@ -2500,9 +2568,9 @@ class SandboxHealth:
                 "wasm": self.check_health("wasm"),
                 "container": self.check_health("container"),
                 "vm": self.check_health("vm"),
-                "native": {"status": "always_available"}
+                "native": {"status": "always_available"},
             },
-            "timestamp": time.time()
+            "timestamp": time.time(),
         }
 ```
 
@@ -2633,6 +2701,7 @@ class SandboxHealth:
 **Use Case:** Generate Python code from natural language prompt
 
 **Configuration:**
+
 ```json
 {
   "default_tier": "wasm",
@@ -2656,11 +2725,13 @@ class SandboxHealth:
 ```
 
 **Execution:**
+
 ```bash
 thegent run "Generate a Python function to calculate fibonacci" --sandbox=wasm
 ```
 
 **Result:**
+
 - ✅ <10ms startup
 - ✅ <5% overhead
 - ✅ Isolated from host filesystem
@@ -2671,6 +2742,7 @@ thegent run "Generate a Python function to calculate fibonacci" --sandbox=wasm
 **Use Case:** Run full test suite in isolated environment
 
 **Configuration:**
+
 ```json
 {
   "default_tier": "container",
@@ -2695,11 +2767,13 @@ thegent run "Generate a Python function to calculate fibonacci" --sandbox=wasm
 ```
 
 **Execution:**
+
 ```bash
 thegent run "Run pytest test suite" --sandbox=container
 ```
 
 **Result:**
+
 - ✅ 100-300ms startup
 - ✅ Full Python environment
 - ✅ Isolated dependencies
@@ -2710,6 +2784,7 @@ thegent run "Run pytest test suite" --sandbox=container
 **Use Case:** Execute untrusted code from external source
 
 **Configuration:**
+
 ```json
 {
   "default_tier": "vm",
@@ -2727,11 +2802,13 @@ thegent run "Run pytest test suite" --sandbox=container
 ```
 
 **Execution:**
+
 ```bash
 thegent run "Execute untrusted code" --sandbox=vm --risk-level=high
 ```
 
 **Result:**
+
 - ✅ 125ms startup (Firecracker)
 - ✅ Maximum isolation
 - ✅ Encrypted disk
@@ -2755,29 +2832,34 @@ thegent run "Execute untrusted code" --sandbox=vm --risk-level=high
 ## 21. References & Further Reading
 
 ### WASM/WASI
+
 - [WASI Preview 2 Specification](https://github.com/WebAssembly/WASI/blob/main/legacy/preview2/docs/wit/README.md)
 - [wasmtime Documentation](https://docs.wasmtime.dev/)
 - [wasmer Documentation](https://docs.wasmer.io/)
 - [wazero Documentation](https://wazero.io/)
 
 ### Containers
+
 - [Podman Documentation](https://docs.podman.io/)
 - [containerd Documentation](https://containerd.io/docs/)
 - [gVisor Documentation](https://gvisor.dev/docs/)
 - [Bubblewrap Documentation](https://github.com/containers/bubblewrap)
 
 ### VMs
+
 - [QEMU Documentation](https://www.qemu.org/docs/)
 - [Firecracker Documentation](https://firecracker-microvm.github.io/)
 - [Cloud-Hypervisor Documentation](https://cloud-hypervisor.org/)
 - [Hyper-V Documentation](https://docs.microsoft.com/en-us/virtualization/hyper-v-on-windows/)
 
 ### Security
+
 - [NVIDIA AI Security Best Practices](https://developer.nvidia.com/ai-security)
 - [OWASP Container Security](https://owasp.org/www-project-container-security/)
 - [CIS Docker Benchmark](https://www.cisecurity.org/benchmark/docker)
 
 ### Monitoring
+
 - [Prometheus Documentation](https://prometheus.io/docs/)
 - [OpenTelemetry Documentation](https://opentelemetry.io/docs/)
 - [Structured Logging Best Practices](https://www.structlog.org/en/stable/)

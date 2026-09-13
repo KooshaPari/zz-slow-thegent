@@ -11,6 +11,7 @@
 **Current State**: ❌ **NOT FULLY CONFIGURED**
 
 **What's Missing**:
+
 - ❌ Mermaid diagrams (architecture, flowcharts, sequence diagrams)
 - ❌ Tryable code playgrounds (Python, CLI, API)
 - ❌ VHS/Playwright GIF generation workflows
@@ -21,6 +22,7 @@
 - ❌ LLM-friendly documentation output
 
 **What Exists**:
+
 - ✅ Basic VitePress setup
 - ✅ DemoGif component (manual)
 - ✅ Callout component
@@ -36,35 +38,42 @@
 #### 1.1 Mermaid Diagrams
 
 **Install**:
+
 ```bash
 npm install vitepress-plugin-mermaid mermaid
 ```
 
 **Configure** (`docs/.vitepress/config.ts`):
-```typescript
-import { withMermaid } from 'vitepress-plugin-mermaid'
 
-export default withMermaid(defineConfig({
-  mermaid: {
-    theme: 'base',
-    themeVariables: {
-      primaryColor: '#42b883',
-      background: 'var(--vp-c-bg)',
-      primaryTextColor: 'var(--vp-c-text-1)',
-    }
-  }
-}))
+```typescript
+import { withMermaid } from "vitepress-plugin-mermaid";
+
+export default withMermaid(
+  defineConfig({
+    mermaid: {
+      theme: "base",
+      themeVariables: {
+        primaryColor: "#42b883",
+        background: "var(--vp-c-bg)",
+        primaryTextColor: "var(--vp-c-text-1)",
+      },
+    },
+  }),
+);
 ```
 
 **Usage**:
-```markdown
+
+````markdown
 ```mermaid
 graph TD
     A[Agent Request] --> B{Router}
     B -->|Fast| C[Lifecycle Loop]
     B -->|Complex| D[The Gent]
 ```
-```
+````
+
+````
 
 **Agent Workflow**: Auto-generate Mermaid from code structure
 
@@ -189,26 +198,31 @@ async function run() {
   color: var(--vp-c-danger);
 }
 </style>
-```
+````
 
 **Register** (`docs/.vitepress/theme/index.ts`):
+
 ```typescript
-import CodePlayground from './components/CodePlayground.vue'
+import CodePlayground from "./components/CodePlayground.vue";
 
 export default {
   extends: DefaultTheme,
   enhanceApp({ app }) {
-    app.component('CodePlayground', CodePlayground)
-  }
-}
+    app.component("CodePlayground", CodePlayground);
+  },
+};
 ```
 
 **Usage**:
+
 ```vue
-<CodePlayground lang="python" code="from thegent import Agent
+<CodePlayground
+  lang="python"
+  code="from thegent import Agent
 agent = Agent('codex')
 result = agent.run('Fix this bug')
-print(result)" />
+print(result)"
+/>
 ```
 
 ---
@@ -216,12 +230,14 @@ print(result)" />
 #### 1.3 VHS/Playwright GIF Generation
 
 **Install**:
+
 ```bash
 npm install -D @playwright/test vhs
 # Or: brew install vhs (macOS)
 ```
 
 **Create Workflow** (`scripts/generate-demo-gifs.sh`):
+
 ```bash
 #!/bin/bash
 # Auto-generate GIFs from demo scripts
@@ -265,7 +281,8 @@ echo "✅ Demo GIFs generated"
 #### 2.1 Docstring → API Docs Generator
 
 **Create Script** (`scripts/generate-api-docs.py`):
-```python
+
+````python
 #!/usr/bin/env python3
 """Generate API docs from Python docstrings"""
 
@@ -273,6 +290,7 @@ import ast
 import inspect
 from pathlib import Path
 from typing import Dict, List
+
 
 def extract_docstrings(module_path: Path) -> Dict:
     """Extract docstrings from Python module"""
@@ -283,10 +301,11 @@ def extract_docstrings(module_path: Path) -> Dict:
     for node in ast.walk(tree):
         if isinstance(node, (ast.FunctionDef, ast.ClassDef)):
             docs[node.name] = {
-                'docstring': ast.get_docstring(node),
-                'signature': inspect.signature(node) if hasattr(node, 'signature') else None,
+                "docstring": ast.get_docstring(node),
+                "signature": inspect.signature(node) if hasattr(node, "signature") else None,
             }
     return docs
+
 
 def generate_markdown(docs: Dict, module_name: str) -> str:
     """Generate Markdown API docs"""
@@ -294,26 +313,29 @@ def generate_markdown(docs: Dict, module_name: str) -> str:
 
     for name, info in docs.items():
         md += f"## {name}\n\n"
-        if info['docstring']:
+        if info["docstring"]:
             md += f"{info['docstring']}\n\n"
-        if info['signature']:
+        if info["signature"]:
             md += f"```python\n{name}{info['signature']}\n```\n\n"
 
     return md
 
+
 # Agent workflow: Run on code changes, update VitePress pages
-```
+````
 
 #### 2.2 Architecture → Diagram Generator
 
 **Create Script** (`scripts/generate-architecture-diagrams.py`):
-```python
+
+````python
 #!/usr/bin/env python3
 """Generate Mermaid diagrams from code structure"""
 
 import ast
 from pathlib import Path
 from typing import Set, Dict
+
 
 def analyze_dependencies(module_path: Path) -> Dict[str, Set[str]]:
     """Analyze module dependencies"""
@@ -330,24 +352,27 @@ def analyze_dependencies(module_path: Path) -> Dict[str, Set[str]]:
 
     return {module_path.stem: imports}
 
+
 def generate_mermaid(deps: Dict[str, Set[str]]) -> str:
     """Generate Mermaid dependency graph"""
     mermaid = "```mermaid\ngraph TD\n"
 
     for module, imports in deps.items():
         for imp in imports:
-            if imp.startswith('thegent'):
+            if imp.startswith("thegent"):
                 mermaid += f"  {module} --> {imp.replace('.', '_')}\n"
 
     mermaid += "```\n"
     return mermaid
 
+
 # Agent workflow: Run on architecture changes, update diagrams
-```
+````
 
 #### 2.3 CLI → Interactive Examples Generator
 
 **Create Script** (`scripts/generate-cli-examples.py`):
+
 ```python
 #!/usr/bin/env python3
 """Generate interactive CLI examples from typer commands"""
@@ -355,16 +380,20 @@ def generate_mermaid(deps: Dict[str, Set[str]]) -> str:
 import inspect
 from thegent.cli import app  # Typer app
 
+
 def extract_commands(app) -> List[Dict]:
     """Extract commands from Typer app"""
     commands = []
     for command in app.registered_commands:
-        commands.append({
-            'name': command.name,
-            'help': command.help,
-            'params': [p.name for p in command.params],
-        })
+        commands.append(
+            {
+                "name": command.name,
+                "help": command.help,
+                "params": [p.name for p in command.params],
+            }
+        )
     return commands
+
 
 def generate_playgrounds(commands: List[Dict]) -> str:
     """Generate CodePlayground components"""
@@ -374,10 +403,11 @@ def generate_playgrounds(commands: List[Dict]) -> str:
         md += f"## {cmd['name']}\n\n"
         md += f"{cmd['help']}\n\n"
         md += f"<CodePlayground lang='bash' code='thegent {cmd['name']} "
-        md += " ".join(f"--{p} VALUE" for p in cmd['params'])
+        md += " ".join(f"--{p} VALUE" for p in cmd["params"])
         md += "' />\n\n"
 
     return md
+
 
 # Agent workflow: Run on CLI changes, update examples
 ```
@@ -385,13 +415,15 @@ def generate_playgrounds(commands: List[Dict]) -> str:
 #### 2.4 Auto-Generate Demo GIFs
 
 **Create Agent Workflow** (`scripts/agent-generate-demos.py`):
-```python
+
+````python
 #!/usr/bin/env python3
 """Agent workflow: Auto-generate demo GIFs from docs"""
 
 from pathlib import Path
 import subprocess
 import re
+
 
 def find_demo_scripts(docs_dir: Path) -> List[Path]:
     """Find demo scripts in documentation"""
@@ -401,10 +433,11 @@ def find_demo_scripts(docs_dir: Path) -> List[Path]:
         content = md_file.read_text()
 
         # Find code blocks marked as demos
-        if re.search(r'```(python|bash|sh).*demo', content, re.IGNORECASE):
+        if re.search(r"```(python|bash|sh).*demo", content, re.IGNORECASE):
             demos.append(md_file)
 
     return demos
+
 
 def generate_gif(script_path: Path, output_dir: Path):
     """Generate GIF from demo script"""
@@ -414,8 +447,9 @@ def generate_gif(script_path: Path, output_dir: Path):
     # Embed in original doc
     pass
 
+
 # Agent workflow: Run on doc changes, auto-generate GIFs
-```
+````
 
 ---
 
@@ -424,38 +458,46 @@ def generate_gif(script_path: Path, output_dir: Path):
 #### 3.1 Auto-Generate Sidebar
 
 **Install**:
+
 ```bash
 npm install vitepress-sidebar
 ```
 
 **Configure**:
-```typescript
-import { withSidebars } from 'vitepress-sidebar'
 
-export default withSidebars(defineConfig({
-  sidebar: {
-    // Auto-generated from directory structure
-  }
-}))
+```typescript
+import { withSidebars } from "vitepress-sidebar";
+
+export default withSidebars(
+  defineConfig({
+    sidebar: {
+      // Auto-generated from directory structure
+    },
+  }),
+);
 ```
 
 #### 3.2 LLM-Friendly Output
 
 **Install**:
+
 ```bash
 npm install vitepress-plugin-llms
 ```
 
 **Configure**:
-```typescript
-import { withLLMs } from 'vitepress-plugin-llms'
 
-export default withLLMs(defineConfig({
-  llms: {
-    outputDir: '.llms',
-    includeCode: true,
-  }
-}))
+```typescript
+import { withLLMs } from "vitepress-plugin-llms";
+
+export default withLLMs(
+  defineConfig({
+    llms: {
+      outputDir: ".llms",
+      includeCode: true,
+    },
+  }),
+);
 ```
 
 ---
@@ -483,80 +525,80 @@ export default withLLMs(defineConfig({
 ### Updated `docs/.vitepress/config.ts`
 
 ```typescript
-import { defineConfig } from 'vitepress'
-import { withMermaid } from 'vitepress-plugin-mermaid'
-import { withSidebars } from 'vitepress-sidebar'
-import { withLLMs } from 'vitepress-plugin-llms'
-import { crossProjectLinks } from './plugins/cross-project-links'
-import CodePlayground from './theme/components/CodePlayground.vue'
+import { defineConfig } from "vitepress";
+import { withMermaid } from "vitepress-plugin-mermaid";
+import { withSidebars } from "vitepress-sidebar";
+import { withLLMs } from "vitepress-plugin-llms";
+import { crossProjectLinks } from "./plugins/cross-project-links";
+import CodePlayground from "./theme/components/CodePlayground.vue";
 
 export default withMermaid(
   withSidebars(
     withLLMs(
       defineConfig({
-        title: 'thegent',
-        description: 'AI Agent Governance & MCP Server',
+        title: "thegent",
+        description: "AI Agent Governance & MCP Server",
         appearance: true,
         lastUpdated: true,
 
         // Mermaid config
         mermaid: {
-          theme: 'base',
+          theme: "base",
           themeVariables: {
-            primaryColor: '#42b883',
-            background: 'var(--vp-c-bg)',
-          }
+            primaryColor: "#42b883",
+            background: "var(--vp-c-bg)",
+          },
         },
 
         // LLM-friendly output
         llms: {
-          outputDir: '.llms',
+          outputDir: ".llms",
           includeCode: true,
         },
 
         markdown: {
           config: (md) => {
-            md.use(crossProjectLinks)
-          }
+            md.use(crossProjectLinks);
+          },
         },
 
         themeConfig: {
           nav: [
-            { text: 'Home', link: '/' },
-            { text: 'API', link: '/api/' },
-            { text: 'Guides', link: '/guides/' },
-            { text: 'Reference', link: '/reference/' },
+            { text: "Home", link: "/" },
+            { text: "API", link: "/api/" },
+            { text: "Guides", link: "/guides/" },
+            { text: "Reference", link: "/reference/" },
           ],
-          search: { provider: 'local' },
-          outline: 'deep',
+          search: { provider: "local" },
+          outline: "deep",
         },
 
         build: {
-          outDir: '../docs-dist',
+          outDir: "../docs-dist",
         },
-      })
-    )
-  )
-)
+      }),
+    ),
+  ),
+);
 ```
 
 ### Updated `docs/.vitepress/theme/index.ts`
 
 ```typescript
-import DefaultTheme from 'vitepress/theme'
-import Callout from './components/Callout.vue'
-import DemoGif from './components/DemoGif.vue'
-import CodePlayground from './components/CodePlayground.vue'
-import './custom.css'
+import DefaultTheme from "vitepress/theme";
+import Callout from "./components/Callout.vue";
+import DemoGif from "./components/DemoGif.vue";
+import CodePlayground from "./components/CodePlayground.vue";
+import "./custom.css";
 
 export default {
   extends: DefaultTheme,
   enhanceApp({ app }) {
-    app.component('Callout', Callout)
-    app.component('DemoGif', DemoGif)
-    app.component('CodePlayground', CodePlayground)
-  }
-}
+    app.component("Callout", Callout);
+    app.component("DemoGif", DemoGif);
+    app.component("CodePlayground", CodePlayground);
+  },
+};
 ```
 
 ---
@@ -567,6 +609,7 @@ export default {
 
 **Trigger**: On code/doc changes
 **Steps**:
+
 1. Extract docstrings → API docs
 2. Analyze code structure → Architecture diagrams
 3. Extract CLI commands → Interactive examples
@@ -575,6 +618,7 @@ export default {
 6. Rebuild site
 
 **Implementation** (`scripts/agent-populate-vitepress.py`):
+
 ```python
 #!/usr/bin/env python3
 """Agent workflow: Auto-populate VitePress from code/docs"""
@@ -582,26 +626,28 @@ export default {
 from pathlib import Path
 import subprocess
 
+
 def main():
-    docs_dir = Path('docs')
-    vitepress_dir = docs_dir / '.vitepress'
+    docs_dir = Path("docs")
+    vitepress_dir = docs_dir / ".vitepress"
 
     # 1. Generate API docs
-    subprocess.run(['python', 'scripts/generate-api-docs.py'])
+    subprocess.run(["python", "scripts/generate-api-docs.py"])
 
     # 2. Generate architecture diagrams
-    subprocess.run(['python', 'scripts/generate-architecture-diagrams.py'])
+    subprocess.run(["python", "scripts/generate-architecture-diagrams.py"])
 
     # 3. Generate CLI examples
-    subprocess.run(['python', 'scripts/generate-cli-examples.py'])
+    subprocess.run(["python", "scripts/generate-cli-examples.py"])
 
     # 4. Generate demo GIFs
-    subprocess.run(['bash', 'scripts/generate-demo-gifs.sh'])
+    subprocess.run(["bash", "scripts/generate-demo-gifs.sh"])
 
     # 5. Rebuild VitePress
-    subprocess.run(['npm', 'run', 'docs:build'])
+    subprocess.run(["npm", "run", "docs:build"])
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     main()
 ```
 
@@ -609,19 +655,19 @@ if __name__ == '__main__':
 
 ## Next Actions (WORK_STREAM IDs)
 
-| ID | Action | Priority | Depends |
-|----|--------|----------|---------|
-| `vitepress-mermaid-setup` | Install and configure Mermaid plugin | P1 | - |
-| `vitepress-code-playground` | Create CodePlayground component | P1 | - |
-| `vitepress-vhs-setup` | Set up VHS for terminal recordings | P1 | - |
-| `vitepress-playwright-setup` | Set up Playwright for browser recordings | P1 | - |
-| `vitepress-api-docs-generator` | Auto-generate API docs from docstrings | P1 | vitepress-mermaid-setup |
-| `vitepress-architecture-generator` | Auto-generate architecture diagrams | P1 | vitepress-mermaid-setup |
-| `vitepress-cli-examples-generator` | Auto-generate CLI examples | P1 | vitepress-code-playground |
-| `vitepress-demo-gif-generator` | Auto-generate demo GIFs | P1 | vitepress-vhs-setup |
-| `vitepress-auto-sidebar` | Auto-generate sidebar from structure | P2 | - |
-| `vitepress-llm-output` | Generate LLM-friendly documentation | P2 | - |
-| `vitepress-agent-workflow` | Create agent workflow for auto-population | P1 | All above |
+| ID                                 | Action                                    | Priority | Depends                   |
+| ---------------------------------- | ----------------------------------------- | -------- | ------------------------- |
+| `vitepress-mermaid-setup`          | Install and configure Mermaid plugin      | P1       | -                         |
+| `vitepress-code-playground`        | Create CodePlayground component           | P1       | -                         |
+| `vitepress-vhs-setup`              | Set up VHS for terminal recordings        | P1       | -                         |
+| `vitepress-playwright-setup`       | Set up Playwright for browser recordings  | P1       | -                         |
+| `vitepress-api-docs-generator`     | Auto-generate API docs from docstrings    | P1       | vitepress-mermaid-setup   |
+| `vitepress-architecture-generator` | Auto-generate architecture diagrams       | P1       | vitepress-mermaid-setup   |
+| `vitepress-cli-examples-generator` | Auto-generate CLI examples                | P1       | vitepress-code-playground |
+| `vitepress-demo-gif-generator`     | Auto-generate demo GIFs                   | P1       | vitepress-vhs-setup       |
+| `vitepress-auto-sidebar`           | Auto-generate sidebar from structure      | P2       | -                         |
+| `vitepress-llm-output`             | Generate LLM-friendly documentation       | P2       | -                         |
+| `vitepress-agent-workflow`         | Create agent workflow for auto-population | P1       | All above                 |
 
 **See Also**: [WORK_STREAM.md](../reference/WORK_STREAM.md) for full backlog
 
@@ -638,13 +684,12 @@ if __name__ == '__main__':
 
 **Status**: ✅ **IMPLEMENTATION COMPLETE** - All phases implemented and integrated
 
-
 ---
+
 ## See also
 
 - [WORK_STREAM.md](../reference/WORK_STREAM.md) — canonical backlog
 - [00-MASTER-INDEX.md](../plans/00-MASTER-INDEX.md) — plan index
-
 
 ---
 
@@ -654,15 +699,18 @@ if __name__ == '__main__':
 **Extended by:** Claude Code
 
 ### Changes Made
+
 1. Added practical implementation patterns
 2. Added configuration examples
 3. Enhanced cross-references to related docs
 
 ### Cross-References Added
+
 - Related research and implementation guides
 - WORK_STREAM.md for tracking
 
 ### Practical Additions
+
 - Implementation templates
 - Configuration examples
 - Best practices

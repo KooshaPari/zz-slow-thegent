@@ -1,6 +1,11 @@
 """Stub module for thegent.integrations.reliability_score_targets."""
 
-__all__ = ["ReliabilityInputs", "ReliabilityTargets", "classify_reliability", "compute_reliability_score"]
+__all__ = [
+    "ReliabilityInputs",
+    "ReliabilityTargets",
+    "classify_reliability",
+    "compute_reliability_score",
+]
 
 
 class ReliabilityInputs:

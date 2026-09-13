@@ -7,18 +7,19 @@
 > **WORK_STREAM ID:** phase15-enterprise-compliance
 
 ## 1. Objective
+
 Verify that enterprise features (egress, ledger, redaction) meet strict security and auditability standards.
 
 ## 2. Test Cases
 
-| ID | Category | Description | Success Criteria |
-|----|----------|-------------|------------------|
-| EC-001 | Egress | Emit a "High Risk" event. | Event pushed to mock SIEM endpoint within 5s. |
-| EC-002 | Ledger | Add artifact to ledger and verify hash chain. | Chain integrity check passes; tampering detected. |
-| EC-003 | Redaction | Run support mode with a session containing an API key. | Output contains `[REDACTED]` instead of the key. |
-| EC-004 | Compliance| Export SOC 2 evidence bundle. | Bundle contains signed run history and policy logs. |
-| EC-005 | Plugin | Attempt to register an unsigned plugin contract. | Registration rejected. |
-| EC-006 | Forensic | Replay an incident from the ledger. | Replay exactly matches original execution trace. |
+| ID     | Category   | Description                                            | Success Criteria                                    |
+| ------ | ---------- | ------------------------------------------------------ | --------------------------------------------------- |
+| EC-001 | Egress     | Emit a "High Risk" event.                              | Event pushed to mock SIEM endpoint within 5s.       |
+| EC-002 | Ledger     | Add artifact to ledger and verify hash chain.          | Chain integrity check passes; tampering detected.   |
+| EC-003 | Redaction  | Run support mode with a session containing an API key. | Output contains `[REDACTED]` instead of the key.    |
+| EC-004 | Compliance | Export SOC 2 evidence bundle.                          | Bundle contains signed run history and policy logs. |
+| EC-005 | Plugin     | Attempt to register an unsigned plugin contract.       | Registration rejected.                              |
+| EC-006 | Forensic   | Replay an incident from the ledger.                    | Replay exactly matches original execution trace.    |
 
 ## 3. Test Implementation
 
@@ -34,13 +35,16 @@ from thegent.governance.compliance import ComplianceReporter
 from thegent.governance.plugins import PluginRegistry
 from thegent.governance.forensics import IncidentReplayer
 
+
 @pytest.fixture
 def siem_exporter():
     return SIEMExporter(endpoint="http://mock-siem:8080/events")
 
+
 @pytest.fixture
 def ledger():
     return Ledger()
+
 
 @pytest.fixture
 def redactor():
@@ -60,7 +64,7 @@ def test_ec001_siem_egress(siem_exporter):
         "type": "high_risk",
         "severity": "critical",
         "session_id": "session-123",
-        "timestamp": datetime.now(UTC).isoformat()
+        "timestamp": datetime.now(UTC).isoformat(),
     }
 
     start_time = time.time()
@@ -120,10 +124,7 @@ def test_ec004_soc2_evidence_bundle():
     from thegent.governance.compliance import ComplianceReporter
 
     reporter = ComplianceReporter(profile="SOC2")
-    bundle = reporter.generate_evidence_bundle(
-        start_date="2026-01-01",
-        end_date="2026-02-19"
-    )
+    bundle = reporter.generate_evidence_bundle(start_date="2026-01-01", end_date="2026-02-19")
 
     # Verify bundle contents
     assert "run_history" in bundle
@@ -146,7 +147,7 @@ def test_ec005_unsigned_plugin_rejection():
     unsigned_contract = {
         "name": "malicious-plugin",
         "version": "1.0.0",
-        "actions": ["execute_code"]
+        "actions": ["execute_code"],
         # Missing: signature, certificate
     }
 
@@ -169,8 +170,8 @@ def test_ec006_incident_replay(ledger):
         "session_id": "incident-123",
         "actions": [
             {"type": "model_call", "model": "claude-sonnet", "input": "test"},
-            {"type": "file_write", "path": "/tmp/test.txt", "content": "data"}
-        ]
+            {"type": "file_write", "path": "/tmp/test.txt", "content": "data"},
+        ],
     }
 
     ledger.add({"type": "incident", "trace": original_trace})
@@ -195,11 +196,11 @@ def test_ec006_incident_replay(ledger):
 - [ ] All tests passing (pending implementation)
 
 ---
+
 ## See also
 
 - [WORK_STREAM.md](../reference/WORK_STREAM.md) — canonical backlog
 - [00-MASTER-INDEX.md](../plans/00-MASTER-INDEX.md) — plan index
-
 
 ---
 
@@ -209,14 +210,17 @@ def test_ec006_incident_replay(ledger):
 **Extended by:** Claude Code
 
 ### Changes Made
+
 1. Added planning patterns
 2. Added implementation roadmap
 3. Enhanced cross-references
 
 ### Cross-References Added
+
 - WORK_STREAM.md
 - Implementation guides
 
 ### Practical Additions
+
 - Planning templates
 - Roadmap configurations

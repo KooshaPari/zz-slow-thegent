@@ -7,15 +7,18 @@ import argparse
 import datetime as dt
 import json
 import subprocess
-from pathlib import Path
-
 import tomllib
+from pathlib import Path
 
 
 def _parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--repo-root", type=Path, default=Path(__file__).resolve().parents[1])
-    parser.add_argument("--boundary-config", type=Path, default=Path("config/thegent_core_boundary.toml"))
+    parser.add_argument(
+        "--boundary-config",
+        type=Path,
+        default=Path("config/thegent_core_boundary.toml"),
+    )
     parser.add_argument("--days", type=int, default=3)
     parser.add_argument("--end-date", type=str, default=dt.datetime.now(dt.UTC).date().isoformat())
     parser.add_argument("--json-out", type=Path, required=True)
@@ -126,7 +129,10 @@ def _build_payload(*, generated_at: str, dates: list[dt.date], snapshots: list[d
 
 
 def _render_md(
-    report_date: str, artifact_json_path: str, snapshots: list[dict[str, object]], trend: dict[str, object]
+    report_date: str,
+    artifact_json_path: str,
+    snapshots: list[dict[str, object]],
+    trend: dict[str, object],
 ) -> str:
     lines = [
         f"# WL-120/WL-136 LOC Trend Evidence ({report_date})",
@@ -207,8 +213,14 @@ def main() -> int:
 
     print(f"Wrote JSON artifact: {args.json_out}")
     print(f"Wrote Markdown artifact: {args.md_out}")
-    print("Total LOC trend:", " -> ".join(str(v) for v in payload["trend"]["total_loc_values"]))
-    print("Core boundary trend:", " -> ".join(str(v) for v in payload["trend"]["core_boundary_loc_values"]))
+    print(
+        "Total LOC trend:",
+        " -> ".join(str(v) for v in payload["trend"]["total_loc_values"]),
+    )
+    print(
+        "Core boundary trend:",
+        " -> ".join(str(v) for v in payload["trend"]["core_boundary_loc_values"]),
+    )
     return 0
 
 

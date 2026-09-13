@@ -1,4 +1,4 @@
-from typing import Any, Sequence
+from collections.abc import Sequence
 
 def extract(
     query: str,

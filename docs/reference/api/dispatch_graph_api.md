@@ -14,7 +14,7 @@ Resolves an OperationEnvelopeV2 to a specific execution path.
 
 ### Methods
 
-#### DispatchResolver.__init__
+#### DispatchResolver.**init**
 
 ```python
 __init__(self: Any, registry: Any)

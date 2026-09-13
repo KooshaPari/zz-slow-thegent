@@ -8,9 +8,11 @@
 ---
 
 ## Part 1: Core Performance Runtime (The "Modern Unix" 2.0)
-*Consolidated and de-duplicated from previous manifests. These are the baseline requirements.*
+
+_Consolidated and de-duplicated from previous manifests. These are the baseline requirements._
 
 ### 1.1 Fast Filesystem & Search
+
 1.  **ripgrep (rg)**: Standard for line search.
 2.  **fd**: Standard for file finding.
 3.  **eza**: Modern `ls`.
@@ -19,6 +21,7 @@
 6.  **zoxide**: Habit-aware `cd`.
 
 ### 1.2 Performance & System Monitoring
+
 7.  **bottom (btm)**: System monitor (Rust).
 8.  **procs**: Process explorer (Rust).
 9.  **hyperfine**: CLI benchmarking.
@@ -26,6 +29,7 @@
 11. **bandwhich**: Network utilization (Rust).
 
 ### 1.3 Interactive Terminal QOL
+
 12. **zellij**: Terminal multiplexer (Rust).
 13. **starship**: Cross-shell prompt.
 14. **bat**: Syntax-aware `cat`.
@@ -36,9 +40,11 @@
 ---
 
 ## Part 2: The Next 100: Bleeding Edge & AX-Focused Items
-*Truly new, advanced items proposed for the 2026 agentic workstation.*
+
+_Truly new, advanced items proposed for the 2026 agentic workstation._
 
 ### 2.1 Zig Ecosystem & Systems Programming (15 items)
+
 18. **Zig Build System**: Replacing Make/CMake for cross-platform C/C++/Zig compilation.
 19. **zls**: High-performance Zig Language Server.
 20. **zap**: Blazing fast Zig web framework built on top of `facil.io`.
@@ -56,6 +62,7 @@
 32. **wasm-tools**: Comprehensive toolkit for manipulating WASM modules.
 
 ### 2.2 Kernel-Level, eBPF & Observability (15 items)
+
 33. **cilium/ebpf**: Pure Go library to read, modify, and load eBPF programs.
 34. **aya-rs**: A library to write eBPF programs in Rust (used for thegent network monitoring).
 35. **bpftrace**: High-level tracing language for Linux eBPF.
@@ -73,6 +80,7 @@
 47. **ebpf-exporter**: Exposing custom eBPF metrics to the thegent TUI.
 
 ### 2.3 WASM-Based Isolation & Runtime (15 items)
+
 48. **wasmtime**: High-performance JIT for WASM (T3 isolation tier).
 49. **wasmer**: Universal WebAssembly runtime for L2 agent sandboxing.
 50. **extism**: Universal plugin system for agent tool expansion.
@@ -90,6 +98,7 @@
 62. **wasi-nn**: WASI interface for high-performance machine learning.
 
 ### 2.4 Hardware Acceleration & AI Infra (15 items)
+
 63. **candle**: Minimalist ML framework for Rust (running LLMs locally at L1).
 64. **burn**: A flexible and high-performance deep learning framework in Rust.
 65. **tch-rs**: Rust bindings for the C++ API of PyTorch.
@@ -107,6 +116,7 @@
 77. **qdrant-rs**: High-performance vector database client.
 
 ### 2.5 Advanced Networking & Protocols (15 items)
+
 78. **quic-go**: QUIC implementation in Go for the multi-runtime bridge.
 79. **s2n-quic**: AWS's high-performance QUIC implementation in Rust.
 80. **hickory-dns**: A trustable, high-performance DNS resolver (Rust).
@@ -124,6 +134,7 @@
 92. **rdma-core-rs**: Remote Direct Memory Access for agent-to-agent SHM.
 
 ### 2.6 Hyper-Fast Databases & Vector Engines (15 items)
+
 93. **SurrealDB**: Multi-model database written in Rust (Agent Knowledge Base).
 94. **DuckDB**: Fast analytical database for agent log analysis.
 95. **Meilisearch**: Fast, relevant search for agent-facing documentation.
@@ -131,16 +142,17 @@
 97. **Sled**: High-performance embedded key-value store (Rust).
 98. **RocksDB-rs**: Bindings to the world's fastest KV store.
 99. **Lance**: A modern columnar data format for AI/Vectors.
-100. **Milvus**: Distributed vector database for massive agent memories.
-101. **Redb**: A high-performance, transactional, single-file database (Rust).
-102. **Chroma-rs**: Vector store for agent long-term memory.
-103. **LanceDB**: Developer-friendly serverless vector database.
-104. **TiKV**: Distributed transactional KV database (Zig/Rust backend).
-105. **ObjectStore-rs**: Unified abstraction over S3/GCS/Azure for agent artifacts.
-106. **Parquet-rs**: High-speed columnar storage for agent historical traces.
-107. **FoundationDB-rs**: Building blocks for thegent's distributed control plane.
+100.  **Milvus**: Distributed vector database for massive agent memories.
+101.  **Redb**: A high-performance, transactional, single-file database (Rust).
+102.  **Chroma-rs**: Vector store for agent long-term memory.
+103.  **LanceDB**: Developer-friendly serverless vector database.
+104.  **TiKV**: Distributed transactional KV database (Zig/Rust backend).
+105.  **ObjectStore-rs**: Unified abstraction over S3/GCS/Azure for agent artifacts.
+106.  **Parquet-rs**: High-speed columnar storage for agent historical traces.
+107.  **FoundationDB-rs**: Building blocks for thegent's distributed control plane.
 
 ### 2.7 Specialized Agentic AI Infra (10 items)
+
 108. **LangGraph (Rust-port)**: State-machine based agentic workflows.
 109. **CrewAI-rs**: High-concurrency role-based agent teams.
 110. **DSPy-rs**: Programmatic optimization of LLM prompts in Rust.
@@ -157,18 +169,24 @@
 ## Part 3: Strategy & Implementation Patterns (AX)
 
 ### 3.1 Zero-Copy Handoff (L1 -> L2)
+
 Using **OverlayFS** and **Bind Mounts**, L1 ensures that L2 agents never wait for I/O.
+
 - **DNA Hashing**: Every project's manifest is hashed into a **Project DNA**.
 - **Shared Blobs**: Projects with matching DNA share `~/.cache/thegent/blobs` via read-only bind mounts.
 
 ### 3.2 Predictive Throttling (Statistical Peak)
+
 The `ConcurrencyController` no longer uses "active process count" but **"Predicted Resource Entropy"**.
+
 - If `HarnessCard.p95_peak` + `System.load_entropy` > `Hardware.thermal_limit`, the next agent is deferred.
 
 ### 3.3 The SSH Proxy & Git Signer
+
 Agents never see `id_rsa`. They communicate via a Unix Socket to the L1 **Identity Proxy**, which signs Git commits on their behalf, maintaining a perfect audit trail without security risk.
 
 ---
 
 ## Part 4: Continual Expansion & AX Ease
+
 This document is indexed in `thegent/docs/research/KUSH_ECOSYSTEM_UNIFIED_DOCS_INDEX.md` and should be extended whenever a new performance primitive is identified. All AX-facing tools must pass the `thegent doctor --perf` check based on these benchmarks.

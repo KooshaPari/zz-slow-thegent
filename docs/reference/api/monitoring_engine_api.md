@@ -12,7 +12,7 @@ Monitor agent crew execution.
 
 ### Methods
 
-#### MonitoringEngine.__init__
+#### MonitoringEngine.**init**
 
 ```python
 __init__(self: Any)

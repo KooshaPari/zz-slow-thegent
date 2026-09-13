@@ -44,7 +44,7 @@ Uses WAL journal mode for safe concurrent reads/writes.
 
 ### Methods
 
-#### ProjectRegistry.__init__
+#### ProjectRegistry.**init**
 
 ```python
 __init__(self: Any, db_path: Any)
@@ -111,7 +111,7 @@ update_episode(self: Any, episode_id: str, status: Any, metadata: Any)
 Update an episode's status and/or metadata.
 
 Returns the updated record, or None if the episode does not exist.
-For terminal statuses (completed, failed), ``ended_at`` is set automatically.
+For terminal statuses (completed, failed), `ended_at` is set automatically.
 
 ---
 
@@ -121,7 +121,7 @@ For terminal statuses (completed, failed), ``ended_at`` is set automatically.
 update_project_metadata(self: Any, project_id: str, metadata: dict[(str, Any)])
 ```
 
-Merge *metadata* into the project's existing metadata.
+Merge _metadata_ into the project's existing metadata.
 
 Returns the updated record, or None if the project does not exist.
 
@@ -188,7 +188,7 @@ update_episode(self: Any, episode_id: str, status: Any, metadata: Any)
 Update an episode's status and/or metadata.
 
 Returns the updated record, or None if the episode does not exist.
-For terminal statuses (completed, failed), ``ended_at`` is set automatically.
+For terminal statuses (completed, failed), `ended_at` is set automatically.
 
 ---
 
@@ -198,7 +198,7 @@ For terminal statuses (completed, failed), ``ended_at`` is set automatically.
 update_project_metadata(self: Any, project_id: str, metadata: dict[(str, Any)])
 ```
 
-Merge *metadata* into the project's existing metadata.
+Merge _metadata_ into the project's existing metadata.
 
 Returns the updated record, or None if the project does not exist.
 

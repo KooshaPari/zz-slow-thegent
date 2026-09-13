@@ -4,12 +4,16 @@ Verifies that board artifacts (MD, CSV, JSON) can be loaded, parsed, and integra
 into the thegent unified workstream loop.
 """
 
-import orjson as json
 from pathlib import Path
 
+import orjson as json
 import pytest
 
-from thegent.planning.board_artifact_loader import BoardArtifactLoader, BoardItem, ExecutionSlice
+from thegent.planning.board_artifact_loader import (
+    BoardArtifactLoader,
+    BoardItem,
+    ExecutionSlice,
+)
 
 
 @pytest.fixture

@@ -10,7 +10,10 @@ def test_run_impl_fails_fast_when_explicit_ollama_guard_fails() -> None:
 
     with (
         patch("thegent.models.catalog.resolve_route", return_value=("ollama", "llama3.3")),
-        patch("thegent.cli.commands.impl._validate_explicit_ollama_provider", return_value="Ollama unavailable"),
+        patch(
+            "thegent.cli.commands.impl._validate_explicit_ollama_provider",
+            return_value="Ollama unavailable",
+        ),
     ):
         result = cli_impl.run_impl(
             agent=None,
@@ -29,7 +32,10 @@ def test_bg_impl_fails_fast_when_explicit_ollama_guard_fails() -> None:
 
     with (
         patch("thegent.models.catalog.resolve_route", return_value=("ollama", "llama3.3")),
-        patch("thegent.cli.commands.impl._validate_explicit_ollama_provider", return_value="No local models"),
+        patch(
+            "thegent.cli.commands.impl._validate_explicit_ollama_provider",
+            return_value="No local models",
+        ),
     ):
         result = cli_impl.bg_impl(
             agent=None,
@@ -48,8 +54,14 @@ def test_validate_explicit_ollama_provider_returns_model_install_message() -> No
     from thegent.cli.commands.impl import _validate_explicit_ollama_provider
 
     with (
-        patch("thegent.utils.routing_impl.ollama_provider.assert_ollama_available", return_value=None),
-        patch("thegent.utils.routing_impl.ollama_provider.get_available_models", return_value=[]),
+        patch(
+            "thegent.utils.routing_impl.ollama_provider.assert_ollama_available",
+            return_value=None,
+        ),
+        patch(
+            "thegent.utils.routing_impl.ollama_provider.get_available_models",
+            return_value=[],
+        ),
     ):
         msg = _validate_explicit_ollama_provider(provider="ollama-local", model="llama3.3")
 
@@ -62,8 +74,14 @@ def test_validate_explicit_ollama_provider_returns_none_when_model_is_installed(
     from thegent.cli.commands.impl import _validate_explicit_ollama_provider
 
     with (
-        patch("thegent.utils.routing_impl.ollama_provider.assert_ollama_available", return_value=None),
-        patch("thegent.utils.routing_impl.ollama_provider.get_available_models", return_value=["llama3.3", "mistral"]),
+        patch(
+            "thegent.utils.routing_impl.ollama_provider.assert_ollama_available",
+            return_value=None,
+        ),
+        patch(
+            "thegent.utils.routing_impl.ollama_provider.get_available_models",
+            return_value=["llama3.3", "mistral"],
+        ),
     ):
         msg = _validate_explicit_ollama_provider(provider="ollama", model="ollama/llama3.3")
 

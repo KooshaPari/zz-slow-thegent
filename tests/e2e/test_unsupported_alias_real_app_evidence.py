@@ -6,7 +6,9 @@ import sys
 from unittest.mock import MagicMock
 
 from tests.e2e.command_surface import command_path_exists
-from tests.e2e.test_cli_alias_rewrite_contract import _DELIBERATELY_UNSUPPORTED_CANONICAL_PREFIXES
+from tests.e2e.test_cli_alias_rewrite_contract import (
+    _DELIBERATELY_UNSUPPORTED_CANONICAL_PREFIXES,
+)
 
 sys.modules.setdefault("thegent_git", MagicMock())
 from thegent.main import app

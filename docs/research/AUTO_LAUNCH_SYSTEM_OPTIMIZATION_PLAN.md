@@ -13,6 +13,7 @@
 **Target State**: Fully integrated autonomous governance loop with XP rewards and proactive gardening.
 
 **Key Improvements**:
+
 1. **Event-driven notifications** - React to agent completion events via hooks and file watchers (<1s latency)
 2. **Database storage** - SQLite for explorable session/workstream data with rich query interface
 3. **MCP integration** - Use existing `thegent_do_next`, `thegent_workstream_claim`, `thegent_workstream_complete` tools
@@ -60,6 +61,7 @@
 ## Implementation Status
 
 ### Phase 0: Foundation & Integration - COMPLETED ✅
+
 - [x] Integrated with all existing thegent components (WorkStreamManager, LaneModel, etc.)
 - [x] Unified auto-launch core in `AutoLaunchSystem`
 - [x] Resource-aware concurrency with LoadBasedLimits
@@ -67,12 +69,14 @@
 - [x] Initialized memory caching and constitutional AI placeholders
 
 ### Phase 1: Dashboard TUI & Event-Driven foundation - COMPLETED ✅
+
 - [x] Advanced real-time dashboard using Textual (multi-tab: Overview, Costs, Reputation, Violations)
 - [x] Immediate session completion events via FastFileWatcher and hooks
 - [x] MCP event resource `thegent://events/session-complete`
 - [x] Dashboard refresh loop optimized for performance
 
 ### Phase 2: Database Storage & Evidence Ledger - COMPLETED ✅
+
 - [x] SQLite `workstream.db` with 15+ harmonized tables and indexing
 - [x] Bidirectional sync WORK_STREAM.md ↔ database
 - [x] Evidence ledger integration for audit trail
@@ -80,12 +84,14 @@
 - [x] MCP tools for database query and statistics
 
 ### Phase 3: Advanced Governance & Reputation - COMPLETED ✅
+
 - [x] SQLite-backed Reputation Manager with persistent trust scores
 - [x] Constitutional AI critique integrated into auto-launch flow
 - [x] Automatic recording of violations and reputation hits in database
 - [x] Lane-aware prioritization and routing implementation
 
 ### Phase 4: Smart Dependency Resolution & Auto-Advance - COMPLETED ✅
+
 - [x] Build dependency graph in database
 - [x] Auto-launch when dependencies clear
 - [x] Smart batching (launch cleared deps together)
@@ -93,6 +99,7 @@
 - [x] Priority-aware queue (P1 before P2)
 
 ### Phase 5: AgilePlus & Gardener Integration - COMPLETED ✅
+
 - [x] AgilePlus event feed integration
 - [x] Gardener trigger integration for proactive maintenance
 - [x] XP award system for agent performance tracking

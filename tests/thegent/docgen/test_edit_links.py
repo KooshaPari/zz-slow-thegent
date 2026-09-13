@@ -1,7 +1,5 @@
 """Tests for 'Edit on GitHub' link generator."""
 
-from pathlib import Path
-
 import pytest
 
 from thegent.docgen.edit_links import EditLinkGenerator

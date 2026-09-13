@@ -6,6 +6,7 @@ This stub exists for backwards compatibility with existing tests.
 """
 
 from __future__ import annotations
+
 import hashlib
 
 

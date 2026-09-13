@@ -13,10 +13,10 @@ FR Traceability: @trace FR-MCP-CTX-001 through FR-MCP-CTX-006
 
 from __future__ import annotations
 
-import orjson as json
 from typing import TYPE_CHECKING, Any
 from unittest.mock import AsyncMock, MagicMock, patch
 
+import orjson as json
 import pytest
 
 if TYPE_CHECKING:
@@ -75,7 +75,6 @@ class TestSeedDetectContextApi:
         # @trace FR-MCP-CTX-001
         from fastmcp import FastMCP
         from thegent.mcp_tools_seeds import (
-            _ctx_info,  # ensures module-level symbol exists
             register_seed_tools,
         )
 
@@ -207,7 +206,10 @@ class TestSeedStoreContextApi:
         from thegent.mcp_tools_seeds import register_seed_tools
 
         mcp = FastMCP("test")
-        with patch("thegent.mcp.tools.seeds._resolve_cwd", side_effect=RuntimeError("storage failed")):
+        with patch(
+            "thegent.mcp.tools.seeds._resolve_cwd",
+            side_effect=RuntimeError("storage failed"),
+        ):
             register_seed_tools(mcp)
             tool_fn = await _get_tool_fn(mcp, "thegent_seed_store")
 
@@ -333,7 +335,11 @@ class TestScrapeUrlContextApi:
         ctx = _make_ctx()
         mock_result = {"content": "scraped content", "status": 200}
 
-        with patch("thegent.skills.research.scrape_url", new_callable=AsyncMock, return_value=mock_result):
+        with patch(
+            "thegent.skills.research.scrape_url",
+            new_callable=AsyncMock,
+            return_value=mock_result,
+        ):
             result = await _mcp_mod.thegent_scrape_url(
                 url="https://example.com",
                 use_playwright=False,
@@ -353,7 +359,11 @@ class TestScrapeUrlContextApi:
         ctx = _make_ctx()
         mock_result = {"content": "x" * 500, "status": 200}
 
-        with patch("thegent.skills.research.scrape_url", new_callable=AsyncMock, return_value=mock_result):
+        with patch(
+            "thegent.skills.research.scrape_url",
+            new_callable=AsyncMock,
+            return_value=mock_result,
+        ):
             await _mcp_mod.thegent_scrape_url(
                 url="https://example.com",
                 use_playwright=True,
@@ -379,7 +389,11 @@ class TestScrapeUrlContextApi:
         ctx.report_progress = AsyncMock(side_effect=capture_progress)
         mock_result = {"content": "data"}
 
-        with patch("thegent.skills.research.scrape_url", new_callable=AsyncMock, return_value=mock_result):
+        with patch(
+            "thegent.skills.research.scrape_url",
+            new_callable=AsyncMock,
+            return_value=mock_result,
+        ):
             await _mcp_mod.thegent_scrape_url(url="http://x.com", ctx=ctx)
 
         assert len(progress_calls) >= 3
@@ -403,7 +417,10 @@ class TestDagRunContextApi:
         from thegent.mcp_tools_modes import register_modes
 
         mcp = FastMCP("test")
-        with patch("thegent.cli.commands.impl.dag_run_impl", return_value={"spawned": ["t1", "t2"], "skipped": []}):
+        with patch(
+            "thegent.cli.commands.impl.dag_run_impl",
+            return_value={"spawned": ["t1", "t2"], "skipped": []},
+        ):
             register_modes(mcp)
             tool_fn = await _get_tool_fn(mcp, "thegent_dag_run")
 
@@ -424,7 +441,10 @@ class TestDagRunContextApi:
         from thegent.mcp_tools_modes import register_modes
 
         mcp = FastMCP("test")
-        with patch("thegent.cli.commands.impl.dag_run_impl", return_value={"spawned": [], "skipped": []}):
+        with patch(
+            "thegent.cli.commands.impl.dag_run_impl",
+            return_value={"spawned": [], "skipped": []},
+        ):
             register_modes(mcp)
             tool_fn = await _get_tool_fn(mcp, "thegent_dag_run")
 

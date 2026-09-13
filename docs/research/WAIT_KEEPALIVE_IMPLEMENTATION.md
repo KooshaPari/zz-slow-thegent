@@ -8,6 +8,7 @@ The `thegent wait` command times out at 4 minutes (likely due to Cursor's guard 
 ## Solution
 
 Implemented terminal keepalive mechanism that:
+
 1. Detects the calling terminal/PID using `os.getppid()` and `psutil`
 2. Identifies Cursor terminals via process name and environment variables
 3. Sends keepalive input (Enter key) every 3 minutes to prevent timeout
@@ -20,6 +21,7 @@ Implemented terminal keepalive mechanism that:
 Located at: `src/thegent/infra/terminal_keepalive.py`
 
 **Features:**
+
 - `TerminalKeepalive` class: Manages keepalive thread
 - `_get_parent_terminal_info()`: Detects parent process and terminal type
 - `_send_keepalive_to_stdin()`: Sends Enter to stdin
@@ -30,6 +32,7 @@ Located at: `src/thegent/infra/terminal_keepalive.py`
   - tmux session detection
 
 **Usage:**
+
 ```python
 from thegent.infra.terminal_keepalive import create_keepalive
 
@@ -42,10 +45,12 @@ keepalive.stop()
 ### Integration
 
 **Modified Files:**
+
 1. `src/thegent/cli.py` - `wait_cmd()` function
 2. `src/thegent/cli_impl.py` - `wait_impl()` function
 
 Both functions now:
+
 - Create keepalive instance on start
 - Start keepalive thread automatically
 - Stop keepalive on completion or error
@@ -53,6 +58,7 @@ Both functions now:
 ## Detection Logic
 
 The keepalive is enabled when:
+
 1. Running in interactive terminal (`sys.stdin.isatty()`)
 2. Parent process is Cursor/IDE (detected via process name)
 3. OR Cursor environment variables are present
@@ -74,11 +80,13 @@ Both methods are tried, and either can succeed.
 ## Testing
 
 Test detection:
+
 ```bash
 python3 -c "from thegent.infra.terminal_keepalive import _get_parent_terminal_info; print(_get_parent_terminal_info())"
 ```
 
 Test keepalive:
+
 ```bash
 # In Cursor terminal, run a long wait
 thegent wait <session_id>

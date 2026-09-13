@@ -7,6 +7,7 @@ This proposal establishes a standardized, centralized retry logic library for **
 ## Problem Statement
 
 ### Current State
+
 - **No unified retry strategy**: Scattered implementations across codebase (manual loops, custom backoff logic)
 - **Poor observability**: Retry attempts not instrumented; no metrics or tracing
 - **Inconsistent behavior**: Different services retry with different strategies, exponential bases, max attempts
@@ -14,6 +15,7 @@ This proposal establishes a standardized, centralized retry logic library for **
 - **Missed library investment**: `tenacity>=8.3.0` already in `pyproject.toml`, underutilized
 
 ### Risks
+
 - Silent failures during transient faults (network hiccups, service restarts)
 - Cascading failures due to aggressive retry patterns
 - Difficulty debugging transient issues (no visibility into retries)
@@ -30,6 +32,7 @@ This proposal establishes a standardized, centralized retry logic library for **
 ## Scope
 
 ### In Scope
+
 - Retry library (`src/thegent/resilience/retry.py`) with tenacity wrapper
 - Default exponential backoff strategy (base 2, max jitter)
 - OpenTelemetry instrumentation (span attributes, metrics)
@@ -42,6 +45,7 @@ This proposal establishes a standardized, centralized retry logic library for **
 - Documentation and usage examples
 
 ### Out of Scope
+
 - Circuit breaker logic (separate concern; `pybreaker` already present)
 - Rate limiting (separate concern; tenacity + asyncio.Semaphore for advanced cases)
 - Custom backoff algorithms beyond exponential (extend in future if needed)
@@ -60,6 +64,7 @@ This proposal establishes a standardized, centralized retry logic library for **
 **Library-first principle**: Use `tenacity` as the foundation, build thin wrapper exposing project conventions. No custom retry logic.
 
 **Architecture**:
+
 ```
 src/thegent/resilience/
 ├── __init__.py              # Public API (retry, retry_config, decorators)
@@ -101,6 +106,7 @@ Estimated: 2–3 agent work blocks (~20–30 min wall clock for autonomous agent
 **DECISION: Adopt library-first approach with tenacity wrapper**
 
 **Rationale**:
+
 - Tenacity is proven, widely adopted, and already a project dependency
 - Thin wrapper ensures project conventions are enforced
 - OpenTelemetry integration provides production observability

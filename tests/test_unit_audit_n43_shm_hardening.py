@@ -116,11 +116,8 @@ The dormant corridor is ``tests/orchestration/test_shm.py`` (32 tests,
 from __future__ import annotations
 
 import ast
-import inspect
-import textwrap
 from pathlib import Path
 from typing import Any
-
 
 # ---------------------------------------------------------------------------
 # Helpers — read the source once at module level so every test can

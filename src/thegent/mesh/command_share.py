@@ -1,15 +1,22 @@
 """Command sharing service composed from the durable mesh adapters."""
+
 from __future__ import annotations
 
+from collections.abc import Mapping
 from pathlib import Path
 from typing import Any
 from uuid import uuid4
-from collections.abc import Mapping
 
 from .cache import Singleflight
 from .contracts import (
-    AcquireLockCommand, CommandKey, EnqueueTaskCommand, EventType, MeshEvent,
-    MergeCommand, QueuePort, ReleaseLockCommand,
+    AcquireLockCommand,
+    CommandKey,
+    EnqueueTaskCommand,
+    EventType,
+    MergeCommand,
+    MeshEvent,
+    QueuePort,
+    ReleaseLockCommand,
 )
 from .coordination import FileClaimsRegistry
 from .smart_merge import SmartMerger
@@ -19,8 +26,13 @@ from .task_queue import MaildirQueue
 class CommandShareService:
     """Application adapter; persistence remains owned by existing mesh ports."""
 
-    def __init__(self, mesh_root: Path, *, merger: SmartMerger | None = None,
-                 queue: QueuePort | None = None) -> None:
+    def __init__(
+        self,
+        mesh_root: Path,
+        *,
+        merger: SmartMerger | None = None,
+        queue: QueuePort | None = None,
+    ) -> None:
         self.mesh_root = Path(mesh_root)
         self.mesh_root.mkdir(parents=True, exist_ok=True)
         self.claims = FileClaimsRegistry(self.mesh_root)
@@ -67,7 +79,11 @@ class CommandShareService:
     def enqueue(self, payload: dict[str, Any], priority: int = 5, owner_id: str | None = None) -> str:
         command = EnqueueTaskCommand(payload, priority, owner_id)
         task_id = self.queue.enqueue(dict(command.payload), command.priority)
-        self._emit(EventType.TASK_ENQUEUED, owner_id or "system", {"task_id": task_id, "payload": dict(command.payload)})
+        self._emit(
+            EventType.TASK_ENQUEUED,
+            owner_id or "system",
+            {"task_id": task_id, "payload": dict(command.payload)},
+        )
         return task_id
 
     def confine_result_path(self, relative_path: str) -> Path:
@@ -105,5 +121,9 @@ class CommandShareService:
 
     def merge(self, command: MergeCommand, output: str, *, path_hint: str | None = None) -> Any:
         result = self.merger.merge(command.base, command.ours, command.theirs, output, path_hint=path_hint)
-        self._emit(EventType.MERGE_COMPLETED, "system", {"success": getattr(result, "success", True)})
+        self._emit(
+            EventType.MERGE_COMPLETED,
+            "system",
+            {"success": getattr(result, "success", True)},
+        )
         return result

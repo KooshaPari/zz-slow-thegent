@@ -36,8 +36,8 @@ Covers:
 from __future__ import annotations
 
 import asyncio
-import orjson as json
-from unittest.mock import AsyncMock, MagicMock, patch
+import contextlib
+from unittest.mock import MagicMock, patch
 
 import pytest
 
@@ -50,11 +50,12 @@ from thegent.orchestration.protocol import (
     SubAgentEvent,
     SubAgentEventType,
     SubAgentRequest,
-    SubAgentStatus,
 )
-from thegent.orchestration.sub_agent_dispatcher import CapabilityIndex, SubAgentDispatcher
+from thegent.orchestration.sub_agent_dispatcher import (
+    CapabilityIndex,
+    SubAgentDispatcher,
+)
 from thegent.orchestration.unified_worker import UnifiedWorkerDaemon
-
 
 # ---------------------------------------------------------------------------
 # Helpers
@@ -535,7 +536,6 @@ async def test_unified_worker_daemon_consume_events_receives():
     daemon = UnifiedWorkerDaemon(event_queue=q)
 
     consumed: list[SubAgentEvent] = []
-    original_consume = daemon._consume_events
 
     async def _patched_consume() -> None:
         while True:
@@ -548,10 +548,8 @@ async def test_unified_worker_daemon_consume_events_receives():
     q.put(_make_event(request_id="daemon_test"))
     await asyncio.sleep(0.05)
     task.cancel()
-    try:
+    with contextlib.suppress(asyncio.CancelledError):
         await task
-    except asyncio.CancelledError:
-        pass
 
     assert len(consumed) == 1
     assert consumed[0].request_id == "daemon_test"

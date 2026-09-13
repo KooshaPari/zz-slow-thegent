@@ -1,9 +1,9 @@
 import logging
 import os
-from thegent.infra.shim_subprocess import run as shim_run
 from pathlib import Path
 from typing import Any
 
+from thegent.infra.shim_subprocess import run as shim_run
 from thegent.skills.deep_research import perform_deep_research
 
 logger = logging.getLogger(__name__)
@@ -16,7 +16,15 @@ def search_local_agslag(workspace_root: Path) -> list[dict[str, str]]:
     # Try using 'rg' for fast search
     try:
         # Search for 'agslag' in file contents
-        cmd = ["rg", "-i", "agslag", str(workspace_root), "--files-with-matches", "--max-depth", "5"]
+        cmd = [
+            "rg",
+            "-i",
+            "agslag",
+            str(workspace_root),
+            "--files-with-matches",
+            "--max-depth",
+            "5",
+        ]
         process = shim_run(cmd, capture_output=True, text=True, check=False)
         if process.returncode == 0:
             for line in process.stdout.splitlines():
@@ -48,7 +56,9 @@ def search_local_agslag(workspace_root: Path) -> list[dict[str, str]]:
 
 
 def research_agslag_project(
-    workspace_root: Path, query: str = "agslag project", subreddits: list[str] | None = None
+    workspace_root: Path,
+    query: str = "agslag project",
+    subreddits: list[str] | None = None,
 ) -> dict[str, Any]:
     """Perform comprehensive research on the agslag project."""
     # 1. Local search

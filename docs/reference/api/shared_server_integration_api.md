@@ -44,9 +44,9 @@ Initialize shared servers for a new session.
 Called when a thegent session starts.
 
 **Returns**: {
-    'mcp_url': str,
-    'lsp_servers': {language: socket_path},
-    'scope': 'system' | 'project'
+'mcp_url': str,
+'lsp_servers': {language: socket_path},
+'scope': 'system' | 'project'
 }
 
 ---

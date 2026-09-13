@@ -1,5 +1,7 @@
 """Unified config integration module."""
+
 from __future__ import annotations
+
 from pathlib import Path
 from typing import Any
 
@@ -81,14 +83,14 @@ class UnifiedConfigManager:
 
         # Resolve conflicts - prefer first source in config_sources, else first in unified_config
         resolved = {}
-        
+
         # Apply sources in order of priority - first source wins
         sources_order = [s for s, _ in self.config_sources] if self.config_sources else []
-        
+
         # If config_sources is empty, use unified_config keys as order
         if not sources_order:
             sources_order = list(self.unified_config.keys())
-        
+
         for source in sources_order:
             if source in self.unified_config:
                 flat = flatten_config(self.unified_config[source])
@@ -133,7 +135,9 @@ class UnifiedConfigManager:
                     # Preserve body after ---
                     if "---" in existing:
                         parts = existing.split("---", 2)
-                        content = f"---\n{yaml.dump(unflatten_config(source_flat))}---{parts[2] if len(parts) > 2 else ''}"
+                        content = (
+                            f"---\n{yaml.dump(unflatten_config(source_flat))}---{parts[2] if len(parts) > 2 else ''}"
+                        )
                     path.write_text(content, encoding="utf-8")
 
         self._data["conflicts"] = conflicts

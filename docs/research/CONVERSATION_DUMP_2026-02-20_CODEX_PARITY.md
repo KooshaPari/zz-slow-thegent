@@ -10,6 +10,7 @@
 ## Executive Summary
 
 Built a **definitive parity matrix** comparing Codex (current state) against four major agent harnesses:
+
 1. Claude Code (Anthropic reference)
 2. Gemini CLI (Google agent)
 3. GitHub Copilot Workspace (Microsoft agent)
@@ -22,7 +23,9 @@ Built a **definitive parity matrix** comparing Codex (current state) against fou
 ## Issues Addressed
 
 ### Understood Codex Current State
+
 From `/Users/kooshapari/temp-PRODVERCEL/485/kush/thegent/src/thegent/agents/codex_proxy.py`:
+
 - Runs via Rust binary at `codex exec - --skip-git-repo-check`
 - Supports multiple sandbox modes: `--sandbox workspace-write`, `--full-auto`
 - Outputs JSON with `--json` flag for streaming
@@ -36,7 +39,9 @@ From `/Users/kooshapari/temp-PRODVERCEL/485/kush/thegent/src/thegent/agents/code
 ### Researched Competitor Capabilities
 
 #### Claude Code (Anthropic's reference)
+
 **Key strengths**:
+
 - Project memory via `CLAUDE.md` + session-level memory
 - Agent Skills adoption (open standard, Anthropic-led)
 - Rich TUI with side-by-side diffs
@@ -48,7 +53,9 @@ From `/Users/kooshapari/temp-PRODVERCEL/485/kush/thegent/src/thegent/agents/code
 **UX**: Interactive, approval-based, visual diff review
 
 #### Gemini CLI (Google's agent)
+
 **Key strengths**:
+
 - Rich lifecycle hooks (pre/post at every point)
 - Agent Skills extensibility
 - Built-in Google Search grounding
@@ -59,7 +66,9 @@ From `/Users/kooshapari/temp-PRODVERCEL/485/kush/thegent/src/thegent/agents/code
 **UX**: Customizable via hooks, script-driven control
 
 #### GitHub Copilot Workspace (Microsoft)
+
 **Key strengths**:
+
 - System of sub-agents (Plan, Implement, Fix)
 - Generates Specification + Plan before code
 - Self-healing builds (reads errors, auto-fixes)
@@ -70,6 +79,7 @@ From `/Users/kooshapari/temp-PRODVERCEL/485/kush/thegent/src/thegent/agents/code
 **UX**: Web-first, visual planning, multi-agent orchestration
 
 #### Agent Skills Standard (Anthropic)
+
 - **Adoption**: Claude Code, Gemini CLI, GitHub Copilot, Cursor, OpenAI Codex, others
 - **Format**: SKILL.md + asset folders
 - **Mechanism**: Skill descriptions injected into prompts, `activate_skill()` tool
@@ -134,16 +144,19 @@ From `/Users/kooshapari/temp-PRODVERCEL/485/kush/thegent/src/thegent/agents/code
 ### Parity Roadmap (Proposed)
 
 **Phase 1: Foundation (Month 1-2)**
+
 - Implement `.codex/project.yaml` + memory storage
 - Adopt Agent Skills standard
 - Add basic hooks system (pre/post tool execution)
 
 **Phase 2: UX (Month 2-3)**
+
 - Session persistence with `--continue`
 - TUI diff viewer
 - Better error messages
 
 **Phase 3: Advanced (Month 3+)**
+
 - Full hooks lifecycle
 - Context compression
 - Benchmarking harness
@@ -151,6 +164,7 @@ From `/Users/kooshapari/temp-PRODVERCEL/485/kush/thegent/src/thegent/agents/code
 ### Terminal Benchmark Spec (Included in Matrix)
 
 Defined standard benchmark tasks for comparing all harnesses:
+
 1. **Code Generation**: Simple to complex (fibonacci → REST API)
 2. **File Manipulation**: Rename, create, refactor
 3. **Multi-Step Workflows**: Setup tests, implement feature, upgrade deps
@@ -187,9 +201,11 @@ Metrics: success rate, latency, tokens, tool calls, overall score
 ## Deliverables
 
 ### Primary Artifact
+
 **File**: `/Users/kooshapari/temp-PRODVERCEL/485/kush/thegent/docs/reference/HARNESS_PARITY_MATRIX.md`
 
 **Contents**:
+
 - Executive summary
 - 23-feature comparison matrix (Codex, Claude Code, Ante, Gemini CLI, Copilot Workspace)
 - Critical gaps analysis (P0 blockers with solutions)
@@ -230,6 +246,7 @@ Metrics: success rate, latency, tokens, tool calls, overall score
 ## Governance Checkpoint
 
 **Governance Domains Touched**:
+
 - Documentation organization (created in `docs/reference/`, compliant)
 - Specification system (referenced Terminal-Bench spec patterns)
 - Research methodology (web research, synthesis, open-ended exploration)

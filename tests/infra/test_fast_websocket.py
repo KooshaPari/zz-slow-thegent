@@ -5,13 +5,14 @@ including the websocket-client fallback for async operations.
 """
 
 import asyncio
+import contextlib
 from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
 
 from thegent.infra.fast_websocket import (
-    WEBSOCKETS_AVAILABLE,
     WEBSOCKET_CLIENT_AVAILABLE,
+    WEBSOCKETS_AVAILABLE,
     FastWebSocket,
     websocket_connect_async,
     websocket_connect_sync,
@@ -115,10 +116,8 @@ class TestFastWebSocketConnectAsync:
             pytest.skip("websocket-client not available for fallback test")
 
         ws = FastWebSocket("ws://localhost:8080")
-        try:
+        with contextlib.suppress(Exception):
             await ws.connect_async()
-        except Exception:
-            pass
 
         if ws._backend is not None:
             assert ws._backend == "websocket-client-async"
@@ -339,7 +338,6 @@ class TestConvenienceFunctions:
 
         ws = FastWebSocket("ws://localhost:8080")
         # Mock connect_async
-        original_connect = ws.connect_async
 
         async def mock_connect():
             ws._backend = "websockets" if WEBSOCKETS_AVAILABLE else "websocket-client-async"
@@ -359,7 +357,6 @@ class TestConvenienceFunctions:
 
         ws = FastWebSocket("ws://localhost:8080")
         # Mock connect_sync
-        original_connect = ws.connect_sync
 
         def mock_connect():
             ws._backend = "websocket-client"

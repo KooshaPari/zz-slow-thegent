@@ -2,7 +2,6 @@
 
 from __future__ import annotations
 
-import time
 from pathlib import Path
 
 import pytest
@@ -18,7 +17,6 @@ from thegent.governance.policy_engine import (
     Verdict,
     evaluate_pre_check,
 )
-
 
 # All tests in this module are unit tests.
 pytestmark = pytest.mark.unit
@@ -558,7 +556,11 @@ class TestRegisterOverridePathTraversalGuard:
             return original_apply(*args, **kwargs)  # pragma: no cover - not reached
 
         monkeypatch.setattr(engine.override_manager, "apply_override", spy_apply)
-        monkeypatch.setattr(overrides_module, "_validate_policy_id", lambda _id: (_ for _ in ()).throw(sentinel))
+        monkeypatch.setattr(
+            overrides_module,
+            "_validate_policy_id",
+            lambda _id: (_ for _ in ()).throw(sentinel),
+        )
 
         with pytest.raises(PolicyEngineConfigError):
             engine.register_override(
@@ -592,7 +594,11 @@ class TestRegisterOverridePathTraversalGuard:
             return original_apply(*args, **kwargs)  # pragma: no cover - not reached
 
         monkeypatch.setattr(engine.override_manager, "apply_override", spy_apply)
-        monkeypatch.setattr(overrides_module, "_validate_policy_id", lambda _id: (_ for _ in ()).throw(sentinel))
+        monkeypatch.setattr(
+            overrides_module,
+            "_validate_policy_id",
+            lambda _id: (_ for _ in ()).throw(sentinel),
+        )
 
         with pytest.raises(PolicyEngineConfigError):
             engine.register_override(

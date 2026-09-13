@@ -2,10 +2,10 @@
 
 from __future__ import annotations
 
-import orjson as json
 from typing import TYPE_CHECKING
 from unittest.mock import MagicMock, patch
 
+import orjson as json
 import pytest
 
 from thegent.mcp.manage import (
@@ -13,7 +13,6 @@ from thegent.mcp.manage import (
     _ensure_mcp_servers,
     _get_mcp_url,
     _remote_config,
-    migrate_to_unimount,
     install_to_claude_code,
     install_to_client,
     install_to_codex,
@@ -21,6 +20,7 @@ from thegent.mcp.manage import (
     install_to_droid,
     mcp_down,
     mcp_up,
+    migrate_to_unimount,
     service_install,
     service_start,
     service_status,
@@ -219,7 +219,10 @@ class TestMigrateToUnimount:
     def test_preserves_other_servers(self, tmp_path: Path) -> None:
         """Migration updates only thegent aliases and preserves existing MCP entries."""
         existing = {
-            "mcpServers": {"other-server": {"url": "http://old"}, "legacy": {"url": "http://legacy"}},
+            "mcpServers": {
+                "other-server": {"url": "http://old"},
+                "legacy": {"url": "http://legacy"},
+            },
             "other_key": 7,
         }
         codex_dir = tmp_path / ".codex"

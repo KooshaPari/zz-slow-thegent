@@ -42,9 +42,7 @@ from thegent.artifacts import BaseArtifact, ArtifactMetadata, ArtifactCategory
 
 # Create artifact from MAIF
 metadata = ArtifactMetadata(
-    category=ArtifactCategory.CODE,
-    tags=["refactor", "performance"],
-    dependencies=["artifact-id-1"]
+    category=ArtifactCategory.CODE, tags=["refactor", "performance"], dependencies=["artifact-id-1"]
 )
 artifact = BaseArtifact.from_maif_artifact(maif, category=ArtifactCategory.CODE, metadata=metadata.model_dump())
 
@@ -61,6 +59,7 @@ artifact.add_tag("critical")
 #### Code Artifacts (`code_artifacts.py`)
 
 **CodeChangeArtifact**: Track code modifications
+
 - File path and language
 - Change type (edit, refactor, bug fix, feature, formatting)
 - Affected symbols (functions, classes)
@@ -68,6 +67,7 @@ artifact.add_tag("critical")
 - Lint violations
 
 **FileOperationArtifact**: Track file operations
+
 - Operation type (create, delete, rename, move, copy)
 - Source and destination paths
 - File metadata (size, permissions)
@@ -77,6 +77,7 @@ artifact.add_tag("critical")
 #### Tool Artifacts (`tool_artifacts.py`)
 
 **ToolInvocationArtifact**: Track external tool calls
+
 - Tool type (MCP, API, CLI, subprocess, database)
 - Input arguments and parameters
 - Execution result and status
@@ -84,6 +85,7 @@ artifact.add_tag("critical")
 - Retry information
 
 **MCPCallArtifact**: Specialized for MCP interactions
+
 - Server and tool names
 - Request/response schemas
 - Error handling and validation
@@ -92,6 +94,7 @@ artifact.add_tag("critical")
 #### Decision Artifacts (`decision_artifacts.py`)
 
 **DecisionArtifact**: Track agent decisions
+
 - Decision type (routing, resource allocation, strategy, parameter choice, error recovery)
 - Options considered and scoring
 - Decision criteria and rationale
@@ -99,6 +102,7 @@ artifact.add_tag("critical")
 - Outcome and feedback
 
 **BranchingPointArtifact**: Track conditional branching
+
 - Condition evaluated
 - True/false branch descriptions
 - Which branch was taken
@@ -124,6 +128,7 @@ class ArtifactStorage(ABC):
 #### In-Memory Implementation
 
 `MemoryArtifactStorage` for Phase 1:
+
 - Stores artifacts in Python dict
 - Maintains indices for fast lookup
 - Supports queries by session, category, tags
@@ -186,7 +191,7 @@ code_artifact = factory.code.create_code_change(
     before_content=b"old code",
     after_content=b"new code",
     language="python",
-    tags=["feature", "async"]
+    tags=["feature", "async"],
 )
 
 # Create tool invocation
@@ -197,7 +202,7 @@ tool_artifact = factory.tool.create_tool_invocation(
     tool_name="file_read",
     arguments={"path": "/path/to/file"},
     result_status=ToolResultStatus.SUCCESS,
-    result_output="file contents"
+    result_output="file contents",
 )
 
 # Create decision
@@ -207,7 +212,7 @@ decision_artifact = factory.decision.create_decision(
     decision_type=DecisionType.ROUTING,
     options_considered=["option-a", "option-b"],
     selected_option="option-a",
-    rationale="Option A has lower cost"
+    rationale="Option A has lower cost",
 )
 ```
 
@@ -220,11 +225,7 @@ Unified interface for all artifact operations:
 ```python
 from thegent.artifacts import ArtifactAPI
 
-api = ArtifactAPI(
-    signing_key=signing_key,
-    verifying_key=verifying_key,
-    storage=storage
-)
+api = ArtifactAPI(signing_key=signing_key, verifying_key=verifying_key, storage=storage)
 
 # Create and store
 artifact = await api.generators.code.create_code_change(...)
@@ -254,14 +255,7 @@ stats = await api.get_stats()
 ## Usage Example: Complete Workflow
 
 ```python
-from thegent.artifacts import (
-    ArtifactAPI,
-    CodeChangeType,
-    FileOperationType,
-    ToolType,
-    ToolResultStatus,
-    DecisionType
-)
+from thegent.artifacts import ArtifactAPI, CodeChangeType, FileOperationType, ToolType, ToolResultStatus, DecisionType
 from thegent.maif import SigningKey
 
 # Initialize
@@ -279,7 +273,7 @@ code_artifact = await api.generators.code.create_code_change(
     after_content=b"fixed version",
     language="python",
     affected_symbols=["parse_config"],
-    tags=["bug-fix", "security"]
+    tags=["bug-fix", "security"],
 )
 await api.store_artifact(code_artifact)
 
@@ -290,7 +284,7 @@ file_op = await api.generators.code.create_file_operation(
     operation_type=FileOperationType.CREATE,
     source_path="src/tests/test_utils.py",
     before_content=b"",
-    after_content=b"test code"
+    after_content=b"test code",
 )
 await api.store_artifact(file_op)
 
@@ -303,7 +297,7 @@ tool_artifact = await api.generators.tool.create_mcp_call(
     call_status=ToolResultStatus.SUCCESS,
     request_parameters={"path": "src/utils.py"},
     input_data=b"",
-    output_data=b"file content"
+    output_data=b"file content",
 )
 await api.store_artifact(tool_artifact)
 
@@ -315,7 +309,7 @@ decision = await api.generators.decision.create_decision(
     options_considered=["quick_fix", "thorough_refactor"],
     selected_option="quick_fix",
     rationale="Priority is correctness, time budget allows thorough testing",
-    confidence_score=0.85
+    confidence_score=0.85,
 )
 await api.store_artifact(decision)
 
@@ -349,17 +343,18 @@ print(stats)
 
 ## Phase 2+ Roadmap
 
-| Phase | Focus | Timeline |
-|-------|-------|----------|
-| **Phase 1** (Current) | Base classes, artifact types, memory storage | ✅ Complete |
-| **Phase 2** | Supermemory L4 integration | WIP |
-| **Phase 3** | Event hooks (auto-capture on tool use, file writes) | Planned |
-| **Phase 4** | Analytics and dashboards | Planned |
-| **Phase 5** | Replay engine integration | Planned |
+| Phase                 | Focus                                               | Timeline    |
+| --------------------- | --------------------------------------------------- | ----------- |
+| **Phase 1** (Current) | Base classes, artifact types, memory storage        | ✅ Complete |
+| **Phase 2**           | Supermemory L4 integration                          | WIP         |
+| **Phase 3**           | Event hooks (auto-capture on tool use, file writes) | Planned     |
+| **Phase 4**           | Analytics and dashboards                            | Planned     |
+| **Phase 5**           | Replay engine integration                           | Planned     |
 
 ## Testing
 
 Tests should cover:
+
 - Artifact creation with all specialized types
 - Serialization/deserialization round-trips
 - Hash chain verification

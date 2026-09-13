@@ -1,10 +1,12 @@
 """Stub module."""
+
 from dataclasses import dataclass
 
 
 @dataclass
 class HashChainValidator:
     """Validator for hash chains."""
+
     chain_id: str = ""
 
     def validate(self, block: dict) -> bool:

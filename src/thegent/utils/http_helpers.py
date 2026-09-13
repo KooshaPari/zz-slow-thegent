@@ -5,8 +5,9 @@ Common HTTP client helpers.
 
 from __future__ import annotations
 
-import httpx
 from typing import Any
+
+import httpx
 
 
 class HTTPClient:
@@ -37,7 +38,7 @@ class HTTPClient:
             self._client.close()
             self._client = None
 
-    def __enter__(self) -> "HTTPClient":
+    def __enter__(self) -> HTTPClient:
         return self
 
     def __exit__(self, *args: Any) -> None:

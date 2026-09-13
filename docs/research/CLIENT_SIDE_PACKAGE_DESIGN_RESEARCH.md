@@ -13,6 +13,7 @@
 This research consolidates best practices for building and deploying client-side software systems like thegent. Findings cover Python packaging standards, native package managers (Homebrew, Nix, Windows Installer, Linux packages), update mechanisms, signing, security, and user experience patterns.
 
 **Key Findings:**
+
 1. **Modern Python Packaging** — PEP 517/518 (pyproject.toml) is the standard; wheels preferred over sdists
 2. **Package Data Management** — Use `importlib.resources` for accessing bundled data files
 3. **Version Management** — Dynamic versioning from git tags recommended
@@ -29,6 +30,7 @@ This research consolidates best practices for building and deploying client-side
 ### 1.1 Modern Build System (PEP 517/518)
 
 **Key Standards:**
+
 - **PEP 518** — Specifies `pyproject.toml` for build system requirements
 - **PEP 517** — Build backend interface (hatchling, setuptools, flit)
 - **PEP 440** — Version identification and dependency specification
@@ -65,6 +67,7 @@ packages = ["src/thegent"]
 ```
 
 **Key Insights:**
+
 - Use `hatchling` or `setuptools` as build backend
 - Prefer `dynamic = ["version"]` over hardcoded versions
 - Use `[project.optional-dependencies]` for platform-specific deps
@@ -78,8 +81,10 @@ packages = ["src/thegent"]
 
 ```python
 """Access package resources."""
+
 from importlib import resources
 from pathlib import Path
+
 
 def get_hooks_dir() -> Path:
     """Get hooks directory from package."""
@@ -100,6 +105,7 @@ def get_hooks_dir() -> Path:
     # Fallback to user config
     return get_config_dir() / "hooks"
 
+
 def get_templates_dir() -> Path:
     """Get templates directory from package."""
     try:
@@ -115,6 +121,7 @@ def get_templates_dir() -> Path:
 ```
 
 **Best Practices:**
+
 - Use `importlib.resources.files()` (Python 3.9+)
 - Fallback chain: package data → dev repo → user config → create default
 - Test both installed and dev modes
@@ -125,7 +132,9 @@ def get_templates_dir() -> Path:
 
 ```python
 """Dynamic version management."""
+
 from importlib.metadata import version, PackageNotFoundError
+
 
 def get_version() -> str:
     """Get package version dynamically."""
@@ -134,16 +143,15 @@ def get_version() -> str:
     except PackageNotFoundError:
         # Dev mode - get from git
         import subprocess
+
         try:
             result = subprocess.run(
-                ["git", "describe", "--tags", "--always"],
-                capture_output=True,
-                text=True,
-                check=True
+                ["git", "describe", "--tags", "--always"], capture_output=True, text=True, check=True
             )
             return result.stdout.strip()
         except Exception:
             return "0.1.0-dev"
+
 
 __version__ = get_version()
 ```
@@ -160,6 +168,7 @@ write_to = "src/thegent/_version.py"
 ```
 
 **Best Practices:**
+
 - Use git tags for versioning (semantic versioning recommended)
 - Automate version extraction in build process
 - Support both installed and dev modes
@@ -189,6 +198,7 @@ cibuildwheel --platform linux --platform macos --platform windows
 ```
 
 **Best Practices:**
+
 - Build platform-specific wheels (manylinux, macOS universal, Windows)
 - Use `maturin` for Rust extensions
 - Test wheels on target platforms before release
@@ -234,6 +244,7 @@ end
 ```
 
 **Best Practices:**
+
 - Use `depends_on "python@3.12"` for Python version
 - Platform-specific dependencies with `on_macos` / `on_linux`
 - Test block required for all formulae
@@ -287,6 +298,7 @@ end
 ```
 
 **Best Practices:**
+
 - Use `buildPythonPackage` for Python packages
 - Include Rust build inputs for extensions
 - Install data files to `$out/share/thegent`
@@ -317,15 +329,15 @@ end
 ```python
 # pyinstaller.spec
 a = Analysis(
-    ['src/thegent/cli.py'],
+    ["src/thegent/cli.py"],
     pathex=[],
     binaries=[],
     datas=[
-        ('hooks', 'hooks'),
-        ('templates', 'templates'),
-        ('scripts', 'scripts'),
+        ("hooks", "hooks"),
+        ("templates", "templates"),
+        ("scripts", "scripts"),
     ],
-    hiddenimports=['thegent.platform', 'thegent.platform_paths'],
+    hiddenimports=["thegent.platform", "thegent.platform_paths"],
     hookspath=[],
     hooksconfig={},
     runtime_hooks=[],
@@ -341,7 +353,7 @@ exe = EXE(
     a.binaries,
     a.datas,
     [],
-    name='thegent',
+    name="thegent",
     debug=False,
     bootloader_ignore_signals=False,
     strip=False,
@@ -358,6 +370,7 @@ exe = EXE(
 ```
 
 **Best Practices:**
+
 - Use MSIX for modern Windows (Windows 10/11)
 - Use PyInstaller for standalone executables
 - Code sign all Windows binaries
@@ -414,6 +427,7 @@ python3 -m pip install --root %{buildroot} dist/*.whl
 ```
 
 **Best Practices:**
+
 - Use `dh_python3` for Debian packages
 - Follow FHS (Filesystem Hierarchy Standard)
 - Include man pages in `/usr/share/man`
@@ -429,9 +443,11 @@ python3 -m pip install --root %{buildroot} dist/*.whl
 
 ```python
 """Auto-update checker."""
+
 import subprocess
 from pathlib import Path
 from packaging import version
+
 
 def check_for_updates() -> Optional[str]:
     """Check for available updates."""
@@ -439,12 +455,7 @@ def check_for_updates() -> Optional[str]:
         current_version = get_version()
 
         # Check PyPI for latest version
-        result = subprocess.run(
-            ["pip", "index", "versions", "thegent"],
-            capture_output=True,
-            text=True,
-            check=True
-        )
+        result = subprocess.run(["pip", "index", "versions", "thegent"], capture_output=True, text=True, check=True)
 
         # Parse latest version
         latest_version = parse_latest_version(result.stdout)
@@ -456,6 +467,7 @@ def check_for_updates() -> Optional[str]:
     except Exception:
         return None
 
+
 def prompt_update(available_version: str) -> None:
     """Prompt user to update."""
     console.print(f"[yellow]Update available: {available_version}[/yellow]")
@@ -466,11 +478,14 @@ def prompt_update(available_version: str) -> None:
 
 ```python
 """Background update checker."""
+
 import threading
 import time
 
+
 class UpdateChecker:
     """Background update checker."""
+
     def __init__(self, check_interval: int = 86400):  # 24 hours
         self.check_interval = check_interval
         self.thread = None
@@ -496,7 +511,9 @@ class UpdateChecker:
 
 ```python
 """Package manager update detection."""
+
 from thegent.platform import detect_platform, Platform
+
 
 def get_update_command() -> str:
     """Get update command for current package manager."""
@@ -529,6 +546,7 @@ def get_update_command() -> str:
 ```
 
 **Best Practices:**
+
 - Check for updates on startup (optional, user-configurable)
 - Respect user's package manager (don't mix pip and system packages)
 - Provide clear update instructions
@@ -551,7 +569,9 @@ Examples:
 
 ```python
 """Version comparison."""
+
 from packaging import version
+
 
 def is_compatible(current: str, required: str) -> bool:
     """Check if current version is compatible with required."""
@@ -566,6 +586,7 @@ def is_compatible(current: str, required: str) -> bool:
 ```
 
 **Best Practices:**
+
 - Follow semantic versioning (semver.org)
 - Use `packaging` library for version comparison
 - Document breaking changes in MAJOR versions
@@ -614,6 +635,7 @@ rpm --addsign thegent-0.1.0-1.x86_64.rpm
 ```
 
 **Best Practices:**
+
 - Sign all binaries and installers
 - Use timestamp servers for long-term validity
 - Store signing keys securely (use CI/CD secrets)
@@ -651,6 +673,7 @@ osv-scanner --lockfile pyproject.toml
 ```
 
 **Best Practices:**
+
 - Regularly audit dependencies for vulnerabilities
 - Use Dependabot or Renovate for automated updates
 - Pin security-critical dependencies
@@ -666,8 +689,10 @@ osv-scanner --lockfile pyproject.toml
 
 ```python
 """First-run wizard."""
+
 from rich.prompt import Confirm, Prompt
 from thegent.platform import detect_platform
+
 
 def run_first_run_wizard() -> None:
     """Run first-run setup wizard."""
@@ -699,10 +724,11 @@ def run_first_run_wizard() -> None:
     console.print("\n[bold green]🎉 Setup complete![/bold green]")
     console.print("\n[cyan]Next steps:[/cyan]")
     console.print("  1. Start MCP server: [green]thegent serve[/green]")
-    console.print("  2. Run your first agent: [green]thegent run \"Hello!\"[/green]")
+    console.print('  2. Run your first agent: [green]thegent run "Hello!"[/green]')
 ```
 
 **Best Practices:**
+
 - Detect platform automatically
 - Check prerequisites and offer to install
 - Guide user through initial configuration
@@ -714,7 +740,9 @@ def run_first_run_wizard() -> None:
 
 ```python
 """Progress indicators."""
+
 from rich.progress import Progress, SpinnerColumn, TextColumn, BarColumn
+
 
 def install_with_progress() -> None:
     """Install with progress indication."""
@@ -735,6 +763,7 @@ def install_with_progress() -> None:
 ```
 
 **Best Practices:**
+
 - Show progress for long-running operations
 - Provide estimated time remaining
 - Allow cancellation where appropriate
@@ -746,10 +775,13 @@ def install_with_progress() -> None:
 
 ```python
 """Actionable error messages."""
+
 from thegent.platform import detect_platform
+
 
 class ThegentError(Exception):
     """Base exception with platform-aware remediation."""
+
     def __init__(self, message: str, remediation: Optional[str] = None):
         super().__init__(message)
         self.remediation = remediation or self._get_default_remediation()
@@ -758,6 +790,7 @@ class ThegentError(Exception):
         """Get default remediation based on platform."""
         plat = detect_platform().value
         return f"See https://thegent.readthedocs.io/troubleshooting/{plat}"
+
 
 def format_error(error: Exception) -> str:
     """Format error with remediation."""
@@ -775,6 +808,7 @@ def format_error(error: Exception) -> str:
 ```
 
 **Best Practices:**
+
 - Provide actionable remediation steps
 - Include platform-specific instructions
 - Link to documentation
@@ -812,6 +846,7 @@ def format_error(error: Exception) -> str:
 ```
 
 **Best Practices:**
+
 - Release to PyPI first (primary distribution)
 - Create GitHub releases with assets
 - Update native package managers after PyPI release
@@ -828,7 +863,7 @@ name: Release
 on:
   push:
     tags:
-      - 'v*'
+      - "v*"
 
 jobs:
   build:
@@ -836,7 +871,7 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest, macos-latest, windows-latest]
-        python-version: ['3.12']
+        python-version: ["3.12"]
 
     steps:
       - uses: actions/checkout@v4
@@ -867,6 +902,7 @@ jobs:
 ```
 
 **Best Practices:**
+
 - Automate releases on git tags
 - Build for all platforms in CI
 - Test before publishing
@@ -879,6 +915,7 @@ jobs:
 ### 7.1 macOS
 
 **Key Considerations:**
+
 - Code signing required for distribution
 - Notarization required for Gatekeeper
 - Universal binaries (x86_64 + arm64) preferred
@@ -886,6 +923,7 @@ jobs:
 - Follow macOS Human Interface Guidelines
 
 **Best Practices:**
+
 - Build universal wheels with `cibuildwheel`
 - Sign and notarize all binaries
 - Use `plist` files for app metadata
@@ -894,6 +932,7 @@ jobs:
 ### 7.2 Linux
 
 **Key Considerations:**
+
 - Multiple package managers (apt, yum, snap, flatpak)
 - FHS compliance required
 - Systemd integration for services
@@ -901,6 +940,7 @@ jobs:
 - GPG signing for packages
 
 **Best Practices:**
+
 - Support multiple package formats
 - Follow FHS for file placement
 - Provide systemd service files
@@ -910,6 +950,7 @@ jobs:
 ### 7.3 Windows
 
 **Key Considerations:**
+
 - Code signing required
 - MSIX preferred over MSI/EXE
 - PowerShell vs CMD compatibility
@@ -917,6 +958,7 @@ jobs:
 - UAC handling
 
 **Best Practices:**
+
 - Use MSIX for modern Windows
 - Sign all executables
 - Support both PowerShell and CMD
@@ -933,30 +975,24 @@ jobs:
 
 ```python
 """Test package installation."""
+
 import subprocess
 import sys
+
 
 def test_installation() -> None:
     """Test package installation."""
     # Install in virtual environment
-    subprocess.run([
-        sys.executable, "-m", "venv", "test_env"
-    ], check=True)
+    subprocess.run([sys.executable, "-m", "venv", "test_env"], check=True)
 
     # Install package
-    subprocess.run([
-        "test_env/bin/pip", "install", "."
-    ], check=True)
+    subprocess.run(["test_env/bin/pip", "install", "."], check=True)
 
     # Test import
-    subprocess.run([
-        "test_env/bin/python", "-c", "import thegent; print(thegent.__version__)"
-    ], check=True)
+    subprocess.run(["test_env/bin/python", "-c", "import thegent; print(thegent.__version__)"], check=True)
 
     # Test CLI
-    subprocess.run([
-        "test_env/bin/thegent", "--version"
-    ], check=True)
+    subprocess.run(["test_env/bin/thegent", "--version"], check=True)
 ```
 
 **Cross-Platform Testing:**
@@ -966,10 +1002,11 @@ def test_installation() -> None:
 strategy:
   matrix:
     os: [ubuntu-latest, macos-latest, windows-latest]
-    python-version: ['3.12', '3.13']
+    python-version: ["3.12", "3.13"]
 ```
 
 **Best Practices:**
+
 - Test installation on all platforms
 - Test CLI functionality
 - Test resource access (hooks, templates)
@@ -989,11 +1026,13 @@ strategy:
 ## macOS
 
 ### Homebrew (Recommended)
+
 \`\`\`bash
 brew install thegent
 \`\`\`
 
 ### pip
+
 \`\`\`bash
 pip install thegent
 \`\`\`
@@ -1001,11 +1040,13 @@ pip install thegent
 ## Linux
 
 ### Debian/Ubuntu
+
 \`\`\`bash
 sudo apt install thegent
 \`\`\`
 
 ### Fedora/RHEL
+
 \`\`\`bash
 sudo yum install python3-thegent
 \`\`\`
@@ -1013,17 +1054,20 @@ sudo yum install python3-thegent
 ## Windows
 
 ### Winget (Recommended)
+
 \`\`\`powershell
 winget install thegent
 \`\`\`
 
 ### pip
+
 \`\`\`powershell
 pip install thegent
 \`\`\`
 ```
 
 **Best Practices:**
+
 - Provide platform-specific instructions
 - Show multiple installation methods
 - Include verification steps
@@ -1041,6 +1085,7 @@ pip install thegent
 **Symptoms:** `thegent: command not found`
 
 **Solutions:**
+
 - macOS: Ensure `/opt/homebrew/bin` is in PATH
 - Linux: Ensure `~/.local/bin` is in PATH
 - Windows: Restart terminal after installation
@@ -1050,12 +1095,14 @@ pip install thegent
 **Symptoms:** Permission errors when running commands
 
 **Solutions:**
+
 - Check file permissions
 - Run with appropriate privileges
 - Check antivirus exclusions (Windows)
 ```
 
 **Best Practices:**
+
 - Document common issues
 - Provide step-by-step solutions
 - Include platform-specific fixes
@@ -1157,22 +1204,26 @@ pip install thegent
 ### 12.1 Enhancements to Production Packaging Plan
 
 **Add to Section 2 (Packaging & Distribution):**
+
 - Dynamic versioning implementation
 - Package data access patterns
 - Binary wheel strategy details
 - Native package manager specifics
 
 **Add to Section 5 (Error Handling):**
+
 - Platform-specific error remediation
 - Actionable error messages
 - Troubleshooting integration
 
 **Add to Section 7 (User Experience):**
+
 - First-run wizard implementation
 - Progress indicators
 - Update notification patterns
 
 **Add to Section 10 (CI/CD):**
+
 - Release automation workflows
 - Multi-channel distribution
 - Code signing automation
@@ -1180,17 +1231,20 @@ pip install thegent
 ### 12.2 New Sections to Add
 
 **Section: Update Mechanisms**
+
 - Auto-update patterns
 - Package manager detection
 - Version compatibility checking
 
 **Section: Security & Signing**
+
 - Code signing requirements
 - Notarization (macOS)
 - GPG signing (Linux)
 - Security best practices
 
 **Section: Distribution Channels**
+
 - Multi-channel strategy
 - Release coordination
 - Channel-specific considerations
@@ -1234,12 +1288,14 @@ name = "thegent-plugins"
 ```
 
 **Benefits:**
+
 - Separate versioning and distribution
 - Independent release cycles
 - Modular installation (users install only what they need)
 - Compatible with regular packages
 
 **Best Practices:**
+
 - Use native namespace packages (PEP 420) for Python 3.3+
 - Omit `__init__.py` from namespace directory
 - Each distribution must omit `__init__.py` or use compatible pattern
@@ -1273,12 +1329,14 @@ pip install -e .
 ```
 
 **Backend Support:**
+
 - `hatchling` — Full PEP 660 support
 - `setuptools` — Via `setuptools_pep660` plugin
 - `flit` — Native support
 - `pdm` — Native support
 
 **Best Practices:**
+
 - Use editable installs for development
 - Test both editable and regular installs
 - Document editable install limitations (entry points, data files may require reinstall)
@@ -1295,14 +1353,17 @@ def make_exe():
         embedded_python_extra_modules=["thegent"],
     )
 
+
 def make_embedded_resources(exe):
     return exe.to_embedded_resources()
+
 
 def make_install(exe):
     return default_python_distribution().to_embedded_resources()
 ```
 
 **Benefits:**
+
 - Single-file executables
 - No Python installation required
 - Fast startup (Rust bootloader)
@@ -1322,12 +1383,14 @@ python -m nuitka --include-data-dir=hooks=hooks thegent/cli.py
 ```
 
 **Benefits:**
+
 - Faster execution (compiled to C++)
 - Smaller binaries than PyInstaller
 - Better compatibility with CPython
 - Cross-platform support
 
 **Best Practices:**
+
 - Use PyOxidizer for maximum performance and single-file distribution
 - Use Nuitka for compatibility-focused compilation
 - Test compiled binaries on target platforms
@@ -1410,6 +1473,7 @@ pip-audit --sbom=sbom.json
 ```
 
 **Best Practices:**
+
 - Generate SBOMs for all releases
 - Include SBOMs in release artifacts
 - Use PURL for package identification
@@ -1426,13 +1490,13 @@ name: SLSA Build
 on:
   push:
     tags:
-      - 'v*'
+      - "v*"
 
 jobs:
   build:
     uses: slsa-framework/slsa-github-generator/.github/workflows/builder_go_slsa3.yml@v1.0.0
     with:
-      go-version: '1.21'
+      go-version: "1.21"
 ```
 
 **Cosign** — Container and artifact signing:
@@ -1468,6 +1532,7 @@ osv-scanner --offline --download-offline-databases ./thegent
 ```
 
 **Best Practices:**
+
 - Sign all release artifacts (wheels, SBOMs, containers)
 - Use keyless signing (Sigstore) for simplicity
 - Generate SBOMs for every release
@@ -1481,6 +1546,7 @@ osv-scanner --offline --download-offline-databases ./thegent
 ### 15.1 Principles
 
 **Deterministic Builds:**
+
 - Same source → same binary (bit-for-bit)
 - No timestamps in binaries
 - Deterministic file ordering
@@ -1532,6 +1598,7 @@ reprotest 'python -m build --wheel' dist/*.whl
 ```
 
 **Best Practices:**
+
 - Use `SOURCE_DATE_EPOCH` environment variable
 - Pin all build dependencies
 - Use deterministic file ordering
@@ -1585,8 +1652,8 @@ jobs:
 ```yaml
 env:
   # Build selection
-  CIBW_BUILD_SKIP: "cp38-*"  # Skip Python 3.8
-  CIBW_ARCHS: "x86_64 arm64"  # Specific architectures
+  CIBW_BUILD_SKIP: "cp38-*" # Skip Python 3.8
+  CIBW_ARCHS: "x86_64 arm64" # Specific architectures
 
   # Build customization
   CIBW_BEFORE_BUILD: "pip install build-requirements.txt"
@@ -1617,7 +1684,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        python-version: ['3.10', '3.11', '3.12']
+        python-version: ["3.10", "3.11", "3.12"]
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -1670,7 +1737,7 @@ name: Release
 on:
   push:
     tags:
-      - 'v*'
+      - "v*"
 
 jobs:
   build:
@@ -1719,6 +1786,7 @@ jobs:
 ```
 
 **Best Practices:**
+
 - Build for all target platforms in parallel
 - Test wheels before publishing
 - Sign all release artifacts
@@ -1738,10 +1806,12 @@ jobs:
 # thegent/__init__.py
 """Lazy import pattern for faster startup."""
 
+
 def __getattr__(name: str):
     """Lazy import for submodules."""
     if name == "platform":
         from thegent import platform
+
         return platform
     raise AttributeError(f"module {__name__!r} has no attribute {name!r}")
 ```
@@ -1797,6 +1867,7 @@ pip install --only-binary=:all: thegent
 ```
 
 **Best Practices:**
+
 - Provide wheels for all platforms
 - Use lazy imports for optional features
 - Minimize package size (exclude tests, docs)
@@ -1818,6 +1889,7 @@ import sys
 import tempfile
 from pathlib import Path
 
+
 def test_installation():
     """Test package installation."""
     with tempfile.TemporaryDirectory() as tmpdir:
@@ -1835,7 +1907,7 @@ def test_installation():
             [str(python), "-c", "import thegent; print(thegent.__version__)"],
             capture_output=True,
             text=True,
-            check=True
+            check=True,
         )
         assert result.stdout.strip() != ""
 ```
@@ -1865,14 +1937,19 @@ def test_package_resources():
 import pytest
 from thegent.platform import detect_platform, Platform
 
-@pytest.mark.parametrize("platform_name,expected", [
-    ("Linux", Platform.LINUX),
-    ("Darwin", Platform.MACOS),
-    ("Windows", Platform.WINDOWS),
-])
+
+@pytest.mark.parametrize(
+    "platform_name,expected",
+    [
+        ("Linux", Platform.LINUX),
+        ("Darwin", Platform.MACOS),
+        ("Windows", Platform.WINDOWS),
+    ],
+)
 def test_platform_detection(monkeypatch, platform_name, expected):
     """Test platform detection."""
     import platform
+
     monkeypatch.setattr(platform, "system", lambda: platform_name)
     assert detect_platform() == expected
 ```
@@ -1894,7 +1971,7 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-20.04, macos-12, windows-2022]
-        python-version: ['3.10', '3.11', '3.12']
+        python-version: ["3.10", "3.11", "3.12"]
 
     steps:
       - uses: actions/download-artifact@v4
@@ -1911,6 +1988,7 @@ jobs:
 ```
 
 **Best Practices:**
+
 - Test installation in clean environments
 - Test resource access (hooks, templates)
 - Test platform-specific code paths
@@ -1936,7 +2014,7 @@ from tuf.ngclient import Updater
 updater = Updater(
     metadata_dir="./metadata",
     metadata_base_url="https://thegent.example.com/metadata/",
-    target_base_url="https://thegent.example.com/targets/"
+    target_base_url="https://thegent.example.com/targets/",
 )
 
 # Refresh metadata
@@ -1948,18 +2026,21 @@ updater.download_target(target, "thegent.whl")
 ```
 
 **TUF Roles:**
+
 - **Root** — Defines trusted keys and roles
 - **Timestamp** — Indicates latest snapshot metadata
 - **Snapshot** — Lists available targets metadata
 - **Targets** — Lists actual target files
 
 **Benefits:**
+
 - Protection against repository compromise
 - Key rotation support
 - Rollback prevention
 - Freeze attack prevention
 
 **Best Practices:**
+
 - Use TUF for critical update mechanisms
 - Implement key rotation policies
 - Use threshold signatures for security
@@ -2015,7 +2096,7 @@ envelope.payload = {
     "_type": "https://in-toto.io/Statement/v1",
     "subject": [{"name": "thegent.whl", "digest": {"sha256": "..."}}],
     "predicateType": "https://slsa.dev/provenance/v1",
-    "predicate": {...}
+    "predicate": {...},
 }
 
 # Sign attestation
@@ -2023,6 +2104,7 @@ envelope.sign(key)
 ```
 
 **Best Practices:**
+
 - Generate attestations for all builds
 - Include comprehensive build metadata
 - Sign attestations with cosign
@@ -2053,26 +2135,21 @@ envelope.sign(key)
 from dsse import DSSE
 
 # Create envelope
-envelope = DSSE.create_envelope(
-    payload=b"payload data",
-    payload_type="application/json",
-    signer=signer
-)
+envelope = DSSE.create_envelope(payload=b"payload data", payload_type="application/json", signer=signer)
 
 # Verify envelope
-is_valid = DSSE.verify_envelope(
-    envelope=envelope,
-    verifier=verifier
-)
+is_valid = DSSE.verify_envelope(envelope=envelope, verifier=verifier)
 ```
 
 **Benefits:**
+
 - Supports arbitrary message encodings
 - Authenticates message and type
 - Avoids canonicalization issues
 - Allows any crypto primitives
 
 **Best Practices:**
+
 - Use DSSE for signing attestations
 - Store payload type explicitly
 - Use key IDs for key management
@@ -2088,7 +2165,7 @@ is_valid = DSSE.verify_envelope(
 
 ```yaml
 name: thegent
-version: '0.1.0'
+version: "0.1.0"
 summary: Agentic orchestration & governance platform
 description: |
   Comprehensive platform for AI agent lifecycle management,
@@ -2136,6 +2213,7 @@ snapcraft upload --release=stable thegent_0.1.0_amd64.snap
 ```
 
 **Best Practices:**
+
 - Use strict confinement for security
 - Define required plugs explicitly
 - Test snap in clean environment
@@ -2152,11 +2230,7 @@ snapcraft upload --release=stable thegent_0.1.0_amd64.snap
   "runtime-version": "23.08",
   "sdk": "org.freedesktop.Sdk",
   "command": "thegent",
-  "finish-args": [
-    "--share=network",
-    "--socket=x11",
-    "--filesystem=home"
-  ],
+  "finish-args": ["--share=network", "--socket=x11", "--filesystem=home"],
   "modules": [
     {
       "name": "thegent",
@@ -2191,6 +2265,7 @@ flatpak build-bundle repo thegent.flatpak org.thegent
 ```
 
 **Best Practices:**
+
 - Use stable runtime versions
 - Minimize finish-args for security
 - Test in clean environment
@@ -2226,6 +2301,7 @@ python-appimage build thegent
 ```
 
 **Best Practices:**
+
 - Include desktop file for integration
 - Test on multiple distributions
 - Sign AppImage with GPG
@@ -2238,6 +2314,7 @@ python-appimage build thegent
 ### 21.1 uv — Ultra-Fast Python Package Manager
 
 **Features:**
+
 - 10-100x faster than pip
 - Single tool replacing pip, pip-tools, pipx, poetry, pyenv, twine, virtualenv
 - Universal lockfile support
@@ -2288,6 +2365,7 @@ dev-dependencies = [
 ```
 
 **Best Practices:**
+
 - Use uv for faster dependency resolution
 - Leverage universal lockfile
 - Use uvx for one-off tool execution
@@ -2329,6 +2407,7 @@ thegent-serve = "thegent.server:main"
 ```
 
 **Best Practices:**
+
 - Add console script entry points
 - Test installation with pipx
 - Document pipx installation method
@@ -2381,6 +2460,7 @@ pipenv check
 ```
 
 **Best Practices:**
+
 - Use Pipfile for dependency management
 - Lock dependencies with Pipfile.lock
 - Check for vulnerabilities regularly
@@ -2459,6 +2539,7 @@ git commit -m "message"
 ```
 
 **Best Practices:**
+
 - Use pre-commit for all projects
 - Include security checks (bandit, gitleaks)
 - Format code automatically (black, ruff)
@@ -2523,6 +2604,7 @@ ruff rule E501
 ```
 
 **Best Practices:**
+
 - Use ruff instead of flake8 + plugins
 - Enable auto-fix for common issues
 - Configure per-file ignores
@@ -2571,6 +2653,7 @@ black --diff .
 ```
 
 **Best Practices:**
+
 - Use black for consistent formatting
 - Set line-length to 88 (default)
 - Include in pre-commit hooks
@@ -2627,19 +2710,19 @@ dmypy run -- src/
 from typing import Optional, Dict, List, Union
 from pathlib import Path
 
+
 def get_config_dir() -> Path:
     """Get configuration directory."""
     ...
 
-def process_data(
-    data: Dict[str, Union[str, int]],
-    options: Optional[List[str]] = None
-) -> Dict[str, str]:
+
+def process_data(data: Dict[str, Union[str, int]], options: Optional[List[str]] = None) -> Dict[str, str]:
     """Process data with options."""
     ...
 ```
 
 **Best Practices:**
+
 - Use type hints throughout codebase
 - Enable strict mode gradually
 - Use mypy daemon for faster checks
@@ -2654,6 +2737,7 @@ def process_data(
 from hypothesis import given, strategies as st
 from thegent.platform import detect_platform, Platform
 
+
 @given(st.text(min_size=1, max_size=100))
 def test_platform_detection_handles_text(platform_name: str):
     """Test platform detection handles various inputs."""
@@ -2665,10 +2749,8 @@ def test_platform_detection_handles_text(platform_name: str):
         # Acceptable if input is invalid
         pass
 
-@given(
-    st.lists(st.integers(), min_size=1, max_size=10),
-    st.integers(min_value=1, max_value=100)
-)
+
+@given(st.lists(st.integers(), min_size=1, max_size=10), st.integers(min_value=1, max_value=100))
 def test_path_operations(path_parts: List[int], max_depth: int):
     """Test path operations with various inputs."""
     # Property: path operations should be deterministic
@@ -2678,6 +2760,7 @@ def test_path_operations(path_parts: List[int], max_depth: int):
 ```
 
 **Best Practices:**
+
 - Use property-based testing for complex logic
 - Test edge cases automatically
 - Combine with unit tests
@@ -2696,13 +2779,16 @@ def test_path_operations(path_parts: List[int], max_depth: int):
 # thegent/__init__.py
 """Lazy import pattern for faster startup."""
 
+
 def __getattr__(name: str):
     """Lazy import for submodules."""
     if name == "platform":
         from thegent import platform
+
         return platform
     if name == "cli":
         from thegent import cli
+
         return cli
     raise AttributeError(f"module {__name__!r} has no attribute {name!r}")
 ```
@@ -2718,9 +2804,11 @@ def main():
     # Only import heavy modules when needed
     if "--help" in sys.argv or len(sys.argv) == 1:
         from thegent.cli.help import show_help
+
         show_help()
     elif sys.argv[1] == "run":
         from thegent.cli.run import run_command
+
         run_command(sys.argv[2:])
     # ... other commands
 ```
@@ -2730,6 +2818,7 @@ def main():
 ```python
 # Cache expensive computations
 from functools import lru_cache
+
 
 @lru_cache(maxsize=1)
 def get_platform_info() -> Dict[str, Any]:
@@ -2742,27 +2831,24 @@ def get_platform_info() -> Dict[str, Any]:
 ```
 
 **Best Practices:**
+
 - Use lazy imports for optional features
 - Defer heavy imports until needed
 - Cache expensive computations
-- Minimize imports in __init__.py
+- Minimize imports in **init**.py
 - Profile startup time
 
 ### 23.2 Memory Optimization
 
-**__slots__ for Classes:**
+\***\*slots** for Classes:\*\*
 
 ```python
 class PlatformInfo:
     """Platform information with memory optimization."""
+
     __slots__ = ("platform", "architecture", "paths")
 
-    def __init__(
-        self,
-        platform: Platform,
-        architecture: str,
-        paths: Dict[str, Path]
-    ):
+    def __init__(self, platform: Platform, architecture: str, paths: Dict[str, Path]):
         self.platform = platform
         self.architecture = architecture
         self.paths = paths
@@ -2777,13 +2863,15 @@ def walk_hooks_dir() -> Iterator[Path]:
     for path in hooks_dir.rglob("*.sh"):
         yield path
 
+
 # Usage
 for hook_file in walk_hooks_dir():
     process_hook(hook_file)
 ```
 
 **Best Practices:**
-- Use __slots__ for data classes
+
+- Use **slots** for data classes
 - Use generators for large datasets
 - Avoid loading entire files into memory
 - Use streaming for large operations
@@ -2830,6 +2918,7 @@ python -m zipfile -c wheel.whl -l 9 dist/
 ```
 
 **Best Practices:**
+
 - Exclude tests and development files
 - Strip debug symbols in production
 - Use maximum compression
@@ -2895,6 +2984,7 @@ jobs:
 ```
 
 **Best Practices:**
+
 - Automate package manager updates
 - Use GitOps for version control
 - Test package updates before merging
@@ -2944,10 +3034,12 @@ jobs:
 from typing import Dict
 import os
 
+
 def is_feature_enabled(feature: str) -> bool:
     """Check if feature is enabled."""
     env_var = f"THGENT_FEATURE_{feature.upper()}"
     return os.getenv(env_var, "false").lower() == "true"
+
 
 # Usage
 if is_feature_enabled("new_ui"):
@@ -2957,6 +3049,7 @@ else:
 ```
 
 **Best Practices:**
+
 - Use canary releases for testing
 - Implement feature flags
 - Monitor canary metrics
@@ -3014,6 +3107,7 @@ RUN python -m build --wheel
 ```
 
 **Best Practices:**
+
 - Cache dependencies separately from source
 - Use content-based cache keys
 - Cache build artifacts
@@ -3031,6 +3125,7 @@ RUN python -m build --wheel
 import structlog
 
 logger = structlog.get_logger()
+
 
 def track_installation():
     """Track installation events."""
@@ -3054,6 +3149,7 @@ sentry_sdk.init(
     environment="production",
 )
 
+
 def report_error(error: Exception, context: Dict[str, Any]):
     """Report error with context."""
     with sentry_sdk.push_scope() as scope:
@@ -3062,6 +3158,7 @@ def report_error(error: Exception, context: Dict[str, Any]):
 ```
 
 **Best Practices:**
+
 - Use structured logging
 - Track key metrics (installations, errors)
 - Respect user privacy (opt-in telemetry)
@@ -3077,6 +3174,7 @@ def report_error(error: Exception, context: Dict[str, Any]):
 from typing import Dict, Any
 from thegent.platform import detect_platform
 
+
 def get_health_status() -> Dict[str, Any]:
     """Get system health status."""
     return {
@@ -3088,7 +3186,7 @@ def get_health_status() -> Dict[str, Any]:
             "dependencies": check_dependencies(),
             "paths": check_paths(),
             "permissions": check_permissions(),
-        }
+        },
     }
 ```
 
@@ -3107,6 +3205,7 @@ thegent doctor
 ```
 
 **Best Practices:**
+
 - Provide health check command
 - Include actionable diagnostics
 - Test health checks regularly
@@ -3141,6 +3240,7 @@ THIRD_PARTY_LICENSES = {
     # ... more licenses
 }
 
+
 def generate_license_file() -> str:
     """Generate LICENSE file with all attributions."""
     content = ["thegent License: MIT\n"]
@@ -3150,6 +3250,7 @@ def generate_license_file() -> str:
 ```
 
 **Best Practices:**
+
 - Document all licenses
 - Include license files in distribution
 - Verify license compatibility
@@ -3169,6 +3270,7 @@ EXPORT_CONTROL = {
     "restricted_countries": [],
 }
 
+
 def check_export_compliance() -> bool:
     """Check export control compliance."""
     # Implement compliance checks
@@ -3176,6 +3278,7 @@ def check_export_compliance() -> bool:
 ```
 
 **Best Practices:**
+
 - Classify software for export control
 - Document encryption usage
 - Comply with international regulations
@@ -3242,6 +3345,7 @@ poetry export -f requirements.txt --output requirements.txt
 ```
 
 **Best Practices:**
+
 - Use Poetry for dependency management
 - Lock dependencies with poetry.lock
 - Use dependency groups for organization
@@ -3303,6 +3407,7 @@ pdm publish
 ```
 
 **Best Practices:**
+
 - Use PDM for PEP 621 compliance
 - Leverage fast dependency resolver
 - Use optional dependencies for groups
@@ -3368,6 +3473,7 @@ hatch publish
 ```
 
 **Best Practices:**
+
 - Use Hatch for modern project management
 - Leverage environment management
 - Use standardized build system
@@ -3434,6 +3540,7 @@ conda install thegent
 ```
 
 **Best Practices:**
+
 - Use Conda for binary packages
 - Support conda-forge distribution
 - Provide comprehensive meta.yaml
@@ -3522,6 +3629,7 @@ choco search thegent
 ```
 
 **Best Practices:**
+
 - Provide Chocolatey package
 - Use proper nuspec metadata
 - Include checksums for security
@@ -3576,6 +3684,7 @@ scoop list
 ```
 
 **Best Practices:**
+
 - Provide Scoop manifest
 - Support auto-update
 - Use portable installation
@@ -3614,6 +3723,7 @@ import sys
 # Import code to fuzz
 from thegent.platform import detect_platform, Platform
 
+
 def TestOneInput(data):
     """Fuzz platform detection."""
     fdp = atheris.FuzzedDataProvider(data)
@@ -3629,9 +3739,11 @@ def TestOneInput(data):
         # Acceptable exceptions
         pass
 
+
 def main():
     atheris.Setup(sys.argv, TestOneInput)
     atheris.Fuzz()
+
 
 if __name__ == "__main__":
     main()
@@ -3653,6 +3765,7 @@ sanitizers:
 ```
 
 **Best Practices:**
+
 - Integrate OSS-Fuzz for continuous fuzzing
 - Write fuzzing targets for critical code
 - Monitor fuzzing results regularly
@@ -3701,6 +3814,7 @@ mut.py --target thegent.platform --unit-test tests.test_platform --operator AOR 
 ```
 
 **Best Practices:**
+
 - Use mutation testing to evaluate test quality
 - Aim for high mutation scores (>80%)
 - Fix tests that don't kill mutants
@@ -3783,6 +3897,7 @@ chaos validate experiment.json
 ```
 
 **Best Practices:**
+
 - Use chaos engineering for resilience testing
 - Start with safe experiments
 - Define clear steady-state hypotheses
@@ -3831,12 +3946,10 @@ DISTRIBUTION_CHANNELS = {
     },
 }
 
+
 def distribute_all_channels(version: str):
     """Distribute to all enabled channels."""
-    channels = sorted(
-        [c for c in DISTRIBUTION_CHANNELS.items() if c[1]["enabled"]],
-        key=lambda x: x[1]["priority"]
-    )
+    channels = sorted([c for c in DISTRIBUTION_CHANNELS.items() if c[1]["enabled"]], key=lambda x: x[1]["priority"])
 
     for channel_name, config in channels:
         print(f"Distributing to {channel_name}...")
@@ -3844,6 +3957,7 @@ def distribute_all_channels(version: str):
 ```
 
 **Best Practices:**
+
 - Support multiple distribution channels
 - Prioritize channels by user preference
 - Automate multi-channel distribution
@@ -3877,6 +3991,7 @@ ROLLOUT_PHASES = {
     },
 }
 
+
 def should_release_to_user(user_id: str, phase: str) -> bool:
     """Determine if user should receive release."""
     config = ROLLOUT_PHASES[phase]
@@ -3885,6 +4000,7 @@ def should_release_to_user(user_id: str, phase: str) -> bool:
 ```
 
 **Best Practices:**
+
 - Implement staged rollouts
 - Monitor metrics at each phase
 - Support rollback mechanisms
@@ -3919,6 +4035,7 @@ AB_TEST_CONFIG = {
     ],
 }
 
+
 def get_version_for_user(user_id: str) -> str:
     """Get version for user based on A/B test."""
     user_hash = hash(user_id) % 100
@@ -3928,6 +4045,7 @@ def get_version_for_user(user_id: str) -> str:
 ```
 
 **Best Practices:**
+
 - Use A/B testing for major releases
 - Monitor key metrics
 - Support gradual rollout
@@ -3949,16 +4067,20 @@ from enum import Enum
 from typing import Optional, Dict, Any
 from dataclasses import dataclass
 
+
 class ErrorCode(Enum):
     """Error codes for thegent."""
+
     PLATFORM_DETECTION_FAILED = "PLATFORM_001"
     PATH_RESOLUTION_FAILED = "PATH_001"
     CONFIG_LOAD_FAILED = "CONFIG_001"
     HOOK_EXECUTION_FAILED = "HOOK_001"
 
+
 @dataclass
 class ThegentError(Exception):
     """Base error class for thegent."""
+
     code: ErrorCode
     message: str
     details: Optional[Dict[str, Any]] = None
@@ -3976,8 +4098,10 @@ class ThegentError(Exception):
             "cause": str(self.cause) if self.cause else None,
         }
 
+
 class PlatformDetectionError(ThegentError):
     """Platform detection failed."""
+
     def __init__(self, cause: Optional[Exception] = None):
         super().__init__(
             code=ErrorCode.PLATFORM_DETECTION_FAILED,
@@ -3997,6 +4121,7 @@ except Exception as e:
 ```
 
 **Best Practices:**
+
 - Use structured error classes
 - Include error codes for programmatic handling
 - Provide actionable error messages
@@ -4017,6 +4142,7 @@ from tenacity import (
     retry_if_exception_type,
 )
 
+
 @retry(
     stop=stop_after_attempt(3),
     wait=wait_exponential(multiplier=1, min=1, max=10),
@@ -4025,10 +4151,12 @@ from tenacity import (
 def fetch_with_retry(url: str) -> bytes:
     """Fetch URL with automatic retry."""
     import httpx
+
     with httpx.Client(timeout=5.0) as client:
         response = client.get(url)
         response.raise_for_status()
         return response.content
+
 
 def recover_from_error(error: Exception) -> bool:
     """Attempt to recover from error."""
@@ -4045,6 +4173,7 @@ def recover_from_error(error: Exception) -> bool:
 ```
 
 **Best Practices:**
+
 - Implement retry logic for transient failures
 - Use exponential backoff
 - Distinguish recoverable vs. non-recoverable errors
@@ -4081,6 +4210,7 @@ ERROR_MESSAGES = {
     },
 }
 
+
 def format_user_error(error: ThegentError) -> str:
     """Format error for user display."""
     config = ERROR_MESSAGES.get(error.code, {})
@@ -4102,6 +4232,7 @@ def format_user_error(error: ThegentError) -> str:
 ```
 
 **Best Practices:**
+
 - Provide clear, actionable error messages
 - Include suggestions for resolution
 - Link to documentation
@@ -4125,16 +4256,17 @@ import json
 import yaml
 import os
 
+
 class ConfigManager:
     """Manages hierarchical configuration."""
 
     CONFIG_SOURCES = [
-        "defaults",      # Built-in defaults
-        "system",        # System-wide config
-        "user",          # User config
-        "project",       # Project config
-        "environment",   # Environment variables
-        "cli",           # Command-line arguments
+        "defaults",  # Built-in defaults
+        "system",  # System-wide config
+        "user",  # User config
+        "project",  # Project config
+        "environment",  # Environment variables
+        "cli",  # Command-line arguments
     ]
 
     def __init__(self):
@@ -4194,6 +4326,7 @@ class ConfigManager:
 ```
 
 **Best Practices:**
+
 - Support hierarchical configuration
 - Define clear precedence order
 - Support multiple file formats
@@ -4210,6 +4343,7 @@ class ConfigManager:
 from pydantic import BaseModel, Field, validator
 from typing import Optional, List
 from pathlib import Path
+
 
 class ConfigSchema(BaseModel):
     """Configuration schema."""
@@ -4237,12 +4371,14 @@ class ConfigSchema(BaseModel):
     class Config:
         extra = "forbid"  # Reject unknown fields
 
+
 def validate_config(config_dict: Dict[str, Any]) -> ConfigSchema:
     """Validate configuration dictionary."""
     return ConfigSchema(**config_dict)
 ```
 
 **Best Practices:**
+
 - Use schema validation for configuration
 - Provide clear validation errors
 - Support configuration documentation
@@ -4315,7 +4451,7 @@ This research provides comprehensive, in-depth guidance for building and deployi
 ### Performance Optimization (Sections 17, 23)
 
 41. **Startup Time** — Lazy imports, deferred CLI loading, module caching
-42. **Memory Optimization** — __slots__, generators, streaming patterns
+42. **Memory Optimization** — **slots**, generators, streaming patterns
 43. **Binary Size** — Exclude unnecessary files, strip debug symbols, compression
 44. **Wheel Optimization** — Lazy loading, size reduction, parallel installation
 
@@ -4380,6 +4516,7 @@ This research provides comprehensive, in-depth guidance for building and deployi
 ### Key Recommendations
 
 **Immediate Priorities:**
+
 - Implement modern Python packaging with `pyproject.toml`
 - Set up comprehensive CI/CD with matrix builds
 - Generate SBOMs for all releases
@@ -4389,6 +4526,7 @@ This research provides comprehensive, in-depth guidance for building and deployi
 - Implement configuration validation
 
 **Short-Term Goals:**
+
 - Support multiple distribution platforms (Snap, Flatpak, AppImage, Chocolatey, Scoop)
 - Implement TUF for secure updates
 - Add comprehensive health checks and diagnostics
@@ -4399,6 +4537,7 @@ This research provides comprehensive, in-depth guidance for building and deployi
 - Add multi-channel distribution automation
 
 **Long-Term Vision:**
+
 - Achieve SLSA Build Level 3+ compliance
 - Implement in-toto attestations for all builds
 - Support all major package managers natively (Poetry, PDM, Hatch, Conda, uv, pipx, pipenv)

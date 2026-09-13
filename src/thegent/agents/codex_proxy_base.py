@@ -5,7 +5,6 @@ and utility functions extracted from the codex_proxy monolith.
 """
 
 import logging
-import os
 import shutil
 import subprocess
 import tempfile
@@ -310,7 +309,12 @@ def _run_with_activity_monitoring(
         with lock:
             last_activity["t"] = time.monotonic()
 
-    def _drain(stream, collector: list[str], cb: Callable[[str], None] | None, filter_noise: bool) -> None:
+    def _drain(
+        stream,
+        collector: list[str],
+        cb: Callable[[str], None] | None,
+        filter_noise: bool,
+    ) -> None:
         for line in stream:
             clean = strip_ansi(line)
             if filter_noise and _is_ignorable_stderr_line(clean):

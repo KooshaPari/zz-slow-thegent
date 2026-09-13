@@ -43,7 +43,10 @@ def _make_model_list() -> list[dict]:
         },
         {
             "model_name": "claude-opus-4.6",
-            "litellm_params": {"model": "anthropic/claude-opus-4.6", "api_key": "dummy"},
+            "litellm_params": {
+                "model": "anthropic/claude-opus-4.6",
+                "api_key": "dummy",
+            },
         },
         {
             "model_name": "gemini-3-flash",

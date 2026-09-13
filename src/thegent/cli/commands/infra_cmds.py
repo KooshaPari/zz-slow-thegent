@@ -90,12 +90,12 @@ def cockpit_cmd(*args: Any, **kwargs: Any) -> int:
     ps/registry lookup so tests can monkey-patch the canonical home.
     Pinned by :class:`tests.test_unit_cli_impl_dag.TestCockpitCmd`.
     """
+    from thegent.cli.commands.impl import ps_impl
     from thegent.config import ThegentSettings
     from thegent.execution import CheckpointRegistry, CircuitBreakerRegistry
-    from thegent.cli.commands.impl import ps_impl
 
     settings = ThegentSettings()
-    sessions = ps_impl(session_dir=getattr(settings, "session_dir", None))
+    ps_impl(session_dir=getattr(settings, "session_dir", None))
     _registry: Any = None
     try:
         from thegent.execution import RunRegistry

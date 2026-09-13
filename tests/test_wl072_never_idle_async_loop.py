@@ -9,7 +9,6 @@ creating and destroying one on every gardening tick via asyncio.run().
 from __future__ import annotations
 
 import asyncio
-import threading
 from pathlib import Path
 from typing import Any
 from unittest.mock import AsyncMock, MagicMock, patch
@@ -89,8 +88,14 @@ class TestNeverIdleLoopPersistentEventLoop:
         mock_gardening.run_step = AsyncMock(return_value=mock_result)
 
         with (
-            patch("thegent.sitback.never_idle.BackgroundTaskWatcher", return_value=mock_watcher),
-            patch("thegent.sitback.never_idle.GardeningManager", return_value=mock_gardening),
+            patch(
+                "thegent.sitback.never_idle.BackgroundTaskWatcher",
+                return_value=mock_watcher,
+            ),
+            patch(
+                "thegent.sitback.never_idle.GardeningManager",
+                return_value=mock_gardening,
+            ),
             patch("asyncio.run") as mock_asyncio_run,
         ):
             nil = NeverIdleLoop(session_dir=Path("/tmp/s"), project_root=Path("/tmp"))
@@ -122,8 +127,14 @@ class TestNeverIdleLoopPersistentEventLoop:
             return original_threadsafe(coro, loop)
 
         with (
-            patch("thegent.sitback.never_idle.BackgroundTaskWatcher", return_value=mock_watcher),
-            patch("thegent.sitback.never_idle.GardeningManager", return_value=mock_gardening),
+            patch(
+                "thegent.sitback.never_idle.BackgroundTaskWatcher",
+                return_value=mock_watcher,
+            ),
+            patch(
+                "thegent.sitback.never_idle.GardeningManager",
+                return_value=mock_gardening,
+            ),
             patch("asyncio.run_coroutine_threadsafe", side_effect=capturing_threadsafe),
         ):
             nil = NeverIdleLoop(session_dir=Path("/tmp/s"), project_root=Path("/tmp"))
@@ -155,8 +166,14 @@ class TestNeverIdleLoopPersistentEventLoop:
             return original_threadsafe(coro, loop)
 
         with (
-            patch("thegent.sitback.never_idle.BackgroundTaskWatcher", return_value=mock_watcher),
-            patch("thegent.sitback.never_idle.GardeningManager", return_value=mock_gardening),
+            patch(
+                "thegent.sitback.never_idle.BackgroundTaskWatcher",
+                return_value=mock_watcher,
+            ),
+            patch(
+                "thegent.sitback.never_idle.GardeningManager",
+                return_value=mock_gardening,
+            ),
             patch("asyncio.run_coroutine_threadsafe", side_effect=capturing_threadsafe),
         ):
             nil = NeverIdleLoop(session_dir=Path("/tmp/s"), project_root=Path("/tmp"))
@@ -182,13 +199,22 @@ class TestNeverIdleLoopPersistentEventLoop:
         mock_watcher.run_once.return_value = []
 
         step_name = NeverIdleLoop.GARDENING_STEPS[0]
-        mock_result: dict[str, Any] = {"needs_attention": True, "detail": "something bad"}
+        mock_result: dict[str, Any] = {
+            "needs_attention": True,
+            "detail": "something bad",
+        }
         mock_gardening = MagicMock()
         mock_gardening.run_step = AsyncMock(return_value=mock_result)
 
         with (
-            patch("thegent.sitback.never_idle.BackgroundTaskWatcher", return_value=mock_watcher),
-            patch("thegent.sitback.never_idle.GardeningManager", return_value=mock_gardening),
+            patch(
+                "thegent.sitback.never_idle.BackgroundTaskWatcher",
+                return_value=mock_watcher,
+            ),
+            patch(
+                "thegent.sitback.never_idle.GardeningManager",
+                return_value=mock_gardening,
+            ),
         ):
             nil = NeverIdleLoop(session_dir=Path("/tmp/s"), project_root=Path("/tmp"))
             nil._run_once()
@@ -212,8 +238,14 @@ class TestNeverIdleLoopPersistentEventLoop:
         mock_gardening.get_summary.return_value = {}
 
         with (
-            patch("thegent.sitback.never_idle.BackgroundTaskWatcher", return_value=mock_watcher),
-            patch("thegent.sitback.never_idle.GardeningManager", return_value=mock_gardening),
+            patch(
+                "thegent.sitback.never_idle.BackgroundTaskWatcher",
+                return_value=mock_watcher,
+            ),
+            patch(
+                "thegent.sitback.never_idle.GardeningManager",
+                return_value=mock_gardening,
+            ),
         ):
             nil = NeverIdleLoop(session_dir=Path("/tmp/s"), project_root=Path("/tmp"), sleep_interval=1)
             nil.start()
@@ -236,8 +268,14 @@ class TestNeverIdleLoopPersistentEventLoop:
         mock_gardening.run_step = AsyncMock(return_value={"needs_attention": False})
 
         with (
-            patch("thegent.sitback.never_idle.BackgroundTaskWatcher", return_value=mock_watcher),
-            patch("thegent.sitback.never_idle.GardeningManager", return_value=mock_gardening),
+            patch(
+                "thegent.sitback.never_idle.BackgroundTaskWatcher",
+                return_value=mock_watcher,
+            ),
+            patch(
+                "thegent.sitback.never_idle.GardeningManager",
+                return_value=mock_gardening,
+            ),
         ):
             nil = NeverIdleLoop(session_dir=Path("/tmp/s"), project_root=Path("/tmp"))
             nil._run_once()

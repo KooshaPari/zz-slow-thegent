@@ -6,22 +6,24 @@ This guide documents the complete type checker setup for Python projects using t
 
 We use **multiple type checkers** for different purposes:
 
-| Tool | Purpose | Speed | Use Case |
-|------|---------|-------|----------|
-| **Pyright/Pylance** | IDE IntelliSense | Moderate | Real-time IDE feedback |
-| **ty** | Fast CI checking | Very Fast (10-50x) | Quick development feedback |
-| **zuban** | Fast CI checking | Very Fast | Complementary to ty |
-| **basedpyright** | Strict checking | Moderate | CI/commit strict validation |
-| **mypy** | Strict checking | Moderate | Additional strict validation |
+| Tool                | Purpose          | Speed              | Use Case                     |
+| ------------------- | ---------------- | ------------------ | ---------------------------- |
+| **Pyright/Pylance** | IDE IntelliSense | Moderate           | Real-time IDE feedback       |
+| **ty**              | Fast CI checking | Very Fast (10-50x) | Quick development feedback   |
+| **zuban**           | Fast CI checking | Very Fast          | Complementary to ty          |
+| **basedpyright**    | Strict checking  | Moderate           | CI/commit strict validation  |
+| **mypy**            | Strict checking  | Moderate           | Additional strict validation |
 
 ## Architecture: Dual Approach
 
 ### IDE (Real-time)
+
 - **Pyright/Pylance** for IntelliSense
 - Optimized with aggressive exclusions
 - Configuration: `pyrightconfig.json` + `.vscode/settings.json`
 
 ### CI/Linting (Batch)
+
 - **Fast path**: `ty` + `zuban` (10-50x faster than Pyright)
 - **Strict path**: `basedpyright` + `mypy` (comprehensive checking)
 
@@ -42,6 +44,7 @@ dev = [
 ```
 
 Install:
+
 ```bash
 uv sync --extra dev
 ```
@@ -100,6 +103,7 @@ disallow_incomplete_defs = false
 #### pyrightconfig.json (IDE)
 
 Copy from template:
+
 ```bash
 cp thegent/templates/quality/pyrightconfig.json ./pyrightconfig.json
 ```
@@ -107,6 +111,7 @@ cp thegent/templates/quality/pyrightconfig.json ./pyrightconfig.json
 #### basedpyrightconfig.json (Optional)
 
 For strict checking configuration:
+
 ```bash
 cp thegent/templates/quality/basedpyrightconfig.json ./basedpyrightconfig.json
 ```
@@ -114,11 +119,13 @@ cp thegent/templates/quality/basedpyrightconfig.json ./basedpyrightconfig.json
 ### 3. Configure IDE Settings
 
 Copy VS Code/Cursor settings:
+
 ```bash
 cp -r thegent/templates/ide/.vscode ./my-project/.vscode
 ```
 
 Ensure Pylance is enabled:
+
 ```json
 {
   "python.languageServer": "Pylance"
@@ -169,26 +176,32 @@ repos:
 ## Usage Workflows
 
 ### Development (IDE)
+
 - **Real-time**: Pylance provides IntelliSense as you type
 - **Performance**: Optimized with `pyrightconfig.json` exclusions
 - **No action needed**: Works automatically
 
 ### Pre-commit
+
 - **Fast**: `ty` check (quick feedback)
 - **Strict**: `basedpyright` check (comprehensive)
 
 ### CI Fast Path
+
 ```bash
 task lint:type
 ```
+
 - Runs: `ty` + `zuban`
 - Speed: 10-50x faster than Pyright
 - Use: Quick feedback during development
 
 ### CI Strict Path
+
 ```bash
 task lint:strict
 ```
+
 - Runs: `basedpyright` + `mypy`
 - Speed: Moderate (comprehensive checking)
 - Use: Before commits, CI pipelines
@@ -197,19 +210,19 @@ task lint:strict
 
 ### pyproject.toml Sections
 
-| Section | Purpose | Tools |
-|---------|---------|-------|
-| `[tool.ty]` | Fast type checker config | ty |
+| Section               | Purpose                    | Tools        |
+| --------------------- | -------------------------- | ------------ |
+| `[tool.ty]`           | Fast type checker config   | ty           |
 | `[tool.basedpyright]` | Strict type checker config | basedpyright |
-| `[tool.mypy]` | Additional strict checking | mypy |
+| `[tool.mypy]`         | Additional strict checking | mypy         |
 
 ### Standalone Config Files
 
-| File | Purpose | Tool |
-|------|---------|------|
-| `pyrightconfig.json` | IDE IntelliSense | Pyright/Pylance |
-| `basedpyrightconfig.json` | Strict checking (optional) | basedpyright |
-| `.vscode/settings.json` | IDE settings | VS Code/Cursor |
+| File                      | Purpose                    | Tool            |
+| ------------------------- | -------------------------- | --------------- |
+| `pyrightconfig.json`      | IDE IntelliSense           | Pyright/Pylance |
+| `basedpyrightconfig.json` | Strict checking (optional) | basedpyright    |
+| `.vscode/settings.json`   | IDE settings               | VS Code/Cursor  |
 
 ### Zuban Configuration
 
@@ -224,13 +237,13 @@ zuban check src/ \
 
 ## Performance Comparison
 
-| Checker | Speed | Use Case |
-|---------|-------|----------|
-| ty | ⚡⚡⚡⚡⚡ Very Fast | Fast CI feedback |
-| zuban | ⚡⚡⚡⚡⚡ Very Fast | Fast CI feedback |
-| Pyright | ⚡⚡⚡ Moderate | IDE IntelliSense |
-| basedpyright | ⚡⚡⚡ Moderate | Strict CI checking |
-| mypy | ⚡⚡⚡ Moderate | Strict CI checking |
+| Checker      | Speed                | Use Case           |
+| ------------ | -------------------- | ------------------ |
+| ty           | ⚡⚡⚡⚡⚡ Very Fast | Fast CI feedback   |
+| zuban        | ⚡⚡⚡⚡⚡ Very Fast | Fast CI feedback   |
+| Pyright      | ⚡⚡⚡ Moderate      | IDE IntelliSense   |
+| basedpyright | ⚡⚡⚡ Moderate      | Strict CI checking |
+| mypy         | ⚡⚡⚡ Moderate      | Strict CI checking |
 
 ## Troubleshooting
 

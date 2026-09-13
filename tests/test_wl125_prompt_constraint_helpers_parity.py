@@ -3,7 +3,9 @@ from __future__ import annotations
 from thegent.cli.commands import impl
 
 
-def test_wl125_inject_time_constraint_wrapper_delegates_to_prompt_helper(monkeypatch) -> None:
+def test_wl125_inject_time_constraint_wrapper_delegates_to_prompt_helper(
+    monkeypatch,
+) -> None:
     captured: dict[str, object] = {}
 
     def _fake(
@@ -23,7 +25,10 @@ def test_wl125_inject_time_constraint_wrapper_delegates_to_prompt_helper(monkeyp
         )
         return "wrapped-prompt"
 
-    monkeypatch.setattr("thegent.cli.commands.impl.prompt_constraint_helpers.inject_time_constraint", _fake)
+    monkeypatch.setattr(
+        "thegent.cli.commands.impl.prompt_constraint_helpers.inject_time_constraint",
+        _fake,
+    )
 
     result = impl._inject_time_constraint("hello", 30, summary_mode=False)
 

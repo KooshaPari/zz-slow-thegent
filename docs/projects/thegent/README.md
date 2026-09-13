@@ -39,23 +39,27 @@ thegent/
 ## Key Components
 
 ### 1. Agent Registry
+
 - Agent configuration and discovery
 - Registration and metadata management
 - See: `docs/AGENT_REGISTRY_DESIGN.md`
 
 ### 2. Hook System
+
 - Event-driven middleware
 - Request/response hooks
 - Error handling hooks
 - See: `docs/architecture/` for detailed design
 
 ### 3. Memory System
+
 - JSONL-based memory storage
 - Can migrate to SQLite (Phase 6)
 - Semantic memory relationships
 - See: `docs/guides/PHASE_6_MEMORY_MIGRATION_GUIDE.md`
 
 ### 4. Runtime
+
 - Agent execution engine
 - Tool binding and invocation
 - Error handling and recovery
@@ -64,6 +68,7 @@ thegent/
 ## Development
 
 ### Setup
+
 ```bash
 cd thegent
 cargo build
@@ -71,12 +76,14 @@ cargo test
 ```
 
 ### Running Tests
+
 ```bash
 cargo test --workspace
 cargo test --doc  # Documentation tests
 ```
 
 ### Building Documentation
+
 ```bash
 cargo doc --open
 ```

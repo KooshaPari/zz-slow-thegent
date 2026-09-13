@@ -12,7 +12,7 @@ Incremental check/record subcommands.
 
 ### Methods
 
-#### IncrementalSubcommands.__init__
+#### IncrementalSubcommands.**init**
 
 ```python
 __init__(self: Any, manifest_path: Any)

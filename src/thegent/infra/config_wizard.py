@@ -129,10 +129,22 @@ class ConfigWizard:
         print_section("Default Models")
 
         models = {
-            "Cursor": ("THGENT_DEFAULT_CURSOR_MODEL", self.settings.default_cursor_model),
-            "Gemini": ("THGENT_DEFAULT_GEMINI_MODEL", self.settings.default_gemini_model),
-            "Copilot": ("THGENT_DEFAULT_COPILOT_MODEL", self.settings.default_copilot_model),
-            "Claude": ("THGENT_DEFAULT_CLAUDE_MODEL", self.settings.default_claude_model),
+            "Cursor": (
+                "THGENT_DEFAULT_CURSOR_MODEL",
+                self.settings.default_cursor_model,
+            ),
+            "Gemini": (
+                "THGENT_DEFAULT_GEMINI_MODEL",
+                self.settings.default_gemini_model,
+            ),
+            "Copilot": (
+                "THGENT_DEFAULT_COPILOT_MODEL",
+                self.settings.default_copilot_model,
+            ),
+            "Claude": (
+                "THGENT_DEFAULT_CLAUDE_MODEL",
+                self.settings.default_claude_model,
+            ),
             "Codex": ("THGENT_DEFAULT_CODEX_MODEL", self.settings.default_codex_model),
         }
 

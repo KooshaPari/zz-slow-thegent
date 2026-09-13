@@ -10,7 +10,6 @@ from thegent.protocols.turn_submit_boundaries import (
     build_observability_event_phase,
     build_policy_match_phase,
     build_provider_selection_phase,
-    build_provider_rule_evaluation_phase,
     build_queue_priority_phase,
     build_retry_loop_phase,
     build_session_state_update_phase,
@@ -20,7 +19,6 @@ from thegent.protocols.turn_submit_boundaries import (
     resolve_hook_invocation_target,
     resolve_observability_serialization_target,
     resolve_policy_enforcement_plan_target,
-    resolve_provider_final_selection_target,
     resolve_queue_execution_target,
     resolve_session_persistence_plan_target,
     resolve_sync_commit_plan_target,
@@ -58,7 +56,11 @@ def test_wl10771_policy_enforcement_separates_rule_discovery_and_action_executio
 
 def test_wl10772_sync_reliability_separates_scan_records_and_mutation_apply_metadata() -> None:
     # @trace WL-10772
-    phase = build_sync_diff_phase([{"file": "src/thegent/integrations/gh_project_sync.py"}], "apply sync", "lane-a13")
+    phase = build_sync_diff_phase(
+        [{"file": "src/thegent/integrations/gh_project_sync.py"}],
+        "apply sync",
+        "lane-a13",
+    )
     assert resolve_sync_commit_plan_target(phase) == (
         [{"file": "src/thegent/integrations/gh_project_sync.py"}],
         "apply sync",
@@ -66,7 +68,9 @@ def test_wl10772_sync_reliability_separates_scan_records_and_mutation_apply_meta
     )
 
     invalid_phase = build_sync_diff_phase(
-        [{"file": "src/thegent/integrations/gh_project_sync.py"}], "apply sync", "lane-a13"
+        [{"file": "src/thegent/integrations/gh_project_sync.py"}],
+        "apply sync",
+        "lane-a13",
     )
     invalid_phase["diff_records"] = ["bad"]
     with pytest.raises(ValueError, match="invalid diff record"):
@@ -152,7 +156,11 @@ def test_wl10778_queue_throughput_separates_intake_and_worker_fanout_boundaries(
 def test_wl10779_telemetry_separates_metric_collection_and_emitter_lifecycle() -> None:
     # @trace WL-10779
     phase = build_observability_event_phase("queue.depth", {"depth": 9}, "json")
-    assert resolve_observability_serialization_target(phase) == ("queue.depth", {"depth": 9}, "json")
+    assert resolve_observability_serialization_target(phase) == (
+        "queue.depth",
+        {"depth": 9},
+        "json",
+    )
 
     invalid_phase = build_observability_event_phase("queue.depth", {"depth": 9}, "json")
     invalid_phase["event_payload"] = "bad"

@@ -12,7 +12,7 @@ Recommends operational tuning actions based on system performance (WP-14004).
 
 ### Methods
 
-#### RunbookTuner.__init__
+#### RunbookTuner.**init**
 
 ```python
 __init__(self: Any, slo_metrics: dict[(str, Any)])

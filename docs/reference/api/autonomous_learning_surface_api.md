@@ -12,7 +12,7 @@ Surface map for autonomous learning.
 
 ### Methods
 
-#### AutonomousLearningSurfaceMap.__init__
+#### AutonomousLearningSurfaceMap.**init**
 
 ```python
 __init__(self: Any)

@@ -18,12 +18,12 @@ Covers:
 
 from __future__ import annotations
 
-import orjson as json
 import time
 from pathlib import Path
 from typing import Any
 from unittest.mock import AsyncMock, MagicMock
 
+import orjson as json
 import pytest
 
 from thegent.govern.vetter.models import (
@@ -33,7 +33,6 @@ from thegent.govern.vetter.models import (
     VetterVerdict,
 )
 from thegent.govern.vetter.orchestrator import VetterOrchestrator
-
 
 # ---------------------------------------------------------------------------
 # Helpers: mock check factories
@@ -273,7 +272,9 @@ async def test_evaluate_fail_fast_stops_after_first_failure(tmp_path: Path) -> N
 
 
 @pytest.mark.asyncio
-async def test_evaluate_fail_fast_result_contains_only_run_checks(tmp_path: Path) -> None:
+async def test_evaluate_fail_fast_result_contains_only_run_checks(
+    tmp_path: Path,
+) -> None:
     """With fail_fast=True, only checks actually run appear in check_results. # @trace WL-092"""
     check_bad = _failing_check("bad")
     check_never = _passing_check("never_called")
@@ -514,7 +515,9 @@ async def test_evaluate_empty_checks_emits_event(tmp_path: Path) -> None:
 
 
 @pytest.mark.asyncio
-async def test_evaluate_escalated_emits_vetter_escalation_and_calls_hitl(tmp_path: Path) -> None:
+async def test_evaluate_escalated_emits_vetter_escalation_and_calls_hitl(
+    tmp_path: Path,
+) -> None:
     """Escalation path emits event + calls HITL workflow await_approval. # @trace WL-093"""
     bad = _failing_check("safety")
     hitl = MagicMock()
@@ -604,7 +607,9 @@ async def test_evaluate_revision_requested_enqueues_prompt(tmp_path: Path) -> No
 
 
 @pytest.mark.asyncio
-async def test_evaluate_revision_round_cap_falls_back_to_rejected(tmp_path: Path) -> None:
+async def test_evaluate_revision_round_cap_falls_back_to_rejected(
+    tmp_path: Path,
+) -> None:
     """When revision rounds are exhausted, verdict falls back to rejected. # @trace WL-096"""
     bad = _failing_check("style", "need updates")
     queue = MagicMock()
@@ -630,7 +635,9 @@ async def test_evaluate_revision_round_cap_falls_back_to_rejected(tmp_path: Path
 
 
 @pytest.mark.asyncio
-async def test_evaluate_revision_round_cap_escalates_when_policy_on_fail_escalate(tmp_path: Path) -> None:
+async def test_evaluate_revision_round_cap_escalates_when_policy_on_fail_escalate(
+    tmp_path: Path,
+) -> None:
     """Exhausted revision rounds use policy.on_fail='escalate' path. # @trace WL-096"""
     bad = _failing_check("style", "need updates")
     queue = MagicMock()
@@ -668,7 +675,9 @@ async def test_evaluate_revision_round_cap_escalates_when_policy_on_fail_escalat
 
 
 @pytest.mark.asyncio
-async def test_repeated_calls_without_round_bump_do_not_revision_loop_forever(tmp_path: Path) -> None:
+async def test_repeated_calls_without_round_bump_do_not_revision_loop_forever(
+    tmp_path: Path,
+) -> None:
     """Repeated evaluate() calls for same run_id stop at max_revision_rounds. # @trace WL-096"""
     bad = _failing_check("style", "need updates")
     queue = MagicMock()
@@ -701,7 +710,9 @@ async def test_repeated_calls_without_round_bump_do_not_revision_loop_forever(tm
 
 
 @pytest.mark.asyncio
-async def test_repeated_calls_without_round_bump_escalate_once_cap_reached(tmp_path: Path) -> None:
+async def test_repeated_calls_without_round_bump_escalate_once_cap_reached(
+    tmp_path: Path,
+) -> None:
     """Escalation policy activates after revision cap even across repeated calls. # @trace WL-096"""
     bad = _failing_check("style", "need updates")
     queue = MagicMock()

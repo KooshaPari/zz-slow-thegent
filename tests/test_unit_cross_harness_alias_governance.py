@@ -13,9 +13,8 @@ try:
     from thegent.anen_main import default_anen
     from thegent.clode_main import _MODEL_ALIAS as _CLODE_MODEL_ALIAS
     from thegent.clode_main import default_clode
-    from thegent.dex_main import _DEX_BYPASS_FLAG
+    from thegent.dex_main import _DEX_BYPASS_FLAG, default_dex
     from thegent.dex_main import _MODEL_ALIAS as _DEX_MODEL_ALIAS
-    from thegent.dex_main import default_dex
     from thegent.fanta_main import _MODEL_ALIAS as _FANTA_MODEL_ALIAS
     from thegent.fanta_main import app as fanta_app
     from thegent.roid_main import _MODEL_ALIAS as _ROID_MODEL_ALIAS
@@ -54,7 +53,10 @@ def test_default_clode_callback_uses_flash_path() -> None:
 
 def test_default_dex_callback_uses_flash_path() -> None:
     ctx = type("Ctx", (), {"invoked_subcommand": None})()
-    with patch("sys.argv", ["dex"]), patch("thegent.dex_main._run_codex_interactive") as run_interactive:
+    with (
+        patch("sys.argv", ["dex"]),
+        patch("thegent.dex_main._run_codex_interactive") as run_interactive,
+    ):
         default_dex(ctx, force=False, native=False)  # type: ignore[arg-type]
     run_interactive.assert_called_once_with("flash")
 

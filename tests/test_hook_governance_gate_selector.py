@@ -2,12 +2,12 @@
 
 from __future__ import annotations
 
-import orjson as json
 import os
 import re
 import subprocess
 from pathlib import Path
 
+import orjson as json
 import pytest
 
 
@@ -225,7 +225,10 @@ def _run_governance_selected(
                 "missing_required_test_types": [],
                 "detected_test_types": {},
             },
-            "security": {"signed_attestation_present": True, "slsa_provenance_present": True},
+            "security": {
+                "signed_attestation_present": True,
+                "slsa_provenance_present": True,
+            },
         }
         (verify_dir / "qa-attestation.json").write_text(json.dumps(attestation).decode() + "\n", encoding="utf-8")
 
@@ -325,7 +328,9 @@ def test_selector_malformed_token_is_fail_closed(tmp_path: Path) -> None:
 
 
 @pytest.mark.unit
-def test_selector_empty_entries_fail_closed_with_explicit_reason(tmp_path: Path) -> None:
+def test_selector_empty_entries_fail_closed_with_explicit_reason(
+    tmp_path: Path,
+) -> None:
     proc = _run_governance_selected(tmp_path, selected=" , , ")
 
     assert proc.returncode == 2
@@ -474,7 +479,9 @@ def test_selector_native_dispatcher_parity_with_shell_fallback(tmp_path: Path) -
 
 
 @pytest.mark.unit
-def test_selector_native_dispatcher_parity_for_malformed_token_fail_closed(tmp_path: Path) -> None:
+def test_selector_native_dispatcher_parity_for_malformed_token_fail_closed(
+    tmp_path: Path,
+) -> None:
     native_bin = _repo_root() / "hooks/hook-dispatcher/target/debug/hook-dispatcher"
     if not native_bin.exists():
         pytest.skip("native hook-dispatcher binary not built")
@@ -580,7 +587,14 @@ def test_selector_artifact_schema_drift_sentinel_exact_keys(tmp_path: Path) -> N
 
 @pytest.mark.unit
 @pytest.mark.parametrize(
-    ("scenario", "kwargs", "expected_returncode", "expected_band", "expect_alert", "expected_alert_severity"),
+    (
+        "scenario",
+        "kwargs",
+        "expected_returncode",
+        "expected_band",
+        "expect_alert",
+        "expected_alert_severity",
+    ),
     [
         (
             "green",

@@ -16,13 +16,13 @@ Implements:
 
 from __future__ import annotations
 
-import orjson as json
 import logging
 from datetime import UTC, datetime, timedelta
 from pathlib import Path
 from typing import Any
 
 import httpx
+import orjson as json
 from pydantic import BaseModel, ConfigDict, Field
 
 _log = logging.getLogger(__name__)
@@ -265,7 +265,11 @@ class KeyRotationWebhook:
         )
         response.raise_for_status()
 
-        result: dict[str, Any] = {"sent": True, "status_code": response.status_code, "payload": payload}
+        result: dict[str, Any] = {
+            "sent": True,
+            "status_code": response.status_code,
+            "payload": payload,
+        }
         _log.info("Webhook response: status=%d for key_id=%s", response.status_code, key_id)
         return result
 

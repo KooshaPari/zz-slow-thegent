@@ -5,7 +5,7 @@
 
 from __future__ import annotations
 
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from pathlib import Path
 
 import pytest
@@ -21,8 +21,8 @@ def db_path(tmp_path: Path) -> Path:
 
 def test_scheduler_runs_hourly_job(db_path: Path) -> None:
     """Test that TieredScheduler executes hourly tier crawlers."""
-    from research_engine.scheduler import TieredScheduler
     from research_engine.crawlers.base import BaseCrawler
+    from research_engine.scheduler import TieredScheduler
 
     call_log: list[str] = []
 
@@ -45,8 +45,9 @@ def test_scheduler_runs_hourly_job(db_path: Path) -> None:
 
 def test_scheduler_stores_items(db_path: Path) -> None:
     """Test that TieredScheduler persists fetched items to store."""
-    from research_engine.scheduler import TieredScheduler
     from research_engine.crawlers.base import BaseCrawler
+    from research_engine.scheduler import TieredScheduler
+
     from research_engine.store import ResearchStore
 
     class FixedCrawler(BaseCrawler):
@@ -65,7 +66,7 @@ def test_scheduler_stores_items(db_path: Path) -> None:
                     summary="test",
                     score=100,
                     tags=["python"],
-                    fetched_at=datetime.now(timezone.utc),
+                    fetched_at=datetime.now(UTC),
                     relevance=0.9,
                 )
             ]
@@ -92,8 +93,8 @@ def test_scheduler_start_stop(db_path: Path) -> None:
 
 def test_scheduler_multiple_tiers(db_path: Path) -> None:
     """Test TieredScheduler runs correct tier for registered crawlers."""
-    from research_engine.scheduler import TieredScheduler
     from research_engine.crawlers.base import BaseCrawler
+    from research_engine.scheduler import TieredScheduler
 
     calls: dict[str, int] = {"hourly": 0, "daily": 0, "weekly": 0}
 
@@ -134,8 +135,9 @@ def test_scheduler_multiple_tiers(db_path: Path) -> None:
 
 def test_scheduler_multiple_crawlers_same_tier(db_path: Path) -> None:
     """Test TieredScheduler runs all crawlers in a tier."""
-    from research_engine.scheduler import TieredScheduler
     from research_engine.crawlers.base import BaseCrawler
+    from research_engine.scheduler import TieredScheduler
+
     from research_engine.store import ResearchStore
 
     class CrawlerA(BaseCrawler):
@@ -154,7 +156,7 @@ def test_scheduler_multiple_crawlers_same_tier(db_path: Path) -> None:
                     summary="From crawler A",
                     score=10,
                     tags=["test"],
-                    fetched_at=datetime.now(timezone.utc),
+                    fetched_at=datetime.now(UTC),
                     relevance=0.5,
                 )
             ]
@@ -175,7 +177,7 @@ def test_scheduler_multiple_crawlers_same_tier(db_path: Path) -> None:
                     summary="From crawler B",
                     score=20,
                     tags=["test"],
-                    fetched_at=datetime.now(timezone.utc),
+                    fetched_at=datetime.now(UTC),
                     relevance=0.7,
                 )
             ]

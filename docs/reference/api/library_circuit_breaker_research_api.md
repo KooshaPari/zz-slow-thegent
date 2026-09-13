@@ -12,7 +12,7 @@ Research for pybreaker migration.
 
 ### Methods
 
-#### LibraryCircuitBreakerResearch.__init__
+#### LibraryCircuitBreakerResearch.**init**
 
 ```python
 __init__(self: Any)

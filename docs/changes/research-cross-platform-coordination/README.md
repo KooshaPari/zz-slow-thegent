@@ -18,6 +18,7 @@ This research initiative addresses the gap in **coordinating multi-platform agen
 ## Documents in This Research Package
 
 ### 1. **proposal.md** – Strategic Vision
+
 - **Purpose**: Define problem, success criteria, business value
 - **Audience**: Stakeholders, decision-makers
 - **Key Sections**:
@@ -28,6 +29,7 @@ This research initiative addresses the gap in **coordinating multi-platform agen
 - **Status**: Approved ✓
 
 ### 2. **design.md** – Technical Architecture
+
 - **Purpose**: Detailed architecture, data models, algorithms, integration points
 - **Audience**: Architects, implementers, code reviewers
 - **Key Sections**:
@@ -39,6 +41,7 @@ This research initiative addresses the gap in **coordinating multi-platform agen
 - **Status**: Ready for implementation ✓
 
 ### 3. **tasks.md** – Implementation Roadmap
+
 - **Purpose**: Work breakdown, task list, dependencies, timeline
 - **Audience**: Implementers, project coordinators
 - **Key Sections**:
@@ -53,32 +56,35 @@ This research initiative addresses the gap in **coordinating multi-platform agen
 
 ## Quick Reference
 
-| Question | Answer | Link |
-|----------|--------|------|
-| What are we building? | Platform-aware dispatch system | proposal.md §1 |
-| Why do we need it? | Multi-platform agents need constraints | proposal.md §2 |
-| How does it work? | Detect → Registry → Dispatch → Fallback | design.md §1 |
-| What do I build first? | Platform detector module | tasks.md §Phase 1 |
-| How long will it take? | ~2-3 weeks wall-clock (parallel agents) | proposal.md §4 |
-| What are the risks? | Detection slowness, tool detection false positives | design.md §Risk & Mitigations |
+| Question               | Answer                                             | Link                          |
+| ---------------------- | -------------------------------------------------- | ----------------------------- |
+| What are we building?  | Platform-aware dispatch system                     | proposal.md §1                |
+| Why do we need it?     | Multi-platform agents need constraints             | proposal.md §2                |
+| How does it work?      | Detect → Registry → Dispatch → Fallback            | design.md §1                  |
+| What do I build first? | Platform detector module                           | tasks.md §Phase 1             |
+| How long will it take? | ~2-3 weeks wall-clock (parallel agents)            | proposal.md §4                |
+| What are the risks?    | Detection slowness, tool detection false positives | design.md §Risk & Mitigations |
 
 ---
 
 ## Getting Started
 
 ### For Stakeholders
+
 1. Read **proposal.md** – Problem, vision, success criteria
 2. Review success metrics and timeline
 3. Approve or request adjustments
 4. Sign off on resource allocation
 
 ### For Architects & Tech Leads
+
 1. Read **design.md** – Full architecture overview
 2. Review data models, algorithms, integration points
 3. Identify any design gaps or concerns
 4. Coordinate with adjacent systems (MCP, CLI)
 
 ### For Implementers
+
 1. Read **tasks.md** – Full task breakdown
 2. Review phases, dependencies, estimates
 3. Pick a task or phase to start
@@ -89,13 +95,13 @@ This research initiative addresses the gap in **coordinating multi-platform agen
 
 ## Key Architectural Decisions
 
-| Decision | Rationale | Tradeoff |
-|----------|-----------|----------|
-| In-memory cache + disk persistence | Fast lookups, survives restarts | ~50MB disk space |
-| 1-hour TTL by default | Balance freshness vs. overhead | Manual refresh available |
-| Tool substitution fallbacks | Graceful degradation | May lose functionality |
-| Decorator + YAML syntax | Multiple API styles | Learning curve |
-| CLI + MCP + Programmatic APIs | Multiple use cases | Code duplication risk (mitigated via shared core) |
+| Decision                           | Rationale                       | Tradeoff                                          |
+| ---------------------------------- | ------------------------------- | ------------------------------------------------- |
+| In-memory cache + disk persistence | Fast lookups, survives restarts | ~50MB disk space                                  |
+| 1-hour TTL by default              | Balance freshness vs. overhead  | Manual refresh available                          |
+| Tool substitution fallbacks        | Graceful degradation            | May lose functionality                            |
+| Decorator + YAML syntax            | Multiple API styles             | Learning curve                                    |
+| CLI + MCP + Programmatic APIs      | Multiple use cases              | Code duplication risk (mitigated via shared core) |
 
 ---
 
@@ -149,17 +155,20 @@ After approval, the following items should be added to `WORK_STREAM.md`:
 ## Knowledge Map
 
 **Related Documents**:
+
 - `docs/guides/PLATFORM_COMPATIBILITY_GUIDE.md` – Agent developer guide (post-launch)
 - `docs/reference/PLATFORM_CAPABILITY_REGISTRY.md` – Tool catalog (post-launch)
 - `docs/reference/PLATFORM_ARCHITECTURE.md` – Architecture deep-dive (post-launch)
 
 **Related Systems**:
+
 - **MCP Server** – Capability registry exposed via resources/tools
 - **CLI** – `thegent platform *` commands
 - **Task Dispatch** – `thegent run`, `thegent bg` integrate dispatch
 - **Agent Decorators** – `@PlatformConstraint` decorator
 
 **Related Research**:
+
 - Multi-platform CI/CD (separate initiative)
 - Agent capability introspection (related, not blocking)
 - Environment capability discovery (related, overlaps partially)
@@ -168,17 +177,18 @@ After approval, the following items should be added to `WORK_STREAM.md`:
 
 ## Approval & Sign-Off
 
-| Role | Name | Status | Date |
-|------|------|--------|------|
-| Product Owner | thegent team | Pending | — |
-| Technical Lead | thegent team | Pending | — |
-| Architect | thegent team | Pending | — |
+| Role           | Name         | Status  | Date |
+| -------------- | ------------ | ------- | ---- |
+| Product Owner  | thegent team | Pending | —    |
+| Technical Lead | thegent team | Pending | —    |
+| Architect      | thegent team | Pending | —    |
 
 ---
 
 ## Session Continuity
 
 **For hand-off to next agent/session**:
+
 1. Read this README first
 2. Pick a phase or task from tasks.md
 3. Check dependencies (DAG in tasks.md §Phase 1-7)
@@ -186,6 +196,7 @@ After approval, the following items should be added to `WORK_STREAM.md`:
 5. Log progress to `docs/research/CONVERSATION_DUMP_YYYY-MM-DD.md`
 
 **Cursor/Codex recovery**:
+
 - If session crashes, find prior session logs in `.thegent/sessions/`
 - Export via `thegent prompts dump <session_id>`
 - Merge findings into CONVERSATION_DUMP
@@ -205,9 +216,9 @@ After approval, the following items should be added to `WORK_STREAM.md`:
 
 ## Revision History
 
-| Version | Date | Author | Changes |
-|---------|------|--------|---------|
-| 1.0 | 2026-02-18 | Agent Researcher | Initial draft (proposal, design, tasks) |
+| Version | Date       | Author           | Changes                                 |
+| ------- | ---------- | ---------------- | --------------------------------------- |
+| 1.0     | 2026-02-18 | Agent Researcher | Initial draft (proposal, design, tasks) |
 
 ---
 
@@ -224,8 +235,8 @@ After approval, the following items should be added to `WORK_STREAM.md`:
 - [Proposal – Full Problem & Vision](proposal.md)
 - [Design – Technical Architecture](design.md)
 - [Tasks – Work Breakdown & Timeline](tasks.md)
-- [Agent Developer Guide](../../../guides/PLATFORM_COMPATIBILITY_GUIDE.md) *(post-launch)*
-- [Capability Registry](../../../reference/PLATFORM_CAPABILITY_REGISTRY.md) *(post-launch)*
+- [Agent Developer Guide](../../../guides/PLATFORM_COMPATIBILITY_GUIDE.md) _(post-launch)_
+- [Capability Registry](../../../reference/PLATFORM_CAPABILITY_REGISTRY.md) _(post-launch)_
 
 ---
 

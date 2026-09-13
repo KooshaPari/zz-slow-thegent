@@ -4,7 +4,6 @@ import importlib.util
 import os
 import re
 import sys
-from collections.abc import Iterable
 from pathlib import Path
 from unittest.mock import MagicMock
 
@@ -77,10 +76,7 @@ def _matches_collection_guardrails(raw_path: Path) -> bool:
 
     if re.search(r"(^|/)dist/", path_str) is not None:
         return True
-    if re.search(r"(^|/)build/", path_str) is not None:
-        return True
-
-    return False
+    return re.search(r"(^|/)build/", path_str) is not None
 
 
 def _collection_item_key(item: pytest.Item) -> tuple[str, int, str]:
@@ -223,10 +219,16 @@ def _load_script_module(module_name: str, script_path: Path):
     (which raises ``Skipped``) on failure.
     """
     if not script_path.exists():
-        skip(f"script not present (tracked follow-up): {script_path.name}", allow_module_level=True)
+        skip(
+            f"script not present (tracked follow-up): {script_path.name}",
+            allow_module_level=True,
+        )
     spec = importlib.util.spec_from_file_location(module_name, script_path)
     if spec is None or spec.loader is None:
-        skip(f"could not build import spec for {script_path.name}", allow_module_level=True)
+        skip(
+            f"could not build import spec for {script_path.name}",
+            allow_module_level=True,
+        )
     mod = importlib.util.module_from_spec(spec)
     sys.modules.setdefault(module_name, mod)
     spec.loader.exec_module(mod)

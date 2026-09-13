@@ -14,7 +14,7 @@ AgentRunner implementation that spawns external ACP agents.
 
 ### Methods
 
-#### ACPClientAdapter.__init__
+#### ACPClientAdapter.**init**
 
 ```python
 __init__(self: Any, acp_command: list[str], agent_name: str)

@@ -15,13 +15,12 @@ computing governance placement recommendations from
 
 from __future__ import annotations
 
+import re
 from dataclasses import dataclass
 from pathlib import Path
-import re
 from typing import Any
 
 from thegent.infra.fast_yaml_parser import yaml_load
-
 
 _SCHEMA_PATH = Path(__file__).resolve().parents[3] / "docs" / "governance" / "TASK_CLASSIFIER_SCHEMA.yaml"
 

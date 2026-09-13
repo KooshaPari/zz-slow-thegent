@@ -26,6 +26,7 @@
 ### 1.1 Core Principle
 
 **Library-First Approach**: Prefer **library + thin wrapper** over full custom implementation. Libraries provide:
+
 - Battle-tested behavior
 - Security fixes
 - Community maintenance
@@ -34,20 +35,20 @@
 
 ### 1.2 Replacement Categories
 
-| Category | Files Affected | Current | Replacement | Priority |
-|----------|----------------|---------|-------------|----------|
-| **HTTP** | 7+ | urllib.request | httpx | P1 |
-| **Retry/Backoff** | 4 | Manual loops | tenacity | P1 |
-| **File Watching** | 1 | os.walk polling | watchdog | P1 |
-| **ANSI Stripping** | 5 | Custom regex | rich.strip_control_codes | P2 |
-| **Caching** | 5+ | Custom TTL | cachetools, diskcache | P2 |
-| **XML Parsing** | 2 | Custom regex | defusedxml, lxml | P2 |
-| **Resource Monitoring** | 1 | Custom subprocess | psutil | P2 |
-| **Circuit Breaker** | 1 | Custom ToolCircuitBreaker | pybreaker | P2 |
-| **Process Discovery** | 1 | ps parsing | psutil | P2 |
-| **Logging** | 60+ | stdlib logging | structlog | P3 |
-| **YAML** | 15+ | PyYAML | ruamel.yaml | P2 |
-| **JSON** | 50+ | stdlib json | orjson (optional) | P3 |
+| Category                | Files Affected | Current                   | Replacement              | Priority |
+| ----------------------- | -------------- | ------------------------- | ------------------------ | -------- |
+| **HTTP**                | 7+             | urllib.request            | httpx                    | P1       |
+| **Retry/Backoff**       | 4              | Manual loops              | tenacity                 | P1       |
+| **File Watching**       | 1              | os.walk polling           | watchdog                 | P1       |
+| **ANSI Stripping**      | 5              | Custom regex              | rich.strip_control_codes | P2       |
+| **Caching**             | 5+             | Custom TTL                | cachetools, diskcache    | P2       |
+| **XML Parsing**         | 2              | Custom regex              | defusedxml, lxml         | P2       |
+| **Resource Monitoring** | 1              | Custom subprocess         | psutil                   | P2       |
+| **Circuit Breaker**     | 1              | Custom ToolCircuitBreaker | pybreaker                | P2       |
+| **Process Discovery**   | 1              | ps parsing                | psutil                   | P2       |
+| **Logging**             | 60+            | stdlib logging            | structlog                | P3       |
+| **YAML**                | 15+            | PyYAML                    | ruamel.yaml              | P2       |
+| **JSON**                | 50+            | stdlib json               | orjson (optional)        | P3       |
 
 ### 1.3 Source Documents
 
@@ -65,6 +66,7 @@
 ### 2.1 Migration Approach
 
 **Phased Migration**:
+
 1. **Phase 1**: Critical replacements (P1) - HTTP, Retry, File Watching
 2. **Phase 2**: High-value replacements (P2) - Caching, Circuit Breaker, YAML
 3. **Phase 3**: Polish & optimization (P3) - Logging, JSON, Enhancements
@@ -74,9 +76,11 @@
 ### 2.2 Wrapper Pattern
 
 **Thin Wrapper Strategy**:
+
 ```python
 # Example: Retry wrapper
 from tenacity import retry, stop_after_attempt, wait_exponential
+
 
 def retry_with_usage_limit(max_attempts=3):
     """Domain-specific retry wrapper"""
@@ -88,6 +92,7 @@ def retry_with_usage_limit(max_attempts=3):
 ```
 
 **Benefits**:
+
 - Domain-specific logic in wrapper
 - Library handles retry mechanics
 - Consistent behavior across codebase
@@ -100,18 +105,21 @@ def retry_with_usage_limit(max_attempts=3):
 ### 3.1 Priority 1 (P1) - Critical
 
 **HTTP (urllib → httpx)**:
+
 - **Files**: 7+ files using `urllib.request`
 - **Impact**: Security, performance, async support
 - **Effort**: Medium (API changes)
 - **Risk**: Low (httpx is drop-in replacement)
 
 **Retry/Backoff (Manual → tenacity)**:
+
 - **Files**: 4 files with manual retry loops
 - **Impact**: Consistency, maintainability
 - **Effort**: Low (decorator pattern)
 - **Risk**: Low (tenacity already in deps)
 
 **File Watching (Polling → watchdog)**:
+
 - **Files**: 1 file (`governance/triggers.py`)
 - **Impact**: Performance, CPU usage
 - **Effort**: Low (watchdog API)
@@ -120,24 +128,28 @@ def retry_with_usage_limit(max_attempts=3):
 ### 3.2 Priority 2 (P2) - High Value
 
 **Caching (Custom → cachetools/diskcache)**:
+
 - **Files**: 5+ files with custom TTL caches
 - **Impact**: Maintainability, performance
 - **Effort**: Medium (refactor cache APIs)
 - **Risk**: Medium (cache behavior changes)
 
 **Circuit Breaker (Custom → pybreaker)**:
+
 - **Files**: 1 file (`resilience.py`)
 - **Impact**: Reliability, consistency
 - **Effort**: Low (state machine replacement)
 - **Risk**: Low (pybreaker is mature)
 
 **YAML (PyYAML → ruamel.yaml)**:
+
 - **Files**: 15+ files using PyYAML
 - **Impact**: Config preservation, round-trip
 - **Effort**: Medium (API changes)
 - **Risk**: Low (ruamel.yaml is compatible)
 
 **ANSI Stripping (Custom → rich)**:
+
 - **Files**: 5 files with custom regex
 - **Impact**: Maintainability, correctness
 - **Effort**: Low (direct replacement)
@@ -146,12 +158,14 @@ def retry_with_usage_limit(max_attempts=3):
 ### 3.3 Priority 3 (P3) - Polish & Optimization
 
 **Logging (stdlib → structlog)**:
+
 - **Files**: 60+ files using stdlib logging
 - **Impact**: Structured logging, observability
 - **Effort**: High (widespread changes)
 - **Risk**: Medium (logging behavior changes)
 
 **JSON (stdlib → orjson)**:
+
 - **Files**: 50+ files using stdlib json
 - **Impact**: Performance (5-50x faster)
 - **Effort**: Medium (drop-in replacement)
@@ -164,6 +178,7 @@ def retry_with_usage_limit(max_attempts=3):
 ### Phase 1: Critical Replacements (Weeks 1-2)
 
 **Deliverables**:
+
 - [ ] Replace urllib with httpx (7 files)
 - [ ] Migrate manual retry loops to tenacity (4 files)
 - [ ] Replace polling with watchdog (1 file)
@@ -171,6 +186,7 @@ def retry_with_usage_limit(max_attempts=3):
 - [ ] Performance benchmarks
 
 **Dependencies**:
+
 - `httpx` (already in deps)
 - `tenacity` (already in deps)
 - `watchdog` (add to deps)
@@ -187,6 +203,7 @@ def retry_with_usage_limit(max_attempts=3):
 ### Phase 2: High-Value Replacements (Weeks 3-4)
 
 **Deliverables**:
+
 - [ ] Replace custom caching with cachetools/diskcache (5 files)
 - [ ] Replace custom circuit breaker with pybreaker (1 file)
 - [ ] Replace PyYAML with ruamel.yaml (15 files)
@@ -194,6 +211,7 @@ def retry_with_usage_limit(max_attempts=3):
 - [ ] Integration tests
 
 **Dependencies**:
+
 - `cachetools` (add to deps)
 - `diskcache` (optional, add to deps)
 - `pybreaker` (add to deps)
@@ -212,12 +230,14 @@ def retry_with_usage_limit(max_attempts=3):
 ### Phase 3: Polish & Optimization (Weeks 5-6)
 
 **Deliverables**:
+
 - [ ] Migrate logging to structlog (60 files, optional)
 - [ ] Replace json with orjson (50 files, optional)
 - [ ] Performance optimization
 - [ ] Documentation updates
 
 **Dependencies**:
+
 - `structlog` (add to deps, optional)
 - `orjson` (add to deps, optional)
 
@@ -235,6 +255,7 @@ def retry_with_usage_limit(max_attempts=3):
 ### 5.1 HTTP Replacement (urllib → httpx)
 
 **Before**:
+
 ```python
 import urllib.request
 import urllib.parse
@@ -246,6 +267,7 @@ with urllib.request.urlopen(req) as response:
 ```
 
 **After**:
+
 ```python
 import httpx
 
@@ -256,6 +278,7 @@ with httpx.Client() as client:
 ```
 
 **Benefits**:
+
 - Async support
 - Connection pooling
 - Better error handling
@@ -265,6 +288,7 @@ with httpx.Client() as client:
 ### 5.2 Retry Replacement (Manual → tenacity)
 
 **Before**:
+
 ```python
 import time
 
@@ -275,12 +299,14 @@ for attempt in range(3):
     except Exception as e:
         if attempt == 2:
             raise
-        time.sleep(2 ** attempt)
+        time.sleep(2**attempt)
 ```
 
 **After**:
+
 ```python
 from tenacity import retry, stop_after_attempt, wait_exponential
+
 
 @retry(
     stop=stop_after_attempt(3),
@@ -292,6 +318,7 @@ def api_call():
 ```
 
 **Benefits**:
+
 - Consistent retry behavior
 - Configurable strategies
 - Better error handling
@@ -300,9 +327,11 @@ def api_call():
 ### 5.3 File Watching Replacement (Polling → watchdog)
 
 **Before**:
+
 ```python
 import os
 import time
+
 
 def watch_directory(path):
     last_mtime = {}
@@ -319,14 +348,17 @@ def watch_directory(path):
 ```
 
 **After**:
+
 ```python
 from watchdog.observers import Observer
 from watchdog.events import FileSystemEventHandler
+
 
 class ChangeHandler(FileSystemEventHandler):
     def on_modified(self, event):
         if not event.is_directory:
             handle_change(event.src_path)
+
 
 observer = Observer()
 observer.schedule(ChangeHandler(), path, recursive=True)
@@ -334,6 +366,7 @@ observer.start()
 ```
 
 **Benefits**:
+
 - Native OS events (inotify, FSEvents)
 - Lower CPU usage
 - Real-time notifications
@@ -342,9 +375,11 @@ observer.start()
 ### 5.4 Caching Replacement (Custom → cachetools)
 
 **Before**:
+
 ```python
 import time
 from typing import Dict, Optional
+
 
 class TTLCache:
     def __init__(self, ttl: int):
@@ -364,19 +399,23 @@ class TTLCache:
 ```
 
 **After**:
+
 ```python
 from cachetools import TTLCache
 
 cache = TTLCache(maxsize=100, ttl=300)
 
+
 def get_cached(key: str):
     return cache.get(key)
+
 
 def set_cached(key: str, value: object):
     cache[key] = value
 ```
 
 **Benefits**:
+
 - Battle-tested implementation
 - Automatic eviction
 - Thread-safe
@@ -385,6 +424,7 @@ def set_cached(key: str, value: object):
 ### 5.5 Circuit Breaker Replacement (Custom → pybreaker)
 
 **Before**:
+
 ```python
 class ToolCircuitBreaker:
     def __init__(self):
@@ -404,10 +444,12 @@ class ToolCircuitBreaker:
 ```
 
 **After**:
+
 ```python
 from pybreaker import CircuitBreaker
 
 breaker = CircuitBreaker(fail_max=5, timeout_duration=60)
+
 
 @breaker
 def api_call():
@@ -416,6 +458,7 @@ def api_call():
 ```
 
 **Benefits**:
+
 - Standard state machine
 - Configurable thresholds
 - Automatic recovery
@@ -427,21 +470,21 @@ def api_call():
 
 ### 6.1 Benchmarks
 
-| Operation | Current | Target | Library |
-|-----------|---------|--------|---------|
-| **HTTP Request** | 100ms | 50ms | httpx (connection pooling) |
-| **File Watch Latency** | 2s (polling) | <100ms | watchdog (native events) |
-| **JSON Parse** | 5ms | 0.1ms | orjson (5-50x faster) |
-| **Cache Lookup** | 1ms | 0.5ms | cachetools (optimized) |
-| **YAML Parse** | 10ms | 8ms | ruamel.yaml (similar, preserves comments) |
+| Operation              | Current      | Target | Library                                   |
+| ---------------------- | ------------ | ------ | ----------------------------------------- |
+| **HTTP Request**       | 100ms        | 50ms   | httpx (connection pooling)                |
+| **File Watch Latency** | 2s (polling) | <100ms | watchdog (native events)                  |
+| **JSON Parse**         | 5ms          | 0.1ms  | orjson (5-50x faster)                     |
+| **Cache Lookup**       | 1ms          | 0.5ms  | cachetools (optimized)                    |
+| **YAML Parse**         | 10ms         | 8ms    | ruamel.yaml (similar, preserves comments) |
 
 ### 6.2 Resource Usage
 
-| Metric | Current | Target | Improvement |
-|--------|---------|--------|-------------|
-| **CPU (file watching)** | High (polling) | Low (events) | 80% reduction |
-| **Memory (caching)** | Custom (inefficient) | cachetools (LRU) | 30% reduction |
-| **Network (HTTP)** | No pooling | Connection pooling | 50% latency reduction |
+| Metric                  | Current              | Target             | Improvement           |
+| ----------------------- | -------------------- | ------------------ | --------------------- |
+| **CPU (file watching)** | High (polling)       | Low (events)       | 80% reduction         |
+| **Memory (caching)**    | Custom (inefficient) | cachetools (LRU)   | 30% reduction         |
+| **Network (HTTP)**      | No pooling           | Connection pooling | 50% latency reduction |
 
 ---
 
@@ -449,35 +492,38 @@ def api_call():
 
 ### 7.1 Technical Risks
 
-| Risk | Impact | Mitigation |
-|------|--------|------------|
-| **API incompatibility** | High | Comprehensive testing, gradual migration |
-| **Behavior changes** | Medium | Feature flags, rollback plan |
-| **Performance regression** | Low | Benchmarking, monitoring |
-| **Dependency issues** | Medium | Version pinning, dependency audit |
+| Risk                       | Impact | Mitigation                               |
+| -------------------------- | ------ | ---------------------------------------- |
+| **API incompatibility**    | High   | Comprehensive testing, gradual migration |
+| **Behavior changes**       | Medium | Feature flags, rollback plan             |
+| **Performance regression** | Low    | Benchmarking, monitoring                 |
+| **Dependency issues**      | Medium | Version pinning, dependency audit        |
 
 ### 7.2 Migration Risks
 
-| Risk | Impact | Mitigation |
-|------|--------|------------|
-| **Breaking changes** | High | Backward compatibility, feature flags |
-| **Testing gaps** | Medium | Comprehensive test coverage |
-| **Rollback complexity** | Medium | Phased rollout, monitoring |
+| Risk                    | Impact | Mitigation                            |
+| ----------------------- | ------ | ------------------------------------- |
+| **Breaking changes**    | High   | Backward compatibility, feature flags |
+| **Testing gaps**        | Medium | Comprehensive test coverage           |
+| **Rollback complexity** | Medium | Phased rollout, monitoring            |
 
 ### 7.3 Mitigation Strategies
 
 **Testing**:
+
 - Unit tests for all replacements
 - Integration tests for critical paths
 - Performance benchmarks
 - Compatibility tests
 
 **Rollback**:
+
 - Feature flags for instant rollback
 - Version pinning
 - Gradual rollout with monitoring
 
 **Monitoring**:
+
 - Error rates
 - Performance metrics
 - Resource usage
@@ -490,17 +536,20 @@ def api_call():
 ### 8.1 Unit Tests
 
 **Coverage Requirements**:
+
 - All replacements: >90% coverage
 - Critical paths: >95% coverage
 - Error handling: >85% coverage
 
 **Test Structure**:
+
 ```python
 # tests/test_http_replacement.py
 
 import pytest
 import httpx
 from unittest.mock import patch
+
 
 def test_httpx_replacement():
     """Test urllib → httpx migration"""
@@ -512,6 +561,7 @@ def test_httpx_replacement():
 ### 8.2 Integration Tests
 
 **Test Scenarios**:
+
 1. HTTP requests with various endpoints
 2. Retry behavior under failures
 3. File watching with real filesystem
@@ -521,12 +571,14 @@ def test_httpx_replacement():
 ### 8.3 Performance Tests
 
 **Benchmark Requirements**:
+
 - HTTP: <50ms (p95)
 - File watch: <100ms latency
 - JSON parse: <0.1ms (p95)
 - Cache lookup: <0.5ms (p95)
 
 **Benchmark Framework**:
+
 - Use `pytest-benchmark` for Python benchmarks
 - Use `hyperfine` for CLI benchmarks
 - Compare with baseline (current implementation)
@@ -537,17 +589,17 @@ def test_httpx_replacement():
 
 Add to [WORK_STREAM.md](../reference/WORK_STREAM.md) BACKLOG:
 
-| ID | Title | Priority | Depends |
-|----|-------|----------|---------|
-| **research-library-http** | Replace urllib with httpx (7 files) | P1 | - |
-| **research-library-retry** | Migrate manual retry loops to tenacity (4 files) | P1 | - |
-| **research-library-watchdog** | Replace polling with watchdog (1 file) | P1 | - |
-| **research-library-cache** | Replace custom caching with cachetools (5 files) | P2 | - |
-| **research-library-circuit-breaker** | Replace custom circuit breaker with pybreaker (1 file) | P2 | - |
-| **research-library-yaml** | Replace PyYAML with ruamel.yaml (15 files) | P2 | - |
-| **research-library-ansi** | Replace custom ANSI stripping with rich (5 files) | P2 | - |
-| **research-library-logging** | Migrate logging to structlog (60 files, optional) | P3 | - |
-| **research-library-json** | Replace json with orjson (50 files, optional) | P3 | - |
+| ID                                   | Title                                                  | Priority | Depends |
+| ------------------------------------ | ------------------------------------------------------ | -------- | ------- |
+| **research-library-http**            | Replace urllib with httpx (7 files)                    | P1       | -       |
+| **research-library-retry**           | Migrate manual retry loops to tenacity (4 files)       | P1       | -       |
+| **research-library-watchdog**        | Replace polling with watchdog (1 file)                 | P1       | -       |
+| **research-library-cache**           | Replace custom caching with cachetools (5 files)       | P2       | -       |
+| **research-library-circuit-breaker** | Replace custom circuit breaker with pybreaker (1 file) | P2       | -       |
+| **research-library-yaml**            | Replace PyYAML with ruamel.yaml (15 files)             | P2       | -       |
+| **research-library-ansi**            | Replace custom ANSI stripping with rich (5 files)      | P2       | -       |
+| **research-library-logging**         | Migrate logging to structlog (60 files, optional)      | P3       | -       |
+| **research-library-json**            | Replace json with orjson (50 files, optional)          | P3       | -       |
 
 ---
 
@@ -591,14 +643,17 @@ Add to [WORK_STREAM.md](../reference/WORK_STREAM.md) BACKLOG:
 **Extended by:** Claude Code
 
 ### Changes Made
+
 1. Added planning patterns
 2. Added implementation roadmap
 3. Enhanced cross-references
 
 ### Cross-References Added
+
 - WORK_STREAM.md
 - Implementation guides
 
 ### Practical Additions
+
 - Planning templates
 - Roadmap configurations

@@ -24,7 +24,6 @@ from typer.testing import CliRunner
 from thegent.ux.cli_cockpit import app as cockpit_app
 from thegent.ux.cli_sota import app as sota_app
 
-
 # ---------------------------------------------------------------------------
 # Fixtures (mirrors ``test_unit_cockpit_sota_json_parity.py``)
 # ---------------------------------------------------------------------------
@@ -490,7 +489,7 @@ class TestSotaJunitXmlFlippedProperty:
         _write_batch(batch)
         _write_snapshot(compare, _harvest_decisions(runner, batch))
 
-        result = runner.invoke(
+        runner.invoke(
             sota_app,
             [
                 "replay",
@@ -529,10 +528,10 @@ class TestFlipEnvelopeCompositionSemantics:
 
     def test_cockpit_emit_replay_summary_flipped_is_serialised(self) -> None:
         """``_emit_replay_summary(json_output=True, flipped=[...])`` includes the key."""
-        from thegent.ux.cli_cockpit import _emit_replay_summary
-
-        import io
         import contextlib
+        import io
+
+        from thegent.ux.cli_cockpit import _emit_replay_summary
 
         buf = io.StringIO()
         with contextlib.redirect_stdout(buf):
@@ -560,10 +559,10 @@ class TestFlipEnvelopeCompositionSemantics:
 
     def test_cockpit_emit_replay_summary_no_flip_defaults_to_empty_list(self) -> None:
         """``_emit_replay_summary(..., flipped=None)`` -> ``flipped == []`` (no key drift)."""
-        from thegent.ux.cli_cockpit import _emit_replay_summary
-
-        import io
         import contextlib
+        import io
+
+        from thegent.ux.cli_cockpit import _emit_replay_summary
 
         buf = io.StringIO()
         with contextlib.redirect_stdout(buf):

@@ -12,6 +12,7 @@
 Portkey is a production-grade AI Gateway and LLMOps control plane built for GenAI workloads at enterprise scale. It sits between your application and LLM providers, adding routing, reliability, security, observability, and governance as a transparent middleware layer.
 
 Key identity markers:
+
 - "Control Panel for Production AI" (their tagline)
 - **Managed SaaS** (default) + **Open-source self-hosted gateway** (separate tier)
 - 250+ models, 45+ providers, 1,600+ total model variants
@@ -33,6 +34,7 @@ GitHub: `Portkey-AI/gateway`
 The OSS gateway is a Node.js/TypeScript edge-compatible proxy. It handles routing, fallbacks, load balancing, caching, and basic guardrails — but **without** observability persistence, prompt management, virtual keys, RBAC, or the control-plane SaaS features.
 
 Install methods:
+
 ```bash
 # Docker
 docker pull portkeyai/gateway
@@ -86,6 +88,7 @@ Header: `x-portkey-api-key: <YOUR_PORTKEY_API_KEY>`
 Two methods:
 
 **Direct provider key** (simpler, less secure):
+
 ```
 x-portkey-provider: openai
 x-portkey-api-key: <PORTKEY_KEY>
@@ -93,33 +96,36 @@ Authorization: Bearer <OPENAI_API_KEY>
 ```
 
 **Virtual Key / AI Provider slug** (recommended):
+
 ```
 x-portkey-virtual-key: my-openai-prod-vk
 ```
+
 or with model catalog:
+
 ```
 model: "@openai-prod/gpt-4o"
 ```
 
-### 3.3 Full x-portkey-* Header Inventory
+### 3.3 Full x-portkey-\* Header Inventory
 
-| Header | Type | Purpose |
-|--------|------|---------|
-| `x-portkey-api-key` | string | Portkey account authentication |
-| `x-portkey-provider` | string | Direct provider name (e.g., "openai", "anthropic") |
-| `x-portkey-virtual-key` | string | Virtual key slug (legacy) |
-| `x-portkey-config` | string/json | Config ID or inline JSON config object |
-| `x-portkey-trace-id` | string | Custom trace ID for observability |
-| `x-portkey-span-id` | string | Span ID for distributed tracing |
-| `x-portkey-parent-span-id` | string | Parent span for nested traces |
-| `x-portkey-span-name` | string | Human-readable span label |
-| `x-portkey-metadata` | json object | Custom key-value pairs attached to logs |
-| `x-portkey-cache-namespace` | string | Custom cache partition key (e.g., user ID) |
-| `x-portkey-cache-force-refresh` | boolean | Bypass cache and re-fetch |
-| `x-portkey-debug` | boolean | Enable debug mode (must be true for caching) |
-| `x-portkey-forward-headers` | array | List of headers to forward to provider |
-| `x-portkey-input-guardrails` | string | Guardrail ID for input checking |
-| `x-portkey-output-guardrails` | string | Guardrail ID for output checking |
+| Header                          | Type        | Purpose                                            |
+| ------------------------------- | ----------- | -------------------------------------------------- |
+| `x-portkey-api-key`             | string      | Portkey account authentication                     |
+| `x-portkey-provider`            | string      | Direct provider name (e.g., "openai", "anthropic") |
+| `x-portkey-virtual-key`         | string      | Virtual key slug (legacy)                          |
+| `x-portkey-config`              | string/json | Config ID or inline JSON config object             |
+| `x-portkey-trace-id`            | string      | Custom trace ID for observability                  |
+| `x-portkey-span-id`             | string      | Span ID for distributed tracing                    |
+| `x-portkey-parent-span-id`      | string      | Parent span for nested traces                      |
+| `x-portkey-span-name`           | string      | Human-readable span label                          |
+| `x-portkey-metadata`            | json object | Custom key-value pairs attached to logs            |
+| `x-portkey-cache-namespace`     | string      | Custom cache partition key (e.g., user ID)         |
+| `x-portkey-cache-force-refresh` | boolean     | Bypass cache and re-fetch                          |
+| `x-portkey-debug`               | boolean     | Enable debug mode (must be true for caching)       |
+| `x-portkey-forward-headers`     | array       | List of headers to forward to provider             |
+| `x-portkey-input-guardrails`    | string      | Guardrail ID for input checking                    |
+| `x-portkey-output-guardrails`   | string      | Guardrail ID for output checking                   |
 
 W3C standard `traceparent` and `baggage` headers are also supported for OTel compatibility; Portkey-specific headers take precedence if both present.
 
@@ -138,16 +144,10 @@ from portkey_ai import PORTKEY_GATEWAY_URL, createHeaders
 client = OpenAI(
     api_key="OPENAI_API_KEY",  # or can be anything if using virtual keys
     base_url=PORTKEY_GATEWAY_URL,  # https://api.portkey.ai/v1
-    default_headers=createHeaders(
-        api_key="PORTKEY_API_KEY",
-        provider="openai"
-    )
+    default_headers=createHeaders(api_key="PORTKEY_API_KEY", provider="openai"),
 )
 
-response = client.chat.completions.create(
-    model="gpt-4o",
-    messages=[{"role": "user", "content": "Hello"}]
-)
+response = client.chat.completions.create(model="gpt-4o", messages=[{"role": "user", "content": "Hello"}])
 ```
 
 ### Python (Portkey native SDK)
@@ -155,15 +155,9 @@ response = client.chat.completions.create(
 ```python
 from portkey_ai import Portkey
 
-portkey = Portkey(
-    api_key="PORTKEY_API_KEY",
-    virtual_key="my-openai-vk"
-)
+portkey = Portkey(api_key="PORTKEY_API_KEY", virtual_key="my-openai-vk")
 
-response = portkey.chat.completions.create(
-    model="gpt-4o",
-    messages=[{"role": "user", "content": "Hello"}]
-)
+response = portkey.chat.completions.create(model="gpt-4o", messages=[{"role": "user", "content": "Hello"}])
 ```
 
 ### JavaScript/TypeScript (OpenAI SDK)
@@ -173,12 +167,12 @@ import OpenAI from "openai";
 import { PORTKEY_GATEWAY_URL, createHeaders } from "portkey-ai";
 
 const client = new OpenAI({
-    apiKey: "OPENAI_API_KEY",
-    baseURL: PORTKEY_GATEWAY_URL,
-    defaultHeaders: createHeaders({
-        apiKey: "PORTKEY_API_KEY",
-        provider: "openai"
-    })
+  apiKey: "OPENAI_API_KEY",
+  baseURL: PORTKEY_GATEWAY_URL,
+  defaultHeaders: createHeaders({
+    apiKey: "PORTKEY_API_KEY",
+    provider: "openai",
+  }),
 });
 ```
 
@@ -189,14 +183,14 @@ import { createPortkey } from "@portkey-ai/vercel-provider";
 import { streamText } from "ai";
 
 const portkey = createPortkey({
-    apiKey: "PORTKEY_API_KEY",
-    provider: "openai",
-    overrideParams: { model: "gpt-4o" }
+  apiKey: "PORTKEY_API_KEY",
+  provider: "openai",
+  overrideParams: { model: "gpt-4o" },
 });
 
 const result = await streamText({
-    model: portkey.chatModel("gpt-4o"),
-    prompt: "Hello"
+  model: portkey.chatModel("gpt-4o"),
+  prompt: "Hello",
 });
 ```
 
@@ -264,6 +258,7 @@ The Config Object is Portkey's primary routing/reliability/caching/guardrail con
 ```
 
 Key rules:
+
 - `targets` is recursive — each target can itself be a full config (enabling nested strategies)
 - Target-level settings override top-level settings
 - `strategy.mode` defaults to `single` if omitted and one target is present
@@ -295,7 +290,10 @@ Sequential: try each target in order; trigger on configured HTTP status codes.
   },
   "targets": [
     { "provider": "@openai-primary" },
-    { "provider": "@anthropic-backup", "override_params": { "model": "claude-3-5-sonnet" } },
+    {
+      "provider": "@anthropic-backup",
+      "override_params": { "model": "claude-3-5-sonnet" }
+    },
     { "provider": "@azure-openai-tertiary" }
   ]
 }
@@ -344,35 +342,49 @@ Route based on metadata values or request parameters:
     "default": "standard-target"
   },
   "targets": [
-    { "name": "premium-target", "provider": "@anthropic", "override_params": { "model": "claude-3-5-opus" } },
-    { "name": "creative-target", "provider": "@openai", "override_params": { "model": "gpt-4o" } },
-    { "name": "standard-target", "provider": "@openai", "override_params": { "model": "gpt-4o-mini" } }
+    {
+      "name": "premium-target",
+      "provider": "@anthropic",
+      "override_params": { "model": "claude-3-5-opus" }
+    },
+    {
+      "name": "creative-target",
+      "provider": "@openai",
+      "override_params": { "model": "gpt-4o" }
+    },
+    {
+      "name": "standard-target",
+      "provider": "@openai",
+      "override_params": { "model": "gpt-4o-mini" }
+    }
   ]
 }
 ```
 
 **Supported condition operators:**
 
-| Operator | Meaning |
-|----------|---------|
-| `$eq` | Equals |
-| `$ne` | Not equals |
-| `$in` | In array |
-| `$nin` | Not in array |
+| Operator | Meaning                           |
+| -------- | --------------------------------- |
+| `$eq`    | Equals                            |
+| `$ne`    | Not equals                        |
+| `$in`    | In array                          |
+| `$nin`   | Not in array                      |
 | `$regex` | JavaScript regex (case-sensitive) |
-| `$gt` | Greater than |
-| `$gte` | Greater than or equal |
-| `$lt` | Less than |
-| `$lte` | Less than or equal |
-| `$and` | All subconditions true |
-| `$or` | Any subcondition true |
+| `$gt`    | Greater than                      |
+| `$gte`   | Greater than or equal             |
+| `$lt`    | Less than                         |
+| `$lte`   | Less than or equal                |
+| `$and`   | All subconditions true            |
+| `$or`    | Any subcondition true             |
 
 **Condition query paths:**
+
 - `metadata.<key>` — custom metadata attached to the request
 - `params.<key>` — request body parameters (model, temperature, max_tokens, etc.)
 - `url.pathname` — full request URL path matching
 
 **Limitations:**
+
 - Only two-segment keys: `metadata.user_plan` works; `metadata.features.new_model` does not
 - Only primitive types (string, number, boolean) in conditions
 - Conditions evaluated sequentially; first match wins
@@ -394,7 +406,10 @@ Targets can contain full sub-configs, enabling load balance with nested fallback
       "strategy": { "mode": "fallback" },
       "targets": [
         { "provider": "@openai", "override_params": { "model": "gpt-4o" } },
-        { "provider": "@azure-openai", "override_params": { "model": "gpt-4o" } }
+        {
+          "provider": "@azure-openai",
+          "override_params": { "model": "gpt-4o" }
+        }
       ],
       "weight": 0.5
     }
@@ -498,13 +513,13 @@ Fuzzy match using cosine similarity on prompt embeddings. Catches semantically e
 { "cache": { "mode": "simple", "max_age": 3600 } }
 ```
 
-| Bound | Value |
-|-------|-------|
-| Minimum | 60 seconds |
-| Maximum | 90 days (7,776,000 seconds) |
-| Default | 7 days (604,800 seconds) |
-| Free plan cap | 1 day (86,400 seconds) |
-| Org-max TTL | 25,923,000 seconds (settable in Admin → Organization Properties) |
+| Bound         | Value                                                            |
+| ------------- | ---------------------------------------------------------------- |
+| Minimum       | 60 seconds                                                       |
+| Maximum       | 90 days (7,776,000 seconds)                                      |
+| Default       | 7 days (604,800 seconds)                                         |
+| Free plan cap | 1 day (86,400 seconds)                                           |
+| Org-max TTL   | 25,923,000 seconds (settable in Admin → Organization Properties) |
 
 TTL precedence: request `max_age` honored unless it exceeds org-level cap (org cap wins).
 
@@ -513,10 +528,7 @@ TTL precedence: request `max_age` honored unless it exceeds org-level cap (org c
 Override default cache partitioning (which uses all headers) with a custom string key:
 
 ```python
-portkey.chat.completions.create(
-    ...,
-    cache_namespace="user-123"
-)
+portkey.chat.completions.create(..., cache_namespace="user-123")
 ```
 
 ```bash
@@ -550,6 +562,7 @@ Dashboard shows: Cache Hit, Cache Semantic Hit, Cache Miss, Cache Refreshed, Cac
 ### 9.1 Overview
 
 Guardrails run before (input hook) and/or after (output hook) each LLM call. They can:
+
 - Block the request (return error to caller)
 - Log violations but allow through
 - Transform/redact the request or response
@@ -557,49 +570,49 @@ Guardrails run before (input hook) and/or after (output hook) each LLM call. The
 
 ### 9.2 Native Guardrails (Deterministic — All Plans)
 
-| Check | Parameters | Hook |
-|-------|-----------|------|
-| Regex Match | `rule: string` | input/output |
-| Sentence Count | `minSentences, maxSentences: number` | input/output |
-| Word Count | `minWords, maxWords: number` | input/output |
-| Character Count | `minCharacters, maxCharacters: number` | input/output |
-| JSON Schema | `schema: json` | output only |
-| JSON Keys | `keys: array; operator: string` | output only |
-| Contains | `words: array; operator: string` | output only |
-| Valid URLs | `onlyDNS: boolean` | output only |
-| Contains Code | `format: string` (SQL, Python, etc.) | output only |
-| Lowercase Detection | `format: string` | input/output |
-| Ends With | `Suffix: string` | input/output |
-| Webhook (BYOG) | `webhookURL: string; headers: json` | input/output |
-| JWT Token Validator | JWKS signature, introspection, claim validation | input only |
-| Model Whitelist | `Models: array; Inverse: boolean` | input only |
+| Check               | Parameters                                      | Hook         |
+| ------------------- | ----------------------------------------------- | ------------ |
+| Regex Match         | `rule: string`                                  | input/output |
+| Sentence Count      | `minSentences, maxSentences: number`            | input/output |
+| Word Count          | `minWords, maxWords: number`                    | input/output |
+| Character Count     | `minCharacters, maxCharacters: number`          | input/output |
+| JSON Schema         | `schema: json`                                  | output only  |
+| JSON Keys           | `keys: array; operator: string`                 | output only  |
+| Contains            | `words: array; operator: string`                | output only  |
+| Valid URLs          | `onlyDNS: boolean`                              | output only  |
+| Contains Code       | `format: string` (SQL, Python, etc.)            | output only  |
+| Lowercase Detection | `format: string`                                | input/output |
+| Ends With           | `Suffix: string`                                | input/output |
+| Webhook (BYOG)      | `webhookURL: string; headers: json`             | input/output |
+| JWT Token Validator | JWKS signature, introspection, claim validation | input only   |
+| Model Whitelist     | `Models: array; Inverse: boolean`               | input only   |
 
 ### 9.3 LLM-Based Guardrails (Pro/Enterprise Plans)
 
-| Check | Parameters | Hook |
-|-------|-----------|------|
-| Moderate Content | `categories: array` | input only |
-| Check Language | `language: string` | input only |
-| Detect PII | `categories: array` | input/output |
-| Detect Gibberish | `boolean` | input/output |
+| Check            | Parameters          | Hook         |
+| ---------------- | ------------------- | ------------ |
+| Moderate Content | `categories: array` | input only   |
+| Check Language   | `language: string`  | input only   |
+| Detect PII       | `categories: array` | input/output |
+| Detect Gibberish | `boolean`           | input/output |
 
 ### 9.4 Partner Guardrail Integrations (13 Partners)
 
-| Partner | Key Capabilities |
-|---------|-----------------|
-| **Acuvity** | PII detection, toxicity, prompt injection |
-| **Aporia** | Custom policy validation via Aporia project ID |
+| Partner                    | Key Capabilities                                                        |
+| -------------------------- | ----------------------------------------------------------------------- |
+| **Acuvity**                | PII detection, toxicity, prompt injection                               |
+| **Aporia**                 | Custom policy validation via Aporia project ID                          |
 | **AWS Bedrock Guardrails** | PII redaction, content safety, jailbreak detection, copyright detection |
-| **Azure Content Safety** | PII redaction, jailbreak/injection detection, Protected Material |
-| **Javelin** | GenAI/Agent/MCP security, visibility, emerging threats |
-| **Lasso Security** | Security risk analysis, jailbreak detection, custom policies |
-| **Mistral Moderation** | Harmful content filtering, multi-dimensional safety |
-| **Pangea Text Guard** | Input/output protection, malicious content, model manipulation |
-| **Palo Alto Prisma AIRS** | Real-time threat detection across OSI layers 1-7, DoS blocking |
-| **Patronus AI** | Hallucination detection, factual error, bias, quality evaluation |
-| **Pillar** | Comprehensive scanning, PII/toxicity/injection, enterprise security |
-| **Prompt Security** | Vulnerability scanning, policy violations, advanced threats |
-| **Qualifire** | Agent/RAG/chatbot evaluation, hallucination, grounding |
+| **Azure Content Safety**   | PII redaction, jailbreak/injection detection, Protected Material        |
+| **Javelin**                | GenAI/Agent/MCP security, visibility, emerging threats                  |
+| **Lasso Security**         | Security risk analysis, jailbreak detection, custom policies            |
+| **Mistral Moderation**     | Harmful content filtering, multi-dimensional safety                     |
+| **Pangea Text Guard**      | Input/output protection, malicious content, model manipulation          |
+| **Palo Alto Prisma AIRS**  | Real-time threat detection across OSI layers 1-7, DoS blocking          |
+| **Patronus AI**            | Hallucination detection, factual error, bias, quality evaluation        |
+| **Pillar**                 | Comprehensive scanning, PII/toxicity/injection, enterprise security     |
+| **Prompt Security**        | Vulnerability scanning, policy violations, advanced threats             |
+| **Qualifire**              | Agent/RAG/chatbot evaluation, hallucination, grounding                  |
 
 ### 9.5 Bring Your Own Guardrails (Webhook)
 
@@ -631,6 +644,7 @@ Portkey POSTs request/response data to your URL. Expected response:
 ### 9.6 Guardrail Actions
 
 When a guardrail fires:
+
 - **Block**: Return error to caller (configurable error message)
 - **Log**: Record violation, allow request to proceed
 - **Override**: Substitute transformed content
@@ -657,6 +671,7 @@ When a guardrail fires:
 ### 10.1 Logs
 
 Every request produces a structured log containing:
+
 - Timestamp, user, application identifier
 - Full prompt and response content
 - Provider, model, and routing decisions
@@ -673,6 +688,7 @@ Log retention: 3 days (Dev), 30 days (Pro), custom (Enterprise).
 ### 10.2 Traces
 
 Hierarchical view of multi-step execution (especially for agents):
+
 - Sequence of LLM calls, tool invocations, state transitions
 - Each span: inputs, outputs, model, temperature, token usage, latency, status
 - Spans linked by trace ID and parent span ID
@@ -695,6 +711,7 @@ https://api.portkey.ai/v1/otel
 ### 10.4 Metrics (40+ tracked)
 
 Key metrics monitored:
+
 - Request count, error rate, latency (p50, p95, p99)
 - Cost per request, cost per token, total spend
 - Cache hit rate, cache savings
@@ -716,8 +733,8 @@ Collect human evaluation signals linked to logs:
 ```python
 portkey.feedback.create(
     trace_id="trace_id_from_response",
-    value=1,    # 1 = thumbs up, -1 = thumbs down
-    weight=1
+    value=1,  # 1 = thumbs up, -1 = thumbs down
+    weight=1,
 )
 ```
 
@@ -728,14 +745,7 @@ Feedback is visible in the logs UI with count and value:weight pairs per trace.
 Attach arbitrary key-value pairs to any request for filtering/segmentation:
 
 ```python
-portkey.chat.completions.create(
-    ...,
-    metadata={
-        "user_id": "user_123",
-        "environment": "production",
-        "feature": "search"
-    }
-)
+portkey.chat.completions.create(..., metadata={"user_id": "user_123", "environment": "production", "feature": "search"})
 ```
 
 ---
@@ -751,6 +761,7 @@ Slug format: `@my-openai-prod` — used in configs and the `@provider/model` syn
 ### 11.2 Model Catalog (Current System)
 
 Replaces Virtual Keys with a richer governance layer:
+
 - **Org-level provider integrations**: Create credentials once, provision to multiple workspaces
 - **`@provider_slug/model_name` syntax**: e.g., `@openai-prod/gpt-4o`, `@anthropic/claude-3-5-sonnet`
 - **Model allowlists**: Define which models each workspace/team can access
@@ -793,8 +804,7 @@ Call prompts by ID with variable substitution:
 
 ```python
 portkey.prompts.completions.create(
-    prompt_id="pp-my-prompt-abc",
-    variables={"user_name": "Alice", "topic": "machine learning"}
+    prompt_id="pp-my-prompt-abc", variables={"user_name": "Alice", "topic": "machine learning"}
 )
 ```
 
@@ -814,16 +824,16 @@ Prompts can be promoted through dev → staging → production using label-based
 
 All available through the unified API:
 
-| Modality | Supported |
-|----------|-----------|
-| Chat completions | Yes — all text providers |
-| Text completions (legacy) | Yes |
-| Embeddings | Yes — all embedding providers |
-| Vision (image input) | Yes — OpenAI GPT-4V, Anthropic Claude, Google Gemini, etc. |
-| Image generation | Yes — DALL-E, Stable Diffusion, etc. |
-| Text-to-speech | Yes — OpenAI TTS, ElevenLabs, etc. |
-| Speech-to-text | Yes — OpenAI Whisper, etc. |
-| Realtime API (WebSockets) | Yes — OpenAI Realtime API through integrated WS server |
+| Modality                  | Supported                                                  |
+| ------------------------- | ---------------------------------------------------------- |
+| Chat completions          | Yes — all text providers                                   |
+| Text completions (legacy) | Yes                                                        |
+| Embeddings                | Yes — all embedding providers                              |
+| Vision (image input)      | Yes — OpenAI GPT-4V, Anthropic Claude, Google Gemini, etc. |
+| Image generation          | Yes — DALL-E, Stable Diffusion, etc.                       |
+| Text-to-speech            | Yes — OpenAI TTS, ElevenLabs, etc.                         |
+| Speech-to-text            | Yes — OpenAI Whisper, etc.                                 |
+| Realtime API (WebSockets) | Yes — OpenAI Realtime API through integrated WS server     |
 
 All modalities benefit from routing, fallbacks, load balancing, guardrails, and observability.
 
@@ -846,6 +856,7 @@ A new capability (announced 2025-2026):
 ## 15. Agent Framework Integrations
 
 Native SDKs/integrations for:
+
 - LangChain (Python + JS)
 - LlamaIndex
 - CrewAI
@@ -862,14 +873,14 @@ Native SDKs/integrations for:
 
 ### 16.1 Security and Compliance
 
-| Certification | Status |
-|--------------|--------|
-| SOC 2 Type 2 | Certified |
-| ISO 27001 | Certified |
-| GDPR | Compliant |
-| HIPAA | Certified (Enterprise) |
-| CCPA | Compliant |
-| Custom BAAs | Available (Enterprise) |
+| Certification | Status                 |
+| ------------- | ---------------------- |
+| SOC 2 Type 2  | Certified              |
+| ISO 27001     | Certified              |
+| GDPR          | Compliant              |
+| HIPAA         | Certified (Enterprise) |
+| CCPA          | Compliant              |
+| Custom BAAs   | Available (Enterprise) |
 
 ### 16.2 Access Management
 
@@ -893,12 +904,12 @@ Native SDKs/integrations for:
 
 ## 17. Pricing (as of 2026-02-20)
 
-| Plan | Price | Requests | Log Retention | Key Features |
-|------|-------|---------|--------------|-------------|
-| Dev (Free) | $0 | 10K/month | 3 days | Basic observability, simple caching (1d TTL), 3 prompt templates |
-| Pro | $49/month | 100K/month | 30 days | Semantic caching, unlimited prompts, RBAC, alerts |
-| Pro Overage | $9/100K | up to 3M | — | Overage billing |
-| Enterprise | Custom | Custom | Custom | SSO, SCIM, VPC, HIPAA, airgapped, FinOps dashboards |
+| Plan        | Price     | Requests   | Log Retention | Key Features                                                     |
+| ----------- | --------- | ---------- | ------------- | ---------------------------------------------------------------- |
+| Dev (Free)  | $0        | 10K/month  | 3 days        | Basic observability, simple caching (1d TTL), 3 prompt templates |
+| Pro         | $49/month | 100K/month | 30 days       | Semantic caching, unlimited prompts, RBAC, alerts                |
+| Pro Overage | $9/100K   | up to 3M   | —             | Overage billing                                                  |
+| Enterprise  | Custom    | Custom     | Custom        | SSO, SCIM, VPC, HIPAA, airgapped, FinOps dashboards              |
 
 Enterprise typically: $2,000–$10,000+/month depending on volume, deployment, retention, support.
 
@@ -912,50 +923,51 @@ The OSS gateway core is available free (no managed observability/prompt manageme
 
 All OpenAI-compatible:
 
-| Endpoint | Method | Purpose |
-|----------|--------|---------|
-| `/v1/chat/completions` | POST | Chat completions |
-| `/v1/completions` | POST | Text completions (legacy) |
-| `/v1/embeddings` | POST | Text embeddings |
-| `/v1/images/generations` | POST | Image generation |
-| `/v1/audio/speech` | POST | Text-to-speech |
-| `/v1/audio/transcriptions` | POST | Speech-to-text |
-| `/v1/realtime` | WebSocket | OpenAI Realtime API |
-| `/v1/feedback` | POST | Submit feedback |
-| `/v1/prompts/{id}/completions` | POST | Prompt template execution |
-| `/v1/otel` | OTLP | OpenTelemetry ingestion |
-| Admin APIs | Various | User/workspace/key management |
+| Endpoint                       | Method    | Purpose                       |
+| ------------------------------ | --------- | ----------------------------- |
+| `/v1/chat/completions`         | POST      | Chat completions              |
+| `/v1/completions`              | POST      | Text completions (legacy)     |
+| `/v1/embeddings`               | POST      | Text embeddings               |
+| `/v1/images/generations`       | POST      | Image generation              |
+| `/v1/audio/speech`             | POST      | Text-to-speech                |
+| `/v1/audio/transcriptions`     | POST      | Speech-to-text                |
+| `/v1/realtime`                 | WebSocket | OpenAI Realtime API           |
+| `/v1/feedback`                 | POST      | Submit feedback               |
+| `/v1/prompts/{id}/completions` | POST      | Prompt template execution     |
+| `/v1/otel`                     | OTLP      | OpenTelemetry ingestion       |
+| Admin APIs                     | Various   | User/workspace/key management |
 
 ---
 
 ## 19. Comparison with OpenRouter and LiteLLM
 
-| Feature | Portkey | LiteLLM | OpenRouter |
-|---------|---------|---------|-----------|
-| **Type** | Managed SaaS + OSS gateway | Open-source proxy | Managed SaaS only |
-| **Model coverage** | 1,600+ | 100+ | 400+ |
-| **Routing strategies** | fallback, LB, conditional, nested | fallback, LB, cost-optimized | auto-routing, model fallback |
-| **Caching** | Simple + Semantic | Simple only | Simple only |
-| **Guardrails** | 20+ native + 13 partner integrations | Basic (via extensions) | None |
-| **Observability** | Full (40+ metrics, traces, OTel) | Basic (external callbacks) | Minimal |
-| **Prompt management** | Full versioning, A/B, API | None | None |
-| **Virtual keys** | Yes (Model Catalog) | Yes (via config) | No (direct API keys) |
-| **Budget limits** | Yes (per key, per workspace) | Limited | No |
-| **RBAC** | Yes (roles, workspaces) | No native | No |
-| **SSO/SCIM** | Yes (Enterprise) | No | No |
-| **Audit logs** | Yes | No | No |
-| **Self-hosted** | Yes (OSS gateway) | Yes (full) | No |
-| **Airgapped** | Yes (Enterprise) | Yes | No |
-| **MCP Gateway** | Yes | No | No |
-| **Agent integrations** | 8+ frameworks | Multiple | Limited |
-| **Pricing model** | $0/49/custom | Free (OSS) | 5% markup on spend |
-| **SOC2/HIPAA** | Yes (Enterprise) | Self-certified | No |
-| **Circuit breaker** | Yes (cb_config) | Limited | No |
-| **Conditional routing** | Yes (metadata/params/URL) | Limited | No |
-| **Feedback API** | Yes | No | No |
-| **OTel support** | Yes (OTLP endpoint) | Via callbacks | No |
+| Feature                 | Portkey                              | LiteLLM                      | OpenRouter                   |
+| ----------------------- | ------------------------------------ | ---------------------------- | ---------------------------- |
+| **Type**                | Managed SaaS + OSS gateway           | Open-source proxy            | Managed SaaS only            |
+| **Model coverage**      | 1,600+                               | 100+                         | 400+                         |
+| **Routing strategies**  | fallback, LB, conditional, nested    | fallback, LB, cost-optimized | auto-routing, model fallback |
+| **Caching**             | Simple + Semantic                    | Simple only                  | Simple only                  |
+| **Guardrails**          | 20+ native + 13 partner integrations | Basic (via extensions)       | None                         |
+| **Observability**       | Full (40+ metrics, traces, OTel)     | Basic (external callbacks)   | Minimal                      |
+| **Prompt management**   | Full versioning, A/B, API            | None                         | None                         |
+| **Virtual keys**        | Yes (Model Catalog)                  | Yes (via config)             | No (direct API keys)         |
+| **Budget limits**       | Yes (per key, per workspace)         | Limited                      | No                           |
+| **RBAC**                | Yes (roles, workspaces)              | No native                    | No                           |
+| **SSO/SCIM**            | Yes (Enterprise)                     | No                           | No                           |
+| **Audit logs**          | Yes                                  | No                           | No                           |
+| **Self-hosted**         | Yes (OSS gateway)                    | Yes (full)                   | No                           |
+| **Airgapped**           | Yes (Enterprise)                     | Yes                          | No                           |
+| **MCP Gateway**         | Yes                                  | No                           | No                           |
+| **Agent integrations**  | 8+ frameworks                        | Multiple                     | Limited                      |
+| **Pricing model**       | $0/49/custom                         | Free (OSS)                   | 5% markup on spend           |
+| **SOC2/HIPAA**          | Yes (Enterprise)                     | Self-certified               | No                           |
+| **Circuit breaker**     | Yes (cb_config)                      | Limited                      | No                           |
+| **Conditional routing** | Yes (metadata/params/URL)            | Limited                      | No                           |
+| **Feedback API**        | Yes                                  | No                           | No                           |
+| **OTel support**        | Yes (OTLP endpoint)                  | Via callbacks                | No                           |
 
 **Portkey unique advantages over OpenRouter:**
+
 1. Self-hostable / airgapped — data never leaves your network
 2. Guardrails (50+) — OpenRouter has none
 3. Semantic caching — OpenRouter has none
@@ -966,6 +978,7 @@ All OpenAI-compatible:
 8. MCP Gateway support
 
 **Portkey unique advantages over LiteLLM:**
+
 1. Managed SaaS (no infra to operate)
 2. Full observability dashboard out of box (LiteLLM needs external tools)
 3. Semantic caching (LiteLLM simple only)
@@ -976,6 +989,7 @@ All OpenAI-compatible:
 8. MCP Gateway
 
 **LiteLLM advantages over Portkey:**
+
 1. Fully open-source (MIT) — no SaaS dependency
 2. Richer Python SDK for library-mode (not just proxy)
 3. More deployment flexibility for custom builds
@@ -989,59 +1003,59 @@ All OpenAI-compatible:
 
 **HIGH PRIORITY — Core routing capability:**
 
-| Portkey Feature | thegent Status | Gap |
-|----------------|---------------|-----|
-| Config Object with `strategy`/`targets` JSON | Partial (ad-hoc routing) | Formalize a declarative routing config format |
-| Nested strategies (LB inside fallback, etc.) | Not present | Implement recursive config evaluation |
-| Conditional routing by metadata/params | Not present | Add metadata-keyed routing rules |
-| Circuit breaker (`cb_config`) | Not present | Implement failure_threshold + cooldown_interval |
-| Per-target `override_params` | Partial | Allow per-target model/param override in config |
-| `x-portkey-config` inline JSON | Not present | Allow inline config JSON in headers |
+| Portkey Feature                              | thegent Status           | Gap                                             |
+| -------------------------------------------- | ------------------------ | ----------------------------------------------- |
+| Config Object with `strategy`/`targets` JSON | Partial (ad-hoc routing) | Formalize a declarative routing config format   |
+| Nested strategies (LB inside fallback, etc.) | Not present              | Implement recursive config evaluation           |
+| Conditional routing by metadata/params       | Not present              | Add metadata-keyed routing rules                |
+| Circuit breaker (`cb_config`)                | Not present              | Implement failure_threshold + cooldown_interval |
+| Per-target `override_params`                 | Partial                  | Allow per-target model/param override in config |
+| `x-portkey-config` inline JSON               | Not present              | Allow inline config JSON in headers             |
 
 **HIGH PRIORITY — Reliability:**
 
-| Portkey Feature | thegent Status | Gap |
-|----------------|---------------|-----|
-| `use_retry_after_headers` | Not present | Honor provider Retry-After headers |
-| Per-target retry configs | Not present | Allow retry settings per routing target |
-| Request timeout (per-target) | Partial | Per-target timeout with fallback trigger |
+| Portkey Feature              | thegent Status | Gap                                      |
+| ---------------------------- | -------------- | ---------------------------------------- |
+| `use_retry_after_headers`    | Not present    | Honor provider Retry-After headers       |
+| Per-target retry configs     | Not present    | Allow retry settings per routing target  |
+| Request timeout (per-target) | Partial        | Per-target timeout with fallback trigger |
 
 **MEDIUM PRIORITY — Observability:**
 
-| Portkey Feature | thegent Status | Gap |
-|----------------|---------------|-----|
-| `x-portkey-trace-id` / span propagation | Not present | Structured trace/span headers on all requests |
-| `x-portkey-metadata` custom tagging | Partial | Formalize metadata header + attach to logs |
-| OTel OTLP endpoint | Not present | Expose `/v1/otel` for external trace ingestion |
-| Feedback API | Not present | POST endpoint to attach user feedback to traces |
-| Cache hit/miss logging | Not present | Log cache outcomes with each request |
+| Portkey Feature                         | thegent Status | Gap                                             |
+| --------------------------------------- | -------------- | ----------------------------------------------- |
+| `x-portkey-trace-id` / span propagation | Not present    | Structured trace/span headers on all requests   |
+| `x-portkey-metadata` custom tagging     | Partial        | Formalize metadata header + attach to logs      |
+| OTel OTLP endpoint                      | Not present    | Expose `/v1/otel` for external trace ingestion  |
+| Feedback API                            | Not present    | POST endpoint to attach user feedback to traces |
+| Cache hit/miss logging                  | Not present    | Log cache outcomes with each request            |
 
 **MEDIUM PRIORITY — Caching:**
 
-| Portkey Feature | thegent Status | Gap |
-|----------------|---------------|-----|
-| Cache namespace (`x-portkey-cache-namespace`) | Not present | Per-user/per-session cache namespacing |
-| Cache TTL via config | Not present | `max_age` in cache config object |
-| Semantic caching | Not present | Vector-based fuzzy cache (longer-term) |
-| Cache force refresh | Not present | Per-request cache bypass header |
+| Portkey Feature                               | thegent Status | Gap                                    |
+| --------------------------------------------- | -------------- | -------------------------------------- |
+| Cache namespace (`x-portkey-cache-namespace`) | Not present    | Per-user/per-session cache namespacing |
+| Cache TTL via config                          | Not present    | `max_age` in cache config object       |
+| Semantic caching                              | Not present    | Vector-based fuzzy cache (longer-term) |
+| Cache force refresh                           | Not present    | Per-request cache bypass header        |
 
 **MEDIUM PRIORITY — Guardrails:**
 
-| Portkey Feature | thegent Status | Gap |
-|----------------|---------------|-----|
-| Webhook-based custom guardrails | Not present | Implement BYOG webhook with verdict/transform |
-| Input guardrail IDs in config | Not present | `input_guardrails` and `output_guardrails` in target config |
-| JWT validator guardrail | Partial | JWT claim validation at gateway level |
-| Model whitelist guardrail | Not present | Block requests to non-approved models |
+| Portkey Feature                 | thegent Status | Gap                                                         |
+| ------------------------------- | -------------- | ----------------------------------------------------------- |
+| Webhook-based custom guardrails | Not present    | Implement BYOG webhook with verdict/transform               |
+| Input guardrail IDs in config   | Not present    | `input_guardrails` and `output_guardrails` in target config |
+| JWT validator guardrail         | Partial        | JWT claim validation at gateway level                       |
+| Model whitelist guardrail       | Not present    | Block requests to non-approved models                       |
 
 **LOWER PRIORITY — Enterprise:**
 
-| Portkey Feature | thegent Status | Gap |
-|----------------|---------------|-----|
-| Budget limits per virtual key | Not present | USD spend cap + auto-expiry on keys |
-| SCIM provisioning | Not present | Automated user sync from IdP |
-| FinOps dashboards | Not present | Cost breakdown by team/workspace/model |
-| Prompt versioning API | Partial | Formalize prompt template versioning |
+| Portkey Feature               | thegent Status | Gap                                    |
+| ----------------------------- | -------------- | -------------------------------------- |
+| Budget limits per virtual key | Not present    | USD spend cap + auto-expiry on keys    |
+| SCIM provisioning             | Not present    | Automated user sync from IdP           |
+| FinOps dashboards             | Not present    | Cost breakdown by team/workspace/model |
+| Prompt versioning API         | Partial        | Formalize prompt template versioning   |
 
 ### 20.2 Portkey Features NOT Worth Copying
 

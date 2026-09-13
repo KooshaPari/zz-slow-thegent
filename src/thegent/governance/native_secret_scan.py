@@ -11,15 +11,17 @@ Traces to: FR-SEC-001 (secret detection), FR-GOV-006 (native binary integration)
 
 from __future__ import annotations
 
-import orjson as json
 import logging
 import re
 import shutil
 import subprocess
-from thegent.infra.shim_subprocess import run as shim_run
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Final
+
+import orjson as json
+
+from thegent.infra.shim_subprocess import run as shim_run
 
 _log = logging.getLogger(__name__)
 
@@ -84,11 +86,17 @@ _FALLBACK_PATTERNS: Final[list[tuple[str, re.Pattern[str]]]] = [
     ("private_key_block", re.compile(r"-----BEGIN [A-Z ]+ PRIVATE KEY-----")),
     ("square_access_token", re.compile(r"sq0atp-[0-9A-Za-z\-_]{22}")),
     ("aws_access_key_id", re.compile(r"AKIA[0-9A-Z]{16}")),
-    ("aws_secret_key_context", re.compile(r"(?i)(aws_secret_access_key|secret_access_key)\s*[=:]\s*\S{20,}")),
+    (
+        "aws_secret_key_context",
+        re.compile(r"(?i)(aws_secret_access_key|secret_access_key)\s*[=:]\s*\S{20,}"),
+    ),
     ("github_pat", re.compile(r"ghp_[a-zA-Z0-9]{36}")),
     ("github_oauth", re.compile(r"gho_[a-zA-Z0-9]{36}")),
     ("github_app_token", re.compile(r"ghs_[a-zA-Z0-9]{36}")),
-    ("generic_hex_secret", re.compile(r"(?i)(password|secret|token|api[_\-]?key)\s*[=:]\s*[0-9a-f]{20,}")),
+    (
+        "generic_hex_secret",
+        re.compile(r"(?i)(password|secret|token|api[_\-]?key)\s*[=:]\s*[0-9a-f]{20,}"),
+    ),
     (
         "generic_base64_secret",
         re.compile(r"(?i)(password|secret|token|api[_\-]?key)\s*[=:]\s*[A-Za-z0-9+/]{32,}={0,2}"),

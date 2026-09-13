@@ -2,9 +2,9 @@
 
 from __future__ import annotations
 
-import orjson as json
 from pathlib import Path
 
+import orjson as json
 import pytest
 from typer.testing import CliRunner
 
@@ -43,7 +43,15 @@ def test_dead_letter_replay_fixture_roundtrip(
 
     result = CliRunner().invoke(
         app,
-        ["dead-letter-replay", "--source", "github", "--board", "kooshapari:1", "--limit", "10"],
+        [
+            "dead-letter-replay",
+            "--source",
+            "github",
+            "--board",
+            "kooshapari:1",
+            "--limit",
+            "10",
+        ],
     )
 
     assert result.exit_code == 0

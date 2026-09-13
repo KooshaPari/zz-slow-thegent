@@ -13,7 +13,13 @@ from typing import cast
 class PTYHolder:
     """Wraps a process in a PTY and exposes it via a Unix socket."""
 
-    def __init__(self, socket_path: Path, cmd: list[str], cwd: str | None = None, env: dict | None = None) -> None:
+    def __init__(
+        self,
+        socket_path: Path,
+        cmd: list[str],
+        cwd: str | None = None,
+        env: dict | None = None,
+    ) -> None:
         self.socket_path = socket_path
         self.cmd = cmd
         self.cwd = cwd

@@ -2,7 +2,7 @@
 
 **Date**: 2026-04-02  
 **Research Domain**: Container Sandboxing, VM Isolation, Secure Execution  
-**Project**: thegent  
+**Project**: thegent
 
 ---
 
@@ -11,6 +11,7 @@
 Sandboxing technologies provide critical isolation for running untrusted code. For thegent's use case (executing user dotfiles scripts across diverse systems), selecting the right sandboxing strategy involves balancing security, performance, and compatibility.
 
 **Key Finding**: A tiered sandboxing approach is optimal:
+
 - **Tier 1** (Fast): User namespace containers (bubblewrap) for trusted scenarios
 - **Tier 2** (Balanced): gVisor for general untrusted code
 - **Tier 3** (Secure): Firecracker microVMs for maximum isolation
@@ -22,19 +23,20 @@ Sandboxing technologies provide critical isolation for running untrusted code. F
 
 ### 2.1 Quick Reference Matrix
 
-| Technology | Type | Startup | Memory | Security | Best For |
-|------------|------|---------|--------|----------|----------|
-| **bubblewrap** | User NS | 10ms | +5MB | Medium | Fast, trusted dev |
-| **Firejail** | User NS | 50ms | +20MB | Medium | Desktop apps |
-| **gVisor** | Userspace Kernel | 100ms | +50MB | High | Containers |
-| **Kata** | VM | 1s | +128MB | Very High | K8s pods |
-| **Firecracker** | microVM | 125ms | +5MB | Very High | Serverless |
-| **Wasmtime** | WASM | 1ms | +1MB | High | Plugins |
-| **Wasmer** | WASM | 5ms | +2MB | High | Plugins |
+| Technology      | Type             | Startup | Memory | Security  | Best For          |
+| --------------- | ---------------- | ------- | ------ | --------- | ----------------- |
+| **bubblewrap**  | User NS          | 10ms    | +5MB   | Medium    | Fast, trusted dev |
+| **Firejail**    | User NS          | 50ms    | +20MB  | Medium    | Desktop apps      |
+| **gVisor**      | Userspace Kernel | 100ms   | +50MB  | High      | Containers        |
+| **Kata**        | VM               | 1s      | +128MB | Very High | K8s pods          |
+| **Firecracker** | microVM          | 125ms   | +5MB   | Very High | Serverless        |
+| **Wasmtime**    | WASM             | 1ms     | +1MB   | High      | Plugins           |
+| **Wasmer**      | WASM             | 5ms     | +2MB   | High      | Plugins           |
 
 ### 2.2 Detailed Comparison
 
 #### Startup Time
+
 ```
 Speed (faster is better)
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -48,6 +50,7 @@ Docker        ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 ```
 
 #### Memory Overhead
+
 ```
 Overhead (lower is better)
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -69,6 +72,7 @@ Kata          ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 **Stars**: 4k+ | **Language**: C
 
 **Architecture**:
+
 ```
 ┌─────────────────────────────────────────────────────────┐
 │                   bubblewrap Model                       │
@@ -99,11 +103,13 @@ Kata          ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 ```
 
 **Performance**:
+
 - Startup: ~10ms
 - Memory: +5MB
 - No virtualization overhead
 
 **Decision Drivers**:
+
 - ✅ Fastest non-WASM option
 - ✅ No root required (setuid)
 - ✅ Simple, auditable C code
@@ -113,6 +119,7 @@ Kata          ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 - ❌ Linux only
 
 **thegent Use Case**:
+
 ```bash
 # Example: Sandboxed dotfiles install
 bwrap \
@@ -133,15 +140,18 @@ bwrap \
 **Stars**: 6.5k+ | **Language**: C
 
 **Key Features**:
+
 - 1000+ built-in application profiles
 - Desktop integration (X11, PulseAudio sandboxing)
 - AppImage support
 
 **Performance**:
+
 - Startup: ~50ms
 - Memory: +20MB
 
 **Decision Drivers**:
+
 - ✅ Desktop-focused features
 - ✅ Extensive profile library
 - ✅ Easy to use
@@ -181,6 +191,7 @@ RUN apt-get update && apt-get install -y curl git
 **Full details in AGENT_FRAMEWORKS_SOTA.md Section 5.3**
 
 **Integration with Containerd**:
+
 - **Kata Containers**: Uses Firecracker as VMM
 - **Flintlock**: Direct Firecracker + containerd integration
 
@@ -210,11 +221,13 @@ image = "/opt/kata/rootfs.img"
 | Throughput | 100K+ invocations/sec |
 
 **WASI Support**:
+
 - WASI Preview 1: Stable
 - WASI Preview 2: Component model
 - WASI-NN: Neural network inference
 
 **thegent Plugin Use Case**:
+
 ```rust
 // thegent WASM plugin interface
 #[derive(serde::Serialize, serde::Deserialize)]
@@ -310,23 +323,23 @@ fn select_sandbox(script_metadata: &Metadata) -> Sandbox {
 
 ### 5.1 Attack Surface Comparison
 
-| Technology | Kernel Surface | Userspace | Escape Risk |
-|------------|----------------|-----------|-------------|
-| bubblewrap | Full kernel | Setuid binary | Medium |
-| Firejail | Full kernel | SUID + complex | Medium-High |
-| gVisor | Limited (syscall filter) | Go userspace kernel | Low |
-| Firecracker | None (VM boundary) | Minimal VMM | Very Low |
-| WASM | Capability-based | Runtime | Low |
+| Technology  | Kernel Surface           | Userspace           | Escape Risk |
+| ----------- | ------------------------ | ------------------- | ----------- |
+| bubblewrap  | Full kernel              | Setuid binary       | Medium      |
+| Firejail    | Full kernel              | SUID + complex      | Medium-High |
+| gVisor      | Limited (syscall filter) | Go userspace kernel | Low         |
+| Firecracker | None (VM boundary)       | Minimal VMM         | Very Low    |
+| WASM        | Capability-based         | Runtime             | Low         |
 
 ### 5.2 CVE History (2020-2025)
 
-| Technology | CVEs | Critical | Notes |
-|------------|------|----------|-------|
-| bubblewrap | 2 | 0 | Simple code, fewer bugs |
-| Firejail | 15+ | 2 | Larger codebase, profiles |
-| gVisor | 8 | 1 | Google security team |
-| Firecracker | 3 | 0 | AWS security, minimal code |
-| Docker | 50+ | 5 | Most scrutinized |
+| Technology  | CVEs | Critical | Notes                      |
+| ----------- | ---- | -------- | -------------------------- |
+| bubblewrap  | 2    | 0        | Simple code, fewer bugs    |
+| Firejail    | 15+  | 2        | Larger codebase, profiles  |
+| gVisor      | 8    | 1        | Google security team       |
+| Firecracker | 3    | 0        | AWS security, minimal code |
+| Docker      | 50+  | 5        | Most scrutinized           |
 
 ---
 
@@ -360,8 +373,8 @@ metadata:
 spec:
   runtimeClassName: gvisor
   containers:
-  - name: agent
-    image: thegent/agent:latest
+    - name: agent
+      image: thegent/agent:latest
 ```
 
 ### 6.3 macOS Integration
@@ -370,7 +383,7 @@ Since most sandboxes are Linux-only, use **Lima** (Linux VMs on macOS):
 
 ```yaml
 # lima.yaml for thegent
-vmType: vz  # Apple Virtualization
+vmType: vz # Apple Virtualization
 rosetta:
   enabled: true
 mounts:
@@ -387,33 +400,33 @@ containerd:
 
 ### 7.1 Startup Time (measured on AWS c6i.xlarge)
 
-| Sandbox | Cold Start | Warm Start | Notes |
-|---------|------------|------------|-------|
-| bubblewrap | 12ms | 8ms | No daemon |
-| Firejail | 45ms | 30ms | Profile parsing |
-| gVisor | 180ms | 120ms | Sentry init |
-| Firecracker | 95ms | 80ms | MicroVM boot |
-| Kata | 1.2s | 800ms | Full VM boot |
-| Docker | 650ms | 150ms | Container creation |
+| Sandbox     | Cold Start | Warm Start | Notes              |
+| ----------- | ---------- | ---------- | ------------------ |
+| bubblewrap  | 12ms       | 8ms        | No daemon          |
+| Firejail    | 45ms       | 30ms       | Profile parsing    |
+| gVisor      | 180ms      | 120ms      | Sentry init        |
+| Firecracker | 95ms       | 80ms       | MicroVM boot       |
+| Kata        | 1.2s       | 800ms      | Full VM boot       |
+| Docker      | 650ms      | 150ms      | Container creation |
 
 ### 7.2 Memory Overhead
 
-| Sandbox | Base | Per Instance | 100 Instances |
-|---------|------|--------------|---------------|
-| bubblewrap | 2MB | +3MB | 302MB |
-| gVisor | 40MB | +35MB | 3.5GB |
-| Firecracker | 5MB | +3MB | 305MB |
-| Kata | 128MB | +50MB | 5.1GB |
+| Sandbox     | Base  | Per Instance | 100 Instances |
+| ----------- | ----- | ------------ | ------------- |
+| bubblewrap  | 2MB   | +3MB         | 302MB         |
+| gVisor      | 40MB  | +35MB        | 3.5GB         |
+| Firecracker | 5MB   | +3MB         | 305MB         |
+| Kata        | 128MB | +50MB        | 5.1GB         |
 
 ### 7.3 I/O Throughput
 
-| Sandbox | Read MB/s | Write MB/s | Relative |
-|---------|-----------|------------|----------|
-| Native | 500 | 450 | 100% |
-| bubblewrap | 495 | 445 | 99% |
-| gVisor | 350 | 300 | 70% |
-| Firecracker | 480 | 430 | 95% |
-| Kata | 460 | 420 | 92% |
+| Sandbox     | Read MB/s | Write MB/s | Relative |
+| ----------- | --------- | ---------- | -------- |
+| Native      | 500       | 450        | 100%     |
+| bubblewrap  | 495       | 445        | 99%      |
+| gVisor      | 350       | 300        | 70%      |
+| Firecracker | 480       | 430        | 95%      |
+| Kata        | 460       | 420        | 92%      |
 
 ---
 
@@ -421,13 +434,13 @@ containerd:
 
 ### 8.1 Selection Matrix
 
-| Scenario | Recommended | Alternative | Avoid |
-|----------|-------------|-------------|-------|
-| User's own dotfiles | bubblewrap | Firejail | Firecracker (overkill) |
-| Community templates | gVisor | Firecracker | bubblewrap (insufficient) |
-| Unknown scripts | Firecracker | gVisor | bubblewrap |
-| CI/CD pipelines | Firecracker | gVisor | Kata (too slow) |
-| User plugins | WASM | - | Full containers |
+| Scenario            | Recommended | Alternative | Avoid                     |
+| ------------------- | ----------- | ----------- | ------------------------- |
+| User's own dotfiles | bubblewrap  | Firejail    | Firecracker (overkill)    |
+| Community templates | gVisor      | Firecracker | bubblewrap (insufficient) |
+| Unknown scripts     | Firecracker | gVisor      | bubblewrap                |
+| CI/CD pipelines     | Firecracker | gVisor      | Kata (too slow)           |
+| User plugins        | WASM        | -           | Full containers           |
 
 ### 8.2 Implementation Priority
 
@@ -441,21 +454,24 @@ containerd:
 ## 9. References
 
 ### Documentation
+
 - gVisor: https://gvisor.dev/docs/
 - Firecracker: https://firecracker-microvm.github.io/
 - bubblewrap: https://github.com/containers/bubblewrap
 - WASI: https://github.com/WebAssembly/WASI
 
 ### Papers
+
 - "gVisor: A Linux-compatible Sandboxing Runtime" - Google
 - "Firecracker: Lightweight Virtualization for Serverless" - AWS
 - "WASI: WebAssembly System Interface" - Bytecode Alliance
 
 ### Benchmarks
+
 - gVisor performance: https://gvisor.dev/docs/architecture_guide/performance/
 - Firecracker SPEC: https://github.com/firecracker-microvm/firecracker/blob/main/SPECIFICATION.md
 - Container Security Comparison: https://containersec.com/
 
 ---
 
-*Research completed: 2026-04-02*
+_Research completed: 2026-04-02_

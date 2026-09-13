@@ -23,18 +23,21 @@ This project has migration needs across three main categories. Choose the guide 
 Moving from legacy architectures, patterns, or codebases to modern implementations.
 
 **Scope:**
+
 - System architecture replacements (legacy convergence)
 - Framework upgrades (Rust, Go, Python versions)
 - Dependency replacements (see legacy-migration.md)
 - CLI framework transitions (e.g., Click → Typer)
 
 **Characteristics:**
+
 - May affect multiple files across the codebase
 - Requires comprehensive testing
 - May need backward compatibility period
 - Risk: Medium to High
 
 **Examples:**
+
 - Replacing `gorilla/mux` with `chi` router
 - Migrating from `psycopg2` to `psycopg3` or `asyncpg`
 - Updating `gorm` to `sqlc` or `sqlx`
@@ -49,18 +52,21 @@ Moving from legacy architectures, patterns, or codebases to modern implementatio
 Transforming data structures, storage formats, or database schemas.
 
 **Scope:**
+
 - Storage format changes (JSONL → SQLite, JSON → MessagePack)
 - Database schema version upgrades
 - Data transformation and validation
 - Backup and rollback procedures
 
 **Characteristics:**
+
 - Non-destructive (original data preserved)
 - Incremental (can run in phases)
 - Requires validation at each step
 - Risk: Low to Medium (with proper backups)
 
 **Examples:**
+
 - JSONL memory files → SQLite database migration
 - JSON configuration → YAML transformation
 - Version 1.0 → 2.0 schema migrations
@@ -75,18 +81,21 @@ Transforming data structures, storage formats, or database schemas.
 Updating code patterns, import structures, or language-specific idioms.
 
 **Scope:**
+
 - Import path changes
 - Module reorganization
 - Deprecated API removal
 - Refactoring for modernization
 
 **Characteristics:**
+
 - Usually localized to specific files
 - Low risk if tests pass
 - Can be automated with scripts
 - Risk: Low
 
 **Examples:**
+
 - Updating legacy imports
 - Removing deprecated API calls
 - Moving from `sha2` to `blake3` hashing
@@ -101,6 +110,7 @@ Updating code patterns, import structures, or language-specific idioms.
 ### For Dependency Replacements
 
 1. **Identify the scope:**
+
    ```bash
    # Find usage across codebase
    grep -r "old_library" . --include="*.rs" --include="*.go" --include="*.py"
@@ -119,11 +129,13 @@ Updating code patterns, import structures, or language-specific idioms.
 ### For Data Migrations
 
 1. **Create backup first:**
+
    ```bash
    cp -r source destination.backup.$(date +%Y%m%d)
    ```
 
 2. **Run dry-run:**
+
    ```bash
    python3 scripts/migrate.py --dry-run
    ```
@@ -265,6 +277,7 @@ SELECT * FROM new_table LIMIT 10;
 **Scenario:** Migration partially completed but failed
 
 1. **Check state:**
+
    ```bash
    # For data migrations
    SELECT COUNT(*) FROM migrated_data;

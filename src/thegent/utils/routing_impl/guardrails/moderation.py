@@ -129,10 +129,7 @@ def check_moderation(text: str, config: ModerationConfig | None = None) -> Moder
                     highest_severity = "high"
 
     total = len(compiled) + (len(cfg.custom_blocklist) if cfg.custom_blocklist else 0)
-    if total == 0:
-        score = 0.0
-    else:
-        score = min(1.0, len(matched_names) / total)
+    score = 0.0 if total == 0 else min(1.0, len(matched_names) / total)
 
     flagged = bool(matched_names)
 

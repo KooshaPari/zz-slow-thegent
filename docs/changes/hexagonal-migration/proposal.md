@@ -75,43 +75,49 @@ src/thegent/
 
 ## Migration Strategy: Strangler Fig
 
-Phase 1 -- Establish layers (scaffold empty packages, add __init__.py):
+Phase 1 -- Establish layers (scaffold empty packages, add **init**.py):
+
 - Create domain/, application/, adapters/driving/, adapters/driven/, infrastructure/
 - Add import-linter config immediately (initially in audit mode)
 
 Phase 2 -- Move pure domain code:
+
 - Move contracts/, governance/, models/, planning/ into domain/
 - Move exit_codes.py, orchestration_modes.py into domain/
 - Extract pure logic from agents/ into domain/agents/
 
 Phase 3 -- Move application layer:
+
 - Move execution.py, operations.py, output_parser.py into application/
 - Ensure they only import from domain/
 
 Phase 4 -- Move adapters:
+
 - Move cli.py, cli_impl.py, main.py into adapters/driving/
 - Move mcp_server.py, mcp_manage.py into adapters/driving/
 
 Phase 5 -- Move infrastructure:
+
 - Move config.py, install.py into infrastructure/
 - Wire dependency injection
 
 Phase 6 -- Enforce:
+
 - Switch import-linter from audit to enforcement mode
 - Update pyproject.toml entry points
 - Update test imports
 
 ## Risks and Mitigations
 
-| Risk | Mitigation |
-|------|-----------|
-| Large files (cli.py 174KB) hard to move atomically | Move entire file first, decompose later |
-| Test imports break | Update test imports in same PR as source move |
-| Entry point changes | Update pyproject.toml `[project.scripts]` after moving main.py |
-| tach.toml conflicts with import-linter | Both tools can coexist; tach checks module deps, import-linter checks layer deps |
-
+| Risk                                               | Mitigation                                                                       |
+| -------------------------------------------------- | -------------------------------------------------------------------------------- |
+| Large files (cli.py 174KB) hard to move atomically | Move entire file first, decompose later                                          |
+| Test imports break                                 | Update test imports in same PR as source move                                    |
+| Entry point changes                                | Update pyproject.toml `[project.scripts]` after moving main.py                   |
+| tach.toml conflicts with import-linter             | Both tools can coexist; tach checks module deps, import-linter checks layer deps |
 
 ---
+
 ## See also
 
 - [WORK_STREAM.md](../../reference/WORK_STREAM.md) — canonical backlog

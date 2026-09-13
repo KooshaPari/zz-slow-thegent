@@ -4,6 +4,7 @@ WARNING: This is an auto-generated stub module.
 The actual implementation was moved/deleted during repository restructuring.
 This stub exists for backwards compatibility with existing tests.
 """
+
 from dataclasses import dataclass, field
 from datetime import UTC, datetime
 from pathlib import Path
@@ -177,10 +178,7 @@ class CrossProjectRegistry:
             List of matching PersonaRecord objects.
         """
         capability = capability.lower()
-        return [
-            r for r in self.records
-            if any(capability in cap.lower() for cap in r.capabilities)
-        ]
+        return [r for r in self.records if any(capability in cap.lower() for cap in r.capabilities)]
 
     def get_all(self) -> list[PersonaRecord]:
         """Get all registered personas."""

@@ -9,10 +9,10 @@ Covers:
 
 from __future__ import annotations
 
-import time
 import os
 import stat
-from typing import TYPE_CHECKING, Any
+import time
+from typing import TYPE_CHECKING
 from unittest.mock import MagicMock, patch
 
 import pytest
@@ -191,7 +191,11 @@ class TestMeshManagerDiscoverAgents:
     def test_discover_agents_matches_patterns(self, mock_iter: MagicMock, tmp_path: Path) -> None:
         """discover_agents finds processes matching patterns."""
         proc1 = MagicMock()
-        proc1.info = {"pid": 111, "name": "node", "cmdline": ["claude-code", "--project", "x"]}
+        proc1.info = {
+            "pid": 111,
+            "name": "node",
+            "cmdline": ["claude-code", "--project", "x"],
+        }
         proc2 = MagicMock()
         proc2.info = {"pid": 222, "name": "bash", "cmdline": ["/bin/bash"]}
         mock_iter.return_value = [proc1, proc2]
@@ -216,7 +220,10 @@ class TestManifest:
         """register_agent writes a valid YAML manifest."""
         mgr = MeshManager(mesh_root=tmp_path / "mesh")
 
-        mgr.register_agent("agent-001", {"type": "claude", "pid": 1234, "capabilities": ["code", "test"]})
+        mgr.register_agent(
+            "agent-001",
+            {"type": "claude", "pid": 1234, "capabilities": ["code", "test"]},
+        )
 
         manifest_path = mgr.agents_dir / "agent-001.yaml"
         assert manifest_path.exists()

@@ -2,13 +2,13 @@
 
 from __future__ import annotations
 
-import orjson as json
 import logging
 from dataclasses import dataclass, field
-
 from enum import Enum
 from pathlib import Path  # noqa: TC003 -- Path used at runtime
 from typing import Any
+
+import orjson as json
 
 _log = logging.getLogger(__name__)
 

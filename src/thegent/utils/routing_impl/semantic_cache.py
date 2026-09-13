@@ -30,7 +30,7 @@ _log = logging.getLogger(__name__)
 
 def cosine_similarity(a: list[float], b: list[float]) -> float:
     """Compute cosine similarity between two embedding vectors."""
-    dot = sum(x * y for x, y in zip(a, b))
+    dot = sum(x * y for x, y in zip(a, b, strict=False))
     norm_a = sum(x * x for x in a) ** 0.5
     norm_b = sum(x * x for x in b) ** 0.5
     if norm_a == 0 or norm_b == 0:
@@ -103,7 +103,9 @@ class SentenceTransformerProvider:
     def _load_model(self) -> Any:
         """Lazy-load and cache the SentenceTransformer model."""
         if self._model is None:
-            from sentence_transformers import SentenceTransformer  # type: ignore[import]
+            from sentence_transformers import (
+                SentenceTransformer,  # type: ignore[import]
+            )
 
             self._model = SentenceTransformer(self._model_name)
             _log.debug("Loaded SentenceTransformer model=%s", self._model_name)

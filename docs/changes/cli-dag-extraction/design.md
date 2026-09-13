@@ -37,24 +37,24 @@ src/thegent/cli/commands/
 
 All DAG command handler functions extracted from `cli.py`:
 
-| Function | Responsibility |
-|----------|---------------|
-| `dag_validate_cmd` | Validate DAG session file; exit 2 on errors |
-| `dag_list_cmd` | List DAG tasks (table or JSON format) |
-| `dag_add_cmd` | Add a new task to the active DAG |
-| `dag_remove_cmd` | Remove a task from the DAG |
-| `dag_cancel_cmd` | Cancel a running task |
-| `dag_status_cmd` | Show DAG status summary |
-| `dag_update_cmd` | Update task metadata (status, owner, deps) |
-| `dag_ready_cmd` | Show tasks ready to execute |
-| `dag_reconcile_cmd` | Reconcile DAG with git session state |
-| `dag_run_cmd` | Run a specific task by ID |
-| `dag_sync_cmd` | Sync DAG to upstream and auto-run next |
-| `dag_checkpoint_cmd` | Create a DAG checkpoint snapshot |
-| `dag_rollback_cmd` | Roll back to a named checkpoint |
-| `dag_checkpoints_cmd` | List all saved checkpoints |
-| `dag_recover_cmd` | Recover from failure (retry-failed action) |
-| `dag_probe_cmd` | Probe DAG against a baseline |
+| Function              | Responsibility                              |
+| --------------------- | ------------------------------------------- |
+| `dag_validate_cmd`    | Validate DAG session file; exit 2 on errors |
+| `dag_list_cmd`        | List DAG tasks (table or JSON format)       |
+| `dag_add_cmd`         | Add a new task to the active DAG            |
+| `dag_remove_cmd`      | Remove a task from the DAG                  |
+| `dag_cancel_cmd`      | Cancel a running task                       |
+| `dag_status_cmd`      | Show DAG status summary                     |
+| `dag_update_cmd`      | Update task metadata (status, owner, deps)  |
+| `dag_ready_cmd`       | Show tasks ready to execute                 |
+| `dag_reconcile_cmd`   | Reconcile DAG with git session state        |
+| `dag_run_cmd`         | Run a specific task by ID                   |
+| `dag_sync_cmd`        | Sync DAG to upstream and auto-run next      |
+| `dag_checkpoint_cmd`  | Create a DAG checkpoint snapshot            |
+| `dag_rollback_cmd`    | Roll back to a named checkpoint             |
+| `dag_checkpoints_cmd` | List all saved checkpoints                  |
+| `dag_recover_cmd`     | Recover from failure (retry-failed action)  |
+| `dag_probe_cmd`       | Probe DAG against a baseline                |
 
 ### observability_impl.py (WL-120 A2, extracted from impl.py)
 
@@ -64,7 +64,7 @@ Imported by `impl.py` via a re-export block at line 1091.
 ## Re-Export Strategy
 
 `cli.py` currently does **not** re-export `cli_dag.py` via a wildcard import.
-The DAG Typer sub-application wires `cli_dag.py` directly.  This avoids
+The DAG Typer sub-application wires `cli_dag.py` directly. This avoids
 namespace pollution and allows `cli_dag.py` to be tested without importing
 the full `cli.py` monolith.
 

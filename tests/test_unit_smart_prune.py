@@ -19,7 +19,6 @@ import pytest
 
 from thegent.orchestration.pruning.smart_prune import (
     IDLE_COUNT_THRESHOLD,
-    IDLE_THRESHOLD_SECONDS,
     PROTECTED_PROCESS_NAMES,
     SessionSnapshot,
     SmartPruner,
@@ -316,9 +315,18 @@ class TestRunCycleDryRun:
 
         with (
             patch.object(pruner, "_prune_session") as mock_prune,
-            patch("thegent.orchestration.pruning.smart_prune.ps_impl", return_value=[session]),
-            patch("thegent.orchestration.pruning.smart_prune.list_tmux_panes", return_value=[]),
-            patch("thegent.orchestration.pruning.smart_prune.capture_tmux_pane", return_value="Task finished\n"),
+            patch(
+                "thegent.orchestration.pruning.smart_prune.ps_impl",
+                return_value=[session],
+            ),
+            patch(
+                "thegent.orchestration.pruning.smart_prune.list_tmux_panes",
+                return_value=[],
+            ),
+            patch(
+                "thegent.orchestration.pruning.smart_prune.capture_tmux_pane",
+                return_value="Task finished\n",
+            ),
         ):
             results = pruner.run_cycle(force_prune=True, dry_run=True, yes=True)
 
@@ -331,9 +339,18 @@ class TestRunCycleDryRun:
 
         with (
             patch.object(pruner, "_prune_session") as mock_prune,
-            patch("thegent.orchestration.pruning.smart_prune.ps_impl", return_value=[session]),
-            patch("thegent.orchestration.pruning.smart_prune.list_tmux_panes", return_value=[]),
-            patch("thegent.orchestration.pruning.smart_prune.capture_tmux_pane", return_value="Task finished\n"),
+            patch(
+                "thegent.orchestration.pruning.smart_prune.ps_impl",
+                return_value=[session],
+            ),
+            patch(
+                "thegent.orchestration.pruning.smart_prune.list_tmux_panes",
+                return_value=[],
+            ),
+            patch(
+                "thegent.orchestration.pruning.smart_prune.capture_tmux_pane",
+                return_value="Task finished\n",
+            ),
         ):
             results = pruner.run_cycle(force_prune=True, dry_run=False, yes=False)
 
@@ -346,9 +363,18 @@ class TestRunCycleDryRun:
 
         with (
             patch.object(pruner, "_prune_session") as mock_prune,
-            patch("thegent.orchestration.pruning.smart_prune.ps_impl", return_value=[session]),
-            patch("thegent.orchestration.pruning.smart_prune.list_tmux_panes", return_value=[]),
-            patch("thegent.orchestration.pruning.smart_prune.capture_tmux_pane", return_value="Task finished\n"),
+            patch(
+                "thegent.orchestration.pruning.smart_prune.ps_impl",
+                return_value=[session],
+            ),
+            patch(
+                "thegent.orchestration.pruning.smart_prune.list_tmux_panes",
+                return_value=[],
+            ),
+            patch(
+                "thegent.orchestration.pruning.smart_prune.capture_tmux_pane",
+                return_value="Task finished\n",
+            ),
         ):
             results = pruner.run_cycle(force_prune=True, dry_run=False, yes=True)
 
@@ -424,8 +450,14 @@ class TestRunCycleProtectedSessions:
 
         with (
             patch.object(pruner, "_prune_session") as mock_prune,
-            patch("thegent.orchestration.pruning.smart_prune.ps_impl", return_value=[session]),
-            patch("thegent.orchestration.pruning.smart_prune.list_tmux_panes", return_value=[]),
+            patch(
+                "thegent.orchestration.pruning.smart_prune.ps_impl",
+                return_value=[session],
+            ),
+            patch(
+                "thegent.orchestration.pruning.smart_prune.list_tmux_panes",
+                return_value=[],
+            ),
         ):
             results = pruner.run_cycle(force_prune=True, dry_run=False, yes=True)
 
@@ -480,7 +512,10 @@ class TestSmartPruneMain:
         with (
             patch("thegent.orchestration.pruning.smart_prune.ThegentSettings"),
             patch("thegent.orchestration.pruning.smart_prune.ps_impl", return_value=[]),
-            patch("thegent.orchestration.pruning.smart_prune.list_tmux_panes", return_value=[]),
+            patch(
+                "thegent.orchestration.pruning.smart_prune.list_tmux_panes",
+                return_value=[],
+            ),
         ):
             results = smart_prune_main(force=False, reprompt=False, dry_run=True, yes=False)
 
@@ -492,7 +527,10 @@ class TestSmartPruneMain:
         with (
             patch("thegent.orchestration.pruning.smart_prune.ThegentSettings"),
             patch("thegent.orchestration.pruning.smart_prune.ps_impl", return_value=[]),
-            patch("thegent.orchestration.pruning.smart_prune.list_tmux_panes", return_value=[]),
+            patch(
+                "thegent.orchestration.pruning.smart_prune.list_tmux_panes",
+                return_value=[],
+            ),
         ):
             results = smart_prune_main(force=True, reprompt=False, dry_run=False, yes=True)
 

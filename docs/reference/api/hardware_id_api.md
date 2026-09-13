@@ -23,7 +23,7 @@ Manages hardware-bound cryptographic identities for agents.
 
 ### Methods
 
-#### HardwareIdentityManager.__init__
+#### HardwareIdentityManager.**init**
 
 ```python
 __init__(self: Any, agent_id: str)

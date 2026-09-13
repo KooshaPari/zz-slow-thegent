@@ -3,6 +3,7 @@
 from pathlib import Path
 
 import typer
+
 from thegent.mesh.agent_patterns import run_detection
 from thegent.mesh.mesh import MeshManager
 from thegent.mesh.observability import mesh_status_cmd
@@ -11,7 +12,9 @@ app = typer.Typer(help="Mesh: Local agent mesh coordination (init, status, disco
 
 
 @app.command("status")
-def status(mesh_root: Path | None = typer.Option(None, "--mesh-root", help="Path to mesh root")):
+def status(
+    mesh_root: Path | None = typer.Option(None, "--mesh-root", help="Path to mesh root"),
+):
     """Show current mesh status."""
     from thegent.config import ThegentSettings
 
@@ -20,7 +23,9 @@ def status(mesh_root: Path | None = typer.Option(None, "--mesh-root", help="Path
 
 
 @app.command("agents")
-def agents(mesh_root: Path | None = typer.Option(None, "--mesh-root", help="Path to mesh root")):
+def agents(
+    mesh_root: Path | None = typer.Option(None, "--mesh-root", help="Path to mesh root"),
+):
     """List registered mesh agents."""
     from thegent.config import ThegentSettings
 
@@ -29,7 +34,9 @@ def agents(mesh_root: Path | None = typer.Option(None, "--mesh-root", help="Path
 
 
 @app.command("init")
-def init(mesh_root: Path | None = typer.Option(None, "--mesh-root", help="Path to mesh root")):
+def init(
+    mesh_root: Path | None = typer.Option(None, "--mesh-root", help="Path to mesh root"),
+):
     """Initialize agent mesh."""
     from thegent.config import ThegentSettings
 

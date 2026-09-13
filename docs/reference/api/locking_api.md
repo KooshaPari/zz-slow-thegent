@@ -14,7 +14,7 @@ Provides read/write through the locked file handle so all I/O uses the same fd.
 
 ### Methods
 
-#### QueueLock.__init__
+#### QueueLock.**init**
 
 ```python
 __init__(self: Any, queue_path: Path)

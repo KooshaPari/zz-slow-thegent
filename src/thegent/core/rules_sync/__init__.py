@@ -1,7 +1,7 @@
 """Stub module."""
+
 from dataclasses import dataclass, field
 from typing import Any
-
 
 ALL_PLATFORMS = ["linux", "darwin", "windows"]
 
@@ -9,6 +9,7 @@ ALL_PLATFORMS = ["linux", "darwin", "windows"]
 @dataclass
 class Rule:
     """A rule for synchronization across platforms."""
+
     id: str = ""
     name: str = ""
     pattern: str = ""
@@ -20,6 +21,7 @@ class Rule:
     def matches(self, path: str) -> bool:
         """Check if a path matches this rule's pattern."""
         import re
+
         try:
             return bool(re.match(self.pattern, path))
         except re.error:
@@ -102,6 +104,7 @@ def _parse_frontmatter(content: str) -> tuple[dict[str, Any], str]:
         Tuple of (frontmatter dict, body string).
     """
     import yaml
+
     lines = content.split("\n")
     if lines and lines[0].strip() == "---":
         end_idx = None
@@ -123,6 +126,7 @@ def _parse_frontmatter(content: str) -> tuple[dict[str, Any], str]:
 @dataclass
 class SyncRecord:
     """Record of a sync operation."""
+
     rule_id: str = ""
     platform: str = ""
     timestamp: float = 0.0
@@ -132,6 +136,7 @@ class SyncRecord:
 @dataclass
 class RulesSyncResult:
     """Result of a rules synchronization operation."""
+
     rule_id: str = ""
     success: bool = False
     synced_platforms: list[str] = field(default_factory=list)

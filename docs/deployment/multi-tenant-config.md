@@ -30,6 +30,7 @@ This document outlines a phased approach to building the multi-tenant agent civi
 ```python
 # Code: ~/.claude/civilization/agent_registry.py
 
+
 class AgentIdentity:
     """Generate and persist agent identity."""
 
@@ -58,8 +59,10 @@ class AgentIdentity:
 ```
 
 **Testing**:
+
 ```python
 # test_agent_identity.py
+
 
 def test_agent_id_format():
     identity = AgentIdentity("kush", "runner-1", "2")
@@ -67,6 +70,7 @@ def test_agent_id_format():
     assert agent_id.startswith("kush:")
     assert "L2" in agent_id
     assert "runner-1" in agent_id
+
 
 def test_agent_id_persistence():
     identity1 = AgentIdentity("kush", "runner-1", "2")
@@ -87,31 +91,30 @@ def test_agent_id_persistence():
 ```python
 # Code: ~/.claude/civilization/registry.py
 
+
 class FileBasedRegistry:
     """File-based agent registry with git persistence."""
 
     def __init__(self, registry_path: str = None):
-        self.registry_path = registry_path or str(
-            Path.home() / ".claude" / "civilization" / "registry.json"
-        )
+        self.registry_path = registry_path or str(Path.home() / ".claude" / "civilization" / "registry.json")
         self.cache = {}
         self.cache_ttl_seconds = 10
 
     def register_agent(self, agent_entry: dict) -> bool:
         """Register or update agent in registry."""
         registry = self._read_registry()
-        agent_id = agent_entry['id']
+        agent_id = agent_entry["id"]
 
         # Find and update or append
         found = False
-        for i, agent in enumerate(registry['agents']):
-            if agent['id'] == agent_id:
-                registry['agents'][i] = agent_entry
+        for i, agent in enumerate(registry["agents"]):
+            if agent["id"] == agent_id:
+                registry["agents"][i] = agent_entry
                 found = True
                 break
 
         if not found:
-            registry['agents'].append(agent_entry)
+            registry["agents"].append(agent_entry)
 
         self._write_registry(registry)
         self._git_commit(f"Register agent: {agent_id}")
@@ -120,8 +123,8 @@ class FileBasedRegistry:
     def lookup_agent(self, agent_id: str) -> dict:
         """Look up agent by ID."""
         registry = self._read_registry()
-        for agent in registry['agents']:
-            if agent['id'] == agent_id:
+        for agent in registry["agents"]:
+            if agent["id"] == agent_id:
                 return agent
         raise AgentNotFound(agent_id)
 
@@ -129,10 +132,10 @@ class FileBasedRegistry:
         """List agents matching criteria."""
         registry = self._read_registry()
         results = []
-        for agent in registry['agents']:
-            if project and agent['project'] != project:
+        for agent in registry["agents"]:
+            if project and agent["project"] != project:
                 continue
-            if tier and agent['tier'] != tier:
+            if tier and agent["tier"] != tier:
                 continue
             results.append(agent)
         return results
@@ -141,46 +144,40 @@ class FileBasedRegistry:
         """Read registry from disk."""
         if not Path(self.registry_path).exists():
             return self._create_empty_registry()
-        with open(self.registry_path, 'r') as f:
+        with open(self.registry_path, "r") as f:
             return json.load(f)
 
     def _write_registry(self, registry: dict):
         """Write registry to disk."""
         Path(self.registry_path).parent.mkdir(parents=True, exist_ok=True)
-        with open(self.registry_path, 'w') as f:
+        with open(self.registry_path, "w") as f:
             json.dump(registry, f, indent=2)
 
     def _create_empty_registry(self) -> dict:
         """Create empty registry structure."""
         return {
-            'version': '1.0',
-            'metadata': {
-                'last_updated': now().isoformat(),
-                'civilization_id': 'global-001'
-            },
-            'agents': [],
-            'projects': []
+            "version": "1.0",
+            "metadata": {"last_updated": now().isoformat(), "civilization_id": "global-001"},
+            "agents": [],
+            "projects": [],
         }
 
     def _git_commit(self, message: str):
         """Commit registry changes to git."""
         registry_dir = Path(self.registry_path).parent
-        subprocess.run(['git', 'add', self.registry_path], cwd=registry_dir)
-        subprocess.run(['git', 'commit', '-m', message], cwd=registry_dir)
+        subprocess.run(["git", "add", self.registry_path], cwd=registry_dir)
+        subprocess.run(["git", "commit", "-m", message], cwd=registry_dir)
 ```
 
 **Testing**:
+
 ```python
 def test_register_agent():
     registry = FileBasedRegistry()
-    agent_entry = {
-        'id': 'kush:...:L1:claude-code',
-        'project': 'kush',
-        'tier': 'L1',
-        'status': 'active'
-    }
+    agent_entry = {"id": "kush:...:L1:claude-code", "project": "kush", "tier": "L1", "status": "active"}
     assert registry.register_agent(agent_entry)
-    assert registry.lookup_agent(agent_entry['id']) == agent_entry
+    assert registry.lookup_agent(agent_entry["id"]) == agent_entry
+
 
 def test_list_agents_by_project():
     registry = FileBasedRegistry()
@@ -197,31 +194,31 @@ def test_list_agents_by_project():
 ```markdown
 # Unified Work Stream
 
-| Task ID | Description | Status | Assigned To | Blocked By | Scope |
-|---------|-------------|--------|-------------|-----------|-------|
-| task-1 | research-http | PENDING | - | - | kush |
-| task-2 | implement-client | PENDING | - | task-1 | kush |
-| task-3 | test-suite | COMPLETED | runner-1 | - | kush |
+| Task ID | Description      | Status    | Assigned To | Blocked By | Scope |
+| ------- | ---------------- | --------- | ----------- | ---------- | ----- |
+| task-1  | research-http    | PENDING   | -           | -          | kush  |
+| task-2  | implement-client | PENDING   | -           | task-1     | kush  |
+| task-3  | test-suite       | COMPLETED | runner-1    | -          | kush  |
 ```
 
 **Implementation**:
+
 ```python
 # Code: ~/.claude/civilization/work_stream.py
+
 
 class UnifiedWorkStream:
     """Manage global work stream with git persistence."""
 
     def __init__(self, work_stream_path: str = None):
-        self.work_stream_path = work_stream_path or str(
-            Path.home() / ".claude" / "civilization" / "WORK_STREAM.md"
-        )
+        self.work_stream_path = work_stream_path or str(Path.home() / ".claude" / "civilization" / "WORK_STREAM.md")
 
     def add_task(self, task: dict) -> bool:
         """Add task to work stream."""
         tasks = self._read_tasks()
-        task.setdefault('status', 'PENDING')
-        task.setdefault('assigned_to', None)
-        task.setdefault('blocked_by', [])
+        task.setdefault("status", "PENDING")
+        task.setdefault("assigned_to", None)
+        task.setdefault("blocked_by", [])
         tasks.append(task)
         self._write_tasks(tasks)
         self._git_commit(f"Add task: {task['task_id']}")
@@ -231,11 +228,11 @@ class UnifiedWorkStream:
         """Claim task for agent."""
         tasks = self._read_tasks()
         for task in tasks:
-            if task['task_id'] == task_id:
-                if task['status'] != 'PENDING':
+            if task["task_id"] == task_id:
+                if task["status"] != "PENDING":
                     raise TaskAlreadyClaimed(task_id)
-                task['status'] = 'CLAIMED'
-                task['assigned_to'] = agent_id
+                task["status"] = "CLAIMED"
+                task["assigned_to"] = agent_id
                 self._write_tasks(tasks)
                 self._git_commit(f"Claim task {task_id}: {agent_id}")
                 return True
@@ -245,18 +242,15 @@ class UnifiedWorkStream:
         """Mark task as completed."""
         tasks = self._read_tasks()
         for task in tasks:
-            if task['task_id'] == task_id:
-                task['status'] = 'COMPLETED'
-                task['completed_at'] = now().isoformat()
+            if task["task_id"] == task_id:
+                task["status"] = "COMPLETED"
+                task["completed_at"] = now().isoformat()
                 if output_location:
-                    task['output_location'] = output_location
+                    task["output_location"] = output_location
                 self._write_tasks(tasks)
                 self._git_commit(f"Complete task {task_id}")
                 # Broadcast unblock event
-                self._publish_event({
-                    'type': 'task.completed',
-                    'task_id': task_id
-                })
+                self._publish_event({"type": "task.completed", "task_id": task_id})
                 return True
         raise TaskNotFound(task_id)
 
@@ -287,6 +281,7 @@ class UnifiedWorkStream:
 ```python
 # Code: ~/.claude/civilization/heartbeat.py
 
+
 class HeartbeatManager:
     """Manage agent heartbeats."""
 
@@ -312,18 +307,19 @@ class HeartbeatManager:
     def _get_current_state(self) -> dict:
         """Get agent's current state."""
         return {
-            'id': self.agent_id,
-            'last_heartbeat': now().isoformat(),
-            'current_state': {
-                'status': 'active',
-                'tasks_active': self._count_active_tasks(),
-                'cpu_usage_percent': self._get_cpu_usage(),
-                'memory_usage_mb': self._get_memory_usage()
-            }
+            "id": self.agent_id,
+            "last_heartbeat": now().isoformat(),
+            "current_state": {
+                "status": "active",
+                "tasks_active": self._count_active_tasks(),
+                "cpu_usage_percent": self._get_cpu_usage(),
+                "memory_usage_mb": self._get_memory_usage(),
+            },
         }
 ```
 
 **Testing**:
+
 ```python
 @pytest.mark.asyncio
 async def test_heartbeat_loop():
@@ -350,12 +346,12 @@ def detect_stale_agents():
     all_agents = registry.list_agents()
 
     for agent in all_agents:
-        last_hb = datetime.fromisoformat(agent['last_heartbeat'])
-        heartbeat_interval = agent.get('heartbeat_interval_seconds', 30)
+        last_hb = datetime.fromisoformat(agent["last_heartbeat"])
+        heartbeat_interval = agent.get("heartbeat_interval_seconds", 30)
         grace_period = heartbeat_interval * 3
 
         if (now() - last_hb).total_seconds() > grace_period:
-            agent['status'] = 'stale'
+            agent["status"] = "stale"
             registry.register_agent(agent)
             logger.warning(f"Agent marked stale: {agent['id']}")
 ```
@@ -389,6 +385,7 @@ def detect_stale_agents():
 ```python
 # Code: ~/.claude/civilization/task_dispatch.py
 
+
 class SyncTaskDispatcher:
     """Dispatch tasks synchronously (L1 → L2)."""
 
@@ -396,39 +393,27 @@ class SyncTaskDispatcher:
         self.registry = FileBasedRegistry()
 
     async def dispatch_task(
-        self,
-        task_id: str,
-        prompt: str,
-        agent_id: str,
-        timeout_seconds: float = 30.0
+        self, task_id: str, prompt: str, agent_id: str, timeout_seconds: float = 30.0
     ) -> DispatchResult:
         """Dispatch task to agent, wait for ACK."""
         agent = self.registry.lookup_agent(agent_id)
-        mcp_endpoint = agent['endpoints']['mcp']
+        mcp_endpoint = agent["endpoints"]["mcp"]
 
         # Connect to agent's MCP endpoint
         async with connect_mcp(mcp_endpoint, timeout=timeout_seconds) as client:
             # Send task dispatch message
             result = await client.call_tool(
-                'task_dispatch',
-                {
-                    'task_id': task_id,
-                    'prompt': prompt,
-                    'timeout_seconds': 600
-                }
+                "task_dispatch", {"task_id": task_id, "prompt": prompt, "timeout_seconds": 600}
             )
 
             if result.success:
-                return DispatchResult(
-                    task_id=task_id,
-                    status='CLAIMED',
-                    agent_id=agent_id
-                )
+                return DispatchResult(task_id=task_id, status="CLAIMED", agent_id=agent_id)
             else:
                 raise DispatchFailed(result.error)
 ```
 
 **MCP Tool** (exposed by L2 agents):
+
 ```python
 @mcp.tool()
 async def task_dispatch(task_id: str, prompt: str, timeout_seconds: int):
@@ -438,7 +423,7 @@ async def task_dispatch(task_id: str, prompt: str, timeout_seconds: int):
     """
     # Check capacity
     if agent.current_load >= agent.max_concurrent_tasks:
-        return {'success': False, 'error': 'OVERLOADED'}
+        return {"success": False, "error": "OVERLOADED"}
 
     # Reserve resources
     agent.claim_task(task_id)
@@ -446,7 +431,7 @@ async def task_dispatch(task_id: str, prompt: str, timeout_seconds: int):
     # Begin work asynchronously
     asyncio.create_task(agent.execute_task(task_id, prompt))
 
-    return {'success': True, 'status': 'CLAIMED'}
+    return {"success": True, "status": "CLAIMED"}
 ```
 
 **Effort**: 2-3 tool calls
@@ -462,11 +447,7 @@ class AsyncTaskDispatcher:
     def dispatch_task_async(self, task_id: str, prompt: str, agent_id: str):
         """Queue task for agent."""
         queue_path = self._get_queue_path(agent_id)
-        queue_entry = {
-            'task_id': task_id,
-            'prompt': prompt,
-            'queued_at': now().isoformat()
-        }
+        queue_entry = {"task_id": task_id, "prompt": prompt, "queued_at": now().isoformat()}
         self._append_to_queue(queue_path, queue_entry)
 ```
 
@@ -519,12 +500,12 @@ class ResourceManager:
         agent = self.registry.lookup_agent(agent_id)
 
         # Check 1: Concurrent task limit
-        if agent['current_state']['tasks_active'] >= agent['resource_quota']['max_concurrent_tasks']:
+        if agent["current_state"]["tasks_active"] >= agent["resource_quota"]["max_concurrent_tasks"]:
             return False, "Agent already at max concurrent tasks"
 
         # Check 2: CPU headroom
-        cpu_available = 100 - agent['current_state']['cpu_usage_percent']
-        if cpu_available < task['resource_request']['cpu_percent']:
+        cpu_available = 100 - agent["current_state"]["cpu_usage_percent"]
+        if cpu_available < task["resource_request"]["cpu_percent"]:
             return False, "Insufficient CPU headroom"
 
         return True, "OK"
@@ -574,14 +555,11 @@ class CrossProjectRequester:
         required_capability: str,
         target_project: str,
         deadline: datetime,
-        estimated_effort_minutes: int
+        estimated_effort_minutes: int,
     ) -> RequestApproval:
         """Request help from another project."""
         # Find agent in target_project
-        candidates = self.registry.list_agents(
-            project=target_project,
-            capability=required_capability
-        )
+        candidates = self.registry.list_agents(project=target_project, capability=required_capability)
 
         if not candidates:
             raise NoAvailableAgents(required_capability)
@@ -590,12 +568,12 @@ class CrossProjectRequester:
 
         # Send request
         request = {
-            'request_id': f"{target_project}:request-{uuid4()}",
-            'source_agent': self.agent_id,
-            'target_agent': target_agent['id'],
-            'description': description,
-            'deadline': deadline.isoformat(),
-            'estimated_effort_minutes': estimated_effort_minutes
+            "request_id": f"{target_project}:request-{uuid4()}",
+            "source_agent": self.agent_id,
+            "target_agent": target_agent["id"],
+            "description": description,
+            "deadline": deadline.isoformat(),
+            "estimated_effort_minutes": estimated_effort_minutes,
         }
 
         return await self._send_request(target_agent, request)
@@ -614,22 +592,19 @@ class GlobalResourceManager:
     def update_resource_state(self):
         """Update global resource state file."""
         state = {
-            'timestamp': now().isoformat(),
-            'total_resources': {
-                'cpu_percent': 100,
-                'memory_mb': 16384
-            },
-            'current_usage': self._aggregate_usage(),
-            'projects': [
+            "timestamp": now().isoformat(),
+            "total_resources": {"cpu_percent": 100, "memory_mb": 16384},
+            "current_usage": self._aggregate_usage(),
+            "projects": [
                 {
-                    'name': 'kush',
-                    'quota': {'cpu_percent': 40, 'memory_mb': 8192},
-                    'usage': {'cpu_percent': 28, 'memory_mb': 2300}
+                    "name": "kush",
+                    "quota": {"cpu_percent": 40, "memory_mb": 8192},
+                    "usage": {"cpu_percent": 28, "memory_mb": 2300},
                 },
                 # ... other projects
-            ]
+            ],
         }
-        write_json('~/.claude/civilization/resource_state.json', state)
+        write_json("~/.claude/civilization/resource_state.json", state)
 ```
 
 **Effort**: 1-2 tool calls
@@ -644,10 +619,10 @@ class EventBus:
 
     def publish(self, event: dict):
         """Publish event to all agents."""
-        event['timestamp'] = now().isoformat()
+        event["timestamp"] = now().isoformat()
         # Append to event log
-        with open('~/.claude/civilization/event_log.ndjson', 'a') as f:
-            f.write(json.dumps(event) + '\n')
+        with open("~/.claude/civilization/event_log.ndjson", "a") as f:
+            f.write(json.dumps(event) + "\n")
 
     def subscribe(self, topic: str) -> AsyncIterator[dict]:
         """Subscribe to events (async generator)."""
@@ -689,17 +664,17 @@ class MetricsDashboard:
         work_stream = UnifiedWorkStream()
 
         return {
-            'timestamp': now().isoformat(),
-            'summary': {
-                'total_agents': len(agents),
-                'agents_active': len([a for a in agents if a['status'] == 'active']),
-                'resource_utilization': self._compute_resource_utilization(agents)
+            "timestamp": now().isoformat(),
+            "summary": {
+                "total_agents": len(agents),
+                "agents_active": len([a for a in agents if a["status"] == "active"]),
+                "resource_utilization": self._compute_resource_utilization(agents),
             },
-            'performance': {
-                'tasks_completed_last_hour': work_stream.count_completed_last_hour(),
-                'avg_task_duration': work_stream.avg_duration_minutes(),
-                'queue_depth': work_stream.count_pending()
-            }
+            "performance": {
+                "tasks_completed_last_hour": work_stream.count_completed_last_hour(),
+                "avg_task_duration": work_stream.avg_duration_minutes(),
+                "queue_depth": work_stream.count_pending(),
+            },
         }
 ```
 
@@ -719,7 +694,7 @@ class DeadlockDetector:
         tasks = work_stream.read_tasks()
 
         # Build dependency graph
-        graph = {t['task_id']: t.get('blocked_by', []) for t in tasks}
+        graph = {t["task_id"]: t.get("blocked_by", []) for t in tasks}
 
         # Find cycles
         cycles = find_cycles(graph)
@@ -742,14 +717,9 @@ class AuditLogger:
 
     def log(self, event: str, agent_id: str, **details):
         """Log event to audit trail."""
-        entry = {
-            'timestamp': now().isoformat(),
-            'event': event,
-            'agent_id': agent_id,
-            **details
-        }
-        with open('~/.claude/civilization/audit.log', 'a') as f:
-            f.write(json.dumps(entry) + '\n')
+        entry = {"timestamp": now().isoformat(), "event": event, "agent_id": agent_id, **details}
+        with open("~/.claude/civilization/audit.log", "a") as f:
+            f.write(json.dumps(entry) + "\n")
 ```
 
 **Effort**: 1 tool call
@@ -782,7 +752,7 @@ class FailureRecovery:
     def detect_agent_failure(self, agent_id: str):
         """Detect agent heartbeat timeout."""
         agent = self.registry.lookup_agent(agent_id)
-        last_hb = datetime.fromisoformat(agent['last_heartbeat'])
+        last_hb = datetime.fromisoformat(agent["last_heartbeat"])
 
         if (now() - last_hb).total_seconds() > 180:  # 3 minutes
             self._handle_failure(agent_id)
@@ -794,13 +764,13 @@ class FailureRecovery:
         tasks = work_stream.get_tasks_for_agent(agent_id)
 
         for task in tasks:
-            if task['status'] in ['CLAIMED', 'IN_PROGRESS']:
+            if task["status"] in ["CLAIMED", "IN_PROGRESS"]:
                 # Reassign to alternative agent
-                new_agent = self._find_alternative_agent(task['required_capability'])
+                new_agent = self._find_alternative_agent(task["required_capability"])
                 if new_agent:
-                    work_stream.reassign_task(task['task_id'], new_agent['id'])
+                    work_stream.reassign_task(task["task_id"], new_agent["id"])
                 else:
-                    work_stream.requeue_task(task['task_id'])
+                    work_stream.requeue_task(task["task_id"])
 ```
 
 **Effort**: 2-3 tool calls
@@ -815,28 +785,29 @@ class SmartLoadBalancer:
 
     def select_agent(self, task: dict, source_project: str) -> str:
         """Select agent (prefer locality, balance load)."""
-        candidates = self.registry.list_agents(
-            capability=task['required_capability'],
-            status='active'
-        )
+        candidates = self.registry.list_agents(capability=task["required_capability"], status="active")
 
         # Separate by project
-        same_project = [a for a in candidates if a['project'] == source_project]
-        other_project = [a for a in candidates if a['project'] != source_project]
+        same_project = [a for a in candidates if a["project"] == source_project]
+        other_project = [a for a in candidates if a["project"] != source_project]
 
         # Check if same-project overloaded
-        same_project_load = sum(a['current_state']['cpu_usage_percent'] for a in same_project) / len(same_project) if same_project else 100
+        same_project_load = (
+            sum(a["current_state"]["cpu_usage_percent"] for a in same_project) / len(same_project)
+            if same_project
+            else 100
+        )
 
         # Use locality if not overloaded
         if same_project_load < 80 and same_project:
             # Sort by load
-            same_project.sort(key=lambda a: a['current_state']['cpu_usage_percent'])
-            return same_project[0]['id']
+            same_project.sort(key=lambda a: a["current_state"]["cpu_usage_percent"])
+            return same_project[0]["id"]
 
         # Fall back to global load balance
         all_candidates = same_project + other_project
-        all_candidates.sort(key=lambda a: a['current_state']['cpu_usage_percent'])
-        return all_candidates[0]['id']
+        all_candidates.sort(key=lambda a: a["current_state"]["cpu_usage_percent"])
+        return all_candidates[0]["id"]
 ```
 
 **Effort**: 2 tool calls
@@ -850,11 +821,7 @@ class ResourceBorrower:
     """Manage cross-project resource borrowing."""
 
     async def request_borrow(
-        self,
-        borrower_project: str,
-        resource_type: str,
-        amount: float,
-        duration_minutes: int
+        self, borrower_project: str, resource_type: str, amount: float, duration_minutes: int
     ) -> BorrowApproval:
         """Request to borrow resources."""
         # Find idle projects
@@ -870,7 +837,7 @@ class ResourceBorrower:
             lender_project=lender_project,
             borrower_project=borrower_project,
             amount=amount,
-            duration_minutes=duration_minutes
+            duration_minutes=duration_minutes,
         )
 
         if approval.approved:
@@ -903,6 +870,7 @@ class ResourceBorrower:
 ### Deployment Checklist
 
 **Per Phase**:
+
 - [ ] Code written & tested
 - [ ] Integrated into L1/L2 agents
 - [ ] Tested with 2-3 agents
@@ -911,8 +879,9 @@ class ResourceBorrower:
 - [ ] Monitoring added (logs, metrics)
 
 **Before Scaling**:
+
 - [ ] All phases 1-4 complete
-- [ ] >100 tasks run successfully
+- [ ] > 100 tasks run successfully
 - [ ] <1% task failure rate
 - [ ] Deadlock detector tested with synthetic deadlocks
 - [ ] Resource management tested with >90% load
@@ -967,6 +936,7 @@ If a phase introduces breaking changes:
 3. **Manual Recovery**: If agents left in bad state, manually fix WORK_STREAM.md
 
 **Example**:
+
 ```bash
 # Rollback Phase 3 (cross-project) to Phase 2 (single-project)
 git checkout phase-2-stable -- ~/.claude/civilization/
@@ -983,6 +953,7 @@ pkill -f "L1\|L2"
 ### Unit Tests (Per Phase)
 
 Each phase includes unit tests for:
+
 - Agent identity (format, persistence)
 - Registry (CRUD operations)
 - Work stream (claim, complete, fail)
@@ -991,6 +962,7 @@ Each phase includes unit tests for:
 ### Integration Tests
 
 After each phase:
+
 - 2-3 agents execute 10+ tasks
 - Tasks complete successfully
 - Registry reflects final state
@@ -999,6 +971,7 @@ After each phase:
 ### Chaos Tests (Phase 5)
 
 Before scaling:
+
 - Kill agent mid-task (verify task reassigned)
 - Network partition (verify fallback to file-based)
 - Resource exhaustion (verify backpressure works)
@@ -1008,27 +981,27 @@ Before scaling:
 
 ## Success Metrics
 
-| Metric | Phase 1 | Phase 2 | Phase 3 | Phase 4 | Phase 5 |
-|--------|---------|---------|---------|---------|---------|
-| **Task Success Rate** | 95% | 98% | 98% | 99% | 99%+ |
-| **Avg Task Duration** | <10min | <10min | <15min | <15min | <15min |
-| **Agent Failure Recovery** | Manual | Manual | Automatic | Automatic | <2min |
-| **Deadlock Detection** | N/A | N/A | Manual alert | Automatic | Automatic + resolution |
-| **Resource Utilization** | N/A | N/A | N/A | 60%+ | 75%+ |
-| **Cross-Project Requests** | N/A | N/A | 80%+ success | 90%+ | 95%+ |
+| Metric                     | Phase 1 | Phase 2 | Phase 3      | Phase 4   | Phase 5                |
+| -------------------------- | ------- | ------- | ------------ | --------- | ---------------------- |
+| **Task Success Rate**      | 95%     | 98%     | 98%          | 99%       | 99%+                   |
+| **Avg Task Duration**      | <10min  | <10min  | <15min       | <15min    | <15min                 |
+| **Agent Failure Recovery** | Manual  | Manual  | Automatic    | Automatic | <2min                  |
+| **Deadlock Detection**     | N/A     | N/A     | Manual alert | Automatic | Automatic + resolution |
+| **Resource Utilization**   | N/A     | N/A     | N/A          | 60%+      | 75%+                   |
+| **Cross-Project Requests** | N/A     | N/A     | 80%+ success | 90%+      | 95%+                   |
 
 ---
 
 ## Timeline Summary
 
-| Week | Phase | Focus | Agents | Projects |
-|------|-------|-------|--------|----------|
-| 1 | Foundation | Identity, registry, heartbeat | 2-3 | 1 |
-| 2 | Single-Project | Task dispatch, execution | 3 L2s | 1 |
-| 3 | Cross-Project | Requests, global state, events | 3 L2s | 2 |
-| 4 | Observability | Metrics, deadlock, audit | 3 L2s | 2 |
-| 5 | Resilience | Failure recovery, load balance | 5-10 | 3+ |
-| 6 | Optimization | Resource borrowing, caching | 10-20 | 5-10 |
+| Week | Phase          | Focus                          | Agents | Projects |
+| ---- | -------------- | ------------------------------ | ------ | -------- |
+| 1    | Foundation     | Identity, registry, heartbeat  | 2-3    | 1        |
+| 2    | Single-Project | Task dispatch, execution       | 3 L2s  | 1        |
+| 3    | Cross-Project  | Requests, global state, events | 3 L2s  | 2        |
+| 4    | Observability  | Metrics, deadlock, audit       | 3 L2s  | 2        |
+| 5    | Resilience     | Failure recovery, load balance | 5-10   | 3+       |
+| 6    | Optimization   | Resource borrowing, caching    | 10-20  | 5-10     |
 
 **Total Effort**: 40-60 tool calls
 **Timeline**: 6 weeks (phased)
@@ -1043,4 +1016,3 @@ Before scaling:
 3. **Resource Limits**: Should we enforce hard limits (kill tasks) or soft limits (queue)?
 4. **Cross-Project Visibility**: Can agents in Project A read outputs from Project B? Any security concerns?
 5. **Scaling Beyond 20**: What's the breaking point? When do we need a dedicated service?
-

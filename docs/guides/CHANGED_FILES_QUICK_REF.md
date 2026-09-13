@@ -5,6 +5,7 @@ Phase 1.5 enhancement to `thegent-hooks changed-files` provides advanced filteri
 ## Quick Examples
 
 ### Get Code-Impacting Changes Only
+
 ```bash
 # Excludes documentation, config file changes
 thegent-hooks changed-files-impact HEAD~5..HEAD
@@ -13,6 +14,7 @@ thegent-hooks changed-files-impact HEAD~5..HEAD
 Output: JSON array of file paths that affect code logic
 
 ### Filter Python Files in src/
+
 ```bash
 thegent-hooks changed-files-filter \
   --extension py \
@@ -26,6 +28,7 @@ thegent-hooks changed-files-filter \
 ```
 
 ### Get All Files Changed in Tests
+
 ```bash
 thegent-hooks changed-files-filter \
   --directory tests \
@@ -35,6 +38,7 @@ thegent-hooks changed-files-filter \
 ```
 
 ### Analyze Dependencies Between Changed Files
+
 ```bash
 thegent-hooks changed-files-deps HEAD~1..HEAD
 
@@ -50,6 +54,7 @@ thegent-hooks changed-files-deps HEAD~1..HEAD
 ```
 
 ### Include Reverse Dependencies (What Depends On Each File)
+
 ```bash
 thegent-hooks changed-files-deps --dependents
 
@@ -59,6 +64,7 @@ thegent-hooks changed-files-deps --dependents
 ## Filter Types Reference
 
 ### `--extension` / `-e`
+
 Filter by file extension.
 
 ```bash
@@ -73,6 +79,7 @@ thegent-hooks changed-files-filter -e py -e rs -e go
 ```
 
 ### `--directory` / `-d`
+
 Filter by directory path.
 
 ```bash
@@ -87,6 +94,7 @@ thegent-hooks changed-files-filter -d src -d tests
 ```
 
 ### `--status` / `-s`
+
 Filter by git change status.
 
 ```bash
@@ -107,9 +115,11 @@ thegent-hooks changed-files-filter -s modified -s added
 ```
 
 ### `--impact` / `-i`
+
 Filter by impact classification.
 
 **Impact Types:**
+
 - `code` - Affects source code logic
 - `docs` - Documentation only (no code impact)
 - `config` - Configuration files
@@ -129,6 +139,7 @@ thegent-hooks changed-files-filter -i tests -i build
 ```
 
 ### `--exclude-extension`
+
 Exclude files by extension.
 
 ```bash
@@ -142,6 +153,7 @@ thegent-hooks changed-files-filter --exclude-extension md
 ```
 
 ### `--exclude-directory`
+
 Exclude files by directory.
 
 ```bash
@@ -155,6 +167,7 @@ thegent-hooks changed-files-filter \
 ```
 
 ### `--range` / `-r`
+
 Git revision range (default: `HEAD~1..HEAD`).
 
 ```bash
@@ -171,6 +184,7 @@ thegent-hooks changed-files-filter -r v1.0.0..HEAD
 ## Output Formats
 
 ### `changed-files` (Basic)
+
 ```json
 ["src/main.py", "tests/test.py", "README.md"]
 ```
@@ -178,6 +192,7 @@ thegent-hooks changed-files-filter -r v1.0.0..HEAD
 Simple JSON array of file paths. Same as Phase 1.
 
 ### `changed-files-filter` (Detailed)
+
 ```json
 [
   {
@@ -201,6 +216,7 @@ Simple JSON array of file paths. Same as Phase 1.
 JSON array with full metadata. Useful for agent processing.
 
 ### `changed-files-impact` (Code-Only)
+
 ```json
 ["src/main.py", "tests/test.py", "src/utils.py"]
 ```
@@ -208,6 +224,7 @@ JSON array with full metadata. Useful for agent processing.
 JSON array of paths that have code impact. Excludes docs/config/build files.
 
 ### `changed-files-deps` (Dependency Graph)
+
 ```json
 {
   "src/main.py": {
@@ -356,13 +373,13 @@ thegent-hooks changed-files-impact | jq -r '.[]'
 
 The enhanced changed-files detection is used by multiple hooks:
 
-| Hook | Usage |
-|------|-------|
-| `pre-write-validator` | Detect impacted domains before file modification |
-| `post-edit-checker` | Identify changed file categories for selective checks |
-| `quality-gate` | Filter linting based on file type and impact |
-| `suppression-blocker` | Detect suppression changes in code vs config files |
-| `ad-hoc-checks` | Route checks based on impact classification |
+| Hook                  | Usage                                                 |
+| --------------------- | ----------------------------------------------------- |
+| `pre-write-validator` | Detect impacted domains before file modification      |
+| `post-edit-checker`   | Identify changed file categories for selective checks |
+| `quality-gate`        | Filter linting based on file type and impact          |
+| `suppression-blocker` | Detect suppression changes in code vs config files    |
+| `ad-hoc-checks`       | Route checks based on impact classification           |
 
 ## Performance Notes
 
@@ -373,6 +390,7 @@ The enhanced changed-files detection is used by multiple hooks:
 - Total for typical change: <500ms for repos with <1000 files
 
 For large monorepos with 10,000+ files:
+
 - Consider caching dependency graphs per commit
 - Use `--range` to limit analysis scope
 - Filter early to reduce dependency parsing

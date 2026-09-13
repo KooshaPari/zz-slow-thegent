@@ -1,8 +1,9 @@
 """JSON-RPC agent server protocol."""
-from __future__ import annotations
-from typing import Any
-import time as _time
 
+from __future__ import annotations
+
+import time as _time
+from typing import Any
 
 SUPPORTED_METHODS = [
     "session/start",
@@ -20,6 +21,7 @@ SUPPORTED_METHODS = [
 
 class JsonRpcError:
     """JSON-RPC error class."""
+
     def __init__(self, code: int, message: str, data: dict[str, Any] | None = None) -> None:
         self.code = code
         self.message = message
@@ -97,6 +99,7 @@ class InMemoryJsonRpcState:
 
 class NotificationContext:
     """Context for notification handling."""
+
     def __init__(self, method: str, params: dict[str, Any]) -> None:
         self.method = method
         self.params = params
@@ -105,6 +108,7 @@ class NotificationContext:
 async def serve_stdio() -> None:
     """Serve JSON-RPC over stdio."""
     import sys
+
     for line in sys.stdin:
         line = line.strip()
         if line:
@@ -148,12 +152,18 @@ def _handle_session_start(request_id: str | int) -> dict[str, Any]:
         "result": {"session": session},
     }
 
+
 def _handle_health_check(request_id: str | int) -> dict[str, Any]:
     """Handle health/check method."""
     return {
         "jsonrpc": "2.0",
         "id": request_id,
-        "result": {"status": "ok", "timestamp": _time.time(), "service": "thegent-agent-server", "transport": "stdio"},
+        "result": {
+            "status": "ok",
+            "timestamp": _time.time(),
+            "service": "thegent-agent-server",
+            "transport": "stdio",
+        },
     }
 
 
@@ -183,13 +193,21 @@ def _handle_session_read(request_id: str | int, params: dict[str, Any]) -> dict[
     """Handle session/read method."""
     session_id = params.get("session_id")
     if not session_id:
-        return _error_response(request_id, JsonRpcError(-32602, "session_id required", {"reason": "session_id_required"}))
+        return _error_response(
+            request_id,
+            JsonRpcError(-32602, "session_id required", {"reason": "session_id_required"}),
+        )
     if session_id not in SERVER_STATE.sessions:
-        return _error_response(request_id, JsonRpcError(-32002, "session not found", {"reason": "session_not_found"}))
+        return _error_response(
+            request_id,
+            JsonRpcError(-32002, "session not found", {"reason": "session_not_found"}),
+        )
 
     session = SERVER_STATE.sessions[session_id]
-    turns = [{"id": tid, "status": SERVER_STATE.turns.get(tid, {}).get("status", "unknown")}
-             for tid in session.get("turn_ids", [])]
+    turns = [
+        {"id": tid, "status": SERVER_STATE.turns.get(tid, {}).get("status", "unknown")}
+        for tid in session.get("turn_ids", [])
+    ]
 
     return {
         "jsonrpc": "2.0",
@@ -323,7 +341,11 @@ def _resolve_turn_submit_approval_payload(
             "unified_diff": unified_diff,
         }
         SERVER_STATE.approvals[approval_id] = approval
-        return {"approval": approval, "requires_approval": True, "unified_diff": unified_diff}
+        return {
+            "approval": approval,
+            "requires_approval": True,
+            "unified_diff": unified_diff,
+        }
     return {"requires_approval": False, "unified_diff": None}
 
 
@@ -364,31 +386,37 @@ def _apply_turn_submit_side_effects(
         SERVER_STATE.approvals[approval_id] = approval
         turn["status"] = "awaiting_approval"
         turn["approval_id"] = approval_id
-        notifications.append({
-            "method": "approval/requested",
-            "params": {
-                "approval_id": approval_id,
-                "turn_id": turn_id,
-                "unified_diff": unified_diff or "",
-            },
-        })
+        notifications.append(
+            {
+                "method": "approval/requested",
+                "params": {
+                    "approval_id": approval_id,
+                    "turn_id": turn_id,
+                    "unified_diff": unified_diff or "",
+                },
+            }
+        )
         return {"approval": approval, "status": "awaiting_approval"}
     else:
         SERVER_STATE.tool_call_counter += 1
         tool_call_id = f"tool-call-{SERVER_STATE.tool_call_counter:04d}"
         turn["status"] = "completed"
         turn["tool_call_id"] = tool_call_id
-        notifications.append({
-            "method": "turn/completed",
-            "params": {
-                "turn_id": turn_id,
-                "tool_call_id": tool_call_id,
-            },
-        })
+        notifications.append(
+            {
+                "method": "turn/completed",
+                "params": {
+                    "turn_id": turn_id,
+                    "tool_call_id": tool_call_id,
+                },
+            }
+        )
         return None
 
 
-def _build_turn_submit_execution_phase(parse_phase: dict[str, Any]) -> tuple[str, dict[str, Any], str, bool, str | None, str | None, list[dict[str, Any]]]:
+def _build_turn_submit_execution_phase(
+    parse_phase: dict[str, Any],
+) -> tuple[str, dict[str, Any], str, bool, str | None, str | None, list[dict[str, Any]]]:
     """Build turn submit execution phase from parse phase."""
     # Validate required fields are present
     session_id = parse_phase.get("session_id")
@@ -398,12 +426,20 @@ def _build_turn_submit_execution_phase(parse_phase: dict[str, Any]) -> tuple[str
     unified_diff = parse_phase.get("unified_diff")
     error = parse_phase.get("error")
     notifications = parse_phase.get("notifications", [])
-    
+
     # Validate execution targets are resolved
     if session_id is None or turn is None:
         raise ValueError("Turn submit execution target unresolved")
-    
-    return (session_id, turn, input_text, requires_approval, unified_diff, error, notifications)
+
+    return (
+        session_id,
+        turn,
+        input_text,
+        requires_approval,
+        unified_diff,
+        error,
+        notifications,
+    )
 
 
 def _build_turn_submit_result_payload_flat(
@@ -587,14 +623,23 @@ def _handle_turn_cancel_request(
     """Handle turn/cancel request."""
     turn = SERVER_STATE.turns.get(turn_id)
     if not turn:
-        return _error_response(request_id, JsonRpcError(-32002, "Turn not found", {"reason": "turn_not_found"}))
+        return _error_response(
+            request_id,
+            JsonRpcError(-32002, "Turn not found", {"reason": "turn_not_found"}),
+        )
 
     if turn.get("status") in ("completed", "cancelled", "failed"):
-        return _error_response(request_id, JsonRpcError(-32003, "Turn already terminal", {"reason": "turn_terminal"}))
+        return _error_response(
+            request_id,
+            JsonRpcError(-32003, "Turn already terminal", {"reason": "turn_terminal"}),
+        )
 
     # Cancel any pending approval
     approval_id = turn.get("approval_id")
-    if approval_id and SERVER_STATE.approvals.get(approval_id, {}).get("status") in ("pending", "requested"):
+    if approval_id and SERVER_STATE.approvals.get(approval_id, {}).get("status") in (
+        "pending",
+        "requested",
+    ):
         SERVER_STATE.approvals[approval_id]["status"] = "cancelled"
 
     turn["status"] = "cancelled"
@@ -613,10 +658,16 @@ def _handle_approval_grant(
     """Handle approval/grant request."""
     approval = SERVER_STATE.approvals.get(approval_id)
     if not approval:
-        return _error_response(request_id, JsonRpcError(-32002, "Approval not found", {"reason": "approval_not_found"}))
+        return _error_response(
+            request_id,
+            JsonRpcError(-32002, "Approval not found", {"reason": "approval_not_found"}),
+        )
 
     if approval.get("status") != "pending":
-        return _error_response(request_id, JsonRpcError(-32003, "Approval not pending", {"reason": "approval_not_pending"}))
+        return _error_response(
+            request_id,
+            JsonRpcError(-32003, "Approval not pending", {"reason": "approval_not_pending"}),
+        )
 
     approval["status"] = "granted"
     turn_id = approval.get("turn_id")
@@ -639,10 +690,16 @@ def _handle_approval_reject(
     """Handle approval/reject request."""
     approval = SERVER_STATE.approvals.get(approval_id)
     if not approval:
-        return _error_response(request_id, JsonRpcError(-32002, "Approval not found", {"reason": "approval_not_found"}))
+        return _error_response(
+            request_id,
+            JsonRpcError(-32002, "Approval not found", {"reason": "approval_not_found"}),
+        )
 
     if approval.get("status") != "pending":
-        return _error_response(request_id, JsonRpcError(-32003, "Approval not pending", {"reason": "approval_not_pending"}))
+        return _error_response(
+            request_id,
+            JsonRpcError(-32003, "Approval not pending", {"reason": "approval_not_pending"}),
+        )
 
     approval["status"] = "rejected"
     turn_id = approval.get("turn_id")
@@ -678,7 +735,11 @@ def _handle_config_read(
     return {
         "jsonrpc": "2.0",
         "id": request_id,
-        "result": {"supported_methods": sorted(SUPPORTED_METHODS), "server": "thegent-agent-server", "transport": "stdio"},
+        "result": {
+            "supported_methods": sorted(SUPPORTED_METHODS),
+            "server": "thegent-agent-server",
+            "transport": "stdio",
+        },
     }
 
 
@@ -686,6 +747,7 @@ def process_jsonrpc_line(line: str) -> str | None:
     """Process a single JSON-RPC line and return response string."""
     try:
         import orjson
+
         request = orjson.loads(line)
     except Exception:
         return '{"jsonrpc": "2.0", "id": null, "error": {"code": -32700, "message": "Parse error"}}'
@@ -726,13 +788,23 @@ def process_jsonrpc_line(line: str) -> str | None:
     return orjson.dumps(response).decode()
 
 
-def process_jsonrpc_line_full(line: str) -> tuple[dict[str, Any] | None, list[dict[str, Any]]]:
+def process_jsonrpc_line_full(
+    line: str,
+) -> tuple[dict[str, Any] | None, list[dict[str, Any]]]:
     """Process a JSON-RPC line and return (response, notifications) tuple."""
     try:
         import orjson
+
         request = orjson.loads(line)
     except Exception:
-        return ({"jsonrpc": "2.0", "id": None, "error": {"code": -32700, "message": "Parse error"}}, [])
+        return (
+            {
+                "jsonrpc": "2.0",
+                "id": None,
+                "error": {"code": -32700, "message": "Parse error"},
+            },
+            [],
+        )
 
     # Handle notifications (no id field)
     is_notification = request.get("id") is None
@@ -761,41 +833,49 @@ def process_jsonrpc_line_full(line: str) -> tuple[dict[str, Any] | None, list[di
             params.get("unified_diff"),
         )
         if response and "result" in response:
-            notifications.append({
-                "jsonrpc": "2.0",
-                "method": "turn/started",
-                "params": response["result"],
-            })
+            notifications.append(
+                {
+                    "jsonrpc": "2.0",
+                    "method": "turn/started",
+                    "params": response["result"],
+                }
+            )
         if is_notification:
             response = None
     elif method == "turn/cancel":
         response = _handle_turn_cancel_request(request_id, params.get("turn_id", ""))
         if is_notification and response and "result" in response:
-            notifications.append({
-                "jsonrpc": "2.0",
-                "method": "turn/cancelled",
-                "params": response["result"],
-            })
+            notifications.append(
+                {
+                    "jsonrpc": "2.0",
+                    "method": "turn/cancelled",
+                    "params": response["result"],
+                }
+            )
             response = None
     elif method == "approval/grant":
         response = _handle_approval_grant(request_id, params.get("approval_id", ""))
         if is_notification:
             if response and "result" in response:
-                notifications.append({
-                    "jsonrpc": "2.0",
-                    "method": "approval/granted",
-                    "params": response["result"],
-                })
+                notifications.append(
+                    {
+                        "jsonrpc": "2.0",
+                        "method": "approval/granted",
+                        "params": response["result"],
+                    }
+                )
             response = None
     elif method == "approval/reject":
         response = _handle_approval_reject(request_id, params.get("approval_id", ""))
         if is_notification:
             if response and "result" in response:
-                notifications.append({
-                    "jsonrpc": "2.0",
-                    "method": "approval/rejected",
-                    "params": response["result"],
-                })
+                notifications.append(
+                    {
+                        "jsonrpc": "2.0",
+                        "method": "approval/rejected",
+                        "params": response["result"],
+                    }
+                )
             response = None
     elif method == "health/check":
         response = _handle_health_check(request_id)
@@ -811,6 +891,7 @@ def process_jsonrpc_line_full(line: str) -> tuple[dict[str, Any] | None, list[di
 
 # === Turn Submit Phase Functions ===
 
+
 def _build_turn_submit_phase_plan(request_id: str | int, params: dict[str, Any]) -> dict[str, Any]:
     """Build turn submit phase plan from request parameters."""
     session_id = params.get("session_id")
@@ -824,16 +905,16 @@ def _build_turn_submit_phase_plan(request_id: str | int, params: dict[str, Any])
 
 def _build_turn_submit_parse_phase(plan: dict[str, Any]) -> dict[str, Any]:
     """Build turn submit parse phase from plan.
-    
+
     Validates session exists and input is a string.
     Returns parse_error if validation fails.
     """
     session_id = plan.get("session_id")
     input_text = plan.get("input")
-    
+
     # Check session exists
     session = SERVER_STATE.sessions.get(session_id) if session_id else None
-    
+
     # Build parse phase result - include both 'input' and 'user_input' keys for compatibility
     parse_phase: dict[str, Any] = {
         "session_id": session_id,
@@ -843,21 +924,17 @@ def _build_turn_submit_parse_phase(plan: dict[str, Any]) -> dict[str, Any]:
         "parse_error": None,
         "notifications": [],
     }
-    
+
     # Validate session
     if not session_id or not session:
-        parse_phase["parse_error"] = {
-            "error": {"code": -32001, "message": f"Session not found: {session_id}"}
-        }
+        parse_phase["parse_error"] = {"error": {"code": -32001, "message": f"Session not found: {session_id}"}}
         return parse_phase
-    
+
     # Validate input is string
     if input_text is not None and not isinstance(input_text, str):
-        parse_phase["parse_error"] = {
-            "error": {"code": -32001, "message": "input_must_be_string"}
-        }
+        parse_phase["parse_error"] = {"error": {"code": -32001, "message": "input_must_be_string"}}
         return parse_phase
-    
+
     # Create turn object for execution phase
     SERVER_STATE.turn_counter += 1
     turn_id = f"turn-{SERVER_STATE.turn_counter}"
@@ -870,10 +947,10 @@ def _build_turn_submit_parse_phase(plan: dict[str, Any]) -> dict[str, Any]:
     }
     SERVER_STATE.turns[turn_id] = turn
     session.setdefault("turn_ids", []).append(turn_id)
-    
+
     # Add turn to parse_phase for execution phase
     parse_phase["turn"] = turn
-    
+
     return parse_phase
 
 
@@ -883,7 +960,7 @@ def _build_turn_submit_commit_phase(
     input_text: str,
 ) -> dict[str, Any]:
     """Build turn submit commit phase.
-    
+
     Creates a turn record and associates it with the session.
     """
     SERVER_STATE.turn_counter += 1
@@ -907,17 +984,18 @@ def _build_turn_submit_commit_phase(
 
 # === Turn Submit Resolve Target Functions ===
 
+
 def _resolve_turn_submit_commit_target(
     commit_phase: dict[str, Any],
 ) -> tuple[str, dict[str, Any], dict[str, Any]]:
     """Resolve turn submit commit target from commit phase."""
     turn = commit_phase.get("turn")
     session = commit_phase.get("session", {})
-    
+
     # Validate turn is a dict
     if not isinstance(turn, dict):
         raise ValueError("commit_target resolution requires valid turn dict")
-    
+
     session = session if isinstance(session, dict) else {}
     turn_id = turn.get("id", "") if isinstance(turn, dict) else ""
     return (turn_id, turn, session)
@@ -928,15 +1006,15 @@ def _resolve_turn_submit_side_effects_target(
 ) -> tuple[str, str, str] | tuple[str, str]:
     """Resolve turn submit side effects target from side effects phase."""
     approval = side_effects_phase.get("approval")
-    
+
     # Validate approval exists
     if approval is None or not isinstance(approval, dict):
         raise ValueError("side-effects target resolution requires approval")
-    
+
     approval_id = approval.get("id", "") if isinstance(approval, dict) else ""
     approval_status = approval.get("status", "") if isinstance(approval, dict) else ""
     approval_diff = approval.get("diff") if isinstance(approval, dict) else None
-    
+
     # Return 3-tuple if diff is present, otherwise 2-tuple
     if approval_diff is not None:
         return (approval_id, approval_status, approval_diff)
@@ -948,11 +1026,11 @@ def _resolve_turn_submit_response_target(
 ) -> tuple[dict[str, Any], dict[str, Any] | None]:
     """Resolve turn submit response target from response phase."""
     turn = response_phase.get("turn")
-    
+
     # Validate turn exists
     if turn is None:
         raise ValueError("response_target resolution requires turn")
-    
+
     approval = response_phase.get("approval")
     return (turn, approval)
 
@@ -964,7 +1042,7 @@ def _build_turn_submit_commit_resolution_phase(
     session: dict[str, Any] | None = None,
 ) -> tuple[str, dict[str, Any], dict[str, Any]] | dict[str, Any]:
     """Resolve turn submit commit phase.
-    
+
     Supports two calling conventions:
     - New (lane C2): _build_turn_submit_commit_resolution_phase(commit_phase_dict)
       Returns tuple of (turn_id, turn, resolved_session)
@@ -978,10 +1056,10 @@ def _build_turn_submit_commit_resolution_phase(
         turn_id = commit_phase.get("turn_id")
         turn = commit_phase.get("turn")
         session = commit_phase.get("session")
-        
+
         if turn_id is None or turn is None or session is None:
             raise ValueError("Turn submit commit target unresolved")
-        
+
         return (turn_id, turn, session)
     else:
         # Old calling convention (lane AF) - returns dict
@@ -1004,7 +1082,7 @@ def _build_turn_submit_side_effects_phase(
     approval_diff: str | None,
 ) -> dict[str, Any]:
     """Build turn submit side effects phase.
-    
+
     Prepares the phase for side effects resolution.
     """
     return {
@@ -1021,7 +1099,7 @@ def _build_turn_submit_side_effects_resolution_phase(
     side_effects_phase: dict[str, Any],
 ) -> tuple[str, str, dict[str, Any], str, bool, str | None]:
     """Resolve turn submit side effects phase.
-    
+
     Validates that session_id and turn_id are proper string values and turn is valid.
     Returns tuple of (session_id, turn_id, turn, user_input, requires_approval, approval_diff).
     Raises ValueError if targets are unresolved or have wrong types.
@@ -1032,16 +1110,16 @@ def _build_turn_submit_side_effects_resolution_phase(
     user_input = side_effects_phase.get("user_input")
     requires_approval = side_effects_phase.get("requires_approval")
     approval_diff = side_effects_phase.get("approval_diff")
-    
+
     # Validate session_id and turn_id are strings (not None or other types)
     # Also validate turn is a non-empty dict (has id)
     if not isinstance(session_id, str) or not isinstance(turn_id, str):
         raise ValueError("Turn submit side-effects target unresolved")
-    
+
     # Validate turn is a valid dict with id
     if not isinstance(turn, dict) or "id" not in turn:
         raise ValueError("Turn submit side-effects target unresolved")
-    
+
     return (session_id, turn_id, turn, user_input, requires_approval, approval_diff)
 
 
@@ -1052,7 +1130,7 @@ def _build_turn_submit_response_phase(
     approval: dict[str, Any] | None,
 ) -> dict[str, Any]:
     """Build turn submit response phase.
-    
+
     Prepares the phase for response resolution.
     """
     return {
@@ -1067,7 +1145,7 @@ def _build_turn_submit_response_resolution_phase(
     response_phase: dict[str, Any],
 ) -> tuple[bool, str | int, dict[str, Any], dict[str, Any] | None]:
     """Resolve turn submit response phase.
-    
+
     Extracts response components from the phase.
     Returns tuple of (request_has_id, request_id, resolved_turn, approval_payload).
     """
@@ -1075,5 +1153,5 @@ def _build_turn_submit_response_resolution_phase(
     request_id = response_phase.get("request_id")
     turn = response_phase.get("turn")
     approval = response_phase.get("approval")
-    
+
     return (request_has_id, request_id, turn, approval)

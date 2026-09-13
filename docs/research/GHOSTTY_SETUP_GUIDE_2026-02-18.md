@@ -85,10 +85,12 @@ ghostty --version
 ### Configuration File Location
 
 **macOS:**
+
 - `~/.config/ghostty/config` (XDG)
 - `~/Library/Application Support/com.mitchellh.ghostty/config` (macOS-specific)
 
 **Linux:**
+
 - `~/.config/ghostty/config` (XDG)
 
 ### Basic Configuration
@@ -189,6 +191,7 @@ eval "$(ghostty --shell-integration)"
 ```
 
 **Features Enabled:**
+
 - Prompt marking (knows where prompt starts/ends)
 - Command detection (knows when command completes)
 - Directory tracking (knows current directory)
@@ -197,11 +200,13 @@ eval "$(ghostty --shell-integration)"
 ### 2. Secure Keyboard Entry (macOS)
 
 **Automatic Detection:**
+
 - Detects password prompts automatically
 - Shows lock icon in top-right corner
 - Prevents password capture by other processes
 
 **Manual Enable:**
+
 ```ini
 secure-keyboard-entry = true
 ```
@@ -209,6 +214,7 @@ secure-keyboard-entry = true
 ### 3. Quick Look Integration (macOS)
 
 **Features:**
+
 - Three-finger tap or force touch on text
 - Shows definitions, web searches
 - Works with selected text
@@ -218,6 +224,7 @@ secure-keyboard-entry = true
 ### 4. Proxy Icon (macOS)
 
 **Features:**
+
 - Drag proxy icon in title bar
 - Move or access terminal session files
 - Navigate to file path directly
@@ -227,12 +234,14 @@ secure-keyboard-entry = true
 ### 5. Kitty Graphics Protocol
 
 **Enable Image Display:**
+
 ```bash
 # In terminal applications
 kitty +kitten icat image.png
 ```
 
 **Supported Formats:**
+
 - PNG, JPEG, GIF, WebP
 - SVG (via conversion)
 - Animated GIFs
@@ -240,12 +249,14 @@ kitty +kitten icat image.png
 ### 6. OSC 777 Notifications
 
 **Desktop Notifications:**
+
 ```bash
 # Send notification from terminal
 printf '\033]777;notify;%s;%s\033\\' "Title" "Message"
 ```
 
 **Use Cases:**
+
 - Long-running command completion
 - Agent workflow notifications
 - Background task alerts
@@ -257,6 +268,7 @@ printf '\033]777;notify;%s;%s\033\\' "Title" "Message"
 ### zsh Integration
 
 **Full Integration:**
+
 ```bash
 # ~/.zshrc
 eval "$(ghostty --shell-integration)"
@@ -266,6 +278,7 @@ export GHOSTTY_SHELL_INTEGRATION=1
 ```
 
 **Features:**
+
 - Prompt marking
 - Command detection
 - Directory tracking
@@ -292,18 +305,21 @@ ghostty --shell-integration | source
 ### Ghostty MCP Server
 
 **Installation:**
+
 ```bash
 # Via LobeHub MCP Registry
 # See: https://lobehub.com/mcp/yourusername-ghostty-mcp
 ```
 
 **Features:**
+
 - Programmatic terminal control
 - Tab/window management
 - Session management
 - Useful for agent orchestration
 
 **Use Cases:**
+
 - Agent workflow automation
 - Terminal session management
 - Multi-agent coordination
@@ -406,6 +422,7 @@ theme = "auto"
 ### Performance Benchmarks
 
 **Optimized Configuration:**
+
 - Frame time: <1ms
 - Throughput: 140-190 MB/s
 - Memory: 50-100MB typical
@@ -418,6 +435,7 @@ theme = "auto"
 ### 1. Git Worktree Integration
 
 **Workflow:**
+
 ```bash
 # Create worktree
 git worktree add ../feature-branch feature-branch
@@ -427,6 +445,7 @@ ghostty --working-directory=../feature-branch
 ```
 
 **Automation Script:**
+
 ```bash
 #!/bin/bash
 # git-worktree-ghostty.sh
@@ -439,6 +458,7 @@ ghostty --working-directory="$WORKTREE_DIR" &
 ### 2. Agent Workflow Integration
 
 **Multi-Agent Setup:**
+
 ```bash
 # Terminal 1: Claude Code
 ghostty --title="Claude Code" --working-directory=worktree1
@@ -453,6 +473,7 @@ ghostty --title="OpenCode" --working-directory=worktree3
 ### 3. tmux Integration
 
 **Ghostty + tmux:**
+
 ```bash
 # Start tmux session
 tmux new-session -d -s agent-workflow
@@ -464,6 +485,7 @@ ghostty -e tmux attach -t agent-workflow
 ### 4. Zellij Integration
 
 **Ghostty + Zellij:**
+
 ```bash
 # Start Zellij session
 zellij attach -c agent-workflow
@@ -481,6 +503,7 @@ ghostty -e zellij
 **Purpose:** Desktop notifications for agent workflows
 
 **Implementation:**
+
 ```bash
 # Plugin: ghostty-notifications
 # Location: ~/.config/ghostty/plugins/notifications.sh
@@ -493,6 +516,7 @@ ghostty -e zellij
 ```
 
 **Configuration:**
+
 ```ini
 # ~/.config/ghostty/config
 plugin-notifications-enabled = true
@@ -505,12 +529,14 @@ plugin-notifications-agent-alerts = true
 **Purpose:** Save/restore terminal sessions
 
 **Features:**
+
 - Save tab/window layouts
 - Restore sessions on startup
 - Session templates
 - Multi-project session management
 
 **Usage:**
+
 ```bash
 # Save session
 ghostty session save my-workflow
@@ -527,12 +553,14 @@ ghostty session list
 **Purpose:** Direct integration with CLI agents (Claude Code, Codex, OpenCode)
 
 **Features:**
+
 - Auto-detect agent processes
 - Agent-specific tab styling
 - Agent status indicators
 - Agent output formatting
 
 **Configuration:**
+
 ```ini
 # ~/.config/ghostty/config
 plugin-agent-integration-enabled = true
@@ -546,12 +574,14 @@ plugin-agent-opencode-style = "purple"
 **Purpose:** Git worktree management UI
 
 **Features:**
+
 - Visual worktree browser
 - Quick worktree switching
 - Worktree status indicators
 - Branch visualization
 
 **Usage:**
+
 ```bash
 # Open worktree manager
 ghostty worktree-manager
@@ -565,12 +595,14 @@ ghostty worktree switch feature-branch
 **Purpose:** Real-time performance monitoring
 
 **Features:**
+
 - Frame time display
 - Memory usage
 - CPU usage
 - Throughput metrics
 
 **Configuration:**
+
 ```ini
 # ~/.config/ghostty/config
 plugin-performance-monitor-enabled = true
@@ -583,12 +615,14 @@ plugin-performance-monitor-update-interval = 1000  # ms
 **Purpose:** Generate custom themes from images/colors
 
 **Features:**
+
 - Extract colors from images
 - Generate theme from color palette
 - Theme preview
 - Theme export/import
 
 **Usage:**
+
 ```bash
 # Generate theme from image
 ghostty theme generate --from-image wallpaper.png --name my-theme
@@ -602,12 +636,14 @@ ghostty theme generate --colors "#1e1e1e,#d4d4d4" --name my-theme
 **Purpose:** VS Code-style command palette
 
 **Features:**
+
 - Quick actions (new tab, split, etc.)
 - Command history
 - Fuzzy search
 - Custom commands
 
 **Keybinding:**
+
 ```ini
 keybind = ctrl+shift+p=command_palette
 ```
@@ -617,12 +653,14 @@ keybind = ctrl+shift+p=command_palette
 **Purpose:** Programmatic terminal control
 
 **Features:**
+
 - HTTP API for terminal control
 - Tab/window management
 - Command execution
 - Session management
 
 **Use Cases:**
+
 - Agent orchestration
 - CI/CD integration
 - Remote terminal management
@@ -632,12 +670,14 @@ keybind = ctrl+shift+p=command_palette
 **Purpose:** Search through scrollback buffer
 
 **Features:**
+
 - Full-text search
 - Regex support
 - Highlight matches
 - Jump to matches
 
 **Keybinding:**
+
 ```ini
 keybind = ctrl+f=scrollback_search
 ```
@@ -647,12 +687,14 @@ keybind = ctrl+f=scrollback_search
 **Purpose:** Filter terminal output
 
 **Features:**
+
 - Hide/show specific output
 - Color filtering
 - Pattern matching
 - Output highlighting
 
 **Configuration:**
+
 ```ini
 # ~/.config/ghostty/config
 plugin-output-filter-enabled = true
@@ -698,15 +740,15 @@ plugin-output-filter-hide-matches = true
 
 ### Keybindings (Default)
 
-| Action | Keybinding |
-|--------|------------|
-| Reload config | `Ctrl+Shift+,` |
-| New tab | `Ctrl+Shift+N` |
-| Close tab | `Ctrl+Shift+W` |
-| New split (right) | `Ctrl+Shift+D` |
-| Close split | `Ctrl+Shift+D` |
-| Move tab left | `Ctrl+Shift+Left` |
-| Move tab right | `Ctrl+Shift+Right` |
+| Action            | Keybinding         |
+| ----------------- | ------------------ |
+| Reload config     | `Ctrl+Shift+,`     |
+| New tab           | `Ctrl+Shift+N`     |
+| Close tab         | `Ctrl+Shift+W`     |
+| New split (right) | `Ctrl+Shift+D`     |
+| Close split       | `Ctrl+Shift+D`     |
+| Move tab left     | `Ctrl+Shift+Left`  |
+| Move tab right    | `Ctrl+Shift+Right` |
 
 ### Configuration Locations
 
@@ -723,5 +765,5 @@ plugin-output-filter-hide-matches = true
 
 ---
 
-*Research Date: 2026-02-18*
-*Sources: Ghostty documentation, GitHub discussions, community feedback*
+_Research Date: 2026-02-18_
+_Sources: Ghostty documentation, GitHub discussions, community feedback_

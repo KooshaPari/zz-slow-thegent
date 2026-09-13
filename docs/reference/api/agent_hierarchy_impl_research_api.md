@@ -12,7 +12,7 @@ Research for agent hierarchy implementation.
 
 ### Methods
 
-#### AgentHierarchyImplResearch.__init__
+#### AgentHierarchyImplResearch.**init**
 
 ```python
 __init__(self: Any)

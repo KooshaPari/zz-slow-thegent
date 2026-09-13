@@ -1,4 +1,5 @@
 """Compositor components module."""
+
 from __future__ import annotations
 
 
@@ -23,7 +24,16 @@ class HeaderWidget:
         self.title = ""
 
 
-__all__ = ["DiffViewerPanel", "FooterStatusBar", "HeaderWidget", "MetricsPanel", "OutputWidget", "ProgressIndicator", "SidebarWidget", "StatusWidget"]
+__all__ = [
+    "DiffViewerPanel",
+    "FooterStatusBar",
+    "HeaderWidget",
+    "MetricsPanel",
+    "OutputWidget",
+    "ProgressIndicator",
+    "SidebarWidget",
+    "StatusWidget",
+]
 
 
 class StatusWidget:

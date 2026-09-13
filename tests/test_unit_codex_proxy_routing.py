@@ -22,13 +22,13 @@ class TestCodexProxyRunnerRouting:
 
         with patch.object(runner, "_execute_native_cli") as mock_native:
             mock_native.return_value = MagicMock(exit_code=0, stdout="done", stderr="", timed_out=False)
-            result = runner.run_with_metadata("test prompt", Path("/tmp"), "read", 60, metadata=metadata)
+            runner.run_with_metadata("test prompt", Path("/tmp"), "read", 60, metadata=metadata)
             mock_native.assert_called_once()
 
     def test_api_key_provider_routes_correctly(self):
         """API key providers (minimax) use appropriate routing."""
         runner = CodexProxyRunner("minimax")
-        metadata = TaskMetadata(
+        TaskMetadata(
             category=TaskCategory.NORMAL,
             resolved_provider="minimax",
             resolved_model_alias="minimax-m2.5",

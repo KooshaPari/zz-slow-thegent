@@ -4,7 +4,7 @@
 
 ShadowAuditGit: git-backed audit log for agent episodes (wp-71002).
 
-Maintains a separate git repository at ``~/.thegent/audit/`` that records
+Maintains a separate git repository at `~/.thegent/audit/` that records
 file snapshots (with secrets scrubbed) for every episode transaction.
 
 # @trace FR-VCS-001
@@ -17,7 +17,7 @@ Git-backed shadow audit repository.
 
 ### Methods
 
-#### ShadowAuditGit.__init__
+#### ShadowAuditGit.**init**
 
 ```python
 __init__(self: Any, audit_path: Path)

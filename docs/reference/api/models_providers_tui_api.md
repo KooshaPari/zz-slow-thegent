@@ -5,6 +5,7 @@
 Rich TUI for adding models and providers with full harness configuration.
 
 Covers:
+
 - Provider-model mapping (provider_definitions, model aliases)
 - Per-harness config (cliproxy openai-compatibility, ensure-config)
 - API key injection, validation, credentials

@@ -35,7 +35,6 @@ class ACPServerUnreachableError(Exception):
     """Raised when the ACP server cannot be reached."""
 
 
-
 # ---------------------------------------------------------------------------
 # Dataclasses
 # ---------------------------------------------------------------------------

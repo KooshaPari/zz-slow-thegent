@@ -31,6 +31,7 @@ Infrastructure phase complete. New wrapper layer in place. Ready for implementat
 ### Phase 3: Update Callers (6-8 hours)
 
 **3A: Routing Logic Callers (12 files, 2-4 hours)**
+
 - [ ] cli/commands/impl.py — ParetoRouter replacement
 - [ ] cli/tui/pareto.py — RoutingDecision handling
 - [ ] models/catalog.py — select_offer replacement
@@ -45,6 +46,7 @@ Infrastructure phase complete. New wrapper layer in place. Ready for implementat
 - [ ] cli/commands/run_output_helpers.py — grounding import update
 
 **3B: Data/Metadata Callers (10 files, 1-2 hours)**
+
 - [ ] cliproxy_adapter.py (2-3 lines)
 - [ ] cliproxy_models_transform.py (1 line)
 - [ ] cliproxy_request_transform.py (1 line)
@@ -54,6 +56,7 @@ Infrastructure phase complete. New wrapper layer in place. Ready for implementat
 - [ ] models/catalog.py (1 line)
 
 **3C: TODO Marks for LiteLLM (8 files, 30 min)**
+
 - [ ] agents/codex_proxy.py — add TODO comment above litellm_router import
 - [ ] agents/droid.py — add TODO comments (2 places)
 - [ ] agents/direct_agents.py — add TODO comment
@@ -62,16 +65,19 @@ Infrastructure phase complete. New wrapper layer in place. Ready for implementat
 - [ ] mcp/server/lifecycle.py — add TODO comment
 
 ### Phase 4: Internal Routing Wiring (1-2 hours)
+
 - [ ] auto_router.py — update pareto_router usage
 - [ ] pareto.py — update pareto_router usage
 - [ ] cost_aware_router.py — update pareto_router usage
 
 ### Phase 5: Delete Module (10 min)
+
 - [ ] Remove src/thegent/routing/
 - [ ] Verify no imports remain
 - [ ] Run tests
 
 ### Phase 6: Verify & Commit (30 min)
+
 - [ ] tach check
 - [ ] ruff check src/
 - [ ] pytest tests/test_pareto_router.py tests/test_race_orchestration.py
@@ -80,6 +86,7 @@ Infrastructure phase complete. New wrapper layer in place. Ready for implementat
 ## Documentation
 
 See:
+
 - **Main Plan:** `docs/research/ROUTING_MODULE_CLIPPROXY_MIGRATION_PLAN.md`
 - **Checklist:** `docs/research/ROUTING_MIGRATION_CHECKLIST.md`
 

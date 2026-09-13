@@ -33,7 +33,9 @@ def test_parse_cliproxyctl_envelope_rejects_command_mismatch() -> None:
         )
 
 
-def test_run_cliproxyctl_machine_command_fails_on_nonzero_exit(monkeypatch: pytest.MonkeyPatch) -> None:
+def test_run_cliproxyctl_machine_command_fails_on_nonzero_exit(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
     monkeypatch.setattr(model_cmds, "_resolve_cliproxyctl_binary", lambda: "/tmp/cliproxyctl")
     monkeypatch.setattr(model_cmds, "_binary_exists", lambda binary: True)
 
@@ -51,7 +53,9 @@ def test_run_cliproxyctl_machine_command_fails_on_nonzero_exit(monkeypatch: pyte
         model_cmds._run_cliproxyctl_machine_command("login", args=["claude"])
 
 
-def test_run_cliproxyctl_machine_command_fails_on_invalid_json(monkeypatch: pytest.MonkeyPatch) -> None:
+def test_run_cliproxyctl_machine_command_fails_on_invalid_json(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
     monkeypatch.setattr(model_cmds, "_resolve_cliproxyctl_binary", lambda: "/tmp/cliproxyctl")
     monkeypatch.setattr(model_cmds, "_binary_exists", lambda binary: True)
 
@@ -64,13 +68,23 @@ def test_run_cliproxyctl_machine_command_fails_on_invalid_json(monkeypatch: pyte
         model_cmds._run_cliproxyctl_machine_command("setup")
 
 
-def test_cliproxy_login_cmd_prints_explicit_delegation_message(monkeypatch: pytest.MonkeyPatch) -> None:
+def test_cliproxy_login_cmd_prints_explicit_delegation_message(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
     printed: list[str] = []
-    monkeypatch.setattr(model_cmds.console, "print", lambda msg, *args, **kwargs: printed.append(str(msg)))
+    monkeypatch.setattr(
+        model_cmds.console,
+        "print",
+        lambda msg, *args, **kwargs: printed.append(str(msg)),
+    )
     monkeypatch.setattr(
         model_cmds,
         "_run_cliproxyctl_machine_command",
-        lambda command, args=None: {"schema_version": "cliproxyctl.machine.v1", "command": command, "ok": True},
+        lambda command, args=None: {
+            "schema_version": "cliproxyctl.machine.v1",
+            "command": command,
+            "ok": True,
+        },
     )
 
     with pytest.raises(typer.Exit) as exc_info:

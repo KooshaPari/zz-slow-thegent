@@ -5,6 +5,7 @@
 CompositorManager: manage multiple Compositor instances with layout.
 
 Provides:
+
 - Layout: Enum of supported multi-compositor layouts (SINGLE, SPLIT_H,
   SPLIT_V, GRID_2X2).
 - CompositorSlot: Dataclass binding a Compositor to a named slot with a
@@ -19,12 +20,12 @@ Provides:
 
 Manage multiple Compositor instances and provide layout management.
 
-The manager stores slots in insertion order.  A *focused* slot is brought
-visually to the foreground by rendering its border with a ``[*]`` marker.
+The manager stores slots in insertion order. A _focused_ slot is brought
+visually to the foreground by rendering its border with a `[*]` marker.
 
 ### Methods
 
-#### CompositorManager.__init__
+#### CompositorManager.**init**
 
 ```python
 __init__(self: Any, layout: Layout)
@@ -40,7 +41,7 @@ Initialise an empty manager with the given layout.
 add_compositor(self: Any, compositor: Compositor, slot_id: str, weight: float)
 ```
 
-Add a compositor to the manager under *slot_id*.
+Add a compositor to the manager under _slot_id_.
 
 If a slot with the same ID already exists it is replaced.
 
@@ -58,7 +59,7 @@ If a slot with the same ID already exists it is replaced.
 focus(self: Any, slot_id: str)
 ```
 
-Bring the compositor at *slot_id* to the foreground.
+Bring the compositor at _slot_id_ to the foreground.
 
 **Parameters**:
 
@@ -72,13 +73,13 @@ Bring the compositor at *slot_id* to the foreground.
 get_compositor(self: Any, slot_id: str)
 ```
 
-Return the Compositor for *slot_id*, or None if not found.
+Return the Compositor for _slot_id_, or None if not found.
 
 **Parameters**:
 
 - `slot_id`: Slot identifier.
 
-**Returns**: The :class:`Compositor`, or *None*.
+**Returns**: The :class:`Compositor`, or _None_.
 
 ---
 
@@ -90,7 +91,7 @@ get_focused(self: Any)
 
 Return the currently focused :class:`CompositorSlot`, or None.
 
-**Returns**: The focused slot, or *None* if no slots are registered.
+**Returns**: The focused slot, or _None_ if no slots are registered.
 
 ---
 
@@ -116,7 +117,7 @@ Remove a slot by ID.
 
 - `slot_id`: The slot to remove.
 
-**Returns**: ``True`` if the slot existed and was removed, ``False`` otherwise.
+**Returns**: `True` if the slot existed and was removed, `False` otherwise.
 
 ---
 
@@ -129,14 +130,15 @@ render_all(self: Any, width: int)
 Render all compositors and combine them with ANSI box drawing.
 
 Each compositor's panels are rendered and wrapped in a single-line box
-border.  The focused slot's border title shows a ``[*]`` indicator.
+border. The focused slot's border title shows a `[*]` indicator.
 
 Layout rules:
-- ``SINGLE``: The first slot fills the entire *width*.
-- ``SPLIT_H``: Slots are side-by-side; column widths are proportional
+
+- `SINGLE`: The first slot fills the entire _width_.
+- `SPLIT_H`: Slots are side-by-side; column widths are proportional
   to slot weights.
-- ``SPLIT_V``: Slots are stacked; each gets the full *width*.
-- ``GRID_2X2``: First four slots form a 2x2 grid; any extra slots
+- `SPLIT_V`: Slots are stacked; each gets the full _width_.
+- `GRID_2X2`: First four slots form a 2x2 grid; any extra slots
   fall through as a vertical stack below the grid.
 
 **Parameters**:
@@ -195,7 +197,7 @@ Supported multi-compositor screen layouts.
 add_compositor(self: Any, compositor: Compositor, slot_id: str, weight: float)
 ```
 
-Add a compositor to the manager under *slot_id*.
+Add a compositor to the manager under _slot_id_.
 
 If a slot with the same ID already exists it is replaced.
 
@@ -213,7 +215,7 @@ If a slot with the same ID already exists it is replaced.
 focus(self: Any, slot_id: str)
 ```
 
-Bring the compositor at *slot_id* to the foreground.
+Bring the compositor at _slot_id_ to the foreground.
 
 **Parameters**:
 
@@ -231,13 +233,13 @@ Bring the compositor at *slot_id* to the foreground.
 get_compositor(self: Any, slot_id: str)
 ```
 
-Return the Compositor for *slot_id*, or None if not found.
+Return the Compositor for _slot_id_, or None if not found.
 
 **Parameters**:
 
 - `slot_id`: Slot identifier.
 
-**Returns**: The :class:`Compositor`, or *None*.
+**Returns**: The :class:`Compositor`, or _None_.
 
 ---
 
@@ -249,7 +251,7 @@ get_focused(self: Any)
 
 Return the currently focused :class:`CompositorSlot`, or None.
 
-**Returns**: The focused slot, or *None* if no slots are registered.
+**Returns**: The focused slot, or _None_ if no slots are registered.
 
 ---
 
@@ -275,7 +277,7 @@ Remove a slot by ID.
 
 - `slot_id`: The slot to remove.
 
-**Returns**: ``True`` if the slot existed and was removed, ``False`` otherwise.
+**Returns**: `True` if the slot existed and was removed, `False` otherwise.
 
 ---
 
@@ -288,14 +290,15 @@ render_all(self: Any, width: int)
 Render all compositors and combine them with ANSI box drawing.
 
 Each compositor's panels are rendered and wrapped in a single-line box
-border.  The focused slot's border title shows a ``[*]`` indicator.
+border. The focused slot's border title shows a `[*]` indicator.
 
 Layout rules:
-- ``SINGLE``: The first slot fills the entire *width*.
-- ``SPLIT_H``: Slots are side-by-side; column widths are proportional
+
+- `SINGLE`: The first slot fills the entire _width_.
+- `SPLIT_H`: Slots are side-by-side; column widths are proportional
   to slot weights.
-- ``SPLIT_V``: Slots are stacked; each gets the full *width*.
-- ``GRID_2X2``: First four slots form a 2x2 grid; any extra slots
+- `SPLIT_V`: Slots are stacked; each gets the full _width_.
+- `GRID_2X2`: First four slots form a 2x2 grid; any extra slots
   fall through as a vertical stack below the grid.
 
 **Parameters**:

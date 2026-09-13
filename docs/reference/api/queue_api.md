@@ -12,7 +12,7 @@ Task queue implementation.
 
 ### Methods
 
-#### TaskQueue.__init__
+#### TaskQueue.**init**
 
 ```python
 __init__(self: Any)

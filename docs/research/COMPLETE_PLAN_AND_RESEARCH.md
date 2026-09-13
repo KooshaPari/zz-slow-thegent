@@ -60,6 +60,7 @@ This master document indexes all planning and research documents:
 ### ChatGPT Deep Research (`CHATGPT_PARETO_DEEP_INDEX.md`) ⭐⭐⭐
 
 **7-Part Series from chatgpt3.md, chatgpt4.md**:
+
 - **01 Foundations**: Pareto design, Offer abstraction, PRD/ALD, design philosophy
 - **02 Indices & Economics**: Speed/Cost/Quality formulas, shadow pricing, budget engine, plan types
 - **03 API & Pipelines**: User journeys, POST /v1/route, pipelines (Offer, Telemetry, Economics)
@@ -71,6 +72,7 @@ This master document indexes all planning and research documents:
 ### Pareto Router Synthesis (`CHATGPT_PARETO_ROUTER_EXTENSION.md`) ⭐⭐
 
 **ChatGPT Research Synthesized**:
+
 - **Pareto-first design**: Hard constraints → Pareto frontier → Lexicographic selection
 - **Offer abstraction**: provider+model+region+plan as routable unit (not model name)
 - **Three pillars**: Speed (latency + conciseness + turns), Cost (blended + shadow pricing), Quality (benchmarks + online)
@@ -83,6 +85,7 @@ This master document indexes all planning and research documents:
 ### Ultra-Advanced Research (`ULTRA_ADVANCED_ROUTER_RESEARCH.md`) ⭐⭐
 
 **Complete Feature Analysis**:
+
 - **OpenRouter**: 300+ models, smart routing algorithms (inverse square price weighting), message transforms (middle-out compression), structured outputs (JSON Schema), prompt caching (cross-provider), zero completion insurance, ZDR enforcement, EU data residency
 - **LiteLLM Router**: Production-ready implementation with custom callbacks, advanced configuration, retry policies, alerting
 - **Portkey Gateway**: 250+ models, 40+ guardrails, semantic caching, MCP gateway
@@ -90,6 +93,7 @@ This master document indexes all planning and research documents:
 - **Semantic Router**: Zero-cost intent routing (10ms latency, vector-based)
 
 **Production-Ready Code Examples**:
+
 - Complete router implementations with error handling
 - Guardrails system with multi-level hierarchy
 - Cost optimization framework (80-95% reduction)
@@ -97,12 +101,14 @@ This master document indexes all planning and research documents:
 - Security framework (PII detection, encryption, compliance)
 
 **Advanced Routing Strategies**:
+
 - Complexity-based routing (complete implementation)
 - Cascade routing (quality estimation)
 - Intent-based routing (semantic similarity)
 - Performance threshold routing (percentile-based)
 
 **Enterprise Features**:
+
 - Multi-level guardrails (account, org, member, key)
 - Cross-provider caching
 - Provider-specific caching rules
@@ -113,6 +119,7 @@ This master document indexes all planning and research documents:
 ### Comprehensive Research (`ADVANCED_ROUTER_RESEARCH.md`) ⭐
 
 **OpenRouter Analysis** (Commercial, Industry-Leading):
+
 - 300+ models, smart routing (price/latency/throughput)
 - Guardrails system (multi-level budgets, allowlists)
 - Broadcast to 15+ observability platforms
@@ -122,6 +129,7 @@ This master document indexes all planning and research documents:
 - EU data residency (enterprise)
 
 **LiteLLM Router Analysis** (OSS, Netflix-Proven):
+
 - 100+ providers, 6 routing strategies
 - Reliability: Retries, cooldowns, fallback chains
 - Caching: Redis + In-Memory
@@ -129,12 +137,14 @@ This master document indexes all planning and research documents:
 - Performance: 8ms P95 @ 1k RPS
 
 **Advanced Routing Strategies**:
+
 - Intent-based routing (Semantic Router - zero-cost)
 - Complexity-based routing (80-95% cost reduction)
 - Cascade routing (start cheap, escalate if needed)
 - Hybrid local + cloud routing
 
 **Enterprise Features**:
+
 - Guardrails (budgets, allowlists, ZDR)
 - Observability (broadcast to Langfuse, Datadog, etc.)
 - Plugin system (web search, PDF, response healing)
@@ -157,6 +167,7 @@ This master document indexes all planning and research documents:
 ### Smart Contract QA Governance (`SMART_CONTRACT_*.md`) — QA GOVERNANCE
 
 **System Overview**:
+
 - **Smart contract** = process guarantee: requirement items cannot reach Released without deterministic, evidence-backed state transitions
 - **CDDL** (Contract-Driven Development Ledger): canonical records, spec hash, DAG, evidence policy
 - **State machine**: Draft → Proposed → Approved → Claimed → EvidenceSubmitted → Verified → Accepted → Released
@@ -164,6 +175,7 @@ This master document indexes all planning and research documents:
 - **Phases**: P1–P7 implemented; P8–P16 pending (policy engine, attestation, methodology, etc.)
 
 **Project Roles**:
+
 - **heliosShield**: Hosts gate (`qa-smart-contract-gate.py`), hooks, governance
 - **trace**: Strictness reference for rollout (pyproject.toml, .golangci.yml)
 - **thegent**: Agent orchestration CLI; runs agents that produce evidence
@@ -173,6 +185,7 @@ This master document indexes all planning and research documents:
 ## Implementation Status
 
 ### Planning Phase ✅
+
 - [x] Research LiteLLM Router
 - [x] Analyze codex-proxy
 - [x] Document current architecture
@@ -180,6 +193,7 @@ This master document indexes all planning and research documents:
 - [x] Create implementation roadmap
 
 ### Implementation Phase ⏳
+
 - [ ] Phase 1: LiteLLM Router Responses API Handler
 - [ ] Phase 2: Claude Code Integration
 - [ ] Phase 3: Factory Droid Integration

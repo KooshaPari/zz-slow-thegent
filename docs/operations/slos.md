@@ -25,27 +25,30 @@ This document covers the SLOs for all services this repo provides. For libraries
 
 ## SLO table
 
-| Service | SLI | Target | Measurement window | Current (30d) | Error budget | Burn rate alert |
-|---------|-----|--------|-------------------|----------------|--------------|-----------------|
-| `<service 1>` (e.g., `POST /api/v1/foo`) | Availability | 99.9% (≤ 8.7h downtime/year) | 30 days rolling | 99.95% | 8.7h/year | Page on 2x burn over 1h |
-| `<service 1>` (e.g., `POST /api/v1/foo`) | Latency p99 | ≤ 200ms | 30 days rolling | 180ms | n/a | Page on p99 > 400ms for 5min |
-| `<service 1>` (e.g., `POST /api/v1/foo`) | Error rate | ≤ 0.1% (5xx) | 30 days rolling | 0.05% | n/a | Page on 5xx > 1% for 5min |
-| `<service 2>` (e.g., `CLI binary`) | Build success | 99% | 30 days rolling | 99.2% | n/a | Page on 3 consecutive failures |
-| (add rows for each service) | | | | | | |
+| Service                                  | SLI           | Target                       | Measurement window | Current (30d) | Error budget | Burn rate alert                |
+| ---------------------------------------- | ------------- | ---------------------------- | ------------------ | ------------- | ------------ | ------------------------------ |
+| `<service 1>` (e.g., `POST /api/v1/foo`) | Availability  | 99.9% (≤ 8.7h downtime/year) | 30 days rolling    | 99.95%        | 8.7h/year    | Page on 2x burn over 1h        |
+| `<service 1>` (e.g., `POST /api/v1/foo`) | Latency p99   | ≤ 200ms                      | 30 days rolling    | 180ms         | n/a          | Page on p99 > 400ms for 5min   |
+| `<service 1>` (e.g., `POST /api/v1/foo`) | Error rate    | ≤ 0.1% (5xx)                 | 30 days rolling    | 0.05%         | n/a          | Page on 5xx > 1% for 5min      |
+| `<service 2>` (e.g., `CLI binary`)       | Build success | 99%                          | 30 days rolling    | 99.2%         | n/a          | Page on 3 consecutive failures |
+| (add rows for each service)              |               |                              |                    |               |              |                                |
 
 ## SLI methodology
 
 ### Availability
+
 - **Definition:** `(successful_requests / total_requests) * 100`
 - **Source:** Prometheus / Datadog / Cloud provider metrics
 - **Excludes:** Health check pings, intentional maintenance windows
 
 ### Latency
+
 - **Definition:** p50, p95, p99 latency in milliseconds
 - **Source:** APM (Datadog, OpenTelemetry, Jaeger)
 - **Excludes:** Cold-start latency, network retries
 
 ### Error rate
+
 - **Definition:** `(5xx_responses / total_responses) * 100`
 - **Source:** Application logs / metrics
 - **Excludes:** 4xx client errors, intentional 503 during deploys
@@ -111,6 +114,7 @@ OmniRoute is the reference repo for OB4 (OB4=2). It has SLOs in its docs and a p
 ## How to validate
 
 After applying:
+
 1. `grep -r "slos\|SLO" docs/` — should find the new file
 2. `grep "slos\|SLO" README.md` — should find a reference
 3. The table has at least 3 rows (one per SLI category: availability, latency, error rate)

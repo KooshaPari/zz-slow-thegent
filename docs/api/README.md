@@ -24,6 +24,7 @@ task docs:api:serve
 
 The API reference is generated from docstrings using automated tools.
 Each module includes:
+
 - Class and function documentation
 - Parameter descriptions
 - Return value descriptions

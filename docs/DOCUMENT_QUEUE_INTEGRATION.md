@@ -32,12 +32,14 @@ thegent/
 Scans directories for markdown files, organizing by modification date and location.
 
 **Key Features:**
+
 - Configurable scan locations with recursive/depth options
 - Exclusion patterns (node_modules, .venv, etc.)
 - Date filtering (minimum modification date)
 - JSON queue output
 
 **Usage:**
+
 ```python
 from thegent.agents.document import MarkdownScanner, ScanConfig
 
@@ -58,12 +60,14 @@ queue_file = scanner.save_results()
 Manages processing state, tracks progress, and provides queue operations.
 
 **Key Features:**
+
 - State persistence (processed/skipped/failed files)
 - Month-by-month iteration
 - Location filtering
 - Progress tracking
 
 **Usage:**
+
 ```python
 from thegent.agents.document import QueueManager
 
@@ -78,6 +82,7 @@ queue_manager.mark_file_processed("path/to/file.md")
 Processes documents through configurable pipelines.
 
 **Key Features:**
+
 - Pluggable processing stages
 - Batch processing
 - Metadata extraction
@@ -85,6 +90,7 @@ Processes documents through configurable pipelines.
 - Statistics tracking
 
 **Usage:**
+
 ```python
 from thegent.agents.document import DocumentProcessor, ProcessingPipeline
 from thegent.agents.document.processor import extract_metadata, compute_file_hash
@@ -102,12 +108,14 @@ result = processor.process_file("path/to/file.md")
 Analyzes markdown files for categorization and metadata extraction.
 
 **Key Features:**
+
 - Automatic categorization (research, plan, report, guide, etc.)
 - Keyword extraction
 - Reading time estimation
 - Content analysis (code blocks, images, links, sections)
 
 **Usage:**
+
 ```python
 from thegent.agents.document import DocumentAnalyzer
 
@@ -122,6 +130,7 @@ print(f"Reading time: {analysis.estimated_reading_time} minutes")
 Provides Model Context Protocol tools for AI agents to interact with the queue.
 
 **Available Tools:**
+
 - `document_queue_list_months` - List all months in queue
 - `document_queue_get_next` - Get next month to process
 - `document_queue_get_files` - Get files for a month/location
@@ -131,6 +140,7 @@ Provides Model Context Protocol tools for AI agents to interact with the queue.
 - `document_queue_analyze` - Analyze a document
 
 **Usage:**
+
 ```python
 from thegent.mcp.document_queue import create_document_queue_server
 
@@ -143,6 +153,7 @@ server = create_document_queue_server()
 Command-line interface for queue management.
 
 **Commands:**
+
 - `thegent queue scan` - Scan for markdown files
 - `thegent queue list` - List all months
 - `thegent queue next` - Get next month to process
@@ -152,6 +163,7 @@ Command-line interface for queue management.
 - `thegent queue analyze` - Analyze a document
 
 **Usage:**
+
 ```bash
 # Scan for files
 thegent queue scan --config config.yaml
@@ -195,6 +207,7 @@ output_dir: "~/.thegent/scans"
 ### 1. Agent Integration
 
 Agents can use the queue system to:
+
 - Discover documents to process
 - Track processing state
 - Analyze documents before processing
@@ -203,6 +216,7 @@ Agents can use the queue system to:
 ### 2. MCP Integration
 
 MCP servers can expose queue operations to AI agents, enabling:
+
 - Queue inspection
 - Document retrieval
 - Processing coordination
@@ -211,6 +225,7 @@ MCP servers can expose queue operations to AI agents, enabling:
 ### 3. CLI Integration
 
 CLI provides human-friendly interface for:
+
 - Manual scanning
 - Queue inspection
 - File processing
@@ -235,11 +250,7 @@ from thegent.agents.document import QueueManager, DocumentProcessor, ProcessingP
 from thegent.agents.document.processor import extract_metadata, compute_file_hash
 
 queue_manager = QueueManager(queue_file)
-processor = DocumentProcessor(
-    ProcessingPipeline()
-    .add_stage(extract_metadata)
-    .add_stage(compute_file_hash)
-)
+processor = DocumentProcessor(ProcessingPipeline().add_stage(extract_metadata).add_stage(compute_file_hash))
 
 # Process next month
 next_month = queue_manager.get_next_month()

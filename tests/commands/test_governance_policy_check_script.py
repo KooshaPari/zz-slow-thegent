@@ -104,7 +104,10 @@ def _init_repo(tmp_path: Path) -> Path:
         REPO_ROOT / "scripts" / "worktree_legacy_remediation_report.py",
         scripts_root / "worktree_legacy_remediation_report.py",
     )
-    shutil.copy2(REPO_ROOT / "scripts" / "worktree_governance.sh", scripts_root / "worktree_governance.sh")
+    shutil.copy2(
+        REPO_ROOT / "scripts" / "worktree_governance.sh",
+        scripts_root / "worktree_governance.sh",
+    )
     shutil.copy2(REPO_ROOT / "scripts" / "bootstrap.sh", scripts_root / "bootstrap.sh")
     (scripts_root / "governance_policy_check.sh").chmod(0o755)
     (scripts_root / "worktree_legacy_remediation_report.py").chmod(0o755)
@@ -113,7 +116,12 @@ def _init_repo(tmp_path: Path) -> Path:
 
     _write_governance_fixture(repo_root)
 
-    subprocess.run(["git", "init", "-q", "-b", "main"], cwd=repo_root, check=True, capture_output=True)
+    subprocess.run(
+        ["git", "init", "-q", "-b", "main"],
+        cwd=repo_root,
+        check=True,
+        capture_output=True,
+    )
     subprocess.run(
         ["git", "config", "user.email", "test@example.com"],
         cwd=repo_root,
@@ -138,12 +146,20 @@ def _init_repo(tmp_path: Path) -> Path:
 
 def _run_policy_check(repo_root: Path, *, branch: str | None = None) -> subprocess.CompletedProcess[str]:
     if branch is not None:
-        subprocess.run(["git", "checkout", "-q", "-b", branch], cwd=repo_root, check=True, capture_output=True)
+        subprocess.run(
+            ["git", "checkout", "-q", "-b", branch],
+            cwd=repo_root,
+            check=True,
+            capture_output=True,
+        )
 
     return subprocess.run(
         [str(repo_root / "scripts/governance_policy_check.sh")],
         cwd=repo_root,
-        env={**os.environ, "THGENT_GOV_METRICS_FILE": str(repo_root / "var/metrics.jsonl")},
+        env={
+            **os.environ,
+            "THGENT_GOV_METRICS_FILE": str(repo_root / "var/metrics.jsonl"),
+        },
         capture_output=True,
         text=True,
         check=False,

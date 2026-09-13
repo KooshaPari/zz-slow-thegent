@@ -2,10 +2,10 @@
 
 import shutil
 import sys
-from enum import Enum
+from enum import StrEnum
 
 
-class ShellType(str, Enum):
+class ShellType(StrEnum):
     ZSH = "zsh"
     BASH = "bash"
     PWSH = "pwsh"

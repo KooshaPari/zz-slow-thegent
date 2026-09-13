@@ -38,7 +38,6 @@ from typer.testing import CliRunner
 from thegent.ux.cli_cockpit import _follow_audit_log, app
 from thegent.ux.decision_audit import DecisionAuditAppender, DecisionNotice
 
-
 # ---------------------------------------------------------------------------
 # Helpers
 # ---------------------------------------------------------------------------
@@ -256,7 +255,7 @@ class TestExitCodeOnCapSingleShot:
     def test_single_shot_ignores_exit_code_on_cap(self, tmp_path: Path) -> None:
         """Single-shot always exits 0 regardless of --exit-code-on-cap."""
         log = tmp_path / "decisions.jsonl"
-        appender = _seed_appender(log, n=2, prefix="seed")
+        _seed_appender(log, n=2, prefix="seed")
 
         runner = CliRunner()
         result = runner.invoke(
@@ -334,7 +333,7 @@ class TestExitCodeOnCapNoCap:
     def test_no_cap_no_follow_exits_zero(self, tmp_path: Path) -> None:
         """Unbounded single-shot exits 0 even with non-zero --exit-code-on-cap."""
         log = tmp_path / "decisions.jsonl"
-        appender = _seed_appender(log, n=2, prefix="seed")
+        _seed_appender(log, n=2, prefix="seed")
 
         runner = CliRunner()
         result = runner.invoke(
@@ -413,9 +412,7 @@ class TestBoundedCapAuditIntegration:
     CI smoke workflow that relies on all three legs together.
     """
 
-    def test_bounded_run_emits_exactly_n_lines_and_exits_clean(
-        self, tmp_path: Path
-    ) -> None:
+    def test_bounded_run_emits_exactly_n_lines_and_exits_clean(self, tmp_path: Path) -> None:
         """End-to-end: cap=3, exit-code=42, appender keeps up -> exit 42, 3 lines."""
         log = tmp_path / "decisions.jsonl"
         appender = _seed_appender(log, n=0, prefix="e2e")
@@ -470,27 +467,19 @@ class TestBoundedCapAuditIntegration:
         # lines; in practice exactly ``cap`` because the trailing events
         # arrive faster than the poll cadence).
         emitted = [line for line in output_lines if line.strip()]
-        assert len(emitted) <= cap, (
-            f"follower emitted {len(emitted)} lines, expected <= {cap} "
-            f"with --max-events={cap}"
-        )
+        assert len(emitted) <= cap, f"follower emitted {len(emitted)} lines, expected <= {cap} with --max-events={cap}"
         assert len(emitted) >= 1, "follower emitted zero lines; appender never drained"
 
         # Leg 2: the exit code propagated.
-        assert exit_codes == [42], (
-            f"expected exit 42 (cap-hit), got {exit_codes!r}"
-        )
+        assert exit_codes == [42], f"expected exit 42 (cap-hit), got {exit_codes!r}"
 
         # Leg 3: the appender file contains at least the cap count.
         # (The bounded follower may not see every event we wrote if the
         # follower's offset advances faster than the appender's flush,
         # but it must see at least one to satisfy the cap-hit exit.)
-        file_lines = [
-            line for line in log.read_text(encoding="utf-8").splitlines() if line.strip()
-        ]
+        file_lines = [line for line in log.read_text(encoding="utf-8").splitlines() if line.strip()]
         assert len(file_lines) >= 1, (
-            f"audit appender wrote zero lines; the bounded follow "
-            f"exited {exit_codes!r} but the JSONL is empty"
+            f"audit appender wrote zero lines; the bounded follow exited {exit_codes!r} but the JSONL is empty"
         )
         # And every emitted line is parseable JSON (sanity).
         for line in emitted:
@@ -544,6 +533,4 @@ class TestBoundedCapAuditIntegration:
         assert not thread.is_alive()
         # Default behaviour is "exit 0 on cap"; this preserves the
         # historical operator-facing workflow.
-        assert exit_codes == [0], (
-            f"default --exit-code-on-cap should be 0, got {exit_codes!r}"
-        )
+        assert exit_codes == [0], f"default --exit-code-on-cap should be 0, got {exit_codes!r}"

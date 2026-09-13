@@ -79,10 +79,18 @@ def build_report(*, ci_text: str, taskfile_text: str, precommit_text: str) -> di
 
 def _parse_args(argv: list[str]) -> argparse.Namespace:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--ci", type=Path, default=Path(".github/workflows/ci.yml"), help="Path to CI workflow YAML.")
+    parser.add_argument(
+        "--ci",
+        type=Path,
+        default=Path(".github/workflows/ci.yml"),
+        help="Path to CI workflow YAML.",
+    )
     parser.add_argument("--taskfile", type=Path, default=Path("Taskfile.yml"), help="Path to Taskfile.")
     parser.add_argument(
-        "--precommit", type=Path, default=Path(".pre-commit-config.yaml"), help="Path to pre-commit config."
+        "--precommit",
+        type=Path,
+        default=Path(".pre-commit-config.yaml"),
+        help="Path to pre-commit config.",
     )
     parser.add_argument("--format", choices=["text", "json"], default="text")
     parser.add_argument("--strict", action="store_true", help="Exit non-zero when contract checks fail.")

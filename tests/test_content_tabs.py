@@ -1,7 +1,5 @@
 """Tests for ContentTabs component."""
 
-import pytest
-
 from thegent.docgen.content_tabs import ContentTabs
 
 

@@ -84,7 +84,12 @@ def test_wl10742_cli_command_parse_and_handler_split_remains_stable() -> None:
 def test_wl10743_orchestration_parse_target_preserves_execution_inputs() -> None:
     # @trace WL-10743
     parse_phase = build_parse_phase("session-10743", "route plan", request_id="req-10743", request_has_id=True)
-    assert resolve_parse_target(parse_phase) == ("session-10743", "route plan", "req-10743", True)
+    assert resolve_parse_target(parse_phase) == (
+        "session-10743",
+        "route plan",
+        "req-10743",
+        True,
+    )
 
     with pytest.raises(ValueError, match="invalid session_id"):
         resolve_parse_target(build_parse_phase("", "route plan", request_id=None, request_has_id=False))

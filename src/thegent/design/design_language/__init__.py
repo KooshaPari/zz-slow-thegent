@@ -1,4 +1,5 @@
 """Stub module for thegent.design.design_language."""
+
 from dataclasses import dataclass, field
 from typing import Any
 
@@ -6,6 +7,7 @@ from typing import Any
 @dataclass
 class DesignToken:
     """A design token."""
+
     name: str
     value: str
     category: str = "color"
@@ -14,6 +16,7 @@ class DesignToken:
 @dataclass
 class CLITheme:
     """CLI theme with styles."""
+
     styles: dict[str, str] = field(default_factory=dict)
 
 
@@ -28,6 +31,7 @@ def _default_tokens() -> dict[str, DesignToken]:
 @dataclass
 class DesignLanguage:
     """Design language configuration."""
+
     primary_color: str = "#000000"
     secondary_color: str = "#ffffff"
     font_family: str = "sans-serif"
@@ -40,13 +44,15 @@ class DesignLanguage:
         if "color.info" not in self.tokens:
             raise KeyError("color.info token is required")
 
-        self.cli_theme = CLITheme(styles={
-            "primary": "cyan",
-            "info": "blue",
-            "success": "green",
-            "warning": "yellow",
-            "error": "red",
-        })
+        self.cli_theme = CLITheme(
+            styles={
+                "primary": "cyan",
+                "info": "blue",
+                "success": "green",
+                "warning": "yellow",
+                "error": "red",
+            }
+        )
 
 
 __all__ = ["DesignLanguage", "DesignToken", "CLITheme"]

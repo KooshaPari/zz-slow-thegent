@@ -1,8 +1,8 @@
 from __future__ import annotations
 
 import pytest
-from thegent.cli.commands import plan_cmds
-from thegent.cli.commands import cli
+
+from thegent.cli.commands import cli, plan_cmds
 
 
 def test_workstream_query_cmd_is_bound_to_extracted_plan_module() -> None:

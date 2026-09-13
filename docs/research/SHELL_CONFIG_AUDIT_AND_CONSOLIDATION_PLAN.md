@@ -11,19 +11,20 @@
 
 ### 1.1 Shell Config Files Inventory
 
-| File | Purpose | Status | Variation Type |
-|------|---------|--------|----------------|
-| `shell/.zshenv` | System environment (PATH, early env) | ✅ Canonical | Base |
-| `shell/.zsh_bundle.zsh` | Core utilities (qls, qfind, qgrep) | ✅ Canonical | Base |
-| `shell/.zsh_safeguards.zsh` | Protection (fork guards, eval safety) | ✅ Canonical | Base |
-| `shell/.zshrc` | User interactive shell config | ✅ Canonical | Base |
-| `shell/.zshrc.optimized` | **"Optimized" variant** | ❌ Variation | **REMOVE** |
-| `shell/zshrc.local.template` | User plugin template | ✅ Canonical | Template |
-| `docs/guides/RUNTIME_OPTIMIZATION.md` | Optimization guide | ⚠️ Review | Documentation |
+| File                                  | Purpose                               | Status       | Variation Type |
+| ------------------------------------- | ------------------------------------- | ------------ | -------------- |
+| `shell/.zshenv`                       | System environment (PATH, early env)  | ✅ Canonical | Base           |
+| `shell/.zsh_bundle.zsh`               | Core utilities (qls, qfind, qgrep)    | ✅ Canonical | Base           |
+| `shell/.zsh_safeguards.zsh`           | Protection (fork guards, eval safety) | ✅ Canonical | Base           |
+| `shell/.zshrc`                        | User interactive shell config         | ✅ Canonical | Base           |
+| `shell/.zshrc.optimized`              | **"Optimized" variant**               | ❌ Variation | **REMOVE**     |
+| `shell/zshrc.local.template`          | User plugin template                  | ✅ Canonical | Template       |
+| `docs/guides/RUNTIME_OPTIMIZATION.md` | Optimization guide                    | ⚠️ Review    | Documentation  |
 
 ### 1.2 Problematic Variations
 
 **Issues Found:**
+
 1. **`.zshrc.optimized`** - Creates confusion: "optimized vs normal?" Should be ONE canonical config that IS optimal.
 2. **No "minimal" variant** - Good, we don't want minimal.
 3. **No "dev vs prod" variants** - Good, shell config doesn't need this distinction.
@@ -31,12 +32,12 @@
 
 ### 1.3 Legitimate Variation Use Cases
 
-| Use Case | Current State | Needed? | Solution |
-|----------|---------------|---------|----------|
-| **User vs Agent** | `.zshenv` has early return for agents | ✅ Yes | Keep early return, enhance |
-| **Dev vs Prod** | Not applicable | ❌ No | N/A |
-| **Interactive vs Non-interactive** | `.zshrc` checks `PS1` | ✅ Yes | Keep conditional loading |
-| **Platform-specific** | Not present | ⚠️ Maybe | Add if cross-platform needed |
+| Use Case                           | Current State                         | Needed?  | Solution                     |
+| ---------------------------------- | ------------------------------------- | -------- | ---------------------------- |
+| **User vs Agent**                  | `.zshenv` has early return for agents | ✅ Yes   | Keep early return, enhance   |
+| **Dev vs Prod**                    | Not applicable                        | ❌ No    | N/A                          |
+| **Interactive vs Non-interactive** | `.zshrc` checks `PS1`                 | ✅ Yes   | Keep conditional loading     |
+| **Platform-specific**              | Not present                           | ⚠️ Maybe | Add if cross-platform needed |
 
 ---
 
@@ -96,6 +97,7 @@
 ```
 
 **Loading Logic:**
+
 ```zsh
 # In .zshenv
 if [[ -n "${AGENT_ID:-}" || -n "${heliosShield_AGENT_CONTEXT:-}" ]]; then
@@ -107,6 +109,7 @@ fi
 ### 2.3 Remove Variations
 
 **Actions:**
+
 1. ✅ Delete `shell/.zshrc.optimized` - merge optimizations into canonical `.zshrc`
 2. ✅ Update `docs/guides/RUNTIME_OPTIMIZATION.md` - remove references to "optimized" variant
 3. ✅ Ensure canonical `.zshrc` includes ALL optimizations (lazy loading, compinit -C, etc.)
@@ -118,6 +121,7 @@ fi
 ### 3.1 Best Practices (Web Research)
 
 **Sources:**
+
 - Powerlevel10k README (performance, instant prompt)
 - Oh My Zsh plugins wiki (plugin ecosystem)
 - Zsh documentation (compinit, autoload)
@@ -125,12 +129,14 @@ fi
 **Key Findings:**
 
 #### Performance Optimizations
+
 1. **Instant Prompt** (Powerlevel10k): Print prompt immediately, load plugins async
 2. **Lazy Completion Loading**: `compinit -C` (skip security check) for faster startup
 3. **Conditional Plugin Loading**: Only load plugins when needed
 4. **Async Plugin Loading**: Load heavy plugins in background
 
 #### Plugin Best Practices
+
 1. **fzf-tab**: Replace default completion menu (load after compinit)
 2. **zsh-autosuggestions**: Fast history-based suggestions
 3. **fast-syntax-highlighting**: Real-time syntax highlighting (load last)
@@ -138,6 +144,7 @@ fi
 5. **powerlevel10k**: Feature-rich prompt (if you need customization)
 
 #### Version Manager Best Practices
+
 1. **fnm**: Fast Node version manager (Rust)
 2. **mise**: Polyglot version manager (replaces nvm, pyenv, etc.)
 3. **Lazy loading**: Only activate when needed (not on every shell startup)
@@ -145,6 +152,7 @@ fi
 ### 3.2 Comprehensive Config Features
 
 **Must Have:**
+
 - ✅ Fast startup (<100ms for interactive shell)
 - ✅ Comprehensive PATH (all tool locations)
 - ✅ Safe utilities (path validation)
@@ -155,6 +163,7 @@ fi
 - ✅ Prompt customization (starship or powerlevel10k)
 
 **Should Have:**
+
 - ✅ fzf-tab (better completion UX)
 - ✅ zsh-autosuggestions (productivity)
 - ✅ fast-syntax-highlighting (visual feedback)
@@ -162,6 +171,7 @@ fi
 - ✅ Cross-platform support (macOS, Linux, WSL2)
 
 **Nice to Have:**
+
 - ⚠️ Plugin manager (zinit, sheldon) - only if managing many plugins
 - ⚠️ Custom plugins (thegent-specific utilities)
 
@@ -172,6 +182,7 @@ fi
 ### Phase 1: Consolidation (Immediate)
 
 **Tasks:**
+
 1. ✅ Merge `.zshrc.optimized` optimizations into `.zshrc`
 2. ✅ Delete `.zshrc.optimized`
 3. ✅ Update documentation to remove "optimized" references
@@ -186,6 +197,7 @@ fi
 ### Phase 2: Agent Config (If Needed)
 
 **Tasks:**
+
 1. Create `shell/.zshrc.agent` template
 2. Update `.zshenv` to source agent config
 3. Document agent vs user differences
@@ -195,6 +207,7 @@ fi
 ### Phase 3: Documentation Update
 
 **Tasks:**
+
 1. Update `docs/guides/SHELL_ZSH_PLUGIN_SETUP.md` - remove "optimized" references
 2. Update `docs/guides/RUNTIME_OPTIMIZATION.md` - focus on canonical config optimizations
 3. Create `docs/guides/SHELL_CONFIG_CANONICAL.md` - comprehensive guide
@@ -204,6 +217,7 @@ fi
 ### Phase 4: Testing & Validation
 
 **Tasks:**
+
 1. Test zsh startup time: `time zsh -c 'exit'` (<100ms target)
 2. Test agent shell: `AGENT_ID=test zsh -c 'exit'` (fast, minimal)
 3. Test interactive shell: Full feature set works
@@ -220,6 +234,7 @@ fi
 **Purpose:** System-wide environment setup, sourced first.
 
 **Features:**
+
 - Early return for agents (fast agent shells)
 - Comprehensive PATH setup
 - Runtime flags (USE_BUN_TOOLS, USE_FAST_RUNTIME, etc.)
@@ -232,6 +247,7 @@ fi
 **Purpose:** thegent core utilities and safe wrappers.
 
 **Features:**
+
 - Path-safe utilities (qls, qfind, qgrep, cdq)
 - Safe aliases (ll)
 - Interactive-only bindkeys
@@ -243,6 +259,7 @@ fi
 **Purpose:** Comprehensive protection against common issues.
 
 **Features:**
+
 - Resource limits (ulimit)
 - Command safeguards (ls alias protection)
 - Eval security helpers
@@ -256,6 +273,7 @@ fi
 **Purpose:** Comprehensive user shell configuration.
 
 **Features:**
+
 - Source base configs (.zshenv, .zsh_bundle.zsh, .zsh_safeguards.zsh)
 - Lazy completion loading (compinit -C for speed)
 - Async plugin loading (fzf-tab, autosuggestions, syntax-highlighting)
@@ -269,6 +287,7 @@ fi
 **Purpose:** User-specific plugins and customizations (never overwritten).
 
 **Features:**
+
 - Version managers (fnm, mise, pyenv)
 - User plugins
 - User aliases
@@ -283,6 +302,7 @@ fi
 ### 6.1 For Users with `.zshrc.optimized`
 
 **Steps:**
+
 1. Backup current config: `cp ~/.zshrc ~/.zshrc.backup`
 2. Install canonical config: `thegent install --target user`
 3. Verify: `time zsh -c 'exit'` (should be fast)
@@ -291,6 +311,7 @@ fi
 ### 6.2 For Users with Custom Configs
 
 **Steps:**
+
 1. Review canonical config: `cat shell/.zshrc`
 2. Merge customizations into `~/.zshrc.local`
 3. Install canonical config: `thegent install --target user`
@@ -301,16 +322,19 @@ fi
 ## 7. Success Criteria
 
 **Consolidation:**
+
 - ✅ No "optimized" or "minimal" variants
 - ✅ Single canonical config per file type
 - ✅ Variations only for legitimate use cases (user vs agent)
 
 **Performance:**
+
 - ✅ Interactive shell startup <100ms
 - ✅ Agent shell startup <50ms
 - ✅ All features work correctly
 
 **Documentation:**
+
 - ✅ Clear canonical config guide
 - ✅ No references to "optimized" variants
 - ✅ Comprehensive setup instructions
@@ -339,9 +363,11 @@ from pathlib import Path
 from dataclasses import dataclass
 from typing import List
 
+
 @dataclass
 class ShellConfig:
     """Shell configuration generator."""
+
     is_agent: bool = False
     use_starship: bool = True
     use_zsh_autosuggestions: bool = True
@@ -357,17 +383,21 @@ class ShellConfig:
         ]
 
         if self.is_agent:
-            lines.extend([
-                "# Agent mode: skip heavy init",
-                'export AGENT_ID="thegent"',
-                'export heliosShield_AGENT_CONTEXT="1"',
-                'return',
-            ])
+            lines.extend(
+                [
+                    "# Agent mode: skip heavy init",
+                    'export AGENT_ID="thegent"',
+                    'export heliosShield_AGENT_CONTEXT="1"',
+                    "return",
+                ]
+            )
         else:
-            lines.extend([
-                "# User mode: full initialization",
-                "",
-            ])
+            lines.extend(
+                [
+                    "# User mode: full initialization",
+                    "",
+                ]
+            )
 
         return "\n".join(lines)
 
@@ -383,15 +413,16 @@ class ShellConfig:
             lines.append('eval "$(starship init zsh)"')
 
         if self.use_zsh_autosuggestions:
-            lines.append('source ~/.zsh/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh')
+            lines.append("source ~/.zsh/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh")
 
         if self.use_fzf:
-            lines.append('source ~/.zsh/plugins/fzf-tab/fzf-tab.plugin.zsh')
+            lines.append("source ~/.zsh/plugins/fzf-tab/fzf-tab.plugin.zsh")
 
         if self.enable_protection:
-            lines.append('source ~/.zsh/safeguards.zsh')
+            lines.append("source ~/.zsh/safeguards.zsh")
 
         return "\n".join(lines)
+
 
 def main():
     config = ShellConfig(is_agent=False)
@@ -403,6 +434,7 @@ def main():
     print(zshenv)
     print("\nGenerated .zshrc:")
     print(zshrc)
+
 
 if __name__ == "__main__":
     main()

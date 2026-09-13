@@ -18,7 +18,7 @@ OPT-008: Uses LRU cache with TTL for repeated policy evaluations.
 
 ### Methods
 
-#### AdapterAdmissionPolicy.__init__
+#### AdapterAdmissionPolicy.**init**
 
 ```python
 __init__(self: Any, registry: CapabilityRegistry, cache_ttl_sec: int)

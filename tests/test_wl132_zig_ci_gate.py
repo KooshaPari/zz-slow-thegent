@@ -11,7 +11,6 @@ from pathlib import Path
 
 import pytest
 
-
 CI_YML_PATH = Path(__file__).parents[1] / ".github" / "workflows" / "ci.yml"
 
 

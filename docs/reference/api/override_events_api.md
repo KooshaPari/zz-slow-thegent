@@ -33,7 +33,7 @@ Writes governance override lifecycle events to a JSONL audit log.
 
 ### Methods
 
-#### OverrideEventEmitter.__init__
+#### OverrideEventEmitter.**init**
 
 ```python
 __init__(self: Any, events_path: Any)
@@ -78,13 +78,13 @@ Append an override-expired event to the JSONL log.
 tail_events(self: Any, n: int)
 ```
 
-Read the last *n* events from the JSONL log.
+Read the last _n_ events from the JSONL log.
 
 **Parameters**:
 
 - `n`: Maximum number of events to return (most-recent last).
 
-**Returns**: List of event dicts, up to *n* entries.
+**Returns**: List of event dicts, up to _n_ entries.
 
 ---
 
@@ -124,7 +124,7 @@ Usage::
 
 ### Methods
 
-#### OverrideExpiryMonitor.__init__
+#### OverrideExpiryMonitor.**init**
 
 ```python
 __init__(self: Any, emitter: Any, poll_interval_s: float)
@@ -190,7 +190,7 @@ Remove an override from monitoring (e.g. if manually revoked).
 
 ---
 
-## _Registration
+## \_Registration
 
 ---
 
@@ -273,13 +273,13 @@ Signal the background thread to stop and wait for it.
 tail_events(self: Any, n: int)
 ```
 
-Read the last *n* events from the JSONL log.
+Read the last _n_ events from the JSONL log.
 
 **Parameters**:
 
 - `n`: Maximum number of events to return (most-recent last).
 
-**Returns**: List of event dicts, up to *n* entries.
+**Returns**: List of event dicts, up to _n_ entries.
 
 ---
 

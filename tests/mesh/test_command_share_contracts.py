@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from pathlib import Path
 
 import pytest
@@ -61,11 +61,18 @@ def test_mesh_event_has_correlation_and_utc_timestamp() -> None:
     )
 
     assert event.event_id
-    assert event.occurred_at.tzinfo == timezone.utc
+    assert event.occurred_at.tzinfo == UTC
     assert isinstance(event.occurred_at, datetime)
     assert event.payload == {"task_id": "task-1"}
 
 
 def test_queue_port_exposes_existing_maildir_lifecycle() -> None:
-    for method in ("enqueue", "dequeue", "ack", "nack", "list_pending", "reclaim_owner"):
+    for method in (
+        "enqueue",
+        "dequeue",
+        "ack",
+        "nack",
+        "list_pending",
+        "reclaim_owner",
+    ):
         assert hasattr(QueuePort, method)

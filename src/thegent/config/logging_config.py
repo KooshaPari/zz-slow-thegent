@@ -32,15 +32,15 @@ from __future__ import annotations
 import json as _json
 import logging
 import sys
-from typing import Annotated, Literal, TypeAlias
+from typing import Annotated, Literal
 
 from pydantic import Field, field_validator
 from pydantic_settings import BaseSettings, NoDecode, SettingsConfigDict
 
 # Type aliases for clarity at the public API surface.
-LogLevel: TypeAlias = Literal["DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"]
-LogFormat: TypeAlias = Literal["TEXT", "JSON"]
-LogSink: TypeAlias = Literal["STDERR", "STDOUT", "NULL"]
+type LogLevel = Literal["DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"]
+type LogFormat = Literal["TEXT", "JSON"]
+type LogSink = Literal["STDERR", "STDOUT", "NULL"]
 
 # Canonical masking placeholder.
 SECRET_PLACEHOLDER = "***SECRET***"

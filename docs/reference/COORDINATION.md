@@ -90,6 +90,7 @@ The multi-level coordination system defines three hierarchical layers for managi
 ### Decision Authority
 
 L1 has **final authority** on:
+
 - Strategic direction and priorities
 - Team composition and role assignments
 - Architecture and major design choices
@@ -142,6 +143,7 @@ L1 **delegates execution** to L2 but retains veto power over direction changes.
 **Agent Identity**: Each teammate has a unique **name** (e.g., "research-agent", "implementation-specialist", "test-runner").
 
 **Component Mapping**:
+
 ```
 Team Lead (Claude Code)
 ├── Researcher ("research-agent")
@@ -165,12 +167,14 @@ Team Lead (Claude Code)
 ### Decision Authority
 
 L2 has **authority** within assigned components:
+
 - Implementation approach and design details
 - Code review and merge decisions
 - Sub-task delegation to L3
 - Technical trade-offs within component scope
 
 L2 **must escalate** to L1 for:
+
 - Cross-component impacts
 - Architecture changes
 - Resource constraints or SLOs
@@ -212,6 +216,7 @@ L2 **must escalate** to L1 for:
 ### Decision Authority
 
 L3 agents have **no independent authority**:
+
 - Must follow L2 instructions without deviation
 - Cannot make design decisions or architectural changes
 - Cannot claim new work; must be explicitly assigned by L2
@@ -239,11 +244,13 @@ thegent plan do-next  # Get list of pending work
 #### 2. Find Unclaimed Item
 
 Look for items in **PENDING** section with:
+
 - **Status** = `PENDING`
 - **Depends On** = All satisfied (empty or already COMPLETED)
 - No agent_id in CLAIMED section
 
 Example:
+
 ```markdown
 | TGNT-P6.1 | Per-agent GIT_INDEX_FILE management | feature | TGNT-P4.1 | ~8min | PENDING |
 ```
@@ -251,6 +258,7 @@ Example:
 #### 3. Agent Claims Item
 
 L2 adds row to **CLAIMED** section with:
+
 - **Item ID**: `TGNT-P6.1`
 - **Agent ID**: Your unique agent identifier (e.g., `research-agent`, `dev-agent-1`)
 - **Started**: ISO timestamp (e.g., `2026-02-18T14:30:00Z`)
@@ -259,8 +267,8 @@ L2 adds row to **CLAIMED** section with:
 ```markdown
 ## CLAIMED
 
-| ID | Agent | Started | Status |
-|---|---|---|---|
+| ID        | Agent       | Started              | Status      |
+| --------- | ----------- | -------------------- | ----------- |
 | TGNT-P6.1 | dev-agent-1 | 2026-02-18T14:30:00Z | IN_PROGRESS |
 ```
 
@@ -300,6 +308,7 @@ Code, tests, and documentation complete. Ready to move to COMPLETED.
 #### 2. Move to COMPLETED Section
 
 Remove from **CLAIMED** section. Add to **COMPLETED** section with:
+
 - **Item ID**: `TGNT-P6.1`
 - **Agent ID**: Your agent identifier
 - **Started**: Original start time (ISO)
@@ -310,9 +319,9 @@ Remove from **CLAIMED** section. Add to **COMPLETED** section with:
 ```markdown
 ## COMPLETED
 
-| ID | Agent | Started | Completed | Duration | Notes |
-|---|---|---|---|---|---|
-| TGNT-P6.1 | dev-agent-1 | 2026-02-18T14:30:00Z | 2026-02-18T14:45:00Z | 15 min | Implemented per-agent INDEX handling with atomic writes |
+| ID        | Agent       | Started              | Completed            | Duration | Notes                                                   |
+| --------- | ----------- | -------------------- | -------------------- | -------- | ------------------------------------------------------- |
+| TGNT-P6.1 | dev-agent-1 | 2026-02-18T14:30:00Z | 2026-02-18T14:45:00Z | 15 min   | Implemented per-agent INDEX handling with atomic writes |
 ```
 
 #### 3. Update Original Row Status
@@ -329,6 +338,7 @@ Move any dependent items from PENDING to active (L1 may reprioritize):
 
 ```markdown
 # Items now unblocked:
+
 | TGNT-P6.2 | Git plumbing commit pipeline | feature | TGNT-P6.1 | ~10min | PENDING |
 | TGNT-P6.3 | CAS ref update with backoff | feature | TGNT-P6.2 | ~5min | PENDING |
 ```
@@ -336,6 +346,7 @@ Move any dependent items from PENDING to active (L1 may reprioritize):
 #### 5. Update Trackers
 
 Update related documents:
+
 - `docs/reference/PLAN_STATUS.md` - Phase completion status
 - `docs/reference/CODE_ENTITY_MAP.md` - Map new functions/modules to FRs and work items
 - `docs/research/CONVERSATION_DUMP_YYYY-MM-DD.md` - Key decisions and findings (if significant)
@@ -366,6 +377,7 @@ git push origin main
 **Symptom:** Item in CLAIMED, no progress for 10+ minutes, agent not responding.
 
 **Recovery:**
+
 1. L1 notices staleness via `thegent ps` or timeout
 2. L1 moves item back to PENDING (remove from CLAIMED)
 3. L1 sends message to agent: "Task timed out, released. If you continue, results will be orphaned."
@@ -375,8 +387,8 @@ git push origin main
 ```markdown
 ## CLAIMED
 
-| ID | Agent | Started | Status |
-|---|---|---|---|
+| ID        | Agent       | Started              | Status                    |
+| --------- | ----------- | -------------------- | ------------------------- |
 | TGNT-P6.1 | dev-agent-1 | 2026-02-18T14:30:00Z | TIMEOUT (released 15:00Z) |
 ```
 
@@ -385,6 +397,7 @@ git push origin main
 **Symptom:** Task A depends on B, B depends on A. Both PENDING.
 
 **Recovery:**
+
 1. L1 runs DAG validator: `thegent plan do-next` or manual inspection
 2. L1 identifies cycle and splits one task:
    - Reduce scope of one task (e.g., "Phase 2a: Part A", "Phase 2b: Part B")
@@ -398,6 +411,7 @@ git push origin main
 **Symptom:** Two agents claim non-overlapping tasks, but both edit the same file.
 
 **Recovery:**
+
 1. L1 detects conflict via git merge attempt or explicit reporting
 2. L1 escalates to affected L2 agents for manual resolution:
    - Determine correct final state
@@ -415,6 +429,7 @@ git push origin main
 **Symptom:** Agent claims task, but a dependency is still PENDING.
 
 **Recovery:**
+
 1. Agent reports blocker to L2 immediately
 2. L2 escalates to L1
 3. L1 options:
@@ -432,14 +447,15 @@ git push origin main
 **Symptom:** Item moved to COMPLETED, but downstream task finds regression.
 
 **Recovery:**
+
 1. Downstream agent reports issue to L1
 2. L1 moves original item back to IN_PROGRESS:
 
 ```markdown
 ## CLAIMED
 
-| ID | Agent | Started | Status |
-|---|---|---|---|
+| ID        | Agent       | Started              | Status                                   |
+| --------- | ----------- | -------------------- | ---------------------------------------- |
 | TGNT-P6.1 | dev-agent-1 | 2026-02-18T14:30:00Z | REOPENED (regression found by TGNT-P6.2) |
 ```
 
@@ -455,6 +471,7 @@ git push origin main
 **Symptom:** Task estimated `~8min`, now at `60+ min`.
 
 **Recovery:**
+
 1. L1 detects via elapsed time vs. estimate
 2. L1 sends message to agent: "Task running long. Are you blocked? Do you need help?"
 3. Agent responds:
@@ -533,17 +550,18 @@ git push origin main
 
 ### Key Metrics
 
-| Metric | Display | Action Threshold |
-|--------|---------|-----------------|
-| **Elapsed vs. Estimate** | % over (e.g., 115%) | >150% → Flag as SLO breach |
-| **Cycle Time** | Minutes (CLAIMED → COMPLETED) | >30 min → Investigate |
-| **Agent Utilization** | Active/Total (e.g., 3/5) | <50% → Release agents, reduce scope |
-| **Blocker Count** | Total & severity breakdown | >5 blockers → Escalate to L1 |
-| **Phase Completion %** | Current phase progress | >80% done → Prepare next phase |
+| Metric                   | Display                       | Action Threshold                    |
+| ------------------------ | ----------------------------- | ----------------------------------- |
+| **Elapsed vs. Estimate** | % over (e.g., 115%)           | >150% → Flag as SLO breach          |
+| **Cycle Time**           | Minutes (CLAIMED → COMPLETED) | >30 min → Investigate               |
+| **Agent Utilization**    | Active/Total (e.g., 3/5)      | <50% → Release agents, reduce scope |
+| **Blocker Count**        | Total & severity breakdown    | >5 blockers → Escalate to L1        |
+| **Phase Completion %**   | Current phase progress        | >80% done → Prepare next phase      |
 
 ### Updating Dashboard
 
 Dashboard is read-only view of `WORK_STREAM.md`:
+
 ```bash
 # Watch work stream changes in real-time
 watch -n 5 'tail -50 docs/reference/WORK_STREAM.md'
@@ -558,41 +576,41 @@ thegent dashboard --watch
 
 ### Work Stream Management
 
-| Command | Purpose | Used By |
-|---------|---------|---------|
-| `thegent plan do-next` | List next 5 actionable items | L1, L2 |
-| `thegent plan do-next --limit 10` | List next 10 items | L1 for batch assignment |
-| `TaskCreate` (tool) | Create new work item programmatically | L1 when spawning teams |
-| `TaskList` (tool) | List all work items and status | L2 to find available work |
-| `TaskUpdate` (tool) | Claim, progress, or complete item | L2 during execution |
-| `TaskGet` (tool) | Read full details of single task | L2 before starting work |
+| Command                           | Purpose                               | Used By                   |
+| --------------------------------- | ------------------------------------- | ------------------------- |
+| `thegent plan do-next`            | List next 5 actionable items          | L1, L2                    |
+| `thegent plan do-next --limit 10` | List next 10 items                    | L1 for batch assignment   |
+| `TaskCreate` (tool)               | Create new work item programmatically | L1 when spawning teams    |
+| `TaskList` (tool)                 | List all work items and status        | L2 to find available work |
+| `TaskUpdate` (tool)               | Claim, progress, or complete item     | L2 during execution       |
+| `TaskGet` (tool)                  | Read full details of single task      | L2 before starting work   |
 
 ### Team & Agent Management
 
-| Command | Purpose | Used By |
-|---------|---------|---------|
-| `TeamCreate` | Create new team with roster | L1 for multi-agent projects |
-| `SendMessage` | Send message to teammate | L1 for instructions/status requests |
-| `SendMessage` (broadcast) | Send to all teammates | L1 for critical updates (use sparingly) |
-| `thegent ps` | List running agent sessions | L1 to monitor activity |
-| `thegent wait <session_id>` | Block until agent finishes | L1 to wait for completion |
-| `thegent status <session_id>` | Check agent progress | L1 to get status update |
+| Command                       | Purpose                     | Used By                                 |
+| ----------------------------- | --------------------------- | --------------------------------------- |
+| `TeamCreate`                  | Create new team with roster | L1 for multi-agent projects             |
+| `SendMessage`                 | Send message to teammate    | L1 for instructions/status requests     |
+| `SendMessage` (broadcast)     | Send to all teammates       | L1 for critical updates (use sparingly) |
+| `thegent ps`                  | List running agent sessions | L1 to monitor activity                  |
+| `thegent wait <session_id>`   | Block until agent finishes  | L1 to wait for completion               |
+| `thegent status <session_id>` | Check agent progress        | L1 to get status update                 |
 
 ### File Operations
 
-| Command | Purpose | Used By |
-|---------|---------|---------|
-| `Read` | Read work stream or document | L1, L2 |
-| `Edit` | Update work stream inline | L1, L2 |
-| `Write` | Replace work stream entirely | L1 only (careful!) |
-| `Bash` (git) | Commit and push changes | L1, L2 for atomicity |
+| Command      | Purpose                      | Used By              |
+| ------------ | ---------------------------- | -------------------- |
+| `Read`       | Read work stream or document | L1, L2               |
+| `Edit`       | Update work stream inline    | L1, L2               |
+| `Write`      | Replace work stream entirely | L1 only (careful!)   |
+| `Bash` (git) | Commit and push changes      | L1, L2 for atomicity |
 
 ### Analysis & Reporting
 
-| Command | Purpose | Used By |
-|---------|---------|---------|
-| `Grep` | Search for blocked/overdue items | L1 for health checks |
-| `Bash` (script) | Generate reports, metrics | L1 for dashboards |
+| Command         | Purpose                          | Used By              |
+| --------------- | -------------------------------- | -------------------- |
+| `Grep`          | Search for blocked/overdue items | L1 for health checks |
+| `Bash` (script) | Generate reports, metrics        | L1 for dashboards    |
 
 ---
 

@@ -20,6 +20,7 @@ Comprehensive research and documentation update for thegent CLI commands, model 
 **Issue**: Multiple `Optional` import errors preventing thegent from running.
 
 **Files Fixed**:
+
 - `src/thegent/agents/base.py` - Added `from typing import Optional`
 - `src/thegent/config.py` - Added `from typing import Optional`
 - `src/thegent/agents/codex_proxy.py` - Added `from typing import Optional`
@@ -36,6 +37,7 @@ Comprehensive research and documentation update for thegent CLI commands, model 
 **File**: `docs/research/THGENT_COMMAND_MODEL_OPTIONS_AND_AGENT_FEATURES_RESEARCH.md`
 
 **Contents**:
+
 - Complete command structure research
 - Model routing and provider options
 - Work stream integration commands
@@ -55,6 +57,7 @@ Comprehensive research and documentation update for thegent CLI commands, model 
 **File**: `CLAUDE.md`
 
 **Additions**:
+
 - New section: "Thegent Command Reference for Agents" (~400 lines)
 - Core agent execution commands (`run`, `bg`, `free`, role-based)
 - Work stream integration commands (`plan do-next`, `plan loop`, `plan wait-next`)
@@ -67,6 +70,7 @@ Comprehensive research and documentation update for thegent CLI commands, model 
 - Environment variables reference
 
 **Updates**:
+
 - Updated "Delegate to Subagents" section with thegent command reference
 - Updated "Strategy Quick Reference" table with thegent commands
 - Added cross-reference to research document
@@ -76,6 +80,7 @@ Comprehensive research and documentation update for thegent CLI commands, model 
 **File**: `docs/guides/THGENT_CLI_REFERENCE.md`
 
 **Contents**:
+
 - Complete CLI reference for all commands
 - All options documented with descriptions and defaults
 - Examples for each command
@@ -88,10 +93,12 @@ Comprehensive research and documentation update for thegent CLI commands, model 
 ### 5. Updated SKILL.md Files
 
 **Files Updated**:
+
 - `skills/sitback-agent/SKILL.md`
 - `skills/agent-orchestra/SKILL.md`
 
 **Additions**:
+
 - Thegent command reference section
 - Work stream integration examples
 - Background execution examples
@@ -157,19 +164,23 @@ Comprehensive research and documentation update for thegent CLI commands, model 
 ## Cross-References Added
 
 ### CLAUDE.md
+
 - References to `THGENT_COMMAND_MODEL_OPTIONS_AND_AGENT_FEATURES_RESEARCH.md`
 - References to `THGENT_CLI_REFERENCE.md`
 
 ### Research Document
+
 - References to `CLAUDE.md` (updated)
 - References to `THGENT_CLI_REFERENCE.md`
 - References to `WORK_STREAM.md`
 - References to SKILL.md files (updated)
 
 ### SKILL.md Files
+
 - References to `THGENT_CLI_REFERENCE.md`
 
 ### CLI Reference Guide
+
 - References to `CLAUDE.md`
 - References to research document
 - References to `WORK_STREAM.md`
@@ -179,12 +190,14 @@ Comprehensive research and documentation update for thegent CLI commands, model 
 ## Verification
 
 ### Thegent Working
+
 ✅ Thegent imports successfully
 ✅ Thegent commands work (`--help` shows commands)
 ✅ `thegent plan` commands work
 ✅ `thegent ps` commands work
 
 ### Documentation Complete
+
 ✅ Research document created (~990 lines)
 ✅ CLI reference guide created (~600 lines)
 ✅ CLAUDE.md updated with comprehensive reference (~400 lines added)

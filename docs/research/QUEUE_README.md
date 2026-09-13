@@ -4,6 +4,7 @@
 ## Overview
 
 This directory contains a comprehensive queue system for processing all markdown files found in:
+
 - `kush/` (recursive, excluding node_modules)
 - `kooshapari/` (3 levels down)
 - `temp-PRODVERCEL/` (full recursive, excluding node_modules and .venv)
@@ -35,17 +36,20 @@ The queue is organized by month (newest first), then by location:
 ## Using the Queue Processor
 
 ### List all months
+
 ```bash
 python3 process_queue.py --list
 ```
 
 ### Get next month to process
+
 ```bash
 python3 process_queue.py --next
 python3 process_queue.py --next --files  # Include file list
 ```
 
 ### Process specific month
+
 ```bash
 # All files in a month
 python3 process_queue.py --month 2026-02 --files
@@ -78,19 +82,19 @@ python3 process_queue.py --next
 
 ## Monthly Summary
 
-| Month | Total | kush | kooshapari | temp-PRODVERCEL |
-|-------|-------|------|------------|-----------------|
-| 2026-02 | 3,572 | 5 | 0 | 3,567 |
-| 2026-01 | 7,174 | 0 | 0 | 7,174 |
-| 2025-12 | 6,961 | 2 | 0 | 6,959 |
-| 2025-11 | 8,077 | 0 | 0 | 8,077 |
-| 2025-10 | 5,713 | 0 | 0 | 5,713 |
-| 2025-09 | 528 | 0 | 0 | 528 |
-| 2025-08 | 2,195 | 0 | 0 | 2,195 |
-| 2025-07 | 2,792 | 0 | 0 | 2,792 |
-| 2025-06 | 705 | 0 | 0 | 705 |
-| 2025-05 | 120 | 0 | 0 | 120 |
-| 2025-04 | 10,662 | 0 | 0 | 10,662 |
+| Month   | Total  | kush | kooshapari | temp-PRODVERCEL |
+| ------- | ------ | ---- | ---------- | --------------- |
+| 2026-02 | 3,572  | 5    | 0          | 3,567           |
+| 2026-01 | 7,174  | 0    | 0          | 7,174           |
+| 2025-12 | 6,961  | 2    | 0          | 6,959           |
+| 2025-11 | 8,077  | 0    | 0          | 8,077           |
+| 2025-10 | 5,713  | 0    | 0          | 5,713           |
+| 2025-09 | 528    | 0    | 0          | 528             |
+| 2025-08 | 2,195  | 0    | 0          | 2,195           |
+| 2025-07 | 2,792  | 0    | 0          | 2,792           |
+| 2025-06 | 705    | 0    | 0          | 705             |
+| 2025-05 | 120    | 0    | 0          | 120             |
+| 2025-04 | 10,662 | 0    | 0          | 10,662          |
 
 ## Notes
 

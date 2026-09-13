@@ -122,7 +122,16 @@ class SmartMerge:
 
         if self.mergiraf_path:
             # Mergiraf: mergiraf merge --git %O %A %B -s %S -p %P
-            cmd = [self.mergiraf_path, "merge", "--git", str(base), str(ours), str(theirs), "-p", str(output)]
+            cmd = [
+                self.mergiraf_path,
+                "merge",
+                "--git",
+                str(base),
+                str(ours),
+                str(theirs),
+                "-p",
+                str(output),
+            ]
         else:
             # Fallback: git merge-file -p ours base theirs
             cmd = ["git", "merge-file", "-p", str(ours), str(base), str(theirs)]

@@ -31,6 +31,7 @@ def check_dependencies_satisfied(self, task_id: str, depends: list[str]) -> dict
 ```
 
 **Features**:
+
 - Checks status of each dependency task in WORK_STREAM.md
 - Returns detailed status information for all dependencies
 - Identifies unmet dependencies (not COMPLETED)
@@ -40,12 +41,14 @@ def check_dependencies_satisfied(self, task_id: str, depends: list[str]) -> dict
 **Location**: `src/thegent/cli_impl.py`
 
 **Changes**:
+
 - Initialize `WorkStreamSync` for dependency checking
 - For each task, check dependencies using `check_dependencies_satisfied()`
 - **Skip tasks with unmet dependencies** (not included in results)
 - Add `dependency_status` to returned items for visibility
 
 **Example**:
+
 ```python
 if depends and sync:
     dep_check = sync.check_dependencies_satisfied(task_id, depends)
@@ -59,6 +62,7 @@ if depends and sync:
 **Location**: `src/thegent/cli.py`
 
 **Changes**:
+
 - Added "Deps" column to task table
 - Shows dependency status:
   - `✓ N` - All N dependencies satisfied
@@ -66,6 +70,7 @@ if depends and sync:
   - `-` - No dependencies
 
 **Example Output**:
+
 ```
 ┌─────────────────────────────────────────────────────────────────────────┐
 │ Next work items                                                         │
@@ -82,11 +87,13 @@ if depends and sync:
 **Location**: `src/thegent/task/sync.py` (`claim_task` method)
 
 **Changes**:
+
 - Check dependencies before allowing task claim
 - Return error if dependencies are unmet
 - Prevents manual claiming of tasks with unmet dependencies
 
 **Example**:
+
 ```python
 dep_check = self.check_dependencies_satisfied(task_id, depends)
 if not dep_check["satisfied"]:
@@ -126,18 +133,21 @@ if not dep_check["satisfied"]:
 ### Manual Testing
 
 1. **Create tasks with dependencies**:
+
    ```bash
    # Create task-1.md (no dependencies)
    # Create task-2.md (depends: [task-1])
    ```
 
 2. **Verify filtering**:
+
    ```bash
    thegent plan do-next
    # Should only show task-1 (task-2 has unmet dependency)
    ```
 
 3. **Complete dependency**:
+
    ```bash
    thegent task complete task-1
    # Now task-2 should appear in do-next

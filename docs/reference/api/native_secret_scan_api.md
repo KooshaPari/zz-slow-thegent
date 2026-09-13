@@ -4,8 +4,8 @@
 
 Native secret scanning integration for the hook-dispatcher binary.
 
-Provides ``scan_secrets(content)`` which delegates to the
-``hook-dispatcher scan-secrets --stdin`` subcommand (BKM-07).  Falls back to a
+Provides `scan_secrets(content)` which delegates to the
+`hook-dispatcher scan-secrets --stdin` subcommand (BKM-07). Falls back to a
 pure-Python regex implementation when the binary is not found, so the module
 is always functional regardless of whether the Rust toolchain has been
 compiled.
@@ -26,16 +26,16 @@ A single secret detected in content.
 scan_secrets(content: str)
 ```
 
-Scan *content* for secrets.
+Scan _content_ for secrets.
 
-Delegates to the Rust ``hook-dispatcher scan-secrets --stdin`` binary when
-available.  Falls back to the pure-Python implementation otherwise.
+Delegates to the Rust `hook-dispatcher scan-secrets --stdin` binary when
+available. Falls back to the pure-Python implementation otherwise.
 
 **Parameters**:
 
 - `content`: Raw text (file content or diff) to inspect.
 
-**Returns**: A list of :class:`SecretMatch` objects.  Empty list means no secrets
+**Returns**: A list of :class:`SecretMatch` objects. Empty list means no secrets
 were detected.
 
 ---
@@ -46,7 +46,7 @@ were detected.
 scan_secrets_file(path: Any)
 ```
 
-Convenience wrapper: read *path* and call :func:`scan_secrets`.
+Convenience wrapper: read _path_ and call :func:`scan_secrets`.
 
 **Parameters**:
 

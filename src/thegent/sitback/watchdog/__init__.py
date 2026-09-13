@@ -8,8 +8,8 @@ This stub exists for backwards compatibility with existing tests.
 from __future__ import annotations
 
 import time
-from typing import Any, Callable
-
+from collections.abc import Callable
+from typing import Any
 
 __all__ = ["Watchdog", "WatcherDaemon"]
 
@@ -78,6 +78,7 @@ class WatcherDaemon:
         for path_str in self.watch_paths:
             try:
                 from pathlib import Path
+
                 path = Path(path_str)
                 if path.exists():
                     mtime = path.stat().st_mtime

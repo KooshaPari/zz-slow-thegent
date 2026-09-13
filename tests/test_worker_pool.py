@@ -12,13 +12,11 @@ from unittest.mock import AsyncMock, MagicMock, patch
 import pytest
 
 from thegent.core.worker_pool import (
-    AgentResult,
     AgentTask,
     PersistentWorkerPool,
     Worker,
     get_worker_pool,
 )
-
 
 # --------------------------------------------------------------------------- #
 # Helpers                                                                      #
@@ -152,7 +150,9 @@ class TestWorker:
 # --------------------------------------------------------------------------- #
 
 
-def _make_pool_with_mock_workers(n: int = 2) -> tuple[PersistentWorkerPool, list[Worker]]:
+def _make_pool_with_mock_workers(
+    n: int = 2,
+) -> tuple[PersistentWorkerPool, list[Worker]]:
     """Build a pool bypassing actual subprocess creation."""
     pool = PersistentWorkerPool(pool_size=n, idle_timeout=300)
     pool._started = True

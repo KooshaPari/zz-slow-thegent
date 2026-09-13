@@ -15,7 +15,6 @@ from thegent.utils.routing_impl.guardrails.webhook import (
     call_webhook_guardrail,
 )
 
-
 pytestmark = pytest.mark.requirement("FR-GUARD-053")
 
 _PAYLOAD = {"messages": [{"role": "user", "content": "Hello"}]}
@@ -39,7 +38,10 @@ def test_webhook_verdict_allow():
     cfg = WebhookGuardrailConfig(url="https://example.com/guardrail")
     mock_resp = _make_mock_response({"verdict": "allow"})
 
-    with patch("thegent.utils.routing_impl.guardrails.webhook.httpx.post", return_value=mock_resp) as mock_post:
+    with patch(
+        "thegent.utils.routing_impl.guardrails.webhook.httpx.post",
+        return_value=mock_resp,
+    ) as mock_post:
         result = call_webhook_guardrail(cfg, _PAYLOAD)
 
     mock_post.assert_called_once()
@@ -52,7 +54,10 @@ def test_webhook_verdict_block():
     cfg = WebhookGuardrailConfig(url="https://example.com/guardrail")
     mock_resp = _make_mock_response({"verdict": "block"})
 
-    with patch("thegent.utils.routing_impl.guardrails.webhook.httpx.post", return_value=mock_resp):
+    with patch(
+        "thegent.utils.routing_impl.guardrails.webhook.httpx.post",
+        return_value=mock_resp,
+    ):
         result = call_webhook_guardrail(cfg, _PAYLOAD)
 
     assert result.verdict == "block"
@@ -63,7 +68,10 @@ def test_webhook_verdict_unknown_treated_as_allow():
     cfg = WebhookGuardrailConfig(url="https://example.com/guardrail")
     mock_resp = _make_mock_response({"verdict": "maybe"})
 
-    with patch("thegent.utils.routing_impl.guardrails.webhook.httpx.post", return_value=mock_resp):
+    with patch(
+        "thegent.utils.routing_impl.guardrails.webhook.httpx.post",
+        return_value=mock_resp,
+    ):
         result = call_webhook_guardrail(cfg, _PAYLOAD)
 
     assert result.verdict == "allow"
@@ -77,7 +85,10 @@ def test_webhook_verdict_unknown_treated_as_allow():
 def test_webhook_on_failure_allow_when_unreachable():
     cfg = WebhookGuardrailConfig(url="https://example.com/guardrail", on_failure="allow")
 
-    with patch("thegent.utils.routing_impl.guardrails.webhook.httpx.post", side_effect=Exception("connection refused")):
+    with patch(
+        "thegent.utils.routing_impl.guardrails.webhook.httpx.post",
+        side_effect=Exception("connection refused"),
+    ):
         result = call_webhook_guardrail(cfg, _PAYLOAD)
 
     assert result.verdict == "allow"
@@ -87,7 +98,10 @@ def test_webhook_on_failure_allow_when_unreachable():
 def test_webhook_on_failure_block_when_unreachable():
     cfg = WebhookGuardrailConfig(url="https://example.com/guardrail", on_failure="block")
 
-    with patch("thegent.utils.routing_impl.guardrails.webhook.httpx.post", side_effect=Exception("timeout")):
+    with patch(
+        "thegent.utils.routing_impl.guardrails.webhook.httpx.post",
+        side_effect=Exception("timeout"),
+    ):
         result = call_webhook_guardrail(cfg, _PAYLOAD)
 
     assert result.verdict == "block"
@@ -100,7 +114,8 @@ def test_webhook_timeout_uses_on_failure():
     cfg = WebhookGuardrailConfig(url="https://example.com/guardrail", on_failure="allow", timeout_sec=0.001)
 
     with patch(
-        "thegent.utils.routing_impl.guardrails.webhook.httpx.post", side_effect=_httpx.TimeoutException("timed out")
+        "thegent.utils.routing_impl.guardrails.webhook.httpx.post",
+        side_effect=_httpx.TimeoutException("timed out"),
     ):
         result = call_webhook_guardrail(cfg, _PAYLOAD)
 
@@ -117,7 +132,10 @@ def test_webhook_sends_secret_header():
     cfg = WebhookGuardrailConfig(url="https://example.com/guardrail", secret="mysecret")
     mock_resp = _make_mock_response({"verdict": "allow"})
 
-    with patch("thegent.utils.routing_impl.guardrails.webhook.httpx.post", return_value=mock_resp) as mock_post:
+    with patch(
+        "thegent.utils.routing_impl.guardrails.webhook.httpx.post",
+        return_value=mock_resp,
+    ) as mock_post:
         call_webhook_guardrail(cfg, _PAYLOAD)
 
     _, kwargs = mock_post.call_args
@@ -129,7 +147,10 @@ def test_webhook_no_secret_header_when_empty():
     cfg = WebhookGuardrailConfig(url="https://example.com/guardrail", secret="")
     mock_resp = _make_mock_response({"verdict": "allow"})
 
-    with patch("thegent.utils.routing_impl.guardrails.webhook.httpx.post", return_value=mock_resp) as mock_post:
+    with patch(
+        "thegent.utils.routing_impl.guardrails.webhook.httpx.post",
+        return_value=mock_resp,
+    ) as mock_post:
         call_webhook_guardrail(cfg, _PAYLOAD)
 
     _, kwargs = mock_post.call_args
@@ -147,7 +168,10 @@ def test_webhook_returns_transformed_data():
     transformed = {"messages": [{"role": "user", "content": "Sanitised text"}]}
     mock_resp = _make_mock_response({"verdict": "allow", "transformedData": transformed})
 
-    with patch("thegent.utils.routing_impl.guardrails.webhook.httpx.post", return_value=mock_resp):
+    with patch(
+        "thegent.utils.routing_impl.guardrails.webhook.httpx.post",
+        return_value=mock_resp,
+    ):
         result = call_webhook_guardrail(cfg, _PAYLOAD)
 
     assert result.transformed_data == transformed
@@ -157,7 +181,10 @@ def test_webhook_timeout_forwarded_to_httpx():
     cfg = WebhookGuardrailConfig(url="https://example.com/guardrail", timeout_sec=1.5)
     mock_resp = _make_mock_response({"verdict": "allow"})
 
-    with patch("thegent.utils.routing_impl.guardrails.webhook.httpx.post", return_value=mock_resp) as mock_post:
+    with patch(
+        "thegent.utils.routing_impl.guardrails.webhook.httpx.post",
+        return_value=mock_resp,
+    ) as mock_post:
         call_webhook_guardrail(cfg, _PAYLOAD)
 
     _, kwargs = mock_post.call_args

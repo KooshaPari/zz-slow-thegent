@@ -11,6 +11,7 @@
 This document specifies the design for a **Shared MCP Tool Library** that consolidates common MCP tools across multiple servers (atoms-mcp-prod, morph, task-tool, task2, 4sgm). The library provides reusable, well-tested tools that can be imported and used by any MCP server.
 
 **Key Goals**:
+
 - ✅ Reduce code duplication across MCP servers
 - ✅ Standardize tool interfaces and behaviors
 - ✅ Provide comprehensive tool testing
@@ -24,26 +25,31 @@ This document specifies the design for a **Shared MCP Tool Library** that consol
 ### 1.1 Existing MCP Tools
 
 #### **atoms-mcp-prod**
+
 - **Tools**: 5 consolidated tools (workspace_operation, entity_operation, relationship_operation, etc.)
 - **Pattern**: FastMCP with comprehensive tool definitions
 - **Scope**: Knowledge management, entity tracking, workflow automation
 
 #### **morph**
+
 - **Tools**: workspace_ops, research_hub
 - **Pattern**: FastMCP with hexagonal architecture
 - **Scope**: Workspace operations, research tooling
 
 #### **task-tool**
+
 - **Tools**: Task management tools
 - **Pattern**: FastMCP with telemetry
 - **Scope**: Task creation, execution, monitoring
 
 #### **task2**
+
 - **Tools**: Advanced task tools with DAG planning
 - **Pattern**: FastMCP with agent delegation
 - **Scope**: Batch execution, DAG planning, async/sync modes
 
 #### **4sgm**
+
 - **Tools**: 25+ MCP tools
 - **Pattern**: LangGraph + FastMCP
 - **Scope**: Various domain tools
@@ -51,6 +57,7 @@ This document specifies the design for a **Shared MCP Tool Library** that consol
 ### 1.2 Common Tool Patterns
 
 **Shared Tool Categories**:
+
 - File operations (read, write, list, search)
 - Workspace operations (status, diff, commit)
 - Code operations (lint, format, test)
@@ -58,6 +65,7 @@ This document specifies the design for a **Shared MCP Tool Library** that consol
 - Task operations (create, execute, monitor)
 
 **Duplication Areas**:
+
 - File I/O operations (multiple implementations)
 - Workspace status checks (similar logic)
 - Code quality tools (duplicated across servers)
@@ -129,27 +137,26 @@ import logging
 
 logger = logging.getLogger(__name__)
 
+
 class ToolInput(BaseModel):
     """Base tool input model."""
+
     pass
+
 
 class ToolOutput(BaseModel):
     """Base tool output model."""
+
     success: bool
     result: Any
     error: Optional[str] = None
     metadata: Dict[str, Any] = Field(default_factory=dict)
 
+
 class BaseMCPTool(ABC):
     """Base class for all MCP tools."""
 
-    def __init__(
-        self,
-        name: str,
-        description: str,
-        version: str = "1.0.0",
-        enabled: bool = True
-    ):
+    def __init__(self, name: str, description: str, version: str = "1.0.0", enabled: bool = True):
         self.name = name
         self.description = description
         self.version = version
@@ -168,11 +175,7 @@ class BaseMCPTool(ABC):
 
     def get_schema(self) -> Dict[str, Any]:
         """Get tool schema for MCP registration."""
-        return {
-            "name": self.name,
-            "description": self.description,
-            "inputSchema": self._get_input_schema()
-        }
+        return {"name": self.name, "description": self.description, "inputSchema": self._get_input_schema()}
 
     @abstractmethod
     def _get_input_schema(self) -> Dict[str, Any]:
@@ -187,11 +190,7 @@ class BaseMCPTool(ABC):
             return output.dict()
         except Exception as e:
             self.logger.error(f"Tool execution failed: {e}", exc_info=True)
-            return ToolOutput(
-                success=False,
-                result=None,
-                error=str(e)
-            ).dict()
+            return ToolOutput(success=False, result=None, error=str(e)).dict()
 ```
 
 ---
@@ -205,25 +204,27 @@ from shared_mcp_tools.core.files import BaseMCPTool, ToolInput, ToolOutput
 from pathlib import Path
 from typing import List
 
+
 class ReadFileInput(ToolInput):
     """Input for read file tool."""
+
     path: str = Field(..., description="File path to read")
     encoding: str = Field("utf-8", description="File encoding")
 
+
 class ReadFileOutput(ToolOutput):
     """Output for read file tool."""
+
     content: str
     size: int
     modified: datetime
+
 
 class ReadFileTool(BaseMCPTool):
     """Read file tool."""
 
     def __init__(self):
-        super().__init__(
-            name="read_file",
-            description="Read contents of a file"
-        )
+        super().__init__(name="read_file", description="Read contents of a file")
 
     def validate_input(self, input_data: Dict[str, Any]) -> ReadFileInput:
         return ReadFileInput(**input_data)
@@ -240,24 +241,17 @@ class ReadFileTool(BaseMCPTool):
 
         return ReadFileOutput(
             success=True,
-            result={
-                "content": content,
-                "size": stat.st_size,
-                "modified": datetime.fromtimestamp(stat.st_mtime)
-            },
+            result={"content": content, "size": stat.st_size, "modified": datetime.fromtimestamp(stat.st_mtime)},
             content=content,
             size=stat.st_size,
-            modified=datetime.fromtimestamp(stat.st_mtime)
+            modified=datetime.fromtimestamp(stat.st_mtime),
         )
 
     def _get_input_schema(self) -> Dict[str, Any]:
         return {
             "type": "object",
-            "properties": {
-                "path": {"type": "string"},
-                "encoding": {"type": "string", "default": "utf-8"}
-            },
-            "required": ["path"]
+            "properties": {"path": {"type": "string"}, "encoding": {"type": "string", "default": "utf-8"}},
+            "required": ["path"],
         }
 
     def _is_safe_path(self, path: Path) -> bool:
@@ -270,16 +264,15 @@ class ReadFileTool(BaseMCPTool):
 ```python
 class WorkspaceStatusInput(ToolInput):
     """Input for workspace status tool."""
+
     workspace_path: str = Field(..., description="Workspace path")
+
 
 class WorkspaceStatusTool(BaseMCPTool):
     """Get workspace status tool."""
 
     def __init__(self):
-        super().__init__(
-            name="workspace_status",
-            description="Get workspace git status and file changes"
-        )
+        super().__init__(name="workspace_status", description="Get workspace git status and file changes")
 
     async def execute(self, input_data: WorkspaceStatusInput) -> ToolOutput:
         # Implementation using git operations
@@ -291,18 +284,17 @@ class WorkspaceStatusTool(BaseMCPTool):
 ```python
 class LintCodeInput(ToolInput):
     """Input for lint code tool."""
+
     code: str
     language: str
     linter: Optional[str] = None
+
 
 class LintCodeTool(BaseMCPTool):
     """Lint code tool."""
 
     def __init__(self):
-        super().__init__(
-            name="lint_code",
-            description="Lint code using appropriate linter"
-        )
+        super().__init__(name="lint_code", description="Lint code using appropriate linter")
 
     async def execute(self, input_data: LintCodeInput) -> ToolOutput:
         # Implementation using language-specific linters
@@ -316,18 +308,17 @@ class LintCodeTool(BaseMCPTool):
 ```python
 class WebSearchInput(ToolInput):
     """Input for web search tool."""
+
     query: str
     max_results: int = Field(5, ge=1, le=20)
     filters: Optional[Dict[str, Any]] = None
+
 
 class WebSearchTool(BaseMCPTool):
     """Web search tool."""
 
     def __init__(self):
-        super().__init__(
-            name="web_search",
-            description="Search the web for information"
-        )
+        super().__init__(name="web_search", description="Search the web for information")
 
     async def execute(self, input_data: WebSearchInput) -> ToolOutput:
         # Implementation using search API
@@ -341,19 +332,18 @@ class WebSearchTool(BaseMCPTool):
 ```python
 class CreateTaskInput(ToolInput):
     """Input for create task tool."""
+
     title: str
     description: str
     project_id: Optional[str] = None
     dependencies: List[str] = Field(default_factory=list)
 
+
 class CreateTaskTool(BaseMCPTool):
     """Create task tool."""
 
     def __init__(self):
-        super().__init__(
-            name="create_task",
-            description="Create a new task"
-        )
+        super().__init__(name="create_task", description="Create a new task")
 
     async def execute(self, input_data: CreateTaskInput) -> ToolOutput:
         # Implementation
@@ -412,6 +402,7 @@ shared-mcp-tools/
 ### 3.2 Tool Categories
 
 #### **Core Tools** (`core/`)
+
 - `read_file` - Read file contents
 - `write_file` - Write file contents
 - `list_files` - List directory contents
@@ -423,18 +414,21 @@ shared-mcp-tools/
 - `run_tests` - Run tests
 
 #### **Research Tools** (`research/`)
+
 - `web_search` - Web search
 - `synthesize_content` - Content synthesis
 - `extract_key_points` - Extract key points
 - `summarize` - Summarize content
 
 #### **Task Tools** (`tasks/`)
+
 - `create_task` - Create task
 - `execute_task` - Execute task
 - `monitor_task` - Monitor task status
 - `cancel_task` - Cancel task
 
 #### **Integration Tools** (`integrations/`)
+
 - `github_create_issue` - Create GitHub issue
 - `github_create_pr` - Create GitHub PR
 - `slack_send_message` - Send Slack message
@@ -471,34 +465,24 @@ mcp.tool()(web_search)
 ```python
 from shared_mcp_tools.base import BaseMCPTool, ToolInput, ToolOutput
 
+
 class CustomTool(BaseMCPTool):
     """Custom tool using shared tools."""
 
     def __init__(self):
-        super().__init__(
-            name="custom_operation",
-            description="Custom operation using shared tools"
-        )
+        super().__init__(name="custom_operation", description="Custom operation using shared tools")
         self.read_file = ReadFileTool()
         self.lint_code = LintCodeTool()
 
     async def execute(self, input_data: ToolInput) -> ToolOutput:
         # Read file
-        read_result = await self.read_file.execute(
-            ReadFileInput(path=input_data.path)
-        )
+        read_result = await self.read_file.execute(ReadFileInput(path=input_data.path))
 
         # Lint code
-        lint_result = await self.lint_code.execute(
-            LintCodeInput(code=read_result.content, language="python")
-        )
+        lint_result = await self.lint_code.execute(LintCodeInput(code=read_result.content, language="python"))
 
         return ToolOutput(
-            success=True,
-            result={
-                "file_content": read_result.content,
-                "lint_results": lint_result.result
-            }
+            success=True, result={"file_content": read_result.content, "lint_results": lint_result.result}
         )
 ```
 
@@ -507,16 +491,9 @@ class CustomTool(BaseMCPTool):
 ```python
 from shared_mcp_tools.utils import ToolChain
 
-chain = ToolChain([
-    ReadFileTool(),
-    LintCodeTool(),
-    FormatCodeTool()
-])
+chain = ToolChain([ReadFileTool(), LintCodeTool(), FormatCodeTool()])
 
-result = await chain.execute({
-    "path": "src/main.py",
-    "language": "python"
-})
+result = await chain.execute({"path": "src/main.py", "language": "python"})
 ```
 
 ---
@@ -553,6 +530,7 @@ is_compatible = check_compatibility("read_file", ">=1.0.0,<2.0.0")
 import pytest
 from shared_mcp_tools.core.files import ReadFileTool, ReadFileInput
 
+
 @pytest.mark.asyncio
 async def test_read_file_success():
     tool = ReadFileTool()
@@ -572,10 +550,7 @@ async def test_file_operations_integration():
     read_tool = ReadFileTool()
 
     # Write file
-    await write_tool.execute(WriteFileInput(
-        path="test.txt",
-        content="Hello, World!"
-    ))
+    await write_tool.execute(WriteFileInput(path="test.txt", content="Hello, World!"))
 
     # Read file
     result = await read_tool.execute(ReadFileInput(path="test.txt"))
@@ -595,6 +570,7 @@ async def read_file(path: str) -> str:
     # Custom implementation
     pass
 
+
 # After
 from shared_mcp_tools.core.files import ReadFileTool
 
@@ -610,6 +586,7 @@ class WorkspaceOpsTool:
     async def status(self, path: str):
         # Custom implementation
         pass
+
 
 # After
 from shared_mcp_tools.core.workspace import WorkspaceStatusTool
@@ -627,6 +604,7 @@ mcp.tool()(workspace_status)
 ```python
 from shared_mcp_tools.utils import cached_tool
 
+
 @cached_tool(ttl=300)  # Cache for 5 minutes
 class ReadFileTool(BaseMCPTool):
     # Implementation
@@ -638,11 +616,13 @@ class ReadFileTool(BaseMCPTool):
 ```python
 from shared_mcp_tools.utils import parallel_execute
 
-results = await parallel_execute([
-    ReadFileTool().execute(ReadFileInput(path="file1.txt")),
-    ReadFileTool().execute(ReadFileInput(path="file2.txt")),
-    ReadFileTool().execute(ReadFileInput(path="file3.txt"))
-])
+results = await parallel_execute(
+    [
+        ReadFileTool().execute(ReadFileInput(path="file1.txt")),
+        ReadFileTool().execute(ReadFileInput(path="file2.txt")),
+        ReadFileTool().execute(ReadFileInput(path="file3.txt")),
+    ]
+)
 ```
 
 ---

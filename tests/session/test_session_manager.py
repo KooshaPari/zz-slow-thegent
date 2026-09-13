@@ -21,7 +21,10 @@ def test_fork_session_clones_turn_prefix() -> None:
 
     fork_id = manager.fork_session(source_id, from_turn=2, new_session_id="forked")
     assert fork_id == "forked"
-    assert [turn["turn_id"] for turn in manager.get_session(fork_id).turns] == ["t1", "t2"]
+    assert [turn["turn_id"] for turn in manager.get_session(fork_id).turns] == [
+        "t1",
+        "t2",
+    ]
 
 
 def test_forked_session_diverges_from_original() -> None:
@@ -33,8 +36,14 @@ def test_forked_session_diverges_from_original() -> None:
     manager.append_turn(fork_id, {"turn_id": "t2-fork", "content": "fork"})
     manager.append_turn(source_id, {"turn_id": "t2-source", "content": "source"})
 
-    assert [turn["turn_id"] for turn in manager.get_session(source_id).turns] == ["t1", "t2-source"]
-    assert [turn["turn_id"] for turn in manager.get_session(fork_id).turns] == ["t1", "t2-fork"]
+    assert [turn["turn_id"] for turn in manager.get_session(source_id).turns] == [
+        "t1",
+        "t2-source",
+    ]
+    assert [turn["turn_id"] for turn in manager.get_session(fork_id).turns] == [
+        "t1",
+        "t2-fork",
+    ]
 
 
 def test_fork_session_rejects_invalid_index() -> None:

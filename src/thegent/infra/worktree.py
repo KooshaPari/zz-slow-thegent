@@ -4,9 +4,10 @@ Includes worktree creation, branch coordination, and cleanup.
 
 import logging
 import subprocess
-from thegent.infra.shim_subprocess import run as shim_run
 import time
 from pathlib import Path
+
+from thegent.infra.shim_subprocess import run as shim_run
 
 logger = logging.getLogger(__name__)
 
@@ -27,7 +28,10 @@ class WorktreeManager:
 
         try:
             shim_run(
-                ["git", "rev-parse", "--verify", branch_name], cwd=self.project_root, capture_output=True, check=False
+                ["git", "rev-parse", "--verify", branch_name],
+                cwd=self.project_root,
+                capture_output=True,
+                check=False,
             )
 
             cmd = ["git", "worktree", "add", str(wt_path), branch_name]
@@ -47,7 +51,11 @@ class WorktreeManager:
         wt_path = self.mesh_worktrees_dir / f"agent-{agent_id}"
         if wt_path.exists():
             try:
-                shim_run(["git", "worktree", "remove", "--force", str(wt_path)], cwd=self.project_root, check=True)
+                shim_run(
+                    ["git", "worktree", "remove", "--force", str(wt_path)],
+                    cwd=self.project_root,
+                    check=True,
+                )
                 shim_run(["git", "worktree", "prune"], cwd=self.project_root, check=True)
                 logger.info(f"Cleaned up worktree for agent {agent_id}")
             except subprocess.CalledProcessError as e:

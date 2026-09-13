@@ -16,17 +16,12 @@ from plangent import RootAgent, SubAgent
 
 # Setup
 orchestrator = AgentOrchestrator()
-root_agent = RootAgent(config={
-    "sub_agents": ["code-review", "testing"]
-})
+root_agent = RootAgent(config={"sub_agents": ["code-review", "testing"]})
 
 orchestrator.register_agent("plangent-root", root_agent)
 
 # Execute
-result = await orchestrator.execute_task(
-    agent_id="plangent-root",
-    task="Review and test the new feature"
-)
+result = await orchestrator.execute_task(agent_id="plangent-root", task="Review and test the new feature")
 ```
 
 ---
@@ -61,16 +56,13 @@ research = await mcp.call_tool("web_search", query="Python async")
 import asyncio
 from pathlib import Path
 
+
 async def analyze_project(path: Path):
     bloc_result = await run_command(["bloc", str(path), "--health"])
     trace_result = await run_command(["trace", "analyze", str(path)])
     usage_result = await run_command(["usage", "status", "--project", str(path)])
 
-    return {
-        "code": bloc_result,
-        "requirements": trace_result,
-        "usage": usage_result
-    }
+    return {"code": bloc_result, "requirements": trace_result, "usage": usage_result}
 ```
 
 ---
@@ -83,6 +75,7 @@ async def analyze_project(path: Path):
 from trace import RequirementsManager
 from atoms_mcp import EntityManager
 from jobhunter import TaskManager
+
 
 class UnifiedPM:
     def __init__(self, project_id: str):
@@ -110,12 +103,10 @@ from thegent import AgentOrchestrator
 voice = VoiceInterface()
 orch = AgentOrchestrator()
 
+
 @voice.command("review code")
 async def handle_review():
-    result = await orch.execute_task(
-        agent_id="plangent",
-        task="Review workspace code"
-    )
+    result = await orch.execute_task(agent_id="plangent", task="Review workspace code")
     await voice.speak(f"Review complete: {result.summary}")
 ```
 

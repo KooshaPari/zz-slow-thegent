@@ -62,6 +62,7 @@ import asyncio
 from pathlib import Path
 from thegent.doc_tools import PlaywrightRecorder, RecordingConfig
 
+
 async def record_demo():
     config = RecordingConfig(
         base_url="http://localhost:5173",
@@ -84,6 +85,7 @@ async def record_demo():
         else:
             print(f"Failed: {result.error}")
 
+
 # Run the recording
 asyncio.run(record_demo())
 ```
@@ -104,17 +106,17 @@ Configuration class for recording sessions.
 
 **Parameters:**
 
-| Parameter | Type | Default | Description |
-|-----------|------|---------|-------------|
-| `base_url` | str | `http://localhost:5173` | Base URL for navigation |
-| `browser` | str | `chromium` | Browser engine (chromium, firefox, webkit) |
-| `headless` | bool | `False` | Run browser headless mode |
-| `viewport_width` | int | 1280 | Viewport width (px) |
-| `viewport_height` | int | 720 | Viewport height (px) |
-| `device_scale_factor` | float | 1.0 | DPI/scale factor |
-| `locale` | str | `en-US` | Browser locale |
-| `timezone_id` | str | `America/New_York` | Browser timezone |
-| `output_dir` | Path | `docs/recordings` | Output directory for recordings |
+| Parameter             | Type  | Default                 | Description                                |
+| --------------------- | ----- | ----------------------- | ------------------------------------------ |
+| `base_url`            | str   | `http://localhost:5173` | Base URL for navigation                    |
+| `browser`             | str   | `chromium`              | Browser engine (chromium, firefox, webkit) |
+| `headless`            | bool  | `False`                 | Run browser headless mode                  |
+| `viewport_width`      | int   | 1280                    | Viewport width (px)                        |
+| `viewport_height`     | int   | 720                     | Viewport height (px)                       |
+| `device_scale_factor` | float | 1.0                     | DPI/scale factor                           |
+| `locale`              | str   | `en-US`                 | Browser locale                             |
+| `timezone_id`         | str   | `America/New_York`      | Browser timezone                           |
+| `output_dir`          | Path  | `docs/recordings`       | Output directory for recordings            |
 
 **Example:**
 
@@ -273,6 +275,7 @@ result.to_json(Path("recordings/result.json"))  # Save to file
 from pathlib import Path
 from thegent.doc_tools import PlaywrightRecorder, RecordingConfig
 
+
 async def simple_demo():
     config = RecordingConfig(output_dir=Path("docs/recordings/outputs"))
 
@@ -282,6 +285,7 @@ async def simple_demo():
         await recorder.wait(2000)
         screenshot = await recorder.screenshot("button-clicked")
         print(f"Screenshot: {screenshot}")
+
 
 # Run with: asyncio.run(simple_demo())
 ```
@@ -315,6 +319,7 @@ async def form_demo():
 ```python
 from thegent.doc_tools import RecordingConfig
 
+
 async def record_all_browsers():
     for browser in ["chromium", "firefox", "webkit"]:
         config = RecordingConfig(
@@ -341,18 +346,18 @@ The `playwright.config.ts` file configures Playwright test runner:
 ```typescript
 // playwright.config.ts
 export default defineConfig({
-  testDir: './recordings',
+  testDir: "./recordings",
   webServer: {
-    command: 'bun run docs:dev',
-    url: 'http://localhost:5173',
+    command: "bun run docs:dev",
+    url: "http://localhost:5173",
   },
   use: {
-    baseURL: 'http://localhost:5173',
+    baseURL: "http://localhost:5173",
     viewport: { width: 1280, height: 720 },
-    screenshot: 'only-on-failure',
-    video: 'retain-on-failure',
+    screenshot: "only-on-failure",
+    video: "retain-on-failure",
   },
-})
+});
 ```
 
 Run Playwright tests:
@@ -420,7 +425,7 @@ Increase timeout in config:
 
 ```python
 config = RecordingConfig(
-    http_timeout=60000,        # 60 seconds
+    http_timeout=60000,  # 60 seconds
     navigation_timeout=60000,  # 60 seconds
 )
 ```

@@ -15,7 +15,7 @@ Example executor with isolation support.
 
 ### Methods
 
-#### IsolatedExecutor.__init__
+#### IsolatedExecutor.**init**
 
 ```python
 __init__(self: Any, isolation_provider: Any, enable_isolation: bool)
@@ -59,22 +59,22 @@ tenant contexts.
 
 Example: How to use IsolatedExecutor.
 
->>> import tempfile
->>> with tempfile.TemporaryDirectory() as tmpdir:
-...     provider = SubUserIsolationProvider(base_home_dir=tmpdir)
-...     executor = IsolatedExecutor(
-...         isolation_provider=provider,
-...         enable_isolation=True,
-...     )
-...     result = executor.execute_for_tenant(
-...         tenant_id='tenant-1',
-...         agent_id='agent-1',
-...         command=['echo', 'hello'],
-...     )
-...     print(f"Exit code: {result['returncode']}")
-...     print(f"Output: {result['stdout'].strip()}")
-Exit code: 0
-Output: hello
+> > > import tempfile
+> > > with tempfile.TemporaryDirectory() as tmpdir:
+> > > ... provider = SubUserIsolationProvider(base_home_dir=tmpdir)
+> > > ... executor = IsolatedExecutor(
+> > > ... isolation_provider=provider,
+> > > ... enable_isolation=True,
+> > > ... )
+> > > ... result = executor.execute_for_tenant(
+> > > ... tenant_id='tenant-1',
+> > > ... agent_id='agent-1',
+> > > ... command=['echo', 'hello'],
+> > > ... )
+> > > ... print(f"Exit code: {result['returncode']}")
+> > > ... print(f"Output: {result['stdout'].strip()}")
+> > > Exit code: 0
+> > > Output: hello
 
 ---
 

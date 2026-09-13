@@ -12,7 +12,7 @@ Represents an autonomous learning session bounded by policy.
 
 ### Methods
 
-#### LearningSession.__init__
+#### LearningSession.**init**
 
 ```python
 __init__(self: Any, policy_manager: PolicyManager)
@@ -48,7 +48,7 @@ Manages system-wide policies and their evaluation.
 
 ### Methods
 
-#### PolicyManager.__init__
+#### PolicyManager.**init**
 
 ```python
 __init__(self: Any, initial_policies: Any)

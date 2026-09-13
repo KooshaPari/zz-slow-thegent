@@ -74,11 +74,13 @@
 ## Documentation Organization
 
 ### Document 1: Complete Pareto Frontier Analysis
+
 **File**: `PARETO_FRONTIER_COMPLETE_ANALYSIS.md`
 **Length**: ~1500 lines
 **Audience**: Detailed explanation seekers
 
 **Contents**:
+
 - Full 14-model comparison table
 - Dominance relationships (ASCII chart)
 - Per-model detailed explanations (GLM-5, Opus, Sonnet, Gemini Flash, Codex, Gemini Pro)
@@ -92,11 +94,13 @@
 ---
 
 ### Document 2: Model Routing Decision Tree
+
 **File**: `MODEL_ROUTING_DECISION_TREE.md`
 **Length**: ~1000 lines
 **Audience**: Implementers, programmatic selection
 
 **Contents**:
+
 - Quick reference (3-model frontier summary)
 - Pseudocode decision tree (Python-like)
 - English-language decision tree (flowchart)
@@ -115,11 +119,13 @@
 ---
 
 ### Document 3: Pareto Frontier Quick Reference
+
 **File**: `PARETO_FRONTIER_QUICK_REFERENCE.md`
 **Length**: ~400 lines
 **Audience**: Quick lookup, managers, decision makers
 
 **Contents**:
+
 - The 3-model frontier (TL;DR)
 - Your questions answered (GLM-5, Opus, Codex, etc.)
 - Why only 3 models?
@@ -135,11 +141,13 @@
 ---
 
 ### Document 4: Dominance Proof Reference
+
 **File**: `DOMINANCE_PROOF_REFERENCE.md`
 **Length**: ~600 lines
 **Audience**: Verification, quality assurance, academic rigor
 
 **Contents**:
+
 - Dominance definition (mathematical)
 - 7 detailed dominance proofs:
   1. MiniMax dominates Sonnet (quality + cost)
@@ -159,9 +167,11 @@
 ---
 
 ### Document 5: This Index
+
 **File**: `MODEL_SELECTION_INDEX.md`
 
 **Contents**:
+
 - Quick answers to common questions
 - Document organization guide
 - Which document to read based on need
@@ -172,21 +182,27 @@
 ## How to Use This Documentation
 
 ### Scenario 1: "Why is [model] not selected?"
+
 → Read `/docs/reference/PARETO_FRONTIER_QUICK_REFERENCE.md` (section "Your Questions Answered")
 
 ### Scenario 2: "I need to implement the router"
+
 → Read `/docs/reference/MODEL_ROUTING_DECISION_TREE.md` (Python pseudocode + examples)
 
 ### Scenario 3: "I want to understand the full analysis"
+
 → Read `/docs/reference/PARETO_FRONTIER_COMPLETE_ANALYSIS.md` (comprehensive, 1500 lines)
 
 ### Scenario 4: "I need to verify the logic is correct"
+
 → Read `/docs/reference/DOMINANCE_PROOF_REFERENCE.md` (mathematical proofs)
 
 ### Scenario 5: "I'm explaining this to non-technical stakeholder"
+
 → Show `/docs/reference/PARETO_FRONTIER_QUICK_REFERENCE.md` (visual, simple rules)
 
 ### Scenario 6: "What should I do in situation X?"
+
 → Use `/docs/reference/MODEL_ROUTING_DECISION_TREE.md` (find matching example or trace through tree)
 
 ---
@@ -194,48 +210,60 @@
 ## Key Concepts (Glossary)
 
 ### Pareto Frontier
+
 Set of solutions where no solution dominates another on all dimensions. A model is ON the frontier if no other model beats it on 2+ dimensions simultaneously.
 
 **Example**:
+
 - MiniMax (80.2% quality, $0.79/M) is on frontier
 - Sonnet (77.2% quality, $10.50/M) is OFF frontier (MiniMax beats it on quality AND cost)
 
 ### Dominance
+
 Model A dominates Model B if A is ≥ B on all dimensions and strictly better on ≥2 dimensions.
 
 **Example**: MiniMax dominates Sonnet
+
 - Quality: 80.2% > 77.2% ✓ (strictly better)
 - Cost: $0.79 < $10.50 ✓ (strictly better)
 - Speed: moderate = moderate (tie)
-→ MiniMax is strictly better on 2 dimensions → dominates
+  → MiniMax is strictly better on 2 dimensions → dominates
 
 ### Quality Floor
+
 Minimum acceptable quality for a given category. Models below floor are REJECTED.
 
 **Example**: Quality floor for NORMAL tasks = 70%
+
 - GPT-4o mini: 70% ✓ (meets floor)
 - Codex: 56.8% ✗ (below floor, rejected)
 
 ### Cost Per Quality Point
+
 Cost divided by quality percentage. Measure of efficiency.
 
 **Example**:
+
 - GPT-4o mini: $0.375 / 70% = $0.00536 per % (most efficient)
 - MiniMax: $0.79 / 80.2% = $0.00985 per % (good balance)
 - Opus: $17.50 / 80.8% = $0.21655 per % (least efficient)
 
 ### Frontier Tier
+
 Category within the Pareto frontier based on use case
 
 **Tiers**:
+
 1. **Tier 1 (Fallback)**: GPT-4o mini — cost minimum
 2. **Tier 2 (Primary)**: MiniMax M2.5 — cost-quality sweet spot
 3. **Tier 3 (Premium)**: Claude Opus 4.6 — mission-critical quality
 
 ### Budget Tier
+
 Cost allocation category for task routing
 
 **Tiers**:
+
 1. **FAST**: <$0.0005/call (short inputs, <500 tokens)
 2. **NORMAL**: $0.001-$0.05/call (standard, 1-3K tokens)
 3. **COMPLEX**: $0.05-$0.15/call (advanced, 3-8K tokens)
@@ -245,17 +273,17 @@ Cost allocation category for task routing
 
 ## Model Quick Reference
 
-| Model | Tier | Status | Quality | Cost | When To Use |
-|-------|------|--------|---------|------|---|
-| GPT-4o mini | 1 | FRONTIER | 70% | $0.375/M | Cost absolute minimum |
-| MiniMax M2.5 | 2 | PRIMARY | 80.2% | $0.79/M | DEFAULT (95% of tasks) |
-| Claude Opus 4.6 | 3 | PREMIUM | 80.8% | $17.50/M | mission_critical = True |
-| Gemini Flash | - | FALLBACK | 78% | $1.50/M | latency < 300ms |
-| GLM-5 | - | NICHE | 92.7% AIME | $2.60/M | Pure reasoning only |
-| Gemini 2.5 Pro | - | FALLBACK | 75% | $4.07/M | Image + text required |
-| Sonnet 4.5 | - | DOMINATED | 77.2% | $10.50/M | MiniMax unavailable (fallback) |
-| Codex 5.3 | - | REJECTED | 56.8% | $1.25/M | NEVER (use GPT-4o mini) |
-| Codex-Spark | - | REJECTED | ~50% | ~$1.00/M | NEVER (use GPT-4o mini) |
+| Model           | Tier | Status    | Quality    | Cost     | When To Use                    |
+| --------------- | ---- | --------- | ---------- | -------- | ------------------------------ |
+| GPT-4o mini     | 1    | FRONTIER  | 70%        | $0.375/M | Cost absolute minimum          |
+| MiniMax M2.5    | 2    | PRIMARY   | 80.2%      | $0.79/M  | DEFAULT (95% of tasks)         |
+| Claude Opus 4.6 | 3    | PREMIUM   | 80.8%      | $17.50/M | mission_critical = True        |
+| Gemini Flash    | -    | FALLBACK  | 78%        | $1.50/M  | latency < 300ms                |
+| GLM-5           | -    | NICHE     | 92.7% AIME | $2.60/M  | Pure reasoning only            |
+| Gemini 2.5 Pro  | -    | FALLBACK  | 75%        | $4.07/M  | Image + text required          |
+| Sonnet 4.5      | -    | DOMINATED | 77.2%      | $10.50/M | MiniMax unavailable (fallback) |
+| Codex 5.3       | -    | REJECTED  | 56.8%      | $1.25/M  | NEVER (use GPT-4o mini)        |
+| Codex-Spark     | -    | REJECTED  | ~50%       | ~$1.00/M | NEVER (use GPT-4o mini)        |
 
 ---
 
@@ -284,20 +312,26 @@ START
 ## Integration Points
 
 ### Cost Governance System
+
 The model router integrates with cost governance to enforce budget constraints:
+
 - Task budget (in cents per call) is checked against model cost
 - If budget < model cost: try fallback
 - If all models exceed budget: escalate to human queue
 
 ### Quality Assurance
+
 Models selected must meet category quality floor:
+
 - FAST: ≥ 60% quality
 - NORMAL: ≥ 70% quality
 - COMPLEX: ≥ 75% quality
 - HIGH_COMPLEX: ≥ 80% quality
 
 ### SLA Monitoring
+
 Latency SLA compliance:
+
 - If SLA < 300ms: switch to Gemini 3 Flash (218 tok/s) or error
 - If SLA < 500ms: MiniMax or Gemini as tradeoff
 - If SLA > 500ms: standard MiniMax routing
@@ -307,18 +341,21 @@ Latency SLA compliance:
 ## Future Updates
 
 ### When Benchmarks Change
+
 - Update quality % in all documents
 - Recalculate dominance relationships
 - Verify frontier remains 3-model
 - Note: date of benchmark update in header
 
 ### When Pricing Changes
+
 - Update $/M in all tables
 - Recalculate cost per quality %
 - Verify MiniMax remains optimal
 - If price changes >10%: recompute frontier
 
 ### When New Models Released
+
 - Add row to comparison table
 - Run dominance check against 3-frontier models
 - If dominated: mark as fallback/niche
@@ -337,18 +374,17 @@ Latency SLA compliance:
 
 ## Document Versions
 
-| Document | Version | Date | Status |
-|----------|---------|------|--------|
-| PARETO_FRONTIER_COMPLETE_ANALYSIS.md | 1.0 | 2026-02-15 | Reference |
-| MODEL_ROUTING_DECISION_TREE.md | 1.0 | 2026-02-15 | Reference |
-| PARETO_FRONTIER_QUICK_REFERENCE.md | 1.0 | 2026-02-15 | Reference |
-| DOMINANCE_PROOF_REFERENCE.md | 1.0 | 2026-02-15 | Reference |
-| MODEL_SELECTION_INDEX.md (this) | 1.0 | 2026-02-15 | Reference |
+| Document                             | Version | Date       | Status    |
+| ------------------------------------ | ------- | ---------- | --------- |
+| PARETO_FRONTIER_COMPLETE_ANALYSIS.md | 1.0     | 2026-02-15 | Reference |
+| MODEL_ROUTING_DECISION_TREE.md       | 1.0     | 2026-02-15 | Reference |
+| PARETO_FRONTIER_QUICK_REFERENCE.md   | 1.0     | 2026-02-15 | Reference |
+| DOMINANCE_PROOF_REFERENCE.md         | 1.0     | 2026-02-15 | Reference |
+| MODEL_SELECTION_INDEX.md (this)      | 1.0     | 2026-02-15 | Reference |
 
 ---
 
 **Questions?** Refer to the appropriate document above. For implementation, start with `MODEL_ROUTING_DECISION_TREE.md`. For understanding, start with `PARETO_FRONTIER_QUICK_REFERENCE.md`.
-
 
 ---
 
@@ -358,15 +394,18 @@ Latency SLA compliance:
 **Extended by:** Claude Code
 
 ### Changes Made
+
 1. Added practical implementation patterns
 2. Added configuration examples
 3. Enhanced cross-references to related documentation
 
 ### Cross-References Added
+
 - Related research and implementation guides
 - WORK_STREAM.md for tracking
 
 ### Practical Additions
+
 - Implementation templates
 - Configuration examples
 - Best practices

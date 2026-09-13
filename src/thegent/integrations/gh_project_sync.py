@@ -12,17 +12,18 @@ Key Principles:
 
 import csv
 import io
-import orjson as json
 import logging
+import re
 import shutil
 import subprocess
-from thegent.infra.shim_subprocess import run as shim_run
-import re
 from dataclasses import dataclass
-from datetime import datetime, UTC
+from datetime import UTC, datetime
 from pathlib import Path
 from typing import Any, Literal
 
+import orjson as json
+
+from thegent.infra.shim_subprocess import run as shim_run
 from thegent.integrations.connector_mapping_cache import ConnectorMappingCache
 
 logger = logging.getLogger(__name__)
@@ -219,7 +220,11 @@ def _status_from_github(item: dict[str, Any]) -> str:
 def _parse_github_issue_references(raw: str) -> list[str]:
     """Extract GitHub issue references from text."""
     references: set[str] = set()
-    matches = re.findall(r"https?://github\.com/([^/\s]+)/([^/\s]+)/issues/(\d+)", raw, flags=re.IGNORECASE)
+    matches = re.findall(
+        r"https?://github\.com/([^/\s]+)/([^/\s]+)/issues/(\d+)",
+        raw,
+        flags=re.IGNORECASE,
+    )
     for owner, repo, issue in matches:
         references.add(f"{owner}/{repo}#{issue}")
 
@@ -242,7 +247,12 @@ def extract_github_issue_refs(raw_item: dict[str, Any]) -> list[str]:
         if isinstance(content_url, str):
             references.update(_parse_github_issue_references(content_url))
 
-    for text in (raw_item.get("body"), raw_item.get("title"), raw_item.get("url"), str(raw_item.get("content") or "")):
+    for text in (
+        raw_item.get("body"),
+        raw_item.get("title"),
+        raw_item.get("url"),
+        str(raw_item.get("content") or ""),
+    ):
         if isinstance(text, str):
             references.update(_parse_github_issue_references(text))
 
@@ -274,7 +284,12 @@ def _run_issue_close_and_comment(
     """Close and comment a single GitHub issue."""
     normalized = _normalize_issue_ref(issue_ref)
     if not normalized:
-        return {"issue_ref": issue_ref, "commented": False, "closed": False, "status": "skipped"}
+        return {
+            "issue_ref": issue_ref,
+            "commented": False,
+            "closed": False,
+            "status": "skipped",
+        }
 
     if close_comment:
         _run_gh_command(

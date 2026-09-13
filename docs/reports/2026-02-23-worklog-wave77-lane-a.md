@@ -19,18 +19,18 @@ Repo touched: `/Users/kooshapari/temp-PRODVERCEL/485/kush/cliproxyapi-plusplus`
 
 ## Per-Item Execution Ledger
 
-| Item | Status | Lane Action | Evidence |
-|---|---|---|---|
-| `#178` | verified-existing | Confirmed request translators already sanitize/replace `thoughtSignature` paths for Gemini/Antigravity tool-call conversion; no additional safe delta required. | Existing tests and constants in `translator/gemini/claude` and `translator/antigravity/claude`. |
-| `#1424` | verified-existing | Confirmed schema sanitization removes `$id` and `patternProperties` before Gemini tool schema emission. | `pkg/llmproxy/translator/gemini/common/sanitize.go` and related tests. |
-| `#1394` | triaged-no-safe-fix | Session-title generation failure needs concrete failing title-generation payload/repro path; no deterministic narrow patch from static lane context. | Static review only. |
-| `#1392` | triaged-no-safe-fix | Account rotation on `VALIDATION_REQUIRED` is cross-cutting behavior, not a safe small patch in this lane. | Deferred by scope/risk. |
-| `#163` | fixed | Hardened Claude->Gemini and Claude->Antigravity request translators to drop whitespace-only text blocks (not just empty strings) to prevent invalid empty-part payloads. | Code + new regression tests below. |
-| `#1375` | verified-existing | Confirmed unsupported `defer_loading`/`deferLoading` keys are removed from Google Search tool payloads. | Existing tests in Gemini and Gemini-CLI OpenAI request translators. |
-| `#1325` | triaged-no-safe-fix | 404 model-not-found likely model registry/provider endpoint mismatch requiring issue-specific model IDs and provider context. | No safe static fix without repro details. |
-| `#1306` | triaged-no-safe-fix | Internal error on Opus 4.5 OAuth path requires upstream/provider-specific trace for safe fix. | No deterministic failing fixture in lane scope. |
-| `#1299` | triaged-no-safe-fix | Logging timestamp inaccuracy requires broader logging pipeline audit; no isolated reproducible defect in touched surfaces. | Deferred for dedicated logging slice. |
-| `#1293` | fixed | Same whitespace-empty hardening as `#163` closes another path for Gemini oneof-empty-data failures. | Code + new regression tests below. |
+| Item    | Status              | Lane Action                                                                                                                                                              | Evidence                                                                                        |
+| ------- | ------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ----------------------------------------------------------------------------------------------- |
+| `#178`  | verified-existing   | Confirmed request translators already sanitize/replace `thoughtSignature` paths for Gemini/Antigravity tool-call conversion; no additional safe delta required.          | Existing tests and constants in `translator/gemini/claude` and `translator/antigravity/claude`. |
+| `#1424` | verified-existing   | Confirmed schema sanitization removes `$id` and `patternProperties` before Gemini tool schema emission.                                                                  | `pkg/llmproxy/translator/gemini/common/sanitize.go` and related tests.                          |
+| `#1394` | triaged-no-safe-fix | Session-title generation failure needs concrete failing title-generation payload/repro path; no deterministic narrow patch from static lane context.                     | Static review only.                                                                             |
+| `#1392` | triaged-no-safe-fix | Account rotation on `VALIDATION_REQUIRED` is cross-cutting behavior, not a safe small patch in this lane.                                                                | Deferred by scope/risk.                                                                         |
+| `#163`  | fixed               | Hardened Claude->Gemini and Claude->Antigravity request translators to drop whitespace-only text blocks (not just empty strings) to prevent invalid empty-part payloads. | Code + new regression tests below.                                                              |
+| `#1375` | verified-existing   | Confirmed unsupported `defer_loading`/`deferLoading` keys are removed from Google Search tool payloads.                                                                  | Existing tests in Gemini and Gemini-CLI OpenAI request translators.                             |
+| `#1325` | triaged-no-safe-fix | 404 model-not-found likely model registry/provider endpoint mismatch requiring issue-specific model IDs and provider context.                                            | No safe static fix without repro details.                                                       |
+| `#1306` | triaged-no-safe-fix | Internal error on Opus 4.5 OAuth path requires upstream/provider-specific trace for safe fix.                                                                            | No deterministic failing fixture in lane scope.                                                 |
+| `#1299` | triaged-no-safe-fix | Logging timestamp inaccuracy requires broader logging pipeline audit; no isolated reproducible defect in touched surfaces.                                               | Deferred for dedicated logging slice.                                                           |
+| `#1293` | fixed               | Same whitespace-empty hardening as `#163` closes another path for Gemini oneof-empty-data failures.                                                                      | Code + new regression tests below.                                                              |
 
 ## Code Changes (High-Confidence Only)
 

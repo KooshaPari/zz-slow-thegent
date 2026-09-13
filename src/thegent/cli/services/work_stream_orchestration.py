@@ -6,8 +6,7 @@ import time
 from pathlib import Path
 from typing import Any
 
-from thegent.cli.services import pre_work_gate_helpers
-from thegent.cli.services import run_workstream_helpers
+from thegent.cli.services import pre_work_gate_helpers, run_workstream_helpers
 from thegent.config import ThegentSettings
 
 _log = __import__("logging").getLogger(__name__)
@@ -67,7 +66,10 @@ def do_next_impl(cd: Path | None = None, limit: int = 5) -> dict[str, Any]:
     aggregated_items.extend(ws_items)
     sources_checked.extend(ws_sources)
     aggregated_items.sort(
-        key=lambda x: (x.pop("_sort_order", 5), run_workstream_helpers.priority_sort_key(x.get("priority", "P2")))
+        key=lambda x: (
+            x.pop("_sort_order", 5),
+            run_workstream_helpers.priority_sort_key(x.get("priority", "P2")),
+        )
     )
     next_items = aggregated_items[:limit]
 
@@ -225,7 +227,10 @@ def spawn_next_impl(
             try:
                 claim_result = work_stream_claim_impl(item_id, agent_id, cd=cd)
                 if not claim_result.get("success", False):
-                    err: dict[str, Any] = {"item_id": item_id, "error": claim_result.get("error", "Claim failed")}
+                    err: dict[str, Any] = {
+                        "item_id": item_id,
+                        "error": claim_result.get("error", "Claim failed"),
+                    }
                     if claim_result.get("governance_blocked"):
                         err["governance_blocked"] = True
                         err["remediation"] = claim_result.get("remediation")

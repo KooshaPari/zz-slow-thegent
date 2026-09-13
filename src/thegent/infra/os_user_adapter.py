@@ -3,8 +3,9 @@
 import os
 import platform
 import shutil
-from thegent.infra.shim_subprocess import run as shim_run
 from pathlib import Path
+
+from thegent.infra.shim_subprocess import run as shim_run
 
 
 class OSUserAdapter:
@@ -16,12 +17,11 @@ class OSUserAdapter:
     def _run_privileged(self, cmd: list[str]) -> tuple[bool, str]:
         """Run a command with elevated privileges (sudo/admin)."""
         # 1. On Unix-like systems, try sudo if not already root
-        if self.system in ["Linux", "Darwin"]:
-            if os.geteuid() != 0:
-                if shutil.which("sudo"):
-                    cmd = ["sudo", "-n"] + cmd  # -n for non-interactive
-                else:
-                    return False, "Not root and sudo not found"
+        if self.system in ["Linux", "Darwin"] and os.geteuid() != 0:
+            if shutil.which("sudo"):
+                cmd = ["sudo", "-n"] + cmd  # -n for non-interactive
+            else:
+                return False, "Not root and sudo not found"
 
         # 2. On Windows, assume the process is already elevated or the command handles elevation
         # (Windows doesn't have a direct 'sudo' in standard shell, needs ShellExecute with 'runas')
@@ -75,10 +75,31 @@ class OSUserAdapter:
         commands = [
             ["dscl", ".", "-create", f"/Users/{username}"],
             ["dscl", ".", "-create", f"/Users/{username}", "UserShell", "/bin/zsh"],
-            ["dscl", ".", "-create", f"/Users/{username}", "RealName", f"Agent User {username}"],
+            [
+                "dscl",
+                ".",
+                "-create",
+                f"/Users/{username}",
+                "RealName",
+                f"Agent User {username}",
+            ],
             ["dscl", ".", "-create", f"/Users/{username}", "UniqueID", uid],
-            ["dscl", ".", "-create", f"/Users/{username}", "PrimaryGroupID", "20"],  # staff group
-            ["dscl", ".", "-create", f"/Users/{username}", "NFSHomeDirectory", str(home_dir or f"/Users/{username}")],
+            [
+                "dscl",
+                ".",
+                "-create",
+                f"/Users/{username}",
+                "PrimaryGroupID",
+                "20",
+            ],  # staff group
+            [
+                "dscl",
+                ".",
+                "-create",
+                f"/Users/{username}",
+                "NFSHomeDirectory",
+                str(home_dir or f"/Users/{username}"),
+            ],
             ["dscl", ".", "-passwd", f"/Users/{username}", "*"],  # No password
         ]
 

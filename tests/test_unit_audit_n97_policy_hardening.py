@@ -11,7 +11,7 @@ Source: src/thegent/governance/policy.py
 
 from __future__ import annotations
 
-from thegent.governance.policy import PolicyManager, LearningSession
+from thegent.governance.policy import LearningSession, PolicyManager
 
 
 class TestPolicyManager:

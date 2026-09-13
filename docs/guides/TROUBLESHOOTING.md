@@ -25,17 +25,21 @@ thegent doctor --fix
 **Symptoms**: `thegent` command is not recognized.
 
 **Causes**:
+
 - `thegent` is not installed
 - `~/.local/bin` is not in PATH
 - Virtual environment is not activated
 
 **Solutions**:
+
 1. Install thegent:
+
    ```bash
    pip install thegent
    ```
 
 2. Add `~/.local/bin` to PATH:
+
    ```bash
    echo 'export PATH="$HOME/.local/bin:$PATH"' >> ~/.zshrc
    source ~/.zshrc
@@ -51,6 +55,7 @@ thegent doctor --fix
 **Symptoms**: `uv` command is not available.
 
 **Solutions**:
+
 ```bash
 # macOS/Linux
 curl -LsSf https://astral.sh/uv/install.sh | sh
@@ -66,12 +71,15 @@ uv --version
 **Symptoms**: Configuration errors on startup.
 
 **Solutions**:
+
 1. Create configuration:
+
    ```bash
    thegent setup --wizard
    ```
 
 2. Validate configuration:
+
    ```bash
    thegent config validate
    ```
@@ -86,6 +94,7 @@ uv --version
 **Symptoms**: Configuration validation errors.
 
 **Solutions**:
+
 1. Check the error message for the specific field
 2. Review `docs/guides/CONFIGURATION.md` for valid values
 3. Run `thegent config validate` for detailed errors
@@ -97,6 +106,7 @@ uv --version
 **Symptoms**: PyPy runtime not found.
 
 **Solutions**:
+
 ```bash
 # Install PyPy via uv
 uv python install pypy-3.11
@@ -110,6 +120,7 @@ uv run --python pypy-3.11 python --version
 **Symptoms**: CPython 3.14 runtime not found.
 
 **Solutions**:
+
 ```bash
 # Install CPython 3.14 via uv
 uv python install 3.14
@@ -123,6 +134,7 @@ uv run --python 3.14 python --version
 **Symptoms**: Rust toolchain not found.
 
 **Solutions**:
+
 ```bash
 # Install Rust
 curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
@@ -138,17 +150,21 @@ cargo --version
 **Symptoms**: Network requests timing out.
 
 **Causes**:
+
 - Firewall blocking connections
 - Network connectivity issues
 - Proxy configuration
 
 **Solutions**:
+
 1. Check network connectivity:
+
    ```bash
    thegent doctor --network
    ```
 
 2. Test endpoint:
+
    ```bash
    curl -v https://api.example.com/health
    ```
@@ -164,6 +180,7 @@ cargo --version
 **Symptoms**: Intermittent connectivity on Mac WiFi.
 
 **Solutions**:
+
 1. Check WiFi signal strength
 2. Use Ethernet when possible for heavy compute
 3. Configure asymmetric buffering (see `docs/architecture/HARDWARE_OPTIMIZATION_2026.md`)
@@ -175,12 +192,15 @@ cargo --version
 **Symptoms**: `thegent` takes a long time to start.
 
 **Solutions**:
+
 1. Check for process leaks:
+
    ```bash
    thegent doctor --processes
    ```
 
 2. Clear caches:
+
    ```bash
    thegent clean --cache
    ```
@@ -196,12 +216,15 @@ cargo --version
 **Symptoms**: High memory consumption.
 
 **Solutions**:
+
 1. Check for memory leaks:
+
    ```bash
    thegent doctor --memory
    ```
 
 2. Restart services:
+
    ```bash
    thegent mcp restart
    ```
@@ -215,12 +238,15 @@ cargo --version
 **Symptoms**: Suboptimal performance.
 
 **Solutions**:
+
 1. Check runtime availability:
+
    ```bash
    thegent doctor --runtime
    ```
 
 2. Review runtime selection guide:
+
    ```bash
    cat docs/architecture/RUNTIME_SELECTION_GUIDE.md
    ```
@@ -241,6 +267,7 @@ thegent error report
 ```
 
 This creates a report with:
+
 - Error details
 - System information
 - Configuration (sanitized)

@@ -12,7 +12,7 @@ Test matrix for tenant boundary validation.
 
 ### Methods
 
-#### TenantBoundaryTestMatrix.__init__
+#### TenantBoundaryTestMatrix.**init**
 
 ```python
 __init__(self: Any)

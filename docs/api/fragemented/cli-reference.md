@@ -22,10 +22,10 @@ Global options work with any CRUN command:
 crun [OPTIONS] COMMAND [ARGS]
 ```
 
-| Option | Description | Example |
-|--------|-------------|---------|
-| `--help` | Show help message | `crun --help` |
-| `-v, --version` | Show CRUN version | `crun --version` |
+| Option           | Description               | Example               |
+| ---------------- | ------------------------- | --------------------- |
+| `--help`         | Show help message         | `crun --help`         |
+| `-v, --version`  | Show CRUN version         | `crun --version`      |
 | `--list-clients` | List available UI clients | `crun --list-clients` |
 
 ---
@@ -41,23 +41,25 @@ AI planning commands are in the `ai-plan` namespace.
 Generate a large, detailed project plan using AI.
 
 **Usage:**
+
 ```bash
 crun ai-plan generate-massive [OPTIONS] DESCRIPTION_FILE
 ```
 
 **Arguments:**
+
 - `DESCRIPTION_FILE` - Path to PRD/description file (text or JSON)
 
 **Options:**
 
-| Flag | Default | Description |
-|------|---------|-------------|
-| `-o, --output` | `massive-plan.json` | Output path for generated WBS |
-| `--max-depth` | `4` | Maximum WBS hierarchy depth |
-| `--model` | `anthropic/claude-sonnet-4` | Primary model for generation |
-| `--fast-model` | `anthropic/claude-haiku-4` | Fast model for simpler tasks |
-| `--streaming/--no-streaming` | `--streaming` | Enable streaming progress |
-| `--api-key` | from `OPENROUTER_API_KEY` | API key override |
+| Flag                         | Default                     | Description                   |
+| ---------------------------- | --------------------------- | ----------------------------- |
+| `-o, --output`               | `massive-plan.json`         | Output path for generated WBS |
+| `--max-depth`                | `4`                         | Maximum WBS hierarchy depth   |
+| `--model`                    | `anthropic/claude-sonnet-4` | Primary model for generation  |
+| `--fast-model`               | `anthropic/claude-haiku-4`  | Fast model for simpler tasks  |
+| `--streaming/--no-streaming` | `--streaming`               | Enable streaming progress     |
+| `--api-key`                  | from `OPENROUTER_API_KEY`   | API key override              |
 
 **Examples:**
 
@@ -75,20 +77,22 @@ echo "Build a task management app" | crun ai-plan generate-massive - -o plan.jso
 ### `crun ai-plan visualize`
 
 **Usage:**
+
 ```bash
 crun ai-plan visualize [OPTIONS] PLAN_FILE
 ```
 
 **Arguments:**
+
 - `PLAN_FILE` - Path to WBS plan file (JSON)
 
 **Options:**
 
-| Flag | Default | Description |
-|------|---------|-------------|
-| `-f, --format` | `gantt` | `gantt`, `dag`, `timeline`, `mermaid` |
-| `-o, --output` | auto | Output path |
-| `--highlight-critical/--no-highlight-critical` | `--highlight-critical` | Highlight critical path |
+| Flag                                           | Default                | Description                           |
+| ---------------------------------------------- | ---------------------- | ------------------------------------- |
+| `-f, --format`                                 | `gantt`                | `gantt`, `dag`, `timeline`, `mermaid` |
+| `-o, --output`                                 | auto                   | Output path                           |
+| `--highlight-critical/--no-highlight-critical` | `--highlight-critical` | Highlight critical path               |
 
 **Example:**
 
@@ -99,36 +103,38 @@ crun ai-plan visualize my_plan.json --format dag --output dag.png
 ### `crun ai-plan edit`
 
 **Usage:**
+
 ```bash
 crun ai-plan edit [OPTIONS] PLAN_FILE
 ```
 
 **Options:**
 
-| Flag | Description |
-|------|-------------|
-| `-t, --task` | (required) Task ID to edit |
-| `--set-status` | Set status (`pending`, `in_progress`, `completed`, `blocked`) |
-| `--set-assignee` | Set assignee |
-| `--set-priority` | Set priority |
-| `--add-tag` | Add a tag |
-| `--remove-tag` | Remove a tag |
+| Flag             | Description                                                   |
+| ---------------- | ------------------------------------------------------------- |
+| `-t, --task`     | (required) Task ID to edit                                    |
+| `--set-status`   | Set status (`pending`, `in_progress`, `completed`, `blocked`) |
+| `--set-assignee` | Set assignee                                                  |
+| `--set-priority` | Set priority                                                  |
+| `--add-tag`      | Add a tag                                                     |
+| `--remove-tag`   | Remove a tag                                                  |
 
 ### `crun ai-plan monitor`
 
 **Usage:**
+
 ```bash
 crun ai-plan monitor [OPTIONS] PLAN_FILE
 ```
 
 **Options:**
 
-| Flag | Default | Description |
-|------|---------|-------------|
-| `-f, --follow` | `False` | Stream execution updates |
-| `-w, --workers` | `10` | Maximum workers |
-| `-p, --priority` | `critical_path` | `critical_path`, `slack`, `complexity`, `hybrid` |
-| `--dry-run/--execute` | `--dry-run` | Simulate or execute |
+| Flag                  | Default         | Description                                      |
+| --------------------- | --------------- | ------------------------------------------------ |
+| `-f, --follow`        | `False`         | Stream execution updates                         |
+| `-w, --workers`       | `10`            | Maximum workers                                  |
+| `-p, --priority`      | `critical_path` | `critical_path`, `slack`, `complexity`, `hybrid` |
+| `--dry-run/--execute` | `--dry-run`     | Simulate or execute                              |
 
 ---
 
@@ -165,9 +171,11 @@ Monitoring is under `crun monitor` for static quality/test monitoring.
 Some builds may also expose adapter-based dashboards under `crun monitoring` (project/agent/quality/all).
 
 ### `crun monitor start`
+
 Start static monitoring and optional lint/test fixing over a workspace.
 
 Options:
+
 - `--workspace, -w`: Workspace directory (default `.`)
 - `--languages, -l`: Comma-separated languages to scan (default `python,typescript`)
 - `--lint` (default true): Enable lint fixing
@@ -181,6 +189,7 @@ crun monitor start --workspace . --languages python,typescript
 ```
 
 ### `crun monitor list-models`
+
 List models available to the monitor runner.
 
 ```bash
@@ -248,6 +257,7 @@ crun monitor start --workspace .
 **Cause:** CRUN is not installed in the active environment.
 
 **Solution:**
+
 ```bash
 source venv/bin/activate
 pip install -e ".[all]"
@@ -258,6 +268,7 @@ pip install -e ".[all]"
 **Cause:** OpenRouter API key missing.
 
 **Solution:**
+
 ```bash
 export OPENROUTER_API_KEY=or-your-key
 ```
@@ -273,6 +284,7 @@ export OPENROUTER_API_KEY=or-your-key
 **Cause:** `crun quality` is not a top-level command.
 
 **Solution:**
+
 ```bash
 crun monitor start --workspace . --languages python,typescript --lint --tests
 ```

@@ -101,7 +101,11 @@ def test_build_observe_summary_trend_builds_summary_and_deltas() -> None:
         return datetime.fromisoformat(value) if value else None
 
     def freshness_bucket_fn(
-        freshness_seconds: int | None, *, fresh_seconds: int, warm_seconds: int, stale_seconds: int
+        freshness_seconds: int | None,
+        *,
+        fresh_seconds: int,
+        warm_seconds: int,
+        stale_seconds: int,
     ) -> str:
         assert fresh_seconds == 3600
         assert warm_seconds == 21600

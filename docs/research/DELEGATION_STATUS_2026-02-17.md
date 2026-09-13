@@ -96,16 +96,19 @@ Successfully started parallel agent delegation workflow using `thegent free` age
 ## Monitoring
 
 **Check running agents:**
+
 ```bash
 ps aux | grep "thegent free" | grep -v grep
 ```
 
 **Check session status:**
+
 ```bash
 thegent cockpit
 ```
 
 **Check work stream:**
+
 ```bash
 thegent plan do-next
 ```

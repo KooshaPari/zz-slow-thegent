@@ -18,7 +18,6 @@ import logging
 import shutil
 import subprocess
 from dataclasses import dataclass
-from typing import Optional
 
 _log = logging.getLogger(__name__)
 
@@ -34,40 +33,40 @@ class BenchmarkData:
     """Benchmark data for a model from tokenledger."""
 
     model_id: str
-    provider: Optional[str] = None
+    provider: str | None = None
 
     # Quality metrics
-    intelligence_index: Optional[float] = None
-    coding_index: Optional[float] = None
+    intelligence_index: float | None = None
+    coding_index: float | None = None
 
     # Performance metrics
-    speed_tps: Optional[float] = None  # Tokens per second
-    latency_ttft_ms: Optional[float] = None  # Time to first token
+    speed_tps: float | None = None  # Tokens per second
+    latency_ttft_ms: float | None = None  # Time to first token
 
     # Cost metrics
-    price_input_per_1m: Optional[float] = None  # USD per 1M input tokens
-    price_output_per_1m: Optional[float] = None  # USD per 1M output tokens
+    price_input_per_1m: float | None = None  # USD per 1M input tokens
+    price_output_per_1m: float | None = None  # USD per 1M output tokens
 
     # Context
-    context_window_tokens: Optional[int] = None
+    context_window_tokens: int | None = None
 
     # Metadata
     confidence: float = 0.0
     source: str = "unknown"
 
-    def get_quality_score(self) -> Optional[float]:
+    def get_quality_score(self) -> float | None:
         """Get normalized quality score (0-1)."""
         if self.intelligence_index is not None:
             return self.intelligence_index / 100.0
         return None
 
-    def get_cost_per_1k(self) -> Optional[float]:
+    def get_cost_per_1k(self) -> float | None:
         """Get cost per 1K tokens."""
         if self.price_input_per_1m is not None:
             return self.price_input_per_1m
         return None
 
-    def get_latency_ms(self) -> Optional[int]:
+    def get_latency_ms(self) -> int | None:
         """Get latency in milliseconds."""
         if self.latency_ttft_ms is not None:
             return int(self.latency_ttft_ms)
@@ -100,10 +99,10 @@ class TokenledgerAdapter:
     3. Falls back to hardcoded values on error
     """
 
-    def __init__(self, config: Optional[TokenledgerConfig] = None):
+    def __init__(self, config: TokenledgerConfig | None = None):
         self.config = config or TokenledgerConfig()
         self._cache: dict[str, BenchmarkData] = {}
-        self._available: Optional[bool] = None
+        self._available: bool | None = None
 
     def is_available(self) -> bool:
         """Check if tokenledger CLI is available."""
@@ -118,7 +117,7 @@ class TokenledgerAdapter:
         self._available = False
         return False
 
-    def get_benchmark(self, model_id: str) -> Optional[BenchmarkData]:
+    def get_benchmark(self, model_id: str) -> BenchmarkData | None:
         """Get benchmark data for a model.
 
         Args:
@@ -157,7 +156,7 @@ class TokenledgerAdapter:
         self._cache.clear()
         return True
 
-    def _fetch_from_cli(self, model_id: str) -> Optional[BenchmarkData]:
+    def _fetch_from_cli(self, model_id: str) -> BenchmarkData | None:
         """Fetch benchmark data from tokenledger CLI.
 
         Args:
@@ -260,7 +259,7 @@ class TokenledgerAdapter:
 
 
 # Global adapter instance
-_adapter: Optional[TokenledgerAdapter] = None
+_adapter: TokenledgerAdapter | None = None
 
 
 def get_adapter() -> TokenledgerAdapter:
@@ -271,7 +270,7 @@ def get_adapter() -> TokenledgerAdapter:
     return _adapter
 
 
-def get_benchmark(model_id: str) -> Optional[BenchmarkData]:
+def get_benchmark(model_id: str) -> BenchmarkData | None:
     """Convenience function to get benchmark data."""
     return get_adapter().get_benchmark(model_id)
 

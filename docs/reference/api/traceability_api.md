@@ -15,7 +15,7 @@ Audits code and specs for traceability links.
 
 ### Methods
 
-#### TraceabilityAuditor.__init__
+#### TraceabilityAuditor.**init**
 
 ```python
 __init__(self: Any, root_dir: Path)

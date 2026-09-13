@@ -9,13 +9,13 @@
 
 ## 1. Shell Selection Matrix
 
-| Context | macOS | Linux | Windows (native) | Windows (WSL2) |
-|---------|-------|-------|------------------|----------------|
-| **Hooks** | Bash | Bash | WSL2 Bash or pwsh | Bash |
-| **Agent subprocess** | Bash/zsh | Bash | pwsh or WSL2 Bash | Bash |
-| **OS user creation** | dscl/useradd | useradd | pwsh (New-LocalUser) | N/A |
-| **Desktop automation** | AppleScript | Python+AT-SPI | pwsh + UI Automation | N/A |
-| **thegent CLI** | Python | Python | Python | Python |
+| Context                | macOS        | Linux         | Windows (native)     | Windows (WSL2) |
+| ---------------------- | ------------ | ------------- | -------------------- | -------------- |
+| **Hooks**              | Bash         | Bash          | WSL2 Bash or pwsh    | Bash           |
+| **Agent subprocess**   | Bash/zsh     | Bash          | pwsh or WSL2 Bash    | Bash           |
+| **OS user creation**   | dscl/useradd | useradd       | pwsh (New-LocalUser) | N/A            |
+| **Desktop automation** | AppleScript  | Python+AT-SPI | pwsh + UI Automation | N/A            |
+| **thegent CLI**        | Python       | Python        | Python               | Python         |
 
 ---
 
@@ -24,12 +24,13 @@
 ```yaml
 # ~/.thegent/config.yaml
 shell:
-  agent_shell: "bash"       # bash | pwsh | wsl-bash
-  hook_shell: "bash"        # bash | pwsh | wsl-bash (Windows)
-  os_admin_shell: "auto"    # auto | pwsh (Windows) | bash (Unix)
+  agent_shell: "bash" # bash | pwsh | wsl-bash
+  hook_shell: "bash" # bash | pwsh | wsl-bash (Windows)
+  os_admin_shell: "auto" # auto | pwsh (Windows) | bash (Unix)
 ```
 
 **Environment:**
+
 - `THGENT_AGENT_SHELL` — Override agent subprocess shell
 - `THGENT_HOOK_SHELL` — Override hook execution shell (Windows)
 - `THGENT_OS_ADMIN_SHELL` — Override OS admin commands
@@ -76,7 +77,6 @@ shell:
 - [CROSS_PLATFORM_GAPS_AND_EXTENSIONS_RESEARCH.md](../research/CROSS_PLATFORM_GAPS_AND_EXTENSIONS_RESEARCH.md)
 - [CROSS_PLATFORM_MULTI_TENANT_QUICK_REFERENCE.md](./CROSS_PLATFORM_MULTI_TENANT_QUICK_REFERENCE.md)
 
-
 ---
 
 ## EXTENSION_SUMMARY
@@ -85,15 +85,18 @@ shell:
 **Extended by:** Claude Code
 
 ### Changes Made
+
 1. Added practical implementation patterns
 2. Added configuration examples
 3. Enhanced cross-references to related documentation
 
 ### Cross-References Added
+
 - Related research and implementation guides
 - WORK_STREAM.md for tracking
 
 ### Practical Additions
+
 - Implementation templates
 - Configuration examples
 - Best practices

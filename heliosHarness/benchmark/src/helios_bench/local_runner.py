@@ -14,12 +14,10 @@ Usage:
 """
 
 import argparse
-import subprocess
 import json
+import subprocess
 import time
-import os
-from pathlib import Path
-from typing import Dict, List, Any
+from typing import Any
 
 TASKS = {
     "palindrome": {
@@ -48,7 +46,9 @@ class HeliosRunner:
 
         # Run the binary
         result = subprocess.run(
-            [self.binary, "exec", "--skip-git-repo-check", task["instruction"]], capture_output=True, timeout=30
+            [self.binary, "exec", "--skip-git-repo-check", task["instruction"]],
+            capture_output=True,
+            timeout=30,
         )
 
         elapsed = time.time() - start

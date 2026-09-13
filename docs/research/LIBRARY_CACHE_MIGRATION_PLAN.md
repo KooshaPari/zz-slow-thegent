@@ -16,9 +16,11 @@ Replace custom caching implementations with `cachetools` library per LIBRARY_FIR
 
 **Location**: `src/thegent/cli_impl.py`
 **Pattern**: Global `_CWD_CACHE` dict
+
 ```python
 _CWD_CACHE: dict[str, tuple[str, float]] = {}
 ```
+
 **Usage**: CWD-based cache with no TTL
 **Migration**: Replace with `TTLCache(maxsize=100, ttl=3600)`
 
@@ -28,9 +30,11 @@ _CWD_CACHE: dict[str, tuple[str, float]] = {}
 
 **Location**: `src/thegent/infra/fast_json_schema.py`
 **Pattern**: Global `_schema_cache` dict
+
 ```python
 _schema_cache: dict[str, FastJSONSchemaValidator] = {}
 ```
+
 **Usage**: Schema validator caching (no expiration)
 **Migration**: Replace with `LRUCache(maxsize=50)`
 
@@ -40,11 +44,13 @@ _schema_cache: dict[str, FastJSONSchemaValidator] = {}
 
 **Location**: `src/thegent/infra/fast_process_monitor.py`
 **Pattern**: Instance attribute `self._cache` dict with manual TTL
+
 ```python
 self._cache: dict[int, ProcessInfo] = {}
 self._cache_time: float = 0
 self._cache_ttl: float = 1.0  # Cache for 1 second
 ```
+
 **Usage**: Process info caching with 1s TTL
 **Migration**: Replace with `TTLCache(maxsize=100, ttl=1.0)`
 
@@ -54,13 +60,16 @@ self._cache_ttl: float = 1.0  # Cache for 1 second
 
 **Location**: `src/thegent/tools/cache.py`
 **Pattern**: Complete custom `JSONCache` class
+
 ```python
 class JSONCache:
     def __init__(self, ttl_seconds: int = 300): ...
     def get(self, key: str): ...  # Checks time.time() - timestamp > ttl
     def set(self, key: str, payload: Any): ...
 ```
+
 **Features**:
+
 - File-based persistence (JSON)
 - TTL expiration (manual time.time() checks)
 - ETag hashing for change detection
@@ -69,6 +78,7 @@ class JSONCache:
 **Usage**: Shared tool cache across sessions
 
 **Migration**:
+
 - Replace in-memory cache with `TTLCache`
 - Keep file persistence as separate layer (decorator pattern)
 - Remove manual TTL checks (handled by cachetools)
@@ -79,13 +89,16 @@ class JSONCache:
 
 **Location**: `src/thegent/infra/fast_cache.py`
 **Pattern**: Complete custom `FastCache` class with L1/L2 levels
+
 ```python
 class FastCache:
     def __init__(self, l1_size: int = 10, l2_size: int = 100, ttl: int = 60): ...
     def get(self, key: str): ...  # Checks L1, then L2, with time.time() expiry
     def set(self, key: str, value: Any): ...  # LRU eviction from L2
 ```
+
 **Features**:
+
 - Two-level caching (L1 + L2)
 - TTL expiration (manual time.time() checks)
 - LRU eviction from L2
@@ -94,6 +107,7 @@ class FastCache:
 **Usage**: High-performance multi-level caching
 
 **Migration**:
+
 - Replace with `TTLCache` (single level, faster than custom)
 - Remove manual L1/L2 logic (simpler, less code)
 - Remove manual time.time() checks (handled by cachetools)
@@ -165,6 +179,7 @@ class FastCache:
 ## Test Coverage
 
 Each migration must include:
+
 - Unit test for cache behavior (get/set/expire)
 - Integration test for actual usage pattern
 - Performance regression test (should not be slower)

@@ -11,9 +11,11 @@
 ### Core Research Documents
 
 #### 1. proposal.md (70 lines)
+
 **Purpose**: Define problem, goals, success criteria, and rationale
 
 **Contents**:
+
 - Problem Statement (code duplication, inconsistency, governance gap)
 - Goals (>150 LOC reduction, improved safety)
 - Success Criteria (7 measurable checkpoints)
@@ -25,9 +27,11 @@
 ---
 
 #### 2. design.md (241 lines)
+
 **Purpose**: Technical architecture, wrapper API, patterns, and implementation strategy
 
 **Contents**:
+
 - Architecture Overview (wrapper pattern diagram)
 - Wrapper Location & API (get_cache_ttl, get_cache_lru, get_cache_lfu)
 - Usage Patterns (3 patterns: TTL, LRU, thread-safe)
@@ -43,9 +47,11 @@
 ---
 
 #### 3. tasks.md (245 lines)
+
 **Purpose**: Phased work breakdown with detailed acceptance criteria
 
 **Contents**:
+
 - Phased Work Breakdown (6 phases)
   - Phase 1: Dependency & Setup (2 tasks)
   - Phase 2: Wrapper Design (2 tasks)
@@ -62,9 +68,11 @@
 ---
 
 #### 4. README.md (380 lines)
+
 **Purpose**: Change overview, quick start guide, and status checklist
 
 **Contents**:
+
 - Overview & Status
 - Document Index
 - Quick Start Guides (for readers, implementers, reviewers)
@@ -83,11 +91,13 @@
 ### Supporting Documentation (In docs/research/)
 
 #### 5. CONVERSATION_DUMP_2026-02-18-cache-synthesis.md (462 lines)
+
 **Purpose**: Executive summary, implementation readiness, and quick reference
 
 **Location**: `docs/research/CONVERSATION_DUMP_2026-02-18-cache-synthesis.md`
 
 **Contents**:
+
 - Executive Summary
 - Change Rationale & Library Evaluation
 - Implementation Plan (phased execution)
@@ -107,11 +117,13 @@
 ---
 
 #### 6. CACHE_LIBRARY_IMPLEMENTATION_INDEX.md (280 lines)
+
 **Purpose**: Quick navigation guide and quick reference
 
 **Location**: `docs/research/CACHE_LIBRARY_IMPLEMENTATION_INDEX.md`
 
 **Contents**:
+
 - Documentation Map
 - Quick Navigation (3 use cases)
 - Change Summary
@@ -133,11 +145,13 @@
 ---
 
 #### 7. CACHE_RESEARCH_COMPLETION_REPORT.md (310 lines)
+
 **Purpose**: Research completion summary and sign-off
 
 **Location**: `docs/research/CACHE_RESEARCH_COMPLETION_REPORT.md`
 
 **Contents**:
+
 - Executive Summary
 - Deliverables List (complete breakdown)
 - Key Findings (problem, solution, plan, architecture, criteria, risks)
@@ -158,11 +172,13 @@
 ### Entry Point
 
 #### CACHE_LIBRARY_WRITEUP_SUMMARY.md
+
 **Purpose**: Top-level summary of entire research package
 
 **Location**: Project root: `/CACHE_LIBRARY_WRITEUP_SUMMARY.md`
 
 **Contents**:
+
 - What Was Delivered (overview of all 7 documents)
 - Key Findings (problem, solution, plan, architecture, criteria, risks)
 - Architecture Overview (with code examples)
@@ -180,23 +196,24 @@
 
 ## Document Statistics
 
-| Document | Lines | Category | Purpose |
-|----------|-------|----------|---------|
-| proposal.md | 70 | Core | Problem & Goals |
-| design.md | 241 | Core | Architecture & Patterns |
-| tasks.md | 245 | Core | Phased Tasks |
-| README.md | 380 | Core | Overview & Navigation |
-| synthesis.md | 462 | Supporting | Executive Summary |
-| index.md | 280 | Supporting | Quick Reference |
-| completion-report.md | 310 | Supporting | Research Completion |
-| writeup-summary.md | 340 | Entry Point | Top-Level Summary |
-| **Total** | **2,328** | — | — |
+| Document             | Lines     | Category    | Purpose                 |
+| -------------------- | --------- | ----------- | ----------------------- |
+| proposal.md          | 70        | Core        | Problem & Goals         |
+| design.md            | 241       | Core        | Architecture & Patterns |
+| tasks.md             | 245       | Core        | Phased Tasks            |
+| README.md            | 380       | Core        | Overview & Navigation   |
+| synthesis.md         | 462       | Supporting  | Executive Summary       |
+| index.md             | 280       | Supporting  | Quick Reference         |
+| completion-report.md | 310       | Supporting  | Research Completion     |
+| writeup-summary.md   | 340       | Entry Point | Top-Level Summary       |
+| **Total**            | **2,328** | —           | —                       |
 
 ---
 
 ## How to Use This Manifest
 
 ### Starting a New Implementation
+
 1. Read **CACHE_LIBRARY_WRITEUP_SUMMARY.md** (10 min, overview)
 2. Read **proposal.md** (5 min, problem & goals)
 3. Read **design.md** sections relevant to your role (10 min)
@@ -204,6 +221,7 @@
 5. Begin **Phase 1** of tasks.md
 
 ### Implementing the Change
+
 1. Keep **tasks.md** open (primary reference)
 2. Use **design.md** for technical details
 3. Use **CACHE_LIBRARY_IMPLEMENTATION_INDEX.md** for commands/quick ref
@@ -211,13 +229,16 @@
 5. Use **README.md** for Q&A
 
 ### Reviewing the Change
+
 1. Read **proposal.md** success criteria (what to verify)
 2. Check **design.md** files affected (what changed)
 3. Use **tasks.md** acceptance criteria (verification checklist)
 4. Use **CACHE_RESEARCH_COMPLETION_REPORT.md** (quality verification)
 
 ### Quick Questions
+
 Use **CACHE_LIBRARY_IMPLEMENTATION_INDEX.md**:
+
 - Q&A table: Questions & Support section
 - Command reference: Command Reference section
 - Effort: Effort Breakdown section
@@ -227,12 +248,14 @@ Use **CACHE_LIBRARY_IMPLEMENTATION_INDEX.md**:
 ## Reading Order by Role
 
 ### Product Manager / Project Lead
+
 1. CACHE_LIBRARY_WRITEUP_SUMMARY.md (overview)
 2. proposal.md (problem & goals)
 3. tasks.md summary table (effort & timeline)
 4. CACHE_RESEARCH_COMPLETION_REPORT.md (sign-off)
 
 ### Developer / Implementer
+
 1. README.md (overview + quick start)
 2. proposal.md (understand problem)
 3. design.md sections 1-3 (architecture & wrapper)
@@ -240,6 +263,7 @@ Use **CACHE_LIBRARY_IMPLEMENTATION_INDEX.md**:
 5. design.md section 5-7 (testing & rollback, as needed)
 
 ### Reviewer / QA
+
 1. CACHE_RESEARCH_COMPLETION_REPORT.md (what to verify)
 2. proposal.md success criteria (verification checklist)
 3. design.md files affected (scope check)
@@ -247,6 +271,7 @@ Use **CACHE_LIBRARY_IMPLEMENTATION_INDEX.md**:
 5. README.md success metrics (final validation)
 
 ### Architect / Tech Lead
+
 1. design.md (architecture & patterns)
 2. proposal.md (problem statement)
 3. tasks.md phase 2 (wrapper design)
@@ -258,6 +283,7 @@ Use **CACHE_LIBRARY_IMPLEMENTATION_INDEX.md**:
 ## Status Tracking
 
 ### Research Phase: ✅ COMPLETE
+
 - ✅ Problem analysis complete
 - ✅ Solution identified (cachetools v6.0.0)
 - ✅ Architecture designed (wrapper pattern)
@@ -266,6 +292,7 @@ Use **CACHE_LIBRARY_IMPLEMENTATION_INDEX.md**:
 - ✅ Documentation written (2,328 lines)
 
 ### Implementation Phase: ⭕ PENDING
+
 - ⭕ Phase 1: Setup (verify dependencies)
 - ⭕ Phase 2: Wrapper module creation
 - ⭕ Phase 3: Custom cache discovery
@@ -274,6 +301,7 @@ Use **CACHE_LIBRARY_IMPLEMENTATION_INDEX.md**:
 - ⭕ Phase 6: Documentation & archive
 
 ### Completion: ⭕ PENDING
+
 - ⭕ All tests passing
 - ⭕ Quality gates: 0 errors
 - ⭕ Code review approved
@@ -285,12 +313,14 @@ Use **CACHE_LIBRARY_IMPLEMENTATION_INDEX.md**:
 ## Verification Checklist
 
 ### Before Starting Implementation
+
 - [ ] Read CACHE_LIBRARY_WRITEUP_SUMMARY.md (understand scope)
 - [ ] Verify cachetools installed: `python -c "import cachetools; print(cachetools.__version__)"`
 - [ ] Confirm pytest ready: `pytest --co -q | head -5`
 - [ ] Review tasks.md Phase 1 (setup checklist)
 
 ### During Implementation
+
 - [ ] Follow tasks.md phases in order
 - [ ] Use design.md for technical details
 - [ ] Check README.md Q&A for issues
@@ -298,6 +328,7 @@ Use **CACHE_LIBRARY_IMPLEMENTATION_INDEX.md**:
 - [ ] Commit per-phase (not per-task)
 
 ### After Implementation
+
 - [ ] All tests passing: `pytest tests/ -v`
 - [ ] Coverage maintained: `pytest tests/ --cov=src/ --cov-fail-under=80`
 - [ ] Quality gates pass: `task quality`
@@ -305,6 +336,7 @@ Use **CACHE_LIBRARY_IMPLEMENTATION_INDEX.md**:
 - [ ] Verify success criteria from proposal.md
 
 ### Before Archive
+
 - [ ] All phases complete (1-6)
 - [ ] Code review approved
 - [ ] Tests passing
@@ -316,23 +348,23 @@ Use **CACHE_LIBRARY_IMPLEMENTATION_INDEX.md**:
 
 ## Key Dates & Versions
 
-| Event | Date | Version |
-|-------|------|---------|
-| Research Started | 2026-02-18 | — |
-| Research Completed | 2026-02-18 | 1.0 |
-| Documentation Version | 2026-02-18 | 1.0 |
-| Ready for Implementation | 2026-02-18 | ✅ |
-| Implementation Start | TBD | — |
-| Implementation Complete | TBD | — |
+| Event                    | Date       | Version |
+| ------------------------ | ---------- | ------- |
+| Research Started         | 2026-02-18 | —       |
+| Research Completed       | 2026-02-18 | 1.0     |
+| Documentation Version    | 2026-02-18 | 1.0     |
+| Ready for Implementation | 2026-02-18 | ✅      |
+| Implementation Start     | TBD        | —       |
+| Implementation Complete  | TBD        | —       |
 
 ---
 
 ## Related Changes
 
-| Change | Location | Status | Notes |
-|--------|----------|--------|-------|
+| Change              | Location                               | Status    | Notes                            |
+| ------------------- | -------------------------------------- | --------- | -------------------------------- |
 | Library-First Retry | `docs/changes/research-library-retry/` | Completed | Reference implementation pattern |
-| Library-First Watch | `docs/changes/research-library-watch/` | Completed | Similar change pattern |
+| Library-First Watch | `docs/changes/research-library-watch/` | Completed | Similar change pattern           |
 
 ---
 

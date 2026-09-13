@@ -63,13 +63,28 @@ class HandoffIntegrity:
             warnings.append(f"Referenced files not found: {', '.join(missing_files[:3])}")
 
         # 3. Look for keywords that suggest missing context
-        vague_keywords = ["implement this", "fix the bug", "as discussed", "you know what", "do it"]
+        vague_keywords = [
+            "implement this",
+            "fix the bug",
+            "as discussed",
+            "you know what",
+            "do it",
+        ]
         for kw in vague_keywords:
             if kw in prompt.lower():
                 findings.append(f"Potential vague instruction: '{kw}'")
 
         # 4. Check for specific action verbs (good sign)
-        action_verbs = ["create", "implement", "refactor", "update", "add", "remove", "fix", "test"]
+        action_verbs = [
+            "create",
+            "implement",
+            "refactor",
+            "update",
+            "add",
+            "remove",
+            "fix",
+            "test",
+        ]
         has_action = any(verb in prompt.lower() for verb in action_verbs)
 
         # 5. Check for context indicators (good sign)
@@ -166,7 +181,10 @@ class HandoffIntegrity:
         analysis = self.analyze_prompt(prompt)
 
         if analysis["completeness_score"] < min_completeness_score:
-            return False, f"Completeness score {analysis['completeness_score']} below minimum {min_completeness_score}"
+            return (
+                False,
+                f"Completeness score {analysis['completeness_score']} below minimum {min_completeness_score}",
+            )
 
         if analysis["findings"]:
             return False, f"Found issues: {', '.join(analysis['findings'][:2])}"

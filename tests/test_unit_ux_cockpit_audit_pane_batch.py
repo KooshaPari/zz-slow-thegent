@@ -32,14 +32,13 @@ from thegent.ux.cli_cockpit import (
     app,
 )
 from thegent.ux.cockpit import (
-    DecisionNotice,
     MAX_DECISION_PANE_ROWS,
+    DecisionNotice,
     OperatorCockpit,
     _decision_glyph,
     _format_decision_row,
 )
-from thegent.ux.decision_audit import DecisionAuditAppender, DecisionAuditTailer
-
+from thegent.ux.decision_audit import DecisionAuditAppender
 
 pytestmark = pytest.mark.unit
 
@@ -121,7 +120,16 @@ class TestOperatorCockpitAuditAppenderWiring:
         monkeypatch.setattr(pe_mod, "PolicyEngine", _SpyEngine)
         corpus = tmp_path / "corpus.json"
         corpus.write_text(
-            json.dumps([{"agent": "a", "lane": "standard", "confidence": 0.9, "environment": "development"}])
+            json.dumps(
+                [
+                    {
+                        "agent": "a",
+                        "lane": "standard",
+                        "confidence": 0.9,
+                        "environment": "development",
+                    }
+                ]
+            )
         )
         runner = CliRunner()
         result = runner.invoke(
@@ -225,7 +233,16 @@ class TestOperatorCockpitAuditAppenderWiring:
         monkeypatch.setattr(pe_mod, "PolicyEngine", _SpyEngine)
         corpus = tmp_path / "corpus.json"
         corpus.write_text(
-            json.dumps([{"agent": "a", "lane": "standard", "confidence": 0.9, "environment": "development"}])
+            json.dumps(
+                [
+                    {
+                        "agent": "a",
+                        "lane": "standard",
+                        "confidence": 0.9,
+                        "environment": "development",
+                    }
+                ]
+            )
         )
         runner = CliRunner()
         result = runner.invoke(
@@ -850,7 +867,7 @@ class TestReplayCLI:
         assert payload["matched"] is True
         assert payload["mismatches"] == []
         assert len(payload["decisions"]) == len(expected)
-        for got, want in zip(payload["decisions"], expected):
+        for got, want in zip(payload["decisions"], expected, strict=False):
             assert got["verdict"] == want["verdict"]
             assert got["reason_code"] == want["reason_code"]
             assert got["rule_id"] == want["rule_id"]
@@ -929,7 +946,13 @@ class TestReplayCLI:
         corpus.write_text(json.dumps([{"agent": "a", "lane": "standard"}]))
         result = runner.invoke(
             app,
-            ["replay", "--batch", str(corpus), "--compare", str(tmp_path / "missing.json")],
+            [
+                "replay",
+                "--batch",
+                str(corpus),
+                "--compare",
+                str(tmp_path / "missing.json"),
+            ],
         )
         assert result.exit_code == 1, result.output
         assert "not found" in result.output

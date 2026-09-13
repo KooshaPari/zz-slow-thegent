@@ -6,8 +6,8 @@ Maps direct tool calls to unified operation envelopes with validation.
 from collections.abc import Callable
 from typing import Any
 
-from thegent.operations import OPERATION_MAP, Operation
 from thegent.adapters.ports import AdapterRegistry
+from thegent.operations import OPERATION_MAP, Operation
 
 
 class UniversalToolAdapter:
@@ -30,7 +30,11 @@ class UniversalToolAdapter:
         adapter = self._adapters.get(command)
         if not adapter:
             # Fallback to generic invocation (simplified)
-            return {"status": "success", "operation": entry.operation, "command": command}
+            return {
+                "status": "success",
+                "operation": entry.operation,
+                "command": command,
+            }
 
         return adapter(**kwargs)
 

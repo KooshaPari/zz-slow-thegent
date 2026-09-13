@@ -12,7 +12,7 @@ Generate documentation in parallel.
 
 ### Methods
 
-#### ParallelGenerator.__init__
+#### ParallelGenerator.**init**
 
 ```python
 __init__(self: Any, max_workers: int, use_processes: bool)

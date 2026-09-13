@@ -26,7 +26,6 @@ import pytest
 
 from thegent.ux.compositor import PaneSnapshot, TUICompositor
 
-
 # ---------------------------------------------------------------------------
 # Fixtures
 # ---------------------------------------------------------------------------

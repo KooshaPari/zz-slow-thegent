@@ -12,7 +12,7 @@ Test matrix for cost sensing and learning.
 
 ### Methods
 
-#### CostSensingTestMatrix.__init__
+#### CostSensingTestMatrix.**init**
 
 ```python
 __init__(self: Any)

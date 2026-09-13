@@ -9,6 +9,7 @@
 ## Executive Summary
 
 Designed and documented a comprehensive overhaul plan for OpenAI Codex CLI to support:
+
 1. Lightweight multi-agent execution (5–10 concurrent instances)
 2. Feature parity with proprietary tools (Claude Code, Ante, Cursor Agent)
 3. Optimal DX for programmatic use (JSON streaming, config injection, sub-agent spawning)
@@ -19,7 +20,9 @@ Designed and documented a comprehensive overhaul plan for OpenAI Codex CLI to su
 ## Issues Addressed
 
 ### 1. Multi-Agent Resource Contention
+
 **Problem:** Current thegent integration runs Codex with shared state (SQLite DB at `~/.codex/state.db`). Multiple concurrent instances cause:
+
 - Lock contention on state DB
 - Memory bloat (80–120 MB each, no controls)
 - Auth token re-validation per instance
@@ -28,16 +31,19 @@ Designed and documented a comprehensive overhaul plan for OpenAI Codex CLI to su
 **Solution:** Isolated state directories, shared auth tokens via symlink, activity-based timeouts.
 
 ### 2. Missing Context Management
+
 **Problem:** Codex lacks project memory/context system (like Claude Code's `CLAUDE.md` or Ante's `memory/` dir). Agents can't be told to read project directives; context must be baked into prompts.
 
 **Solution:** Design for upstream Codex support of CLAUDE.md-style context files.
 
 ### 3. Feature Parity Gap
+
 **Problem:** Codex missing: skills/eval mode, sub-agent spawning protocol, context summarization.
 
 **Solution:** Phased roadmap (Phases 1–4) to achieve feature parity with Ante and Claude Code.
 
 ### 4. Programmatic DX Gaps
+
 **Problem:** `--json` mode basic; no enhanced event metadata, no config injection helper, no sub-agent protocol.
 
 **Solution:** Enhanced JSON output format, `-c` flag helpers, async sub-agent spawning.
@@ -47,6 +53,7 @@ Designed and documented a comprehensive overhaul plan for OpenAI Codex CLI to su
 ## Research Findings
 
 ### Codex 0.104.0 Protocol Changes (Critical)
+
 - **Breaking change:** `/v1/chat/completions` fully removed (was deprecated early 2025)
 - **New wire API:** Only `/v1/responses` (HTTP POST or WebSocket)
 - **WebSocket:** Codex 0.104.0 attempts WebSocket `/v1/responses` if `supports_websockets: true` in provider config
@@ -56,29 +63,34 @@ Designed and documented a comprehensive overhaul plan for OpenAI Codex CLI to su
 **Impact:** CLIProxyAPIPlus must implement full JSON-RPC 2.0 WebSocket protocol to support Codex 0.104.0+ (documented separately in CODEX_CLI_V2_PROTOCOL_RESEARCH_2026-02-20.md).
 
 ### Current thegent Integration Assessment
+
 **Strengths:**
+
 - Uses `codex exec --json` for JSONL streaming (lightweight)
 - Activity-based hang detection with `max_idle_seconds` (good)
 - Support for multiple execution modes: `exec`, `--full-auto`, sandbox policies
 - Retry logic with exponential backoff (via `@with_retry`)
 
 **Gaps:**
+
 - No state isolation (shared `~/.codex` DB)
 - No config injection helpers (must hardcode flags in cmd list)
 - No sub-agent spawning protocol
 - No lightweight config template/docs
 
 ### Proprietary Tool Feature Matrix
-| Feature | Codex | Claude Code | Ante | Cursor |
-|---------|-------|-------------|------|--------|
-| Project memory | ✗ | ✓ (CLAUDE.md) | ✓ (memory/) | ✓ (.cursor/) |
-| Skills/eval | ✗ | ✗ | ✓ | ✗ |
-| Sub-agent spawning | ✗ | ✓ (crew) | ✓ (droid) | ✗ |
-| Approval bypass | ✓ (--dangerously-bypass) | ✓ (implicit) | ✓ (headless) | ✓ (implicit) |
-| JSON streaming | ✓ (--json) | ✓ (--print) | ✓ | Limited |
-| Model routing | ✓ (--model, --oss) | ✓ | ✓ (provider catalog) | ✓ |
+
+| Feature            | Codex                    | Claude Code   | Ante                 | Cursor       |
+| ------------------ | ------------------------ | ------------- | -------------------- | ------------ |
+| Project memory     | ✗                        | ✓ (CLAUDE.md) | ✓ (memory/)          | ✓ (.cursor/) |
+| Skills/eval        | ✗                        | ✗             | ✓                    | ✗            |
+| Sub-agent spawning | ✗                        | ✓ (crew)      | ✓ (droid)            | ✗            |
+| Approval bypass    | ✓ (--dangerously-bypass) | ✓ (implicit)  | ✓ (headless)         | ✓ (implicit) |
+| JSON streaming     | ✓ (--json)               | ✓ (--print)   | ✓                    | Limited      |
+| Model routing      | ✓ (--model, --oss)       | ✓             | ✓ (provider catalog) | ✓            |
 
 ### Resource Budgets (Single Machine: 8 CPU, 16 GB RAM)
+
 - **Max concurrent instances:** 8 (at 120 MB lightweight mode each)
 - **System overhead:** 2 GB (OS, orchestrator, caches)
 - **Reserved headroom:** 1 GB
@@ -90,32 +102,38 @@ Designed and documented a comprehensive overhaul plan for OpenAI Codex CLI to su
 ## Design Decisions
 
 ### 1. State Isolation via `--codex-home` (Upstream) + `CODEX_HOME` Env (Fallback)
+
 **Rationale:** Avoids SQLite lock contention without connection pooling changes in Codex.
 **Trade-off:** Requires upstream Codex support; fallback uses `CODEX_HOME` env var.
 **Impact:** High — unblocks multi-agent execution.
 
 ### 2. Shared Auth Token (Symlink)
+
 **Rationale:** Reduces API handshake overhead; each instance re-validates token is wasteful.
 **Security:** Safe if instances run on same machine with same user.
 **Implementation:** `ln -s ~/.codex/auth /tmp/codex-agent-0/.codex/auth`
 
 ### 3. Activity-Based Timeouts (No Wall-Time Requirement)
+
 **Rationale:** Prevents killing long-running but active tasks (e.g., test suites).
 **Current:** `max_idle_seconds=180` (3 min), `max_wall_time=0` (unbounded).
 **Trade-off:** Hung processes only killed if truly idle; may delay cleanup.
 **Improvement:** Configurable via `THGENT_MAX_IDLE_SECONDS`.
 
 ### 4. Lightweight Config via `-c` Flags (Not Config File)
+
 **Rationale:** No file system overhead; flags override `~/.codex/config.toml` at CLI time.
 **Defaults:** `disable_semantic_indexing=true`, `max_context_window=50000`.
 **Impact:** Startup faster, memory lower.
 
 ### 5. JSONL Result Format
+
 **Rationale:** Standard streaming format; easy parsing with `jq`.
 **Alternatives:** Binary protocol (overkill), XML (verbose), CSV (loses structure).
 **Improvement Plan:** Enhanced JSON with event metadata (`response.chunk`, `tool.use`, `response.completed`).
 
 ### 6. Sub-Agent Protocol in thegent (Not Codex)
+
 **Rationale:** Codex doesn't need to know about orchestration; cleaner separation of concerns.
 **Implementation:** `run_lightweight()` + async `spawn_sub_agent()` method (Phase 2).
 
@@ -124,64 +142,72 @@ Designed and documented a comprehensive overhaul plan for OpenAI Codex CLI to su
 ## Plans & Implementation Roadmap
 
 ### MVP (Minimum Viable Product) — 1–2 weeks
+
 **Scope:** Enable 5–10 concurrent Codex instances with isolated state.
 
-| Task | Owner | Effort | Blocker? |
-|------|-------|--------|----------|
-| State isolation (`_isolate_codex_state()` in thegent) | thegent | Small | No |
-| Lightweight config flags (`_build_config_flags()`) | thegent | Small | No |
-| Multi-agent orchestrator (`CodexWorkerPool`) | thegent | Medium | No |
-| JSONL result aggregation | thegent | Small | No |
-| Quick-start docs + examples | thegent | Small | No |
+| Task                                                  | Owner   | Effort | Blocker? |
+| ----------------------------------------------------- | ------- | ------ | -------- |
+| State isolation (`_isolate_codex_state()` in thegent) | thegent | Small  | No       |
+| Lightweight config flags (`_build_config_flags()`)    | thegent | Small  | No       |
+| Multi-agent orchestrator (`CodexWorkerPool`)          | thegent | Medium | No       |
+| JSONL result aggregation                              | thegent | Small  | No       |
+| Quick-start docs + examples                           | thegent | Small  | No       |
 
 **Deliverables:**
+
 - `/Users/kooshapari/temp-PRODVERCEL/485/kush/thegent/src/thegent/agents/codex_proxy.py` — enhanced with `run_lightweight()` and helpers
 - `/Users/kooshapari/temp-PRODVERCEL/485/kush/thegent/docs/guides/CODEX_MULTI_AGENT_QUICK_START.md` (TBD)
 - Example script: `examples/codex_multi_agent_pool.py` (TBD)
 
 ### Phase 1: Context Management — 3–4 weeks
+
 **Requires upstream Codex changes.**
 
-| Task | Owner | Effort |
-|------|-------|--------|
-| Implement `CLAUDE.md` loader in Codex | OpenAI/Codex | Medium |
-| Enhanced `--json` output (event metadata) | OpenAI/Codex | Small |
-| Config injection in thegent | thegent | Small |
+| Task                                      | Owner        | Effort |
+| ----------------------------------------- | ------------ | ------ |
+| Implement `CLAUDE.md` loader in Codex     | OpenAI/Codex | Medium |
+| Enhanced `--json` output (event metadata) | OpenAI/Codex | Small  |
+| Config injection in thegent               | thegent      | Small  |
 
 ### Phase 2: Sub-Agents & Aggregation — 3–4 weeks
+
 **Can implement in thegent; optional upstream support.**
 
-| Task | Owner | Effort |
-|------|-------|--------|
-| `spawn_sub_agent()` async method | thegent | Medium |
+| Task                                                   | Owner   | Effort |
+| ------------------------------------------------------ | ------- | ------ |
+| `spawn_sub_agent()` async method                       | thegent | Medium |
 | Context summarization (multi-agent output aggregation) | thegent | Medium |
-| Hierarchical task orchestration | thegent | Small |
+| Hierarchical task orchestration                        | thegent | Small  |
 
 ### Phase 3: Skills & Eval — 4–6 weeks
+
 **Requires upstream Codex design work.**
 
-| Task | Owner | Effort |
-|------|-------|--------|
-| Skill/task templates system (like Ante) | OpenAI/Codex | High |
-| Benchmark/eval mode | OpenAI/Codex | High |
+| Task                                    | Owner        | Effort |
+| --------------------------------------- | ------------ | ------ |
+| Skill/task templates system (like Ante) | OpenAI/Codex | High   |
+| Benchmark/eval mode                     | OpenAI/Codex | High   |
 
 ### Phase 4: Polish & Scale — 2–3 weeks
+
 **Optimization, load testing, documentation.**
 
-| Task | Owner | Effort |
-|------|-------|--------|
-| Memory/CPU profiling & tuning | thegent + Codex | Medium |
-| Load testing (50+ concurrent agents) | thegent | Medium |
-| Production docs & runbooks | both | Small |
+| Task                                 | Owner           | Effort |
+| ------------------------------------ | --------------- | ------ |
+| Memory/CPU profiling & tuning        | thegent + Codex | Medium |
+| Load testing (50+ concurrent agents) | thegent         | Medium |
+| Production docs & runbooks           | both            | Small  |
 
 ---
 
 ## Fixes Applied
 
 ### 1. Enhanced `codex_proxy.py`
+
 **File:** `/Users/kooshapari/temp-PRODVERCEL/485/kush/thegent/src/thegent/agents/codex_proxy.py`
 
 **Changes:**
+
 - Added `_isolate_codex_state(agent_index, shared_auth)` → Isolates state directory for multi-agent use
 - Added `_build_config_flags(config)` → Builds `-c` flags for config injection
 - Added `run_lightweight(...)` method → Optimized for multi-agent, automatically:
@@ -194,14 +220,17 @@ Designed and documented a comprehensive overhaul plan for OpenAI Codex CLI to su
 **Line count:** 944 lines (added ~100 lines)
 
 **Benefits:**
+
 - Enables state isolation without upstream Codex changes
 - Cleaner API for multi-agent use
 - Documented with `# @trace FR-AGT-005` traceability
 
 ### 2. Comprehensive Design Document
+
 **File:** `/Users/kooshapari/temp-PRODVERCEL/485/kush/thegent/docs/research/CODEX_OVERHAUL_DESIGN.md`
 
 **Contents:**
+
 - Executive summary (2 pages)
 - Gap analysis vs Claude Code / Ante / Cursor (feature matrix)
 - Lightweight mode design (config, startup, memory budgets)
@@ -213,6 +242,7 @@ Designed and documented a comprehensive overhaul plan for OpenAI Codex CLI to su
 - Success criteria & appendices
 
 **Benefits:**
+
 - Single source of truth for Codex overhaul direction
 - Clear phasing and effort estimates
 - Actionable tasks for each phase
@@ -251,23 +281,27 @@ Designed and documented a comprehensive overhaul plan for OpenAI Codex CLI to su
 ## Next Steps
 
 ### Immediate (This Week)
+
 1. [ ] Review design document with team
 2. [ ] Confirm MVP scope (state isolation + lightweight config)
 3. [ ] Test `_isolate_codex_state()` with 5–10 concurrent instances
 4. [ ] Measure memory per instance under lightweight config
 
 ### Short-Term (1–2 Weeks)
+
 5. [ ] Write `CodexWorkerPool` orchestrator
 6. [ ] Implement JSONL result aggregation
 7. [ ] Create quick-start guide + example script
 8. [ ] Load test on single machine (8 instances)
 
 ### Medium-Term (3–4 Weeks)
+
 9. [ ] Contact OpenAI/Codex team for CLAUDE.md support
 10. [ ] Design enhanced `--json` output format
 11. [ ] Implement sub-agent spawning protocol
 
 ### Long-Term (8–16 Weeks)
+
 12. [ ] Skills/eval system (Ante parity)
 13. [ ] Multi-machine scaling (Kubernetes)
 14. [ ] Production hardening & documentation
@@ -300,20 +334,21 @@ Designed and documented a comprehensive overhaul plan for OpenAI Codex CLI to su
 
 ## Metrics & Success Criteria
 
-| Criterion | Target | Current | Gap |
-|-----------|--------|---------|-----|
-| Concurrent instances | ≥8 | 1 (serial) | Design + MVP implementation |
-| Memory per instance | ≤150 MB | ~200–300 MB (TUI) | Lightweight config applied |
-| Startup time | <1 sec | ~0.5 sec (good) | No change needed |
-| Multi-agent throughput | ≥10 tasks/min | N/A (new) | Orchestrator + API throughput |
-| Context isolation | 100% | Partial (shared state) | Separate homes + auth symlink |
-| Feature parity (AX/UX) | ≥70% | ~30% (basic CLI only) | Phases 1–3 (8–16 weeks) |
+| Criterion              | Target        | Current                | Gap                           |
+| ---------------------- | ------------- | ---------------------- | ----------------------------- |
+| Concurrent instances   | ≥8            | 1 (serial)             | Design + MVP implementation   |
+| Memory per instance    | ≤150 MB       | ~200–300 MB (TUI)      | Lightweight config applied    |
+| Startup time           | <1 sec        | ~0.5 sec (good)        | No change needed              |
+| Multi-agent throughput | ≥10 tasks/min | N/A (new)              | Orchestrator + API throughput |
+| Context isolation      | 100%          | Partial (shared state) | Separate homes + auth symlink |
+| Feature parity (AX/UX) | ≥70%          | ~30% (basic CLI only)  | Phases 1–3 (8–16 weeks)       |
 
 ---
 
 ## Appendix: Code Snippets
 
 ### Using the Enhanced API (MVP)
+
 ```python
 from thegent.agents.codex_proxy import CodexProxyRunner
 
@@ -335,6 +370,7 @@ print(f"Completed {sum(1 for r in results if r.exit_code == 0)} / 5 tasks")
 ```
 
 ### Lightweight Config Template
+
 ```toml
 # ~/.codex/lightweight.toml
 [agent]

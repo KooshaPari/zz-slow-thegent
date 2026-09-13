@@ -4,12 +4,13 @@ Includes /proc scanner with agent patterns, heartbeats, and cleanup.
 
 import logging
 import time
+from collections.abc import Callable
 from datetime import UTC, datetime
 from pathlib import Path
-from collections.abc import Callable
 from typing import Any, ClassVar
 
 import psutil
+
 from thegent.infra.fast_yaml_parser import yaml_dump
 
 logger = logging.getLogger(__name__)
@@ -94,7 +95,11 @@ class AgentManifest:
     def create(manifest_path: Path, agent_info: dict[str, Any]) -> None:
         """Create or update agent manifest."""
         manifest_path.parent.mkdir(parents=True, exist_ok=True)
-        data = {"version": "1.0", "timestamp": datetime.now(UTC).isoformat(), **agent_info}
+        data = {
+            "version": "1.0",
+            "timestamp": datetime.now(UTC).isoformat(),
+            **agent_info,
+        }
         with open(manifest_path, "w") as f:
             rendered = yaml_dump(data) or ""
             f.write(rendered)

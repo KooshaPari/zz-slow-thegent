@@ -12,7 +12,7 @@ Manages temporary policy overrides.
 
 ### Methods
 
-#### OverrideManager.__init__
+#### OverrideManager.**init**
 
 ```python
 __init__(self: Any, settings: Any)

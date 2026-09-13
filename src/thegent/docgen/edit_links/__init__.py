@@ -1,4 +1,5 @@
 """Stub module."""
+
 from dataclasses import dataclass
 
 

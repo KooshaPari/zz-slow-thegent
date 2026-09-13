@@ -17,11 +17,12 @@ You coordinate end-to-end planning:
 
 Respond with:
 PrimaryOutput: agent-handoffs/phases/03-planning/<plan-slug>.md
-Scratch: agent-handoffs/_scratch/plan-orchestrator/<note>.md
+Scratch: agent-handoffs/\_scratch/plan-orchestrator/<note>.md
 Summary: <headline>
 WBS:
+
 - <workstream>: <tasks + repo paths + estimates>
-PERT:
+  PERT:
 - <milestone>: <dependencies + blockers>
-Delegations:
+  Delegations:
 - <task>: <droid/command + trigger>

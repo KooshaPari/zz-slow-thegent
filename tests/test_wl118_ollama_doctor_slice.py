@@ -66,7 +66,10 @@ def test_runtime_infrastructure_ollama_timeout_sets_error_severity(monkeypatch) 
 
 def test_display_results_includes_severity_column(monkeypatch) -> None:
     output = StringIO()
-    monkeypatch.setattr("thegent.doctor.console", Console(file=output, force_terminal=False, color_system=None))
+    monkeypatch.setattr(
+        "thegent.doctor.console",
+        Console(file=output, force_terminal=False, color_system=None),
+    )
     record = CheckResult("Ollama Local Provider", "Runtime Infrastructure")
     record.status = "warn"
     record.severity = "error"
@@ -84,7 +87,10 @@ def test_display_results_includes_severity_column(monkeypatch) -> None:
 
 def test_display_results_prints_actionable_hints_for_warn_or_fail(monkeypatch) -> None:
     output = StringIO()
-    monkeypatch.setattr("thegent.doctor.console", Console(file=output, force_terminal=False, color_system=None))
+    monkeypatch.setattr(
+        "thegent.doctor.console",
+        Console(file=output, force_terminal=False, color_system=None),
+    )
     warn_record = CheckResult("Ollama Local Provider", "Runtime Infrastructure")
     warn_record.status = "warn"
     warn_record.severity = "warning"
@@ -104,9 +110,14 @@ def test_display_results_prints_actionable_hints_for_warn_or_fail(monkeypatch) -
     assert "Start the daemon and retry." in rendered
 
 
-def test_display_results_deduplicates_actionable_hints_by_normalized_text(monkeypatch) -> None:
+def test_display_results_deduplicates_actionable_hints_by_normalized_text(
+    monkeypatch,
+) -> None:
     output = StringIO()
-    monkeypatch.setattr("thegent.doctor.console", Console(file=output, force_terminal=False, color_system=None))
+    monkeypatch.setattr(
+        "thegent.doctor.console",
+        Console(file=output, force_terminal=False, color_system=None),
+    )
     first = CheckResult("Ollama", "Runtime Infrastructure")
     first.status = "warn"
     first.fix_hint = "Run `ollama pull llama3.3`."
@@ -120,9 +131,14 @@ def test_display_results_deduplicates_actionable_hints_by_normalized_text(monkey
     assert rendered.count("Run `ollama pull llama3.3`.") == 1
 
 
-def test_display_results_deduplicates_actionable_hints_with_trailing_punctuation(monkeypatch) -> None:
+def test_display_results_deduplicates_actionable_hints_with_trailing_punctuation(
+    monkeypatch,
+) -> None:
     output = StringIO()
-    monkeypatch.setattr("thegent.doctor.console", Console(file=output, force_terminal=False, color_system=None))
+    monkeypatch.setattr(
+        "thegent.doctor.console",
+        Console(file=output, force_terminal=False, color_system=None),
+    )
     first = CheckResult("Ollama", "Runtime Infrastructure")
     first.status = "warn"
     first.fix_hint = "Start local daemon with `ollama serve`."
@@ -136,9 +152,14 @@ def test_display_results_deduplicates_actionable_hints_with_trailing_punctuation
     assert rendered.count("Start local daemon with `ollama serve`.") == 1
 
 
-def test_display_results_deduplicates_actionable_hints_with_leading_list_markers(monkeypatch) -> None:
+def test_display_results_deduplicates_actionable_hints_with_leading_list_markers(
+    monkeypatch,
+) -> None:
     output = StringIO()
-    monkeypatch.setattr("thegent.doctor.console", Console(file=output, force_terminal=False, color_system=None))
+    monkeypatch.setattr(
+        "thegent.doctor.console",
+        Console(file=output, force_terminal=False, color_system=None),
+    )
     first = CheckResult("One", "Runtime Infrastructure")
     first.status = "warn"
     first.fix_hint = "1. Start local daemon with `ollama serve`."
@@ -154,7 +175,10 @@ def test_display_results_deduplicates_actionable_hints_with_leading_list_markers
 
 def test_display_results_sorts_actionable_hints_stably(monkeypatch) -> None:
     output = StringIO()
-    monkeypatch.setattr("thegent.doctor.console", Console(file=output, force_terminal=False, color_system=None))
+    monkeypatch.setattr(
+        "thegent.doctor.console",
+        Console(file=output, force_terminal=False, color_system=None),
+    )
     z_hint = CheckResult("Z", "Runtime Infrastructure")
     z_hint.status = "warn"
     z_hint.fix_hint = "zeta fix"
@@ -172,7 +196,10 @@ def test_display_results_sorts_actionable_hints_stably(monkeypatch) -> None:
 
 def test_display_results_shows_actionable_hint_overflow_count(monkeypatch) -> None:
     output = StringIO()
-    monkeypatch.setattr("thegent.doctor.console", Console(file=output, force_terminal=False, color_system=None))
+    monkeypatch.setattr(
+        "thegent.doctor.console",
+        Console(file=output, force_terminal=False, color_system=None),
+    )
 
     a_record = CheckResult("A", "Runtime Infrastructure")
     a_record.status = "warn"

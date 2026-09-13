@@ -12,23 +12,26 @@
 To balance performance, identity, and security, `thegent` uses a nested hierarchy:
 
 ### 1.1 Layer 1: The OS User (Persistence & Identity)
+
 - **Role**: Acts as the "Team Lead" or "Manager" principal.
 - **Implementation**: A real system account (e.g., `tg_frontend_lead`).
 - **Characteristics**:
-    - Persistent `/home/tg_frontend_lead`.
-    - Real entry in `/etc/passwd` (Linux) or Directory Service (macOS/Windows).
-    - Owns long-lived artifacts (node_modules, build caches).
-    - **Permissions**: Can be granted specific `sudo` rules or group access to host project files.
+  - Persistent `/home/tg_frontend_lead`.
+  - Real entry in `/etc/passwd` (Linux) or Directory Service (macOS/Windows).
+  - Owns long-lived artifacts (node_modules, build caches).
+  - **Permissions**: Can be granted specific `sudo` rules or group access to host project files.
 
 ### 1.2 Layer 2: The Sub-user / Instance (Ephemeral & Isolated)
+
 - **Role**: Acts as the "Specialist" execution context.
 - **Implementation**: A sub-process spawned by L1 with additional restrictions.
 - **Characteristics**:
-    - Ephemeral `$HOME` (via OverlayFS or Reflink).
-    - Restricted permissions (cannot write to L1's persistent config).
-    - **Isolation**: Minimal overhead via kernel namespaces or low-integrity tokens.
+  - Ephemeral `$HOME` (via OverlayFS or Reflink).
+  - Restricted permissions (cannot write to L1's persistent config).
+  - **Isolation**: Minimal overhead via kernel namespaces or low-integrity tokens.
 
 ### 1.3 The Hybrid Flow
+
 1. **Host User** (You) triggers a project task.
 2. **thegent Orchestrator** identifies the task requires "Frontend" expertise.
 3. **Orchestrator** switches to **L1 OS User** (`tg_frontend_lead`).
@@ -41,23 +44,25 @@ To balance performance, identity, and security, `thegent` uses a nested hierarch
 
 Different tasks require different levels of paranoia. `thegent` implements four tiers of isolation:
 
-| Tier | Name | Technology | Overhead | Use Case |
-| :--- | :--- | :--- | :--- | :--- |
-| **T1** | **Process** | Env Vars + ulimit | <1ms | Trusted local scripts, formatters. |
-| **T2** | **Sub-user** | UID Map + OverlayFS | <10ms | General coding, research, local dev. |
-| **T3** | **Sandbox** | Landlock / AppContainer | <20ms | Running untrusted npm/pip packages. |
-| **T4** | **Hardware** | Firecracker / gVisor | >500ms | Running unknown binary blobs / malware analysis. |
+| Tier   | Name         | Technology              | Overhead | Use Case                                         |
+| :----- | :----------- | :---------------------- | :------- | :----------------------------------------------- |
+| **T1** | **Process**  | Env Vars + ulimit       | <1ms     | Trusted local scripts, formatters.               |
+| **T2** | **Sub-user** | UID Map + OverlayFS     | <10ms    | General coding, research, local dev.             |
+| **T3** | **Sandbox**  | Landlock / AppContainer | <20ms    | Running untrusted npm/pip packages.              |
+| **T4** | **Hardware** | Firecracker / gVisor    | >500ms   | Running unknown binary blobs / malware analysis. |
 
 ### 2.1 Linux: Landlock & Bubblewrap (T3)
+
 - **Landlock**: A stackable LSM (Linux Security Module) that allows a process (the agent) to restrict its own access to the filesystem.
-    - *Benefit*: No root required. Extremely low overhead.
-    - *Mapping*: L2 agent can "lock" itself into `$PROJECT_ROOT` and its own `$HOME`.
+  - _Benefit_: No root required. Extremely low overhead.
+  - _Mapping_: L2 agent can "lock" itself into `$PROJECT_ROOT` and its own `$HOME`.
 - **Bubblewrap**: Uses namespaces to create a sandbox.
-    - *Mapping*: Provides private `/tmp`, `/dev`, and `/proc`.
+  - _Mapping_: Provides private `/tmp`, `/dev`, and `/proc`.
 
 ### 2.2 Windows: AppContainer & Job Objects (T3)
+
 - **AppContainer**: Uses Low Integrity Levels (IL) and Capabilities.
-    - *Mapping*: L2 agent is restricted from accessing the registry, network, or user files outside of a specific "Package Sid" directory.
+  - _Mapping_: L2 agent is restricted from accessing the registry, network, or user files outside of a specific "Package Sid" directory.
 - **Windows Sandbox**: Lightweight VM for T4 isolation.
 
 ---
@@ -67,14 +72,17 @@ Different tasks require different levels of paranoia. `thegent` implements four 
 The biggest bottleneck in isolation is often I/O overhead (e.g., Docker Desktop on macOS).
 
 ### 3.1 Zero-Copy Clones (Host -> L1 -> L2)
+
 - **OverlayFS (Linux)**:
-    - **Lower**: Project Root (Read-only for Agent).
-    - **Upper**: Agent Workspace (Writable).
+  - **Lower**: Project Root (Read-only for Agent).
+  - **Upper**: Agent Workspace (Writable).
 - **Reflinks (macOS/APFS)**:
-    - `cp -c` equivalent for home directories. Instant duplication of build artifacts without disk cost.
+  - `cp -c` equivalent for home directories. Instant duplication of build artifacts without disk cost.
 
 ### 3.2 Security Scoping (Bind Mounts)
+
 Instead of giving an agent access to the whole disk, we "mount" only what is needed:
+
 - `/mnt/project` -> `$PROJECT_ROOT`
 - `/mnt/cache` -> `~/.cache/thegent/shared`
 
@@ -85,10 +93,12 @@ Instead of giving an agent access to the whole disk, we "mount" only what is nee
 How does the L1 "Lead" coordinate L2 "Specialists"?
 
 ### 4.1 Signal Propagation
+
 - **Process Groups**: L1 creates a new PGID for its L2 specialists.
 - **Graceful Shutdown**: `SIGTERM` sent to the PGID ensures all specialists cleanup their OverlayFS mounts before L1 exits.
 
 ### 4.2 Environment structured passing
+
 - **THEGENT_CONTEXT**: A JSON file path injected into the agent's environment.
 - **Metadata**: Contains parent UID, trace ID, and resource quotas.
 
@@ -97,10 +107,13 @@ How does the L1 "Lead" coordinate L2 "Specialists"?
 ## 5. Security Posture
 
 ### 5.1 No-Network Default
+
 T3/T4 agents run with `CLONE_NEWNET` (Linux) or disabled network capabilities (Windows) by default.
+
 - **Proxy Bridge**: If an agent needs to fetch documentation, it must request a "URL Fetch" from the L1 Lead, which acts as a security proxy.
 
 ### 5.2 Escape Prevention
+
 - **User Namespaces**: Prevents L2 from seeing or signaling L1 processes.
 - **No-New-Privs**: Ensures `setuid` binaries (like `sudo`) cannot be used to escape the sandbox.
 

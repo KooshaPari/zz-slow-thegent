@@ -1,10 +1,11 @@
-<DONE>
----
+## <DONE>
+
 title: Agent Governance & Polyglot Systems Research (2025-2026 Landscape)
 date: 2026-02-22
 status: active
 owner: thegent
 tags: [research, governance, MCP, polyglot, cost-control, agents, memory, hooks]
+
 ---
 
 # Comprehensive Landscape Research: 2025-2026 Agent Governance & Polyglot Systems
@@ -31,38 +32,40 @@ The agent governance landscape in 2025-2026 has matured significantly with produ
 
 ### Official Language SDKs
 
-| Framework | Language | Status | Key Features | Link |
-|-----------|----------|--------|--------------|------|
-| **modelcontextprotocol/rust-sdk** | Rust | Production | Official Anthropic SDK; supports all MCP features | [GitHub](https://github.com/modelcontextprotocol/rust-sdk) |
-| **modelcontextprotocol/go-sdk** | Go | Production | Maintained with Google; high-level APIs | [GitHub](https://github.com/modelcontextprotocol/go-sdk) |
-| **mcp.zig** | Zig | Production | First comprehensive MCP library for Zig; spec v2025-11-25 | [Guide](https://muhammad-fiaz.github.io/mcp.zig/guide/protocol-version.html) |
-| **mark3labs/mcp-go** | Go | Production | Alternative Go impl; seamless integration for LLM apps | [GitHub](https://github.com/mark3labs/mcp-go) |
+| Framework                         | Language | Status     | Key Features                                              | Link                                                                         |
+| --------------------------------- | -------- | ---------- | --------------------------------------------------------- | ---------------------------------------------------------------------------- |
+| **modelcontextprotocol/rust-sdk** | Rust     | Production | Official Anthropic SDK; supports all MCP features         | [GitHub](https://github.com/modelcontextprotocol/rust-sdk)                   |
+| **modelcontextprotocol/go-sdk**   | Go       | Production | Maintained with Google; high-level APIs                   | [GitHub](https://github.com/modelcontextprotocol/go-sdk)                     |
+| **mcp.zig**                       | Zig      | Production | First comprehensive MCP library for Zig; spec v2025-11-25 | [Guide](https://muhammad-fiaz.github.io/mcp.zig/guide/protocol-version.html) |
+| **mark3labs/mcp-go**              | Go       | Production | Alternative Go impl; seamless integration for LLM apps    | [GitHub](https://github.com/mark3labs/mcp-go)                                |
 
 ### Framework Alternatives to FastMCP
 
-| Framework | Language | Use Case | Note |
-|-----------|----------|----------|------|
-| **EasyMCP** | Python | Minimal boilerplate | Lightweight when speed to market matters |
-| **FastAPI-MCP** | Python | REST-first | Better integration with existing FastAPI services |
-| **mcp-framework** | Python | Balanced | Feature-rich but higher LOC overhead |
+| Framework         | Language | Use Case            | Note                                              |
+| ----------------- | -------- | ------------------- | ------------------------------------------------- |
+| **EasyMCP**       | Python   | Minimal boilerplate | Lightweight when speed to market matters          |
+| **FastAPI-MCP**   | Python   | REST-first          | Better integration with existing FastAPI services |
+| **mcp-framework** | Python   | Balanced            | Feature-rich but higher LOC overhead              |
 
 **Assessment for thegent:**
+
 - Rust SDK is mature and production-grade; consider for critical path if performance gains justify.
 - Go SDK has Google backing; valuable if thegent expands to multi-tenant deployments.
 - Current FastMCP implementation is solid; migration only if bottleneck identified.
 
 ### MCP Gateway / Proxy Solutions
 
-| Solution | Type | Cost Model | Key Capability | Link |
-|----------|------|-----------|-----------------|------|
-| **LiteLLM Proxy** | Managed | Open-source/SaaS | MCP Gateway with auth, cost tracking | [Docs](https://docs.litellm.ai/docs/mcp) |
-| **MintMCP** | Managed | SaaS | STDIO→HTTP conversion + OAuth/SSO + audit logging | [Blog](https://www.mintmcp.com/blog/gateways-ai-startups-with-mcp) |
-| **Lunar.dev MCPX** | Managed | SaaS | Multi-tier RBAC for complex orgs | [Blog](https://www.mintmcp.com/blog/gateways-ai-startups-with-mcp) |
-| **Obot** | Open-source | Self-hosted | Central control plane on Kubernetes | [Best MCP Gateways 2026](https://www.mintmcp.com/blog/gateways-ai-startups-with-mcp) |
-| **Docker MCP Gateway** | Open-source | Self-hosted | Orchestrate servers from Docker catalog | [Composio Blog](https://composio.dev/blog/best-mcp-gateway-for-developers) |
-| **FastMCP Proxy** | Built-in | Included | Bridge transports, aggregate servers, add security | [FastMCP Docs](https://gofastmcp.com/servers/providers/proxy) |
+| Solution               | Type        | Cost Model       | Key Capability                                     | Link                                                                                 |
+| ---------------------- | ----------- | ---------------- | -------------------------------------------------- | ------------------------------------------------------------------------------------ |
+| **LiteLLM Proxy**      | Managed     | Open-source/SaaS | MCP Gateway with auth, cost tracking               | [Docs](https://docs.litellm.ai/docs/mcp)                                             |
+| **MintMCP**            | Managed     | SaaS             | STDIO→HTTP conversion + OAuth/SSO + audit logging  | [Blog](https://www.mintmcp.com/blog/gateways-ai-startups-with-mcp)                   |
+| **Lunar.dev MCPX**     | Managed     | SaaS             | Multi-tier RBAC for complex orgs                   | [Blog](https://www.mintmcp.com/blog/gateways-ai-startups-with-mcp)                   |
+| **Obot**               | Open-source | Self-hosted      | Central control plane on Kubernetes                | [Best MCP Gateways 2026](https://www.mintmcp.com/blog/gateways-ai-startups-with-mcp) |
+| **Docker MCP Gateway** | Open-source | Self-hosted      | Orchestrate servers from Docker catalog            | [Composio Blog](https://composio.dev/blog/best-mcp-gateway-for-developers)           |
+| **FastMCP Proxy**      | Built-in    | Included         | Bridge transports, aggregate servers, add security | [FastMCP Docs](https://gofastmcp.com/servers/providers/proxy)                        |
 
 **Assessment for thegent:**
+
 - FastMCP's built-in proxy is adequate for 80% of use cases.
 - LiteLLM Proxy valuable if thegent needs to expose MCP to remote teams.
 - Obot worth evaluating if Kubernetes becomes deployment target.
@@ -71,11 +74,11 @@ The agent governance landscape in 2025-2026 has matured significantly with produ
 
 **Key Change:** SSE transport deprecated as of MCP spec v2026-03-26 in favor of **Streamable HTTP**.
 
-| Transport | Status | Use Case |
-|-----------|--------|----------|
-| **STDIO** | Active | Local MCP servers (thegent's current default) |
-| **Streamable HTTP** | Active (Modern) | Remote/managed MCP servers |
-| **SSE** | Deprecated (v2026-03-26) | Legacy systems only |
+| Transport           | Status                   | Use Case                                      |
+| ------------------- | ------------------------ | --------------------------------------------- |
+| **STDIO**           | Active                   | Local MCP servers (thegent's current default) |
+| **Streamable HTTP** | Active (Modern)          | Remote/managed MCP servers                    |
+| **SSE**             | Deprecated (v2026-03-26) | Legacy systems only                           |
 
 **Impact on thegent:** No immediate changes needed. Current STDIO usage is unaffected; monitor if remote MCP federation becomes requirement.
 
@@ -88,6 +91,7 @@ The agent governance landscape in 2025-2026 has matured significantly with produ
 #### LiteLLM (Open-source + SaaS)
 
 **Cost Tracking & Budget:**
+
 - Tag-based cost centers (project, team, user, environment)
 - Per-tag budget enforcement (e.g., `max_budget: $100`, `budget_duration: monthly`)
 - Reject requests exceeding budget in real-time
@@ -98,7 +102,7 @@ The agent governance landscape in 2025-2026 has matured significantly with produ
 cost_tracking = {
     "tags": {
         "project-x": {"max_budget": 100.00, "budget_duration": "monthly"},
-        "team-ml": {"max_budget": 500.00, "budget_duration": "monthly"}
+        "team-ml": {"max_budget": 500.00, "budget_duration": "monthly"},
     }
 }
 ```
@@ -108,30 +112,33 @@ cost_tracking = {
 #### Portkey (SaaS + API)
 
 **Cost Governance:**
+
 - Token & cost usage per request, user, environment
 - Real-time enforcement: block or route traffic
 - Budget alerts and spend dashboards
 - Fallback routing when budget exhausted
 
-**Market Position:** LiteLLM and Portkey are the *standard* in 2025; effectively replaced ad-hoc governance systems.
+**Market Position:** LiteLLM and Portkey are the _standard_ in 2025; effectively replaced ad-hoc governance systems.
 
 **Assessment for thegent:**
+
 - Evaluate LiteLLM integration if cost governance is a blocking requirement.
 - Current thegent cost controls are basic; LiteLLM would add enterprise-grade enforcement.
 - Integration effort: ~2-3 days (tag-based routing in orchestrator).
 
 ### LLM Safety & Guardrails Frameworks
 
-| Framework | Type | Use Case | Key Feature | Link |
-|-----------|------|----------|------------|------|
-| **Guardrails AI** | Open-source | Output validation | Pre-built + custom validators | [Website](https://www.guardrailsai.com/blog/nemoguardrails-integration) |
-| **Lakera Guard** | SaaS | Injection filtering | Drop-in proxy; jailbreak detection | [Lakera](https://www.mintmcp.com/blog/gateways-ai-startups-with-mcp) |
-| **SlashLLM** | SaaS | Gateway + filtering | Auth, rate limit, PII redaction, cost tracking | [Website](https://slashllm.com/resources/platforms-comparison) |
-| **LlamaGuard** | Open-source | Content moderation | Unsafe prompt detection; compliance | [Hugging Face](https://www.mintmcp.com/blog/gateways-ai-startups-with-mcp) |
-| **OneShield** | SaaS | Risk management | Policy Manager + sparse HITL | [ArXiv](https://arxiv.org/html/2507.21170v1) |
-| **NeMo Guardrails** | Open-source | State machines | NVIDIA; general-purpose framework | [NVIDIA](https://developer.nvidia.com/nemo-guardrails) |
+| Framework           | Type        | Use Case            | Key Feature                                    | Link                                                                       |
+| ------------------- | ----------- | ------------------- | ---------------------------------------------- | -------------------------------------------------------------------------- |
+| **Guardrails AI**   | Open-source | Output validation   | Pre-built + custom validators                  | [Website](https://www.guardrailsai.com/blog/nemoguardrails-integration)    |
+| **Lakera Guard**    | SaaS        | Injection filtering | Drop-in proxy; jailbreak detection             | [Lakera](https://www.mintmcp.com/blog/gateways-ai-startups-with-mcp)       |
+| **SlashLLM**        | SaaS        | Gateway + filtering | Auth, rate limit, PII redaction, cost tracking | [Website](https://slashllm.com/resources/platforms-comparison)             |
+| **LlamaGuard**      | Open-source | Content moderation  | Unsafe prompt detection; compliance            | [Hugging Face](https://www.mintmcp.com/blog/gateways-ai-startups-with-mcp) |
+| **OneShield**       | SaaS        | Risk management     | Policy Manager + sparse HITL                   | [ArXiv](https://arxiv.org/html/2507.21170v1)                               |
+| **NeMo Guardrails** | Open-source | State machines      | NVIDIA; general-purpose framework              | [NVIDIA](https://developer.nvidia.com/nemo-guardrails)                     |
 
 **Assessment for thegent:**
+
 - Safety is not currently a blocker; governance focus is cost, not safety.
 - If safety requirements emerge: Guardrails AI or LlamaGuard are the open-source defaults.
 - Lakera Guard valuable for production multi-tenant deployments.
@@ -139,6 +146,7 @@ cost_tracking = {
 ### Open Policy Agent (OPA) for Governance
 
 **Capabilities:**
+
 - General-purpose policy engine (graduated CNCF project)
 - Declarative Rego policy language (Datalog-like)
 - Can enforce agent access control, resource quotas, cost limits
@@ -147,6 +155,7 @@ cost_tracking = {
 **Maturity:** 2025 focus on LLM/agent governance (access control, cost enforcement).
 
 **Assessment for thegent:**
+
 - OPA is mature but complex for single-project deployment.
 - Valuable if thegent becomes multi-tenant or needs fine-grained policy.
 - Current effort: not justified for single-project governance.
@@ -161,6 +170,7 @@ cost_tracking = {
 **Current state:** thegent uses shell-script hooks (e.g., `governance-gates.sh`, 99KB+).
 
 **Challenges:**
+
 - Debugging shell scripts requires expertise; error handling is fragile.
 - Maintenance burden: no type system, no reusable patterns.
 - Performance: shell spawning overhead (50-200ms per hook).
@@ -171,6 +181,7 @@ cost_tracking = {
 #### orsomafo - Event Dispatcher for Rust
 
 **Features:**
+
 - Generic event dispatcher
 - Type-safe event handlers
 - No external dependencies
@@ -183,6 +194,7 @@ cost_tracking = {
 #### event-manager (rust-vmm)
 
 **Features:**
+
 - Built on Linux `epoll` (scalable)
 - File descriptor / event-based model
 - Subscriber pattern (register listeners, run loop dispatches)
@@ -195,6 +207,7 @@ cost_tracking = {
 #### static-events
 
 **Features:**
+
 - Generic zero-cost event handler system
 - Compiled to plain function calls (no dynamic dispatch)
 - Type-safe
@@ -205,24 +218,26 @@ cost_tracking = {
 
 ### Alternative Lifecycle Hook Patterns
 
-| Pattern | Language | Framework | Example |
-|---------|----------|-----------|---------|
-| **Hook Dispatch** | Rust | event-manager | File descriptor watchers |
-| **Event Queues** | Any | Kafka, RabbitMQ | Async multi-agent coordination |
-| **Webhook Integrations** | Any | HTTP | External system integration |
-| **Cursor/Claude Hooks** | Python/JSON | Cursor CLI, Claude Code | IDE-native agent lifecycle |
+| Pattern                  | Language    | Framework               | Example                        |
+| ------------------------ | ----------- | ----------------------- | ------------------------------ |
+| **Hook Dispatch**        | Rust        | event-manager           | File descriptor watchers       |
+| **Event Queues**         | Any         | Kafka, RabbitMQ         | Async multi-agent coordination |
+| **Webhook Integrations** | Any         | HTTP                    | External system integration    |
+| **Cursor/Claude Hooks**  | Python/JSON | Cursor CLI, Claude Code | IDE-native agent lifecycle     |
 
 ### Assessment for thegent
 
 **Recommendation:** Migrate critical hook dispatch to Rust event system.
 
 **Phased approach:**
+
 1. **Phase 1 (Quick):** Identify 3-5 most frequently called hooks (cost limit, auth validation, model routing).
 2. **Phase 2 (Design):** Model as Rust event handlers using orsomafo or event-manager.
 3. **Phase 3 (Build):** Rust library with Python bindings (PyO3).
 4. **Phase 4 (Cutover):** Gradually replace shell hooks; keep legacy hooks for backward compat during transition.
 
 **Expected gains:**
+
 - 10-100x performance improvement (eliminate shell spawning).
 - Type-safe hook contracts.
 - Parallel hook dispatch natively supported.
@@ -243,16 +258,19 @@ Three main approaches:
 ### Letta (Successor to MemGPT)
 
 **What is it:**
+
 - Agent runtime built around self-editing memory.
 - Agents manage what stays in-context vs. archival via dedicated memory management tools.
 - REST API + development environment for stateful AI services.
 
 **Key Features (v1, Feb 2026):**
+
 - **Context Repositories:** Git-based versioning for agent memory.
 - **Conversations API:** Shared memory across parallel user experiences.
 - Agents directly edit their own memory blocks using specialized tools.
 
 **Architecture:**
+
 - Long-term memory (archival store)
 - Core memory (in-context window)
 - Agent tools for memory management
@@ -264,11 +282,13 @@ Three main approaches:
 ### Mem0: Scalable Memory-Centric Architecture
 
 **What is it:**
+
 - Managed service (or self-hosted) for agent memory.
 - Dynamically extracts, consolidates, retrieves salient information.
 - Fastest path to production (infrastructure handled).
 
 **Key Features:**
+
 - Graph database backend (track fact evolution over time)
 - Automatic memory consolidation
 - Integration with business data
@@ -281,6 +301,7 @@ Three main approaches:
 ### Zep: Temporal Knowledge Graph
 
 **What is it:**
+
 - Memory stored as temporal knowledge graph.
 - Tracks how facts change over time.
 - Integrates structured business data with conversational history.
@@ -292,6 +313,7 @@ Three main approaches:
 **Current state:** MAIF artifacts system (custom, lightweight).
 
 **Evaluation:**
+
 - **Keep MAIF** if thegent agents don't require complex state synchronization across sessions.
 - **Migrate to Letta** if:
   - Agents need to share memory across team members.
@@ -359,6 +381,7 @@ fn my_module(_py: Python, m: &PyModule) -> PyResult<()> {
 ```python
 # Python code (transparent usage)
 from my_module import compute_hot_path
+
 result = compute_hot_path([1, 2, 3])  # Compiled Rust!
 ```
 
@@ -401,16 +424,17 @@ result = compute_hot_path([1, 2, 3])  # Compiled Rust!
 
 **Context:** Faster type checking enables shorter iteration cycles.
 
-| Checker | Speed vs mypy | Architecture | 2025 Status |
-|---------|---------------|--------------|-------------|
-| **mypy** | 1x (baseline) | Multi-pass semantic analysis | Stable but slow on large codebases |
-| **Pyright** | 3-5x faster | Lazy/JIT type evaluation | Production-ready; Microsoft-backed |
-| **Basedpyright** | 3-5x faster | Fork of Pyright; community-maintained | Production-ready |
-| **New Rust-based checkers** | 10-50x (claimed) | Built for speed; Ty, Pyrefly, Zuban | Early 2025; emerging |
+| Checker                     | Speed vs mypy    | Architecture                          | 2025 Status                        |
+| --------------------------- | ---------------- | ------------------------------------- | ---------------------------------- |
+| **mypy**                    | 1x (baseline)    | Multi-pass semantic analysis          | Stable but slow on large codebases |
+| **Pyright**                 | 3-5x faster      | Lazy/JIT type evaluation              | Production-ready; Microsoft-backed |
+| **Basedpyright**            | 3-5x faster      | Fork of Pyright; community-maintained | Production-ready                   |
+| **New Rust-based checkers** | 10-50x (claimed) | Built for speed; Ty, Pyrefly, Zuban   | Early 2025; emerging               |
 
 **Finding:** 73% of Python devs use type hints, but only 41% run type checkers in CI (due to speed).
 
 **Assessment for thegent:**
+
 - Switch to Pyright/Basedpyright if CI duration is pain point.
 - 3-5x speedup would reduce iteration cycle from 5min → 1-2min on large codebases.
 - Basedpyright is community-maintained fork; Pyright is Microsoft's official.
@@ -422,11 +446,13 @@ result = compute_hot_path([1, 2, 3])  # Compiled Rust!
 ### OpenTelemetry for AI Agents (2025+)
 
 **What is it:**
+
 - CNCF standard for metrics, logs, and traces.
 - Semantic conventions for AI agents emerging (Tasks, Actions, Agents, Teams, Artifacts, Memory).
 - Framework-agnostic (works with CrewAI, LangGraph, AutoGen, IBM Bee Stack, wxFlow, etc.).
 
 **Key Features:**
+
 - Unified telemetry across frameworks.
 - Distributed tracing (trace context correlation).
 - Structured logging with span IDs for correlation.
@@ -435,10 +461,12 @@ result = compute_hot_path([1, 2, 3])  # Compiled Rust!
 **Maturity:** 2025 focus on agent-specific semantic conventions (still emerging but standardizing).
 
 **Links:**
+
 - [OpenTelemetry AI Agent Observability](https://opentelemetry.io/blog/2025/ai-agent-observability/)
 - [AI Agents Observability with VictoriaMetrics Stack](https://victoriametrics.com/blog/ai-agents-observability/)
 
 **Assessment for thegent:**
+
 - Current logging is adequate for single-agent use.
 - Switch to OpenTelemetry if:
   - Multi-agent coordination requires end-to-end tracing.
@@ -453,22 +481,26 @@ result = compute_hot_path([1, 2, 3])  # Compiled Rust!
 ### Pareto Frontier for AI Agents (2025)
 
 **What is it:**
+
 - Economics concept: map accuracy vs. cost for different models.
 - Framework: syftr (Bayesian optimization for multi-objective flows).
 
 **Finding:** Non-agentic workflows dominate Pareto frontier (cheaper, faster).
 
 **Key Insight for Agent Governance:**
+
 - Dynamic routing to model matching task complexity (e.g., Qwen3 for simple tasks, GPT-5 for complex).
 - Avengers-Pro integrates 8 LLMs with cost-aware routing.
 - Average 9x cost reduction while preserving most accuracy.
 
 **Links:**
+
 - [syftr: Pareto-Optimal GenAI](https://arxiv.org/abs/2505.20266)
 - [LLM Arena Pareto Frontier](https://winston-bosan.github.io/llm-pareto-frontier/)
 - [Beyond the Pareto Frontier](https://cognaptus.com/blog/2025-07-08-beyond-the-pareto-frontier-pricing-llm-mistakes-in-the-real-world/)
 
 **Assessment for thegent:**
+
 - Current model routing is hardcoded.
 - Pareto framework would enable dynamic routing based on task complexity.
 - Integration with LiteLLM tag budgets would enable cost-aware routing.
@@ -478,16 +510,16 @@ result = compute_hot_path([1, 2, 3])  # Compiled Rust!
 
 ## 8. Comparative Feature Matrix
 
-| Category | Current (thegent) | 2025-2026 Best-in-Class | Adoption Priority |
-|----------|-------------------|------------------------|-------------------|
-| **MCP Server** | FastMCP (Python) | Rust SDK / FastMCP (tie) | Hold; no blocker |
-| **Cost Governance** | Ad-hoc (basic) | LiteLLM Proxy + tag budgets | **High** |
-| **Hook Dispatch** | Shell scripts (99KB) | Rust event-manager + PyO3 | **High** |
-| **Agent Memory** | MAIF artifacts | Letta (self-editing) or Mem0 | Medium |
-| **Safety/Guardrails** | None | Guardrails AI or Lakera | Low (unless required) |
-| **Type Checking** | mypy | Pyright/Basedpyright | Medium |
-| **Observability** | structlog | OpenTelemetry + structlog | Medium |
-| **Model Routing** | Hardcoded | Pareto frontier + syftr | **High** |
+| Category              | Current (thegent)    | 2025-2026 Best-in-Class      | Adoption Priority     |
+| --------------------- | -------------------- | ---------------------------- | --------------------- |
+| **MCP Server**        | FastMCP (Python)     | Rust SDK / FastMCP (tie)     | Hold; no blocker      |
+| **Cost Governance**   | Ad-hoc (basic)       | LiteLLM Proxy + tag budgets  | **High**              |
+| **Hook Dispatch**     | Shell scripts (99KB) | Rust event-manager + PyO3    | **High**              |
+| **Agent Memory**      | MAIF artifacts       | Letta (self-editing) or Mem0 | Medium                |
+| **Safety/Guardrails** | None                 | Guardrails AI or Lakera      | Low (unless required) |
+| **Type Checking**     | mypy                 | Pyright/Basedpyright         | Medium                |
+| **Observability**     | structlog            | OpenTelemetry + structlog    | Medium                |
+| **Model Routing**     | Hardcoded            | Pareto frontier + syftr      | **High**              |
 
 ---
 
@@ -545,55 +577,62 @@ result = compute_hot_path([1, 2, 3])  # Compiled Rust!
 ## 10. Links & References
 
 ### MCP & Protocol
+
 - [MCP Official](https://modelcontextprotocol.io/)
 - [MCP Rust SDK](https://github.com/modelcontextprotocol/rust-sdk)
 - [MCP Go SDK](https://github.com/modelcontextprotocol/go-sdk)
 - [mcp.zig](https://muhammad-fiaz.github.io/mcp.zig/guide/protocol-version.html)
 
 ### Cost Governance
+
 - [LiteLLM Tag Budgets](https://docs.litellm.ai/docs/proxy/tag_budgets)
 - [Portkey Budget Limits](https://portkey.ai/blog/budget-limits-and-alerts-in-llm-apps/)
 - [MCP MintMCP Gateway](https://www.mintmcp.com/blog/gateways-ai-startups-with-mcp)
 
 ### Hook/Lifecycle Systems
+
 - [orsomafo Event Dispatcher](https://github.com/shiftrightonce/orsomafo)
 - [rust-vmm event-manager](https://github.com/rust-vmm/event-manager)
 - [Claude Code Hooks Mastery](https://yuv.ai/blog/claude-code-hooks-mastery)
 
 ### Agent Memory
+
 - [Letta](https://www.letta.com/)
 - [Letta GitHub](https://github.com/letta-ai/letta)
 - [Mem0: Building Production-Ready AI Agents](https://arxiv.org/html/2504.19413v1)
 
 ### Polyglot & Performance
+
 - [PyO3 User Guide](https://pyo3.rs/)
 - [maturin](https://www.maturin.rs/tutorial.html)
 - [Zig Python Interop](https://lab.abilian.com/Tech/Python/Python%20%E2%86%94%EF%B8%8E%20Zig%20Interop/)
 - [Pyright vs mypy Performance](https://medium.com/@asma.shaikh_19478/python-type-checking-mypy-vs-pyright-performance-battle-fce38c8cb874)
 
 ### Model Routing & Pareto Frontier
+
 - [syftr: Pareto-Optimal GenAI](https://arxiv.org/abs/2505.20266)
 - [LLM Arena Pareto Frontier](https://winston-bosan.github.io/llm-pareto-frontier/)
 
 ### Observability
+
 - [OpenTelemetry AI Agent Observability](https://opentelemetry.io/blog/2025/ai-agent-observability/)
 
 ---
 
 ## 11. Decision Table: Adopt vs Hold vs Monitor
 
-| Tool/Framework | Adopt Now? | Timeline | Owner | Notes |
-|----------------|-----------|----------|-------|-------|
-| **LiteLLM Proxy** | Yes | Sprint 1 | Ops | Cost governance blocker |
-| **Pyright** | Yes | Sprint 1 | CI/Build | Type checker improvement |
-| **Rust Hook System** | Yes | Sprint 2-3 | Core | Governance scalability |
-| **Pareto Routing** | Yes | Sprint 2 | Agent/Orchestration | Cost reduction |
-| **Letta** | Monitor | Q2 2026 | Agent | If memory grows complex |
-| **Mem0** | Monitor | Q2 2026 | Agent | If managed memory needed |
-| **OpenTelemetry** | Monitor | Q3 2026 | Ops | Multi-agent tracing |
-| **OPA** | Hold | TBD | Governance | No current blocker |
-| **NeMo Guardrails** | Hold | TBD | Safety | Switch to Guardrails AI if needed |
-| **Full PyO3 Conversion** | Monitor | Q3 2026+ | Core | Hot path optimization only |
+| Tool/Framework           | Adopt Now? | Timeline   | Owner               | Notes                             |
+| ------------------------ | ---------- | ---------- | ------------------- | --------------------------------- |
+| **LiteLLM Proxy**        | Yes        | Sprint 1   | Ops                 | Cost governance blocker           |
+| **Pyright**              | Yes        | Sprint 1   | CI/Build            | Type checker improvement          |
+| **Rust Hook System**     | Yes        | Sprint 2-3 | Core                | Governance scalability            |
+| **Pareto Routing**       | Yes        | Sprint 2   | Agent/Orchestration | Cost reduction                    |
+| **Letta**                | Monitor    | Q2 2026    | Agent               | If memory grows complex           |
+| **Mem0**                 | Monitor    | Q2 2026    | Agent               | If managed memory needed          |
+| **OpenTelemetry**        | Monitor    | Q3 2026    | Ops                 | Multi-agent tracing               |
+| **OPA**                  | Hold       | TBD        | Governance          | No current blocker                |
+| **NeMo Guardrails**      | Hold       | TBD        | Safety              | Switch to Guardrails AI if needed |
+| **Full PyO3 Conversion** | Monitor    | Q3 2026+   | Core                | Hot path optimization only        |
 
 ---
 
@@ -633,6 +672,7 @@ The agent governance and polyglot systems landscape in 2025-2026 is mature and c
 This roadmap positions thegent as a production-grade agent governance platform while maintaining focus on core capabilities.
 
 <!-- PHENOTYPE_GOVERNANCE_OVERLAY_V1 -->
+
 ## Phenotype Governance Overlay v1
 
 - Enforce `TDD + BDD + SDD` for all feature and workflow changes.
@@ -641,4 +681,3 @@ This roadmap positions thegent as a production-grade agent governance platform w
 - Keep local hot paths deterministic and low-latency; place distributed workflow logic behind durable orchestration boundaries.
 - Require policy gating, auditability, and traceable correlation IDs for agent and workflow actions.
 - Document architectural and protocol decisions before broad rollout changes.
-

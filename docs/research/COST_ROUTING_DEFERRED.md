@@ -19,12 +19,12 @@
 
 The following are **not implemented** and are documented as deferred:
 
-| Item | Description | Reference |
-|------|-------------|-----------|
-| Per-run cost tracking | Aggregate actual cost per run; budget alerts | FR-036, WP-Y4 |
-| Cost-per-quality optimization | RouteLLM-style provider selection; A/B cost-quality trade-off | WP-5003, NFR-016 |
-| Dynamic cost weights | Cost weights from live pricing or usage data | — |
-| Budget enforcement | Hard limits per run or per hour; throttle on overage | Risk registry TD-02 |
+| Item                          | Description                                                   | Reference           |
+| ----------------------------- | ------------------------------------------------------------- | ------------------- |
+| Per-run cost tracking         | Aggregate actual cost per run; budget alerts                  | FR-036, WP-Y4       |
+| Cost-per-quality optimization | RouteLLM-style provider selection; A/B cost-quality trade-off | WP-5003, NFR-016    |
+| Dynamic cost weights          | Cost weights from live pricing or usage data                  | —                   |
+| Budget enforcement            | Hard limits per run or per hour; throttle on overage          | Risk registry TD-02 |
 
 ---
 
@@ -41,13 +41,13 @@ When cost-based routing is prioritized:
 
 ## BACKLOG items (when cost-based routing prioritized)
 
-| ID | Title | Source | Priority | Depends |
-|----|-------|--------|----------|---------|
-| cost-wp-y4 | Per-run cost aggregation (orchestration/cost.py) | COST_ROUTING_DEFERRED.md §3 | P2 | — |
-| cost-budget-alerts | Budget alerts and cost-overage gates | COST_ROUTING_DEFERRED.md §3 | P2 | cost-wp-y4 |
-| cost-wp-5003 | Cost-quality optimization (RouteLLM-style); integrate with run registry | COST_ROUTING_DEFERRED.md §3, WP-5003 | P2 | cost-wp-y4 |
+| ID                 | Title                                                                   | Source                               | Priority | Depends    |
+| ------------------ | ----------------------------------------------------------------------- | ------------------------------------ | -------- | ---------- |
+| cost-wp-y4         | Per-run cost aggregation (orchestration/cost.py)                        | COST_ROUTING_DEFERRED.md §3          | P2       | —          |
+| cost-budget-alerts | Budget alerts and cost-overage gates                                    | COST_ROUTING_DEFERRED.md §3          | P2       | cost-wp-y4 |
+| cost-wp-5003       | Cost-quality optimization (RouteLLM-style); integrate with run registry | COST_ROUTING_DEFERRED.md §3, WP-5003 | P2       | cost-wp-y4 |
 
-*Run `thegent plan incorporate` to merge into [WORK_STREAM.md](../reference/WORK_STREAM.md).*
+_Run `thegent plan incorporate` to merge into [WORK_STREAM.md](../reference/WORK_STREAM.md)._
 
 ---
 
@@ -75,9 +75,11 @@ from pathlib import Path
 from typing import Dict, Optional
 from dataclasses import dataclass, field
 
+
 @dataclass
 class CostEntry:
     """Single cost entry for a token or API call."""
+
     timestamp: str
     provider: str
     model: str
@@ -86,6 +88,7 @@ class CostEntry:
     cost_usd: float
     run_id: str
     task_id: Optional[str] = None
+
 
 class CostTracker:
     """Track and aggregate costs across runs."""
@@ -120,19 +123,14 @@ class CostTracker:
             "total_input_tokens": total_input,
             "total_output_tokens": total_output,
             "providers": {},
-            "ended_at": datetime.utcnow().isoformat() + "Z"
+            "ended_at": datetime.utcnow().isoformat() + "Z",
         }
 
         # Aggregate by provider
         for entry in self.run_entries:
             provider = entry.provider
             if provider not in summary["providers"]:
-                summary["providers"][provider] = {
-                    "cost_usd": 0,
-                    "input_tokens": 0,
-                    "output_tokens": 0,
-                    "models": {}
-                }
+                summary["providers"][provider] = {"cost_usd": 0, "input_tokens": 0, "output_tokens": 0, "models": {}}
             p = summary["providers"][provider]
             p["cost_usd"] += entry.cost_usd
             p["input_tokens"] += entry.input_tokens
@@ -158,11 +156,16 @@ class CostTracker:
         # Append to aggregate
         aggregate_file = self.cost_dir / "aggregate.jsonl"
         with open(aggregate_file, "a") as f:
-            f.write(json.dumps({
-                "run_id": summary["run_id"],
-                "total_cost": summary["total_cost_usd"],
-                "ended_at": summary["ended_at"]
-            }) + "\n")
+            f.write(
+                json.dumps(
+                    {
+                        "run_id": summary["run_id"],
+                        "total_cost": summary["total_cost_usd"],
+                        "ended_at": summary["ended_at"],
+                    }
+                )
+                + "\n"
+            )
 ```
 
 ### 4.2 Budget Alert System
@@ -176,13 +179,16 @@ from pathlib import Path
 from dataclasses import dataclass
 from typing import Optional
 
+
 @dataclass
 class BudgetConfig:
     """Budget configuration."""
+
     hourly_limit_usd: float = 10.0
     daily_limit_usd: float = 100.0
     run_limit_usd: float = 5.0
     warning_threshold: float = 0.8
+
 
 class BudgetAlertSystem:
     """Check budgets and emit alerts."""

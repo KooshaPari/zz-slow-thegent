@@ -20,12 +20,12 @@ Test Coverage:
 - AI slop detector logic
 """
 
-import orjson as json
-import subprocess
-import pytest
-import tempfile
 import os
+import subprocess
 from pathlib import Path
+
+import orjson as json
+import pytest
 
 
 @pytest.fixture
@@ -167,7 +167,7 @@ class TestGateParity:
         - Pre-tool preconditions are met
         """
         # Sample PreToolUse payload
-        payload = json.dumps(
+        json.dumps(
             {
                 "tool_name": "file_write",
                 "tool_args": {"path": "/tmp/test.txt", "content": "test"},
@@ -193,7 +193,7 @@ class TestGateParity:
         - Tool output is well-formed
         - Post-tool validations pass
         """
-        payload = json.dumps(
+        json.dumps(
             {
                 "tool_name": "file_write",
                 "tool_result": {"status": "success", "bytes_written": 42},

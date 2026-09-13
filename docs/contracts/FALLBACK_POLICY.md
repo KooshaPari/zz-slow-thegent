@@ -14,12 +14,12 @@ When agent output cannot be normalized via a provider adapter (XML, JSON, etc.),
 
 ## 2. Policy Configuration
 
-| Config | Default | Description |
-|--------|---------|--------------|
-| `THGENT_NORMALIZATION_POLICY_ALLOW_FALLBACK` | true | Allow plain-text fallback when adapter fails |
-| `THGENT_NORMALIZATION_POLICY_MIN_CONFIDENCE` | 0.4 | Minimum confidence threshold; below triggers policy violation |
-| `THGENT_NORMALIZATION_POLICY_MAX_FALLBACK_RATE` | 0.3 | Max global fallback rate (30%); above triggers policy violation |
-| `THGENT_NORMALIZATION_POLICY_STRICT_PROVIDERS` | "" | Comma-separated providers that must never use fallback |
+| Config                                          | Default | Description                                                     |
+| ----------------------------------------------- | ------- | --------------------------------------------------------------- |
+| `THGENT_NORMALIZATION_POLICY_ALLOW_FALLBACK`    | true    | Allow plain-text fallback when adapter fails                    |
+| `THGENT_NORMALIZATION_POLICY_MIN_CONFIDENCE`    | 0.4     | Minimum confidence threshold; below triggers policy violation   |
+| `THGENT_NORMALIZATION_POLICY_MAX_FALLBACK_RATE` | 0.3     | Max global fallback rate (30%); above triggers policy violation |
+| `THGENT_NORMALIZATION_POLICY_STRICT_PROVIDERS`  | ""      | Comma-separated providers that must never use fallback          |
 
 ---
 
@@ -57,13 +57,13 @@ Both MCP `thegent_run` and CLI `thegent run` use the same `run_with_failover` pa
 
 ## 6. Guardrails
 
-| Guardrail | Behavior |
-|-----------|----------|
+| Guardrail                  | Behavior                                                                                                                      |
+| -------------------------- | ----------------------------------------------------------------------------------------------------------------------------- |
 | Critical lane (G-CA-03 C3) | `--lane critical` rejects runs with `source_contract` fallback-plain or unknown; run fails with error_class unknown_contract. |
-| Strict provider | If provider in `strict_providers`, fallback is blocked; `SemanticValidationError` raised when `allow_fallback=False`. |
-| Confidence threshold | Below `min_confidence_threshold` → policy violation logged. |
-| Max fallback rate | Global rate > `max_fallback_rate` → policy violation logged. |
-| Parse error class | `parse_truncated` from `extract_condensed_validated` → adapter result returned (no fallback to COMPLETED). |
+| Strict provider            | If provider in `strict_providers`, fallback is blocked; `SemanticValidationError` raised when `allow_fallback=False`.         |
+| Confidence threshold       | Below `min_confidence_threshold` → policy violation logged.                                                                   |
+| Max fallback rate          | Global rate > `max_fallback_rate` → policy violation logged.                                                                  |
+| Parse error class          | `parse_truncated` from `extract_condensed_validated` → adapter result returned (no fallback to COMPLETED).                    |
 
 ---
 

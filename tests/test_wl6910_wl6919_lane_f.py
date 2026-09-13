@@ -3,7 +3,6 @@
 from __future__ import annotations
 
 import contextlib
-import orjson as json
 import subprocess
 import sys
 from datetime import UTC, datetime
@@ -11,9 +10,10 @@ from errno import ESRCH
 from pathlib import Path
 from types import SimpleNamespace
 
+import orjson as json
 import pytest
 
-from thegent import dex_cli_helpers, resources, shell_cli, shared_mcp_manager, summary
+from thegent import dex_cli_helpers, resources, shared_mcp_manager, shell_cli, summary
 from thegent import install as install_module
 from thegent.compositor.terminal_pane import TerminalPane
 from thegent.ux.session_tui import SessionTUI
@@ -34,7 +34,8 @@ def _touch(path: Path) -> None:
 
 def _bootstrap_shared_mcp(monkeypatch: pytest.MonkeyPatch) -> None:
     fake_manage = SimpleNamespace(
-        mcp_up=lambda: None, _get_mcp_url=lambda *_args, **_kwargs: "http://127.0.0.1:3847/mcp"
+        mcp_up=lambda: None,
+        _get_mcp_url=lambda *_args, **_kwargs: "http://127.0.0.1:3847/mcp",
     )
     monkeypatch.setitem(sys.modules, "thegent.mcp.manage", fake_manage)
     monkeypatch.setattr(
@@ -101,7 +102,11 @@ def test_wl6911_parse_log_entry_valid_payload() -> None:
     stats = summary.LogParseStats()
 
     row = json.dumps(
-        {"type": "assistant", "timestamp": "2026-01-10T10:00:00+00:00", "message": {"content": "ok"}}
+        {
+            "type": "assistant",
+            "timestamp": "2026-01-10T10:00:00+00:00",
+            "message": {"content": "ok"},
+        }
     ).decode()
     parsed = summary._parse_log_entry(row, start, end, stats)
 
@@ -137,7 +142,13 @@ def test_wl6912_read_log_file_readable(tmp_path: Path) -> None:
     end = datetime(2026, 1, 31, tzinfo=UTC)
     log_file = tmp_path / "ok.jsonl"
     log_file.write_text(
-        json.dumps({"type": "user", "timestamp": "2026-01-12T09:00:00+00:00", "message": {"content": "hello"}}).decode()
+        json.dumps(
+            {
+                "type": "user",
+                "timestamp": "2026-01-12T09:00:00+00:00",
+                "message": {"content": "hello"},
+            }
+        ).decode()
         + "\n",
         encoding="utf-8",
     )
@@ -157,14 +168,26 @@ def test_wl6912_read_log_file_with_malformed_and_valid_records(tmp_path: Path) -
             [
                 "not-json",
                 json.dumps(
-                    {"type": "assistant", "timestamp": "2026-01-10T10:00:00+00:00", "message": {"content": "ok"}}
+                    {
+                        "type": "assistant",
+                        "timestamp": "2026-01-10T10:00:00+00:00",
+                        "message": {"content": "ok"},
+                    }
                 ),
                 json.dumps({"type": "assistant", "timestamp": "bad"}).decode(),
                 json.dumps(
-                    {"type": "system", "timestamp": "2026-01-10T10:00:00+00:00", "message": {"content": "skip"}}
+                    {
+                        "type": "system",
+                        "timestamp": "2026-01-10T10:00:00+00:00",
+                        "message": {"content": "skip"},
+                    }
                 ),
                 json.dumps(
-                    {"type": "user", "timestamp": "2026-01-10T10:01:00+00:00", "message": {"content": "valid"}}
+                    {
+                        "type": "user",
+                        "timestamp": "2026-01-10T10:01:00+00:00",
+                        "message": {"content": "valid"},
+                    }
                 ).decode(),
             ]
         ),
@@ -224,9 +247,13 @@ def test_wl6913_get_thegent_root_installed_package_success(monkeypatch: pytest.M
     assert root == pkg_dir
 
 
-def test_wl6913_get_thegent_root_import_failure_falls_back(monkeypatch: pytest.MonkeyPatch) -> None:
+def test_wl6913_get_thegent_root_import_failure_falls_back(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
     monkeypatch.setattr(
-        install_module, "import_module", lambda _name: (_ for _ in ()).throw(ModuleNotFoundError("no pkg"))
+        install_module,
+        "import_module",
+        lambda _name: (_ for _ in ()).throw(ModuleNotFoundError("no pkg")),
     )
 
     root = install_module._get_thegent_root()
@@ -234,7 +261,9 @@ def test_wl6913_get_thegent_root_import_failure_falls_back(monkeypatch: pytest.M
     assert root == Path(install_module.__file__).resolve().parent.parent.parent
 
 
-def test_wl6913_get_thegent_root_path_failure_falls_back(monkeypatch: pytest.MonkeyPatch) -> None:
+def test_wl6913_get_thegent_root_path_failure_falls_back(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
     module = SimpleNamespace(__file__=object())
     monkeypatch.setattr(install_module, "import_module", lambda _name: module)
 
@@ -248,7 +277,9 @@ def test_wl6914_shared_mcp_stale_lockfile_cleanup_success(monkeypatch: pytest.Mo
     _scope, lockfile = shared_mcp_manager.get_server_scope()
     lockfile.write_text(json.dumps({"pid": 424242, "port": 3847}).decode(), encoding="utf-8")
     monkeypatch.setattr(
-        shared_mcp_manager.os, "kill", lambda *_args, **_kwargs: (_ for _ in ()).throw(OSError(ESRCH, ""))
+        shared_mcp_manager.os,
+        "kill",
+        lambda *_args, **_kwargs: (_ for _ in ()).throw(OSError(ESRCH, "")),
     )
     _bootstrap_shared_mcp(monkeypatch)
 
@@ -315,9 +346,15 @@ def test_wl6917_session_tui_valid_meta_lookup(monkeypatch: pytest.MonkeyPatch, t
     with (
         pytest.MonkeyPatch.context() as mp,
     ):
-        mp.setattr("thegent.ux.session_tui.session_meta_impl", lambda _sid: {"pid": 10, "status": "running"})
+        mp.setattr(
+            "thegent.ux.session_tui.session_meta_impl",
+            lambda _sid: {"pid": 10, "status": "running"},
+        )
         mp.setattr(SessionTUI, "_get_subagents_for_session", lambda self, _sid: [])
-        mp.setattr("thegent.ux.session_tui._find_session_meta", lambda _settings, _sid: meta_path)
+        mp.setattr(
+            "thegent.ux.session_tui._find_session_meta",
+            lambda _settings, _sid: meta_path,
+        )
         details = tui._get_session_details("sess-ok")
 
     assert "log_paths" in details
@@ -330,7 +367,10 @@ def test_wl6917_session_tui_missing_meta_sets_diagnostic() -> None:
     with (
         pytest.MonkeyPatch.context() as mp,
     ):
-        mp.setattr("thegent.ux.session_tui.session_meta_impl", lambda _sid: {"pid": 0, "status": "exited"})
+        mp.setattr(
+            "thegent.ux.session_tui.session_meta_impl",
+            lambda _sid: {"pid": 0, "status": "exited"},
+        )
         mp.setattr(SessionTUI, "_get_subagents_for_session", lambda self, _sid: [])
         mp.setattr(
             "thegent.ux.session_tui._find_session_meta",
@@ -348,7 +388,10 @@ def test_wl6917_session_tui_path_error_sets_diagnostic() -> None:
     with (
         pytest.MonkeyPatch.context() as mp,
     ):
-        mp.setattr("thegent.ux.session_tui.session_meta_impl", lambda _sid: {"pid": 0, "status": "exited"})
+        mp.setattr(
+            "thegent.ux.session_tui.session_meta_impl",
+            lambda _sid: {"pid": 0, "status": "exited"},
+        )
         mp.setattr(SessionTUI, "_get_subagents_for_session", lambda self, _sid: [])
         mp.setattr(
             "thegent.ux.session_tui._find_session_meta",
@@ -402,7 +445,9 @@ def test_wl6918_get_resource_path_non_dev_uses_package(monkeypatch: pytest.Monke
     assert path == packaged
 
 
-def test_wl6918_get_resource_path_path_detection_error_falls_back(monkeypatch: pytest.MonkeyPatch) -> None:
+def test_wl6918_get_resource_path_path_detection_error_falls_back(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
     import thegent.config as config_module
 
     def _boom_resolve(self: Path) -> Path:
@@ -411,7 +456,9 @@ def test_wl6918_get_resource_path_path_detection_error_falls_back(monkeypatch: p
     monkeypatch.setattr(resources.Path, "resolve", _boom_resolve)
     monkeypatch.setattr(config_module, "ThegentSettings", lambda: SimpleNamespace(dev=False))
     monkeypatch.setattr(
-        resources.pkg_resources, "path", lambda *_args, **_kwargs: (_ for _ in ()).throw(FileNotFoundError("no pkg"))
+        resources.pkg_resources,
+        "path",
+        lambda *_args, **_kwargs: (_ for _ in ()).throw(FileNotFoundError("no pkg")),
     )
 
     path = resources.get_resource_path("contracts/dag.json")
@@ -420,7 +467,12 @@ def test_wl6918_get_resource_path_path_detection_error_falls_back(monkeypatch: p
 
 
 class _FakeProcess:
-    def __init__(self, *, timeout_on_wait: bool = False, terminate_error: BaseException | None = None) -> None:
+    def __init__(
+        self,
+        *,
+        timeout_on_wait: bool = False,
+        terminate_error: BaseException | None = None,
+    ) -> None:
         self._timeout_on_wait = timeout_on_wait
         self._terminate_error = terminate_error
         self.terminated = False

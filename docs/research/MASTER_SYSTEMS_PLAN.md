@@ -26,6 +26,7 @@ This document synthesizes research into a unified plan for building:
 ### 1.1 Problem Statement
 
 User asks off-topic question during active development session:
+
 > "During dev work, user notices Python version is wrong and asks about it"
 
 Current behavior: Agent adapts goals, pollutes context, loses focus
@@ -35,6 +36,7 @@ Target behavior: **Spawn a thread (subagent clone) to handle it**
 ### 1.2 Thread Definition
 
 A **thread** is:
+
 - A **unit of work** with **partial context share**
 - A **parallel execution path** (does not block parent unless necessary)
 - Gets: **chat summary + last full turn (unsummarized) + thread instructions + user prompt**
@@ -42,12 +44,12 @@ A **thread** is:
 
 ### 1.3 Thread Trigger Conditions
 
-| Trigger | Action |
-|---------|--------|
-| Prompt unrelated to current goals | Spawn thread |
+| Trigger                                        | Action       |
+| ---------------------------------------------- | ------------ |
+| Prompt unrelated to current goals              | Spawn thread |
 | Prompt would require significant context shift | Spawn thread |
-| User explicitly requests `@thread` prefix | Spawn thread |
-| Prompt matches "quick question" pattern | Spawn thread |
+| User explicitly requests `@thread` prefix      | Spawn thread |
+| Prompt matches "quick question" pattern        | Spawn thread |
 
 ### 1.4 Thread Lifecycle
 
@@ -68,11 +70,13 @@ A **thread** is:
 ### 1.5 Thread Context Isolation
 
 **NOT included in thread context:**
+
 - Full conversation history
 - All previous tool calls
 - Intermediate reasoning
 
 **INCLUDED in thread context:**
+
 - Chat summary (compressed)
 - Last full turn (unsummarized)
 - Thread state instructions
@@ -81,6 +85,7 @@ A **thread** is:
 ### 1.6 Thread-State Smart Contract
 
 At the start of each turn, agent writes a **smart contract**:
+
 ```yaml
 turn_contract:
   goal: "Implement user authentication"
@@ -97,12 +102,12 @@ Contract must be satisfied before thread can complete.
 
 ### 1.7 Thread End States
 
-| End State | Behavior |
-|-----------|----------|
-| Success | Return 1-2 line summary, merge results |
-| Partial | Return summary + pending items |
-| Failed | Return error summary, flag for parent attention |
-| Needs Parent | Escalate back to parent chat |
+| End State    | Behavior                                        |
+| ------------ | ----------------------------------------------- |
+| Success      | Return 1-2 line summary, merge results          |
+| Partial      | Return summary + pending items                  |
+| Failed       | Return error summary, flag for parent attention |
+| Needs Parent | Escalate back to parent chat                    |
 
 ### 1.8 Thread Resumption
 
@@ -120,6 +125,7 @@ run cmd -> can bg or block at run, during run, wait for complete in chat
 ```
 
 Implementation:
+
 ```python
 class CommandExecution:
     mode: Literal["blocking", "background", "idle"]
@@ -132,27 +138,27 @@ class CommandExecution:
 
 ### 2.1 Core Roles
 
-| Role | Purpose | Trigger Pattern |
-|------|---------|-----------------|
-| Planner | Decompose complex tasks | Multi-step request |
-| Researcher | Fetch docs, search | Needs external info |
-| Coder | Write/modify code | Implementation needed |
-| Reviewer | Review changes | After code changes |
-| Tester | Run tests, validate | After implementation |
-| Commiter | Generate commits | Changes ready |
-| Perf Profiler | Profile performance | Optimization needed |
-| Security Scanner | Find vulnerabilities | Security review |
-| Doc Writer | Maintain documentation | Code changes |
-| Orchestrator | Coordinate agents | Multi-agent workflow |
+| Role             | Purpose                 | Trigger Pattern       |
+| ---------------- | ----------------------- | --------------------- |
+| Planner          | Decompose complex tasks | Multi-step request    |
+| Researcher       | Fetch docs, search      | Needs external info   |
+| Coder            | Write/modify code       | Implementation needed |
+| Reviewer         | Review changes          | After code changes    |
+| Tester           | Run tests, validate     | After implementation  |
+| Commiter         | Generate commits        | Changes ready         |
+| Perf Profiler    | Profile performance     | Optimization needed   |
+| Security Scanner | Find vulnerabilities    | Security review       |
+| Doc Writer       | Maintain documentation  | Code changes          |
+| Orchestrator     | Coordinate agents       | Multi-agent workflow  |
 
 ### 2.2 Role Assignment Modes
 
-| Mode | Description |
-|------|-------------|
-| **Explicit** | User says `use XYZ role` |
-| **Implicit** | System detects task type |
-| **Tool-Based** | Agent calls `assumeRole()` tool |
-| **Hybrid** | Mix of explicit + implicit |
+| Mode             | Description                           |
+| ---------------- | ------------------------------------- |
+| **Explicit**     | User says `use XYZ role`              |
+| **Implicit**     | System detects task type              |
+| **Tool-Based**   | Agent calls `assumeRole()` tool       |
+| **Hybrid**       | Mix of explicit + implicit            |
 | **Hierarchical** | Orchestrator delegates to specialists |
 
 ### 2.3 Role Hierarchy
@@ -181,16 +187,17 @@ Reviewer  Tester  Local    Web    Reviewer Tester
 
 ### 2.5 Role Lifecycle
 
-| Phase | Strategy |
-|-------|----------|
-| **Pooled** | Pre-warmed instances ready |
-| **Ephemeral** | Spawn on demand, die when done |
-| **Speculative** | Pre-warm based on prediction |
-| **Hybrid** | All of the above + more |
+| Phase           | Strategy                       |
+| --------------- | ------------------------------ |
+| **Pooled**      | Pre-warmed instances ready     |
+| **Ephemeral**   | Spawn on demand, die when done |
+| **Speculative** | Pre-warm based on prediction   |
+| **Hybrid**      | All of the above + more        |
 
 ### 2.6 Role Configuration
 
 Roles should be **subconfigurable**:
+
 ```yaml
 roles:
   coder:
@@ -200,7 +207,7 @@ roles:
     pool_size: 3
     prewarm: true
   researcher:
-    model: "claude-3-5-haiku"  # Cheaper for search
+    model: "claude-3-5-haiku" # Cheaper for search
     tools: ["web_search", "read"]
     pool_size: 5
     timeout: 60s
@@ -213,6 +220,7 @@ roles:
 ### 3.1 Runbook Definition
 
 A **runbook** is:
+
 - A **predefined semantic workflow** for an agent/human to execute
 - Based on **scientific management principles**
 - Evolved from **learned patterns**
@@ -220,23 +228,23 @@ A **runbook** is:
 
 ### 3.2 Runbook Types
 
-| Type | Description | Example |
-|------|-------------|---------|
-| **Deterministic** | Fixed steps, no branching | `run(project=)` |
-| **Semantic** | Goal-driven, agent decides steps | "Implement auth" |
-| **Learned** | Pattern extracted from history | "Fix failing tests" |
-| **Hybrid** | Mix of above | PR review workflow |
+| Type              | Description                      | Example             |
+| ----------------- | -------------------------------- | ------------------- |
+| **Deterministic** | Fixed steps, no branching        | `run(project=)`     |
+| **Semantic**      | Goal-driven, agent decides steps | "Implement auth"    |
+| **Learned**       | Pattern extracted from history   | "Fix failing tests" |
+| **Hybrid**        | Mix of above                     | PR review workflow  |
 
 ### 3.3 Trigger Mechanisms
 
-| Trigger | Example |
-|---------|---------|
-| Manual | `/runbook deploy` |
-| Event-based | File changed → lint runbook |
-| Schedule | Nightly cleanup |
-| Agent-decided | Detects need, invokes |
-| Threshold | Coverage drops → fix runbook |
-| ML-predicted | Predict next task |
+| Trigger       | Example                      |
+| ------------- | ---------------------------- |
+| Manual        | `/runbook deploy`            |
+| Event-based   | File changed → lint runbook  |
+| Schedule      | Nightly cleanup              |
+| Agent-decided | Detects need, invokes        |
+| Threshold     | Coverage drops → fix runbook |
+| ML-predicted  | Predict next task            |
 
 ### 3.4 Example Runbooks
 
@@ -250,7 +258,7 @@ runbooks:
       - create_spec
       - break_down_tasks
     goal_state: "Tasks registered and prioritized"
-    
+
   fix-failing-tests:
     triggers: [threshold: test_pass_rate < 0.9]
     steps:
@@ -259,7 +267,7 @@ runbooks:
       - implement_fix
       - verify_fix
     goal_state: "All tests passing"
-    
+
   pr-review:
     triggers: [event: pr_opened]
     steps:
@@ -290,6 +298,7 @@ Generic commands auto-match/find or are empty until populated.
 ### 3.6 Reference Implementations
 
 Look at for complex flows:
+
 - **AgilePlus** - Specification-driven development
 - **GSD** - Getting Stuff Done framework
 - **BMAD** - Behavior-Driven AI Development
@@ -301,10 +310,10 @@ Look at for complex flows:
 
 ### 4.1 Dual Git System
 
-| System | Scope | Visibility | Granularity |
-|--------|-------|------------|-------------|
-| **Shadow Git** | Every change | Internal | Per-edit |
-| **Public Git** | Logical units | External | Per-turn/commit |
+| System         | Scope         | Visibility | Granularity     |
+| -------------- | ------------- | ---------- | --------------- |
+| **Shadow Git** | Every change  | Internal   | Per-edit        |
+| **Public Git** | Logical units | External   | Per-turn/commit |
 
 ### 4.2 Shadow Git
 
@@ -321,6 +330,7 @@ Look at for complex flows:
 ```
 
 **Storage Options**:
+
 - Temporal-backed (?) + ???
 - MinIO / SQLite
 - Git notes
@@ -331,6 +341,7 @@ Look at for complex flows:
 ### 4.3 Public Git
 
 **Rules**:
+
 - Each **turn** ends in a commit
 - Next turn(s) may loop on fixing hook/commit check errors
 - Agent can elect to **wait** if work is explicitly incomplete
@@ -338,23 +349,23 @@ Look at for complex flows:
 
 ### 4.4 Commit Timing
 
-| Scenario | Action |
-|----------|--------|
-| 1 file edited | Commit at turn end |
-| 10 files edited | Batch commit at turn end |
+| Scenario              | Action                    |
+| --------------------- | ------------------------- |
+| 1 file edited         | Commit at turn end        |
+| 10 files edited       | Batch commit at turn end  |
 | Agent waiting on work | Skip commit, mark pending |
-| Hook errors | Next turn = fix loop |
+| Hook errors           | Next turn = fix loop      |
 
 ### 4.5 Multi-Tenant Git
 
 When multiple agents work in one worktree:
 
-| Strategy | Description |
-|----------|-------------|
-| **Lock-based** | Agent locks file before edit |
-| **Optimistic** | Edit freely, merge/conflict on commit |
-| **Branch-per-agent** | Each agent gets branch, merge later |
-| **Queue-based** | Edits serialized through queue |
+| Strategy             | Description                           |
+| -------------------- | ------------------------------------- |
+| **Lock-based**       | Agent locks file before edit          |
+| **Optimistic**       | Edit freely, merge/conflict on commit |
+| **Branch-per-agent** | Each agent gets branch, merge later   |
+| **Queue-based**      | Edits serialized through queue        |
 
 **Research needed**: Check thegent's existing multi-tenant git handling
 
@@ -380,18 +391,19 @@ main
 
 ### 5.1 Granularity Levels
 
-| Level | What's Backed Up | Example |
-|-------|------------------|---------|
-| **File** | Complete file | `src/foo.py` |
-| **Hunk** | Lines in file | Lines 10-20 of `foo.py` |
-| **Edit Operation** | Semantic change | "Renamed x to y" |
-| **Agent Action** | All changes in session | Coder agent's work |
-| **Thread** | All changes in thread | Thread-001 |
-| **Command** | CLI command + effects | `npm install` |
+| Level              | What's Backed Up       | Example                 |
+| ------------------ | ---------------------- | ----------------------- |
+| **File**           | Complete file          | `src/foo.py`            |
+| **Hunk**           | Lines in file          | Lines 10-20 of `foo.py` |
+| **Edit Operation** | Semantic change        | "Renamed x to y"        |
+| **Agent Action**   | All changes in session | Coder agent's work      |
+| **Thread**         | All changes in thread  | Thread-001              |
+| **Command**        | CLI command + effects  | `npm install`           |
 
 ### 5.2 Restore Behavior
 
 **User rewinds chat** → Given option to restore:
+
 1. Code only
 2. Conversation only
 3. Both
@@ -408,6 +420,7 @@ main
 ### 5.4 Conflict Handling
 
 If another agent modified same file:
+
 - This is why **all sessions MUST be centralized**
 - thegent integration tracks all agent sessions + terminal invocations
 
@@ -415,13 +428,13 @@ If another agent modified same file:
 
 From research:
 
-| Strategy | Description |
-|----------|-------------|
-| **N-way merge** | Merge multiple agents' changes |
-| **Waiting** | Queue edits, apply serially |
-| **Coalesce** | Combine similar edits |
-| **Flag conflict** | Agent resolves, never human |
-| **Optimistic + prevent** | LLM resolves + file locking |
+| Strategy                 | Description                    |
+| ------------------------ | ------------------------------ |
+| **N-way merge**          | Merge multiple agents' changes |
+| **Waiting**              | Queue edits, apply serially    |
+| **Coalesce**             | Combine similar edits          |
+| **Flag conflict**        | Agent resolves, never human    |
+| **Optimistic + prevent** | LLM resolves + file locking    |
 
 ---
 
@@ -449,12 +462,14 @@ From research:
 ### 6.2 Key Principle
 
 **One process with socket attachment**:
+
 - helios: First-party vertical optimal
 - thegent: Extended and agnostic
 
 ### 6.3 Session Tracking
 
 All agent sessions tracked centrally:
+
 - Agent ID + session ID + thread ID
 - File locks + edit queue
 - Git state + shadow git journal
@@ -462,12 +477,12 @@ All agent sessions tracked centrally:
 
 ### 6.4 Conflict Resolution
 
-| Type | Resolution |
-|------|------------|
-| Same file, different hunks | Auto-merge |
-| Same file, same hunks | LLM resolves |
-| Semantic conflict | Agent flags, system escalates |
-| Temporal conflict | Last-write-wins with notification |
+| Type                       | Resolution                        |
+| -------------------------- | --------------------------------- |
+| Same file, different hunks | Auto-merge                        |
+| Same file, same hunks      | LLM resolves                      |
+| Semantic conflict          | Agent flags, system escalates     |
+| Temporal conflict          | Last-write-wins with notification |
 
 **Rule**: Flag conflicts for agent threads, **NEVER humans**
 
@@ -478,6 +493,7 @@ All agent sessions tracked centrally:
 ### 7.1 Model Purpose
 
 The cheap model handles:
+
 - Commit message generation
 - Session annotation
 - Memory management
@@ -486,15 +502,16 @@ The cheap model handles:
 
 ### 7.2 Model Characteristics
 
-| Attribute | Requirement |
-|-----------|-------------|
-| Speed | Fast |
-| Cost | Cheap |
-| Quality | Good enough for simple tasks |
+| Attribute | Requirement                  |
+| --------- | ---------------------------- |
+| Speed     | Fast                         |
+| Cost      | Cheap                        |
+| Quality   | Good enough for simple tasks |
 
 ### 7.3 Current Mapping
 
 Currently maps to `minimaxm2.5` but should be renamed:
+
 - `THEGENT_HELPER_MODEL`
 - `THEGENT_VERSIONING_MODEL`
 - `THEGENT_CHEAP_MODEL`
@@ -502,6 +519,7 @@ Currently maps to `minimaxm2.5` but should be renamed:
 ### 7.4 Future: Local Models
 
 Explore sub-2B models for zero cost:
+
 - Trade-off: Memory usage vs. concurrency/frequency
 - Break-even point needs analysis
 
@@ -511,33 +529,33 @@ Explore sub-2B models for zero cost:
 
 ### 8.1 Problems to Solve
 
-| Problem | Description |
-|---------|-------------|
-| **Too large** | Context exceeds limits |
-| **Truncation loses info** | Important info cut off |
-| **Stale** | Model doesn't know recent changes |
-| **Scattered** | Hard to find relevant info |
-| **Thrashes/bloats** | Quick degradation |
+| Problem                   | Description                       |
+| ------------------------- | --------------------------------- |
+| **Too large**             | Context exceeds limits            |
+| **Truncation loses info** | Important info cut off            |
+| **Stale**                 | Model doesn't know recent changes |
+| **Scattered**             | Hard to find relevant info        |
+| **Thrashes/bloats**       | Quick degradation                 |
 
 ### 8.2 Solutions
 
-| Solution | Description |
-|----------|-------------|
-| **Summarization** | Compress old messages |
-| **Semantic search** | Find relevant chunks |
-| **Checkpointing** | Save/restore state |
-| **Hierarchical** | Main + sub-contexts |
-| **Episodic memory** | 20-50 layers |
+| Solution            | Description           |
+| ------------------- | --------------------- |
+| **Summarization**   | Compress old messages |
+| **Semantic search** | Find relevant chunks  |
+| **Checkpointing**   | Save/restore state    |
+| **Hierarchical**    | Main + sub-contexts   |
+| **Episodic memory** | 20-50 layers          |
 
 ### 8.3 Context Scope
 
-| Scope | Description |
-|-------|-------------|
-| **Global** | Shared across all, filtered |
-| **Per-chat** | Chat-specific context |
-| **Per-thread** | Thread-isolated context |
-| **Per-agent** | Agent-specific memory |
-| **Episodic** | 20-50 layer session memory |
+| Scope          | Description                 |
+| -------------- | --------------------------- |
+| **Global**     | Shared across all, filtered |
+| **Per-chat**   | Chat-specific context       |
+| **Per-thread** | Thread-isolated context     |
+| **Per-agent**  | Agent-specific memory       |
+| **Episodic**   | 20-50 layer session memory  |
 
 ---
 
@@ -545,21 +563,21 @@ Explore sub-2B models for zero cost:
 
 ### 9.1 Current Pain Points
 
-| Issue | Impact |
-|-------|--------|
-| Agent spawn time | Slow |
-| LLM response time | Variable |
-| Git operations | Can be slow |
-| Context loading | Slow |
+| Issue             | Impact                          |
+| ----------------- | ------------------------------- |
+| Agent spawn time  | Slow                            |
+| LLM response time | Variable                        |
+| Git operations    | Can be slow                     |
+| Context loading   | Slow                            |
 | Concurrent agents | System overload, latency spikes |
 
 ### 9.2 Targets
 
-| Metric | Target |
-|--------|--------|
-| First token | < 3s |
-| Shell startup | < 50ms ✅ |
-| Agent spawn | TBD |
+| Metric          | Target                                         |
+| --------------- | ---------------------------------------------- |
+| First token     | < 3s                                           |
+| Shell startup   | < 50ms ✅                                      |
+| Agent spawn     | TBD                                            |
 | Task completion | Benchmark against SWE-bench/Term-bench subsets |
 
 ### 9.3 Strategy
@@ -575,25 +593,26 @@ Explore sub-2B models for zero cost:
 
 ### 10.1 helios vs thegent
 
-| Aspect | helios | thegent |
-|--------|--------|---------|
-| Focus | First-party vertical | Extended, agnostic |
-| Agents | Direct socket attachment | Tooling/adapters |
-| Scope | Optimized for helios agents | Universal |
+| Aspect | helios                      | thegent            |
+| ------ | --------------------------- | ------------------ |
+| Focus  | First-party vertical        | Extended, agnostic |
+| Agents | Direct socket attachment    | Tooling/adapters   |
+| Scope  | Optimized for helios agents | Universal          |
 
 ### 10.2 External Tool Integration
 
-| Tool | Integration |
-|------|-------------|
-| Claude Code | Inspiration, interoperability for resume |
-| Gemini CLI | Inspiration, interoperability for resume |
-| Cursor Agent | Interoperability for resume |
-| Droid | Interoperability for resume |
-| Gemini Code Assist | Automated PR review |
+| Tool               | Integration                              |
+| ------------------ | ---------------------------------------- |
+| Claude Code        | Inspiration, interoperability for resume |
+| Gemini CLI         | Inspiration, interoperability for resume |
+| Cursor Agent       | Interoperability for resume              |
+| Droid              | Interoperability for resume              |
+| Gemini Code Assist | Automated PR review                      |
 
 ### 10.3 Session Resume
 
 Make helios interoperable with other CLIs:
+
 - Resume cursor-agent sessions
 - Resume droid sessions
 - Resume claude sessions
@@ -674,8 +693,8 @@ helios attach [session-id]
 
 ---
 
-*Generated: 2026-02-24*
-*Status: Ready for Review*
+_Generated: 2026-02-24_
+_Status: Ready for Review_
 
 ---
 
@@ -695,27 +714,33 @@ const ElicitQuestionSchema = z.object({
   id: z.string(),
   type: z.enum([
     "single_choice",
-    "multi_choice", 
+    "multi_choice",
     "text",
     "number",
     "boolean",
     "file_path",
-    "range"
+    "range",
   ]),
   question: z.string(),
   header: z.string().max(32),
   context: z.string().optional(),
-  options: z.array(z.object({
-    label: z.string(),
-    description: z.string().optional(),
-    value: z.any(),
-  })).optional(),
+  options: z
+    .array(
+      z.object({
+        label: z.string(),
+        description: z.string().optional(),
+        value: z.any(),
+      }),
+    )
+    .optional(),
   default: z.any().optional(),
-  validation: z.object({
-    min: z.number().optional(),
-    max: z.number().optional(),
-    pattern: z.string().optional(),
-  }).optional(),
+  validation: z
+    .object({
+      min: z.number().optional(),
+      max: z.number().optional(),
+      pattern: z.string().optional(),
+    })
+    .optional(),
   required: z.boolean().default(true),
 });
 
@@ -816,11 +841,11 @@ Conflict? ──▶ Same file, diff hunks? ──▶ Yes ──▶ Auto-merge
 
 ### C.1 Model Tiers
 
-| Tier | Use Case | Current Mapping |
-|------|----------|-----------------|
-| `THEGENT_HELPER_MODEL` | Commits, annotations, classification | minimaxm2.5 |
-| `THEGENT_SUMMARY_MODEL` | Memory summarization | (configurable) |
-| `THEGENT_LOCAL_MODEL` | Sub-2B for zero cost | (future) |
+| Tier                    | Use Case                             | Current Mapping |
+| ----------------------- | ------------------------------------ | --------------- |
+| `THEGENT_HELPER_MODEL`  | Commits, annotations, classification | minimaxm2.5     |
+| `THEGENT_SUMMARY_MODEL` | Memory summarization                 | (configurable)  |
+| `THEGENT_LOCAL_MODEL`   | Sub-2B for zero cost                 | (future)        |
 
 ### C.2 Task-Model Mapping
 
@@ -830,17 +855,17 @@ task_models:
     model: "${THEGENT_HELPER_MODEL}"
     max_tokens: 200
     temperature: 0.3
-  
+
   change_classification:
     model: "${THEGENT_HELPER_MODEL}"
     max_tokens: 50
     temperature: 0.1
-  
+
   session_annotation:
     model: "${THEGENT_HELPER_MODEL}"
     max_tokens: 500
     temperature: 0.5
-  
+
   memory_summary:
     model: "${THEGENT_SUMMARY_MODEL:-claude-3-5-haiku}"
     max_tokens: 2000
@@ -851,15 +876,15 @@ task_models:
 
 ## D. Implementation Priority
 
-| Phase | Components | Week |
-|-------|------------|------|
-| **1** | Elicitation tool, Shadow Git foundation | 1-2 |
-| **2** | Optimistic edits, Conflict detection | 2-3 |
-| **3** | N-Way merge, LLM resolver | 3-4 |
-| **4** | Batch committer, Public git sync | 4-5 |
-| **5** | Helper model integration | 5-6 |
-| **6** | Full integration testing | 6-7 |
+| Phase | Components                              | Week |
+| ----- | --------------------------------------- | ---- |
+| **1** | Elicitation tool, Shadow Git foundation | 1-2  |
+| **2** | Optimistic edits, Conflict detection    | 2-3  |
+| **3** | N-Way merge, LLM resolver               | 3-4  |
+| **4** | Batch committer, Public git sync        | 4-5  |
+| **5** | Helper model integration                | 5-6  |
+| **6** | Full integration testing                | 6-7  |
 
 ---
 
-*Decisions finalized: 2026-02-24*
+_Decisions finalized: 2026-02-24_

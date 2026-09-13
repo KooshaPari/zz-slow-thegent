@@ -10,7 +10,7 @@ from __future__ import annotations
 
 import logging
 from dataclasses import dataclass
-from datetime import datetime, UTC
+from datetime import UTC, datetime
 from typing import Any
 from uuid import uuid4
 
@@ -127,7 +127,10 @@ def verify_provenance_chain(stamps: list[SyncProvenanceStamp], secret: str) -> t
     expected_prev = ""
     for index, stamp in enumerate(stamps):
         if stamp.prev_hash != expected_prev:
-            return False, f"chain break at index {index}: expected prev_hash={expected_prev}, got {stamp.prev_hash}"
+            return (
+                False,
+                f"chain break at index {index}: expected prev_hash={expected_prev}, got {stamp.prev_hash}",
+            )
         if not verify_provenance_signature(stamp, secret):
             return False, f"signature verification failed at index {index}"
         expected_prev = hashlib.sha256(stamp.canonical_payload().encode("utf-8")).hexdigest()

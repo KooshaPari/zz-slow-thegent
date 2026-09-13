@@ -13,6 +13,7 @@
 This research initiative investigates intelligent compute offloading between macOS (Mac) and Windows/Linux (PC) environments within the thegent orchestration framework. The goal is to enable agents to transparently route workloads to the most suitable execution environment based on platform-specific capabilities, cost, and resource availability.
 
 **Key Outcomes:**
+
 - Feasibility analysis of cross-platform execution bridging
 - Design patterns for environment-aware task routing
 - Prototype implementation of Mac ↔ PC offload mechanism
@@ -23,6 +24,7 @@ This research initiative investigates intelligent compute offloading between mac
 ## Problem Statement
 
 ### Current State
+
 - thegent executes agents on a single machine (the host running the CLI)
 - No mechanism exists to leverage compute resources across heterogeneous environments
 - Mac-specific workloads (e.g., Xcode builds, iOS development) cannot run on Windows/Linux hosts
@@ -30,6 +32,7 @@ This research initiative investigates intelligent compute offloading between mac
 - Each environment pays for compute independently; no cost optimization across platforms
 
 ### Gaps
+
 1. **Workload Awareness**: thegent has no notion of platform-specific tool requirements
 2. **Environment Bridging**: No standardized protocol for remote execution between platforms
 3. **Resource Orchestration**: Can't leverage idle or cost-effective compute in peer environments
@@ -107,18 +110,21 @@ This research initiative investigates intelligent compute offloading between mac
 ## Research Questions
 
 ### Feasibility
+
 1. **Network Reliability**: Can we maintain stable connections for long-running tasks (>10min)?
 2. **Latency Impact**: What overhead does network roundtrip add vs. local execution? Acceptable threshold?
 3. **Authentication & Trust**: How do we securely authenticate Mac ↔ PC without SSH keys per pair?
 4. **Isolation**: Can we safely sandbox offloaded workloads without full VM/container overhead?
 
 ### Architecture
+
 5. **Protocol Choice**: HTTP (simple, ubiquitous), gRPC (typed, streaming), AMQP (async), WebSocket (bidirectional)?
 6. **Registry Model**: Centralized (shared server), Decentralized (gossip), Hybrid (local cache + sync)?
 7. **Routing Algorithm**: Cost-based greedy, ML-based predictor, game-theoretic equilibrium?
 8. **Failure Modes**: How do we handle network partition, task timeout, agent crash mid-execution?
 
 ### Economics
+
 9. **Cost Benefit**: At what workload volume does offload cost < local cost?
 10. **SLA Guarantees**: Can we maintain latency SLAs across heterogeneous networks?
 
@@ -127,6 +133,7 @@ This research initiative investigates intelligent compute offloading between mac
 ## Scope & Constraints
 
 ### In Scope
+
 - ✅ Feasibility analysis (theory + prototype)
 - ✅ Workload classification heuristics
 - ✅ Capability probing and registry
@@ -135,6 +142,7 @@ This research initiative investigates intelligent compute offloading between mac
 - ✅ Reference implementation for 2 platforms (Mac, Linux)
 
 ### Out of Scope
+
 - ❌ Asynchronous protocols (AMQP, gRPC) — prototype only with HTTP
 - ❌ Full multi-cloud federation (AWS, GCP, Azure) — research only
 - ❌ ML-based routing optimization — heuristic-based only
@@ -142,6 +150,7 @@ This research initiative investigates intelligent compute offloading between mac
 - ❌ Container/VM orchestration — sandboxing via lightweight isolation (OS-level)
 
 ### Constraints
+
 - **Timeline**: Fit within Phase 10-12 research window (2-3 weeks)
 - **Code Debt**: Prototype code must be marked `@experimental`; no production guarantees
 - **Network**: Assume LAN-only or VPN (no internet-scale)
@@ -153,6 +162,7 @@ This research initiative investigates intelligent compute offloading between mac
 ## Success Criteria
 
 ### Research Validation
+
 - [ ] **Complete Feasibility Matrix**: Document yes/no answers for all 10 research questions
 - [ ] **Prototype Execution**: Offload a real agent task (e.g., git repo analysis) from Mac to Linux
 - [ ] **Capability Detection**: Fingerprint ≥5 environments; match 90%+ accuracy against manual audit
@@ -160,6 +170,7 @@ This research initiative investigates intelligent compute offloading between mac
 - [ ] **Performance Baseline**: Measure latency overhead; document per task type
 
 ### Prototype Artifacts
+
 - [ ] **Compute Catalog** populated with ≥3 environments and ≥10 capabilities per env
 - [ ] **Workload Classifier** with ≥5 heuristics (language detection, tool inference, dependency scanning)
 - [ ] **Offload Router** integrates with thegent policy engine; respects cost/trust gates
@@ -168,6 +179,7 @@ This research initiative investigates intelligent compute offloading between mac
 - [ ] **Test Coverage**: ≥70% unit test coverage for core modules
 
 ### Documentation
+
 - [ ] **Design Document**: Detailed architecture, protocol, integration points
 - [ ] **Runbook**: Step-by-step setup for Mac + Linux + Windows environments
 - [ ] **Decision Log**: Rationale for protocol, registry, routing choices
@@ -178,6 +190,7 @@ This research initiative investigates intelligent compute offloading between mac
 ## Proposed Phases
 
 ### Phase 1: Research & Design (Week 1)
+
 - Stakeholder interviews (thegent team, users with multi-platform setups)
 - Competitive analysis (Kubernetes federation, Terraform, Nomad, Temporal)
 - Network architecture design
@@ -185,6 +198,7 @@ This research initiative investigates intelligent compute offloading between mac
 - **Deliverable**: design.md
 
 ### Phase 2: Prototype Implementation (Week 2-3)
+
 - Implement compute catalog, workload classifier, router
 - Implement HTTP bridge protocol + reference server
 - Integrate with thegent policy engine
@@ -192,6 +206,7 @@ This research initiative investigates intelligent compute offloading between mac
 - **Deliverable**: src/thegent/offload/ + tests
 
 ### Phase 3: Validation & Runbook (Week 3)
+
 - Deploy prototype to 2+ environments (Mac + Linux VM)
 - Validate end-to-end offload workflow
 - Write setup + operations runbook
@@ -199,6 +214,7 @@ This research initiative investigates intelligent compute offloading between mac
 - **Deliverable**: docs/changes/research-compute-offload/design.md, runbook.md
 
 ### Phase 4: Decision & Handoff (End of Week 3)
+
 - Present findings to team
 - Decide: Refine prototype, archive for future work, or pursue production path
 - Handoff artifacts (code, docs, lessons learned)
@@ -209,12 +225,14 @@ This research initiative investigates intelligent compute offloading between mac
 ## Dependencies & Integrations
 
 ### Internal
+
 - thegent policy engine (for gate evaluation)
 - thegent settings & configuration
 - thegent run registry (for cost tracking)
 - thegent contract telemetry (for audit trail)
 
 ### External
+
 - No mandatory external dependencies beyond stdlib + existing thegent deps
 - Optional: `docker` CLI for sandbox creation (if exploring container-based isolation)
 
@@ -222,25 +240,28 @@ This research initiative investigates intelligent compute offloading between mac
 
 ## Risks & Mitigations
 
-| Risk | Probability | Impact | Mitigation |
-|------|-------------|--------|-----------|
-| Network unreliability in production | High | Task hangs / timeouts | Prototype assumes LAN; add timeout + retry logic; doc as future work |
-| Authentication/trust complexity | Medium | Security vulnerabilities | Use pre-shared tokens for prototype; recommend mTLS for production |
-| Workload classification mismatches | Medium | Wrong platform selected | Start with simple heuristics; add manual override; collect misclassification logs |
-| Integration complexity with policy engine | Medium | Schedule slip | Start with simplified policy; iterate based on feedback |
-| Prototype code becomes "legacy" | Low | Maintenance burden | Mark all code `@experimental`; clear upgrade path in handoff |
+| Risk                                      | Probability | Impact                   | Mitigation                                                                        |
+| ----------------------------------------- | ----------- | ------------------------ | --------------------------------------------------------------------------------- |
+| Network unreliability in production       | High        | Task hangs / timeouts    | Prototype assumes LAN; add timeout + retry logic; doc as future work              |
+| Authentication/trust complexity           | Medium      | Security vulnerabilities | Use pre-shared tokens for prototype; recommend mTLS for production                |
+| Workload classification mismatches        | Medium      | Wrong platform selected  | Start with simple heuristics; add manual override; collect misclassification logs |
+| Integration complexity with policy engine | Medium      | Schedule slip            | Start with simplified policy; iterate based on feedback                           |
+| Prototype code becomes "legacy"           | Low         | Maintenance burden       | Mark all code `@experimental`; clear upgrade path in handoff                      |
 
 ---
 
 ## Success Stories & Related Work
 
 ### Kubernetes Federation
+
 Inspired by Kubernetes multi-cluster support: declarative resource affinity, cluster-aware routing, federated control plane.
 
 ### Terraform
+
 Uses provider-specific execution backends; each platform (AWS, GCP, local) has a provider. Our compute catalog is analogous.
 
 ### Temporal
+
 Workflow engine with worker pools across regions/datacenters; workers register capabilities. Our capability resolver + registry is inspired by this.
 
 ---
@@ -258,11 +279,13 @@ Workflow engine with worker pools across regions/datacenters; workers register c
 ## Resources & References
 
 ### Existing Documentation
+
 - `docs/reference/ARCHITECTURE_LAYERS.md` — thegent architecture
 - `docs/plans/02-UNIFIED-WBS.md` — Phase 10-12 work breakdown
-- `FUNCTIONAL_REQUIREMENTS.md` — FR-EXE-*, FR-MOD-*, FR-AGT-* (agent execution, models, routing)
+- `FUNCTIONAL_REQUIREMENTS.md` — FR-EXE-_, FR-MOD-_, FR-AGT-\* (agent execution, models, routing)
 
 ### External References
+
 - [Kubernetes Federation](https://kubernetes.io/docs/concepts/cluster-administration/federation/)
 - [Terraform Providers](https://www.terraform.io/language/providers)
 - [Temporal Worker Pools](https://docs.temporal.io/workers)
@@ -272,23 +295,23 @@ Workflow engine with worker pools across regions/datacenters; workers register c
 
 ## Timeline & Effort Estimate
 
-| Phase | Duration | Effort | Owner |
-|-------|----------|--------|-------|
-| Research & Design | 3 days | 3 agent-days | TBD |
-| Implementation | 5 days | 8 agent-days | TBD |
-| Validation & Docs | 2 days | 4 agent-days | TBD |
-| **Total** | **~2 weeks** | **~15 agent-days** | TBD |
+| Phase             | Duration     | Effort             | Owner |
+| ----------------- | ------------ | ------------------ | ----- |
+| Research & Design | 3 days       | 3 agent-days       | TBD   |
+| Implementation    | 5 days       | 8 agent-days       | TBD   |
+| Validation & Docs | 2 days       | 4 agent-days       | TBD   |
+| **Total**         | **~2 weeks** | **~15 agent-days** | TBD   |
 
 ---
 
 ## Approval & Sign-Off
 
-| Role | Name | Date | Comments |
-|------|------|------|----------|
-| Proposer | (auto-generated) | 2026-02-18 | Initial proposal |
-| Architecture Review | (pending) | (pending) | – |
-| Product Manager | (pending) | (pending) | – |
-| Security Review | (pending) | (pending) | – |
+| Role                | Name             | Date       | Comments         |
+| ------------------- | ---------------- | ---------- | ---------------- |
+| Proposer            | (auto-generated) | 2026-02-18 | Initial proposal |
+| Architecture Review | (pending)        | (pending)  | –                |
+| Product Manager     | (pending)        | (pending)  | –                |
+| Security Review     | (pending)        | (pending)  | –                |
 
 ---
 
@@ -304,6 +327,7 @@ Workflow engine with worker pools across regions/datacenters; workers register c
 ## Appendix A: Workload Classification Examples
 
 ### Example 1: Python Project
+
 ```
 Prompt: "Analyze this Python monorepo for dependency cycles"
 Detected: python, pip, git
@@ -313,6 +337,7 @@ Recommended: Linux (lowest cost)
 ```
 
 ### Example 2: iOS Development
+
 ```
 Prompt: "Build and test this iOS app with Xcode"
 Detected: swift, xcodebuild, ios-simulator
@@ -322,6 +347,7 @@ Recommended: Mac (only viable)
 ```
 
 ### Example 3: Node.js Service
+
 ```
 Prompt: "Profile CPU usage of this Node.js service"
 Detected: node, npm, perf-tools

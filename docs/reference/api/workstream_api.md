@@ -12,7 +12,7 @@ Automated operations on work stream files.
 
 ### Methods
 
-#### WorkStreamOps.__init__
+#### WorkStreamOps.**init**
 
 ```python
 __init__(self: Any, base_dir: Any)

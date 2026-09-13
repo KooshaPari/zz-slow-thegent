@@ -9,6 +9,7 @@
 ## Claimed Slice
 
 Canonical next unclaimed slice selected after `WL-11019`:
+
 - `WL-11020..WL-11029`
 
 ## Implemented Items

@@ -70,12 +70,8 @@ The tests import from the module under test directly and use
 from __future__ import annotations
 
 from pathlib import Path
-from typing import Any
-
-import pytest
 
 from thegent.orchestration.state.session_scraper import SessionScraper
-
 
 # ---------------------------------------------------------------------------
 # Helpers
@@ -508,7 +504,9 @@ class TestModuleContract:
 
     def test_session_scraper_is_importable(self) -> None:
         """``SessionScraper`` can be imported from the module."""
-        from thegent.orchestration.state.session_scraper import SessionScraper as _ScraperImport
+        from thegent.orchestration.state.session_scraper import (
+            SessionScraper as _ScraperImport,
+        )
 
         assert _ScraperImport is not None
 

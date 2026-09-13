@@ -15,7 +15,7 @@ Verifies liveness properties of autonomous execution loops.
 
 ### Methods
 
-#### LivenessChecker.__init__
+#### LivenessChecker.**init**
 
 ```python
 __init__(self: Any, run_id: str, max_retries: int, progress_timeout_s: int)

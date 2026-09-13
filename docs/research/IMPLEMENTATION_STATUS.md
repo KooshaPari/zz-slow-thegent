@@ -10,6 +10,7 @@
 ## Implementation Summary
 
 Full implementation of agent hierarchy system with:
+
 - ✅ Core data models and hierarchy manager
 - ✅ Team coordination system
 - ✅ Integration with TeammateManager
@@ -143,7 +144,7 @@ request = mgr.delegate(
     parent_run_id="parent-001",
     prompt="Implement login component",
     team_id="frontend-team",
-    relationship_type=RelationshipType.TEAM_MEMBERSHIP
+    relationship_type=RelationshipType.TEAM_MEMBERSHIP,
 )
 ```
 
@@ -173,10 +174,7 @@ hierarchy = AgentHierarchyManager(storage_path)
 coordinator = TeamCoordinator(hierarchy)
 
 # Coordinate task within team
-result = coordinator.coordinate_team_task(
-    team_id="frontend-team",
-    task="Build login UI"
-)
+result = coordinator.coordinate_team_task(team_id="frontend-team", task="Build login UI")
 ```
 
 ---

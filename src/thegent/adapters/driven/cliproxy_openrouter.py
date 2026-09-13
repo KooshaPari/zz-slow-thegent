@@ -2,6 +2,7 @@
 
 Extracted from cliproxy_adapter.py as part of L1 architecture hardening.
 """
+
 from __future__ import annotations
 
 # OR-08: App identification headers for OpenRouter attribution

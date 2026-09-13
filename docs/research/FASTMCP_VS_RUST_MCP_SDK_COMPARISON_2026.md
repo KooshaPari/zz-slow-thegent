@@ -1,10 +1,11 @@
-<DONE>
----
+## <DONE>
+
 title: FastMCP (Python) vs Official Rust MCP SDK - Comprehensive Comparison for thegent
 date: 2026-02-22
 status: active
 owner: thegent
 tags: [research, MCP, FastMCP, Rust SDK, performance, architecture, decision]
+
 ---
 
 # FastMCP (Python) vs Official Rust MCP SDK: In-Depth Comparison for thegent
@@ -22,14 +23,14 @@ tags: [research, MCP, FastMCP, Rust SDK, performance, architecture, decision]
 
 ### Cost-Benefit Analysis
 
-| Factor | Stay FastMCP 3.x | Full Rust Rewrite | Hybrid (FastMCP + Rust) |
-|--------|-----------------|-------------------|------------------------|
-| **Development Speed** | Fast (days) | Slow (weeks) | Medium (10-15 days) |
-| **Integration Friction** | Low | High (FFI overhead) | Low-Medium |
-| **Peak Throughput** | 1,200-1,600 QPS | 4,700+ QPS | 3,500-4,200 QPS |
-| **Observability** | Native OTel | Manual setup | Native OTel (full) |
-| **Agent Code Coupling** | Native Python | FFI bridge needed | Minimal coupling |
-| **Maintenance Burden** | Low | Medium-High | Medium |
+| Factor                   | Stay FastMCP 3.x | Full Rust Rewrite   | Hybrid (FastMCP + Rust) |
+| ------------------------ | ---------------- | ------------------- | ----------------------- |
+| **Development Speed**    | Fast (days)      | Slow (weeks)        | Medium (10-15 days)     |
+| **Integration Friction** | Low              | High (FFI overhead) | Low-Medium              |
+| **Peak Throughput**      | 1,200-1,600 QPS  | 4,700+ QPS          | 3,500-4,200 QPS         |
+| **Observability**        | Native OTel      | Manual setup        | Native OTel (full)      |
+| **Agent Code Coupling**  | Native Python    | FFI bridge needed   | Minimal coupling        |
+| **Maintenance Burden**   | Low              | Medium-High         | Medium                  |
 
 **Bottom Line:** Full rewrite costs 4-6x the benefit. Hybrid approach costs 1.5x for 70% of gains.
 
@@ -42,17 +43,20 @@ tags: [research, MCP, FastMCP, Rust SDK, performance, architecture, decision]
 #### FastMCP 3.x (Python)
 
 **Status:** Production-ready (GA Feb 21, 2026)
+
 - Actively maintained by Prefect; 1M+ daily downloads
 - 70% of MCP servers use FastMCP or derivatives
 - Currently powering thegent's entire MCP infrastructure (7,761 LOC across 20+ modules)
 - Beta 2 available Dec 2025 → GA Feb 2026 with minimal breaking changes
 
 **Version Trajectory:**
+
 - FastMCP 1.x (2024): Initial release, core functionality
 - FastMCP 2.x (2025): Task support, advanced routing, middleware
 - FastMCP 3.x (2026): Component system, versioning, granular authz, OTel instrumentation
 
 **Stability Markers:**
+
 - Semantic versioning respected
 - Clear upgrade path (FastMCP 3.0 docs acknowledge minimal breaking changes from beta)
 - Community feedback incorporated (hot reload, provider architecture)
@@ -62,17 +66,20 @@ tags: [research, MCP, FastMCP, Rust SDK, performance, architecture, decision]
 #### Official Rust MCP SDK (modelcontextprotocol/rust-sdk)
 
 **Status:** Production-ready (v0.16.0, Feb 2026)
+
 - Maintained by Anthropic (official reference implementation)
 - 3,000+ GitHub stars; 140 contributors
 - Used in production deployments (4,700+ QPS benchmarks documented)
 - Strict CI enforcement on all PRs/commits
 
 **Version Trajectory:**
+
 - v0.1.0 (2024): Initial protocol support
 - v0.8-0.12 (2025): Feature completeness, async refinement
 - v0.16.0 (2026): Stable API, production validation
 
 **Stability Markers:**
+
 - Official Anthropic backing (unlikely to deprecate)
 - Comprehensive transport support (STDIO, HTTP, child process)
 - API has stabilized (no major breaking changes in v0.12→v0.16)
@@ -85,30 +92,32 @@ tags: [research, MCP, FastMCP, Rust SDK, performance, architecture, decision]
 
 #### Throughput Benchmarks
 
-| Scenario | FastMCP (Python) | Rust MCP SDK | Performance Delta |
-|----------|------------------|--------------|-------------------|
-| **Simple tool call** | 1,200-1,600 QPS | 4,700+ QPS | Rust: 3-4x faster |
-| **In Docker** | ~500-800 QPS | 1,700+ QPS | Rust: 2-3x faster |
-| **Average latency** | 10-30ms | 0.2-0.8ms | Rust: 40-50x faster |
-| **P99 latency** | 50-100ms | 1-2ms | Rust: 25-50x faster |
+| Scenario             | FastMCP (Python) | Rust MCP SDK | Performance Delta   |
+| -------------------- | ---------------- | ------------ | ------------------- |
+| **Simple tool call** | 1,200-1,600 QPS  | 4,700+ QPS   | Rust: 3-4x faster   |
+| **In Docker**        | ~500-800 QPS     | 1,700+ QPS   | Rust: 2-3x faster   |
+| **Average latency**  | 10-30ms          | 0.2-0.8ms    | Rust: 40-50x faster |
+| **P99 latency**      | 50-100ms         | 1-2ms        | Rust: 25-50x faster |
 
 **Key Studies:**
+
 - [Multi-Language MCP Server Performance Benchmark (TM Dev Lab)](https://www.tmdevlab.com/mcp-server-performance-benchmark.html): Java/Go achieve 1,600+ QPS with sub-millisecond latency; Python/Node.js 10-30x slower
 - [fast-diff-mcp case study](https://github.com/Krumbthi/fast-diff-mcp): Rust implementation 2x faster than Python even within MCP scope (protocol overhead included)
 - [Production Rust implementation](https://www.paiml.com/blog/2025-08-04-rust-mcp-sdk/): 4,700+ QPS native, 1,700+ QPS in Docker
 
 **Critical Detail:** FastMCP throughput varies by operation complexity:
+
 - I/O-bound tools (API calls, DB queries): FastMCP's async handles well (~1,200-1,600 QPS)
 - CPU-bound tools (diff, parsing, search): Rust dominates (4,700+ vs 300-500 QPS in FastMCP)
 - Mixed workloads: Rust averages 3-4x better
 
 #### Memory & Resource Footprint
 
-| Metric | FastMCP | Rust SDK |
-|--------|---------|----------|
-| **Baseline memory** | 80-120 MB | 15-30 MB |
-| **Per-tool overhead** | ~5-10 MB | ~100-200 KB |
-| **Startup time** | 2-4s | 50-200ms |
+| Metric                | FastMCP   | Rust SDK    |
+| --------------------- | --------- | ----------- |
+| **Baseline memory**   | 80-120 MB | 15-30 MB    |
+| **Per-tool overhead** | ~5-10 MB  | ~100-200 KB |
+| **Startup time**      | 2-4s      | 50-200ms    |
 
 FastMCP's memory footprint is acceptable for modern systems; startup time less critical for long-running servers.
 
@@ -118,16 +127,16 @@ FastMCP's memory footprint is acceptable for modern systems; startup time less c
 
 #### Core MCP Protocol Support
 
-| Feature | FastMCP 3.x | Rust SDK |
-|---------|-----------|----------|
-| **Tools (call_tool)** | ✅ Full | ✅ Full |
-| **Resources (read_resource)** | ✅ Full | ✅ Full |
-| **Prompts (get_prompt)** | ✅ Full | ✅ Full |
-| **Sampling** | ✅ Full | ✅ Full |
-| **Progress tracking** | ✅ (MCP 3.x feature) | ✅ Full |
-| **Cancellation** | ✅ (cancellation tokens) | ✅ Full |
-| **Streaming responses** | ✅ Text + JSON | ✅ Text + JSON |
-| **Task management** | ✅ (Docket integration) | ✅ (tokio-based) |
+| Feature                       | FastMCP 3.x              | Rust SDK         |
+| ----------------------------- | ------------------------ | ---------------- |
+| **Tools (call_tool)**         | ✅ Full                  | ✅ Full          |
+| **Resources (read_resource)** | ✅ Full                  | ✅ Full          |
+| **Prompts (get_prompt)**      | ✅ Full                  | ✅ Full          |
+| **Sampling**                  | ✅ Full                  | ✅ Full          |
+| **Progress tracking**         | ✅ (MCP 3.x feature)     | ✅ Full          |
+| **Cancellation**              | ✅ (cancellation tokens) | ✅ Full          |
+| **Streaming responses**       | ✅ Text + JSON           | ✅ Text + JSON   |
+| **Task management**           | ✅ (Docket integration)  | ✅ (tokio-based) |
 
 **Parity:** Both frameworks support the full MCP spec as of Feb 2026.
 
@@ -187,6 +196,7 @@ FastMCP's memory footprint is acceptable for modern systems; startup time less c
 #### Current Architecture: thegent + FastMCP
 
 **Coupling:** Native Python integration, minimal overhead
+
 ```
 thegent (Python) → FastMCP server (Python, same process)
                 ↓
@@ -196,6 +206,7 @@ thegent (Python) → FastMCP server (Python, same process)
 ```
 
 **Integration complexity:** Trivial
+
 - FastMCP server runs in same process as agent code
 - Direct imports: `from thegent.cli.commands.impl import run_impl, ps_impl, ...` (60+ imports in server.py)
 - No IPC overhead, no type marshalling, no FFI complexity
@@ -207,6 +218,7 @@ thegent (Python) → FastMCP server (Python, same process)
 #### Hypothetical: Rust MCP SDK + Python Agent Code
 
 **Coupling:** FFI bridge required
+
 ```
 thegent (Python) → IPC/gRPC/HTTP ← Rust MCP server
                 ↓                    ↓
@@ -220,21 +232,25 @@ thegent (Python) → IPC/gRPC/HTTP ← Rust MCP server
 ##### Option A: PyO3 + Maturin (Recommended for Rust + Python)
 
 **Pattern:**
+
 1. Compile Rust code with PyO3 bindings via maturin
 2. Package as `.whl` (Python wheel)
 3. Import in Python: `from thegent_mcp import call_tool, list_tools`
 
 **Pros:**
+
 - Zero-copy data marshalling (PyO3 handles conversion)
 - Native Python exception handling
 - Standard Python distribution (pip install)
 
 **Cons:**
+
 - Maturin setup complexity (~1-2 days)
 - Rust docstrings → Python docstrings (limited)
 - Per-platform wheels needed (macOS, Linux, Windows)
 
 **Example (from research):**
+
 ```rust
 // Rust with PyO3
 use pyo3::prelude::*;
@@ -259,16 +275,19 @@ Python sees: `result = call_mcp_tool("tool_name", "args_json")`
 ##### Option B: gRPC + Protocol Buffers
 
 **Pattern:**
+
 1. Define MCP operations in `.proto` files
 2. Generate Python client + Rust server stubs
 3. thegent talks to Rust server over TCP/Unix socket
 
 **Pros:**
+
 - Language-agnostic (future-proof)
 - Well-defined schema (proto files)
 - Streaming first-class (gRPC streams)
 
 **Cons:**
+
 - Serialization overhead (20-50ms per RPC in worst case)
 - Network latency (even on localhost, 1-5ms)
 - Additional tooling complexity (protoc, grpcio)
@@ -278,15 +297,18 @@ Python sees: `result = call_mcp_tool("tool_name", "args_json")`
 ##### Option C: HTTP + JSON
 
 **Pattern:**
+
 1. Rust server exposes HTTP API
 2. thegent communicates via `httpx` (Python HTTP client)
 3. JSON request/response
 
 **Pros:**
+
 - Simplest to understand and debug
 - Leverage existing HTTP testing tools
 
 **Cons:**
+
 - Highest overhead (HTTP parsing, JSON serialization)
 - Polling-based (no true streaming without SSE/WebSocket)
 
@@ -298,11 +320,11 @@ Python sees: `result = call_mcp_tool("tool_name", "args_json")`
 
 If critical path tools (30+ concurrent agents, 1,000+ calls/min) moved to Rust:
 
-| FFI Approach | Estimated Latency | Total Throughput | vs. Native FastMCP |
-|--------------|-------------------|------------------|-------------------|
-| **PyO3** | +0.5-1ms | 1,000-1,200 QPS | -5-10% |
-| **gRPC** | +5-20ms | 400-600 QPS | -60% (breaks scaling) |
-| **HTTP/JSON** | +10-50ms | 150-300 QPS | -80% (unviable) |
+| FFI Approach  | Estimated Latency | Total Throughput | vs. Native FastMCP    |
+| ------------- | ----------------- | ---------------- | --------------------- |
+| **PyO3**      | +0.5-1ms          | 1,000-1,200 QPS  | -5-10%                |
+| **gRPC**      | +5-20ms           | 400-600 QPS      | -60% (breaks scaling) |
+| **HTTP/JSON** | +10-50ms          | 150-300 QPS      | -80% (unviable)       |
 
 **Conclusion:** Only PyO3 is viable for performance-critical path. Even then, integration complexity outweighs gains unless tool is CPU-bound (diff, parsing, search).
 
@@ -313,11 +335,13 @@ If critical path tools (30+ concurrent agents, 1,000+ calls/min) moved to Rust:
 #### FastMCP 3.x
 
 **Built-in:**
+
 - Native OpenTelemetry instrumentation (traces all tool calls, resource reads, prompts)
 - Structured logging (Python logging or structlog)
 - Automatic span attributes: tool_name, args, latency, errors
 
 **Configuration (automatic):**
+
 ```python
 # FastMCP server automatically exports to OTEL_EXPORTER_OTLP_ENDPOINT
 # or local Jaeger/Grafana if configured
@@ -332,10 +356,12 @@ If critical path tools (30+ concurrent agents, 1,000+ calls/min) moved to Rust:
 #### Rust MCP SDK
 
 **Built-in:**
+
 - Structured logging (tracing crate, Tokio-native)
 - Requires manual span instrumentation
 
 **Configuration (manual):**
+
 ```rust
 // Must add tracing crate and instrumentation
 #[tracing::instrument]
@@ -412,11 +438,13 @@ async fn call_tool(name: &str, input: Value) -> Result<String> {
 ### Implementation Plan (Phased)
 
 #### Phase 1: Baseline (Week 1)
+
 - Keep current FastMCP 3.x server as-is
 - Document performance baseline (tool call latency, throughput)
 - Identify CPU-bound tools (diff, search, parsing) for acceleration
 
 #### Phase 2: CPU-Path Identification (Week 1-2)
+
 - Profile current server: `fastmcp profile` or custom OTel analysis
 - Rank tools by:
   - Cumulative latency impact (P99 slowest tools)
@@ -425,6 +453,7 @@ async fn call_tool(name: &str, input: Value) -> Result<String> {
 - Select 3-5 tools for Rust implementation (diff, search_codebase, parse_ast, etc.)
 
 #### Phase 3: Rust Acceleration Modules (Week 2-4)
+
 - Create `src/mcp_accelerators/` (Rust directory)
 - Implement 3-5 hottest tools in Rust (100-200 LOC each)
 - Build PyO3 bindings via maturin
@@ -441,12 +470,14 @@ except ImportError:
 ```
 
 #### Phase 4: Validation (Week 4-5)
+
 - A/B test: FastMCP-only vs Hybrid
 - Measure: throughput, latency, memory, startup time
 - Target: 70% of peak throughput gain (3,500+ QPS) with <10% memory increase
 - No integration friction (both interfaces identical)
 
 #### Phase 5: Deploy (Week 5)
+
 - Roll out hybrid server
 - Monitor in production
 - Document performance gains for future evaluation
@@ -468,12 +499,14 @@ except ImportError:
 **When to choose:** If thegent is meeting throughput targets today
 
 **Pros:**
+
 - Zero disruption (already working)
 - Excellent developer experience (hot reload, OTel built-in)
 - Lower maintenance burden
 - Rich ecosystem (FileSystemProvider, SkillsProvider, OpenAPIProvider)
 
 **Cons:**
+
 - Hits CPU wall at ~1,600 QPS (for CPU-bound tools)
 - Scaling requires horizontal replicas (more complex orchestration)
 - Python GC pauses visible in P99 latency
@@ -487,12 +520,14 @@ except ImportError:
 **When to choose:** If thegent becomes a high-throughput shared platform (1,000+ concurrent agents)
 
 **Pros:**
+
 - Peak throughput: 4,700+ QPS per server
 - Lowest latency (sub-millisecond)
 - Minimal resource footprint
 - Official reference implementation (Anthropic-backed)
 
 **Cons:**
+
 - Rewrite effort: 4-6 weeks (server + all 30+ tools)
 - Rust expertise required (harder to hire than Python devs)
 - Loss of hot reload during development (slower feedback loop)
@@ -508,6 +543,7 @@ except ImportError:
 **When to choose:** If thegent has scaling ambitions but bottleneck not yet proven
 
 **Pros:**
+
 - Fast time-to-value (2-3 weeks)
 - Data-driven (profiles to find actual bottleneck)
 - Minimal disruption (pure acceleration, no behavior change)
@@ -515,6 +551,7 @@ except ImportError:
 - Validates whether Rust migration is actually needed
 
 **Cons:**
+
 - Maintains two code paths (Python + Rust implementations of same tools)
 - Requires PyO3/maturin expertise
 - Adds complexity to build (per-platform wheels)
@@ -525,35 +562,39 @@ except ImportError:
 
 ## Recommendation by Use Case
 
-| Use Case | Recommendation | Rationale |
-|----------|------------------|-----------|
-| **Prototype/MVP** | FastMCP 3.x | Fast to build, production-ready, plenty of headroom |
-| **Single-agent orchestration** | FastMCP 3.x | <100 concurrent agents, 200-400 tool calls/min → no bottleneck |
-| **Multi-agent (50-100 agents)** | FastMCP 3.x + monitor | Profile at scale; hybrid only if P99 latency >50ms or throughput <1,000 QPS |
-| **High-scale (500+ agents)** | Hybrid first, Rust second | Use hybrid to validate bottleneck, then decide full migration |
-| **Enterprise shared platform** | Hybrid now, Rust later | Start hybrid; commit to Rust migration after 3-month baseline |
+| Use Case                        | Recommendation            | Rationale                                                                   |
+| ------------------------------- | ------------------------- | --------------------------------------------------------------------------- |
+| **Prototype/MVP**               | FastMCP 3.x               | Fast to build, production-ready, plenty of headroom                         |
+| **Single-agent orchestration**  | FastMCP 3.x               | <100 concurrent agents, 200-400 tool calls/min → no bottleneck              |
+| **Multi-agent (50-100 agents)** | FastMCP 3.x + monitor     | Profile at scale; hybrid only if P99 latency >50ms or throughput <1,000 QPS |
+| **High-scale (500+ agents)**    | Hybrid first, Rust second | Use hybrid to validate bottleneck, then decide full migration               |
+| **Enterprise shared platform**  | Hybrid now, Rust later    | Start hybrid; commit to Rust migration after 3-month baseline               |
 
 ---
 
 ## Implementation Roadmap (Next 90 Days)
 
 ### Week 1-2: Establish Baseline
+
 - Document current FastMCP server throughput under realistic load (30+ agents, 1,000 tool calls/min)
 - Capture latency distribution (p50, p95, p99)
 - Identify slowest tools (diff, search, parsing?)
 
 ### Week 3-4: Profile & Plan
+
 - Run `fastmcp profile` or custom OTel trace analysis
 - Identify 3-5 CPU-bound tools for acceleration
 - Write detailed design doc for PyO3 bindings
 
 ### Week 5-8: Implement Hybrid
+
 - Create Rust accelerators for hot path
 - Build PyO3 bindings
 - Integrate into FastMCP server
 - A/B test performance
 
 ### Week 9-12: Validate & Deploy
+
 - Production validation
 - Document results
 - Decide on Phase 2 (full Rust migration) based on data
@@ -586,17 +627,17 @@ except ImportError:
 
 ## Glossary
 
-| Term | Definition |
-|------|-----------|
-| **QPS** | Queries Per Second (tool calls/sec) |
-| **Latency** | Time from request to response (milliseconds) |
-| **P99** | 99th percentile latency (worst 1% of requests) |
-| **FFI** | Foreign Function Interface (Rust↔Python bridge) |
-| **PyO3** | Rust library for creating Python modules from Rust |
-| **Maturin** | Build tool for PyO3-based wheels |
-| **OTel** | OpenTelemetry (standard observability protocol) |
-| **Hot reload** | Automatic code reloading without restart |
-| **Throughput** | Requests per second across entire system |
+| Term           | Definition                                         |
+| -------------- | -------------------------------------------------- |
+| **QPS**        | Queries Per Second (tool calls/sec)                |
+| **Latency**    | Time from request to response (milliseconds)       |
+| **P99**        | 99th percentile latency (worst 1% of requests)     |
+| **FFI**        | Foreign Function Interface (Rust↔Python bridge)   |
+| **PyO3**       | Rust library for creating Python modules from Rust |
+| **Maturin**    | Build tool for PyO3-based wheels                   |
+| **OTel**       | OpenTelemetry (standard observability protocol)    |
+| **Hot reload** | Automatic code reloading without restart           |
+| **Throughput** | Requests per second across entire system           |
 
 ---
 
@@ -607,6 +648,7 @@ except ImportError:
 **Timeline:** 2-3 weeks to implement, 1 week to validate
 
 **Expected Outcome:**
+
 - Keep current FastMCP architecture (low disruption)
 - Identify and accelerate 3-5 CPU-bound tools in Rust
 - Achieve 70% of full-rewrite performance gains (3,500+ QPS)

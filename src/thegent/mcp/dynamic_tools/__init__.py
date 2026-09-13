@@ -1,4 +1,5 @@
 """Dynamic tools module for MCP server."""
+
 from __future__ import annotations
 
 import time
@@ -9,6 +10,7 @@ from typing import Any
 @dataclass(frozen=True)
 class DynamicToolSpec:
     """Specification for a dynamic tool."""
+
     name: str
     description: str
     input_schema: dict[str, Any] = field(default_factory=dict)
@@ -17,6 +19,7 @@ class DynamicToolSpec:
 @dataclass
 class DynamicToolCall:
     """Represents a dynamic tool call."""
+
     call_id: str
     session_id: str
     name: str
@@ -29,6 +32,7 @@ class DynamicToolCall:
 @dataclass
 class PendingDynamicToolCall:
     """Represents a pending dynamic tool call."""
+
     call_id: str
     session_id: str
     name: str
@@ -40,6 +44,7 @@ class PendingDynamicToolCall:
 @dataclass
 class DynamicToolCallResult:
     """Result of a dynamic tool call."""
+
     call_id: str
     success: bool
     output: Any = None
@@ -85,7 +90,13 @@ class DynamicToolRegistry:
             raise ValueError("session_id must be non-empty")
         return list(self.tools.get(session_id.strip(), {}).values())
 
-    def create_tool_call(self, session_id: str, tool_name: str, arguments: dict[str, Any], timeout_seconds: float = 30.0) -> PendingDynamicToolCall:
+    def create_tool_call(
+        self,
+        session_id: str,
+        tool_name: str,
+        arguments: dict[str, Any],
+        timeout_seconds: float = 30.0,
+    ) -> PendingDynamicToolCall:
         """Create a tool call."""
         if not session_id or not session_id.strip():
             raise ValueError("session_id must be non-empty")
@@ -125,7 +136,9 @@ class DynamicToolRegistry:
         )
 
     @staticmethod
-    def tool_call_requested_event(call: PendingDynamicToolCall | DynamicToolCall) -> dict[str, Any]:
+    def tool_call_requested_event(
+        call: PendingDynamicToolCall | DynamicToolCall,
+    ) -> dict[str, Any]:
         """Get event for tool call request."""
         return {
             "event": "tool_call_requested",
@@ -141,7 +154,9 @@ class DynamicToolRegistry:
             raise KeyError(f"unknown dynamic call id: {call_id}")
         return self.pending_calls[call_id]
 
-    def resolve_tool_call(self, call_id: str, output: Any = None, success: bool = True, error: str = "") -> DynamicToolCallResult:
+    def resolve_tool_call(
+        self, call_id: str, output: Any = None, success: bool = True, error: str = ""
+    ) -> DynamicToolCallResult:
         """Resolve a tool call."""
         if call_id not in self.pending_calls:
             raise KeyError(f"unknown dynamic call id: {call_id}")
@@ -173,7 +188,9 @@ class DynamicToolRegistry:
             raise ValueError("session_id must be non-empty")
         return [c for c in self.pending_calls.values() if c.session_id == session_id]
 
-    def resolve_tool_call_for_session(self, session_id: str, call_id: str, output: Any = None, success: bool = True) -> DynamicToolCallResult:
+    def resolve_tool_call_for_session(
+        self, session_id: str, call_id: str, output: Any = None, success: bool = True
+    ) -> DynamicToolCallResult:
         """Resolve a tool call, enforcing session ownership."""
         call = self.pending_calls.get(call_id)
         if call is None:
@@ -231,11 +248,13 @@ class _ToolsSessions:
 
         elif msg_type == "dynamic_tool_list":
             tools = reg.list_dynamic_tools(session_id)
-            return json_lib.dumps({
-                "success": True,
-                "session_id": session_id,
-                "tools": [{"name": t.name, "description": t.description} for t in tools],
-            })
+            return json_lib.dumps(
+                {
+                    "success": True,
+                    "session_id": session_id,
+                    "tools": [{"name": t.name, "description": t.description} for t in tools],
+                }
+            )
 
         elif msg_type == "dynamic_tool_invoke":
             call = reg.create_tool_call(session_id, data["name"], data.get("arguments", {}))
@@ -282,11 +301,13 @@ async def thegent_list_dynamic_tools(session_id: str) -> str:
     import json as json_lib
 
     tools = _tools_sessions._dynamic_registry.list_dynamic_tools(session_id)
-    return json_lib.dumps({
-        "success": True,
-        "session_id": session_id,
-        "tools": [{"name": t.name, "description": t.description} for t in tools],
-    })
+    return json_lib.dumps(
+        {
+            "success": True,
+            "session_id": session_id,
+            "tools": [{"name": t.name, "description": t.description} for t in tools],
+        }
+    )
 
 
 async def thegent_complete_tool_call(
@@ -298,9 +319,7 @@ async def thegent_complete_tool_call(
     """MCP tool: complete a dynamic tool call."""
     import json as json_lib
 
-    result = _tools_sessions._dynamic_registry.resolve_tool_call(
-        call_id, output=output, success=success
-    )
+    result = _tools_sessions._dynamic_registry.resolve_tool_call(call_id, output=output, success=success)
     event = _tools_sessions._dynamic_registry.tool_call_completed_event(result)
     return json_lib.dumps({"success": True, "event": event})
 

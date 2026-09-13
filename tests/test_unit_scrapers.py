@@ -1,10 +1,10 @@
 """Unit tests for thegent.models.scrapers — model discovery scrapers."""
 
-import orjson as json
 import time
 from pathlib import Path
 from unittest.mock import MagicMock, patch
 
+import orjson as json
 import pytest
 
 MODULE = "thegent.models.scrapers"
@@ -204,7 +204,10 @@ class TestScrapeCursor:
 
         assert scrape_cursor() == []
 
-    @patch("subprocess.run", side_effect=__import__("subprocess").TimeoutExpired(cmd="cursor", timeout=10))
+    @patch(
+        "subprocess.run",
+        side_effect=__import__("subprocess").TimeoutExpired(cmd="cursor", timeout=10),
+    )
     def test_returns_empty_on_timeout(self, mock_run: MagicMock) -> None:
         # @trace FR-MOD-015
         from thegent.models.scrapers import scrape_cursor
@@ -360,7 +363,14 @@ class TestScrapeClaude:
         from thegent.models.scrapers import scrape_claude
 
         result = scrape_claude()
-        assert result == ["haiku", "sonnet", "opus", "claude-haiku-4.5", "claude-sonnet-4.5", "claude-opus-4.6"]
+        assert result == [
+            "haiku",
+            "sonnet",
+            "opus",
+            "claude-haiku-4.5",
+            "claude-sonnet-4.5",
+            "claude-opus-4.6",
+        ]
 
 
 # ---------------------------------------------------------------------------
@@ -678,7 +688,10 @@ class TestScrapeProxyEnsureProxyException:
         # @trace FR-MOD-026
         """scrape_proxy continues when ensure_proxy_running raises."""
         settings = _make_settings()
-        with patch("thegent.agents.cliproxy_manager.ensure_proxy_running", side_effect=RuntimeError("proxy not found")):
+        with patch(
+            "thegent.agents.cliproxy_manager.ensure_proxy_running",
+            side_effect=RuntimeError("proxy not found"),
+        ):
             from thegent.models.scrapers import scrape_proxy
 
             result = scrape_proxy(settings)
@@ -731,7 +744,15 @@ class TestScrapeAllExceptionBranches:
     @patch("thegent.models.catalog.filter_models_for_provider", return_value=[])
     @patch(
         f"{MODULE}.scrape_proxy",
-        return_value={"antigravity": [], "minimax": [], "glm": [], "roo": [], "kilo": [], "gemini": [], "claude": []},
+        return_value={
+            "antigravity": [],
+            "minimax": [],
+            "glm": [],
+            "roo": [],
+            "kilo": [],
+            "gemini": [],
+            "claude": [],
+        },
     )
     @patch(f"{MODULE}.scrape_cursor", return_value=["model-1"])
     @patch(f"{MODULE}.scrape_cursor_api", return_value=["model-api-1"])

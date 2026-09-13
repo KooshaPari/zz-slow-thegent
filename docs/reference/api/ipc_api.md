@@ -14,7 +14,7 @@ Manages the IPC mesh directory and atomic primitives.
 
 ### Methods
 
-#### IPCMesh.__init__
+#### IPCMesh.**init**
 
 ```python
 __init__(self: Any, mesh_root: Path)
@@ -50,7 +50,7 @@ IPC message queue following Maildir-like tmp/new/cur lifecycle.
 
 ### Methods
 
-#### MaildirQueue.__init__
+#### MaildirQueue.**init**
 
 ```python
 __init__(self: Any, queue_dir: Path)
@@ -86,7 +86,7 @@ WAL implementation for crash recovery.
 
 ### Methods
 
-#### WriteAheadLog.__init__
+#### WriteAheadLog.**init**
 
 ```python
 __init__(self: Any, wal_file: Path)

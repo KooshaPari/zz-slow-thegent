@@ -5,7 +5,6 @@ import importlib.util
 import sys
 from pathlib import Path
 
-
 ROOT = Path(__file__).resolve().parents[1]
 SCRIPT = ROOT / "scripts" / "check_instruction_architecture.py"
 
@@ -103,7 +102,9 @@ def test_pre_work_gate_command_module_flags_wrapper_logic_leak(tmp_path: Path) -
     assert any(item.kind == "pre_work_gate_wrapper_logic_leak" for item in findings)
 
 
-def test_orchestration_wrapper_command_module_requires_direct_delegation(tmp_path: Path) -> None:
+def test_orchestration_wrapper_command_module_requires_direct_delegation(
+    tmp_path: Path,
+) -> None:
     mod = _load_module()
     module_path = tmp_path / "orchestration_wrappers.py"
     module_path.write_text(
@@ -172,7 +173,9 @@ def test_orchestration_wrapper_command_module_requires_direct_delegation(tmp_pat
     assert findings == []
 
 
-def test_orchestration_wrapper_command_module_flags_business_logic_leak(tmp_path: Path) -> None:
+def test_orchestration_wrapper_command_module_flags_business_logic_leak(
+    tmp_path: Path,
+) -> None:
     mod = _load_module()
     module_path = tmp_path / "bad_orchestration_wrappers.py"
     module_path.write_text(
@@ -255,7 +258,9 @@ def test_wl125_impl_boundary_flags_line_ceiling(tmp_path: Path) -> None:
     assert any(item.kind == "wl125_impl_line_ceiling" for item in findings)
 
 
-def test_wl125_impl_boundary_flags_missing_trend_warning_metadata_key(tmp_path: Path) -> None:
+def test_wl125_impl_boundary_flags_missing_trend_warning_metadata_key(
+    tmp_path: Path,
+) -> None:
     mod = _load_module()
     impl_path = tmp_path / "impl.py"
     impl_path.write_text("def noop():\n    return 'ok'\n", encoding="utf-8")

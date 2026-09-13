@@ -1,4 +1,5 @@
 """Stub module."""
+
 from dataclasses import dataclass
 from typing import Any
 
@@ -6,6 +7,7 @@ from typing import Any
 @dataclass
 class DeadLetterQueueEntry:
     """Entry in the dead letter queue."""
+
     id: str
     data: dict[str, Any]
     error: str
@@ -14,6 +16,7 @@ class DeadLetterQueueEntry:
 @dataclass
 class RemoteWriteDeadLetterRecord:
     """Record for remote write dead letter queue."""
+
     record_id: str
     payload: dict[str, Any]
     status: str = "pending"
@@ -51,7 +54,12 @@ DEFAULT_BOARD_DEAD_LETTER_MAX_ATTEMPTS = 5
 DEFAULT_BOARD_DEAD_LETTER_RETRY_DELAY_SECONDS = 5.0
 
 
-def compute_backoff_seconds(attempt: int, base_delay: float = 1.0, multiplier: float = 2.0, max_delay: float = 60.0) -> float:
+def compute_backoff_seconds(
+    attempt: int,
+    base_delay: float = 1.0,
+    multiplier: float = 2.0,
+    max_delay: float = 60.0,
+) -> float:
     """Compute exponential backoff seconds for retry attempts."""
-    delay = base_delay * (multiplier ** attempt)
+    delay = base_delay * (multiplier**attempt)
     return min(delay, max_delay)

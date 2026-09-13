@@ -9,6 +9,7 @@
 ## Problem
 
 Starship calls git frequently (for `git status`, branch info, etc.). The git shim at `~/.local/bin/git` was:
+
 1. Resolving the real git binary using `command -v` with modified PATH
 2. Running `realpath` twice
 3. Doing string comparisons
@@ -16,6 +17,7 @@ Starship calls git frequently (for `git status`, branch info, etc.). The git shi
 This happened on **every** git invocation, causing Starship to timeout after 8+ minutes.
 
 **Error:**
+
 ```
 [WARN] - (starship::utils): Executing command "/Users/kooshapari/.local/bin/git" timed out.
 [WARN] - (starship::utils): You can set command_timeout in your config to a higher value to allow longer-running commands to keep executing.
@@ -30,11 +32,13 @@ This happened on **every** git invocation, causing Starship to timeout after 8+ 
 **File:** `src/thegent/install.py` — `_install_tool_accelerators()`
 
 **Changes:**
+
 - Added cache file: `~/.cache/thegent/git-shim-cache`
 - **Fast path:** If cache exists and is valid, use cached git path immediately (no resolution)
 - **Slow path:** Only resolve git binary on cache miss or invalid cache, then write to cache
 
 **Benefits:**
+
 - First git call: ~100-200ms (resolves + caches)
 - Subsequent calls: <1ms (reads cache, execs immediately)
 - Starship prompt: Fast after first call
@@ -44,10 +48,12 @@ This happened on **every** git invocation, causing Starship to timeout after 8+ 
 **File:** `Taskfile.yml` — `task setup`
 
 **Changes:**
+
 - Added `command_timeout = 10000` (10 seconds) to `.starship.toml`
 - Keeps `scan_timeout = 2000` (2 seconds) for directory scanning
 
 **Rationale:**
+
 - First git call (cache miss) may take a few seconds
 - After cache is populated, git calls are instant
 - 10s timeout is a safety net for first call only
@@ -84,21 +90,25 @@ fi
 ## Migration Steps
 
 1. **Update git shim:**
+
    ```bash
    thegent install-shims --force
    ```
 
 2. **Update starship config (if using project-level):**
+
    ```bash
    task setup  # Regenerates .starship.toml with command_timeout
    ```
 
 3. **Clear old cache (optional, for fresh start):**
+
    ```bash
    rm ~/.cache/thegent/git-shim-cache
    ```
 
 4. **Test:**
+
    ```bash
    # First call (cache miss) - may take 100-200ms
    time git --version
@@ -111,11 +121,11 @@ fi
 
 ## Performance Impact
 
-| Scenario | Before | After |
-|----------|--------|-------|
-| First git call | 8+ minutes (timeout) | ~100-200ms |
-| Subsequent calls | 8+ minutes (timeout) | <1ms |
-| Starship prompt | 8m 47s+ | <100ms (after first call) |
+| Scenario         | Before               | After                     |
+| ---------------- | -------------------- | ------------------------- |
+| First git call   | 8+ minutes (timeout) | ~100-200ms                |
+| Subsequent calls | 8+ minutes (timeout) | <1ms                      |
+| Starship prompt  | 8m 47s+              | <100ms (after first call) |
 
 ---
 
@@ -143,15 +153,18 @@ fi
 **Extended by:** Claude Code
 
 ### Changes Made
+
 1. Added practical implementation patterns
 2. Added configuration examples
 3. Enhanced cross-references to related docs
 
 ### Cross-References Added
+
 - Related research and implementation guides
 - WORK_STREAM.md for tracking
 
 ### Practical Additions
+
 - Implementation templates
 - Configuration examples
 - Best practices

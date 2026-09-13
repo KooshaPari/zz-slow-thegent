@@ -280,7 +280,7 @@ class MarkdownAnalyzer:
     def _detect_content_type(self, file_path: Path, content: str) -> ContentType:
         """Detect content type from file path and content."""
         path_lower = str(file_path).lower()
-        content_lower = content.lower()
+        content.lower()
 
         # Check file name patterns
         if any(term in path_lower for term in ["spec", "specification"]):
@@ -303,7 +303,11 @@ class MarkdownAnalyzer:
         # Check content patterns
         if re.search(r"##\s*(?:Work\s+)?Breakdown\s+Structure|##\s*WBS", content, re.IGNORECASE):
             return ContentType.WBS
-        if re.search(r"##\s*Product\s+Requirements|##\s*PRD|##\s*Requirements", content, re.IGNORECASE):
+        if re.search(
+            r"##\s*Product\s+Requirements|##\s*PRD|##\s*Requirements",
+            content,
+            re.IGNORECASE,
+        ):
             return ContentType.PRD
         if re.search(r"##\s*Features?|##\s*Feature\s+List", content, re.IGNORECASE):
             return ContentType.FEATURE
@@ -409,15 +413,25 @@ class MarkdownAnalyzer:
 
                 # Extract priority
                 priority = Priority.MEDIUM
-                if re.search(r"\b(critical|high|important|priority)\b", title + description, re.IGNORECASE):
+                if re.search(
+                    r"\b(critical|high|important|priority)\b",
+                    title + description,
+                    re.IGNORECASE,
+                ):
                     priority = Priority.HIGH
-                if re.search(r"\b(critical|urgent|blocking)\b", title + description, re.IGNORECASE):
+                if re.search(
+                    r"\b(critical|urgent|blocking)\b",
+                    title + description,
+                    re.IGNORECASE,
+                ):
                     priority = Priority.CRITICAL
 
                 # Extract acceptance criteria
                 acceptance_criteria = []
                 criteria_match = re.search(
-                    r"Acceptance\s+Criteria[:\-]?\s*(.+?)(?=^##|$)", section, re.IGNORECASE | re.DOTALL
+                    r"Acceptance\s+Criteria[:\-]?\s*(.+?)(?=^##|$)",
+                    section,
+                    re.IGNORECASE | re.DOTALL,
                 )
                 if criteria_match:
                     criteria_text = criteria_match.group(1)

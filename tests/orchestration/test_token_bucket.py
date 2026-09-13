@@ -177,7 +177,9 @@ class TestTokenBucketTryConsume:
         assert success is True
         assert wait == 0.0
 
-    def test_try_consume_failure_returns_wait_time(self) -> None:  # @trace FR-ORC-TB-007
+    def test_try_consume_failure_returns_wait_time(
+        self,
+    ) -> None:  # @trace FR-ORC-TB-007
         bucket = TokenBucket(TokenBucketConfig(capacity=10.0, refill_rate=2.0, initial_tokens=0.0))
         success, wait = bucket.try_consume(4.0)
         assert success is False
@@ -217,7 +219,9 @@ class TestTokenBucketConsumeBlocking:
         assert result is True
         assert elapsed < 1.0  # should have been fast
 
-    def test_blocking_consume_timeout_returns_false(self) -> None:  # @trace FR-ORC-TB-006
+    def test_blocking_consume_timeout_returns_false(
+        self,
+    ) -> None:  # @trace FR-ORC-TB-006
         bucket = TokenBucket(TokenBucketConfig(capacity=5.0, refill_rate=0.0, initial_tokens=0.0))
         start = time.monotonic()
         result = bucket.consume_blocking(tokens=1.0, timeout_s=0.1)
@@ -225,30 +229,42 @@ class TestTokenBucketConsumeBlocking:
         assert result is False
         assert elapsed >= 0.08  # waited approx the timeout
 
-    def test_blocking_consume_zero_timeout_no_tokens(self) -> None:  # @trace FR-ORC-TB-006
+    def test_blocking_consume_zero_timeout_no_tokens(
+        self,
+    ) -> None:  # @trace FR-ORC-TB-006
         bucket = TokenBucket(TokenBucketConfig(capacity=5.0, refill_rate=0.0, initial_tokens=0.0))
         assert bucket.consume_blocking(tokens=1.0, timeout_s=0.0) is False
 
-    def test_blocking_consume_zero_timeout_has_tokens(self) -> None:  # @trace FR-ORC-TB-005
+    def test_blocking_consume_zero_timeout_has_tokens(
+        self,
+    ) -> None:  # @trace FR-ORC-TB-005
         bucket = TokenBucket(TokenBucketConfig(capacity=5.0, refill_rate=0.0))
         assert bucket.consume_blocking(tokens=1.0, timeout_s=0.0) is True
 
-    def test_blocking_consume_exceeds_capacity_fails(self) -> None:  # @trace FR-ORC-TB-006
+    def test_blocking_consume_exceeds_capacity_fails(
+        self,
+    ) -> None:  # @trace FR-ORC-TB-006
         """Requesting more tokens than capacity can never succeed."""
         bucket = TokenBucket(TokenBucketConfig(capacity=5.0, refill_rate=100.0))
         assert bucket.consume_blocking(tokens=10.0, timeout_s=0.5) is False
 
-    def test_blocking_consume_negative_tokens_raises(self) -> None:  # @trace FR-ORC-TB-005
+    def test_blocking_consume_negative_tokens_raises(
+        self,
+    ) -> None:  # @trace FR-ORC-TB-005
         bucket = TokenBucket(TokenBucketConfig(capacity=5.0, refill_rate=1.0))
         with pytest.raises(ValueError, match="tokens must be > 0"):
             bucket.consume_blocking(tokens=-1.0)
 
-    def test_blocking_consume_negative_timeout_raises(self) -> None:  # @trace FR-ORC-TB-006
+    def test_blocking_consume_negative_timeout_raises(
+        self,
+    ) -> None:  # @trace FR-ORC-TB-006
         bucket = TokenBucket(TokenBucketConfig(capacity=5.0, refill_rate=1.0))
         with pytest.raises(ValueError, match="timeout_s must be >= 0"):
             bucket.consume_blocking(tokens=1.0, timeout_s=-1.0)
 
-    def test_blocking_consume_wakes_on_manual_refill(self) -> None:  # @trace FR-ORC-TB-005
+    def test_blocking_consume_wakes_on_manual_refill(
+        self,
+    ) -> None:  # @trace FR-ORC-TB-005
         """A blocking consumer unblocks when another thread manually refills."""
         bucket = TokenBucket(TokenBucketConfig(capacity=5.0, refill_rate=0.0, initial_tokens=0.0))
         results: list[bool] = []
@@ -340,13 +356,17 @@ class TestRateLimitedSwarmRunner:
         runner.run(lambda: None)
         assert bucket.available() == pytest.approx(4.0, abs=0.01)
 
-    def test_run_raises_timeout_error_when_exhausted(self) -> None:  # @trace FR-ORC-TB-010
+    def test_run_raises_timeout_error_when_exhausted(
+        self,
+    ) -> None:  # @trace FR-ORC-TB-010
         bucket = TokenBucket(TokenBucketConfig(capacity=1.0, refill_rate=0.0, initial_tokens=0.0))
         runner = RateLimitedSwarmRunner(bucket=bucket, default_timeout_s=0.05)
         with pytest.raises(TimeoutError, match="Rate limit exceeded"):
             runner.run(lambda: None)
 
-    def test_run_without_bucket_raises_runtime_error(self) -> None:  # @trace FR-ORC-TB-010
+    def test_run_without_bucket_raises_runtime_error(
+        self,
+    ) -> None:  # @trace FR-ORC-TB-010
         runner = RateLimitedSwarmRunner()
         with pytest.raises(RuntimeError, match="no bucket configured"):
             runner.run(lambda: None)

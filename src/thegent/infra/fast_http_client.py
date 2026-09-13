@@ -15,10 +15,9 @@ Performance improvements:
 import logging
 from typing import Any, Literal, cast
 
-import tenacity
-
 import curl_cffi  # type: ignore[reportMissingImports]
 import httpx
+import tenacity
 
 CURL_CFFI_AVAILABLE = True
 HTTPX_AVAILABLE = True

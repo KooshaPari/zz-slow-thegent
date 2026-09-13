@@ -69,7 +69,11 @@ class TestEWMALatencyTracker:
         tracker.record("anthropic", "claude-3", 100.0)
         tracker.record("google", "gemini-pro", 200.0)
 
-        candidates = [("openai", "gpt-4o"), ("anthropic", "claude-3"), ("google", "gemini-pro")]
+        candidates = [
+            ("openai", "gpt-4o"),
+            ("anthropic", "claude-3"),
+            ("google", "gemini-pro"),
+        ]
         ranked = tracker.rank_by_latency(candidates)
 
         assert ranked[0] == ("anthropic", "claude-3")

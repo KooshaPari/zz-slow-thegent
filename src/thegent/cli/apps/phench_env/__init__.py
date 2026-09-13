@@ -5,8 +5,8 @@ This module provides CLI phench environment configuration.
 
 from __future__ import annotations
 
-from typing import Any
 from collections.abc import Callable
+from typing import Any
 
 
 def register_env_commands(

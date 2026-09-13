@@ -11,7 +11,7 @@ Returns matches with category labels and a compliance violation verdict.
 import logging
 import re
 from dataclasses import dataclass
-from enum import Enum
+from enum import StrEnum
 
 _log = logging.getLogger(__name__)
 
@@ -21,7 +21,7 @@ _log = logging.getLogger(__name__)
 # ---------------------------------------------------------------------------
 
 
-class DlpProfile(str, Enum):
+class DlpProfile(StrEnum):
     GDPR = "gdpr"
     HIPAA = "hipaa"
     PCI_DSS = "pci_dss"

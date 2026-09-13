@@ -23,10 +23,10 @@ All other models are **dominated** (beaten on ≥2 dimensions).
 
 **GLM-5 (92.7% AIME, $2.60/M)** is OFF the frontier because:
 
-| Comparison | Winner | Reason |
-|-----------|--------|--------|
-| vs MiniMax | MiniMax | 80.2% quality, $0.79/M = 3.3x cheaper for nearly same output |
-| vs Opus | Opus | 85% AIME reasoning, more reliable for mixed code+reasoning |
+| Comparison | Winner  | Reason                                                              |
+| ---------- | ------- | ------------------------------------------------------------------- |
+| vs MiniMax | MiniMax | 80.2% quality, $0.79/M = 3.3x cheaper for nearly same output        |
+| vs Opus    | Opus    | 85% AIME reasoning, more reliable for mixed code+reasoning          |
 | Cost-value | MiniMax | $0.79 per % quality beats $2.60 per % quality (3.7x more efficient) |
 
 **When GLM-5 is useful**: Pure math/reasoning tasks where 92.7% AIME matters. But that's <5% of agent work.
@@ -39,11 +39,11 @@ All other models are **dominated** (beaten on ≥2 dimensions).
 
 **Claude Opus 4.6 (80.8% SWE-Bench, $17.50/M)** IS on frontier, but ONLY for mission-critical.
 
-| Category | Primary | Reason |
-|----------|---------|--------|
-| FAST | MiniMax | 80.2% ≈ 80.8%, but $0.79 << $17.50 (22x cheaper) |
-| NORMAL | MiniMax | Same situation: MiniMax dominates on cost |
-| COMPLEX | MiniMax | MiniMax quality (80.2%) is 99.3% of Opus (80.8%) |
+| Category     | Primary  | Reason                                                      |
+| ------------ | -------- | ----------------------------------------------------------- |
+| FAST         | MiniMax  | 80.2% ≈ 80.8%, but $0.79 << $17.50 (22x cheaper)            |
+| NORMAL       | MiniMax  | Same situation: MiniMax dominates on cost                   |
+| COMPLEX      | MiniMax  | MiniMax quality (80.2%) is 99.3% of Opus (80.8%)            |
 | HIGH_COMPLEX | **Opus** | Only model for mission-critical (medical, financial, legal) |
 
 **Why reserved?** Opus costs $0.17/10K tokens. That's 22x MiniMax. You only pay that when quality is absolute requirement, not preference.
@@ -118,6 +118,7 @@ Premium: Opus (20x worse efficiency, but only option for mission-critical)
 ## Quick Decision Rules
 
 ### Rule 1: Cost Absolute Constraint
+
 ```
 IF budget < $0.0002/call
   → Use GPT-4o mini (only frontier option that cheap)
@@ -126,6 +127,7 @@ ELSE
 ```
 
 ### Rule 2: Mission-Critical Lock
+
 ```
 IF mission_critical = True
   → Use Claude Opus 4.6 (no negotiation)
@@ -135,6 +137,7 @@ ELSE
 ```
 
 ### Rule 3: Latency Crisis
+
 ```
 IF latency_sla < 300ms
   → Gemini 3 Flash (218 tok/s, fastest frontier-adjacent)
@@ -145,6 +148,7 @@ ELSE
 ```
 
 ### Rule 4: Reasoning Edge Case
+
 ```
 IF reasoning_heavy = True AND quality_threshold > 85%
   → Consider GLM-5 (92.7% AIME, best reasoning)
@@ -155,6 +159,7 @@ ELSE
 ```
 
 ### Rule 5: Default (applies to 95% of tasks)
+
 ```
 → Use MiniMax M2.5
 ```
@@ -209,31 +214,31 @@ THEN:
 
 ## Pricing Reference (January 2026)
 
-| Model | Cost/M | Speed | Quality |
-|-------|--------|-------|---------|
-| GPT-4o mini | $0.375 | fast | 70% |
-| MiniMax M2.5 | $0.79 | moderate | 80.2% |
-| Gemini 3 Flash | $1.50 | ultra-fast | 78% |
-| Codex 5.3 | $1.25 | fast | 56.8% |
-| GLM-5 | $2.60 | slow | 92.7% AIME |
-| Gemini 2.5 Pro | $4.07 | moderate | 75% |
-| Claude Sonnet 4.5 | $10.50 | moderate | 77.2% |
-| Claude Opus 4.6 | $17.50 | slow | 80.8% |
+| Model             | Cost/M | Speed      | Quality    |
+| ----------------- | ------ | ---------- | ---------- |
+| GPT-4o mini       | $0.375 | fast       | 70%        |
+| MiniMax M2.5      | $0.79  | moderate   | 80.2%      |
+| Gemini 3 Flash    | $1.50  | ultra-fast | 78%        |
+| Codex 5.3         | $1.25  | fast       | 56.8%      |
+| GLM-5             | $2.60  | slow       | 92.7% AIME |
+| Gemini 2.5 Pro    | $4.07  | moderate   | 75%        |
+| Claude Sonnet 4.5 | $10.50 | moderate   | 77.2%      |
+| Claude Opus 4.6   | $17.50 | slow       | 80.8%      |
 
 ---
 
 ## Summary Table: Use This Model When...
 
-| Model | Use When |
-|-------|----------|
-| **GPT-4o mini** | Budget < $0.0002/call OR cost is absolute constraint |
-| **MiniMax M2.5** | Default for ALL tasks unless special constraint applies |
-| **Claude Opus 4.6** | mission_critical = True (medical, financial, legal) |
-| **Gemini 3 Flash** | Latency SLA < 300ms AND standard routing unavailable |
-| **GLM-5** | Pure reasoning (math, logic) AND quality > 85% |
-| **Gemini 2.5 Pro** | Image + text input AND cost permits |
-| **Claude Sonnet 4.5** | MiniMax unavailable AND willing to pay 13x more |
-| **Codex 5.3** | Never. Use GPT-4o mini instead. |
+| Model                 | Use When                                                |
+| --------------------- | ------------------------------------------------------- |
+| **GPT-4o mini**       | Budget < $0.0002/call OR cost is absolute constraint    |
+| **MiniMax M2.5**      | Default for ALL tasks unless special constraint applies |
+| **Claude Opus 4.6**   | mission_critical = True (medical, financial, legal)     |
+| **Gemini 3 Flash**    | Latency SLA < 300ms AND standard routing unavailable    |
+| **GLM-5**             | Pure reasoning (math, logic) AND quality > 85%          |
+| **Gemini 2.5 Pro**    | Image + text input AND cost permits                     |
+| **Claude Sonnet 4.5** | MiniMax unavailable AND willing to pay 13x more         |
+| **Codex 5.3**         | Never. Use GPT-4o mini instead.                         |
 
 ---
 
@@ -248,14 +253,12 @@ THEN:
 **Quick Ref Version 1.0**
 **Updated**: 2026-02-15
 
-
 ---
+
 ## See also
 
 - [WORK_STREAM.md](../reference/WORK_STREAM.md) — canonical backlog
 - [00-MASTER-INDEX.md](../plans/00-MASTER-INDEX.md) — plan index
-
-
 
 ---
 
@@ -265,15 +268,18 @@ THEN:
 **Extended by:** Claude Code
 
 ### Changes Made
+
 1. Added practical implementation patterns
 2. Added configuration examples
 3. Enhanced cross-references to related documentation
 
 ### Cross-References Added
+
 - Related research and implementation guides
 - WORK_STREAM.md for tracking
 
 ### Practical Additions
+
 - Implementation templates
 - Configuration examples
 - Best practices

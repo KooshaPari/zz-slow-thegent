@@ -43,7 +43,10 @@ class InfraProvisioner:
         if self.provider == "local":
             if spec.resource_type == "container":
                 if not shutil.which("docker"):
-                    raise ConfigError("Docker is required for container provisioning.", get_install_hint("docker"))
+                    raise ConfigError(
+                        "Docker is required for container provisioning.",
+                        get_install_hint("docker"),
+                    )
             # This would execute 'docker run' or similar
             _log.info("Executing local resource allocation for %s", resource_id)
             self.active_resources[resource_id] = spec

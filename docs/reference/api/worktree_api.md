@@ -30,7 +30,7 @@ Manages git worktrees for isolated agent environments.
 
 ### Methods
 
-#### WorktreeManager.__init__
+#### WorktreeManager.**init**
 
 ```python
 __init__(self: Any, project_root: Path, mesh_dir: Path)

@@ -123,7 +123,9 @@ def test_worktree_governance_state_fails_for_ambiguous_anchor(tmp_path: Path) ->
 
 
 @pytest.mark.unit
-def test_worktree_governance_check_fails_for_branch_path_mismatch(tmp_path: Path) -> None:
+def test_worktree_governance_check_fails_for_branch_path_mismatch(
+    tmp_path: Path,
+) -> None:
     """`worktree_governance.sh check` rejects structured paths whose branch disagrees."""
     repo_root = init_repo(tmp_path)
     mismatch_path = repo_root / ".worktrees" / "backend" / "m" / "anchor" / "active"
@@ -152,7 +154,9 @@ def test_worktree_governance_check_fails_for_branch_path_mismatch(tmp_path: Path
 
 
 @pytest.mark.unit
-def test_worktree_governance_check_fails_for_invalid_structured_state(tmp_path: Path) -> None:
+def test_worktree_governance_check_fails_for_invalid_structured_state(
+    tmp_path: Path,
+) -> None:
     """`worktree_governance.sh check` rejects structured paths with invalid state labels."""
     repo_root = init_repo(tmp_path)
     invalid_state_path = repo_root / ".worktrees" / "backend" / "m" / "anchor" / "invalid-state"

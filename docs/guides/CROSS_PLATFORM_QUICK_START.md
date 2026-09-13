@@ -26,16 +26,19 @@ pip install pyatspi
 ### Step 2: Grant Permissions (2 min)
 
 **macOS:**
+
 1. System Preferences > Security & Privacy > Accessibility
 2. Add Terminal (or your Python interpreter)
 3. System Preferences > Security & Privacy > Screen Recording (for screenshots)
 4. Add Terminal
 
 **Windows:**
+
 - Run as Administrator, OR
 - Configure Group Policy (see Quick Reference)
 
 **Linux:**
+
 - Usually granted by default
 
 ### Step 3: Write Your First Automation (2 min)
@@ -127,7 +130,6 @@ screenshot = provider.screenshot(region=region)
 
 **Status:** Quick start guide complete. Ready for immediate use.
 
-
 ---
 
 ## EXTENSION_SUMMARY
@@ -136,15 +138,18 @@ screenshot = provider.screenshot(region=region)
 **Extended by:** Claude Code
 
 ### Changes Made
+
 1. Added practical implementation patterns
 2. Added configuration examples
 3. Enhanced cross-references to related documentation
 
 ### Cross-References Added
+
 - Related research and implementation guides
 - WORK_STREAM.md for tracking
 
 ### Practical Additions
+
 - Implementation templates
 - Configuration examples
 - Best practices
@@ -213,16 +218,10 @@ from infra.desktop_automation import get_provider
 provider = get_provider()
 
 # Wait for element to appear (timeout=10s)
-element = provider.wait_for_element(
-    "button[name='Submit']",
-    timeout=10
-)
+element = provider.wait_for_element("button[name='Submit']", timeout=10)
 
 # Wait for element to disappear
-provider.wait_for_element_not_present(
-    "dialog[title='Loading']",
-    timeout=30
-)
+provider.wait_for_element_not_present("dialog[title='Loading']", timeout=30)
 ```
 
 ### 7.2 Handling Dialogs
@@ -256,12 +255,14 @@ provider.screenshot_element(element, "window.png")
 ```python
 import pytest
 
+
 @pytest.fixture
 def automation_provider():
     """Provider fixture with cleanup."""
     provider = get_provider()
     yield provider
     provider.cleanup()
+
 
 def test_save_dialog(automation_provider):
     """Test save dialog interaction."""

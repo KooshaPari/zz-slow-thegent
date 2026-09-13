@@ -4,13 +4,13 @@ Maintains a JSONL queue of known issues that could not be resolved in a single
 cycle, enabling carry-over across cycles and audit trail of all findings.
 """
 
-import orjson as json
 import logging
 import uuid
 from datetime import UTC, datetime
 from enum import StrEnum
 from pathlib import Path
 
+import orjson as json
 from pydantic import BaseModel, Field
 
 _log = logging.getLogger(__name__)

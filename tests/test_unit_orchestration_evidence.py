@@ -2,8 +2,9 @@
 
 from __future__ import annotations
 
-import orjson as json
 from typing import TYPE_CHECKING
+
+import orjson as json
 
 from thegent.contracts.csm import CanonicalStructuredMessage, CSMPhase, CSMStatus
 from thegent.contracts.policy import FallbackPolicy

@@ -12,7 +12,7 @@ Research framework for enterprise compliance tests.
 
 ### Methods
 
-#### Phase15EnterpriseComplianceTestsResearch.__init__
+#### Phase15EnterpriseComplianceTestsResearch.**init**
 
 ```python
 __init__(self: Any)

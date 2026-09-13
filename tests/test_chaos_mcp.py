@@ -3,13 +3,13 @@
 Scenarios: timeout mid-run, circuit breaker, corrupt session file, input guardrails.
 """
 
-import orjson as json
 import os
 import time
 from datetime import UTC, datetime
 from pathlib import Path
 from unittest.mock import patch
 
+import orjson as json
 import pytest
 
 from thegent.agents.base import RunResult
@@ -157,7 +157,12 @@ class TestInputGuardrailsIntegration:
         # @trace FR-MCP-001
         """When THGENT_INPUT_GUARDRAILS_ENABLED=1 and agent not in allowlist, run_impl returns error."""
         with patch.dict(
-            os.environ, {"THGENT_INPUT_GUARDRAILS_ENABLED": "1", "THGENT_AGENT_ALLOWLIST": "gemini,claude"}, clear=False
+            os.environ,
+            {
+                "THGENT_INPUT_GUARDRAILS_ENABLED": "1",
+                "THGENT_AGENT_ALLOWLIST": "gemini,claude",
+            },
+            clear=False,
         ):
             result = run_impl(
                 agent="unknown-agent",

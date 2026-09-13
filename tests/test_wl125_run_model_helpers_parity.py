@@ -27,7 +27,9 @@ def test_wl125_resolve_agent_model_wrapper_delegates(monkeypatch) -> None:
     assert captured["settings"] is settings
 
 
-def test_wl120_wavex_validate_explicit_ollama_provider_wrapper_delegates(monkeypatch) -> None:
+def test_wl120_wavex_validate_explicit_ollama_provider_wrapper_delegates(
+    monkeypatch,
+) -> None:
     captured: dict[str, object] = {}
 
     def _fake(*, provider: str | None, model: str | None) -> str | None:
@@ -35,7 +37,10 @@ def test_wl120_wavex_validate_explicit_ollama_provider_wrapper_delegates(monkeyp
         captured["model"] = model
         return "mock-ollama-error"
 
-    monkeypatch.setattr("thegent.cli.commands.impl.run_model_helpers.validate_explicit_ollama_provider", _fake)
+    monkeypatch.setattr(
+        "thegent.cli.commands.impl.run_model_helpers.validate_explicit_ollama_provider",
+        _fake,
+    )
 
     result = impl._validate_explicit_ollama_provider(provider="ollama-local", model="llama3.3")
 

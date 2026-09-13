@@ -17,9 +17,11 @@ This document provides a unified index of all documentation across **40+ project
 ## Part 1: Agent Orchestration Systems
 
 ### thegent
+
 **Status**: ✅ Production | **Docs**: Comprehensive (VitePress)
 
 **Key Documentation**:
+
 - `README.md` - Project overview and quick start
 - `docs/` - Comprehensive VitePress documentation
   - `guides/VITEPRESS_USAGE_GUIDE.md` - Rich documentation features
@@ -29,6 +31,7 @@ This document provides a unified index of all documentation across **40+ project
 - `docs/research/KUSH_ECOSYSTEM_DEEP_DIVE.md` - Ecosystem analysis (this series)
 
 **Architecture Docs**:
+
 - `docs/research/AX_MASTER_SPEC.md` - **The Grand Unified Performance & AX Specification (300+ items)**
 - `docs/research/DESIGN_POLISH_IMPLEMENTATION.md` - Design system
 - `docs/research/DOCGEN_DOCSITE_COMPLETE.md` - Documentation system
@@ -36,9 +39,11 @@ This document provides a unified index of all documentation across **40+ project
 ---
 
 ### plangent
+
 **Status**: ✅ Production | **Docs**: Comprehensive
 
 **Key Documentation**:
+
 - `README.md` - Project overview
 - `docs/` - Architecture and reference docs
   - `architecture/ARCHITECTURE_OVERVIEW.md` - System architecture
@@ -51,9 +56,11 @@ This document provides a unified index of all documentation across **40+ project
 ---
 
 ### kimaki
+
 **Status**: ✅ Complete | **Docs**: Comprehensive
 
 **Key Documentation**:
+
 - `README.md` - Project overview
 - `COMPREHENSIVE-MULTI-AGENT-PLAN.md` - Complete implementation plan
 - `IMPLEMENTATION-SUMMARY.md` - Implementation summary
@@ -65,9 +72,11 @@ This document provides a unified index of all documentation across **40+ project
 ---
 
 ### smolgents
+
 **Status**: ✅ Production | **Docs**: Good
 
 **Key Documentation**:
+
 - `README.md` - Project overview
 - `STAGE2_ARCHITECTURE.md` - Architecture documentation
 - `STAGE2_SUMMARY.md` - Stage 2 summary
@@ -78,9 +87,11 @@ This document provides a unified index of all documentation across **40+ project
 ---
 
 ### crun
+
 **Status**: ✅ v3.0.0 Production | **Docs**: Good
 
 **Key Documentation**:
+
 - `README.md` - Project overview
 - `docs/README.md` - Documentation index
 - `docs/HEXAGONAL_ARCHITECTURE.md` - Architecture patterns
@@ -95,9 +106,11 @@ This document provides a unified index of all documentation across **40+ project
 ## Part 2: MCP Servers
 
 ### atoms-mcp-prod
+
 **Status**: ✅ Production | **Docs**: Comprehensive (50+ guides)
 
 **Key Documentation**:
+
 - `README.md` - Project overview and quick start
 - `docs/guides/` - 50+ comprehensive guides
   - `architecture.md` - Architecture overview
@@ -108,17 +121,21 @@ This document provides a unified index of all documentation across **40+ project
 ---
 
 ### zen-mcp-server
+
 **Status**: ✅ Active | **Docs**: Basic
 
 **Key Documentation**:
+
 - `README.md` - Project overview
 
 ---
 
 ### 4sgm
+
 **Status**: ✅ v2.0.0 | **Docs**: Basic
 
 **Key Documentation**:
+
 - `README.md` - Quick start and CLI commands
 
 ---
@@ -126,9 +143,11 @@ This document provides a unified index of all documentation across **40+ project
 ## Part 3: CLI Tools & Utilities
 
 ### heliosShield
+
 **Status**: ✅ Production | **Docs**: Comprehensive
 
 **Key Documentation**:
+
 - `README.md` - Project overview
 - `docs/` - Unified documentation
   - `unified/MASTER_INDEX.md` - Master index
@@ -139,17 +158,21 @@ This document provides a unified index of all documentation across **40+ project
 ---
 
 ### bloc
+
 **Status**: ✅ v0.2.0 Beta | **Docs**: Basic
 
 **Key Documentation**:
+
 - `README.md` - Project overview and features
 
 ---
 
 ### trace (tracertm)
+
 **Status**: ✅ v0.2.0 Alpha | **Docs**: Good
 
 **Key Documentation**:
+
 - `README.md` - Project overview
 - `00_START_HERE.md` - Getting started guide
 - `scripts/` - Script documentation
@@ -160,9 +183,11 @@ This document provides a unified index of all documentation across **40+ project
 ---
 
 ### usage (kusage)
+
 **Status**: ✅ v2.0.0 Beta | **Docs**: Comprehensive
 
 **Key Documentation**:
+
 - `README.md` - Comprehensive guide
   - Features, installation, configuration
   - CLI commands, native widgets
@@ -175,17 +200,21 @@ This document provides a unified index of all documentation across **40+ project
 ## Part 4: SDKs & Libraries
 
 ### pheno-sdk
+
 **Status**: ✅ v0.3.0 Beta | **Docs**: Basic
 
 **Key Documentation**:
+
 - `README.md` - Project overview
 
 ---
 
 ### smartcp
+
 **Status**: ✅ Active | **Docs**: Research docs
 
 **Key Documentation**:
+
 - `mcp_server_discovery.py` - MCP server discovery
 - `mcp_registry.py` - MCP registry
 - `vector_graph_db.py` - Vector graph database
@@ -197,9 +226,11 @@ This document provides a unified index of all documentation across **40+ project
 ## Part 5: Infrastructure & Specialized Tools
 
 ### morph
+
 **Status**: ✅ Active | **Docs**: Comprehensive Architecture
 
 **Key Documentation**:
+
 - `MORPHa.MD` - Complete architecture blueprint
   - Project overview, technology stack
   - Architecture diagrams, directory structure
@@ -213,9 +244,11 @@ This document provides a unified index of all documentation across **40+ project
 ---
 
 ### dphi (doespythonhaveit-cli)
+
 **Status**: ✅ v2.0.0 | **Docs**: Good
 
 **Key Documentation**:
+
 - `README_UPDATED.md` - Comprehensive guide
   - Multi-language package discovery
   - Web interface, CLI, MCP server
@@ -226,9 +259,11 @@ This document provides a unified index of all documentation across **40+ project
 ---
 
 ### jobhunter
+
 **Status**: ✅ Active | **Docs**: Architecture
 
 **Key Documentation**:
+
 - `CLAUDE.md` - Claude AI agent guide
   - Project overview, build system
   - Development philosophy
@@ -238,9 +273,11 @@ This document provides a unified index of all documentation across **40+ project
 ---
 
 ### knowledgebase
+
 **Status**: ✅ Active | **Docs**: Planning docs
 
 **Key Documentation**:
+
 - `QUICK-REFERENCE.md` - Quick reference card
 - `WARP.md` - WARP documentation
 - `PHASE-3-COMPLETE.md` - Phase 3 completion
@@ -249,9 +286,11 @@ This document provides a unified index of all documentation across **40+ project
 ---
 
 ### agentapi
+
 **Status**: ✅ Active | **Docs**: Code quality docs
 
 **Key Documentation**:
+
 - `atomsAgent/CODE_QUALITY.md` - Code quality guidelines
 - `atomsAgent/CHANGELOG.md` - Changelog
 - `atomsAgent/FINAL_DEPLOYMENT_REPORT.md` - Deployment report
@@ -260,9 +299,11 @@ This document provides a unified index of all documentation across **40+ project
 ---
 
 ### task-tool
+
 **Status**: ✅ Production | **Docs**: Comprehensive
 
 **Key Documentation**:
+
 - `README.md` - Comprehensive guide
   - Features, quick start, configuration
   - Architecture, health endpoints
@@ -274,9 +315,11 @@ This document provides a unified index of all documentation across **40+ project
 ---
 
 ### task2
+
 **Status**: ✅ Active | **Docs**: Good
 
 **Key Documentation**:
+
 - `README.md` - Project overview
 - `AGENTS.md` - Agent automation guidelines
 - `CLAUDE.md` - Claude AI agent guide
@@ -291,9 +334,11 @@ This document provides a unified index of all documentation across **40+ project
 ---
 
 ### kagentop
+
 **Status**: ✅ Active | **Docs**: Implementation docs
 
 **Key Documentation**:
+
 - `PERFORMANCE_OPTIMIZATION_GUIDE.md` - Performance guide
 - `PHASE1_FILES_CREATED.md` - Phase 1 files
 - `IMPLEMENTATION_CHECKLIST.md` - Implementation checklist
@@ -303,9 +348,11 @@ This document provides a unified index of all documentation across **40+ project
 ---
 
 ### claude-squad
+
 **Status**: ✅ Production | **Docs**: Basic
 
 **Key Documentation**:
+
 - `README.md` - Project overview
 
 ---
@@ -315,6 +362,7 @@ This document provides a unified index of all documentation across **40+ project
 ### Architecture Documentation
 
 **Comprehensive Architecture**:
+
 - `thegent/docs/research/` - Design system, docgen system
 - `plangent/docs/architecture/` - Architecture overview
 - `atoms-mcp-prod/docs/guides/architecture.md` - MCP architecture
@@ -323,6 +371,7 @@ This document provides a unified index of all documentation across **40+ project
 - `heliosShield/docs/architecture/` - Architecture documentation
 
 **Quick References**:
+
 - `plangent/docs/getting-started/QUICK_REFERENCE.md`
 - `crun/QUICK_START_CONFIG.md`
 - `crun/PHASE2_QUICK_REFERENCE.md`
@@ -334,12 +383,14 @@ This document provides a unified index of all documentation across **40+ project
 ### Implementation Guides
 
 **Implementation Plans**:
+
 - `kimaki/COMPREHENSIVE-MULTI-AGENT-PLAN.md`
 - `kimaki/IMPLEMENTATION-SUMMARY.md`
 - `smolgents/STAGE2_SUMMARY.md`
 - `task2/IMPLEMENTATION_STRATEGY.md`
 
 **Migration Guides**:
+
 - `morph/MIGRATION_TO_PHENO.md`
 - `task-tool/MIGRATION_TO_PHENO.md`
 - `crun/QUICK_REFERENCE_PHENO_MIGRATION.md`
@@ -350,12 +401,14 @@ This document provides a unified index of all documentation across **40+ project
 ### Testing Documentation
 
 **Test Strategies**:
+
 - `task2/TESTING_STRATEGY.md`
 - `task2/TESTING_STATUS_SUMMARY.md`
 - `agentapi/atomsAgent/TESTING.md`
 - `task-tool/docs/tests.md`
 
 **Validation Reports**:
+
 - `task-tool/VALIDATION_100_PERCENT.md`
 - `dphi/FINAL_VALIDATION_REPORT.md`
 - `kagentop/BUILD_COMPLETION_REPORT.md`
@@ -365,11 +418,13 @@ This document provides a unified index of all documentation across **40+ project
 ### Research & Analysis
 
 **Ecosystem Research**:
+
 - `thegent/docs/research/KUSH_ECOSYSTEM_DEEP_DIVE.md` - Deep dive
 - `thegent/docs/research/KUSH_ECOSYSTEM_UNIFIED_DOCS_INDEX.md` - This file
 - `../ECOSYSTEM_ANALYSIS.md` - Parent ecosystem analysis
 
 **Project Research**:
+
 - `task2/RESEARCH.md` - Research findings
 - `thegent/docs/research/` - Various research documents
 
@@ -380,12 +435,15 @@ This document provides a unified index of all documentation across **40+ project
 ### Documentation Tools
 
 **VitePress**:
+
 - `thegent/docs/` - Rich, interactive documentation
 
 **MkDocs**:
+
 - `atoms-mcp-prod/docs/` - Material theme documentation
 
 **Markdown**:
+
 - All projects use Markdown for documentation
 
 ---
@@ -393,6 +451,7 @@ This document provides a unified index of all documentation across **40+ project
 ### Documentation Structure
 
 **Common Patterns**:
+
 - `README.md` - Project overview (all projects)
 - `CLAUDE.md` - Claude AI agent guidelines (many projects)
 - `docs/` - Detailed documentation (many projects)
@@ -406,21 +465,25 @@ This document provides a unified index of all documentation across **40+ project
 ### By Project Category
 
 **Agent Orchestration**:
+
 - Start with project `README.md`
 - Check `docs/` directory for detailed docs
 - Look for `ARCHITECTURE.md` or architecture docs
 
 **MCP Servers**:
+
 - Start with `README.md`
 - Check `docs/guides/` for comprehensive guides
 - Look for MCP-specific documentation
 
 **CLI Tools**:
+
 - Start with `README.md`
 - Check for CLI command documentation
 - Look for usage examples
 
 **Infrastructure**:
+
 - Start with project-specific docs
 - Check for architecture blueprints
 - Look for migration guides
@@ -430,21 +493,25 @@ This document provides a unified index of all documentation across **40+ project
 ### By Documentation Type
 
 **Getting Started**:
+
 - Look for `README.md` files
 - Check for `QUICK_START.md` or `QUICK_REFERENCE.md`
 - Look for `00_START_HERE.md` files
 
 **Architecture**:
+
 - Look for `ARCHITECTURE.md` files
 - Check `docs/architecture/` directories
 - Look for architecture blueprints
 
 **API Reference**:
+
 - Check `docs/reference/` directories
 - Look for OpenAPI/Swagger specs
 - Check for API documentation
 
 **Implementation**:
+
 - Look for implementation plans
 - Check migration guides
 - Look for phase completion docs
@@ -456,12 +523,14 @@ This document provides a unified index of all documentation across **40+ project
 ### Projects Needing More Documentation
 
 **Minimal Documentation**:
+
 - `zen-mcp-server` - Basic README only
 - `pheno-sdk` - Basic README only
 - `agentapi` - Code quality docs only
 - `kagentop` - Implementation docs only
 
 **Recommendations**:
+
 1. Add comprehensive README.md files
 2. Create architecture documentation
 3. Add quick start guides
@@ -516,15 +585,18 @@ project/
 ### Ecosystem-Level Documentation
 
 **Ecosystem Analysis**:
+
 - `../ECOSYSTEM_ANALYSIS.md` - Parent ecosystem analysis
 - `thegent/docs/research/KUSH_ECOSYSTEM_DEEP_DIVE.md` - Deep dive
 - `thegent/docs/research/KUSH_ECOSYSTEM_UNIFIED_DOCS_INDEX.md` - This file
 
 **Integration Guides**:
+
 - `thegent/docs/research/` - Integration research
 - `heliosShield/docs/unified/` - Unified documentation
 
 **Patterns & Best Practices**:
+
 - `thegent/docs/research/DESIGN_POLISH_IMPLEMENTATION.md` - Design patterns
 - `jobhunter/CLAUDE.md` - Development philosophy
 - `task2/AGENTS.md` - Agent automation guidelines
@@ -536,17 +608,20 @@ project/
 ### Most Important Documentation
 
 **For New Developers**:
+
 1. `thegent/README.md` - Start here
 2. `thegent/docs/research/KUSH_ECOSYSTEM_DEEP_DIVE.md` - Ecosystem overview
 3. Project-specific `README.md` files
 
 **For Architects**:
+
 1. `thegent/docs/research/KUSH_ECOSYSTEM_DEEP_DIVE.md` - Ecosystem architecture
 2. `plangent/docs/architecture/ARCHITECTURE_OVERVIEW.md` - Multi-agent patterns
 3. `morph/MORPHa.MD` - Hexagonal architecture example
 4. `atoms-mcp-prod/docs/guides/architecture.md` - MCP architecture
 
 **For Integration**:
+
 1. `thegent/docs/research/KUSH_ECOSYSTEM_DEEP_DIVE.md` - Integration opportunities
 2. `heliosShield/docs/unified/MASTER_INDEX.md` - Unified docs
 3. Project-specific integration guides

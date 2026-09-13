@@ -181,7 +181,7 @@ def test_pqm_claim_empty_returns_none(pqm: PromptQueueManager) -> None:
 def test_pqm_complete_marks_done(pqm: PromptQueueManager) -> None:
     """FR-HAX-001: complete() marks item as done."""
     # @trace FR-HAX-001
-    item = pqm.enqueue("Task X", project_path="/proj")
+    pqm.enqueue("Task X", project_path="/proj")
     claimed = pqm.claim()
     assert claimed is not None
 

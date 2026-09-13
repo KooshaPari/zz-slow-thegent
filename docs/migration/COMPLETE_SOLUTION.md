@@ -96,17 +96,18 @@ python3 -c "from thegent_discovery import DiscoveryInterface; print('✅ OK')"
 
 ### Before → After
 
-| Operation | Before | After | Improvement |
-|-----------|--------|-------|-------------|
-| Tool detection | 60ms | 1ms | **60x** |
-| PATH resolution | 20ms | 0.5ms | **40x** |
-| Process scanning | 50ms | 0.5ms | **100x** |
-| Hook execution | 200ms | 20ms | **10x** |
-| `which` command | 2m 43s | <10ms | **1000x+** |
+| Operation        | Before | After | Improvement |
+| ---------------- | ------ | ----- | ----------- |
+| Tool detection   | 60ms   | 1ms   | **60x**     |
+| PATH resolution  | 20ms   | 0.5ms | **40x**     |
+| Process scanning | 50ms   | 0.5ms | **100x**    |
+| Hook execution   | 200ms  | 20ms  | **10x**     |
+| `which` command  | 2m 43s | <10ms | **1000x+**  |
 
 ### Real-World Impact
 
 **For 100 hook invocations per session:**
+
 - Time saved: **25.85 seconds**
 - Process reduction: **9,000+ fewer processes**
 - Reliability: **Zero timeouts, zero fork failures**
@@ -162,23 +163,27 @@ thegent-path-resolve codex --additional maturin cargo
 ## 💡 Design Principles Applied
 
 ### Simplicity
+
 - ✅ Simple solutions over clever ones
 - ✅ Clear code over optimized code
 - ✅ Intuitive APIs over flexible APIs
 
 ### Performance
+
 - ✅ Measure everything
 - ✅ Optimize hot paths
 - ✅ Cache aggressively
 - ✅ Parallelize wisely
 
 ### Reliability
+
 - ✅ Fail gracefully
 - ✅ Circuit breakers
 - ✅ Retry with limits
 - ✅ Monitor everything
 
 ### User Experience
+
 - ✅ Self-documenting APIs
 - ✅ Sensible defaults
 - ✅ Helpful errors
@@ -189,6 +194,7 @@ thegent-path-resolve codex --additional maturin cargo
 ## 📈 Status
 
 ### ✅ Completed
+
 - Critical fixes
 - Rust extensions
 - Documentation
@@ -197,12 +203,14 @@ thegent-path-resolve codex --additional maturin cargo
 - Examples
 
 ### 🔄 Ready for Production
+
 - All tests passing
 - Performance validated
 - Documentation complete
 - User experience polished
 
 ### 📅 Next Steps
+
 1. Build extensions: `make build`
 2. Run benchmarks: `make benchmark`
 3. Deploy to production
@@ -227,8 +235,8 @@ thegent-path-resolve codex --additional maturin cargo
 **Performance**: 🚀 10-100x improvements
 **Design**: 🎨 Intuitive and elegant
 
-
 ---
+
 ## See also
 
 - [WORK_STREAM.md](../reference/WORK_STREAM.md) — canonical backlog

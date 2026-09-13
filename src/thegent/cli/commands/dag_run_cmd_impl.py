@@ -75,15 +75,30 @@ def dag_run_cmd(*, cd: Path | None = None, dry_run: bool = False) -> dict[str, A
     """
     impl_mod = _impl_module()
     if impl_mod is None or _dag_impl is None:
-        return {"ready": [], "spawned": [], "dry_run": dry_run, "error": "impl modules unavailable"}
+        return {
+            "ready": [],
+            "spawned": [],
+            "dry_run": dry_run,
+            "error": "impl modules unavailable",
+        }
 
     # 1) Resolve the working directory.
     cwd = _resolve_cwd(cd)
     if cwd is None:
-        return {"ready": [], "spawned": [], "dry_run": dry_run, "error": "could not resolve cwd"}
+        return {
+            "ready": [],
+            "spawned": [],
+            "dry_run": dry_run,
+            "error": "could not resolve cwd",
+        }
     dag_path = cwd / ".factory" / "dag-session.md"
     if not dag_path.exists():
-        return {"ready": [], "spawned": [], "dry_run": dry_run, "error": f"DAG not found: {dag_path}"}
+        return {
+            "ready": [],
+            "spawned": [],
+            "dry_run": dry_run,
+            "error": f"DAG not found: {dag_path}",
+        }
 
     # 2) Parse the canonical DAG document. The parse_dag_full
     # mock-target lives in run_dag_helpers per the AUDIT-N+19 contract.
@@ -100,7 +115,12 @@ def dag_run_cmd(*, cd: Path | None = None, dry_run: bool = False) -> dict[str, A
 
     bg_impl = getattr(impl_mod, "bg_impl", None)
     if bg_impl is None:
-        return {"ready": list(ready), "spawned": [], "dry_run": False, "error": "bg_impl unavailable"}
+        return {
+            "ready": list(ready),
+            "spawned": [],
+            "dry_run": False,
+            "error": "bg_impl unavailable",
+        }
 
     resolve_prompt = getattr(_dag_impl, "_resolve_prompt", None)
 

@@ -19,13 +19,14 @@ import logging
 import os
 import shutil
 import subprocess
-from thegent.infra.shim_subprocess import run as shim_run
 import tempfile
 import time
 from contextlib import contextmanager, suppress
 from dataclasses import dataclass, field
 from pathlib import Path
 from typing import TYPE_CHECKING
+
+from thegent.infra.shim_subprocess import run as shim_run
 
 if TYPE_CHECKING:
     from collections.abc import Generator
@@ -341,7 +342,11 @@ class WorktreePool:
                 if Path(path_str).exists():
                     fresh[agent_id] = path_str
                 else:
-                    _log.info("WorktreePool: removing stale entry for %s (%s)", agent_id, path_str)
+                    _log.info(
+                        "WorktreePool: removing stale entry for %s (%s)",
+                        agent_id,
+                        path_str,
+                    )
                     removed += 1
                     if self._worktrees_ok:
                         self._git_worktree_remove(path_str)
@@ -381,7 +386,12 @@ class WorktreePool:
         except subprocess.CalledProcessError as exc:
             raise RuntimeError(f"WorktreePool: git worktree add failed for agent {agent_id!r}: {exc.stderr}") from exc
 
-        _log.info("WorktreePool: created worktree for %s at %s (branch %s)", agent_id, worktree_path, branch)
+        _log.info(
+            "WorktreePool: created worktree for %s at %s (branch %s)",
+            agent_id,
+            worktree_path,
+            branch,
+        )
         return WorktreeContext(
             agent_id=agent_id,
             path=worktree_path,
@@ -422,7 +432,14 @@ class WorktreePool:
         else:
             try:
                 _run(
-                    ["git", "merge", "--no-ff", "-m", f"Merge agent/{agent_id} into {target}", branch],
+                    [
+                        "git",
+                        "merge",
+                        "--no-ff",
+                        "-m",
+                        f"Merge agent/{agent_id} into {target}",
+                        branch,
+                    ],
                     self.project_root,
                 )
                 merged = True

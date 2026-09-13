@@ -252,7 +252,10 @@ class TeamCoordinator:
                 return self.coordinate_team_task_hierarchical(team_id, task, context, active_members)
             return self.coordinate_team_task_collaborative(team_id, task, context, active_members)
 
-        return {"status": "error", "message": f"Unknown coordination mode: {coordination_mode}"}
+        return {
+            "status": "error",
+            "message": f"Unknown coordination mode: {coordination_mode}",
+        }
 
     def _evaluate_task_complexity(self, task: str, context: dict[str, Any] | None = None) -> float:
         """

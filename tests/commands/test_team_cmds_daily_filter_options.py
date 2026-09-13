@@ -2,8 +2,9 @@
 
 from __future__ import annotations
 
-import orjson as json
 from pathlib import Path
+
+import orjson as json
 
 from thegent.cli.commands import team_cmds
 
@@ -76,7 +77,12 @@ def test_snapshot_daily_export_cmd_forwards_trigger_tag_since(monkeypatch, tmp_p
     seen: dict[str, object] = {}
 
     def fake_snapshot_daily_export_payload(
-        scraper, out_path: str | None, limit: int = 1000, trigger=None, tag=None, since=None
+        scraper,
+        out_path: str | None,
+        limit: int = 1000,
+        trigger=None,
+        tag=None,
+        since=None,
     ):
         seen["scraper"] = scraper
         seen["out_path"] = out_path
@@ -84,7 +90,10 @@ def test_snapshot_daily_export_cmd_forwards_trigger_tag_since(monkeypatch, tmp_p
         seen["trigger"] = trigger
         seen["tag"] = tag
         seen["since"] = since
-        return {"source_json": "snapshot-daily-index.json", "source_md": "snapshot-daily-index.md"}
+        return {
+            "source_json": "snapshot-daily-index.json",
+            "source_md": "snapshot-daily-index.md",
+        }
 
     monkeypatch.setattr("thegent.orchestration.state.session_scraper.SessionScraper", FakeSessionScraper)
     monkeypatch.setattr(
@@ -116,7 +125,11 @@ def test_snapshot_daily_totals_cmd_rich_prints_filters_line_when_present(monkeyp
         "total_commands": 4,
         "total_files": 5,
         "generated_at": "2026-02-22T10:00:00+00:00",
-        "filters": {"trigger": "manual", "tag": "ops", "since": "2026-02-20T00:00:00+00:00"},
+        "filters": {
+            "trigger": "manual",
+            "tag": "ops",
+            "since": "2026-02-20T00:00:00+00:00",
+        },
     }
 
     def fake_snapshot_daily_totals_payload(scraper, limit: int = 1000, trigger=None, tag=None, since=None):

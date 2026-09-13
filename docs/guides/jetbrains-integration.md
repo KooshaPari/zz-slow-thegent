@@ -2,7 +2,7 @@
 
 thegent integrates with JetBrains IDEs (IntelliJ IDEA, PyCharm, GoLand, CLion,
 WebStorm, and others) by writing a standard `mcp.json` configuration file to
-the IDE's configuration directory.  The JetBrains AI plugin reads this file and
+the IDE's configuration directory. The JetBrains AI plugin reads this file and
 connects to the thegent MCP server automatically.
 
 ## Quick Start
@@ -29,11 +29,11 @@ thegent writes to `~/.config/JetBrains/<IDE>/mcp.json` (macOS / Linux).
 On macOS, the actual path is usually under
 `~/Library/Application Support/JetBrains/<IDE>/<version>/mcp.json`.
 
-| Platform | Base Directory                                  |
-|----------|-------------------------------------------------|
-| macOS    | `~/Library/Application Support/JetBrains/`     |
-| Linux    | `~/.config/JetBrains/` (XDG\_CONFIG\_HOME)     |
-| Windows  | `%APPDATA%\JetBrains\`                          |
+| Platform | Base Directory                             |
+| -------- | ------------------------------------------ |
+| macOS    | `~/Library/Application Support/JetBrains/` |
+| Linux    | `~/.config/JetBrains/` (XDG_CONFIG_HOME)   |
+| Windows  | `%APPDATA%\JetBrains\`                     |
 
 ### Config File Format
 
@@ -66,18 +66,18 @@ Existing `mcpServers` entries from other tools are preserved.
 
 ## Supported IDEs
 
-| IDE              | Config Dir Prefix         |
-|------------------|---------------------------|
-| IntelliJ IDEA    | `IntelliJIdea`, `IdeaIC`  |
-| PyCharm          | `PyCharm`, `PyCharmCE`    |
-| GoLand           | `GoLand`                  |
-| CLion            | `CLion`                   |
-| WebStorm         | `WebStorm`                |
-| Rider            | `Rider`                   |
-| DataGrip         | `DataGrip`                |
-| RubyMine         | `RubyMine`                |
-| PhpStorm         | `PhpStorm`                |
-| Fleet            | `Fleet`                   |
+| IDE           | Config Dir Prefix        |
+| ------------- | ------------------------ |
+| IntelliJ IDEA | `IntelliJIdea`, `IdeaIC` |
+| PyCharm       | `PyCharm`, `PyCharmCE`   |
+| GoLand        | `GoLand`                 |
+| CLion         | `CLion`                  |
+| WebStorm      | `WebStorm`               |
+| Rider         | `Rider`                  |
+| DataGrip      | `DataGrip`               |
+| RubyMine      | `RubyMine`               |
+| PhpStorm      | `PhpStorm`               |
+| Fleet         | `Fleet`                  |
 
 ## Starting the MCP Server
 
@@ -98,7 +98,7 @@ thegent jetbrains setup --mcp-url http://localhost:9000/mcp
 ## Serena Integration
 
 [Serena](https://github.com/oraios/serena) provides semantic code tools
-(symbol search, references, definitions) via MCP.  thegent mounts Serena
+(symbol search, references, definitions) via MCP. thegent mounts Serena
 under the `serena` namespace.
 
 ### Backend Auto-Detection
@@ -111,7 +111,7 @@ thegent lsp serena-backend
 ```
 
 If the plugin's MCP server is reachable on the configured port (default 8765),
-thegent uses the JetBrains backend.  Otherwise it falls back to the LSP backend
+thegent uses the JetBrains backend. Otherwise it falls back to the LSP backend
 (`uvx serena start-mcp-server`).
 
 ### Configure the JetBrains Plugin Port
@@ -126,7 +126,7 @@ THGENT_SERENA_JETBRAINS_PORT=8765
 1. Open IntelliJ IDEA (or any JetBrains IDE).
 2. Go to **Settings > Plugins**.
 3. Search for **Serena** and install it.
-4. Restart the IDE.  The plugin starts an MCP server on port 8765 automatically.
+4. Restart the IDE. The plugin starts an MCP server on port 8765 automatically.
 5. Verify: `thegent lsp serena-backend` should print `jetbrains`.
 
 ## Python API

@@ -14,7 +14,7 @@ Combines LLM (Neural) and Symbolic (Formal) methods for model routing.
 
 ### Methods
 
-#### HybridRouter.__init__
+#### HybridRouter.**init**
 
 ```python
 __init__(self: Any, dag: Any)

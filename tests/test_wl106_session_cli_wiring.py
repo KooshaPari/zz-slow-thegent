@@ -12,7 +12,6 @@ from thegent.cli.apps.run import app as run_app
 from thegent.cli.commands import cli as cli_cmd
 from thegent.session import SessionManagerError
 
-
 runner = CliRunner()
 
 
@@ -74,7 +73,10 @@ def test_session_fork_cmd_forwards_none_from_turn_by_default() -> None:
 
 def test_session_fork_cmd_rejects_blank_explicit_new_session_id() -> None:
     manager = _FakeManager(fork_id="forked-123")
-    with patch("thegent.session.SessionManager", return_value=manager), pytest.raises(typer.Exit) as exc:
+    with (
+        patch("thegent.session.SessionManager", return_value=manager),
+        pytest.raises(typer.Exit) as exc,
+    ):
         cli_cmd.session_fork_cmd(session_id="source-1", from_turn=None, new_session_id="   ")
     assert exc.value.exit_code == 2
     assert manager.fork_calls == []
@@ -82,7 +84,10 @@ def test_session_fork_cmd_rejects_blank_explicit_new_session_id() -> None:
 
 def test_session_fork_cmd_rejects_new_session_id_matching_source_id() -> None:
     manager = _FakeManager(fork_id="forked-123")
-    with patch("thegent.session.SessionManager", return_value=manager), pytest.raises(typer.Exit) as exc:
+    with (
+        patch("thegent.session.SessionManager", return_value=manager),
+        pytest.raises(typer.Exit) as exc,
+    ):
         cli_cmd.session_fork_cmd(session_id="source-1", from_turn=None, new_session_id="source-1")
     assert exc.value.exit_code == 2
     assert manager.fork_calls == []
@@ -90,7 +95,10 @@ def test_session_fork_cmd_rejects_new_session_id_matching_source_id() -> None:
 
 def test_session_fork_cmd_rejects_blank_session_id() -> None:
     manager = _FakeManager(fork_id="forked-123")
-    with patch("thegent.session.SessionManager", return_value=manager), pytest.raises(typer.Exit) as exc:
+    with (
+        patch("thegent.session.SessionManager", return_value=manager),
+        pytest.raises(typer.Exit) as exc,
+    ):
         cli_cmd.session_fork_cmd(session_id="   ", from_turn=1, new_session_id="forked-123")
     assert exc.value.exit_code == 2
     assert manager.fork_calls == []
@@ -98,7 +106,10 @@ def test_session_fork_cmd_rejects_blank_session_id() -> None:
 
 def test_session_fork_cmd_rejects_non_positive_from_turn() -> None:
     manager = _FakeManager(fork_id="forked-123")
-    with patch("thegent.session.SessionManager", return_value=manager), pytest.raises(typer.Exit) as exc:
+    with (
+        patch("thegent.session.SessionManager", return_value=manager),
+        pytest.raises(typer.Exit) as exc,
+    ):
         cli_cmd.session_fork_cmd(session_id="source-1", from_turn=0, new_session_id="forked-123")
     assert exc.value.exit_code == 2
     assert manager.fork_calls == []
@@ -120,7 +131,10 @@ def test_session_rollback_cmd_calls_session_manager_api() -> None:
 
 def test_session_rollback_cmd_rejects_blank_session_id() -> None:
     manager = _FakeManager(remaining=2)
-    with patch("thegent.session.SessionManager", return_value=manager), pytest.raises(typer.Exit) as exc:
+    with (
+        patch("thegent.session.SessionManager", return_value=manager),
+        pytest.raises(typer.Exit) as exc,
+    ):
         cli_cmd.session_rollback_cmd(session_id="  ", n_turns=1)
     assert exc.value.exit_code == 2
     assert manager.rollback_calls == []
@@ -128,7 +142,10 @@ def test_session_rollback_cmd_rejects_blank_session_id() -> None:
 
 def test_session_rollback_cmd_rejects_non_positive_n_turns() -> None:
     manager = _FakeManager(remaining=2)
-    with patch("thegent.session.SessionManager", return_value=manager), pytest.raises(typer.Exit) as exc:
+    with (
+        patch("thegent.session.SessionManager", return_value=manager),
+        pytest.raises(typer.Exit) as exc,
+    ):
         cli_cmd.session_rollback_cmd(session_id="sess-1", n_turns=0)
     assert exc.value.exit_code == 2
     assert manager.rollback_calls == []
@@ -136,14 +153,20 @@ def test_session_rollback_cmd_rejects_non_positive_n_turns() -> None:
 
 def test_session_fork_cmd_fails_loud_on_manager_error() -> None:
     manager = _FakeManager(fork_error=SessionManagerError("boom"))
-    with patch("thegent.session.SessionManager", return_value=manager), pytest.raises(typer.Exit) as exc:
+    with (
+        patch("thegent.session.SessionManager", return_value=manager),
+        pytest.raises(typer.Exit) as exc,
+    ):
         cli_cmd.session_fork_cmd(session_id="source-1", from_turn=None, new_session_id=None)
     assert exc.value.exit_code == 2
 
 
 def test_session_rollback_cmd_fails_loud_on_manager_error() -> None:
     manager = _FakeManager(rollback_error=SessionManagerError("boom"))
-    with patch("thegent.session.SessionManager", return_value=manager), pytest.raises(typer.Exit) as exc:
+    with (
+        patch("thegent.session.SessionManager", return_value=manager),
+        pytest.raises(typer.Exit) as exc,
+    ):
         cli_cmd.session_rollback_cmd(session_id="sess-1", n_turns=1)
     assert exc.value.exit_code == 2
 

@@ -1,4 +1,5 @@
 # SwarmController Integration: Phase 3A Complete
+
 **Status:** ✅ COMPLETE & VERIFIED
 **Date:** 2026-02-19
 **Phase:** 3A - Stale Agent Cleanup
@@ -11,6 +12,7 @@
 ### Phase 3A: Stale Agent Cleanup Implementation
 
 **Implemented:**
+
 1. ✅ Stale agent detection mechanism
 2. ✅ Recovery attempt with pause/resume
 3. ✅ Automatic unregistration on recovery failure
@@ -107,17 +109,20 @@ for local_id, registry_id in self.agent_id_map.items():
 ## Code Quality
 
 ### Syntax Check ✅
+
 ```bash
 python3 -m py_compile scripts/swarm_controller.py
 # Result: Success ✅
 ```
 
 ### Type Safety ✅
+
 - Added `if not self.agent_registry:` check in `recover_stale_agent()`
 - Proper None checking before accessing registry methods
 - Type hints preserved throughout
 
 ### Error Handling ✅
+
 - Try-except around cleanup logic
 - Try-except around recovery attempts
 - Debug logging on all failures
@@ -129,21 +134,21 @@ python3 -m py_compile scripts/swarm_controller.py
 
 ### Cleanup Overhead
 
-| Operation | Latency | Notes |
-|-----------|---------|-------|
-| Query stale agents | <1ms | In-memory cache |
-| Per-agent recovery attempt | ~1000ms | Includes 1s sleep |
-| Unregistration | <5ms | File sync |
-| **Cleanup every 10 cycles** | **~10-50ms** | Most cycles have 0 stale agents |
-| **Per-cycle overhead** | **<2ms** | Average (cleanup/10 + no-op checks) |
+| Operation                   | Latency      | Notes                               |
+| --------------------------- | ------------ | ----------------------------------- |
+| Query stale agents          | <1ms         | In-memory cache                     |
+| Per-agent recovery attempt  | ~1000ms      | Includes 1s sleep                   |
+| Unregistration              | <5ms         | File sync                           |
+| **Cleanup every 10 cycles** | **~10-50ms** | Most cycles have 0 stale agents     |
+| **Per-cycle overhead**      | **<2ms**     | Average (cleanup/10 + no-op checks) |
 
 ### Scalability
 
-| Metric | Performance |
-|--------|-------------|
-| Max agents processed | 100+ per cleanup cycle |
-| Memory overhead | <1 KB (cycle counter) |
-| Registry query time | <1ms (in-memory) |
+| Metric                | Performance               |
+| --------------------- | ------------------------- |
+| Max agents processed  | 100+ per cleanup cycle    |
+| Memory overhead       | <1 KB (cycle counter)     |
+| Registry query time   | <1ms (in-memory)          |
 | Parallelism potential | Future: parallel recovery |
 
 ---
@@ -157,6 +162,7 @@ timeout 5 python3 scripts/swarm_controller.py --monitor
 ```
 
 **Output:**
+
 ```
 Phase 1: Agent Identity System initialized ✅
 Phase 1: Registered L1 agent: kush:ced77ddc:L1:coordinator ✅
@@ -168,6 +174,7 @@ Monitor cycle 10: Cleanup runs (cycle_count % 10 == 0)
 ### Test Coverage Targets
 
 **For Full Phase 3A Testing:**
+
 - [ ] Test stale detection (`get_stale_agents()`)
 - [ ] Test recovery success (pause/resume works)
 - [ ] Test recovery failure (process doesn't respond)
@@ -182,12 +189,14 @@ Monitor cycle 10: Cleanup runs (cycle_count % 10 == 0)
 ## Backward Compatibility
 
 ✅ **No Breaking Changes**
+
 - Phase 1 & 2 functionality unchanged
 - Cleanup is optional (graceful fallback if registry unavailable)
 - Cycle counting is internal (doesn't affect external API)
 - Cleanup runs automatically (no user intervention needed)
 
 ✅ **Tested Paths**
+
 - With agent_identity_system available: ✅ Works
 - Agent registration still works: ✅ Yes
 - Monitoring loop still works: ✅ Yes
@@ -197,23 +206,25 @@ Monitor cycle 10: Cleanup runs (cycle_count % 10 == 0)
 
 ## Known Limitations
 
-| Limitation | Impact | Mitigation |
-|-----------|--------|-----------|
+| Limitation                 | Impact | Mitigation                   |
+| -------------------------- | ------ | ---------------------------- |
 | Cleanup interval hardcoded | Medium | Make configurable in Phase 4 |
-| Single-threaded recovery | Low | Parallelize in Phase 4 |
-| No recovery metrics | Low | Add metrics in Phase 4 |
+| Single-threaded recovery   | Low    | Parallelize in Phase 4       |
+| No recovery metrics        | Low    | Add metrics in Phase 4       |
 
 ---
 
 ## Registry State After Phase 3A
 
 **No changes to registry structure**
+
 - L1 agent persists
 - L2 agents persist
 - Relationships maintained
 - Stale agents now cleaned up automatically
 
 **New Behavior:**
+
 - Agents without heartbeat >5 min are detected
 - Recovery attempt before unregistration
 - Failed recoveries logged
@@ -223,11 +234,13 @@ Monitor cycle 10: Cleanup runs (cycle_count % 10 == 0)
 ## What's Next
 
 ### Phase 3B: L3 Agent Support
+
 - Register L3 agents under L2
 - Full 3-level hierarchy
 - Estimated: 20-30 minutes
 
 ### Phase 3C: Advanced Queries
+
 - Civilization-wide status
 - Dashboard support
 - Estimated: 10-20 minutes
@@ -236,8 +249,8 @@ Monitor cycle 10: Cleanup runs (cycle_count % 10 == 0)
 
 ## Files Modified
 
-| File | Changes | Lines |
-|------|---------|-------|
+| File                          | Changes              | Lines                              |
+| ----------------------------- | -------------------- | ---------------------------------- |
 | `scripts/swarm_controller.py` | Phase 3A integration | +68 (55 methods + 13 fields/calls) |
 
 **Total Phase 3A:** 68 LOC added
@@ -249,6 +262,7 @@ Monitor cycle 10: Cleanup runs (cycle_count % 10 == 0)
 **Phase 3A SwarmController Integration is COMPLETE and VERIFIED.**
 
 The SwarmController now:
+
 - ✅ Detects stale agents (no heartbeat >5 min)
 - ✅ Attempts graceful recovery (pause/resume)
 - ✅ Unregisters dead agents automatically

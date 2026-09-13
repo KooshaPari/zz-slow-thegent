@@ -13,6 +13,7 @@
 The **agent layer**. Executes agent logic, tools, and workflows. May or may not come with a CLI, API, or other interface.
 
 **Examples:**
+
 - Codex CLI
 - Claude Code CLI
 - Claude Agent SDK
@@ -36,6 +37,7 @@ The **UI layer** of a harness. How the user interacts with the agent.
 Layers **between and around** the harness, LLM, and presentation. Include routing, proxy, auth, orchestration.
 
 **Examples:**
+
 - CLIProxyAPIPlus (proxy, auth, routing)
 - LiteLLM Router (routing, fallback)
 - thegent (orchestration, delegation)

@@ -17,7 +17,14 @@ class TestCSMStatus:
 
     def test_expected_members_exist(self) -> None:
         # @trace FR-CTR-001
-        expected = {"PENDING", "IN_PROGRESS", "COMPLETED", "FAILED", "BLOCKED", "CANCELLED"}
+        expected = {
+            "PENDING",
+            "IN_PROGRESS",
+            "COMPLETED",
+            "FAILED",
+            "BLOCKED",
+            "CANCELLED",
+        }
         actual = {m.name for m in CSMStatus}
         assert expected == actual
 

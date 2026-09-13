@@ -15,10 +15,12 @@ Phase 1 of the TASK I/O System Improvement has been successfully completed. The 
 ## ✅ What Was Built
 
 ### 1. JSON Schema Definitions
+
 - **`schemas/task-input.schema.json`** - Complete schema for task input with conditional validation
 - **`schemas/task-output.schema.json`** - Schema for task execution results
 
 ### 2. Core Parser (`src/thegent/task/parser.py`)
+
 - YAML frontmatter parsing
 - Legacy format support (backward compatible)
 - Auto-format detection
@@ -26,18 +28,21 @@ Phase 1 of the TASK I/O System Improvement has been successfully completed. The 
 - ~250 lines of robust parsing logic
 
 ### 3. Validator (`src/thegent/task/validator.py`)
+
 - JSON Schema-based validation using `jsonschema`
 - Structured error reporting with `ValidationError` and `ValidationResult`
 - Custom validation rules (ID format, dependencies)
 - ~150 lines
 
 ### 4. Type Definitions (`src/thegent/task/types.py`)
+
 - Pydantic models for type safety (`Task`, `TaskStep`, `TaskMetadata`, `TaskOutput`)
 - Enums: `SubagentType`, `Priority`, `TaskVisibility`, `Complexity`
 - Full type validation and serialization
 - ~200 lines
 
 ### 5. CLI Commands (`src/thegent/task/cli.py`)
+
 - `thegent task validate` - Validate task files
 - `thegent task parse` - Parse and display tasks
 - `thegent task list` - List tasks with filtering
@@ -46,12 +51,14 @@ Phase 1 of the TASK I/O System Improvement has been successfully completed. The 
 - ~250 lines
 
 ### 6. Migration Tool (`src/thegent/task/migrate.py`)
+
 - `migrate_work_stream_to_tasks` - Batch migration from WORK_STREAM.md
 - `migrate_legacy_task_to_yaml_frontmatter` - Single legacy file migration
 - Dry-run mode support
 - ~300 lines
 
 ### 7. Integration (`src/thegent/cli_impl.py`)
+
 - Enhanced `do_next_impl` to check `tasks/` directory first
 - Falls back to WORK_STREAM.md for backward compatibility
 - Returns structured task data with full metadata
@@ -62,6 +69,7 @@ Phase 1 of the TASK I/O System Improvement has been successfully completed. The 
 ## 🧪 Verification
 
 ### Parser & Validator
+
 ```bash
 ✅ Task parsed successfully
    ID: example-task
@@ -73,6 +81,7 @@ Phase 1 of the TASK I/O System Improvement has been successfully completed. The 
 ```
 
 ### Integration
+
 ```bash
 ✅ Found 3 items
 Sources: ['TASKS', 'WORK_STREAM']
@@ -82,6 +91,7 @@ Sources: ['TASKS', 'WORK_STREAM']
 ```
 
 ### Migration Tool
+
 ```bash
 ✅ Would migrate: 100+ tasks from WORK_STREAM.md
 ✅ Dry-run mode working
@@ -102,6 +112,7 @@ Sources: ['TASKS', 'WORK_STREAM']
 ## 🚀 Usage Examples
 
 ### Create a Task File
+
 ```markdown
 ---
 id: my-task
@@ -110,19 +121,24 @@ subagent_type: worker
 priority: P1
 depends: []
 ---
+
 ## Description
+
 Task description here.
 
 ## Steps to Complete
+
 1. Step one
 2. Step two
 
 ## Deliverables
+
 - Deliverable 1
 - Deliverable 2
 ```
 
 ### Validate Tasks
+
 ```bash
 # Validate single task
 thegent task validate --file tasks/my-task.md
@@ -135,6 +151,7 @@ thegent task list --priority P1
 ```
 
 ### Migrate Legacy Format
+
 ```bash
 # Dry run migration
 thegent task migrate --dry-run
@@ -147,6 +164,7 @@ thegent task migrate --legacy-file path/to/legacy.md
 ```
 
 ### Use with `thegent plan`
+
 ```bash
 # Get next work items (now checks tasks/ first)
 thegent plan do-next
@@ -161,6 +179,7 @@ thegent plan do-next
 ## 🔄 Backward Compatibility
 
 ✅ **Fully backward compatible**:
+
 - `do_next_impl` still parses WORK_STREAM.md tables
 - Legacy format parser included
 - Existing workflows continue to work

@@ -9,10 +9,9 @@ Usage:
     python3 process_queue.py --list
 """
 
-import json
 import argparse
+import json
 from pathlib import Path
-from typing import Optional, List, Dict
 
 QUEUE_FILE = Path(__file__).parent / "MARKDOWN_SCAN_QUEUE.json"
 
@@ -23,7 +22,7 @@ def load_queue() -> dict:
         return json.load(f)
 
 
-def get_next_month(queue_data: dict, last_processed: Optional[str] = None) -> Optional[dict]:
+def get_next_month(queue_data: dict, last_processed: str | None = None) -> dict | None:
     """Get the next month to process."""
     if last_processed is None:
         # Start with the first (newest) month
@@ -40,7 +39,7 @@ def get_next_month(queue_data: dict, last_processed: Optional[str] = None) -> Op
     return None
 
 
-def get_month_files(queue_data: dict, month: str, location: Optional[str] = None) -> list[str]:
+def get_month_files(queue_data: dict, month: str, location: str | None = None) -> list[str]:
     """Get all files for a specific month, optionally filtered by location."""
     for month_entry in queue_data["queue"]:
         if month_entry["month"] == month:
@@ -55,9 +54,9 @@ def get_month_files(queue_data: dict, month: str, location: Optional[str] = None
 def list_months(queue_data: dict):
     """List all months in the queue."""
     for month_entry in queue_data["queue"]:
-        month = month_entry["month"]
-        total = month_entry["total_files"]
-        locations = ", ".join([f"{loc['location']}({loc['file_count']})" for loc in month_entry["locations"]])
+        month_entry["month"]
+        month_entry["total_files"]
+        ", ".join([f"{loc['location']}({loc['file_count']})" for loc in month_entry["locations"]])
 
 
 def main():

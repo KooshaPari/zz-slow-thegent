@@ -304,7 +304,7 @@ class TestFDBudget:
         budget = FDBudget(threshold=0.8)
         # Division by zero handling
         try:
-            result = budget.check(0, 0)
+            budget.check(0, 0)
         except ZeroDivisionError:
             # If it raises, that's acceptable behavior
             pass
@@ -416,7 +416,8 @@ class TestResourceManagerLimitEnforcement:
             raise AssertionError(f"unexpected kind: {kind}")
 
         monkeypatch.setattr(
-            "thegent.infra.resource_management.resource.getrlimit", lambda kind: limits[_kind_name(kind)]
+            "thegent.infra.resource_management.resource.getrlimit",
+            lambda kind: limits[_kind_name(kind)],
         )
         monkeypatch.setattr(
             "thegent.infra.resource_management.resource.setrlimit",
@@ -562,7 +563,14 @@ class TestResourceManagerMonitorUsage:
         result = manager.monitor_usage(os.getpid())
 
         # Should have these keys
-        expected_keys = ["pid", "memory_rss", "cpu_percent", "fd_count", "child_count", "status"]
+        expected_keys = [
+            "pid",
+            "memory_rss",
+            "cpu_percent",
+            "fd_count",
+            "child_count",
+            "status",
+        ]
         for key in expected_keys:
             assert key in result, f"Missing key: {key}"
 

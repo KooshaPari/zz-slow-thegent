@@ -15,7 +15,6 @@ Coverage targets:
 
 from __future__ import annotations
 
-import orjson as json
 import subprocess
 from typing import TYPE_CHECKING, Any
 from unittest.mock import MagicMock, patch
@@ -234,7 +233,7 @@ class TestDiscoveryClientNativePath:
     ) -> None:
         client = self._make_native_client(tmp_path)
         with patch.object(client, "_run", return_value=fake_all_json) as mock_run:
-            result = client.all(pattern="cursor")
+            client.all(pattern="cursor")
         mock_run.assert_called_once_with("all", "--pattern", "cursor")
 
     def test_tools_map_convenience(
@@ -284,7 +283,10 @@ class TestDiscoveryClientErrorFallback:
             patch.object(client, "_run", return_value=None),
             patch(
                 "thegent.native.discovery_native._fallback_sessions",
-                return_value={"sessions": [], "fallback": {"status": "empty", "session_count": 0}},
+                return_value={
+                    "sessions": [],
+                    "fallback": {"status": "empty", "session_count": 0},
+                },
             ) as mock_fb,
         ):
             result = client.sessions()
@@ -299,7 +301,13 @@ class TestDiscoveryClientErrorFallback:
             patch.object(client, "_run", return_value=None),
             patch(
                 "thegent.native.discovery_native._fallback_sessions",
-                return_value={"sessions": [], "fallback": {"status": "probe_failed", "error_type": "tmux_missing"}},
+                return_value={
+                    "sessions": [],
+                    "fallback": {
+                        "status": "probe_failed",
+                        "error_type": "tmux_missing",
+                    },
+                },
             ),
         ):
             result = client.sessions()
@@ -312,7 +320,13 @@ class TestDiscoveryClientErrorFallback:
             patch.object(client, "_run", return_value=None),
             patch(
                 "thegent.native.discovery_native._fallback_tools",
-                return_value={"tools": [], "fallback": {"status": "probe_failed", "error_type": "path_probe_missing"}},
+                return_value={
+                    "tools": [],
+                    "fallback": {
+                        "status": "probe_failed",
+                        "error_type": "path_probe_missing",
+                    },
+                },
             ) as mock_fb,
         ):
             result = client.tools()
@@ -327,7 +341,13 @@ class TestDiscoveryClientErrorFallback:
             patch.object(client, "_run", return_value=None),
             patch(
                 "thegent.native.discovery_native._fallback_processes",
-                return_value={"processes": [], "fallback": {"status": "probe_failed", "error_type": "psutil_missing"}},
+                return_value={
+                    "processes": [],
+                    "fallback": {
+                        "status": "probe_failed",
+                        "error_type": "psutil_missing",
+                    },
+                },
             ) as mock_fb,
         ):
             result = client.processes()
@@ -364,7 +384,10 @@ class TestDiscoveryClientErrorFallback:
     def test_all_falls_back_on_timeout_with_native_metadata(self, tmp_path: Path) -> None:
         client = self._make_native_client(tmp_path)
         with (
-            patch("subprocess.run", side_effect=subprocess.TimeoutExpired(cmd="thegent-discovery", timeout=15)),
+            patch(
+                "subprocess.run",
+                side_effect=subprocess.TimeoutExpired(cmd="thegent-discovery", timeout=15),
+            ),
             patch(
                 "thegent.native.discovery_native._fallback_sessions",
                 return_value={"sessions": [], "fallback": {"status": "ok"}},
@@ -387,10 +410,19 @@ class TestDiscoveryClientErrorFallback:
     def test_all_falls_back_on_tmux_probe_failure(self, tmp_path: Path) -> None:
         client = self._make_native_client(tmp_path)
         with (
-            patch("subprocess.run", side_effect=subprocess.TimeoutExpired(cmd="thegent-discovery", timeout=15)),
+            patch(
+                "subprocess.run",
+                side_effect=subprocess.TimeoutExpired(cmd="thegent-discovery", timeout=15),
+            ),
             patch(
                 "thegent.native.discovery_native._fallback_sessions",
-                return_value={"sessions": [], "fallback": {"status": "probe_failed", "error_type": "tmux_missing"}},
+                return_value={
+                    "sessions": [],
+                    "fallback": {
+                        "status": "probe_failed",
+                        "error_type": "tmux_missing",
+                    },
+                },
             ),
             patch(
                 "thegent.native.discovery_native._fallback_tools",
@@ -462,7 +494,10 @@ class TestDiscoveryClientFallbackPath:
     def test_sessions_delegates_to_fallback(self, fallback_client: DiscoveryClient) -> None:
         with patch(
             "thegent.native.discovery_native._fallback_sessions",
-            return_value={"sessions": [{"session_name": "s1"}], "fallback": {"status": "ok"}},
+            return_value={
+                "sessions": [{"session_name": "s1"}],
+                "fallback": {"status": "ok"},
+            },
         ) as mock_fb:
             result = fallback_client.sessions()
         mock_fb.assert_called_once()
@@ -489,7 +524,12 @@ class TestDiscoveryClientFallbackPath:
             patch("thegent.native.discovery_native._fallback_processes", return_value=[]),
         ):
             result = fallback_client.all()
-        assert set(result.keys()) == {"sessions", "tools", "processes", "fallback_metadata"}
+        assert set(result.keys()) == {
+            "sessions",
+            "tools",
+            "processes",
+            "fallback_metadata",
+        }
 
 
 # ---------------------------------------------------------------------------
@@ -552,7 +592,10 @@ class TestFallbackSessions:
         assert payload["fallback"]["returncode"] == 2
 
     def test_timeout_metadata(self) -> None:
-        with patch("subprocess.run", side_effect=subprocess.TimeoutExpired(cmd="tmux", timeout=5)):
+        with patch(
+            "subprocess.run",
+            side_effect=subprocess.TimeoutExpired(cmd="tmux", timeout=5),
+        ):
             payload = _fallback_sessions(include_meta=True)
         assert payload["sessions"] == []
         assert payload["fallback"]["status"] == "probe_failed"
@@ -574,7 +617,10 @@ class TestFallbackTools:
     """_fallback_tools — shutil.which calls."""
 
     def test_returns_entry_per_tool(self) -> None:
-        with patch("shutil.which", side_effect=lambda t: f"/usr/bin/{t}" if t == "git" else None):
+        with patch(
+            "shutil.which",
+            side_effect=lambda t: f"/usr/bin/{t}" if t == "git" else None,
+        ):
             tools = _fallback_tools()
         names = {t["tool"] for t in tools}
         assert "git" in names
@@ -594,7 +640,10 @@ class TestFallbackTools:
         assert len(tools) == len(_PROBE_TOOLS)
 
     def test_include_meta_returns_payload(self) -> None:
-        with patch("shutil.which", side_effect=lambda t: f"/usr/bin/{t}" if t == "git" else None):
+        with patch(
+            "shutil.which",
+            side_effect=lambda t: f"/usr/bin/{t}" if t == "git" else None,
+        ):
             payload = _fallback_tools(include_meta=True)
         assert payload["fallback"]["status"] == "ok"
         assert payload["fallback"]["tools_count"] == len(payload["tools"])

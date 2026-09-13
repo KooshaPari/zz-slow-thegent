@@ -33,8 +33,18 @@ if TYPE_CHECKING:
 def _init_git_repo(path: Path) -> None:
     """Initialise a minimal git repo at *path* so WorktreePool tests run."""
     subprocess.run(["git", "init"], cwd=str(path), check=True, capture_output=True)
-    subprocess.run(["git", "config", "user.email", "test@test.com"], cwd=str(path), check=True, capture_output=True)
-    subprocess.run(["git", "config", "user.name", "Test"], cwd=str(path), check=True, capture_output=True)
+    subprocess.run(
+        ["git", "config", "user.email", "test@test.com"],
+        cwd=str(path),
+        check=True,
+        capture_output=True,
+    )
+    subprocess.run(
+        ["git", "config", "user.name", "Test"],
+        cwd=str(path),
+        check=True,
+        capture_output=True,
+    )
     # Create an initial commit so HEAD exists
     (path / "README.md").write_text("init\n")
     subprocess.run(["git", "add", "."], cwd=str(path), check=True, capture_output=True)

@@ -20,10 +20,10 @@ from thegent.agents.routing_contracts import GEMINI_FLASH_MODEL, GEMINI_FLASH_PR
 from thegent.dex_main import (
     _DEX_BYPASS_FLAG,
     _DEX_YOLO_FLAG,
-    _run_codex_interactive,
     _MODEL_ALIAS,
-    _run_model_cmd,
     _resolve_provider_for_model,
+    _run_codex_interactive,
+    _run_model_cmd,
     app,
     default_dex,
 )
@@ -351,9 +351,17 @@ def test_default_dex_callback_uses_flash_table_driven(
     argv: list[str], expected_model: str, expected_extra_args: list[str]
 ) -> None:
     ctx = type("Ctx", (), {"invoked_subcommand": None})()
-    with patch("sys.argv", argv), patch("thegent.dex_main._run_codex_interactive") as run_interactive:
+    with (
+        patch("sys.argv", argv),
+        patch("thegent.dex_main._run_codex_interactive") as run_interactive,
+    ):
         default_dex(ctx, force=False, native=False)  # type: ignore[arg-type]
-    run_interactive.assert_called_once_with(expected_model, dangerously_bypass=None, dangerously_yolo=None, extra_args=expected_extra_args)
+    run_interactive.assert_called_once_with(
+        expected_model,
+        dangerously_bypass=None,
+        dangerously_yolo=None,
+        extra_args=expected_extra_args,
+    )
 
 
 def test_default_dex_direct_callback_explicit_flags_do_not_trigger_native_exec() -> None:
@@ -385,7 +393,10 @@ def test_default_dex_native_force_includes_force_yolo_for_native_path() -> None:
 def test_run_codex_interactive_includes_yolo_and_dangerously_bypass_flags() -> None:
     with (
         patch("thegent.dex_main._resolve_provider_for_model", return_value="copilot"),
-        patch("thegent.dex_main._get_codex_env", return_value={"OPENAI_BASE_URL": "http://127.0.0.1:8317"}),
+        patch(
+            "thegent.dex_main._get_codex_env",
+            return_value={"OPENAI_BASE_URL": "http://127.0.0.1:8317"},
+        ),
         patch("thegent.dex_main.resolve_codex_cli_path", return_value="/usr/bin/codex"),
         patch("thegent.dex_main.os.execvpe") as execvpe,
         patch("thegent.dex_main.wrap_with_caffeinate", side_effect=lambda cmd, _: cmd),
@@ -399,7 +410,10 @@ def test_run_codex_interactive_includes_yolo_and_dangerously_bypass_flags() -> N
 def test_run_codex_interactive_deduplicates_bypass_flags() -> None:
     with (
         patch("thegent.dex_main._resolve_provider_for_model", return_value="copilot"),
-        patch("thegent.dex_main._get_codex_env", return_value={"OPENAI_BASE_URL": "http://127.0.0.1:8317"}),
+        patch(
+            "thegent.dex_main._get_codex_env",
+            return_value={"OPENAI_BASE_URL": "http://127.0.0.1:8317"},
+        ),
         patch("thegent.dex_main.resolve_codex_cli_path", return_value="/usr/bin/codex"),
         patch("thegent.dex_main.os.execvpe") as execvpe,
         patch("thegent.dex_main.wrap_with_caffeinate", side_effect=lambda cmd, _: cmd),

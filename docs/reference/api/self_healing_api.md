@@ -12,7 +12,7 @@ Routes failed runs to automated recovery playbooks.
 
 ### Methods
 
-#### RecoveryRouter.__init__
+#### RecoveryRouter.**init**
 
 ```python
 __init__(self: Any)
@@ -48,7 +48,7 @@ Monitors session stability and performance over time.
 
 ### Methods
 
-#### StabilityTracker.__init__
+#### StabilityTracker.**init**
 
 ```python
 __init__(self: Any, window_size: int)

@@ -11,7 +11,6 @@ Key features:
 - Graceful fallback if Wasm not available
 """
 
-import orjson as json
 import logging
 import threading
 import time
@@ -20,6 +19,8 @@ from dataclasses import dataclass, field
 from enum import Enum
 from pathlib import Path
 from typing import Any
+
+import orjson as json
 
 _log = logging.getLogger(__name__)
 
@@ -272,7 +273,11 @@ class ExtismPlugin(WasmPlugin):
 
                 self._plugin = extism.Plugin(manifest, wasi=self._allow_wasi)
                 self._status = PluginStatus.READY
-                _log.info("Loaded Wasm plugin: %s from %s", self.metadata.name, self.plugin_path)
+                _log.info(
+                    "Loaded Wasm plugin: %s from %s",
+                    self.metadata.name,
+                    self.plugin_path,
+                )
                 return True
 
             except FileNotFoundError:

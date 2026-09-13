@@ -17,7 +17,9 @@ class TestResponsesHandlerClientPool:
 
     def test_two_calls_return_same_client(self):
         """Two calls to _get_http_client() return the same instance."""
-        from thegent.utils.routing_impl.litellm_responses_handler import _get_http_client
+        from thegent.utils.routing_impl.litellm_responses_handler import (
+            _get_http_client,
+        )
 
         self._reset_client()
 

@@ -8,7 +8,6 @@ from __future__ import annotations
 import importlib.util
 from pathlib import Path
 
-
 ROOT = Path(__file__).parent.parent
 SCRIPT = ROOT / "scripts" / "wl137_weekly_diagnosis.py"
 

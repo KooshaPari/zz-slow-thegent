@@ -15,12 +15,14 @@
 ## 📊 Current State Analysis
 
 ### Test Infrastructure
+
 - **Test Framework**: pytest with markers (unit, integration, e2e, slow, asyncio, load)
 - **Coverage Tool**: pytest-cov with 80% target (INSUFFICIENT for agent-only)
 - **Test Files**: ~247 test files identified
 - **E2E Tests**: `test_e2e_cli.py` exists but needs expansion
 
 ### Coverage Gaps
+
 - **E2E Coverage**: Unknown - needs measurement
 - **Integration Coverage**: Partial - needs comprehensive mapping
 - **User Journey Coverage**: Incomplete - needs full CLI command coverage
@@ -48,6 +50,7 @@
 ```
 
 **Key Difference**: In agent-only environments, E2E and Integration tests are MORE critical than unit tests because:
+
 - Agents interact at the API/CLI boundary
 - No human can manually verify behavior
 - Failures must be caught automatically
@@ -63,6 +66,7 @@ Every CLI command must have at least one E2E test:
 #### CLI Commands Requiring E2E Tests
 
 **Core Commands** (from `main.py`):
+
 - [ ] `thegent init` - Initialization
 - [ ] `thegent doctor` - Health checks
 - [ ] `thegent run <prompt>` - Agent execution
@@ -74,6 +78,7 @@ Every CLI command must have at least one E2E test:
 - [ ] `thegent list-droids` - Droid discovery
 
 **Orchestration Commands**:
+
 - [ ] `thegent orchestrate crew create` - Crew creation
 - [ ] `thegent orchestrate crew add-agent` - Agent addition
 - [ ] `thegent orchestrate crew add-task` - Task addition
@@ -83,6 +88,7 @@ Every CLI command must have at least one E2E test:
 - [ ] `thegent orchestrate crew status` - Crew status
 
 **Team Management**:
+
 - [ ] `thegent teams create` - Team creation
 - [ ] `thegent teams list` - Team listing
 - [ ] `thegent teams show` - Team details
@@ -90,17 +96,20 @@ Every CLI command must have at least one E2E test:
 - [ ] `thegent teams remove-member` - Member removal
 
 **Hierarchy Management**:
+
 - [ ] `thegent hierarchy show` - Hierarchy display
 - [ ] `thegent hierarchy tree` - Tree visualization
 - [ ] `thegent hierarchy relationships` - Relationship display
 
 **Research & Discovery**:
+
 - [ ] `thegent research deep <query>` - Deep research
 - [ ] `thegent discovery scan` - Discovery scanning
 - [ ] `thegent discovery register` - Discovery registration
 - [ ] `thegent discovery parse` - Discovery parsing
 
 **Compliance & Governance**:
+
 - [ ] `thegent compliance export` - Compliance export
 - [ ] `thegent compliance siem-test` - SIEM testing
 - [ ] `thegent compliance plugin-check` - Plugin checking
@@ -108,16 +117,19 @@ Every CLI command must have at least one E2E test:
 - [ ] `thegent compliance ledger-verify` - Ledger verification
 
 **Trust & Signatures**:
+
 - [ ] `thegent trust status` - Trust status
 - [ ] `thegent signatures list` - Signature listing
 - [ ] `thegent signatures verify` - Signature verification
 
 **Learning & Adaptation**:
+
 - [ ] `thegent learning list` - Learning artifacts
 - [ ] `thegent learning promote` - Learning promotion
 - [ ] `thegent learning rollback` - Learning rollback
 
 **Configuration**:
+
 - [ ] `thegent config check` - Configuration validation
 
 **And 50+ more commands...**
@@ -164,6 +176,7 @@ Every workflow must have integration tests:
 ### C. Unit Test Coverage (100% Required)
 
 Every function must have unit tests:
+
 - All public functions
 - All classes and methods
 - Edge cases and error conditions
@@ -239,31 +252,37 @@ Feature: Agent Execution
 ## 🛠️ Implementation Plan
 
 ### Phase 1: Coverage Measurement (Immediate)
+
 1. Run coverage report to identify gaps
 2. Map all CLI commands to test coverage
 3. Create coverage gap report
 
 ### Phase 2: E2E Test Framework (Week 1)
+
 1. Set up BDD test framework (pytest-bdd or behave)
 2. Create test fixtures for common scenarios
 3. Implement E2E test template
 
 ### Phase 3: E2E Test Implementation (Week 2-4)
+
 1. Implement E2E tests for all CLI commands
 2. Cover all user journeys
 3. Add error scenario tests
 
 ### Phase 4: Integration Test Expansion (Week 5-6)
+
 1. Expand integration test coverage
 2. Test all workflows end-to-end
 3. Add failure scenario tests
 
 ### Phase 5: Unit Test Completion (Week 7-8)
+
 1. Complete unit test coverage to 100%
 2. Add edge case tests
 3. Add boundary condition tests
 
 ### Phase 6: Continuous Integration (Ongoing)
+
 1. Set up CI/CD with test execution
 2. Require 100% coverage for new code
 3. Block merges without tests
@@ -292,16 +311,19 @@ Feature: Agent Execution
 ## 🎯 TDD/BDD/SDD Governance
 
 ### TDD (Test-Driven Development)
+
 - Write tests BEFORE implementation
 - Red → Green → Refactor cycle
 - Tests must pass before code review
 
 ### BDD (Behavior-Driven Development)
+
 - Tests describe agent behavior
 - Gherkin-style scenarios
 - Human-readable test descriptions
 
 ### SDD (System Design Document)
+
 - Tests validate SDD requirements
 - Test coverage mapped to SDD components
 - Test results inform SDD updates

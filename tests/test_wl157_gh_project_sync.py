@@ -9,11 +9,11 @@ Tests cover:
 - CSV export/import
 """
 
-import orjson as json
 import tempfile
 from pathlib import Path
 from unittest.mock import patch
 
+import orjson as json
 import pytest
 
 from thegent.integrations.gh_project_sync import (
@@ -309,7 +309,18 @@ class TestSyncToGithub:
             if args[:3] == ["project", "view", "1"]:
                 return 0, json.dumps({"id": "PVT_1", "items": []}).decode(), ""
             if args[:3] == ["project", "item-list", "1"]:
-                return (0, json.dumps([{"id": "ITM_1", "content": {"title": "[WL-6896] Existing issue"}}]).decode(), "")
+                return (
+                    0,
+                    json.dumps(
+                        [
+                            {
+                                "id": "ITM_1",
+                                "content": {"title": "[WL-6896] Existing issue"},
+                            }
+                        ]
+                    ).decode(),
+                    "",
+                )
             if args[:3] == ["project", "field-list", "1"]:
                 return (
                     0,
@@ -326,7 +337,10 @@ class TestSyncToGithub:
                             {
                                 "id": "F_PRIORITY",
                                 "name": "Priority",
-                                "options": [{"id": "P1", "name": "P1"}, {"id": "P2", "name": "P2"}],
+                                "options": [
+                                    {"id": "P1", "name": "P1"},
+                                    {"id": "P2", "name": "P2"},
+                                ],
                             },
                         ]
                     ),
@@ -343,8 +357,18 @@ class TestSyncToGithub:
         result = sync_to_github(
             config,
             [
-                {"item_id": "WL-6896", "title": "Existing issue", "status": "DONE", "priority": "P2"},
-                {"item_id": "WL-6897", "title": "New item", "status": "BACKLOG", "priority": "P1"},
+                {
+                    "item_id": "WL-6896",
+                    "title": "Existing issue",
+                    "status": "DONE",
+                    "priority": "P2",
+                },
+                {
+                    "item_id": "WL-6897",
+                    "title": "New item",
+                    "status": "BACKLOG",
+                    "priority": "P1",
+                },
             ],
         )
 
@@ -369,14 +393,24 @@ class TestSyncToGithub:
             if args[:3] == ["project", "item-list", "1"]:
                 return 0, json.dumps([]).decode(), ""
             if args[:3] == ["project", "field-list", "1"]:
-                return 0, json.dumps([{"id": "F_STATUS", "name": "Status", "options": []}]).decode(), ""
+                return (
+                    0,
+                    json.dumps([{"id": "F_STATUS", "name": "Status", "options": []}]).decode(),
+                    "",
+                )
             raise AssertionError(f"Unexpected gh args: {args}")
 
         mock_run.side_effect = side_effect
         with pytest.raises(GHProjectSyncError, match="status option mappings"):
             sync_to_github(
                 valid_config,
-                [{"item_id": "WL-6896", "title": "Needs status mapping", "status": "BACKLOG"}],
+                [
+                    {
+                        "item_id": "WL-6896",
+                        "title": "Needs status mapping",
+                        "status": "BACKLOG",
+                    }
+                ],
             )
 
         assert not any(cmd[:3] == ["project", "item-create", "1"] for cmd in calls)
@@ -402,7 +436,10 @@ class TestSyncToGithub:
                             {
                                 "id": "F_STATUS",
                                 "name": "Status",
-                                "options": [{"id": "OPT_TODO", "name": "Todo"}, {"id": "OPT_DONE", "name": "Done"}],
+                                "options": [
+                                    {"id": "OPT_TODO", "name": "Todo"},
+                                    {"id": "OPT_DONE", "name": "Done"},
+                                ],
                             }
                         ]
                     ),
@@ -611,7 +648,14 @@ class TestImportFromCsv:
             direction="write_only",
             standalone_mode=True,
         )
-        workstream = [{"item_id": "WL-162", "title": "Parity", "status": "IN PROGRESS", "priority": "P1"}]
+        workstream = [
+            {
+                "item_id": "WL-162",
+                "title": "Parity",
+                "status": "IN PROGRESS",
+                "priority": "P1",
+            }
+        ]
 
         def side_effect(args, capture=True):
             _ = capture
@@ -621,8 +665,16 @@ class TestImportFromCsv:
                 return (0, "[]", "")
             if args[:3] == ["project", "field-list", "1"]:
                 payload = [
-                    {"id": "F_STATUS", "name": "Status", "options": [{"id": "OPT_IN_PROGRESS", "name": "In Progress"}]},
-                    {"id": "F_PRIORITY", "name": "Priority", "options": [{"id": "OPT_HIGH", "name": "High"}]},
+                    {
+                        "id": "F_STATUS",
+                        "name": "Status",
+                        "options": [{"id": "OPT_IN_PROGRESS", "name": "In Progress"}],
+                    },
+                    {
+                        "id": "F_PRIORITY",
+                        "name": "Priority",
+                        "options": [{"id": "OPT_HIGH", "name": "High"}],
+                    },
                 ]
                 return (0, json.dumps(payload).decode(), "")
             if args[:3] == ["project", "item-create", "1"]:

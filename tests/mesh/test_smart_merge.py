@@ -164,12 +164,14 @@ class TestMergeFilesCleanMerge:
         ours.write_text("ours content\n", encoding="utf-8")
         theirs.write_text("theirs\n", encoding="utf-8")
 
-        with mock.patch("shutil.which", return_value=None):
-            with mock.patch(
+        with (
+            mock.patch("shutil.which", return_value=None),
+            mock.patch(
                 "subprocess.run",
                 side_effect=FileNotFoundError("git not found"),
-            ):
-                result = merge_files(base, ours, theirs, output)
+            ),
+        ):
+            result = merge_files(base, ours, theirs, output)
 
         assert result is False
         # Output should contain our content as the safe default
@@ -541,7 +543,10 @@ class TestSmartMergerMerge:
 
         cfg = SmartMergeConfig(mergiraf_binary="/usr/bin/mergiraf")
         merger = SmartMerger(cfg)
-        with mock.patch("subprocess.run", return_value=mock.Mock(returncode=1, stdout="", stderr="conflict")):
+        with mock.patch(
+            "subprocess.run",
+            return_value=mock.Mock(returncode=1, stdout="", stderr="conflict"),
+        ):
             result = merger.merge(base, ours, theirs, output)
 
         assert result.success is False
@@ -600,7 +605,10 @@ class TestSmartMergerMerge:
         base, ours, theirs, output = _files
         with mock.patch("shutil.which", return_value=None):
             merger = SmartMerger()
-        with mock.patch("subprocess.run", return_value=mock.Mock(returncode=0, stdout="ok", stderr="")):
+        with mock.patch(
+            "subprocess.run",
+            return_value=mock.Mock(returncode=0, stdout="ok", stderr=""),
+        ):
             result = merger.merge(base, ours, theirs, output)
         assert isinstance(result, MergeResult)
 

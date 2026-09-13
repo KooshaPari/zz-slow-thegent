@@ -40,7 +40,7 @@ class ProviderLoopTimeout(Exception):
         super().__init__(msg)
 
 
-async def run_with_provider_loop_timeout(
+async def run_with_provider_loop_timeout[T](
     coro: Coroutine[object, object, T],
     timeout_sec: int | None = None,
     context: str = "",

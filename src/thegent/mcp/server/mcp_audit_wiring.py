@@ -48,8 +48,9 @@ import os
 import threading
 import time
 import warnings
+from collections.abc import Iterator
 from contextlib import contextmanager
-from typing import Any, Iterator
+from typing import Any
 
 from thegent.mcp.server.mcp_audit_trail import (
     AuditEntry,
@@ -370,16 +371,18 @@ def audited_budget(
     # would form an import cycle through ``mcp_audit_trail``).
     from thegent.mcp.server.mcp_perf_gates import mcp_budget_context
 
-    with audit_context(
-        kind=kind,
-        operation=operation,
-        agent=agent,
-        session_id=session_id,
-        payload=payload,
-        extra=extra,
-    ) as state:
-        with mcp_budget_context(operation, budget_ms=budget_ms):
-            yield state
+    with (
+        audit_context(
+            kind=kind,
+            operation=operation,
+            agent=agent,
+            session_id=session_id,
+            payload=payload,
+            extra=extra,
+        ) as state,
+        mcp_budget_context(operation, budget_ms=budget_ms),
+    ):
+        yield state
 
 
 # ------------------------------------------------------------------

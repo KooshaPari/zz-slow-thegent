@@ -5,8 +5,9 @@ Related to CLIProxyAPI#1547 - MCP not in available tools 400 error.
 
 from __future__ import annotations
 
+from unittest.mock import patch
+
 import pytest
-from unittest.mock import patch, AsyncMock
 
 
 class TestMCPToolAvailability:

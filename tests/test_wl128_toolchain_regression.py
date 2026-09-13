@@ -9,10 +9,8 @@ canonical toolchain entrypoints.
 
 from __future__ import annotations
 
-import sys
 from pathlib import Path
 
-import pytest
 import yaml
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -27,8 +25,6 @@ class TestPyprojectTomlValidity:
 
     def test_pyproject_is_valid_toml(self) -> None:
         """pyproject.toml must parse without errors after dedup changes."""
-        if sys.version_info < (3, 11):
-            pytest.skip("tomllib requires Python 3.11+")
         import tomllib  # stdlib since 3.11
 
         content = PYPROJECT.read_text(encoding="utf-8")

@@ -4,10 +4,13 @@ Extracted from cliproxy_adapter.py as part of L1 architecture hardening.
 
 GW-20, GW-35, GW-36, GW-43, GW-48, GW-49 namespaces are covered here.
 """
+
 from __future__ import annotations
 
+import contextlib
 import uuid
 from dataclasses import dataclass
+
 
 # @trace FR-CACHE-024 FR-CACHE-025 FR-CACHE-027
 @dataclass
@@ -78,18 +81,14 @@ def extract_tg_headers(request_headers: dict) -> TgHeaders:
     cache_ttl = None
     raw_ttl = headers.get("tg-cache-ttl")
     if raw_ttl is not None:
-        try:
+        with contextlib.suppress(ValueError):
             cache_ttl = float(raw_ttl)
-        except ValueError:
-            pass
 
     custom_cost = None
     raw_cost = headers.get("tg-custom-cost")
     if raw_cost is not None:
-        try:
+        with contextlib.suppress(ValueError):
             custom_cost = float(raw_cost)
-        except ValueError:
-            pass
 
     return TgHeaders(
         cache_ttl=cache_ttl,
@@ -130,7 +129,10 @@ def build_cost_response_header(response_body: dict) -> dict[str, str]:
     """
     try:
         # Local import to keep this module lightweight
-        from thegent.utils.routing_impl.cost_calculator import calculate_cost_from_response, format_cost_header_value
+        from thegent.utils.routing_impl.cost_calculator import (
+            calculate_cost_from_response,
+            format_cost_header_value,
+        )
 
         cost = calculate_cost_from_response(response_body)
         if cost > 0.0:
@@ -156,7 +158,9 @@ def inject_usage_cost(response_body: dict) -> dict:
     # @trace FR-REQEXT-048
     """
     try:
-        from thegent.utils.routing_impl.cost_calculator import calculate_cost_from_response
+        from thegent.utils.routing_impl.cost_calculator import (
+            calculate_cost_from_response,
+        )
 
         cost = calculate_cost_from_response(response_body)
         if cost <= 0.0:

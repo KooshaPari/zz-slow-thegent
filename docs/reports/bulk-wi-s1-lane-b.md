@@ -1,4 +1,5 @@
 ### [WL-5110] cache test_frecency:534 follow-up
+
 **Status:** OPEN
 **Priority:** P2
 **Area:** backlog,bulk
@@ -8,6 +9,7 @@
 Remove or narrow this skip by wiring deterministic preconditions so the path runs in CI.
 
 ### [WL-5111] cache test_multi_level:370 follow-up
+
 **Status:** OPEN
 **Priority:** P2
 **Area:** backlog,bulk
@@ -17,6 +19,7 @@ Remove or narrow this skip by wiring deterministic preconditions so the path run
 Remove or narrow this skip by wiring deterministic preconditions so the path runs in CI.
 
 ### [WL-5112] cli test_wl136_tooling_routing:81 follow-up
+
 **Status:** OPEN
 **Priority:** P2
 **Area:** backlog,bulk
@@ -26,6 +29,7 @@ Remove or narrow this skip by wiring deterministic preconditions so the path run
 Replace this unconditional skip path with deterministic setup so the import validation is asserted in CI.
 
 ### [WL-5113] cli test_wl136_tooling_routing:96 follow-up
+
 **Status:** OPEN
 **Priority:** P2
 **Area:** backlog,bulk
@@ -35,6 +39,7 @@ Replace this unconditional skip path with deterministic setup so the import vali
 Replace this unconditional skip path with deterministic setup so the import validation is asserted in CI.
 
 ### [WL-5114] cli test_wl136_tooling_routing:124 follow-up
+
 **Status:** OPEN
 **Priority:** P2
 **Area:** backlog,bulk
@@ -44,6 +49,7 @@ Replace this unconditional skip path with deterministic setup so the import vali
 Eliminate the environment-dependent skip by using a fixture or test double for server path availability.
 
 ### [WL-5115] commands test_idea_seeds:49 follow-up
+
 **Status:** OPEN
 **Priority:** P2
 **Area:** backlog,bulk
@@ -53,6 +59,7 @@ Eliminate the environment-dependent skip by using a fixture or test double for s
 Replace placeholder-style seed setup with explicit behavior assertions that verify scanner output shape and values.
 
 ### [WL-5116] commands test_idea_seeds:84 follow-up
+
 **Status:** OPEN
 **Priority:** P2
 **Area:** backlog,bulk
@@ -62,6 +69,7 @@ Replace placeholder-style seed setup with explicit behavior assertions that veri
 Harden this TODO-detection test with stronger assertions on extracted metadata and ordering guarantees.
 
 ### [WL-5117] commands test_idea_seeds:87 follow-up
+
 **Status:** OPEN
 **Priority:** P2
 **Area:** backlog,bulk
@@ -71,6 +79,7 @@ Harden this TODO-detection test with stronger assertions on extracted metadata a
 Strengthen this assertion set to validate complete seed fields rather than only pattern type.
 
 ### [WL-5118] commands test_idea_seeds:91 follow-up
+
 **Status:** OPEN
 **Priority:** P2
 **Area:** backlog,bulk
@@ -80,6 +89,7 @@ Strengthen this assertion set to validate complete seed fields rather than only 
 Expand this FIXME-path case with deterministic assertions on priority mapping and downstream work item conversion.
 
 ### [WL-5119] commands test_idea_seeds:94 follow-up
+
 **Status:** OPEN
 **Priority:** P2
 **Area:** backlog,bulk

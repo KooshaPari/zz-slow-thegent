@@ -7,6 +7,7 @@
 ## Issue
 
 Thegent commands are failing with:
+
 ```
 NameError: name 'Optional' is not defined
 ```
@@ -22,14 +23,17 @@ This is preventing both `thegent research` and `thegent free` from generating wr
 ## Workaround Options
 
 ### Option 1: Fix Code Error First
+
 - Fix `Optional` import issue in thegent code
 - Then retry writeup generation
 
 ### Option 2: Manual Writeup Generation
+
 - Generate writeups manually using direct prompts
 - Use working thegent commands once fixed
 
 ### Option 3: Use Alternative Approach
+
 - Generate writeups using different tool/method
 - Or wait for code fix
 

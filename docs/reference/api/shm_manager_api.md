@@ -8,7 +8,7 @@ Python wrapper for the high-performance Rust SHM mesh.
 
 ### Methods
 
-#### SHMManager.__init__
+#### SHMManager.**init**
 
 ```python
 __init__(self: Any, shm_path: Any)

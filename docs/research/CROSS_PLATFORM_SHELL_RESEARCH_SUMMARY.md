@@ -40,26 +40,31 @@
 ## Key Findings
 
 ### 1. Dual-Shell Architecture is Achievable
+
 - Both POSIX and PowerShell can be unified through a dispatcher
 - Rust binary dispatcher is ideal: fast, portable, no language bias
 - Library-first design minimizes code duplication
 
 ### 2. Shell Execution is NOT the Critical Path
+
 - Shell performance is irrelevant (hooks are I/O bound)
 - Dispatcher overhead acceptable: ~10-50ms per hook
 - Real issues: environment setup, command building, error handling
 
 ### 3. POSIX Shells Dominate Currently
+
 - 80% of usage: macOS/Linux
 - Windows support emerging but incomplete
 - WSL2 explicitly supported but underutilized
 
 ### 4. PowerShell is Viable for Windows-Native Operations
+
 - PowerShell 7+ is cross-platform (but not needed on POSIX)
 - Structured error handling superior to bash
 - Object piping enables powerful automation (but not needed for thegent)
 
 ### 5. WSL2 is the Pragmatic Windows Path
+
 - WSL2 provides POSIX shells on Windows
 - Simpler than native PowerShell hooks (less code duplication)
 - But: native PowerShell needed for OS operations (users, UI automation)
@@ -69,9 +74,11 @@
 ## Deliverables
 
 ### 1. Comprehensive Research Document (2000+ lines)
+
 **Location:** `docs/research/research-cross-platform-shell.md`
 
 **Contents:**
+
 - Executive summary with key findings
 - Current state analysis (7 major components analyzed)
 - Shell landscape (3 tables, platform comparison)
@@ -84,9 +91,11 @@
 - Risk mitigation & success metrics
 
 ### 2. Implementation Checklist (800+ lines)
+
 **Location:** `docs/reference/SHELL_IMPLEMENTATION_CHECKLIST_PHASE2.md`
 
 **Contents:**
+
 - Phase 2A (Weeks 1-2): Foundation
   - Rust dispatcher binary
   - POSIX library (bash_lib.sh)
@@ -118,6 +127,7 @@
   - Success criteria
 
 **Includes:**
+
 - Effort estimates (7 weeks, 4 FTE recommended)
 - Dependency graph (what blocks what)
 - Acceptance criteria for each task
@@ -129,6 +139,7 @@
 **Location:** `docs/reference/` and `docs/changes/research-cross-platform-shell/`
 
 **Already exist (validated by research):**
+
 - `POSIX_PWSH_SHELL_STRATEGY.md` — Configuration matrix (extends)
 - `docs/changes/research-cross-platform-shell/design.md` — Architecture (confirmed)
 - `docs/changes/research-cross-platform-shell/proposal.md` — Requirements (confirmed)
@@ -138,35 +149,45 @@
 ## Critical Design Decisions
 
 ### 1. Dispatcher: Rust Binary
+
 **Why not Python/Bash?**
+
 - Python: Runtime dependency (slow startup, heavy)
 - Bash: Not portable to Windows native
 - Rust: Fast, portable, statically compiled, no dependencies
 
 **Why not Shell Plugin System?**
+
 - Bash can't route to PowerShell well
 - PowerShell can't invoke Bash shims cleanly
 - Neutral dispatcher (Rust) avoids bias
 
 ### 2. Library-First Design
+
 **Why separate libraries?**
+
 - POSIX hooks use bash_lib.sh
 - PowerShell hooks use pwsh_lib.ps1
 - Complex logic delegated to Python
 
 **Why not Python-only?**
+
 - Shell scripts need direct environment access
 - Direct shell execution is faster than Python subprocess
 - Hook libraries are high-leverage (used by many hooks)
 
 ### 3. Phase 2A Foundation First
+
 **Why not start with hooks?**
+
 - Dispatcher + libraries are blocking dependencies
 - Can't write dual-shell hooks without libraries
 - Worth 2 weeks of foundation work upfront
 
 ### 4. Defer OS Adapters to Phase 2D
+
 **Why not Phase 2A?**
+
 - Not blocking other work
 - Lower priority (non-critical paths)
 - Can be deferred to Phase 3 if needed
@@ -186,6 +207,7 @@
 ✓ **Risk mitigation** — Path forward for Windows support
 
 **Extends prior work with:**
+
 - Detailed component design (dispatcher, runners, libraries)
 - Concrete implementation examples (code patterns)
 - Effort estimates and timeline
@@ -225,13 +247,13 @@
 
 ## Risks Identified
 
-| Risk | Probability | Impact | Mitigation |
-|------|-------------|--------|-----------|
-| **PowerShell complexity** | MEDIUM | HIGH | Week 1 spike; dedicated pwsh eng |
-| **Performance regression** | LOW | MEDIUM | Benchmark early; caching |
-| **Library API mismatch** | LOW | HIGH | Detailed specs; test compatibility |
-| **Windows path handling** | HIGH | MEDIUM | pathlib; test coverage |
-| **WSL2 interop issues** | MEDIUM | MEDIUM | Clear errors; good docs |
+| Risk                       | Probability | Impact | Mitigation                         |
+| -------------------------- | ----------- | ------ | ---------------------------------- |
+| **PowerShell complexity**  | MEDIUM      | HIGH   | Week 1 spike; dedicated pwsh eng   |
+| **Performance regression** | LOW         | MEDIUM | Benchmark early; caching           |
+| **Library API mismatch**   | LOW         | HIGH   | Detailed specs; test compatibility |
+| **Windows path handling**  | HIGH        | MEDIUM | pathlib; test coverage             |
+| **WSL2 interop issues**    | MEDIUM      | MEDIUM | Clear errors; good docs            |
 
 **Highest priority:** Week 1 spike on PowerShell library approach.
 
@@ -239,26 +261,26 @@
 
 ## Success Metrics
 
-| Metric | Target | How to Measure |
-|--------|--------|----------------|
-| **Hook success on Windows** | >95% | Test suite on CI matrix |
-| **Dispatcher latency** | <50ms | Benchmark tool |
-| **Fallback activation** | <1% | Monitoring + logging |
-| **Documentation coverage** | 100% | Docstrings + guides |
-| **Test coverage** | >90% | pytest coverage report |
-| **Performance regression** | <5% | Benchmark before/after |
+| Metric                      | Target | How to Measure          |
+| --------------------------- | ------ | ----------------------- |
+| **Hook success on Windows** | >95%   | Test suite on CI matrix |
+| **Dispatcher latency**      | <50ms  | Benchmark tool          |
+| **Fallback activation**     | <1%    | Monitoring + logging    |
+| **Documentation coverage**  | 100%   | Docstrings + guides     |
+| **Test coverage**           | >90%   | pytest coverage report  |
+| **Performance regression**  | <5%    | Benchmark before/after  |
 
 ---
 
 ## Effort Estimate
 
-| Phase | Duration | Output | Team |
-|-------|----------|--------|------|
-| 2A | 2 weeks | Dispatcher + libraries | 2 eng |
-| 2B | 1 week | 5 dual-shell hooks | 2 eng |
-| 2C | 1 week | Python integration | 1 eng |
-| 2D | 1 week | 4 OS adapters | 1-2 eng |
-| 2E | 2 weeks | Docs + testing + rollout | 2 eng |
+| Phase     | Duration    | Output                     | Team       |
+| --------- | ----------- | -------------------------- | ---------- |
+| 2A        | 2 weeks     | Dispatcher + libraries     | 2 eng      |
+| 2B        | 1 week      | 5 dual-shell hooks         | 2 eng      |
+| 2C        | 1 week      | Python integration         | 1 eng      |
+| 2D        | 1 week      | 4 OS adapters              | 1-2 eng    |
+| 2E        | 2 weeks     | Docs + testing + rollout   | 2 eng      |
 | **Total** | **7 weeks** | **Full dual-shell system** | **~4 FTE** |
 
 **Alternative:** 1 fullstack engineer over 3 months
@@ -268,11 +290,13 @@
 ## Deliverables in This Research
 
 ✓ **research-cross-platform-shell.md** (2000+ lines)
+
 - Comprehensive analysis and design
 - Architecture, patterns, testing strategy
 - Ready for implementation planning
 
 ✓ **SHELL_IMPLEMENTATION_CHECKLIST_PHASE2.md** (800+ lines)
+
 - Detailed task breakdown
 - Effort estimates and dependencies
 - Acceptance criteria for all deliverables

@@ -14,7 +14,7 @@ Provides high-performance path translation and identity mapping.
 
 ### Methods
 
-#### WslInterop.__init__
+#### WslInterop.**init**
 
 ```python
 __init__(self: Any)
@@ -41,6 +41,7 @@ map_sid_to_uid(self: Any, sid: str)
 Map a Windows SID to a WSL2 UID.
 
 Implementation logic:
+
 1. deterministic hash-based mapping (similar to sub-user system).
 2. /etc/wsl.conf [user] default=&lt;uid&gt; if needed.
 
@@ -91,6 +92,7 @@ map_sid_to_uid(self: Any, sid: str)
 Map a Windows SID to a WSL2 UID.
 
 Implementation logic:
+
 1. deterministic hash-based mapping (similar to sub-user system).
 2. /etc/wsl.conf [user] default=&lt;uid&gt; if needed.
 

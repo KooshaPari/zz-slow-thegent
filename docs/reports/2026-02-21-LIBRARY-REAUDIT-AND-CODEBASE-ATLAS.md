@@ -3,6 +3,7 @@
 ## Scope
 
 This report captures:
+
 1. Re-audit of migration status off wasteful custom LOC tooling and legacy package surfaces.
 2. Current-state validation after large recent feature growth.
 3. A concrete codebase atlas explaining the high Python `tokei` counts.
@@ -12,19 +13,23 @@ This report captures:
 Status is **partial, not fully complete** for current HEAD.
 
 What remains true:
+
 - Major library-first migration is real (httpx/tenacity, watchfiles/watchdog, cachetools/diskcache, fastjsonschema, etc. in `pyproject.toml`).
 
 What is now stale from older "complete" reports:
+
 - There are still active legacy/debt surfaces and custom LOC enforcement surfaces that need final consolidation.
 
 ## Evidence Snapshot
 
 ### A) Library-first migration present
+
 - `pyproject.toml` includes modern stack in active deps:
   - `httpx`, `tenacity`, `watchfiles`, `watchdog`, `cachetools`, `diskcache`, `fastjsonschema`, `litellm`.
 - This confirms major migration happened and is not only documented.
 
 ### B) Remaining legacy/debt/custom surfaces
+
 - Rust legacy crate usage still present:
   - `crates/thegent-hooks/Cargo.toml` still declares `lazy_static = "1.5.0"`.
 - Legacy compatibility tasks/aliases still present in task entrypoints:
@@ -49,16 +54,19 @@ What is now stale from older "complete" reports:
 ## Codebase Atlas (why Python looks huge)
 
 ## Repo-wide (tracked project surface)
+
 - `tokei` total: **986,670 lines**
 - Python: **344,933 lines**, **267,846 code lines**
 - Markdown: **435,020 lines** (docs-heavy, non-executable)
 - Rust: **35,219 lines**, **29,466 code lines**
 
 Interpretation:
+
 - The "~250k Python LOC" number is plausible when reading **code-only** (`267k` code).
 - The bigger near-1M total is inflated by markdown/docs and comments/blanks.
 
 ## Focused engineering surface (`src tests scripts governance crates hooks shell templates`)
+
 - Total: **401,442 lines**
 - Python: **342,661 lines**, **266,186 code lines**
 - Rust: **35,219 lines**, **29,466 code lines**
@@ -66,6 +74,7 @@ Interpretation:
 This confirms Python dominates the active engineering surface even after excluding common build/vendor dirs.
 
 ## Python hotspot directories (by code lines)
+
 - `tests`: 62,513
 - `src/thegent`: 16,037
 - `src/thegent/cli/commands`: 14,413
@@ -76,6 +85,7 @@ This confirms Python dominates the active engineering surface even after excludi
 - `src/thegent/routing`: 7,492
 
 ## Python hotspot files (by code lines)
+
 - `src/thegent/cli/commands/cli.py`: 6,843
 - `src/thegent/cli/commands/impl.py`: 5,786
 - `tests/test_e2e_cli.py`: 4,855
@@ -85,6 +95,7 @@ This confirms Python dominates the active engineering surface even after excludi
 - `src/thegent/doctor.py`: 1,891
 
 ## Why the count feels confusing
+
 - `tokei` reports all lines by default (code + comments + blanks).
 - Docs are extremely large and dominate total line volume.
 - Tests are large and heavily contribute to Python LOC.
@@ -93,15 +104,19 @@ This confirms Python dominates the active engineering surface even after excludi
 ## Remaining Work (prioritized)
 
 1. Finish legacy package cleanup in Rust hooks
+
 - Replace `lazy_static` with `OnceLock`/`once_cell` strategy consistently and remove remaining legacy crate usage.
 
 2. Consolidate governance task aliases
+
 - Retire deprecated task aliases after parity checks and keep one canonical quality path.
 
 3. Normalize file-length governance into one canonical fast path
+
 - Keep Rust primary implementation; make Zig path explicit optional plugin path; ensure CI gate is single-source.
 
 4. Split oversized Python hotspots
+
 - Start with:
   - `src/thegent/cli/commands/cli.py`
   - `src/thegent/cli/commands/impl.py`
@@ -109,6 +124,7 @@ This confirms Python dominates the active engineering surface even after excludi
 - Target <=500 lines per module via functional decomposition.
 
 5. Re-baseline docs vs code metrics in CI summary
+
 - Publish separate code-only and docs-only metrics in CI outputs to avoid metric confusion.
 
 ## Repro Commands

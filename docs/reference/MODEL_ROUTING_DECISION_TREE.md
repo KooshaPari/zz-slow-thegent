@@ -64,8 +64,7 @@ def select_model(
         # Opus cost: $17.50/M, avg 10K+ tokens per call
         opus_cost_cents = (17.50 / 1_000_000) * input_tokens * 100
         if opus_cost_cents > budget_cents:
-            return WARN(f"Opus costs {opus_cost_cents}¢ > budget {budget_cents}¢") \
-                   and use_fallback("minimax-m2.5")
+            return WARN(f"Opus costs {opus_cost_cents}¢ > budget {budget_cents}¢") and use_fallback("minimax-m2.5")
         return "claude-opus-4.6"
 
     # ═══════════════════════════════════════════════════════════════
@@ -92,8 +91,7 @@ def select_model(
         if gpt4o_mini_cost_cents <= budget_cents:
             return "gpt-4o-mini"
         # No other model achieves <300ms SLA well
-        return WARN("No model achieves <300ms SLA within budget") \
-               and use_best_effort("gemini-3-flash")
+        return WARN("No model achieves <300ms SLA within budget") and use_best_effort("gemini-3-flash")
 
     if latency_sla_ms < 500:
         # Need fast model (>100 tok/s)
@@ -112,8 +110,7 @@ def select_model(
         # Ultimate budget minimum: GPT-4o mini
         if gpt4o_mini_cost_cents <= budget_cents:
             return "gpt-4o-mini"
-        return WARN("Budget too low even for GPT-4o mini") \
-               and use_fallback("gpt-4o-mini")
+        return WARN("Budget too low even for GPT-4o mini") and use_fallback("gpt-4o-mini")
 
     # ═══════════════════════════════════════════════════════════════
     # PHASE 5: Quality-critical path (reasoning or domain-specific)
@@ -166,8 +163,7 @@ def select_model(
         if quality_threshold <= 70:
             return "gpt-4o-mini"
         else:
-            return WARN(f"Quality drop: MiniMax 80.2% → GPT-4o mini 70%") \
-                   and use_fallback("gpt-4o-mini")
+            return WARN(f"Quality drop: MiniMax 80.2% → GPT-4o mini 70%") and use_fallback("gpt-4o-mini")
 
     # All models over budget: hard error
     return ERROR(f"All models exceed budget {budget_cents}¢")
@@ -251,6 +247,7 @@ END
 ### Example 1: Rapid Document Classification
 
 **Input:**
+
 - Input: 200 tokens
 - Budget: $0.0001 (max cost $0.01 per 100 requests)
 - Latency SLA: 2 seconds
@@ -258,6 +255,7 @@ END
 - Task: Classify GitHub issues into categories
 
 **Decision Path:**
+
 1. mission_critical = False ✓
 2. latency_sla_ms (2s) not critical ✓
 3. budget check: $0.0001 is very tight
@@ -267,6 +265,7 @@ END
 5. MiniMax in budget and meets quality (80.2% > 60%) ✓
 
 **Result: USE MiniMax M2.5**
+
 - Cost per request: $0.000016 (1.6¢ per 1000 requests)
 - Quality: 80.2% (excellent for classification)
 - Speed: moderate (acceptable for batch processing)
@@ -276,6 +275,7 @@ END
 ### Example 2: Real-Time Chat with User
 
 **Input:**
+
 - Input: 5K tokens (large conversation history)
 - Budget: $0.05 (max cost per message)
 - Latency SLA: 300ms (must respond within 300ms for interactive feel)
@@ -283,6 +283,7 @@ END
 - Task: Conversational agent responding to user queries
 
 **Decision Path:**
+
 1. mission_critical = False ✓
 2. latency_sla_ms = 300ms (CRITICAL) → Need >180 tok/s
 3. Latency analysis:
@@ -293,6 +294,7 @@ END
 5. Practical solution: Use MiniMax with context reduction OR reduce SLA
 
 **Result: USE MiniMax M2.5 with context optimization**
+
 - Recommendation: Only include last 1K tokens in context (not full 5K)
 - Cost: (0.79 / 1M) × 1K × 100 = $0.0000079 (0.79¢)
 - Achievable latency: 75 tok/s → 13.3s per token (still high, but acceptable for thought generation)
@@ -305,6 +307,7 @@ END
 ### Example 3: Mission-Critical Medical Diagnosis Report
 
 **Input:**
+
 - Input: 50K tokens (detailed patient history, test results, prior diagnoses)
 - Budget: $5.00 (no cost constraint; medical accuracy > cost)
 - Latency SLA: 2 hours (medical work is async)
@@ -312,6 +315,7 @@ END
 - Task: Generate diagnostic recommendations based on patient data
 
 **Decision Path:**
+
 1. mission_critical = True → LOCKED to Opus
 2. Cost check:
    - Opus: (17.50 / 1M) × 50K × 100 = $0.0875 (87.5¢)
@@ -322,6 +326,7 @@ END
    - Recommendation: PAIR with human review (Opus + doctor verification)
 
 **Result: USE Claude Opus 4.6**
+
 - Cost: $0.875 (acceptable for high-value medical task)
 - Quality: 80.8% (highest available; human verifies final recommendation)
 - Speed: slow (50K tokens @ 30 tok/s ≈ 27 minutes) → acceptable for async medical work
@@ -332,6 +337,7 @@ END
 ### Example 4: Code Refactoring with Budget Constraint
 
 **Input:**
+
 - Input: 8K tokens (large source file)
 - Budget: $0.01 (strict cost control; cost > quality)
 - Latency SLA: 10 seconds (batch job)
@@ -339,6 +345,7 @@ END
 - Task: Refactor Python code for readability
 
 **Decision Path:**
+
 1. mission_critical = False ✓
 2. latency_sla_ms = 10s (reasonable) ✓
 3. Budget: $0.01
@@ -349,6 +356,7 @@ END
 5. MiniMax in budget, meets quality (80.2% > 75%) ✓
 
 **Result: USE MiniMax M2.5**
+
 - Cost: 6.32¢ (well under $0.01 budget)
 - Quality: 80.2% (excellent for refactoring task)
 - Speed: 8K / 75 tok/s ≈ 106s (acceptable for batch job)
@@ -358,6 +366,7 @@ END
 ### Example 5: Pure Reasoning: Complex Math Problem
 
 **Input:**
+
 - Input: 2K tokens (math problem, scratch space)
 - Budget: $0.05 (willing to spend for correct answer)
 - Latency SLA: 30 seconds (async, reasoning takes time)
@@ -366,6 +375,7 @@ END
 - Task: Solve competition-level math problem
 
 **Decision Path:**
+
 1. mission_critical = False (but quality is critical)
 2. reasoning_heavy = True AND quality_threshold > 80% ✓
 3. Best models for reasoning:
@@ -377,6 +387,7 @@ END
 5. Both in budget. GLM-5 dominates on reasoning (92.7% > 85%)
 
 **Result: USE GLM-5**
+
 - Cost: 5.2¢ (well under budget)
 - Quality: 92.7% AIME (best mathematical reasoning)
 - Speed: 2K / 50 tok/s ≈ 40s (acceptable for reasoning task)
@@ -389,6 +400,7 @@ END
 ### Example 6: Multi-Modal Image Analysis
 
 **Input:**
+
 - Input: 3K tokens + 1 image (product photo for e-commerce)
 - Budget: $0.02
 - Latency SLA: 5 seconds
@@ -397,6 +409,7 @@ END
 - Task: Describe product image and extract attributes
 
 **Decision Path:**
+
 1. mission_critical = False ✓
 2. multi_modal_required = True → Need image-capable model
 3. Best multi-modal: Gemini 2.5 Pro (image + text)
@@ -407,6 +420,7 @@ END
 5. Quality: Gemini 2.5 Pro 75% > threshold 70% ✓
 
 **Result: USE Gemini 2.5 Pro**
+
 - Cost: 12.2¢ (within $0.02 budget)
 - Quality: 75% (adequate for image description)
 - Speed: moderate (acceptable for batch product processing)
@@ -446,21 +460,22 @@ HIGH_COMPLEX Category:
 
 ## Summary: When to Use Each Model
 
-| Model | Primary Use Case | Cost | Quality | When |
-|-------|---|---|---|---|
-| **GPT-4o mini** | Ultimate cost minimum | $0.375/M | 70% | Budget < $0.0002/call AND cost > quality |
-| **MiniMax M2.5** | DEFAULT for 95% of tasks | $0.79/M | 80.2% | Use unless specific constraint (latency, reasoning, mission-critical) |
-| **Claude Opus 4.6** | Mission-critical work | $17.50/M | 80.8% | mission_critical = True AND budget permits |
-| **Gemini 3 Flash** | Latency-critical only | $1.50/M | 78% | latency_sla < 300ms AND MiniMax doesn't fit |
-| **GLM-5** | Reasoning-heavy | $2.60/M | 92.7% AIME | reasoning_heavy = True AND quality_threshold > 85% |
-| **Gemini 2.5 Pro** | Multi-modal only | $4.07/M | 75% | Image + text input required |
-| **Claude Sonnet 4.5** | Fallback for quality | $10.50/M | 77.2% | MiniMax unavailable AND quality gap matters |
+| Model                 | Primary Use Case         | Cost     | Quality    | When                                                                  |
+| --------------------- | ------------------------ | -------- | ---------- | --------------------------------------------------------------------- |
+| **GPT-4o mini**       | Ultimate cost minimum    | $0.375/M | 70%        | Budget < $0.0002/call AND cost > quality                              |
+| **MiniMax M2.5**      | DEFAULT for 95% of tasks | $0.79/M  | 80.2%      | Use unless specific constraint (latency, reasoning, mission-critical) |
+| **Claude Opus 4.6**   | Mission-critical work    | $17.50/M | 80.8%      | mission_critical = True AND budget permits                            |
+| **Gemini 3 Flash**    | Latency-critical only    | $1.50/M  | 78%        | latency_sla < 300ms AND MiniMax doesn't fit                           |
+| **GLM-5**             | Reasoning-heavy          | $2.60/M  | 92.7% AIME | reasoning_heavy = True AND quality_threshold > 85%                    |
+| **Gemini 2.5 Pro**    | Multi-modal only         | $4.07/M  | 75%        | Image + text input required                                           |
+| **Claude Sonnet 4.5** | Fallback for quality     | $10.50/M | 77.2%      | MiniMax unavailable AND quality gap matters                           |
 
 ---
 
 ## Implementation Note
 
 This decision tree is designed to be **programmatically executable**. Pseudo-code above can be implemented in:
+
 - Python: Direct implementation as function
 - Go: Switch on constraint types
 - TypeScript: Discriminated union pattern
@@ -474,14 +489,12 @@ This decision tree is designed to be **programmatically executable**. Pseudo-cod
 **Last Updated**: 2026-02-15
 **Next Review**: When new models released or benchmarks updated
 
-
 ---
+
 ## See also
 
 - [WORK_STREAM.md](../reference/WORK_STREAM.md) — canonical backlog
 - [00-MASTER-INDEX.md](../plans/00-MASTER-INDEX.md) — plan index
-
-
 
 ---
 
@@ -491,15 +504,18 @@ This decision tree is designed to be **programmatically executable**. Pseudo-cod
 **Extended by:** Claude Code
 
 ### Changes Made
+
 1. Added practical implementation patterns
 2. Added configuration examples
 3. Enhanced cross-references to related documentation
 
 ### Cross-References Added
+
 - Related research and implementation guides
 - WORK_STREAM.md for tracking
 
 ### Practical Additions
+
 - Implementation templates
 - Configuration examples
 - Best practices

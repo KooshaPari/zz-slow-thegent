@@ -12,7 +12,7 @@ Generate CLI examples automatically.
 
 ### Methods
 
-#### CLIExamplesGenerator.__init__
+#### CLIExamplesGenerator.**init**
 
 ```python
 __init__(self: Any, command: str)

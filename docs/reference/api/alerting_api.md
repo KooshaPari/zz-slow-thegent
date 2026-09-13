@@ -33,7 +33,7 @@ Manage routing alerts with webhook support.
 
 ### Methods
 
-#### AlertManager.__init__
+#### AlertManager.**init**
 
 ```python
 __init__(self: Any, webhook_url: Any, min_severity: str)

@@ -12,7 +12,7 @@ Workflow for agents to auto-populate documentation.
 
 ### Methods
 
-#### AgentWorkflow.__init__
+#### AgentWorkflow.**init**
 
 ```python
 __init__(self: Any)

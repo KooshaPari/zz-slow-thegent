@@ -6,12 +6,13 @@ Traces to: FR-GOV-001 (policy federation), FR-GOV-002 (scope precedence)
 
 from __future__ import annotations
 
-import orjson as json
 import logging
 import threading
 from dataclasses import dataclass, field
 from enum import Enum
 from typing import TYPE_CHECKING, Any
+
+import orjson as json
 
 if TYPE_CHECKING:
     from pathlib import Path
@@ -48,11 +49,22 @@ class PolicyRule:
 
     @classmethod
     def create(
-        cls, rule_id: str, scope: PolicyScope, condition: str, action: str, priority: int, namespace: str = "global"
+        cls,
+        rule_id: str,
+        scope: PolicyScope,
+        condition: str,
+        action: str,
+        priority: int,
+        namespace: str = "global",
     ) -> PolicyRule:
         """Named constructor matching the canonical field order in the task spec."""
         return cls(
-            priority=priority, rule_id=rule_id, scope=scope, condition=condition, action=action, namespace=namespace
+            priority=priority,
+            rule_id=rule_id,
+            scope=scope,
+            condition=condition,
+            action=action,
+            namespace=namespace,
         )
 
 

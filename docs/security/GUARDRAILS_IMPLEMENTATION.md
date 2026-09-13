@@ -11,17 +11,20 @@ This document describes the comprehensive security guardrails system implemented
 **Purpose**: Prevent dangerous commands from executing.
 
 **Features**:
+
 - Blocks commands that kill protected processes (agents, terminals)
 - Prevents dangerous system operations (`rm -rf /`, `format`, etc.)
 - Validates command length and argument count
 - Rate limiting for command execution
 
 **Protected Processes**:
+
 - `cursor-agent`, `thegent`, `claude`, `codex`, `droid`, `opencode`, `copilot`
 - Shell processes: `bash`, `zsh`, `sh`
 - Terminal emulators: `ghostty`, `terminal`, `iterm`, `alacritty`, `kitty`
 
 **Forbidden Patterns**:
+
 - `kill -9 cursor-agent`
 - `rm -rf /`
 - `xargs kill`
@@ -32,12 +35,14 @@ This document describes the comprehensive security guardrails system implemented
 **Purpose**: Reduce token usage and costs while maintaining context quality.
 
 **Strategies**:
+
 - **Secret Removal**: Replaces API keys, passwords, tokens with environment variable placeholders
 - **Smart Truncation**: Keeps important parts (start/end) when truncating
 - **Whitespace Compression**: Reduces unnecessary whitespace
 - **Context Compression**: Maintains context within token limits
 
 **Example**:
+
 ```
 Before: sk-abc123xyz789... (100K tokens)
 After: ${OPENAI_API_KEY}... (50K tokens, secrets removed)
@@ -48,6 +53,7 @@ After: ${OPENAI_API_KEY}... (50K tokens, secrets removed)
 **Purpose**: Prevent injection attacks and malicious inputs.
 
 **Protections**:
+
 - SQL injection detection
 - XSS (Cross-Site Scripting) detection
 - Command injection detection
@@ -59,6 +65,7 @@ After: ${OPENAI_API_KEY}... (50K tokens, secrets removed)
 **Purpose**: Prevent resource exhaustion and abuse.
 
 **Limits**:
+
 - Commands: 100/minute
 - File operations: 200/minute
 - Network requests: 50/minute
@@ -69,6 +76,7 @@ After: ${OPENAI_API_KEY}... (50K tokens, secrets removed)
 **Purpose**: Use environment variables instead of hardcoded secrets.
 
 **Mapping**:
+
 - `openai_api_key` → `OPENAI_API_KEY`
 - `anthropic_api_key` → `ANTHROPIC_API_KEY`
 - `github_token` → `GITHUB_TOKEN`
@@ -148,6 +156,7 @@ System invariants that must always hold:
 ## Monitoring
 
 Security violations are logged:
+
 - Blocked commands
 - Rate limit violations
 - Injection attempts

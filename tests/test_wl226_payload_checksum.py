@@ -8,8 +8,8 @@ Verifies SHA256 checksum computation, storage, and verification for payload inte
 from __future__ import annotations
 
 import hashlib
-import orjson as json
 
+import orjson as json
 import pytest
 
 
@@ -89,7 +89,10 @@ class TestRemotePayloadChecksumVerifier:
 
     def test_store_saves_record(self):
         """# @trace WL-226 — store() saves a checksum record."""
-        from thegent.integrations.payload_checksum import ChecksumRecord, RemotePayloadChecksumVerifier
+        from thegent.integrations.payload_checksum import (
+            ChecksumRecord,
+            RemotePayloadChecksumVerifier,
+        )
 
         verifier = RemotePayloadChecksumVerifier()
         record = ChecksumRecord(payload_id="payload_1", checksum="abc123")
@@ -110,7 +113,10 @@ class TestRemotePayloadChecksumVerifier:
 
     def test_get_returns_stored_record(self):
         """# @trace WL-226 — get() returns the stored record."""
-        from thegent.integrations.payload_checksum import ChecksumRecord, RemotePayloadChecksumVerifier
+        from thegent.integrations.payload_checksum import (
+            ChecksumRecord,
+            RemotePayloadChecksumVerifier,
+        )
 
         verifier = RemotePayloadChecksumVerifier()
         original = ChecksumRecord(payload_id="test", checksum="hash123")
@@ -207,7 +213,10 @@ class TestRemotePayloadChecksumVerifier:
 
     def test_store_overwrites_previous(self):
         """# @trace WL-226 — store() overwrites previous record for same payload."""
-        from thegent.integrations.payload_checksum import ChecksumRecord, RemotePayloadChecksumVerifier
+        from thegent.integrations.payload_checksum import (
+            ChecksumRecord,
+            RemotePayloadChecksumVerifier,
+        )
 
         verifier = RemotePayloadChecksumVerifier()
 

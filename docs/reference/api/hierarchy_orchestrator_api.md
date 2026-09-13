@@ -23,7 +23,7 @@ via a shared context dict that accumulates results.
 
 ### Methods
 
-#### HierarchyOrchestrator.__init__
+#### HierarchyOrchestrator.**init**
 
 ```python
 __init__(self: Any, planner: Any, executor: Any)

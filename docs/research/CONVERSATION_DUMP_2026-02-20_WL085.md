@@ -56,6 +56,7 @@ Expose `thegent_orchestration_events` MCP tool. Wire into UnifiedWorkerDaemon.
 ### 5. New file: `tests/test_wl085_sub_agent_events.py`
 
 29 tests, all passing. Covers:
+
 - SubAgentEventQueue: construction, put/get/drain/stream, QueueFull/QueueEmpty
 - Singleton: get_global_event_queue() returns same instance; reset replaces it
 - SubAgentDispatcher: STARTED+COMPLETED events per dispatch, request_id match, payload

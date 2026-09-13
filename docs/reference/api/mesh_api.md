@@ -15,7 +15,7 @@ Manages global agent connectivity and peer discovery.
 
 ### Methods
 
-#### AgentMesh.__init__
+#### AgentMesh.**init**
 
 ```python
 __init__(self: Any, node_id: str, registry_url: str)

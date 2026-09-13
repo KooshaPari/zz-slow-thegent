@@ -5,7 +5,10 @@ from __future__ import annotations
 from datetime import UTC, datetime
 from pathlib import Path
 
-from thegent.cli.commands.impl import _build_run_event_details, _resolve_grounding_sources_for_output
+from thegent.cli.commands.impl import (
+    _build_run_event_details,
+    _resolve_grounding_sources_for_output,
+)
 from thegent.execution import RunRegistry
 from thegent.utils.routing_impl.grounding import (
     extract_grounding_sources,
@@ -16,12 +19,18 @@ from thegent.utils.routing_impl.grounding import (
 
 def test_extract_grounding_sources_dedupes_and_preserves_order() -> None:
     text = "See https://a.example/x and https://b.example/y then https://a.example/x"
-    assert extract_grounding_sources(text) == ["https://a.example/x", "https://b.example/y"]
+    assert extract_grounding_sources(text) == [
+        "https://a.example/x",
+        "https://b.example/y",
+    ]
 
 
 def test_extract_grounding_sources_normalizes_and_dedupes_urls() -> None:
     text = "Refs: HTTPS://A.EXAMPLE/x, https://a.example/x. https://b.example/y?"
-    assert extract_grounding_sources(text) == ["https://a.example/x", "https://b.example/y"]
+    assert extract_grounding_sources(text) == [
+        "https://a.example/x",
+        "https://b.example/y",
+    ]
 
 
 def test_extract_grounding_sources_empty() -> None:
@@ -85,12 +94,18 @@ def test_extract_grounding_sources_from_payload_supports_source_url_keys() -> No
 def test_resolve_grounding_sources_prefers_structured_result_list() -> None:
     resolved = _resolve_grounding_sources_for_output(
         stdout="plain text without urls",
-        result_grounding_sources=["https://a.example/x", "https://a.example/x", "https://b.example/y"],
+        result_grounding_sources=[
+            "https://a.example/x",
+            "https://a.example/x",
+            "https://b.example/y",
+        ],
     )
     assert resolved == ["https://a.example/x", "https://b.example/y"]
 
 
-def test_run_registry_finish_event_can_persist_grounding_sources(tmp_path: Path) -> None:
+def test_run_registry_finish_event_can_persist_grounding_sources(
+    tmp_path: Path,
+) -> None:
     registry = RunRegistry(tmp_path)
     event_details = _build_run_event_details(
         grounding_sources=["https://a.example/1", "https://b.example/2"],

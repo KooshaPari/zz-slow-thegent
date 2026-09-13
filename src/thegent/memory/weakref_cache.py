@@ -23,13 +23,13 @@ import weakref
 from collections.abc import Callable, Iterable, Iterator
 from contextlib import contextmanager
 from threading import RLock
-from typing import Any, Generic, TypeVar
+from typing import Any, TypeVar
 
 _K = TypeVar("_K")
 _V = TypeVar("_V")
 
 
-class WeakrefCache(Generic[_K, _V]):
+class WeakrefCache[K, V]:
     """Thread-safe ``key -> weakref(value)`` cache.
 
     ``set`` keeps a strong reference to ``value`` via :class:`weakref.ref`

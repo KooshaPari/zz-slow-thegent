@@ -1,6 +1,5 @@
 """Tests for workstream_ops module."""
 
-from datetime import UTC, datetime
 from pathlib import Path
 from unittest.mock import patch
 
@@ -96,7 +95,8 @@ class TestWorkStreamOps:
         ops.work_stream_path = work_stream_file
 
         with patch(
-            "thegent.utils.workstream_ops._locked_file_access", side_effect=BlockingIOError(11, "resource unavailable")
+            "thegent.utils.workstream_ops._locked_file_access",
+            side_effect=BlockingIOError(11, "resource unavailable"),
         ):
             success = ops.claim_item("WS-006", "Test-Agent")
 
@@ -109,7 +109,8 @@ class TestWorkStreamOps:
         ops.work_stream_path = work_stream_file
 
         with patch(
-            "thegent.utils.workstream_ops._locked_file_access", side_effect=BlockingIOError(11, "resource unavailable")
+            "thegent.utils.workstream_ops._locked_file_access",
+            side_effect=BlockingIOError(11, "resource unavailable"),
         ):
             success = ops.complete_item("WS-001", "Test-Agent")
 

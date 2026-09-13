@@ -9,12 +9,9 @@ Covers:
 from __future__ import annotations
 
 import subprocess
-from pathlib import Path
-from unittest.mock import MagicMock, call, patch
+from unittest.mock import MagicMock, patch
 
-import pytest
-
-from thegent.mesh.injection import ContextInjection, ShellInjection
+from thegent.mesh.injection import ShellInjection
 
 # ---------------------------------------------------------------------------
 # TGNT-P13.1 – tmux session detection and naming

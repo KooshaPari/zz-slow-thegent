@@ -12,7 +12,7 @@ Research framework for autonomous learning.
 
 ### Methods
 
-#### Phase14AutonomousLearningResearch.__init__
+#### Phase14AutonomousLearningResearch.**init**
 
 ```python
 __init__(self: Any)

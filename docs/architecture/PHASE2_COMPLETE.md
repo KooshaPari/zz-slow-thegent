@@ -16,11 +16,13 @@ Phase 2 enhancements have been successfully implemented, adding configuration wi
 ### 1. Configuration Wizard
 
 **Files**:
+
 - `src/thegent/infra/config_wizard.py` - Interactive configuration wizard
 - `src/thegent/infra/config_validator.py` - Configuration validation
 - `src/thegent/infra/config_commands.py` - Configuration management commands
 
 **Features**:
+
 - Step-by-step interactive wizard (`thegent config wizard`)
 - Configuration validation (`thegent config validate`)
 - Configuration migration (`thegent config migrate`)
@@ -30,6 +32,7 @@ Phase 2 enhancements have been successfully implemented, adding configuration wi
 - Default value suggestions
 
 **Usage**:
+
 ```bash
 # Run configuration wizard
 thegent config wizard
@@ -47,10 +50,12 @@ thegent setup --wizard
 ### 2. Enhanced Doctor Command
 
 **Files**:
+
 - `src/thegent/doctor.py` - Enhanced with new diagnostic options
 - `src/thegent/infra/multi_runtime_diagnostics.py` - Multi-runtime health checks
 
 **Features**:
+
 - Multi-runtime diagnostics (`thegent doctor --runtime`)
 - Network diagnostics (`thegent doctor --network`)
 - Process health checks (`thegent doctor --processes`)
@@ -59,6 +64,7 @@ thegent setup --wizard
 - Integration with existing doctor checks
 
 **Usage**:
+
 ```bash
 # Full health check
 thegent doctor
@@ -76,9 +82,11 @@ thegent doctor --runtime --network --processes --memory --deps
 ### 3. CLI UX Improvements
 
 **Files**:
+
 - `src/thegent/infra/cli_ux.py` - CLI UX utilities
 
 **Features**:
+
 - Command suggestions for typos
 - Interactive prompts with Rich
 - Better error formatting with suggestions
@@ -86,6 +94,7 @@ thegent doctor --runtime --network --processes --memory --deps
 - Section headers and progress indicators
 
 **Usage**:
+
 ```python
 from thegent.infra.cli_ux import suggest_command, display_command_suggestion
 
@@ -97,11 +106,13 @@ display_command_suggestion("doctr", suggestions)
 ### 4. Integration Points
 
 **Enhanced Commands**:
+
 - `thegent setup` - Now integrates configuration wizard
 - `thegent doctor` - Enhanced with multi-runtime diagnostics
 - `thegent config` - New subcommands: validate, wizard, migrate
 
 **Integration**:
+
 - Configuration wizard integrated into setup flow
 - Multi-runtime diagnostics integrated into doctor command
 - Enhanced error handling throughout
@@ -139,6 +150,7 @@ display_command_suggestion("doctr", suggestions)
 ### 1. Taskfile Enhancements
 
 **Planned Features**:
+
 - Better task organization
 - Task help (`task --help <task>`)
 - Task timing
@@ -148,6 +160,7 @@ display_command_suggestion("doctr", suggestions)
 ### 2. Documentation Enhancements
 
 **Planned Features**:
+
 - Enhanced docstrings with examples
 - Auto-generated API reference
 - Tutorial series
@@ -157,6 +170,7 @@ display_command_suggestion("doctr", suggestions)
 ### 3. Additional CLI UX Improvements
 
 **Planned Features**:
+
 - Command completion integration
 - Output formatting consistency
 - Color theme support

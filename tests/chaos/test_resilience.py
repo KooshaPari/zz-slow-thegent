@@ -71,7 +71,11 @@ def test_lifecycle_loop_resilience_to_transient_failures(mock_run, controller, c
 def test_lifecycle_loop_stops_on_permanent_failure(mock_run, controller):
     """Lifecycle Loop should NOT retry on permanent failures."""
 
-    mock_run.return_value = {"exit_code": 1, "stdout": "Permanent Error: Invalid Config", "stderr": ""}
+    mock_run.return_value = {
+        "exit_code": 1,
+        "stdout": "Permanent Error: Invalid Config",
+        "stderr": "",
+    }
 
     state = controller.run_loop("Start", "Todo")
 

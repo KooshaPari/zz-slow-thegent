@@ -3,6 +3,7 @@
 
 > **Status**: Complete | **Version**: 1.0 | **Date**: 2026-02-16
 > **Related**:
+>
 > - [MCP Full Parity & FastMCP Audit](./MCP_FULL_PARITY_AND_FASTMCP_AUDIT.md)
 > - [Multi-Platform Parity Master Plan](../plans/MULTI_PLATFORM_PARITY_MASTER_PLAN.md)
 > - [MCP Tool Optimization Plan](../plans/MCP_TOOL_OPTIMIZATION_PLAN.md)
@@ -35,6 +36,7 @@ This document consolidates all FastMCP research into a single comprehensive guid
 ### 1.1 What is FastMCP?
 
 **FastMCP** is a Pythonic framework for building MCP (Model Context Protocol) servers. It provides:
+
 - **Declarative API**: Decorators for tools, resources, prompts
 - **Context Management**: Elicitation, progress, logging, sampling
 - **Middleware Pipeline**: Caching, rate limiting, error handling
@@ -43,21 +45,22 @@ This document consolidates all FastMCP research into a single comprehensive guid
 
 ### 1.2 Key Features
 
-| Feature | Status | thegent Usage |
-|---------|--------|---------------|
-| **Tools** | ✅ Full | 30+ tools (thegent_run, thegent_bg, etc.) |
-| **Resources** | ✅ Full | thegent://sessions, thegent://dag, etc. |
-| **Elicitation** | ✅ Full | ctx.elicit() for user input |
-| **Progress** | ✅ Full | ctx.report_progress() |
-| **Background Tasks** | ✅ Full | TaskConfig for async execution |
-| **Middleware** | ✅ Full | Caching, rate limiting, timing |
-| **Transforms** | ✅ Full | Namespace, tool, resource transforms |
-| **Storage** | ✅ Full | Memory, disk, Redis backends |
-| **HTTP Transport** | ✅ Full | Streamable HTTP server |
+| Feature              | Status  | thegent Usage                             |
+| -------------------- | ------- | ----------------------------------------- |
+| **Tools**            | ✅ Full | 30+ tools (thegent_run, thegent_bg, etc.) |
+| **Resources**        | ✅ Full | thegent://sessions, thegent://dag, etc.   |
+| **Elicitation**      | ✅ Full | ctx.elicit() for user input               |
+| **Progress**         | ✅ Full | ctx.report_progress()                     |
+| **Background Tasks** | ✅ Full | TaskConfig for async execution            |
+| **Middleware**       | ✅ Full | Caching, rate limiting, timing            |
+| **Transforms**       | ✅ Full | Namespace, tool, resource transforms      |
+| **Storage**          | ✅ Full | Memory, disk, Redis backends              |
+| **HTTP Transport**   | ✅ Full | Streamable HTTP server                    |
 
 ### 1.3 Source Documents
 
 This consolidated guide synthesizes content from:
+
 - `FASTMCP_IMPLEMENTATION_GUIDE.md` (Implementation patterns, 1500+ lines)
 - `FASTMCP_SPEC_DEEP_DIVE.md` (Spec reference, 600+ lines)
 - `FASTMCP_FEATURES_AND_TRANSPORT_GAPS.md` (Feature matrix, gaps)
@@ -100,22 +103,24 @@ This consolidated guide synthesizes content from:
 ### 2.2 Component Flow
 
 **List Operations** (Pure Function Pattern):
+
 ```
 Provider → [Provider Transforms] → [Server Transforms] → Client
 ```
 
 **Get Operations** (Middleware Pattern):
+
 ```
 Client → [Server Transforms] → [Provider Transforms] → Provider → [Reverse Mapping] → Client
 ```
 
 ### 2.3 Transport Options
 
-| Transport | Spec | Use Case | thegent |
-|-----------|------|----------|---------|
-| **STDIO** | Core | Local development, CLI | ✅ Default |
-| **Streamable HTTP** | Core | Remote, web integration | ✅ `thegent serve` |
-| **SSE** | Legacy | Legacy clients | ⚠️ Deprecated |
+| Transport           | Spec   | Use Case                | thegent            |
+| ------------------- | ------ | ----------------------- | ------------------ |
+| **STDIO**           | Core   | Local development, CLI  | ✅ Default         |
+| **Streamable HTTP** | Core   | Remote, web integration | ✅ `thegent serve` |
+| **SSE**             | Legacy | Legacy clients          | ⚠️ Deprecated      |
 
 ---
 
@@ -124,10 +129,12 @@ Client → [Server Transforms] → [Provider Transforms] → Provider → [Rever
 ### 3.1 Tools
 
 **Basic Tool Definition**:
+
 ```python
 from fastmcp import FastMCP
 
 mcp = FastMCP("thegent")
+
 
 @mcp.tool()
 def thegent_run(command: str, cwd: str | None = None) -> str:
@@ -137,40 +144,38 @@ def thegent_run(command: str, cwd: str | None = None) -> str:
 ```
 
 **Tool with Annotations**:
+
 ```python
-@mcp.tool(
-    readOnlyHint=True,
-    timeout=30,
-    tags=["execution"]
-)
+@mcp.tool(readOnlyHint=True, timeout=30, tags=["execution"])
 def thegent_status() -> dict:
     """Get thegent status."""
     return {"status": "running"}
 ```
 
 **Tool with Structured Output**:
+
 ```python
 from pydantic import BaseModel
+
 
 class RunResult(BaseModel):
     returncode: int
     stdout: str
     stderr: str
 
+
 @mcp.tool()
 def thegent_run(command: str) -> RunResult:
     """Run command with structured output."""
     # Implementation
-    return RunResult(
-        returncode=0,
-        stdout="...",
-        stderr=""
-    )
+    return RunResult(returncode=0, stdout="...", stderr="")
 ```
 
 **ToolResult Pattern**:
+
 ```python
 from fastmcp import ToolResult
+
 
 @mcp.tool()
 def thegent_run(command: str) -> ToolResult:
@@ -184,20 +189,22 @@ def thegent_run(command: str) -> ToolResult:
         structured_content={
             "returncode": result.returncode,
             "stdout": result.stdout.decode(),
-            "stderr": result.stderr.decode()
+            "stderr": result.stderr.decode(),
         },
-        meta={"execution_time_ms": execution_time * 1000}
+        meta={"execution_time_ms": execution_time * 1000},
     )
 ```
 
 ### 3.2 Resources
 
 **Basic Resource**:
+
 ```python
 @mcp.resource("thegent://sessions")
 def list_sessions() -> list[dict]:
     """List all sessions."""
     return [{"id": "123", "status": "running"}]
+
 
 @mcp.resource("thegent://session/{id}/meta")
 def get_session_meta(id: str) -> dict:
@@ -206,6 +213,7 @@ def get_session_meta(id: str) -> dict:
 ```
 
 **Resource with Templates** (RFC 6570):
+
 ```python
 @mcp.resource("thegent://session/{id}/meta{?include_contract}")
 def get_session_meta(id: str, include_contract: bool = False) -> dict:
@@ -222,10 +230,7 @@ def get_session_meta(id: str, include_contract: bool = False) -> dict:
 @mcp.prompt()
 def agent_prompt(agent_type: str) -> str:
     """Get agent prompt template."""
-    templates = {
-        "planner": "You are a planning agent...",
-        "executor": "You are an execution agent..."
-    }
+    templates = {"planner": "You are a planning agent...", "executor": "You are an execution agent..."}
     return templates.get(agent_type, "Default prompt")
 ```
 
@@ -236,9 +241,11 @@ def agent_prompt(agent_type: str) -> str:
 ### 4.1 User Input Elicitation
 
 **Basic Elicitation**:
+
 ```python
 from fastmcp.dependencies import CurrentContext
 from fastmcp import AcceptedElicitation, DeclinedElicitation, CancelledElicitation
+
 
 @mcp.tool()
 async def configure_agent(ctx: CurrentContext = CurrentContext()) -> str:
@@ -254,6 +261,7 @@ async def configure_agent(ctx: CurrentContext = CurrentContext()) -> str:
 ```
 
 **Single-Select Options**:
+
 ```python
 config_options = {
     "dev": {"title": "Development (local, no auth)"},
@@ -265,6 +273,7 @@ selected_env = result.data  # "dev" or "prod"
 ```
 
 **Multi-Select Options**:
+
 ```python
 options = ["email", "slack", "webhook"]
 result = await ctx.elicit("Notifications?", response_type=options)
@@ -272,18 +281,18 @@ selected = result.data  # ["email", "slack"] etc.
 ```
 
 **Structured Data Input**:
+
 ```python
 from pydantic import BaseModel
+
 
 class AgentConfig(BaseModel):
     name: str
     timeout_secs: int
     retry_count: int
 
-result = await ctx.elicit(
-    "Configure the agent",
-    response_type=AgentConfig
-)
+
+result = await ctx.elicit("Configure the agent", response_type=AgentConfig)
 if isinstance(result, AcceptedElicitation):
     config: AgentConfig = result.data
     await spawn_agent(config)
@@ -292,6 +301,7 @@ if isinstance(result, AcceptedElicitation):
 ### 4.2 Context Patterns
 
 **Pattern 1: Optional Elicitation with Fallback**:
+
 ```python
 result = await ctx.elicit("Feature flag?", response_type=str)
 if isinstance(result, AcceptedElicitation):
@@ -301,6 +311,7 @@ else:
 ```
 
 **Pattern 2: Conditional Elicitation Chain**:
+
 ```python
 env_result = await ctx.elicit("Environment?", response_type=["dev", "prod"])
 if isinstance(env_result, AcceptedElicitation):
@@ -312,6 +323,7 @@ if isinstance(env_result, AcceptedElicitation):
 ### 4.3 Logging
 
 **Contextual Logging**:
+
 ```python
 @mcp.tool()
 async def thegent_run(ctx: CurrentContext = CurrentContext(), command: str) -> str:
@@ -328,15 +340,12 @@ async def thegent_run(ctx: CurrentContext = CurrentContext(), command: str) -> s
 ```
 
 **Structured Logging**:
+
 ```python
 await ctx.log(
     "info",
     "Command executed",
-    metadata={
-        "command": command,
-        "returncode": result.returncode,
-        "execution_time_ms": execution_time
-    }
+    metadata={"command": command, "returncode": result.returncode, "execution_time_ms": execution_time},
 )
 ```
 
@@ -347,6 +356,7 @@ await ctx.log(
 ### 5.1 Progress Reporting
 
 **Basic Progress**:
+
 ```python
 @mcp.tool()
 async def long_running_task(ctx: CurrentContext = CurrentContext()) -> str:
@@ -362,8 +372,10 @@ async def long_running_task(ctx: CurrentContext = CurrentContext()) -> str:
 ```
 
 **Progress Dependency**:
+
 ```python
 from fastmcp.dependencies import Progress
+
 
 @mcp.tool()
 async def my_tool(progress: ProgressLike = Progress()) -> str:
@@ -381,9 +393,11 @@ async def my_tool(progress: ProgressLike = Progress()) -> str:
 ### 5.2 Background Tasks
 
 **Task Configuration**:
+
 ```python
 from fastmcp import TaskConfig
 from datetime import timedelta
+
 
 @mcp.tool(task=TaskConfig(mode="optional", poll_interval=timedelta(seconds=5)))
 async def thegent_run(command: str) -> dict:
@@ -393,15 +407,18 @@ async def thegent_run(command: str) -> dict:
 ```
 
 **Task Modes**:
+
 - **`forbidden`**: No task support; returns error if requested
 - **`optional`**: Sync or task; client chooses (recommended)
 - **`required`**: Must use task; returns error if not
 
 **Sync Code in Async Handler**:
+
 ```python
 @mcp.tool(task=TaskConfig(mode="optional"))
 async def thegent_run(command: str) -> dict:
     """Run sync code in async handler."""
+
     def run_impl():
         # Sync implementation
         return subprocess.run(command, shell=True, capture_output=True)
@@ -418,10 +435,10 @@ async def thegent_run(command: str) -> dict:
 Middleware executes in **order added**. First added = outermost (runs first in, last out).
 
 ```python
-mcp.add_middleware(ErrorHandlingMiddleware())   # 1st in, last out
-mcp.add_middleware(RateLimitingMiddleware())   # 2nd in, 2nd out
-mcp.add_middleware(TimingMiddleware())        # 3rd in, first out
-mcp.add_middleware(LoggingMiddleware())        # 4th in, first out
+mcp.add_middleware(ErrorHandlingMiddleware())  # 1st in, last out
+mcp.add_middleware(RateLimitingMiddleware())  # 2nd in, 2nd out
+mcp.add_middleware(TimingMiddleware())  # 3rd in, first out
+mcp.add_middleware(LoggingMiddleware())  # 4th in, first out
 ```
 
 **Recommended Order**: ErrorHandling → RateLimiting → Timing → Logging
@@ -436,17 +453,17 @@ from fastmcp.server.middleware.caching import (
     ReadResourceSettings,
 )
 
-mcp.add_middleware(ResponseCachingMiddleware(
-    list_tools_settings=ListToolsSettings(ttl=30),
-    call_tool_settings=CallToolSettings(
-        included_tools=["thegent_ps", "thegent_list_agents"],
-        ttl=60
-    ),
-    read_resource_settings=ReadResourceSettings(enabled=False)
-))
+mcp.add_middleware(
+    ResponseCachingMiddleware(
+        list_tools_settings=ListToolsSettings(ttl=30),
+        call_tool_settings=CallToolSettings(included_tools=["thegent_ps", "thegent_list_agents"], ttl=60),
+        read_resource_settings=ReadResourceSettings(enabled=False),
+    )
+)
 ```
 
 **Settings Classes**:
+
 - `ListToolsSettings`: Cache `tools/list` responses
 - `CallToolSettings`: Cache specific tool calls
 - `ListResourcesSettings`: Cache `resources/list` responses
@@ -455,6 +472,7 @@ mcp.add_middleware(ResponseCachingMiddleware(
 - `GetPromptSettings`: Cache `prompts/get` responses
 
 **Per-Settings Options**:
+
 - `included_*` / `excluded_*`: Whitelist or blacklist
 - `ttl`: Time-to-live in seconds
 - `enabled`: Enable/disable caching
@@ -464,13 +482,11 @@ mcp.add_middleware(ResponseCachingMiddleware(
 ```python
 from fastmcp.server.middleware.rate_limiting import RateLimitingMiddleware
 
-mcp.add_middleware(RateLimitingMiddleware(
-    calls_per_minute=60,
-    calls_per_hour=1000
-))
+mcp.add_middleware(RateLimitingMiddleware(calls_per_minute=60, calls_per_hour=1000))
 ```
 
 **Options**:
+
 - `calls_per_minute`: Per-minute limit
 - `calls_per_hour`: Per-hour limit
 - `key_func`: Custom key function for rate limiting
@@ -479,6 +495,7 @@ mcp.add_middleware(RateLimitingMiddleware(
 
 ```python
 from fastmcp.server.middleware import Middleware
+
 
 class TimingMiddleware(Middleware):
     """Add execution time to tool results."""
@@ -515,9 +532,7 @@ cache_store = MemoryStore()
 ```python
 from key_value.aio.stores.disk import DiskStore
 
-middleware = ResponseCachingMiddleware(
-    cache_storage=DiskStore(directory="/var/cache/fastmcp")
-)
+middleware = ResponseCachingMiddleware(cache_storage=DiskStore(directory="/var/cache/fastmcp"))
 ```
 
 - **Use Case**: Single-server production
@@ -529,9 +544,7 @@ middleware = ResponseCachingMiddleware(
 ```python
 from key_value.aio.stores.redis import RedisStore
 
-middleware = ResponseCachingMiddleware(
-    cache_storage=RedisStore(host="redis.example.com", port=6379)
-)
+middleware = ResponseCachingMiddleware(cache_storage=RedisStore(host="redis.example.com", port=6379))
 ```
 
 - **Use Case**: Distributed production, multi-server deployments
@@ -545,10 +558,7 @@ from key_value.aio.wrappers.encryption import FernetEncryptionWrapper
 from cryptography.fernet import Fernet
 
 key = Fernet.generate_key()
-encrypted_store = FernetEncryptionWrapper(
-    DiskStore(directory="/var/lib/fastmcp/oauth"),
-    key=key
-)
+encrypted_store = FernetEncryptionWrapper(DiskStore(directory="/var/lib/fastmcp/oauth"), key=key)
 ```
 
 ---
@@ -558,19 +568,14 @@ encrypted_store = FernetEncryptionWrapper(
 ### 8.1 Namespace Transform
 
 **Multi-Provider Aggregation**:
+
 ```python
 from fastmcp.server.transforms import NamespaceTransform
 
 # Aggregate multiple providers under namespaces
-mcp.add_transform(NamespaceTransform(
-    namespace="thegent",
-    provider=thegent_provider
-))
+mcp.add_transform(NamespaceTransform(namespace="thegent", provider=thegent_provider))
 
-mcp.add_transform(NamespaceTransform(
-    namespace="external",
-    provider=external_provider
-))
+mcp.add_transform(NamespaceTransform(namespace="external", provider=external_provider))
 
 # Tools become: thegent:run, external:search
 ```
@@ -578,26 +583,25 @@ mcp.add_transform(NamespaceTransform(
 ### 8.2 Tool Transform
 
 **Schema/Description Overrides**:
+
 ```python
 from fastmcp.server.transforms import ToolTransform
 
-mcp.add_transform(ToolTransform(
-    tool_name="thegent_run",
-    description="Run a command (enhanced)",
-    schema_overrides={
-        "properties": {
-            "command": {
-                "description": "Command to execute",
-                "pattern": "^[a-zA-Z0-9_\\-]+"
-            }
-        }
-    }
-))
+mcp.add_transform(
+    ToolTransform(
+        tool_name="thegent_run",
+        description="Run a command (enhanced)",
+        schema_overrides={
+            "properties": {"command": {"description": "Command to execute", "pattern": "^[a-zA-Z0-9_\\-]+"}}
+        },
+    )
+)
 ```
 
 ### 8.3 ResourcesAsTools Transform
 
 **Expose Resources to Tool-Only Clients**:
+
 ```python
 from fastmcp.server.transforms import ResourcesAsTools
 
@@ -609,6 +613,7 @@ Converts resources like `thegent://sessions` into tools like `thegent_read_resou
 ### 8.4 PromptsAsTools Transform
 
 **Expose Prompts to Tool-Only Clients**:
+
 ```python
 from fastmcp.server.transforms import PromptsAsTools
 
@@ -664,23 +669,25 @@ await event_store.publish("tools/list_changed", {"tool": "thegent_run"})
 
 ### 10.1 Client Support Matrix
 
-| Feature | Claude Code | Cursor | Codex | Notes |
-|---------|-------------|--------|-------|-------|
-| **STDIO** | ✅ | ✅ | ✅ | All support |
-| **HTTP** | ✅ | ✅ | ⚠️ | Codex: local only |
-| **Elicitation** | ⚠️ | ⚠️ | ⚠️ | May not be supported |
-| **Progress** | ✅ | ✅ | ⚠️ | Codex: unknown |
-| **Background Tasks** | ⚠️ | ⚠️ | ⚠️ | SEP-1686 support unclear |
-| **Sampling** | ⚠️ | ⚠️ | ⚠️ | Requires handler |
+| Feature              | Claude Code | Cursor | Codex | Notes                    |
+| -------------------- | ----------- | ------ | ----- | ------------------------ |
+| **STDIO**            | ✅          | ✅     | ✅    | All support              |
+| **HTTP**             | ✅          | ✅     | ⚠️    | Codex: local only        |
+| **Elicitation**      | ⚠️          | ⚠️     | ⚠️    | May not be supported     |
+| **Progress**         | ✅          | ✅     | ⚠️    | Codex: unknown           |
+| **Background Tasks** | ⚠️          | ⚠️     | ⚠️    | SEP-1686 support unclear |
+| **Sampling**         | ⚠️          | ⚠️     | ⚠️    | Requires handler         |
 
 ### 10.2 Elicitation Support
 
 **Critical for Blocking UX**:
+
 - Elicitation lets tools pause and request user input
 - Protocol-native way to implement "blocking" behavior
 - **Client Requirement**: Must implement elicitation handler
 
 **Verification**:
+
 ```python
 # Test tool that uses elicitation
 @mcp.tool()
@@ -696,11 +703,13 @@ async def test_elicitation(ctx: CurrentContext = CurrentContext()) -> str:
 **SEP-1686**: Background Tasks specification
 
 **Client Requirements**:
+
 - Implement `tasks/list` endpoint
 - Implement `tasks/get` endpoint
 - Poll task status
 
 **Verification**:
+
 ```python
 @mcp.tool(task=TaskConfig(mode="required"))
 async def test_task() -> dict:
@@ -716,15 +725,14 @@ async def test_task() -> dict:
 ```python
 from fastmcp.dependencies import Depends
 
+
 def get_default_cwd() -> str:
     """Get default working directory."""
     return os.getcwd()
 
+
 @mcp.tool()
-def thegent_run(
-    command: str,
-    cwd: str = Depends(get_default_cwd)
-) -> str:
+def thegent_run(command: str, cwd: str = Depends(get_default_cwd)) -> str:
     """Run command with dependency injection."""
     return subprocess.run(command, cwd=cwd, shell=True, capture_output=True).stdout.decode()
 ```
@@ -734,6 +742,7 @@ def thegent_run(
 ```python
 from fastmcp import ToolResult
 
+
 @mcp.tool()
 async def thegent_run(command: str) -> ToolResult:
     """Run command with error handling."""
@@ -741,28 +750,17 @@ async def thegent_run(command: str) -> ToolResult:
         result = subprocess.run(command, shell=True, capture_output=True)
         return ToolResult(
             content=f"Command executed: {result.returncode}",
-            structured_content={
-                "returncode": result.returncode,
-                "stdout": result.stdout.decode()
-            }
+            structured_content={"returncode": result.returncode, "stdout": result.stdout.decode()},
         )
     except Exception as e:
-        return ToolResult(
-            content=f"Error: {e}",
-            structured_content={"error": str(e)},
-            meta={"error": True}
-        )
+        return ToolResult(content=f"Error: {e}", structured_content={"error": str(e)}, meta={"error": True})
 ```
 
 ### 11.3 Resource with Template Pattern
 
 ```python
 @mcp.resource("thegent://session/{id}/meta{?include_contract,include_logs}")
-def get_session_meta(
-    id: str,
-    include_contract: bool = False,
-    include_logs: bool = False
-) -> dict:
+def get_session_meta(id: str, include_contract: bool = False, include_logs: bool = False) -> dict:
     """Get session metadata with optional parameters."""
     meta = {"id": id, "status": "running"}
 
@@ -815,21 +813,25 @@ def get_session_meta(
 ### 13.1 Common Issues
 
 **Issue**: Elicitation not working
+
 - **Solution**: Verify client supports elicitation
 - **Solution**: Check elicitation handler implementation
 - **Solution**: Use fallback pattern if not supported
 
 **Issue**: Progress not updating
+
 - **Solution**: Verify client supports progress
 - **Solution**: Check progress handler implementation
 - **Solution**: Use logging as fallback
 
 **Issue**: Background tasks not working
+
 - **Solution**: Verify client supports SEP-1686
 - **Solution**: Check task endpoints implementation
 - **Solution**: Use sync mode as fallback
 
 **Issue**: Caching not working
+
 - **Solution**: Check storage backend configuration
 - **Solution**: Verify middleware order
 - **Solution**: Check TTL settings
@@ -837,12 +839,15 @@ def get_session_meta(
 ### 13.2 Debugging
 
 **Enable Debug Logging**:
+
 ```python
 import logging
+
 logging.basicConfig(level=logging.DEBUG)
 ```
 
 **Check Middleware Execution**:
+
 ```python
 class DebugMiddleware(Middleware):
     async def on_call_tool(self, tool_name: str, arguments: dict, call_next):
@@ -875,7 +880,7 @@ class DebugMiddleware(Middleware):
 
 ---
 
-*Generated: 2026-02-16 | Version: 1.0 | Status: Complete*
+_Generated: 2026-02-16 | Version: 1.0 | Status: Complete_
 
 ---
 
@@ -885,28 +890,31 @@ class DebugMiddleware(Middleware):
 **Extended by:** Claude Code
 
 ### Changes Made
+
 1. Added practical implementation patterns
 2. Added configuration examples
 3. Enhanced cross-references to related docs
 
 ### Cross-References Added
+
 - Related research and implementation guides
 - WORK_STREAM.md for tracking
 
 ### Practical Additions
+
 - Implementation templates
 - Configuration examples
 - Best practices
 
 ## FastMCP Deployment Gates
 
-| Gate | Pass Criteria | Verification Command | Blocker if Fails |
-| --- | --- | --- | --- |
-| Interface parity | Required tools, resources, and prompts are discoverable | `python -m pytest tests/mcp/test_parity.py -q` | Missing protocol surface |
-| Contract stability | Core tool schemas unchanged or migration documented | `python -m pytest tests/mcp/test_tool_contracts.py -q` | Breaking client integrations |
-| Transport health | SSE/HTTP endpoint answers MCP initialize/list calls | `curl -fsS http://localhost:8000/mcp/health` | Server not reachable |
-| Security baseline | Auth, CORS, and rate limits enabled in production config | `python -m pytest tests/mcp/test_security_config.py -q` | Unsafe external exposure |
-| Observability | Structured logs and error counters emitted per request | `python -m pytest tests/mcp/test_observability.py -q` | Blind incident response |
+| Gate               | Pass Criteria                                            | Verification Command                                    | Blocker if Fails             |
+| ------------------ | -------------------------------------------------------- | ------------------------------------------------------- | ---------------------------- |
+| Interface parity   | Required tools, resources, and prompts are discoverable  | `python -m pytest tests/mcp/test_parity.py -q`          | Missing protocol surface     |
+| Contract stability | Core tool schemas unchanged or migration documented      | `python -m pytest tests/mcp/test_tool_contracts.py -q`  | Breaking client integrations |
+| Transport health   | SSE/HTTP endpoint answers MCP initialize/list calls      | `curl -fsS http://localhost:8000/mcp/health`            | Server not reachable         |
+| Security baseline  | Auth, CORS, and rate limits enabled in production config | `python -m pytest tests/mcp/test_security_config.py -q` | Unsafe external exposure     |
+| Observability      | Structured logs and error counters emitted per request   | `python -m pytest tests/mcp/test_observability.py -q`   | Blind incident response      |
 
 - Deploy only when all five gates pass in the same CI run.
 - Require rollback artifact (`last-known-good` image/tag) before promoting to production.
@@ -922,12 +930,12 @@ class DebugMiddleware(Middleware):
 - **6) Recover safely**: canary patched build to `10%` traffic for `15` minutes before full restore.
 - **7) Close out**: publish incident note with root cause, mitigation, and one preventive action with owner/date.
 
-| Signal | Immediate Action | Escalation Trigger |
-| --- | --- | --- |
-| `initialize` failures >20% | Roll back and restart MCP service | Continues >5 minutes after rollback |
-| `call_tool` timeout p95 >15s | Reduce concurrency and disable heavy tools | Two consecutive 5-minute windows breached |
-| Auth failures spike | Rotate credentials and validate issuer/audience | Any production tenant fully blocked |
-| Error budget burn >10%/hour | Halt deploys and open incident channel | Burn persists for 30 minutes |
+| Signal                       | Immediate Action                                | Escalation Trigger                        |
+| ---------------------------- | ----------------------------------------------- | ----------------------------------------- |
+| `initialize` failures >20%   | Roll back and restart MCP service               | Continues >5 minutes after rollback       |
+| `call_tool` timeout p95 >15s | Reduce concurrency and disable heavy tools      | Two consecutive 5-minute windows breached |
+| Auth failures spike          | Rotate credentials and validate issuer/audience | Any production tenant fully blocked       |
+| Error budget burn >10%/hour  | Halt deploys and open incident channel          | Burn persists for 30 minutes              |
 
 ## Tool Registration Checklist
 

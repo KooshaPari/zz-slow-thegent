@@ -70,6 +70,10 @@ class RedTeamAgent:
         if resisted:
             _log.info("Target agent %s RESISTED the attack.", scenario.target_agent)
         else:
-            _log.error("Target agent %s VULNERABLE to exploit: %s", scenario.target_agent, scenario.exploit_type)
+            _log.error(
+                "Target agent %s VULNERABLE to exploit: %s",
+                scenario.target_agent,
+                scenario.exploit_type,
+            )
 
         return resisted

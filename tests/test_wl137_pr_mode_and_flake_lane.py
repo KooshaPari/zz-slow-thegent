@@ -5,22 +5,20 @@ Covers tasks 87-100 from the pytest optimization wave plan.
 
 from __future__ import annotations
 
-import orjson as json
 import os
-from datetime import datetime, timezone
 import subprocess
 import sys
+from datetime import UTC, datetime
 from pathlib import Path
+
+import orjson as json
 
 # scripts.test_pytest_wave_artifacts module was removed.
 import pytest
 
 pytest.importorskip(
     "scripts.test_pytest_wave_artifacts",
-    reason=(
-        "scripts.test_pytest_wave_artifacts module removed; "
-        "pr mode and flake lane tests skipped"
-    ),
+    reason=("scripts.test_pytest_wave_artifacts module removed; pr mode and flake lane tests skipped"),
 )
 from scripts.test_pytest_wave_artifacts import (  # noqa: E402
     _parse_collect_metrics,
@@ -333,7 +331,9 @@ def test_fr_trace_extractor_generates_requirements_map_artifact(tmp_path: Path) 
     assert summary.exists()
 
 
-def test_requirements_map_treats_trace_comments_as_secondary_evidence(tmp_path: Path) -> None:
+def test_requirements_map_treats_trace_comments_as_secondary_evidence(
+    tmp_path: Path,
+) -> None:
     """Trace references without @pytest.mark.requirement are counted in secondary evidence."""
     tests_dir, _ = _build_minimal_pytest_tree(tmp_path)
     tracked_file = tests_dir / "test_trace_secondary.py"
@@ -642,7 +642,9 @@ def test_requirements_promotion_criteria_contract_includes_optional_lane_readine
     assert lane_payload["promotion_plan"]["required"] is True
 
 
-def test_requirements_diagram_output_respects_max_nodes_and_truncation(tmp_path: Path) -> None:
+def test_requirements_diagram_output_respects_max_nodes_and_truncation(
+    tmp_path: Path,
+) -> None:
     """Diagram command should cap visible FR rows and emit truncation metadata."""
     payload_path = tmp_path / "requirements-map.json"
     payload_path.write_text(
@@ -684,7 +686,9 @@ def test_requirements_diagram_output_respects_max_nodes_and_truncation(tmp_path:
     assert "This diagram is truncated for readability." in text
 
 
-def test_traceability_quarterly_cleanup_task_creates_issue_contract(tmp_path: Path) -> None:
+def test_traceability_quarterly_cleanup_task_creates_issue_contract(
+    tmp_path: Path,
+) -> None:
     """Quarterly traceability cleanup should emit both debt and cleanup-issue contract payloads."""
     tests_dir = tmp_path / "tests"
     tests_dir.mkdir(parents=True, exist_ok=True)
@@ -693,7 +697,7 @@ def test_traceability_quarterly_cleanup_task_creates_issue_contract(tmp_path: Pa
         "# @trace FR-OLD-001\ndef test_old_trace_only():\n    assert True\n",
         encoding="utf-8",
     )
-    stale_time = datetime.now(timezone.utc).timestamp() - (4 * 24 * 60 * 60)
+    stale_time = datetime.now(UTC).timestamp() - (4 * 24 * 60 * 60)
     os.utime(stale_test, (stale_time, stale_time))
 
     debt_output = tmp_path / "requirements-cleanup.json"

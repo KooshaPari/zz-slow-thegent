@@ -81,7 +81,13 @@ class TestInitImplContract:
         assert (tmp_path / "docs" / "thegent-onboarding.md").is_file()
 
         # Step labels match the canonical 5-step ladder.
-        assert payload["steps"] == ["preflight", "probe", "scaffold", "contract", "summary"]
+        assert payload["steps"] == [
+            "preflight",
+            "probe",
+            "scaffold",
+            "contract",
+            "summary",
+        ]
 
     def test_minimal_profile_skips_work_stream_and_doc(self, tmp_path: Path) -> None:
         payload = init_impl(target_dir=tmp_path, profile=InitProfile.MINIMAL)
@@ -283,11 +289,13 @@ class TestInitAppSurface:
             assert "init" in joined.lower(), f"`init` missing from launcher output:\n{joined}"
         else:
             # Fallback: the root CLI imports cleanly with init mounted.
-            from thegent.cli.apps.main import app  # noqa: F401  pylint: disable=import-outside-toplevel
+            from thegent.cli.apps.main import (
+                app,  # noqa: F401  pylint: disable=import-outside-toplevel
+            )
 
     def test_init_check_subcommand_does_not_write(self, tmp_path: Path) -> None:
         """`init check` runs through the Typer entry and never touches disk."""
-        result = subprocess.run(
+        subprocess.run(
             [
                 sys.executable,
                 "-c",

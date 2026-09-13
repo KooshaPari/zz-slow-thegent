@@ -11,13 +11,13 @@
 
 ## 1. Gap Summary
 
-| Gap | Current State | This Doc |
-|-----|---------------|----------|
-| **POSIX + pwsh dual-shell** | WSL2 for POSIX; PowerShell for Windows automation; no unified strategy | §2 |
-| **Remote compute implementation** | Phase 4 planned; `thegent run --remote` not specified | §3 |
-| **OS-level agent primitives** | Desktop automation = API integration; no "extend OS" design | §4 |
-| **Agents as first-class OS principals** | Sub-user, OS user; no PAM/auth provider design | §5 |
-| **Real-time multi-tenant OS integration** | Coordination via locks; no kernel/OS extension | §6 |
+| Gap                                       | Current State                                                          | This Doc |
+| ----------------------------------------- | ---------------------------------------------------------------------- | -------- |
+| **POSIX + pwsh dual-shell**               | WSL2 for POSIX; PowerShell for Windows automation; no unified strategy | §2       |
+| **Remote compute implementation**         | Phase 4 planned; `thegent run --remote` not specified                  | §3       |
+| **OS-level agent primitives**             | Desktop automation = API integration; no "extend OS" design            | §4       |
+| **Agents as first-class OS principals**   | Sub-user, OS user; no PAM/auth provider design                         | §5       |
+| **Real-time multi-tenant OS integration** | Coordination via locks; no kernel/OS extension                         | §6       |
 
 ---
 
@@ -32,13 +32,13 @@
 
 ### 2.2 Shell Selection Matrix
 
-| Context | macOS | Linux | Windows (native) | Windows (WSL2) |
-|---------|-------|-------|------------------|----------------|
-| **Hooks** | Bash | Bash | WSL2 Bash or pwsh | Bash |
-| **Agent subprocess** | Bash/zsh | Bash | pwsh or WSL2 Bash | Bash |
-| **OS user creation** | dscl/useradd | useradd | pwsh (New-LocalUser) | N/A (use native) |
-| **Desktop automation** | AppleScript/osascript | Python+AT-SPI | pwsh + UI Automation | N/A |
-| **thegent CLI** | Python (any) | Python (any) | Python (any) | Python (any) |
+| Context                | macOS                 | Linux         | Windows (native)     | Windows (WSL2)   |
+| ---------------------- | --------------------- | ------------- | -------------------- | ---------------- |
+| **Hooks**              | Bash                  | Bash          | WSL2 Bash or pwsh    | Bash             |
+| **Agent subprocess**   | Bash/zsh              | Bash          | pwsh or WSL2 Bash    | Bash             |
+| **OS user creation**   | dscl/useradd          | useradd       | pwsh (New-LocalUser) | N/A (use native) |
+| **Desktop automation** | AppleScript/osascript | Python+AT-SPI | pwsh + UI Automation | N/A              |
+| **thegent CLI**        | Python (any)          | Python (any)  | Python (any)         | Python (any)     |
 
 ### 2.3 Implementation Plan
 
@@ -72,12 +72,12 @@ def get_preferred_shell(platform: str, context: Literal["hooks", "agent", "os_ad
 
 ### 2.4 Tasks (Add to CROSS_PLATFORM_MULTI_TENANT_IMPLEMENTATION_PLAN)
 
-| ID | Task | Phase | Depends |
-|----|------|-------|---------|
-| P-SHELL-1 | Create `shell_detection.py` with `get_preferred_shell()` | Phase 1 | None |
-| P-SHELL-2 | Add `THGENT_AGENT_SHELL` config (bash\|pwsh\|wsl-bash) | Phase 1 | P-SHELL-1 |
+| ID        | Task                                                     | Phase   | Depends   |
+| --------- | -------------------------------------------------------- | ------- | --------- |
+| P-SHELL-1 | Create `shell_detection.py` with `get_preferred_shell()` | Phase 1 | None      |
+| P-SHELL-2 | Add `THGENT_AGENT_SHELL` config (bash\|pwsh\|wsl-bash)   | Phase 1 | P-SHELL-1 |
 | P-SHELL-3 | Update hook dispatcher to use shell detection on Windows | Phase 2 | P-SHELL-1 |
-| P-SHELL-4 | Create `docs/reference/POSIX_PWSH_SHELL_STRATEGY.md` | Phase 1 | None |
+| P-SHELL-4 | Create `docs/reference/POSIX_PWSH_SHELL_STRATEGY.md`     | Phase 1 | None      |
 
 ---
 
@@ -86,6 +86,7 @@ def get_preferred_shell(platform: str, context: Literal["hooks", "agent", "os_ad
 ### 3.1 Current Gap
 
 HYBRID_ENV Phase 4 specifies:
+
 - SSH setup
 - "Create remote execution wrapper script"
 - "Test `thegent run --remote windows-pc`"
@@ -108,12 +109,12 @@ Mac (client)                    Windows PC (compute)
 
 ### 3.3 Design Decisions
 
-| Decision | Choice | Rationale |
-|----------|--------|-----------|
-| **Session storage** | Remote `run_registry.jsonl` on Windows | Sessions live where work runs |
-| **MCP server** | Optional on remote; Mac MCP can proxy | Reduce latency for chat clients on Mac |
-| **Path mapping** | `D:\kush\` ↔ `~/kush/` via sync | Syncthing keeps in sync |
-| **Agent routing** | `--remote HOST` spawns on HOST via SSH | Explicit; no auto-routing yet |
+| Decision            | Choice                                 | Rationale                              |
+| ------------------- | -------------------------------------- | -------------------------------------- |
+| **Session storage** | Remote `run_registry.jsonl` on Windows | Sessions live where work runs          |
+| **MCP server**      | Optional on remote; Mac MCP can proxy  | Reduce latency for chat clients on Mac |
+| **Path mapping**    | `D:\kush\` ↔ `~/kush/` via sync       | Syncthing keeps in sync                |
+| **Agent routing**   | `--remote HOST` spawns on HOST via SSH | Explicit; no auto-routing yet          |
 
 ### 3.4 CLI Interface
 
@@ -133,14 +134,14 @@ thegent logs --remote windows-pc <session_id>
 
 ### 3.5 Implementation Tasks (Extend HYBRID_ENV Phase 4)
 
-| ID | Task | Est. | Depends |
-|----|------|------|---------|
-| P4.2.1a | Define `RemoteHost` config (host, user, path_mapping) | 30 min | None |
-| P4.2.1b | Implement `run_remote(host, cwd, prompt, agent)` via SSH | 1.5 hr | P4.1.7 |
-| P4.2.1c | Implement `ps_remote(host)`, `logs_remote(host, session_id)` | 1 hr | P4.2.1b |
-| P4.2.2 | Add `~/.thegent/remote_hosts.yaml` for host definitions | 30 min | P4.2.1a |
-| P4.2.3 | Path mapping: `D:\kush\` ↔ `~/kush/` in prompts | 30 min | P4.2.1b |
-| P4.2.4 | Document `thegent run --remote` in CLI help and guides | 30 min | P4.2.3 |
+| ID      | Task                                                         | Est.   | Depends |
+| ------- | ------------------------------------------------------------ | ------ | ------- |
+| P4.2.1a | Define `RemoteHost` config (host, user, path_mapping)        | 30 min | None    |
+| P4.2.1b | Implement `run_remote(host, cwd, prompt, agent)` via SSH     | 1.5 hr | P4.1.7  |
+| P4.2.1c | Implement `ps_remote(host)`, `logs_remote(host, session_id)` | 1 hr   | P4.2.1b |
+| P4.2.2  | Add `~/.thegent/remote_hosts.yaml` for host definitions      | 30 min | P4.2.1a |
+| P4.2.3  | Path mapping: `D:\kush\` ↔ `~/kush/` in prompts             | 30 min | P4.2.1b |
+| P4.2.4  | Document `thegent run --remote` in CLI help and guides       | 30 min | P4.2.3  |
 
 ### 3.6 Remote Session Registry
 
@@ -156,13 +157,13 @@ thegent logs --remote windows-pc <session_id>
 
 "Extending or modifying OS" for real-time multi-tenant agent execution can mean:
 
-| Level | Mechanism | thegent Relevance |
-|-------|-----------|-------------------|
-| **Process** | subprocess, cgroups, namespaces | Already: subprocess; planned: cgroups |
-| **User** | OS users, user namespaces | Planned: OS user creation |
-| **Resource** | cgroups v2, rlimits, Windows Job Objects | Gap: no explicit plan |
-| **Kernel** | Custom kernel modules, eBPF | Out of scope |
-| **Auth** | PAM, Windows auth providers | Gap: no plan |
+| Level        | Mechanism                                | thegent Relevance                     |
+| ------------ | ---------------------------------------- | ------------------------------------- |
+| **Process**  | subprocess, cgroups, namespaces          | Already: subprocess; planned: cgroups |
+| **User**     | OS users, user namespaces                | Planned: OS user creation             |
+| **Resource** | cgroups v2, rlimits, Windows Job Objects | Gap: no explicit plan                 |
+| **Kernel**   | Custom kernel modules, eBPF              | Out of scope                          |
+| **Auth**     | PAM, Windows auth providers              | Gap: no plan                          |
 
 ### 4.2 Resource Containment (Fill Gap)
 
@@ -177,6 +178,7 @@ def create_agent_cgroup(agent_id: str, limits: ResourceLimits) -> Path:
 ```
 
 **Tasks:**
+
 - [ ] Add `ResourceLimits` (memory_mb, cpu_percent)
 - [ ] Implement cgroup creation for Linux (requires root or user cgroups)
 - [ ] Integrate with `AgentRunner` when `isolation_mode=osuser` or new `cgroup` mode
@@ -189,6 +191,7 @@ def create_agent_cgroup(agent_id: str, limits: ResourceLimits) -> Path:
 ```
 
 **Tasks:**
+
 - [ ] Research Windows Job Objects API (ctypes or pywin32)
 - [ ] Implement `create_agent_job(agent_id, limits)` for Windows
 - [ ] Assign agent subprocess to job
@@ -202,12 +205,12 @@ def create_agent_cgroup(agent_id: str, limits: ResourceLimits) -> Path:
 
 ### 4.4 Tasks (Add to Implementation Plan)
 
-| ID | Task | Phase | Effort |
-|----|------|-------|--------|
-| P-OS-1 | Design `ResourceLimits` and `ResourceContainment` interface | Phase 2 | 2-3 tool calls |
-| P-OS-2 | Implement Linux cgroups v2 containment (opt-in) | Phase 3 | 8-12 tool calls |
-| P-OS-3 | Implement Windows Job Objects containment (opt-in) | Phase 3 | 8-12 tool calls |
-| P-OS-4 | Add `thegent run --memory-limit 512 --cpu-limit 50` | Phase 3 | 4-6 tool calls |
+| ID     | Task                                                        | Phase   | Effort          |
+| ------ | ----------------------------------------------------------- | ------- | --------------- |
+| P-OS-1 | Design `ResourceLimits` and `ResourceContainment` interface | Phase 2 | 2-3 tool calls  |
+| P-OS-2 | Implement Linux cgroups v2 containment (opt-in)             | Phase 3 | 8-12 tool calls |
+| P-OS-3 | Implement Windows Job Objects containment (opt-in)          | Phase 3 | 8-12 tool calls |
+| P-OS-4 | Add `thegent run --memory-limit 512 --cpu-limit 50`         | Phase 3 | 4-6 tool calls  |
 
 ---
 
@@ -221,13 +224,13 @@ def create_agent_cgroup(agent_id: str, limits: ResourceLimits) -> Path:
 
 ### 5.2 Options for Deeper OS Integration
 
-| Option | Description | Effort | Use Case |
-|--------|-------------|--------|----------|
-| **A. Status quo** | Sub-user or OS user; no auth integration | — | Current |
-| **B. PAM module (Linux)** | Custom PAM module for "agent" auth | High | Agent-as-service login |
-| **C. Windows Service Account** | Run thegent as Windows Service under agent SID | Medium | Production Windows |
-| **D. systemd scope (Linux)** | `systemd-run --scope` for agent processes | Low | Resource containment |
-| **E. macOS launchd** | Per-agent launchd plist | Medium | Agent daemons on Mac |
+| Option                         | Description                                    | Effort | Use Case               |
+| ------------------------------ | ---------------------------------------------- | ------ | ---------------------- |
+| **A. Status quo**              | Sub-user or OS user; no auth integration       | —      | Current                |
+| **B. PAM module (Linux)**      | Custom PAM module for "agent" auth             | High   | Agent-as-service login |
+| **C. Windows Service Account** | Run thegent as Windows Service under agent SID | Medium | Production Windows     |
+| **D. systemd scope (Linux)**   | `systemd-run --scope` for agent processes      | Low    | Resource containment   |
+| **E. macOS launchd**           | Per-agent launchd plist                        | Medium | Agent daemons on Mac   |
 
 ### 5.3 Recommendation
 
@@ -237,9 +240,9 @@ def create_agent_cgroup(agent_id: str, limits: ResourceLimits) -> Path:
 
 ### 5.4 Tasks
 
-| ID | Task | Phase | Effort |
-|----|------|-------|--------|
-| P-AUTH-1 | Create `docs/reference/AGENT_OS_PRINCIPALS_DEPTH.md` | Phase 2 | 4-6 tool calls |
+| ID       | Task                                                   | Phase   | Effort         |
+| -------- | ------------------------------------------------------ | ------- | -------------- |
+| P-AUTH-1 | Create `docs/reference/AGENT_OS_PRINCIPALS_DEPTH.md`   | Phase 2 | 4-6 tool calls |
 | P-AUTH-2 | Add `systemd-run --scope` option for Linux osuser mode | Phase 3 | 4-6 tool calls |
 
 ---
@@ -254,13 +257,13 @@ def create_agent_cgroup(agent_id: str, limits: ResourceLimits) -> Path:
 
 ### 6.2 Coordination Primitives (Extend Existing)
 
-| Primitive | Current | Extension |
-|-----------|---------|-----------|
-| **File lease** | EditLeaseManager | Tenant-aware (done in main research) |
-| **UI lock** | DesktopAutomationCoordinator | User activity detection (planned) |
-| **Process namespace** | None | Per-agent cgroup/job (new) |
-| **Desktop/space** | None | macOS: detect Space; switch before automation |
-| **Input focus** | None | Track focused app; deny automation if user app focused |
+| Primitive             | Current                      | Extension                                              |
+| --------------------- | ---------------------------- | ------------------------------------------------------ |
+| **File lease**        | EditLeaseManager             | Tenant-aware (done in main research)                   |
+| **UI lock**           | DesktopAutomationCoordinator | User activity detection (planned)                      |
+| **Process namespace** | None                         | Per-agent cgroup/job (new)                             |
+| **Desktop/space**     | None                         | macOS: detect Space; switch before automation          |
+| **Input focus**       | None                         | Track focused app; deny automation if user app focused |
 
 ### 6.3 macOS Space Awareness (New)
 
@@ -283,11 +286,11 @@ def create_agent_cgroup(agent_id: str, limits: ResourceLimits) -> Path:
 
 ### 6.5 Tasks (Add to Implementation Plan)
 
-| ID | Task | Phase | Effort |
-|----|------|-------|--------|
-| P-RT-1 | Add macOS Space detection to desktop automation | Phase 3 | 4-6 tool calls |
+| ID     | Task                                                | Phase   | Effort         |
+| ------ | --------------------------------------------------- | ------- | -------------- |
+| P-RT-1 | Add macOS Space detection to desktop automation     | Phase 3 | 4-6 tool calls |
 | P-RT-2 | Add Windows Session detection to desktop automation | Phase 3 | 4-6 tool calls |
-| P-RT-3 | Deny automation if user app focused (configurable) | Phase 3 | 2-4 tool calls |
+| P-RT-3 | Deny automation if user app focused (configurable)  | Phase 3 | 2-4 tool calls |
 
 ---
 
@@ -298,29 +301,31 @@ def create_agent_cgroup(agent_id: str, limits: ResourceLimits) -> Path:
 Add after Phase 5:
 
 **Phase 6: Shell Strategy & Remote Compute**
+
 - P-SHELL-1 through P-SHELL-4 (from §2)
 - P4.2.1a through P4.2.4 (from §3) — or merge into HYBRID_ENV Phase 4
 
 **Phase 7: OS-Level Primitives**
+
 - P-OS-1 through P-OS-4 (from §4)
 - P-AUTH-1, P-AUTH-2 (from §5)
 - P-RT-1 through P-RT-3 (from §6)
 
 ### 7.2 New Documents to Create
 
-| Document | Purpose |
-|----------|---------|
-| `docs/reference/POSIX_PWSH_SHELL_STRATEGY.md` | Shell selection matrix, config, hook compatibility |
-| `docs/reference/AGENT_OS_PRINCIPALS_DEPTH.md` | PAM, Windows Service, systemd scope options |
-| `docs/plans/REMOTE_COMPUTE_IMPLEMENTATION_DETAIL.md` | Full spec for `thegent run --remote` |
+| Document                                             | Purpose                                            |
+| ---------------------------------------------------- | -------------------------------------------------- |
+| `docs/reference/POSIX_PWSH_SHELL_STRATEGY.md`        | Shell selection matrix, config, hook compatibility |
+| `docs/reference/AGENT_OS_PRINCIPALS_DEPTH.md`        | PAM, Windows Service, systemd scope options        |
+| `docs/plans/REMOTE_COMPUTE_IMPLEMENTATION_DETAIL.md` | Full spec for `thegent run --remote`               |
 
 ### 7.3 Updates to Existing Docs
 
-| Document | Update |
-|----------|--------|
-| HYBRID_ENV_IMPLEMENTATION_PLAN | Add P4.2.1a–P4.2.4 detail from §3 |
-| CROSS_PLATFORM_MULTI_TENANT_IMPLEMENTATION_PLAN | Add Phase 6, 7; P-SHELL, P-OS, P-AUTH, P-RT tasks |
-| CROSS_PLATFORM_MASTER_INDEX | Add this doc, new reference docs |
+| Document                                                | Update                                                                              |
+| ------------------------------------------------------- | ----------------------------------------------------------------------------------- |
+| HYBRID_ENV_IMPLEMENTATION_PLAN                          | Add P4.2.1a–P4.2.4 detail from §3                                                   |
+| CROSS_PLATFORM_MULTI_TENANT_IMPLEMENTATION_PLAN         | Add Phase 6, 7; P-SHELL, P-OS, P-AUTH, P-RT tasks                                   |
+| CROSS_PLATFORM_MASTER_INDEX                             | Add this doc, new reference docs                                                    |
 | CROSS_PLATFORM_MULTI_TENANT_DESKTOP_AUTOMATION_RESEARCH | Add §40.3 item: "POSIX+pwsh strategy"; "Remote compute spec"; "OS-level primitives" |
 
 ---
@@ -341,15 +346,18 @@ Add after Phase 5:
 **Extended by:** Claude Code
 
 ### Changes Made
+
 1. Added gap analysis patterns
 2. Added extension examples
 3. Enhanced cross-references
 
 ### Cross-References Added
+
 - CROSS_PLATFORM_RESEARCH_INDEX.md
 - CROSS_PLATFORM_ADVANCED_PATTERNS.md
 
 ### Practical Additions
+
 - Gap templates
 - Extension configurations
 

@@ -2,8 +2,9 @@
 
 from __future__ import annotations
 
-import orjson as json
 from pathlib import Path
+
+import orjson as json
 
 from thegent.cli.commands import team_cmds
 
@@ -52,7 +53,11 @@ def test_snapshot_export_cmd_rich_prints_source_to_output(monkeypatch, capsys, t
         fake_snapshot_export_payload,
     )
 
-    team_cmds.snapshot_export_cmd(snapshot_path=tmp_path / "in.json", project=tmp_path, out_path=tmp_path / "out.md")
+    team_cmds.snapshot_export_cmd(
+        snapshot_path=tmp_path / "in.json",
+        project=tmp_path,
+        out_path=tmp_path / "out.md",
+    )
 
     out = capsys.readouterr().out
     assert f"{payload['source']} -> {payload['output']}" in out

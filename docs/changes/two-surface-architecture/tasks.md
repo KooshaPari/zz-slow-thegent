@@ -10,14 +10,14 @@ tags: [wl-136, tasks, wave-4, decomposition]
 
 ## Completed (Wave-1 and Wave-2)
 
-| Task | Status | Artifact |
-|------|--------|----------|
-| Extract dag_* commands from cli.py | DONE | `cli_dag.py` |
-| Extract tooling commands from cli.py | DONE | `cli_tooling.py` |
-| Create execution boundary shim | DONE | `impl_execution.py` |
-| Classify modules (core vs tooling) | DONE | `design.md` |
-| Machine-readable boundary matrix | DONE | `contracts/runtime/runtime-modularization-matrix.json` |
-| Boundary enforcement script | DONE | `scripts/check_thegent_core_boundary.py` |
+| Task                                 | Status | Artifact                                               |
+| ------------------------------------ | ------ | ------------------------------------------------------ |
+| Extract dag\_\* commands from cli.py | DONE   | `cli_dag.py`                                           |
+| Extract tooling commands from cli.py | DONE   | `cli_tooling.py`                                       |
+| Create execution boundary shim       | DONE   | `impl_execution.py`                                    |
+| Classify modules (core vs tooling)   | DONE   | `design.md`                                            |
+| Machine-readable boundary matrix     | DONE   | `contracts/runtime/runtime-modularization-matrix.json` |
+| Boundary enforcement script          | DONE   | `scripts/check_thegent_core_boundary.py`               |
 
 ## Wave-4 Extractions (Remaining cli.py decomposition)
 

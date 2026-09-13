@@ -3,6 +3,7 @@ Includes Singleflight, inotify cache invalidation, heat-based LRU, and multi-tie
 """
 
 import collections
+import contextlib
 import logging
 import threading
 import time
@@ -282,7 +283,7 @@ class MultiTierCache:
         # Use PersistDict for L3 (safe serialization via LMDB)
         self._l3_type: str = "none"
         if l3_path and PERSISTDICT_AVAILABLE:
-            self.l3: "PersistDict | None" = PersistDict(
+            self.l3: PersistDict | None = PersistDict(
                 database_path=l3_path,
                 expiration_days=int(default_ttl / 86400) if default_ttl else 7,
                 background_thread=False,
@@ -318,24 +319,18 @@ class MultiTierCache:
 
     def _set_l3(self, key: str, value: Any, ttl: float | None) -> None:
         """Set L3 cache (PersistDict)."""
-        try:
+        with contextlib.suppress(Exception):
             self.l3[key] = value
-        except Exception:
-            pass
 
     def _delete_l3(self, key: str) -> None:
         """Delete from L3 cache (PersistDict)."""
-        try:
+        with contextlib.suppress(Exception):
             self.l3.pop(key, None)
-        except Exception:
-            pass
 
     def _clear_l3(self) -> None:
         """Clear L3 cache (PersistDict)."""
-        try:
+        with contextlib.suppress(Exception):
             self.l3.clear()
-        except Exception:
-            pass
 
     def _len_l3(self) -> int:
         """Get L3 cache size (PersistDict)."""

@@ -10,6 +10,7 @@
 ## Phase 1: Foundation & Protocol (Weeks 1-2)
 
 ### Research & Planning
+
 - [ ] Read PAL-MCP server.py (entry point)
 - [ ] Read PAL-MCP providers/ directory
 - [ ] Read PAL-MCP systemprompts/ directory
@@ -19,6 +20,7 @@
 - [ ] Document architecture decisions in ADR
 
 ### Dependency Setup
+
 - [ ] Add mcp>=1.0.0 to pyproject.toml
 - [ ] Add google-genai>=1.19.0 to pyproject.toml
 - [ ] Add openai>=1.55.2 to pyproject.toml
@@ -27,6 +29,7 @@
 - [ ] Document dependencies in DEPENDENCIES.md
 
 ### Proof of Concept
+
 - [ ] Create skeleton multi-model provider registry
 - [ ] Wire up Gemini API (test)
 - [ ] Wire up OpenAI API (test)
@@ -40,6 +43,7 @@
 ## Phase 2: Multi-Model Conversation Threading (Weeks 3-4)
 
 ### Core Implementation
+
 - [ ] Design conversation state schema (database/in-memory)
 - [ ] Implement message history storage per thread
 - [ ] Implement model switching (mid-conversation)
@@ -48,6 +52,7 @@
 - [ ] Implement context revival (when model resets)
 
 ### Provider Pattern
+
 - [ ] Create ProviderBase abstract class
 - [ ] Implement GeminiProvider
 - [ ] Implement OpenAIProvider
@@ -56,6 +61,7 @@
 - [ ] Add provider fallback logic (if primary unavailable)
 
 ### Testing
+
 - [ ] Unit tests: conversation state management
 - [ ] Integration tests: model switching
 - [ ] Integration tests: context passing
@@ -64,6 +70,7 @@
 - [ ] Coverage: >=80%
 
 ### Documentation
+
 - [ ] Document provider interface
 - [ ] Document conversation threading API
 - [ ] Add code examples (codereview workflow)
@@ -76,6 +83,7 @@
 ## Phase 3: Subagent Spawning & Role Specialization (Weeks 5-6)
 
 ### Subagent Lifecycle
+
 - [ ] Design subagent spawn interface
 - [ ] Implement spawn() with role parameter
 - [ ] Implement isolate() (separate context)
@@ -85,6 +93,7 @@
 - [ ] Add parent-child tracking (for debugging)
 
 ### Role Specialization
+
 - [ ] Define system prompts: planner
 - [ ] Define system prompts: codereviewer
 - [ ] Define system prompts: debugger
@@ -93,6 +102,7 @@
 - [ ] Allow custom roles (extensible)
 
 ### Workflow Orchestration
+
 - [ ] Design DAG validator (ensure no cycles)
 - [ ] Implement codereview workflow: walk code → analyze → collect issues
 - [ ] Implement planner workflow: break down tasks
@@ -101,6 +111,7 @@
 - [ ] Add confidence tracking (exploring → low → medium → high → certain)
 
 ### Testing
+
 - [ ] Unit tests: DAG validation
 - [ ] Unit tests: role system prompt injection
 - [ ] Integration tests: spawn + execute + collect
@@ -109,6 +120,7 @@
 - [ ] Coverage: >=80%
 
 ### Documentation
+
 - [ ] Document subagent lifecycle
 - [ ] Document role specialization
 - [ ] Document workflow creation
@@ -122,6 +134,7 @@
 ## Phase 4: Consensus & Advanced Workflows (Weeks 7-8)
 
 ### Consensus Workflows
+
 - [ ] Design consensus mechanism (collect opinions)
 - [ ] Implement multi-model consensus
 - [ ] Implement conflict resolution (when models disagree)
@@ -129,6 +142,7 @@
 - [ ] Add explanation collection (why each model chose X)
 
 ### Advanced Patterns
+
 - [ ] Implement token limit bypass (use different models for different limits)
 - [ ] Implement context injection (from PAL-MCP patterns)
 - [ ] Implement CLI-to-CLI bridging (clink-like)
@@ -136,6 +150,7 @@
 - [ ] Add local model support (Ollama, Llama)
 
 ### Error Handling & Recovery
+
 - [ ] Handle model API timeouts (retry logic)
 - [ ] Handle context window overflow
 - [ ] Handle subagent failures (graceful degradation)
@@ -143,6 +158,7 @@
 - [ ] Add monitoring/alerting
 
 ### Testing
+
 - [ ] Integration tests: consensus workflows
 - [ ] Integration tests: token limit bypass
 - [ ] Chaos tests: API failures, timeouts
@@ -156,6 +172,7 @@
 ## Phase 5: Integration Layer & ACP Adoption (Weeks 9-10)
 
 ### AgentAPI Extension
+
 - [ ] Design HTTP routing for thegent agents
 - [ ] Implement /agents endpoint (list available agents)
 - [ ] Implement /agents/{id}/execute endpoint
@@ -164,6 +181,7 @@
 - [ ] Add usage tracking (for governance)
 
 ### ACP Protocol Integration (Planned for Future)
+
 - [ ] Review ACP spec (not critical path yet)
 - [ ] Create type definitions matching ACP
 - [ ] Plan WebSocket transport layer
@@ -171,6 +189,7 @@
 - [ ] Schedule for v2 (after MVP)
 
 ### Context7 Documentation Injection (Optional Phase 6)
+
 - [ ] Research documentation sources (APIs, docs, examples)
 - [ ] Implement library docs fetching
 - [ ] Implement version detection
@@ -178,6 +197,7 @@
 - [ ] Integrate with agent prompts
 
 ### Tool Governance (From AiBridge)
+
 - [ ] Create MCP tool registry
 - [ ] Implement tool versioning
 - [ ] Add tool deprecation tracking
@@ -185,6 +205,7 @@
 - [ ] Add usage tracking
 
 ### Testing
+
 - [ ] Integration tests: HTTP routing
 - [ ] Integration tests: adapter patterns
 - [ ] E2E tests: CLI tool bridging
@@ -198,6 +219,7 @@
 ## Phase 6+: Refinement & Scaling
 
 ### Performance Optimization
+
 - [ ] Profile token counting
 - [ ] Optimize context passing
 - [ ] Cache frequently-used outputs
@@ -205,6 +227,7 @@
 - [ ] Measure latency per model
 
 ### Deployment & Ops
+
 - [ ] Docker image building
 - [ ] Kubernetes manifests
 - [ ] Health check endpoints
@@ -212,6 +235,7 @@
 - [ ] Runbook documentation
 
 ### Documentation
+
 - [ ] User guide: how to use multi-model orchestration
 - [ ] Developer guide: adding new workflows
 - [ ] Operator guide: deployment, scaling, monitoring
@@ -219,6 +243,7 @@
 - [ ] Architecture decision records
 
 ### Quality Assurance
+
 - [ ] Full regression test suite
 - [ ] Performance benchmarks
 - [ ] Security audit (token handling, API keys)
@@ -275,6 +300,7 @@ src/thegent/orchestration/
 ## Key Files to Study (Research Phase)
 
 ### PAL-MCP Server (Local or GitHub)
+
 ```
 /tmp/pal-mcp/
 ├── server.py                   # Entry point (small, readable)
@@ -294,6 +320,7 @@ src/thegent/orchestration/
 ```
 
 ### Coder Ecosystem
+
 ```
 /tmp/agentapi/                  # Go HTTP routing
 /tmp/acp/                       # Rust protocol reference
@@ -303,14 +330,14 @@ src/thegent/orchestration/
 
 ## Success Criteria per Phase
 
-| Phase | Criterion | Acceptance |
-|-------|-----------|-----------|
-| 1 | Dependencies working | All imports successful |
-| 2 | Multi-model threading | Ask 2 models, get 2 responses, context carries |
-| 3 | Subagent spawning | Spawn agent, runs in isolation, results collected |
-| 4 | Consensus | 3 models vote, conflict resolution works |
-| 5 | HTTP integration | AgentAPI routes requests correctly |
-| 6 | Deployment ready | Docker image runs, K8s manifests work |
+| Phase | Criterion             | Acceptance                                        |
+| ----- | --------------------- | ------------------------------------------------- |
+| 1     | Dependencies working  | All imports successful                            |
+| 2     | Multi-model threading | Ask 2 models, get 2 responses, context carries    |
+| 3     | Subagent spawning     | Spawn agent, runs in isolation, results collected |
+| 4     | Consensus             | 3 models vote, conflict resolution works          |
+| 5     | HTTP integration      | AgentAPI routes requests correctly                |
+| 6     | Deployment ready      | Docker image runs, K8s manifests work             |
 
 ---
 
@@ -324,13 +351,13 @@ src/thegent/orchestration/
 
 ## Known Risks & Mitigations
 
-| Risk | Likelihood | Impact | Mitigation |
-|------|-----------|--------|-----------|
-| PAL-MCP API changes | Medium | High | Pin versions, test frequently |
-| Token limit issues | Medium | Medium | Test per-provider, document limits |
-| Subagent complexity | Medium | Medium | Require DAG validation, clear docs |
-| State corruption | Low | High | Durable storage, recovery tests |
-| Performance degradation | Low | Medium | Profiling, caching, benchmarks |
+| Risk                    | Likelihood | Impact | Mitigation                         |
+| ----------------------- | ---------- | ------ | ---------------------------------- |
+| PAL-MCP API changes     | Medium     | High   | Pin versions, test frequently      |
+| Token limit issues      | Medium     | Medium | Test per-provider, document limits |
+| Subagent complexity     | Medium     | Medium | Require DAG validation, clear docs |
+| State corruption        | Low        | High   | Durable storage, recovery tests    |
+| Performance degradation | Low        | Medium | Profiling, caching, benchmarks     |
 
 ---
 
@@ -340,6 +367,7 @@ src/thegent/orchestration/
 
 ```markdown
 Phase X: [Name]
+
 - [ ] All tasks completed
 - [ ] Test coverage >=80%
 - [ ] Documentation updated
@@ -347,7 +375,7 @@ Phase X: [Name]
 - [ ] Risks mitigated
 - [ ] Ready for next phase
 
-Signed: _______________  Date: ______________
+Signed: **\*\***\_\_\_**\*\*** Date: **\*\***\_\_**\*\***
 ```
 
 ---
@@ -355,6 +383,7 @@ Signed: _______________  Date: ______________
 ## Appendix: PAL-MCP Pattern Examples to Extract
 
 ### 1. Multi-Provider Factory (Python)
+
 ```python
 class ProviderRegistry:
     def get_provider(self, provider_name: str, model: str):
@@ -366,6 +395,7 @@ class ProviderRegistry:
 ```
 
 ### 2. Conversation State
+
 ```python
 class ConversationThread:
     def __init__(self, thread_id: str):
@@ -373,15 +403,18 @@ class ConversationThread:
         self.models_used = set()
 
     def add_message(self, role, content, model):
-        self.messages.append({
-            "role": role,
-            "content": content,
-            "model": model,  # Track which model sent this
-            "timestamp": now()
-        })
+        self.messages.append(
+            {
+                "role": role,
+                "content": content,
+                "model": model,  # Track which model sent this
+                "timestamp": now(),
+            }
+        )
 ```
 
 ### 3. Subagent Spawning
+
 ```python
 def spawn_subagent(role: str, parent_thread: ConversationThread):
     subagent = Subagent(role=role)
@@ -391,6 +424,7 @@ def spawn_subagent(role: str, parent_thread: ConversationThread):
 ```
 
 ### 4. Workflow Sequencing
+
 ```python
 class CodeReviewWorkflow:
     async def execute(self):

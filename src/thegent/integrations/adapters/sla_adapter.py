@@ -5,7 +5,10 @@ Handles SLA evaluation, error budget tracking, and connector health monitoring.
 
 from typing import Any
 
-from thegent.integrations.capability_alerts import ConnectorSLAEvaluator, ConnectorSLAThresholds
+from thegent.integrations.capability_alerts import (
+    ConnectorSLAEvaluator,
+    ConnectorSLAThresholds,
+)
 from thegent.integrations.error_budget import ErrorBudgetConfig, ErrorBudgetTracker
 from thegent.integrations.pipeline_percentiles import PipelinePercentileTracker
 

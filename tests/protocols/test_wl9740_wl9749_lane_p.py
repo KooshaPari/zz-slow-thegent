@@ -5,7 +5,10 @@ from __future__ import annotations
 import orjson as json
 
 from thegent.protocols import jsonrpc_agent_server as server
-from thegent.protocols.jsonrpc_agent_server import SERVER_STATE, process_jsonrpc_line_full
+from thegent.protocols.jsonrpc_agent_server import (
+    SERVER_STATE,
+    process_jsonrpc_line_full,
+)
 
 
 def _reset_state() -> None:
@@ -32,7 +35,14 @@ def _submit_turn(session_id: str, *, requires_approval: bool = False) -> str:
         params["requires_approval"] = True
         params["unified_diff"] = "--- a/x\n+++ b/x\n@@\n-old\n+new\n"
     response, _notifications = process_jsonrpc_line_full(
-        json.dumps({"jsonrpc": "2.0", "id": "submit", "method": "turn/submit", "params": params})
+        json.dumps(
+            {
+                "jsonrpc": "2.0",
+                "id": "submit",
+                "method": "turn/submit",
+                "params": params,
+            }
+        )
     )
     assert response is not None
     return response["result"]["turn"]["id"]

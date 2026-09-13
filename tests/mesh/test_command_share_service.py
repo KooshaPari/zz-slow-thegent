@@ -1,4 +1,5 @@
 from pathlib import Path
+
 import pytest
 
 from thegent.mesh.command_share import CommandShareService
@@ -15,7 +16,10 @@ def test_service_shares_lock_queue_and_events(tmp_path: Path):
     assert service.dequeue("agent-a")["id"] == task_id
     service.ack(task_id)
     assert [event.event_type.value for event in service.events] == [
-        "lock.acquired", "task.enqueued", "task.claimed", "task.acked"
+        "lock.acquired",
+        "task.enqueued",
+        "task.claimed",
+        "task.acked",
     ]
 
 
@@ -63,8 +67,12 @@ def test_redacted_event_replay_retains_correlation(tmp_path: Path):
     service.enqueue({"token": "hidden", "message": "ok"})
     event = service.events[-1]
     replay = event.__class__(
-        event.event_type, event.actor_id, event.correlation_id,
-        payload=event.payload, event_id=event.event_id, occurred_at=event.occurred_at,
+        event.event_type,
+        event.actor_id,
+        event.correlation_id,
+        payload=event.payload,
+        event_id=event.event_id,
+        occurred_at=event.occurred_at,
     )
     assert replay.correlation_id == event.correlation_id
     assert replay.payload["payload"]["token"] == "[REDACTED]"

@@ -14,7 +14,7 @@ Manages role-based constraints for operator personas.
 
 ### Methods
 
-#### PersonaManager.__init__
+#### PersonaManager.**init**
 
 ```python
 __init__(self: Any)

@@ -6,6 +6,7 @@
 4. Commit, push, open PR, and merge.
 
 Critical path:
+
 - Taskfile edit
 - Local validation
 - GitHub publish flow

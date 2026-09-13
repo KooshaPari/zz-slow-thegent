@@ -22,9 +22,9 @@ import pytest
 
 # Import directly from registry module to avoid litellm import issue through __init__.py
 from thegent.agents.registry import (
+    _AGENT_ALIASES,
     AGENT_LABELS,
     AGENT_NAMES,
-    _AGENT_ALIASES,
     LearningCandidate,
     LearningRegistry,
     get_fallback_agents,

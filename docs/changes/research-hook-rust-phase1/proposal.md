@@ -103,6 +103,7 @@ The hook system is currently implemented as a hybrid Bash/Rust architecture. The
 ### Performance Profiling
 
 **Baseline Measurement**:
+
 ```bash
 # Measure current Stop dispatcher latency
 time hook-dispatcher stop < /tmp/hook-input.json
@@ -112,11 +113,13 @@ strace -c bash hooks/quality-gate.sh
 ```
 
 **Expected Findings**:
+
 - Bash startup: ~50ms per hook (12 hooks × 50ms = 600ms total in sequential)
 - Parallel reduction: 600ms → ~150ms (spawn overhead)
 - rg/jq/fd invocation overhead: 30-50% of hook execution time
 
 **Rust Optimization Targets**:
+
 - Native binary: ~10ms startup (60× faster)
 - Embedded regex/json: no subprocess calls
 - Parallel threading: better CPU utilization than bash background jobs
@@ -153,6 +156,7 @@ strace -c bash hooks/quality-gate.sh
 ### Rust Hook Interface
 
 **Input Contract** (stdin):
+
 ```json
 {
   "tool_name": "Write",
@@ -164,6 +168,7 @@ strace -c bash hooks/quality-gate.sh
 ```
 
 **Output Contract** (stdout/stderr):
+
 ```
 - Exit code 0: success
 - Exit code 1-127: failure (propagate)
@@ -171,6 +176,7 @@ strace -c bash hooks/quality-gate.sh
 ```
 
 **Environment Variables** (passed from dispatcher):
+
 ```
 - PROJECT_DIR, CWD
 - FILE_PATH, TOOL_NAME
@@ -181,6 +187,7 @@ strace -c bash hooks/quality-gate.sh
 ### Dependencies
 
 **Required Crates**:
+
 - `serde_json`: JSON parsing (already in use)
 - `regex`: Pattern matching for secrets, governance rules
 - `tokio`: Async I/O (optional for parallel hooks)
@@ -188,10 +195,12 @@ strace -c bash hooks/quality-gate.sh
 - `tracing`: Structured logging (for observability)
 
 **Avoided**:
+
 - `subprocess` / `std::process`: Minimize subprocesses (one of the problems we're solving)
 - `async-trait`: Stick to concrete types for simplicity
 
 **Risk Assessment**:
+
 - All crates are high-maturity with active maintenance
 - Tokio is battle-tested in production
 - No new external dependencies beyond what dispatcher uses
@@ -202,42 +211,42 @@ strace -c bash hooks/quality-gate.sh
 
 ### Performance Targets
 
-| Metric | Current (Bash) | Target (Rust) | Success |
-|--------|----------------|---------------|---------|
-| Single hook latency | 100-200ms | 20-40ms | ✓ 50-75% reduction |
-| Parallel Stop latency (12 hooks) | 800-1200ms | 300-500ms | ✓ 60% reduction |
-| Memory per hook | 15-20MB | 2-5MB | ✓ 75% reduction |
-| Startup overhead | ~50ms | ~10ms | ✓ 80% reduction |
+| Metric                           | Current (Bash) | Target (Rust) | Success            |
+| -------------------------------- | -------------- | ------------- | ------------------ |
+| Single hook latency              | 100-200ms      | 20-40ms       | ✓ 50-75% reduction |
+| Parallel Stop latency (12 hooks) | 800-1200ms     | 300-500ms     | ✓ 60% reduction    |
+| Memory per hook                  | 15-20MB        | 2-5MB         | ✓ 75% reduction    |
+| Startup overhead                 | ~50ms          | ~10ms         | ✓ 80% reduction    |
 
 ### Quality Targets
 
-| Criteria | Target |
-|----------|--------|
-| Code coverage (Rust hooks) | ≥ 85% |
-| Type safety | No unsafe blocks (except where necessary) |
-| Cross-platform tests | 3 platforms (macOS, Linux, WSL) |
-| Error handling | All error paths tested |
+| Criteria                   | Target                                    |
+| -------------------------- | ----------------------------------------- |
+| Code coverage (Rust hooks) | ≥ 85%                                     |
+| Type safety                | No unsafe blocks (except where necessary) |
+| Cross-platform tests       | 3 platforms (macOS, Linux, WSL)           |
+| Error handling             | All error paths tested                    |
 
 ### Feasibility Targets
 
-| Decision | Target | Confidence |
-|----------|--------|------------|
-| Governance logic extractable to Rust library | Yes | High |
-| 50% code reduction vs. Bash | Yes | High |
-| No performance regression | Yes | Medium |
-| Community adoption (no vendor lock-in) | Yes | High |
+| Decision                                     | Target | Confidence |
+| -------------------------------------------- | ------ | ---------- |
+| Governance logic extractable to Rust library | Yes    | High       |
+| 50% code reduction vs. Bash                  | Yes    | High       |
+| No performance regression                    | Yes    | Medium     |
+| Community adoption (no vendor lock-in)       | Yes    | High       |
 
 ---
 
 ## Risks & Mitigations
 
-| Risk | Impact | Likelihood | Mitigation |
-|------|--------|------------|-----------|
-| Rust binary size larger than expected | Deployment friction | Low | Static linking is acceptable; ~20MB is typical |
-| Cross-platform testing complexity | Schedule slip | Medium | Use Docker + WSL for CI; accept macos manual test |
-| Dependency version conflicts | Build failures | Low | Pinned versions, pre-commit checks for updates |
-| Performance not meeting targets | Research inconclusive | Low | Fallback: rewrite only hot-path functions |
-| Developer resistance to Rust | Adoption friction | Low | Provide templates and patterns; oss in hooks/lib/ |
+| Risk                                  | Impact                | Likelihood | Mitigation                                        |
+| ------------------------------------- | --------------------- | ---------- | ------------------------------------------------- |
+| Rust binary size larger than expected | Deployment friction   | Low        | Static linking is acceptable; ~20MB is typical    |
+| Cross-platform testing complexity     | Schedule slip         | Medium     | Use Docker + WSL for CI; accept macos manual test |
+| Dependency version conflicts          | Build failures        | Low        | Pinned versions, pre-commit checks for updates    |
+| Performance not meeting targets       | Research inconclusive | Low        | Fallback: rewrite only hot-path functions         |
+| Developer resistance to Rust          | Adoption friction     | Low        | Provide templates and patterns; oss in hooks/lib/ |
 
 ---
 
@@ -277,13 +286,13 @@ strace -c bash hooks/quality-gate.sh
 
 ## Timeline
 
-| Phase | Milestone | Week |
-|-------|-----------|------|
-| 1.1 | Research & Analysis | Day 1-2 |
-| 1.2 | Architecture Design | Day 2-3 |
-| 1.3 | Governance Library PoC | Day 4-5 |
-| 1.4 | Spec & Reporting | Day 6-7 |
-| Done | Phase 1 Delivery | End of Week |
+| Phase | Milestone              | Week        |
+| ----- | ---------------------- | ----------- |
+| 1.1   | Research & Analysis    | Day 1-2     |
+| 1.2   | Architecture Design    | Day 2-3     |
+| 1.3   | Governance Library PoC | Day 4-5     |
+| 1.4   | Spec & Reporting       | Day 6-7     |
+| Done  | Phase 1 Delivery       | End of Week |
 
 ---
 
@@ -291,6 +300,7 @@ strace -c bash hooks/quality-gate.sh
 
 **Team**: 1 Rust engineer (familiar with governance domain)
 **Infrastructure**:
+
 - macOS, Linux CI, WSL environment for testing
 - No additional hardware required
 
@@ -326,16 +336,16 @@ strace -c bash hooks/quality-gate.sh
 
 ## Appendix: Current Hook Inventory
 
-| Hook Name | Lines | Frequency | Impact | Candidate |
-|-----------|-------|-----------|--------|-----------|
-| quality-gate.sh | 300 | Stop (always) | High | ✓ Yes |
-| security-pipeline.sh | 250 | Stop (always) | High | ✓ Yes |
-| stop-reconcile.sh | 180 | Stop (always) | Medium | ✓ Yes |
-| spec-verifier.sh | 220 | Stop (optional) | Medium | ~ Phase 2 |
-| pre-write-validator.sh | 150 | PreToolUse (often) | Medium | ~ Phase 2 |
-| qa-policy-test.sh | 120 | PostToolUse (often) | Low | Phase 2 |
-| task-completion-verifier.sh | 100 | TaskCompleted (rare) | Low | Phase 3 |
-| **Remaining 9** | ~1200 | Mixed | Low-Med | Phase 2-3 |
+| Hook Name                   | Lines | Frequency            | Impact  | Candidate |
+| --------------------------- | ----- | -------------------- | ------- | --------- |
+| quality-gate.sh             | 300   | Stop (always)        | High    | ✓ Yes     |
+| security-pipeline.sh        | 250   | Stop (always)        | High    | ✓ Yes     |
+| stop-reconcile.sh           | 180   | Stop (always)        | Medium  | ✓ Yes     |
+| spec-verifier.sh            | 220   | Stop (optional)      | Medium  | ~ Phase 2 |
+| pre-write-validator.sh      | 150   | PreToolUse (often)   | Medium  | ~ Phase 2 |
+| qa-policy-test.sh           | 120   | PostToolUse (often)  | Low     | Phase 2   |
+| task-completion-verifier.sh | 100   | TaskCompleted (rare) | Low     | Phase 3   |
+| **Remaining 9**             | ~1200 | Mixed                | Low-Med | Phase 2-3 |
 
 **Total LoC**: ~2500 Bash
 **Estimated Rust equivalent**: ~1200 LoC (50% reduction via type system + stdlib)

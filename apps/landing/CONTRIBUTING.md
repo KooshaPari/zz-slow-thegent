@@ -15,6 +15,7 @@ Thank you for your interest in contributing!
 ## Commit Message Format
 
 We follow conventional commits:
+
 - `feat:` New feature
 - `fix:` Bug fix
 - `docs:` Documentation
@@ -26,6 +27,7 @@ We follow conventional commits:
 ## Code Review
 
 All submissions require review. Please ensure:
+
 - CI checks pass
 - Code is documented
 - Tests cover new functionality

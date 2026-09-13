@@ -7,7 +7,8 @@ No implementation; used for dependency injection.
 from __future__ import annotations
 
 from abc import ABC, abstractmethod
-from typing import Any, Callable, Generic, Protocol, TypeVar, runtime_checkable
+from collections.abc import Callable
+from typing import Any, Generic, Protocol, TypeVar, runtime_checkable
 
 T = TypeVar("T")
 

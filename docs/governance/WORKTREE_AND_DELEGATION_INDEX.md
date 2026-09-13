@@ -4,17 +4,17 @@ Use this index as the entrypoint for multi-agent worktree/commit/delegation gove
 
 ## Documents
 
-| File | Purpose |
-|------|---------|
+| File                                          | Purpose                                                                                                 |
+| --------------------------------------------- | ------------------------------------------------------------------------------------------------------- |
 | `METHODOLOGY_SYNTHESIS_GSD_BMAD_AGILEPLUS.md` | **Read first.** Unified process principles from GSD + BMAD + AgilePlus integrated into thegent workflow |
-| `UNIFIED_WORKTREE_WORKFLOW_GOVERNANCE.md` | Path schema, lifecycle states, BMAD/AgilePlus harmonization, legacy migration plan |
-| `WORKTREE_SCALE_COMMIT_VERSION_PR_POLICY.md` | Commit strategy, versioning, PR topology, merge policy (still authoritative) |
-| `DELEGATION_ARCHITECTURE_LN.md` | L1→Ln role layers, universal delegation decision engine |
-| `TASK_CLASSIFIER_SCHEMA.yaml` | Canonical YAML classifier: domain, scale, risk, worktree mode |
-| `DOMAIN_PLAYBOOKS.md` | Per-domain delegation rules (backend, frontend, infra, data, security, QA) |
-| `GOVERNANCE_ROADMAP_DAG.md` | Governance evolution DAG |
-| `MCP_A2A_CONTROL_PLANE_BOUNDARY.md` | MCP and agent-to-agent control plane boundaries |
-| `ROLLOUT_PHASES_CHECKLIST.md` | Lane rollout checklist |
+| `UNIFIED_WORKTREE_WORKFLOW_GOVERNANCE.md`     | Path schema, lifecycle states, BMAD/AgilePlus harmonization, legacy migration plan                      |
+| `WORKTREE_SCALE_COMMIT_VERSION_PR_POLICY.md`  | Commit strategy, versioning, PR topology, merge policy (still authoritative)                            |
+| `DELEGATION_ARCHITECTURE_LN.md`               | L1→Ln role layers, universal delegation decision engine                                                 |
+| `TASK_CLASSIFIER_SCHEMA.yaml`                 | Canonical YAML classifier: domain, scale, risk, worktree mode                                           |
+| `DOMAIN_PLAYBOOKS.md`                         | Per-domain delegation rules (backend, frontend, infra, data, security, QA)                              |
+| `GOVERNANCE_ROADMAP_DAG.md`                   | Governance evolution DAG                                                                                |
+| `MCP_A2A_CONTROL_PLANE_BOUNDARY.md`           | MCP and agent-to-agent control plane boundaries                                                         |
+| `ROLLOUT_PHASES_CHECKLIST.md`                 | Lane rollout checklist                                                                                  |
 
 ## Reading Order
 

@@ -14,7 +14,7 @@ Manages agent hierarchy, relationships, and teams.
 
 ### Methods
 
-#### AgentHierarchyManager.__init__
+#### AgentHierarchyManager.**init**
 
 ```python
 __init__(self: Any, storage_path: Path)

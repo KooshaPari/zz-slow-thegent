@@ -29,15 +29,14 @@ Run ACP server adapter (exposes thegent agents via ACP protocol).
 This command runs an ACP server that exposes thegent agents as ACP-compatible agents.
 Use this with ACP clients like gsh or Zed.
 
-Example (gsh):
-    # In ~/.gsh/repl.gsh:
-    acp Thegent {
-        command: "thegent",
-        args: ["acp", "server"],
-    }
+Example (gsh): # In ~/.gsh/repl.gsh:
+acp Thegent {
+command: "thegent",
+args: ["acp", "server"],
+}
 
 Then use in gsh REPL:
-    gsh> @thegent analyze my codebase
+gsh> @thegent analyze my codebase
 
 ---
 

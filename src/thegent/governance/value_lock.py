@@ -79,7 +79,10 @@ class ValueLock:
         # unless it matches the original commitment hash.
         new_hash = hashlib.sha256(new_description.encode()).hexdigest()
         if new_hash != lock.commitment_hash:
-            _log.error("VALUE-LOCK VIOLATION: Proposal diverges from locked intent for %s", principle_id)
+            _log.error(
+                "VALUE-LOCK VIOLATION: Proposal diverges from locked intent for %s",
+                principle_id,
+            )
             return False
 
         return True

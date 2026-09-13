@@ -3,11 +3,13 @@
 from __future__ import annotations
 
 import orjson as json
-
 import pytest
 
 from thegent.protocols import jsonrpc_agent_server as server
-from thegent.protocols.jsonrpc_agent_server import SERVER_STATE, process_jsonrpc_line_full
+from thegent.protocols.jsonrpc_agent_server import (
+    SERVER_STATE,
+    process_jsonrpc_line_full,
+)
 
 
 def _reset_state() -> None:
@@ -83,7 +85,11 @@ def test_wl11047_handle_turn_submit_request_with_no_request_id_suppresses_result
     # @trace WL-11047
     _reset_state()
     session_id = _start_session()
-    request = {"jsonrpc": "2.0", "method": "turn/submit", "params": {"session_id": session_id}}
+    request = {
+        "jsonrpc": "2.0",
+        "method": "turn/submit",
+        "params": {"session_id": session_id},
+    }
     response, notifications = process_jsonrpc_line_full(json.dumps(request).decode())
     assert response is None
     assert len(notifications) >= 4
@@ -93,7 +99,11 @@ def test_wl11047_handle_turn_submit_request_with_no_request_id_suppresses_result
 def test_wl11048_handle_turn_submit_request_with_parse_error_returns_error_response_without_id() -> None:
     # @trace WL-11048
     _reset_state()
-    request = {"jsonrpc": "2.0", "method": "turn/submit", "params": {"session_id": "does-not-exist"}}
+    request = {
+        "jsonrpc": "2.0",
+        "method": "turn/submit",
+        "params": {"session_id": "does-not-exist"},
+    }
     response, notifications = process_jsonrpc_line_full(json.dumps(request).decode())
     assert response is not None
     assert response["error"]["code"] == -32001

@@ -13,10 +13,7 @@ from __future__ import annotations
 
 import asyncio
 import subprocess
-from dataclasses import dataclass, field
 from unittest.mock import MagicMock, patch
-
-import pytest
 
 from thegent.govern.vetter.checks import RuffVetterCheck, TestPassVetterCheck
 from thegent.govern.vetter.models import VetterCheck, VetterCheckResult
@@ -97,7 +94,10 @@ def test_test_pass_vetter_check_custom_params():
 def test_test_pass_vetter_check_passes_on_zero_exit():
     # @trace WL-097
     check = TestPassVetterCheck()
-    with patch("thegent.govern.vetter.checks.subprocess.run", return_value=_mock_proc(0, b"1 passed")) as mock_run:
+    with patch(
+        "thegent.govern.vetter.checks.subprocess.run",
+        return_value=_mock_proc(0, b"1 passed"),
+    ) as mock_run:
         result = asyncio.run(check.check(RUN_ID, _DIFF_ONE_PY, CONTEXT))
 
     assert result.passed is True

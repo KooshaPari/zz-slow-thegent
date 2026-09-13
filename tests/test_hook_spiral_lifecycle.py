@@ -2,12 +2,12 @@
 
 from __future__ import annotations
 
-import orjson as json
 import os
 import subprocess
 import time
 from pathlib import Path
 
+import orjson as json
 import pytest
 
 
@@ -70,7 +70,10 @@ def _write_attestation(path: Path) -> None:
             "missing_required_test_types": [],
             "detected_test_types": {},
         },
-        "security": {"signed_attestation_present": True, "slsa_provenance_present": True},
+        "security": {
+            "signed_attestation_present": True,
+            "slsa_provenance_present": True,
+        },
     }
     path.write_text(json.dumps(attestation).decode() + "\n", encoding="utf-8")
 
@@ -149,7 +152,9 @@ def _run_once(
     )
 
 
-def _load_artifacts(verify_dir: Path) -> tuple[dict, dict, dict, dict | None, list[dict]]:
+def _load_artifacts(
+    verify_dir: Path,
+) -> tuple[dict, dict, dict, dict | None, list[dict]]:
     report = json.loads((verify_dir / "regression-spiral-guard.json").read_text(encoding="utf-8"))
     metric_lines = [
         line
@@ -173,7 +178,9 @@ def _assert_contract_versions(report: dict, metric: dict, state: dict, alert: di
 
 
 @pytest.mark.unit
-def test_spiral_lifecycle_green_yellow_red_then_cooldown_recovery(tmp_path: Path) -> None:
+def test_spiral_lifecycle_green_yellow_red_then_cooldown_recovery(
+    tmp_path: Path,
+) -> None:
     paths = _init_project(tmp_path)
     verify_dir = paths["verify_dir"]
 
@@ -260,5 +267,10 @@ def test_spiral_lifecycle_green_yellow_red_then_cooldown_recovery(tmp_path: Path
     assert alert4 is None
 
     assert len(all_metrics) == 4
-    assert [item["policy_band"] for item in all_metrics] == ["green", "yellow", "red", "green"]
+    assert [item["policy_band"] for item in all_metrics] == [
+        "green",
+        "yellow",
+        "red",
+        "green",
+    ]
     assert all(item["contract_version"] == "v1" for item in all_metrics)

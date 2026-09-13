@@ -11,6 +11,7 @@
 ## Implementation Summary
 
 Full implementation of Agent Crew stack following Agile Plus principles:
+
 - ✅ Core data models (Crew, Task, Agent)
 - ✅ TaskExecutor with dependency resolution
 - ✅ CrewExecutor with execution modes
@@ -168,6 +169,7 @@ agent_executor = create_agent_executor(
 )
 
 from thegent.agents.crew.executor import TaskExecutor
+
 task_executor = TaskExecutor(agent_executor=agent_executor)
 
 # Execute crew

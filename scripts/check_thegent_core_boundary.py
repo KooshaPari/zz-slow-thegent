@@ -152,21 +152,30 @@ def build_clean_file_count(report: dict[str, object], *, violation_file_count: i
 
 def _parse_args(argv: list[str]) -> argparse.Namespace:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--core-dir", type=Path, default=CORE_DIR, help="Core package directory to scan.")
+    parser.add_argument(
+        "--core-dir",
+        type=Path,
+        default=CORE_DIR,
+        help="Core package directory to scan.",
+    )
     parser.add_argument("--config", type=Path, default=CONFIG_PATH, help="Boundary config TOML path.")
     parser.add_argument(
         "--strict",
         action="store_true",
         help="Exit non-zero on violations (CI mode). Default mode is advisory and exits zero.",
     )
-    parser.add_argument("--format", choices=["text", "json", "summary-json", "violations-jsonl"], default="text")
+    parser.add_argument(
+        "--format",
+        choices=["text", "json", "summary-json", "violations-jsonl"],
+        default="text",
+    )
     return parser.parse_args(argv)
 
 
 def main(argv: list[str] | None = None) -> int:
     args = _parse_args(argv or sys.argv[1:])
     report = build_report(core_dir=args.core_dir, config_path=args.config)
-    is_ok = bool(report["ok"])
+    bool(report["ok"])
     violations = list(report["violations"])
     mode = "strict" if args.strict else "advisory"
 

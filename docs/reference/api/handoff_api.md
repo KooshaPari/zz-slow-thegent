@@ -8,7 +8,7 @@ WP-16005: Verifies that delegated prompts are complete and context-aware.
 
 ### Methods
 
-#### HandoffIntegrity.__init__
+#### HandoffIntegrity.**init**
 
 ```python
 __init__(self: Any, workspace_root: Path)

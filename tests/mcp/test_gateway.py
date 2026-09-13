@@ -94,7 +94,15 @@ def test_execute_returns_result() -> None:
         tool="read_file",
         arguments={"path": "/tmp/foo.txt"},
     )
-    proc = type("Proc", (), {"stdout": '{"jsonrpc":"2.0","result":{"ok":true}}\n', "returncode": 0, "stderr": ""})()
+    proc = type(
+        "Proc",
+        (),
+        {
+            "stdout": '{"jsonrpc":"2.0","result":{"ok":true}}\n',
+            "returncode": 0,
+            "stderr": "",
+        },
+    )()
     with patch("thegent.mcp.gateway.subprocess.run", return_value=proc):
         result = gw.execute(call)
     assert isinstance(result, McpToolResult)

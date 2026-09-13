@@ -8,7 +8,6 @@ from typer.testing import CliRunner
 
 from thegent.cli.apps.memory import app
 
-
 runner = CliRunner()
 
 

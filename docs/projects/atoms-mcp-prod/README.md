@@ -43,24 +43,28 @@ atoms-mcp-prod/
 ## Key Features
 
 ### 1. Authentication System
+
 - API key management
 - Token handling
 - Secure storage
 - See: `docs/AUTH_SYSTEM_COMPLETE_GUIDE.md`
 
 ### 2. Tool Integration
+
 - Pre-built MCP tools
 - Custom tool development
 - Tool composition
 - See: `docs/03-tool-reference/`
 
 ### 3. Agent Demonstrations
+
 - Example agent implementations
 - Integration patterns
 - Best practices
 - See: `docs/01-agent-demonstrations/`
 
 ### 4. Live/Mock Architecture
+
 - Live API connections
 - Mock implementations for testing
 - Hybrid modes
@@ -69,17 +73,20 @@ atoms-mcp-prod/
 ## Development
 
 ### Setup
+
 ```bash
 cd atoms-mcp-prod
 # Follow docs/05-developer-setup/
 ```
 
 ### Running Tests
+
 ```bash
 pytest tests/
 ```
 
 ### Building and Serving
+
 ```bash
 # See CLI documentation in docs/
 ```

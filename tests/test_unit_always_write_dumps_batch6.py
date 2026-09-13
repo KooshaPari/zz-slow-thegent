@@ -1,8 +1,9 @@
 from __future__ import annotations
 
-import orjson as json
 import os
 from pathlib import Path
+
+import orjson as json
 
 from thegent.research.always_write_dumps import ConversationDumper
 
@@ -95,7 +96,13 @@ def test_persist_dump_index_and_export_markdown_create_expected_artifacts(
     assert md_index_path.exists()
 
     payload = json.loads(json_index_path.read_text(encoding="utf-8"))
-    assert {"generated_at", "docs_dir", "categories", "latest_dump", "latest_json_dump"} <= set(payload)
+    assert {
+        "generated_at",
+        "docs_dir",
+        "categories",
+        "latest_dump",
+        "latest_json_dump",
+    } <= set(payload)
     assert payload["categories"] == {"execution": 1, "research": 1}
     assert payload["latest_dump"]
     assert payload["latest_json_dump"]

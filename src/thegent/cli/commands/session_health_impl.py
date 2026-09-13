@@ -26,13 +26,12 @@ sibling tests.
 
 from __future__ import annotations
 
-import os
 import hashlib
+import os
 from pathlib import Path
 from typing import Any
 
 from thegent.config import ThegentSettings
-
 
 # AUDIT-N+19: schema-version constant re-exported so callers can
 # ``from thegent.cli import HEALTH_PAYLOAD_SCHEMA_VERSION``.
@@ -251,7 +250,13 @@ def session_contract_audit_impl(*, owner: str | None = None) -> dict[str, Any]:
     :func:`monkeypatch.setattr("thegent.cli.commands.session_health_impl.session_contract_audit_impl", ...)`
     to drive coverage.
     """
-    return {"summary": {"total": 0, "health": {"healthy": 0, "warning": 0, "error": 0, "missing": 0}}, "rows": []}
+    return {
+        "summary": {
+            "total": 0,
+            "health": {"healthy": 0, "warning": 0, "error": 0, "missing": 0},
+        },
+        "rows": [],
+    }
 
 
 def session_contract_health_gate_impl(

@@ -19,6 +19,7 @@
 ```
 
 **Flow:**
+
 1. User runs `thegent queue tui` (or similar) in a separate terminal — TUI for add/edit/list
 2. Agent runs in Codex; agent instructions tell it to check `thegent_queue_list` between tasks
 3. Agent calls `thegent_queue_list` → sees queued items
@@ -38,30 +39,30 @@
 {"id":"q_ghi789","prompt":"Update README","status":"done","created_at":"2026-02-16T12:02:00Z","updated_at":"2026-02-16T12:10:00Z","done_at":"2026-02-16T12:10:00Z","done_by":"codex:session_xyz","project":"/path/to/repo"}
 ```
 
-| Field | Type | Description |
-|-------|------|-------------|
-| id | str | Unique ID (e.g. q_<uuid8>) |
-| prompt | str | User's prompt (editable) |
-| status | enum | queued, in_progress, done |
-| created_at | ISO8601 | When added |
-| updated_at | ISO8601 | Last modification |
-| claimed_at | ISO8601? | When agent claimed (in_progress) |
-| claimed_by | str? | **Agent identity** (see §2.1) |
+| Field            | Type     | Description                               |
+| ---------------- | -------- | ----------------------------------------- |
+| id               | str      | Unique ID (e.g. q\_<uuid8>)               |
+| prompt           | str      | User's prompt (editable)                  |
+| status           | enum     | queued, in_progress, done                 |
+| created_at       | ISO8601  | When added                                |
+| updated_at       | ISO8601  | Last modification                         |
+| claimed_at       | ISO8601? | When agent claimed (in_progress)          |
+| claimed_by       | str?     | **Agent identity** (see §2.1)             |
 | lease_expires_at | ISO8601? | Lock expiry; stale items can be reclaimed |
-| done_at | ISO8601? | When agent marked done |
-| done_by | str? | Agent that completed |
-| project | str? | Project path for scoping |
+| done_at          | ISO8601? | When agent marked done                    |
+| done_by          | str?     | Agent that completed                      |
+| project          | str?     | Project path for scoping                  |
 
 ### 2.1 Agent Identity (`claimed_by` / `done_by`)
 
 Format: `{client}:{session_id}` or `{client}:{session_id}:{agent_name}`
 
-| Client | Example |
-|--------|---------|
-| Codex | `codex:5bc6858a-f775-4ed5-b757-bbc684c8af0d` |
-| Claude Code | `claude-code:abc123` |
-| Cursor | `cursor:067bf5cb0b14a175fea2065139a899df` |
-| Sitback | `sitback:session_xyz` |
+| Client      | Example                                      |
+| ----------- | -------------------------------------------- |
+| Codex       | `codex:5bc6858a-f775-4ed5-b757-bbc684c8af0d` |
+| Claude Code | `claude-code:abc123`                         |
+| Cursor      | `cursor:067bf5cb0b14a175fea2065139a899df`    |
+| Sitback     | `sitback:session_xyz`                        |
 
 **Source:** MCP context `session_id`, or `SESSION_ID` env, or client-provided `--agent-id` when claiming. TUI and `thegent_queue_list` display `claimed_by` so user sees who is working on each item.
 
@@ -71,32 +72,33 @@ Format: `{client}:{session_id}` or `{client}:{session_id}:{agent_name}`
 
 ### 3.1 MCP Tools (for Agent)
 
-| Tool | Purpose |
-|------|---------|
-| `thegent_queue_list` | List items; filter by status. Shows `claimed_by`, `lease_expires_at`. |
-| `thegent_queue_claim` | Claim next queued (or stale) item. Requires `agent_id` (from context or arg). Sets `claimed_by`, `lease_expires_at`. |
-| `thegent_queue_done` | Mark item done. Only `claimed_by` can complete (else error or `--force`). |
-| `thegent_queue_release` | Release item back to queued. Only `claimed_by` or `--force`. |
-| `thegent_queue_extend_lease` | Extend lease_expires_at (optional; agent calls if long-running). |
-| `thegent_queue_add` | Add item (agent or user via CLI). |
-| `thegent_queue_edit` | Edit prompt (only if queued). |
+| Tool                         | Purpose                                                                                                              |
+| ---------------------------- | -------------------------------------------------------------------------------------------------------------------- |
+| `thegent_queue_list`         | List items; filter by status. Shows `claimed_by`, `lease_expires_at`.                                                |
+| `thegent_queue_claim`        | Claim next queued (or stale) item. Requires `agent_id` (from context or arg). Sets `claimed_by`, `lease_expires_at`. |
+| `thegent_queue_done`         | Mark item done. Only `claimed_by` can complete (else error or `--force`).                                            |
+| `thegent_queue_release`      | Release item back to queued. Only `claimed_by` or `--force`.                                                         |
+| `thegent_queue_extend_lease` | Extend lease_expires_at (optional; agent calls if long-running).                                                     |
+| `thegent_queue_add`          | Add item (agent or user via CLI).                                                                                    |
+| `thegent_queue_edit`         | Edit prompt (only if queued).                                                                                        |
 
 ### 3.2 CLI Commands (for User)
 
-| Command | Purpose |
-|---------|---------|
-| `thegent queue tui` | TUI: add, edit, list with state + claimed_by. Release stuck items. |
-| `thegent queue add "prompt"` | Add from CLI. |
-| `thegent queue list [--status queued\|in_progress\|done]` | List items (shows claimed_by). |
-| `thegent queue edit <id> "new prompt"` | Edit queued item. |
-| `thegent queue release <id> [--force]` | Release in_progress back to queued (--force to override ownership). |
-| `thegent queue status` | Summary (N queued, N in progress, N done). |
+| Command                                                   | Purpose                                                             |
+| --------------------------------------------------------- | ------------------------------------------------------------------- |
+| `thegent queue tui`                                       | TUI: add, edit, list with state + claimed_by. Release stuck items.  |
+| `thegent queue add "prompt"`                              | Add from CLI.                                                       |
+| `thegent queue list [--status queued\|in_progress\|done]` | List items (shows claimed_by).                                      |
+| `thegent queue edit <id> "new prompt"`                    | Edit queued item.                                                   |
+| `thegent queue release <id> [--force]`                    | Release in_progress back to queued (--force to override ownership). |
+| `thegent queue status`                                    | Summary (N queued, N in progress, N done).                          |
 
 ### 3.3 TUI (User-Facing)
 
 **Tech:** Textual (Python) or Rich + simple input loop.
 
 **Features:**
+
 - **Add** — Type prompt, Enter to add
 - **Edit** — Select queued item, edit prompt (only queued)
 - **List** — Table: id, prompt (truncated), status, created_at
@@ -104,6 +106,7 @@ Format: `{client}:{session_id}` or `{client}:{session_id}:{agent_name}`
 - **State** — Color: queued (yellow), in_progress (blue), done (green)
 
 **Layout:**
+
 ```
 ┌─ Prompt Queue ───────────────────────────────────────────────────────────────┐
 │ [A]dd  [E]dit  [X] release (stuck)  [R]efresh  [Q]uit                         │
@@ -150,12 +153,12 @@ Thegent Sitback Agent already has a "never-idle" loop. Extend it:
 
 ### 5.1 Lock Systems
 
-| Mechanism | Purpose |
-|-----------|---------|
-| **Claim ownership** | `claimed_by` records which agent/session holds the item |
-| **Lease (TTL)** | `lease_expires_at` = claimed_at + lease_duration (default 30 min). Stale locks can be reclaimed. |
-| **Atomic claim** | Single read-modify-write under file lock; only one agent succeeds per item |
-| **Done ownership** | Only `claimed_by` can call `thegent_queue_done` for that item (or allow override with flag) |
+| Mechanism           | Purpose                                                                                          |
+| ------------------- | ------------------------------------------------------------------------------------------------ |
+| **Claim ownership** | `claimed_by` records which agent/session holds the item                                          |
+| **Lease (TTL)**     | `lease_expires_at` = claimed_at + lease_duration (default 30 min). Stale locks can be reclaimed. |
+| **Atomic claim**    | Single read-modify-write under file lock; only one agent succeeds per item                       |
+| **Done ownership**  | Only `claimed_by` can call `thegent_queue_done` for that item (or allow override with flag)      |
 
 ### 5.2 Claim Protocol
 
@@ -179,22 +182,22 @@ Thegent Sitback Agent already has a "never-idle" loop. Extend it:
 
 Items in `in_progress` with `lease_expires_at` in the past are **stale** (agent crashed or left). Options:
 
-| Option | Behavior |
-|-------|----------|
-| **Reclaim** | `thegent_queue_claim` can return stale items; new claim overwrites `claimed_by` |
-| **Release** | `thegent_queue_release <id>` — agent or user explicitly releases; reverts to queued |
-| **Auto-release** | Background job or on-next-claim: reset stale items to queued |
+| Option           | Behavior                                                                            |
+| ---------------- | ----------------------------------------------------------------------------------- |
+| **Reclaim**      | `thegent_queue_claim` can return stale items; new claim overwrites `claimed_by`     |
+| **Release**      | `thegent_queue_release <id>` — agent or user explicitly releases; reverts to queued |
+| **Auto-release** | Background job or on-next-claim: reset stale items to queued                        |
 
 **Recommendation:** `thegent_queue_claim` considers stale items (lease_expired) as eligible for reclaim. New claimer becomes `claimed_by`.
 
 ### 5.4 Done, Release & Lease Extension Ownership
 
-| Action | Rule |
-|--------|------|
-| `thegent_queue_done <id>` | Only `claimed_by` can mark done. Else: error "Item claimed by X; you are Y". |
-| `thegent_queue_release <id>` | Only `claimed_by` can release. Or: `--force` for user/admin override. |
-| `thegent_queue_extend_lease <id>` | Only `claimed_by` can extend; resets lease_expires_at by +30min. |
-| Override | `thegent_queue_done <id> --force` — user can force completion (e.g. agent crashed) |
+| Action                            | Rule                                                                               |
+| --------------------------------- | ---------------------------------------------------------------------------------- |
+| `thegent_queue_done <id>`         | Only `claimed_by` can mark done. Else: error "Item claimed by X; you are Y".       |
+| `thegent_queue_release <id>`      | Only `claimed_by` can release. Or: `--force` for user/admin override.              |
+| `thegent_queue_extend_lease <id>` | Only `claimed_by` can extend; resets lease_expires_at by +30min.                   |
+| Override                          | `thegent_queue_done <id> --force` — user can force completion (e.g. agent crashed) |
 
 ### 5.5 Edit & User Lock Interaction
 
@@ -210,29 +213,30 @@ Items in `in_progress` with `lease_expires_at` in the past are **stale** (agent 
 
 ### 5.7 Configuration
 
-| Setting | Default | Purpose |
-|---------|---------|---------|
-| `THGENT_QUEUE_LEASE_MINUTES` | 30 | Lease TTL for claimed items |
-| `THGENT_QUEUE_PATH` | `.thegent/prompt_queue.jsonl` | Queue file path (relative to project or ~/.thegent) |
+| Setting                      | Default                       | Purpose                                             |
+| ---------------------------- | ----------------------------- | --------------------------------------------------- |
+| `THGENT_QUEUE_LEASE_MINUTES` | 30                            | Lease TTL for claimed items                         |
+| `THGENT_QUEUE_PATH`          | `.thegent/prompt_queue.jsonl` | Queue file path (relative to project or ~/.thegent) |
 
 ---
 
 ## 6. Implementation Plan
 
-| Phase | Task | Effort |
-|-------|------|--------|
-| 1 | Queue storage: `PromptQueue` class, JSONL read/write | Small |
-| 2 | MCP tools: list, claim, done, add, edit | Small |
-| 3 | CLI: queue add, list, edit, status | Small |
-| 4 | TUI: Textual app for add/edit/list with live state | Medium |
-| 5 | Agent instruction: add to Codex skill / thegent docs | Small |
-| 6 | Sitback integration: queue check in never-idle loop | Small |
+| Phase | Task                                                 | Effort |
+| ----- | ---------------------------------------------------- | ------ |
+| 1     | Queue storage: `PromptQueue` class, JSONL read/write | Small  |
+| 2     | MCP tools: list, claim, done, add, edit              | Small  |
+| 3     | CLI: queue add, list, edit, status                   | Small  |
+| 4     | TUI: Textual app for add/edit/list with live state   | Medium |
+| 5     | Agent instruction: add to Codex skill / thegent docs | Small  |
+| 6     | Sitback integration: queue check in never-idle loop  | Small  |
 
 ---
 
 ## 7. Codex Integration
 
 **Codex** (OpenAI) supports:
+
 - MCP servers (thegent serve)
 - Skills (`.codex/skills/`)
 - Terminal TUI
@@ -245,23 +249,23 @@ Items in `in_progress` with `lease_expires_at` in the past are **stale** (agent 
 
 ## 8. File Locations
 
-| Path | Purpose |
-|------|---------|
-| `PROJECT_DIR/.thegent/prompt_queue.jsonl` | Project-scoped queue |
-| `~/.thegent/prompt_queue.jsonl` | Global fallback when not in project |
-| `PROJECT_DIR/.codex/skills/thegent-queue/` | Codex skill (optional) |
+| Path                                       | Purpose                             |
+| ------------------------------------------ | ----------------------------------- |
+| `PROJECT_DIR/.thegent/prompt_queue.jsonl`  | Project-scoped queue                |
+| `~/.thegent/prompt_queue.jsonl`            | Global fallback when not in project |
+| `PROJECT_DIR/.codex/skills/thegent-queue/` | Codex skill (optional)              |
 
 ---
 
 ## 9. Summary
 
-| Component | Purpose |
-|-----------|---------|
-| **Queue file** | JSONL with id, prompt, status, timestamps |
-| **MCP tools** | Agent: list, claim, done, add, edit |
-| **CLI** | User: add, list, edit, status |
-| **TUI** | User: add/edit/list with live state view |
-| **Agent instruction** | "Check queue between tasks" |
+| Component             | Purpose                                   |
+| --------------------- | ----------------------------------------- |
+| **Queue file**        | JSONL with id, prompt, status, timestamps |
+| **MCP tools**         | Agent: list, claim, done, add, edit       |
+| **CLI**               | User: add, list, edit, status             |
+| **TUI**               | User: add/edit/list with live state view  |
+| **Agent instruction** | "Check queue between tasks"               |
 
 **Next step:** Implement Phase 1–3 (storage + MCP tools + CLI), then TUI.
 
@@ -280,6 +284,7 @@ For tasks with different priority levels:
 ```
 
 **Agent Claim Logic:**
+
 ```python
 def claim_next(agent_id, min_priority=None):
     items = queue.list(status="queued")
@@ -330,6 +335,7 @@ def claim_batch(agent_id, batch_size=5):
             break
     return batch
 
+
 # Usage in agent:
 batch = claim_batch(agent_id, batch_size=3)
 for item in batch:
@@ -370,10 +376,19 @@ class QueueCircuitBreaker:
 Handle failed items that cannot be processed:
 
 ```jsonl
-{"id":"dlq_001","original_id":"q_failed123","prompt":"Complex refactor task","reason":"timeout","status":"dead_letter","failed_at":"2026-02-16T14:00:00Z","retry_count":3}
+{
+  "id": "dlq_001",
+  "original_id": "q_failed123",
+  "prompt": "Complex refactor task",
+  "reason": "timeout",
+  "status": "dead_letter",
+  "failed_at": "2026-02-16T14:00:00Z",
+  "retry_count": 3
+}
 ```
 
 **DLQ Management:**
+
 - Items moved to DLQ after `max_retries` failures
 - DLQ reviewed weekly
 - Items either: requeued with adjusted timeout, ignored, or escalated
@@ -415,13 +430,13 @@ def claim_idempotent(queue_path, agent_id, item_id=None):
 
 ## 11. Cross-References
 
-| Topic | Reference |
-|-------|-----------|
+| Topic               | Reference                                       |
+| ------------------- | ----------------------------------------------- |
 | Agent Orchestration | `docs/reference/AGENT_NEGOTIATION_ACL_DEPTH.md` |
-| MCP Tools | `src/thegent/mcp_tools_modes.py` |
-| Session Management | `src/thegent/orchestration/session.py` |
-| Governance | `docs/governance/` |
-| Planning Loop | `skills/sitback-agent/SKILL.md` |
+| MCP Tools           | `src/thegent/mcp_tools_modes.py`                |
+| Session Management  | `src/thegent/orchestration/session.py`          |
+| Governance          | `docs/governance/`                              |
+| Planning Loop       | `skills/sitback-agent/SKILL.md`                 |
 
 ---
 
@@ -429,18 +444,18 @@ def claim_idempotent(queue_path, agent_id, item_id=None):
 
 ### Added in This Extension
 
-| Section | Description |
-|---------|-------------|
+| Section                       | Description                                                                                    |
+| ----------------------------- | ---------------------------------------------------------------------------------------------- |
 | **10. Queue Design Patterns** | Added priority queue, work stealing, batching, circuit breaker, DLQ, idempotent claim patterns |
-| **11. Cross-References** | Added links to related documentation |
+| **11. Cross-References**      | Added links to related documentation                                                           |
 
 ### Related Extensions
 
-| File | Extension |
-|------|-----------|
-| `docs/architecture/HYBRID_MAC_WIN_DEV_ENVIRONMENT.md` | Compute offloading examples |
-| `docs/research/API_CLI_DEVOPS_TOOLING.md` | CLI patterns for queue tools |
-| `docs/research/CI_CD_DEVX_TOOLING.md` | CI/CD integration patterns |
+| File                                                  | Extension                    |
+| ----------------------------------------------------- | ---------------------------- |
+| `docs/architecture/HYBRID_MAC_WIN_DEV_ENVIRONMENT.md` | Compute offloading examples  |
+| `docs/research/API_CLI_DEVOPS_TOOLING.md`             | CLI patterns for queue tools |
+| `docs/research/CI_CD_DEVX_TOOLING.md`                 | CI/CD integration patterns   |
 
 ---
 
@@ -448,23 +463,23 @@ def claim_idempotent(queue_path, agent_id, item_id=None):
 
 ### MCP Tool Reference
 
-| Tool | Parameters | Returns |
-|------|------------|---------|
-| `thegent_queue_list` | `[--status queued\|in_progress\|done]` | Array of queue items |
-| `thegent_queue_claim` | `[--id <item_id>]` | Claimed item |
-| `thegent_queue_done` | `<item_id>` | Success/failure |
-| `thegent_queue_release` | `<item_id>` | Released item |
-| `thegent_queue_add` | `"<prompt>"` | Created item |
-| `thegent_queue_edit` | `<item_id> "<new_prompt>"` | Updated item |
+| Tool                    | Parameters                             | Returns              |
+| ----------------------- | -------------------------------------- | -------------------- |
+| `thegent_queue_list`    | `[--status queued\|in_progress\|done]` | Array of queue items |
+| `thegent_queue_claim`   | `[--id <item_id>]`                     | Claimed item         |
+| `thegent_queue_done`    | `<item_id>`                            | Success/failure      |
+| `thegent_queue_release` | `<item_id>`                            | Released item        |
+| `thegent_queue_add`     | `"<prompt>"`                           | Created item         |
+| `thegent_queue_edit`    | `<item_id> "<new_prompt>"`             | Updated item         |
 
 ### CLI Command Reference
 
-| Command | Purpose |
-|---------|---------|
-| `thegent queue tui` | Launch TUI interface |
-| `thegent queue add "task"` | Add task to queue |
-| `thegent queue list` | List all items |
-| `thegent queue status` | Show queue summary |
+| Command                       | Purpose               |
+| ----------------------------- | --------------------- |
+| `thegent queue tui`           | Launch TUI interface  |
+| `thegent queue add "task"`    | Add task to queue     |
+| `thegent queue list`          | List all items        |
+| `thegent queue status`        | Show queue summary    |
 | `thegent queue purge --force` | Clear completed items |
 
 ---
@@ -481,15 +496,18 @@ def claim_idempotent(queue_path, agent_id, item_id=None):
 **Extended by:** Claude Code
 
 ### Changes Made
+
 1. Added practical implementation patterns
 2. Added configuration examples
 3. Enhanced cross-references to related docs
 
 ### Cross-References Added
+
 - Related research and implementation guides
 - WORK_STREAM.md for tracking
 
 ### Practical Additions
+
 - Implementation templates
 - Configuration examples
 - Best practices

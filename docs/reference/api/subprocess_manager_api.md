@@ -12,7 +12,7 @@ Manager for subprocess lifecycle with resource tracking.
 
 ### Methods
 
-#### SubprocessManager.__init__
+#### SubprocessManager.**init**
 
 ```python
 __init__(self: Any)

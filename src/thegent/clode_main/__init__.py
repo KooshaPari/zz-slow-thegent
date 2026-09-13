@@ -9,7 +9,6 @@ from __future__ import annotations
 
 from typing import Any
 
-
 _CLODE_BYPASS_FLAG = "CLODE_BYPASS"
 _GLM_POLICY_COUNTER = {"claude": 0, "gemini": 0, "openai": 0}
 
@@ -39,6 +38,7 @@ def _resolve_provider_for_model(model_id: str) -> str:
 def _resolve_clode_token() -> str | None:
     """Resolve the CLODE token from environment."""
     import os
+
     return os.environ.get("CLODE_TOKEN") or os.environ.get("ANTHROPIC_API_KEY")
 
 
@@ -93,6 +93,7 @@ def _get_claude_env() -> dict[str, str]:
         Dictionary of environment variables for Claude.
     """
     import os
+
     env: dict[str, str] = {}
     if api_key := os.environ.get("ANTHROPIC_API_KEY"):
         env["ANTHROPIC_API_KEY"] = api_key

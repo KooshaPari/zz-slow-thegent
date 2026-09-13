@@ -11,22 +11,22 @@
 
 ### 1.1 Hook System (15 Events)
 
-| Event | When | Blocking | Input Schema (key fields) | Output / Decision |
-|-------|------|----------|---------------------------|-------------------|
-| **SessionStart** | New session, resume, clear, compact | No | session_id, transcript_path, cwd, source (startup\|resume\|clear\|compact), model, agent_type? | additionalContext |
-| **UserPromptSubmit** | Before prompt sent | Yes | prompt, session_id, cwd | decision: block, reason; additionalContext |
-| **PreToolUse** | Before tool call | Yes | tool_name, tool_input, session_id | permissionDecision: allow\|deny\|ask, permissionDecisionReason |
-| **PermissionRequest** | Permission dialog | Yes | tool_name, tool_input | decision.behavior: allow\|deny |
-| **PostToolUse** | After tool call | No | tool_name, tool_input, result | decision: block (rare) |
-| **PostToolUseFailure** | After tool fails | No | tool_name, tool_input, error | — |
-| **Notification** | Various | No | notification type | — |
-| **SubagentStart** | Subagent spawned | No | agent_type (Bash, Explore, Plan, custom) | — |
-| **SubagentStop** | Subagent done | Yes | agent_type | decision: block |
-| **Stop** | Session ends | Yes | session_id, cwd | decision: block (force continue) |
-| **TeammateIdle** | Teammate about idle | Yes | teammate_id | exit 2 → feedback, keep working |
-| **TaskCompleted** | Task marked done | Yes | task_id | exit 2 → block, send feedback |
-| **PreCompact** | Before compaction | No | trigger: manual\|auto | — |
-| **SessionEnd** | Session terminates | No | reason: clear\|logout\|prompt_input_exit\|... | — |
+| Event                  | When                                | Blocking | Input Schema (key fields)                                                                      | Output / Decision                                              |
+| ---------------------- | ----------------------------------- | -------- | ---------------------------------------------------------------------------------------------- | -------------------------------------------------------------- |
+| **SessionStart**       | New session, resume, clear, compact | No       | session_id, transcript_path, cwd, source (startup\|resume\|clear\|compact), model, agent_type? | additionalContext                                              |
+| **UserPromptSubmit**   | Before prompt sent                  | Yes      | prompt, session_id, cwd                                                                        | decision: block, reason; additionalContext                     |
+| **PreToolUse**         | Before tool call                    | Yes      | tool_name, tool_input, session_id                                                              | permissionDecision: allow\|deny\|ask, permissionDecisionReason |
+| **PermissionRequest**  | Permission dialog                   | Yes      | tool_name, tool_input                                                                          | decision.behavior: allow\|deny                                 |
+| **PostToolUse**        | After tool call                     | No       | tool_name, tool_input, result                                                                  | decision: block (rare)                                         |
+| **PostToolUseFailure** | After tool fails                    | No       | tool_name, tool_input, error                                                                   | —                                                              |
+| **Notification**       | Various                             | No       | notification type                                                                              | —                                                              |
+| **SubagentStart**      | Subagent spawned                    | No       | agent_type (Bash, Explore, Plan, custom)                                                       | —                                                              |
+| **SubagentStop**       | Subagent done                       | Yes      | agent_type                                                                                     | decision: block                                                |
+| **Stop**               | Session ends                        | Yes      | session_id, cwd                                                                                | decision: block (force continue)                               |
+| **TeammateIdle**       | Teammate about idle                 | Yes      | teammate_id                                                                                    | exit 2 → feedback, keep working                                |
+| **TaskCompleted**      | Task marked done                    | Yes      | task_id                                                                                        | exit 2 → block, send feedback                                  |
+| **PreCompact**         | Before compaction                   | No       | trigger: manual\|auto                                                                          | —                                                              |
+| **SessionEnd**         | Session terminates                  | No       | reason: clear\|logout\|prompt_input_exit\|...                                                  | —                                                              |
 
 **Matcher patterns:** PreToolUse/PostToolUse match on `tool_name` (regex: `Bash`, `Edit|Write`, `mcp__.*`). UserPromptSubmit, Stop, TeammateIdle, TaskCompleted have no matcher.
 
@@ -66,6 +66,7 @@ claude -p "prompt" [--continue] [--resume SESSION_ID] [--output-format json|stre
 **Locations:** `~/.codex/config.toml`, `.codex/config.toml` (project, trusted only).
 
 **Key keys:**
+
 ```toml
 notify = ["cmd", "arg1"]           # Receives JSON as last argv
 model_instructions_file = "path"  # Override AGENTS.md
@@ -82,8 +83,16 @@ tui.notifications = true|[...]
 ```
 
 **Notify payload (AfterAgent):**
+
 ```json
-{"type":"agent-turn-complete","thread-id":"uuid","turn-id":"turn-1","cwd":"/path","input-messages":["..."],"last-assistant-message":"..."}
+{
+  "type": "agent-turn-complete",
+  "thread-id": "uuid",
+  "turn-id": "turn-1",
+  "cwd": "/path",
+  "input-messages": ["..."],
+  "last-assistant-message": "..."
+}
 ```
 
 ### 2.2 Skills
@@ -111,14 +120,15 @@ codex exec - [--model X] [--cd PATH] [--json] [--skip-git-repo-check] [--full-au
 
 ## Part III: Cursor-Agent
 
-### 3.1 Rules (.cursor/rules/*.mdc)
+### 3.1 Rules (.cursor/rules/\*.mdc)
 
 **Format:**
+
 ```yaml
 ---
 description: Brief description (rule picker)
-globs: "**/*.ts"        # File pattern; omit for always-apply
-alwaysApply: false      # true = every session
+globs: "**/*.ts" # File pattern; omit for always-apply
+alwaysApply: false # true = every session
 ---
 # Rule content (markdown)
 ```
@@ -132,6 +142,7 @@ Project root; plain text or markdown. Being superseded by .cursor/rules/.
 ### 3.3 Subagents (.cursor/agents/)
 
 **Format:** `.md` with frontmatter:
+
 ```yaml
 ---
 name: code-reviewer
@@ -151,8 +162,14 @@ description: Reviews code for quality and best practices
 **Path:** `~/.cursor/projects/Users-{user}-{path-slug}/agent-transcripts/{session-id}.jsonl`
 
 **Line format:**
+
 ```json
-{"role":"user","message":{"content":[{"type":"text","text":"prompt with $idea or $defer"}]}}
+{
+  "role": "user",
+  "message": {
+    "content": [{ "type": "text", "text": "prompt with $idea or $defer" }]
+  }
+}
 ```
 
 **Harvest logic:** Filter `role==user`, extract `message.content[].text`, check for $idea/$defer/$pending.
@@ -169,9 +186,10 @@ description: Reviews code for quality and best practices
 
 ## Part IV: Factory Droid
 
-### 4.1 Droid Format (.factory/droids/*.md)
+### 4.1 Droid Format (.factory/droids/\*.md)
 
 **Frontmatter:**
+
 ```yaml
 ---
 name: worker
@@ -179,7 +197,7 @@ description: General-purpose worker for delegating tasks
 tools: [Read, Grep, Glob, Create, Edit, Execute, Todo, WebSearch, FetchUrl]
 # or tools: all | read-only | write | execute
 version: v1
-model: inherit   # or specific model
+model: inherit # or specific model
 ---
 # System prompt body
 ```
@@ -297,11 +315,11 @@ auggie --print "task"     # Headless (same as claude -p)
 
 ### 7.2 Mapping
 
-| Source | Claude Code | Codex | Cursor |
-|-------|-------------|-------|--------|
-| Rule .mdc | CLAUDE.md section or skill | .codex/skills/{name}/SKILL.md | .cursor/rules/{name}.mdc |
-| alwaysApply | Injected at SessionStart | model_instructions or skill | alwaysApply: true |
-| globs | N/A (no file-scoped) | N/A | globs field |
+| Source      | Claude Code                | Codex                         | Cursor                   |
+| ----------- | -------------------------- | ----------------------------- | ------------------------ |
+| Rule .mdc   | CLAUDE.md section or skill | .codex/skills/{name}/SKILL.md | .cursor/rules/{name}.mdc |
+| alwaysApply | Injected at SessionStart   | model_instructions or skill   | alwaysApply: true        |
+| globs       | N/A (no file-scoped)       | N/A                           | globs field              |
 
 ### 7.3 Sync Algorithm
 
@@ -316,7 +334,13 @@ auggie --print "task"     # Headless (same as claude -p)
 ### 8.1 Queue Schema (.thegent/prompt_queue.jsonl)
 
 ```json
-{"ts":"2025-02-15T12:00:00Z","prompt":"...","project":"/path","claimed_by":null,"lease_expires_at":null}
+{
+  "ts": "2025-02-15T12:00:00Z",
+  "prompt": "...",
+  "project": "/path",
+  "claimed_by": null,
+  "lease_expires_at": null
+}
 ```
 
 ### 8.2 Escalation ($block)
@@ -343,13 +367,13 @@ Resolve: `thegent govern escalate resolve RUN_ID`
 
 ## Part X: Cross-Platform Invocation Matrix
 
-| Platform | Interactive | Headless | thegent run |
-|----------|-------------|----------|-------------|
-| Claude Code | claude | claude -p | run -M claude |
-| Codex | codex | codex exec - | run -M codex |
-| Cursor | Composer | cursor-agent | run -M cursor-agent |
-| Factory droid | — | droid exec | run -M droid:name |
-| Augment | auggie | auggie --print | run -M augment |
+| Platform      | Interactive | Headless       | thegent run         |
+| ------------- | ----------- | -------------- | ------------------- |
+| Claude Code   | claude      | claude -p      | run -M claude       |
+| Codex         | codex       | codex exec -   | run -M codex        |
+| Cursor        | Composer    | cursor-agent   | run -M cursor-agent |
+| Factory droid | —           | droid exec     | run -M droid:name   |
+| Augment       | auggie      | auggie --print | run -M augment      |
 
 ---
 
@@ -368,7 +392,13 @@ Factory can import Claude hooks: `claudeHooksImported: true`, `importedClaudeHoo
 ### 11.3 Hook Input (PreToolUse)
 
 ```json
-{"tool_name":"Write","tool_input":{"file_path":"...","content":"..."},"session_id":"...","cwd":"...","hook_event_name":"PreToolUse"}
+{
+  "tool_name": "Write",
+  "tool_input": { "file_path": "...", "content": "..." },
+  "session_id": "...",
+  "cwd": "...",
+  "hook_event_name": "PreToolUse"
+}
 ```
 
 ### 11.4 Block Pattern
@@ -376,7 +406,13 @@ Factory can import Claude hooks: `claudeHooksImported: true`, `importedClaudeHoo
 ```python
 output = {"decision": "block", "reason": "..."}
 # or
-output = {"hookSpecificOutput": {"hookEventName": "PreToolUse", "permissionDecision": "deny", "permissionDecisionReason": "..."}}
+output = {
+    "hookSpecificOutput": {
+        "hookEventName": "PreToolUse",
+        "permissionDecision": "deny",
+        "permissionDecisionReason": "...",
+    }
+}
 print(json.dumps(output))
 sys.exit(0)  # or exit 2 for simple block
 ```
@@ -394,11 +430,11 @@ sys.exit(0)  # or exit 2 for simple block
 
 ### 12.2 create-rule Skill
 
-Frontmatter: name, description. Guides creation of .cursor/rules/*.mdc with description, globs, alwaysApply.
+Frontmatter: name, description. Guides creation of .cursor/rules/\*.mdc with description, globs, alwaysApply.
 
 ### 12.3 create-subagent Skill
 
-Frontmatter: name, description, disable-model-invocation. Guides creation of .cursor/agents/*.md or ~/.cursor/agents/*.md.
+Frontmatter: name, description, disable-model-invocation. Guides creation of .cursor/agents/_.md or ~/.cursor/agents/_.md.
 
 ### 12.4 AGENTS.md
 
@@ -453,36 +489,36 @@ enabled = true
 
 ### 15.1 Queue Tools
 
-| Tool | Params | Returns |
-|------|--------|---------|
-| thegent_queue_list | project?, limit? | items[] |
-| thegent_queue_claim | id, lease_minutes? | item |
-| thegent_queue_done | id | ok |
-| thegent_queue_add | prompt, project? | id |
-| thegent_queue_edit | id, prompt | ok |
-| thegent_queue_release | id | ok |
-| thegent_queue_extend_lease | id, minutes | ok |
+| Tool                       | Params             | Returns |
+| -------------------------- | ------------------ | ------- |
+| thegent_queue_list         | project?, limit?   | items[] |
+| thegent_queue_claim        | id, lease_minutes? | item    |
+| thegent_queue_done         | id                 | ok      |
+| thegent_queue_add          | prompt, project?   | id      |
+| thegent_queue_edit         | id, prompt         | ok      |
+| thegent_queue_release      | id                 | ok      |
+| thegent_queue_extend_lease | id, minutes        | ok      |
 
 ### 15.2 Team Tools
 
-| Tool | Params | Returns |
-|------|--------|---------|
-| thegent_team_create | name, teammates[] | team_id |
-| thegent_team_task_list | team_id | tasks[] |
-| thegent_team_task_assign | team_id, task | task_id |
-| thegent_team_task_claim | team_id, task_id | ok |
-| thegent_team_task_done | team_id, task_id | ok |
-| thegent_team_message | team_id, to, message | ok |
-| thegent_team_broadcast | team_id, message | ok |
-| thegent_team_shutdown | team_id | ok |
+| Tool                     | Params               | Returns |
+| ------------------------ | -------------------- | ------- |
+| thegent_team_create      | name, teammates[]    | team_id |
+| thegent_team_task_list   | team_id              | tasks[] |
+| thegent_team_task_assign | team_id, task        | task_id |
+| thegent_team_task_claim  | team_id, task_id     | ok      |
+| thegent_team_task_done   | team_id, task_id     | ok      |
+| thegent_team_message     | team_id, to, message | ok      |
+| thegent_team_broadcast   | team_id, message     | ok      |
+| thegent_team_shutdown    | team_id              | ok      |
 
 ### 15.3 Run Tools
 
-| Tool | Params | Returns |
-|------|--------|---------|
-| thegent_run | prompt, mode?, model? | run_id, output |
-| thegent_bg | prompt, mode? | run_id |
-| thegent_do_next | — | run_id, output (from queue) |
+| Tool            | Params                | Returns                     |
+| --------------- | --------------------- | --------------------------- |
+| thegent_run     | prompt, mode?, model? | run_id, output              |
+| thegent_bg      | prompt, mode?         | run_id                      |
+| thegent_do_next | —                     | run_id, output (from queue) |
 
 ---
 
@@ -546,11 +582,11 @@ auggie --help                    # Full flags
 
 ## Part XIX: Droid Backend Resolution
 
-| Backend | Resolve order | Fallback |
-|---------|---------------|----------|
-| droid | ~/.local/bin/droid, ~/.factory/bin/droid, PATH | — |
-| codex | PATH codex | — |
-| custom | CLI from droid frontmatter `cli:` | — |
+| Backend | Resolve order                                  | Fallback |
+| ------- | ---------------------------------------------- | -------- |
+| droid   | ~/.local/bin/droid, ~/.factory/bin/droid, PATH | —        |
+| codex   | PATH codex                                     | —        |
+| custom  | CLI from droid frontmatter `cli:`              | —        |
 
 **CodexRunner stdin:** `{droid_content}\n\n---\nUser request: {prompt}`
 
@@ -561,19 +597,34 @@ auggie --help                    # Full flags
 ### Claude history.jsonl
 
 ```json
-{"display":"prompt text","project":"/path","timestamp":"ISO8601","sessionId":"uuid"}
+{
+  "display": "prompt text",
+  "project": "/path",
+  "timestamp": "ISO8601",
+  "sessionId": "uuid"
+}
 ```
 
 ### Codex history.jsonl
 
 ```json
-{"text":"prompt or response","role":"user|assistant","thread_id":"uuid","turn_id":"...","timestamp":"..."}
+{
+  "text": "prompt or response",
+  "role": "user|assistant",
+  "thread_id": "uuid",
+  "turn_id": "...",
+  "timestamp": "..."
+}
 ```
 
 ### Cursor transcript (per line)
 
 ```json
-{"role":"user","message":{"content":[{"type":"text","text":"prompt"}]},"timestamp":"..."}
+{
+  "role": "user",
+  "message": { "content": [{ "type": "text", "text": "prompt" }] },
+  "timestamp": "..."
+}
 ```
 
 ---
@@ -632,14 +683,14 @@ if "notify" not in config or "thegent" not in str(config.get("notify", [])):
 
 ## Part XXIII: Codex Source Locations (Exact)
 
-| Symbol | File | Approx Line |
-|--------|------|------------|
-| notify_hook spawn | codex-rs/core/src/codex.rs | ~4536 |
-| AgentTurnComplete struct | codex-rs/core/src/ | — |
-| after_tool_use (empty) | codex-rs/core/src/tools/registry.rs | ~347 |
-| session_log::log_session_end | codex-rs/tui/src/lib.rs | — |
-| config.toml parse | codex-rs/core/src/config/ | — |
-| exec stdin read | codex-rs/cli/ or exec path | — |
+| Symbol                       | File                                | Approx Line |
+| ---------------------------- | ----------------------------------- | ----------- |
+| notify_hook spawn            | codex-rs/core/src/codex.rs          | ~4536       |
+| AgentTurnComplete struct     | codex-rs/core/src/                  | —           |
+| after_tool_use (empty)       | codex-rs/core/src/tools/registry.rs | ~347        |
+| session_log::log_session_end | codex-rs/tui/src/lib.rs             | —           |
+| config.toml parse            | codex-rs/core/src/config/           | —           |
+| exec stdin read              | codex-rs/cli/ or exec path          | —           |
 
 ---
 
@@ -668,11 +719,11 @@ run -M cliproxy   → CodexProxyRunner (codex exec → CLIProxyAPIPlus)
 
 ### 25.2 Transport Stack
 
-| Transport | Spec | Use Case | Config |
-|-----------|------|----------|--------|
-| **STDIO** | Core | Local, single-process | `thegent mcp-stdio` or `python -m thegent.main mcp-stdio` |
-| **Streamable HTTP** | Core | Remote, multi-client | `thegent serve` → uvicorn on `mcp_host:mcp_port` (default 127.0.0.1:3847) |
-| **SSE** | Legacy | Long-polling | EventStore + `Last-Event-ID` for reconnect |
+| Transport           | Spec   | Use Case              | Config                                                                    |
+| ------------------- | ------ | --------------------- | ------------------------------------------------------------------------- |
+| **STDIO**           | Core   | Local, single-process | `thegent mcp-stdio` or `python -m thegent.main mcp-stdio`                 |
+| **Streamable HTTP** | Core   | Remote, multi-client  | `thegent serve` → uvicorn on `mcp_host:mcp_port` (default 127.0.0.1:3847) |
+| **SSE**             | Legacy | Long-polling          | EventStore + `Last-Event-ID` for reconnect                                |
 
 ### 25.3 EventStore & Session State
 
@@ -698,10 +749,10 @@ Shutdown:
 
 ### 25.5 HTTP Endpoints
 
-| Path | Method | Purpose |
-|------|--------|---------|
-| `/health` | GET | Health check; no auth |
-| `/mcp` | POST | MCP JSON-RPC (Streamable HTTP) |
+| Path      | Method | Purpose                        |
+| --------- | ------ | ------------------------------ |
+| `/health` | GET    | Health check; no auth          |
+| `/mcp`    | POST   | MCP JSON-RPC (Streamable HTTP) |
 
 ---
 
@@ -709,73 +760,73 @@ Shutdown:
 
 ### 26.1 Execution & Orchestration
 
-| Tool | Params | Annotations | Purpose |
-|------|--------|-------------|---------|
-| thegent_run | prompt, agent?, model?, cd?, mode, timeout, full, include_contract, confidence, arbitration | readOnly: F, destructive: F, idempotent: F | Sync agent run; blocks until complete |
-| thegent_bg | agent, prompt, cd?, mode, timeout, owner?, model?, provider?, routing?, failover, confidence, arbitration | same | Fire-and-forget; returns session_id |
-| thegent_loop | prompt, todo_spec, agent?, checker, mode, cd? | same | Lifecycle loop with Checker oversight |
-| thegent_loop_takeover | session_id, prompt | same | Inject human input into running loop |
-| thegent_loop_stop | session_id | same | Send STOP signal to loop |
-| thegent_stop | session_id, force? | destructive: T | Stop background session |
-| thegent_wait | session_id, timeout? | readOnly: T | Block until session completes |
-| thegent_do_next | cd?, limit | readOnly: T | Find next actionable work items |
+| Tool                  | Params                                                                                                    | Annotations                                | Purpose                               |
+| --------------------- | --------------------------------------------------------------------------------------------------------- | ------------------------------------------ | ------------------------------------- |
+| thegent_run           | prompt, agent?, model?, cd?, mode, timeout, full, include_contract, confidence, arbitration               | readOnly: F, destructive: F, idempotent: F | Sync agent run; blocks until complete |
+| thegent_bg            | agent, prompt, cd?, mode, timeout, owner?, model?, provider?, routing?, failover, confidence, arbitration | same                                       | Fire-and-forget; returns session_id   |
+| thegent_loop          | prompt, todo_spec, agent?, checker, mode, cd?                                                             | same                                       | Lifecycle loop with Checker oversight |
+| thegent_loop_takeover | session_id, prompt                                                                                        | same                                       | Inject human input into running loop  |
+| thegent_loop_stop     | session_id                                                                                                | same                                       | Send STOP signal to loop              |
+| thegent_stop          | session_id, force?                                                                                        | destructive: T                             | Stop background session               |
+| thegent_wait          | session_id, timeout?                                                                                      | readOnly: T                                | Block until session completes         |
+| thegent_do_next       | cd?, limit                                                                                                | readOnly: T                                | Find next actionable work items       |
 
 ### 26.2 Discovery & Status
 
-| Tool | Params | Purpose |
-|------|--------|---------|
-| thegent_ps | owner?, all?, include_contract? | List background sessions |
-| thegent_status | session_id, include_contract? | Session status |
-| thegent_logs | session_id, tail?, stderr? | Read session logs |
-| thegent_inspect | session_ids?, owner?, tail, stderr?, include_contract? | Multi-session status + logs |
-| thegent_list_agents | — | List available agents |
-| thegent_list_droids | cd? | List available droids |
-| thegent_list_models | provider?, include_contract?, by_model? | List models (optionally by provider) |
-| thegent_resolve_model_route | model, provider?, policy | Resolve model to routing target |
+| Tool                        | Params                                                 | Purpose                              |
+| --------------------------- | ------------------------------------------------------ | ------------------------------------ |
+| thegent_ps                  | owner?, all?, include_contract?                        | List background sessions             |
+| thegent_status              | session_id, include_contract?                          | Session status                       |
+| thegent_logs                | session_id, tail?, stderr?                             | Read session logs                    |
+| thegent_inspect             | session_ids?, owner?, tail, stderr?, include_contract? | Multi-session status + logs          |
+| thegent_list_agents         | —                                                      | List available agents                |
+| thegent_list_droids         | cd?                                                    | List available droids                |
+| thegent_list_models         | provider?, include_contract?, by_model?                | List models (optionally by provider) |
+| thegent_resolve_model_route | model, provider?, policy                               | Resolve model to routing target      |
 
 ### 26.3 Contract & Governance
 
-| Tool | Params | Purpose |
-|------|--------|---------|
-| thegent_negotiate_contract | contract_id, supported_versions | Version negotiation (WP-7001) |
-| thegent_session_contracts | owner?, all?, missing_only?, summary_only?, strict? | Contract audit |
-| thegent_session_contract_health_gate | owner?, all?, strict?, min_healthy_ratio?, policy_profile?, no_worse_than_baseline?, regression_tolerance? | Health gate for CI |
-| thegent_session_contract_health_report | owner?, all?, strict?, top_blocked?, policy_profile?, no_worse_than_baseline?, regression_tolerance? | Health report with taxonomy |
-| thegent_session_contract_health_trend | payload_type?, owner?, all?, strict?, policy_profile?, min_healthy_ratio?, top_blocked?, limit? | Trend snapshots |
+| Tool                                   | Params                                                                                                     | Purpose                       |
+| -------------------------------------- | ---------------------------------------------------------------------------------------------------------- | ----------------------------- |
+| thegent_negotiate_contract             | contract_id, supported_versions                                                                            | Version negotiation (WP-7001) |
+| thegent_session_contracts              | owner?, all?, missing_only?, summary_only?, strict?                                                        | Contract audit                |
+| thegent_session_contract_health_gate   | owner?, all?, strict?, min_healthy_ratio?, policy_profile?, no_worse_than_baseline?, regression_tolerance? | Health gate for CI            |
+| thegent_session_contract_health_report | owner?, all?, strict?, top_blocked?, policy_profile?, no_worse_than_baseline?, regression_tolerance?       | Health report with taxonomy   |
+| thegent_session_contract_health_trend  | payload_type?, owner?, all?, strict?, policy_profile?, min_healthy_ratio?, top_blocked?, limit?            | Trend snapshots               |
 
 ### 26.4 Observability & Inbox
 
-| Tool | Params | Purpose |
-|------|--------|---------|
-| thegent_observe_summary | limit?, drift_window?, structural_budget_pct?, semantic_budget_pct?, provider?, trend_samples?, top_escalations? | KPIs, drift, escalations |
-| thegent_inbox_list | owner?, agent?, event_type?, status?, sources?, limit? | List inbox events |
-| thegent_inbox_wait | owner?, agent?, event_type?, status?, sources?, poll_interval?, timeout? | Wait for next inbox event |
+| Tool                    | Params                                                                                                           | Purpose                   |
+| ----------------------- | ---------------------------------------------------------------------------------------------------------------- | ------------------------- |
+| thegent_observe_summary | limit?, drift_window?, structural_budget_pct?, semantic_budget_pct?, provider?, trend_samples?, top_escalations? | KPIs, drift, escalations  |
+| thegent_inbox_list      | owner?, agent?, event_type?, status?, sources?, limit?                                                           | List inbox events         |
+| thegent_inbox_wait      | owner?, agent?, event_type?, status?, sources?, poll_interval?, timeout?                                         | Wait for next inbox event |
 
 ### 26.5 Planning & Workflow
 
-| Tool | Params | Purpose |
-|------|--------|---------|
-| thegent_dag_list | cd? | List DAG tasks from .factory/dag-session.md |
-| thegent_list_operations | operation? | Universal operation taxonomy |
-| thegent_list_modes | mode? | Orchestration modes (sequential_delegation, parallel_consensus, review_loop) |
+| Tool                    | Params     | Purpose                                                                      |
+| ----------------------- | ---------- | ---------------------------------------------------------------------------- |
+| thegent_dag_list        | cd?        | List DAG tasks from .factory/dag-session.md                                  |
+| thegent_list_operations | operation? | Universal operation taxonomy                                                 |
+| thegent_list_modes      | mode?      | Orchestration modes (sequential_delegation, parallel_consensus, review_loop) |
 
 ### 26.6 Terminal & Sitback
 
-| Tool | Params | Purpose |
-|------|--------|---------|
-| thegent_terminal_list | all? | List tmux panes |
-| thegent_terminal_inspect | pane_id, last_lines? | Capture pane content |
-| thegent_terminal_send | pane_id, text, enter? | Send text to pane |
-| thegent_terminal_attach | pane_id | Get tmux attach command |
-| thegent_heliosShield_status | — | heliosShield harness status |
-| thegent_sitback_dashboard | — | Sitback dashboard (cached 30s) |
+| Tool                        | Params                | Purpose                        |
+| --------------------------- | --------------------- | ------------------------------ |
+| thegent_terminal_list       | all?                  | List tmux panes                |
+| thegent_terminal_inspect    | pane_id, last_lines?  | Capture pane content           |
+| thegent_terminal_send       | pane_id, text, enter? | Send text to pane              |
+| thegent_terminal_attach     | pane_id               | Get tmux attach command        |
+| thegent_heliosShield_status | —                     | heliosShield harness status    |
+| thegent_sitback_dashboard   | —                     | Sitback dashboard (cached 30s) |
 
 ### 26.7 Research & Sampling
 
-| Tool | Params | Purpose |
-|------|--------|---------|
-| thegent_ddg_search | query, num_results? | DuckDuckGo search |
-| thegent_suggest_prompt | raw_prompt | Refine prompt via ctx.sample() |
+| Tool                   | Params              | Purpose                        |
+| ---------------------- | ------------------- | ------------------------------ |
+| thegent_ddg_search     | query, num_results? | DuckDuckGo search              |
+| thegent_suggest_prompt | raw_prompt          | Refine prompt via ctx.sample() |
 
 ---
 
@@ -783,37 +834,37 @@ Shutdown:
 
 ### 27.1 Resources (URI-addressable)
 
-| URI | Params | MIME | Purpose |
-|-----|--------|------|---------|
-| thegent://sessions | include_contract? | application/json | List sessions |
-| thegent://session/{id}/meta | include_contract? | application/json | Session metadata |
-| thegent://session/{id}/logs | stderr?, tail? | text/plain | Session logs |
-| thegent://dag | — | application/json | DAG from .factory/dag-session.md |
-| thegent://agents | — | application/json | List agents |
-| thegent://models | provider?, include_contract? | application/json | List models |
-| thegent://models/contract | — | application/json | Model routing contract schema |
-| thegent://sessions/contracts | owner?, all?, missing_only?, summary_only?, strict? | application/json | Contract audit |
-| thegent://sessions/contracts/health | owner?, all?, strict?, min_healthy_ratio?, policy_profile?, no_worse_than_baseline?, regression_tolerance? | application/json | Health gate |
-| thegent://sessions/contracts/report | owner?, all?, strict?, top_blocked?, policy_profile?, no_worse_than_baseline?, regression_tolerance? | application/json | Health report |
-| thegent://sessions/contracts/trend | payload_type?, owner?, all?, strict?, policy_profile?, min_healthy_ratio?, top_blocked?, limit? | application/json | Health trend |
-| thegent://observe/summary | limit?, drift_window?, structural_budget_pct?, semantic_budget_pct?, provider?, trend_samples?, top_escalations? | application/json | Observe summary |
-| thegent://meta | — | application/json | Server metadata |
-| thegent://operations | operation? | application/json | Operation taxonomy |
-| thegent://modes | mode? | application/json | Orchestration modes |
-| thegent://workflow/triggers | — | text/markdown | Workflow instructions |
-| thegent://workflow/gardening | — | text/markdown | Gardening workflow |
+| URI                                 | Params                                                                                                           | MIME             | Purpose                          |
+| ----------------------------------- | ---------------------------------------------------------------------------------------------------------------- | ---------------- | -------------------------------- |
+| thegent://sessions                  | include_contract?                                                                                                | application/json | List sessions                    |
+| thegent://session/{id}/meta         | include_contract?                                                                                                | application/json | Session metadata                 |
+| thegent://session/{id}/logs         | stderr?, tail?                                                                                                   | text/plain       | Session logs                     |
+| thegent://dag                       | —                                                                                                                | application/json | DAG from .factory/dag-session.md |
+| thegent://agents                    | —                                                                                                                | application/json | List agents                      |
+| thegent://models                    | provider?, include_contract?                                                                                     | application/json | List models                      |
+| thegent://models/contract           | —                                                                                                                | application/json | Model routing contract schema    |
+| thegent://sessions/contracts        | owner?, all?, missing_only?, summary_only?, strict?                                                              | application/json | Contract audit                   |
+| thegent://sessions/contracts/health | owner?, all?, strict?, min_healthy_ratio?, policy_profile?, no_worse_than_baseline?, regression_tolerance?       | application/json | Health gate                      |
+| thegent://sessions/contracts/report | owner?, all?, strict?, top_blocked?, policy_profile?, no_worse_than_baseline?, regression_tolerance?             | application/json | Health report                    |
+| thegent://sessions/contracts/trend  | payload_type?, owner?, all?, strict?, policy_profile?, min_healthy_ratio?, top_blocked?, limit?                  | application/json | Health trend                     |
+| thegent://observe/summary           | limit?, drift_window?, structural_budget_pct?, semantic_budget_pct?, provider?, trend_samples?, top_escalations? | application/json | Observe summary                  |
+| thegent://meta                      | —                                                                                                                | application/json | Server metadata                  |
+| thegent://operations                | operation?                                                                                                       | application/json | Operation taxonomy               |
+| thegent://modes                     | mode?                                                                                                            | application/json | Orchestration modes              |
+| thegent://workflow/triggers         | —                                                                                                                | text/markdown    | Workflow instructions            |
+| thegent://workflow/gardening        | —                                                                                                                | text/markdown    | Gardening workflow               |
 
 ### 27.2 Prompts (Template-based)
 
-| Prompt | Params | Purpose |
-|--------|--------|---------|
-| thegent_workflow_idea | idea | Idea/task workflow instructions |
-| thegent_workflow_quality_green | — | Quality pipeline instructions |
-| thegent_workflow_next_item | — | Next work item instructions |
-| thegent_workflow_gardening | — | Gardening workflow |
-| thegent_run_agent | agent, prompt, cd?, mode | Generate run prompt |
-| thegent_create_wbs | feature, scope? | WBS creation prompt |
-| thegent_bg_task | agent, prompt, owner? | Background task prompt |
+| Prompt                         | Params                   | Purpose                         |
+| ------------------------------ | ------------------------ | ------------------------------- |
+| thegent_workflow_idea          | idea                     | Idea/task workflow instructions |
+| thegent_workflow_quality_green | —                        | Quality pipeline instructions   |
+| thegent_workflow_next_item     | —                        | Next work item instructions     |
+| thegent_workflow_gardening     | —                        | Gardening workflow              |
+| thegent_run_agent              | agent, prompt, cd?, mode | Generate run prompt             |
+| thegent_create_wbs             | feature, scope?          | WBS creation prompt             |
+| thegent_bg_task                | agent, prompt, owner?    | Background task prompt          |
 
 ### 27.3 Transforms
 
@@ -836,9 +887,9 @@ Shutdown:
 
 ### 28.2 Auth
 
-| Mode | Config | Behavior |
-|------|--------|----------|
-| none | mcp_auth_mode=none | No auth |
+| Mode   | Config                                                  | Behavior                                        |
+| ------ | ------------------------------------------------------- | ----------------------------------------------- |
+| none   | mcp_auth_mode=none                                      | No auth                                         |
 | bearer | mcp_auth_mode=bearer, mcp_bearer_tokens=comma-separated | `Authorization: Bearer <token>`; /health exempt |
 
 ### 28.3 Context Injection
@@ -853,20 +904,20 @@ Shutdown:
 
 ### 29.1 MCP Client Config Paths
 
-| Client | Path(s) |
-|--------|---------|
-| Cursor | ~/.cursor/mcp.json, .cursor/mcp.json (workspace) |
-| Claude Code | ~/.claude.json |
-| Codex | ~/.codex/mcp.json, ~/.config/codex/mcp.json |
+| Client         | Path(s)                                                         |
+| -------------- | --------------------------------------------------------------- |
+| Cursor         | ~/.cursor/mcp.json, .cursor/mcp.json (workspace)                |
+| Claude Code    | ~/.claude.json                                                  |
+| Codex          | ~/.codex/mcp.json, ~/.config/codex/mcp.json                     |
 | Claude Desktop | ~/Library/Application Support/Claude/claude_desktop_config.json |
-| Droid | .factory/mcp.json (project) |
+| Droid          | .factory/mcp.json (project)                                     |
 
 ### 29.2 Install Modes
 
-| Client | Transport | Config Entry |
-|--------|-----------|--------------|
-| Claude Code | STDIO | `command: python`, `args: ["-m", "thegent.main", "mcp-stdio"]`, `cwd: <project_root>` |
-| Cursor, Codex, Claude Desktop, Droid | HTTP | `url: http://host:port/mcp`, `transport: http` |
+| Client                               | Transport | Config Entry                                                                          |
+| ------------------------------------ | --------- | ------------------------------------------------------------------------------------- |
+| Claude Code                          | STDIO     | `command: python`, `args: ["-m", "thegent.main", "mcp-stdio"]`, `cwd: <project_root>` |
+| Cursor, Codex, Claude Desktop, Droid | HTTP      | `url: http://host:port/mcp`, `transport: http`                                        |
 
 ### 29.3 Config Keys
 
@@ -888,27 +939,27 @@ Shutdown:
 
 ### 30.1 FastMCP Feature Matrix
 
-| Feature | FastMCP | MCP/SEP | thegent |
-|---------|---------|---------|---------|
-| Tools | ✓ | Core | 30+ |
-| Resources | ✓ | Core | 20+ |
-| Prompts | ✓ | Core | 7 |
-| Elicitation | ✓ | SEP-1330 | cwd/owner in run, bg, dag_list |
-| Progress | ✓ | Core | thegent_run every 10s |
-| Sampling | ✓ | SEP-1577 | thegent_suggest_prompt |
-| Background Tasks | ✓ | SEP-1686 | TaskConfig(mode=optional) on run |
-| Notifications | ✓ | Core | tools/list_changed (not yet used) |
-| SSE Polling | ✓ | SEP-1699 | ctx.close_sse_stream() every 30s in long runs |
-| Bearer Auth | ✓ | — | G-FM-01 |
-| Dependency Injection | ✓ | — | Depends(get_default_cwd), CurrentContext |
+| Feature              | FastMCP | MCP/SEP  | thegent                                       |
+| -------------------- | ------- | -------- | --------------------------------------------- |
+| Tools                | ✓       | Core     | 30+                                           |
+| Resources            | ✓       | Core     | 20+                                           |
+| Prompts              | ✓       | Core     | 7                                             |
+| Elicitation          | ✓       | SEP-1330 | cwd/owner in run, bg, dag_list                |
+| Progress             | ✓       | Core     | thegent_run every 10s                         |
+| Sampling             | ✓       | SEP-1577 | thegent_suggest_prompt                        |
+| Background Tasks     | ✓       | SEP-1686 | TaskConfig(mode=optional) on run              |
+| Notifications        | ✓       | Core     | tools/list_changed (not yet used)             |
+| SSE Polling          | ✓       | SEP-1699 | ctx.close_sse_stream() every 30s in long runs |
+| Bearer Auth          | ✓       | —        | G-FM-01                                       |
+| Dependency Injection | ✓       | —        | Depends(get_default_cwd), CurrentContext      |
 
 ### 30.2 Client Verification (Elicitation, Progress, Sampling)
 
-| Client | Elicitation | Progress | Sampling |
-|--------|-------------|----------|----------|
-| Claude Code | ? | ? | ? |
-| Cursor | ? | ? | ? |
-| Codex | ? | ? | ? |
+| Client      | Elicitation | Progress | Sampling |
+| ----------- | ----------- | -------- | -------- |
+| Claude Code | ?           | ?        | ?        |
+| Cursor      | ?           | ?        | ?        |
+| Codex       | ?           | ?        | ?        |
 
 **Workaround:** Queue/blocking uses hooks, not MCP elicitation.
 
@@ -918,10 +969,10 @@ Shutdown:
 
 ### 31.1 Browser Tools (Optional Mount)
 
-| Provider | Config | URL/Command | Namespace |
-|----------|--------|--------------|-----------|
-| flyto-core | mcp_mount_flyto=True, THGENT_FLYTO_URL | http://localhost:8333/mcp | browser |
-| @playwright/mcp | mcp_mount_playwright=True | npx -y @playwright/mcp@latest | browser |
+| Provider        | Config                                 | URL/Command                   | Namespace |
+| --------------- | -------------------------------------- | ----------------------------- | --------- |
+| flyto-core      | mcp_mount_flyto=True, THGENT_FLYTO_URL | http://localhost:8333/mcp     | browser   |
+| @playwright/mcp | mcp_mount_playwright=True              | npx -y @playwright/mcp@latest | browser   |
 
 **Mutually exclusive:** Only one browser provider at a time.
 
@@ -939,27 +990,27 @@ Shutdown:
 
 ### 31.4 Tool Icons (G-FM-04)
 
-| Tool | Icon |
-|------|------|
-| thegent_run | ▶ |
-| thegent_bg | ⏸ |
-| thegent_stop | ⏹ |
-| thegent_logs | ▤ |
-| thegent_ps | ≡ |
-| thegent_status | ℹ |
-| thegent_wait | ⏳ |
-| thegent_inbox_list | ↓ |
-| thegent_inbox_wait | 📬 |
-| thegent_inspect | ⌕ |
-| thegent_list_agents | ⊕ |
-| thegent_list_droids | ◉ |
-| thegent_list_models | ⊞ |
-| thegent_dag_list | ▣ |
-| thegent_observe_summary | ↑ |
-| thegent_sitback_dashboard | ⊞ |
-| thegent_terminal_* | ⊞ ◉ ⌨ ⎘ |
-| thegent_ddg_search | ⌕ |
-| thegent_do_next | → |
+| Tool                      | Icon     |
+| ------------------------- | -------- |
+| thegent_run               | ▶       |
+| thegent_bg                | ⏸       |
+| thegent_stop              | ⏹       |
+| thegent_logs              | ▤        |
+| thegent_ps                | ≡        |
+| thegent_status            | ℹ       |
+| thegent_wait              | ⏳       |
+| thegent_inbox_list        | ↓        |
+| thegent_inbox_wait        | 📬       |
+| thegent_inspect           | ⌕        |
+| thegent_list_agents       | ⊕        |
+| thegent_list_droids       | ◉        |
+| thegent_list_models       | ⊞        |
+| thegent_dag_list          | ▣        |
+| thegent_observe_summary   | ↑        |
+| thegent_sitback_dashboard | ⊞        |
+| thegent*terminal*\*       | ⊞ ◉ ⌨ ⎘ |
+| thegent_ddg_search        | ⌕        |
+| thegent_do_next           | →        |
 
 ---
 
@@ -967,28 +1018,28 @@ Shutdown:
 
 ### 32.1 Queue Tools (Phase 1)
 
-| Tool | Params | Purpose |
-|------|--------|---------|
-| thegent_queue_list | project?, limit? | List pending |
-| thegent_queue_claim | id, lease_minutes? | Claim for processing |
-| thegent_queue_done | id | Mark done |
-| thegent_queue_add | prompt, project? | Add to queue |
-| thegent_queue_edit | id, prompt | Edit prompt |
-| thegent_queue_release | id | Release claim |
-| thegent_queue_extend_lease | id, minutes | Extend lease |
+| Tool                       | Params             | Purpose              |
+| -------------------------- | ------------------ | -------------------- |
+| thegent_queue_list         | project?, limit?   | List pending         |
+| thegent_queue_claim        | id, lease_minutes? | Claim for processing |
+| thegent_queue_done         | id                 | Mark done            |
+| thegent_queue_add          | prompt, project?   | Add to queue         |
+| thegent_queue_edit         | id, prompt         | Edit prompt          |
+| thegent_queue_release      | id                 | Release claim        |
+| thegent_queue_extend_lease | id, minutes        | Extend lease         |
 
 ### 32.2 Team Tools (Phase 6)
 
-| Tool | Params | Purpose |
-|------|--------|---------|
-| thegent_team_create | name, teammates[] | Create team, spawn teammates |
-| thegent_team_task_list | team_id | List tasks |
-| thegent_team_task_assign | team_id, task | Assign task |
-| thegent_team_task_claim | team_id, task_id | Teammate self-claim |
-| thegent_team_task_done | team_id, task_id | Mark done |
-| thegent_team_message | team_id, to, message | Send to teammate |
-| thegent_team_broadcast | team_id, message | Broadcast |
-| thegent_team_shutdown | team_id | Graceful shutdown |
+| Tool                     | Params               | Purpose                      |
+| ------------------------ | -------------------- | ---------------------------- |
+| thegent_team_create      | name, teammates[]    | Create team, spawn teammates |
+| thegent_team_task_list   | team_id              | List tasks                   |
+| thegent_team_task_assign | team_id, task        | Assign task                  |
+| thegent_team_task_claim  | team_id, task_id     | Teammate self-claim          |
+| thegent_team_task_done   | team_id, task_id     | Mark done                    |
+| thegent_team_message     | team_id, to, message | Send to teammate             |
+| thegent_team_broadcast   | team_id, message     | Broadcast                    |
+| thegent_team_shutdown    | team_id              | Graceful shutdown            |
 
 ---
 
@@ -1010,15 +1061,18 @@ Shutdown:
 **Extended by:** Claude Code
 
 ### Changes Made
+
 1. Added platform patterns
 2. Added deep dive configurations
 3. Enhanced cross-references
 
 ### Cross-References Added
+
 - CROSS_PLATFORM_RESEARCH_INDEX.md
 - CROSS_PLATFORM_ADVANCED_PATTERNS.md
 
 ### Practical Additions
+
 - Platform templates
 - Configuration examples
 

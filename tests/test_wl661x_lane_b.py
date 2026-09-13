@@ -1,12 +1,12 @@
 from __future__ import annotations
 
-import orjson as json
 import importlib.util
 import sys
 import types
 from datetime import UTC, datetime
 from pathlib import Path
 
+import orjson as json
 import pytest
 
 import thegent.execution_jsonl_parsers as jsonl_parsers
@@ -155,7 +155,12 @@ class TestWL6612KpisFromTelemetry:
         now = datetime.now(UTC)
         rows = [
             {"event": "start", "ts": now.isoformat(), "run_id": "r1"},
-            {"event": "end", "ts": now.isoformat(), "run_id": "r1", "status": "completed"},
+            {
+                "event": "end",
+                "ts": now.isoformat(),
+                "run_id": "r1",
+                "status": "completed",
+            },
             {"event": "start", "ts": now.isoformat(), "run_id": "r2"},
             {"event": "end", "ts": now.isoformat(), "run_id": "r2", "status": "failed"},
         ]
@@ -179,13 +184,19 @@ class TestWL6612KpisFromTelemetry:
 @pytest.mark.unit
 class TestWL6613HarnessProbeStatus:
     def test_probe_reports_disabled_by_config(self, monkeypatch: pytest.MonkeyPatch) -> None:
-        monkeypatch.setattr("thegent.config.ThegentSettings", lambda: types.SimpleNamespace(sitback_harness=False))
+        monkeypatch.setattr(
+            "thegent.config.ThegentSettings",
+            lambda: types.SimpleNamespace(sitback_harness=False),
+        )
         status = _probe_harness_status()
         assert status["status"] == "unavailable"
         assert status["reason"] == "disabled_by_config"
 
     def test_probe_reports_missing_dependency(self, monkeypatch: pytest.MonkeyPatch) -> None:
-        monkeypatch.setattr("thegent.config.ThegentSettings", lambda: types.SimpleNamespace(sitback_harness=True))
+        monkeypatch.setattr(
+            "thegent.config.ThegentSettings",
+            lambda: types.SimpleNamespace(sitback_harness=True),
+        )
         missing_attr_module = types.ModuleType("thegent.skills.terminal")
         monkeypatch.setitem(sys.modules, "thegent.skills.terminal", missing_attr_module)
         status = _probe_harness_status()
@@ -193,7 +204,10 @@ class TestWL6613HarnessProbeStatus:
         assert status["reason"] == "dependency_missing"
 
     def test_probe_reports_runtime_failure(self, monkeypatch: pytest.MonkeyPatch) -> None:
-        monkeypatch.setattr("thegent.config.ThegentSettings", lambda: types.SimpleNamespace(sitback_harness=True))
+        monkeypatch.setattr(
+            "thegent.config.ThegentSettings",
+            lambda: types.SimpleNamespace(sitback_harness=True),
+        )
         fake_terminal = types.ModuleType("thegent.skills.terminal")
 
         def _raise() -> str:
@@ -218,10 +232,22 @@ class TestWL6614MojoDispatchScripts:
     def test_unknown_module_and_function_raise_actionable_errors(self) -> None:
         with pytest.raises(ValueError, match="Unknown module"):
             build_dispatch_script(
-                MojoTask(task_id="wl6614-missing-module", module="missing_mod_zzz", function="run", args={})
+                MojoTask(
+                    task_id="wl6614-missing-module",
+                    module="missing_mod_zzz",
+                    function="run",
+                    args={},
+                )
             )
         with pytest.raises(ValueError, match="Unknown function"):
-            build_dispatch_script(MojoTask(task_id="wl6614-missing-fn", module="json", function="missing_fn", args={}))
+            build_dispatch_script(
+                MojoTask(
+                    task_id="wl6614-missing-fn",
+                    module="json",
+                    function="missing_fn",
+                    args={},
+                )
+            )
 
     def test_malformed_args_payload_raises(self) -> None:
         with pytest.raises(ValueError, match="Malformed args payload"):
@@ -289,7 +315,11 @@ class TestWL6617ShimDetectionDiagnostics:
     ) -> None:
         caplog.set_level("WARNING")
         monkeypatch.setattr(Path, "is_symlink", lambda self: True)
-        monkeypatch.setattr(Path, "readlink", lambda self: (_ for _ in ()).throw(PermissionError("denied")))
+        monkeypatch.setattr(
+            Path,
+            "readlink",
+            lambda self: (_ for _ in ()).throw(PermissionError("denied")),
+        )
         assert is_thegent_shim("/tmp/claude") is False
         assert any("shim_resolution_failed" in r.message for r in caplog.records)
 

@@ -15,7 +15,7 @@ Generator for creating signed MAIF artifacts with hash chain tracking.
 
 ### Methods
 
-#### MAIFArtifactGenerator.__init__
+#### MAIFArtifactGenerator.**init**
 
 ```python
 __init__(self: Any, signer: SigningKey)

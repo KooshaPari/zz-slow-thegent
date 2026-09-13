@@ -17,6 +17,7 @@ Enable the thegent governance engine (Zig implementation) to be compiled to WebA
 A new 174-line module providing C ABI exports for governance functions:
 
 **Exported Functions**:
+
 - `dispatch_hook(event_type_ptr, event_type_len, payload_ptr, payload_len) -> u8` - Process hook events
 - `event_type_from_string(event_str_ptr, event_str_len) -> u8` - Parse event type strings
 - `event_type_to_string(event_code, output_ptr, output_len) -> u32` - Convert event codes
@@ -26,6 +27,7 @@ A new 174-line module providing C ABI exports for governance functions:
 - `wasm_reset() -> void` - Reset scratch buffer for batch operations
 
 **Architecture**:
+
 - Uses 16 KiB scratch buffer for temporary allocations
 - All functions use linear memory for string parameters
 - Status codes compatible with standard WASM conventions
@@ -35,6 +37,7 @@ A new 174-line module providing C ABI exports for governance functions:
 Restructured Zig build system with target-conditional compilation:
 
 **Changes**:
+
 - Detect WASM target at build time
 - Native dispatcher (POSIX-dependent) only compiled for native targets
 - WASM artifacts produced only with `-Dtarget=wasm32-freestanding`
@@ -45,6 +48,7 @@ Restructured Zig build system with target-conditional compilation:
 - Unit tests included in native build only
 
 **Build Commands**:
+
 ```bash
 # Native build (default)
 zig build
@@ -56,6 +60,7 @@ zig build -Dtarget=wasm32-freestanding
 ### 3. Documentation (`WASM_STATUS.md`)
 
 Comprehensive 157-line status document covering:
+
 - Build targets and artifact verification
 - Complete function signature reference
 - Architecture and memory management design
@@ -66,13 +71,15 @@ Comprehensive 157-line status document covering:
 ### 4. Python Quality Fixes (`src/thegent/cli/__init__.py`)
 
 Fixed linting violations while restructuring the file:
+
 - N811: Corrected constant naming (AGENT_LABELS imported as uppercase)
-- PLE0605: Simplified __all__ to static sorted list literal
+- PLE0605: Simplified **all** to static sorted list literal
 - All ruff checks passing
 
 ## Verification
 
 ### WASM Artifacts
+
 ```bash
 $ file hooks/zig/zig-out/bin/*.wasm
 governance-wasm.wasm: WebAssembly (wasm) binary module version 0x1 (MVP)
@@ -80,17 +87,20 @@ hook-contracts.wasm:  WebAssembly (wasm) binary module version 0x1 (MVP)
 ```
 
 ### Size Metrics
+
 - `governance-wasm.wasm`: 1.2 KiB (ReleaseSmall)
 - `hook-contracts.wasm`: 2.3 KiB (ReleaseSmall)
 - Native binary: 1.3 MB (native executable)
 
 ### Native Build Verification
+
 ```bash
 $ zig build && ./zig-out/bin/hook-dispatcher-zig version
 hook-dispatcher-zig v1.0.0 (Zig 0.15.2)
 ```
 
 ### Quality Gates
+
 - Python (ruff): PASSED
 - All linting checks: PASSED
 - Pre-commit hooks: PASSED
@@ -98,18 +108,21 @@ hook-dispatcher-zig v1.0.0 (Zig 0.15.2)
 ## Technical Highlights
 
 ### Freestanding WASM Compliance
+
 - No POSIX syscalls (not available in freestanding)
 - No file I/O, networking, or threading
 - Pure computation using linear memory only
 - Single-threaded execution model
 
 ### Memory Management
+
 - Simplified scratch buffer (16 KiB)
 - Linear memory shared with WASM runtime
 - No external stdlib dependencies
 - Caller manages allocation/deallocation boundaries
 
 ### Optimization
+
 - ReleaseSmall optimization for minimal footprint
 - Inlining of governance logic
 - Dead code elimination through LLVM
@@ -129,12 +142,12 @@ See `hooks/zig/WASM_STATUS.md` for language-specific examples.
 
 ## Files Modified
 
-| File | Type | Changes |
-|------|------|---------|
-| `hooks/zig/src/wasm.zig` | NEW | 174 lines - WASM wrapper module |
-| `hooks/zig/build.zig` | MODIFIED | 90 lines - Conditional build system |
-| `hooks/zig/WASM_STATUS.md` | NEW | 157 lines - Integration docs |
-| `src/thegent/cli/__init__.py` | MODIFIED | Fixed N811, PLE0605 linting |
+| File                          | Type     | Changes                             |
+| ----------------------------- | -------- | ----------------------------------- |
+| `hooks/zig/src/wasm.zig`      | NEW      | 174 lines - WASM wrapper module     |
+| `hooks/zig/build.zig`         | MODIFIED | 90 lines - Conditional build system |
+| `hooks/zig/WASM_STATUS.md`    | NEW      | 157 lines - Integration docs        |
+| `src/thegent/cli/__init__.py` | MODIFIED | Fixed N811, PLE0605 linting         |
 
 **Total**: 4 files changed, 481 insertions, 21 deletions
 

@@ -21,6 +21,7 @@ Replace 14.5K LOC of Python storage layer (PostgreSQL + Redis + Neo4j queries, H
 ## Bottom Line Recommendation
 
 ### PRIMARY: Rust + Axum/SQLx
+
 - **Timeline:** 6-10 weeks
 - **Safety:** Memory-safe by default (compile-time)
 - **Performance:** C++ tier, no garbage collection pauses
@@ -28,6 +29,7 @@ Replace 14.5K LOC of Python storage layer (PostgreSQL + Redis + Neo4j queries, H
 - **Risk:** Low
 
 ### SECONDARY: Go + GORM/sqlc
+
 - **Timeline:** 4-6 weeks (fastest option)
 - **Safety:** GC pauses (1-10ms), no compile-time memory safety
 - **Performance:** 2-3x slower than Rust (still fast for DB workloads)
@@ -43,15 +45,18 @@ Replace 14.5K LOC of Python storage layer (PostgreSQL + Redis + Neo4j queries, H
 ## Languages NOT Ready
 
 ### Mojo (Pre-1.0, Late 2026)
+
 - **Problem:** 1.0 not until H1 2026; zero native database drivers; must use Python FFI for all DB operations
 - **Performance Cost:** 2-4x slower than Rust/Go due to FFI overhead
 - **Verdict:** Wait until 1.0 + ecosystem stabilization (late 2026)
 
 ### Carbon (Pre-MVP, 2028+)
+
 - **Problem:** MVP 0.1 not until Dec 2026 at earliest; 1.0 not until after 2028; zero ecosystem
 - **Verdict:** Eliminated. Not viable for any 2026 timeline.
 
 ### Zig (1.0 in 2026, Ecosystem Emerging)
+
 - **Status:** 1.0 landing sometime in 2026; real production backend built in Feb 2026
 - **Problem:** Ecosystem less mature than Rust/Go; fewer proven DB libraries
 - **Verdict:** Viable but risky. Wait for 1.0 release + ecosystem stabilization, or commit to writing some custom drivers.
@@ -60,38 +65,44 @@ Replace 14.5K LOC of Python storage layer (PostgreSQL + Redis + Neo4j queries, H
 
 ## Quick Comparison (Storage Layer Workload)
 
-| Factor | Rust | Go | Mojo | Carbon | Zig |
-|--------|:----:|:----:|:----:|:-----:|:---:|
-| **Production Ready** | ✅ | ✅ | ❌ | ❌ | ⚠️ |
-| **PostgreSQL Driver** | 🥇 pgx | 🥈 pgx/sqlc | ❌ FFI | ❌ None | ⚠️ pg.zig |
-| **Redis Support** | ✅ Excellent | ✅ Excellent | ❌ FFI | ❌ None | ⚠️ Limited |
-| **Neo4j Support** | ✅ Good | ✅ Excellent | ❌ FFI | ❌ None | ❌ None |
-| **Performance** | 🥇 C++ tier | 🥈 2-3x slower | ❌ FFI slow | ❌ Unknown | 🥇 C++ tier |
-| **Dev Velocity** | ⚠️ 2-3 weeks | ✅ 1-2 weeks | ✅ Python | ❌ N/A | ⚠️ 2-3 weeks |
-| **Maturity** | ✅ Excellent | ✅ Excellent | ❌ Minimal | ❌ None | ⚠️ Growing |
-| **Learning Curve** | ❌ Steep | ✅ Gentle | ✅ Python-like | ❌ N/A | ⚠️ Moderate |
-| **Long-term Risk** | 🟢 Low | 🟢 Low | 🔴 High | 🔴 Critical | 🟡 Medium |
+| Factor                |     Rust     |       Go       |      Mojo      |   Carbon    |     Zig      |
+| --------------------- | :----------: | :------------: | :------------: | :---------: | :----------: |
+| **Production Ready**  |      ✅      |       ✅       |       ❌       |     ❌      |      ⚠️      |
+| **PostgreSQL Driver** |    🥇 pgx    |  🥈 pgx/sqlc   |     ❌ FFI     |   ❌ None   |  ⚠️ pg.zig   |
+| **Redis Support**     | ✅ Excellent |  ✅ Excellent  |     ❌ FFI     |   ❌ None   |  ⚠️ Limited  |
+| **Neo4j Support**     |   ✅ Good    |  ✅ Excellent  |     ❌ FFI     |   ❌ None   |   ❌ None    |
+| **Performance**       | 🥇 C++ tier  | 🥈 2-3x slower |  ❌ FFI slow   | ❌ Unknown  | 🥇 C++ tier  |
+| **Dev Velocity**      | ⚠️ 2-3 weeks |  ✅ 1-2 weeks  |   ✅ Python    |   ❌ N/A    | ⚠️ 2-3 weeks |
+| **Maturity**          | ✅ Excellent |  ✅ Excellent  |   ❌ Minimal   |   ❌ None   |  ⚠️ Growing  |
+| **Learning Curve**    |   ❌ Steep   |   ✅ Gentle    | ✅ Python-like |   ❌ N/A    | ⚠️ Moderate  |
+| **Long-term Risk**    |    🟢 Low    |     🟢 Low     |    🔴 High     | 🔴 Critical |  🟡 Medium   |
 
 ---
 
 ## Decision Criteria
 
 ### If you prioritize: **Safety + Long-term Maintainability**
+
 → **Choose Rust**
+
 - Compile-time memory safety
 - Predictable performance (no GC pauses)
 - Better refactoring confidence on large codebases
 - Industry momentum (Stripe, Discord, AWS, Google)
 
 ### If you prioritize: **Time-to-Market + Simplicity**
+
 → **Choose Go**
+
 - 4-6 week timeline (vs 6-10 for Rust)
 - Gentler learning curve (1-2 weeks)
 - Proven at massive scale (Google, Uber, Kubernetes)
 - GC overhead acceptable for most web workloads
 
 ### If you prioritize: **Performance at Any Cost + Memory Efficiency**
+
 → **Choose Rust** (Zig in 2027+ after 1.0 ecosystem stabilizes)
+
 - Zero GC pauses
 - C++ tier performance
 - Fine-grained memory control
@@ -102,24 +113,29 @@ Replace 14.5K LOC of Python storage layer (PostgreSQL + Redis + Neo4j queries, H
 ## Risk Summary
 
 ### Rust Risks
+
 - **Steep learning curve** — 3-6 weeks for team proficiency (medium risk, manageable)
 - **Slower initial dev** — Week 1-3 slower; offsets in weeks 4-10 (low risk, expected)
 - **Compile times** — Longer than Go but not prohibitive (low risk)
 
 ### Go Risks
+
 - **GC pauses** — 1-10ms pauses under load (low risk for most workloads, acceptable tradeoff)
 - **No memory safety** — Code review rigor required (manageable with discipline)
 
 ### Mojo Risks (Why Not)
+
 - **Pre-1.0 instability** — Breaking changes expected (high risk)
 - **FFI overhead** — 2-4x slower for all DB operations (critical issue for your workload)
 - **Ecosystem gap** — No native drivers, must use Python (negates performance benefits)
 
 ### Carbon Risks (Why Eliminated)
+
 - **Years from production** — MVP 0.1 in Dec 2026, 1.0 after 2028 (critical blocker)
 - **Zero ecosystem** — No frameworks, drivers, or libraries (critical blocker)
 
 ### Zig Risks (Why Conditional)
+
 - **1.0 timing uncertain** — "Sometime in 2026" is vague (medium risk)
 - **Smaller ecosystem** — Fewer battle-tested libraries than Rust/Go (medium risk)
 - **Async model unproven** — Different from traditional async/await (medium risk)
@@ -143,7 +159,7 @@ Result:
   Rust vs Mojo difference: ~2-8ms   (but Mojo not production-ready)
   Rust vs Zig difference:  ~0ms     (parity on DB workloads)
 
-BOTTOM LINE: All three (Rust/Go/Zig) are fast enough. 
+BOTTOM LINE: All three (Rust/Go/Zig) are fast enough.
              Choose based on MATURITY + RISK, not raw speed.
 ```
 
@@ -154,6 +170,7 @@ BOTTOM LINE: All three (Rust/Go/Zig) are fast enough.
 ## Timeline & Effort
 
 ### Rust + Axum/SQLx (Recommended)
+
 ```
 Week 1-2:  Team Rust fundamentals (async/ownership/borrowing)
 Week 3-4:  PostgreSQL ORM layer (SQLx + connection pooling)
@@ -164,6 +181,7 @@ Total: 6-10 weeks, 40-60 person-days
 ```
 
 ### Go + GORM/sqlc (Faster)
+
 ```
 Week 1:    Setup + sqlc code generation
 Week 2-3:  PostgreSQL ORM (GORM models + migrations)
@@ -178,12 +196,14 @@ Total: 4-6 weeks, 20-30 person-days
 ## Team Implications
 
 ### Rust Route
+
 - **Training cost:** $50K-100K (team ramp-up, mentoring)
 - **Hiring impact:** Easier future recruiting in Rust market
 - **Productivity:** Slower weeks 1-4, faster weeks 5+
 - **Confidence:** Higher long-term (memory safety at compile-time)
 
 ### Go Route
+
 - **Training cost:** $10K-20K (simpler language)
 - **Hiring impact:** Neutral (Go widely known)
 - **Productivity:** Steady fast throughout
@@ -216,6 +236,7 @@ Want finest performance control?
 ## Final Call
 
 ### **PRIMARY RECOMMENDATION: Rust + Axum/SQLx**
+
 - Safest long-term choice
 - Best database driver ecosystem
 - Zero GC pauses (predictable latency)
@@ -223,6 +244,7 @@ Want finest performance control?
 - Team investment pays dividends on future refactoring
 
 ### **ACCEPTABLE ALTERNATIVE: Go + GORM/sqlc**
+
 - Fastest time-to-market
 - Proven at Google/Uber/Kubernetes scale
 - Simpler learning curve
@@ -230,18 +252,21 @@ Want finest performance control?
 - Choose if timeline pressure > 5 weeks
 
 ### **NOT READY: Mojo**
+
 - Pre-1.0 instability
 - FFI overhead defeats performance benefits
 - No native drivers (Python interop costs)
 - Re-evaluate late 2026 + 6 months ecosystem maturation
 
 ### **ELIMINATED: Carbon**
+
 - MVP 0.1 not until Dec 2026
 - 1.0 not until 2028+
 - Zero ecosystem
 - Not viable for any 2026 timeline
 
 ### **CONDITIONAL: Zig (Post-1.0 Late 2026)**
+
 - 1.0 expected 2026 (timing uncertain)
 - Viable but emerging ecosystem
 - Consider if Rust learning curve blocking factor

@@ -3,6 +3,7 @@
 import pytest
 
 from tests.conftest_factories import make_adapter_result, make_csm
+from thegent.adapters.ports import PLUGIN_HOST, PluginHost, PluginInterface
 from thegent.contracts.adapters import (
     ADAPTER_REGISTRY,
     AdapterResult,
@@ -13,7 +14,6 @@ from thegent.contracts.adapters import (
     normalize_output,
     register_adapter,
 )
-from thegent.adapters.ports import PLUGIN_HOST, PluginHost, PluginInterface
 from thegent.contracts.csm import CSMStatus
 from thegent.contracts.validation import SemanticValidationError
 

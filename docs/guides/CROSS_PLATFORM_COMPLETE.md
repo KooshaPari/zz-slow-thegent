@@ -2,6 +2,7 @@
 
 > **Status**: Complete | **Version**: 1.0 | **Date**: 2026-02-16
 > **Related**:
+>
 > - [Cross-Platform Research Complete](../research/CROSS_PLATFORM_RESEARCH_COMPLETE.md)
 > - [Cross-Platform Multi-Tenant Implementation Plan](../plans/CROSS_PLATFORM_MULTI_TENANT_IMPLEMENTATION_PLAN.md)
 > - [Cross-Platform Master Index](../CROSS_PLATFORM_MASTER_INDEX.md)
@@ -43,16 +44,19 @@ pip install pyatspi
 **Step 2: Grant Permissions (2 min)**
 
 **macOS:**
+
 1. System Preferences > Security & Privacy > Accessibility
 2. Add Terminal (or your Python interpreter)
 3. System Preferences > Security & Privacy > Screen Recording (for screenshots)
 4. Add Terminal
 
 **Windows:**
+
 - Run as Administrator, OR
 - Configure Group Policy
 
 **Linux:**
+
 - Usually granted by default
 
 **Step 3: Write Your First Automation (2 min)**
@@ -113,6 +117,7 @@ element = provider.find_element("button[x=100,y=200]")
 ### 2.1 Migration Overview
 
 This guide helps you migrate from:
+
 - Manual UI interaction → Automated desktop automation
 - Platform-specific code → Cross-platform abstraction
 - Single-agent → Multi-tenant coordination
@@ -123,11 +128,13 @@ This guide helps you migrate from:
 #### Path 1: Adding Desktop Automation to New Code
 
 **Step 1: Install Dependencies**
+
 ```bash
 pip install py-applescript pywinauto pyatspi
 ```
 
 **Step 2: Import Provider**
+
 ```python
 from thegent.infra.desktop_automation import get_provider
 
@@ -135,6 +142,7 @@ provider = get_provider()
 ```
 
 **Step 3: Use Provider**
+
 ```python
 element = provider.find_element("button[name='Save']")
 if element:
@@ -144,8 +152,10 @@ if element:
 #### Path 2: Migrating Existing Platform-Specific Code
 
 **Before (macOS-specific):**
+
 ```python
 import subprocess
+
 
 def click_button_macos(button_name: str):
     script = f'''
@@ -157,8 +167,10 @@ def click_button_macos(button_name: str):
 ```
 
 **After (Cross-platform):**
+
 ```python
 from thegent.infra.desktop_automation import get_provider
+
 
 def click_button(button_name: str):
     provider = get_provider()
@@ -171,6 +183,7 @@ def click_button(button_name: str):
 #### Path 3: Migrating to Multi-Tenant Coordination
 
 **Before (Single-agent):**
+
 ```python
 def automate_task():
     provider = get_provider()
@@ -179,8 +192,10 @@ def automate_task():
 ```
 
 **After (Multi-tenant):**
+
 ```python
 from thegent.infra.desktop_automation import get_provider, Coordinator
+
 
 def automate_task(agent_id: str):
     provider = get_provider()
@@ -216,6 +231,7 @@ def automate_task(agent_id: str):
 **Status:** ✅ Complete
 
 **Deliverables:**
+
 - ✅ Comprehensive research (13 documents, 12,000+ lines)
 - ✅ Architecture decisions documented
 - ✅ Implementation plan created
@@ -230,6 +246,7 @@ def automate_task(agent_id: str):
 **Week 1: Core Infrastructure**
 
 **Tasks:**
+
 - [ ] Create base provider abstract class (`DesktopAutomationProvider`)
 - [ ] Implement `UIElement`, `AutomationAction`, `AutomationResult` dataclasses
 - [ ] Create provider factory (`get_provider()`)
@@ -237,6 +254,7 @@ def automate_task(agent_id: str):
 - [ ] Set up test infrastructure
 
 **Deliverables:**
+
 - Base provider class
 - Configuration system
 - Test framework
@@ -244,6 +262,7 @@ def automate_task(agent_id: str):
 **Week 2: Platform Implementations**
 
 **Tasks:**
+
 - [ ] Implement macOS provider (AppleScript)
 - [ ] Implement Windows provider (UI Automation)
 - [ ] Implement Linux provider (AT-SPI)
@@ -251,6 +270,7 @@ def automate_task(agent_id: str):
 - [ ] Write unit tests
 
 **Deliverables:**
+
 - Three platform providers
 - Platform detection
 - Unit test suite
@@ -260,6 +280,7 @@ def automate_task(agent_id: str):
 **Goal:** Add multi-tenant coordination and conflict resolution.
 
 **Tasks:**
+
 - [ ] Implement file-based locking
 - [ ] Implement UI automation coordination
 - [ ] Add process coordination
@@ -267,6 +288,7 @@ def automate_task(agent_id: str):
 - [ ] Add conflict resolution
 
 **Deliverables:**
+
 - Coordinator class
 - Lock management
 - Conflict resolution
@@ -276,6 +298,7 @@ def automate_task(agent_id: str):
 **Goal:** Add advanced features and optimizations.
 
 **Tasks:**
+
 - [ ] Add screenshot and analysis
 - [ ] Implement batch operations
 - [ ] Add performance optimizations
@@ -283,6 +306,7 @@ def automate_task(agent_id: str):
 - [ ] Add monitoring and metrics
 
 **Deliverables:**
+
 - Advanced features
 - Performance optimizations
 - Monitoring system
@@ -292,6 +316,7 @@ def automate_task(agent_id: str):
 **Goal:** Production hardening and documentation.
 
 **Tasks:**
+
 - [ ] Security audit
 - [ ] Performance testing
 - [ ] Documentation completion
@@ -299,6 +324,7 @@ def automate_task(agent_id: str):
 - [ ] Release preparation
 
 **Deliverables:**
+
 - Production-ready system
 - Complete documentation
 - Test suite
@@ -362,14 +388,14 @@ def fill_form(provider, form_data: dict):
 def automate_workflow(provider, steps: list):
     """Execute a multi-step workflow."""
     for step in steps:
-        element = provider.find_element(step['selector'])
+        element = provider.find_element(step["selector"])
         if not element:
             raise ValueError(f"Element not found: {step['selector']}")
 
-        if step['action'] == 'click':
+        if step["action"] == "click":
             result = provider.click(element)
-        elif step['action'] == 'type':
-            result = provider.type_text(element, step['text'])
+        elif step["action"] == "type":
+            result = provider.type_text(element, step["text"])
         else:
             raise ValueError(f"Unknown action: {step['action']}")
 
@@ -385,10 +411,8 @@ def automate_workflow(provider, steps: list):
 ```python
 from tenacity import retry, stop_after_attempt, wait_exponential
 
-@retry(
-    stop=stop_after_attempt(3),
-    wait=wait_exponential(multiplier=1, min=1, max=10)
-)
+
+@retry(stop=stop_after_attempt(3), wait=wait_exponential(multiplier=1, min=1, max=10))
 def click_with_retry(provider, selector: str):
     """Click element with retry logic."""
     element = provider.find_element(selector)
@@ -424,13 +448,13 @@ def manage_window(provider, window_name: str, action: str):
     if not window:
         raise ValueError(f"Window not found: {window_name}")
 
-    if action == 'focus':
+    if action == "focus":
         provider.focus(window)
-    elif action == 'minimize':
+    elif action == "minimize":
         provider.minimize(window)
-    elif action == 'maximize':
+    elif action == "maximize":
         provider.maximize(window)
-    elif action == 'close':
+    elif action == "close":
         provider.close(window)
     else:
         raise ValueError(f"Unknown action: {action}")
@@ -450,12 +474,12 @@ def automate_across_apps(provider, apps: list):
 
         # Execute actions
         for action in actions:
-            element = provider.find_element(action['selector'])
+            element = provider.find_element(action["selector"])
             if element:
-                if action['type'] == 'click':
+                if action["type"] == "click":
                     provider.click(element)
-                elif action['type'] == 'type':
-                    provider.type_text(element, action['text'])
+                elif action["type"] == "type":
+                    provider.type_text(element, action["text"])
 ```
 
 ### 4.8 Recipe 8: Conditional Automation
@@ -530,6 +554,7 @@ _log = logging.getLogger(__name__)
 @dataclass
 class UIElement:
     """Represents a UI element."""
+
     selector: str
     name: str
     role: str  # button, text_field, window, etc.
@@ -546,6 +571,7 @@ class UIElement:
 @dataclass
 class AutomationAction:
     """Represents an automation action."""
+
     type: str  # click, type_text, find_element, screenshot, wait_for_idle
     selector: str | None = None
     text: str | None = None
@@ -556,6 +582,7 @@ class AutomationAction:
 @dataclass
 class AutomationResult:
     """Result of an automation action."""
+
     success: bool
     error: str | None = None
     duration_ms: float = 0.0
@@ -602,6 +629,7 @@ from .base import DesktopAutomationProvider, UIElement, AutomationResult
 import subprocess
 import json
 
+
 class MacOSAutomationProvider(DesktopAutomationProvider):
     """macOS provider using AppleScript."""
 
@@ -611,22 +639,17 @@ class MacOSAutomationProvider(DesktopAutomationProvider):
         script = self._build_find_script(selector)
 
         try:
-            result = subprocess.run(
-                ["osascript", "-e", script],
-                capture_output=True,
-                text=True,
-                timeout=timeout
-            )
+            result = subprocess.run(["osascript", "-e", script], capture_output=True, text=True, timeout=timeout)
 
             if result.returncode == 0:
                 data = json.loads(result.stdout)
                 return UIElement(
                     selector=selector,
-                    name=data.get('name', ''),
-                    role=data.get('role', ''),
-                    bounds=data.get('bounds', {}),
-                    attributes=data.get('attributes', {}),
-                    platform_specific={'applescript_data': data}
+                    name=data.get("name", ""),
+                    role=data.get("role", ""),
+                    bounds=data.get("bounds", {}),
+                    attributes=data.get("attributes", {}),
+                    platform_specific={"applescript_data": data},
                 )
         except Exception as e:
             _log.error(f"Error finding element: {e}")
@@ -637,48 +660,33 @@ class MacOSAutomationProvider(DesktopAutomationProvider):
         """Click element using AppleScript."""
         start_time = time.time()
 
-        script = f'''
+        script = f"""
         tell application "System Events"
-            click {element.platform_specific['applescript_data']['reference']}
+            click {element.platform_specific["applescript_data"]["reference"]}
         end tell
-        '''
+        """
 
         try:
-            result = subprocess.run(
-                ["osascript", "-e", script],
-                capture_output=True,
-                timeout=5.0
-            )
+            result = subprocess.run(["osascript", "-e", script], capture_output=True, timeout=5.0)
 
             duration_ms = (time.time() - start_time) * 1000
 
             if result.returncode == 0:
-                return AutomationResult(
-                    success=True,
-                    duration_ms=duration_ms
-                )
+                return AutomationResult(success=True, duration_ms=duration_ms)
             else:
-                return AutomationResult(
-                    success=False,
-                    error=result.stderr.decode(),
-                    duration_ms=duration_ms
-                )
+                return AutomationResult(success=False, error=result.stderr.decode(), duration_ms=duration_ms)
         except Exception as e:
-            return AutomationResult(
-                success=False,
-                error=str(e),
-                duration_ms=(time.time() - start_time) * 1000
-            )
+            return AutomationResult(success=False, error=str(e), duration_ms=(time.time() - start_time) * 1000)
 
     def _build_find_script(self, selector: str) -> str:
         """Build AppleScript query from selector."""
         # Parse selector and build AppleScript
         # This is a simplified version
-        return f'''
+        return f"""
         tell application "System Events"
             -- Parse selector and find element
         end tell
-        '''
+        """
 ```
 
 ### 5.3 Provider Factory
@@ -691,18 +699,22 @@ class MacOSAutomationProvider(DesktopAutomationProvider):
 import platform
 from .base import DesktopAutomationProvider
 
+
 def get_provider() -> DesktopAutomationProvider:
     """Get platform-specific provider."""
     system = platform.system()
 
     if system == "Darwin":
         from .macos import MacOSAutomationProvider
+
         return MacOSAutomationProvider()
     elif system == "Windows":
         from .windows import WindowsAutomationProvider
+
         return WindowsAutomationProvider()
     elif system == "Linux":
         from .linux import LinuxAutomationProvider
+
         return LinuxAutomationProvider()
     else:
         raise ValueError(f"Unsupported platform: {system}")
@@ -719,6 +731,7 @@ def get_provider() -> DesktopAutomationProvider:
 **Permissions**: Accessibility, Screen Recording
 
 **Example**:
+
 ```python
 from thegent.infra.desktop_automation import get_provider
 
@@ -734,6 +747,7 @@ provider.click(element)
 **Permissions**: Administrator or Group Policy
 
 **Example**:
+
 ```python
 from thegent.infra.desktop_automation import get_provider
 
@@ -749,6 +763,7 @@ provider.click(element)
 **Permissions**: Usually granted by default
 
 **Example**:
+
 ```python
 from thegent.infra.desktop_automation import get_provider
 
@@ -798,6 +813,7 @@ provider.click(element)
 **Symptoms**: `find_element()` returns `None`
 
 **Solutions**:
+
 1. Check selector syntax
 2. Verify element exists in UI
 3. Wait for element to appear: `wait_for_idle()`
@@ -808,6 +824,7 @@ provider.click(element)
 **Symptoms**: `click()` returns `success=False`
 
 **Solutions**:
+
 1. Verify element is visible and enabled
 2. Check if element is covered by another element
 3. Try focusing element first: `focus(element)`
@@ -818,6 +835,7 @@ provider.click(element)
 **Symptoms**: Slow automation execution
 
 **Solutions**:
+
 1. Cache elements instead of re-finding
 2. Reduce `wait_for_idle()` timeouts
 3. Batch operations
@@ -826,16 +844,19 @@ provider.click(element)
 ### 8.4 Platform-Specific Issues
 
 **macOS**:
+
 - Check Accessibility permissions
 - Verify AppleScript syntax
 - Check for system dialogs blocking automation
 
 **Windows**:
+
 - Run as Administrator if needed
 - Check Group Policy settings
 - Verify UI Automation is enabled
 
 **Linux**:
+
 - Check AT-SPI is running
 - Verify accessibility permissions
 - Check for desktop environment compatibility
@@ -851,8 +872,7 @@ provider.click(element)
 
 ---
 
-*Generated: 2026-02-16 | Version: 1.0 | Status: Complete*
-
+_Generated: 2026-02-16 | Version: 1.0 | Status: Complete_
 
 ---
 
@@ -862,15 +882,18 @@ provider.click(element)
 **Extended by:** Claude Code
 
 ### Changes Made
+
 1. Added practical implementation patterns
 2. Added configuration examples
 3. Enhanced cross-references to related documentation
 
 ### Cross-References Added
+
 - Related research and implementation guides
 - WORK_STREAM.md for tracking
 
 ### Practical Additions
+
 - Implementation templates
 - Configuration examples
 - Best practices

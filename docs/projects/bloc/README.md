@@ -26,6 +26,7 @@ bloc/
 ## Quick Start
 
 ### Setup
+
 ```bash
 cd bloc
 # Check pyproject.toml or setup.py for dependencies
@@ -35,6 +36,7 @@ pip install -e .
 ```
 
 ### Running Tests
+
 ```bash
 pytest tests/
 ```
@@ -48,6 +50,7 @@ pytest tests/
 ## Documentation
 
 Full documentation for this component is being organized. See:
+
 - Source code comments for implementation details
 - Test cases for usage examples
 - Example files for integration patterns

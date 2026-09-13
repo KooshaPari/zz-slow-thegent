@@ -151,6 +151,7 @@ class AutomationPipeline:
 ```
 
 **Optimization Strategies:**
+
 - Minimize app switching (group by app)
 - Minimize mouse movement (group by screen region)
 - Parallelize independent actions
@@ -252,10 +253,7 @@ class ExponentialBackoffRetry:
     """Exponential backoff retry for automation."""
 
     def execute_with_retry(
-        self,
-        action: AutomationAction,
-        max_retries: int = 3,
-        base_delay: float = 1.0
+        self, action: AutomationAction, max_retries: int = 3, base_delay: float = 1.0
     ) -> AutomationResult:
         """Execute with exponential backoff retry."""
         for attempt in range(max_retries):
@@ -264,7 +262,7 @@ class ExponentialBackoffRetry:
             except RetryableError as e:
                 if attempt == max_retries - 1:
                     raise
-                delay = base_delay * (2 ** attempt)
+                delay = base_delay * (2**attempt)
                 time.sleep(delay)
 ```
 
@@ -424,11 +422,13 @@ class AutomationRecorder:
 
     def record(self, action: AutomationAction, result: AutomationResult):
         """Record automation action."""
-        self.recordings.append({
-            "action": action.to_dict(),
-            "result": result.to_dict(),
-            "timestamp": time.time(),
-        })
+        self.recordings.append(
+            {
+                "action": action.to_dict(),
+                "result": result.to_dict(),
+                "timestamp": time.time(),
+            }
+        )
 
     def replay(self, recording: dict) -> AutomationResult:
         """Replay recorded automation."""
@@ -445,10 +445,8 @@ class AutomationRecorder:
 ```python
 from hypothesis import given, strategies as st
 
-@given(
-    selector=st.text(),
-    timeout=st.floats(min_value=0.1, max_value=10.0)
-)
+
+@given(selector=st.text(), timeout=st.floats(min_value=0.1, max_value=10.0))
 def test_find_element_properties(selector: str, timeout: float):
     """Property-based test for element finding."""
     provider = get_provider()
@@ -500,9 +498,7 @@ class ProviderSelectionStrategy:
     """Strategy for selecting automation provider."""
 
     def select_provider(
-        self,
-        action: AutomationAction,
-        available_providers: list[DesktopAutomationProvider]
+        self, action: AutomationAction, available_providers: list[DesktopAutomationProvider]
     ) -> DesktopAutomationProvider:
         """Select best provider for action."""
         # Consider:
@@ -620,19 +616,19 @@ class AutomationEventNotifier:
 
 ### Practical Examples Added
 
-| Pattern | File | Purpose |
-|---------|------|---------|
-| macOS AppleScript | `macos_provider.py` | UI automation via AppleScript |
-| Windows UI Automation | `windows_provider.py` | UI automation via pywinauto |
-| Linux AT-SPI | `linux_provider.py` | UI automation via pyatspi |
-| ConsensusCoordinator | `consensus_coordinator.py` | Multi-agent voting for automation |
-| AdaptiveTimeoutStrategy | `adaptive_timeout.py` | Dynamic timeout adjustment |
-| AutomationHealthChecker | `health_checker.py` | Provider health monitoring |
-| EncryptedAutomationStorage | `encrypted_storage.py` | Secure screenshot storage |
-| MockAutomationProvider | `mock_provider.py` | Testing mock for unit tests |
-| AutomationRecorder | `recorder.py` | Record/replay for testing |
-| AutomationProviderAdapter | `adapter.py` | Provider abstraction layer |
-| ProviderSelectionStrategy | `strategy.py` | Dynamic provider selection |
+| Pattern                    | File                       | Purpose                           |
+| -------------------------- | -------------------------- | --------------------------------- |
+| macOS AppleScript          | `macos_provider.py`        | UI automation via AppleScript     |
+| Windows UI Automation      | `windows_provider.py`      | UI automation via pywinauto       |
+| Linux AT-SPI               | `linux_provider.py`        | UI automation via pyatspi         |
+| ConsensusCoordinator       | `consensus_coordinator.py` | Multi-agent voting for automation |
+| AdaptiveTimeoutStrategy    | `adaptive_timeout.py`      | Dynamic timeout adjustment        |
+| AutomationHealthChecker    | `health_checker.py`        | Provider health monitoring        |
+| EncryptedAutomationStorage | `encrypted_storage.py`     | Secure screenshot storage         |
+| MockAutomationProvider     | `mock_provider.py`         | Testing mock for unit tests       |
+| AutomationRecorder         | `recorder.py`              | Record/replay for testing         |
+| AutomationProviderAdapter  | `adapter.py`               | Provider abstraction layer        |
+| ProviderSelectionStrategy  | `strategy.py`              | Dynamic provider selection        |
 
 ### Cross-References Added
 

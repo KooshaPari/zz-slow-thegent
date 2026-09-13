@@ -1,8 +1,9 @@
 """Tests for health score calculator."""
 
-import orjson as json
 import tempfile
 from pathlib import Path
+
+import orjson as json
 
 from thegent.governance.health_scorer import HealthScorer
 

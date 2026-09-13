@@ -14,13 +14,10 @@ Covers:
 from __future__ import annotations
 
 import hashlib
-import orjson as json
-import tempfile
 from pathlib import Path
-from unittest.mock import patch
 
+import orjson as json
 import pytest
-
 
 # ---------------------------------------------------------------------------
 # P3.1 — Data models
@@ -86,7 +83,10 @@ class TestRoutingOrchestratorBridge:
     """P3.2: RoutingOrchestratorBridge manages per-agent routing state."""
 
     def test_record_decision_adds_agent(self) -> None:
-        from thegent.utils.routing_impl.route_executor import RoutingDecision, RoutingOrchestratorBridge
+        from thegent.utils.routing_impl.route_executor import (
+            RoutingDecision,
+            RoutingOrchestratorBridge,
+        )
 
         orch = RoutingOrchestratorBridge()
         orch.record_decision("agent-1", RoutingDecision("Lifecycle", 0.3, "ok"))
@@ -97,7 +97,10 @@ class TestRoutingOrchestratorBridge:
         assert status.agents[0].lifecycle_decisions == 1
 
     def test_multiple_agents_tracked_separately(self) -> None:
-        from thegent.utils.routing_impl.route_executor import RoutingDecision, RoutingOrchestratorBridge
+        from thegent.utils.routing_impl.route_executor import (
+            RoutingDecision,
+            RoutingOrchestratorBridge,
+        )
 
         orch = RoutingOrchestratorBridge()
         orch.record_decision("a1", RoutingDecision("Lifecycle", 0.2, "r1"))
@@ -114,7 +117,10 @@ class TestRoutingOrchestratorBridge:
         assert a2.thegent_decisions == 1
 
     def test_arbitrate_majority_wins_defaults_lifecycle(self) -> None:
-        from thegent.utils.routing_impl.route_executor import RoutingDecision, RoutingOrchestratorBridge
+        from thegent.utils.routing_impl.route_executor import (
+            RoutingDecision,
+            RoutingOrchestratorBridge,
+        )
 
         orch = RoutingOrchestratorBridge(policy="MajorityWins")
         orch.record_decision("a1", RoutingDecision("Lifecycle", 0.1, ""))
@@ -125,7 +131,10 @@ class TestRoutingOrchestratorBridge:
         assert result == "Lifecycle"
 
     def test_arbitrate_majority_wins_thegent_wins_tie(self) -> None:
-        from thegent.utils.routing_impl.route_executor import RoutingDecision, RoutingOrchestratorBridge
+        from thegent.utils.routing_impl.route_executor import (
+            RoutingDecision,
+            RoutingOrchestratorBridge,
+        )
 
         orch = RoutingOrchestratorBridge(policy="MajorityWins")
         orch.record_decision("a1", RoutingDecision("TheGent", 0.9, ""))
@@ -136,7 +145,10 @@ class TestRoutingOrchestratorBridge:
         assert result == "TheGent"
 
     def test_arbitrate_most_restrictive_wins_any_thegent_vote(self) -> None:
-        from thegent.utils.routing_impl.route_executor import RoutingDecision, RoutingOrchestratorBridge
+        from thegent.utils.routing_impl.route_executor import (
+            RoutingDecision,
+            RoutingOrchestratorBridge,
+        )
 
         orch = RoutingOrchestratorBridge(policy="MostRestrictiveWins")
         orch.record_decision("a1", RoutingDecision("Lifecycle", 0.1, ""))
@@ -148,7 +160,10 @@ class TestRoutingOrchestratorBridge:
         assert result == "TheGent"
 
     def test_arbitrate_most_restrictive_all_lifecycle(self) -> None:
-        from thegent.utils.routing_impl.route_executor import RoutingDecision, RoutingOrchestratorBridge
+        from thegent.utils.routing_impl.route_executor import (
+            RoutingDecision,
+            RoutingOrchestratorBridge,
+        )
 
         orch = RoutingOrchestratorBridge(policy="MostRestrictiveWins")
         orch.record_decision("a1", RoutingDecision("Lifecycle", 0.1, ""))
@@ -164,7 +179,10 @@ class TestRoutingOrchestratorBridge:
         assert orch.arbitrate() is None
 
     def test_status_percentages_correct(self) -> None:
-        from thegent.utils.routing_impl.route_executor import RoutingDecision, RoutingOrchestratorBridge
+        from thegent.utils.routing_impl.route_executor import (
+            RoutingDecision,
+            RoutingOrchestratorBridge,
+        )
 
         orch = RoutingOrchestratorBridge()
         for _ in range(3):
@@ -177,7 +195,10 @@ class TestRoutingOrchestratorBridge:
         assert status.thegent_pct == pytest.approx(25.0)
 
     def test_status_display_contains_agent_ids(self) -> None:
-        from thegent.utils.routing_impl.route_executor import RoutingDecision, RoutingOrchestratorBridge
+        from thegent.utils.routing_impl.route_executor import (
+            RoutingDecision,
+            RoutingOrchestratorBridge,
+        )
 
         orch = RoutingOrchestratorBridge()
         orch.record_decision("agent-alpha", RoutingDecision("Lifecycle", 0.1, "ok"))
@@ -186,7 +207,10 @@ class TestRoutingOrchestratorBridge:
         assert "Router Status" in text
 
     def test_status_to_json_roundtrip(self) -> None:
-        from thegent.utils.routing_impl.route_executor import RoutingDecision, RouterStatus, RoutingOrchestratorBridge
+        from thegent.utils.routing_impl.route_executor import (
+            RoutingDecision,
+            RoutingOrchestratorBridge,
+        )
 
         orch = RoutingOrchestratorBridge()
         orch.record_decision("a1", RoutingDecision("Lifecycle", 0.1, ""))
@@ -316,14 +340,18 @@ class TestMakeRoutingDecision:
     """P3.4: make_routing_decision_from_factors uses ThegentSettings hysteresis params."""
 
     def test_simple_complexity_routes_lifecycle(self) -> None:
-        from thegent.utils.routing_impl.route_executor import make_routing_decision_from_factors
+        from thegent.utils.routing_impl.route_executor import (
+            make_routing_decision_from_factors,
+        )
 
         d = make_routing_decision_from_factors("simple")
         assert d.mode == "Lifecycle"
         assert d.risk_score == pytest.approx(0.1)
 
     def test_very_complex_routes_thegent_with_default_band(self) -> None:
-        from thegent.utils.routing_impl.route_executor import make_routing_decision_from_factors
+        from thegent.utils.routing_impl.route_executor import (
+            make_routing_decision_from_factors,
+        )
 
         # Default band=0.15 → high threshold = 1.0 - 0.15 = 0.85
         # very_complex risk = 0.9 > 0.85 → TheGent
@@ -332,14 +360,18 @@ class TestMakeRoutingDecision:
         assert d.risk_score == pytest.approx(0.9)
 
     def test_moderate_routes_lifecycle_with_default_band(self) -> None:
-        from thegent.utils.routing_impl.route_executor import make_routing_decision_from_factors
+        from thegent.utils.routing_impl.route_executor import (
+            make_routing_decision_from_factors,
+        )
 
         # moderate risk = 0.45; high threshold = 0.85 → Lifecycle
         d = make_routing_decision_from_factors("moderate")
         assert d.mode == "Lifecycle"
 
     def test_cost_sensitive_reduces_risk(self) -> None:
-        from thegent.utils.routing_impl.route_executor import make_routing_decision_from_factors
+        from thegent.utils.routing_impl.route_executor import (
+            make_routing_decision_from_factors,
+        )
 
         # complex = 0.7, cost_sensitive → 0.6; threshold = 0.85 → Lifecycle
         d = make_routing_decision_from_factors("complex", cost_sensitive=True)
@@ -347,14 +379,18 @@ class TestMakeRoutingDecision:
         assert d.mode == "Lifecycle"
 
     def test_latency_critical_reduces_risk(self) -> None:
-        from thegent.utils.routing_impl.route_executor import make_routing_decision_from_factors
+        from thegent.utils.routing_impl.route_executor import (
+            make_routing_decision_from_factors,
+        )
 
         d_base = make_routing_decision_from_factors("moderate")
         d_latency = make_routing_decision_from_factors("moderate", latency_critical=True)
         assert d_latency.risk_score < d_base.risk_score
 
     def test_invalid_complexity_raises_value_error(self) -> None:
-        from thegent.utils.routing_impl.route_executor import make_routing_decision_from_factors
+        from thegent.utils.routing_impl.route_executor import (
+            make_routing_decision_from_factors,
+        )
 
         with pytest.raises(ValueError, match="Unknown complexity level"):
             make_routing_decision_from_factors("bogus")
@@ -362,7 +398,9 @@ class TestMakeRoutingDecision:
     def test_narrow_band_promotes_complex_to_thegent(self) -> None:
         """Wide band raises threshold so complex tasks stay Lifecycle; narrow band flips to TheGent."""
         from thegent.config import ThegentSettings
-        from thegent.utils.routing_impl.route_executor import make_routing_decision_from_factors
+        from thegent.utils.routing_impl.route_executor import (
+            make_routing_decision_from_factors,
+        )
 
         # Small band: high threshold = 1.0 - 0.05 = 0.95; complex=0.7 → Lifecycle
         small_band = ThegentSettings(router_band_width=0.05)  # type: ignore[call-arg]
@@ -375,7 +413,9 @@ class TestMakeRoutingDecision:
         assert d_large.mode == "TheGent"
 
     def test_rationale_contains_band_width(self) -> None:
-        from thegent.utils.routing_impl.route_executor import make_routing_decision_from_factors
+        from thegent.utils.routing_impl.route_executor import (
+            make_routing_decision_from_factors,
+        )
 
         d = make_routing_decision_from_factors("simple")
         assert "band_width" in d.rationale

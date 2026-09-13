@@ -8,11 +8,11 @@ FR traceability: @trace FR-GOV-001 (governance audit trail)
 
 from __future__ import annotations
 
-import orjson as json
 import threading
 import time
 from typing import TYPE_CHECKING
 
+import orjson as json
 import pytest
 
 if TYPE_CHECKING:
@@ -60,7 +60,11 @@ class TestOverrideExpiredEvent:
 
     def test_custom_reason(self):
         evt = OverrideExpiredEvent(
-            override_id="ovr-2", policy_id="pol-B", owner="bob", expired_at=2.0, reason="manual_revoke"
+            override_id="ovr-2",
+            policy_id="pol-B",
+            owner="bob",
+            expired_at=2.0,
+            reason="manual_revoke",
         )
         assert evt.reason == "manual_revoke"
 
@@ -89,13 +93,23 @@ class TestOverrideActivatedEvent:
 
     def test_event_type_field(self):
         evt = OverrideActivatedEvent(
-            override_id="ovr-10", policy_id="pol-X", owner="erin", activated_at=100.0, ttl_s=60.0, expires_at=160.0
+            override_id="ovr-10",
+            policy_id="pol-X",
+            owner="erin",
+            activated_at=100.0,
+            ttl_s=60.0,
+            expires_at=160.0,
         )
         assert evt.event_type == "governance.override.activated"
 
     def test_to_dict_contains_all_fields(self):
         evt = OverrideActivatedEvent(
-            override_id="ovr-11", policy_id="pol-Y", owner="frank", activated_at=200.0, ttl_s=120.0, expires_at=320.0
+            override_id="ovr-11",
+            policy_id="pol-Y",
+            owner="frank",
+            activated_at=200.0,
+            ttl_s=120.0,
+            expires_at=320.0,
         )
         d = evt.to_dict()
         assert d["override_id"] == "ovr-11"
@@ -113,7 +127,12 @@ class TestOverrideEventEmitterExpired:
     """@trace FR-GOV-001"""
 
     def test_emit_expired_creates_file(self, emitter: OverrideEventEmitter, events_path: Path):
-        evt = OverrideExpiredEvent(override_id="ovr-100", policy_id="pol-1", owner="alice", expired_at=time.time())
+        evt = OverrideExpiredEvent(
+            override_id="ovr-100",
+            policy_id="pol-1",
+            owner="alice",
+            expired_at=time.time(),
+        )
         emitter.emit_expired(evt)
         assert events_path.exists()
 
@@ -128,14 +147,23 @@ class TestOverrideEventEmitterExpired:
     def test_emit_expired_appends_multiple(self, emitter: OverrideEventEmitter, events_path: Path):
         for i in range(3):
             emitter.emit_expired(
-                OverrideExpiredEvent(override_id=f"ovr-{i}", policy_id="pol-X", owner="alice", expired_at=float(i))
+                OverrideExpiredEvent(
+                    override_id=f"ovr-{i}",
+                    policy_id="pol-X",
+                    owner="alice",
+                    expired_at=float(i),
+                )
             )
         lines = _read_lines(events_path)
         assert len(lines) == 3
 
     def test_emit_expired_preserves_reason(self, emitter: OverrideEventEmitter, events_path: Path):
         evt = OverrideExpiredEvent(
-            override_id="ovr-102", policy_id="pol-3", owner="carol", expired_at=1000.0, reason="manual_revoke"
+            override_id="ovr-102",
+            policy_id="pol-3",
+            owner="carol",
+            expired_at=1000.0,
+            reason="manual_revoke",
         )
         emitter.emit_expired(evt)
         data = _read_lines(events_path)[0]
@@ -173,7 +201,12 @@ class TestOverrideEventEmitterActivated:
     def test_emit_multiple_types(self, emitter: OverrideEventEmitter, events_path: Path):
         emitter.emit_activated("ovr-300", "pol-D", "grace", 30.0)
         emitter.emit_expired(
-            OverrideExpiredEvent(override_id="ovr-300", policy_id="pol-D", owner="grace", expired_at=time.time() + 30)
+            OverrideExpiredEvent(
+                override_id="ovr-300",
+                policy_id="pol-D",
+                owner="grace",
+                expired_at=time.time() + 30,
+            )
         )
         lines = _read_lines(events_path)
         assert len(lines) == 2

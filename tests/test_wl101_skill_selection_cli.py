@@ -2,16 +2,18 @@ from __future__ import annotations
 
 from pathlib import Path
 
-from click.exceptions import Exit
 import pytest
+from click.exceptions import Exit
 
-from thegent.cli.commands.cli import _inject_skill_instructions
 from thegent.cli.apps.skills import skills_list, skills_select
+from thegent.cli.commands.cli import _inject_skill_instructions
 from thegent.cli.commands.impl import resume_impl
 from thegent.skills.discovery import SkillInfo
 
 
-def test_wl101_inject_skill_instructions_appends_content(monkeypatch: pytest.MonkeyPatch) -> None:
+def test_wl101_inject_skill_instructions_appends_content(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
     def _fake_load_skill(name: str) -> dict[str, str] | None:
         return {"content": f"# {name} instructions"}
 
@@ -22,7 +24,9 @@ def test_wl101_inject_skill_instructions_appends_content(monkeypatch: pytest.Mon
     assert "## Skill: beta" in prompt
 
 
-def test_wl101_inject_skill_instructions_errors_on_missing_skill(monkeypatch: pytest.MonkeyPatch) -> None:
+def test_wl101_inject_skill_instructions_errors_on_missing_skill(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
     monkeypatch.setattr("thegent.skills.discovery.load_skill", lambda _name: None)
     with pytest.raises(Exit):
         _inject_skill_instructions("base prompt", ["missing"])
@@ -113,21 +117,27 @@ def test_wl101_skills_select_trims_input_name(
     assert "--skill alpha" in stdout
 
 
-def test_wl101_skills_select_rejects_control_characters(capsys: pytest.CaptureFixture[str]) -> None:
+def test_wl101_skills_select_rejects_control_characters(
+    capsys: pytest.CaptureFixture[str],
+) -> None:
     with pytest.raises(Exit):
         skills_select("alpha\nbeta")
     stderr = capsys.readouterr().out
     assert "must not contain control characters" in stderr
 
 
-def test_wl101_skills_select_rejects_blank_name(capsys: pytest.CaptureFixture[str]) -> None:
+def test_wl101_skills_select_rejects_blank_name(
+    capsys: pytest.CaptureFixture[str],
+) -> None:
     with pytest.raises(Exit):
         skills_select("   ")
     stderr = capsys.readouterr().out
     assert "must be non-empty" in stderr
 
 
-def test_wl101_skills_select_rejects_ascii_unit_separator(capsys: pytest.CaptureFixture[str]) -> None:
+def test_wl101_skills_select_rejects_ascii_unit_separator(
+    capsys: pytest.CaptureFixture[str],
+) -> None:
     with pytest.raises(Exit):
         skills_select("alpha\x1fbeta")
     stderr = capsys.readouterr().out

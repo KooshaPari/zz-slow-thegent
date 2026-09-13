@@ -89,7 +89,10 @@ def test_droid_codex_flash_uses_dex_proxy_env(tmp_path):
         "THGENT_CLIPROXY_ADAPTER": "1",
     }
     with (
-        patch("thegent.dex_main._resolve_provider_for_model", return_value=GEMINI_FLASH_PROVIDER) as resolve_provider,
+        patch(
+            "thegent.dex_main._resolve_provider_for_model",
+            return_value=GEMINI_FLASH_PROVIDER,
+        ) as resolve_provider,
         patch("thegent.dex_main._get_codex_env", return_value=fake_env) as get_env,
         patch("thegent.agents.droid.subprocess.run") as run_proc,
     ):

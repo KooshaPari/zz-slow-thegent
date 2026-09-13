@@ -1,7 +1,6 @@
 """Unit tests for cliproxy_adapter (Responses API <-> Chat Completions transform)."""
 
 import orjson as json
-
 import pytest
 
 from thegent.cliproxy_adapter import (
@@ -47,7 +46,11 @@ class TestResponsesToChatCompletions:
         body = {
             "model": "codex-MiniMax-M2.5",
             "input": [
-                {"type": "message", "role": "user", "content": [{"type": "text", "text": "Hi"}]},
+                {
+                    "type": "message",
+                    "role": "user",
+                    "content": [{"type": "text", "text": "Hi"}],
+                },
             ],
             "stream": True,
         }
@@ -102,7 +105,10 @@ class TestResponsesToChatCompletions:
                     "type": "custom",
                     "name": "run_sql",
                     "description": "Run SQL query",
-                    "input_schema": {"type": "object", "properties": {"query": {"type": "string"}}},
+                    "input_schema": {
+                        "type": "object",
+                        "properties": {"query": {"type": "string"}},
+                    },
                 }
             ],
             "tool_choice": {"type": "custom", "name": "run_sql"},
@@ -114,13 +120,21 @@ class TestResponsesToChatCompletions:
                 "function": {
                     "name": "run_sql",
                     "description": "Run SQL query",
-                    "parameters": {"type": "object", "properties": {"query": {"type": "string"}}},
+                    "parameters": {
+                        "type": "object",
+                        "properties": {"query": {"type": "string"}},
+                    },
                 },
             }
         ]
-        assert out["tool_choice"] == {"type": "function", "function": {"name": "run_sql"}}
+        assert out["tool_choice"] == {
+            "type": "function",
+            "function": {"name": "run_sql"},
+        }
 
-    def test_schema_normalization_strips_unsupported_fields_and_nullable_arrays(self) -> None:
+    def test_schema_normalization_strips_unsupported_fields_and_nullable_arrays(
+        self,
+    ) -> None:
         """CLIP-BUG-03/04: normalize schema keys and nullable type arrays."""
         body = {
             "model": "claude-opus-4-6-thinking",
@@ -166,7 +180,10 @@ class TestResponsesToChatCompletions:
     def test_preserves_messages_payload_when_input_is_missing(self) -> None:
         """CLIP-BUG-11: keep explicit messages payloads verbatim."""
         messages = [
-            {"role": "assistant", "content": [{"type": "thinking", "thinking": "t", "signature": "sig-1"}]},
+            {
+                "role": "assistant",
+                "content": [{"type": "thinking", "thinking": "t", "signature": "sig-1"}],
+            },
             {"role": "user", "content": "continue"},
         ]
         body = {"model": "claude-opus-4-6-thinking", "messages": messages}
@@ -191,7 +208,10 @@ class TestResponsesToChatCompletions:
             "model": "claude-sonnet-4-6",
             "input": [{"type": "message", "role": "user", "content": "hi"}],
             "tools": [{"type": "function", "function": {"name": "write_file"}}],
-            "tool_choice": {"type": "function", "function": {"name": "proxy_write_file"}},
+            "tool_choice": {
+                "type": "function",
+                "function": {"name": "proxy_write_file"},
+            },
         }
         out = _responses_to_chat_completions(body)
         assert out["tool_choice"]["function"]["name"] == "write_file"

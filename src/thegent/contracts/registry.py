@@ -15,7 +15,6 @@ from __future__ import annotations
 from dataclasses import dataclass, field
 from typing import Any
 
-
 #: Public schema version used by contract payloads surfaced through
 #: ``get_server_meta_impl``. Defined here so the registries module remains the
 #: single import surface for contract-versioning constants; callers should

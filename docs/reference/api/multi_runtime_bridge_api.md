@@ -15,7 +15,7 @@ Orchestrates tasks across multiple specialized Python processes with network-awa
 
 ### Methods
 
-#### MultiRuntimeBridge.__init__
+#### MultiRuntimeBridge.**init**
 
 ```python
 __init__(self: Any, mesh_root: Any)

@@ -5,6 +5,7 @@
 Trace data model and schema definitions.
 
 Defines JSONL trace format with three core record types:
+
 - ToolCallRecord: Captures tool invocations (bash, read, write, etc.)
 - DecisionRecord: Captures LLM decisions (model, routing, parameters)
 - SessionRecord: Metadata about a trace session
@@ -103,7 +104,7 @@ JSONL trace file reader/writer with optional compression.
 
 ### Methods
 
-#### TraceFile.__init__
+#### TraceFile.**init**
 
 ```python
 __init__(self: Any, path: str, compression: Any)
@@ -237,6 +238,7 @@ validate_record(record: Any)
 Validate a trace record.
 
 Checks:
+
 - Required fields present
 - Types correct
 - Timestamps valid ISO 8601

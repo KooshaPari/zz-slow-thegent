@@ -47,19 +47,19 @@ If you were previously using API keys:
 
 ## Provider Status
 
-| Provider | OAuth Support | API Key Support |
-|----------|---------------|-----------------|
-| claude | ✅ Required | ❌ Removed |
-| codex | ✅ Required | ❌ Removed |
-| gemini | ✅ Required | ❌ Removed |
-| copilot | ✅ Required | ❌ Removed |
-| antigravity | ✅ Required | ❌ Removed |
-| iflow | ✅ Required | ❌ Removed |
-| kiro | ✅ Required | ❌ Removed |
-| kilo | ✅ Required | ❌ Removed |
-| roo | ✅ Required | ❌ Removed |
-| qwen | ✅ Required | ❌ Removed |
-| kimi | ✅ Required | ❌ Removed |
+| Provider    | OAuth Support | API Key Support |
+| ----------- | ------------- | --------------- |
+| claude      | ✅ Required   | ❌ Removed      |
+| codex       | ✅ Required   | ❌ Removed      |
+| gemini      | ✅ Required   | ❌ Removed      |
+| copilot     | ✅ Required   | ❌ Removed      |
+| antigravity | ✅ Required   | ❌ Removed      |
+| iflow       | ✅ Required   | ❌ Removed      |
+| kiro        | ✅ Required   | ❌ Removed      |
+| kilo        | ✅ Required   | ❌ Removed      |
+| roo         | ✅ Required   | ❌ Removed      |
+| qwen        | ✅ Required   | ❌ Removed      |
+| kimi        | ✅ Required   | ❌ Removed      |
 
 ## Rationale
 
@@ -76,14 +76,12 @@ If you were previously using API keys:
 
 All features are **required** - nothing is optional.
 
-
 ---
+
 ## See also
 
 - [WORK_STREAM.md](../reference/WORK_STREAM.md) — canonical backlog
 - [00-MASTER-INDEX.md](../plans/00-MASTER-INDEX.md) — plan index
-
-
 
 ---
 
@@ -93,15 +91,18 @@ All features are **required** - nothing is optional.
 **Extended by:** Claude Code
 
 ### Changes Made
+
 1. Added practical implementation patterns
 2. Added configuration examples
 3. Enhanced cross-references to related documentation
 
 ### Cross-References Added
+
 - Related research and implementation guides
 - WORK_STREAM.md for tracking
 
 ### Practical Additions
+
 - Implementation templates
 - Configuration examples
 - Best practices

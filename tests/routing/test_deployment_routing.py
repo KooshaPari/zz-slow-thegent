@@ -6,7 +6,6 @@
 
 from __future__ import annotations
 
-
 import pytest
 
 from thegent.utils.routing_impl.cost_aware_router import (
@@ -18,7 +17,6 @@ from thegent.utils.routing_impl.cost_aware_router import (
     SessionStickyRouter,
     get_session_sticky_extra,
 )
-
 
 # ---------------------------------------------------------------------------
 # GW-17: Provider budget routing
@@ -36,7 +34,10 @@ def test_provider_budget_blocks_over_limit() -> None:
 
     model_list = [
         {"model_name": "gpt-4o", "litellm_params": {"model": "openai/gpt-4o"}},
-        {"model_name": "claude-opus-4.6", "litellm_params": {"model": "anthropic/claude-opus-4.6"}},
+        {
+            "model_name": "claude-opus-4.6",
+            "litellm_params": {"model": "anthropic/claude-opus-4.6"},
+        },
     ]
 
     # Before any spend: both providers available
@@ -64,7 +65,10 @@ def test_provider_budget_falls_back_when_all_over() -> None:
 
     model_list = [
         {"model_name": "gpt-4o", "litellm_params": {"model": "openai/gpt-4o"}},
-        {"model_name": "claude-opus-4.6", "litellm_params": {"model": "anthropic/claude-opus-4.6"}},
+        {
+            "model_name": "claude-opus-4.6",
+            "litellm_params": {"model": "anthropic/claude-opus-4.6"},
+        },
     ]
 
     router.record_spend("openai", 2.0)
@@ -123,8 +127,18 @@ def test_deployment_pool_to_litellm_format() -> None:
     pool = DeploymentPool(
         name="gpt-4o",
         deployments=[
-            DeploymentConfig(provider="openai", model="gpt-4o", weight=1.0, api_base="https://api.openai.com/v1"),
-            DeploymentConfig(provider="openai", model="gpt-4o", weight=2.0, api_base="https://api2.openai.com/v1"),
+            DeploymentConfig(
+                provider="openai",
+                model="gpt-4o",
+                weight=1.0,
+                api_base="https://api.openai.com/v1",
+            ),
+            DeploymentConfig(
+                provider="openai",
+                model="gpt-4o",
+                weight=2.0,
+                api_base="https://api2.openai.com/v1",
+            ),
         ],
     )
     manager = DeploymentPoolManager([pool])
@@ -239,7 +253,9 @@ def test_session_sticky_returns_none_for_unknown_model() -> None:
 
 
 @pytest.mark.requirement("FR-ROUTE-021")
-def test_get_session_sticky_extra_returns_params(monkeypatch: pytest.MonkeyPatch) -> None:
+def test_get_session_sticky_extra_returns_params(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
     """get_session_sticky_extra returns dict with api_base and api_key when available."""
     monkeypatch.setenv("MY_OPENAI_KEY", "sk-test-123")
 

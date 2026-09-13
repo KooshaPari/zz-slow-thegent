@@ -9,6 +9,7 @@
 ## 1. ReasoningBank Pattern (from ruvnet/agentic-flow)
 
 ### Concept
+
 Store successful reasoning patterns for reuse and optimization.
 
 ### Implementation for CLIProxyAPI
@@ -72,6 +73,7 @@ func (rb *ReasoningBank) SelectProvider(req *Request) string {
 ```
 
 ### Benefits
+
 - 90%+ success rate after learning
 - Reduced latency via pattern reuse
 - Cost optimization through provider scoring
@@ -81,6 +83,7 @@ func (rb *ReasoningBank) SelectProvider(req *Request) string {
 ## 2. QUIC Sync Pattern (from AgentDB)
 
 ### Concept
+
 Sub-second synchronization for distributed agents.
 
 ### Implementation for CLIProxyAPI
@@ -132,6 +135,7 @@ func (qs *QUICSync) Subscribe(eventType string) <-chan SyncEvent {
 ```
 
 ### Benefits
+
 - 50-70% latency reduction
 - Automatic conflict resolution
 - Real-time config propagation
@@ -141,6 +145,7 @@ func (qs *QUICSync) Subscribe(eventType string) <-chan SyncEvent {
 ## 3. Proof-Carrying Protocol (from bar181/aisp-open-core)
 
 ### Concept
+
 Requests carry proof of validity, reducing runtime validation.
 
 ### Implementation for CLIProxyAPI
@@ -193,6 +198,7 @@ func (pcr *ProofCarryingRequest) Validate() error {
 ```
 
 ### Benefits
+
 - Reduces validation complexity 40-65% → <2%
 - Faster request processing
 - Reduced error rates
@@ -202,6 +208,7 @@ func (pcr *ProofCarryingRequest) Validate() error {
 ## 4. SPARC Methodology (from ruvnet/sparc)
 
 ### Concept
+
 5-phase development process with TDD focus.
 
 ### Application to CLIProxyAPI Development
@@ -246,6 +253,7 @@ modes:
 ```
 
 ### Benefits
+
 - Structured development process
 - Better test coverage
 - Cleaner architecture
@@ -255,6 +263,7 @@ modes:
 ## 5. Multi-Model Router (from agentic-flow)
 
 ### Concept
+
 Intelligent model selection based on task requirements.
 
 ### Implementation for CLIProxyAPI
@@ -319,6 +328,7 @@ func (mr *ModelRouter) scoreModel(model ModelConfig, needs RequestNeeds) float64
 ```
 
 ### Benefits
+
 - 85-99% cost reduction
 - Automatic optimization
 - Task-appropriate routing
@@ -328,6 +338,7 @@ func (mr *ModelRouter) scoreModel(model ModelConfig, needs RequestNeeds) float64
 ## 6. Agent Swarm Pattern (from claude-flow)
 
 ### Concept
+
 Parallel agent execution for complex tasks.
 
 ### Implementation for CLIProxyAPI
@@ -382,6 +393,7 @@ func (se *SwarmExecutor) Execute(tasks []Task) ([]Result, error) {
 ```
 
 ### Benefits
+
 - 15-agent concurrent execution
 - 40% code reduction
 - <500ms cold start
@@ -391,6 +403,7 @@ func (se *SwarmExecutor) Execute(tasks []Task) ([]Result, error) {
 ## 7. HNSW Index Pattern (from ruvector/AgentDB)
 
 ### Concept
+
 Fast approximate nearest neighbor search.
 
 ### Implementation for Semantic Routing
@@ -439,6 +452,7 @@ func (idx *HNSWIndex) RouteRequest(req *Request) string {
 ```
 
 ### Benefits
+
 - 150x-12,500x search speedup
 - ~5ms search latency
 - Sub-millisecond for cached
@@ -448,6 +462,7 @@ func (idx *HNSWIndex) RouteRequest(req *Request) string {
 ## 8. Configuration Pattern (from claude-flow MCP)
 
 ### Concept
+
 Plugin-based architecture for extensibility.
 
 ### Implementation for CLIProxyAPI
@@ -506,15 +521,15 @@ hooks:
 
 ## 9. Summary: Integration Roadmap
 
-| Phase | Pattern | Source | Priority |
-|-------|---------|--------|----------|
-| 1 | ReasoningBank | agentic-flow | High |
-| 2 | Multi-Model Router | agentic-flow | High |
-| 3 | Proof-Carrying | aisp-open-core | Medium |
-| 4 | QUIC Sync | AgentDB | Medium |
-| 5 | HNSW Index | ruvector | Medium |
-| 6 | Swarm Executor | claude-flow | Low |
-| 7 | SPARC Methodology | sparc | Low |
+| Phase | Pattern            | Source         | Priority |
+| ----- | ------------------ | -------------- | -------- |
+| 1     | ReasoningBank      | agentic-flow   | High     |
+| 2     | Multi-Model Router | agentic-flow   | High     |
+| 3     | Proof-Carrying     | aisp-open-core | Medium   |
+| 4     | QUIC Sync          | AgentDB        | Medium   |
+| 5     | HNSW Index         | ruvector       | Medium   |
+| 6     | Swarm Executor     | claude-flow    | Low      |
+| 7     | SPARC Methodology  | sparc          | Low      |
 
 ---
 

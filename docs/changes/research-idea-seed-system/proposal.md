@@ -41,16 +41,16 @@ Implement an **Idea Seed Detection & Storage System** that:
 
 ### Key Features
 
-| Feature | Benefit |
-|---------|---------|
-| **Explicit Tagging** (`$idea` flag) | Users opt-in; clear intent signals |
-| **Automatic Detection** (Pattern regex) | Capture ideas without explicit flag |
-| **Persistent Storage** (Git-backed) | Ideas never lost; full audit trail |
-| **Session Context** | Link to original conversation (if available) |
-| **Search & Discovery** | Full-text search, filtering by date/project |
-| **Artifact Extraction** | Extract todos, code sketches, diagrams from ideas |
-| **MCP Integration** | Agents can query ideas, learn from past concepts |
-| **CLI Access** | `thegent ideas list`, `search`, `export` commands |
+| Feature                                 | Benefit                                           |
+| --------------------------------------- | ------------------------------------------------- |
+| **Explicit Tagging** (`$idea` flag)     | Users opt-in; clear intent signals                |
+| **Automatic Detection** (Pattern regex) | Capture ideas without explicit flag               |
+| **Persistent Storage** (Git-backed)     | Ideas never lost; full audit trail                |
+| **Session Context**                     | Link to original conversation (if available)      |
+| **Search & Discovery**                  | Full-text search, filtering by date/project       |
+| **Artifact Extraction**                 | Extract todos, code sketches, diagrams from ideas |
+| **MCP Integration**                     | Agents can query ideas, learn from past concepts  |
+| **CLI Access**                          | `thegent ideas list`, `search`, `export` commands |
 
 ---
 
@@ -212,6 +212,7 @@ Implement an **Idea Seed Detection & Storage System** that:
 ## 7. Phase Breakdown
 
 ### Phase 1: Core Detection & Storage (Week 1)
+
 - Implement pattern matching (flag + regex)
 - Build idea schema
 - Create storage layer (JSONL + git)
@@ -220,6 +221,7 @@ Implement an **Idea Seed Detection & Storage System** that:
 **Deliverable**: Ideas detected and persistently stored
 
 ### Phase 2: Indexing & Search (Week 2)
+
 - Implement full-text index
 - Add search CLI command
 - Add filtering (date, project, tag)
@@ -228,6 +230,7 @@ Implement an **Idea Seed Detection & Storage System** that:
 **Deliverable**: Ideas searchable via CLI
 
 ### Phase 3: MCP Integration (Week 3)
+
 - Add MCP tools (collect, search, get)
 - Integrate with MCP server
 - Add MCP resources
@@ -236,6 +239,7 @@ Implement an **Idea Seed Detection & Storage System** that:
 **Deliverable**: Ideas accessible via MCP
 
 ### Phase 4: Polish & Documentation (Week 4)
+
 - Complete test suite
 - Write user guide + CLI reference
 - Add export functionality
@@ -274,20 +278,20 @@ Implement an **Idea Seed Detection & Storage System** that:
 
 ### Technical Risks
 
-| Risk | Severity | Mitigation |
-|------|----------|-----------|
-| Pattern matching false positives | Medium | Configurable rules, manual override, metrics |
-| Storage bloat (many ideas) | Low | Archiving, compression, pruning |
-| Git commit overhead | Low | Batch commits, async writing |
-| Search performance at scale | Medium | Indexing, caching, pagination |
+| Risk                             | Severity | Mitigation                                   |
+| -------------------------------- | -------- | -------------------------------------------- |
+| Pattern matching false positives | Medium   | Configurable rules, manual override, metrics |
+| Storage bloat (many ideas)       | Low      | Archiving, compression, pruning              |
+| Git commit overhead              | Low      | Batch commits, async writing                 |
+| Search performance at scale      | Medium   | Indexing, caching, pagination                |
 
 ### User Adoption Risks
 
-| Risk | Severity | Mitigation |
-|------|----------|-----------|
-| Users forget `$idea` flag | Medium | Auto-detection patterns, reminders, documentation |
-| Ideas not actionable | Low | Export to backlog feature, review process |
-| Privacy concerns | Low | Redaction options, local-only storage |
+| Risk                      | Severity | Mitigation                                        |
+| ------------------------- | -------- | ------------------------------------------------- |
+| Users forget `$idea` flag | Medium   | Auto-detection patterns, reminders, documentation |
+| Ideas not actionable      | Low      | Export to backlog feature, review process         |
+| Privacy concerns          | Low      | Redaction options, local-only storage             |
 
 ---
 
@@ -310,13 +314,13 @@ Implement an **Idea Seed Detection & Storage System** that:
 
 ## 11. Glossary
 
-| Term | Definition |
-|------|-----------|
-| **Idea Seed** | Early-stage concept/insight tagged for preservation |
-| **Detection** | Process of identifying ideas in prompts |
-| **Audit Trail** | Git-backed versioning of all idea changes |
-| **Implicit Idea** | Detected via pattern matching (no explicit tag) |
-| **Explicit Idea** | Tagged with `$idea` flag by user |
+| Term              | Definition                                          |
+| ----------------- | --------------------------------------------------- |
+| **Idea Seed**     | Early-stage concept/insight tagged for preservation |
+| **Detection**     | Process of identifying ideas in prompts             |
+| **Audit Trail**   | Git-backed versioning of all idea changes           |
+| **Implicit Idea** | Detected via pattern matching (no explicit tag)     |
+| **Explicit Idea** | Tagged with `$idea` flag by user                    |
 
 ---
 

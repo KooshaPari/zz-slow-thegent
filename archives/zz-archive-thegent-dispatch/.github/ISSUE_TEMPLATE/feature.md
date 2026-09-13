@@ -6,6 +6,7 @@ labels: enhancement
 ---
 
 ## Problem
+
 <!-- What user need is unmet? -->
 
 ## Proposed solution
@@ -13,4 +14,5 @@ labels: enhancement
 ## Alternatives considered
 
 ## Acceptance criteria
+
 - [ ]

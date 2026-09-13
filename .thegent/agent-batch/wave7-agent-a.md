@@ -3,10 +3,12 @@
 ## Completed slices
 
 ### WL-102: SDK error detail extraction hardening
+
 - Improved SDK HTTP error parsing to extract nested `error.message` when present in non-2xx JSON payloads.
 - Added coverage for nested error payload mapping so typed exceptions preserve actionable detail.
 
 ### WL-105: Dynamic tool input/timeout validation hardening
+
 - Strengthened `DynamicToolRegistry` validation:
   - `default_timeout_seconds` must be finite and `> 0`.
   - per-call `timeout_seconds` must be finite and `> 0`.
@@ -14,14 +16,17 @@
 - Added focused tests for non-finite timeouts and invalid call payload shapes.
 
 ### WL-103: Context usage ratio serialization safety
+
 - Updated run-event detail helper to only emit `context_usage_ratio` when it is finite.
 - Added focused tests for NaN omission and finite rounding behavior.
 
 ### WL-101: Deterministic skill list JSON output
+
 - `thegent skill list --json` now emits skills in deterministic name-sorted order.
 - Added test ensuring sorted output ordering in JSON mode.
 
 ### WL-078: Optional strict benchmark completeness gate
+
 - Extended benchmark regression checker with `--require-complete-baseline`.
 - In strict mode, missing labels from current benchmark payload are treated as regressions (`reason: missing_from_current`).
 - Added tests for complete-baseline enforcement path.

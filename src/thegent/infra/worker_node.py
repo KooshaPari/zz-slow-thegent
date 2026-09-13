@@ -10,6 +10,7 @@ import os
 import sys
 import time
 from pathlib import Path
+
 import typer
 
 # Ensure we can import thegent
@@ -18,7 +19,10 @@ sys.path.insert(0, str(Path(__file__).parent.parent.parent))
 from thegent.infra.ipc import MaildirQueue
 
 try:
-    from thegent_shm import init_shm, record_resource_usage  # type: ignore[reportMissingImports]
+    from thegent_shm import (  # type: ignore[reportMissingImports]
+        init_shm,
+        record_resource_usage,
+    )
 
     HAS_SHM = True
 except ImportError:
@@ -102,7 +106,13 @@ async def worker_loop(mesh_root: Path, runtime_name: str):
                 except Exception as e:
                     result_path = mesh_root / "results" / f"{task_id}.json"
                     result_path.write_text(
-                        json.dumps({"status": "error", "error": str(e), "runtime": runtime_name}),
+                        json.dumps(
+                            {
+                                "status": "error",
+                                "error": str(e),
+                                "runtime": runtime_name,
+                            }
+                        ),
                         encoding="utf-8",
                     )
 

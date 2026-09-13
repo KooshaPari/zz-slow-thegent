@@ -7,9 +7,9 @@ FR Traceability:
 
 from __future__ import annotations
 
-import orjson as json
 from pathlib import Path
 
+import orjson as json
 import pytest
 
 from thegent.governance.hitl import (
@@ -19,7 +19,6 @@ from thegent.governance.hitl import (
     PolicyEngine,
     RunContext,
 )
-
 
 # ---------------------------------------------------------------------------
 # Fixtures
@@ -348,7 +347,7 @@ class TestHITLApprovalWorkflow:
         self._seed_pending(tmp_session, "run_w_02")
         workflow = HITLApprovalWorkflow(tmp_session)
         workflow.approve("run_w_02")
-        log = GovernanceEventLog(tmp_session)
+        GovernanceEventLog(tmp_session)
         events_path = tmp_session / "governance_events.jsonl"
         events = [json.loads(l) for l in events_path.read_text().splitlines() if l.strip()]
         resolution_events = [e for e in events if e.get("event_type") == "hitl_resolution"]
@@ -455,7 +454,13 @@ class TestGovernImplHelpers:
     def test_govern_approve_impl_success(self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
         # @trace G-GP-05 / WL-019-B
         log = GovernanceEventLog(tmp_path)
-        log.emit({"event_type": "await_approval", "run_id": "run_impl_01", "status": "pending"})
+        log.emit(
+            {
+                "event_type": "await_approval",
+                "run_id": "run_impl_01",
+                "status": "pending",
+            }
+        )
 
         from thegent.governance.hitl import HITLApprovalWorkflow
 
@@ -467,7 +472,13 @@ class TestGovernImplHelpers:
     def test_govern_reject_impl_success(self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
         # @trace G-GP-05 / WL-019-B
         log = GovernanceEventLog(tmp_path)
-        log.emit({"event_type": "await_approval", "run_id": "run_impl_02", "status": "pending"})
+        log.emit(
+            {
+                "event_type": "await_approval",
+                "run_id": "run_impl_02",
+                "status": "pending",
+            }
+        )
 
         from thegent.governance.hitl import HITLApprovalWorkflow
 
@@ -479,7 +490,13 @@ class TestGovernImplHelpers:
     def test_govern_list_pending_impl(self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
         # @trace G-GP-05 / WL-019-B
         log = GovernanceEventLog(tmp_path)
-        log.emit({"event_type": "await_approval", "run_id": "run_list_p1", "status": "pending"})
+        log.emit(
+            {
+                "event_type": "await_approval",
+                "run_id": "run_list_p1",
+                "status": "pending",
+            }
+        )
 
         from thegent.governance.hitl import HITLApprovalWorkflow
 

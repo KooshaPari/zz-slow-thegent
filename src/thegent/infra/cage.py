@@ -56,10 +56,17 @@ class AgentCage:
                 capture_output=True,
                 text=True,
                 timeout=30,
-                env={"CAGE_ID": self.cage_id, "PATH": "/usr/bin:/bin"},  # Restricted path
+                env={
+                    "CAGE_ID": self.cage_id,
+                    "PATH": "/usr/bin:/bin",
+                },  # Restricted path
                 check=False,
             )
-            return {"exit_code": result.returncode, "stdout": result.stdout, "stderr": result.stderr}
+            return {
+                "exit_code": result.returncode,
+                "stdout": result.stdout,
+                "stderr": result.stderr,
+            }
         except Exception as e:
             _log.error("Caged command failed: %s", e)
             return {"exit_code": -1, "error": str(e)}

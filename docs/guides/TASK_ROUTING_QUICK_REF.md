@@ -37,6 +37,7 @@ Haiku/Gemini   Sonnet/Mini     Opus            Opus (locked)
 ```
 
 **Examples:**
+
 - "Fix this typo in the README" → FAST
 - "Implement a login handler" → NORMAL
 - "Design the auth microservices architecture" → COMPLEX
@@ -56,6 +57,7 @@ For **HIGH_COMPLEX**: Opus ONLY (no fallback)
 ### Alternative: `prefer_proxy` (cost optimization)
 
 Use if budget is tight:
+
 - FAST: (same)
 - NORMAL: MiniMax/GLM → Sonnet
 - COMPLEX: Cursor Opus Thinking → Opus
@@ -64,6 +66,7 @@ Use if budget is tight:
 ### Alternative: `cheapest`
 
 Sort by cost_weight, pick lowest:
+
 - Best for: repeated queries, high volume
 - Tradeoff: quality may drop, latency may increase
 - Safe for: FAST and NORMAL only
@@ -87,14 +90,17 @@ Sort by cost_weight, pick lowest:
 ## Governance Gates
 
 ### FAST & NORMAL
+
 No special gates. Check cost budget.
 
 ### COMPLEX
+
 1. If `lane=critical` → require `confidence >= 0.9`
 2. If `confidence < 0.85` → warn (suggest review)
 3. Cost budget check (same as all)
 
 ### HIGH_COMPLEX
+
 1. **MANDATORY:** cost budget approval (> $0.25)
 2. **MANDATORY:** `lane=critical` requires `confidence >= 0.9`
 3. **MANDATORY:** contract drift < 5%
@@ -106,12 +112,12 @@ No special gates. Check cost budget.
 ## RunMeta: New Fields to Track
 
 ```python
-task_category: str | None          # "FAST", "NORMAL", "COMPLEX", "HIGH_COMPLEX"
-tokens_in_estimated: int | None    # estimated input tokens
-tokens_out_estimated: int | None   # estimated output tokens
-reasoning_depth: int | None        # 0=none, 1=light, 2=moderate, 3=deep
-route_decision: str | None         # trace: "prefer_direct > opus"
-fallback_count: int = 0            # how many times did we fallback?
+task_category: str | None  # "FAST", "NORMAL", "COMPLEX", "HIGH_COMPLEX"
+tokens_in_estimated: int | None  # estimated input tokens
+tokens_out_estimated: int | None  # estimated output tokens
+reasoning_depth: int | None  # 0=none, 1=light, 2=moderate, 3=deep
+route_decision: str | None  # trace: "prefer_direct > opus"
+fallback_count: int = 0  # how many times did we fallback?
 ```
 
 ---
@@ -119,6 +125,7 @@ fallback_count: int = 0            # how many times did we fallback?
 ## Typical Flows (Copy-Paste)
 
 ### FAST Query
+
 ```bash
 thegent run claude "Find the retry decorator in utils.py"
 # Automatically routes to: haiku-4.5 (direct)
@@ -127,6 +134,7 @@ thegent run claude "Find the retry decorator in utils.py"
 ```
 
 ### NORMAL Implementation
+
 ```bash
 thegent run claude \
   "Implement auth handler with error handling and tests" \
@@ -137,6 +145,7 @@ thegent run claude \
 ```
 
 ### COMPLEX Design (Requires Approval)
+
 ```bash
 thegent run claude \
   "Design the microservices architecture for our data pipeline" \
@@ -151,6 +160,7 @@ thegent run claude \
 ```
 
 ### HIGH_COMPLEX Feature (Requires Escalation)
+
 ```bash
 thegent run claude \
   "Full-stack feature: implement auth + tests + docs + CI setup" \
@@ -174,11 +184,11 @@ thegent run claude \
 
 If your provider is exhausted:
 
-| Category | Fallback Sequence |
-|----------|-------------------|
-| FAST | Haiku → Gemini → Composer → Sonnet → ERROR |
-| NORMAL | Sonnet → MiniMax → GLM → Haiku → ESCALATE |
-| COMPLEX | Opus → Cursor Opus → Sonnet → ESCALATE |
+| Category     | Fallback Sequence                                 |
+| ------------ | ------------------------------------------------- |
+| FAST         | Haiku → Gemini → Composer → Sonnet → ERROR        |
+| NORMAL       | Sonnet → MiniMax → GLM → Haiku → ESCALATE         |
+| COMPLEX      | Opus → Cursor Opus → Sonnet → ESCALATE            |
 | HIGH_COMPLEX | Opus → Cursor Opus → ESCALATE (no lower fallback) |
 
 **ESCALATE** = add to `EscalationQueue`, notify on-call, block dispatch until human approves.
@@ -188,6 +198,7 @@ If your provider is exhausted:
 ## Monitoring (What to Watch)
 
 **Daily check:**
+
 ```bash
 thegent observe routing-summary
 # Shows:
@@ -236,12 +247,14 @@ export THGENT_ESCALATION_SLA_MINUTES=30
 ## Common Mistakes (Don't!)
 
 ✗ **Mistake 1:** Submit HIGH_COMPLEX without `--confidence`
+
 ```
 → Denied: "Critical lane requires confidence >= 0.9"
 → Fix: Add `--confidence 0.91`
 ```
 
 ✗ **Mistake 2:** Use Sonnet for a COMPLEX task
+
 ```
 thegent run claude "Design the architecture" --model sonnet-4.5
 → Warning: COMPLEX category prefers Opus, not Sonnet
@@ -249,6 +262,7 @@ thegent run claude "Design the architecture" --model sonnet-4.5
 ```
 
 ✗ **Mistake 3:** Rely on fallback for HIGH_COMPLEX
+
 ```
 → HIGH_COMPLEX has NO fallback chain
 → If Opus exhausted → ESCALATE (hard stop)
@@ -256,6 +270,7 @@ thegent run claude "Design the architecture" --model sonnet-4.5
 ```
 
 ✗ **Mistake 4:** Ignore calibration factors
+
 ```
 Agent submits: confidence 0.90
 But historical calibration: 0.85 (underconfident)
@@ -271,25 +286,28 @@ Critical lane requires 0.9 → DENIED
 **File:** `src/thegent/routing/classifier.py` (new)
 
 **Core functions to implement:**
+
 ```python
 def classify_task(input: TaskClassificationInput) -> TaskCategory:
     """Classify task into FAST, NORMAL, COMPLEX, or HIGH_COMPLEX."""
 
+
 def resolve_provider(
-    category: TaskCategory,
-    provider_hint: str | None = None,
-    policy: RoutePolicy = "prefer_direct"
+    category: TaskCategory, provider_hint: str | None = None, policy: RoutePolicy = "prefer_direct"
 ) -> tuple[str, str]:
     """Resolve category to (provider, model_alias)."""
 
+
 def estimate_tokens_input(prompt: str) -> int:
     """Quick estimate of input tokens (1 token ≈ 4 chars)."""
+
 
 def infer_reasoning_depth(prompt: str) -> int:
     """Infer reasoning depth 0–3 from prompt keywords."""
 ```
 
 **Integration points:**
+
 1. `PolicyEngine.evaluate()` — add task classification check before dispatch
 2. `RunRegistry.register_start()` — populate `task_category`, `tokens_in_estimated`, etc.
 3. `RunRegistry.register_end()` — log actual cost vs. estimated
@@ -308,7 +326,6 @@ def infer_reasoning_depth(prompt: str) -> int:
 7. Monitor fallback rates for 1 week
 8. Tune category thresholds based on real token distributions
 
-
 ---
 
 ## EXTENSION_SUMMARY
@@ -317,15 +334,18 @@ def infer_reasoning_depth(prompt: str) -> int:
 **Extended by:** Claude Code
 
 ### Changes Made
+
 1. Added practical implementation patterns
 2. Added configuration examples
 3. Enhanced cross-references to related documentation
 
 ### Cross-References Added
+
 - Related research and implementation guides
 - WORK_STREAM.md for tracking
 
 ### Practical Additions
+
 - Implementation templates
 - Configuration examples
 - Best practices

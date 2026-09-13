@@ -6,11 +6,12 @@ Analyzes all projects, extracts specs/WBS/PRD content from markdown files,
 performs cross-project analysis, and generates unified work streams and PRDs.
 """
 
-import orjson as json
 import logging
 import sys
 from datetime import datetime
 from pathlib import Path
+
+import orjson as json
 
 # Add thegent to path
 sys.path.insert(0, str(Path(__file__).parent.parent.parent))

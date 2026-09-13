@@ -12,11 +12,12 @@ import logging
 import sqlite3
 import threading
 import time
+from collections.abc import Callable
 from dataclasses import dataclass, field
 from datetime import UTC, datetime
 from enum import Enum
 from pathlib import Path
-from typing import Any, Callable, ClassVar, cast
+from typing import Any, ClassVar, cast
 
 from thegent.infra.fast_file_watcher import FastFileWatcher
 from thegent.integrations.base import SerializableMixin
@@ -146,7 +147,13 @@ class UnifiedSessionIndex:
                         harness=HarnessType.UNKNOWN,
                         project_path=None,
                         started_at=datetime.now(UTC),
-                        metadata={"source": "zmx", "pid": s.pid, "state": s.state, "cmd": s.cmd, "live": is_alive},
+                        metadata={
+                            "source": "zmx",
+                            "pid": s.pid,
+                            "state": s.state,
+                            "cmd": s.cmd,
+                            "live": is_alive,
+                        },
                     )
                     self._upsert_session(session)
                     count += 1
@@ -283,7 +290,11 @@ class UnifiedSessionIndex:
         sessions_dir = ante_root / "sessions"
         if sessions_dir.exists():
             try:
-                for session_file in sorted(sessions_dir.glob("*.json"), key=lambda x: x.stat().st_mtime, reverse=True):
+                for session_file in sorted(
+                    sessions_dir.glob("*.json"),
+                    key=lambda x: x.stat().st_mtime,
+                    reverse=True,
+                ):
                     parsed = self._parse_ante_session(session_file)
                     if parsed:
                         self._upsert_session(parsed)
@@ -436,30 +447,29 @@ class UnifiedSessionIndex:
         limit: int = 100,
     ) -> list[AgentSession]:
         """Search sessions with filters."""
-        with self._lock:
-            with sqlite3.connect(self.db_path) as conn:
-                conn.row_factory = sqlite3.Row
+        with self._lock, sqlite3.connect(self.db_path) as conn:
+            conn.row_factory = sqlite3.Row
 
-                sql = "SELECT * FROM sessions WHERE 1=1"
-                params: list[Any] = []
+            sql = "SELECT * FROM sessions WHERE 1=1"
+            params: list[Any] = []
 
-                if harness:
-                    sql += " AND harness = ?"
-                    params.append(harness.value)
+            if harness:
+                sql += " AND harness = ?"
+                params.append(harness.value)
 
-                if project:
-                    sql += " AND project_path LIKE ?"
-                    params.append(f"%{project}%")
+            if project:
+                sql += " AND project_path LIKE ?"
+                params.append(f"%{project}%")
 
-                if query:
-                    sql += " AND (messages_json LIKE ? OR metadata_json LIKE ?)"
-                    params.extend([f"%{query}%", f"%{query}%"])
+            if query:
+                sql += " AND (messages_json LIKE ? OR metadata_json LIKE ?)"
+                params.extend([f"%{query}%", f"%{query}%"])
 
-                sql += " ORDER BY started_at DESC LIMIT ?"
-                params.append(limit)
+            sql += " ORDER BY started_at DESC LIMIT ?"
+            params.append(limit)
 
-                rows = conn.execute(sql, params).fetchall()
-                return [self._row_to_session(row) for row in rows]
+            rows = conn.execute(sql, params).fetchall()
+            return [self._row_to_session(row) for row in rows]
 
     def _row_to_session(self, row: sqlite3.Row) -> AgentSession:
         """Convert DB row to AgentSession."""
@@ -590,7 +600,12 @@ def main() -> None:
     parser.add_argument("--db", type=Path, help="SQLite DB path")
     parser.add_argument("--index", action="store_true", help="Full index all harnesses")
     parser.add_argument("--search", type=str, help="Search query")
-    parser.add_argument("--harness", type=str, choices=["cursor", "codex", "ante"], help="Filter by harness")
+    parser.add_argument(
+        "--harness",
+        type=str,
+        choices=["cursor", "codex", "ante"],
+        help="Filter by harness",
+    )
     parser.add_argument("--project", type=str, help="Filter by project path")
     parser.add_argument("--watch", action="store_true", help="Start live watching")
     parser.add_argument("--limit", type=int, default=20, help="Result limit")
@@ -637,9 +652,10 @@ if __name__ == "__main__":
 # ---------------------------------------------------------------------------
 
 
-import subprocess
-from thegent.infra.shim_subprocess import run as shim_run
 import shlex
+import subprocess
+
+from thegent.infra.shim_subprocess import run as shim_run
 
 
 class HarnessActionError(Exception):

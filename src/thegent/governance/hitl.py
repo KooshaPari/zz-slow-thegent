@@ -14,12 +14,13 @@ Contract surface asserted by
 from __future__ import annotations
 
 import hashlib
-import orjson as json
 import logging
 import uuid
 from datetime import UTC, datetime
 from pathlib import Path
 from typing import Any
+
+import orjson as json
 
 from thegent.integrations.base import SerializableMixin
 
@@ -277,8 +278,8 @@ class PolicyEngine:
         Returns:
             Event dict that was emitted
         """
-        from datetime import UTC, datetime
         import uuid
+        from datetime import UTC, datetime
 
         event: dict[str, Any] = {
             "event_type": "await_approval",

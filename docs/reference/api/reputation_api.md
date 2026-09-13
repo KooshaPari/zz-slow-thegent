@@ -23,7 +23,7 @@ Manages decentralized trust and reputation for mesh agents.
 
 ### Methods
 
-#### ReputationManager.__init__
+#### ReputationManager.**init**
 
 ```python
 __init__(self: Any, db_path: Any)

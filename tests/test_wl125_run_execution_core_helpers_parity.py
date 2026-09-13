@@ -69,8 +69,16 @@ def _load_impl_module(monkeypatch) -> types.ModuleType:
         "unlock_resource_impl",
         "verify_context_impl",
     ]
-    monkeypatch.setitem(sys.modules, "thegent.cli.commands.session_impl", _stub_module("session_impl", session_symbols))
-    monkeypatch.setitem(sys.modules, "thegent.cli.commands.infra_impl", _stub_module("infra_impl", infra_symbols))
+    monkeypatch.setitem(
+        sys.modules,
+        "thegent.cli.commands.session_impl",
+        _stub_module("session_impl", session_symbols),
+    )
+    monkeypatch.setitem(
+        sys.modules,
+        "thegent.cli.commands.infra_impl",
+        _stub_module("infra_impl", infra_symbols),
+    )
     sys.modules.pop("thegent.cli.commands.impl", None)
     return importlib.import_module("thegent.cli.commands.impl")
 
@@ -171,7 +179,9 @@ def test_bg_impl_wrapper_delegates_with_argument_passthrough(monkeypatch, tmp_pa
         "_phase_trust_boundary",
     ],
 )
-def test_run_impl_core_delegates_early_phases_to_extracted_helpers(phase_name: str) -> None:
+def test_run_impl_core_delegates_early_phases_to_extracted_helpers(
+    phase_name: str,
+) -> None:
     helpers = importlib.import_module("thegent.cli.services.run_execution_core_helpers")
     source = inspect.getsource(helpers.run_impl_core)
 

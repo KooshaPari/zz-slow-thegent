@@ -218,9 +218,6 @@ class TestAuditStatsCmdJsonOutput:
 
         audit_stats_cmd(audit_path=log, json_output=True)
         # Re-parse what was emitted.
-        import io
-
-        from thegent.cli.commands import cli as cli_module
 
         # The cleanest way to read what ``audit_stats_cmd`` emitted
         # is to monkey-patch ``typer.echo`` and capture the

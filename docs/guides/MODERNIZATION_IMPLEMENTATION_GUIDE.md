@@ -8,18 +8,18 @@ Guide for agents maintaining and extending the cross-project quality modernizati
 
 Every project uses `task` (go-task) with shared templates from `thegent/templates/`. Available targets:
 
-| Target | What it does |
-|--------|-------------|
-| `task lint` | Run all linters (ruff for Python, oxlint for TS, shellcheck for Bash) |
-| `task test` | Run all test suites |
-| `task format` | Auto-format all source files |
-| `task typecheck` | Run type checkers (ty for Python, tsc for TS) |
-| `task quality` | Run lint + typecheck + test:cov + security |
-| `task gate` | Run full 9-gate quality system |
-| `task security` | Run security scanners (bandit, pip-audit, npm audit) |
-| `task complexity` | Check cyclomatic/cognitive complexity |
-| `task format:check` | Check formatting without modifying files |
-| `task test:cov` | Run tests with coverage reporting |
+| Target              | What it does                                                          |
+| ------------------- | --------------------------------------------------------------------- |
+| `task lint`         | Run all linters (ruff for Python, oxlint for TS, shellcheck for Bash) |
+| `task test`         | Run all test suites                                                   |
+| `task format`       | Auto-format all source files                                          |
+| `task typecheck`    | Run type checkers (ty for Python, tsc for TS)                         |
+| `task quality`      | Run lint + typecheck + test:cov + security                            |
+| `task gate`         | Run full 9-gate quality system                                        |
+| `task security`     | Run security scanners (bandit, pip-audit, npm audit)                  |
+| `task complexity`   | Check cyclomatic/cognitive complexity                                 |
+| `task format:check` | Check formatting without modifying files                              |
+| `task test:cov`     | Run tests with coverage reporting                                     |
 
 Run `task --list` in any project for the full target list.
 
@@ -32,14 +32,15 @@ Run `task --list` in any project for the full target list.
 1. **Create project Taskfile.yml** in the project root. Use `jobhunter/Taskfile.yml` as the reference template.
 
 2. **Include shared templates** from thegent:
+
    ```yaml
    includes:
      py:
        taskfile: ../thegent/templates/python/Taskfile.python.yml
        optional: true
        vars:
-         PYTHON_SRC: 'src'
-         PYTHON_TESTS: 'tests'
+         PYTHON_SRC: "src"
+         PYTHON_TESTS: "tests"
      quality:
        taskfile: ../thegent/templates/shared/Taskfile.quality.yml
        optional: true
@@ -67,17 +68,17 @@ Run `task --list` in any project for the full target list.
 
 The gate system runs sequentially. Each gate must pass before the next runs.
 
-| Gate | Check | Tool |
-|------|-------|------|
-| 1 | Formatting | `ruff format --check` / `prettier --check` |
-| 2 | Linting | `ruff check` / `oxlint` / `shellcheck` |
-| 3 | Type checking | `ty check` / `tsc --noEmit` |
-| 4 | Unit tests | `pytest -m unit` / `vitest` |
-| 5 | Integration tests | `pytest -m integration` |
-| 6 | Coverage threshold | `pytest --cov --cov-fail-under=80` |
-| 7 | Security scanning | `bandit` / `pip-audit` / `npm audit` |
-| 8 | Complexity check | `radon` / cyclomatic + cognitive limits |
-| 9 | Architecture enforcement | `import-linter` / `tach check` |
+| Gate | Check                    | Tool                                       |
+| ---- | ------------------------ | ------------------------------------------ |
+| 1    | Formatting               | `ruff format --check` / `prettier --check` |
+| 2    | Linting                  | `ruff check` / `oxlint` / `shellcheck`     |
+| 3    | Type checking            | `ty check` / `tsc --noEmit`                |
+| 4    | Unit tests               | `pytest -m unit` / `vitest`                |
+| 5    | Integration tests        | `pytest -m integration`                    |
+| 6    | Coverage threshold       | `pytest --cov --cov-fail-under=80`         |
+| 7    | Security scanning        | `bandit` / `pip-audit` / `npm audit`       |
+| 8    | Complexity check         | `radon` / cyclomatic + cognitive limits    |
+| 9    | Architecture enforcement | `import-linter` / `tach check`             |
 
 ### Extending the gate system
 

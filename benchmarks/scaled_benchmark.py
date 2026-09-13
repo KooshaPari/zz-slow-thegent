@@ -16,9 +16,6 @@ from __future__ import annotations
 
 import asyncio
 import json
-import os
-import subprocess
-import sys
 import time
 from dataclasses import dataclass, field
 from datetime import UTC, datetime
@@ -103,7 +100,7 @@ async def benchmark_agent_cold_spawn(tmp_path: Path) -> float:
     if hasattr(synth_module, "_agent_cache"):
         synth_module._agent_cache = {}
 
-    agent = synth_module.AgentSynthesis()
+    synth_module.AgentSynthesis()
 
     elapsed = (time.perf_counter() - start) * 1000  # ms
     return elapsed
@@ -123,7 +120,7 @@ async def benchmark_agent_warm_spawn(tmp_path: Path) -> float:
     if hasattr(synth_module, "_agent_cache"):
         synth_module._agent_cache["default"] = {"ready": True}
 
-    agent = synth_module.AgentSynthesis()
+    synth_module.AgentSynthesis()
 
     elapsed = (time.perf_counter() - start) * 1000
     return elapsed
@@ -162,7 +159,7 @@ def benchmark_api_latency(model: str = "minimax-m2.5") -> dict[str, float]:
     # Test with proxy
     try:
         start = time.perf_counter()
-        response = httpx.get("http://127.0.0.1:8318/v1/models", timeout=5.0)
+        httpx.get("http://127.0.0.1:8318/v1/models", timeout=5.0)
         proxy_latency = (time.perf_counter() - start) * 1000
         results["proxy_latency_ms"] = proxy_latency
     except Exception as e:
@@ -348,7 +345,7 @@ def benchmark_plugin_loading() -> dict[str, float]:
         # Measure hook execution (if available)
         from thegent.hooks.hook_dispatcher import HookDispatcher
 
-        dispatcher = HookDispatcher()
+        HookDispatcher()
         start = time.perf_counter()
         # Would run hooks: await dispatcher.dispatch("pre_task", {"task_id": "test"})
         dispatch_time = (time.perf_counter() - start) * 1000

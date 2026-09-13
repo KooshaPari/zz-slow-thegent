@@ -91,7 +91,16 @@ class DroidRunner(AgentRunner):
         # Route via LiteLLM Router if enabled
         if self._use_litellm_router:
             return self._run_via_litellm_router(
-                prompt, cwd, mode, timeout, self._model, use_stream, live_output, on_stdout, on_stderr, env=env
+                prompt,
+                cwd,
+                mode,
+                timeout,
+                self._model,
+                use_stream,
+                live_output,
+                on_stdout,
+                on_stderr,
+                env=env,
             )
 
         droid_path = self.droids_dir / f"{self.droid_name}.md"
@@ -309,7 +318,16 @@ class CodexRunner(AgentRunner):
         # Route via LiteLLM Router if enabled
         if self._use_litellm_router:
             return self._run_via_litellm_router(
-                prompt, cwd, mode, timeout, self._model, use_stream, live_output, on_stdout, on_stderr, env=env
+                prompt,
+                cwd,
+                mode,
+                timeout,
+                self._model,
+                use_stream,
+                live_output,
+                on_stdout,
+                on_stderr,
+                env=env,
             )
 
         droid_path = self.droids_dir / f"{self.droid_name}.md"

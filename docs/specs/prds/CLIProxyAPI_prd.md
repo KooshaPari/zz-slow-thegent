@@ -23,19 +23,18 @@
 
 ## 3. Success Metrics
 
-- *seven dimensions** with specific metrics:
+- \*seven dimensions\*\* with specific metrics:
 - ----------|----------------|-------------------|--------|
-- *Code Generation** | HumanEval+ pass@1 | BigCodeBench, LiveCodeBench, MBPP+ | 15% |
-- *Agentic SWE** | SWE-bench Verified | Aider Polyglot, SWE-bench Lite | 25% |
-- *Tool Use** | BFCL accuracy | ToolBench, τ-Bench | 15% |
-- *Autonomous Agents** | GAIA Level 3 | WebArena, AgentBench | 15% |
-- *ML Engineering** | MLE-bench medals | RE-bench, DevAI | 10% |
-- *Security** | CyberSecEval safe rate | SecCodePLT | 5% |
-- *Reasoning** | GPQA Diamond | AIME, MATH-500 | 15% |
+- \*Code Generation\*\* | HumanEval+ pass@1 | BigCodeBench, LiveCodeBench, MBPP+ | 15% |
+- \*Agentic SWE\*\* | SWE-bench Verified | Aider Polyglot, SWE-bench Lite | 25% |
+- \*Tool Use\*\* | BFCL accuracy | ToolBench, τ-Bench | 15% |
+- \*Autonomous Agents\*\* | GAIA Level 3 | WebArena, AgentBench | 15% |
+- \*ML Engineering\*\* | MLE-bench medals | RE-bench, DevAI | 10% |
+- \*Security\*\* | CyberSecEval safe rate | SecCodePLT | 5% |
+- \*Reasoning\*\* | GPQA Diamond | AIME, MATH-500 | 15% |
 - -------|-------------|-------------|
 
 ## 4. Stakeholders
-
 
 ## 5. Target Users
 
@@ -48,1245 +47,735 @@
 
 93.17%
 
-
 ### FR-2: Latency:
 
 50ms
-
 
 ### FR-3: Output:
 
 Domain + Action (e.g., "programming/code-generation")
 
-
 ### FR-4: Input:
 
 User prompt + context
-
 
 ### FR-5: Abilities:
 
 25-dimensional latent space per model
 
-
 ### FR-6: Formula:
 
 P(success) = sigmoid(∑ a_i · (θ_i - b_i))
-
 
 ### FR-7: Features:
 
 25-dimensional difficulty vector from prompt
 
-
 ### FR-8: Score:
 
 P(success) / cost_per_token
-
 
 ### FR-9: Latency:
 
 15-30ms
 
-
 ### FR-10: For Users Who Want to Get Started
-
-
-
 
 ### FR-11: For Developers Who Want to Understand the Code
 
-
-
-
 ### FR-12: High-Level Flow
-
-
-
 
 ### FR-13: Component Breakdown
 
-
-
-
 ### FR-14: Documentation
-
-
-
 
 ### FR-15: Source Code
 
-
-
-
 ### FR-16: Database
-
-
-
 
 ### FR-17: Arch-Router (Task Classification)
 
-
-
-
 ### FR-18: MIRT-BERT (Cost-Quality Prediction)
-
-
-
 
 ### FR-19: ExecutorRegistry (Model Unification)
 
-
-
-
 ### FR-20: FeatureExtractor (Query Analysis)
-
-
-
 
 ### FR-21: 1. Install Dependencies
 
-
-
-
 ### FR-22: 2. Set up Database
-
-
-
 
 ### FR-23: 3. Start MLX-LM Server
 
-
-
-
 ### FR-24: 4. Run Tests
-
-
-
 
 ### FR-25: 5. Integrate into CLIProxyAPI
 
-
-
-
 ### FR-26: Basic Usage
-
-
-
 
 ### FR-27: Testing Components Individually
 
-
-
-
 ### FR-28: DualRouter
-
-
-
 
 ### FR-29: ExecutorRegistry
 
-
-
-
 ### FR-30: MIRT Client
-
-
-
 
 ### FR-31: FeatureExtractor
 
-
-
-
 ### FR-32: Expected Latency
-
-
-
 
 ### FR-33: Run Benchmarks
 
-
-
-
 ### FR-34: MLX-LM Server Not Responding
-
-
-
 
 ### FR-35: MIRT Checkpoint Not Loading
 
-
-
-
 ### FR-36: Feature Extraction Too Slow
-
-
-
 
 ### FR-37: Unit Tests
 
-
-
-
 ### FR-38: Integration Tests (Pending)
-
-
-
 
 ### FR-39: Week 2: MLX-LM Integration
 
-
-
-
 ### FR-40: Week 3: Vibeproxy UI
-
-
-
 
 ### FR-41: Week 4: Testing & Optimization
 
-
-
-
 ### FR-42: Week 5: Production
-
-
-
 
 ### FR-43: For Technical Questions
 
-
-
-
 ### FR-44: For Integration Issues
 
-
-
-
 ### FR-45: For Performance Issues
-
-
-
 
 ### FR-46: Read the Overview
 
 → [DUAL_ROUTER_WEEK1_IMPLEMENTATION.md](./DUAL_ROUTER_WEEK1_IMPLEMENTATION.md)
 
-
 ### FR-47: Follow Setup Guide
 
 → [DUAL_ROUTER_SETUP_GUIDE.md](./DUAL_ROUTER_SETUP_GUIDE.md)
-
 
 ### FR-48: Check Status
 
 → [DUAL_ROUTER_IMPLEMENTATION_STATUS.md](./DUAL_ROUTER_IMPLEMENTATION_STATUS.md)
 
-
 ### FR-49: Architecture Review
 
 → See "System Architecture" below
-
 
 ### FR-50: Code Tour
 
 → Start with `internal/router/dual_router.go`
 
-
 ### FR-51: Run Tests
 
 → `go test ./internal/router/... -v`
-
 
 ### FR-52: Check Examples
 
 → See "Integration Examples" below
 
-
 ### FR-53: Tools Used
 
 LS, Read, Grep tools
-
 
 ### FR-54: Files Analyzed
 
 go.mod, go.sum, README, config.example.yaml, Docker, internal packages
 
-
 ### FR-55: Output
 
 Comprehensive tech stack inventory and architecture map
-
 
 ### FR-56: Cursor Agent
 
 3 official documentation pages fetched
 
-
 ### FR-57: Auggie CLI
 
 3 official documentation pages fetched
-
 
 ### FR-58: Total Sources
 
 6+ official docs, 15+ web research sources
 
-
 ### FR-59: MCP Architecture
 
 Mapped transport methods, capabilities, security models
-
 
 ### FR-60: ACP Protocol
 
 Reviewed Agent Client Protocol standards
 
-
 ### FR-61: CLI Features
 
 Documented all flags, modes, and configurations
-
 
 ### FR-62: Tool Design
 
 Proposed 5 major MCP tools for each CLI
 
-
 ### FR-63: Implementation Phases
 
 4-phase roadmap for each integration
-
 
 ### FR-64: Use Cases
 
 Real-world examples for automation and development
 
-
 ### FR-65: Project Context
 
 `agileplus/project.md`
-
 
 ### FR-66: Cursor Agent Research
 
 `docs/cursor-agent-research.md`
 
-
 ### FR-67: Auggie CLI Research
 
 `docs/auggie-cli-research.md`
-
 
 ### FR-68: This Summary
 
 `docs/RESEARCH_SUMMARY.md`
 
-
 ### FR-69: Total Words Written
 
 12,000+
-
 
 ### FR-70: Code Examples Provided
 
 70+
 
-
 ### FR-71: Tables Created
 
 30+
-
 
 ### FR-72: Research Sources
 
 25+
 
-
 ### FR-73: Hours of Research
 
 ~8 hours of focused research
 
-
 ### FR-74: 1. Project Context Document
-
-
-
 
 ### FR-75: 2. Cursor Agent CLI Research
 
-
-
-
 ### FR-76: 3. Auggie CLI Research
-
-
-
 
 ### FR-77: Phase 1: Codebase Analysis
 
-
-
-
 ### FR-78: Phase 2: Official Documentation Review
-
-
-
 
 ### FR-79: Phase 3: Integration Analysis
 
-
-
-
 ### FR-80: Phase 4: Opportunity Identification
-
-
-
 
 ### FR-81: About CLIProxyAPI
 
-
-
-
 ### FR-82: About Cursor Agent CLI
-
-
-
 
 ### FR-83: About Auggie CLI
 
-
-
-
 ### FR-84: Integration Opportunities
-
-
-
 
 ### FR-85: For AI Assistants (Auggie, Cursor Agent)
 
-
-
-
 ### FR-86: For Team Planning
-
-
-
 
 ### FR-87: For Community Engagement
 
-
-
-
 ### FR-88: Step 1: Team Review (This Week)
-
-
-
 
 ### FR-89: Step 2: Proposal Creation (Next Week)
 
-
-
-
 ### FR-90: Step 3: Proof of Concept (Weeks 3-4)
-
-
-
 
 ### FR-91: Step 4: Implementation (Weeks 5+)
 
-
-
-
 ### FR-92: File Locations
-
-
-
 
 ### FR-93: Key Statistics
 
-
-
-
 ### FR-94: Installation Commands (For Reference)
 
-
-
-
 ### FR-95: Quick MCP Overview
-
-
-
 
 ### FR-96: Complete Project Context
 
 - Documented conventions, architecture, constraints
 
-
 ### FR-97: Cursor Agent CLI Research
 
 - Integration opportunities via MCP servers
-
 
 ### FR-98: Auggie CLI Research
 
 - Automation and CI/CD integration possibilities
 
-
 ### FR-99: CLIProxyAPI Integration Opportunities
 
 - Vision: Why combine them?
-
 
 ### FR-100: CLIProxyAPI Integration Opportunities
 
 - Vision: Automation and CI/CD focus
 
-
 ### FR-101: Project Onboarding
 
 Reference `agileplus/project.md` for new contributors
-
 
 ### FR-102: Feature Proposals
 
 Use MCP tool designs from research documents
 
-
 ### FR-103: Architecture Decisions
 
 Reference integration patterns from both CLIs
-
 
 ### FR-104: Implementation Roadmaps
 
 Follow 4-phase approach from each research doc
 
-
 ### FR-105: GitHub Issues
 
 Link to research for context on feature requests
-
 
 ### FR-106: PRs
 
 Reference conventions from `project.md`
 
-
 ### FR-107: Discussions
 
 Share research findings for feedback
-
 
 ### FR-108: Documentation
 
 Incorporate findings into official docs
 
-
 ### FR-109: Understands code deeply
 
 - Indexes entire codebases automatically
-
 
 ### FR-110: Executes tools
 
 - Runs shell commands, reads/writes files, uses MCP tools
 
-
 ### FR-111: Integrates everywhere
 
 - Works in standalone terminal, CI/CD, ACP editors
-
 
 ### FR-112: Automates tasks
 
 - Designed for code reviews, issue triage, monitoring, exception handling
 
-
 ### FR-113: Runtime
 
 Node.js 22.x or later
-
 
 ### FR-114: Shell
 
 zsh, bash, or fish
 
-
 ### FR-115: Platforms
 
 macOS, Linux, Windows (WSL)
-
 
 ### FR-116: Authentication
 
 Augment account (free tier available for beta)
 
-
 ### FR-117: Network
 
 Optional (works offline with cached context)
-
 
 ### FR-118: Tools
 
 - Functions agent can call
 
-
 ### FR-119: Resources
 
 - Structured data sources
-
 
 ### FR-120: Prompts
 
 - Pre-built workflows
 
-
 ### FR-121: Roots
 
 - Filesystem/URI boundary checks
-
 
 ### FR-122: Elicitation
 
 - Server-initiated information requests
 
-
 ### FR-123: Universal access
 
 - Same Auggie instance across editors
-
 
 ### FR-124: Consistent behavior
 
 - Same tools and context everywhere
 
-
 ### FR-125: Easy deployment
 
 - Single binary, works in any ACP editor
-
 
 ### FR-126: No custom integration
 
 - Standard ACP protocol handling
 
-
 ### FR-127: Auggie CLI Overview
 
 https://docs.augmentcode.com/cli/overview
-
 
 ### FR-128: CLI Reference
 
 https://docs.augmentcode.com/cli/reference
 
-
 ### FR-129: Integrations & MCP
 
 https://docs.augmentcode.com/cli/integrations
-
 
 ### FR-130: Automation
 
 https://docs.augmentcode.com/cli/automation
 
-
 ### FR-131: ACP Clients
 
 https://docs.augmentcode.com/cli/acp/clients
-
 
 ### FR-132: GitHub Repository
 
 https://github.com/augmentcode/auggie
 
-
 ### FR-133: NPM Package
 
 https://www.npmjs.com/package/@augmentcode/auggie
-
 
 ### FR-134: Blog
 
 https://www.augmentcode.com/blog
 
-
 ### FR-135: MCP Directory
 
 https://www.augmentcode.com/mcp/
-
 
 ### FR-136: ACP Spec
 
 https://agentclientprotocol.com/
 
-
 ### FR-137: MCP Protocol
 
 https://modelcontextprotocol.io/
-
 
 ### FR-138: Augment Code Docs
 
 https://docs.augmentcode.com/
 
-
 ### FR-139: Key Findings
-
-
-
 
 ### FR-140: 1.1 What is Auggie CLI?
 
-
-
-
 ### FR-141: 1.2 Core Architecture
-
-
-
 
 ### FR-142: 1.3 System Requirements
 
-
-
-
 ### FR-143: 2.1 Interactive Mode
-
-
-
 
 ### FR-144: 2.2 Print Mode (Automation)
 
-
-
-
 ### FR-145: 2.3 Quiet Mode
-
-
-
 
 ### FR-146: 2.4 Compact Mode
 
-
-
-
 ### FR-147: 2.5 Custom Commands
-
-
-
 
 ### FR-148: 2.6 Session Management
 
-
-
-
 ### FR-149: 2.7 Configuration & Customization
-
-
-
 
 ### FR-150: 3.1 MCP Architecture in Auggie
 
-
-
-
 ### FR-151: 3.2 MCP Transport Methods
-
-
-
 
 ### FR-152: 3.3 Configuring MCP Servers
 
-
-
-
 ### FR-153: 3.4 MCP Capabilities in Auggie
-
-
-
 
 ### FR-154: 3.5 MCP Overrides
 
-
-
-
 ### FR-155: 4.1 What is ACP?
-
-
-
 
 ### FR-156: 4.2 Using Auggie with ACP Editors
 
-
-
-
 ### FR-157: 4.3 ACP Benefits for CLIProxyAPI Integration
-
-
-
 
 ### FR-158: 5.1 Supported Native Integrations
 
-
-
-
 ### FR-159: 5.2 Using Integrations in Commands
-
-
-
 
 ### FR-160: 6.1 Vision: Why Auggie CLI + CLIProxyAPI?
 
-
-
-
 ### FR-161: 6.2 Proposed MCP Server Architecture
-
-
-
 
 ### FR-162: 6.3 Proposed MCP Tools for CLIProxyAPI
 
-
-
-
 ### FR-163: 6.4 Example Auggie Commands with CLIProxyAPI MCP
-
-
-
 
 ### FR-164: 6.5 Implementation Phases
 
-
-
-
 ### FR-165: 7.1 GitHub Actions Integration
-
-
-
 
 ### FR-166: 7.2 CLI Scripts
 
-
-
-
 ### FR-167: 7.3 Pipe-based Workflows
-
-
-
 
 ### FR-168: 7.4 Pre-commit Hooks
 
-
-
-
 ### FR-169: 8.1 Authentication
-
-
-
 
 ### FR-170: 8.2 MCP Server Security
 
-
-
-
 ### FR-171: 8.3 Integration with CLIProxyAPI Security
-
-
-
 
 ### FR-172: Key Differentiator
 
-
-
-
 ### FR-173: Official Documentation
-
-
-
 
 ### FR-174: Community Resources
 
-
-
-
 ### FR-175: Related Standards
-
-
-
 
 ### FR-176: For CLIProxyAPI Maintainers
 
-
-
-
 ### FR-177: For Integration Explorers
-
-
-
 
 ### FR-178: Community Engagement
 
-
-
-
 ### FR-179: Recommended Path Forward
-
-
-
 
 ### FR-180: Review this research
 
 Assess alignment with project roadmap
 
-
 ### FR-181: Create AgilePlus proposal
 
 Formalize MCP server feature
-
 
 ### FR-182: Design MCP interface
 
 Define tool set and security model
 
-
 ### FR-183: Prototype
 
 Build minimal MCP server for proof-of-concept
-
 
 ### FR-184: Test with Auggie
 
 Verify integration works end-to-end
 
-
 ### FR-185: Gather feedback
 
 Community input on proposed tools
-
 
 ### FR-186: Implement
 
 Execute in phases from section 6.5
 
-
 ### FR-187: Install Auggie CLI
 
 `npm install -g @augmentcode/auggie`
-
 
 ### FR-188: Login
 
 `auggie login`
 
-
 ### FR-189: Explore
 
 `auggie "Analyze the CLIProxyAPI codebase"`
-
 
 ### FR-190: Test MCP
 
 Configure a custom `.augment/settings.json`
 
-
 ### FR-191: Create command
 
 Write a custom Auggie command for CLIProxyAPI
-
 
 ### FR-192: Provide feedback
 
 Share findings with team
 
-
 ### FR-193: Better Automation
 
 - Native support in CI/CD and scripting
-
 
 ### FR-194: Natural Language Management
 
 - Conversational provider control
 
-
 ### FR-195: Enterprise Features
 
 - Audit logging, multi-tenant support
-
 
 ### FR-196: Community Alignment
 
 - Both embrace open standards (MCP, ACP)
 
-
 ### FR-197: Novel Use Cases
 
 - Enable scenarios previously impossible
-
 
 ### FR-198: Short term
 
 (1-2 weeks): Create AgilePlus proposal
 
-
 ### FR-199: Medium term
 
 (3-4 weeks): Prototype core MCP tools
-
 
 ### FR-200: Long term
 
 (2+ months): Production release with CI/CD examples
 
-
 ### FR-201: Cursor CLI Overview
 
 https://cursor.com/docs/cli/overview
-
 
 ### FR-202: Using Agent in CLI
 
 https://cursor.com/docs/cli/using
 
-
 ### FR-203: MCP in Cursor
 
 https://cursor.com/docs/context/mcp
-
 
 ### FR-204: Building MCP Servers
 
 https://cursor.com/docs/cookbook/building-mcp-server
 
-
 ### FR-205: MCP Protocol Spec
 
 https://modelcontextprotocol.io/introduction
-
 
 ### FR-206: MCP Directory
 
 https://cursor.com/docs/context/mcp/directory
 
-
 ### FR-207: Cursor Blog
 
 https://cursor.com/blog/cli (Release announcement)
-
 
 ### FR-208: Smithery MCP Hub
 
 https://smithery.ai/ (MCP server directory)
 
-
 ### FR-209: Example MCP Servers
 
 https://github.com/msfeldstein/mcp-test-servers
-
 
 ### FR-210: CursorMCP Hub
 
 https://cursormcp.com/en
 
-
 ### FR-211: Key Findings
-
-
-
 
 ### FR-212: 1.1 What is Cursor Agent CLI?
 
-
-
-
 ### FR-213: 1.2 Core Architecture
-
-
-
 
 ### FR-214: 2.1 Interactive Mode
 
-
-
-
 ### FR-215: 2.2 Non-Interactive Mode (Print Mode)
-
-
-
 
 ### FR-216: 2.3 Session Management
 
-
-
-
 ### FR-217: 2.4 Output Formats
-
-
-
 
 ### FR-218: 3.1 What is MCP?
 
-
-
-
 ### FR-219: 3.2 MCP Architecture in Cursor Agent
-
-
-
 
 ### FR-220: 3.3 MCP Transport Methods
 
-
-
-
 ### FR-221: 3.4 MCP Capabilities Supported by Cursor Agent
-
-
-
 
 ### FR-222: 3.5 MCP Configuration
 
-
-
-
 ### FR-223: 4.1 Rules System
-
-
-
 
 ### FR-224: 4.2 Codebase Indexing
 
-
-
-
 ### FR-225: 5.1 Command Approval
-
-
-
 
 ### FR-226: 5.2 MCP Tool Approval
 
-
-
-
 ### FR-227: 5.3 Security Best Practices
-
-
-
 
 ### FR-228: 6.1 Vision: Why Cursor Agent + CLIProxyAPI?
 
-
-
-
 ### FR-229: 6.2 Proposed Integration Architecture
-
-
-
 
 ### FR-230: 6.3 Potential MCP Tools for CLIProxyAPI
 
-
-
-
 ### FR-231: 6.4 Benefits to CLIProxyAPI Users
-
-
-
 
 ### FR-232: 6.5 Implementation Phases
 
-
-
-
 ### FR-233: 7.1 Go MCP Server Implementation
-
-
-
 
 ### FR-234: 7.2 Security Implications
 
-
-
-
 ### FR-235: 7.3 Performance & Scalability
-
-
-
 
 ### FR-236: Cursor Agent vs. Traditional CI/CD
 
-
-
-
 ### FR-237: MCP Ecosystem Alternatives
-
-
-
 
 ### FR-238: Official Documentation
 
-
-
-
 ### FR-239: Key Resources
-
-
-
 
 ### FR-240: Community & Examples
 
-
-
-
 ### FR-241: For CLIProxyAPI Maintainers
 
-
-
-
 ### FR-242: For Integration Explorers
-
-
-
 
 ### FR-243: Review this research
 
 Assess alignment with project goals
 
-
 ### FR-244: Create change proposal
 
 Use AgilePlus to formalize MCP server feature
-
 
 ### FR-245: Design MCP interface
 
 Define tool set and protocols
 
-
 ### FR-246: Prototype
 
 Build minimal MCP server for proof-of-concept
-
 
 ### FR-247: Community feedback
 
 Share proposal for community input
 
-
 ### FR-248: Implementation
 
 Execute in phases per section 6.5
 
-
 ### FR-249: Experiment locally
 
-```bash
+````bash
 
 
 ### FR-250: Test MCP setup
@@ -12335,20 +11824,20 @@ gRPC bridge for Go-Python communication
 
 ### 2.1 High-Level Architecture
 
-```
-┌─────────────────────────────────────────────────────────────────────────────────┐
-│                              SAIP Architecture                                   │
-├─────────────────────────────────────────────────────────────────────────────────┤
-│                                                                                  │
-│  ┌──────────────────────────────────────────────────────────────────────────┐   │
-│  │                        INGESTION LAYER (Spokes)                          │   │
-│  │  ┌─────────────┐  ┌─────────────┐  ┌─────────────┐  ┌─────────────────┐  │   │
-│  │  │ HuggingFace │  │ Web Scrape  │  │ Git Mining  │  │ API Connectors  │  │   │
-│  │  │  Strategy   │  │  Strategy   │  │  Strategy   │  │   Strategy      │  │   │
-│  │  └──────┬──────┘  └──────┬──────┘  └──────┬──────┘  └────────┬────────┘  │   │
-│  └─────────┼────────────────┼────────────────┼──────────────────┼───────────┘   │
-│            └────────────────┴──────
+````
 
+┌─────────────────────────────────────────────────────────────────────────────────┐
+│ SAIP Architecture │
+├─────────────────────────────────────────────────────────────────────────────────┤
+│ │
+│ ┌──────────────────────────────────────────────────────────────────────────┐ │
+│ │ INGESTION LAYER (Spokes) │ │
+│ │ ┌─────────────┐ ┌─────────────┐ ┌─────────────┐ ┌─────────────────┐ │ │
+│ │ │ HuggingFace │ │ Web Scrape │ │ Git Mining │ │ API Connectors │ │ │
+│ │ │ Strategy │ │ Strategy │ │ Strategy │ │ Strategy │ │ │
+│ │ └──────┬──────┘ └──────┬──────┘ └──────┬──────┘ └────────┬────────┘ │ │
+│ └─────────┼────────────────┼────────────────┼──────────────────┼───────────┘ │
+│ └────────────────┴──────
 
 ## 10. Technical Requirements
 
@@ -12420,12 +11909,9 @@ gRPC bridge for Go-Python communication
 
 ## 12. Timeline & Phases
 
-
 ## 13. Milestones
 
-
 ## 14. Dependencies
-
 
 ## 16. Related Projects
 
@@ -12461,7 +11947,9 @@ gRPC bridge for Go-Python communication
 - Organization
 - 3
 - can
-- ---
+
+---
+
 - Structure
 - Overview
 - COMPLETE

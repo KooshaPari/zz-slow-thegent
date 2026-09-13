@@ -9,12 +9,12 @@ multiple thegent instances share a single global slot pool. Falls back to the
 in-process controller when Redis is not installed or unreachable.
 
 Configuration via environment variables (all read through ThegentSettings):
-  THGENT_REDIS_HOST              - Redis host (default: localhost)
-  THGENT_REDIS_PORT              - Redis port (default: 6379)
-  THGENT_REDIS_DB                - Redis DB index (default: 0)
-  THGENT_REDIS_PASSWORD          - Optional password
-  THGENT_REDIS_KEY_PREFIX        - Key namespace (default: thgent:concurrency)
-  THGENT_REDIS_CONCURRENCY_LIMIT - Max concurrent slots (default: 10)
+THGENT_REDIS_HOST - Redis host (default: localhost)
+THGENT_REDIS_PORT - Redis port (default: 6379)
+THGENT_REDIS_DB - Redis DB index (default: 0)
+THGENT_REDIS_PASSWORD - Optional password
+THGENT_REDIS_KEY_PREFIX - Key namespace (default: thgent:concurrency)
+THGENT_REDIS_CONCURRENCY_LIMIT - Max concurrent slots (default: 10)
 
 swarm-redis-concurrency
 
@@ -25,19 +25,19 @@ swarm-redis-concurrency
 Distributed concurrency limits backed by Redis SETNX/EXPIRE.
 
 Each acquired slot is represented by a Redis key:
-  ``{key_prefix}:slot:{run_id}``
+`{key_prefix}:slot:{run_id}`
 
-The key expires automatically after ``slot_ttl_s`` seconds so stale slots
+The key expires automatically after `slot_ttl_s` seconds so stale slots
 (from crashed workers) are reclaimed without manual intervention.
 
-Fallback: if the ``redis`` package is not installed *or* Redis is
+Fallback: if the `redis` package is not installed _or_ Redis is
 unreachable at construction time, the controller silently falls back to
-an in-process ``_InMemoryStore`` that behaves identically within a single
-process.  ``is_available()`` returns ``False`` in fallback mode.
+an in-process `_InMemoryStore` that behaves identically within a single
+process. `is_available()` returns `False` in fallback mode.
 
 ### Methods
 
-#### RedisConcurrencyController.__init__
+#### RedisConcurrencyController.**init**
 
 ```python
 __init__(self: Any, redis_config: Any, max_concurrent: Any, slot_ttl_s: float)
@@ -47,12 +47,12 @@ Initialise the controller.
 
 **Parameters**:
 
-- `redis_config`: Connection parameters.  When *None*, reads from env.
+- `redis_config`: Connection parameters. When _None_, reads from env.
 - `max_concurrent`: Maximum concurrent slots across all instances.
-Reads ``THGENT_REDIS_CONCURRENCY_LIMIT`` when *None*
-(default: 10).
-- `slot_ttl_s`: TTL in seconds for each slot key.  Slots older than
-this are considered stale and released automatically.
+  Reads `THGENT_REDIS_CONCURRENCY_LIMIT` when _None_
+  (default: 10).
+- `slot_ttl_s`: TTL in seconds for each slot key. Slots older than
+  this are considered stale and released automatically.
 
 ---
 
@@ -66,7 +66,7 @@ Return the number of currently active (acquired) slots.
 
 When called from within a running event loop (async context), returns
 a synchronous approximate count from the fallback store or 0 for
-Redis mode (use ``aget_active_count()`` from async code).
+Redis mode (use `aget_active_count()` from async code).
 
 ---
 
@@ -120,13 +120,13 @@ Build config from ThegentSettings.
 
 ---
 
-## _InMemoryStore
+## \_InMemoryStore
 
 Thread-safe in-process slot tracker used as Redis fallback.
 
 ### Methods
 
-#### _InMemoryStore.count_with_prefix_sync
+#### \_InMemoryStore.count_with_prefix_sync
 
 ```python
 count_with_prefix_sync(self: Any, prefix: str)
@@ -178,7 +178,7 @@ Return the number of currently active (acquired) slots.
 
 When called from within a running event loop (async context), returns
 a synchronous approximate count from the fallback store or 0 for
-Redis mode (use ``aget_active_count()`` from async code).
+Redis mode (use `aget_active_count()` from async code).
 
 ---
 
@@ -208,10 +208,10 @@ Return the list of run_ids currently holding a slot (synchronous).
 make_redis_concurrency_controller(max_concurrent: Any, slot_ttl_s: float)
 ```
 
-Create a ``RedisConcurrencyController`` from environment variables.
+Create a `RedisConcurrencyController` from environment variables.
 
-When ``THGENT_REDIS_HOST`` is not set, the controller will still be
-created but immediately fall back to in-process limits (``is_available()``
-returns ``False``).
+When `THGENT_REDIS_HOST` is not set, the controller will still be
+created but immediately fall back to in-process limits (`is_available()`
+returns `False`).
 
 ---

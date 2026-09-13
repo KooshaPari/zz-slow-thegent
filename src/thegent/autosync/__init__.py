@@ -16,7 +16,7 @@ class AutoSync:
 
     def sync(self) -> dict[str, Any]:
         """Perform synchronization.
-        
+
         Returns:
             Sync result dictionary.
         """

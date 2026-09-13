@@ -1,10 +1,10 @@
 """Unit tests for CLI resolution logic."""
 
 import getpass
-import orjson as json
 from pathlib import Path
 from unittest.mock import patch
 
+import orjson as json
 import pytest
 import typer
 from typer.testing import CliRunner
@@ -208,7 +208,13 @@ class TestSessionCommands:
             # Put options first (Click/Typer parses options-after-positionals as commands)
             result = runner.invoke(
                 app,
-                ["bg", f"--cd={tmp_path}", "--owner=test-owner", "say hi", "cursor-agent"],
+                [
+                    "bg",
+                    f"--cd={tmp_path}",
+                    "--owner=test-owner",
+                    "say hi",
+                    "cursor-agent",
+                ],
             )
 
         assert result.exit_code == 0
@@ -224,7 +230,15 @@ class TestSessionCommands:
         (tmp_path / ".git").mkdir()
         result = runner.invoke(
             app,
-            ["run", "-M", "gemini-3-flash", "-P", "minimax", f"--cd={tmp_path}", "prompt"],
+            [
+                "run",
+                "-M",
+                "gemini-3-flash",
+                "-P",
+                "minimax",
+                f"--cd={tmp_path}",
+                "prompt",
+            ],
         )
         assert result.exit_code == 1
         assert "not available via provider 'minimax'" in result.stdout
@@ -294,7 +308,10 @@ class TestSessionCommands:
             with patch("thegent.cli.commands.cli._is_pid_running", return_value=True):
                 with patch("thegent.cli.commands.cli.os.killpg") as killpg:
                     with patch("thegent.cli.commands.cli.time.sleep"):
-                        with patch("thegent.cli.commands.cli.time.time", side_effect=[0.0, 0.3, 0.7, 1.2]):
+                        with patch(
+                            "thegent.cli.commands.cli.time.time",
+                            side_effect=[0.0, 0.3, 0.7, 1.2],
+                        ):
                             stop_cmd(sid, force=False, wind_down=True, grace=1)
                             # Wind-down sends SIGTERM then, after the grace
                             # period elapses, escalates to SIGKILL.
@@ -531,4 +548,9 @@ class TestObserveSummaryImpl:
         assert result["trend_summary"]["trend_effective_samples"] == 3
         assert result["trend_summary"]["history_sample_count"] == 0
         assert result["generated_query"]["trend_samples"] == 3
-        assert result["trend_summary"]["trend_snapshot_health"] in {"good", "warning", "degraded", "critical"}
+        assert result["trend_summary"]["trend_snapshot_health"] in {
+            "good",
+            "warning",
+            "degraded",
+            "critical",
+        }

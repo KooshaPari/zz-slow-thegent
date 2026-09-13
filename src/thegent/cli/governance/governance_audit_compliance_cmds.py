@@ -11,7 +11,6 @@ import sys
 import uuid
 
 import typer
-
 from rich.console import Console
 from rich.table import Table
 
@@ -44,7 +43,11 @@ def signatures_list_cmd(limit: int = 50, format: str | None = None) -> None:
 
     artifacts = []
     if artifacts_dir.exists():
-        for p in sorted(artifacts_dir.glob("maif.json"), key=lambda x: x.stat().st_mtime, reverse=True)[:limit]:
+        for p in sorted(
+            artifacts_dir.glob("maif.json"),
+            key=lambda x: x.stat().st_mtime,
+            reverse=True,
+        )[:limit]:
             _load_artifact(artifacts, p)
 
     fmt = _normalize_output_format(format)
@@ -248,10 +251,17 @@ def guardrails_show_cmd() -> None:
 
     table.add_row("Max Chars", str(rails.prompt_max_chars))
     table.add_row("Blocklist Patterns", str(len(rails.prompt_blocklist_patterns)))
-    table.add_row("Agent Allowlist", ", ".join(rails.agent_allowlist) if rails.agent_allowlist else "None")
-    table.add_row("Model Allowlist", ", ".join(rails.model_allowlist) if rails.model_allowlist else "None")
     table.add_row(
-        "CWD Allowed Prefixes", ", ".join(rails.cwd_allowed_prefixes) if rails.cwd_allowed_prefixes else "None"
+        "Agent Allowlist",
+        ", ".join(rails.agent_allowlist) if rails.agent_allowlist else "None",
+    )
+    table.add_row(
+        "Model Allowlist",
+        ", ".join(rails.model_allowlist) if rails.model_allowlist else "None",
+    )
+    table.add_row(
+        "CWD Allowed Prefixes",
+        ", ".join(rails.cwd_allowed_prefixes) if rails.cwd_allowed_prefixes else "None",
     )
 
     console.print(table)

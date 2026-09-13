@@ -7,6 +7,7 @@ A complete, production-ready Self-Healing Swarm Controller has been implemented 
 ## Deliverables
 
 ### 1. Core Implementation
+
 - **File**: `scripts/swarm_controller.py` (1000+ LOC)
 - **Features**:
   - `SwarmController` main orchestrator
@@ -20,6 +21,7 @@ A complete, production-ready Self-Healing Swarm Controller has been implemented 
   - Comprehensive logging
 
 ### 2. Configuration
+
 - **File**: `config/swarm_controller_config.yaml`
 - **Sections**:
   - Health monitoring (10s polling, 30s stale threshold)
@@ -33,6 +35,7 @@ A complete, production-ready Self-Healing Swarm Controller has been implemented 
   - All tunable parameters
 
 ### 3. Testing
+
 - **File**: `scripts/test_swarm_controller.py` (200+ LOC)
 - **Coverage**:
   - Configuration loading
@@ -45,6 +48,7 @@ A complete, production-ready Self-Healing Swarm Controller has been implemented 
 - **Status**: All 7 tests passing ✓
 
 ### 4. Documentation
+
 - **`docs/guides/SWARM_CONTROLLER_README.md`** (Comprehensive overview)
   - Architecture and classes
   - Quick start guide
@@ -83,6 +87,7 @@ A complete, production-ready Self-Healing Swarm Controller has been implemented 
   - Best practices
 
 ### 5. CI/CD Integration
+
 - **File**: `.github/workflows/swarm-health.yml`
 - **Features**:
   - Scheduled health checks (every 15 min during work hours)
@@ -93,6 +98,7 @@ A complete, production-ready Self-Healing Swarm Controller has been implemented 
   - Security-hardened for GitHub Actions
 
 ### 6. Agent Tracking
+
 - **File**: `docs/reference/AGENTS_ACTIVE.md`
 - **Contains**:
   - Agent status summary
@@ -106,6 +112,7 @@ A complete, production-ready Self-Healing Swarm Controller has been implemented 
 ## Key Features
 
 ### Health Monitoring ✓
+
 - Polls agent status every 10 seconds
 - Detects stale agents (>30s no update)
 - Detects SLO breaches (>150% of expected time)
@@ -113,42 +120,49 @@ A complete, production-ready Self-Healing Swarm Controller has been implemented 
 - Tracks heartbeat, last activity, task progress
 
 ### Graceful Pause ✓
+
 - Uses SIGSTOP signal (not kill)
 - Preserves agent memory state
 - Can resume with SIGCONT
 - Prevents state loss on resource pressure
 
 ### Automatic Restart ✓
+
 - Exponential backoff: 2s, 4s, 8s, 16s
 - Max 3 automatic restart attempts
 - After max: escalate to L1 manual intervention
 - Tracks restart history per agent
 
 ### Dynamic Scaling ✓
+
 - Scale UP: pending > 5 items
 - Scale DOWN: pending < 2 items or resource pressure
 - Min: 1 agent, Max: 10 agents
 - Resource-aware (won't scale up if CPU>60% or Memory>50%)
 
 ### Resource Management ✓
+
 - Monitors system CPU and memory
 - Throttles on CPU>80% or Memory>70%
 - Pauses agents on resource pressure
 - Resumes when resources free up
 
 ### Queue Management ✓
+
 - Reads `docs/reference/WORK_STREAM.md` for queue depth
 - Prevents overload via backpressure (if claimed > 10)
 - Limits per-agent claiming (max 5 items)
 - Fair work distribution
 
 ### Persistent State ✓
+
 - Saves agent metrics to `.claude/swarm_state.json`
 - Logs all decisions to `.claude/swarm_controller.log`
 - State persists across restarts
 - JSON format for integration
 
 ### CLI Interface ✓
+
 - `--monitor`: Run continuous loop
 - `--auto-heal`: Enable auto-healing
 - `--status`: Print JSON status
@@ -214,16 +228,19 @@ Total:  7
 ## Quick Start
 
 ### Installation
+
 ```bash
 pip3 install psutil pyyaml
 ```
 
 ### Run Monitor
+
 ```bash
 python3 scripts/swarm_controller.py --monitor --auto-heal
 ```
 
 ### Check Status
+
 ```bash
 # JSON status
 python3 scripts/swarm_controller.py --status
@@ -233,6 +250,7 @@ python3 scripts/swarm_controller.py --report
 ```
 
 ### Agent Management
+
 ```bash
 # Pause agent (gracefully)
 python3 scripts/swarm_controller.py --pause-agent agent-1
@@ -246,18 +264,18 @@ python3 scripts/swarm_controller.py --update-metrics agent-1 task_progress=5
 
 ## File Locations
 
-| File | Purpose |
-|------|---------|
-| `scripts/swarm_controller.py` | Main controller (1000+ LOC) |
-| `scripts/test_swarm_controller.py` | Test suite (200+ LOC) |
-| `config/swarm_controller_config.yaml` | Configuration |
-| `docs/guides/SWARM_CONTROLLER_README.md` | Overview |
-| `docs/guides/SWARM_CONTROLLER_USAGE.md` | Detailed usage guide |
-| `docs/guides/SWARM_INTEGRATION_GUIDE.md` | Integration patterns |
-| `docs/reference/AGENTS_ACTIVE.md` | Agent tracking |
-| `.claude/swarm_controller.log` | Decision log |
-| `.claude/swarm_state.json` | Agent state |
-| `.github/workflows/swarm-health.yml` | CI/CD |
+| File                                     | Purpose                     |
+| ---------------------------------------- | --------------------------- |
+| `scripts/swarm_controller.py`            | Main controller (1000+ LOC) |
+| `scripts/test_swarm_controller.py`       | Test suite (200+ LOC)       |
+| `config/swarm_controller_config.yaml`    | Configuration               |
+| `docs/guides/SWARM_CONTROLLER_README.md` | Overview                    |
+| `docs/guides/SWARM_CONTROLLER_USAGE.md`  | Detailed usage guide        |
+| `docs/guides/SWARM_INTEGRATION_GUIDE.md` | Integration patterns        |
+| `docs/reference/AGENTS_ACTIVE.md`        | Agent tracking              |
+| `.claude/swarm_controller.log`           | Decision log                |
+| `.claude/swarm_state.json`               | Agent state                 |
+| `.github/workflows/swarm-health.yml`     | CI/CD                       |
 
 ## Integration Points
 
@@ -311,6 +329,7 @@ All behavior tunable via `config/swarm_controller_config.yaml`:
 ## Validation
 
 All code validated:
+
 - Syntax check: ✓ Passed
 - Import validation: ✓ Passed
 - Test suite: ✓ 7/7 passing
@@ -321,6 +340,7 @@ All code validated:
 ## Production Ready
 
 This implementation is production-ready with:
+
 - Comprehensive error handling
 - Persistent state management
 - Detailed logging

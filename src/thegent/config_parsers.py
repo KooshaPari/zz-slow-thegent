@@ -1,8 +1,9 @@
 """Shared parsing helpers used by :mod:`thegent.config`."""
 
-import orjson as json
 import os
 from pathlib import Path
+
+import orjson as json
 
 TRUE_STRINGS = {"1", "true", "yes", "on"}
 

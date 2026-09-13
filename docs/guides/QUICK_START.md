@@ -10,16 +10,19 @@
 ### One-liner (Recommended)
 
 **macOS / Linux:**
+
 ```bash
 curl -fsSL https://raw.githubusercontent.com/kooshapari/thegent/main/scripts/bootstrap.sh | sh -s -- install
 ```
 
 **Windows (PowerShell):**
+
 ```powershell
 irm https://raw.githubusercontent.com/kooshapari/thegent/main/scripts/install.ps1 | iex
 ```
 
 ### Manual (pip / uv)
+
 ```bash
 # Using uv (fastest)
 uv tool install thegent
@@ -40,6 +43,7 @@ thegent setup --full
 ```
 
 ### What this does:
+
 - Configures your shell (zsh/bash/pwsh) for `thegent` integration.
 - Sets up AI providers (Claude, OpenAI, Gemini).
 - Initializes the **Agent Mesh** (coordination layer).
@@ -49,19 +53,19 @@ thegent setup --full
 
 ## 3. Basic Commands
 
-| Command | Description |
-|---------|-------------|
-| `thegent doctor` | Verify your installation and fix common issues. |
-| `thegent mesh status` | Check the status of active agents in the mesh. |
-| `thegent mesh discover` | Discover and register running agents. |
+| Command                  | Description                                     |
+| ------------------------ | ----------------------------------------------- |
+| `thegent doctor`         | Verify your installation and fix common issues. |
+| `thegent mesh status`    | Check the status of active agents in the mesh.  |
+| `thegent mesh discover`  | Discover and register running agents.           |
 | `thegent run "<prompt>"` | Run an autonomous task across your local tools. |
-| `thegent serve` | Start the MCP (Model Context Protocol) server. |
+| `thegent serve`          | Start the MCP (Model Context Protocol) server.  |
 
 ---
 
 ## 4. Agent Mesh Coordination
 
-`thegent` includes a high-performance coordination layer (formerly *heliosShield*) that prevents agent collisions and optimizes git operations.
+`thegent` includes a high-performance coordination layer (formerly _heliosShield_) that prevents agent collisions and optimizes git operations.
 
 ```bash
 # Check coordination status
@@ -87,7 +91,7 @@ thegent login gemini
 
 ## 6. Development Workflow
 
-If you are developing *thegent* or custom skills:
+If you are developing _thegent_ or custom skills:
 
 ```bash
 # Install in editable mode

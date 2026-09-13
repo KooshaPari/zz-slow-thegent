@@ -15,31 +15,35 @@ Active agent tracking for the swarm controller. This file is auto-updated by the
 ## Agent Status Summary
 
 | Total | Healthy | Unhealthy | Paused | Dead | Queue Depth |
-|-------|---------|-----------|--------|------|-------------|
-| 0 | 0 | 0 | 0 | 0 | 0 |
+| ----- | ------- | --------- | ------ | ---- | ----------- |
+| 0     | 0       | 0         | 0      | 0    | 0           |
 
 ---
 
 ## Active Agents
 
-| Agent ID | Status | PID | Restarts | CPU % | Memory % | Errors | Last Activity |
-|----------|--------|-----|----------|-------|----------|--------|---------------|
-| researcher-1 | IDLE (awaiting assignment) | -- | 0 | -- | -- | 0 | 2026-02-19 13:00 - Phase 2 already COMPLETED, notified L1, awaiting new assignment |
+| Agent ID     | Status                     | PID | Restarts | CPU % | Memory % | Errors | Last Activity                                                                      |
+| ------------ | -------------------------- | --- | -------- | ----- | -------- | ------ | ---------------------------------------------------------------------------------- |
+| researcher-1 | IDLE (awaiting assignment) | --  | 0        | --    | --       | 0      | 2026-02-19 13:00 - Phase 2 already COMPLETED, notified L1, awaiting new assignment |
 
 ---
 
 ## Recent Events
 
 ### Healthy Agents
+
 (None currently tracked)
 
 ### Paused Agents
+
 (None currently tracked)
 
 ### Unhealthy Agents
+
 (None currently tracked)
 
 ### Dead Agents
+
 (None currently tracked)
 
 ---
@@ -47,6 +51,7 @@ Active agent tracking for the swarm controller. This file is auto-updated by the
 ## Health Trends
 
 ### Queue Depth (24h)
+
 ```
 Pending:  [████░░░░░░░░░░░░░░] 5
 Claimed:  [██░░░░░░░░░░░░░░░░] 2
@@ -54,12 +59,14 @@ Completed: [██████████████████] 50
 ```
 
 ### Agent Success Rate (24h)
+
 ```
 Success: 95% [██████████████████░]
 Errors:  5%  [█░░░░░░░░░░░░░░░░░]
 ```
 
 ### System Resources (24h)
+
 ```
 CPU:     [████░░░░░░░░░░░░░░] avg 40%
 Memory:  [███░░░░░░░░░░░░░░░] avg 35%
@@ -69,17 +76,17 @@ Memory:  [███░░░░░░░░░░░░░░░] avg 35%
 
 ## Configuration
 
-| Setting | Value |
-|---------|-------|
-| Health Check Interval | 10s |
-| Stale Threshold | 30s |
-| SLO Multiplier | 1.5x |
-| Max Concurrent Agents | 10 |
-| Min Concurrent Agents | 1 |
-| CPU Threshold | 80% |
-| Memory Threshold | 70% |
-| Max Restart Attempts | 3 |
-| Scale Up Queue Threshold | 5 items |
+| Setting                    | Value   |
+| -------------------------- | ------- |
+| Health Check Interval      | 10s     |
+| Stale Threshold            | 30s     |
+| SLO Multiplier             | 1.5x    |
+| Max Concurrent Agents      | 10      |
+| Min Concurrent Agents      | 1       |
+| CPU Threshold              | 80%     |
+| Memory Threshold           | 70%     |
+| Max Restart Attempts       | 3       |
+| Scale Up Queue Threshold   | 5 items |
 | Scale Down Queue Threshold | 2 items |
 
 ---
@@ -97,16 +104,19 @@ Memory:  [███░░░░░░░░░░░░░░░] avg 35%
 ## Escalation Contacts
 
 ### Level 1 (Operational)
+
 - Check logs: `tail -100 .claude/swarm_controller.log`
 - Resume agent: `python scripts/swarm_controller.py --resume-agent <id>`
 - Check health: `python scripts/swarm_controller.py --report`
 
 ### Level 2 (Engineering)
+
 - Investigate root cause in agent logs
 - Review controller configuration
 - Check system resources (CPU, memory, disk)
 
 ### Level 3 (Critical)
+
 - Dead agents (exceeded max restart attempts)
 - Sustained resource pressure (>1 hour)
 - Queue backlog growing (pending >> completed)
@@ -118,6 +128,7 @@ Memory:  [███░░░░░░░░░░░░░░░] avg 35%
 This file is managed by the Swarm Controller. Manual updates are possible but will be overwritten on next controller cycle.
 
 To manually update:
+
 ```bash
 # Resume a paused agent
 python scripts/swarm_controller.py --resume-agent <agent-id>
@@ -131,7 +142,6 @@ python scripts/swarm_controller.py --status
 # Get health report
 python scripts/swarm_controller.py --report
 ```
-
 
 ---
 
@@ -229,6 +239,7 @@ The multi-level coordination system defines three hierarchical layers for managi
 ### Decision Authority
 
 L1 has **final authority** on:
+
 - Strategic direction and priorities
 - Team composition and role assignments
 - Architecture and major design choices
@@ -281,6 +292,7 @@ L1 **delegates execution** to L2 but retains veto power over direction changes.
 **Agent Identity**: Each teammate has a unique **name** (e.g., "research-agent", "implementation-specialist", "test-runner").
 
 **Component Mapping**:
+
 ```
 Team Lead (Claude Code)
 ├── Researcher ("research-agent")
@@ -304,12 +316,14 @@ Team Lead (Claude Code)
 ### Decision Authority
 
 L2 has **authority** within assigned components:
+
 - Implementation approach and design details
 - Code review and merge decisions
 - Sub-task delegation to L3
 - Technical trade-offs within component scope
 
 L2 **must escalate** to L1 for:
+
 - Cross-component impacts
 - Architecture changes
 - Resource constraints or SLOs
@@ -351,6 +365,7 @@ L2 **must escalate** to L1 for:
 ### Decision Authority
 
 L3 agents have **no independent authority**:
+
 - Must follow L2 instructions without deviation
 - Cannot make design decisions or architectural changes
 - Cannot claim new work; must be explicitly assigned by L2
@@ -378,11 +393,13 @@ thegent plan do-next  # Get list of pending work
 #### 2. Find Unclaimed Item
 
 Look for items in **PENDING** section with:
+
 - **Status** = `PENDING`
 - **Depends On** = All satisfied (empty or already COMPLETED)
 - No agent_id in CLAIMED section
 
 Example:
+
 ```markdown
 | TGNT-P6.1 | Per-agent GIT_INDEX_FILE management | feature | TGNT-P4.1 | ~8min | PENDING |
 ```
@@ -390,6 +407,7 @@ Example:
 #### 3. Agent Claims Item
 
 L2 adds row to **CLAIMED** section with:
+
 - **Item ID**: `TGNT-P6.1`
 - **Agent ID**: Your unique agent identifier (e.g., `research-agent`, `dev-agent-1`)
 - **Started**: ISO timestamp (e.g., `2026-02-18T14:30:00Z`)
@@ -398,8 +416,8 @@ L2 adds row to **CLAIMED** section with:
 ```markdown
 ## CLAIMED
 
-| ID | Agent | Started | Status |
-|---|---|---|---|
+| ID        | Agent       | Started              | Status      |
+| --------- | ----------- | -------------------- | ----------- |
 | TGNT-P6.1 | dev-agent-1 | 2026-02-18T14:30:00Z | IN_PROGRESS |
 ```
 
@@ -439,6 +457,7 @@ Code, tests, and documentation complete. Ready to move to COMPLETED.
 #### 2. Move to COMPLETED Section
 
 Remove from **CLAIMED** section. Add to **COMPLETED** section with:
+
 - **Item ID**: `TGNT-P6.1`
 - **Agent ID**: Your agent identifier
 - **Started**: Original start time (ISO)
@@ -449,9 +468,9 @@ Remove from **CLAIMED** section. Add to **COMPLETED** section with:
 ```markdown
 ## COMPLETED
 
-| ID | Agent | Started | Completed | Duration | Notes |
-|---|---|---|---|---|---|
-| TGNT-P6.1 | dev-agent-1 | 2026-02-18T14:30:00Z | 2026-02-18T14:45:00Z | 15 min | Implemented per-agent INDEX handling with atomic writes |
+| ID        | Agent       | Started              | Completed            | Duration | Notes                                                   |
+| --------- | ----------- | -------------------- | -------------------- | -------- | ------------------------------------------------------- |
+| TGNT-P6.1 | dev-agent-1 | 2026-02-18T14:30:00Z | 2026-02-18T14:45:00Z | 15 min   | Implemented per-agent INDEX handling with atomic writes |
 ```
 
 #### 3. Update Original Row Status
@@ -468,6 +487,7 @@ Move any dependent items from PENDING to active (L1 may reprioritize):
 
 ```markdown
 # Items now unblocked:
+
 | TGNT-P6.2 | Git plumbing commit pipeline | feature | TGNT-P6.1 | ~10min | PENDING |
 | TGNT-P6.3 | CAS ref update with backoff | feature | TGNT-P6.2 | ~5min | PENDING |
 ```
@@ -475,6 +495,7 @@ Move any dependent items from PENDING to active (L1 may reprioritize):
 #### 5. Update Trackers
 
 Update related documents:
+
 - `docs/reference/PLAN_STATUS.md` - Phase completion status
 - `docs/reference/CODE_ENTITY_MAP.md` - Map new functions/modules to FRs and work items
 - `docs/research/CONVERSATION_DUMP_YYYY-MM-DD.md` - Key decisions and findings (if significant)
@@ -505,6 +526,7 @@ git push origin main
 **Symptom:** Item in CLAIMED, no progress for 10+ minutes, agent not responding.
 
 **Recovery:**
+
 1. L1 notices staleness via `thegent ps` or timeout
 2. L1 moves item back to PENDING (remove from CLAIMED)
 3. L1 sends message to agent: "Task timed out, released. If you continue, results will be orphaned."
@@ -514,8 +536,8 @@ git push origin main
 ```markdown
 ## CLAIMED
 
-| ID | Agent | Started | Status |
-|---|---|---|---|
+| ID        | Agent       | Started              | Status                    |
+| --------- | ----------- | -------------------- | ------------------------- |
 | TGNT-P6.1 | dev-agent-1 | 2026-02-18T14:30:00Z | TIMEOUT (released 15:00Z) |
 ```
 
@@ -524,6 +546,7 @@ git push origin main
 **Symptom:** Task A depends on B, B depends on A. Both PENDING.
 
 **Recovery:**
+
 1. L1 runs DAG validator: `thegent plan do-next` or manual inspection
 2. L1 identifies cycle and splits one task:
    - Reduce scope of one task (e.g., "Phase 2a: Part A", "Phase 2b: Part B")
@@ -537,6 +560,7 @@ git push origin main
 **Symptom:** Two agents claim non-overlapping tasks, but both edit the same file.
 
 **Recovery:**
+
 1. L1 detects conflict via git merge attempt or explicit reporting
 2. L1 escalates to affected L2 agents for manual resolution:
    - Determine correct final state
@@ -554,6 +578,7 @@ git push origin main
 **Symptom:** Agent claims task, but a dependency is still PENDING.
 
 **Recovery:**
+
 1. Agent reports blocker to L2 immediately
 2. L2 escalates to L1
 3. L1 options:
@@ -571,14 +596,15 @@ git push origin main
 **Symptom:** Item moved to COMPLETED, but downstream task finds regression.
 
 **Recovery:**
+
 1. Downstream agent reports issue to L1
 2. L1 moves original item back to IN_PROGRESS:
 
 ```markdown
 ## CLAIMED
 
-| ID | Agent | Started | Status |
-|---|---|---|---|
+| ID        | Agent       | Started              | Status                                   |
+| --------- | ----------- | -------------------- | ---------------------------------------- |
 | TGNT-P6.1 | dev-agent-1 | 2026-02-18T14:30:00Z | REOPENED (regression found by TGNT-P6.2) |
 ```
 
@@ -594,6 +620,7 @@ git push origin main
 **Symptom:** Task estimated `~8min`, now at `60+ min`.
 
 **Recovery:**
+
 1. L1 detects via elapsed time vs. estimate
 2. L1 sends message to agent: "Task running long. Are you blocked? Do you need help?"
 3. Agent responds:
@@ -672,17 +699,18 @@ git push origin main
 
 ### Key Metrics
 
-| Metric | Display | Action Threshold |
-|--------|---------|-----------------|
-| **Elapsed vs. Estimate** | % over (e.g., 115%) | >150% → Flag as SLO breach |
-| **Cycle Time** | Minutes (CLAIMED → COMPLETED) | >30 min → Investigate |
-| **Agent Utilization** | Active/Total (e.g., 3/5) | <50% → Release agents, reduce scope |
-| **Blocker Count** | Total & severity breakdown | >5 blockers → Escalate to L1 |
-| **Phase Completion %** | Current phase progress | >80% done → Prepare next phase |
+| Metric                   | Display                       | Action Threshold                    |
+| ------------------------ | ----------------------------- | ----------------------------------- |
+| **Elapsed vs. Estimate** | % over (e.g., 115%)           | >150% → Flag as SLO breach          |
+| **Cycle Time**           | Minutes (CLAIMED → COMPLETED) | >30 min → Investigate               |
+| **Agent Utilization**    | Active/Total (e.g., 3/5)      | <50% → Release agents, reduce scope |
+| **Blocker Count**        | Total & severity breakdown    | >5 blockers → Escalate to L1        |
+| **Phase Completion %**   | Current phase progress        | >80% done → Prepare next phase      |
 
 ### Updating Dashboard
 
 Dashboard is read-only view of `WORK_STREAM.md`:
+
 ```bash
 # Watch work stream changes in real-time
 watch -n 5 'tail -50 docs/reference/WORK_STREAM.md'
@@ -697,41 +725,41 @@ thegent dashboard --watch
 
 ### Work Stream Management
 
-| Command | Purpose | Used By |
-|---------|---------|---------|
-| `thegent plan do-next` | List next 5 actionable items | L1, L2 |
-| `thegent plan do-next --limit 10` | List next 10 items | L1 for batch assignment |
-| `TaskCreate` (tool) | Create new work item programmatically | L1 when spawning teams |
-| `TaskList` (tool) | List all work items and status | L2 to find available work |
-| `TaskUpdate` (tool) | Claim, progress, or complete item | L2 during execution |
-| `TaskGet` (tool) | Read full details of single task | L2 before starting work |
+| Command                           | Purpose                               | Used By                   |
+| --------------------------------- | ------------------------------------- | ------------------------- |
+| `thegent plan do-next`            | List next 5 actionable items          | L1, L2                    |
+| `thegent plan do-next --limit 10` | List next 10 items                    | L1 for batch assignment   |
+| `TaskCreate` (tool)               | Create new work item programmatically | L1 when spawning teams    |
+| `TaskList` (tool)                 | List all work items and status        | L2 to find available work |
+| `TaskUpdate` (tool)               | Claim, progress, or complete item     | L2 during execution       |
+| `TaskGet` (tool)                  | Read full details of single task      | L2 before starting work   |
 
 ### Team & Agent Management
 
-| Command | Purpose | Used By |
-|---------|---------|---------|
-| `TeamCreate` | Create new team with roster | L1 for multi-agent projects |
-| `SendMessage` | Send message to teammate | L1 for instructions/status requests |
-| `SendMessage` (broadcast) | Send to all teammates | L1 for critical updates (use sparingly) |
-| `thegent ps` | List running agent sessions | L1 to monitor activity |
-| `thegent wait <session_id>` | Block until agent finishes | L1 to wait for completion |
-| `thegent status <session_id>` | Check agent progress | L1 to get status update |
+| Command                       | Purpose                     | Used By                                 |
+| ----------------------------- | --------------------------- | --------------------------------------- |
+| `TeamCreate`                  | Create new team with roster | L1 for multi-agent projects             |
+| `SendMessage`                 | Send message to teammate    | L1 for instructions/status requests     |
+| `SendMessage` (broadcast)     | Send to all teammates       | L1 for critical updates (use sparingly) |
+| `thegent ps`                  | List running agent sessions | L1 to monitor activity                  |
+| `thegent wait <session_id>`   | Block until agent finishes  | L1 to wait for completion               |
+| `thegent status <session_id>` | Check agent progress        | L1 to get status update                 |
 
 ### File Operations
 
-| Command | Purpose | Used By |
-|---------|---------|---------|
-| `Read` | Read work stream or document | L1, L2 |
-| `Edit` | Update work stream inline | L1, L2 |
-| `Write` | Replace work stream entirely | L1 only (careful!) |
-| `Bash` (git) | Commit and push changes | L1, L2 for atomicity |
+| Command      | Purpose                      | Used By              |
+| ------------ | ---------------------------- | -------------------- |
+| `Read`       | Read work stream or document | L1, L2               |
+| `Edit`       | Update work stream inline    | L1, L2               |
+| `Write`      | Replace work stream entirely | L1 only (careful!)   |
+| `Bash` (git) | Commit and push changes      | L1, L2 for atomicity |
 
 ### Analysis & Reporting
 
-| Command | Purpose | Used By |
-|---------|---------|---------|
-| `Grep` | Search for blocked/overdue items | L1 for health checks |
-| `Bash` (script) | Generate reports, metrics | L1 for dashboards |
+| Command         | Purpose                          | Used By              |
+| --------------- | -------------------------------- | -------------------- |
+| `Grep`          | Search for blocked/overdue items | L1 for health checks |
+| `Bash` (script) | Generate reports, metrics        | L1 for dashboards    |
 
 ---
 
@@ -759,7 +787,6 @@ thegent dashboard --watch
 **Maintained By:** Coordination Leadership (L1)
 **Next Review:** 2026-02-25
 
-
 ---
 
 ## Source: COORDINATION_INDEX.md
@@ -776,13 +803,13 @@ This index documents the complete coordination framework for Phase 6, enabling m
 
 ### Documents Created
 
-| Document | Size | Purpose | Status |
-|----------|------|---------|--------|
-| **COORDINATION.md** | 24 KB | Three-level hierarchy, workflows, recovery | ✓ Complete |
-| **AGENTS_ACTIVE.md** | 8.5 KB | Agent registry, team management | ✓ Complete |
-| **TUI_DASHBOARD_DESIGN.md** | 34 KB | Dashboard mockup, implementation plan | ✓ Complete |
-| **FAILURE_RECOVERY_PLAYBOOK.md** | 27 KB | 10 FRP scenarios, decision tree | ✓ Complete |
-| **COORDINATION_INDEX.md** | This file | Cross-reference and navigation | ✓ Complete |
+| Document                         | Size      | Purpose                                    | Status     |
+| -------------------------------- | --------- | ------------------------------------------ | ---------- |
+| **COORDINATION.md**              | 24 KB     | Three-level hierarchy, workflows, recovery | ✓ Complete |
+| **AGENTS_ACTIVE.md**             | 8.5 KB    | Agent registry, team management            | ✓ Complete |
+| **TUI_DASHBOARD_DESIGN.md**      | 34 KB     | Dashboard mockup, implementation plan      | ✓ Complete |
+| **FAILURE_RECOVERY_PLAYBOOK.md** | 27 KB     | 10 FRP scenarios, decision tree            | ✓ Complete |
+| **COORDINATION_INDEX.md**        | This file | Cross-reference and navigation             | ✓ Complete |
 
 **Total:** 93.5 KB of coordination documentation
 
@@ -793,11 +820,13 @@ This index documents the complete coordination framework for Phase 6, enabling m
 ### For Claude Code (L1 Coordinators)
 
 **Getting Started:**
+
 1. Read: [COORDINATION.md - Level 1 Section](COORDINATION.md#level-1-coordinator-claude-code)
 2. Review: [AGENTS_ACTIVE.md - Team Composition Patterns](AGENTS_ACTIVE.md#team-composition-patterns)
 3. Understand: [TUI_DASHBOARD_DESIGN.md - Overview](TUI_DASHBOARD_DESIGN.md#overview)
 
 **Operational Tasks:**
+
 - Creating a team → [COORDINATION.md - Team Coordination](COORDINATION.md#team-coordination)
 - Assigning work → [AGENTS_ACTIVE.md - Commands](AGENTS_ACTIVE.md#commands-for-registry-management)
 - Monitoring progress → [TUI_DASHBOARD_DESIGN.md - Full Dashboard](TUI_DASHBOARD_DESIGN.md#full-dashboard-layout-160x40-minimum)
@@ -806,11 +835,13 @@ This index documents the complete coordination framework for Phase 6, enabling m
 ### For L2 Teammates (Named Agents)
 
 **Getting Started:**
+
 1. Read: [COORDINATION.md - Level 2 Section](COORDINATION.md#level-2-teammates-named-agents)
 2. Learn: [COORDINATION.md - CLAIMED Workflow](COORDINATION.md#claimed-workflow)
 3. Practice: [COORDINATION.md - COMPLETED Workflow](COORDINATION.md#completed-workflow)
 
 **During Execution:**
+
 - Finding work → `thegent plan do-next`
 - Claiming task → [COORDINATION.md - CLAIMED Step 3](COORDINATION.md#3-agent-claims-item)
 - Updating status → [COORDINATION.md - COMPLETED Step 4](COORDINATION.md#4-unblock-downstream-tasks)
@@ -820,10 +851,12 @@ This index documents the complete coordination framework for Phase 6, enabling m
 ### For L3 Thegent Agents
 
 **Getting Started:**
+
 1. Read: [COORDINATION.md - Level 3 Section](COORDINATION.md#level-3-thegent-agents-freepremium)
 2. Understand: [AGENTS_ACTIVE.md - Agent Lifecycle States](AGENTS_ACTIVE.md#agent-lifecycle-states)
 
 **During Execution:**
+
 - Follow L2 instructions exactly
 - Report results via file writes or stdout
 - If stuck, escalate to L2 (don't make decisions)
@@ -861,18 +894,18 @@ This index documents the complete coordination framework for Phase 6, enabling m
 
 ### Recovery Workflows (L1)
 
-| Failure | Handler | Reference |
-|---------|---------|-----------|
-| Agent timeout | Release task, force kill if needed | [FRP-1](FAILURE_RECOVERY_PLAYBOOK.md#frp-1-agent-crashtimeout-during-execution) |
-| Race condition | Break tie, lock WORK_STREAM.md | [FRP-2](FAILURE_RECOVERY_PLAYBOOK.md#frp-2-duplicate-task-claims-race-condition) |
-| Circular dependency | Break cycle by redesign | [FRP-3](FAILURE_RECOVERY_PLAYBOOK.md#frp-3-circular-dependencies) |
-| File merge conflict | Manual merge + verify | [FRP-4](FAILURE_RECOVERY_PLAYBOOK.md#frp-4-file-conflict-multiple-agents-editing-same-file) |
-| Regression after completion | Reopen task, fix, test | [FRP-5](FAILURE_RECOVERY_PLAYBOOK.md#frp-5-regression-after-completion) |
-| SLO breach (10x estimate) | Investigate, split, adjust | [FRP-6](FAILURE_RECOVERY_PLAYBOOK.md#frp-6-slo-breach-task-running-10x-estimate) |
-| Git conflict in WORK_STREAM | Manual merge, prevent future | [FRP-7](FAILURE_RECOVERY_PLAYBOOK.md#frp-7-git-conflict-in-work_streammd) |
-| Blocker 30+ min | Escalate dependency | [FRP-8](FAILURE_RECOVERY_PLAYBOOK.md#frp-8-blocker-slo-breach-task-waiting-30-minutes) |
-| Permission/file lock error | Fix perms, remove lock | [FRP-9](FAILURE_RECOVERY_PLAYBOOK.md#frp-9-permissionfile-locking-issues) |
-| No more work | Verify complete, next phase | [FRP-10](FAILURE_RECOVERY_PLAYBOOK.md#frp-10-work-stream-depletion-all-tasks-claimedcomplete) |
+| Failure                     | Handler                            | Reference                                                                                     |
+| --------------------------- | ---------------------------------- | --------------------------------------------------------------------------------------------- |
+| Agent timeout               | Release task, force kill if needed | [FRP-1](FAILURE_RECOVERY_PLAYBOOK.md#frp-1-agent-crashtimeout-during-execution)               |
+| Race condition              | Break tie, lock WORK_STREAM.md     | [FRP-2](FAILURE_RECOVERY_PLAYBOOK.md#frp-2-duplicate-task-claims-race-condition)              |
+| Circular dependency         | Break cycle by redesign            | [FRP-3](FAILURE_RECOVERY_PLAYBOOK.md#frp-3-circular-dependencies)                             |
+| File merge conflict         | Manual merge + verify              | [FRP-4](FAILURE_RECOVERY_PLAYBOOK.md#frp-4-file-conflict-multiple-agents-editing-same-file)   |
+| Regression after completion | Reopen task, fix, test             | [FRP-5](FAILURE_RECOVERY_PLAYBOOK.md#frp-5-regression-after-completion)                       |
+| SLO breach (10x estimate)   | Investigate, split, adjust         | [FRP-6](FAILURE_RECOVERY_PLAYBOOK.md#frp-6-slo-breach-task-running-10x-estimate)              |
+| Git conflict in WORK_STREAM | Manual merge, prevent future       | [FRP-7](FAILURE_RECOVERY_PLAYBOOK.md#frp-7-git-conflict-in-work_streammd)                     |
+| Blocker 30+ min             | Escalate dependency                | [FRP-8](FAILURE_RECOVERY_PLAYBOOK.md#frp-8-blocker-slo-breach-task-waiting-30-minutes)        |
+| Permission/file lock error  | Fix perms, remove lock             | [FRP-9](FAILURE_RECOVERY_PLAYBOOK.md#frp-9-permissionfile-locking-issues)                     |
+| No more work                | Verify complete, next phase        | [FRP-10](FAILURE_RECOVERY_PLAYBOOK.md#frp-10-work-stream-depletion-all-tasks-claimedcomplete) |
 
 ---
 
@@ -999,12 +1032,12 @@ grep "TGNT-P6.1" docs/reference/WORK_STREAM.md | wc -l
 
 ### Implementation Roadmap
 
-| Phase | Timeframe | Deliverable | Owner |
-|-------|-----------|-------------|-------|
-| **Phase 1 (MVP)** | Week 1 | Basic dashboard (header + agents + blockers) | TBD |
-| **Phase 2** | Week 2 | Extended views (workstream, blockers, stats) | TBD |
-| **Phase 3** | Week 3 | Interactive features (claim, message, edit) | TBD |
-| **Phase 4** | Week 4 | Predictions & automation (ETA, auto-unblock) | TBD |
+| Phase             | Timeframe | Deliverable                                  | Owner |
+| ----------------- | --------- | -------------------------------------------- | ----- |
+| **Phase 1 (MVP)** | Week 1    | Basic dashboard (header + agents + blockers) | TBD   |
+| **Phase 2**       | Week 2    | Extended views (workstream, blockers, stats) | TBD   |
+| **Phase 3**       | Week 3    | Interactive features (claim, message, edit)  | TBD   |
+| **Phase 4**       | Week 4    | Predictions & automation (ETA, auto-unblock) | TBD   |
 
 📄 **Full details:** [TUI_DASHBOARD_DESIGN.md - Implementation Roadmap](TUI_DASHBOARD_DESIGN.md#implementation-roadmap)
 
@@ -1014,23 +1047,23 @@ grep "TGNT-P6.1" docs/reference/WORK_STREAM.md | wc -l
 
 ### When to Create a Team
 
-| Scenario | Decision | Effort |
-|----------|----------|--------|
-| Single agent, simple task (1-2 files) | ❌ No team | 5-15 min |
-| 2-3 agents, feature | ✓ Small team | 30-45 min |
-| 4-6 agents, sprint | ✓ Medium team | 60-120 min |
-| 7+ agents, major refactor | ✓ Large team | 120+ min |
+| Scenario                              | Decision      | Effort     |
+| ------------------------------------- | ------------- | ---------- |
+| Single agent, simple task (1-2 files) | ❌ No team    | 5-15 min   |
+| 2-3 agents, feature                   | ✓ Small team  | 30-45 min  |
+| 4-6 agents, sprint                    | ✓ Medium team | 60-120 min |
+| 7+ agents, major refactor             | ✓ Large team  | 120+ min   |
 
 ### When to Escalate to L1
 
-| Issue | Escalate? | When? |
-|-------|-----------|-------|
-| Task estimate seems low | ⚠ Maybe | If >100% and persistent |
-| Need another agent | ✓ Always | Ask L1 to allocate |
-| Change scope | ✓ Always | Don't unilaterally change |
-| Circular dependency | ✓ Always | Can't break on own |
-| File conflict | ⚠ Maybe | Try manual merge first |
-| Blocker >15 min | ✓ Always | Report immediately |
+| Issue                   | Escalate? | When?                     |
+| ----------------------- | --------- | ------------------------- |
+| Task estimate seems low | ⚠ Maybe  | If >100% and persistent   |
+| Need another agent      | ✓ Always  | Ask L1 to allocate        |
+| Change scope            | ✓ Always  | Don't unilaterally change |
+| Circular dependency     | ✓ Always  | Can't break on own        |
+| File conflict           | ⚠ Maybe  | Try manual merge first    |
+| Blocker >15 min         | ✓ Always  | Report immediately        |
 
 ---
 
@@ -1086,24 +1119,24 @@ grep "TGNT-P6.1" docs/reference/WORK_STREAM.md | wc -l
 
 ### ✓ Good Patterns
 
-| Pattern | Example | Reference |
-|---------|---------|-----------|
-| Atomic CLAIMED update | Claim task, immediately commit | [COORDINATION.md](COORDINATION.md#3-agent-claims-item) |
-| Clear task ownership | One agent per task | [AGENTS_ACTIVE.md](AGENTS_ACTIVE.md#agent-lifecycle-states) |
-| Explicit dependencies | All TGNT-P6.X specify Depends On | [COORDINATION.md](COORDINATION.md#overview) |
-| Fast recovery | FRP procedures, auto-escalation | [FAILURE_RECOVERY_PLAYBOOK.md](FAILURE_RECOVERY_PLAYBOOK.md) |
-| Blocker visibility | Dashboard shows blockers in red | [TUI_DASHBOARD_DESIGN.md](TUI_DASHBOARD_DESIGN.md#3-blockers-section-always-visible) |
+| Pattern               | Example                          | Reference                                                                            |
+| --------------------- | -------------------------------- | ------------------------------------------------------------------------------------ |
+| Atomic CLAIMED update | Claim task, immediately commit   | [COORDINATION.md](COORDINATION.md#3-agent-claims-item)                               |
+| Clear task ownership  | One agent per task               | [AGENTS_ACTIVE.md](AGENTS_ACTIVE.md#agent-lifecycle-states)                          |
+| Explicit dependencies | All TGNT-P6.X specify Depends On | [COORDINATION.md](COORDINATION.md#overview)                                          |
+| Fast recovery         | FRP procedures, auto-escalation  | [FAILURE_RECOVERY_PLAYBOOK.md](FAILURE_RECOVERY_PLAYBOOK.md)                         |
+| Blocker visibility    | Dashboard shows blockers in red  | [TUI_DASHBOARD_DESIGN.md](TUI_DASHBOARD_DESIGN.md#3-blockers-section-always-visible) |
 
 ### ❌ Anti-Patterns
 
-| Anti-Pattern | Problem | Fix |
-|--------------|---------|-----|
-| Manual WORK_STREAM updates | Race conditions | Use TaskUpdate tool |
-| Claiming without commit | Other agents don't see claim | Always commit immediately |
-| Hiding blockers | Escalation delays | Report immediately to L1 |
-| Circular dependencies | Deadlock | Break cycle with redesign (FRP-3) |
-| No timestamps | Can't detect staleness | Always use ISO 8601 timestamps |
-| Soft estimates | SLO breaches | +30% buffer for git/risky work |
+| Anti-Pattern               | Problem                      | Fix                               |
+| -------------------------- | ---------------------------- | --------------------------------- |
+| Manual WORK_STREAM updates | Race conditions              | Use TaskUpdate tool               |
+| Claiming without commit    | Other agents don't see claim | Always commit immediately         |
+| Hiding blockers            | Escalation delays            | Report immediately to L1          |
+| Circular dependencies      | Deadlock                     | Break cycle with redesign (FRP-3) |
+| No timestamps              | Can't detect staleness       | Always use ISO 8601 timestamps    |
+| Soft estimates             | SLO breaches                 | +30% buffer for git/risky work    |
 
 ---
 
@@ -1111,22 +1144,22 @@ grep "TGNT-P6.1" docs/reference/WORK_STREAM.md | wc -l
 
 ### Task-Level SLOs
 
-| Metric | Target | Warning | Critical |
-|--------|--------|---------|----------|
-| Cycle Time | 15 min | >20 min | >30 min |
-| SLO Adherence | 100% | >85% | <70% |
-| Estimate Accuracy | ±30% | ±50% | >50% |
-| Agent Utilization | 60%+ | 30-60% | <30% |
-| Blocker Resolution | <5 min | <15 min | >30 min |
+| Metric             | Target | Warning | Critical |
+| ------------------ | ------ | ------- | -------- |
+| Cycle Time         | 15 min | >20 min | >30 min  |
+| SLO Adherence      | 100%   | >85%    | <70%     |
+| Estimate Accuracy  | ±30%   | ±50%    | >50%     |
+| Agent Utilization  | 60%+   | 30-60%  | <30%     |
+| Blocker Resolution | <5 min | <15 min | >30 min  |
 
 ### Phase-Level SLOs
 
-| Metric | Target | Warning | Critical |
-|--------|--------|---------|----------|
-| Phase Completion | On schedule | ±15% | >±15% |
-| Test Coverage | >=90% | >=80% | <80% |
-| Zero Regressions | 0 | 1 | >1 |
-| Quality Gate Pass | 100% | >95% | <95% |
+| Metric            | Target      | Warning | Critical |
+| ----------------- | ----------- | ------- | -------- |
+| Phase Completion  | On schedule | ±15%    | >±15%    |
+| Test Coverage     | >=90%       | >=80%   | <80%     |
+| Zero Regressions  | 0           | 1       | >1       |
+| Quality Gate Pass | 100%        | >95%    | <95%     |
 
 ---
 
@@ -1144,6 +1177,7 @@ If you encounter a failure not covered by FRP-1 through FRP-10:
 ### Suggest Improvements
 
 Good places for improvements:
+
 - Automation (reduce manual steps)
 - Visibility (better metrics, clearer dashboards)
 - Prevention (avoid failures before they happen)
@@ -1153,11 +1187,11 @@ Good places for improvements:
 
 ## Version History
 
-| Version | Date | Changes | Status |
-|---------|------|---------|--------|
-| 1.0 | 2026-02-18 | Initial coordination framework | ✓ Active |
-| 1.1 | TBD | Dashboard MVP implementation | Planned |
-| 2.0 | TBD | Automated escalation & recovery | Planned |
+| Version | Date       | Changes                         | Status   |
+| ------- | ---------- | ------------------------------- | -------- |
+| 1.0     | 2026-02-18 | Initial coordination framework  | ✓ Active |
+| 1.1     | TBD        | Dashboard MVP implementation    | Planned  |
+| 2.0     | TBD        | Automated escalation & recovery | Planned  |
 
 ---
 
@@ -1184,7 +1218,6 @@ Good places for improvements:
 **Last Updated:** 2026-02-18
 **Next Review:** 2026-02-25
 **Contact:** docs/reference/COORDINATION.md (L1 section)
-
 
 ---
 
@@ -1216,6 +1249,7 @@ This document activates the **3-level agent hierarchy** for parallel work execut
 ## L2 Teammate Agents (Named)
 
 ### researcher-1
+
 - **Role:** Discovery, analysis, research tasks
 - **Component:** Phase 2 (Async State & Snapshots)
 - **Capabilities:** Code exploration, file analysis, pattern discovery
@@ -1224,6 +1258,7 @@ This document activates the **3-level agent hierarchy** for parallel work execut
 - **Status:** IDLE → Ready to claim
 
 **Claim Protocol:**
+
 1. Read WORK_STREAM.md PENDING section for Phase 2
 2. Pick highest-priority unclaimed item with met dependencies
 3. Add to CLAIMED table: `| researcher-1 | TGNT-P2.X | In Progress | 2026-02-18 13:XX |`
@@ -1232,6 +1267,7 @@ This document activates the **3-level agent hierarchy** for parallel work execut
 6. Return to step 1 until Phase 2 exhausted or blocker encountered
 
 ### builder-1
+
 - **Role:** Feature implementation, core system building
 - **Component:** Phase 3 (Caching & Metrics)
 - **Capabilities:** System design, implementation, testing
@@ -1242,10 +1278,11 @@ This document activates the **3-level agent hierarchy** for parallel work execut
 **Claim Protocol:** (Same as researcher-1, but Phase 3 items)
 
 ### integrator-1
+
 - **Role:** Integration, testing, coordination
 - **Component:** Phase 4-5 (Intelligence & Context)
 - **Capabilities:** Integration testing, E2E scenarios, validation
-- **Work Items:** TGNT-P4.* → TGNT-P5.*
+- **Work Items:** TGNT-P4._ → TGNT-P5._
 - **Cycle Time Target:** 5-15 min per item
 - **Status:** IDLE → Standby (unblock after Phase 2-3 complete)
 
@@ -1256,6 +1293,7 @@ This document activates the **3-level agent hierarchy** for parallel work execut
 ## First Batch: Phase 2-3 Parallelization (NOW)
 
 ### Batch Summary
+
 - **Duration:** ~25-40 min (both workers in parallel)
 - **Goal:** Complete Phase 2 (Discovery) + Phase 3 (Building)
 - **Independent:** Yes (no Phase 2 → Phase 3 dependencies)
@@ -1263,14 +1301,15 @@ This document activates the **3-level agent hierarchy** for parallel work execut
 
 ### Phase 2: Async State & Snapshots (researcher-1)
 
-| ID | Title | Depends On | Effort | Notes |
-|----|-------|-----------|--------|-------|
-| TGNT-P2.1 | Async state snapshots (jq serialization) | TGNT-P0.4 | ~5min | Use jq for JSON extraction + timestamps |
-| TGNT-P2.2 | State diff calculation (recursive, null handling) | TGNT-P2.1 | ~8min | Detect changed fields, preserve structure |
-| TGNT-P2.3 | State versioning (SHA256 hash per snapshot) | TGNT-P2.1 | ~5min | Unique version ID per state change |
-| TGNT-P2.4 | Timeline aggregation (reverse chronological) | TGNT-P2.3 | ~5min | Query capabilities: `state at <time>` |
+| ID        | Title                                             | Depends On | Effort | Notes                                     |
+| --------- | ------------------------------------------------- | ---------- | ------ | ----------------------------------------- |
+| TGNT-P2.1 | Async state snapshots (jq serialization)          | TGNT-P0.4  | ~5min  | Use jq for JSON extraction + timestamps   |
+| TGNT-P2.2 | State diff calculation (recursive, null handling) | TGNT-P2.1  | ~8min  | Detect changed fields, preserve structure |
+| TGNT-P2.3 | State versioning (SHA256 hash per snapshot)       | TGNT-P2.1  | ~5min  | Unique version ID per state change        |
+| TGNT-P2.4 | Timeline aggregation (reverse chronological)      | TGNT-P2.3  | ~5min  | Query capabilities: `state at <time>`     |
 
 **Researcher Execution Flow:**
+
 ```
 1. thegent free --do-next  # Auto-claim TGNT-P2.1
 2. Implement async snapshots
@@ -1282,15 +1321,16 @@ This document activates the **3-level agent hierarchy** for parallel work execut
 
 ### Phase 3: Caching & Metrics (builder-1)
 
-| ID | Title | Depends On | Effort | Notes |
-|----|-------|-----------|--------|-------|
-| TGNT-P3.1 | Rebuild strategy (invalidation heuristics) | TGNT-P0.4 | ~8min | When to invalidate entire cache vs partial |
-| TGNT-P3.2 | Partial rebuild (diff-aware re-execution) | TGNT-P3.1 | ~10min | Only re-run affected downstream items |
-| TGNT-P3.3 | Preload optimization (predict hot keys) | TGNT-P0.4 | ~8min | Load likely-accessed entries at startup |
-| TGNT-P3.4 | Build timing (profile hot paths, cutoff threshold) | TGNT-P3.1, TGNT-P3.2 | ~5min | Measure rebuild cost, skip if <10ms gain |
-| TGNT-P3.5 | Cache integration test (end-to-end scenario) | TGNT-P3.1 → TGNT-P3.4 | ~10min | Verify cache improves harness speed by ≥20% |
+| ID        | Title                                              | Depends On            | Effort | Notes                                       |
+| --------- | -------------------------------------------------- | --------------------- | ------ | ------------------------------------------- |
+| TGNT-P3.1 | Rebuild strategy (invalidation heuristics)         | TGNT-P0.4             | ~8min  | When to invalidate entire cache vs partial  |
+| TGNT-P3.2 | Partial rebuild (diff-aware re-execution)          | TGNT-P3.1             | ~10min | Only re-run affected downstream items       |
+| TGNT-P3.3 | Preload optimization (predict hot keys)            | TGNT-P0.4             | ~8min  | Load likely-accessed entries at startup     |
+| TGNT-P3.4 | Build timing (profile hot paths, cutoff threshold) | TGNT-P3.1, TGNT-P3.2  | ~5min  | Measure rebuild cost, skip if <10ms gain    |
+| TGNT-P3.5 | Cache integration test (end-to-end scenario)       | TGNT-P3.1 → TGNT-P3.4 | ~10min | Verify cache improves harness speed by ≥20% |
 
 **Builder Execution Flow:**
+
 ```
 1. thegent free --do-next  # Auto-claim TGNT-P3.1
 2. Implement rebuild strategy
@@ -1305,6 +1345,7 @@ This document activates the **3-level agent hierarchy** for parallel work execut
 ## Execution Checklist
 
 ### Pre-Execution (L1 - This Step)
+
 - [x] WORK_STREAM.md prepared with 186 tasks (all phases)
 - [x] COORDINATION.md documents L1/L2/L3 workflows
 - [x] AGENTS_ACTIVE.md created with team registry
@@ -1313,18 +1354,21 @@ This document activates the **3-level agent hierarchy** for parallel work execut
 - [ ] L2 teammates notified with claims protocol
 
 ### Execution (L2 - Parallel)
+
 - [ ] researcher-1: Claim TGNT-P2.1
 - [ ] builder-1: Claim TGNT-P3.1
 - [ ] Both execute in parallel via `thegent free --do-next --repeat 5` (max 5 items each batch)
 - [ ] L1 monitor: Check status every 5-10 min via AGENTS_ACTIVE.md updates
 
 ### Mid-Execution Gates (L1 - Monitoring)
+
 - [ ] At ~10 min: At least 1 item completed by each worker
 - [ ] At ~20 min: ≥50% of batch complete
 - [ ] At ~30 min: Phase 2 complete OR blocker detected
 - [ ] At ~35 min: Phase 3 complete OR blocker detected
 
 ### Post-Batch Validation (L1)
+
 - [ ] All Phase 2 items in COMPLETED section
 - [ ] All Phase 3 items in COMPLETED section
 - [ ] Cycle time metrics recorded in AGENTS_ACTIVE.md
@@ -1336,21 +1380,25 @@ This document activates the **3-level agent hierarchy** for parallel work execut
 ## Communication Protocol
 
 ### L2 → L1 (Status Updates)
+
 - **Frequency:** Every 5-10 min OR when blocker encountered
 - **Method:** Update AGENTS_ACTIVE.md (commit immediately)
 - **Content:** Current task, progress %, blockers, ETA
 
 ### L2 ↔ L2 (Coordination)
+
 - **Method:** WORK_STREAM.md dependency columns (read-only)
 - **Resolve:** Only via L1 arbitration if circular depends detected
 - **Avoid:** Direct messaging (use work stream as async protocol)
 
 ### L1 → L2 (Instructions)
+
 - **Method:** Update this document (EXECUTION_KICKOFF) or COORDINATION.md
 - **Frequency:** As needed (new blockers, priority changes, phase transitions)
 - **Content:** New work assignments, blocker resolutions, next phase gates
 
 ### All → L1 (Escalation)
+
 - **Trigger:** Blocker >5 min, SLO breach, dependency cycle, unknown error
 - **Method:** Add to FAILED/BLOCKED section with evidence and decision point
 - **Response Time:** L1 resolves within 2 min (add note to this document)
@@ -1360,6 +1408,7 @@ This document activates the **3-level agent hierarchy** for parallel work execut
 ## Blocker Resolution Protocol
 
 ### If researcher-1 Blocked
+
 **Scenario:** TGNT-P2.2 blocked on TGNT-P2.1 not complete yet
 
 1. Check WORK_STREAM.md: Is TGNT-P2.1 COMPLETED?
@@ -1368,11 +1417,13 @@ This document activates the **3-level agent hierarchy** for parallel work execut
 4. After 5 min: L1 investigates researcher-1 session status
 
 ### If builder-1 Blocked
+
 **Scenario:** TGNT-P3.5 blocked on TGNT-P3.4 not complete
 
 (Same protocol as researcher-1)
 
 ### If Circular Dependency Detected
+
 **Scenario:** A → B → C → A
 
 1. STOP: Do not continue parallel work
@@ -1386,13 +1437,15 @@ This document activates the **3-level agent hierarchy** for parallel work execut
 ## Success Criteria
 
 ### Batch Complete (Phase 2-3)
-- ✅ All TGNT-P2.* items in COMPLETED
-- ✅ All TGNT-P3.* items in COMPLETED
+
+- ✅ All TGNT-P2.\* items in COMPLETED
+- ✅ All TGNT-P3.\* items in COMPLETED
 - ✅ Cycle time avg ≤ 12 min (target)
 - ✅ SLO breaches: 0
 - ✅ No unresolved blockers
 
 ### Quality Gates (Validation)
+
 - ✅ Code follows thegent patterns
 - ✅ Tests added for new code
 - ✅ WORK_STREAM.md entries signed off (L1 approval)
@@ -1403,12 +1456,14 @@ This document activates the **3-level agent hierarchy** for parallel work execut
 ## Next Steps (After Phase 2-3 Complete)
 
 ### Batch 2: Phase 4-5 Parallelization
+
 - **Trigger:** Phase 2-3 both 100% complete
 - **Workers:** researcher-1 (continues) + integrator-1 (new)
 - **Duration:** ~30-45 min
 - **Items:** TGNT-P4.1 → TGNT-P5.5 (30+ tasks)
 
 ### Phase Transition Gates
+
 - **Phase 2 → 3:** Independent (parallel)
 - **Phase 3 → 4:** Depends on P3.5 (integration test) ✓
 - **Phase 4 → 5:** Depends on P4.4 (context merging) ✓
@@ -1418,42 +1473,41 @@ This document activates the **3-level agent hierarchy** for parallel work execut
 
 ## Key Files & References
 
-| Document | Purpose | Location |
-|----------|---------|----------|
-| WORK_STREAM.md | Canonical task list | `docs/reference/` |
-| COORDINATION.md | L1/L2/L3 workflows | `docs/reference/` |
-| AGENTS_ACTIVE.md | Team registry & status | `docs/reference/` |
-| FAILURE_RECOVERY_PLAYBOOK.md | 10 failure scenarios | `docs/reference/` |
-| This Document | Execution kickoff & protocol | `docs/reference/` |
+| Document                     | Purpose                      | Location          |
+| ---------------------------- | ---------------------------- | ----------------- |
+| WORK_STREAM.md               | Canonical task list          | `docs/reference/` |
+| COORDINATION.md              | L1/L2/L3 workflows           | `docs/reference/` |
+| AGENTS_ACTIVE.md             | Team registry & status       | `docs/reference/` |
+| FAILURE_RECOVERY_PLAYBOOK.md | 10 failure scenarios         | `docs/reference/` |
+| This Document                | Execution kickoff & protocol | `docs/reference/` |
 
 ---
 
 ## Metrics to Track
 
-| Metric | Target | Measured At |
-|--------|--------|------------|
-| Cycle Time (avg) | ≤ 12 min / item | Per batch completion |
-| SLO Compliance | 100% (0 breaches) | Per batch completion |
-| Task Completion Rate | ≥ 95% | Per phase completion |
-| Blocker Resolution Time | ≤ 5 min | Real-time |
-| Team Utilization | ≥ 90% | Per batch completion |
+| Metric                  | Target            | Measured At          |
+| ----------------------- | ----------------- | -------------------- |
+| Cycle Time (avg)        | ≤ 12 min / item   | Per batch completion |
+| SLO Compliance          | 100% (0 breaches) | Per batch completion |
+| Task Completion Rate    | ≥ 95%             | Per phase completion |
+| Blocker Resolution Time | ≤ 5 min           | Real-time            |
+| Team Utilization        | ≥ 90%             | Per batch completion |
 
 ---
 
 ## Status & Timeline
 
-| Phase | Start | Target Complete | Actual | Status |
-|-------|-------|-----------------|--------|--------|
-| Phase 2-3 (Batch 1) | 2026-02-18 13:00 | 2026-02-18 13:40 | -- | ACTIVE |
-| Phase 4-5 (Batch 2) | 2026-02-18 13:45 | 2026-02-18 14:30 | -- | Pending |
-| Phase 6+ (Batch 3+) | 2026-02-18 14:35 | 2026-02-18 16:00 | -- | Pending |
+| Phase               | Start            | Target Complete  | Actual | Status  |
+| ------------------- | ---------------- | ---------------- | ------ | ------- |
+| Phase 2-3 (Batch 1) | 2026-02-18 13:00 | 2026-02-18 13:40 | --     | ACTIVE  |
+| Phase 4-5 (Batch 2) | 2026-02-18 13:45 | 2026-02-18 14:30 | --     | Pending |
+| Phase 6+ (Batch 3+) | 2026-02-18 14:35 | 2026-02-18 16:00 | --     | Pending |
 
 ---
 
 **Maintained By:** L1 (Claude Code)
 **Version:** 1.0 | **Last Updated:** 2026-02-18 13:00 UTC
 **Next Review:** Every 10 min during execution
-
 
 ---
 
@@ -1471,18 +1525,18 @@ This playbook defines recovery procedures for common failure scenarios in multi-
 
 ### Quick Symptom Matcher
 
-| Symptom | Root Cause | Playbook Section |
-|---------|-----------|------------------|
-| Task claimed but no progress for 10+ min | Agent crash/hang | FRP-1 |
-| Two agents claim same task | Race condition in WORK_STREAM.md | FRP-2 |
-| Task A depends on B, B depends on A | Circular dependency | FRP-3 |
-| Multiple agents editing same file, merge conflict | Concurrent file edits | FRP-4 |
-| Task marked complete, but downstream finds bug | Incomplete testing/QA | FRP-5 |
-| Task estimate 5m, now 45+ min running | SLO breach / scope creep | FRP-6 |
-| CLAIMED and PENDING both show same task | Git conflict in WORK_STREAM.md | FRP-7 |
-| Blocker waiting 30+ min, upstream task stuck | Dependency SLO breach | FRP-8 |
-| Agent reports file already exists / can't create | Permission or file locking issue | FRP-9 |
-| All agents idle, no work items available | Work stream depletion | FRP-10 |
+| Symptom                                           | Root Cause                       | Playbook Section |
+| ------------------------------------------------- | -------------------------------- | ---------------- |
+| Task claimed but no progress for 10+ min          | Agent crash/hang                 | FRP-1            |
+| Two agents claim same task                        | Race condition in WORK_STREAM.md | FRP-2            |
+| Task A depends on B, B depends on A               | Circular dependency              | FRP-3            |
+| Multiple agents editing same file, merge conflict | Concurrent file edits            | FRP-4            |
+| Task marked complete, but downstream finds bug    | Incomplete testing/QA            | FRP-5            |
+| Task estimate 5m, now 45+ min running             | SLO breach / scope creep         | FRP-6            |
+| CLAIMED and PENDING both show same task           | Git conflict in WORK_STREAM.md   | FRP-7            |
+| Blocker waiting 30+ min, upstream task stuck      | Dependency SLO breach            | FRP-8            |
+| Agent reports file already exists / can't create  | Permission or file locking issue | FRP-9            |
+| All agents idle, no work items available          | Work stream depletion            | FRP-10           |
 
 ---
 
@@ -1491,6 +1545,7 @@ This playbook defines recovery procedures for common failure scenarios in multi-
 **Symptom:** Task in CLAIMED section, agent not responding, no status update for 10+ minutes.
 
 **Detection:**
+
 ```bash
 # Check for stale sessions (no update in 10 min)
 thegent ps | grep -v updated
@@ -1506,9 +1561,11 @@ done
 **Option A: Graceful Recovery (Preferred)**
 
 1. **Attempt Soft Shutdown** (30-second timeout)
+
    ```bash
    thegent wait {session_id} --timeout 30
    ```
+
    - If agent responds, it can finish or gracefully abort
    - Check logs to understand what happened:
      ```bash
@@ -1516,6 +1573,7 @@ done
      ```
 
 2. **If Agent Responds:** Let it finish or ask to abort
+
    ```bash
    # Send message to agent (if TeamCreate used)
    SendMessage type=message recipient="{agent-name}" \
@@ -1537,11 +1595,13 @@ done
 **Option B: Force Terminate (If Soft Timeout Fails)**
 
 1. **Force Kill Session** (immediate, no cleanup)
+
    ```bash
    thegent kill {session_id} --force
    ```
 
 2. **Check for Partial Files**
+
    ```bash
    # Look for incomplete edits (e.g., .swp, .tmp files)
    git status | grep -E "\.swp|\.tmp|\.bak"
@@ -1550,6 +1610,7 @@ done
    ```
 
 3. **Abort Any Pending Git Operations**
+
    ```bash
    # Check for dangling lock files
    ls -la .git/ | grep lock
@@ -1560,6 +1621,7 @@ done
 4. **Move Task Back to PENDING** (same as Option A, step 3)
 
 5. **Update AGENTS_ACTIVE.md**
+
    ```markdown
    | agent-id | ... | ERROR | TGNT-P6.1 | -- | 2026-02-18T14:30:00Z | 2026-02-18T15:45:00Z | 75 min | Force killed after timeout |
    ```
@@ -1587,6 +1649,7 @@ done
 **Symptom:** Two agents claim the same task (both update WORK_STREAM.md simultaneously).
 
 **Detection:**
+
 ```bash
 # Check for duplicate task in CLAIMED
 grep "TGNT-P6.1" docs/reference/WORK_STREAM.md | wc -l
@@ -1618,6 +1681,7 @@ git show {commit2}:docs/reference/WORK_STREAM.md | grep TGNT-P6.1
 **Step 3: Assign Task to Winner, Release Loser**
 
 **If Agent 1 wins:**
+
 ```bash
 # In WORK_STREAM.md CLAIMED section, keep Agent 1 entry, remove Agent 2
 # Commit with message:
@@ -1632,6 +1696,7 @@ Next available: TGNT-P6.6 (ready now). Claim it?"
 **Step 4: Lock WORK_STREAM.md During High Contention**
 
 If race conditions are frequent:
+
 ```bash
 # Add atomic locking mechanism (Git pre-commit hook)
 cat > .git/hooks/pre-commit << 'EOF'
@@ -1653,6 +1718,7 @@ chmod +x .git/hooks/pre-commit
 **Step 5: Implement Mutex for CLAIMED Updates**
 
 Use file locking to prevent concurrent updates:
+
 ```bash
 # Wrap WORK_STREAM.md updates with flock
 update_work_stream() {
@@ -1731,6 +1797,7 @@ grep -A1 "TGNT-P6.1\|TGNT-P6.2" docs/reference/WORK_STREAM.md
 **Step 2: Break Cycle by Removing Weakest Link**
 
 Identify which dependency is weakest:
+
 ```bash
 # Ask questions:
 # 1. Can task B be done without A's output? (if yes, remove A→B dependency)
@@ -1741,11 +1808,13 @@ Identify which dependency is weakest:
 **Example: A=Auth, B=API depends on Auth**
 
 Original:
+
 - TGNT-P1: Auth system (depends on: none)
 - TGNT-P2: API endpoints (depends on: TGNT-P1)
 - But TGNT-P1 also depends on TGNT-P2 (API middleware?)
 
 Resolution: Split TGNT-P1 into two tasks:
+
 - TGNT-P1a: Auth core (no deps) → can start now
 - TGNT-P1b: Auth API integration (depends on TGNT-P2) → can start after P2
 
@@ -1753,13 +1822,14 @@ Resolution: Split TGNT-P1 into two tasks:
 
 ```markdown
 | TGNT-P1a | Auth core | ... | -- | ~5min | PENDING |
-| TGNT-P2  | API endpoints | ... | TGNT-P1a | ~10min | PENDING |
+| TGNT-P2 | API endpoints | ... | TGNT-P1a | ~10min | PENDING |
 | TGNT-P1b | Auth API integration | ... | TGNT-P2 | ~5min | PENDING |
 ```
 
 **Step 4: Reorder Tasks**
 
 Now that cycle is broken, reorder to maximize parallelism:
+
 ```
 TGNT-P1a (start now) → TGNT-P2 (start after P1a) + TGNT-P1b (wait for P2)
 ```
@@ -1807,6 +1877,7 @@ git mergetool {filename}
 **Step 2: Resolve Manually or Auto-Merge**
 
 **Option A: Manual Merge** (for logic conflicts)
+
 ```bash
 # Edit file, remove conflict markers
 nano {filename}
@@ -1820,6 +1891,7 @@ git commit -m "Resolve conflict: {filename} (took {agent-1} logic for {section})
 **Option B: Rebase & Replay**
 
 If conflict is just ordering/format:
+
 ```bash
 # Rebase agent B's changes on top of agent A's
 git rebase -i {base-commit}
@@ -1852,17 +1924,21 @@ pytest tests/test_{filename}.py
 **Step 5: Prevent Future Conflicts**
 
 Implement task scoping to prevent overlaps:
+
 ```markdown
 # Best: Different agents, different files
+
 Agent A: auth.py
 Agent B: api.py
 
 # OK: Same file, different functions
+
 Agent A: auth.py (classes UserAuth, TokenAuth)
 Agent B: auth.py (functions validate_token, refresh_token)
 
 # BAD: Same function, both agents editing
-Agent A & B: auth.py (function validate_token)  ❌
+
+Agent A & B: auth.py (function validate_token) ❌
 ```
 
 ---
@@ -1900,12 +1976,14 @@ pytest tests/test_git_index.py::test_atomic_write -v
 
 ```markdown
 # In WORK_STREAM.md, move from COMPLETED back to IN_PROGRESS:
+
 | TGNT-P6.1 | dev-agent-1 | 2026-02-18T14:30:00Z | -- | IN_PROGRESS (reopened: regression in TGNT-P6.2) |
 ```
 
 **Step 3: Root Cause Analysis**
 
 Ask agent: "What went wrong?"
+
 - Incomplete testing? (test didn't catch edge case)
 - Partial implementation? (feature flag not complete)
 - Assumption error? (didn't test on all platforms)
@@ -1913,6 +1991,7 @@ Ask agent: "What went wrong?"
 **Step 4: Fix and Re-Test**
 
 Agent fixes the issue:
+
 ```bash
 # Make fix
 nano {file}
@@ -1960,6 +2039,7 @@ fi
 **Step 1: Determine Root Cause**
 
 Send message to agent:
+
 ```
 "TGNT-P6.1 is running long (80m vs 8m estimate).
 What's blocking you?
@@ -1972,6 +2052,7 @@ D) Need help/pair programming"
 **Step 2: Based on Response:**
 
 **If A (Task More Complex):**
+
 - Split task into smaller subtasks
 - Complete current subtask, mark as partial completion
 - Reassess scope of remaining work
@@ -1982,16 +2063,19 @@ D) Need help/pair programming"
   ```
 
 **If B (Waiting for Dependency):**
+
 - Escalate dependency blocker (see FRP-8)
 - If dependency is far away, consider different approach
 - Can agent do other work in parallel?
 
 **If C (Tooling Issues):**
+
 - Provide support, assign troubleshooting agent
 - Install missing tools, fix environment
 - Restart task once fixed
 
 **If D (Need Help):**
+
 - Pair agent with specialist
 - Or bring in second agent to handle sub-part
 - Update task to show collaboration
@@ -2005,6 +2089,7 @@ D) Need help/pair programming"
 **Step 4: Adjust Future Estimates**
 
 Document lessons learned:
+
 ```markdown
 # Post-Task Analysis
 
@@ -2012,14 +2097,16 @@ Document lessons learned:
 **Original Estimate:** 8 min
 **Actual Duration:** 45 min (5.6x over)
 **Root Causes:**
-  - GIT_INDEX_FILE semantics more complex than anticipated
-  - Edge cases in concurrent access not covered by initial design
-  - Testing + debugging took longer than expected
+
+- GIT_INDEX_FILE semantics more complex than anticipated
+- Edge cases in concurrent access not covered by initial design
+- Testing + debugging took longer than expected
 
 **Recommendations for Similar Tasks:**
-  - Estimate should be 20-30 min minimum for git-level operations
-  - Build in 50% buffer for git testing (very environment-dependent)
-  - Consider pair programming for git operations (high risk of subtle bugs)
+
+- Estimate should be 20-30 min minimum for git-level operations
+- Build in 50% buffer for git testing (very environment-dependent)
+- Consider pair programming for git operations (high risk of subtle bugs)
 
 **Estimate Adjustment:** +300% for similar git-level tasks going forward
 ```
@@ -2027,6 +2114,7 @@ Document lessons learned:
 **Step 5: Monitor for Pattern**
 
 If multiple tasks are overshooting:
+
 - Team is overcommitting
 - Complexity underestimated
 - Consider reducing sprint scope
@@ -2158,12 +2246,14 @@ Options:
 
 ```markdown
 # In WORK_STREAM.md:
+
 | TGNT-P6.7 | ... | BLOCKED | Notes: Escalated to L1 due to 30m wait on TGNT-P6.5 |
 ```
 
 **Step 5: Automated Escalation Policy**
 
 Add rule to dashboard:
+
 ```
 if (time_blocked > 15 min):
   severity = MEDIUM
@@ -2220,6 +2310,7 @@ ls -la .git/ | grep lock
 **Step 3: Fix Appropriately**
 
 **If Permission:**
+
 ```bash
 # Fix file permissions
 chmod 644 {filename}
@@ -2232,6 +2323,7 @@ git config core.filemode
 ```
 
 **If Lock:**
+
 ```bash
 # Check what process is holding it
 lsof {filename} | awk '{print $2}' | grep -v PID | xargs ps aux | grep
@@ -2244,6 +2336,7 @@ rm -f .git/index.lock .git/HEAD.lock
 ```
 
 **If Network Drive:**
+
 ```bash
 # Try remounting NFS with shorter timeouts:
 sudo mount -o remount,timeo=10 {mount_point}
@@ -2253,6 +2346,7 @@ sudo mount -o remount,timeo=10 {mount_point}
 **Step 4: Retry Task**
 
 Once fixed:
+
 ```bash
 git status  # Should show no errors
 # Agent retries task
@@ -2262,6 +2356,7 @@ git status  # Should show no errors
 
 ```markdown
 # In AGENTS_ACTIVE.md notes:
+
 | agent-id | ... | ERROR | TGNT-P6.1 | -- | ... | File lock on git/index. Fixed with: rm .git/index.lock. Retrying now. |
 ```
 
@@ -2346,6 +2441,7 @@ task quality
 ## Phase 6: Git Parallelism - Complete
 
 ### Summary
+
 - Started: 2026-02-18 14:00 UTC
 - Completed: 2026-02-18 17:15 UTC
 - Duration: 3h 15m
@@ -2354,17 +2450,20 @@ task quality
 - Regressions: 0
 
 ### Metrics
+
 - Avg Cycle Time: 18 min
 - SLO Breaches: 1 (TGNT-P6.1, resolved)
 - Blockers: 2 (all resolved)
 - Quality: ✓ PASS (lint 0, tests 42/42, coverage 94%)
 
 ### Key Learnings
+
 1. Git operations need 3-4x estimate buffer (too complex)
 2. Atomic writes are hard to test (environment-dependent)
 3. Pair programming worked well for tricky sections
 
 ### Next Phase: Phase 7 (Monitoring)
+
 - Ready to start immediately
 - No blocking dependencies
 - First task: Dashboard design & implementation
@@ -2391,11 +2490,12 @@ cp docs/reports/PHASE_6_COMPLETION_SUMMARY.md docs/reference/archive/phase-6/
 
 ### thegent: Phase 7 (Monitoring - PENDING)
 
-| ID | Title | Type | Depends On | Effort | Status |
-|----|-------|------|-----------|--------|--------|
-| TGNT-P7.1 | Dashboard design (TUI mockup + hotkeys) | feature | TGNT-P6 | ~15min | PENDING |
-| TGNT-P7.2 | Dashboard MVP (parse WORK_STREAM, display header) | feature | TGNT-P7.1 | ~10min | PENDING |
-| TGNT-P7.3 | Dashboard agents view (live updates) | feature | TGNT-P7.2 | ~12min | PENDING |
+| ID        | Title                                             | Type    | Depends On | Effort | Status  |
+| --------- | ------------------------------------------------- | ------- | ---------- | ------ | ------- |
+| TGNT-P7.1 | Dashboard design (TUI mockup + hotkeys)           | feature | TGNT-P6    | ~15min | PENDING |
+| TGNT-P7.2 | Dashboard MVP (parse WORK_STREAM, display header) | feature | TGNT-P7.1  | ~10min | PENDING |
+| TGNT-P7.3 | Dashboard agents view (live updates)              | feature | TGNT-P7.2  | ~12min | PENDING |
+
 ...
 ```
 
@@ -2444,30 +2544,29 @@ Failure Detected
 
 ## Escalation Matrix
 
-| Issue | Severity | Initial Handler | Escalation | Time Limit |
-|-------|----------|-----------------|-----------|-----------|
-| Agent timeout | Medium | L2 (Release task) | L1 (Investigate) | 30 min |
-| Race condition | High | L2 (Resolve) | L1 (Lock WORK_STREAM) | 15 min |
-| Circular dep | High | L1 (Break cycle) | Design review | 20 min |
-| File conflict | Medium | L2 (Manual merge) | L1 (Rebase strategy) | 10 min |
-| Regression | High | Upstream (Fix) | L1 (Post-mortem) | 30 min |
-| SLO breach | High | L2 (Escalate) | L1 (Reprioritize) | 15 min |
-| Blocker 30min | Critical | L1 (Escalate) | Team Lead (Override) | 5 min |
-| File lock | Low | Agent (Retry) | Ops (Fix perms) | 10 min |
-| No more work | Low | L1 (Create more) | -- | N/A |
+| Issue          | Severity | Initial Handler   | Escalation            | Time Limit |
+| -------------- | -------- | ----------------- | --------------------- | ---------- |
+| Agent timeout  | Medium   | L2 (Release task) | L1 (Investigate)      | 30 min     |
+| Race condition | High     | L2 (Resolve)      | L1 (Lock WORK_STREAM) | 15 min     |
+| Circular dep   | High     | L1 (Break cycle)  | Design review         | 20 min     |
+| File conflict  | Medium   | L2 (Manual merge) | L1 (Rebase strategy)  | 10 min     |
+| Regression     | High     | Upstream (Fix)    | L1 (Post-mortem)      | 30 min     |
+| SLO breach     | High     | L2 (Escalate)     | L1 (Reprioritize)     | 15 min     |
+| Blocker 30min  | Critical | L1 (Escalate)     | Team Lead (Override)  | 5 min      |
+| File lock      | Low      | Agent (Retry)     | Ops (Fix perms)       | 10 min     |
+| No more work   | Low      | L1 (Create more)  | --                    | N/A        |
 
 ---
 
 ## Version & Maintenance
 
-| Version | Date | Changes | Status |
-|---------|------|---------|--------|
-| 1.0 | 2026-02-18 | 10 FRP scenarios + decision tree | Active |
+| Version | Date       | Changes                          | Status |
+| ------- | ---------- | -------------------------------- | ------ |
+| 1.0     | 2026-02-18 | 10 FRP scenarios + decision tree | Active |
 
 **Maintained By:** L1 Coordinator
 **Review Frequency:** After each failure scenario encountered
 **Next Review:** 2026-02-25
-
 
 ---
 
@@ -2509,6 +2608,7 @@ Example: "thegent:abc123:L2:builder"
 ```
 
 **Components:**
+
 - `project` - Project name/path (e.g., "thegent", "kush")
 - `uuid` - 8-character unique identifier
 - `level` - Hierarchy level (L1, L2, L3)
@@ -2519,6 +2619,7 @@ Example: "thegent:abc123:L2:builder"
 **Location:** `~/.claude/civilization/registry.json`
 
 **Structure:**
+
 ```json
 {
   "thegent:abc123:L1:coordinator": {
@@ -2597,11 +2698,13 @@ Core implementation with:
 Comprehensive test suite with 17 passing tests:
 
 **TestAgentIdentity (4 tests):**
+
 - Agent ID format string generation
 - Dictionary serialization/deserialization
 - Roundtrip conversion
 
 **TestGlobalAgentRegistry (10 tests):**
+
 - Agent registration/retrieval
 - Unregistration with cleanup
 - Filtering by project, level, role
@@ -2611,10 +2714,12 @@ Comprehensive test suite with 17 passing tests:
 - Registry statistics
 
 **TestAgentIdentityFactory (4 tests):**
+
 - L1, L2, L3 agent creation
 - Full hierarchy creation
 
 **Test Results:**
+
 ```
 Ran 17 tests in 0.187s
 OK ✅
@@ -2640,17 +2745,11 @@ print(f"L1 Agent: {l1.agent_id}")
 
 # Create L2 workers
 l2_researcher = factory.create_l2_agent(
-    "thegent",
-    AgentRole.RESEARCHER,
-    l1.agent_id,
-    capabilities=["research", "analysis"]
+    "thegent", AgentRole.RESEARCHER, l1.agent_id, capabilities=["research", "analysis"]
 )
 
 l2_builder = factory.create_l2_agent(
-    "thegent",
-    AgentRole.BUILDER,
-    l1.agent_id,
-    capabilities=["implementation", "testing"]
+    "thegent", AgentRole.BUILDER, l1.agent_id, capabilities=["implementation", "testing"]
 )
 
 # Create L3 executors
@@ -2702,17 +2801,20 @@ The agent identity system integrates with the existing `SwarmController`:
 **swarm_controller.py should be updated to:**
 
 1. **On Agent Registration:**
+
    ```python
    identity = factory.create_l3_agent(project, l2_parent_id)
    self.agent_identities[identity.agent_id] = identity
    ```
 
 2. **On Heartbeat Update:**
+
    ```python
    registry.update_heartbeat(agent_id)
    ```
 
 3. **On Agent Stale Detection:**
+
    ```python
    stale = registry.get_stale_agents()
    for agent in stale:
@@ -2765,12 +2867,12 @@ Phase 2 will implement:
 
 ## Key Files
 
-| File | Purpose | Status |
-|------|---------|--------|
-| `scripts/agent_identity_system.py` | Core implementation | ✅ 427 LOC |
-| `scripts/test_agent_identity_system.py` | Test suite | ✅ 361 LOC, 17 tests passing |
-| `docs/reference/PHASE_1_AGENT_IDENTITY_IMPLEMENTATION.md` | This file | ✅ Documentation |
-| `~/.claude/civilization/registry.json` | Global registry | Created on first use |
+| File                                                      | Purpose             | Status                       |
+| --------------------------------------------------------- | ------------------- | ---------------------------- |
+| `scripts/agent_identity_system.py`                        | Core implementation | ✅ 427 LOC                   |
+| `scripts/test_agent_identity_system.py`                   | Test suite          | ✅ 361 LOC, 17 tests passing |
+| `docs/reference/PHASE_1_AGENT_IDENTITY_IMPLEMENTATION.md` | This file           | ✅ Documentation             |
+| `~/.claude/civilization/registry.json`                    | Global registry     | Created on first use         |
 
 ---
 
@@ -2803,6 +2905,7 @@ test_create_full_hierarchy ✅
 ## Summary
 
 Phase 1 establishes the foundational agent identity and discovery system that enables:
+
 - **Unique global identities** for all agents across projects
 - **Hierarchical relationships** tracking (L1→L2→L3)
 - **Service discovery** via global registry
@@ -2814,7 +2917,6 @@ This is the critical foundation upon which Phases 2-6 build the complete Multi-T
 ---
 
 **Generated:** 2026-02-19 | **Completed By:** Claude Code (L1)
-
 
 ---
 
@@ -2830,22 +2932,26 @@ This is the critical foundation upon which Phases 2-6 build the complete Multi-T
 ## Quick Navigation
 
 ### For Developers
+
 1. **Start here:** `PHASE_1_QUICK_REFERENCE.md` (5 min read)
 2. **Deep dive:** `PHASE_1_AGENT_IDENTITY_IMPLEMENTATION.md` (15 min read)
 3. **Code:** `scripts/agent_identity_system.py` (427 LOC)
 4. **Tests:** `scripts/test_agent_identity_system.py` (17 passing tests)
 
 ### For Integration
+
 1. **Start here:** `INTEGRATING_AGENT_IDENTITY_WITH_SWARM_CONTROLLER.md` (10 min read)
 2. **Implementation:** See step-by-step integration guide
 3. **Timeline:** 3-4 hours for full integration
 
 ### For Project Managers
+
 1. **Executive summary:** `PHASE_1_COMPLETION_SUMMARY_2026-02-19.md`
 2. **Status:** ✅ Complete, 100% tests passing, ready for integration
 3. **Next phase:** Phase 2 - Service Discovery Protocol
 
 ### For Architects
+
 1. **Architecture:** `PHASE_1_AGENT_IDENTITY_IMPLEMENTATION.md` § Architecture
 2. **Integration strategy:** `INTEGRATING_AGENT_IDENTITY_WITH_SWARM_CONTROLLER.md`
 3. **Design decisions:** See ADRs in main project
@@ -2881,10 +2987,12 @@ kush/
 ## Document Descriptions
 
 ### 1. PHASE_1_QUICK_REFERENCE.md
+
 **Type:** Quick Reference Card
 **Read Time:** 5 minutes
 **Audience:** All developers
 **Content:**
+
 - One-minute overview
 - Quick start code snippets
 - Common operations table
@@ -2899,10 +3007,12 @@ kush/
 ---
 
 ### 2. PHASE_1_AGENT_IDENTITY_IMPLEMENTATION.md
+
 **Type:** Technical Specification
 **Read Time:** 15 minutes
 **Audience:** Implementers, architects
 **Content:**
+
 - Complete architecture overview
 - AgentIdentity dataclass specification
 - GlobalAgentRegistry API documentation
@@ -2918,10 +3028,12 @@ kush/
 ---
 
 ### 3. INTEGRATING_AGENT_IDENTITY_WITH_SWARM_CONTROLLER.md
+
 **Type:** Integration Roadmap
 **Read Time:** 10 minutes for overview, 1-2 hours for implementation
 **Audience:** Implementation engineers
 **Content:**
+
 - Current state assessment
 - Integration strategy (5 steps)
 - Step-by-step implementation
@@ -2937,10 +3049,12 @@ kush/
 ---
 
 ### 4. PHASE_1_COMPLETION_SUMMARY_2026-02-19.md
+
 **Type:** Executive Summary
 **Read Time:** 10 minutes
 **Audience:** Project managers, executives, stakeholders
 **Content:**
+
 - Executive summary (30 seconds)
 - Deliverables table
 - Test coverage (100%, 17/17 passing)
@@ -2959,7 +3073,9 @@ kush/
 ### 5. Core Implementation Files
 
 #### scripts/agent_identity_system.py (427 LOC)
+
 **Components:**
+
 - `AgentLevel` enum (L1, L2, L3)
 - `AgentRole` enum (RESEARCHER, BUILDER, etc.)
 - `AgentIdentity` dataclass (core identity)
@@ -2967,18 +3083,22 @@ kush/
 - `AgentIdentityFactory` class (creation patterns)
 
 **Key methods:**
+
 - Registry: register, unregister, get, filter, relationships, persistence
 - Factory: create_l1_agent, create_l2_agent, create_l3_agent
 
 **Use:** Import and instantiate for agent identity operations
 
 #### scripts/test_agent_identity_system.py (361 LOC, 17 tests)
+
 **Test classes:**
+
 - `TestAgentIdentity` (4 tests)
 - `TestGlobalAgentRegistry` (10 tests)
 - `TestAgentIdentityFactory` (4 tests)
 
 **Coverage:**
+
 - ✅ Identity creation and formatting
 - ✅ Serialization/deserialization
 - ✅ Registration and retrieval
@@ -2993,6 +3113,7 @@ kush/
 ## Key Concepts
 
 ### Agent Identity
+
 ```
 Format: {project}:{uuid}:L{level}:{role}
 Example: "thegent:abc123:L2:builder"
@@ -3005,6 +3126,7 @@ Components:
 ```
 
 ### Global Registry
+
 ```
 Location: ~/.claude/civilization/registry.json
 Purpose: Central service discovery & relationship tracking
@@ -3013,6 +3135,7 @@ Persistence: Automatic on every change
 ```
 
 ### Hierarchy
+
 ```
 L1 (Strategic Lead)
 ├── L2 (Named Workers)
@@ -3024,29 +3147,32 @@ L1 (Strategic Lead)
 
 ## Integration Timeline
 
-| Phase | Duration | Status | Deliverables |
-|-------|----------|--------|--------------|
-| **Phase 1** | ✅ Complete | 100% | Agent identity system, global registry, 17 tests |
-| **Phase 2** | Next | Planned | Service discovery protocol, MCP transport |
-| **Phase 3** | Later | Planned | Conflict resolution, agent memory |
-| **Phase 4-6** | Later | Planned | Advanced coordination, dashboards, scale |
+| Phase         | Duration    | Status  | Deliverables                                     |
+| ------------- | ----------- | ------- | ------------------------------------------------ |
+| **Phase 1**   | ✅ Complete | 100%    | Agent identity system, global registry, 17 tests |
+| **Phase 2**   | Next        | Planned | Service discovery protocol, MCP transport        |
+| **Phase 3**   | Later       | Planned | Conflict resolution, agent memory                |
+| **Phase 4-6** | Later       | Planned | Advanced coordination, dashboards, scale         |
 
 ---
 
 ## Getting Started (5 Minutes)
 
 ### 1. Read Quick Reference
+
 ```bash
 cat docs/reference/PHASE_1_QUICK_REFERENCE.md
 ```
 
 ### 2. Run Tests
+
 ```bash
 python3 -m unittest scripts.test_agent_identity_system -v
 # Expected: Ran 17 tests in 0.187s OK ✅
 ```
 
 ### 3. Try Example Code
+
 ```python
 from scripts.agent_identity_system import GlobalAgentRegistry, AgentIdentityFactory
 
@@ -3061,6 +3187,7 @@ print(f"Total agents: {stats['total_agents']}")
 ```
 
 ### 4. Check Registry
+
 ```bash
 cat ~/.claude/civilization/registry.json | jq .
 ```
@@ -3109,16 +3236,19 @@ A: Call `registry.update_heartbeat(agent_id)` periodically. Agents without updat
 ## Related Documentation
 
 ### In This Project
+
 - `docs/reference/WORK_STREAM.md` - 186 consolidated tasks
 - `docs/reference/COORDINATION.md` - L1/L2/L3 workflows
 - `docs/reference/AGENTS_ACTIVE.md` - Agent registry template
 - `scripts/swarm_controller.py` - Existing agent orchestration
 
 ### From Prior Sessions
+
 - Conversation dumps: `docs/research/CONVERSATION_DUMP_*.md`
 - Research summaries: `docs/research/DYNAMIC_SCALING_AND_SELF_HEALING_PATTERNS.md`
 
 ### Global Civilization Framework
+
 - Phase 2: Service Discovery Protocol (planned)
 - Phase 3: Conflict Resolution (planned)
 - Phase 4-6: Advanced coordination (planned)
@@ -3128,6 +3258,7 @@ A: Call `registry.update_heartbeat(agent_id)` periodically. Agents without updat
 ## Support & Troubleshooting
 
 ### Tests Not Running?
+
 ```bash
 # Make sure you're in project directory
 cd /Users/kooshapari/temp-PRODVERCEL/485/kush
@@ -3137,6 +3268,7 @@ python3 -m unittest scripts.test_agent_identity_system -v
 ```
 
 ### Registry File Issues?
+
 ```bash
 # Check if registry exists
 ls -la ~/.claude/civilization/registry.json
@@ -3149,6 +3281,7 @@ rm ~/.claude/civilization/registry.json  # Will rebuild on next run
 ```
 
 ### Import Errors?
+
 ```bash
 # Ensure you're importing correctly
 from scripts.agent_identity_system import GlobalAgentRegistry
@@ -3163,14 +3296,14 @@ from agent_identity_system import GlobalAgentRegistry
 
 ## Metrics & Quality
 
-| Metric | Target | Actual | Status |
-|--------|--------|--------|--------|
-| Test Coverage | 100% | 100% (17/17) | ✅ |
-| Code Quality | Pyright pass | 0 errors | ✅ |
-| Documentation | Comprehensive | 700+ lines | ✅ |
-| Performance | <5ms/op | ~1ms | ✅ |
-| Persistence | Reliable | Tested | ✅ |
-| Backward Compat | Full | Yes | ✅ |
+| Metric          | Target        | Actual       | Status |
+| --------------- | ------------- | ------------ | ------ |
+| Test Coverage   | 100%          | 100% (17/17) | ✅     |
+| Code Quality    | Pyright pass  | 0 errors     | ✅     |
+| Documentation   | Comprehensive | 700+ lines   | ✅     |
+| Performance     | <5ms/op       | ~1ms         | ✅     |
+| Persistence     | Reliable      | Tested       | ✅     |
+| Backward Compat | Full          | Yes          | ✅     |
 
 ---
 
@@ -3198,7 +3331,6 @@ Phase 1 is **complete and production-ready**. All documentation is cross-linked 
 **Finally:** `INTEGRATING_AGENT_IDENTITY_WITH_SWARM_CONTROLLER.md` → Integration planning
 
 ✅ Ready to proceed → Phase 2: Service Discovery Protocol
-
 
 ---
 
@@ -3262,39 +3394,39 @@ l3 = factory.create_l3_agent("thegent", l2.agent_id)
 
 ## Common Operations
 
-| Operation | Code | Returns |
-|-----------|------|---------|
-| Get agent | `registry.get_agent(agent_id)` | `AgentIdentity \| None` |
-| Find all in project | `registry.get_agents_by_project("thegent")` | `List[AgentIdentity]` |
-| Find all L1 leaders | `registry.get_agents_by_level(AgentLevel.L1_STRATEGIC)` | `List[AgentIdentity]` |
-| Find by role | `registry.get_agents_by_role(AgentRole.BUILDER)` | `List[AgentIdentity]` |
-| Get hierarchy | `registry.get_hierarchy(l1_agent_id)` | `Dict[str, Any]` |
-| Heartbeat ping | `registry.update_heartbeat(agent_id)` | `bool` |
-| Find stale | `registry.get_stale_agents(ttl_seconds=300)` | `List[AgentIdentity]` |
-| Statistics | `registry.get_stats()` | `Dict[str, int]` |
+| Operation           | Code                                                    | Returns                 |
+| ------------------- | ------------------------------------------------------- | ----------------------- |
+| Get agent           | `registry.get_agent(agent_id)`                          | `AgentIdentity \| None` |
+| Find all in project | `registry.get_agents_by_project("thegent")`             | `List[AgentIdentity]`   |
+| Find all L1 leaders | `registry.get_agents_by_level(AgentLevel.L1_STRATEGIC)` | `List[AgentIdentity]`   |
+| Find by role        | `registry.get_agents_by_role(AgentRole.BUILDER)`        | `List[AgentIdentity]`   |
+| Get hierarchy       | `registry.get_hierarchy(l1_agent_id)`                   | `Dict[str, Any]`        |
+| Heartbeat ping      | `registry.update_heartbeat(agent_id)`                   | `bool`                  |
+| Find stale          | `registry.get_stale_agents(ttl_seconds=300)`            | `List[AgentIdentity]`   |
+| Statistics          | `registry.get_stats()`                                  | `Dict[str, int]`        |
 
 ---
 
 ## Agent Roles
 
-| Role | Use Case |
-|------|----------|
+| Role          | Use Case                                   |
+| ------------- | ------------------------------------------ |
 | `COORDINATOR` | Orchestration, scheduling, decision-making |
-| `RESEARCHER` | Investigation, analysis, discovery |
-| `BUILDER` | Implementation, construction, execution |
-| `INTEGRATOR` | Integration, coordination, testing |
-| `MONITOR` | Observation, health checks, metrics |
-| `GENERIC` | Default for L3 executors |
+| `RESEARCHER`  | Investigation, analysis, discovery         |
+| `BUILDER`     | Implementation, construction, execution    |
+| `INTEGRATOR`  | Integration, coordination, testing         |
+| `MONITOR`     | Observation, health checks, metrics        |
+| `GENERIC`     | Default for L3 executors                   |
 
 ---
 
 ## Agent Levels
 
-| Level | Example | Capabilities |
-|-------|---------|--------------|
-| **L1** | Coordinator | Orchestration, monitoring, escalation |
-| **L2** | Named Worker | Component execution, sub-delegation |
-| **L3** | Executor | Task execution, reporting |
+| Level  | Example      | Capabilities                          |
+| ------ | ------------ | ------------------------------------- |
+| **L1** | Coordinator  | Orchestration, monitoring, escalation |
+| **L2** | Named Worker | Component execution, sub-delegation   |
+| **L3** | Executor     | Task execution, reporting             |
 
 ---
 
@@ -3323,25 +3455,25 @@ Examples:
 agent = registry.get_agent(agent_id)
 
 # Identity
-agent.project                  # "thegent"
-agent.uuid                     # "abc123"
-agent.level                    # AgentLevel.L1_STRATEGIC
-agent.role                     # AgentRole.COORDINATOR
-agent.agent_id                 # Full ID string
+agent.project  # "thegent"
+agent.uuid  # "abc123"
+agent.level  # AgentLevel.L1_STRATEGIC
+agent.role  # AgentRole.COORDINATOR
+agent.agent_id  # Full ID string
 
 # Relationships
-agent.parent_agent_id          # Parent L1/L2 ID (or None)
-agent.child_agent_ids          # List of child IDs
-agent.peer_agent_ids           # Peer agents at same level
+agent.parent_agent_id  # Parent L1/L2 ID (or None)
+agent.child_agent_ids  # List of child IDs
+agent.peer_agent_ids  # Peer agents at same level
 
 # Status
-agent.is_active                # True/False
-agent.status_message           # "healthy", etc.
-agent.last_heartbeat           # Unix timestamp
+agent.is_active  # True/False
+agent.status_message  # "healthy", etc.
+agent.last_heartbeat  # Unix timestamp
 
 # Metadata
-agent.capabilities             # ["orchestration", "monitoring"]
-agent.scope_tags               # {"tier": "strategic"}
+agent.capabilities  # ["orchestration", "monitoring"]
+agent.scope_tags  # {"tier": "strategic"}
 ```
 
 ---
@@ -3470,24 +3602,24 @@ OK ✅
 
 ## Files
 
-| File | Purpose |
-|------|---------|
-| `scripts/agent_identity_system.py` | Core implementation (427 LOC) |
-| `scripts/test_agent_identity_system.py` | Test suite (361 LOC, 17 tests) |
-| `~/.claude/civilization/registry.json` | Global registry (created on first use) |
-| `docs/reference/PHASE_1_AGENT_IDENTITY_IMPLEMENTATION.md` | Full documentation |
-| `docs/guides/INTEGRATING_AGENT_IDENTITY_WITH_SWARM_CONTROLLER.md` | Integration guide |
+| File                                                              | Purpose                                |
+| ----------------------------------------------------------------- | -------------------------------------- |
+| `scripts/agent_identity_system.py`                                | Core implementation (427 LOC)          |
+| `scripts/test_agent_identity_system.py`                           | Test suite (361 LOC, 17 tests)         |
+| `~/.claude/civilization/registry.json`                            | Global registry (created on first use) |
+| `docs/reference/PHASE_1_AGENT_IDENTITY_IMPLEMENTATION.md`         | Full documentation                     |
+| `docs/guides/INTEGRATING_AGENT_IDENTITY_WITH_SWARM_CONTROLLER.md` | Integration guide                      |
 
 ---
 
 ## Common Errors & Fixes
 
-| Error | Cause | Fix |
-|-------|-------|-----|
-| `FileNotFoundError` | Registry path missing | Check `~/.claude/civilization/` exists |
-| `agent_id` is `None` | Agent not registered | Call `factory.create_*_agent()` first |
-| `get_agent()` returns `None` | Wrong agent ID | Check ID format: `{project}:{uuid}:L{1-3}:{role}` |
-| Stale agents not cleaned | Cleanup not called | Add `registry.unregister_agent()` in cleanup loop |
+| Error                        | Cause                 | Fix                                               |
+| ---------------------------- | --------------------- | ------------------------------------------------- |
+| `FileNotFoundError`          | Registry path missing | Check `~/.claude/civilization/` exists            |
+| `agent_id` is `None`         | Agent not registered  | Call `factory.create_*_agent()` first             |
+| `get_agent()` returns `None` | Wrong agent ID        | Check ID format: `{project}:{uuid}:L{1-3}:{role}` |
+| Stale agents not cleaned     | Cleanup not called    | Add `registry.unregister_agent()` in cleanup loop |
 
 ---
 
@@ -3525,7 +3657,6 @@ OK ✅
 **Last Updated:** 2026-02-19
 **Version:** 1.0
 **Status:** Production Ready ✅
-
 
 ---
 
@@ -3568,42 +3699,42 @@ OK ✅
 
 ### Complete Feature Matrix
 
-| Feature | Retry | Circuit Breaker | Bulkhead | Timeout | Throttle | Load Shed | Adaptive |
-|---------|-------|-----------------|----------|---------|----------|-----------|----------|
-| **Transient Failures** | ✅ | - | - | - | - | - | - |
-| **Cascading Failure** | - | ✅ | ✅ | - | - | ✅ | - |
-| **Slow Responses** | - | - | ✅ | ✅ | - | - | ✅ |
-| **Resource Exhaustion** | - | - | ✅ | - | ✅ | ✅ | - |
-| **Overload Protection** | - | - | - | - | ✅ | ✅ | ✅ |
-| **Auto Recovery** | - | ✅ | - | ✅ | - | - | ✅ |
-| **Fair Share** | - | - | ✅ | ✅ | ✅ | - | ✅ |
-| **Fast Failure** | - | ✅ | - | ✅ | - | - | - |
-| **Config Complexity** | Low | Medium | Low | Low | Medium | Medium | High |
-| **Operational Overhead** | Low | Medium | Low | Low | Medium | Medium | High |
+| Feature                  | Retry | Circuit Breaker | Bulkhead | Timeout | Throttle | Load Shed | Adaptive |
+| ------------------------ | ----- | --------------- | -------- | ------- | -------- | --------- | -------- |
+| **Transient Failures**   | ✅    | -               | -        | -       | -        | -         | -        |
+| **Cascading Failure**    | -     | ✅              | ✅       | -       | -        | ✅        | -        |
+| **Slow Responses**       | -     | -               | ✅       | ✅      | -        | -         | ✅       |
+| **Resource Exhaustion**  | -     | -               | ✅       | -       | ✅       | ✅        | -        |
+| **Overload Protection**  | -     | -               | -        | -       | ✅       | ✅        | ✅       |
+| **Auto Recovery**        | -     | ✅              | -        | ✅      | -        | -         | ✅       |
+| **Fair Share**           | -     | -               | ✅       | ✅      | ✅       | -         | ✅       |
+| **Fast Failure**         | -     | ✅              | -        | ✅      | -        | -         | -        |
+| **Config Complexity**    | Low   | Medium          | Low      | Low     | Medium   | Medium    | High     |
+| **Operational Overhead** | Low   | Medium          | Low      | Low     | Medium   | Medium    | High     |
 
 ### Implementation Complexity
 
-| Pattern | Lines of Code | Maintenance | Learning Curve |
-|---------|---------------|-------------|-----------------|
-| Retry | < 10 | Minimal | Beginner |
-| Circuit Breaker | 50-100 | Medium | Intermediate |
-| Bulkhead | 20-50 | Low | Beginner |
-| Timeout | < 5 | Minimal | Beginner |
-| Throttle | 30-80 | Low-Medium | Intermediate |
-| Load Shed | 40-100 | Medium | Intermediate |
-| Adaptive Concurrency | 100-200 | High | Advanced |
+| Pattern              | Lines of Code | Maintenance | Learning Curve |
+| -------------------- | ------------- | ----------- | -------------- |
+| Retry                | < 10          | Minimal     | Beginner       |
+| Circuit Breaker      | 50-100        | Medium      | Intermediate   |
+| Bulkhead             | 20-50         | Low         | Beginner       |
+| Timeout              | < 5           | Minimal     | Beginner       |
+| Throttle             | 30-80         | Low-Medium  | Intermediate   |
+| Load Shed            | 40-100        | Medium      | Intermediate   |
+| Adaptive Concurrency | 100-200       | High        | Advanced       |
 
 ### Performance Impact
 
-| Pattern | CPU Overhead | Memory Overhead | Latency | Throughput |
-|---------|--------------|-----------------|---------|------------|
-| Retry | Low | Low | +100-1000ms | -10-30% |
-| Circuit Breaker | Very Low | Low | 0-5ms | +5-20% |
-| Bulkhead | Low | Medium | 0-10ms | +10-30% |
-| Timeout | Very Low | Low | 0ms | 0% |
-| Throttle | Very Low | Medium | +50-500ms | -5-50% |
-| Load Shed | Low | Low | 0-5ms | +5-20% |
-| Adaptive Conc | Medium | High | -5-20% | +20-40% |
+| Pattern         | CPU Overhead | Memory Overhead | Latency     | Throughput |
+| --------------- | ------------ | --------------- | ----------- | ---------- |
+| Retry           | Low          | Low             | +100-1000ms | -10-30%    |
+| Circuit Breaker | Very Low     | Low             | 0-5ms       | +5-20%     |
+| Bulkhead        | Low          | Medium          | 0-10ms      | +10-30%    |
+| Timeout         | Very Low     | Low             | 0ms         | 0%         |
+| Throttle        | Very Low     | Medium          | +50-500ms   | -5-50%     |
+| Load Shed       | Low          | Low             | 0-5ms       | +5-20%     |
+| Adaptive Conc   | Medium       | High            | -5-20%      | +20-40%    |
 
 ---
 
@@ -3613,62 +3744,62 @@ OK ✅
 
 #### SCENARIO: External API Integration
 
-| Aspect | Pattern | Recommendation |
-|--------|---------|-----------------|
-| **Primary** | Circuit Breaker | Prevent cascading failures when API is down |
-| **Secondary** | Retry + Backoff | Handle transient network errors |
-| **Tertiary** | Timeout | Prevent hanging requests |
-| **Fallback** | Cached Response | Use stale data if API down |
-| **Config** | CB: fail_max=5, timeout=60s | |
-| | Retry: max_attempts=3, exp_backoff | |
-| | Timeout: 30s HTTP, 5s DB | |
+| Aspect        | Pattern                            | Recommendation                              |
+| ------------- | ---------------------------------- | ------------------------------------------- |
+| **Primary**   | Circuit Breaker                    | Prevent cascading failures when API is down |
+| **Secondary** | Retry + Backoff                    | Handle transient network errors             |
+| **Tertiary**  | Timeout                            | Prevent hanging requests                    |
+| **Fallback**  | Cached Response                    | Use stale data if API down                  |
+| **Config**    | CB: fail_max=5, timeout=60s        |                                             |
+|               | Retry: max_attempts=3, exp_backoff |                                             |
+|               | Timeout: 30s HTTP, 5s DB           |                                             |
 
 #### SCENARIO: Database Connection Management
 
-| Aspect | Pattern | Recommendation |
-|--------|---------|-----------------|
-| **Primary** | Connection Pool | Reuse connections; prevent exhaustion |
-| **Secondary** | Bulkhead | Separate pools for OLTP vs OLAP |
-| **Tertiary** | Timeout | Kill slow queries |
-| **Quaternary** | Circuit Breaker | Detect DB unavailability |
-| **Config** | Pool size: 20-50 | |
-| | Max wait: 5-30s | |
-| | Query timeout: 5-10s | |
+| Aspect         | Pattern              | Recommendation                        |
+| -------------- | -------------------- | ------------------------------------- |
+| **Primary**    | Connection Pool      | Reuse connections; prevent exhaustion |
+| **Secondary**  | Bulkhead             | Separate pools for OLTP vs OLAP       |
+| **Tertiary**   | Timeout              | Kill slow queries                     |
+| **Quaternary** | Circuit Breaker      | Detect DB unavailability              |
+| **Config**     | Pool size: 20-50     |                                       |
+|                | Max wait: 5-30s      |                                       |
+|                | Query timeout: 5-10s |                                       |
 
 #### SCENARIO: Microservice Mesh
 
-| Aspect | Pattern | Recommendation |
-|--------|---------|-----------------|
-| **Primary** | Circuit Breaker | Service-to-service failure isolation |
-| **Secondary** | Retry + Backoff | Transient service restarts |
-| **Tertiary** | Timeout | Prevent resource exhaustion |
-| **Quaternary** | Bulkhead | Isolate critical paths |
-| **Quinary** | Load Shed | Graceful degradation under spike |
-| **Config** | Per-service circuit breaker | |
-| | Deadline propagation (timeouts) | |
+| Aspect         | Pattern                         | Recommendation                       |
+| -------------- | ------------------------------- | ------------------------------------ |
+| **Primary**    | Circuit Breaker                 | Service-to-service failure isolation |
+| **Secondary**  | Retry + Backoff                 | Transient service restarts           |
+| **Tertiary**   | Timeout                         | Prevent resource exhaustion          |
+| **Quaternary** | Bulkhead                        | Isolate critical paths               |
+| **Quinary**    | Load Shed                       | Graceful degradation under spike     |
+| **Config**     | Per-service circuit breaker     |                                      |
+|                | Deadline propagation (timeouts) |                                      |
 
 #### SCENARIO: Background Task Queue
 
-| Aspect | Pattern | Recommendation |
-|--------|---------|-----------------|
-| **Primary** | Retry + Backoff | Eventually consistent execution |
-| **Secondary** | Circuit Breaker | Prevent queue saturation |
-| **Tertiary** | Load Shed | Drop low-priority tasks when full |
-| **Quaternary** | Timeout | Prevent runaway tasks |
-| **Config** | Max retries: 3-10 | |
-| | Backoff: exponential 2^n | |
-| | Max queue size: 1000-10000 | |
+| Aspect         | Pattern                    | Recommendation                    |
+| -------------- | -------------------------- | --------------------------------- |
+| **Primary**    | Retry + Backoff            | Eventually consistent execution   |
+| **Secondary**  | Circuit Breaker            | Prevent queue saturation          |
+| **Tertiary**   | Load Shed                  | Drop low-priority tasks when full |
+| **Quaternary** | Timeout                    | Prevent runaway tasks             |
+| **Config**     | Max retries: 3-10          |                                   |
+|                | Backoff: exponential 2^n   |                                   |
+|                | Max queue size: 1000-10000 |                                   |
 
 #### SCENARIO: Real-Time Analytics
 
-| Aspect | Pattern | Recommendation |
-|--------|---------|-----------------|
-| **Primary** | Timeout | Must complete within deadline |
-| **Secondary** | Adaptive Concurrency | Scale with load |
-| **Tertiary** | Bulkhead | Prevent OLAP blocking OLTP |
-| **Quaternary** | Load Shed | Drop low-priority queries |
-| **Config** | Query timeout: 10-30s | |
-| | Concurrency: adaptive 10-100 | |
+| Aspect         | Pattern                      | Recommendation                |
+| -------------- | ---------------------------- | ----------------------------- |
+| **Primary**    | Timeout                      | Must complete within deadline |
+| **Secondary**  | Adaptive Concurrency         | Scale with load               |
+| **Tertiary**   | Bulkhead                     | Prevent OLAP blocking OLTP    |
+| **Quaternary** | Load Shed                    | Drop low-priority queries     |
+| **Config**     | Query timeout: 10-30s        |                               |
+|                | Concurrency: adaptive 10-100 |                               |
 
 ---
 
@@ -3683,10 +3814,12 @@ OK ✅
 from tenacity import retry, stop_after_attempt, wait_exponential
 from pybreaker import CircuitBreaker
 
+
 # Retry
 @retry(stop=stop_after_attempt(3), wait=wait_exponential(multiplier=1, min=2, max=60))
 async def api_call():
     pass
+
 
 # Circuit Breaker
 breaker = CircuitBreaker(fail_max=5, timeout_seconds=60)
@@ -3737,18 +3870,24 @@ public String fallback(Exception e) {
 
 ```javascript
 // Quick setup: node-retry + circuit-breaker-js
-const retry = require('async-retry');
-const CircuitBreaker = require('opossum');
+const retry = require("async-retry");
+const CircuitBreaker = require("opossum");
 
 // Retry
-const data = await retry(async bail => {
+const data = await retry(
+  async (bail) => {
     return await fetchApi();
-}, { retries: 3, minTimeout: 2000, maxTimeout: 60000 });
+  },
+  { retries: 3, minTimeout: 2000, maxTimeout: 60000 },
+);
 
 // Circuit Breaker
-const breaker = new CircuitBreaker(async () => {
+const breaker = new CircuitBreaker(
+  async () => {
     return await fetchApi();
-}, { timeout: 3000, errorThresholdPercentage: 50, resetTimeout: 60000 });
+  },
+  { timeout: 3000, errorThresholdPercentage: 50, resetTimeout: 60000 },
+);
 ```
 
 ---
@@ -3759,26 +3898,26 @@ const breaker = new CircuitBreaker(async () => {
 
 #### Transient Network Errors (Should Retry)
 
-| Error | Pattern | Max Retries | Backoff |
-|-------|---------|-------------|---------|
-| Connection Refused | Retry + CB | 3 | Exponential |
-| Timeout | Retry + CB | 3 | Exponential |
-| DNS Failure | Retry + CB | 2 | Linear |
-| SSL Error (self-signed) | Fallback | 0 | N/A |
-| Socket Reset | Retry + CB | 3 | Exponential |
-| Rate Limit (429) | Retry + Backoff | 3-5 | Exponential |
+| Error                   | Pattern         | Max Retries | Backoff     |
+| ----------------------- | --------------- | ----------- | ----------- |
+| Connection Refused      | Retry + CB      | 3           | Exponential |
+| Timeout                 | Retry + CB      | 3           | Exponential |
+| DNS Failure             | Retry + CB      | 2           | Linear      |
+| SSL Error (self-signed) | Fallback        | 0           | N/A         |
+| Socket Reset            | Retry + CB      | 3           | Exponential |
+| Rate Limit (429)        | Retry + Backoff | 3-5         | Exponential |
 
 #### Permanent Failures (Should Not Retry)
 
-| Error | Pattern | Action |
-|-------|---------|--------|
-| 400 Bad Request | Fail Fast | Log error, don't retry |
-| 401 Unauthorized | Fail Fast | Refresh token, retry once |
-| 403 Forbidden | Fail Fast | Log error, don't retry |
-| 404 Not Found | Fail Fast | Log error, don't retry |
-| 500 Server Error | Retry + CB | Retry if transient |
-| 502 Bad Gateway | Retry + CB | Likely transient |
-| 503 Unavailable | Retry + CB | Service down, wait |
+| Error            | Pattern    | Action                    |
+| ---------------- | ---------- | ------------------------- |
+| 400 Bad Request  | Fail Fast  | Log error, don't retry    |
+| 401 Unauthorized | Fail Fast  | Refresh token, retry once |
+| 403 Forbidden    | Fail Fast  | Log error, don't retry    |
+| 404 Not Found    | Fail Fast  | Log error, don't retry    |
+| 500 Server Error | Retry + CB | Retry if transient        |
+| 502 Bad Gateway  | Retry + CB | Likely transient          |
+| 503 Unavailable  | Retry + CB | Service down, wait        |
 
 ---
 
@@ -4053,16 +4192,16 @@ CircuitBreaker(fail_max=10, timeout_seconds=120)
 
 ```python
 # API calls
-timeout_sec=30  # 30s for external APIs
+timeout_sec = 30  # 30s for external APIs
 
 # Database queries
-timeout_sec=5   # 5s for queries
+timeout_sec = 5  # 5s for queries
 
 # Background tasks
-timeout_sec=300 # 5 min for long tasks
+timeout_sec = 300  # 5 min for long tasks
 
 # Microservices
-timeout_sec=10  # 10s inter-service
+timeout_sec = 10  # 10s inter-service
 ```
 
 ### Bulkhead Configuration Quick Copy
@@ -4084,6 +4223,7 @@ pool_size = 50  # Aggressive
 ## Conclusion
 
 Use this reference to:
+
 1. **Find your scenario** in the scenario matrix
 2. **Choose patterns** from the recommendation
 3. **Configure quickly** using the provided settings
@@ -4100,7 +4240,6 @@ For quick implementation, see: `/docs/guides/RESILIENCE_IMPLEMENTATION_QUICKSTAR
 **Last Updated**: 2026-02-19
 **Status**: Ready for Reference
 
-
 ---
 
 ## Source: TUI_DASHBOARD_DESIGN.md
@@ -4114,6 +4253,7 @@ For quick implementation, see: `/docs/guides/RESILIENCE_IMPLEMENTATION_QUICKSTAR
 ## Overview
 
 The TUI Dashboard provides L1 coordinators with real-time visibility into:
+
 - Work stream status (PENDING, CLAIMED, COMPLETED)
 - Active agents and their progress
 - Blockers and dependencies
@@ -4199,12 +4339,14 @@ The TUI Dashboard provides L1 coordinators with real-time visibility into:
 ```
 
 **Components:**
+
 - **Title**: Always visible, shows project and current phase
 - **Timestamp**: UTC time, auto-updates every second
 - **Status Indicator**: Colored dot (● green=healthy, ● yellow=warning, ● red=critical)
 - **Quick Stats**: Count of items in each state
 
 **Color Coding:**
+
 - Green: All metrics healthy, no blockers
 - Yellow: 1-2 warnings, SLO approaching, 1-2 blockers
 - Red: Active failures, multiple blockers, critical SLO breaches
@@ -4229,6 +4371,7 @@ The TUI Dashboard provides L1 coordinators with real-time visibility into:
 ```
 
 **Columns:**
+
 - **Agent**: Assigned agent name (e.g., `dev-1`, `tester`)
 - **Task ID**: Work item identifier (e.g., `TGNT-P6.1`)
 - **Task Title**: Shortened title (truncated to fit)
@@ -4259,6 +4402,7 @@ The TUI Dashboard provides L1 coordinators with real-time visibility into:
 ```
 
 **Columns:**
+
 - **Blocked ID**: Task waiting for dependency
 - **Blocked By**: Dependency status
   - ✓ ready (dependency will complete soon)
@@ -4272,6 +4416,7 @@ The TUI Dashboard provides L1 coordinators with real-time visibility into:
   - "Start parallel prep?" - dependency will take time, start parallel work
 
 **Colors:**
+
 - Green: Blocker resolving soon (< 5 min)
 - Yellow: Blocker moderate (5-15 min)
 - Red: Blocker critical (> 15 min or stuck)
@@ -4293,6 +4438,7 @@ The TUI Dashboard provides L1 coordinators with real-time visibility into:
 ```
 
 **Columns:**
+
 - **Task ID**: Unique identifier
 - **Title**: Brief description
 - **Est.**: Time estimate
@@ -4321,15 +4467,15 @@ The TUI Dashboard provides L1 coordinators with real-time visibility into:
 
 **Metrics Explained:**
 
-| Metric | Formula | Good | Warning | Critical |
-|--------|---------|------|---------|----------|
-| Avg Task Duration | Sum(completed durations) / count | 80-120% | 120-150% | >150% |
-| Cycle Time | Median(CLAIMED → COMPLETED) | <15 min | 15-25 min | >25 min |
-| Agent Utilization | Active agents / Total agents | >50% | 30-50% | <30% |
-| Success Rate | (Total - Errors) / Total * 100 | >95% | 85-95% | <85% |
-| Blocker Count | Count(BLOCKED tasks) | <3 | 3-5 | >5 |
-| Phase ETA | Based on remaining tasks & cycle time | On time | ±15% | >±15% |
-| Quality Gate | Lint + test + coverage status | All PASS | 1 WARN | 1+ FAIL |
+| Metric            | Formula                               | Good     | Warning   | Critical |
+| ----------------- | ------------------------------------- | -------- | --------- | -------- |
+| Avg Task Duration | Sum(completed durations) / count      | 80-120%  | 120-150%  | >150%    |
+| Cycle Time        | Median(CLAIMED → COMPLETED)           | <15 min  | 15-25 min | >25 min  |
+| Agent Utilization | Active agents / Total agents          | >50%     | 30-50%    | <30%     |
+| Success Rate      | (Total - Errors) / Total \* 100       | >95%     | 85-95%    | <85%     |
+| Blocker Count     | Count(BLOCKED tasks)                  | <3       | 3-5       | >5       |
+| Phase ETA         | Based on remaining tasks & cycle time | On time  | ±15%      | >±15%    |
+| Quality Gate      | Lint + test + coverage status         | All PASS | 1 WARN    | 1+ FAIL  |
 
 ### 6. Footer (Fixed Bottom)
 
@@ -4340,6 +4486,7 @@ The TUI Dashboard provides L1 coordinators with real-time visibility into:
 ```
 
 **Hotkeys:**
+
 - `[A]` → Show extended agents view (more details, edit mode)
 - `[W]` → Show full work stream (sortable by status, priority, team)
 - `[B]` → Show detailed blocker analysis (manual resolution options)
@@ -4505,6 +4652,7 @@ The TUI Dashboard provides L1 coordinators with real-time visibility into:
 ```
 
 **Tech Stack:**
+
 - Language: Bash or Python (curses/blessed)
 - Data Source: `docs/reference/WORK_STREAM.md` (parsed as markdown table)
 - Refresh: Simple file poll + terminal clear/redraw
@@ -4588,15 +4736,14 @@ User presses [A] for agents view:
 
 ## Version & Maintenance
 
-| Version | Date | Status | Changes |
-|---------|------|--------|---------|
-| 1.0 | 2026-02-18 | Design | Initial mockup and specification |
-| 1.1 | TBD | Planned | MVP implementation (Phase 1) |
-| 2.0 | TBD | Planned | Extended views + sorting |
+| Version | Date       | Status  | Changes                          |
+| ------- | ---------- | ------- | -------------------------------- |
+| 1.0     | 2026-02-18 | Design  | Initial mockup and specification |
+| 1.1     | TBD        | Planned | MVP implementation (Phase 1)     |
+| 2.0     | TBD        | Planned | Extended views + sorting         |
 
 **Maintained By:** L1 Coordinator
-**Feedback & Issues:** File in docs/research/FEEDBACK_*.md
-
+**Feedback & Issues:** File in docs/research/FEEDBACK\_\*.md
 
 ---
 
@@ -4610,16 +4757,16 @@ User presses [A] for agents view:
 
 ## Schema
 
-| Column | Description |
-|--------|-------------|
-| **ID** | Unique task identifier (format: `{PROJECT}-{PHASE}.{TASK}` or `P{PHASE}.{TASK}`) |
-| **Title** | Task description (brief, <80 chars) |
-| **Type** | `feature` \| `refactor` \| `bugfix` \| `infra` \| `research` \| `docs` |
-| **Project** | `thegent` or `sharecli` |
-| **Phase** | Phase number (0-18) or epic name |
-| **Depends On** | Prerequisite task IDs (comma-separated) |
-| **Effort** | Estimate: `~3min` / `~5min` / `~8min` / `~10min` / `~15min` / `~20min` |
-| **Status** | `PENDING` / `CLAIMED` / `IN_PROGRESS` / `COMPLETED` / `BLOCKED` |
+| Column         | Description                                                                      |
+| -------------- | -------------------------------------------------------------------------------- |
+| **ID**         | Unique task identifier (format: `{PROJECT}-{PHASE}.{TASK}` or `P{PHASE}.{TASK}`) |
+| **Title**      | Task description (brief, <80 chars)                                              |
+| **Type**       | `feature` \| `refactor` \| `bugfix` \| `infra` \| `research` \| `docs`           |
+| **Project**    | `thegent` or `sharecli`                                                          |
+| **Phase**      | Phase number (0-18) or epic name                                                 |
+| **Depends On** | Prerequisite task IDs (comma-separated)                                          |
+| **Effort**     | Estimate: `~3min` / `~5min` / `~8min` / `~10min` / `~15min` / `~20min`           |
+| **Status**     | `PENDING` / `CLAIMED` / `IN_PROGRESS` / `COMPLETED` / `BLOCKED`                  |
 
 ---
 
@@ -4629,180 +4776,180 @@ All actionable, unassigned work items. Ordered by project, phase, then task ID.
 
 ### thegent: Phase 0 (Foundation - COMPLETE)
 
-| ID | Title | Type | Depends On | Effort | Status |
-|----|-------|------|-----------|--------|--------|
-| TGNT-P0.1 | Symlink dispatch mechanism (`bin/harness` + N symlinks) | infra | -- | ~5min | COMPLETED |
-| TGNT-P0.2 | Agent detection via `/proc` tree walk with macOS `ps` fallback | infra | TGNT-P0.1 | ~5min | COMPLETED |
-| TGNT-P0.3 | `rules.conf` parser (command, strategy, options) | infra | TGNT-P0.1 | ~3min | COMPLETED |
-| TGNT-P0.4 | Coalesce strategy (flock + SHA256 cache key + atomic writes) | infra | TGNT-P0.2, TGNT-P0.3 | ~10min | COMPLETED |
-| TGNT-P0.5 | Queue strategy (bounded concurrency pool with slot files) | infra | TGNT-P0.3 | ~8min | COMPLETED |
-| TGNT-P0.6 | Debounce strategy (delay + coalesce within window) | infra | TGNT-P0.3 | ~5min | COMPLETED |
-| TGNT-P0.7 | `harness sync` symlink generator from rules.conf | infra | TGNT-P0.3 | ~3min | COMPLETED |
-| TGNT-P0.8 | `nocache_args` safety (`--fix` / `--write` -> queue fallback) | infra | TGNT-P0.4 | ~3min | COMPLETED |
+| ID        | Title                                                          | Type  | Depends On           | Effort | Status    |
+| --------- | -------------------------------------------------------------- | ----- | -------------------- | ------ | --------- |
+| TGNT-P0.1 | Symlink dispatch mechanism (`bin/harness` + N symlinks)        | infra | --                   | ~5min  | COMPLETED |
+| TGNT-P0.2 | Agent detection via `/proc` tree walk with macOS `ps` fallback | infra | TGNT-P0.1            | ~5min  | COMPLETED |
+| TGNT-P0.3 | `rules.conf` parser (command, strategy, options)               | infra | TGNT-P0.1            | ~3min  | COMPLETED |
+| TGNT-P0.4 | Coalesce strategy (flock + SHA256 cache key + atomic writes)   | infra | TGNT-P0.2, TGNT-P0.3 | ~10min | COMPLETED |
+| TGNT-P0.5 | Queue strategy (bounded concurrency pool with slot files)      | infra | TGNT-P0.3            | ~8min  | COMPLETED |
+| TGNT-P0.6 | Debounce strategy (delay + coalesce within window)             | infra | TGNT-P0.3            | ~5min  | COMPLETED |
+| TGNT-P0.7 | `harness sync` symlink generator from rules.conf               | infra | TGNT-P0.3            | ~3min  | COMPLETED |
+| TGNT-P0.8 | `nocache_args` safety (`--fix` / `--write` -> queue fallback)  | infra | TGNT-P0.4            | ~3min  | COMPLETED |
 
 ### thegent: Phase 1 (Quick Wins - COMPLETE)
 
-| ID | Title | Type | Depends On | Effort | Status |
-|----|-------|------|-----------|--------|--------|
-| TGNT-P1.1 | Lock timeout via `HARNESS_LOCK_TIMEOUT` (fallback to uncached) | infra | TGNT-P0.4 | ~3min | COMPLETED |
-| TGNT-P1.2 | Stale-while-revalidate (serve stale + background refresh) | infra | TGNT-P0.4 | ~5min | COMPLETED |
-| TGNT-P1.3 | Prometheus metrics endpoint (`harness metrics`) | infra | TGNT-P0.4 | ~5min | COMPLETED |
-| TGNT-P1.4 | Cache compression (zstd for outputs > 10KB) | infra | TGNT-P0.4 | ~5min | COMPLETED |
-| TGNT-P1.5 | JSON metrics export (`harness metrics json`) | infra | TGNT-P1.3 | ~2min | COMPLETED |
+| ID        | Title                                                          | Type  | Depends On | Effort | Status    |
+| --------- | -------------------------------------------------------------- | ----- | ---------- | ------ | --------- |
+| TGNT-P1.1 | Lock timeout via `HARNESS_LOCK_TIMEOUT` (fallback to uncached) | infra | TGNT-P0.4  | ~3min  | COMPLETED |
+| TGNT-P1.2 | Stale-while-revalidate (serve stale + background refresh)      | infra | TGNT-P0.4  | ~5min  | COMPLETED |
+| TGNT-P1.3 | Prometheus metrics endpoint (`harness metrics`)                | infra | TGNT-P0.4  | ~5min  | COMPLETED |
+| TGNT-P1.4 | Cache compression (zstd for outputs > 10KB)                    | infra | TGNT-P0.4  | ~5min  | COMPLETED |
+| TGNT-P1.5 | JSON metrics export (`harness metrics json`)                   | infra | TGNT-P1.3  | ~2min  | COMPLETED |
 
 ### thegent: Phase 2 (Intelligence - COMPLETE)
 
-| ID | Title | Type | Depends On | Effort | Status |
-|----|-------|------|-----------|--------|--------|
-| TGNT-P2.1 | 5-level priority queue (critical/high/normal/low/background) | feature | TGNT-P1.1 | ~8min | COMPLETED |
-| TGNT-P2.2 | Priority aging (+1 level per 5s waiting, prevents starvation) | feature | TGNT-P2.1 | ~3min | COMPLETED |
-| TGNT-P2.3 | Fair share scheduling (per-agent quota with penalty for over-use) | feature | TGNT-P2.1 | ~8min | COMPLETED |
-| TGNT-P2.4 | Semantic coalescing (path normalization, `.` -> project root) | feature | TGNT-P0.4 | ~5min | COMPLETED |
-| TGNT-P2.5 | Queue timeout protection (fallback execution on timeout) | feature | TGNT-P2.1 | ~3min | COMPLETED |
+| ID        | Title                                                             | Type    | Depends On | Effort | Status    |
+| --------- | ----------------------------------------------------------------- | ------- | ---------- | ------ | --------- |
+| TGNT-P2.1 | 5-level priority queue (critical/high/normal/low/background)      | feature | TGNT-P1.1  | ~8min  | COMPLETED |
+| TGNT-P2.2 | Priority aging (+1 level per 5s waiting, prevents starvation)     | feature | TGNT-P2.1  | ~3min  | COMPLETED |
+| TGNT-P2.3 | Fair share scheduling (per-agent quota with penalty for over-use) | feature | TGNT-P2.1  | ~8min  | COMPLETED |
+| TGNT-P2.4 | Semantic coalescing (path normalization, `.` -> project root)     | feature | TGNT-P0.4  | ~5min  | COMPLETED |
+| TGNT-P2.5 | Queue timeout protection (fallback execution on timeout)          | feature | TGNT-P2.1  | ~3min  | COMPLETED |
 
 ### thegent: Phase 3 (Performance - COMPLETE)
 
-| ID | Title | Type | Depends On | Effort | Status |
-|----|-------|------|-----------|--------|--------|
-| TGNT-P3.1 | L1 memory cache (`/dev/shm`, 100MB max, 60s TTL) | infra | TGNT-P0.4 | ~8min | COMPLETED |
-| TGNT-P3.2 | L2 disk cache (`var/cache`, compressed, persistent) | infra | TGNT-P0.4 | ~5min | COMPLETED |
-| TGNT-P3.3 | L2-to-L1 promotion on cache hit (automatic) | infra | TGNT-P3.1, TGNT-P3.2 | ~5min | COMPLETED |
-| TGNT-P3.4 | I/O scheduler integration (ionice priority classes) | feature | TGNT-P2.1 | ~5min | COMPLETED |
-| TGNT-P3.5 | Negative stat cache (track nonexistent files, 5s TTL) | feature | TGNT-P3.1 | ~3min | COMPLETED |
-| TGNT-P3.6 | Page cache warmer (bulk read by file type before exec) | feature | TGNT-P0.4 | ~5min | COMPLETED |
+| ID        | Title                                                  | Type    | Depends On           | Effort | Status    |
+| --------- | ------------------------------------------------------ | ------- | -------------------- | ------ | --------- |
+| TGNT-P3.1 | L1 memory cache (`/dev/shm`, 100MB max, 60s TTL)       | infra   | TGNT-P0.4            | ~8min  | COMPLETED |
+| TGNT-P3.2 | L2 disk cache (`var/cache`, compressed, persistent)    | infra   | TGNT-P0.4            | ~5min  | COMPLETED |
+| TGNT-P3.3 | L2-to-L1 promotion on cache hit (automatic)            | infra   | TGNT-P3.1, TGNT-P3.2 | ~5min  | COMPLETED |
+| TGNT-P3.4 | I/O scheduler integration (ionice priority classes)    | feature | TGNT-P2.1            | ~5min  | COMPLETED |
+| TGNT-P3.5 | Negative stat cache (track nonexistent files, 5s TTL)  | feature | TGNT-P3.1            | ~3min  | COMPLETED |
+| TGNT-P3.6 | Page cache warmer (bulk read by file type before exec) | feature | TGNT-P0.4            | ~5min  | COMPLETED |
 
 ### thegent: Phase 4 (Coordination - COMPLETE)
 
-| ID | Title | Type | Depends On | Effort | Status |
-|----|-------|------|-----------|--------|--------|
-| TGNT-P4.1 | Intent broadcasting (agents signal planned file ops) | feature | TGNT-P0.4 | ~8min | COMPLETED |
-| TGNT-P4.2 | Intent conflict checking (write-write, read-write detection) | feature | TGNT-P4.1 | ~5min | COMPLETED |
-| TGNT-P4.3 | Wait-for graph construction from lock records | feature | TGNT-P0.5 | ~8min | COMPLETED |
-| TGNT-P4.4 | DFS cycle detection for deadlocks | feature | TGNT-P4.3 | ~5min | COMPLETED |
-| TGNT-P4.5 | Deadlock auto-resolution (abort youngest waiter) | feature | TGNT-P4.4 | ~3min | COMPLETED |
-| TGNT-P4.6 | Fair share tracking with 50% decay smoothing | feature | TGNT-P2.3 | ~5min | COMPLETED |
+| ID        | Title                                                        | Type    | Depends On | Effort | Status    |
+| --------- | ------------------------------------------------------------ | ------- | ---------- | ------ | --------- |
+| TGNT-P4.1 | Intent broadcasting (agents signal planned file ops)         | feature | TGNT-P0.4  | ~8min  | COMPLETED |
+| TGNT-P4.2 | Intent conflict checking (write-write, read-write detection) | feature | TGNT-P4.1  | ~5min  | COMPLETED |
+| TGNT-P4.3 | Wait-for graph construction from lock records                | feature | TGNT-P0.5  | ~8min  | COMPLETED |
+| TGNT-P4.4 | DFS cycle detection for deadlocks                            | feature | TGNT-P4.3  | ~5min  | COMPLETED |
+| TGNT-P4.5 | Deadlock auto-resolution (abort youngest waiter)             | feature | TGNT-P4.4  | ~3min  | COMPLETED |
+| TGNT-P4.6 | Fair share tracking with 50% decay smoothing                 | feature | TGNT-P2.3  | ~5min  | COMPLETED |
 
 ### thegent: Phase 5 (Polish - COMPLETE)
 
-| ID | Title | Type | Depends On | Effort | Status |
-|----|-------|------|-----------|--------|--------|
-| TGNT-P5.1 | Interactive dashboard (TUI with cache/queue/intent/fair share) | feature | TGNT-P1.3, TGNT-P2.3, TGNT-P4.1 | ~10min | COMPLETED |
-| TGNT-P5.2 | Self-tuning report (analyze metrics, detect low hit rate/contention) | feature | TGNT-P1.3, TGNT-P3.1 | ~8min | COMPLETED |
-| TGNT-P5.3 | Auto-fix recommendations (color-coded severity, safe auto-apply) | feature | TGNT-P5.2 | ~5min | COMPLETED |
-| TGNT-P5.4 | Rules suggestion engine (generate rules from observed patterns) | feature | TGNT-P5.2 | ~5min | COMPLETED |
-| TGNT-P5.5 | L1 vs L2 benchmark command | feature | TGNT-P3.1, TGNT-P3.2 | ~3min | COMPLETED |
+| ID        | Title                                                                | Type    | Depends On                      | Effort | Status    |
+| --------- | -------------------------------------------------------------------- | ------- | ------------------------------- | ------ | --------- |
+| TGNT-P5.1 | Interactive dashboard (TUI with cache/queue/intent/fair share)       | feature | TGNT-P1.3, TGNT-P2.3, TGNT-P4.1 | ~10min | COMPLETED |
+| TGNT-P5.2 | Self-tuning report (analyze metrics, detect low hit rate/contention) | feature | TGNT-P1.3, TGNT-P3.1            | ~8min  | COMPLETED |
+| TGNT-P5.3 | Auto-fix recommendations (color-coded severity, safe auto-apply)     | feature | TGNT-P5.2                       | ~5min  | COMPLETED |
+| TGNT-P5.4 | Rules suggestion engine (generate rules from observed patterns)      | feature | TGNT-P5.2                       | ~5min  | COMPLETED |
+| TGNT-P5.5 | L1 vs L2 benchmark command                                           | feature | TGNT-P3.1, TGNT-P3.2            | ~3min  | COMPLETED |
 
 ### thegent: Phase 6 (Git Parallelism - COMPLETE)
 
-| ID | Title | Type | Depends On | Effort | Status |
-|----|-------|------|-----------|--------|--------|
-| TGNT-P6.1 | Per-agent `GIT_INDEX_FILE` management (init, copy, cleanup) | feature | TGNT-P4.1 | ~8min | COMPLETED |
-| TGNT-P6.2 | Git plumbing commit pipeline (hash-object -> write-tree -> commit-tree) | feature | TGNT-P6.1 | ~10min | COMPLETED |
-| TGNT-P6.3 | CAS ref update with exponential backoff + jitter retry | feature | TGNT-P6.2 | ~5min | COMPLETED |
-| TGNT-P6.4 | Scoped staging (agent-to-file mapping, parallel when non-overlapping) | feature | TGNT-P6.1 | ~5min | COMPLETED |
-| TGNT-P6.5 | `harness git status` per-agent view (show each agent's staged changes) | feature | TGNT-P6.4 | ~3min | COMPLETED |
+| ID        | Title                                                                   | Type    | Depends On | Effort | Status    |
+| --------- | ----------------------------------------------------------------------- | ------- | ---------- | ------ | --------- |
+| TGNT-P6.1 | Per-agent `GIT_INDEX_FILE` management (init, copy, cleanup)             | feature | TGNT-P4.1  | ~8min  | COMPLETED |
+| TGNT-P6.2 | Git plumbing commit pipeline (hash-object -> write-tree -> commit-tree) | feature | TGNT-P6.1  | ~10min | COMPLETED |
+| TGNT-P6.3 | CAS ref update with exponential backoff + jitter retry                  | feature | TGNT-P6.2  | ~5min  | COMPLETED |
+| TGNT-P6.4 | Scoped staging (agent-to-file mapping, parallel when non-overlapping)   | feature | TGNT-P6.1  | ~5min  | COMPLETED |
+| TGNT-P6.5 | `harness git status` per-agent view (show each agent's staged changes)  | feature | TGNT-P6.4  | ~3min  | COMPLETED |
 
 ### thegent: Phase 7 (Smart Merge - COMPLETE)
 
-| ID | Title | Type | Depends On | Effort | Status |
-|----|-------|------|-----------|--------|--------|
-| TGNT-P7.1 | Mergiraf integration (AST merge for Python/JS/TS/Rust/Go/Java/C) | feature | TGNT-P6.3 | ~10min | COMPLETED |
-| TGNT-P7.2 | Conflict prediction from intents (trial merge before commit) | feature | TGNT-P4.1, TGNT-P6.3 | ~8min | COMPLETED |
-| TGNT-P7.3 | Import union auto-resolve (Python/JS import conflicts -> sorted union) | feature | TGNT-P7.1 | ~5min | COMPLETED |
-| TGNT-P7.4 | JSON/YAML structural merge (deep merge via jq, ours-wins on conflict) | feature | TGNT-P7.1 | ~5min | COMPLETED |
+| ID        | Title                                                                  | Type    | Depends On           | Effort | Status    |
+| --------- | ---------------------------------------------------------------------- | ------- | -------------------- | ------ | --------- |
+| TGNT-P7.1 | Mergiraf integration (AST merge for Python/JS/TS/Rust/Go/Java/C)       | feature | TGNT-P6.3            | ~10min | COMPLETED |
+| TGNT-P7.2 | Conflict prediction from intents (trial merge before commit)           | feature | TGNT-P4.1, TGNT-P6.3 | ~8min  | COMPLETED |
+| TGNT-P7.3 | Import union auto-resolve (Python/JS import conflicts -> sorted union) | feature | TGNT-P7.1            | ~5min  | COMPLETED |
+| TGNT-P7.4 | JSON/YAML structural merge (deep merge via jq, ours-wins on conflict)  | feature | TGNT-P7.1            | ~5min  | COMPLETED |
 
 ### thegent: Phase 8 (File Coordination - COMPLETE)
 
-| ID | Title | Type | Depends On | Effort | Status |
-|----|-------|------|-----------|--------|--------|
-| TGNT-P8.1 | OCC version check on write (record version at claim, verify before commit) | feature | TGNT-P4.1 | ~8min | COMPLETED |
-| TGNT-P8.2 | HLC timestamp generation (millisecond physical + logical counter) | feature | TGNT-P8.1 | ~5min | COMPLETED |
-| TGNT-P8.3 | Lease-based file claims registry (read/write/exclusive with flock) | feature | TGNT-P8.1 | ~8min | COMPLETED |
-| TGNT-P8.4 | Lease renewal and expiry (background cleanup daemon) | feature | TGNT-P8.3 | ~5min | COMPLETED |
+| ID        | Title                                                                      | Type    | Depends On | Effort | Status    |
+| --------- | -------------------------------------------------------------------------- | ------- | ---------- | ------ | --------- |
+| TGNT-P8.1 | OCC version check on write (record version at claim, verify before commit) | feature | TGNT-P4.1  | ~8min  | COMPLETED |
+| TGNT-P8.2 | HLC timestamp generation (millisecond physical + logical counter)          | feature | TGNT-P8.1  | ~5min  | COMPLETED |
+| TGNT-P8.3 | Lease-based file claims registry (read/write/exclusive with flock)         | feature | TGNT-P8.1  | ~8min  | COMPLETED |
+| TGNT-P8.4 | Lease renewal and expiry (background cleanup daemon)                       | feature | TGNT-P8.3  | ~5min  | COMPLETED |
 
 ### thegent: Phase 9 (Request Coalescing v2 - COMPLETE)
 
-| ID | Title | Type | Depends On | Effort | Status |
-|----|-------|------|-----------|--------|--------|
-| TGNT-P9.1 | Singleflight dedup pattern (first executes, rest wait for shared result) | feature | TGNT-P0.4 | ~5min | COMPLETED |
-| TGNT-P9.2 | inotify cache invalidation (watch file changes, invalidate affected entries) | feature | TGNT-P3.1 | ~8min | COMPLETED |
-| TGNT-P9.3 | Heat-based LRU eviction (access frequency with exponential decay) | feature | TGNT-P3.1 | ~5min | COMPLETED |
+| ID        | Title                                                                        | Type    | Depends On | Effort | Status    |
+| --------- | ---------------------------------------------------------------------------- | ------- | ---------- | ------ | --------- |
+| TGNT-P9.1 | Singleflight dedup pattern (first executes, rest wait for shared result)     | feature | TGNT-P0.4  | ~5min  | COMPLETED |
+| TGNT-P9.2 | inotify cache invalidation (watch file changes, invalidate affected entries) | feature | TGNT-P3.1  | ~8min  | COMPLETED |
+| TGNT-P9.3 | Heat-based LRU eviction (access frequency with exponential decay)            | feature | TGNT-P3.1  | ~5min  | COMPLETED |
 
 ### thegent: Phase 10 (Resource Isolation - COMPLETE)
 
-| ID | Title | Type | Depends On | Effort | Status |
-|----|-------|------|-----------|--------|--------|
-| TGNT-P10.1 | Per-agent TMPDIR allocation (private temp, cleanup on exit) | feature | TGNT-P0.2 | ~3min | COMPLETED |
-| TGNT-P10.2 | Dynamic port range allocation (registry + liveness check) | feature | TGNT-P10.1 | ~5min | COMPLETED |
-| TGNT-P10.3 | Environment variable isolation (agent-specific env file, wrapped exec) | feature | TGNT-P10.1 | ~5min | COMPLETED |
+| ID         | Title                                                                  | Type    | Depends On | Effort | Status    |
+| ---------- | ---------------------------------------------------------------------- | ------- | ---------- | ------ | --------- |
+| TGNT-P10.1 | Per-agent TMPDIR allocation (private temp, cleanup on exit)            | feature | TGNT-P0.2  | ~3min  | COMPLETED |
+| TGNT-P10.2 | Dynamic port range allocation (registry + liveness check)              | feature | TGNT-P10.1 | ~5min  | COMPLETED |
+| TGNT-P10.3 | Environment variable isolation (agent-specific env file, wrapped exec) | feature | TGNT-P10.1 | ~5min  | COMPLETED |
 
 ### thegent: Phase 11 (IPC Primitives - COMPLETE)
 
-| ID | Title | Type | Depends On | Effort | Status |
-|----|-------|------|-----------|--------|--------|
-| TGNT-P11.1 | tmpfs mesh directory creation (`/tmp/agent-mesh`, 256MB, mode 1777) | infra | -- | ~3min | COMPLETED |
-| TGNT-P11.2 | Atomic mkdir lock primitives (EEXIST = already held) + claim + lease | infra | TGNT-P11.1 | ~5min | COMPLETED |
-| TGNT-P11.3 | Maildir message queue (tmp -> new -> cur lifecycle, TTL enforcement) | infra | TGNT-P11.1 | ~10min | COMPLETED |
-| TGNT-P11.4 | inotify event notification (1-10ms latency, polling fallback for macOS) | feature | TGNT-P11.3 | ~8min | COMPLETED |
-| TGNT-P11.5 | Write-ahead log (WAL) with append-before-execute + replay-on-crash | infra | TGNT-P11.1 | ~8min | COMPLETED |
+| ID         | Title                                                                   | Type    | Depends On | Effort | Status    |
+| ---------- | ----------------------------------------------------------------------- | ------- | ---------- | ------ | --------- |
+| TGNT-P11.1 | tmpfs mesh directory creation (`/tmp/agent-mesh`, 256MB, mode 1777)     | infra   | --         | ~3min  | COMPLETED |
+| TGNT-P11.2 | Atomic mkdir lock primitives (EEXIST = already held) + claim + lease    | infra   | TGNT-P11.1 | ~5min  | COMPLETED |
+| TGNT-P11.3 | Maildir message queue (tmp -> new -> cur lifecycle, TTL enforcement)    | infra   | TGNT-P11.1 | ~10min | COMPLETED |
+| TGNT-P11.4 | inotify event notification (1-10ms latency, polling fallback for macOS) | feature | TGNT-P11.3 | ~8min  | COMPLETED |
+| TGNT-P11.5 | Write-ahead log (WAL) with append-before-execute + replay-on-crash      | infra   | TGNT-P11.1 | ~8min  | COMPLETED |
 
 ### thegent: Phase 12 (Process Discovery - COMPLETE)
 
-| ID | Title | Type | Depends On | Effort | Status |
-|----|-------|------|-----------|--------|--------|
-| TGNT-P12.1 | `/proc` scanner with agent-specific patterns (Claude/Aider/Cursor/Cline) | feature | TGNT-P11.1 | ~8min | COMPLETED |
-| TGNT-P12.2 | Agent manifest creation (YAML: id, type, pid, capabilities, ODD, status) | feature | TGNT-P12.1 | ~5min | COMPLETED |
-| TGNT-P12.3 | Heartbeat monitor (touch-file every 5s, 15s failure threshold) | feature | TGNT-P12.2 | ~5min | COMPLETED |
-| TGNT-P12.4 | Stale agent cleanup (reclaim tasks, notify dependents, archive manifest) | feature | TGNT-P12.3 | ~3min | COMPLETED |
+| ID         | Title                                                                    | Type    | Depends On | Effort | Status    |
+| ---------- | ------------------------------------------------------------------------ | ------- | ---------- | ------ | --------- |
+| TGNT-P12.1 | `/proc` scanner with agent-specific patterns (Claude/Aider/Cursor/Cline) | feature | TGNT-P11.1 | ~8min  | COMPLETED |
+| TGNT-P12.2 | Agent manifest creation (YAML: id, type, pid, capabilities, ODD, status) | feature | TGNT-P12.1 | ~5min  | COMPLETED |
+| TGNT-P12.3 | Heartbeat monitor (touch-file every 5s, 15s failure threshold)           | feature | TGNT-P12.2 | ~5min  | COMPLETED |
+| TGNT-P12.4 | Stale agent cleanup (reclaim tasks, notify dependents, archive manifest) | feature | TGNT-P12.3 | ~3min  | COMPLETED |
 
 ### thegent: Phase 13 (Shell Injection - COMPLETE)
 
-| ID | Title | Type | Depends On | Effort | Status |
-|----|-------|------|-----------|--------|--------|
-| TGNT-P13.1 | tmux session detection and naming (`mesh-{agent-uuid}`) | feature | TGNT-P12.1 | ~5min | COMPLETED |
-| TGNT-P13.2 | Command injection via `tmux send-keys -l` + 1.5s delay + Enter (>99% reliable) | feature | TGNT-P13.1 | ~8min | COMPLETED |
-| TGNT-P13.3 | Agent readiness detection (prompt patterns per agent type, busy/idle/error states) | feature | TGNT-P13.2 | ~5min | COMPLETED |
+| ID         | Title                                                                              | Type    | Depends On | Effort | Status    |
+| ---------- | ---------------------------------------------------------------------------------- | ------- | ---------- | ------ | --------- |
+| TGNT-P13.1 | tmux session detection and naming (`mesh-{agent-uuid}`)                            | feature | TGNT-P12.1 | ~5min  | COMPLETED |
+| TGNT-P13.2 | Command injection via `tmux send-keys -l` + 1.5s delay + Enter (>99% reliable)     | feature | TGNT-P13.1 | ~8min  | COMPLETED |
+| TGNT-P13.3 | Agent readiness detection (prompt patterns per agent type, busy/idle/error states) | feature | TGNT-P13.2 | ~5min  | COMPLETED |
 
 ### thegent: Phase 14 (Context Injection - COMPLETE)
 
-| ID | Title | Type | Depends On | Effort | Status |
-|----|-------|------|-----------|--------|--------|
-| TGNT-P14.1 | AGENT.md template system (mesh state, coordination rules, identity) | feature | TGNT-P12.2 | ~5min | COMPLETED |
-| TGNT-P14.2 | Tool-specific context files (CLAUDE.md, .cursorrules, .clinerules symlinks) | feature | TGNT-P14.1 | ~8min | COMPLETED |
-| TGNT-P14.3 | Dynamic context update (re-render AGENT.md on mesh state changes) | feature | TGNT-P14.2 | ~5min | COMPLETED |
+| ID         | Title                                                                       | Type    | Depends On | Effort | Status    |
+| ---------- | --------------------------------------------------------------------------- | ------- | ---------- | ------ | --------- |
+| TGNT-P14.1 | AGENT.md template system (mesh state, coordination rules, identity)         | feature | TGNT-P12.2 | ~5min  | COMPLETED |
+| TGNT-P14.2 | Tool-specific context files (CLAUDE.md, .cursorrules, .clinerules symlinks) | feature | TGNT-P14.1 | ~8min  | COMPLETED |
+| TGNT-P14.3 | Dynamic context update (re-render AGENT.md on mesh state changes)           | feature | TGNT-P14.2 | ~5min  | COMPLETED |
 
 ### thegent: Phase 15 (Worktree Support - COMPLETE)
 
-| ID | Title | Type | Depends On | Effort | Status |
-|----|-------|------|-----------|--------|--------|
-| TGNT-P15.1 | Optional worktree creation (`git worktree add .mesh/worktrees/agent-{uuid}`) | feature | TGNT-P6.1 | ~8min | COMPLETED |
-| TGNT-P15.2 | Branch coordination (registry, collision avoidance, status tracking) | feature | TGNT-P15.1 | ~5min | COMPLETED |
-| TGNT-P15.3 | Worktree cleanup (orphan detection, 30s grace, health monitor) | feature | TGNT-P15.2 | ~3min | COMPLETED |
+| ID         | Title                                                                        | Type    | Depends On | Effort | Status    |
+| ---------- | ---------------------------------------------------------------------------- | ------- | ---------- | ------ | --------- |
+| TGNT-P15.1 | Optional worktree creation (`git worktree add .mesh/worktrees/agent-{uuid}`) | feature | TGNT-P6.1  | ~8min  | COMPLETED |
+| TGNT-P15.2 | Branch coordination (registry, collision avoidance, status tracking)         | feature | TGNT-P15.1 | ~5min  | COMPLETED |
+| TGNT-P15.3 | Worktree cleanup (orphan detection, 30s grace, health monitor)               | feature | TGNT-P15.2 | ~3min  | COMPLETED |
 
 ### thegent: Phase 16 (Sandboxing - COMPLETE)
 
-| ID | Title | Type | Depends On | Effort | Status |
-|----|-------|------|-----------|--------|--------|
-| TGNT-P16.1 | bubblewrap profile (Linux: filesystem + network + process policies) | infra | TGNT-P12.2 | ~10min | COMPLETED |
-| TGNT-P16.2 | seatbelt profile (macOS: sandbox-exec equivalent) | infra | TGNT-P12.2 | ~10min | COMPLETED |
-| TGNT-P16.3 | 5-tier autonomy enforcement (read -> worktree -> git -> shared -> production) | feature | TGNT-P16.1, TGNT-P16.2 | ~8min | COMPLETED |
-| TGNT-P16.4 | Operation classification engine (tier assignment from command + target analysis) | feature | TGNT-P16.3 | ~8min | COMPLETED |
+| ID         | Title                                                                            | Type    | Depends On             | Effort | Status    |
+| ---------- | -------------------------------------------------------------------------------- | ------- | ---------------------- | ------ | --------- |
+| TGNT-P16.1 | bubblewrap profile (Linux: filesystem + network + process policies)              | infra   | TGNT-P12.2             | ~10min | COMPLETED |
+| TGNT-P16.2 | seatbelt profile (macOS: sandbox-exec equivalent)                                | infra   | TGNT-P12.2             | ~10min | COMPLETED |
+| TGNT-P16.3 | 5-tier autonomy enforcement (read -> worktree -> git -> shared -> production)    | feature | TGNT-P16.1, TGNT-P16.2 | ~8min  | COMPLETED |
+| TGNT-P16.4 | Operation classification engine (tier assignment from command + target analysis) | feature | TGNT-P16.3             | ~8min  | COMPLETED |
 
 ### thegent: Phase 17 (Resource Management - COMPLETE)
 
-| ID | Title | Type | Depends On | Effort | Status |
-|----|-------|------|-----------|--------|--------|
-| TGNT-P17.1 | Memory limit enforcement (cgroups on Linux, ulimit fallback) | feature | TGNT-P12.2 | ~8min | COMPLETED |
-| TGNT-P17.2 | Process count limits (detect runaway subprocess spawning) | feature | TGNT-P17.1 | ~5min | COMPLETED |
-| TGNT-P17.3 | FD budget allocation (monitor per-agent, alert at thresholds) | feature | TGNT-P17.2 | ~5min | COMPLETED |
+| ID         | Title                                                         | Type    | Depends On | Effort | Status    |
+| ---------- | ------------------------------------------------------------- | ------- | ---------- | ------ | --------- |
+| TGNT-P17.1 | Memory limit enforcement (cgroups on Linux, ulimit fallback)  | feature | TGNT-P12.2 | ~8min  | COMPLETED |
+| TGNT-P17.2 | Process count limits (detect runaway subprocess spawning)     | feature | TGNT-P17.1 | ~5min  | COMPLETED |
+| TGNT-P17.3 | FD budget allocation (monitor per-agent, alert at thresholds) | feature | TGNT-P17.2 | ~5min  | COMPLETED |
 
 ### thegent: Phase 18 (Observability v2 - COMPLETE)
 
-| ID | Title | Type | Depends On | Effort | Status |
-|----|-------|------|-----------|--------|--------|
-| TGNT-P18.1 | JSONL structured logging (PIPE_BUF-aware, atomic append, <4KB per line) | infra | TGNT-P11.1 | ~5min | COMPLETED |
-| TGNT-P18.2 | Advanced metrics aggregation (per-agent, per-command, histograms) | feature | TGNT-P1.3, TGNT-P12.2 | ~8min | COMPLETED |
-| TGNT-P18.3 | CLI for mesh management (`mesh status`, `mesh agents`, `mesh tasks`) | feature | TGNT-P12.2 | ~10min | COMPLETED |
+| ID         | Title                                                                    | Type    | Depends On            | Effort | Status    |
+| ---------- | ------------------------------------------------------------------------ | ------- | --------------------- | ------ | --------- |
+| TGNT-P18.1 | JSONL structured logging (PIPE_BUF-aware, atomic append, <4KB per line)  | infra   | TGNT-P11.1            | ~5min  | COMPLETED |
+| TGNT-P18.2 | Advanced metrics aggregation (per-agent, per-command, histograms)        | feature | TGNT-P1.3, TGNT-P12.2 | ~8min  | COMPLETED |
+| TGNT-P18.3 | CLI for mesh management (`mesh status`, `mesh agents`, `mesh tasks`)     | feature | TGNT-P12.2            | ~10min | COMPLETED |
 | TGNT-P18.4 | Health dashboard v2 (agent activity, port/tmpdir usage, claims, intents) | feature | TGNT-P5.1, TGNT-P18.2 | ~10min | COMPLETED |
 
 ---
@@ -4811,45 +4958,45 @@ All actionable, unassigned work items. Ordered by project, phase, then task ID.
 
 ### Phase 0: Foundation & Prototype (COMPLETE)
 
-| ID | Title | Type | Depends On | Effort | Status |
-|----|-------|------|-----------|--------|--------|
-| SCLI-P0.1 | Mission statement and hard problems analysis | research | -- | ~5min | COMPLETED |
-| SCLI-P0.2 | System architecture diagram and component overview | docs | SCLI-P0.1 | ~8min | COMPLETED |
-| SCLI-P0.3 | Configuration schema (rules.conf, agents.conf, env vars) | docs | SCLI-P0.2 | ~5min | COMPLETED |
-| SCLI-P0.4 | Risk register with mitigation strategies | docs | SCLI-P0.2 | ~8min | COMPLETED |
-| SCLI-P0.5 | Tech stack justification (Bash, Rust, C, flock, etc.) | docs | SCLI-P0.2 | ~5min | COMPLETED |
+| ID        | Title                                                    | Type     | Depends On | Effort | Status    |
+| --------- | -------------------------------------------------------- | -------- | ---------- | ------ | --------- |
+| SCLI-P0.1 | Mission statement and hard problems analysis             | research | --         | ~5min  | COMPLETED |
+| SCLI-P0.2 | System architecture diagram and component overview       | docs     | SCLI-P0.1  | ~8min  | COMPLETED |
+| SCLI-P0.3 | Configuration schema (rules.conf, agents.conf, env vars) | docs     | SCLI-P0.2  | ~5min  | COMPLETED |
+| SCLI-P0.4 | Risk register with mitigation strategies                 | docs     | SCLI-P0.2  | ~8min  | COMPLETED |
+| SCLI-P0.5 | Tech stack justification (Bash, Rust, C, flock, etc.)    | docs     | SCLI-P0.2  | ~5min  | COMPLETED |
 
 ### Phase 1: Process Detection & Agent Mesh Initialization (PENDING)
 
-| ID | Title | Type | Depends On | Effort | Status |
-|----|-------|------|-----------|--------|--------|
-| SCLI-P1.1 | Process enumeration from `/proc` (or `ps` for macOS) | feature | -- | ~8min | COMPLETED |
-| SCLI-P1.2 | Agent pattern matching (regex-based detection from agents.conf) | feature | SCLI-P1.1 | ~5min | COMPLETED |
-| SCLI-P1.3 | Agent manifest system (YAML with metadata, capabilities, ODD) | feature | SCLI-P1.2 | ~8min | COMPLETED |
-| SCLI-P1.4 | Mesh directory initialization (`/tmp/agent-mesh` or configurable) | infra | -- | ~3min | COMPLETED |
-| SCLI-P1.5 | Agent heartbeat mechanism (touch-file every 5s, 15s failure detection) | feature | SCLI-P1.3 | ~8min | COMPLETED |
-| SCLI-P1.6 | Stale agent cleanup and task reclamation | feature | SCLI-P1.5 | ~8min | COMPLETED |
+| ID        | Title                                                                  | Type    | Depends On | Effort | Status    |
+| --------- | ---------------------------------------------------------------------- | ------- | ---------- | ------ | --------- |
+| SCLI-P1.1 | Process enumeration from `/proc` (or `ps` for macOS)                   | feature | --         | ~8min  | COMPLETED |
+| SCLI-P1.2 | Agent pattern matching (regex-based detection from agents.conf)        | feature | SCLI-P1.1  | ~5min  | COMPLETED |
+| SCLI-P1.3 | Agent manifest system (YAML with metadata, capabilities, ODD)          | feature | SCLI-P1.2  | ~8min  | COMPLETED |
+| SCLI-P1.4 | Mesh directory initialization (`/tmp/agent-mesh` or configurable)      | infra   | --         | ~3min  | COMPLETED |
+| SCLI-P1.5 | Agent heartbeat mechanism (touch-file every 5s, 15s failure detection) | feature | SCLI-P1.3  | ~8min  | COMPLETED |
+| SCLI-P1.6 | Stale agent cleanup and task reclamation                               | feature | SCLI-P1.5  | ~8min  | COMPLETED |
 
 ### Phase 2: IPC & Coordination (PENDING)
 
-| ID | Title | Type | Depends On | Effort | Status |
-|----|-------|------|-----------|--------|--------|
-| SCLI-P2.1 | Atomic mkdir lock primitives for mesh coordination | infra | SCLI-P1.4 | ~5min | COMPLETED |
-| SCLI-P2.2 | Maildir message queue system (tmp -> new -> cur lifecycle) | feature | SCLI-P1.4 | ~10min | COMPLETED |
-| SCLI-P2.3 | inotify-based event notification (with /proc polling fallback) | feature | SCLI-P2.2 | ~8min | COMPLETED |
-| SCLI-P2.4 | Write-ahead log (WAL) for crash recovery | infra | SCLI-P1.4 | ~8min | COMPLETED |
-| SCLI-P2.5 | Intent broadcasting system (agents signal planned operations) | feature | SCLI-P2.2 | ~8min | COMPLETED |
-| SCLI-P2.6 | Intent conflict detection (write-write, read-write conflicts) | feature | SCLI-P2.5 | ~5min | COMPLETED |
+| ID        | Title                                                          | Type    | Depends On | Effort | Status    |
+| --------- | -------------------------------------------------------------- | ------- | ---------- | ------ | --------- |
+| SCLI-P2.1 | Atomic mkdir lock primitives for mesh coordination             | infra   | SCLI-P1.4  | ~5min  | COMPLETED |
+| SCLI-P2.2 | Maildir message queue system (tmp -> new -> cur lifecycle)     | feature | SCLI-P1.4  | ~10min | COMPLETED |
+| SCLI-P2.3 | inotify-based event notification (with /proc polling fallback) | feature | SCLI-P2.2  | ~8min  | COMPLETED |
+| SCLI-P2.4 | Write-ahead log (WAL) for crash recovery                       | infra   | SCLI-P1.4  | ~8min  | COMPLETED |
+| SCLI-P2.5 | Intent broadcasting system (agents signal planned operations)  | feature | SCLI-P2.2  | ~8min  | COMPLETED |
+| SCLI-P2.6 | Intent conflict detection (write-write, read-write conflicts)  | feature | SCLI-P2.5  | ~5min  | COMPLETED |
 
 ### Phase 3: Consensus & Escalation (PENDING)
 
-| ID | Title | Type | Depends On | Effort | Status |
-|----|-------|------|-----------|--------|--------|
-| SCLI-P3.1 | Consensus protocol (majority for implementation, supermajority for architecture) | feature | SCLI-P2.5 | ~8min | COMPLETED |
-| SCLI-P3.2 | Shapley-value causal influence tracking | feature | SCLI-P3.1 | ~10min | COMPLETED |
-| SCLI-P3.3 | 5-tier escalation workflow (self -> peer -> lead -> committee -> human) | feature | SCLI-P3.1 | ~10min | COMPLETED |
-| SCLI-P3.4 | Async human escalation queue | feature | SCLI-P3.3 | ~5min | COMPLETED |
-| SCLI-P3.5 | Confidence scoring and debate capping (max 3 rounds) | feature | SCLI-P3.1 | ~8min | COMPLETED |
+| ID        | Title                                                                            | Type    | Depends On | Effort | Status    |
+| --------- | -------------------------------------------------------------------------------- | ------- | ---------- | ------ | --------- |
+| SCLI-P3.1 | Consensus protocol (majority for implementation, supermajority for architecture) | feature | SCLI-P2.5  | ~8min  | COMPLETED |
+| SCLI-P3.2 | Shapley-value causal influence tracking                                          | feature | SCLI-P3.1  | ~10min | COMPLETED |
+| SCLI-P3.3 | 5-tier escalation workflow (self -> peer -> lead -> committee -> human)          | feature | SCLI-P3.1  | ~10min | COMPLETED |
+| SCLI-P3.4 | Async human escalation queue                                                     | feature | SCLI-P3.3  | ~5min  | COMPLETED |
+| SCLI-P3.5 | Confidence scoring and debate capping (max 3 rounds)                             | feature | SCLI-P3.1  | ~8min  | COMPLETED |
 
 ---
 
@@ -4857,57 +5004,57 @@ All actionable, unassigned work items. Ordered by project, phase, then task ID.
 
 ### Phase 4: Git Operations & Parallelism (PENDING)
 
-| ID | Title | Type | Depends On | Effort | Status |
-|----|-------|------|-----------|--------|--------|
-| SCLI-P4.1 | Per-agent `GIT_INDEX_FILE` implementation | feature | SCLI-P1.3 | ~8min | COMPLETED |
-| SCLI-P4.2 | Git plumbing pipeline (hash-object, write-tree, commit-tree, update-ref CAS) | feature | SCLI-P4.1 | ~10min | COMPLETED |
-| SCLI-P4.3 | CAS retry loop with exponential backoff and jitter | feature | SCLI-P4.2 | ~5min | COMPLETED |
-| SCLI-P4.4 | Scoped staging (agent-to-file mapping for parallel operations) | feature | SCLI-P4.1 | ~5min | COMPLETED |
-| SCLI-P4.5 | Per-agent git status view (show staged changes per agent) | feature | SCLI-P4.4 | ~3min | COMPLETED |
+| ID        | Title                                                                        | Type    | Depends On | Effort | Status    |
+| --------- | ---------------------------------------------------------------------------- | ------- | ---------- | ------ | --------- |
+| SCLI-P4.1 | Per-agent `GIT_INDEX_FILE` implementation                                    | feature | SCLI-P1.3  | ~8min  | COMPLETED |
+| SCLI-P4.2 | Git plumbing pipeline (hash-object, write-tree, commit-tree, update-ref CAS) | feature | SCLI-P4.1  | ~10min | COMPLETED |
+| SCLI-P4.3 | CAS retry loop with exponential backoff and jitter                           | feature | SCLI-P4.2  | ~5min  | COMPLETED |
+| SCLI-P4.4 | Scoped staging (agent-to-file mapping for parallel operations)               | feature | SCLI-P4.1  | ~5min  | COMPLETED |
+| SCLI-P4.5 | Per-agent git status view (show staged changes per agent)                    | feature | SCLI-P4.4  | ~3min  | COMPLETED |
 
 ### Phase 5: Smart Merge (PENDING)
 
-| ID | Title | Type | Depends On | Effort | Status |
-|----|-------|------|-----------|--------|--------|
-| SCLI-P5.1 | Mergiraf integration (AST-aware merge for 10+ languages) | feature | SCLI-P4.2 | ~10min | COMPLETED |
-| SCLI-P5.2 | Conflict prediction before commit (trial merge from intents) | feature | SCLI-P2.5, SCLI-P4.2 | ~8min | COMPLETED |
-| SCLI-P5.3 | Import union auto-resolution (Python/JS imports) | feature | SCLI-P5.1 | ~5min | COMPLETED |
-| SCLI-P5.4 | JSON/YAML structural merge (deep merge via jq) | feature | SCLI-P5.1 | ~5min | COMPLETED |
+| ID        | Title                                                        | Type    | Depends On           | Effort | Status    |
+| --------- | ------------------------------------------------------------ | ------- | -------------------- | ------ | --------- |
+| SCLI-P5.1 | Mergiraf integration (AST-aware merge for 10+ languages)     | feature | SCLI-P4.2            | ~10min | COMPLETED |
+| SCLI-P5.2 | Conflict prediction before commit (trial merge from intents) | feature | SCLI-P2.5, SCLI-P4.2 | ~8min  | COMPLETED |
+| SCLI-P5.3 | Import union auto-resolution (Python/JS imports)             | feature | SCLI-P5.1            | ~5min  | COMPLETED |
+| SCLI-P5.4 | JSON/YAML structural merge (deep merge via jq)               | feature | SCLI-P5.1            | ~5min  | COMPLETED |
 
 ### Phase 6: File Coordination (PENDING)
 
-| ID | Title | Type | Depends On | Effort | Status |
-|----|-------|------|-----------|--------|--------|
-| SCLI-P6.1 | Optimistic concurrency control (OCC) version tracking | feature | SCLI-P2.5 | ~8min | COMPLETED |
-| SCLI-P6.2 | Hybrid Logical Clock (HLC) timestamp generation | feature | SCLI-P6.1 | ~5min | COMPLETED |
-| SCLI-P6.3 | Lease-based file claims registry (read/write/exclusive) | feature | SCLI-P6.1 | ~8min | COMPLETED |
-| SCLI-P6.4 | Lease renewal and expiry management | feature | SCLI-P6.3 | ~5min | COMPLETED |
+| ID        | Title                                                   | Type    | Depends On | Effort | Status    |
+| --------- | ------------------------------------------------------- | ------- | ---------- | ------ | --------- |
+| SCLI-P6.1 | Optimistic concurrency control (OCC) version tracking   | feature | SCLI-P2.5  | ~8min  | COMPLETED |
+| SCLI-P6.2 | Hybrid Logical Clock (HLC) timestamp generation         | feature | SCLI-P6.1  | ~5min  | COMPLETED |
+| SCLI-P6.3 | Lease-based file claims registry (read/write/exclusive) | feature | SCLI-P6.1  | ~8min  | COMPLETED |
+| SCLI-P6.4 | Lease renewal and expiry management                     | feature | SCLI-P6.3  | ~5min  | COMPLETED |
 
 ### Phase 7: Caching & Request Deduplication (PENDING)
 
-| ID | Title | Type | Depends On | Effort | Status |
-|----|-------|------|-----------|--------|--------|
-| SCLI-P7.1 | Singleflight deduplication (first executes, rest wait) | feature | -- | ~5min | COMPLETED |
-| SCLI-P7.2 | inotify-based cache invalidation on file changes | feature | SCLI-P2.3 | ~8min | COMPLETED |
-| SCLI-P7.3 | Heat-based LRU eviction (access frequency tracking) | feature | -- | ~5min | COMPLETED |
+| ID        | Title                                                  | Type    | Depends On | Effort | Status    |
+| --------- | ------------------------------------------------------ | ------- | ---------- | ------ | --------- |
+| SCLI-P7.1 | Singleflight deduplication (first executes, rest wait) | feature | --         | ~5min  | COMPLETED |
+| SCLI-P7.2 | inotify-based cache invalidation on file changes       | feature | SCLI-P2.3  | ~8min  | COMPLETED |
+| SCLI-P7.3 | Heat-based LRU eviction (access frequency tracking)    | feature | --         | ~5min  | COMPLETED |
 
 ### Phase 8: Resource Isolation (PENDING)
 
-| ID | Title | Type | Depends On | Effort | Status |
-|----|-------|------|-----------|--------|--------|
-| SCLI-P8.1 | Per-agent TMPDIR allocation and cleanup | feature | SCLI-P1.3 | ~3min | COMPLETED |
-| SCLI-P8.2 | Dynamic port range allocation (registry + liveness) | feature | SCLI-P8.1 | ~5min | COMPLETED |
-| SCLI-P8.3 | Environment variable isolation per agent | feature | SCLI-P8.1 | ~5min | COMPLETED |
+| ID        | Title                                               | Type    | Depends On | Effort | Status    |
+| --------- | --------------------------------------------------- | ------- | ---------- | ------ | --------- |
+| SCLI-P8.1 | Per-agent TMPDIR allocation and cleanup             | feature | SCLI-P1.3  | ~3min  | COMPLETED |
+| SCLI-P8.2 | Dynamic port range allocation (registry + liveness) | feature | SCLI-P8.1  | ~5min  | COMPLETED |
+| SCLI-P8.3 | Environment variable isolation per agent            | feature | SCLI-P8.1  | ~5min  | COMPLETED |
 
 ### Phase 9: Shell Injection & Context Injection (PENDING)
 
-| ID | Title | Type | Depends On | Effort | Status |
-|----|-------|------|-----------|--------|--------|
-| SCLI-P9.1 | tmux session detection and naming | feature | SCLI-P1.3 | ~5min | COMPLETED |
-| SCLI-P9.2 | tmux command injection (`send-keys` with 1.5s delay) | feature | SCLI-P9.1 | ~8min | PENDING |
-| SCLI-P9.3 | Agent readiness detection (prompt patterns, busy/idle/error) | feature | SCLI-P9.2 | ~5min | PENDING |
-| SCLI-P9.4 | AGENT.md template system (dynamic mesh state injection) | feature | SCLI-P1.3 | ~5min | PENDING |
-| SCLI-P9.5 | Tool-specific context files (CLAUDE.md, .cursorrules symlinks) | feature | SCLI-P9.4 | ~8min | PENDING |
+| ID        | Title                                                          | Type    | Depends On | Effort | Status    |
+| --------- | -------------------------------------------------------------- | ------- | ---------- | ------ | --------- |
+| SCLI-P9.1 | tmux session detection and naming                              | feature | SCLI-P1.3  | ~5min  | COMPLETED |
+| SCLI-P9.2 | tmux command injection (`send-keys` with 1.5s delay)           | feature | SCLI-P9.1  | ~8min  | PENDING   |
+| SCLI-P9.3 | Agent readiness detection (prompt patterns, busy/idle/error)   | feature | SCLI-P9.2  | ~5min  | PENDING   |
+| SCLI-P9.4 | AGENT.md template system (dynamic mesh state injection)        | feature | SCLI-P1.3  | ~5min  | PENDING   |
+| SCLI-P9.5 | Tool-specific context files (CLAUDE.md, .cursorrules symlinks) | feature | SCLI-P9.4  | ~8min  | PENDING   |
 
 ---
 
@@ -4915,133 +5062,133 @@ All actionable, unassigned work items. Ordered by project, phase, then task ID.
 
 ### Phase 10: Sandboxing (PENDING)
 
-| ID | Title | Type | Depends On | Effort | Status |
-|----|-------|------|-----------|--------|--------|
-| SCLI-P10.1 | bubblewrap profile (Linux filesystem/network/process policies) | infra | SCLI-P1.3 | ~10min | PENDING |
-| SCLI-P10.2 | seatbelt profile (macOS sandbox-exec equivalent) | infra | SCLI-P1.3 | ~10min | PENDING |
-| SCLI-P10.3 | 5-tier autonomy enforcement (read -> worktree -> git -> shared -> production) | feature | SCLI-P10.1, SCLI-P10.2 | ~8min | PENDING |
-| SCLI-P10.4 | Operation classification (tier assignment from command + target) | feature | SCLI-P10.3 | ~8min | PENDING |
+| ID         | Title                                                                         | Type    | Depends On             | Effort | Status  |
+| ---------- | ----------------------------------------------------------------------------- | ------- | ---------------------- | ------ | ------- |
+| SCLI-P10.1 | bubblewrap profile (Linux filesystem/network/process policies)                | infra   | SCLI-P1.3              | ~10min | PENDING |
+| SCLI-P10.2 | seatbelt profile (macOS sandbox-exec equivalent)                              | infra   | SCLI-P1.3              | ~10min | PENDING |
+| SCLI-P10.3 | 5-tier autonomy enforcement (read -> worktree -> git -> shared -> production) | feature | SCLI-P10.1, SCLI-P10.2 | ~8min  | PENDING |
+| SCLI-P10.4 | Operation classification (tier assignment from command + target)              | feature | SCLI-P10.3             | ~8min  | PENDING |
 
 ### Phase 11: Worktree Support (PENDING)
 
-| ID | Title | Type | Depends On | Effort | Status |
-|----|-------|------|-----------|--------|--------|
-| SCLI-P11.1 | Optional per-agent git worktree creation | feature | SCLI-P4.1 | ~8min | PENDING |
-| SCLI-P11.2 | Branch coordination and collision avoidance | feature | SCLI-P11.1 | ~5min | PENDING |
-| SCLI-P11.3 | Worktree cleanup and orphan detection | feature | SCLI-P11.2 | ~3min | PENDING |
+| ID         | Title                                       | Type    | Depends On | Effort | Status  |
+| ---------- | ------------------------------------------- | ------- | ---------- | ------ | ------- |
+| SCLI-P11.1 | Optional per-agent git worktree creation    | feature | SCLI-P4.1  | ~8min  | PENDING |
+| SCLI-P11.2 | Branch coordination and collision avoidance | feature | SCLI-P11.1 | ~5min  | PENDING |
+| SCLI-P11.3 | Worktree cleanup and orphan detection       | feature | SCLI-P11.2 | ~3min  | PENDING |
 
 ### Phase 12: Resource Management (PENDING)
 
-| ID | Title | Type | Depends On | Effort | Status |
-|----|-------|------|-----------|--------|--------|
-| SCLI-P12.1 | Memory limit enforcement (cgroups on Linux, ulimit fallback) | feature | SCLI-P1.3 | ~8min | PENDING |
-| SCLI-P12.2 | Process count limits (runaway subprocess detection) | feature | SCLI-P12.1 | ~5min | PENDING |
-| SCLI-P12.3 | File descriptor budget allocation and monitoring | feature | SCLI-P12.2 | ~5min | PENDING |
+| ID         | Title                                                        | Type    | Depends On | Effort | Status  |
+| ---------- | ------------------------------------------------------------ | ------- | ---------- | ------ | ------- |
+| SCLI-P12.1 | Memory limit enforcement (cgroups on Linux, ulimit fallback) | feature | SCLI-P1.3  | ~8min  | PENDING |
+| SCLI-P12.2 | Process count limits (runaway subprocess detection)          | feature | SCLI-P12.1 | ~5min  | PENDING |
+| SCLI-P12.3 | File descriptor budget allocation and monitoring             | feature | SCLI-P12.2 | ~5min  | PENDING |
 
 ### Phase 13: Observability (PENDING)
 
-| ID | Title | Type | Depends On | Effort | Status |
-|----|-------|------|-----------|--------|--------|
-| SCLI-P13.1 | JSONL structured logging (atomic append, <4KB per line) | infra | SCLI-P1.4 | ~5min | PENDING |
-| SCLI-P13.2 | Advanced metrics aggregation (per-agent, per-command) | feature | -- | ~8min | PENDING |
-| SCLI-P13.3 | CLI mesh management commands (`mesh status`, `mesh agents`) | feature | SCLI-P1.3 | ~10min | PENDING |
-| SCLI-P13.4 | Health dashboard v2 (activity, usage, claims, intents) | feature | SCLI-P13.2 | ~10min | PENDING |
+| ID         | Title                                                       | Type    | Depends On | Effort | Status  |
+| ---------- | ----------------------------------------------------------- | ------- | ---------- | ------ | ------- |
+| SCLI-P13.1 | JSONL structured logging (atomic append, <4KB per line)     | infra   | SCLI-P1.4  | ~5min  | PENDING |
+| SCLI-P13.2 | Advanced metrics aggregation (per-agent, per-command)       | feature | --         | ~8min  | PENDING |
+| SCLI-P13.3 | CLI mesh management commands (`mesh status`, `mesh agents`) | feature | SCLI-P1.3  | ~10min | PENDING |
+| SCLI-P13.4 | Health dashboard v2 (activity, usage, claims, intents)      | feature | SCLI-P13.2 | ~10min | PENDING |
 
 ### Phase 14: Audit & Recovery (PENDING)
 
-| ID | Title | Type | Depends On | Effort | Status |
-|----|-------|------|-----------|--------|--------|
-| SCLI-P14.1 | Shadow git repo for full delete recovery | feature | SCLI-P4.2 | ~10min | PENDING |
-| SCLI-P14.2 | Audit trail with inotify sync to shadow repo | feature | SCLI-P14.1 | ~8min | PENDING |
-| SCLI-P14.3 | Full recovery workflow (cross-reference dev + audit repos) | feature | SCLI-P14.2 | ~8min | PENDING |
+| ID         | Title                                                      | Type    | Depends On | Effort | Status  |
+| ---------- | ---------------------------------------------------------- | ------- | ---------- | ------ | ------- |
+| SCLI-P14.1 | Shadow git repo for full delete recovery                   | feature | SCLI-P4.2  | ~10min | PENDING |
+| SCLI-P14.2 | Audit trail with inotify sync to shadow repo               | feature | SCLI-P14.1 | ~8min  | PENDING |
+| SCLI-P14.3 | Full recovery workflow (cross-reference dev + audit repos) | feature | SCLI-P14.2 | ~8min  | PENDING |
 
 ---
 
 ## CLAIMED
 
-| ID | Title | Agent | Claimed At | Expected Completion |
-|----|-------|-------|-----------|-------------------|
-| TGNT-P6.1 | Per-agent GIT_INDEX_FILE management | phase6-worker | 2026-02-18T16:45:00Z | 2026-02-18T16:53:00Z |
-| TGNT-P6.2 | Git plumbing commit pipeline | phase6-worker | 2026-02-18T16:45:00Z | 2026-02-18T17:05:00Z |
+| ID        | Title                                   | Agent         | Claimed At           | Expected Completion  |
+| --------- | --------------------------------------- | ------------- | -------------------- | -------------------- |
+| TGNT-P6.1 | Per-agent GIT_INDEX_FILE management     | phase6-worker | 2026-02-18T16:45:00Z | 2026-02-18T16:53:00Z |
+| TGNT-P6.2 | Git plumbing commit pipeline            | phase6-worker | 2026-02-18T16:45:00Z | 2026-02-18T17:05:00Z |
 | TGNT-P6.3 | CAS ref update with exponential backoff | phase6-worker | 2026-02-18T16:45:00Z | 2026-02-18T17:10:00Z |
-| TGNT-P6.4 | Scoped staging (agent-to-file mapping) | phase6-worker | 2026-02-18T16:45:00Z | 2026-02-18T17:15:00Z |
-| TGNT-P6.5 | harness git status per-agent view | phase6-worker | 2026-02-18T16:45:00Z | 2026-02-18T17:18:00Z |
+| TGNT-P6.4 | Scoped staging (agent-to-file mapping)  | phase6-worker | 2026-02-18T16:45:00Z | 2026-02-18T17:15:00Z |
+| TGNT-P6.5 | harness git status per-agent view       | phase6-worker | 2026-02-18T16:45:00Z | 2026-02-18T17:18:00Z |
 
 ---
 
 ## COMPLETED
 
-| ID | Title | Completed At | Effort | Notes |
-|----|-------|---|--------|-------|
-| TGNT-P0.1 | Symlink dispatch mechanism | 2026-02-15 | ~5min | Core harness foundation |
-| TGNT-P0.2 | Agent detection via `/proc` tree walk | 2026-02-15 | ~5min | Includes macOS `ps` fallback |
-| TGNT-P0.3 | `rules.conf` parser | 2026-02-15 | ~3min | Command, strategy, options support |
-| TGNT-P0.4 | Coalesce strategy | 2026-02-15 | ~10min | flock + SHA256 + atomic writes |
-| TGNT-P0.5 | Queue strategy | 2026-02-16 | ~8min | Bounded concurrency pool |
-| TGNT-P0.6 | Debounce strategy | 2026-02-16 | ~5min | Delay + coalesce within window |
-| TGNT-P0.7 | `harness sync` symlink generator | 2026-02-16 | ~3min | From rules.conf |
-| TGNT-P0.8 | `nocache_args` safety | 2026-02-16 | ~3min | `--fix`/`--write` fallback |
-| TGNT-P1.1 | Lock timeout + fallback | 2026-02-16 | ~3min | HARNESS_LOCK_TIMEOUT env var |
-| TGNT-P1.2 | Stale-while-revalidate | 2026-02-16 | ~5min | Serve stale + background refresh |
-| TGNT-P1.3 | Prometheus metrics | 2026-02-16 | ~5min | `harness metrics` endpoint |
-| TGNT-P1.4 | Cache compression | 2026-02-16 | ~5min | zstd for outputs > 10KB |
-| TGNT-P1.5 | JSON metrics export | 2026-02-16 | ~2min | `harness metrics json` |
-| TGNT-P2.1 | 5-level priority queue | 2026-02-17 | ~8min | critical/high/normal/low/background |
-| TGNT-P2.2 | Priority aging | 2026-02-17 | ~3min | +1 level per 5s, prevents starvation |
-| TGNT-P2.3 | Fair share scheduling | 2026-02-17 | ~8min | Per-agent quota + penalty |
-| TGNT-P2.4 | Semantic coalescing | 2026-02-17 | ~5min | Path normalization, `.` -> root |
-| TGNT-P2.5 | Queue timeout protection | 2026-02-17 | ~3min | Fallback execution on timeout |
-| TGNT-P3.1 | L1 memory cache | 2026-02-17 | ~8min | `/dev/shm`, 100MB, 60s TTL |
-| TGNT-P3.2 | L2 disk cache | 2026-02-17 | ~5min | `var/cache`, compressed, persistent |
-| TGNT-P3.3 | L2-to-L1 promotion | 2026-02-17 | ~5min | Automatic on cache hit |
-| TGNT-P3.4 | I/O scheduler integration | 2026-02-17 | ~5min | ionice priority classes |
-| TGNT-P3.5 | Negative stat cache | 2026-02-17 | ~3min | Nonexistent files, 5s TTL |
-| TGNT-P3.6 | Page cache warmer | 2026-02-17 | ~5min | Bulk read by file type |
-| TGNT-P4.1 | Intent broadcasting | 2026-02-18 | ~8min | Agents signal planned ops |
-| TGNT-P4.2 | Intent conflict checking | 2026-02-18 | ~5min | write-write, read-write detection |
-| TGNT-P4.3 | Wait-for graph | 2026-02-18 | ~8min | From lock records |
-| TGNT-P4.4 | DFS cycle detection | 2026-02-18 | ~5min | Deadlock detection |
-| TGNT-P4.5 | Deadlock auto-resolution | 2026-02-18 | ~3min | Abort youngest waiter |
-| TGNT-P4.6 | Fair share tracking | 2026-02-18 | ~5min | 50% decay smoothing |
-| TGNT-P5.1 | Interactive TUI dashboard | 2026-02-18 | ~10min | cache/queue/intent/fair share |
-| TGNT-P5.2 | Self-tuning report | 2026-02-18 | ~8min | Detect low hit rate/contention |
-| TGNT-P5.3 | Auto-fix recommendations | 2026-02-18 | ~5min | Color-coded severity |
-| TGNT-P5.4 | Rules suggestion engine | 2026-02-18 | ~5min | From observed patterns |
-| TGNT-P5.5 | L1 vs L2 benchmark | 2026-02-18 | ~3min | Perf comparison tool |
-| SCLI-P0.1 | Mission & hard problems | 2026-02-15 | ~5min | System analysis |
-| SCLI-P0.2 | Architecture diagram | 2026-02-15 | ~8min | Component overview |
-| SCLI-P0.3 | Configuration schema | 2026-02-15 | ~5min | rules.conf, agents.conf, env vars |
-| SCLI-P0.4 | Risk register | 2026-02-15 | ~8min | Mitigations |
-| SCLI-P0.5 | Tech stack justification | 2026-02-15 | ~5min | Bash, Rust, C rationale |
-| SCLI-P5.1 | Mergiraf integration (AST-aware merge for 10+ languages) | 2026-02-22 | ~10min | merge_ast_aware in mesh/merge.py |
-| SCLI-P5.2 | Conflict prediction before commit (trial merge from intents) | 2026-02-22 | ~8min | predict_conflicts in mesh/merge.py |
-| SCLI-P5.3 | Import union auto-resolution (Python/JS imports) | 2026-02-22 | ~5min | resolve_imports in mesh/merge.py |
-| SCLI-P5.4 | JSON/YAML structural merge (deep merge via jq) | 2026-02-22 | ~5min | merge_structural in mesh/merge.py |
-| SCLI-P6.1 | Optimistic concurrency control (OCC) version tracking | 2026-02-22 | ~8min | OptimisticConcurrencyControl in mesh/coordination.py |
-| TGNT-P7.1 | Mergiraf integration | 2026-02-19 | ~10min | AST merge for 10+ languages |
-| TGNT-P7.2 | Conflict prediction from intents | 2026-02-19 | ~8min | Trial merge before commit |
-| TGNT-P7.3 | Import union auto-resolve | 2026-02-19 | ~5min | Python/JS sorted union |
-| TGNT-P7.4 | JSON/YAML structural merge | 2026-02-19 | ~5min | Deep merge via jq, ours-wins |
-| TGNT-P8.1 | OCC version check on write | 2026-02-19 | ~8min | Record version at claim, verify before commit |
-| TGNT-P8.2 | HLC timestamp generation | 2026-02-19 | ~5min | Millisecond physical + logical counter |
-| TGNT-P8.3 | Lease-based file claims registry | 2026-02-19 | ~8min | read/write/exclusive with flock |
-| TGNT-P8.4 | Lease renewal and expiry | 2026-02-19 | ~5min | Background cleanup daemon |
-| TGNT-P9.1 | Singleflight dedup pattern | 2026-02-19 | ~5min | First executes, rest wait |
-| TGNT-P9.2 | inotify cache invalidation | 2026-02-19 | ~8min | Watch file changes, invalidate |
-| TGNT-P9.3 | Heat-based LRU eviction | 2026-02-19 | ~5min | Access frequency + exponential decay |
-| TGNT-P10.1 | Per-agent TMPDIR allocation | 2026-02-19 | ~3min | Private temp, cleanup on exit |
-| TGNT-P10.2 | Dynamic port range allocation | 2026-02-19 | ~5min | Registry + liveness check |
-| TGNT-P10.3 | Environment variable isolation | 2026-02-19 | ~5min | Agent-specific env file |
-| TGNT-P12.1 | /proc scanner with agent patterns | 2026-02-19 | ~8min | Claude/Aider/Cursor/Cline detection |
-| TGNT-P12.2 | Agent manifest creation | 2026-02-19 | ~5min | YAML: id, type, pid, capabilities |
-| TGNT-P12.3 | Heartbeat monitor | 2026-02-19 | ~5min | Touch-file every 5s, 15s threshold |
-| TGNT-P12.4 | Stale agent cleanup | 2026-02-19 | ~3min | Reclaim tasks, archive manifest |
-| TGNT-P13.1 | tmux session detection | 2026-02-19 | ~5min | mesh-{agent-uuid} naming |
-| TGNT-P13.2 | Command injection via tmux | 2026-02-19 | ~8min | send-keys + 1.5s delay |
-| TGNT-P13.3 | Agent readiness detection | 2026-02-19 | ~5min | Prompt patterns, busy/idle/error |
-| TGNT-P15.1 | Optional worktree creation | 2026-02-19 | ~8min | git worktree add .mesh/worktrees/agent-{uuid} |
-| TGNT-P15.2 | Branch coordination | 2026-02-19 | ~5min | Registry, collision avoidance, status tracking |
-| TGNT-P15.3 | Worktree cleanup | 2026-02-19 | ~3min | Orphan detection, 30s grace, health monitor |
+| ID         | Title                                                        | Completed At | Effort | Notes                                                |
+| ---------- | ------------------------------------------------------------ | ------------ | ------ | ---------------------------------------------------- |
+| TGNT-P0.1  | Symlink dispatch mechanism                                   | 2026-02-15   | ~5min  | Core harness foundation                              |
+| TGNT-P0.2  | Agent detection via `/proc` tree walk                        | 2026-02-15   | ~5min  | Includes macOS `ps` fallback                         |
+| TGNT-P0.3  | `rules.conf` parser                                          | 2026-02-15   | ~3min  | Command, strategy, options support                   |
+| TGNT-P0.4  | Coalesce strategy                                            | 2026-02-15   | ~10min | flock + SHA256 + atomic writes                       |
+| TGNT-P0.5  | Queue strategy                                               | 2026-02-16   | ~8min  | Bounded concurrency pool                             |
+| TGNT-P0.6  | Debounce strategy                                            | 2026-02-16   | ~5min  | Delay + coalesce within window                       |
+| TGNT-P0.7  | `harness sync` symlink generator                             | 2026-02-16   | ~3min  | From rules.conf                                      |
+| TGNT-P0.8  | `nocache_args` safety                                        | 2026-02-16   | ~3min  | `--fix`/`--write` fallback                           |
+| TGNT-P1.1  | Lock timeout + fallback                                      | 2026-02-16   | ~3min  | HARNESS_LOCK_TIMEOUT env var                         |
+| TGNT-P1.2  | Stale-while-revalidate                                       | 2026-02-16   | ~5min  | Serve stale + background refresh                     |
+| TGNT-P1.3  | Prometheus metrics                                           | 2026-02-16   | ~5min  | `harness metrics` endpoint                           |
+| TGNT-P1.4  | Cache compression                                            | 2026-02-16   | ~5min  | zstd for outputs > 10KB                              |
+| TGNT-P1.5  | JSON metrics export                                          | 2026-02-16   | ~2min  | `harness metrics json`                               |
+| TGNT-P2.1  | 5-level priority queue                                       | 2026-02-17   | ~8min  | critical/high/normal/low/background                  |
+| TGNT-P2.2  | Priority aging                                               | 2026-02-17   | ~3min  | +1 level per 5s, prevents starvation                 |
+| TGNT-P2.3  | Fair share scheduling                                        | 2026-02-17   | ~8min  | Per-agent quota + penalty                            |
+| TGNT-P2.4  | Semantic coalescing                                          | 2026-02-17   | ~5min  | Path normalization, `.` -> root                      |
+| TGNT-P2.5  | Queue timeout protection                                     | 2026-02-17   | ~3min  | Fallback execution on timeout                        |
+| TGNT-P3.1  | L1 memory cache                                              | 2026-02-17   | ~8min  | `/dev/shm`, 100MB, 60s TTL                           |
+| TGNT-P3.2  | L2 disk cache                                                | 2026-02-17   | ~5min  | `var/cache`, compressed, persistent                  |
+| TGNT-P3.3  | L2-to-L1 promotion                                           | 2026-02-17   | ~5min  | Automatic on cache hit                               |
+| TGNT-P3.4  | I/O scheduler integration                                    | 2026-02-17   | ~5min  | ionice priority classes                              |
+| TGNT-P3.5  | Negative stat cache                                          | 2026-02-17   | ~3min  | Nonexistent files, 5s TTL                            |
+| TGNT-P3.6  | Page cache warmer                                            | 2026-02-17   | ~5min  | Bulk read by file type                               |
+| TGNT-P4.1  | Intent broadcasting                                          | 2026-02-18   | ~8min  | Agents signal planned ops                            |
+| TGNT-P4.2  | Intent conflict checking                                     | 2026-02-18   | ~5min  | write-write, read-write detection                    |
+| TGNT-P4.3  | Wait-for graph                                               | 2026-02-18   | ~8min  | From lock records                                    |
+| TGNT-P4.4  | DFS cycle detection                                          | 2026-02-18   | ~5min  | Deadlock detection                                   |
+| TGNT-P4.5  | Deadlock auto-resolution                                     | 2026-02-18   | ~3min  | Abort youngest waiter                                |
+| TGNT-P4.6  | Fair share tracking                                          | 2026-02-18   | ~5min  | 50% decay smoothing                                  |
+| TGNT-P5.1  | Interactive TUI dashboard                                    | 2026-02-18   | ~10min | cache/queue/intent/fair share                        |
+| TGNT-P5.2  | Self-tuning report                                           | 2026-02-18   | ~8min  | Detect low hit rate/contention                       |
+| TGNT-P5.3  | Auto-fix recommendations                                     | 2026-02-18   | ~5min  | Color-coded severity                                 |
+| TGNT-P5.4  | Rules suggestion engine                                      | 2026-02-18   | ~5min  | From observed patterns                               |
+| TGNT-P5.5  | L1 vs L2 benchmark                                           | 2026-02-18   | ~3min  | Perf comparison tool                                 |
+| SCLI-P0.1  | Mission & hard problems                                      | 2026-02-15   | ~5min  | System analysis                                      |
+| SCLI-P0.2  | Architecture diagram                                         | 2026-02-15   | ~8min  | Component overview                                   |
+| SCLI-P0.3  | Configuration schema                                         | 2026-02-15   | ~5min  | rules.conf, agents.conf, env vars                    |
+| SCLI-P0.4  | Risk register                                                | 2026-02-15   | ~8min  | Mitigations                                          |
+| SCLI-P0.5  | Tech stack justification                                     | 2026-02-15   | ~5min  | Bash, Rust, C rationale                              |
+| SCLI-P5.1  | Mergiraf integration (AST-aware merge for 10+ languages)     | 2026-02-22   | ~10min | merge_ast_aware in mesh/merge.py                     |
+| SCLI-P5.2  | Conflict prediction before commit (trial merge from intents) | 2026-02-22   | ~8min  | predict_conflicts in mesh/merge.py                   |
+| SCLI-P5.3  | Import union auto-resolution (Python/JS imports)             | 2026-02-22   | ~5min  | resolve_imports in mesh/merge.py                     |
+| SCLI-P5.4  | JSON/YAML structural merge (deep merge via jq)               | 2026-02-22   | ~5min  | merge_structural in mesh/merge.py                    |
+| SCLI-P6.1  | Optimistic concurrency control (OCC) version tracking        | 2026-02-22   | ~8min  | OptimisticConcurrencyControl in mesh/coordination.py |
+| TGNT-P7.1  | Mergiraf integration                                         | 2026-02-19   | ~10min | AST merge for 10+ languages                          |
+| TGNT-P7.2  | Conflict prediction from intents                             | 2026-02-19   | ~8min  | Trial merge before commit                            |
+| TGNT-P7.3  | Import union auto-resolve                                    | 2026-02-19   | ~5min  | Python/JS sorted union                               |
+| TGNT-P7.4  | JSON/YAML structural merge                                   | 2026-02-19   | ~5min  | Deep merge via jq, ours-wins                         |
+| TGNT-P8.1  | OCC version check on write                                   | 2026-02-19   | ~8min  | Record version at claim, verify before commit        |
+| TGNT-P8.2  | HLC timestamp generation                                     | 2026-02-19   | ~5min  | Millisecond physical + logical counter               |
+| TGNT-P8.3  | Lease-based file claims registry                             | 2026-02-19   | ~8min  | read/write/exclusive with flock                      |
+| TGNT-P8.4  | Lease renewal and expiry                                     | 2026-02-19   | ~5min  | Background cleanup daemon                            |
+| TGNT-P9.1  | Singleflight dedup pattern                                   | 2026-02-19   | ~5min  | First executes, rest wait                            |
+| TGNT-P9.2  | inotify cache invalidation                                   | 2026-02-19   | ~8min  | Watch file changes, invalidate                       |
+| TGNT-P9.3  | Heat-based LRU eviction                                      | 2026-02-19   | ~5min  | Access frequency + exponential decay                 |
+| TGNT-P10.1 | Per-agent TMPDIR allocation                                  | 2026-02-19   | ~3min  | Private temp, cleanup on exit                        |
+| TGNT-P10.2 | Dynamic port range allocation                                | 2026-02-19   | ~5min  | Registry + liveness check                            |
+| TGNT-P10.3 | Environment variable isolation                               | 2026-02-19   | ~5min  | Agent-specific env file                              |
+| TGNT-P12.1 | /proc scanner with agent patterns                            | 2026-02-19   | ~8min  | Claude/Aider/Cursor/Cline detection                  |
+| TGNT-P12.2 | Agent manifest creation                                      | 2026-02-19   | ~5min  | YAML: id, type, pid, capabilities                    |
+| TGNT-P12.3 | Heartbeat monitor                                            | 2026-02-19   | ~5min  | Touch-file every 5s, 15s threshold                   |
+| TGNT-P12.4 | Stale agent cleanup                                          | 2026-02-19   | ~3min  | Reclaim tasks, archive manifest                      |
+| TGNT-P13.1 | tmux session detection                                       | 2026-02-19   | ~5min  | mesh-{agent-uuid} naming                             |
+| TGNT-P13.2 | Command injection via tmux                                   | 2026-02-19   | ~8min  | send-keys + 1.5s delay                               |
+| TGNT-P13.3 | Agent readiness detection                                    | 2026-02-19   | ~5min  | Prompt patterns, busy/idle/error                     |
+| TGNT-P15.1 | Optional worktree creation                                   | 2026-02-19   | ~8min  | git worktree add .mesh/worktrees/agent-{uuid}        |
+| TGNT-P15.2 | Branch coordination                                          | 2026-02-19   | ~5min  | Registry, collision avoidance, status tracking       |
+| TGNT-P15.3 | Worktree cleanup                                             | 2026-02-19   | ~3min  | Orphan detection, 30s grace, health monitor          |
 
 ---
 
@@ -5066,7 +5213,6 @@ All actionable, unassigned work items. Ordered by project, phase, then task ID.
 ---
 
 **Last Updated**: 2026-02-22 | **Format Version**: 1.0
-
 
 ---
 

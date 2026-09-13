@@ -3,9 +3,9 @@
 @trace WL-158
 """
 
-import orjson as json
 from pathlib import Path
 
+import orjson as json
 import pytest
 
 from thegent.planning.board_artifact_integrator import (
@@ -46,8 +46,18 @@ class TestBoardArtifactParser:
         json_file.write_text(
             json.dumps(
                 [
-                    {"id": "JB-001", "title": "Task A", "status": "BACKLOG", "priority": "P1"},
-                    {"id": "JB-002", "title": "Task B", "status": "COMPLETED", "priority": "P2"},
+                    {
+                        "id": "JB-001",
+                        "title": "Task A",
+                        "status": "BACKLOG",
+                        "priority": "P1",
+                    },
+                    {
+                        "id": "JB-002",
+                        "title": "Task B",
+                        "status": "COMPLETED",
+                        "priority": "P2",
+                    },
                 ]
             )
         ).decode()
@@ -309,7 +319,14 @@ class TestWL158Integration:
         json_file = board_dir / "CLIPPROXYAPI_2000_ITEM_EXECUTION_BOARD_2026-02-22.json"
         json_file.write_text(
             json.dumps(
-                [{"id": "JAB-001", "title": "JSON artifact task", "status": "BACKLOG", "priority": "P1"}]
+                [
+                    {
+                        "id": "JAB-001",
+                        "title": "JSON artifact task",
+                        "status": "BACKLOG",
+                        "priority": "P1",
+                    }
+                ]
             ).decode()
         )
 

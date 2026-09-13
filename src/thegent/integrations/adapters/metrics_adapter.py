@@ -3,10 +3,11 @@
 Handles Prometheus metrics export, cycle metrics, and change digest.
 """
 
-import orjson as json
-from datetime import datetime, UTC
+from datetime import UTC, datetime
 from pathlib import Path
 from typing import Any
+
+import orjson as json
 
 from thegent.governance.metrics import get_metrics_collector
 

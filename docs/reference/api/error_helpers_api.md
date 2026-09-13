@@ -14,7 +14,7 @@ Error with actionable suggestions for fixing it.
 
 ### Methods
 
-#### ActionableError.__init__
+#### ActionableError.**init**
 
 ```python
 __init__(self: Any, message: str, suggestion: Any, docs_url: Any, context: Any)

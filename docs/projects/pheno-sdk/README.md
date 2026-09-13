@@ -45,24 +45,28 @@ pheno-sdk/
 ## Key Features
 
 ### 1. Agent Framework
+
 - Agent creation and configuration
 - Lifecycle management
 - State persistence
 - See: `docs/architecture/`
 
 ### 2. CLI Framework
+
 - Modern CLI with Typer
 - Legacy Click support
 - Command structure
 - See: `docs/cli/` and migration guides
 
 ### 3. Authentication System
+
 - API key management
 - Token handling
 - Secure storage
 - See: `docs/auth/`
 
 ### 4. Migration Paths
+
 - CLI framework migrations (Click → Typer)
 - Legacy compatibility
 - Upgrade procedures
@@ -71,6 +75,7 @@ pheno-sdk/
 ## Development
 
 ### Setup
+
 ```bash
 cd pheno-sdk
 python -m venv venv
@@ -79,12 +84,14 @@ pip install -e ".[dev]"
 ```
 
 ### Running Tests
+
 ```bash
 pytest tests/
 pytest tests/ -v --cov=src/
 ```
 
 ### Building Documentation
+
 ```bash
 cd docs
 make html

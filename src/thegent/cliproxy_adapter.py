@@ -32,84 +32,25 @@ import logging
 from starlette.applications import Starlette
 from starlette.routing import Route, WebSocketRoute
 
-from thegent.config import ThegentSettings
-from thegent.adapters.ports import AdapterRegistry
-
 # --- decomposed module imports ----------------------------------------------
-from thegent.adapters.driven.cliproxy_http import (
-    CliproxyHTTPClient,
-    CliproxyHeaderManager,
-    CliproxyResponseTransformer,
-)
-from thegent.adapters.driven.cliproxy_ttft import TTFTTracker
-from thegent.adapters.driven.cliproxy_headers import (
-    CacheControl,
-    TgHeaders,
-    build_cache_response_headers,
-    build_cost_response_header,
-    build_event_id_header,
-    build_fallback_step_header,
-    extract_cache_control,
-    extract_tg_headers,
-    generate_event_id,
-    inject_native_finish_reason,
-    inject_usage_cost,
-    normalize_finish_reason,
-)
-from thegent.adapters.driven.cliproxy_anthropic_bridge import (
-    anthropic_messages_to_chat_completions,
-    anthropic_response_to_messages_format,
-    extract_provider_gateway_options,
-    extract_special_headers,
-)
-from thegent.adapters.driven.cliproxy_models_metadata import (
-    enrich_model_entry,
-    inject_proxy_models,
-)
-from thegent.adapters.driven.cliproxy_openrouter import (
-    _inject_openrouter_headers,
-    _is_openrouter_backend,
-)
-from thegent.adapters.driven.cliproxy_proxy_handlers import (
-    _backend_path,
-    _proxy_request,
-    _proxy_stream,
-)
 from thegent.adapters.driven.cliproxy_proxy_router import proxy_handler
 from thegent.adapters.driven.cliproxy_ws import websocket_responses_handler
+from thegent.adapters.ports import AdapterRegistry
 
 # --- existing decomposed siblings (kept for compatibility) ------------------
-from thegent.cliproxy_error_utils import (
-    _ERROR_MESSAGES,
-    _RETRY_MAX_ATTEMPTS,
-    _RetryableStreamError,
-    InsufficientCreditsError,
-    _make_error_body,
-)
-from thegent.cliproxy_header_utils import (
-    extract_websocket_forward_headers,
-    filter_inbound_response_headers,
-    sanitize_outbound_request_headers,
-)
 from thegent.cliproxy_models_transform import (
-    _compute_models_etag,
     transform_models_response,
 )
 from thegent.cliproxy_request_transform import (
-    _OR_PASSTHROUGH_FIELDS,
     _extract_delta_content,
-    _extract_delta_tool_calls,
-    _extract_usage,
-    _map_model_for_backend,
-    _process_sse_line,
+)
+from thegent.cliproxy_request_transform import (
     _responses_to_chat_completions as _request_transform_to_chat_completions,
+)
+from thegent.cliproxy_request_transform import (
     build_openrouter_passthrough_body as _build_openrouter_passthrough_body,
 )
-from thegent.cliproxy_stream_state import ResponsesStreamState
-from thegent.utils.routing_impl.cost_calculator import (
-    calculate_cost_from_response,
-    format_cost_header_value,
-)
+from thegent.config import ThegentSettings
 
 _log = logging.getLogger(__name__)
 
@@ -169,7 +110,6 @@ def _responses_to_chat_completions(body: dict) -> dict:
     NOTE: This is the historical shim-level name; callers expect the legacy
     message-collapse behaviour on top of the upstream request_transform.
     """
-    import orjson as json
 
     collapse_text_content: list[bool] = []
     input_messages = body.get("input")
@@ -197,17 +137,16 @@ def _responses_to_chat_completions(body: dict) -> dict:
             if not isinstance(message, dict):
                 continue
             content = message.get("content")
-            if isinstance(content, list):
-                if (
-                    idx < len(collapse_text_content)
-                    and collapse_text_content[idx]
-                    and len(content) == 1
-                    and isinstance(content[0], dict)
-                    and content[0].get("type") == "text"
-                    and "text" in content[0]
-                    and len(content[0]) == 2
-                ):
-                    message["content"] = content[0].get("text", "")
+            if isinstance(content, list) and (
+                idx < len(collapse_text_content)
+                and collapse_text_content[idx]
+                and len(content) == 1
+                and isinstance(content[0], dict)
+                and content[0].get("type") == "text"
+                and "text" in content[0]
+                and len(content[0]) == 2
+            ):
+                message["content"] = content[0].get("text", "")
             normalized.append(message)
         transformed["messages"] = normalized
     return transformed

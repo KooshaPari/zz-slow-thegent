@@ -12,7 +12,7 @@ Enhanced config management.
 
 ### Methods
 
-#### ConfigEnhance.__init__
+#### ConfigEnhance.**init**
 
 ```python
 __init__(self: Any)

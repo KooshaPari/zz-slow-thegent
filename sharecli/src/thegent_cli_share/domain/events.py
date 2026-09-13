@@ -6,14 +6,14 @@ Event Sourcing Principles:
 - Reconstruct state by replaying events
 """
 
-from datetime import datetime
-from enum import Enum
-from typing import Optional
 from dataclasses import dataclass
+from datetime import datetime
+from enum import StrEnum
 
 
-class EventType(str, Enum):
+class EventType(StrEnum):
     """Event type enumeration."""
+
     LOCK_ACQUIRED = "lock_acquired"
     LOCK_RELEASED = "lock_released"
     LOCK_COMPLETED = "lock_completed"
@@ -32,38 +32,42 @@ class EventType(str, Enum):
 @dataclass(frozen=True)
 class CliShareEvent:
     """Base event for CLI share operations."""
+
     event_type: EventType
     timestamp: datetime
     cmd_hash: str
-    pid: Optional[int] = None
-    metadata: Optional[dict] = None
+    pid: int | None = None
+    metadata: dict | None = None
 
 
 @dataclass(frozen=True)
 class TaskEvent:
     """Event for task queue operations."""
+
     event_type: EventType
     timestamp: datetime
     task_id: str
-    metadata: Optional[dict] = None
+    metadata: dict | None = None
 
 
 @dataclass(frozen=True)
 class MergeEvent:
     """Event for merge operations."""
+
     event_type: EventType
     timestamp: datetime
     base_commit: str
     branch_name: str
     conflict_count: int = 0
-    metadata: Optional[dict] = None
+    metadata: dict | None = None
 
 
 @dataclass(frozen=True)
 class CoordinationEvent:
     """Event for coordination operations."""
+
     event_type: EventType
     timestamp: datetime
     resource_id: str
     owner_id: str
-    metadata: Optional[dict] = None
+    metadata: dict | None = None

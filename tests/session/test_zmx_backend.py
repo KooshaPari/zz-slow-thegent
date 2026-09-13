@@ -7,10 +7,10 @@ All subprocess calls are mocked — no zmx binary required.
 
 from __future__ import annotations
 
-import orjson as json
 import subprocess
 from unittest.mock import MagicMock, patch
 
+import orjson as json
 import pytest
 
 from thegent.session.zmx_backend import (
@@ -184,8 +184,18 @@ class TestZmxBackendList:
             returncode=0,
             stdout=json.dumps(
                 [
-                    {"name": "agent-1", "state": "running", "pid": 1234, "cmd": "claude"},
-                    {"name": "agent-2", "state": "detached", "pid": 5678, "cmd": "codex"},
+                    {
+                        "name": "agent-1",
+                        "state": "running",
+                        "pid": 1234,
+                        "cmd": "claude",
+                    },
+                    {
+                        "name": "agent-2",
+                        "state": "detached",
+                        "pid": 5678,
+                        "cmd": "codex",
+                    },
                 ]
             ).decode(),
             stderr="",
@@ -261,7 +271,10 @@ class TestZmxBackendKill:
         call_args = mock_run.call_args[0][0]
         assert call_args == ["zmx", "kill", "agent-1"]
 
-    @patch("subprocess.run", return_value=MagicMock(returncode=1, stdout="", stderr="not found"))
+    @patch(
+        "subprocess.run",
+        return_value=MagicMock(returncode=1, stdout="", stderr="not found"),
+    )
     def test_kill_not_found_returns_false(self, _run: MagicMock, backend: ZmxBackend) -> None:
         result = backend.kill("nonexistent")
         assert result is False
@@ -290,7 +303,10 @@ class TestZmxBackendCapture:
         call_args = mock_run.call_args[0][0]
         assert call_args == ["zmx", "capture", "agent-1", "--lines", "50"]
 
-    @patch("subprocess.run", return_value=MagicMock(returncode=1, stdout="", stderr="not found"))
+    @patch(
+        "subprocess.run",
+        return_value=MagicMock(returncode=1, stdout="", stderr="not found"),
+    )
     def test_capture_failure_returns_empty(self, _run: MagicMock, backend: ZmxBackend) -> None:
         content = backend.capture("missing", last_lines=50)
         assert content == ""
@@ -356,28 +372,32 @@ class TestResolveSessionBackend:
 
     def test_backend_zmx_unavailable_returns_none(self) -> None:
         with patch(
-            "thegent.session.zmx_backend.ZmxBackend.available", new_callable=lambda: property(lambda self: False)
+            "thegent.session.zmx_backend.ZmxBackend.available",
+            new_callable=lambda: property(lambda self: False),
         ):
             result = resolve_session_backend("zmx")
         assert result is None
 
     def test_backend_zmx_available_returns_backend(self) -> None:
         with patch(
-            "thegent.session.zmx_backend.ZmxBackend.available", new_callable=lambda: property(lambda self: True)
+            "thegent.session.zmx_backend.ZmxBackend.available",
+            new_callable=lambda: property(lambda self: True),
         ):
             result = resolve_session_backend("zmx")
         assert isinstance(result, ZmxBackend)
 
     def test_backend_auto_zmx_available(self) -> None:
         with patch(
-            "thegent.session.zmx_backend.ZmxBackend.available", new_callable=lambda: property(lambda self: True)
+            "thegent.session.zmx_backend.ZmxBackend.available",
+            new_callable=lambda: property(lambda self: True),
         ):
             result = resolve_session_backend("auto")
         assert isinstance(result, ZmxBackend)
 
     def test_backend_auto_zmx_unavailable_returns_none(self) -> None:
         with patch(
-            "thegent.session.zmx_backend.ZmxBackend.available", new_callable=lambda: property(lambda self: False)
+            "thegent.session.zmx_backend.ZmxBackend.available",
+            new_callable=lambda: property(lambda self: False),
         ):
             result = resolve_session_backend("auto")
         assert result is None

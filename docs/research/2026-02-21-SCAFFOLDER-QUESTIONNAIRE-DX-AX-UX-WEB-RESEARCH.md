@@ -17,19 +17,19 @@ Define a high-signal project initialization questionnaire and instruction templa
 ## Primary Sources
 
 1. Copier configuration and question model (`choices`, `multiselect`, `when`, `validator`, defaults):
-https://copier.readthedocs.io/en/stable/configuring/
+   https://copier.readthedocs.io/en/stable/configuring/
 2. Cookiecutter prompt customization patterns (human-readable prompts):
-https://cookiecutter.readthedocs.io/en/stable/advanced/human_readable_prompts.html
+   https://cookiecutter.readthedocs.io/en/stable/advanced/human_readable_prompts.html
 3. Backstage software template parameter modeling (structured parameters, composition):
-https://backstage.io/docs/features/software-templates/writing-templates/
+   https://backstage.io/docs/features/software-templates/writing-templates/
 4. CLI design baseline (human-first command/interface design):
-https://clig.dev/
+   https://clig.dev/
 5. GOV.UK guidance for asking for information (progressive disclosure, clarity):
-https://design-system.service.gov.uk/patterns/
+   https://design-system.service.gov.uk/patterns/
 6. USWDS form guidance (label/help/error clarity):
-https://designsystem.digital.gov/components/form/
+   https://designsystem.digital.gov/components/form/
 7. Twelve-Factor config principle (config in environment, deploy portability):
-https://12factor.net/config
+   https://12factor.net/config
 
 ## Findings Applied
 

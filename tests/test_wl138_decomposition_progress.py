@@ -1,9 +1,10 @@
 from __future__ import annotations
 
-import orjson as json
 import subprocess
 import sys
 from pathlib import Path
+
+import orjson as json
 
 
 def _repo_root() -> Path:
@@ -63,7 +64,9 @@ def test_wl138_progress_script_emits_json(tmp_path: Path) -> None:
     assert rust_checkpoint["execution_gates"][0]["status"] == "skipped"
 
 
-def test_build_progress_fails_checkpoint_when_execution_gate_fails(tmp_path: Path) -> None:
+def test_build_progress_fails_checkpoint_when_execution_gate_fails(
+    tmp_path: Path,
+) -> None:
     repo_root = _repo_root()
     single_checkpoint = tmp_path / "checkpoint.json"
     output = tmp_path / "single_checkpoint_result.json"

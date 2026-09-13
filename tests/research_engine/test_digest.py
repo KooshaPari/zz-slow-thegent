@@ -2,7 +2,7 @@
 # @trace FR-RE-011
 """DigestGenerator — markdown digest rendering tests."""
 
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from pathlib import Path
 
 import pytest
@@ -24,7 +24,7 @@ def populated_store(tmp_path: Path) -> ResearchStore:
                 summary=f"Summary of item {i}",
                 score=100 - i * 10,
                 tags=["python", "mcp"],
-                fetched_at=datetime.now(timezone.utc),
+                fetched_at=datetime.now(UTC),
                 relevance=0.9 - i * 0.1,
             )
         )

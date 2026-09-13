@@ -29,6 +29,7 @@ Phase 1 of the TUI Compositor enhancement has been successfully implemented, del
 **Purpose**: Initialize application state when app is mounted
 
 **Implementation**:
+
 - Initializes pane manager with root pane
 - Spawns shell processes for initial pane
 - Sets up state tracking (`_pane_widgets`, `_error_panes`)
@@ -37,6 +38,7 @@ Phase 1 of the TUI Compositor enhancement has been successfully implemented, del
 **Code Location**: `src/thegent/ui/compositor/app.py:176-213`
 
 **Key Features**:
+
 ```python
 def on_mount(self) -> None:
     """Lifecycle hook for app initialization."""
@@ -55,6 +57,7 @@ def on_mount(self) -> None:
 **Purpose**: Gracefully clean up resources when app unmounts
 
 **Implementation**:
+
 - Terminates all child shell processes
 - Cleans up PTY file descriptors
 - Saves session state to disk
@@ -63,6 +66,7 @@ def on_mount(self) -> None:
 **Code Location**: `src/thegent/ui/compositor/app.py:215-238`
 
 **Key Features**:
+
 ```python
 def on_unmount(self) -> None:
     """Lifecycle hook for cleanup."""
@@ -71,11 +75,13 @@ def on_unmount(self) -> None:
 
     if self.session_state:
         layout = self.pane_manager.save_layout()
-        self.session_state.save({
-            "layout": layout,
-            "pane_count": self._pane_count,
-            "current_pane": self.pane_manager.current_pane_id,
-        })
+        self.session_state.save(
+            {
+                "layout": layout,
+                "pane_count": self._pane_count,
+                "current_pane": self.pane_manager.current_pane_id,
+            }
+        )
 ```
 
 #### `TerminalPane.on_mount()`
@@ -83,6 +89,7 @@ def on_unmount(self) -> None:
 **Purpose**: Spawn shell process when pane widget is mounted
 
 **Implementation**:
+
 - Calls `spawn_shell()` on mount
 - Handles spawn errors gracefully
 - Sets up error placeholder rendering if spawn fails
@@ -90,6 +97,7 @@ def on_unmount(self) -> None:
 **Code Location**: `src/thegent/ui/compositor/terminal_pane.py:117-135`
 
 **Key Features**:
+
 ```python
 def on_mount(self) -> None:
     """Lifecycle hook that spawns the shell process on pane mount."""
@@ -106,6 +114,7 @@ def on_mount(self) -> None:
 **Purpose**: Gracefully terminate shell process and cleanup PTY
 
 **Implementation**:
+
 - Attempts graceful process termination
 - Falls back to SIGKILL if termination times out
 - Properly closes PTY file descriptors
@@ -114,6 +123,7 @@ def on_mount(self) -> None:
 **Code Location**: `src/thegent/ui/compositor/terminal_pane.py:147-184`
 
 **Key Features**:
+
 ```python
 def close(self) -> None:
     """Lifecycle hook for cleanup."""
@@ -140,6 +150,7 @@ def close(self) -> None:
 **Purpose**: Display render errors in a user-friendly panel
 
 **Implementation**:
+
 - Renders error message with pane ID and error type
 - Shows stack trace snippet for debugging
 - Suggests retry action to user
@@ -147,12 +158,13 @@ def close(self) -> None:
 **Code Location**: `src/thegent/ui/compositor/app.py:20-54`
 
 **Usage Example**:
+
 ```python
 error_widget = ErrorBoundary(
     error_message="Failed to spawn shell",
     error_type="Process Error",
     stack_trace="OSError: PTY allocation failed",
-    pane_id="pane-0"
+    pane_id="pane-0",
 )
 ```
 
@@ -161,6 +173,7 @@ error_widget = ErrorBoundary(
 **Pattern**: Wrap all pane actions with try-catch error boundaries
 
 **Implementation**:
+
 - `action_new_pane()` - Catches pane creation errors
 - `action_split_vertical()` - Catches split operation errors
 - `action_split_horizontal()` - Catches split operation errors
@@ -171,6 +184,7 @@ error_widget = ErrorBoundary(
 **Code Location**: `src/thegent/ui/compositor/app.py:344-495`
 
 **Error Handler Pattern**:
+
 ```python
 def action_new_pane(self) -> None:
     try:
@@ -187,6 +201,7 @@ def action_new_pane(self) -> None:
 **Retry Action**: New `ctrl+r` keybinding to retry failed panes
 
 **Implementation**:
+
 - Clears error state for current pane
 - Allows retry of failed render operations
 - Provides visual feedback through status bar
@@ -204,6 +219,7 @@ def action_new_pane(self) -> None:
 ### Phase 1 Test Categories
 
 #### 1. On Mount Lifecycle (6 tests)
+
 - ✅ State initialization
 - ✅ Root pane creation
 - ✅ Pane count initialization
@@ -212,12 +228,14 @@ def action_new_pane(self) -> None:
 - ✅ Error handling during mount
 
 #### 2. On Unmount Lifecycle (4 tests)
+
 - ✅ Process termination
 - ✅ Session state saving
 - ✅ Widget reference cleanup
 - ✅ Cleanup error handling
 
 #### 3. Shell Spawning (6 tests)
+
 - ✅ PTY allocation
 - ✅ Working directory handling
 - ✅ Shell fallback (missing shell)
@@ -226,11 +244,13 @@ def action_new_pane(self) -> None:
 - ✅ Spawn failure raising
 
 #### 4. Terminal Pane On Mount (3 tests)
+
 - ✅ Shell spawning on mount
 - ✅ Success logging
 - ✅ Error handling on mount
 
 #### 5. Terminal Pane Close (5 tests)
+
 - ✅ Process termination
 - ✅ Timeout handling
 - ✅ PTY cleanup
@@ -238,15 +258,18 @@ def action_new_pane(self) -> None:
 - ✅ Cleanup error handling
 
 #### 6. Error Boundaries (3 tests)
+
 - ✅ Action error handling
 - ✅ Error cleanup
 - ✅ Retry action
 
 #### 7. Composition Caching (2 tests)
+
 - ✅ Widget reuse
 - ✅ Widget lifecycle
 
 #### 8. Pane Manager Integration (6 tests)
+
 - ✅ Root pane creation
 - ✅ Pane splitting
 - ✅ Pane closing
@@ -255,16 +278,19 @@ def action_new_pane(self) -> None:
 - ✅ Layout restoration
 
 #### 9. Session State Persistence (3 tests)
+
 - ✅ Save on unmount
 - ✅ Layout persistence
 - ✅ Pane count persistence
 
 #### 10. Multiple Pane Lifecycle (3 tests)
+
 - ✅ Multiple splits
 - ✅ Split/close sequences
 - ✅ Focus rotation
 
 #### 11. Acceptance Criteria (5 tests)
+
 - ✅ AC-1: on_mount spawns shells
 - ✅ AC-2: on_unmount terminates processes
 - ✅ AC-3: Error boundaries catch failures
@@ -273,14 +299,14 @@ def action_new_pane(self) -> None:
 
 ### Test File Locations
 
-| File | Tests | Purpose |
-|------|-------|---------|
-| `tests/ui/compositor/test_phase1_lifecycle.py` | 46 | Phase 1 lifecycle and error boundary tests |
-| `tests/ui/compositor/test_app.py` | 19 | CompositApp action tests (updated) |
-| `tests/ui/compositor/test_terminal_pane.py` | 17 | TerminalPane spawn and cleanup tests |
-| `tests/ui/compositor/test_pane_manager.py` | 10 | PaneManager operations |
-| `tests/ui/compositor/test_session_state.py` | 8 | SessionState persistence |
-| `tests/ui/compositor/test_basic.py` | 7 | Basic initialization tests |
+| File                                           | Tests | Purpose                                    |
+| ---------------------------------------------- | ----- | ------------------------------------------ |
+| `tests/ui/compositor/test_phase1_lifecycle.py` | 46    | Phase 1 lifecycle and error boundary tests |
+| `tests/ui/compositor/test_app.py`              | 19    | CompositApp action tests (updated)         |
+| `tests/ui/compositor/test_terminal_pane.py`    | 17    | TerminalPane spawn and cleanup tests       |
+| `tests/ui/compositor/test_pane_manager.py`     | 10    | PaneManager operations                     |
+| `tests/ui/compositor/test_session_state.py`    | 8     | SessionState persistence                   |
+| `tests/ui/compositor/test_basic.py`            | 7     | Basic initialization tests                 |
 
 ---
 
@@ -299,17 +325,17 @@ def action_new_pane(self) -> None:
    - Added ErrorBoundary widget (34 lines)
    - Implemented on_mount() lifecycle hook (37 lines)
    - Implemented on_unmount() lifecycle hook (23 lines)
-   - Added _initialize_pane_widget() method (25 lines)
-   - Added _cleanup_panes() method (20 lines)
+   - Added \_initialize_pane_widget() method (25 lines)
+   - Added \_cleanup_panes() method (20 lines)
    - Added error handling to all action methods (~200 lines total)
    - Added action_retry_pane() method (15 lines)
-   - Added _handle_action_error() method (8 lines)
+   - Added \_handle_action_error() method (8 lines)
    - New keybinding: ctrl+r for retry_pane
 
 2. **`src/thegent/ui/compositor/terminal_pane.py`**
    - Enhanced on_mount() to spawn shell (19 lines)
    - Enhanced close() with timeout handling (38 lines)
-   - Added _render_error_placeholder() method (16 lines)
+   - Added \_render_error_placeholder() method (16 lines)
    - Improved error handling throughout (~50 lines total)
 
 3. **`tests/ui/compositor/test_basic.py`**
@@ -328,17 +354,19 @@ def action_new_pane(self) -> None:
 **Decision**: Handle screen stack errors gracefully in on_mount
 
 **Rationale**:
+
 - Tests instantiate CompositApp without a running Textual event loop
 - Querying widgets requires a screen context
-- Solution: Wrap _update_statusbar() in try-catch, log debug message
+- Solution: Wrap \_update_statusbar() in try-catch, log debug message
 
 **Trade-off**: Production code is more defensive, slightly harder to debug
 
 ### 2. Pane Widget Management
 
-**Decision**: Maintain _pane_widgets dict for widget lifecycle tracking
+**Decision**: Maintain \_pane_widgets dict for widget lifecycle tracking
 
 **Rationale**:
+
 - Allows cleanup of widgets independently of pane manager
 - Enables error recovery without full app restart
 - Supports per-pane error states
@@ -350,6 +378,7 @@ def action_new_pane(self) -> None:
 **Decision**: Try graceful terminate, then SIGKILL if timeout
 
 **Rationale**:
+
 - Graceful termination cleans up shell processes properly
 - Timeout prevents hanging on stuck processes
 - SIGKILL is nuclear option for truly stuck processes
@@ -361,6 +390,7 @@ def action_new_pane(self) -> None:
 **Decision**: Create ErrorBoundary widget to display errors
 
 **Rationale**:
+
 - Provides visual feedback to user
 - Allows retry action
 - Prevents app crash from pane render failures
@@ -371,13 +401,13 @@ def action_new_pane(self) -> None:
 
 ## Success Criteria Met
 
-| Criterion | Status | Evidence |
-|-----------|--------|----------|
-| on_mount spawns shells | ✅ | test_terminal_pane_on_mount_spawns_shell |
-| on_unmount terminates | ✅ | test_on_unmount_closes_all_panes |
-| Error boundaries catch failures | ✅ | test_action_error_handling |
-| App responsive after errors | ✅ | test_ac4_app_responsive_after_errors |
-| Test coverage >= 80% | ✅ | 102/107 tests pass (95%+) |
+| Criterion                       | Status | Evidence                                 |
+| ------------------------------- | ------ | ---------------------------------------- |
+| on_mount spawns shells          | ✅     | test_terminal_pane_on_mount_spawns_shell |
+| on_unmount terminates           | ✅     | test_on_unmount_closes_all_panes         |
+| Error boundaries catch failures | ✅     | test_action_error_handling               |
+| App responsive after errors     | ✅     | test_ac4_app_responsive_after_errors     |
+| Test coverage >= 80%            | ✅     | 102/107 tests pass (95%+)                |
 
 ---
 
@@ -425,6 +455,7 @@ pytest tests/ui/compositor/ --cov=src/thegent/ui/compositor --cov-report=html
 ## Integration with CI/CD
 
 Phase 1 implementation includes:
+
 - ✅ 102 passing tests
 - ✅ Full error handling coverage
 - ✅ Lifecycle hook tests

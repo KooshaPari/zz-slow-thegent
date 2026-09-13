@@ -1,9 +1,10 @@
 from __future__ import annotations
 
-import orjson as json
 import subprocess
 import sys
 from pathlib import Path
+
+import orjson as json
 
 
 def test_validate_quality_control_plane_script() -> None:
@@ -41,7 +42,10 @@ def test_quality_control_plane_report_script(tmp_path: Path) -> None:
                     "github_code_scanning": {"enabled": True, "sarif_required": True},
                     "sonar_bridge": {"enabled": False, "mode": "optional_downstream"},
                 },
-                "required_artifacts": [str(artifact).decode(), str(tmp_path / "missing.json")],
+                "required_artifacts": [
+                    str(artifact).decode(),
+                    str(tmp_path / "missing.json"),
+                ],
                 "gates": {
                     "allow_missing_artifacts_in_pr": True,
                     "require_contract_validation_in_nightly": True,

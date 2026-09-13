@@ -272,7 +272,12 @@ def test_migration_cmd_json_shape(mod_name: str) -> None:
     ``{"compatible": bool, "allowed": bool, "contract": str, "version": str}``.
     """
     mod = importlib.import_module(mod_name)
-    output = _capture_stdout(mod.migration_cmd, contract_id="csm", version="contract-schema-v1", format="json")
+    output = _capture_stdout(
+        mod.migration_cmd,
+        contract_id="csm",
+        version="contract-schema-v1",
+        format="json",
+    )
     parsed = json.loads(output)
     assert isinstance(parsed, dict)
     for key in ("compatible", "allowed", "contract", "version"):
@@ -347,7 +352,13 @@ def test_contracts_conformance_cmd_json_shape() -> None:
         "failed": 0,
         "total": 3,
         "results": [
-            {"name": "t1", "provider": "claude", "success": True, "confidence": 0.9, "issues": []},
+            {
+                "name": "t1",
+                "provider": "claude",
+                "success": True,
+                "confidence": 0.9,
+                "issues": [],
+            },
         ],
         "drift_issues": [],
     }
@@ -401,7 +412,13 @@ def test_contracts_conformance_cmd_renders_table() -> None:
         "failed": 0,
         "total": 3,
         "results": [
-            {"name": "t1", "provider": "claude", "success": True, "confidence": 0.9, "issues": []},
+            {
+                "name": "t1",
+                "provider": "claude",
+                "success": True,
+                "confidence": 0.9,
+                "issues": [],
+            },
         ],
         "drift_issues": [],
     }

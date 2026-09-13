@@ -10,11 +10,13 @@
 ## Executive Summary: What Changed
 
 **Problem with Previous Analysis:**
+
 - Previous frontier used **SWE-Bench** (software engineering tasks — file operations, debugging, refactoring)
 - thegent is fundamentally a **terminal/system agent** (MCP server, hooks, CLI orchestration)
 - SWE-Bench scores are NOT representative of thegent's actual workload (agent routing, lifecycle hooks, policy enforcement)
 
 **Solution:**
+
 - Use **Terminal Bench 2.0** — benchmark for system/terminal task performance
 - Terminal Bench 2.0 tests CLI tool usage, environment awareness, multi-step shell scripting, system integration
 - **Much more relevant** for thegent than SWE-Bench
@@ -28,18 +30,19 @@ GPT-5.3-Codex now enters the frontier (64.7% on TB2.0 vs 56.8% SWE-Bench). The h
 
 ### 1.1 Corrected Terminal Bench 2.0 Scores
 
-| Model | Provider | TB2.0 Score | SWE-Bench (ref) | Cost/M | Speed | TB2.0 Rank |
-|-------|----------|------------|-----------------|--------|-------|-----------|
-| **GPT-5.3-Codex** | OpenAI | **64.7%** ← TOP | 56.8% | $1.25 | fast | 1 |
-| **Claude Opus 4.6** | Anthropic | 62.9% | 80.8% | $17.50 | slow | 2 |
-| **Codex-Spark** | OpenAI | 58.4% | ~50% | ??? | very-fast | 3 |
-| **GLM-5** | Alibaba | 56.2% | 92.7% (AIME) | $2.60 | slow | 4 |
-| **Gemini 3 Flash** | Google | 51.7% | 78.0% | $1.50 | ultra-fast | 5 |
-| **MiniMax M2.5** | MiniMax | 51.7% | 80.2% | $0.79 | very-fast | 5 (tie) |
-| **Claude Sonnet 4.5** | Anthropic | 42.8% | 77.2% | $10.50 | moderate | 7 |
-| **Claude Haiku 4.5** | Anthropic | 28.3% | 73.3% | $3.50 | fast | 8 |
+| Model                 | Provider  | TB2.0 Score     | SWE-Bench (ref) | Cost/M | Speed      | TB2.0 Rank |
+| --------------------- | --------- | --------------- | --------------- | ------ | ---------- | ---------- |
+| **GPT-5.3-Codex**     | OpenAI    | **64.7%** ← TOP | 56.8%           | $1.25  | fast       | 1          |
+| **Claude Opus 4.6**   | Anthropic | 62.9%           | 80.8%           | $17.50 | slow       | 2          |
+| **Codex-Spark**       | OpenAI    | 58.4%           | ~50%            | ???    | very-fast  | 3          |
+| **GLM-5**             | Alibaba   | 56.2%           | 92.7% (AIME)    | $2.60  | slow       | 4          |
+| **Gemini 3 Flash**    | Google    | 51.7%           | 78.0%           | $1.50  | ultra-fast | 5          |
+| **MiniMax M2.5**      | MiniMax   | 51.7%           | 80.2%           | $0.79  | very-fast  | 5 (tie)    |
+| **Claude Sonnet 4.5** | Anthropic | 42.8%           | 77.2%           | $10.50 | moderate   | 7          |
+| **Claude Haiku 4.5**  | Anthropic | 28.3%           | 73.3%           | $3.50  | fast       | 8          |
 
 **Key Observations:**
+
 1. **MiniMax M2.5 drops from 80.2% → 51.7%** — no longer the "best value"
 2. **GPT-5.3-Codex rises to 64.7% (top)** — previously rejected for poor quality, now competitive
 3. **Opus 4.6 still strong at 62.9%** but now only 2.0% ahead of Codex while costing 14x more
@@ -47,6 +50,7 @@ GPT-5.3-Codex now enters the frontier (64.7% on TB2.0 vs 56.8% SWE-Bench). The h
 5. **Gemini 3 Flash & MiniMax M2.5 tie** at 51.7% — but Gemini is slower, more expensive
 
 **Interpretation:**
+
 - SWE-Bench rewards general coding ability (Claude's strength)
 - Terminal Bench 2.0 rewards CLI tool usage, shell scripting, environment awareness
 - Codex is specialized for code-at-terminal (still weak, but relatively stronger)
@@ -62,6 +66,7 @@ GPT-5.3-Codex now enters the frontier (64.7% on TB2.0 vs 56.8% SWE-Bench). The h
 **Missing:** Cost/M
 
 **Estimation Strategy:**
+
 - OpenAI pricing pattern: Codex $1.25/M; Spark is "cheaper + faster" variant
 - Typical: Fast models cost 20-40% more than cheapest variants
 - **Reasonable estimate: $0.95-1.10/M**
@@ -71,6 +76,7 @@ GPT-5.3-Codex now enters the frontier (64.7% on TB2.0 vs 56.8% SWE-Bench). The h
 
 **Given:** "very-fast"
 **Map to speed score:**
+
 - Gemini 3 Flash: "ultra-fast" (100 tokens/sec) = 218 tok/s observed
 - Codex-Spark: "very-fast" (150 tok/s estimated)
 - Speed score: 85 (on 0-100 scale)
@@ -91,6 +97,7 @@ GPT-5.3-Codex now enters the frontier (64.7% on TB2.0 vs 56.8% SWE-Bench). The h
 ### 3.1 Step 1: Check Each Model Against All Others
 
 #### Model 1: GPT-5.3-Codex
+
 ```
 GPT-5.3-Codex: 64.7% (TB2.0), cost=$1.25, speed=fast (70)
 
@@ -111,6 +118,7 @@ VERDICT: ON FRONTIER ✓ (no model dominates)
 ```
 
 #### Model 2: Claude Opus 4.6
+
 ```
 Claude Opus 4.6: 62.9% (TB2.0), cost=$17.50, speed=slow (30)
 
@@ -126,6 +134,7 @@ VERDICT: ON FRONTIER ✓ (trades cost+speed for top-2 quality)
 ```
 
 #### Model 3: Codex-Spark
+
 ```
 Codex-Spark: 58.4% (TB2.0), cost=$1.00 (est), speed=very-fast (85)
 
@@ -147,6 +156,7 @@ VERDICT: ON FRONTIER ✓ (dominates GLM-5, not dominated by others)
 ```
 
 #### Model 4: GLM-5
+
 ```
 GLM-5: 56.2% (TB2.0), cost=$2.60, speed=slow (30)
 
@@ -155,6 +165,7 @@ VERDICT: OFF FRONTIER ✗ (Codex-Spark strictly dominates)
 ```
 
 #### Model 5: Gemini 3 Flash
+
 ```
 Gemini 3 Flash: 51.7% (TB2.0), cost=$1.50, speed=ultra-fast (100)
 
@@ -168,6 +179,7 @@ VERDICT: OFF FRONTIER ✗ (MiniMax dominates on cost, same quality)
 ```
 
 #### Model 6: MiniMax M2.5
+
 ```
 MiniMax M2.5: 51.7% (TB2.0), cost=$0.79, speed=very-fast (85)
 
@@ -189,6 +201,7 @@ VERDICT: ON FRONTIER ✓ (lowest cost, ties with Gemini on quality)
 ```
 
 #### Model 7: Claude Sonnet 4.5
+
 ```
 Claude Sonnet 4.5: 42.8% (TB2.0), cost=$10.50, speed=moderate (50)
 
@@ -200,6 +213,7 @@ VERDICT: OFF FRONTIER ✗ (dominated by Codex)
 ```
 
 #### Model 8: Claude Haiku 4.5
+
 ```
 Claude Haiku 4.5: 28.3% (TB2.0), cost=$3.50, speed=fast (70)
 
@@ -209,13 +223,13 @@ VERDICT: OFF FRONTIER ✗ (dominated by MiniMax)
 
 ### 3.2 Pareto Frontier (Final) — Terminal Bench 2.0
 
-| Rank | Model | Quality (TB2.0) | Cost/M | Speed | Dominates | Dominated By | Status |
-|------|-------|-----------------|--------|-------|-----------|------------|--------|
-| 1 | Qwen3.5 Plus 02-15 (QwenCode) | ~52% (est) | $0 (free) | fast (70) | MiniMax (cost) | None | ← FREE TIER |
-| 2 | MiniMax M2.5 | 51.7% | $0.79 | very-fast (85) | Gemini Flash, Haiku, Sonnet | QwenCode (when free) | ← CHEAPEST PAID |
-| 3 | Codex-Spark | 58.4% | $1.00 | very-fast (85) | GLM-5 | None | ← SPEED TIER |
-| 4 | GPT-5.3-Codex | 64.7% | $1.25 | fast (70) | GLM-5, Sonnet, Haiku | None | ← QUALITY TIER |
-| 5 | Claude Opus 4.6 | 62.9% | $17.50 | slow (30) | All except Codex | None | ← PREMIUM TIER |
+| Rank | Model                         | Quality (TB2.0) | Cost/M    | Speed          | Dominates                   | Dominated By         | Status          |
+| ---- | ----------------------------- | --------------- | --------- | -------------- | --------------------------- | -------------------- | --------------- |
+| 1    | Qwen3.5 Plus 02-15 (QwenCode) | ~52% (est)      | $0 (free) | fast (70)      | MiniMax (cost)              | None                 | ← FREE TIER     |
+| 2    | MiniMax M2.5                  | 51.7%           | $0.79     | very-fast (85) | Gemini Flash, Haiku, Sonnet | QwenCode (when free) | ← CHEAPEST PAID |
+| 3    | Codex-Spark                   | 58.4%           | $1.00     | very-fast (85) | GLM-5                       | None                 | ← SPEED TIER    |
+| 4    | GPT-5.3-Codex                 | 64.7%           | $1.25     | fast (70)      | GLM-5, Sonnet, Haiku        | None                 | ← QUALITY TIER  |
+| 5    | Claude Opus 4.6               | 62.9%           | $17.50    | slow (30)      | All except Codex            | None                 | ← PREMIUM TIER  |
 
 **Note:** Qwen3.5 Plus 02-15 enters via OpenRouter (~$0.40–0.80/M) or QwenCode free tier. When free, it dominates MiniMax on cost; when paid, similar to MiniMax. See `docs/research/QWEN3.5_PLUS_OPENROUTER_PARETO_RESEARCH.md`.
 
@@ -227,18 +241,19 @@ VERDICT: OFF FRONTIER ✗ (dominated by MiniMax)
 
 ### 4.1 Cost per 1% Quality (Efficiency)
 
-| Model | Quality | Cost | Cost per 1% |
-|-------|---------|------|------------|
-| MiniMax M2.5 | 51.7% | $0.79 | $0.0153 |
-| Codex-Spark | 58.4% | $1.00 | $0.0171 |
-| GPT-5.3-Codex | 64.7% | $1.25 | $0.0193 |
-| Claude Opus 4.6 | 62.9% | $17.50 | $0.2779 |
+| Model           | Quality | Cost   | Cost per 1% |
+| --------------- | ------- | ------ | ----------- |
+| MiniMax M2.5    | 51.7%   | $0.79  | $0.0153     |
+| Codex-Spark     | 58.4%   | $1.00  | $0.0171     |
+| GPT-5.3-Codex   | 64.7%   | $1.25  | $0.0193     |
+| Claude Opus 4.6 | 62.9%   | $17.50 | $0.2779     |
 
 **Finding:** Opus is 18x more expensive per 1% quality than Codex.
 
 ### 4.2 Quality-Cost Trade-offs Between Frontier Models
 
 #### MiniMax M2.5 vs Codex-Spark
+
 ```
 Quality gap: 58.4% - 51.7% = +6.7 percentage points
 Cost difference: $1.00 - $0.79 = +$0.21 per million tokens
@@ -250,6 +265,7 @@ Decision: Is 6.7% quality worth $0.21/M additional cost?
 ```
 
 #### Codex-Spark vs GPT-5.3-Codex
+
 ```
 Quality gap: 64.7% - 58.4% = +6.3 percentage points
 Cost difference: $1.25 - $1.00 = +$0.25 per million tokens
@@ -265,6 +281,7 @@ Decision: For terminal tasks, speed matters
 ```
 
 #### GPT-5.3-Codex vs Claude Opus 4.6
+
 ```
 Quality gap: 62.9% - 64.7% = -1.8 percentage points (Opus wins)
 Cost difference: $17.50 - $1.25 = +$16.25 per million tokens
@@ -320,27 +337,29 @@ DOMINATED (✗):
 
 ### 5.1 What Terminal Bench 2.0 Tests (vs SWE-Bench)
 
-| Aspect | SWE-Bench | Terminal Bench 2.0 | Impact on thegent |
-|--------|-----------|-------------------|------------------|
-| **Task Type** | Code file edits, debugging, refactoring | CLI tool usage, shell scripting, environment awareness | Terminal Bench is better (thegent is CLI/MCP) |
-| **Context** | Python/JS in IDEs, integrated tooling | Bare terminal, piped commands, stdio | Terminal tasks dominate thegent (hooks, agents) |
-| **Model Strength** | Claude rewards verbose reasoning, context awareness | Codex rewards concise, tool-focused outputs | Codex excels at "what to run next" |
-| **Failure Mode** | Incomplete implementations, logic errors | Wrong tool invocation, bad env setup | Terminal tasks punish verbose reasoning |
-| **Claude Performance** | Haiku 73.3%, Opus 80.8% (excellent) | Haiku 28.3%, Opus 62.9% (poor) | Claude's strength is reasoning, not action |
-| **Codex Performance** | 56.8% (poor, outdated) | 64.7% (top), Spark 58.4% | Codex is optimized for terminal targets |
+| Aspect                 | SWE-Bench                                           | Terminal Bench 2.0                                     | Impact on thegent                               |
+| ---------------------- | --------------------------------------------------- | ------------------------------------------------------ | ----------------------------------------------- |
+| **Task Type**          | Code file edits, debugging, refactoring             | CLI tool usage, shell scripting, environment awareness | Terminal Bench is better (thegent is CLI/MCP)   |
+| **Context**            | Python/JS in IDEs, integrated tooling               | Bare terminal, piped commands, stdio                   | Terminal tasks dominate thegent (hooks, agents) |
+| **Model Strength**     | Claude rewards verbose reasoning, context awareness | Codex rewards concise, tool-focused outputs            | Codex excels at "what to run next"              |
+| **Failure Mode**       | Incomplete implementations, logic errors            | Wrong tool invocation, bad env setup                   | Terminal tasks punish verbose reasoning         |
+| **Claude Performance** | Haiku 73.3%, Opus 80.8% (excellent)                 | Haiku 28.3%, Opus 62.9% (poor)                         | Claude's strength is reasoning, not action      |
+| **Codex Performance**  | 56.8% (poor, outdated)                              | 64.7% (top), Spark 58.4%                               | Codex is optimized for terminal targets         |
 
 **Key Insight:** SWE-Bench rewards "understand the code + fix it." Terminal Bench 2.0 rewards "choose the right tool + run it correctly."
 
 ### 5.2 Why Claude Collapses on Terminal Tasks
 
 **Problem:**
+
 - Claude generates verbose explanations, reasoning steps, context
 - Terminal tasks penalize explanation text (wrong output)
 - Example: Task = "List all .py files in /src"
   - Claude: "I can see this is a Python project. Here are the steps... Let me first check if /src exists... [long explanation] ...then run `find /src -name '*.py'`"
-  - Codex: "find /src -name '*.py'"
+  - Codex: "find /src -name '\*.py'"
 
 **Result:**
+
 - Claude Haiku: 73.3% (SWE-Bench) → 28.3% (TB2.0) — 61% DROP
 - Claude Opus: 80.8% (SWE-Bench) → 62.9% (TB2.0) — 22% DROP
 - Codex: 56.8% (SWE-Bench) → 64.7% (TB2.0) — 13.6% GAIN
@@ -348,6 +367,7 @@ DOMINATED (✗):
 ### 5.3 Why This Matters for thegent
 
 thegent is fundamentally a **terminal/system agent**:
+
 - **MCP server** — speaks terminal protocol, runs tools
 - **Hooks** — bash scripts, environmental awareness
 - **Agents** — dispatch to CLI tools (git, python, npm, etc.)
@@ -374,6 +394,7 @@ Task Categories (cost/call estimate):
 ```
 
 #### FAST ($0.002/call max; 500 tokens)
+
 ```
 Use: MiniMax M2.5
 ├─ Cost: $0.79/M → $0.0004/call (fits budget)
@@ -388,6 +409,7 @@ Fallback: Codex-Spark
 ```
 
 #### NORMAL ($0.05/call max; 1.3K tokens)
+
 ```
 Use: GPT-5.3-Codex
 ├─ Cost: $1.25/M → $0.0016/call (well under budget)
@@ -408,6 +430,7 @@ Fallback 2: MiniMax M2.5
 ```
 
 #### COMPLEX ($0.15/call max; 3.8K tokens)
+
 ```
 Use: GPT-5.3-Codex
 ├─ Cost: $1.25/M → $0.0048/call (well under budget)
@@ -434,6 +457,7 @@ Alternative: MiniMax M2.5 (batch mode)
 ```
 
 #### HIGH_COMPLEX ($0.85/call max; mission-critical)
+
 ```
 Use: GPT-5.3-Codex
 ├─ Cost: $1.25/M → $0.0048/call for 3.8K tokens (fits budget easily)
@@ -456,16 +480,16 @@ Alternative: Codex-Spark (if latency critical)
 
 ### 6.2 Model Selection Matrix by Task Type
 
-| Task Type | Primary | Quality | Cost/Call | Speed | Rationale |
-|-----------|---------|---------|-----------|-------|-----------|
-| **CLI tool execution** | GPT-5.3-Codex | 64.7% | $0.001/K | fast | Designed for tool dispatch |
-| **Shell script generation** | GPT-5.3-Codex | 64.7% | $0.001/K | fast | Best at shell syntax |
-| **MCP tool invocation** | Codex-Spark | 58.4% | $0.0008/K | very-fast | Speed + reasonable quality |
-| **Hook orchestration** | GPT-5.3-Codex | 64.7% | $0.001/K | fast | Bash script quality matters |
-| **Agent routing decision** | MiniMax M2.5 | 51.7% | $0.0008/K | very-fast | Low-complexity decision, cheap |
-| **Policy enforcement logic** | GPT-5.3-Codex | 64.7% | $0.001/K | fast | Correctness matters |
-| **Governance cost calculation** | GPT-5.3-Codex | 64.7% | $0.001/K | fast | Arithmetic + logic |
-| **Spec verification** | Claude Opus 4.6 | 62.9% | $0.017/K | slow | Reasoning > terminal (exception) |
+| Task Type                       | Primary         | Quality | Cost/Call | Speed     | Rationale                        |
+| ------------------------------- | --------------- | ------- | --------- | --------- | -------------------------------- |
+| **CLI tool execution**          | GPT-5.3-Codex   | 64.7%   | $0.001/K  | fast      | Designed for tool dispatch       |
+| **Shell script generation**     | GPT-5.3-Codex   | 64.7%   | $0.001/K  | fast      | Best at shell syntax             |
+| **MCP tool invocation**         | Codex-Spark     | 58.4%   | $0.0008/K | very-fast | Speed + reasonable quality       |
+| **Hook orchestration**          | GPT-5.3-Codex   | 64.7%   | $0.001/K  | fast      | Bash script quality matters      |
+| **Agent routing decision**      | MiniMax M2.5    | 51.7%   | $0.0008/K | very-fast | Low-complexity decision, cheap   |
+| **Policy enforcement logic**    | GPT-5.3-Codex   | 64.7%   | $0.001/K  | fast      | Correctness matters              |
+| **Governance cost calculation** | GPT-5.3-Codex   | 64.7%   | $0.001/K  | fast      | Arithmetic + logic               |
+| **Spec verification**           | Claude Opus 4.6 | 62.9%   | $0.017/K  | slow      | Reasoning > terminal (exception) |
 
 ---
 
@@ -474,6 +498,7 @@ Alternative: Codex-Spark (if latency critical)
 ### 7.1 The Benchmark Mismatch
 
 **Previous (SWE-Bench):**
+
 - MiniMax M2.5: Rank 1 (80.2%, $0.79) — "best value"
 - Claude Opus 4.6: Rank 3 (80.8%, $17.50) — "premium tier"
 - Claude Haiku 4.5: Rank ? (73.3%, $3.50) — "good enough"
@@ -483,12 +508,14 @@ Alternative: Codex-Spark (if latency critical)
 **Problem:** SWE-Bench tests **code understanding + editing**, not **terminal task execution**.
 
 **Corrected (Terminal Bench 2.0):**
+
 - GPT-5.3-Codex: Rank 1 (64.7%, $1.25) — "quality tier"
 - Codex-Spark: Rank 2 (58.4%, $1.00) — "speed tier"
 - MiniMax M2.5: Rank 3 (51.7%, $0.79) — "budget tier"
 - Claude Opus 4.6: Rank 4 (62.9%, $17.50) — "premium (but dominated)"
 
 **Key Changes:**
+
 1. **Codex now on frontier** (was rejected for 56.8% SWE-Bench)
 2. **MiniMax drops to budget tier** (was primary tier)
 3. **Claude models drop significantly** (Opus loses 18%, Haiku loses 61%)
@@ -550,17 +577,18 @@ Alternative: Codex-Spark (if latency critical)
 
 **Assumption:** thegent monthly cost target ~$100-150
 
-| Category | Projected Calls | Avg Tokens | Primary Model | Estimated Cost | % of Budget |
-|----------|-----------------|-----------|---------------|----------------|------------|
-| **FAST** (high-volume routing) | 5000 | 500 | MiniMax M2.5 | $1.98 | 2% |
-| **NORMAL** (standard agent work) | 2000 | 1300 | GPT-5.3-Codex | $32.50 | 32% |
-| **COMPLEX** (multi-step hooks) | 500 | 3800 | GPT-5.3-Codex | $23.75 | 24% |
-| **HIGH_COMPLEX** (policy enforcement) | 100 | 5000 | GPT-5.3-Codex | $6.25 | 6% |
-| **Reasoning fallback** (rare) | 50 | 2000 | Claude Opus 4.6 | $1.75 | 2% |
-| **Contingency** | — | — | — | $35 | 35% |
-| **TOTAL** | **7650** | — | — | **$101.23** | **100%** |
+| Category                              | Projected Calls | Avg Tokens | Primary Model   | Estimated Cost | % of Budget |
+| ------------------------------------- | --------------- | ---------- | --------------- | -------------- | ----------- |
+| **FAST** (high-volume routing)        | 5000            | 500        | MiniMax M2.5    | $1.98          | 2%          |
+| **NORMAL** (standard agent work)      | 2000            | 1300       | GPT-5.3-Codex   | $32.50         | 32%         |
+| **COMPLEX** (multi-step hooks)        | 500             | 3800       | GPT-5.3-Codex   | $23.75         | 24%         |
+| **HIGH_COMPLEX** (policy enforcement) | 100             | 5000       | GPT-5.3-Codex   | $6.25          | 6%          |
+| **Reasoning fallback** (rare)         | 50              | 2000       | Claude Opus 4.6 | $1.75          | 2%          |
+| **Contingency**                       | —               | —          | —               | $35            | 35%         |
+| **TOTAL**                             | **7650**        | —          | —               | **$101.23**    | **100%**    |
 
 **Key Changes from Previous Allocation:**
+
 - **Previous:** MiniMax primary, Opus premium (based on SWE-Bench)
 - **Corrected:** GPT-5.3-Codex primary, MiniMax budget tier, Opus rare (based on Terminal Bench 2.0)
 - **Cost:** Essentially same ($101 vs prior estimates), but better quality for terminal tasks
@@ -656,6 +684,7 @@ FALLBACK_CHAIN = {
 ### 10.3 Documentation Updates
 
 **Files to update:**
+
 1. `/docs/reference/ROUTING_DECISION_MATRIX.md` — Use Terminal Bench 2.0
 2. `/docs/reference/MODEL_ROUTING_SUMMARY.md` — Promote Codex, demote Claude models for terminal work
 3. `/FUNCTIONAL_REQUIREMENTS.md` — Update any model performance SLAs
@@ -686,6 +715,7 @@ FALLBACK_CHAIN = {
 ### 11.3 Task-Specific Performance
 
 Terminal Bench 2.0 may not predict well for:
+
 - **MCP protocol compliance** (requires exact JSON format)
 - **Complex reasoning** (Opus still better, even with terminal penalty)
 - **Domain-specific work** (medical, financial, legal)
@@ -699,21 +729,21 @@ Mitigation: Run A/B tests before full rollout.
 
 ### 12.1 Pareto Frontier (Terminal Bench 2.0 — FINAL)
 
-| Rank | Model | TB2.0 | Cost | Speed | Role |
-|------|-------|-------|------|-------|------|
-| 1 | **MiniMax M2.5** | 51.7% | $0.79 | very-fast | Budget tier (high-volume, low-quality) |
-| 2 | **Codex-Spark** | 58.4% | $1.00 | very-fast | Speed tier (latency-critical + reasonable quality) |
-| 3 | **GPT-5.3-Codex** | 64.7% | $1.25 | fast | Quality tier (primary for normal/complex/high-complex) |
-| 4 | **Claude Opus 4.6** | 62.9% | $17.50 | slow | Premium tier (non-terminal reasoning, if cost irrelevant) |
+| Rank | Model               | TB2.0 | Cost   | Speed     | Role                                                      |
+| ---- | ------------------- | ----- | ------ | --------- | --------------------------------------------------------- |
+| 1    | **MiniMax M2.5**    | 51.7% | $0.79  | very-fast | Budget tier (high-volume, low-quality)                    |
+| 2    | **Codex-Spark**     | 58.4% | $1.00  | very-fast | Speed tier (latency-critical + reasonable quality)        |
+| 3    | **GPT-5.3-Codex**   | 64.7% | $1.25  | fast      | Quality tier (primary for normal/complex/high-complex)    |
+| 4    | **Claude Opus 4.6** | 62.9% | $17.50 | slow      | Premium tier (non-terminal reasoning, if cost irrelevant) |
 
 ### 12.2 Task Category Assignments (Corrected)
 
-| Category | Budget | Primary | Fallback 1 | Fallback 2 |
-|----------|--------|---------|-----------|-----------|
-| **FAST** | $0.002 | MiniMax M2.5 (51.7%) | Codex-Spark (58.4%) | — |
-| **NORMAL** | $0.05 | GPT-5.3-Codex (64.7%) | Codex-Spark (58.4%) | MiniMax M2.5 (51.7%) |
-| **COMPLEX** | $0.15 | GPT-5.3-Codex (64.7%) | Codex-Spark (58.4%) | — |
-| **HIGH_COMPLEX** | $0.85 | GPT-5.3-Codex (64.7%) | Codex-Spark (58.4%) | Opus 4.6 (62.9%, if reasoning needed) |
+| Category         | Budget | Primary               | Fallback 1          | Fallback 2                            |
+| ---------------- | ------ | --------------------- | ------------------- | ------------------------------------- |
+| **FAST**         | $0.002 | MiniMax M2.5 (51.7%)  | Codex-Spark (58.4%) | —                                     |
+| **NORMAL**       | $0.05  | GPT-5.3-Codex (64.7%) | Codex-Spark (58.4%) | MiniMax M2.5 (51.7%)                  |
+| **COMPLEX**      | $0.15  | GPT-5.3-Codex (64.7%) | Codex-Spark (58.4%) | —                                     |
+| **HIGH_COMPLEX** | $0.85  | GPT-5.3-Codex (64.7%) | Codex-Spark (58.4%) | Opus 4.6 (62.9%, if reasoning needed) |
 
 ### 12.3 Cost Impact
 
@@ -746,7 +776,6 @@ Mitigation: Run A/B tests before full rollout.
 **Next Review**: Immediate (upon Codex-Spark confirmation)
 **Author**: Pareto Frontier Analysis (Terminal Bench Edition)
 
-
 ---
 
 ## EXTENSION_SUMMARY
@@ -755,15 +784,18 @@ Mitigation: Run A/B tests before full rollout.
 **Extended by:** Claude Code
 
 ### Changes Made
+
 1. Added practical implementation patterns
 2. Added configuration examples
 3. Enhanced cross-references to related documentation
 
 ### Cross-References Added
+
 - Related research and implementation guides
 - WORK_STREAM.md for tracking
 
 ### Practical Additions
+
 - Implementation templates
 - Configuration examples
 - Best practices

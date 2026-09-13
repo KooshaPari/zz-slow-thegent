@@ -16,10 +16,10 @@ class UICompositor:
 
     def compose(self, components: list[Any]) -> Any:
         """Compose multiple UI components.
-        
+
         Args:
             components: List of UI components to compose.
-            
+
         Returns:
             Composed UI.
         """
@@ -92,10 +92,10 @@ class CompositorManager:
 
     def get_compositor(self, name: str) -> UICompositor:
         """Get a compositor by name.
-        
+
         Args:
             name: Compositor name.
-            
+
         Returns:
             UICompositor instance.
         """

@@ -3,11 +3,13 @@
 from __future__ import annotations
 
 import orjson as json
-
 import pytest
 
 from thegent.protocols import jsonrpc_agent_server as server
-from thegent.protocols.jsonrpc_agent_server import SERVER_STATE, process_jsonrpc_line_full
+from thegent.protocols.jsonrpc_agent_server import (
+    SERVER_STATE,
+    process_jsonrpc_line_full,
+)
 
 
 def _reset_state() -> None:
@@ -55,14 +57,20 @@ def test_wl11013_build_turn_submit_phase_plan_rejects_non_bool_requires_approval
     _reset_state()
     session_id = _start_session()
     plan = server._build_turn_submit_phase_plan(
-        "req", {"session_id": session_id, "requires_approval": "yes", "unified_diff": "diff"}
+        "req",
+        {"session_id": session_id, "requires_approval": "yes", "unified_diff": "diff"},
     )
     assert plan["parse_error"]["error"]["data"]["reason"] == "requires_approval_must_be_boolean"
 
 
 def test_wl11014_build_turn_submit_side_effects_target_keeps_optional_missing_approval_diff() -> None:
     # @trace WL-11014
-    turn = {"id": "turn-1", "session_id": "session-1", "input": "x", "status": "in_progress"}
+    turn = {
+        "id": "turn-1",
+        "session_id": "session-1",
+        "input": "x",
+        "status": "in_progress",
+    }
     resolved = server._resolve_turn_submit_side_effects_target(
         {
             "session_id": "session-1",
@@ -108,7 +116,13 @@ def test_wl11017_build_turn_submit_success_response_preserves_float_request_id()
 
 def test_wl11018_handle_turn_submit_parse_failure_returns_exact_error_payload() -> None:
     # @trace WL-11018
-    parse_error = {"error": {"code": -32602, "message": "Invalid params", "data": {"reason": "input_must_be_string"}}}
+    parse_error = {
+        "error": {
+            "code": -32602,
+            "message": "Invalid params",
+            "data": {"reason": "input_must_be_string"},
+        }
+    }
     assert server._handle_turn_submit_parse_failure(parse_error) == parse_error
 
 

@@ -58,6 +58,7 @@ Phase 1 of the TUI Compositor is now complete, providing:
 ### `layout_engine.py` - Core Layout Engine
 
 **Provides**:
+
 - `Direction` - Layout direction enum (VERTICAL, HORIZONTAL)
 - `SizeUnit` - Size units (%, fr, cells, auto)
 - `Size` - Dimension specification with unit conversion
@@ -89,13 +90,13 @@ css = engine.generate_layout_css()
 ```python
 from thegent.compositor import Size, SizeUnit
 
-size_percent = Size(70, "%")      # 70% of parent
-size_fraction = Size(1, "fr")     # 1 fraction (1fr)
-size_cells = Size(30, "cells")    # 30 character cells
-size_auto = Size(1, "auto")       # Automatic sizing
+size_percent = Size(70, "%")  # 70% of parent
+size_fraction = Size(1, "fr")  # 1 fraction (1fr)
+size_cells = Size(30, "cells")  # 30 character cells
+size_auto = Size(1, "auto")  # Automatic sizing
 
 print(size_percent.to_textual_css())  # "70%"
-print(size_fraction.to_textual_css()) # "1fr"
+print(size_fraction.to_textual_css())  # "1fr"
 ```
 
 ---
@@ -123,6 +124,7 @@ line_count = output.get_line_count()
 ```
 
 **Features**:
+
 - Auto-scrolling RichLog widget
 - Timestamp display (HH:MM:SS format)
 - Rich text styling support
@@ -147,6 +149,7 @@ status.stop_timer()
 ```
 
 **Features**:
+
 - Real-time status display (idle/running/error/done)
 - Model name display
 - Token counter with formatting
@@ -168,14 +171,11 @@ sidebar.add_agent("agent-2", "Agent Two", status="idle")
 sidebar.update_agent_status("agent-1", "done")
 
 # Update session info
-sidebar.update_session_info(
-    session_id="sess_abc123",
-    start_time="14:30:45",
-    uptime="00:05:23"
-)
+sidebar.update_session_info(session_id="sess_abc123", start_time="14:30:45", uptime="00:05:23")
 ```
 
 **Features**:
+
 - Agent list with status indicators
 - Session information display
 - Quick action buttons (Pause, Resume, Stop)
@@ -214,11 +214,7 @@ metrics = MetricsPanel()
 
 # Update metrics
 metrics.update_metric("cpu", "45%")
-metrics.update_metrics({
-    "memory": "2.1GB",
-    "requests": "1234",
-    "latency": "123ms"
-})
+metrics.update_metrics({"memory": "2.1GB", "requests": "1234", "latency": "123ms"})
 ```
 
 #### ProgressIndicator
@@ -244,6 +240,7 @@ from textual.app import App, ComposeResult
 from textual.containers import Horizontal, Vertical
 from thegent.compositor import OutputWidget, StatusWidget, SidebarWidget
 
+
 class AgentUIApp(App):
     def compose(self) -> ComposeResult:
         with Vertical():
@@ -251,6 +248,7 @@ class AgentUIApp(App):
             with Horizontal():
                 yield StatusWidget(id="status")
                 yield SidebarWidget(id="sidebar")
+
 
 app = AgentUIApp()
 app.run()
@@ -264,17 +262,12 @@ from thegent.compositor import LayoutEngine, Size
 engine = LayoutEngine()
 
 # Create 2x2 grid of monitoring panels
-grid = engine.create_grid(2, 2, [
-    "cpu-widget",
-    "memory-widget",
-    "network-widget",
-    "disk-widget"
-])
+grid = engine.create_grid(2, 2, ["cpu-widget", "memory-widget", "network-widget", "disk-widget"])
 
 # Customize sizes
 constraints = [
-    Size(50, "%"),   # 50% width
-    Size(1, "fr"),   # Remaining space
+    Size(50, "%"),  # 50% width
+    Size(1, "fr"),  # Remaining space
 ]
 ```
 
@@ -286,15 +279,14 @@ from thegent.compositor import LayoutEngine, Size, SizeUnit
 engine = LayoutEngine()
 
 # Create vertical layout: header, main content, footer
-layout = engine.create_vertical_stack([
-    "header",      # 3 cells
-    "main",        # 1fr (flexible)
-    "footer"       # 1 cell
-], constraints=[
-    Size(3, "cells"),
-    Size(1, "fr"),
-    Size(1, "cells")
-])
+layout = engine.create_vertical_stack(
+    [
+        "header",  # 3 cells
+        "main",  # 1fr (flexible)
+        "footer",  # 1 cell
+    ],
+    constraints=[Size(3, "cells"), Size(1, "fr"), Size(1, "cells")],
+)
 ```
 
 ---
@@ -323,11 +315,8 @@ sidebar = SidebarWidget()
 
 # Track multiple agents
 for agent in running_agents:
-    sidebar.add_agent(
-        agent_id=agent.id,
-        name=agent.name,
-        status=agent.status
-    )
+    sidebar.add_agent(agent_id=agent.id, name=agent.name, status=agent.status)
+
 
 # Update as agents complete
 def on_agent_complete(agent_id):
@@ -428,18 +417,19 @@ pytest tests/compositor/ --cov=thegent.compositor --cov-report=html
 
 ## Performance Characteristics
 
-| Aspect | Measurement |
-|--------|-------------|
-| Layout calculation | <1ms (100 widgets) |
-| Component creation | ~2-5ms per component |
-| Memory per widget | 100-500KB |
-| Render overhead | Textual handles (typically <16ms) |
+| Aspect             | Measurement                       |
+| ------------------ | --------------------------------- |
+| Layout calculation | <1ms (100 widgets)                |
+| Component creation | ~2-5ms per component              |
+| Memory per widget  | 100-500KB                         |
+| Render overhead    | Textual handles (typically <16ms) |
 
 ---
 
 ## Dependencies
 
 **Required** (already in pyproject.toml):
+
 - `textual >= 0.50.0`
 - `rich >= 13.7.0`
 - `python >= 3.12`
@@ -451,15 +441,18 @@ pytest tests/compositor/ --cov=thegent.compositor --cov-report=html
 ## Files Created/Modified
 
 ### New Files
+
 - `src/thegent/compositor/layout_engine.py` (380 lines)
 - `src/thegent/compositor/components.py` (440 lines)
 - `tests/compositor/test_layout_engine.py` (200 lines)
 - `tests/compositor/test_components.py` (200 lines)
 
 ### Modified Files
+
 - `src/thegent/compositor/__init__.py` - Updated exports
 
 ### Existing (Untouched)
+
 - `src/thegent/compositor/app.py`
 - `src/thegent/compositor/pane_manager.py`
 - `src/thegent/compositor/terminal_pane.py`

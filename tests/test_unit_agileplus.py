@@ -5,11 +5,11 @@ Tests the state machine, cycle execution, error handling, and graceful shutdown.
 
 from __future__ import annotations
 
-import orjson as json
 import signal
 from typing import TYPE_CHECKING
 from unittest.mock import MagicMock, patch
 
+import orjson as json
 import pytest
 from pydantic import ValidationError
 
@@ -263,7 +263,9 @@ def test_run_once_full_cycle(loop: AgilePlusLoop) -> None:
         patch.object(AgilePlusLoop, "_init_components"),
         patch.object(AgilePlusLoop, "_run_scan", return_value=_SCAN_RESULT_MOCK) as mock_scan,
         patch.object(
-            AgilePlusLoop, "_compute_health", return_value=MagicMock(score=50.0, band=MagicMock(value="warning"))
+            AgilePlusLoop,
+            "_compute_health",
+            return_value=MagicMock(score=50.0, band=MagicMock(value="warning")),
         ) as mock_compute,
         patch.object(AgilePlusLoop, "_run_analysis", return_value=_FINDINGS_MOCK) as mock_analysis,
         patch.object(AgilePlusLoop, "_run_planning", return_value=_PLAN_MOCK) as mock_planning,
@@ -321,7 +323,9 @@ def test_run_once_forces_cycle_when_healthy(loop: AgilePlusLoop) -> None:
         patch.object(AgilePlusLoop, "_init_components"),
         patch.object(AgilePlusLoop, "_run_scan", return_value=_SCAN_RESULT_MOCK),
         patch.object(
-            AgilePlusLoop, "_compute_health", return_value=MagicMock(score=95.0, band=MagicMock(value="excellent"))
+            AgilePlusLoop,
+            "_compute_health",
+            return_value=MagicMock(score=95.0, band=MagicMock(value="excellent")),
         ),
         patch.object(AgilePlusLoop, "_run_analysis", return_value=[]),
         patch.object(AgilePlusLoop, "_run_planning", return_value=MagicMock(tasks=[])),
@@ -361,7 +365,9 @@ def test_run_once_state_transitions(
             patch.object(AgilePlusLoop, "_init_components"),
             patch.object(AgilePlusLoop, "_run_scan", return_value=_SCAN_RESULT_MOCK),
             patch.object(
-                AgilePlusLoop, "_compute_health", return_value=MagicMock(score=50.0, band=MagicMock(value="warning"))
+                AgilePlusLoop,
+                "_compute_health",
+                return_value=MagicMock(score=50.0, band=MagicMock(value="warning")),
             ),
             patch.object(AgilePlusLoop, "_run_analysis", return_value=_FINDINGS_MOCK),
             patch.object(AgilePlusLoop, "_run_planning", return_value=_PLAN_MOCK),
@@ -407,7 +413,9 @@ def test_run_once_handles_analysis_error(loop: AgilePlusLoop) -> None:
         patch.object(AgilePlusLoop, "_init_components"),
         patch.object(AgilePlusLoop, "_run_scan", return_value=_SCAN_RESULT_MOCK),
         patch.object(
-            AgilePlusLoop, "_compute_health", return_value=MagicMock(score=50.0, band=MagicMock(value="warning"))
+            AgilePlusLoop,
+            "_compute_health",
+            return_value=MagicMock(score=50.0, band=MagicMock(value="warning")),
         ),
         patch.object(AgilePlusLoop, "_run_analysis", side_effect=RuntimeError("Analysis failed")),
     ):
@@ -425,7 +433,9 @@ def test_run_once_handles_planning_error(loop: AgilePlusLoop) -> None:
         patch.object(AgilePlusLoop, "_init_components"),
         patch.object(AgilePlusLoop, "_run_scan", return_value=_SCAN_RESULT_MOCK),
         patch.object(
-            AgilePlusLoop, "_compute_health", return_value=MagicMock(score=50.0, band=MagicMock(value="warning"))
+            AgilePlusLoop,
+            "_compute_health",
+            return_value=MagicMock(score=50.0, band=MagicMock(value="warning")),
         ),
         patch.object(AgilePlusLoop, "_run_analysis", return_value=_FINDINGS_MOCK),
         patch.object(AgilePlusLoop, "_run_planning", side_effect=RuntimeError("Planning failed")),
@@ -444,11 +454,17 @@ def test_run_once_handles_deployment_error(loop: AgilePlusLoop) -> None:
         patch.object(AgilePlusLoop, "_init_components"),
         patch.object(AgilePlusLoop, "_run_scan", return_value=_SCAN_RESULT_MOCK),
         patch.object(
-            AgilePlusLoop, "_compute_health", return_value=MagicMock(score=50.0, band=MagicMock(value="warning"))
+            AgilePlusLoop,
+            "_compute_health",
+            return_value=MagicMock(score=50.0, band=MagicMock(value="warning")),
         ),
         patch.object(AgilePlusLoop, "_run_analysis", return_value=_FINDINGS_MOCK),
         patch.object(AgilePlusLoop, "_run_planning", return_value=_PLAN_MOCK),
-        patch.object(AgilePlusLoop, "_run_deployment", side_effect=RuntimeError("Deployment failed")),
+        patch.object(
+            AgilePlusLoop,
+            "_run_deployment",
+            side_effect=RuntimeError("Deployment failed"),
+        ),
     ):
         result = loop.run_once(force=True)
 
@@ -464,12 +480,18 @@ def test_run_once_handles_verification_error(loop: AgilePlusLoop) -> None:
         patch.object(AgilePlusLoop, "_init_components"),
         patch.object(AgilePlusLoop, "_run_scan", return_value=_SCAN_RESULT_MOCK),
         patch.object(
-            AgilePlusLoop, "_compute_health", return_value=MagicMock(score=50.0, band=MagicMock(value="warning"))
+            AgilePlusLoop,
+            "_compute_health",
+            return_value=MagicMock(score=50.0, band=MagicMock(value="warning")),
         ),
         patch.object(AgilePlusLoop, "_run_analysis", return_value=_FINDINGS_MOCK),
         patch.object(AgilePlusLoop, "_run_planning", return_value=_PLAN_MOCK),
         patch.object(AgilePlusLoop, "_run_deployment", return_value=_DEPLOYMENT_RESULT_MOCK),
-        patch.object(AgilePlusLoop, "_run_verification", side_effect=RuntimeError("Verification failed")),
+        patch.object(
+            AgilePlusLoop,
+            "_run_verification",
+            side_effect=RuntimeError("Verification failed"),
+        ),
     ):
         result = loop.run_once(force=True)
 
@@ -537,7 +559,7 @@ def test_run_continuous_health_based_interval(
     ]
 
     with patch.object(AgilePlusLoop, "run_once", mock_run_once):
-        results = loop.run_continuous(interval_seconds=60, max_cycles=2)
+        loop.run_continuous(interval_seconds=60, max_cycles=2)
 
     # First call should have slept for interval * 2 (healthy)
     assert mock_sleep.call_count >= 1
@@ -560,7 +582,7 @@ def test_run_continuous_respects_shutdown(
     )
 
     with patch.object(AgilePlusLoop, "run_once", mock_run_once):
-        results = loop.run_continuous(interval_seconds=60, max_cycles=10)
+        loop.run_continuous(interval_seconds=60, max_cycles=10)
 
     # Should not have run any cycles due to shutdown
     assert mock_run_once.call_count == 0
@@ -708,12 +730,16 @@ def test_run_once_with_empty_findings(loop: AgilePlusLoop) -> None:
         patch.object(AgilePlusLoop, "_init_components"),
         patch.object(AgilePlusLoop, "_run_scan", return_value=_SCAN_RESULT_MOCK),
         patch.object(
-            AgilePlusLoop, "_compute_health", return_value=MagicMock(score=50.0, band=MagicMock(value="warning"))
+            AgilePlusLoop,
+            "_compute_health",
+            return_value=MagicMock(score=50.0, band=MagicMock(value="warning")),
         ),
-        patch.object(AgilePlusLoop, "_run_analysis", return_value=[]) as mock_analysis,
+        patch.object(AgilePlusLoop, "_run_analysis", return_value=[]),
         patch.object(
-            AgilePlusLoop, "_run_planning", return_value=MagicMock(tasks=[], total_estimated_calls=0)
-        ) as mock_planning,
+            AgilePlusLoop,
+            "_run_planning",
+            return_value=MagicMock(tasks=[], total_estimated_calls=0),
+        ),
         patch.object(AgilePlusLoop, "_run_deployment") as mock_deploy,
         patch.object(AgilePlusLoop, "_run_verification", return_value=0),
         patch.object(AgilePlusLoop, "_run_commitment"),
@@ -734,7 +760,9 @@ def test_run_once_completed_at_timestamp(loop: AgilePlusLoop) -> None:
         patch.object(AgilePlusLoop, "_init_components"),
         patch.object(AgilePlusLoop, "_run_scan", return_value=_SCAN_RESULT_MOCK),
         patch.object(
-            AgilePlusLoop, "_compute_health", return_value=MagicMock(score=95.0, band=MagicMock(value="excellent"))
+            AgilePlusLoop,
+            "_compute_health",
+            return_value=MagicMock(score=95.0, band=MagicMock(value="excellent")),
         ),
     ):
         result = loop.run_once(force=False)
@@ -792,7 +820,10 @@ def test_run_continuous_with_zero_max_cycles(
     mock_result.health_score = 50.0
     mock_result.state = CycleState.IDLE
 
-    with patch.object(AgilePlusLoop, "run_once", return_value=mock_result) as mock_run, patch("time.sleep"):
+    with (
+        patch.object(AgilePlusLoop, "run_once", return_value=mock_result) as mock_run,
+        patch("time.sleep"),
+    ):
         results = loop.run_continuous(interval_seconds=60, max_cycles=0)
 
     # Should not run any cycles
@@ -807,7 +838,7 @@ def test_run_continuous_infinite_loop(
     loop._shutdown_requested = True
 
     with patch.object(AgilePlusLoop, "run_once") as mock_run, patch("time.sleep"):
-        results = loop.run_continuous(interval_seconds=60, max_cycles=None)
+        loop.run_continuous(interval_seconds=60, max_cycles=None)
 
     # Should stop immediately due to shutdown
     assert mock_run.call_count == 0

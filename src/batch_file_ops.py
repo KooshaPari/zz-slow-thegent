@@ -7,7 +7,6 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Any
 
 
 class BatchFileOpsError(Exception):
@@ -17,6 +16,7 @@ class BatchFileOpsError(Exception):
 @dataclass
 class BatchOperation:
     """Represents a single file operation in a batch."""
+
     file_path: str
     operation_type: str  # 'read', 'write', 'delete'
     success: bool = False
@@ -26,6 +26,7 @@ class BatchOperation:
 @dataclass
 class BatchOperationResult:
     """Result of a batch operation."""
+
     total: int
     successful: int
     failed: int
@@ -50,7 +51,7 @@ def batch_read_files(paths: list[str]) -> dict[str, str]:
                 results[path_str] = path.read_text(encoding="utf-8")
             else:
                 results[path_str] = ""
-        except Exception as e:
+        except Exception:
             results[path_str] = ""
     return results
 

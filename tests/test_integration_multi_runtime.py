@@ -9,7 +9,6 @@ Tests the MultiRuntimeBridge functionality including:
 
 import asyncio
 import contextlib
-from pathlib import Path
 from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest

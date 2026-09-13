@@ -12,7 +12,7 @@ Health check system.
 
 ### Methods
 
-#### HealthChecker.__init__
+#### HealthChecker.**init**
 
 ```python
 __init__(self: Any)

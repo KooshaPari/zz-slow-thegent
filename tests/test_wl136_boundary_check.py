@@ -82,9 +82,8 @@ def _extract_imports(source_file: Path) -> list[str]:
         if isinstance(node, ast.Import):
             for alias in node.names:
                 imports.add(alias.name)
-        elif isinstance(node, ast.ImportFrom):
-            if node.module:
-                imports.add(node.module)
+        elif isinstance(node, ast.ImportFrom) and node.module:
+            imports.add(node.module)
     return sorted(imports)
 
 
@@ -105,7 +104,11 @@ def _find_boundary_violations() -> list[dict[str, str]]:
             for imp in imports:
                 for tooling_prefix in TOOLING_IMPORT_PREFIXES:
                     if imp == tooling_prefix or imp.startswith(tooling_prefix + "."):
-                        key = (str(py_file.relative_to(_REPO_ROOT)), imp, tooling_prefix)
+                        key = (
+                            str(py_file.relative_to(_REPO_ROOT)),
+                            imp,
+                            tooling_prefix,
+                        )
                         if key in seen:
                             continue
                         seen.add(key)

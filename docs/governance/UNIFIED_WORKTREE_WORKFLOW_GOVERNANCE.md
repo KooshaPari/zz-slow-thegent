@@ -38,13 +38,13 @@ It does not replace the commit, versioning, or PR rules in `WORKTREE_SCALE_COMMI
 
 ### 3.1 Schema Segments
 
-| Segment | Source | Values |
-|---------|--------|--------|
-| `<repo>` | Git repo name | `thegent`, `cliproxy++`, `heliosHarness`, etc. |
-| `<domain>` | Task classifier `domain` field | `backend`, `frontend`, `infra`, `data`, `docs`, `research`, `security`, `qa`, `release`, `ops` |
-| `<scale>` | Task classifier `scale` field | `xs`, `s`, `m`, `l`, `xl` |
-| `<change-anchor>` | AgilePlus change-id (verb-led, kebab-case) | e.g. `fix-mcp-timeout`, `add-dag-tests`, `refactor-config-layer` |
-| `<state>` | Lifecycle state (see §4) | `active`, `review`, `blocked`, `integration`, `done` |
+| Segment           | Source                                     | Values                                                                                         |
+| ----------------- | ------------------------------------------ | ---------------------------------------------------------------------------------------------- |
+| `<repo>`          | Git repo name                              | `thegent`, `cliproxy++`, `heliosHarness`, etc.                                                 |
+| `<domain>`        | Task classifier `domain` field             | `backend`, `frontend`, `infra`, `data`, `docs`, `research`, `security`, `qa`, `release`, `ops` |
+| `<scale>`         | Task classifier `scale` field              | `xs`, `s`, `m`, `l`, `xl`                                                                      |
+| `<change-anchor>` | AgilePlus change-id (verb-led, kebab-case) | e.g. `fix-mcp-timeout`, `add-dag-tests`, `refactor-config-layer`                               |
+| `<state>`         | Lifecycle state (see §4)                   | `active`, `review`, `blocked`, `integration`, `done`                                           |
 
 ### 3.2 Full Example Paths
 
@@ -65,6 +65,7 @@ The git branch name is derived from the path (not the reverse):
 ```
 
 Examples:
+
 - `backend/m/fix-mcp-timeout`
 - `qa/s/add-dag-tests`
 - `security/l/clear-text-logging-v2`
@@ -77,13 +78,13 @@ Legacy branch names (e.g. `thegent-mcp-fix`, `feature/wl-implementation`) are al
 
 States map to BMAD phases and AgilePlus proposal stages.
 
-| State | Dir Name | BMAD Phase Equivalent | AgilePlus Stage | Meaning |
-|-------|----------|----------------------|----------------|---------|
-| `active` | `active/` | Phase 4 — Implementation | Apply | Work in progress, agent or human actively committing |
-| `review` | `review/` | Phase 4 — Review Story | Apply (pending approval) | PR open or awaiting code review |
-| `blocked` | `blocked/` | Phase 3 — Readiness / Solutioning | Propose | Waiting on dependency, decision, or upstream merge |
-| `integration` | `integration/` | Phase 4 — Sprint Planning / Merge | Apply (integration train) | Merge train or integration worktree in progress |
-| `done` | `done/` | Post Phase 4 — Retrospective | Archive | Branch merged, worktree retained briefly before pruning |
+| State         | Dir Name       | BMAD Phase Equivalent             | AgilePlus Stage           | Meaning                                                 |
+| ------------- | -------------- | --------------------------------- | ------------------------- | ------------------------------------------------------- |
+| `active`      | `active/`      | Phase 4 — Implementation          | Apply                     | Work in progress, agent or human actively committing    |
+| `review`      | `review/`      | Phase 4 — Review Story            | Apply (pending approval)  | PR open or awaiting code review                         |
+| `blocked`     | `blocked/`     | Phase 3 — Readiness / Solutioning | Propose                   | Waiting on dependency, decision, or upstream merge      |
+| `integration` | `integration/` | Phase 4 — Sprint Planning / Merge | Apply (integration train) | Merge train or integration worktree in progress         |
+| `done`        | `done/`        | Post Phase 4 — Retrospective      | Archive                   | Branch merged, worktree retained briefly before pruning |
 
 ### 4.1 State Transitions
 
@@ -94,6 +95,7 @@ States map to BMAD phases and AgilePlus proposal stages.
 ```
 
 State is changed by renaming the worktree directory:
+
 ```bash
 # move from active to review
 git worktree move .worktrees/backend/m/fix-mcp-timeout/active \
@@ -101,6 +103,7 @@ git worktree move .worktrees/backend/m/fix-mcp-timeout/active \
 ```
 
 Or via the governance script (see §7):
+
 ```bash
 ./scripts/worktree_governance.sh state <change-anchor> review
 ```
@@ -111,18 +114,18 @@ Or via the governance script (see §7):
 
 BMAD defines 5 phases (0–4) plus a parallel testing track. Each maps to a worktree state or signals that no worktree is needed yet.
 
-| BMAD Phase | Name | Worktree Needed? | State |
-|------------|------|-----------------|-------|
-| 0 | Documentation / Brownfield Capture | No | — (docs only) |
-| 1 | Analysis (research, brainstorm) | No | — (docs only) |
-| 2 | Planning (PRD, UX, tech-spec) | No | — (docs only) |
-| 3 | Solutioning (architecture, epics, stories) | No until approved | `blocked` if pre-approved work queued |
-| 4 — Story Creation | Dev story scaffold | Yes | `active` |
-| 4 — Implementation | Active coding | Yes | `active` |
-| 4 — Review | PR / code review | Yes | `review` |
-| 4 — Integration | Merge train | Yes | `integration` |
-| 4 — Retrospective | Post-merge | Optional | `done` |
-| Testing (parallel) | ATDD, CI, coverage | Yes (parallel to Phase 4) | `active` under `qa/` domain |
+| BMAD Phase         | Name                                       | Worktree Needed?          | State                                 |
+| ------------------ | ------------------------------------------ | ------------------------- | ------------------------------------- |
+| 0                  | Documentation / Brownfield Capture         | No                        | — (docs only)                         |
+| 1                  | Analysis (research, brainstorm)            | No                        | — (docs only)                         |
+| 2                  | Planning (PRD, UX, tech-spec)              | No                        | — (docs only)                         |
+| 3                  | Solutioning (architecture, epics, stories) | No until approved         | `blocked` if pre-approved work queued |
+| 4 — Story Creation | Dev story scaffold                         | Yes                       | `active`                              |
+| 4 — Implementation | Active coding                              | Yes                       | `active`                              |
+| 4 — Review         | PR / code review                           | Yes                       | `review`                              |
+| 4 — Integration    | Merge train                                | Yes                       | `integration`                         |
+| 4 — Retrospective  | Post-merge                                 | Optional                  | `done`                                |
+| Testing (parallel) | ATDD, CI, coverage                         | Yes (parallel to Phase 4) | `active` under `qa/` domain           |
 
 **Rule:** Do not create a worktree during BMAD Phases 0–2. Create the worktree at the start of Phase 4 (when a dev story exists and work is approved).
 
@@ -133,6 +136,7 @@ BMAD defines 5 phases (0–4) plus a parallel testing track. Each maps to a work
 Every worktree's `<change-anchor>` segment **is** (or maps 1:1 to) an AgilePlus `change-id`.
 
 This means:
+
 - Every worktree has a corresponding `agileplus/changes/<change-anchor>/` directory in the repo
 - `proposal.md` in that change dir is the source-of-truth for what the worktree is doing
 - `tasks.md` drives the commit sequence inside the worktree
@@ -141,6 +145,7 @@ This means:
 ### 6.1 Exceptions (no AgilePlus proposal required)
 
 Per AgilePlus policy, skip the proposal for:
+
 - Bug fixes (typos, formatting, dependency bumps, config changes)
 - Tests for existing behavior
 
@@ -212,6 +217,7 @@ thg_new_worktree <domain> <scale> <change-anchor> [start-point]
 ### 7.3 BMAD Integration Point
 
 When starting BMAD Phase 4 (dev story), the first action after story approval is:
+
 ```bash
 ./scripts/worktree_governance.sh new <domain> <scale> <change-anchor>
 ```
@@ -232,31 +238,31 @@ The following worktrees are non-compliant (broken gitdir pointers from `/temp-PR
 
 ### 8.1 Broken (gitdir pointer to missing path) — Prune After Salvage
 
-| Directory | Last Known Branch | Action |
-|-----------|------------------|--------|
-| `repos/thegent-dag-tests` | unknown | Salvage any unique commits → prune |
-| `repos/thegent-flaky-tests` | unknown | Salvage → prune |
-| `repos/thegent-lint-fix` | unknown | Salvage → prune |
-| `repos/thegent-mcp-fix` | unknown | Salvage → prune |
-| `repos/thegent-mcp-fix2` | unknown | Salvage → prune |
-| `repos/thegent-mcp-fix3` | unknown | Salvage → prune |
-| `repos/thegent-mcp-fix4` | unknown | Salvage → prune |
-| `repos/thegent-merge` | unknown | Salvage → prune |
-| `repos/thegent-output-tests` | unknown | Salvage → prune |
-| `repos/thegent-skips-v2` | unknown | Salvage → prune |
-| `repos/thegent-v2` | main (empty) | Prune (empty) |
-| `repos/cliproxy++-config-fix` | fix/config-build | Salvage → prune |
-| `repos/cliproxy++-security` | fix/security-clear-text-logging-v2 | Salvage → prune |
-| `repos/heliosHarness-orchestration` | feature/sub-agent-orchestration | Salvage → prune |
+| Directory                           | Last Known Branch                  | Action                             |
+| ----------------------------------- | ---------------------------------- | ---------------------------------- |
+| `repos/thegent-dag-tests`           | unknown                            | Salvage any unique commits → prune |
+| `repos/thegent-flaky-tests`         | unknown                            | Salvage → prune                    |
+| `repos/thegent-lint-fix`            | unknown                            | Salvage → prune                    |
+| `repos/thegent-mcp-fix`             | unknown                            | Salvage → prune                    |
+| `repos/thegent-mcp-fix2`            | unknown                            | Salvage → prune                    |
+| `repos/thegent-mcp-fix3`            | unknown                            | Salvage → prune                    |
+| `repos/thegent-mcp-fix4`            | unknown                            | Salvage → prune                    |
+| `repos/thegent-merge`               | unknown                            | Salvage → prune                    |
+| `repos/thegent-output-tests`        | unknown                            | Salvage → prune                    |
+| `repos/thegent-skips-v2`            | unknown                            | Salvage → prune                    |
+| `repos/thegent-v2`                  | main (empty)                       | Prune (empty)                      |
+| `repos/cliproxy++-config-fix`       | fix/config-build                   | Salvage → prune                    |
+| `repos/cliproxy++-security`         | fix/security-clear-text-logging-v2 | Salvage → prune                    |
+| `repos/heliosHarness-orchestration` | feature/sub-agent-orchestration    | Salvage → prune                    |
 
 ### 8.2 Active but Misplaced — Migrate to Schema
 
-| Directory | Branch | Target Path |
-|-----------|--------|-------------|
-| `/private/tmp/wl-impl` | `feature/wl-implementation` | `thegent/.worktrees/backend/m/wl-impl/active/` |
-| `~/cliproxy++-security` | `main` (standalone clone) | Evaluate: merge to `repos/cliproxy++` or discard |
-| `~/cliproxy++-security-work` | `security-fix` | `cliproxy++/.worktrees/security/m/clear-text-logging-v2/blocked/` |
-| `temp-PRODVERCEL-485/kush/heliosHarness-infra` | `feature/infra-work` | `heliosHarness/.worktrees/infra/m/infra-work/active/` |
+| Directory                                      | Branch                      | Target Path                                                       |
+| ---------------------------------------------- | --------------------------- | ----------------------------------------------------------------- |
+| `/private/tmp/wl-impl`                         | `feature/wl-implementation` | `thegent/.worktrees/backend/m/wl-impl/active/`                    |
+| `~/cliproxy++-security`                        | `main` (standalone clone)   | Evaluate: merge to `repos/cliproxy++` or discard                  |
+| `~/cliproxy++-security-work`                   | `security-fix`              | `cliproxy++/.worktrees/security/m/clear-text-logging-v2/blocked/` |
+| `temp-PRODVERCEL-485/kush/heliosHarness-infra` | `feature/infra-work`        | `heliosHarness/.worktrees/infra/m/infra-work/active/`             |
 
 ### 8.3 Migration Steps (per worktree)
 
@@ -279,25 +285,26 @@ The canonical migration command for clean legacy lanes is `thegent worktree migr
 
 ## 9. Vocabulary Cross-Reference
 
-| This System | BMAD Term | AgilePlus Term | Task Classifier Field |
-|-------------|-----------|---------------|----------------------|
-| `<domain>` | Agent persona domain (backend, QA, etc.) | capability folder | `domain` |
-| `<scale>` | Story size / sprint scope | — (not used) | `scale` (XS/S/M/L/XL) |
-| `<change-anchor>` | Story ID / epic slug | `change-id` | `task_id` |
-| `active` | Phase 4 — Implementation | Apply stage | — |
-| `review` | Phase 4 — Review Story | Apply (pending) | — |
-| `blocked` | Phase 3 — Readiness | Propose (approved, not started) | — |
-| `integration` | Phase 4 — Sprint Planning / merge train | Apply (integration) | `worktree_mode: integration` |
-| `done` | Retrospective | Archive | — |
-| XS worktree mode | Single-story, shared lane | skip proposal | `worktree_mode: shared_lane` |
-| M worktree mode | Lane-dedicated | proposal required | `worktree_mode: lane_dedicated` |
-| L/XL worktree mode | Integration worktree | proposal required | `worktree_mode: integration` |
+| This System        | BMAD Term                                | AgilePlus Term                  | Task Classifier Field           |
+| ------------------ | ---------------------------------------- | ------------------------------- | ------------------------------- |
+| `<domain>`         | Agent persona domain (backend, QA, etc.) | capability folder               | `domain`                        |
+| `<scale>`          | Story size / sprint scope                | — (not used)                    | `scale` (XS/S/M/L/XL)           |
+| `<change-anchor>`  | Story ID / epic slug                     | `change-id`                     | `task_id`                       |
+| `active`           | Phase 4 — Implementation                 | Apply stage                     | —                               |
+| `review`           | Phase 4 — Review Story                   | Apply (pending)                 | —                               |
+| `blocked`          | Phase 3 — Readiness                      | Propose (approved, not started) | —                               |
+| `integration`      | Phase 4 — Sprint Planning / merge train  | Apply (integration)             | `worktree_mode: integration`    |
+| `done`             | Retrospective                            | Archive                         | —                               |
+| XS worktree mode   | Single-story, shared lane                | skip proposal                   | `worktree_mode: shared_lane`    |
+| M worktree mode    | Lane-dedicated                           | proposal required               | `worktree_mode: lane_dedicated` |
+| L/XL worktree mode | Integration worktree                     | proposal required               | `worktree_mode: integration`    |
 
 ---
 
 ## 10. Governance Checklist (New Work)
 
 ### Pre-Creation (Phase 0 — Context Load)
+
 - [ ] `agileplus list` — check active changes for conflicts
 - [ ] `agileplus list --specs` — check existing capabilities
 - [ ] `git worktree list` — check active worktrees
@@ -305,11 +312,13 @@ The canonical migration command for clean legacy lanes is `thegent worktree migr
 - [ ] Task classified: domain, scale, risk, coupling filled in
 
 ### Outcome Definition (Phase 1 — Goal-Backward)
+
 - [ ] `must_haves` defined: observable outcomes stated (what is true when done)
 - [ ] `verify_commands` defined: runnable command proving each must_have
 - [ ] If change-anchor slug needs "and": split into two changes
 
 ### Proposal (Phase 2)
+
 - [ ] If M/L/XL: AgilePlus proposal scaffolded (`proposal.md`, `tasks.md`, `design.md`)
 - [ ] Each task in `tasks.md` has a `verify:` line with a runnable command (Nyquist)
 - [ ] If L/XL: `design.md` locks all naming, API, error patterns before implementation
@@ -317,18 +326,21 @@ The canonical migration command for clean legacy lanes is `thegent worktree migr
 - [ ] Proposal approved (worktree stays in `blocked/` until this gate clears)
 
 ### Execution Setup (Phase 3–4)
+
 - [ ] Wave decomposition done for M/L/XL: each task labeled Wave N
 - [ ] Worktree created: `./scripts/worktree_governance.sh new <domain> <scale> <change-anchor>`
 - [ ] `SESSION_STATE.md` initialized in worktree root (current task, decisions, blockers, next action)
 - [ ] Worktree path verified: `<repo>/.worktrees/<domain>/<scale>/<change-anchor>/active/`
 
 ### Execution (Phase 5)
+
 - [ ] Wave 1 tasks delegated to fresh subagents in parallel (thin orchestrator)
 - [ ] `SESSION_STATE.md` updated after each task
 - [ ] Atomic commits per task: `<type>(<domain>/<change-anchor>): <description>`
 - [ ] No stopping at "milestones" — halt only at 3 failures, missing config, new dependency, or gate
 
 ### Verification (Phase 6)
+
 - [ ] All `verify:` commands from `tasks.md` pass
 - [ ] `task quality` passes
 - [ ] All `must_haves` observable from outside the system
@@ -336,11 +348,13 @@ The canonical migration command for clean legacy lanes is `thegent worktree migr
 - [ ] State transitioned to `review/`: `./scripts/worktree_governance.sh state <change-anchor> review`
 
 ### Integration and Archive (Phase 7)
+
 - [ ] On merge: `agileplus archive <change-anchor> --yes`
 - [ ] `git worktree prune`
 - [ ] Worktree dir moved to `done/` or removed
 
 <!-- PHENOTYPE_GOVERNANCE_OVERLAY_V1 -->
+
 ## Phenotype Governance Overlay v1
 
 - Enforce `TDD + BDD + SDD` for all feature and workflow changes.

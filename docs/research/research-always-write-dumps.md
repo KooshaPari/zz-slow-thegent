@@ -28,16 +28,19 @@ The conversation dump policy is documented in two locations in `CLAUDE.md`:
 ### ✅ Template Available
 
 Template document exists at:
+
 - `docs/research/CONVERSATION_DUMP_2026-02-16.md`
 
 ### ✅ Expanded Guide Available
 
 Comprehensive guide exists at:
+
 - `docs/research/CONVERSATION_DUMP_2026-02-16_EXPANDED.md`
 
 ## Usage
 
 Agents should write conversation dumps when:
+
 - Completing research work
 - Making design decisions
 - Implementing multi-file changes
@@ -46,6 +49,7 @@ Agents should write conversation dumps when:
 **Format**: `docs/research/CONVERSATION_DUMP_YYYY-MM-DD.md`
 
 **Sections**:
+
 - Issues Addressed
 - Fixes Applied
 - Research Findings

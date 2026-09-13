@@ -21,16 +21,19 @@ Each doc must be expanded to meet:
 ## Priority 0: Critical Fragments (In Progress)
 
 ### ✅ SESSION_RESEARCH_FRAGMENTS.md
+
 **Status**: ✅ Expanded
 **Output**: [SESSION_RESEARCH_FRAGMENTS_EXPANDED.md](./SESSION_RESEARCH_FRAGMENTS_EXPANDED.md)
 **Work Items**: 5 BACKLOG items added
 
 ### ✅ CONVERSATION_DUMP_2026-02-16.md
+
 **Status**: ✅ Expanded
 **Output**: [CONVERSATION_DUMP_2026-02-16_EXPANDED.md](./CONVERSATION_DUMP_2026-02-16_EXPANDED.md)
 **Work Items**: 4 BACKLOG items extracted
 
-### ✅ idea-seeds/*.md (4 files)
+### ✅ idea-seeds/\*.md (4 files)
+
 **Status**: ✅ Expanded
 **Output**: [IDEA_SEED_EXPANSION_COMPLETE.md](./idea-seeds/IDEA_SEED_EXPANSION_COMPLETE.md)
 **Work Items**: 1 BACKLOG item (3 duplicates merged)
@@ -42,6 +45,7 @@ Each doc must be expanded to meet:
 ### 1. CROSS_PLATFORM Research Consolidation
 
 **Files**:
+
 - `CROSS_PLATFORM_GAPS_AND_EXTENSIONS_RESEARCH.md` (333 lines)
 - `CROSS_PLATFORM_EXTENSIONS_WIDER_DEEPER_OPTIMIZATION.md`
 - `CROSS_PLATFORM_RESEARCH_SUMMARY.md`
@@ -49,6 +53,7 @@ Each doc must be expanded to meet:
 - `CROSS_PLATFORM_RESEARCH_COMPLETION_SUMMARY.md` (458 lines)
 
 **TODO**:
+
 - [ ] Consolidate into single comprehensive guide
 - [ ] Expand each platform (macOS, Linux, Windows, WSL) with deep dives
 - [ ] Add implementation patterns, code examples
@@ -64,6 +69,7 @@ Each doc must be expanded to meet:
 
 **Status**: Synthesis, needs expansion
 **TODO**:
+
 - [ ] Expand migration strategy with detailed steps
 - [ ] Add performance comparison (shell vs Rust)
 - [ ] Add migration timeline with milestones
@@ -78,11 +84,13 @@ Each doc must be expanded to meet:
 ### 3. LIBRARY_REPLACEMENT Research Consolidation
 
 **Files**:
+
 - `LIBRARY_FIRST_AUDIT_AND_PLAN.md`
 - `LIBRARY_REPLACEMENT_AUDIT_DEEP.md` (825 lines)
 - `LIBRARY_REPLACEMENT_PHASE_DWBS.md`
 
 **TODO**:
+
 - [ ] Consolidate into unified replacement plan
 - [ ] Add migration strategy for each library
 - [ ] Add performance benchmarks
@@ -92,9 +100,10 @@ Each doc must be expanded to meet:
 
 **Target**: `docs/research/LIBRARY_REPLACEMENT_COMPLETE.md`
 
-### 4. Phase Documents (phase13-*, phase14-*, phase15-*)
+### 4. Phase Documents (phase13-_, phase14-_, phase15-\*)
 
 **TODO**:
+
 - [ ] Add "Purpose" section to each
 - [ ] Add "Depends" section
 - [ ] Add acceptance criteria
@@ -106,6 +115,7 @@ Each doc must be expanded to meet:
 ### 5. GOVERNANCE_WP_GAPS.md
 
 **TODO**:
+
 - [ ] Convert gaps into BACKLOG items
 - [ ] Expand each gap with options
 - [ ] Add owner assignments
@@ -117,6 +127,7 @@ Each doc must be expanded to meet:
 ### 6. COST_ROUTING_DEFERRED.md
 
 **TODO**:
+
 - [ ] Either implement cost routing
 - [ ] Or formalize as deferred with unblock criteria
 - [ ] Add decision record (ADR)
@@ -131,6 +142,7 @@ Each doc must be expanded to meet:
 ### 7. SWARM_RESEARCH_INDEX.md
 
 **TODO**:
+
 - [ ] Add "sprawl-status" column per linked doc
 - [ ] Link to RESEARCH_SEED_FRAGMENT_INVENTORY
 - [ ] Mark which docs are complete vs fragments
@@ -140,6 +152,7 @@ Each doc must be expanded to meet:
 ### 8. CROSS_PLATFORM_RESEARCH_INDEX.md
 
 **TODO**:
+
 - [ ] Add sprawl-status column
 - [ ] Link to RESEARCH_SEED_FRAGMENT_INVENTORY
 - [ ] Ensure each target doc has sprawl todo if fragment
@@ -149,6 +162,7 @@ Each doc must be expanded to meet:
 ### 9. 00-MASTER-INDEX.md
 
 **TODO**:
+
 - [ ] Add "Research sprawl" row
 - [ ] Link to RESEARCH_SEED_FRAGMENT_INVENTORY
 - [ ] Add sprawl status tracking
@@ -162,6 +176,7 @@ Each doc must be expanded to meet:
 ### 10. CROSS_PLATFORM_MULTI_TENANT_DESKTOP_AUTOMATION_RESEARCH.md (3956 lines)
 
 **TODO**:
+
 - [ ] Add summary table at top
 - [ ] Cross-link to WORK_STREAM/WBS
 - [ ] Add "Next actions" with IDs
@@ -173,6 +188,7 @@ Each doc must be expanded to meet:
 ### 11. FASTMCP_IMPLEMENTATION_GUIDE.md (1332 lines)
 
 **TODO**:
+
 - [ ] Add summary table
 - [ ] Cross-link to implementation plans
 - [ ] Add "Next actions" with IDs
@@ -184,6 +200,7 @@ Each doc must be expanded to meet:
 ### 12. PYTHON_FRONTMATTER_NATIVE_BACKMATTER_AUDIT_PLAN.md (959 lines)
 
 **TODO**:
+
 - [ ] Add summary table
 - [ ] Cross-link to migration plans
 - [ ] Add "Next actions" with IDs
@@ -195,6 +212,7 @@ Each doc must be expanded to meet:
 ### 13. CACHING_INDEXING_PREWARMING_DEEP_RESEARCH.md (839 lines)
 
 **TODO**:
+
 - [ ] Add summary table
 - [ ] Cross-link to implementation
 - [ ] Add "Next actions" with IDs
@@ -206,6 +224,7 @@ Each doc must be expanded to meet:
 ### 14. LIBRARY_REPLACEMENT_AUDIT_DEEP.md (825 lines)
 
 **TODO**:
+
 - [ ] Add summary table
 - [ ] Cross-link to replacement plans
 - [ ] Add "Next actions" with IDs
@@ -221,6 +240,7 @@ Each doc must be expanded to meet:
 ### 15. Frontmatter Standardization
 
 **TODO**:
+
 - [ ] Ensure all docs have frontmatter or H1 title
 - [ ] Add purpose/status/date to each
 - [ ] Standardize format
@@ -230,6 +250,7 @@ Each doc must be expanded to meet:
 ### 16. Cross-Linking
 
 **TODO**:
+
 - [ ] Add "See also" sections
 - [ ] Link to WORK_STREAM where relevant
 - [ ] Link to 00-MASTER-INDEX where relevant
@@ -240,6 +261,7 @@ Each doc must be expanded to meet:
 ### 17. Structure Consistency
 
 **TODO**:
+
 - [ ] Consistent heading levels
 - [ ] Consistent section ordering
 - [ ] Consistent table formats
@@ -255,7 +277,7 @@ Each doc must be expanded to meet:
 
 - [x] SESSION_RESEARCH_FRAGMENTS.md → Expanded
 - [x] CONVERSATION_DUMP_2026-02-16.md → Expanded
-- [x] idea-seeds/*.md (4 files) → Expanded
+- [x] idea-seeds/\*.md (4 files) → Expanded
 
 ### In Progress 🔄
 
@@ -315,14 +337,17 @@ Each doc must be expanded to meet:
 **Extended by:** Claude Code
 
 ### Changes Made
+
 1. Added planning patterns
 2. Added implementation roadmap
 3. Enhanced cross-references
 
 ### Cross-References Added
+
 - WORK_STREAM.md
 - Implementation guides
 
 ### Practical Additions
+
 - Planning templates
 - Roadmap configurations

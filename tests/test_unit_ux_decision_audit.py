@@ -19,7 +19,6 @@ from thegent.ux.decision_audit import (
     DecisionAuditTailer,
 )
 
-
 pytestmark = pytest.mark.unit
 
 
@@ -151,7 +150,10 @@ class TestAppenderTail:
 
     def test_tail_skips_malformed_lines(self, tmp_path: Path) -> None:
         log = tmp_path / "d.jsonl"
-        log.write_text('{"event_type":"cockpit.decision.recorded","verdict":"allow"}\nNOT_JSON\n', encoding="utf-8")
+        log.write_text(
+            '{"event_type":"cockpit.decision.recorded","verdict":"allow"}\nNOT_JSON\n',
+            encoding="utf-8",
+        )
         appender = DecisionAuditAppender(audit_path=log)
         events = appender.tail_events(n=10)
         assert len(events) == 1

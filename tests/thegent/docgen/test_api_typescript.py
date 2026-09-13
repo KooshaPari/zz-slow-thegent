@@ -1,5 +1,3 @@
-from pathlib import Path
-
 import pytest
 
 from thegent.docgen.api_typescript import TypeScriptAPIGenerator

@@ -8,11 +8,8 @@ the key functions exist and behave correctly in dry-run/mock scenarios.
 
 from __future__ import annotations
 
-import shutil
 from pathlib import Path
 from unittest.mock import MagicMock, patch
-
-import pytest
 
 # ---------------------------------------------------------------------------
 # WL-035: mise integration validation
@@ -118,7 +115,10 @@ class TestVerifyMiseInstallation:
     def test_success_when_mise_present(self) -> None:
         with (
             patch("thegent.install._command_exists", return_value=True),
-            patch("thegent.install._run_command", return_value=(0, "2025.1.0 linux-x64 (2025-01-01)", "")),
+            patch(
+                "thegent.install._run_command",
+                return_value=(0, "2025.1.0 linux-x64 (2025-01-01)", ""),
+            ),
         ):
             from thegent.install import verify_mise_installation
 
@@ -207,7 +207,12 @@ class TestInstallSystemDependenciesResult:
                 dry_run=False,
                 install_homebrew_pkg=False,
                 install_mise_pkg=False,
-                git_repos=[{"url": "https://github.com/example/repo", "target": "/tmp/test-repo"}],
+                git_repos=[
+                    {
+                        "url": "https://github.com/example/repo",
+                        "target": "/tmp/test-repo",
+                    }
+                ],
             )
 
         assert len(result["git_repos"]) == 1

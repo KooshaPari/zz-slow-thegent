@@ -2,10 +2,10 @@
 
 from __future__ import annotations
 
-import orjson as json
 import subprocess
 from pathlib import Path
 
+import orjson as json
 import pytest
 
 
@@ -33,7 +33,14 @@ def test_spiral_trend_replay_manifest_invariants() -> None:
         assert metrics_file.exists(), f"Missing replay fixture: {metrics_file}"
 
         proc = subprocess.run(
-            [str(dispatcher), "governance", "spiral-trend", str(metrics_file), "--window", "50"],
+            [
+                str(dispatcher),
+                "governance",
+                "spiral-trend",
+                str(metrics_file),
+                "--window",
+                "50",
+            ],
             cwd=_repo_root(),
             capture_output=True,
             text=True,

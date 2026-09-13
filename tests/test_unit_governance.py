@@ -1,10 +1,10 @@
 """Unit tests for governance modules (G-GP)."""
 
-import orjson as json
 import os
 from pathlib import Path
 from unittest.mock import MagicMock, patch
 
+import orjson as json
 import pytest
 
 from thegent.cost.aggregator import CostAggregator, CostEstimator
@@ -224,7 +224,13 @@ class TestPolicyEngineOPA:
 
         engine = PolicyEngine(settings)
         # prompt too long (>65k by default, but let's use a small one via env mock)
-        run = RunMeta(agent="gemini", prompt="too_long_prompt", cwd="/tmp", owner="user", lane="standard")
+        run = RunMeta(
+            agent="gemini",
+            prompt="too_long_prompt",
+            cwd="/tmp",
+            owner="user",
+            lane="standard",
+        )
 
         with patch("thegent.governance.input_guardrails.InputGuardrails.check") as mock_check:
             from thegent.governance.input_guardrails import GuardrailResult
@@ -262,9 +268,24 @@ class TestCostAggregatorDailyTotal:
         reg_path = tmp_path / "run_registry.jsonl"
         today = datetime.now(UTC).date().isoformat()
         events = [
-            {"event": "finish", "run_id": "r1", "cost_usd": 1.50, "ended_at_utc": f"{today}T10:00:00Z"},
-            {"event": "finish", "run_id": "r2", "cost_usd": 2.25, "ended_at_utc": f"{today}T11:00:00Z"},
-            {"event": "finish", "run_id": "r3", "cost_usd": 0.75, "ended_at_utc": "2020-01-01T00:00:00Z"},
+            {
+                "event": "finish",
+                "run_id": "r1",
+                "cost_usd": 1.50,
+                "ended_at_utc": f"{today}T10:00:00Z",
+            },
+            {
+                "event": "finish",
+                "run_id": "r2",
+                "cost_usd": 2.25,
+                "ended_at_utc": f"{today}T11:00:00Z",
+            },
+            {
+                "event": "finish",
+                "run_id": "r3",
+                "cost_usd": 0.75,
+                "ended_at_utc": "2020-01-01T00:00:00Z",
+            },
         ]
         with reg_path.open("w", encoding="utf-8") as f:
             for ev in events:
@@ -281,8 +302,18 @@ class TestCostAggregatorDailyTotal:
         reg_path = tmp_path / "run_registry.jsonl"
         today = datetime.now(UTC).date().isoformat()
         events = [
-            {"event": "start", "run_id": "r1", "cost_usd": 99.0, "ended_at_utc": f"{today}T10:00:00Z"},
-            {"event": "feedback", "run_id": "r1", "cost_usd": 99.0, "ended_at_utc": f"{today}T10:00:00Z"},
+            {
+                "event": "start",
+                "run_id": "r1",
+                "cost_usd": 99.0,
+                "ended_at_utc": f"{today}T10:00:00Z",
+            },
+            {
+                "event": "feedback",
+                "run_id": "r1",
+                "cost_usd": 99.0,
+                "ended_at_utc": f"{today}T10:00:00Z",
+            },
         ]
         with reg_path.open("w", encoding="utf-8") as f:
             for ev in events:
@@ -369,9 +400,24 @@ class TestCostAggregatorMtdTotal:
         now = datetime.now(UTC)
         current_month = f"{now.year}-{now.month:02d}"
         events = [
-            {"event": "finish", "run_id": "r1", "cost_usd": 2.50, "ended_at_utc": f"{current_month}-01T10:00:00Z"},
-            {"event": "finish", "run_id": "r2", "cost_usd": 3.25, "ended_at_utc": f"{current_month}-15T11:00:00Z"},
-            {"event": "finish", "run_id": "r3", "cost_usd": 1.00, "ended_at_utc": "2020-01-01T00:00:00Z"},
+            {
+                "event": "finish",
+                "run_id": "r1",
+                "cost_usd": 2.50,
+                "ended_at_utc": f"{current_month}-01T10:00:00Z",
+            },
+            {
+                "event": "finish",
+                "run_id": "r2",
+                "cost_usd": 3.25,
+                "ended_at_utc": f"{current_month}-15T11:00:00Z",
+            },
+            {
+                "event": "finish",
+                "run_id": "r3",
+                "cost_usd": 1.00,
+                "ended_at_utc": "2020-01-01T00:00:00Z",
+            },
         ]
         with reg_path.open("w", encoding="utf-8") as f:
             for ev in events:
@@ -389,8 +435,18 @@ class TestCostAggregatorMtdTotal:
         now = datetime.now(UTC)
         current_month = f"{now.year}-{now.month:02d}"
         events = [
-            {"event": "start", "run_id": "r1", "cost_usd": 99.0, "ended_at_utc": f"{current_month}-01T10:00:00Z"},
-            {"event": "feedback", "run_id": "r1", "cost_usd": 99.0, "ended_at_utc": f"{current_month}-01T10:00:00Z"},
+            {
+                "event": "start",
+                "run_id": "r1",
+                "cost_usd": 99.0,
+                "ended_at_utc": f"{current_month}-01T10:00:00Z",
+            },
+            {
+                "event": "feedback",
+                "run_id": "r1",
+                "cost_usd": 99.0,
+                "ended_at_utc": f"{current_month}-01T10:00:00Z",
+            },
         ]
         with reg_path.open("w", encoding="utf-8") as f:
             for ev in events:
@@ -407,7 +463,11 @@ class TestCostAggregatorMtdTotal:
         now = datetime.now(UTC)
         current_month = f"{now.year}-{now.month:02d}"
         events = [
-            {"event": "finish", "run_id": "r1", "ended_at_utc": f"{current_month}-01T10:00:00Z"},
+            {
+                "event": "finish",
+                "run_id": "r1",
+                "ended_at_utc": f"{current_month}-01T10:00:00Z",
+            },
         ]
         with reg_path.open("w", encoding="utf-8") as f:
             for ev in events:
@@ -492,7 +552,12 @@ class TestCostAggregatorBlankAndCorruptedLines:
             f.write("\n")
             f.write(
                 json.dumps(
-                    {"event": "finish", "run_id": "r1", "cost_usd": 1.0, "ended_at_utc": f"{today}T10:00:00Z"}
+                    {
+                        "event": "finish",
+                        "run_id": "r1",
+                        "cost_usd": 1.0,
+                        "ended_at_utc": f"{today}T10:00:00Z",
+                    }
                 ).decode()
                 + "\n"
             )
@@ -512,7 +577,12 @@ class TestCostAggregatorBlankAndCorruptedLines:
             f.write("{broken json\n")
             f.write(
                 json.dumps(
-                    {"event": "finish", "run_id": "r1", "cost_usd": 2.0, "ended_at_utc": f"{today}T10:00:00Z"}
+                    {
+                        "event": "finish",
+                        "run_id": "r1",
+                        "cost_usd": 2.0,
+                        "ended_at_utc": f"{today}T10:00:00Z",
+                    }
                 ).decode()
                 + "\n"
             )
@@ -579,7 +649,11 @@ class TestGuardrailsFromEnvBranches:
     def test_blocklist_from_env(self) -> None:
         # @trace FR-GOV-007
         """THGENT_PROMPT_BLOCKLIST_PATTERNS parsed from env (line 111)."""
-        with patch.dict(os.environ, {"THGENT_PROMPT_BLOCKLIST_PATTERNS": "SECRET,PASSWORD"}, clear=False):
+        with patch.dict(
+            os.environ,
+            {"THGENT_PROMPT_BLOCKLIST_PATTERNS": "SECRET,PASSWORD"},
+            clear=False,
+        ):
             g = guardrails_from_settings()
         assert "SECRET" in g.prompt_blocklist_patterns
         assert "PASSWORD" in g.prompt_blocklist_patterns

@@ -25,6 +25,7 @@
 ### Q: What are the minimum system requirements?
 
 **A:** CRUN requires:
+
 - **Python:** 3.11 or higher
 - **RAM:** 4GB minimum (8GB+ recommended)
 - **Disk:** 2GB for installation + workspace
@@ -37,6 +38,7 @@ For production deployments with 100+ agents, we recommend 16GB+ RAM.
 ### Q: Can I install CRUN on Windows?
 
 **A:** Yes, on Windows 10/11:
+
 1. **Native:** Limited support - command-line only
 2. **WSL2** (Recommended): Full support
    ```bash
@@ -137,15 +139,16 @@ The plan will contain 2000-3000 lines with tasks, subtasks, and dependencies.
 
 **A:**
 
-| Feature | CLI | TUI | GUI |
-|---------|-----|-----|-----|
-| **Interface** | Command-line | Terminal UI | Graphical |
-| **Automation** | ✓ Script-friendly | - | - |
-| **Remote** | ✓ SSH support | ✓ SSH support | ✗ Local only |
-| **Performance** | Best | Good | Heaviest |
-| **Learning** | Moderate | Easy | Easy |
+| Feature         | CLI               | TUI           | GUI          |
+| --------------- | ----------------- | ------------- | ------------ |
+| **Interface**   | Command-line      | Terminal UI   | Graphical    |
+| **Automation**  | ✓ Script-friendly | -             | -            |
+| **Remote**      | ✓ SSH support     | ✓ SSH support | ✗ Local only |
+| **Performance** | Best              | Good          | Heaviest     |
+| **Learning**    | Moderate          | Easy          | Easy         |
 
 **Which to use:**
+
 - **CLI:** Automation, scripts, remote servers
 - **TUI:** Interactive development, no GUI
 - **GUI:** Visual design, learning
@@ -163,6 +166,7 @@ crun ai-plan generate-massive project.txt \
 ```
 
 For best CPU performance, use smaller models:
+
 - Claude 3 Haiku
 - GPT-3.5 Turbo
 - Mistral 7B
@@ -175,12 +179,12 @@ For best CPU performance, use smaller models:
 
 **A:** Plan generation typically takes:
 
-| Plan Size | Time | API Cost |
-|-----------|------|----------|
-| Small (500 lines) | 30s | $0.10 |
-| Medium (1500 lines) | 1min | $0.50 |
-| Large (3000 lines) | 2min | $1.00 |
-| Massive (5000+ lines) | 3-5min | $2-3 |
+| Plan Size             | Time   | API Cost |
+| --------------------- | ------ | -------- |
+| Small (500 lines)     | 30s    | $0.10    |
+| Medium (1500 lines)   | 1min   | $0.50    |
+| Large (3000 lines)    | 2min   | $1.00    |
+| Massive (5000+ lines) | 3-5min | $2-3     |
 
 Times vary by model and network. Use a higher-capacity model and larger `--max-depth`
 for better quality, for example `anthropic/claude-sonnet-4` with `--max-depth 5`.
@@ -192,6 +196,7 @@ for better quality, for example `anthropic/claude-sonnet-4` with `--max-depth 5`
 **A:**
 
 Use the current planning controls:
+
 - `--max-depth` to control plan complexity
 - `--model` and `--fast-model` for quality/cost tradeoffs
 - `--streaming/--no-streaming` for output behavior
@@ -239,6 +244,7 @@ crun ai-plan monitor my_plan.md --follow
 ### Q: What's DAG execution?
 
 **A:** DAG (Directed Acyclic Graph) execution:
+
 - Analyzes task dependencies
 - Executes independent tasks in parallel
 - Respects task ordering constraints
@@ -260,14 +266,15 @@ Execution uses CRUN's internal scheduling strategy by default.
 
 **A:**
 
-| Resources | Max Agents | Recommendation |
-|-----------|------------|-----------------|
-| 4GB RAM | 5 | 2 for stability |
-| 8GB RAM | 20 | 10 for balance |
-| 16GB RAM | 50 | 25 for speed |
-| 32GB+ | 100+ | Scale as needed |
+| Resources | Max Agents | Recommendation  |
+| --------- | ---------- | --------------- |
+| 4GB RAM   | 5          | 2 for stability |
+| 8GB RAM   | 20         | 10 for balance  |
+| 16GB RAM  | 50         | 25 for speed    |
+| 32GB+     | 100+       | Scale as needed |
 
 Set with:
+
 ```bash
 crun ai-plan monitor plan.md --workers 20
 ```
@@ -286,6 +293,7 @@ crun ai-plan monitor plan.md --workers 20
 4. **Planning depth/model choices:** higher depth and larger models increase runtime.
 
 **Solutions:**
+
 ```bash
 # Disable fancy features
 crun ai-plan generate-massive project.txt
@@ -305,17 +313,20 @@ crun ai-plan generate-massive project.txt
 **A:**
 
 1. **Use cheaper models:**
+
    ```bash
    --model claude-3-haiku  # Cheapest
    --model gpt-3.5-turbo   # Moderate
    ```
 
 2. **Use default quality settings:**
+
    ```bash
    crun ai-plan generate-massive project.txt --max-depth 4
    ```
 
 3. **Cache plans:**
+
    ```bash
    # Reuse generated plans instead of regenerating
    ```
@@ -329,6 +340,7 @@ crun ai-plan generate-massive project.txt
    ```
 
 **Typical costs:**
+
 - Small plan: $0.10
 - Medium plan: $0.50
 - Large plan: $1-2
@@ -391,11 +403,7 @@ from crun.planning import generate_plan
 from crun.execution import execute_plan
 
 # Generate plan
-plan = generate_plan(
-    description="Build a web app",
-    use_tot=True,
-    max_tokens=4000
-)
+plan = generate_plan(description="Build a web app", use_tot=True, max_tokens=4000)
 
 # Execute plan
 results = execute_plan(plan, max_parallel=10)
@@ -446,6 +454,7 @@ curl -X POST http://localhost:8000/api/plans \
 
 ```python
 from crun.agents import BaseAgent
+
 
 class CustomAgent(BaseAgent):
     async def execute(self, task):
@@ -516,6 +525,7 @@ python -c "from crun.agents import Agent; a = Agent(); print(a.status())"
 ### Q: Can I run CRUN in offline mode?
 
 **A:** Limited support:
+
 - ✓ Can execute previously generated plans
 - ✗ Cannot generate new plans (requires API)
 - ✗ Cannot use AI features
@@ -597,6 +607,7 @@ Schedule regular backups for production.
 - **Major versions:** After testing
 
 Check release notes:
+
 ```bash
 crun --version  # Current version
 git log --oneline  # Recent changes
@@ -630,7 +641,6 @@ CRUN_WORKSPACE_ROOT=/workspace2 crun gui --port 8001
 ---
 
 **Version:** CRUN 3.0.0 | Last Updated: 2026-02-20
-
 
 ---
 

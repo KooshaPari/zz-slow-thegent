@@ -1,15 +1,17 @@
 """High-performance parallel git operations for the agent mesh."""
 
-import logging
 import hashlib
-import orjson as json
+import logging
 import os
 import random
 import shutil
 import subprocess
-from thegent.infra.shim_subprocess import run as shim_run
 import time
 from pathlib import Path
+
+import orjson as json
+
+from thegent.infra.shim_subprocess import run as shim_run
 
 logger = logging.getLogger(__name__)
 
@@ -27,7 +29,12 @@ def _thegent_git_has(name: str) -> bool:
 class GitParallelismManager:
     """Manages parallel git operations using per-agent index files and plumbing (SCLI-P4.1–P4.2)."""
 
-    def __init__(self, project_root: Path, agent_id: str, mesh_root: Path = Path("/tmp/agent-mesh")) -> None:  # noqa: S108 -- intentional platform temp dir for agent mesh IPC
+    def __init__(
+        self,
+        project_root: Path,
+        agent_id: str,
+        mesh_root: Path = Path("/tmp/agent-mesh"),
+    ) -> None:  # noqa: S108 -- intentional platform temp dir for agent mesh IPC
         self.project_root = project_root
         self.agent_id = agent_id
         self.git_dir = project_root / ".git"
@@ -102,10 +109,7 @@ class GitParallelismManager:
         if age < stale_after_s:
             return False
 
-        if self._has_open_lock_holder(lock_path):
-            return False
-
-        return True
+        return not self._has_open_lock_holder(lock_path)
 
     def index_lock_status(self, stale_after_s: float = 90.0) -> dict[str, object]:
         """Return index lock state summary."""
@@ -354,7 +358,10 @@ class GitParallelismManager:
             if probe.returncode != 0 or "CONFLICT" in probe.stdout:
                 return None
 
-            tree_proc = self._run_git(["merge-tree", "--write-tree", ours_commit, theirs_commit], use_index=False)
+            tree_proc = self._run_git(
+                ["merge-tree", "--write-tree", ours_commit, theirs_commit],
+                use_index=False,
+            )
             if tree_proc.returncode != 0:
                 return None
 

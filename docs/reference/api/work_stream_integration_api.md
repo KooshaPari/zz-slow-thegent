@@ -12,7 +12,7 @@ Auto-incorporate items into work stream.
 
 ### Methods
 
-#### WorkStreamIntegration.__init__
+#### WorkStreamIntegration.**init**
 
 ```python
 __init__(self: Any, work_stream_path: Any)

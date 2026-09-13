@@ -29,6 +29,7 @@ src/tracertm/services/**
 ## Auto-Invoke Patterns
 
 Trigger when user mentions:
+
 - "performance", "slow", "optimize", "bottleneck", "profiling"
 - Performance regressions detected
 - Bundle size increases
@@ -114,19 +115,11 @@ for project in projects:
     items = session.query(Item).filter(Item.project_id == project.id).all()
 
 # ✅ GOOD: Join with eager loading
-projects = (
-    session.query(Project)
-    .options(joinedload(Project.items))
-    .all()
-)
+projects = session.query(Project).options(joinedload(Project.items)).all()
 
 # ✅ GOOD: Batch loading
 project_ids = [p.id for p in projects]
-items = (
-    session.query(Item)
-    .filter(Item.project_id.in_(project_ids))
-    .all()
-)
+items = session.query(Item).filter(Item.project_id.in_(project_ids)).all()
 ```
 
 ### 4. React Memo Patterns
@@ -201,7 +194,7 @@ const Component = () => {
 const result = heavyComputation(data);
 
 // ✅ GOOD: Use Web Worker
-const worker = new Worker('/workers/compute.js');
+const worker = new Worker("/workers/compute.js");
 worker.postMessage(data);
 worker.onmessage = (e) => {
   const result = e.data;
@@ -211,6 +204,7 @@ worker.onmessage = (e) => {
 ## Value Proposition
 
 **Time Savings:**
+
 - Proactive bottleneck detection: 60 min debugging → 15 min profiling
 - Query optimization: 40 min → 10 min with EXPLAIN
 - Bundle analysis: 30 min → 5 min with tools

@@ -12,6 +12,7 @@
 **Problem:** thegent currently assumes it's running from the dev repository directory. In production, users install via package managers (pip, nix, etc.) and have a "manage" devkit system. Thegent should work **without** requiring access to the repository directory.
 
 **Current State:**
+
 - `.envrc` uses `$(pwd)` to reference thegent directory
 - `.starship.toml` is in thegent directory
 - Code searches for `src/thegent` to detect project root
@@ -19,6 +20,7 @@
 - Hooks/templates referenced from repo directory
 
 **Goal:** Make thegent work seamlessly for:
+
 1. **Dev mode** (running from repo) — current behavior
 2. **Installed mode** (via pip/nix/pkg manager) — new requirement
 3. **Manage devkit** — integrate with existing devkit system
@@ -29,38 +31,38 @@
 
 ### 1.1 Environment Files
 
-| File | Dependency | Location | Impact |
-|------|-----------|----------|--------|
-| `.envrc` | `$(pwd)/.starship.toml` | `.envrc:17` | ⚠️ **High** — Starship config not found |
-| `.envrc` | `$(pwd)/.venv` | `.envrc:8` | ⚠️ **Medium** — Dev venv only |
-| `.envrc` | `$(pwd)/src` | `.envrc:11` | ⚠️ **High** — PYTHONPATH for dev |
-| `.starship.toml` | Project root | `.starship.toml` | ⚠️ **High** — Prompt config |
+| File             | Dependency              | Location         | Impact                                  |
+| ---------------- | ----------------------- | ---------------- | --------------------------------------- |
+| `.envrc`         | `$(pwd)/.starship.toml` | `.envrc:17`      | ⚠️ **High** — Starship config not found |
+| `.envrc`         | `$(pwd)/.venv`          | `.envrc:8`       | ⚠️ **Medium** — Dev venv only           |
+| `.envrc`         | `$(pwd)/src`            | `.envrc:11`      | ⚠️ **High** — PYTHONPATH for dev        |
+| `.starship.toml` | Project root            | `.starship.toml` | ⚠️ **High** — Prompt config             |
 
 ### 1.2 Python Code Dependencies
 
-| File | Pattern | Line | Impact |
-|------|---------|------|--------|
-| `doctor.py` | `Path.cwd() / "src" / "thegent"` | 40 | ⚠️ **High** — Assumes repo structure |
-| `doctor.py` | `os.chdir(project_root)` | 51 | ⚠️ **High** — Changes CWD |
-| `mcp_manage.py` | `Path(thegent.__file__).parent.parent.parent` | 88 | ⚠️ **High** — Assumes repo structure |
-| `install.py` | `Path(__file__).parent.parent.parent` | 1833 | ⚠️ **High** — Assumes repo structure |
-| `cliproxy_manager.py` | `Path(thegent.__file__).parent.parent.parent` | 335, 378 | ⚠️ **Medium** — Fork binary lookup |
-| `cliproxy_manager.py` | `parents[3] / "scripts"` | 507 | ⚠️ **Medium** — Adapter script |
-| `main.py` | `parents[2] / "hooks"` | 1930 | ⚠️ **High** — Hook watcher |
-| `prompts.py` | `parent.parent.parent` | 592 | ⚠️ **Medium** — Script directory |
+| File                  | Pattern                                       | Line     | Impact                               |
+| --------------------- | --------------------------------------------- | -------- | ------------------------------------ |
+| `doctor.py`           | `Path.cwd() / "src" / "thegent"`              | 40       | ⚠️ **High** — Assumes repo structure |
+| `doctor.py`           | `os.chdir(project_root)`                      | 51       | ⚠️ **High** — Changes CWD            |
+| `mcp_manage.py`       | `Path(thegent.__file__).parent.parent.parent` | 88       | ⚠️ **High** — Assumes repo structure |
+| `install.py`          | `Path(__file__).parent.parent.parent`         | 1833     | ⚠️ **High** — Assumes repo structure |
+| `cliproxy_manager.py` | `Path(thegent.__file__).parent.parent.parent` | 335, 378 | ⚠️ **Medium** — Fork binary lookup   |
+| `cliproxy_manager.py` | `parents[3] / "scripts"`                      | 507      | ⚠️ **Medium** — Adapter script       |
+| `main.py`             | `parents[2] / "hooks"`                        | 1930     | ⚠️ **High** — Hook watcher           |
+| `prompts.py`          | `parent.parent.parent`                        | 592      | ⚠️ **Medium** — Script directory     |
 
 ### 1.3 Shell Scripts
 
-| File | Dependency | Impact |
-|------|-----------|--------|
-| `scripts/start_proxy.py` | `Path(__file__).parents[1] / "src"` | ⚠️ **High** — Dev-only |
-| `~/.local/bin/thegent` wrapper | Finds project root | ⚠️ **High** — Assumes repo exists |
+| File                           | Dependency                          | Impact                            |
+| ------------------------------ | ----------------------------------- | --------------------------------- |
+| `scripts/start_proxy.py`       | `Path(__file__).parents[1] / "src"` | ⚠️ **High** — Dev-only            |
+| `~/.local/bin/thegent` wrapper | Finds project root                  | ⚠️ **High** — Assumes repo exists |
 
 ### 1.4 Configuration Files
 
-| File | Dependency | Impact |
-|------|-----------|--------|
-| `flake.nix` | `$(pwd)/src` | ⚠️ **Medium** — Dev shell only |
+| File        | Dependency     | Impact                         |
+| ----------- | -------------- | ------------------------------ |
+| `flake.nix` | `$(pwd)/src`   | ⚠️ **Medium** — Dev shell only |
 | `flake.nix` | `$(pwd)/.venv` | ⚠️ **Medium** — Dev shell only |
 
 ---
@@ -70,6 +72,7 @@
 ### 2.1 Detection Methods
 
 **Method 1: Check if `thegent.__file__` is in site-packages**
+
 ```python
 import thegent
 from pathlib import Path
@@ -83,10 +86,12 @@ is_dev = not is_installed and (pkg_path.parent.parent / "pyproject.toml").exists
 ```
 
 **Method 2: Check for `pyproject.toml` in parent directories**
+
 ```python
 def _is_dev_mode() -> bool:
     """Detect if running from dev repo vs installed package."""
     import thegent
+
     pkg_path = Path(thegent.__file__).resolve().parent
     # Check if we're in a repo (has pyproject.toml nearby)
     for parent in [pkg_path.parent, pkg_path.parent.parent, pkg_path.parent.parent.parent]:
@@ -96,6 +101,7 @@ def _is_dev_mode() -> bool:
 ```
 
 **Method 3: Environment variable override**
+
 ```python
 # Allow explicit override
 if os.environ.get("THGENT_MODE") == "dev":
@@ -108,6 +114,7 @@ elif os.environ.get("THGENT_MODE") == "installed":
 ### 2.2 Recommended Approach
 
 **Hybrid detection:**
+
 1. Check `THGENT_MODE` env var (explicit override)
 2. Check if `thegent.__file__` is in site-packages (installed)
 3. Check for `pyproject.toml` + `src/thegent` (dev)
@@ -120,11 +127,13 @@ elif os.environ.get("THGENT_MODE") == "installed":
 ### 3.1 XDG Base Directory Specification
 
 **Standard locations:**
+
 - **Config:** `~/.config/thegent/` (or `$XDG_CONFIG_HOME/thegent/`)
 - **Cache:** `~/.cache/thegent/` (or `$XDG_CACHE_HOME/thegent/`)
 - **Data:** `~/.local/share/thegent/` (or `$XDG_DATA_HOME/thegent/`)
 
 **Current usage:**
+
 - `~/.config/thegent/cliproxy-config.yaml` ✅ Already using XDG
 - `~/.cache/thegent/sessions/` ✅ Already using XDG
 - `~/.cache/thegent/git-shim-cache` ✅ Already using XDG
@@ -132,12 +141,14 @@ elif os.environ.get("THGENT_MODE") == "installed":
 ### 3.2 Project-Specific Files
 
 **For installed thegent:**
+
 - **Hooks:** `~/.config/thegent/hooks/` (installed via `thegent install`)
 - **Templates:** `~/.config/thegent/templates/` (installed via `thegent install`)
 - **Scripts:** `~/.local/share/thegent/scripts/` (installed via `thegent install`)
 - **Starship config:** `~/.config/thegent/.starship.toml` (global) or per-project
 
 **For dev mode:**
+
 - Use repo directories as fallback
 - Allow override via `THGENT_HOOKS_DIR`, `THGENT_TEMPLATES_DIR`, etc.
 
@@ -148,12 +159,14 @@ elif os.environ.get("THGENT_MODE") == "installed":
 ### 4.1 What is "Manage"?
 
 **Hypothesis:** "manage" is likely:
+
 - A devkit/system management tool
 - Possibly related to Factory system (`.factory/` directories)
 - May provide hooks, templates, or configuration management
 - Could be a wrapper/system for managing dev environments
 
 **Research needed:**
+
 - Search codebase for "manage" references
 - Check if there's a `manage` command or tool
 - Understand how it integrates with thegent
@@ -161,6 +174,7 @@ elif os.environ.get("THGENT_MODE") == "installed":
 ### 4.2 Integration Points
 
 **Potential integration:**
+
 1. **Hooks:** `manage` may provide hooks that thegent should use
 2. **Templates:** `manage` may provide templates
 3. **Configuration:** `manage` may manage `.envrc`, `.starship.toml`, etc.
@@ -175,12 +189,14 @@ elif os.environ.get("THGENT_MODE") == "installed":
 **Goal:** Add detection logic without breaking existing behavior.
 
 **Tasks:**
+
 1. Create `src/thegent/utils.py` with `_is_dev_mode()` function
 2. Add `THGENT_MODE` env var support
 3. Update `_get_project_root()` functions to use detection
 4. Test in both dev and installed modes
 
 **Files:**
+
 - `src/thegent/utils.py` — New utility module
 - `src/thegent/mcp_manage.py` — Update `_get_project_root()`
 - `src/thegent/doctor.py` — Update project root detection
@@ -195,6 +211,7 @@ elif os.environ.get("THGENT_MODE") == "installed":
 **Goal:** Move project-specific files to user directories.
 
 **Tasks:**
+
 1. Create `~/.config/thegent/hooks/` directory structure
 2. Install hooks to user directory via `thegent install`
 3. Update hook resolution to check user dir first, then repo
@@ -202,6 +219,7 @@ elif os.environ.get("THGENT_MODE") == "installed":
 5. Update `.envrc` to use user directory
 
 **Files:**
+
 - `src/thegent/install.py` — Install hooks/templates to user dir
 - `hooks/hook-dispatcher/src/main.rs` — Update `resolve_hooks_dir()`
 - `.envrc` — Use user directory for starship config
@@ -216,12 +234,14 @@ elif os.environ.get("THGENT_MODE") == "installed":
 **Goal:** Remove all `Path.cwd()` and `$(pwd)` dependencies.
 
 **Tasks:**
+
 1. Update `doctor.py` to not change CWD
 2. Update `.envrc` to not use `$(pwd)`
 3. Update scripts to use user directories or package paths
 4. Remove project root detection from non-dev commands
 
 **Files:**
+
 - `src/thegent/doctor.py` — Remove CWD changes
 - `.envrc` — Use user directories
 - `scripts/start_proxy.py` — Use package paths
@@ -236,12 +256,14 @@ elif os.environ.get("THGENT_MODE") == "installed":
 **Goal:** Integrate with "manage" devkit system.
 
 **Tasks:**
+
 1. Research "manage" devkit system
 2. Detect if "manage" is available
 3. Use "manage" hooks/templates if available
 4. Fallback to thegent defaults if not
 
 **Files:**
+
 - `src/thegent/utils.py` — Add manage detection
 - `src/thegent/install.py` — Check for manage integration
 - Documentation — Document manage integration
@@ -263,6 +285,7 @@ import site
 from pathlib import Path
 from typing import Optional
 
+
 def _is_dev_mode() -> bool:
     """Detect if running from dev repo vs installed package.
 
@@ -278,6 +301,7 @@ def _is_dev_mode() -> bool:
 
     # Auto-detect: check if package is in site-packages
     import thegent
+
     pkg_path = Path(thegent.__file__).resolve().parent
 
     # Check site-packages
@@ -293,12 +317,14 @@ def _is_dev_mode() -> bool:
     # Fallback: assume installed (safer)
     return False
 
+
 def _get_thegent_root() -> Optional[Path]:
     """Get thegent root directory (dev repo) or None if installed."""
     if not _is_dev_mode():
         return None
 
     import thegent
+
     pkg_path = Path(thegent.__file__).resolve().parent
     for parent in [pkg_path.parent, pkg_path.parent.parent, pkg_path.parent.parent.parent]:
         if (parent / "pyproject.toml").exists() and (parent / "src" / "thegent").exists():
@@ -313,17 +339,20 @@ def _get_thegent_root() -> Optional[Path]:
 from pathlib import Path
 import os
 
+
 def _get_user_config_dir() -> Path:
     """Get user config directory (XDG compliant)."""
     if "XDG_CONFIG_HOME" in os.environ:
         return Path(os.environ["XDG_CONFIG_HOME"]) / "thegent"
     return Path.home() / ".config" / "thegent"
 
+
 def _get_user_data_dir() -> Path:
     """Get user data directory (XDG compliant)."""
     if "XDG_DATA_HOME" in os.environ:
         return Path(os.environ["XDG_DATA_HOME"]) / "thegent"
     return Path.home() / ".local" / "share" / "thegent"
+
 
 # Add to ThegentSettings
 hooks_dir: Path = Field(
@@ -382,6 +411,7 @@ fn resolve_hooks_dir() -> PathBuf {
 ### 6.4 Starship Config Strategy
 
 **Option A: Global config (recommended)**
+
 ```bash
 # ~/.config/thegent/.starship.toml (installed)
 # Created by: thegent install --target shell
@@ -390,12 +420,14 @@ command_timeout = 10000
 ```
 
 **Option B: Per-project config (dev mode)**
+
 ```bash
 # .starship.toml (dev repo)
 # Only used in dev mode
 ```
 
 **Option C: Hybrid**
+
 ```bash
 # .envrc update
 if [ -f .starship.toml ]; then
@@ -414,6 +446,7 @@ fi
 ### 7.1 Python Package (pip)
 
 **Installation:**
+
 ```bash
 pip install thegent
 # or
@@ -421,6 +454,7 @@ pip install -e .  # Dev mode
 ```
 
 **Package structure:**
+
 ```
 site-packages/thegent/
 ├── __init__.py
@@ -430,12 +464,14 @@ site-packages/thegent/
 ```
 
 **Data files:**
+
 - Use `package_data` in `pyproject.toml` to include hooks/templates
 - Install to user directory via `thegent install`
 
 ### 7.2 Nix Package
 
 **flake.nix update:**
+
 ```nix
 {
   packages.default = pkgs.python3Packages.buildPythonPackage {
@@ -452,6 +488,7 @@ site-packages/thegent/
 ```
 
 **Usage:**
+
 ```bash
 nix profile install github:router-for-me/thegent
 thegent install  # Installs hooks/templates to ~/.config/thegent/
@@ -460,6 +497,7 @@ thegent install  # Installs hooks/templates to ~/.config/thegent/
 ### 7.3 Package Data Strategy
 
 **pyproject.toml:**
+
 ```toml
 [tool.hatch.build.targets.wheel]
 packages = ["src/thegent"]
@@ -471,9 +509,11 @@ packages = ["src/thegent"]
 ```
 
 **Access in code:**
+
 ```python
 import importlib.resources
 from pathlib import Path
+
 
 def _get_package_hooks_dir() -> Path | None:
     """Get hooks directory from installed package."""
@@ -491,12 +531,14 @@ def _get_package_hooks_dir() -> Path | None:
 ### 8.1 Research Needed
 
 **Questions:**
+
 1. What is "manage"? (command, tool, system?)
 2. Where does it store hooks/templates?
 3. How does it integrate with direnv/nix?
 4. Does it provide starship config?
 
 **Investigation:**
+
 - Search codebase for "manage" references
 - Check for `manage` command or script
 - Check `.factory/` directory structure
@@ -505,6 +547,7 @@ def _get_package_hooks_dir() -> Path | None:
 ### 8.2 Integration Strategy
 
 **If manage provides hooks:**
+
 ```python
 def _get_hooks_dir() -> Path:
     """Get hooks directory with manage integration."""
@@ -560,12 +603,12 @@ def _get_hooks_dir() -> Path:
 
 ### 10.1 Risks
 
-| Risk | Severity | Mitigation |
-|------|----------|------------|
-| **Breaking dev workflow** | High | Keep dev mode detection, test thoroughly |
-| **Hook resolution failures** | Medium | Multiple fallback paths, clear error messages |
-| **Config migration** | Low | Provide migration script |
-| **Manage integration** | Low | Optional, fallback exists |
+| Risk                         | Severity | Mitigation                                    |
+| ---------------------------- | -------- | --------------------------------------------- |
+| **Breaking dev workflow**    | High     | Keep dev mode detection, test thoroughly      |
+| **Hook resolution failures** | Medium   | Multiple fallback paths, clear error messages |
+| **Config migration**         | Low      | Provide migration script                      |
+| **Manage integration**       | Low      | Optional, fallback exists                     |
 
 ### 10.2 Migration Strategy
 
@@ -578,12 +621,12 @@ def _get_hooks_dir() -> Path:
 
 ## 11. Timeline and Effort
 
-| Phase | Tasks | Effort | Risk | Priority |
-|-------|-------|--------|------|----------|
-| **Phase 1** | Dev/installed detection | 2-3h | Low | P1 |
-| **Phase 2** | User data directories | 4-6h | Medium | P1 |
-| **Phase 3** | Remove CWD dependencies | 3-4h | Medium | P1 |
-| **Phase 4** | Manage devkit integration | 2-3h | Low | P2 |
+| Phase       | Tasks                     | Effort | Risk   | Priority |
+| ----------- | ------------------------- | ------ | ------ | -------- |
+| **Phase 1** | Dev/installed detection   | 2-3h   | Low    | P1       |
+| **Phase 2** | User data directories     | 4-6h   | Medium | P1       |
+| **Phase 3** | Remove CWD dependencies   | 3-4h   | Medium | P1       |
+| **Phase 4** | Manage devkit integration | 2-3h   | Low    | P2       |
 
 **Total Effort:** 11-16 hours
 **Total Risk:** Low-Medium (with fallbacks)
@@ -637,12 +680,14 @@ def _get_hooks_dir() -> Path:
 **Goal:** Make thegent work seamlessly in both dev and installed modes, with integration for "manage" devkit system.
 
 **Approach:**
+
 1. Detect dev vs installed mode
 2. Use user directories for installed mode
 3. Remove CWD dependencies
 4. Integrate with manage devkit
 
 **Expected Benefits:**
+
 - ✅ Works out of box for production users
 - ✅ Clean package manager installation
 - ✅ Manage devkit integration
@@ -662,15 +707,18 @@ def _get_hooks_dir() -> Path:
 **Extended by:** Claude Code
 
 ### Changes Made
+
 1. Added practical implementation patterns
 2. Added configuration examples
 3. Enhanced cross-references to related docs
 
 ### Cross-References Added
+
 - Related research and implementation guides
 - WORK_STREAM.md for tracking
 
 ### Practical Additions
+
 - Implementation templates
 - Configuration examples
 - Best practices

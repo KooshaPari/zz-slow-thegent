@@ -14,14 +14,15 @@
 
 ## 1. Feature Comparison
 
-| Feature | Old Implementation | New Implementation | Status | Notes |
-|---------|-------------------|-------------------|--------|-------|
-| Feature 1 | ✅ Location/API | ✅ Location/API | ✅ Parity | - |
-| Feature 2 | ✅ Location/API | ✅ Location/API | ✅ Parity | - |
-| Feature 3 | ✅ Location/API | ⚠️ Different API | ⚠️ Review | [Explain difference] |
-| Feature 4 | ✅ Location/API | ❌ Missing | ❌ **BLOCK** | [Action required] |
+| Feature   | Old Implementation | New Implementation | Status       | Notes                |
+| --------- | ------------------ | ------------------ | ------------ | -------------------- |
+| Feature 1 | ✅ Location/API    | ✅ Location/API    | ✅ Parity    | -                    |
+| Feature 2 | ✅ Location/API    | ✅ Location/API    | ✅ Parity    | -                    |
+| Feature 3 | ✅ Location/API    | ⚠️ Different API   | ⚠️ Review    | [Explain difference] |
+| Feature 4 | ✅ Location/API    | ❌ Missing         | ❌ **BLOCK** | [Action required]    |
 
 **Summary:**
+
 - ✅ Features with parity: X
 - ⚠️ Features with differences: Y (acceptable)
 - ❌ Missing features: Z (**BLOCK REMOVAL**)
@@ -32,13 +33,14 @@
 
 ### Callers Identified
 
-| Caller Location | Old Import | New Import | Status |
-|----------------|-----------|-----------|--------|
-| `file1.py` | `from old import X` | `from new import X` | ✅ Migrated |
-| `file2.py` | `from old import Y` | `from new import Y` | ✅ Migrated |
-| `file3.py` | `from old import Z` | ❌ Not migrated | ❌ **BLOCK** |
+| Caller Location | Old Import          | New Import          | Status       |
+| --------------- | ------------------- | ------------------- | ------------ |
+| `file1.py`      | `from old import X` | `from new import X` | ✅ Migrated  |
+| `file2.py`      | `from old import Y` | `from new import Y` | ✅ Migrated  |
+| `file3.py`      | `from old import Z` | ❌ Not migrated     | ❌ **BLOCK** |
 
 **Summary:**
+
 - Total callers: X
 - Migrated: Y
 - Remaining: Z (**BLOCK REMOVAL** if > 0)
@@ -59,14 +61,15 @@ grep -r "old_module\|old.import" src/ tests/ | wc -l  # Should be 0
 
 ### Test Results
 
-| Test Case | Old Implementation | New Implementation | Status |
-|-----------|-------------------|-------------------|--------|
-| Test 1: Basic functionality | ✅ Pass | ✅ Pass | ✅ Parity |
-| Test 2: Edge case handling | ✅ Pass | ✅ Pass | ✅ Parity |
-| Test 3: Error handling | ✅ Pass | ⚠️ Different | ⚠️ Review |
-| Test 4: Performance | ✅ 100ms | ✅ 50ms | ✅ Better |
+| Test Case                   | Old Implementation | New Implementation | Status    |
+| --------------------------- | ------------------ | ------------------ | --------- |
+| Test 1: Basic functionality | ✅ Pass            | ✅ Pass            | ✅ Parity |
+| Test 2: Edge case handling  | ✅ Pass            | ✅ Pass            | ✅ Parity |
+| Test 3: Error handling      | ✅ Pass            | ⚠️ Different       | ⚠️ Review |
+| Test 4: Performance         | ✅ 100ms           | ✅ 50ms            | ✅ Better |
 
 **Summary:**
+
 - Tests passing: X/Y
 - Behavioral differences: Z (acceptable/unacceptable)
 - Performance: Better/Same/Worse
@@ -97,17 +100,20 @@ def test_parity_old_vs_new():
 ## 5. Approval
 
 **Parity Verification:**
+
 - [ ] ✅ Feature parity verified
 - [ ] ✅ Migration complete
 - [ ] ✅ Tests pass
 - [ ] ✅ Documentation updated
 
 **Ready for Removal:**
+
 - [ ] ✅ All checks pass
 - [ ] ✅ Approval obtained
 - [ ] ✅ Removal plan documented
 
 **If any check fails:**
+
 - ❌ **DO NOT PROCEED** with removal
 - ⚠️ Fix issues first
 - 🔄 Re-verify after fixes
@@ -117,6 +123,7 @@ def test_parity_old_vs_new():
 ## 6. Post-Removal Verification
 
 **After removal, verify:**
+
 - [ ] All tests pass
 - [ ] No broken imports
 - [ ] No regressions

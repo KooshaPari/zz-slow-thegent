@@ -20,7 +20,11 @@ import pytest
 # individual tests is preserved for symmetry.
 pytest.importorskip("diskcache", reason="diskcache dependency is required for cache integration tests")
 
-from thegent.cache.multi_level import _DISKCACHE_AVAILABLE, MultiLevelCache, cached_multi
+from thegent.cache.multi_level import (
+    _DISKCACHE_AVAILABLE,
+    MultiLevelCache,
+    cached_multi,
+)
 
 if TYPE_CHECKING:
     from pathlib import Path

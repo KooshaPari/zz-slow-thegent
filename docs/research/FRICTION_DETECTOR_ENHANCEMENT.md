@@ -50,18 +50,22 @@ Expanded friction detector from **7 patterns** to **40+ patterns** covering:
 ## New Features
 
 ### Multi-Line Pattern Detection
+
 - Detects patterns spanning multiple lines
 - Handles sequential operations across lines
 
 ### Category Grouping
+
 - Output grouped by category (UX, DX, AX)
 - Sorted by priority (P1 first)
 
 ### Filtering Options
+
 - `--category ux|dx|ax|all` - Filter by category
 - `--priority P1|P2|all` - Filter by priority
 
 ### Deduplication
+
 - Removes duplicate findings at same location
 - Prevents false positives
 
@@ -70,44 +74,54 @@ Expanded friction detector from **7 patterns** to **40+ patterns** covering:
 ### Process/Agent Workflow Patterns
 
 **Sequential Agent Calls**:
+
 ```python
 thegent free "Task 1"
 thegent free "Task 2"
 thegent free "Task 3"
 ```
+
 → **Detected**: Should use `thegent bg` for parallel execution
 
 **While Loop Polling**:
+
 ```bash
 while true; do
   sleep 5
   thegent ps
 done
 ```
+
 → **Detected**: Should use `thegent plan wait-next`
 
 **Reading Many Files**:
+
 ```python
 read_file("file1.py")
 read_file("file2.py")
 read_file("file3.py")
 read_file("file4.py")
 ```
+
 → **Detected**: Should delegate or use `batch_read_files()`
 
 ### Performance Patterns
 
 **Subprocess Overhead**:
+
 ```python
 subprocess.run("cmd", shell=True)
 ```
+
 → **Detected**: Use `shell=False` or FastSubprocess helper
 
 **Regex in Loop**:
+
 ```python
 for line in lines:
     re.search(pattern, line)
 ```
+
 → **Detected**: Compile regex once before loop
 
 ## Usage
@@ -142,6 +156,7 @@ python3 scripts/friction_detector.py --file file.py --format json
 **After**: 40+ patterns detected
 
 **Coverage**:
+
 - CLI/UX friction ✅
 - Process inefficiencies ✅
 - Agent workflow optimizations ✅

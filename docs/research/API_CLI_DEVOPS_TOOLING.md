@@ -21,14 +21,15 @@ This research provides a comprehensive analysis of current documentation tooling
 
 ### 1.1 Swagger UI
 
-| Aspect | Details |
-|--------|---------|
-| **Type** | Open-source UI renderer |
-| **License** | Apache 2.0 |
-| **Price** | Free |
+| Aspect      | Details                      |
+| ----------- | ---------------------------- |
+| **Type**    | Open-source UI renderer      |
+| **License** | Apache 2.0                   |
+| **Price**   | Free                         |
 | **Website** | swagger.io/tools/swagger-ui/ |
 
 **Key Features:**
+
 - Visualizes and interacts with API resources
 - Auto-generated from OpenAPI/Swagger Specifications
 - Dependency-free (works in any environment)
@@ -37,12 +38,14 @@ This research provides a comprehensive analysis of current documentation tooling
 - Full customization via source code access
 
 **Pros:**
+
 - Industry standard with broadest adoption
 - Excellent tooling ecosystem integration
 - No vendor lock-in
 - Extensive community support
 
 **Cons:**
+
 - UI feels dated compared to modern alternatives
 - Limited theming options
 - Performance degrades with large specs
@@ -51,14 +54,15 @@ This research provides a comprehensive analysis of current documentation tooling
 
 ### 1.2 Redoc / Redocly
 
-| Aspect | Details |
-|--------|---------|
-| **Type** | Commercial API documentation platform |
-| **License** | Proprietary (free tier available) |
-| **Price** | Free tier + paid plans |
-| **Website** | redocly.com/ |
+| Aspect      | Details                               |
+| ----------- | ------------------------------------- |
+| **Type**    | Commercial API documentation platform |
+| **License** | Proprietary (free tier available)     |
+| **Price**   | Free tier + paid plans                |
+| **Website** | redocly.com/                          |
 
 **Key Features:**
+
 - Three-panel and stacked layout options
 - Code block syntax highlighting
 - Schema documentation with nested properties
@@ -66,11 +70,13 @@ This research provides a comprehensive analysis of current documentation tooling
 - OpenAPI/Swagger specification support
 
 **Pros:**
+
 - Professional appearance
 - Customizable theming via CSS variables
 - AI assistant integration
 
 **Cons:**
+
 - Free tier limitations
 - Less community-driven than open-source alternatives
 
@@ -78,14 +84,15 @@ This research provides a comprehensive analysis of current documentation tooling
 
 ### 1.3 RapiDoc
 
-| Aspect | Details |
-|--------|---------|
-| **Type** | Web Component-based API docs |
-| **License** | MIT |
-| **Price** | Free |
-| **Website** | rapidocweb.com/ |
+| Aspect      | Details                      |
+| ----------- | ---------------------------- |
+| **Type**    | Web Component-based API docs |
+| **License** | MIT                          |
+| **Price**   | Free                         |
+| **Website** | rapidocweb.com/              |
 
 **Key Features:**
+
 - Web Component Standard - framework agnostic
 - Use as HTML tag with attribute-based configuration
 - Fully customizable (fonts, logos, colors, themes)
@@ -97,6 +104,7 @@ This research provides a comprehensive analysis of current documentation tooling
 - Minimal clicks to browse specs
 
 **Pros:**
+
 - No build steps required
 - Highly customizable appearance
 - Lightweight and fast (minimal dependencies)
@@ -105,6 +113,7 @@ This research provides a comprehensive analysis of current documentation tooling
 - Works with any framework or vanilla JavaScript
 
 **Cons:**
+
 - Requires basic HTML/JavaScript knowledge
 - May need additional setup for advanced auth scenarios
 
@@ -112,14 +121,15 @@ This research provides a comprehensive analysis of current documentation tooling
 
 ### 1.4 Scalar
 
-| Aspect | Details |
-|--------|---------|
-| **Type** | API Platform (Client + Docs + Registry + SDK) |
-| **License** | MIT (open-source) |
-| **Price** | Free tier + paid plans |
-| **Website** | scalar.com/ |
+| Aspect      | Details                                       |
+| ----------- | --------------------------------------------- |
+| **Type**    | API Platform (Client + Docs + Registry + SDK) |
+| **License** | MIT (open-source)                             |
+| **Price**   | Free tier + paid plans                        |
+| **Website** | scalar.com/                                   |
 
 **Key Features:**
+
 - **Scalar API Client**: Open-source, offline-first Postman alternative
 - **Scalar Docs**: Modern documentation with Markdown/MDX + OpenAPI
 - **Scalar Registry**: Centralized API definition repository
@@ -128,6 +138,7 @@ This research provides a comprehensive analysis of current documentation tooling
 - JSON Schema support, Spectral Rules
 
 **Pros:**
+
 - Fully open-source (MIT license)
 - Built on OpenAPI standard
 - No vendor lock-in
@@ -135,6 +146,7 @@ This research provides a comprehensive analysis of current documentation tooling
 - Integrates docs, client, registry, and SDKs
 
 **Cons:**
+
 - AsyncAPI support "coming soon"
 - Less mature than established competitors
 
@@ -142,27 +154,27 @@ This research provides a comprehensive analysis of current documentation tooling
 
 ### 1.5 API Documentation Comparison Matrix
 
-| Feature | Swagger UI | Redoc | RapiDoc | Scalar |
-|---------|------------|-------|---------|--------|
-| Open Source | Yes | Partial | Yes | Yes |
-| Free Tier | Yes | Yes | Yes | Yes |
-| Built-in API Testing | No | No | Yes | Yes |
-| Custom Theming | Limited | Yes | Yes | Yes |
-| Framework Required | No | No | No | Optional |
-| Performance | Moderate | Good | Excellent | Good |
-| Markdown Support | No | No | Yes | Yes |
-| Interactive Console | No | No | Yes | Yes |
+| Feature              | Swagger UI | Redoc   | RapiDoc   | Scalar   |
+| -------------------- | ---------- | ------- | --------- | -------- |
+| Open Source          | Yes        | Partial | Yes       | Yes      |
+| Free Tier            | Yes        | Yes     | Yes       | Yes      |
+| Built-in API Testing | No         | No      | Yes       | Yes      |
+| Custom Theming       | Limited    | Yes     | Yes       | Yes      |
+| Framework Required   | No         | No      | No        | Optional |
+| Performance          | Moderate   | Good    | Excellent | Good     |
+| Markdown Support     | No         | No      | Yes       | Yes      |
+| Interactive Console  | No         | No      | Yes       | Yes      |
 
 ---
 
 ### 1.6 Mock Servers from OpenAPI
 
-| Tool | Description | License |
-|------|-------------|---------|
-| **Prism** | Open-source mock server, validation, proxy | MIT |
+| Tool                | Description                                | License    |
+| ------------------- | ------------------------------------------ | ---------- |
+| **Prism**           | Open-source mock server, validation, proxy | MIT        |
 | **Stoplight Prism** | Similar to above, now community-maintained | Apache 2.0 |
-| **swagger-cli** | CLI for Swagger validation and bundling | Apache 2.0 |
-| **openapi-mermaid** | Generates mock servers from specs | MIT |
+| **swagger-cli**     | CLI for Swagger validation and bundling    | Apache 2.0 |
+| **openapi-mermaid** | Generates mock servers from specs          | MIT        |
 
 ---
 
@@ -170,14 +182,15 @@ This research provides a comprehensive analysis of current documentation tooling
 
 ### 2.1 Docusaurus
 
-| Aspect | Details |
-|--------|---------|
-| **Type** | Static Site Generator (React-based) |
-| **License** | MIT |
-| **Price** | Free (open source) |
-| **Website** | docusaurus.io/ |
+| Aspect      | Details                             |
+| ----------- | ----------------------------------- |
+| **Type**    | Static Site Generator (React-based) |
+| **License** | MIT                                 |
+| **Price**   | Free (open source)                  |
+| **Website** | docusaurus.io/                      |
 
 **Key Features:**
+
 - MDX support for interactive documentation
 - Built-in versioning
 - Internationalization (i18n)
@@ -195,6 +208,7 @@ This research provides a comprehensive analysis of current documentation tooling
 | Lower learning curve | Out-of-box features | React-based | No SPA |
 
 **Pros:**
+
 - Large ecosystem of plugins
 - React ecosystem integration
 - Strong community support
@@ -202,6 +216,7 @@ This research provides a comprehensive analysis of current documentation tooling
 - Comprehensive feature set
 
 **Cons:**
+
 - Build times can be slow for large sites
 - React dependency may be overkill for simple docs
 
@@ -209,14 +224,15 @@ This research provides a comprehensive analysis of current documentation tooling
 
 ### 2.2 VitePress
 
-| Aspect | Details |
-|--------|---------|
-| **Type** | Static Site Generator (Vue-based) |
-| **License** | MIT |
-| **Price** | Free (open source) |
-| **Website** | vitepress.dev/ |
+| Aspect      | Details                           |
+| ----------- | --------------------------------- |
+| **Type**    | Static Site Generator (Vue-based) |
+| **License** | MIT                               |
+| **Price**   | Free (open source)                |
+| **Website** | vitepress.dev/                    |
 
 **Key Features:**
+
 - Creates docs from Markdown
 - Instant server start
 - Lightning-fast hot updates
@@ -227,12 +243,14 @@ This research provides a comprehensive analysis of current documentation tooling
 - Developed by Evan You (Vue creator)
 
 **Pros:**
+
 - Exceptional build performance (Vite-powered)
 - Lightweight
 - Vue ecosystem integration
 - Modern developer experience
 
 **Cons:**
+
 - Smaller plugin ecosystem than Docusaurus
 - Vue-specific (less flexible for React teams)
 
@@ -240,14 +258,15 @@ This research provides a comprehensive analysis of current documentation tooling
 
 ### 2.3 Mintlify
 
-| Aspect | Details |
-|--------|---------|
-| **Type** | Documentation Platform |
-| **License** | Proprietary |
-| **Price** | Free tier + Enterprise plans |
-| **Website** | mintlify.com/ |
+| Aspect      | Details                      |
+| ----------- | ---------------------------- |
+| **Type**    | Documentation Platform       |
+| **License** | Proprietary                  |
+| **Price**   | Free tier + Enterprise plans |
+| **Website** | mintlify.com/                |
 
 **Key Features:**
+
 - AI-powered documentation
 - llms.txt support
 - MCP support
@@ -255,11 +274,13 @@ This research provides a comprehensive analysis of current documentation tooling
 - Enterprise features (SOC 2, SSO)
 
 **Pros:**
+
 - Modern AI features
 - Good for team collaboration
 - Enterprise-grade security
 
 **Cons:**
+
 - Less control than open-source options
 - Vendor lock-in concerns
 - Less customizable
@@ -268,27 +289,27 @@ This research provides a comprehensive analysis of current documentation tooling
 
 ### 2.4 CLI Help Generators (In-Code)
 
-| Tool | Description | Language |
-|------|-------------|----------|
-| **oclif** | Node.js CLI framework with built-in help | JavaScript/TypeScript |
-| **Cobra** | Go CLI framework with auto-help | Go |
-| **Typer** | Python CLI library with help generation | Python |
-| **Clap** | Rust CLI argument parser | Rust |
-| **Argparse** | Python standard library | Python |
+| Tool         | Description                              | Language              |
+| ------------ | ---------------------------------------- | --------------------- |
+| **oclif**    | Node.js CLI framework with built-in help | JavaScript/TypeScript |
+| **Cobra**    | Go CLI framework with auto-help          | Go                    |
+| **Typer**    | Python CLI library with help generation  | Python                |
+| **Clap**     | Rust CLI argument parser                 | Rust                  |
+| **Argparse** | Python standard library                  | Python                |
 
 ---
 
 ### 2.5 CLI Documentation Comparison Matrix
 
-| Feature | Docusaurus | VitePress | Mintlify |
-|---------|------------|-----------|----------|
-| Open Source | Yes | Yes | No |
-| Free Tier | Yes | Yes | Yes |
-| Build Speed | Moderate | Fast | N/A (hosted) |
-| Plugin Ecosystem | Extensive | Growing | Limited |
-| Customization | High | High | Moderate |
-| GitHub Sync | Via plugins | Via plugins | Native |
-| CLI Integration | Via plugins | Via plugins | Native |
+| Feature          | Docusaurus  | VitePress   | Mintlify     |
+| ---------------- | ----------- | ----------- | ------------ |
+| Open Source      | Yes         | Yes         | No           |
+| Free Tier        | Yes         | Yes         | Yes          |
+| Build Speed      | Moderate    | Fast        | N/A (hosted) |
+| Plugin Ecosystem | Extensive   | Growing     | Limited      |
+| Customization    | High        | High        | Moderate     |
+| GitHub Sync      | Via plugins | Via plugins | Native       |
+| CLI Integration  | Via plugins | Via plugins | Native       |
 
 ---
 
@@ -296,14 +317,15 @@ This research provides a comprehensive analysis of current documentation tooling
 
 ### 3.1 Mermaid
 
-| Aspect | Details |
-|--------|---------|
-| **Type** | Text-to-diagram tool |
-| **License** | MIT |
-| **Price** | Free |
-| **Website** | mermaid.js.org/ |
+| Aspect      | Details              |
+| ----------- | -------------------- |
+| **Type**    | Text-to-diagram tool |
+| **License** | MIT                  |
+| **Price**   | Free                 |
+| **Website** | mermaid.js.org/      |
 
 **Key Features:**
+
 - Text-based diagram generation
 - Multiple diagram types: flowcharts, sequence, class, state, Gantt, mind maps
 - Live editor at mermaid.live
@@ -311,12 +333,14 @@ This research provides a comprehensive analysis of current documentation tooling
 - Award-winning (2019 JavaScript Open Source Award)
 
 **Pros:**
+
 - Simple text-based syntax
 - No design skills required
 - Active open-source community
 - Web-native (works in browsers)
 
 **Cons:**
+
 - Learning curve for syntax
 - Limited advanced customization
 - Complex diagrams become lengthy
@@ -325,14 +349,15 @@ This research provides a comprehensive analysis of current documentation tooling
 
 ### 3.2 PlantUML
 
-| Aspect | Details |
-|--------|---------|
-| **Type** | UML diagram generator |
-| **License** | GPL |
-| **Price** | Free |
-| **Website** | plantuml.com/ |
+| Aspect      | Details               |
+| ----------- | --------------------- |
+| **Type**    | UML diagram generator |
+| **License** | GPL                   |
+| **Price**   | Free                  |
+| **Website** | plantuml.com/         |
 
 **Key Features:**
+
 - 25+ diagram types (UML and non-UML)
 - Sequence, Use Case, Class, Activity, Component, Deployment, State, Timing
 - JSON, YAML, EBNF, Regex, Network, Gantt, MindMap, ER diagrams
@@ -340,12 +365,14 @@ This research provides a comprehensive analysis of current documentation tooling
 - Output: PNG, SVG, LaTeX, EPS, ASCII art
 
 **Pros:**
+
 - Free and open-source
 - Comprehensive UML support
 - Multiple output formats
 - Strong integration with documentation tools
 
 **Cons:**
+
 - Requires Graphviz for best results
 - Layout can be inconsistent
 - Java dependency
@@ -354,25 +381,28 @@ This research provides a comprehensive analysis of current documentation tooling
 
 ### 3.3 Kroki
 
-| Aspect | Details |
-|--------|---------|
-| **Type** | Unified diagram API |
-| **License** | MIT |
-| **Price** | Free (self-hosted) |
-| **Website** | kroki.io/ |
+| Aspect      | Details             |
+| ----------- | ------------------- |
+| **Type**    | Unified diagram API |
+| **License** | MIT                 |
+| **Price**   | Free (self-hosted)  |
+| **Website** | kroki.io/           |
 
 **Key Features:**
+
 - Creates diagrams from textual descriptions
 - Unified API for multiple diagram tools
 - Supports: BlockDiag, BPMN, Bytefield, C4, D2, Ditaa, Erd, Graphviz, Mermaid, PlantUML, SeqDiag, SVGbob, UMlet, Vega, Vega-Lite, WaveDrom
 - Can be self-hosted
 
 **Pros:**
+
 - Single endpoint for multiple diagram tools
 - Self-hostable
 - No local tool installation needed
 
 **Cons:**
+
 - Requires running a server
 - External dependency for diagram generation
 
@@ -380,14 +410,15 @@ This research provides a comprehensive analysis of current documentation tooling
 
 ### 3.4 C4 Model
 
-| Aspect | Details |
-|--------|---------|
-| **Type** | Architecture visualization |
-| **License**** | Various (tools) |
-| **Price** | Free |
-| **Website** | c4model.com/ |
+| Aspect          | Details                    |
+| --------------- | -------------------------- |
+| **Type**        | Architecture visualization |
+| **License\*\*** | Various (tools)            |
+| **Price**       | Free                       |
+| **Website**     | c4model.com/               |
 
 **Key Features:**
+
 - Context, Container, Component, Code levels
 - Standardized architecture diagrams
 - Multiple tool implementations (Structurizr, PlantUML, Mermaid)
@@ -396,24 +427,24 @@ This research provides a comprehensive analysis of current documentation tooling
 
 ### 3.5 Architecture Diagram Tools Comparison
 
-| Feature | Mermaid | PlantUML | Kroki | C4 |
-|---------|---------|----------|-------|-----|
-| Open Source | Yes | Yes | Yes | Yes |
-| Free | Yes | Yes | Yes | Yes |
-| UML Support | Limited | Full | Full | Limited |
-| Web-Native | Yes | No | No | Via tools |
-| Integrations | Wide | Wide | Good | Via tools |
-| Learning Curve | Low | Medium | Low | Medium |
+| Feature        | Mermaid | PlantUML | Kroki | C4        |
+| -------------- | ------- | -------- | ----- | --------- |
+| Open Source    | Yes     | Yes      | Yes   | Yes       |
+| Free           | Yes     | Yes      | Yes   | Yes       |
+| UML Support    | Limited | Full     | Full  | Limited   |
+| Web-Native     | Yes     | No       | No    | Via tools |
+| Integrations   | Wide    | Wide     | Good  | Via tools |
+| Learning Curve | Low     | Medium   | Low   | Medium    |
 
 ---
 
 ### 3.6 Runbook Generators
 
-| Tool | Description |
-|------|-------------|
-| **Runme** | Markdown-based runbooks with execution |
-| **Opslevel Runbooks** | Infrastructure runbook management |
-| **GitBook** | Documentation with runbook features |
+| Tool                  | Description                            |
+| --------------------- | -------------------------------------- |
+| **Runme**             | Markdown-based runbooks with execution |
+| **Opslevel Runbooks** | Infrastructure runbook management      |
+| **GitBook**           | Documentation with runbook features    |
 
 ---
 
@@ -423,14 +454,15 @@ This research provides a comprehensive analysis of current documentation tooling
 
 #### Lychee
 
-| Aspect | Details |
-|--------|---------|
-| **Type** | Link checker |
-| **License** | Apache 2.0 / MIT |
-| **Price** | Free |
+| Aspect      | Details                       |
+| ----------- | ----------------------------- |
+| **Type**    | Link checker                  |
+| **License** | Apache 2.0 / MIT              |
+| **Price**   | Free                          |
 | **Website** | github.com/lycheeverse/lychee |
 
 **Key Features:**
+
 - Fast, async, stream-based (Rust)
 - Finds broken URLs and emails
 - Supports Markdown, HTML, reStructuredText
@@ -442,6 +474,7 @@ This research provides a comprehensive analysis of current documentation tooling
 - Cross-platform (Linux, macOS, Windows, BSD)
 
 **Installation:**
+
 ```bash
 # macOS
 brew install lychee
@@ -457,24 +490,26 @@ docker pull lycheeverse/lychee
 
 **Comparison with alternatives:**
 
-| Feature | Lychee | awesome_bot | muffet | broken-link-checker | linkinator |
-|---------|--------|-------------|--------|---------------------|------------|
-| Language | Rust | Ruby | Go | JS | TypeScript |
-| Async | Yes | Yes | Yes | Yes | Yes |
-| JSON Output | Yes | No | Yes | Yes | Yes |
-| Static Binary | Yes | No | Yes | No | No |
-| Markdown | Yes | Yes | No | No | No |
-| HTML | Yes | No | No | Yes | Yes |
-| Basic Auth | Yes | No | No | Yes | No |
-| GitHub Action | Yes | No | No | No | Yes |
+| Feature       | Lychee | awesome_bot | muffet | broken-link-checker | linkinator |
+| ------------- | ------ | ----------- | ------ | ------------------- | ---------- |
+| Language      | Rust   | Ruby        | Go     | JS                  | TypeScript |
+| Async         | Yes    | Yes         | Yes    | Yes                 | Yes        |
+| JSON Output   | Yes    | No          | Yes    | Yes                 | Yes        |
+| Static Binary | Yes    | No          | Yes    | No                  | No         |
+| Markdown      | Yes    | Yes         | No     | No                  | No         |
+| HTML          | Yes    | No          | No     | Yes                 | Yes        |
+| Basic Auth    | Yes    | No          | No     | Yes                 | No         |
+| GitHub Action | Yes    | No          | No     | No                  | Yes        |
 
 **Pros:**
+
 - Rust-based for speed and efficiency
 - Static binary - easy deployment
 - Best feature set vs alternatives
 - Excellent CI/CD integration
 
 **Cons:**
+
 - No OpenSSL (uses Rustls)
 - Email checking requires feature flag
 
@@ -482,33 +517,33 @@ docker pull lycheeverse/lychee
 
 ### 4.2 Code Example Testing
 
-| Tool | Description | Integration |
-|------|-------------|-------------|
-| **Playwright** | E2E testing for docs | Docusaurus, VitePress |
-| **Cypress** | E2E testing | Various |
-| **CodeceptJS** | E2E testing | Various |
-| **jest-axel** | API documentation testing | OpenAPI |
-| **docusaurus-search-local** | Local search testing | Docusaurus |
+| Tool                        | Description               | Integration           |
+| --------------------------- | ------------------------- | --------------------- |
+| **Playwright**              | E2E testing for docs      | Docusaurus, VitePress |
+| **Cypress**                 | E2E testing               | Various               |
+| **CodeceptJS**              | E2E testing               | Various               |
+| **jest-axel**               | API documentation testing | OpenAPI               |
+| **docusaurus-search-local** | Local search testing      | Docusaurus            |
 
 ---
 
 ### 4.3 Image/Broken Asset Checkers
 
-| Tool | Description |
-|------|-------------|
+| Tool                    | Description                             |
+| ----------------------- | --------------------------------------- |
 | **broken-link-checker** | Node.js link checker with image support |
-| **linkinator** | TypeScript-based link checker |
-| **htmltest** | Static HTML link checker (Go) |
+| **linkinator**          | TypeScript-based link checker           |
+| **htmltest**            | Static HTML link checker (Go)           |
 
 ---
 
 ### 4.4 Doc Integration Testing
 
-| Tool | Description | Use Case |
-|------|-------------|----------|
-| **Vitest** | Fast unit test runner | Testing doc components |
-| **Storybook** | UI component explorer | Doc component testing |
-| ** chromatic** | Visual testing | Doc UI consistency |
+| Tool           | Description           | Use Case               |
+| -------------- | --------------------- | ---------------------- |
+| **Vitest**     | Fast unit test runner | Testing doc components |
+| **Storybook**  | UI component explorer | Doc component testing  |
+| ** chromatic** | Visual testing        | Doc UI consistency     |
 
 ---
 
@@ -520,17 +555,17 @@ docker pull lycheeverse/lychee
 
 ```javascript
 // docs/.vitepress/theme/index.js
-import DefaultTheme from 'vitepress/theme'
-import './custom.css'
+import DefaultTheme from "vitepress/theme";
+import "./custom.css";
 
 export default {
   extends: DefaultTheme,
   enhanceApp({ app }) {
     // Register RapiDoc as a custom element
     app.config.compilerOptions.isCustomElement = (tag) =>
-      tag.startsWith('rapiddoc')
-  }
-}
+      tag.startsWith("rapiddoc");
+  },
+};
 ```
 
 ```html
@@ -554,10 +589,10 @@ export default {
 // docs/.vitepress/config.js
 export default {
   head: [
-    ['link', { rel: 'stylesheet', href: '/swagger-ui/swagger-ui.css' }],
-    ['script', { src: '/swagger-ui/swagger-ui-bundle.js' }]
-  ]
-}
+    ["link", { rel: "stylesheet", href: "/swagger-ui/swagger-ui.css" }],
+    ["script", { src: "/swagger-ui/swagger-ui-bundle.js" }],
+  ],
+};
 ```
 
 ---
@@ -571,17 +606,19 @@ npm install -D vitepress-plugin-mermaid
 
 ```javascript
 // docs/.vitepress/config.js
-import { defineConfig } from 'vitepress'
-import { withMermaid } from 'vitepress-plugin-mermaid'
+import { defineConfig } from "vitepress";
+import { withMermaid } from "vitepress-plugin-mermaid";
 
-export default withMermaid(defineConfig({
-  mermaid: {
-    // Mermaid configuration
-  }
-}))
+export default withMermaid(
+  defineConfig({
+    mermaid: {
+      // Mermaid configuration
+    },
+  }),
+);
 ```
 
-```markdown
+````markdown
 # Architecture
 
 ```mermaid
@@ -590,7 +627,9 @@ graph TD
     B --> C[Service]
     C --> D[Database]
 ```
-```
+````
+
+````
 
 ---
 
@@ -613,7 +652,7 @@ jobs:
         with:
           args: --verbose ./docs/**/*.md
           fail: true
-```
+````
 
 ---
 
@@ -641,11 +680,11 @@ my-cli --help
 
 ### Commands
 
-| Command | Description |
-|---------|-------------|
-| `init` | Initialize project |
+| Command | Description          |
+| ------- | -------------------- |
+| `init`  | Initialize project   |
 | `build` | Build for production |
-| `dev` | Start dev server |
+| `dev`   | Start dev server     |
 ```
 
 ---
@@ -654,12 +693,12 @@ my-cli --help
 
 ### 6.1 Small Projects (< 5 developers)
 
-| Component | Recommended | Alternative |
-|-----------|-------------|-------------|
-| API Docs | RapiDoc | Swagger UI |
-| Site Generator | VitePress | MkDocs |
-| Diagrams | Mermaid | PlantUML |
-| Link Check | Lychee | linkinator |
+| Component      | Recommended | Alternative |
+| -------------- | ----------- | ----------- |
+| API Docs       | RapiDoc     | Swagger UI  |
+| Site Generator | VitePress   | MkDocs      |
+| Diagrams       | Mermaid     | PlantUML    |
+| Link Check     | Lychee      | linkinator  |
 
 **Rationale:** VitePress + RapiDoc + Mermaid + Lychee provides excellent performance with minimal setup overhead.
 
@@ -667,12 +706,12 @@ my-cli --help
 
 ### 6.2 Medium Projects (5-20 developers)
 
-| Component | Recommended | Alternative |
-|-----------|-------------|-------------|
-| API Docs | Scalar | RapiDoc |
-| Site Generator | Docusaurus | VitePress |
-| Diagrams | Mermaid + PlantUML | Kroki |
-| Link Check | Lychee | custom CI |
+| Component      | Recommended        | Alternative |
+| -------------- | ------------------ | ----------- |
+| API Docs       | Scalar             | RapiDoc     |
+| Site Generator | Docusaurus         | VitePress   |
+| Diagrams       | Mermaid + PlantUML | Kroki       |
+| Link Check     | Lychee             | custom CI   |
 
 **Rationale:** Docusaurus provides more plugin options for team collaboration. Scalar offers integrated API client + docs.
 
@@ -680,13 +719,13 @@ my-cli --help
 
 ### 6.3 Enterprise Projects (20+ developers)
 
-| Component | Recommended | Alternative |
-|-----------|-------------|-------------|
-| API Docs | Scalar + Redoc | Swagger Hub |
-| Site Generator | Docusaurus | Custom VitePress |
-| Diagrams | PlantUML + C4 | Kroki |
-| Link Check | Lychee | Enterprise tools |
-| Runbooks | Runme | OpsLevel |
+| Component      | Recommended    | Alternative      |
+| -------------- | -------------- | ---------------- |
+| API Docs       | Scalar + Redoc | Swagger Hub      |
+| Site Generator | Docusaurus     | Custom VitePress |
+| Diagrams       | PlantUML + C4  | Kroki            |
+| Link Check     | Lychee         | Enterprise tools |
+| Runbooks       | Runme          | OpsLevel         |
 
 **Rationale:** Enterprise requires scalability, security, and support. Docusaurus offers the largest ecosystem.
 
@@ -694,12 +733,12 @@ my-cli --help
 
 ### 6.4 Open Source Projects
 
-| Component | Recommended | Alternative |
-|-----------|-------------|-------------|
-| API Docs | RapiDoc | Swagger UI |
-| Site Generator | VitePress | Docusaurus |
-| Diagrams | Mermaid | PlantUML |
-| Link Check | Lychee | None |
+| Component      | Recommended | Alternative |
+| -------------- | ----------- | ----------- |
+| API Docs       | RapiDoc     | Swagger UI  |
+| Site Generator | VitePress   | Docusaurus  |
+| Diagrams       | Mermaid     | PlantUML    |
+| Link Check     | Lychee      | None        |
 
 **Rationale:** All recommended tools are MIT/Apache licensed with strong open-source communities.
 
@@ -709,26 +748,26 @@ my-cli --help
 
 ### 7.1 Free Options (Recommended)
 
-| Tool | Category | License |
-|------|----------|---------|
-| Swagger UI | API Docs | Apache 2.0 |
-| RapiDoc | API Docs | MIT |
-| Docusaurus | Site Generator | MIT |
-| VitePress | Site Generator | MIT |
-| Mermaid | Diagrams | MIT |
-| PlantUML | Diagrams | GPL |
-| Lychee | Link Check | Apache 2.0 |
+| Tool       | Category       | License    |
+| ---------- | -------------- | ---------- |
+| Swagger UI | API Docs       | Apache 2.0 |
+| RapiDoc    | API Docs       | MIT        |
+| Docusaurus | Site Generator | MIT        |
+| VitePress  | Site Generator | MIT        |
+| Mermaid    | Diagrams       | MIT        |
+| PlantUML   | Diagrams       | GPL        |
+| Lychee     | Link Check     | Apache 2.0 |
 
 ### 7.2 Paid Options (When Needed)
 
-| Tool | Category | Price Range |
-|------|----------|-------------|
-| Redocly | API Docs | Free tier + Custom |
-| Mintlify | Docs Platform | Free + Enterprise |
-| Swagger Hub | API Platform | Free + Team + Enterprise |
-| GitBook | Docs Platform | Free + Team + Enterprise |
-| Notion | Docs | Free + Paid |
-| Confluence | Docs | Paid |
+| Tool        | Category      | Price Range              |
+| ----------- | ------------- | ------------------------ |
+| Redocly     | API Docs      | Free tier + Custom       |
+| Mintlify    | Docs Platform | Free + Enterprise        |
+| Swagger Hub | API Platform  | Free + Team + Enterprise |
+| GitBook     | Docs Platform | Free + Team + Enterprise |
+| Notion      | Docs          | Free + Paid              |
+| Confluence  | Docs          | Paid                     |
 
 ---
 
@@ -880,17 +919,17 @@ environment:
 ```python
 # Output modes
 class OutputFormatter:
-    FORMATS = ['json', 'yaml', 'table', 'quiet']
+    FORMATS = ["json", "yaml", "table", "quiet"]
 
-    def format(data, format='json', verbose=False):
-        if format == 'json':
+    def format(data, format="json", verbose=False):
+        if format == "json":
             return json.dumps(data, indent=2)
-        elif format == 'yaml':
+        elif format == "yaml":
             return yaml.dump(data)
-        elif format == 'table':
+        elif format == "table":
             return TableRenderer.render(data, verbose)
-        elif format == 'quiet':
-            return '' if not data else str(data)
+        elif format == "quiet":
+            return "" if not data else str(data)
 ```
 
 ### 9.4 Error Handling Pattern
@@ -906,6 +945,7 @@ class ExitCode:
     TIMEOUT = 5
     NETWORK_ERROR = 6
     CONFIG_ERROR = 7
+
 
 # Usage
 def main():
@@ -939,17 +979,17 @@ class ProgressIndicator:
         self.stages = []
 
     def add_stage(self, name):
-        self.stages.append({'name': name, 'status': 'pending'})
+        self.stages.append({"name": name, "status": "pending"})
         return self
 
     def start_stage(self, stage_name):
-        stage = next(s for s in self.stages if s['name'] == stage_name)
-        stage['status'] = 'running'
+        stage = next(s for s in self.stages if s["name"] == stage_name)
+        stage["status"] = "running"
         self._render()
 
     def complete_stage(self, stage_name, success=True):
-        stage = next(s for s in self.stages if s['name'] == stage_name)
-        stage['status'] = 'success' if success else 'error'
+        stage = next(s for s in self.stages if s["name"] == stage_name)
+        stage["status"] = "success" if success else "error"
         self._render()
 
     def _render(self):
@@ -968,10 +1008,10 @@ class SubcommandLoader:
 
     def discover(self):
         for filename in os.listdir(self.command_dir):
-            if filename.endswith('.py') and not filename.startswith('_'):
+            if filename.endswith(".py") and not filename.startswith("_"):
                 module_name = filename[:-3]
-                module = importlib.import_module(f'commands.{module_name}')
-                if hasattr(module, 'register'):
+                module = importlib.import_module(f"commands.{module_name}")
+                if hasattr(module, "register"):
                     self.subcommands[module_name] = module.register()
         return self.subcommands
 ```
@@ -981,7 +1021,7 @@ class SubcommandLoader:
 ```python
 # CLI args > config file > environment > defaults
 class ConfigOverride:
-    PRIORITY = ['args', 'config', 'env', 'defaults']
+    PRIORITY = ["args", "config", "env", "defaults"]
 
     def load(self, args):
         # 1. Load defaults
@@ -1001,9 +1041,9 @@ class ConfigOverride:
 
     def _load_env(self):
         env_mappings = {
-            'THGENT_MODEL': ('model', str),
-            'THGENT_TIMEOUT': ('timeout', int),
-            'THGENT_PORT': ('port', int),
+            "THGENT_MODEL": ("model", str),
+            "THGENT_TIMEOUT": ("timeout", int),
+            "THGENT_PORT": ("port", int),
         }
         for env_var, (key, type_cast) in env_mappings.items():
             if env_var in os.environ:
@@ -1029,12 +1069,12 @@ thegent --print-completion fish | source
 
 ## 10. Cross-References
 
-| Topic | Reference |
-|-------|-----------|
-| TUI/Queue Design | `USER_QUEUE_TUI_AND_AGENT_POLL.md` |
-| CI/CD Pipelines | `CI_CD_DEVX_TOOLING.md` |
-| Hybrid Environment | `../architecture/HYBRID_MAC_WIN_DEV_ENVIRONMENT.md` |
-| Implementation Plan | `../plans/HYBRID_ENV_IMPLEMENTATION_PLAN.md` |
+| Topic               | Reference                                           |
+| ------------------- | --------------------------------------------------- |
+| TUI/Queue Design    | `USER_QUEUE_TUI_AND_AGENT_POLL.md`                  |
+| CI/CD Pipelines     | `CI_CD_DEVX_TOOLING.md`                             |
+| Hybrid Environment  | `../architecture/HYBRID_MAC_WIN_DEV_ENVIRONMENT.md` |
+| Implementation Plan | `../plans/HYBRID_ENV_IMPLEMENTATION_PLAN.md`        |
 
 ---
 
@@ -1042,33 +1082,33 @@ thegent --print-completion fish | source
 
 ### Added in This Extension
 
-| Section | Description |
-|---------|-------------|
+| Section                    | Description                                                                                                                                                           |
+| -------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | **9. CLI Design Patterns** | Added command structure, config files, output formatting, error handling, progress indicators, subcommand discovery, environment overrides, shell completion patterns |
-| **10. Cross-References** | Added links to related documentation |
-| **11. Extension Summary** | This summary section |
+| **10. Cross-References**   | Added links to related documentation                                                                                                                                  |
+| **11. Extension Summary**  | This summary section                                                                                                                                                  |
 
 ### Key CLI Patterns
 
-| Pattern | Purpose |
-|---------|---------|
-| 9.1 Command Structure | Hierarchical command organization |
-| 9.2 Configuration Files | YAML configs with profiles |
-| 9.3 Output Formatting | Multiple output modes |
-| 9.4 Error Handling | Consistent exit codes |
-| 9.5 Progress Indicator | Multi-stage progress display |
-| 9.6 Subcommand Discovery | Auto-loading commands |
-| 9.7 Environment Override | Priority-based config |
-| 9.8 Shell Completion | Interactive completion |
+| Pattern                  | Purpose                           |
+| ------------------------ | --------------------------------- |
+| 9.1 Command Structure    | Hierarchical command organization |
+| 9.2 Configuration Files  | YAML configs with profiles        |
+| 9.3 Output Formatting    | Multiple output modes             |
+| 9.4 Error Handling       | Consistent exit codes             |
+| 9.5 Progress Indicator   | Multi-stage progress display      |
+| 9.6 Subcommand Discovery | Auto-loading commands             |
+| 9.7 Environment Override | Priority-based config             |
+| 9.8 Shell Completion     | Interactive completion            |
 
 ### Related Tools
 
-| Tool | Purpose |
-|------|---------|
+| Tool  | Purpose                |
+| ----- | ---------------------- |
 | Typer | CLI framework (Python) |
-| Cobra | CLI framework (Go) |
+| Cobra | CLI framework (Go)     |
 | Click | CLI framework (Python) |
-| Clap | CLI framework (Rust) |
+| Clap  | CLI framework (Rust)   |
 
 ---
 
@@ -1084,15 +1124,18 @@ thegent --print-completion fish | source
 **Extended by:** Claude Code
 
 ### Changes Made
+
 1. Added CLI design patterns
 2. Added DevOps tooling examples
 3. Enhanced cross-references
 
 ### Cross-References Added
+
 - CI_CD_DEVX_TOOLING.md
 - USER_QUEUE_TUI_AND_AGENT_POLL.md
 
 ### Practical Additions
+
 - CLI templates
 - Tooling configurations
 

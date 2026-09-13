@@ -8,6 +8,7 @@
 ## Problem
 
 The `ls` command fails because writeup files don't exist:
+
 ```bash
 ls -lh docs/research/*_PLAN.md
 # Error: no matches found
@@ -28,12 +29,14 @@ ls -lh docs/research/*_PLAN.md
 ### Option 1: Fix Code Error (Recommended)
 
 The `Optional` import error needs to be fixed in thegent code. Check:
+
 - `thegent/src/thegent/main.py` - Line 18 has `from typing import Optional, Union`
 - Error might be in a different file that uses `Optional` without importing it
 
 ### Option 2: Use Working Command
 
 Once code is fixed, retry with:
+
 ```bash
 # Generate writeups one by one
 thegent free "Generate comprehensive research writeup for: research-tui-compositor..." --bg
@@ -61,6 +64,7 @@ Generate writeups manually or wait for code fix, then proceed with delegation.
 ## Quick Fix Command
 
 Once code is fixed, run:
+
 ```bash
 cd /Users/kooshapari/temp-PRODVERCEL/485/kush
 ./scripts/generate_writeups.sh

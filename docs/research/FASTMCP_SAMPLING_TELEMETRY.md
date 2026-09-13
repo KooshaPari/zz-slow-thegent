@@ -21,10 +21,12 @@ return result.text or ""
 ```python
 from pydantic import BaseModel
 
+
 class SentimentResult(BaseModel):
     sentiment: str
     confidence: float
     reasoning: str
+
 
 result = await ctx.sample(
     messages=f"Analyze the sentiment of: {text}",
@@ -71,6 +73,7 @@ async def thegent_suggest_prompt(raw_prompt: str, ctx: Context) -> str:
 ```python
 from fastmcp.telemetry import get_tracer
 
+
 @mcp.tool()
 async def complex_operation(input: str) -> str:
     tracer = get_tracer()
@@ -84,12 +87,12 @@ async def complex_operation(input: str) -> str:
 
 ### Span attributes
 
-| Attribute | Description |
-|-----------|-------------|
-| mcp.method.name | tools/call, resources/read, prompts/get |
-| mcp.session.id | Session identifier |
-| fastmcp.component.type | tool, resource, prompt |
-| fastmcp.component.key | e.g. tool:greet |
+| Attribute              | Description                             |
+| ---------------------- | --------------------------------------- |
+| mcp.method.name        | tools/call, resources/read, prompts/get |
+| mcp.session.id         | Session identifier                      |
+| fastmcp.component.type | tool, resource, prompt                  |
+| fastmcp.component.key  | e.g. tool:greet                         |
 
 ---
 
@@ -121,30 +124,29 @@ opentelemetry-instrument python -m thegent.main serve --host 127.0.0.1 --port 38
 
 ### Server spans (auto-generated)
 
-| Span Name | Description |
-|-----------|-------------|
-| tools/call {name} | e.g. tools/call thegent_run |
+| Span Name            | Description                                    |
+| -------------------- | ---------------------------------------------- |
+| tools/call {name}    | e.g. tools/call thegent_run                    |
 | resources/read {uri} | e.g. resources/read thegent://session/.../logs |
-| prompts/get {name} | e.g. prompts/get thegent_run_agent |
+| prompts/get {name}   | e.g. prompts/get thegent_run_agent             |
 
 ---
 
 ## 4. thegent Integration
 
-| Feature | Use |
-|---------|-----|
-| ctx.sample | thegent_suggest_prompt tool |
-| sampling_handler | OpenAISamplingHandler when client lacks sampling |
-| get_tracer | Custom spans in thegent_run (parse, route, execute) |
-| opentelemetry-instrument | Production trace export |
-
+| Feature                  | Use                                                 |
+| ------------------------ | --------------------------------------------------- |
+| ctx.sample               | thegent_suggest_prompt tool                         |
+| sampling_handler         | OpenAISamplingHandler when client lacks sampling    |
+| get_tracer               | Custom spans in thegent_run (parse, route, execute) |
+| opentelemetry-instrument | Production trace export                             |
 
 ---
+
 ## See also
 
 - [WORK_STREAM.md](../reference/WORK_STREAM.md) — canonical backlog
 - [00-MASTER-INDEX.md](../plans/00-MASTER-INDEX.md) — plan index
-
 
 ---
 
@@ -154,15 +156,18 @@ opentelemetry-instrument python -m thegent.main serve --host 127.0.0.1 --port 38
 **Extended by:** Claude Code
 
 ### Changes Made
+
 1. Added telemetry patterns
 2. Added sampling configuration
 3. Enhanced cross-references
 
 ### Cross-References Added
+
 - FASTMCP_TRANSFORMS_DEPLOYMENT.md
 - FASTMCP_SPEC_DEEP_DIVE.md
 
 ### Practical Additions
+
 - Telemetry templates
 - Sampling configurations
 

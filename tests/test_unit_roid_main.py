@@ -10,7 +10,13 @@ from typer.testing import CliRunner
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))
 sys.modules.pop("thegent", None)
 
-from thegent.roid_main import GEMINI_FLASH_MODEL, _MODEL_ALIAS, _run_droid_with_alias, app, default_roid
+from thegent.roid_main import (
+    _MODEL_ALIAS,
+    GEMINI_FLASH_MODEL,
+    _run_droid_with_alias,
+    app,
+    default_roid,
+)
 
 runner = CliRunner()
 
@@ -81,7 +87,10 @@ def test_roid_mini_uses_gpt5_mini(mock_run: MagicMock, _mock_resolve: MagicMock)
     ],
 )
 def test_roid_high_xhigh_use_expected_canonical_models(
-    mock_run: MagicMock, _mock_resolve: MagicMock, model_alias: str, canonical_model: str
+    mock_run: MagicMock,
+    _mock_resolve: MagicMock,
+    model_alias: str,
+    canonical_model: str,
 ) -> None:
     mock_run.return_value = _mock_completed(0)
 

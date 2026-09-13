@@ -1,11 +1,12 @@
 """A2A protocol support for agent-to-agent communication."""
+
 from __future__ import annotations
 
 import time
 import uuid
+from collections.abc import Callable
 from dataclasses import dataclass, field
-from typing import Any, Callable
-
+from typing import Any
 
 VALID_MESSAGE_TYPES = {"request", "response", "error", "event"}
 
@@ -13,6 +14,7 @@ VALID_MESSAGE_TYPES = {"request", "response", "error", "event"}
 @dataclass
 class A2AMessage:
     """A2A message for agent-to-agent communication."""
+
     source_agent: str
     target_agent: str
     message_type: str  # "request", "response", "error", "event"

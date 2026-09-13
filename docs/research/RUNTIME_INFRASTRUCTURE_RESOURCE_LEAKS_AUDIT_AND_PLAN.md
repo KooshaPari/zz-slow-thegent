@@ -13,12 +13,14 @@
 ## Immediate Fixes Applied (2026-02-17)
 
 ### ✅ Fixed Critical File Descriptor Leak
+
 - **File:** `src/thegent/cli.py:7150`
 - **Issue:** File handle opened without context manager, never closed
 - **Fix:** Added `with open()` context manager and process registration
 - **Impact:** Prevents file descriptor exhaustion
 
 ### ✅ Created Process Registry Infrastructure
+
 - **File:** `src/thegent/infra/process_registry.py`
 - **Purpose:** Track all subprocesses for automatic cleanup
 - **Features:**
@@ -28,6 +30,7 @@
   - Orphaned process cleanup
 
 ### ✅ Created Subprocess Manager
+
 - **File:** `src/thegent/infra/subprocess_manager.py`
 - **Purpose:** Resource-aware subprocess management
 - **Features:**
@@ -37,6 +40,7 @@
   - Timeout handling
 
 ### ✅ Updated Critical Code Paths
+
 - **File:** `src/thegent/agents/cliproxy_manager.py`
 - **Changes:** All `subprocess.Popen` calls now register processes
 - **Impact:** Proxy processes tracked and cleaned up on exit
@@ -46,6 +50,7 @@
 ## Executive Summary
 
 Runtime infrastructure is experiencing increasing resource leaks and optimization issues, manifesting as:
+
 - `BlockingIOError: [Errno 35] Resource temporarily unavailable` (file descriptor exhaustion)
 - Process leaks (zombie processes)
 - Subprocess handles not properly cleaned up
@@ -69,6 +74,7 @@ subprocess.Popen(["fd", ".", "-H", "--full-path"], stdout=open(index_file, "w"))
 ```
 
 **Fix:**
+
 ```python
 # ✅ CORRECT: Use context manager
 with open(index_file, "w") as f:
@@ -77,6 +83,7 @@ with open(index_file, "w") as f:
 ```
 
 **Other Potential FD Leaks:**
+
 - `subprocess.Popen` with `PIPE` that aren't drained/closed
 - File opens without `with` statements (though grep shows most use context managers)
 - Network connections (httpx) that aren't properly closed
@@ -86,6 +93,7 @@ with open(index_file, "w") as f:
 **Issue:** `subprocess.Popen` instances created but not tracked or cleaned up.
 
 **Locations:**
+
 - `cliproxy_manager.py:404, 423, 523` - Proxy processes
 - `direct_agents.py:404` - Agent execution processes
 - `cli_impl.py:105` - Various CLI processes
@@ -93,6 +101,7 @@ with open(index_file, "w") as f:
 - `cli.py:7150` - Indexing processes
 
 **Problem Pattern:**
+
 ```python
 # ❌ LEAK: Process not tracked, no cleanup
 proc = subprocess.Popen([...], stdout=subprocess.DEVNULL, ...)
@@ -100,6 +109,7 @@ proc = subprocess.Popen([...], stdout=subprocess.DEVNULL, ...)
 ```
 
 **Impact:**
+
 - Zombie processes accumulate
 - File descriptors held by processes
 - Ports held by dead processes
@@ -130,6 +140,7 @@ proc = subprocess.Popen(
 **Issue:** httpx clients may not be properly closed in error cases.
 
 **Locations:**
+
 - `cliproxy_manager.py:361, 605` - Uses context managers ✅
 - `cliproxy_adapter.py:130, 214, 368` - Uses async context managers ✅
 - But error paths may not close properly
@@ -139,6 +150,7 @@ proc = subprocess.Popen(
 **Issue:** No global registry of started processes for cleanup.
 
 **Impact:**
+
 - Can't enumerate all processes to clean up
 - No atexit handler to clean up on exit
 - Processes survive parent termination
@@ -152,12 +164,14 @@ proc = subprocess.Popen(
 **Symptom:** `BlockingIOError: [Errno 35] Resource temporarily unavailable`
 
 **Causes:**
+
 1. File handles opened without closing
 2. Subprocess PIPE streams not drained/closed
 3. Network connections not closed
 4. Process handles accumulating
 
 **Detection:**
+
 ```bash
 # Check current FD usage
 lsof -p $(pgrep -f thegent) | wc -l
@@ -174,11 +188,13 @@ watch -n 1 'lsof -p $(pgrep -f thegent) | wc -l'
 **Symptom:** Many zombie processes, ports held by dead processes
 
 **Causes:**
+
 1. Processes started but not waited on
 2. Processes killed but not reaped
 3. Orphaned processes from crashes
 
 **Detection:**
+
 ```bash
 # Find zombie processes
 ps aux | grep ' Z '
@@ -193,6 +209,7 @@ ps aux | grep thegent | wc -l
 ### 2.3 Memory Leaks
 
 **Potential Issues:**
+
 - Large data structures not released
 - Circular references preventing GC
 - Caches growing unbounded
@@ -204,6 +221,7 @@ ps aux | grep thegent | wc -l
 ### 3.1 Missing Resource Management Infrastructure
 
 **Problems:**
+
 1. **No Process Registry** - Can't track all started processes
 2. **No Resource Limits** - No limits on concurrent subprocesses
 3. **No Cleanup Handlers** - No atexit/signal handlers for cleanup
@@ -213,6 +231,7 @@ ps aux | grep thegent | wc -l
 ### 3.2 Inconsistent Cleanup Patterns
 
 **Problems:**
+
 1. Some code uses context managers, some doesn't
 2. Error paths don't always clean up
 3. Timeout paths may not clean up properly
@@ -221,6 +240,7 @@ ps aux | grep thegent | wc -l
 ### 3.3 Missing Error Recovery
 
 **Problems:**
+
 1. No retry with backoff for resource exhaustion
 2. No automatic cleanup on errors
 3. No resource pool management
@@ -253,6 +273,7 @@ from thegent.thg_platform import Platform, detect_platform
 @dataclass
 class ProcessHandle:
     """Handle for a tracked subprocess."""
+
     pid: int
     proc: subprocess.Popen
     name: str
@@ -463,9 +484,7 @@ class SubprocessManager:
         # Check resource limits
         with self._lock:
             if self._active_count >= self.MAX_CONCURRENT_PROCESSES:
-                raise RuntimeError(
-                    f"Maximum concurrent processes ({self.MAX_CONCURRENT_PROCESSES}) exceeded"
-                )
+                raise RuntimeError(f"Maximum concurrent processes ({self.MAX_CONCURRENT_PROCESSES}) exceeded")
             self._active_count += 1
 
         proc: Optional[subprocess.Popen] = None
@@ -581,6 +600,7 @@ import psutil
 @dataclass
 class ResourceStats:
     """Resource usage statistics."""
+
     fd_count: int
     fd_limit: int
     fd_usage_percent: float
@@ -592,9 +612,7 @@ class ResourceStats:
     def is_critical(self) -> bool:
         """Check if resource usage is critical."""
         return (
-            self.fd_usage_percent > 80.0 or
-            self.process_count > 100 or
-            self.memory_mb > 2048  # 2GB
+            self.fd_usage_percent > 80.0 or self.process_count > 100 or self.memory_mb > 2048  # 2GB
         )
 
 
@@ -703,17 +721,17 @@ class ResourceMonitor:
 
         # Check for increasing FD count
         fd_trend = [s.fd_count for s in recent]
-        if all(fd_trend[i] < fd_trend[i+1] for i in range(len(fd_trend)-1)):
+        if all(fd_trend[i] < fd_trend[i + 1] for i in range(len(fd_trend) - 1)):
             return "File descriptor leak detected (increasing trend)"
 
         # Check for increasing process count
         proc_trend = [s.process_count for s in recent]
-        if all(proc_trend[i] < proc_trend[i+1] for i in range(len(proc_trend)-1)):
+        if all(proc_trend[i] < proc_trend[i + 1] for i in range(len(proc_trend) - 1)):
             return "Process leak detected (increasing trend)"
 
         # Check for increasing memory
         mem_trend = [s.memory_mb for s in recent]
-        if all(mem_trend[i] < mem_trend[i+1] for i in range(len(mem_trend)-1)):
+        if all(mem_trend[i] < mem_trend[i + 1] for i in range(len(mem_trend) - 1)):
             return "Memory leak detected (increasing trend)"
 
         return None
@@ -881,6 +899,7 @@ def get_resource_limits() -> ResourceLimits:
 from thegent.infra.process_registry import get_registry
 from thegent.infra.resource_monitor import get_resource_monitor
 
+
 def initialize_runtime_infrastructure():
     """Initialize runtime infrastructure with cleanup."""
     # Clean up orphaned processes
@@ -895,6 +914,7 @@ def initialize_runtime_infrastructure():
 
     # Set resource limits
     from thegent.infra.resource_limits import get_resource_limits
+
     limits = get_resource_limits()
     logging.info(f"FD limit: {limits.get_fd_limit()}, Process limit: {limits.get_process_limit()}")
 ```
@@ -1051,6 +1071,7 @@ def test_cleanup_on_error():
 ```python
 """Stress tests for resource exhaustion."""
 
+
 def test_concurrent_process_limit():
     """Test that concurrent process limit is enforced."""
     manager = get_subprocess_manager()
@@ -1079,6 +1100,7 @@ def test_concurrent_process_limit():
 
 ```python
 """Integration tests for runtime infrastructure."""
+
 
 def test_cliproxy_lifecycle():
     """Test cliproxy process lifecycle."""
@@ -1130,6 +1152,7 @@ def test_cliproxy_lifecycle():
 
 ```python
 """Health check for runtime infrastructure."""
+
 
 def check_runtime_health() -> dict:
     """Check runtime infrastructure health."""
@@ -1203,6 +1226,7 @@ logger.warning(
 ### 8.1 Subprocess Management
 
 **DO:**
+
 - Use `SubprocessManager.popen()` context manager
 - Always track processes in registry
 - Drain stdout/stderr streams
@@ -1210,6 +1234,7 @@ logger.warning(
 - Handle errors gracefully
 
 **DON'T:**
+
 - Create `subprocess.Popen` without tracking
 - Leave PIPE streams undrained
 - Ignore process exit codes
@@ -1218,12 +1243,14 @@ logger.warning(
 ### 8.2 File Handling
 
 **DO:**
+
 - Use `with open()` context managers
 - Close files explicitly in error cases
 - Monitor file descriptor usage
 - Set file descriptor limits
 
 **DON'T:**
+
 - Open files without context managers
 - Pass file handles to subprocess without closing
 - Ignore file descriptor limits
@@ -1231,12 +1258,14 @@ logger.warning(
 ### 8.3 Resource Monitoring
 
 **DO:**
+
 - Monitor resource usage continuously
 - Set up alerts for critical usage
 - Track resource trends
 - Clean up on startup
 
 **DON'T:**
+
 - Ignore resource warnings
 - Wait until exhaustion to act
 - Skip cleanup on errors

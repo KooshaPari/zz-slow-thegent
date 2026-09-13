@@ -76,4 +76,4 @@ Phase 2-3 tasks in EXECUTION_KICKOFF are treated as **new work** that should be 
 
 ---
 
-*Issued by L1 Coordinator (Claude Code) at 2026-02-18 23:57 UTC*
+_Issued by L1 Coordinator (Claude Code) at 2026-02-18 23:57 UTC_

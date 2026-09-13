@@ -17,7 +17,7 @@ Uses Unix Domain Sockets to forward signing requests.
 
 ### Methods
 
-#### SSHIdentityProxy.__init__
+#### SSHIdentityProxy.**init**
 
 ```python
 __init__(self: Any, proxy_socket_path: Path)

@@ -4,13 +4,13 @@ This page documents common configuration patterns for `thegent`.
 
 ## Environment Variables
 
-| Variable | Purpose |
-|----------|---------|
-| `ANTHROPIC_API_KEY` | Claude provider authentication |
-| `OPENAI_API_KEY` | OpenAI/Codex provider authentication |
-| `GOOGLE_API_KEY` | Gemini provider authentication |
-| `THGENT_DEFAULT_ROUTING` | Default routing preference |
-| `THGENT_DEBUG` | Enable debug output for runtime diagnostics |
+| Variable                 | Purpose                                     |
+| ------------------------ | ------------------------------------------- |
+| `ANTHROPIC_API_KEY`      | Claude provider authentication              |
+| `OPENAI_API_KEY`         | OpenAI/Codex provider authentication        |
+| `GOOGLE_API_KEY`         | Gemini provider authentication              |
+| `THGENT_DEFAULT_ROUTING` | Default routing preference                  |
+| `THGENT_DEBUG`           | Enable debug output for runtime diagnostics |
 
 ## Set Values with CLI
 

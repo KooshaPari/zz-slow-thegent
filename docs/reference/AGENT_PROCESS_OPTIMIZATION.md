@@ -25,13 +25,13 @@ thegent mcp prune --force     # Kill orphans
 
 ## Process Types
 
-| Type | Typical Use | Orphan Check | Optimization |
-|------|-------------|--------------|--------------|
-| **Python** | thegent CLI, uv run | Parent chain to Cursor/Claude/Codex | Reduce concurrency; stop idle sessions |
-| **node** | LSP (pyright, tsserver), MCP servers | Same | `mcp prune`; disable unused MCPs |
-| **droid** | Factory droid exec | Same | Stop sessions; restart droid if stuck |
-| **claude** | Claude Code IDE | N/A (usually parent) | Close unused windows |
-| **codex** | Codex/dex CLI | Same | Stop background sessions |
+| Type       | Typical Use                          | Orphan Check                        | Optimization                           |
+| ---------- | ------------------------------------ | ----------------------------------- | -------------------------------------- |
+| **Python** | thegent CLI, uv run                  | Parent chain to Cursor/Claude/Codex | Reduce concurrency; stop idle sessions |
+| **node**   | LSP (pyright, tsserver), MCP servers | Same                                | `mcp prune`; disable unused MCPs       |
+| **droid**  | Factory droid exec                   | Same                                | Stop sessions; restart droid if stuck  |
+| **claude** | Claude Code IDE                      | N/A (usually parent)                | Close unused windows                   |
+| **codex**  | Codex/dex CLI                        | Same                                | Stop background sessions               |
 
 ---
 

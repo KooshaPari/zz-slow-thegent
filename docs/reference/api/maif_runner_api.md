@@ -14,7 +14,7 @@ Wraps an AgentRunner to automatically generate MAIF artifacts using ExecutionEng
 
 ### Methods
 
-#### MAIFAgentRunner.__init__
+#### MAIFAgentRunner.**init**
 
 ```python
 __init__(self: Any, runner: AgentRunner, engine: Optional[ExecutionEngine])

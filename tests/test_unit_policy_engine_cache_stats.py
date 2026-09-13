@@ -29,8 +29,7 @@ from pathlib import Path
 import pytest
 
 from thegent.config.settings import ThegentSettings
-from thegent.governance.policy_engine import PolicyContext, PolicyEngine, Verdict
-
+from thegent.governance.policy_engine import PolicyContext, PolicyEngine
 
 pytestmark = pytest.mark.unit
 
@@ -193,7 +192,7 @@ class TestCacheStatsConcurrent:
         readers = 8
         writers = 4
         iters = 50
-        stop = threading.Event()
+        threading.Event()
 
         def reader_loop() -> None:
             for _ in range(iters):
@@ -240,7 +239,14 @@ class TestCacheStatsShape:
     def test_keys_match_contract(self, engine: PolicyEngine) -> None:
         """The keys match the docstring contract."""
         stats = engine.cache_stats()
-        assert set(stats.keys()) == {"size", "maxsize", "hits", "misses", "total", "hit_rate"}
+        assert set(stats.keys()) == {
+            "size",
+            "maxsize",
+            "hits",
+            "misses",
+            "total",
+            "hit_rate",
+        }
 
     def test_is_json_serialisable(self, engine: PolicyEngine) -> None:
         """SOTA tooling JSON-serialises the snapshot for downstream consumers."""

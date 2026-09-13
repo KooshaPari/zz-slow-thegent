@@ -41,17 +41,9 @@ Covers:
 from __future__ import annotations
 
 import asyncio
+
 import orjson as json
-
 import pytest
-
-from thegent.mcp.dynamic_tools import (
-    DynamicToolCallResult,
-    DynamicToolRegistry,
-    DynamicToolSpec,
-    PendingDynamicToolCall,
-)
-
 
 # ---------------------------------------------------------------------------
 # Import tools_sessions (dynamically loaded module, not a package).
@@ -60,8 +52,13 @@ from thegent.mcp.dynamic_tools import (
 # ensures the module is in sys.modules under the canonical name, so both the
 # MCP tool callables in server.py and the test share the same registry instance.
 # ---------------------------------------------------------------------------
-
 import thegent.mcp.server as _mcp_server  # noqa: E402 -- must run after sys.modules check
+from thegent.mcp.dynamic_tools import (
+    DynamicToolCallResult,
+    DynamicToolRegistry,
+    DynamicToolSpec,
+    PendingDynamicToolCall,
+)
 
 _tools_sessions = _mcp_server._server_tools_sessions
 
@@ -443,7 +440,11 @@ class TestSessionSendImplDynamicTools:
     def test_register_returns_success(self):
         # @trace WL-105
         payload = json.dumps(
-            {"name": "calc", "description": "a calculator", "input_schema": {"type": "object"}}
+            {
+                "name": "calc",
+                "description": "a calculator",
+                "input_schema": {"type": "object"},
+            }
         ).decode()
         result = self._send("sess-1", payload, "dynamic_tool_register")
         assert result["success"] is True
@@ -521,7 +522,10 @@ class TestMCPToolCallables:
                 session_id="sess-x",
                 name="weather",
                 description="get weather",
-                input_schema={"type": "object", "properties": {"city": {"type": "string"}}},
+                input_schema={
+                    "type": "object",
+                    "properties": {"city": {"type": "string"}},
+                },
             )
         )
         result = json.loads(raw)

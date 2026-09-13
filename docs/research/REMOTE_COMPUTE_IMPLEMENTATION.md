@@ -4,6 +4,7 @@
 ## Overview
 
 Remote compute allows `thegent` to offload execution of agents and entire runs to a remote host (e.g. a powerful Linux server from a Mac). This is useful for:
+
 - Environment parity: running in the same OS as the target project.
 - Compute power: offloading LLM or tool execution to a more powerful machine.
 - Geographic presence: running from a specific region/IP.

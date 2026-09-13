@@ -9,7 +9,6 @@ import pytest
 
 from thegent.cliproxy_adapter import build_cost_response_header
 
-
 # ---------------------------------------------------------------------------
 # build_cost_response_header — with usage
 # ---------------------------------------------------------------------------

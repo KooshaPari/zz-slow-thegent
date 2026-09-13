@@ -210,7 +210,12 @@ class TestShadowPersistence:
         proj = reg.register_project(name="persist", path="/persist")
 
         s1 = ShadowAuditGit(db_path=db_path)
-        s1.record_commit(project_id=proj.id, sha="persist-sha", message="persist msg", diff="persist diff")
+        s1.record_commit(
+            project_id=proj.id,
+            sha="persist-sha",
+            message="persist msg",
+            diff="persist diff",
+        )
 
         s2 = ShadowAuditGit(db_path=db_path)
         entries = s2.get_audit_log(proj.id)

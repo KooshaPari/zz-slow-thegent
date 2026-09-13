@@ -12,7 +12,7 @@ Research framework for cost sensing tests.
 
 ### Methods
 
-#### Phase14CostSensingTestsResearch.__init__
+#### Phase14CostSensingTestsResearch.**init**
 
 ```python
 __init__(self: Any)

@@ -7,7 +7,6 @@ FR Traceability: FR-VER-004 (episode lifecycle management)
 from __future__ import annotations
 
 from pathlib import Path  # noqa: TC003
-from unittest.mock import MagicMock, patch
 
 import pytest
 
@@ -140,9 +139,8 @@ class TestContextManager:
         assert controller.episode.status == EpisodeStatus.COMPLETED
 
     def test_context_manager_on_exception(self, controller: EpisodeController) -> None:
-        with pytest.raises(ValueError, match="boom"):
-            with controller:
-                raise ValueError("boom")
+        with pytest.raises(ValueError, match="boom"), controller:
+            raise ValueError("boom")
         assert controller.episode is not None
         assert controller.episode.status == EpisodeStatus.FAILED
 

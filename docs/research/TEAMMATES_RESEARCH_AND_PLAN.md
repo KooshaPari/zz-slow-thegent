@@ -2,7 +2,9 @@
 # Thegent Teammates: Research and Implementation Plan (2026-02-15)
 
 ## 1. Research: Claude Code Teammates
+
 Claude Code's "teammates" feature represents a shift from a single monolithic agent to a collaborative team of specialized agents. Key characteristics identified:
+
 - **Delegation**: A primary orchestrator (the "Manager") breaks down complex tasks into sub-tasks.
 - **Specialization**: Teammates have specific roles (e.g., researcher, coder, reviewer, tester).
 - **Collaboration**: Multiple agents work on the same codebase, often asynchronously.
@@ -10,30 +12,36 @@ Claude Code's "teammates" feature represents a shift from a single monolithic ag
 
 ## 2. Competitive Analysis: Thegent vs. Teammates
 
-| Capability | Claude Code Teammates | Thegent + heliosShield |
-|------------|-----------------------|--------------------|
-| **Orchestration** | Centralized | `thegent sitback` (Manager) |
-| **Isolation** | Workspace-based (likely) | Git Parallelism (Private Index) |
-| **Coordination** | Internal protocol | heliosShield Phase 6-18 (OCC + Locks) |
-| **Handoff** | Structured prompts | XML Tags (Task Tool Contract) |
-| **Observability** | CLI Dashboard | Sitback Dashboard v2 |
+| Capability        | Claude Code Teammates    | Thegent + heliosShield                |
+| ----------------- | ------------------------ | ------------------------------------- |
+| **Orchestration** | Centralized              | `thegent sitback` (Manager)           |
+| **Isolation**     | Workspace-based (likely) | Git Parallelism (Private Index)       |
+| **Coordination**  | Internal protocol        | heliosShield Phase 6-18 (OCC + Locks) |
+| **Handoff**       | Structured prompts       | XML Tags (Task Tool Contract)         |
+| **Observability** | CLI Dashboard            | Sitback Dashboard v2                  |
 
 ## 3. Implementation Strategy: The "Teammate Swarm"
 
 ### 3.1 Orchestration (Thegent Layer)
+
 We will leverage `thegent sitback` as the primary entry point. The sitback agent will be enhanced with "Teammate Awareness":
+
 - **`thegent teammates list`**: Discover specialized personas in `agents/*.md`.
 - **`thegent teammates delegate <persona> <prompt>`**: Spawn an asynchronous sub-agent to handle a specific task.
 - **Status Tracking**: Use the `EvidenceGraph` to link teammate actions back to the primary run.
 
 ### 3.2 Coordination (heliosShield Layer)
+
 To allow teammates to work safely in the same directory, we must implement the **Shared-Directory Architecture** from heliosShield Phase 6+:
+
 - **Git Parallelism (Phase 6)**: Enable multiple agents to commit concurrently using private `GIT_INDEX_FILE` and CAS ref updates.
 - **Smart Merge (Phase 7)**: Use `Mergiraf` for AST-aware conflict resolution when teammates edit the same files.
 - **Task Coordination (Phase 11)**: A filesystem-native task queue (Maildir style) for teammates to claim work.
 
 ### 3.3 Handoff Protocol (Task Tool Layer)
+
 We will adopt and extend the XML contract from `task-tool`:
+
 - `<Thought>`: Internal reasoning.
 - `<Action>`: The delegated task.
 - `<Result>`: The teammate's output.
@@ -42,27 +50,33 @@ We will adopt and extend the XML contract from `task-tool`:
 ## 4. Work Packages (WPs)
 
 ### WP-16001: Teammate Persona Registry
+
 - Expand `PersonaManager` to support "Teammate" metadata (role, priority, ODD).
 - Auto-discovery of teammates from the `agents/` directory.
 
 ### WP-16002: Async Delegation CLI
+
 - Implement `thegent teammates delegate` command.
 - Implement `thegent teammates status` to monitor the swarm.
 
 ### WP-16003: heliosShield Integration Bridge
+
 - Wire `thegent` into heliosShield's Phase 11 task queue.
 - Ensure `thegent_run` automatically respects heliosShield locks and intents.
 
 ### WP-16004: Intelligent Conflict Resolution Bridge
+
 - Implement a `thegent merge` helper that wraps heliosShield's Phase 7 AST merge.
 
 ## 5. Success Criteria
+
 - [ ] A single `thegent sitback` session can delegate a sub-task to a "coder" teammate.
 - [ ] The teammate completes the task in the background and reports back via XML.
 - [ ] Multiple teammates can work on different files simultaneously without git lock contention.
 - [ ] The `sitback` dashboard shows a live view of the "Teammate Swarm".
 
 ## 6. Reference Implementation: OpenCode
+
 The `opencode-openai-codex-auth` plugin and `task-tool` provide the baseline for XML-based tool remapping and Planner→Operator→Reviewer sequencing. We will refine these patterns into a more generic "Teammate" interface.
 
 ---
@@ -81,6 +95,7 @@ from typing import Optional
 
 app = typer.Typer()
 
+
 @app.command()
 def list():
     """List all available teammates."""
@@ -92,11 +107,12 @@ def list():
             desc = agent_def.get("description", "")[:60]
             print(f"  • {agent_id}: {desc}...")
 
+
 @app.command()
 def delegate(
     teammate: str = typer.Argument(..., help="Teammate agent ID"),
     task: str = typer.Argument(..., help="Task description"),
-    context: Optional[Path] = typer.Option(None, "-c", "--context", help="Context directory")
+    context: Optional[Path] = typer.Option(None, "-c", "--context", help="Context directory"),
 ):
     """Delegate task to a teammate."""
     from thegent.agents.runner import AgentRunner
@@ -107,11 +123,7 @@ def delegate(
             ctx_file = Path(tmpdir) / "context.md"
             ctx_file.write_text(f"# Context from {context}\n\n{context.read_text()}")
 
-        runner = AgentRunner(
-            agent_id=teammate,
-            task_prompt=task,
-            work_dir=Path(tmpdir)
-        )
+        runner = AgentRunner(agent_id=teammate, task_prompt=task, work_dir=Path(tmpdir))
 
         result = runner.run()
 
@@ -120,6 +132,7 @@ def delegate(
         else:
             print(f"\n❌ Teammate {teammate} failed: {result.error}")
             raise SystemExit(1)
+
 
 @app.command()
 def status():
@@ -146,15 +159,18 @@ from dataclasses import dataclass
 from typing import Optional
 from enum import Enum
 
+
 class HandoffState(Enum):
     PENDING = "pending"
     IN_PROGRESS = "in_progress"
     COMPLETED = "completed"
     FAILED = "failed"
 
+
 @dataclass
 class Handoff:
     """Handoff between teammates."""
+
     from_agent: str
     to_agent: str
     task: str
@@ -172,26 +188,16 @@ class Handoff:
     <Confidence>{self.confidence}</Confidence>
 </Handoff>"""
 
+
 class HandoffProtocol:
     """Manage handoffs between teammates."""
 
     def __init__(self):
         self.pending_handoffs: list[Handoff] = []
 
-    def create_handoff(
-        self,
-        from_agent: str,
-        to_agent: str,
-        task: str,
-        context: str
-    ) -> Handoff:
+    def create_handoff(self, from_agent: str, to_agent: str, task: str, context: str) -> Handoff:
         """Create a new handoff."""
-        handoff = Handoff(
-            from_agent=from_agent,
-            to_agent=to_agent,
-            task=task,
-            context=context
-        )
+        handoff = Handoff(from_agent=from_agent, to_agent=to_agent, task=task, context=context)
         self.pending_handoffs.append(handoff)
         return handoff
 
@@ -254,6 +260,7 @@ See [AGENT_HIERARCHY_AND_TEAM_STRUCTURE.md](./AGENT_HIERARCHY_AND_TEAM_STRUCTURE
 ### Enhanced Delegation
 
 Delegation now supports:
+
 - **Team-aware delegation**: Delegate to team members or cross-team
 - **Hierarchy-aware delegation**: Respect role levels and permissions
 - **Relationship tracking**: Full parent-child relationship graph

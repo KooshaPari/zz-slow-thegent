@@ -11,6 +11,7 @@ the split transition (Track 4.2-4.3). It ensures:
 
 import sys
 from pathlib import Path
+
 import pytest
 
 # Add src to path so we can import packages
@@ -134,10 +135,10 @@ class TestPackageDependencyGraph:
         # Import in dependency order; if circular, will raise ImportError
         try:
             # Core first
-            import thegent_sdk  # noqa: F401
-
             # MCP and Agents (both depend on core, not each other)
             import thegent_mcp  # noqa: F401
+            import thegent_sdk  # noqa: F401
+
             import thegent_agents  # noqa: F401
         except ImportError as e:
             pytest.fail(f"Circular dependency detected: {e}")

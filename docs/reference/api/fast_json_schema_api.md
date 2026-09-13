@@ -6,10 +6,12 @@ Fast JSON schema validator with optimized backends.
 
 This module provides a high-performance abstraction layer for JSON schema validation
 that automatically selects the fastest available backend:
+
 - fastjsonschema: 2-3x faster than jsonschema
 - jsonschema: Standard fallback
 
 Performance improvements:
+
 - fastjsonschema compiles schemas to Python code (2-3x faster)
 - Automatic backend selection based on availability
 - Cached compiled schemas for repeated validation
@@ -21,12 +23,13 @@ Performance improvements:
 High-performance JSON schema validator with automatic backend selection.
 
 Backend priority (fastest first):
+
 1. fastjsonschema (if installed) - 2-3x faster, compiles schemas to Python
 2. jsonschema (standard fallback) - baseline performance
 
 ### Methods
 
-#### FastJSONSchemaValidator.__init__
+#### FastJSONSchemaValidator.**init**
 
 ```python
 __init__(self: Any, schema: dict[(str, Any)])

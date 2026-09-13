@@ -5,11 +5,13 @@
 Fast compression/decompression with optimized backends.
 
 This module provides optimized compression utilities:
+
 - brotli for better compression ratios (if available)
 - zstandard (zstd) for fast compression (if available)
 - Standard gzip/zlib fallback
 
 Performance improvements:
+
 - brotli: Better compression ratios than gzip
 - zstd: Faster compression/decompression
 - Optimized for common use cases

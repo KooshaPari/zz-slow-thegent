@@ -6,15 +6,15 @@ Use this when turning **Tier 2** deliverables into **one PR per repo** (or one s
 
 ## 1. heliosApp
 
-| Path | Role |
-|------|------|
-| `.github/workflows/ci.yml` | Bun **1.2.20** on all jobs |
-| `.github/workflows/vitepress-pages.yml` | Bun **1.2.20** (parity with `ci.yml`) |
-| `.github/workflows/compliance-check.yml` | Bun pin |
-| `.github/workflows/quality-gates.yml` | Bun pin |
-| `.github/pull_request_template.md` | Worktree + runtime / quality-gates notes |
-| `CHANGELOG.md` | Unreleased + link |
-| `docs/guides/troubleshooting-local-dev.md` | ENOSPC / `.tmp` / Bun / secrets |
+| Path                                       | Role                                     |
+| ------------------------------------------ | ---------------------------------------- |
+| `.github/workflows/ci.yml`                 | Bun **1.2.20** on all jobs               |
+| `.github/workflows/vitepress-pages.yml`    | Bun **1.2.20** (parity with `ci.yml`)    |
+| `.github/workflows/compliance-check.yml`   | Bun pin                                  |
+| `.github/workflows/quality-gates.yml`      | Bun pin                                  |
+| `.github/pull_request_template.md`         | Worktree + runtime / quality-gates notes |
+| `CHANGELOG.md`                             | Unreleased + link                        |
+| `docs/guides/troubleshooting-local-dev.md` | ENOSPC / `.tmp` / Bun / secrets          |
 
 **Verify before PR:**
 
@@ -44,10 +44,10 @@ git add \
 
 ## 2. colab
 
-| Path | Role |
-|------|------|
-| `CONTRIBUTING.md` | New |
-| `.gitignore` | `.tmp/`, IDE stubs |
+| Path              | Role               |
+| ----------------- | ------------------ |
+| `CONTRIBUTING.md` | New                |
+| `.gitignore`      | `.tmp/`, IDE stubs |
 
 ```bash
 git add CONTRIBUTING.md .gitignore
@@ -59,10 +59,10 @@ git add CONTRIBUTING.md .gitignore
 
 ## 3. helMo
 
-| Path | Role |
-|------|------|
-| `CONTRIBUTING.md` | New |
-| `.gitignore` | Expanded |
+| Path              | Role     |
+| ----------------- | -------- |
+| `CONTRIBUTING.md` | New      |
+| `.gitignore`      | Expanded |
 
 ```bash
 git add CONTRIBUTING.md .gitignore
@@ -74,10 +74,10 @@ git add CONTRIBUTING.md .gitignore
 
 ## 4. helios-cli
 
-| Path | Role |
-|------|------|
+| Path                   | Role                     |
+| ---------------------- | ------------------------ |
 | `docs/contributing.md` | Scratch / `.tmp` section |
-| `.gitignore` | `.tmp/` |
+| `.gitignore`           | `.tmp/`                  |
 
 ```bash
 git add docs/contributing.md .gitignore
@@ -101,12 +101,12 @@ After merging thegent, **sync** the markdown body to `repos/README.md` (same con
 
 ## 6. thegent (session + reference)
 
-| Path | Role |
-|------|------|
-| `docs/sessions/20260324-phenotype-local-worktree-forest-blocker-matrix/16_PARALLEL_AGENT_AUDIT.md` | Tier 1–2 audit |
-| `docs/sessions/20260324-phenotype-local-worktree-forest-blocker-matrix/17_PR_STAGING_CHECKLIST.md` | This checklist |
-| `docs/sessions/20260324-phenotype-local-worktree-forest-blocker-matrix/ACTIVE_BACKLOG.md` | Session log |
-| `docs/reference/phenotype_repos_hub.md` | Versioned hub index |
+| Path                                                                                               | Role                |
+| -------------------------------------------------------------------------------------------------- | ------------------- |
+| `docs/sessions/20260324-phenotype-local-worktree-forest-blocker-matrix/16_PARALLEL_AGENT_AUDIT.md` | Tier 1–2 audit      |
+| `docs/sessions/20260324-phenotype-local-worktree-forest-blocker-matrix/17_PR_STAGING_CHECKLIST.md` | This checklist      |
+| `docs/sessions/20260324-phenotype-local-worktree-forest-blocker-matrix/ACTIVE_BACKLOG.md`          | Session log         |
+| `docs/reference/phenotype_repos_hub.md`                                                            | Versioned hub index |
 
 ```bash
 git add \

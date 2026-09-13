@@ -5,6 +5,7 @@
 ### Phase 1: Dependency & Setup (2 tasks)
 
 #### Task 1.1: Add cachetools Dependency
+
 - **Status**: Pending
 - **Owner**: TBD
 - **Description**: Add `cachetools==6.0.0` to `pyproject.toml` and sync dependencies
@@ -17,6 +18,7 @@
 - **Depends On**: None
 
 #### Task 1.2: Verify Test Environment
+
 - **Status**: Pending
 - **Owner**: TBD
 - **Description**: Confirm test infrastructure ready (pytest, coverage, type checking)
@@ -32,6 +34,7 @@
 ### Phase 2: Wrapper Design & Implementation (2 tasks)
 
 #### Task 2.1: Create project_cache.py Wrapper
+
 - **Status**: Pending
 - **Owner**: TBD
 - **Description**: Implement thin wrapper module `src/lib/project_cache.py` with standard cache factory functions
@@ -48,6 +51,7 @@
 - **Depends On**: Task 1.2
 
 #### Task 2.2: Document Wrapper Usage Patterns
+
 - **Status**: Pending
 - **Owner**: TBD
 - **Description**: Add usage documentation to wrapper and create reference guide
@@ -68,6 +72,7 @@
 ### Phase 3: Discovery & Mapping (1 task)
 
 #### Task 3.1: Discover Custom Caches
+
 - **Status**: Pending
 - **Owner**: TBD
 - **Description**: Search codebase for all custom cache implementations
@@ -90,6 +95,7 @@
 ### Phase 4: Migration (per custom cache)
 
 #### Task 4.X: Replace Custom Cache in Module X
+
 - **Status**: Pending (one task per discovered cache)
 - **Owner**: TBD
 - **Description**: Replace custom cache in module X with cachetools equivalent
@@ -110,6 +116,7 @@
 - **Depends On**: Task 2.1, Task 3.1
 
 **Example for provider_cache.py** (if discovered):
+
 ```
 Task 4.1: Replace src/services/provider_cache.py custom TTL cache
 - [ ] Remove class ProviderCache (35 LOC)
@@ -125,6 +132,7 @@ Task 4.1: Replace src/services/provider_cache.py custom TTL cache
 ### Phase 5: Integration & Validation (3 tasks)
 
 #### Task 5.1: Run Full Test Suite
+
 - **Status**: Pending
 - **Owner**: TBD
 - **Description**: Execute complete test suite after all replacements
@@ -137,6 +145,7 @@ Task 4.1: Replace src/services/provider_cache.py custom TTL cache
 - **Depends On**: All Phase 4 tasks
 
 #### Task 5.2: Run Quality Gates
+
 - **Status**: Pending
 - **Owner**: TBD
 - **Description**: Run project quality checks (linters, type checking, security)
@@ -150,6 +159,7 @@ Task 4.1: Replace src/services/provider_cache.py custom TTL cache
 - **Depends On**: Task 5.1
 
 #### Task 5.3: Verify Code Reduction
+
 - **Status**: Pending
 - **Owner**: TBD
 - **Description**: Measure and document LOC reduction
@@ -169,6 +179,7 @@ Task 4.1: Replace src/services/provider_cache.py custom TTL cache
 ### Phase 6: Documentation & Cleanup (2 tasks)
 
 #### Task 6.1: Update Library-First Audit
+
 - **Status**: Pending
 - **Owner**: TBD
 - **Description**: Update governance documentation to reflect cachetools adoption
@@ -187,6 +198,7 @@ Task 4.1: Replace src/services/provider_cache.py custom TTL cache
 - **Depends On**: Task 5.3
 
 #### Task 6.2: Archive Change Documentation
+
 - **Status**: Pending
 - **Owner**: TBD
 - **Description**: Move this change doc to archive after merge
@@ -201,15 +213,15 @@ Task 4.1: Replace src/services/provider_cache.py custom TTL cache
 
 ## Summary
 
-| Phase | Tasks | LOC Changed | Est. Time |
-|-------|-------|-------------|-----------|
-| 1: Setup | 2 | 0 | 2 min |
-| 2: Wrapper | 2 | ~50 | 5 min |
-| 3: Discovery | 1 | 0 | 3 min |
-| 4: Migration | 3-5 | -150+ | 10-15 min |
-| 5: Validation | 3 | 0 | 5 min |
-| 6: Docs | 2 | ~100 | 5 min |
-| **Total** | **13-15** | **~0 net** | **30-35 min** |
+| Phase         | Tasks     | LOC Changed | Est. Time     |
+| ------------- | --------- | ----------- | ------------- |
+| 1: Setup      | 2         | 0           | 2 min         |
+| 2: Wrapper    | 2         | ~50         | 5 min         |
+| 3: Discovery  | 1         | 0           | 3 min         |
+| 4: Migration  | 3-5       | -150+       | 10-15 min     |
+| 5: Validation | 3         | 0           | 5 min         |
+| 6: Docs       | 2         | ~100        | 5 min         |
+| **Total**     | **13-15** | **~0 net**  | **30-35 min** |
 
 ---
 

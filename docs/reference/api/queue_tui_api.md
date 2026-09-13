@@ -12,7 +12,7 @@ Rich-based TUI for the prompt queue.
 
 ### Methods
 
-#### QueueTUI.__init__
+#### QueueTUI.**init**
 
 ```python
 __init__(self: Any, session_dir: Path)

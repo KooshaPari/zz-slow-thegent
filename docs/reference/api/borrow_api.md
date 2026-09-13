@@ -33,11 +33,12 @@ url(self: Any)
 Discovers and exports thegent MCP tools for cross-project use.
 
 Other projects call this class to:
-1. Enumerate available tools (``list_available_tools``).
-2. Build an MCP server config fragment (``export_tool_config``).
-3. Write an ``mcp.json`` file suitable for Claude Code (``generate_mcp_json``).
+
+1. Enumerate available tools (`list_available_tools`).
+2. Build an MCP server config fragment (`export_tool_config`).
+3. Write an `mcp.json` file suitable for Claude Code (`generate_mcp_json`).
 4. Generate a CLAUDE.md snippet instructing Claude to use the tools
-   (``generate_claude_md_snippet``).
+   (`generate_claude_md_snippet`).
 
 Example::
 
@@ -49,7 +50,7 @@ Example::
 
 ### Methods
 
-#### ToolBorrower.__init__
+#### ToolBorrower.**init**
 
 ```python
 __init__(self: Any, config: Any)
@@ -65,8 +66,8 @@ export_tool_config(self: Any, tool_names: list[str])
 
 Build an MCP server config dict for the requested tools.
 
-The returned dict is the ``mcpServers`` entry for a Claude Code
-``mcp.json`` / ``.claude.json`` config.  It points at the running
+The returned dict is the `mcpServers` entry for a Claude Code
+`mcp.json` / `.claude.json` config. It points at the running
 thegent HTTP+SSE MCP server; no tool filtering is applied at the
 config level because the server exposes all tools and MCP clients
 select the ones they need.
@@ -74,9 +75,9 @@ select the ones they need.
 **Parameters**:
 
 - `tool_names`: List of tool names to document in the config metadata.
-Pass an empty list to include all tools.
+  Pass an empty list to include all tools.
 
-**Returns**: Dict with shape ``{"thegent": {"type": "http", "url": ..., ...}}``.
+**Returns**: Dict with shape `{"thegent": {"type": "http", "url": ..., ...}}`.
 
 ---
 
@@ -102,17 +103,17 @@ Generate a CLAUDE.md section instructing Claude to use thegent tools.
 generate_mcp_json(self: Any, tool_names: list[str], output_path: Path)
 ```
 
-Write (or update) an ``mcp.json`` file in ``output_path``.
+Write (or update) an `mcp.json` file in `output_path`.
 
-The file uses Claude Code's ``mcpServers`` format.  When ``merge=True``
-and the file already exists, the ``thegent`` server entry is upserted
+The file uses Claude Code's `mcpServers` format. When `merge=True`
+and the file already exists, the `thegent` server entry is upserted
 without touching existing entries.
 
 **Parameters**:
 
 - `tool_names`: Tools to document. Empty list borrows all tools.
-- `output_path`: Directory where ``mcp.json`` will be written.
-- `merge`: If True, merge with existing ``mcp.json``; otherwise overwrite.
+- `output_path`: Directory where `mcp.json` will be written.
+- `merge`: If True, merge with existing `mcp.json`; otherwise overwrite.
 
 **Returns**: Absolute path to the written file.
 
@@ -156,7 +157,7 @@ validate_server_reachable(self: Any)
 
 Check whether the configured thegent MCP server is reachable.
 
-Performs a simple HTTP GET to the ``/health`` endpoint.
+Performs a simple HTTP GET to the `/health` endpoint.
 
 **Returns**: True if the server responds with status 200, False otherwise.
 
@@ -190,8 +191,8 @@ export_tool_config(self: Any, tool_names: list[str])
 
 Build an MCP server config dict for the requested tools.
 
-The returned dict is the ``mcpServers`` entry for a Claude Code
-``mcp.json`` / ``.claude.json`` config.  It points at the running
+The returned dict is the `mcpServers` entry for a Claude Code
+`mcp.json` / `.claude.json` config. It points at the running
 thegent HTTP+SSE MCP server; no tool filtering is applied at the
 config level because the server exposes all tools and MCP clients
 select the ones they need.
@@ -199,9 +200,9 @@ select the ones they need.
 **Parameters**:
 
 - `tool_names`: List of tool names to document in the config metadata.
-Pass an empty list to include all tools.
+  Pass an empty list to include all tools.
 
-**Returns**: Dict with shape ``{"thegent": {"type": "http", "url": ..., ...}}``.
+**Returns**: Dict with shape `{"thegent": {"type": "http", "url": ..., ...}}`.
 
 **Raises**:
 
@@ -235,17 +236,17 @@ Generate a CLAUDE.md section instructing Claude to use thegent tools.
 generate_mcp_json(self: Any, tool_names: list[str], output_path: Path)
 ```
 
-Write (or update) an ``mcp.json`` file in ``output_path``.
+Write (or update) an `mcp.json` file in `output_path`.
 
-The file uses Claude Code's ``mcpServers`` format.  When ``merge=True``
-and the file already exists, the ``thegent`` server entry is upserted
+The file uses Claude Code's `mcpServers` format. When `merge=True`
+and the file already exists, the `thegent` server entry is upserted
 without touching existing entries.
 
 **Parameters**:
 
 - `tool_names`: Tools to document. Empty list borrows all tools.
-- `output_path`: Directory where ``mcp.json`` will be written.
-- `merge`: If True, merge with existing ``mcp.json``; otherwise overwrite.
+- `output_path`: Directory where `mcp.json` will be written.
+- `merge`: If True, merge with existing `mcp.json`; otherwise overwrite.
 
 **Returns**: Absolute path to the written file.
 
@@ -307,7 +308,7 @@ validate_server_reachable(self: Any)
 
 Check whether the configured thegent MCP server is reachable.
 
-Performs a simple HTTP GET to the ``/health`` endpoint.
+Performs a simple HTTP GET to the `/health` endpoint.
 
 **Returns**: True if the server responds with status 200, False otherwise.
 

@@ -16,6 +16,7 @@ This document defines the comprehensive integration plan for TaskRouter (task cl
 - **Week 3 (Testing + Monitoring):** Full testing, shadow run, production rollout
 
 **Hard Constraints** (all must pass before soft optimization):
+
 - **Performance:** Quality threshold by task category (60–80% depending on complexity)
 - **Cost:** Per-call instantaneous budget + monthly cumulative budget by category
 - **Speed:** SLA by task category (1s for FAST, 60s for HIGH_COMPLEX)
@@ -36,24 +37,24 @@ class RunMeta(BaseModel):
     # Existing fields...
 
     # NEW: Task Routing Fields (Phase 1)
-    task_category: str | None = None           # FAST, NORMAL, COMPLEX, HIGH_COMPLEX
-    task_complexity_score: float | None = None # 0.0 to 1.0
-    estimated_cost_usd: float | None = None    # Pre-execution estimate
+    task_category: str | None = None  # FAST, NORMAL, COMPLEX, HIGH_COMPLEX
+    task_complexity_score: float | None = None  # 0.0 to 1.0
+    estimated_cost_usd: float | None = None  # Pre-execution estimate
     estimated_duration_s: float | None = None  # Predicted execution time
 
     # NEW: Constraint Validation (Phase 1)
     constraint_violations: list[str] = Field(default_factory=list)  # e.g. ["speed_sla_exceeded"]
-    fallback_reason: str | None = None         # Why fallback was triggered (if any)
+    fallback_reason: str | None = None  # Why fallback was triggered (if any)
     fallback_chain: list[str] = Field(default_factory=list)  # [first_try, fallback1, fallback2...]
 ```
 
 **Integration Points:**
 
-| Location | Change | Why |
-|----------|--------|-----|
-| `register_start()` | Capture task_category, complexity_score, estimated_cost at run start | Audit trail for cost/complexity correlation |
-| `register_end()` | Store actual_cost_usd, actual_duration_s; compare vs estimates | Calibration feedback for classifier |
-| `get_calibration_factor()` | Use task_category bucketing (FAST/NORMAL/COMPLEX per-agent factors) | Better calibration precision |
+| Location                   | Change                                                               | Why                                         |
+| -------------------------- | -------------------------------------------------------------------- | ------------------------------------------- |
+| `register_start()`         | Capture task_category, complexity_score, estimated_cost at run start | Audit trail for cost/complexity correlation |
+| `register_end()`           | Store actual_cost_usd, actual_duration_s; compare vs estimates       | Calibration feedback for classifier         |
+| `get_calibration_factor()` | Use task_category bucketing (FAST/NORMAL/COMPLEX per-agent factors)  | Better calibration precision                |
 
 **LOC Impact:** +15 lines (field definitions only; no logic)
 
@@ -126,11 +127,11 @@ async def run_impl(
 
 **Integration Points:**
 
-| Location | Change | Why |
-|----------|--------|-----|
-| Pre-policy: Classify + Validate | Route early; block before expensive policy checks | Fail-fast on hard constraints |
-| Post-policy: Route selection | Use task_category for Pareto optimization | Category-aware model mapping |
-| Post-dispatch: Cost registration | Track actual vs estimated; feed calibration | Classifier feedback loop |
+| Location                         | Change                                            | Why                           |
+| -------------------------------- | ------------------------------------------------- | ----------------------------- |
+| Pre-policy: Classify + Validate  | Route early; block before expensive policy checks | Fail-fast on hard constraints |
+| Post-policy: Route selection     | Use task_category for Pareto optimization         | Category-aware model mapping  |
+| Post-dispatch: Cost registration | Track actual vs estimated; feed calibration       | Classifier feedback loop      |
 
 **LOC Impact:** +20 lines (integration; logic in TaskRouter module)
 
@@ -147,6 +148,7 @@ async def run_impl(
 @dataclass
 class CostAggregator:
     """Per-category cost tracking (Phase 2)."""
+
     session_dir: Path
 
     def add_to_category(
@@ -186,9 +188,11 @@ class CostAggregator:
                         continue
                     try:
                         data = json.loads(line)
-                        if (data.get("event") == "cost" and
-                            data.get("category") == category and
-                            data.get("timestamp", "").startswith(current_month)):
+                        if (
+                            data.get("event") == "cost"
+                            and data.get("category") == category
+                            and data.get("timestamp", "").startswith(current_month)
+                        ):
                             total += float(data.get("cost_usd", 0))
                     except Exception:
                         continue
@@ -214,9 +218,7 @@ class CostAggregator:
                     try:
                         data = json.loads(line)
                         ts = data.get("timestamp", "")[:10]
-                        if (data.get("event") == "cost" and
-                            data.get("category") == category and
-                            ts == today):
+                        if data.get("event") == "cost" and data.get("category") == category and ts == today:
                             total += float(data.get("cost_usd", 0))
                     except Exception:
                         continue
@@ -250,11 +252,11 @@ class CostAggregator:
 
 **Integration Points:**
 
-| Location | Change | Why |
-|----------|--------|-----|
-| `register_end()` in execution.py | Call `CostAggregator.add_to_category()` | Track per-category spend |
-| `PolicyEngine.evaluate()` | Check category budget before allow | Enforce per-category limits |
-| Monitoring/dashboard | Query per-category totals | Category-aware spend visibility |
+| Location                         | Change                                  | Why                             |
+| -------------------------------- | --------------------------------------- | ------------------------------- |
+| `register_end()` in execution.py | Call `CostAggregator.add_to_category()` | Track per-category spend        |
+| `PolicyEngine.evaluate()`        | Check category budget before allow      | Enforce per-category limits     |
+| Monitoring/dashboard             | Query per-category totals               | Category-aware spend visibility |
 
 **LOC Impact:** +40 lines (new methods)
 
@@ -300,10 +302,7 @@ def resolve_route_for_category(
 
     # Filter routes by quality (from model catalog)
     # Requires model catalog to have quality scores (Phase 2 enhancement)
-    qualified_routes = [
-        r for r in routes
-        if _get_route_quality_score(r) >= min_quality
-    ]
+    qualified_routes = [r for r in routes if _get_route_quality_score(r) >= min_quality]
 
     if not qualified_routes:
         # Fallback: return cheapest route, log warning
@@ -312,21 +311,14 @@ def resolve_route_for_category(
     # Sort by policy
     if category in ("COMPLEX", "HIGH_COMPLEX"):
         # Prioritize quality, then cost
-        sorted_routes = sorted(
-            qualified_routes,
-            key=lambda r: (-_get_route_quality_score(r), r.cost_weight)
-        )
+        sorted_routes = sorted(qualified_routes, key=lambda r: (-_get_route_quality_score(r), r.cost_weight))
     elif category == "FAST":
         # Prioritize cost, then quality
-        sorted_routes = sorted(
-            qualified_routes,
-            key=lambda r: (r.cost_weight, -_get_route_quality_score(r))
-        )
+        sorted_routes = sorted(qualified_routes, key=lambda r: (r.cost_weight, -_get_route_quality_score(r)))
     else:  # NORMAL
         # Balance
         sorted_routes = sorted(
-            qualified_routes,
-            key=lambda r: (r.cost_weight * 0.5 + (1 - _get_route_quality_score(r)) * 0.5)
+            qualified_routes, key=lambda r: r.cost_weight * 0.5 + (1 - _get_route_quality_score(r)) * 0.5
         )
 
     best = sorted_routes[0]
@@ -337,6 +329,7 @@ def resolve_route_for_category(
         priority=best.priority,
         cost_weight=best.cost_weight,
     )
+
 
 def _get_route_quality_score(route: Route) -> float:
     """
@@ -356,6 +349,7 @@ def _get_route_quality_score(route: Route) -> float:
     }
     return quality_map.get((route.provider, route.model_alias), 0.70)
 
+
 def _fallback_cheapest_route(routes: list[Route]) -> ResolvedRoute | None:
     """Fallback: return cheapest route when no quality threshold match."""
     if not routes:
@@ -372,11 +366,11 @@ def _fallback_cheapest_route(routes: list[Route]) -> ResolvedRoute | None:
 
 **Integration Points:**
 
-| Location | Change | Why |
-|----------|--------|-----|
-| cli_impl.py:run_impl() | Call resolve_route_for_category() with task_category | Task-aware routing |
-| models/catalog.py | Add quality metadata to Route (Phase 2) | Enable Pareto optimization |
-| monitoring | Track Pareto coverage (% of routes meeting quality) | SLA visibility |
+| Location               | Change                                               | Why                        |
+| ---------------------- | ---------------------------------------------------- | -------------------------- |
+| cli_impl.py:run_impl() | Call resolve_route_for_category() with task_category | Task-aware routing         |
+| models/catalog.py      | Add quality metadata to Route (Phase 2)              | Enable Pareto optimization |
+| monitoring             | Track Pareto coverage (% of routes meeting quality)  | SLA visibility             |
 
 **LOC Impact:** +50 lines (new functions; Phase 2 optional enhancement)
 
@@ -480,13 +474,11 @@ def _parse_complexity_keywords(cls, v: object) -> dict[str, list[str]]:
         try:
             parsed = json.loads(v)
             if isinstance(parsed, dict):
-                return {k: list(val) if isinstance(val, (list, tuple)) else [val]
-                        for k, val in parsed.items()}
+                return {k: list(val) if isinstance(val, (list, tuple)) else [val] for k, val in parsed.items()}
         except json.JSONDecodeError:
             pass
     if isinstance(v, dict):
-        return {k: list(val) if isinstance(val, (list, tuple)) else [val]
-                for k, val in v.items()}
+        return {k: list(val) if isinstance(val, (list, tuple)) else [val] for k, val in v.items()}
     return {"high_complexity": [], "medium_complexity": []}
 ```
 
@@ -498,7 +490,8 @@ def _parse_complexity_keywords(cls, v: object) -> dict[str, list[str]]:
 
 **New Files:**
 
-#### routing/__init__.py
+#### routing/**init**.py
+
 ```python
 """Task routing and constraint validation for thegent."""
 
@@ -520,32 +513,39 @@ __all__ = [
 **LOC Impact:** +10 lines
 
 #### routing/models.py
+
 ```python
 """Data models for task routing."""
 
 from dataclasses import dataclass
 from enum import Enum
 
+
 class TaskCategory(str, Enum):
     """Task complexity categories."""
-    FAST = "FAST"              # Simple, <1s, <100 tokens, <$0.002
-    NORMAL = "NORMAL"          # Standard, <5s, <1k tokens, <$0.05
-    COMPLEX = "COMPLEX"        # Hard, <20s, <10k tokens, <$0.15
+
+    FAST = "FAST"  # Simple, <1s, <100 tokens, <$0.002
+    NORMAL = "NORMAL"  # Standard, <5s, <1k tokens, <$0.05
+    COMPLEX = "COMPLEX"  # Hard, <20s, <10k tokens, <$0.15
     HIGH_COMPLEX = "HIGH_COMPLEX"  # Very hard, <60s, >10k tokens, <$0.85
+
 
 @dataclass
 class TaskMetadata:
     """Metadata for classified task."""
-    category: str              # FAST, NORMAL, COMPLEX, HIGH_COMPLEX
-    complexity_score: float    # 0.0 (trivial) to 1.0 (hardest)
-    estimated_tokens: int      # Estimated input+output tokens
-    estimated_cost: float      # Estimated cost in USD
+
+    category: str  # FAST, NORMAL, COMPLEX, HIGH_COMPLEX
+    complexity_score: float  # 0.0 (trivial) to 1.0 (hardest)
+    estimated_tokens: int  # Estimated input+output tokens
+    estimated_cost: float  # Estimated cost in USD
     estimated_duration_s: float  # Estimated execution time
     reasoning: str | None = None  # Why this category was assigned
+
 
 @dataclass
 class ConstraintViolation:
     """A violated hard constraint."""
+
     constraint_type: str  # performance, cost, speed
     category: str
     threshold: float
@@ -556,7 +556,8 @@ class ConstraintViolation:
 **LOC Impact:** +50 lines
 
 #### routing/task_router.py
-```python
+
+````python
 """Task classification and constraint validation."""
 
 import logging
@@ -571,6 +572,7 @@ if TYPE_CHECKING:
     from thegent.execution import RunRegistry
 
 _log = logging.getLogger(__name__)
+
 
 class TaskClassifier:
     """Classifies tasks by complexity and estimates cost/duration."""
@@ -761,14 +763,13 @@ class ConstraintValidator:
         # 2. Instantaneous cost constraint
         inst_budget = self.config.routing_instantaneous_budget.get(category, 0.05)
         if task_metadata.estimated_cost > inst_budget:
-            violations.append(
-                f"Cost (instantaneous): ${task_metadata.estimated_cost:.4f} > ${inst_budget:.4f}"
-            )
+            violations.append(f"Cost (instantaneous): ${task_metadata.estimated_cost:.4f} > ${inst_budget:.4f}")
 
         # 3. Cumulative cost constraint (if registry available)
         if registry:
             cum_budget = self.config.routing_cumulative_budget.get(category, 100.0)
             from thegent.governance.cost import CostAggregator
+
             agg = CostAggregator(self.config.session_dir)
             category_mtd = agg.get_category_mtd_total(category)
             if category_mtd + task_metadata.estimated_cost > cum_budget:
@@ -779,9 +780,7 @@ class ConstraintValidator:
         # 4. Speed constraint
         speed_sla = self.config.routing_speed_sla_ms.get(category, 5000) / 1000
         if task_metadata.estimated_duration_s > speed_sla:
-            violations.append(
-                f"Speed: {task_metadata.estimated_duration_s:.1f}s > {speed_sla:.1f}s SLA"
-            )
+            violations.append(f"Speed: {task_metadata.estimated_duration_s:.1f}s > {speed_sla:.1f}s SLA")
 
         return violations
 
@@ -822,7 +821,7 @@ class TaskRouter:
         task = self.classify(prompt)
         violations = self.validate(task, registry, model)
         return task, violations
-```
+````
 
 **LOC Impact:** +300 lines (comprehensive implementation)
 
@@ -909,18 +908,18 @@ class TaskRouter:
 
 ## 4. File Changes Summary
 
-| File | Change Type | LOC | Priority | Depends On |
-|------|-------------|-----|----------|-----------|
-| **src/thegent/execution.py** | Extend RunMeta | +15 | P0 | None |
-| **src/thegent/cli_impl.py** | TaskRouter integration | +20 | P0 | execution.py changes |
-| **src/thegent/config.py** | Add TaskRouter config | +20 | P0 | None |
-| **src/thegent/governance/cost.py** | Per-category tracking | +40 | P1 | execution.py changes |
-| **src/thegent/models/catalog.py** | Pareto-aware routing | +50 | P2 | config.py (Phase 2 only) |
-| **src/thegent/routing/__init__.py** | Module init | +10 | P0 | None |
-| **src/thegent/routing/models.py** | Data classes | +50 | P0 | None |
-| **src/thegent/routing/task_router.py** | Core router | +300 | P0 | config.py, models.py |
-| **tests/test_unit_routing.py** | Unit tests | +400 | P0 | routing/ modules |
-| **tests/test_integration_routing.py** | Integration tests | +300 | P1 | routing/, execution, governance |
+| File                                   | Change Type            | LOC  | Priority | Depends On                      |
+| -------------------------------------- | ---------------------- | ---- | -------- | ------------------------------- |
+| **src/thegent/execution.py**           | Extend RunMeta         | +15  | P0       | None                            |
+| **src/thegent/cli_impl.py**            | TaskRouter integration | +20  | P0       | execution.py changes            |
+| **src/thegent/config.py**              | Add TaskRouter config  | +20  | P0       | None                            |
+| **src/thegent/governance/cost.py**     | Per-category tracking  | +40  | P1       | execution.py changes            |
+| **src/thegent/models/catalog.py**      | Pareto-aware routing   | +50  | P2       | config.py (Phase 2 only)        |
+| **src/thegent/routing/**init**.py**    | Module init            | +10  | P0       | None                            |
+| **src/thegent/routing/models.py**      | Data classes           | +50  | P0       | None                            |
+| **src/thegent/routing/task_router.py** | Core router            | +300 | P0       | config.py, models.py            |
+| **tests/test_unit_routing.py**         | Unit tests             | +400 | P0       | routing/ modules                |
+| **tests/test_integration_routing.py**  | Integration tests      | +300 | P1       | routing/, execution, governance |
 
 **Total LOC**: ~1,205 lines (including tests)
 **Critical Path**: execution.py → cli_impl.py → routing/task_router.py
@@ -932,6 +931,7 @@ class TaskRouter:
 ### Hard Constraints (All Must Pass)
 
 #### Performance
+
 ```
 FAST Task:
 ├─ Min Quality: 60%
@@ -955,6 +955,7 @@ HIGH_COMPLEX Task:
 ```
 
 #### Instantaneous Cost (per-call)
+
 ```
 FAST:      cost ≤ $0.002 (typical: MiniMax ~$0.0015, Gemini ~$0.0001)
 NORMAL:    cost ≤ $0.05  (typical: MiniMax ~$0.04, Claude Haiku ~$0.02)
@@ -963,6 +964,7 @@ HIGH_COMPLEX: cost ≤ $0.85 (typical: Claude Opus ~$0.35, MiniMax ~$0.40)
 ```
 
 #### Cumulative Cost (monthly per category)
+
 ```
 FAST:      budget = $50/mo  (warn at $40, block at $50)
            capacity: ~33,000 calls @ $0.0015/call
@@ -978,6 +980,7 @@ HIGH_COMPLEX: budget = $50/mo (warn at $40, block at $50)
 ```
 
 #### Speed (SLA)
+
 ```
 FAST:      SLA ≤ 1s    (typical: MiniMax ~200ms, Gemini ~150ms ✓)
 NORMAL:    SLA ≤ 5s    (typical: MiniMax ~200ms, Claude ~800ms ✓)
@@ -1027,24 +1030,28 @@ THGENT_COST_BUDGET_BY_CATEGORY='{"FAST":50,"NORMAL":200,"COMPLEX":150,"HIGH_COMP
 ### Week 1: Core Routing (Days 1–5)
 
 **Day 1–2: Implement TaskRouter**
+
 - routing/models.py: TaskMetadata, TaskCategory, ConstraintViolation (1–2 hours)
 - routing/task_router.py: TaskClassifier, ConstraintValidator (4–6 hours)
 - Unit tests: test_unit_routing.py (tokenization, complexity, categorization, validation) (2–3 hours)
 - **Deliverable**: TaskRouter module with unit tests (90%+ coverage)
 
 **Day 2–3: Extend config.py + RunMeta**
+
 - config.py: Add all routing settings (1–2 hours)
 - execution.py: Add task_category, complexity_score, estimated_cost to RunMeta (30 min)
 - Tests: test_unit_config.py for TaskRouter config validation (1 hour)
 - **Deliverable**: Config schema + RunMeta extensions
 
 **Day 3–4: Integrate into cli_impl.py**
+
 - cli_impl.py: Call TaskRouter.classify(), ConstraintValidator.validate() before policy (2 hours)
 - Update PolicyEngine.evaluate() signature to accept RunMeta with task_category (1 hour)
 - E2E smoke test: Run 100 tasks, verify classification + validation (1 hour)
 - **Deliverable**: TaskRouter integrated into execution pipeline
 
 **Day 5: Unit + E2E Testing**
+
 - Complete unit tests (routing, config, execution changes) (2 hours)
 - E2E test: FAST task (should route to cheap model, <1s) (1 hour)
 - E2E test: HIGH_COMPLEX task (should enforce quality constraint) (1 hour)
@@ -1055,25 +1062,29 @@ THGENT_COST_BUDGET_BY_CATEGORY='{"FAST":50,"NORMAL":200,"COMPLEX":150,"HIGH_COMP
 ### Week 2: Policy + Cost Integration (Days 6–10)
 
 **Day 6–7: Extend PolicyEngine + CostAggregator**
+
 - governance/cost.py: Add per-category methods (add_to_category, get_category_mtd_total, etc.) (2 hours)
 - execution.py: register_end() calls CostAggregator.add_to_category() (1 hour)
 - PolicyEngine.evaluate(): Check per-category budget before allow (1.5 hours)
 - **Deliverable**: Cost tracking by category, budget enforcement in policy
 
 **Day 7–8: Extend Route Selection (Phase 2 – Optional)**
+
 - models/catalog.py: resolve_route_for_category() function (2 hours)
 - Add quality metadata to Route dataclass (30 min)
-- _get_route_quality_score() hardcoded mapping (30 min)
+- \_get_route_quality_score() hardcoded mapping (30 min)
 - Tests: test_unit_models.py for Pareto routing (1.5 hours)
 - **Deliverable**: Pareto-aware model selection (optional; can defer if time-constrained)
 
 **Day 8–9: Integration Tests**
+
 - test_integration_routing.py: Full flow tests (classify + validate + policy + route + dispatch) (3 hours)
 - Cost tracking integration: Verify category buckets update after runs (1 hour)
 - Policy enforcement: Verify budget blocks/warns correctly (1 hour)
 - **Deliverable**: Integration tests pass, cost enforcement working
 
 **Day 10: Monitoring + Reporting**
+
 - Add metrics queries (cost by category, utilization %, fallback frequency) (2 hours)
 - Implement dashboard queries (SQL if using DB, or JSONL parsing) (1.5 hours)
 - Documentation: Update CLAUDE.md with TaskRouter usage (1 hour)
@@ -1084,12 +1095,14 @@ THGENT_COST_BUDGET_BY_CATEGORY='{"FAST":50,"NORMAL":200,"COMPLEX":150,"HIGH_COMP
 ### Week 3: Testing + Monitoring + Rollout (Days 11–15)
 
 **Day 11–12: Shadow Run (Production Traffic, No Enforcement)**
+
 - Deploy with routing_constraints_enabled=false (violations logged but not enforced)
 - Run production traffic through TaskRouter for 2 days
 - Collect metrics: classification accuracy, cost estimates vs actual, SLA adherence (2 hours/day)
 - **Success Criteria**: No false positives, cost estimates within 20% of actual
 
 **Day 13: Full Enforcement Rollout**
+
 - Set routing_constraints_enabled=true
 - Set routing_budget_warning_threshold=0.80 (warn at 80% utilization)
 - Monitor: violations logged, budget warnings firing (2 hours)
@@ -1097,11 +1110,13 @@ THGENT_COST_BUDGET_BY_CATEGORY='{"FAST":50,"NORMAL":200,"COMPLEX":150,"HIGH_COMP
 - **Success Criteria**: No task rejections due to false positives, legitimate budget blocks only
 
 **Day 14: Tuning + Documentation**
+
 - Adjust thresholds based on shadow run data (1 hour)
 - Finalize documentation: INTEGRATION_ARCHITECTURE.md, INTEGRATION_QUICK_START.md (1.5 hours)
 - Runbooks: How to investigate cost overages, disable routing, adjust budgets (1 hour)
 
 **Day 15: Post-Launch Monitoring**
+
 - Monitor SLOs: routing latency < 100ms, budget accuracy, constraint violation rate < 1% (1 hour)
 - Respond to any issues (1 hour)
 - Post-launch report: cost reduction, constraint compliance, incident summary (1 hour)
@@ -1114,6 +1129,7 @@ THGENT_COST_BUDGET_BY_CATEGORY='{"FAST":50,"NORMAL":200,"COMPLEX":150,"HIGH_COMP
 ### Unit Tests
 
 **test_routing.py — TaskClassifier**
+
 ```python
 def test_classify_fast_task():
     """Classify simple task as FAST."""
@@ -1122,6 +1138,7 @@ def test_classify_fast_task():
     assert result.category == "FAST"
     assert result.estimated_duration_s <= 1.0
     assert result.estimated_cost <= 0.002
+
 
 def test_classify_high_complex_task():
     """Classify complex task as HIGH_COMPLEX."""
@@ -1134,6 +1151,7 @@ def test_classify_high_complex_task():
     assert result.category == "HIGH_COMPLEX"
     assert result.complexity_score > 0.75
 
+
 def test_complexity_keywords():
     """High-complexity keywords increase score."""
     classifier = TaskClassifier(config)
@@ -1143,6 +1161,7 @@ def test_complexity_keywords():
 ```
 
 **test_routing.py — ConstraintValidator**
+
 ```python
 def test_validate_instantaneous_cost_constraint():
     """Reject if estimated cost > instantaneous budget."""
@@ -1157,6 +1176,7 @@ def test_validate_instantaneous_cost_constraint():
     violations = validator.validate(task)
     assert any("instantaneous" in v for v in violations)
 
+
 def test_validate_speed_constraint():
     """Reject if estimated duration > SLA."""
     validator = ConstraintValidator(config)
@@ -1169,6 +1189,7 @@ def test_validate_speed_constraint():
     )
     violations = validator.validate(task)
     assert any("Speed" in v for v in violations)
+
 
 def test_validate_cumulative_budget():
     """Reject if category MTD + estimate > budget."""
@@ -1188,6 +1209,7 @@ def test_validate_cumulative_budget():
 ### Integration Tests
 
 **test_integration_routing.py**
+
 ```python
 @pytest.mark.asyncio
 async def test_full_routing_flow():
@@ -1220,6 +1242,7 @@ async def test_full_routing_flow():
     assert resolved is not None
     assert resolved.cost_weight <= 0.3  # FAST should pick cheap route
 
+
 @pytest.mark.asyncio
 async def test_cost_tracking_by_category():
     """Verify cost tracked per-category."""
@@ -1237,6 +1260,7 @@ async def test_cost_tracking_by_category():
     assert agg.get_category_mtd_total("FAST") == pytest.approx(0.003)
     assert agg.get_category_mtd_total("COMPLEX") == pytest.approx(0.10)
     assert agg.get_mtd_total() == pytest.approx(0.13)
+
 
 @pytest.mark.asyncio
 async def test_budget_enforcement():
@@ -1265,6 +1289,7 @@ async def test_budget_enforcement():
 ### End-to-End Tests
 
 **test_e2e_routing.py**
+
 ```python
 @pytest.mark.e2e
 @pytest.mark.asyncio
@@ -1277,6 +1302,7 @@ async def test_e2e_fast_task_routed_cheap():
     assert result["provider"] in ["minimax", "gemini"]
     assert result["duration_s"] < 1.0
     assert result["cost_usd"] < 0.002
+
 
 @pytest.mark.e2e
 @pytest.mark.asyncio
@@ -1292,6 +1318,7 @@ async def test_e2e_high_complex_task_routed_quality():
     assert result["provider"] in ["claude", "minimax"]
     assert result["model_quality"] >= 0.80
     assert result["duration_s"] < 60
+
 
 @pytest.mark.e2e
 @pytest.mark.asyncio
@@ -1405,6 +1432,7 @@ Fallback Frequency:
 If integration causes issues:
 
 ### Disable Routing
+
 ```bash
 # Immediate: Set env var
 export THGENT_ROUTING_ENABLED=false
@@ -1417,15 +1445,18 @@ routing:
 **Effect**: Tasks skip TaskRouter.classify() and ConstraintValidator.validate(), but RunMeta fields remain available (backward-compatible).
 
 ### Disable Cost Enforcement
+
 ```bash
 export THGENT_ROUTING_CONSTRAINTS_ENABLED=false
 export THGENT_COST_TRACKING_ENABLED=false
 ```
 
 ### Revert RunMeta
+
 RunMeta fields (task_category, complexity_score, etc.) are optional (default None). Old code that doesn't set them continues to work.
 
 ### Manual Recovery
+
 ```python
 # If registry is corrupted, rebuild from backups:
 registry_path = ~/.cache/thegent/sessions/run_registry.jsonl
@@ -1437,18 +1468,19 @@ python scripts/recalculate_category_costs.py --month 2026-02
 
 ### Disable per-Phase
 
-| Phase | Disable via | Impact |
-|-------|------------|--------|
-| Task Classification | ROUTING_ENABLED=false | No task_category assigned; runs proceed normally |
-| Constraint Validation | ROUTING_CONSTRAINTS_ENABLED=false | Violations logged but not enforced |
-| Cost Enforcement | COST_TRACKING_ENABLED=false or PolicyEngine skip | Budget checks don't fire |
-| Pareto Routing | resolve_route_for_category → resolve_route | Fall back to standard routing (Phase 1 still works) |
+| Phase                 | Disable via                                      | Impact                                              |
+| --------------------- | ------------------------------------------------ | --------------------------------------------------- |
+| Task Classification   | ROUTING_ENABLED=false                            | No task_category assigned; runs proceed normally    |
+| Constraint Validation | ROUTING_CONSTRAINTS_ENABLED=false                | Violations logged but not enforced                  |
+| Cost Enforcement      | COST_TRACKING_ENABLED=false or PolicyEngine skip | Budget checks don't fire                            |
+| Pareto Routing        | resolve_route_for_category → resolve_route       | Fall back to standard routing (Phase 1 still works) |
 
 ---
 
 ## 11. Success Criteria
 
 ### Week 1
+
 - [ ] TaskRouter module 100% tested (unit coverage ≥ 90%)
 - [ ] 100 test tasks classified with ≤5% misclassification rate
 - [ ] Constraints validated with 100% accuracy (no false positives)
@@ -1457,6 +1489,7 @@ python scripts/recalculate_category_costs.py --month 2026-02
 - [ ] cli_impl.py integration complete (E2E smoke tests pass)
 
 ### Week 2
+
 - [ ] Per-category cost tracking working (verified against mock registry)
 - [ ] PolicyEngine enforces per-category budgets (block at 100%, warn at 80%)
 - [ ] Integration tests pass (policy + cost + routing full flow)
@@ -1464,6 +1497,7 @@ python scripts/recalculate_category_costs.py --month 2026-02
 - [ ] Monitoring queries production-ready
 
 ### Week 3
+
 - [ ] Shadow run complete: cost estimates within 20% of actual
 - [ ] Zero false-positive constraint blocks during shadow run
 - [ ] Full enforcement rollout: legitimate blocks only
@@ -1481,7 +1515,6 @@ python scripts/recalculate_category_costs.py --month 2026-02
 - **Hard Constraints**: All-or-nothing enforcement (no graceful degradation)
 - **Monitoring**: Industry-standard SLO framework (Google SLO handbook)
 
-
 ---
 
 ## EXTENSION_SUMMARY
@@ -1490,15 +1523,18 @@ python scripts/recalculate_category_costs.py --month 2026-02
 **Extended by:** Claude Code
 
 ### Changes Made
+
 1. Added practical implementation patterns
 2. Added configuration examples
 3. Enhanced cross-references to related documentation
 
 ### Cross-References Added
+
 - Related research and implementation guides
 - WORK_STREAM.md for tracking
 
 ### Practical Additions
+
 - Implementation templates
 - Configuration examples
 - Best practices

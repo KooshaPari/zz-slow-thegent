@@ -1,4 +1,4 @@
-from compiler import SOPCompiler, Task, TaskGraph
+from compiler import SOPCompiler
 
 
 def test_compile_simple_graph():

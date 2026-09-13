@@ -16,6 +16,7 @@ The thegent TUI Compositor implementation spans **three distinct packages**:
 4. **`src/thegent/compositor/`** (Alternative modular structure)
 
 The codebase has **basic implementations but significant gaps** in:
+
 - Panel lifecycle management (mount/unmount hooks)
 - Composition caching to avoid re-renders
 - Error boundaries and recovery for panel crashes
@@ -24,6 +25,7 @@ The codebase has **basic implementations but significant gaps** in:
 - Integration with CLI progress bars (plan_loop_cmd)
 
 This document provides:
+
 1. Current state analysis
 2. Gap identification
 3. Enhancement recommendations
@@ -42,12 +44,14 @@ This document provides:
 **Status**: Functional baseline
 
 **What Works**:
+
 - Pane collection from tmux (`collect_panes()`)
 - Layout rendering (`render()`)
 - Config loading (YAML)
 - Live refresh with `Rich.Live`
 
 **Gaps**:
+
 - No panel lifecycle hooks (mount/unmount)
 - No composition caching
 - No error handling for pane crashes
@@ -67,12 +71,14 @@ This document provides:
 **Status**: Partially implemented
 
 **Modules**:
+
 - `app.py` - CompositApp (main Textual app)
 - `pane_manager.py` - PaneManager (tree structure)
 - `session_state.py` - SessionState (persistence)
 - `terminal_pane.py` - TerminalPane (PTY widget)
 
 **What Works**:
+
 - App initialization with BINDINGS and CSS
 - PaneManager with tree data structure
 - split_pane (vertical/horizontal)
@@ -83,6 +89,7 @@ This document provides:
 - Layout serialization/deserialization
 
 **Gaps**:
+
 - **No panel lifecycle hooks** - on_mount/on_unmount not implemented
 - **No composition caching** - renders on every call
 - **No error boundaries** - crashes in pane kill the whole app
@@ -104,12 +111,14 @@ This document provides:
 **Status**: Partial (different design)
 
 **What Works**:
+
 - Basic Textual app structure
 - Layout composition
 - Action bindings (focus, sidebar toggle, maximize)
 - Output/status pane management
 
 **Gaps**:
+
 - No pane tree structure
 - No split/close operations
 - No session persistence
@@ -133,6 +142,7 @@ This document provides:
 ### Test Coverage
 
 **Current Tests** (in `tests/ui/compositor/`):
+
 - `test_app.py` - CompositApp initialization, actions (basic)
 - `test_basic.py` - Component initialization (smoke tests)
 - `test_integration.py` - Session persistence, focus rotation (in-progress)
@@ -141,6 +151,7 @@ This document provides:
 - `test_terminal_pane.py` - TerminalPane initialization
 
 **Coverage**: ~40% (basic smoke tests, missing:)
+
 - Panel lifecycle events (mount/unmount)
 - Error recovery scenarios
 - Performance profiling
@@ -149,6 +160,7 @@ This document provides:
 - Complex multi-pane workflows
 
 **Old Test** (in `tests/test_unit_tui_compositor.py`):
+
 - Tests for `ux/compositor.py` (MVP)
 - Basic layout rendering
 
@@ -157,6 +169,7 @@ This document provides:
 ### CLI Integration (plan_loop_cmd)
 
 **Current State**:
+
 - `plan_loop_cmd()` in `src/thegent/cli.py` is a loop that:
   1. Calls `do_next_impl()` to get next work item
   2. Prints item to console (Rich)
@@ -165,12 +178,14 @@ This document provides:
 - Uses Rich `console.print()` for progress
 
 **Integration Gap**:
+
 - No connection to CompositorApp
 - No progress bar display in TUI
 - No pane switching based on status
 - Status updates not reflected in sidebar
 
 **Needed**:
+
 - CompositorApp integration hook
 - Progress bar widget in TUI
 - Real-time status updates
@@ -187,12 +202,14 @@ This document provides:
 **Severity**: High
 
 **Missing**:
+
 ```python
 # Needed in TerminalPane or panel interface
 def on_mount(self) -> None:
     """Called when panel is mounted."""
     # Initialize PTY, start shell, setup event handlers
     pass
+
 
 def on_unmount(self) -> None:
     """Called when panel is unmounted."""
@@ -211,6 +228,7 @@ def on_unmount(self) -> None:
 **Severity**: Medium
 
 **Missing**:
+
 ```python
 # Composition cache to avoid re-renders
 class CompositionCache:
@@ -232,6 +250,7 @@ class CompositionCache:
 ```
 
 **Benefits**:
+
 - Avoid re-rendering unchanged panes
 - Reduce CPU usage
 - Smoother 60 FPS rendering
@@ -247,6 +266,7 @@ class CompositionCache:
 **Severity**: Medium
 
 **Missing**:
+
 ```python
 # Error boundary wrapper
 class PanelErrorBoundary:
@@ -266,7 +286,7 @@ class PanelErrorBoundary:
             return Panel(
                 f"[red]Panel Error[/red]\n{str(e)[:100]}",
                 title=f"Error (attempt {self.error_count})",
-                border_style="red"
+                border_style="red",
             )
 ```
 
@@ -281,6 +301,7 @@ class PanelErrorBoundary:
 **Severity**: Low (but needed for production)
 
 **Missing**:
+
 ```python
 # Frame time profiling
 class FrameProfiler:
@@ -326,6 +347,7 @@ class FrameProfiler:
 **Severity**: Medium
 
 **Missing**:
+
 ```python
 # Hook for progress updates
 class LoopProgressWidget(Static):
@@ -404,6 +426,7 @@ class LoopProgressWidget(Static):
 ### Phase 1: Lifecycle Hooks (P1.1)
 
 **Files to Modify**:
+
 - `src/thegent/ui/compositor/terminal_pane.py`
   - Add event class: `PanelMounted`, `PanelUnmounted`
   - Implement `on_mount()` - start shell
@@ -423,6 +446,7 @@ class LoopProgressWidget(Static):
 ### Phase 2: Error Boundaries (P1.2)
 
 **Files to Modify**:
+
 - `src/thegent/ui/compositor/app.py`
   - Add PanelErrorBoundary wrapper class
   - Wrap all pane render calls
@@ -444,6 +468,7 @@ class LoopProgressWidget(Static):
 ### Phase 3: Comprehensive Testing (P1.3)
 
 **Files to Create/Modify**:
+
 - `tests/ui/compositor/test_lifecycle.py` (NEW)
   - Mount/unmount sequences
   - Pane creation/destruction lifecycle
@@ -469,6 +494,7 @@ class LoopProgressWidget(Static):
 ### Phase 4: Composition Caching (P2.1)
 
 **Files to Create/Modify**:
+
 - `src/thegent/ui/compositor/cache.py` (NEW)
   - CompositionCache class
   - TTL-based invalidation
@@ -490,6 +516,7 @@ class LoopProgressWidget(Static):
 ### Phase 5: Performance Profiling (P2.2)
 
 **Files to Create/Modify**:
+
 - `src/thegent/ui/compositor/profiler.py` (NEW)
   - FrameProfiler class
   - Metrics tracking
@@ -510,6 +537,7 @@ class LoopProgressWidget(Static):
 ### Phase 6: CLI Integration (P2.3)
 
 **Files to Create/Modify**:
+
 - `src/thegent/ui/compositor/widgets/progress.py` (NEW)
   - LoopProgressWidget
   - Real-time updates
@@ -579,9 +607,10 @@ class LoopProgressWidget(Static):
 
 ## Testing Strategy
 
-### Unit Tests (test_*.py)
+### Unit Tests (test\_\*.py)
 
 **Lifecycle Tests** (NEW):
+
 ```python
 def test_terminal_pane_mount_spawns_shell():
     """Verify on_mount() starts shell process."""
@@ -589,6 +618,7 @@ def test_terminal_pane_mount_spawns_shell():
     pane.on_mount()
     assert pane.process is not None
     assert pane.pty_master is not None
+
 
 def test_terminal_pane_unmount_closes_pty():
     """Verify on_unmount() closes PTY."""
@@ -599,12 +629,14 @@ def test_terminal_pane_unmount_closes_pty():
 ```
 
 **Error Boundary Tests** (NEW):
+
 ```python
 def test_pane_render_error_shows_error_ui():
     """Verify crash in pane doesn't crash app."""
     pane = ErrorBoundaryPane(FailingPane())
     output = pane.render()
     assert "[red]Panel Error[/red]" in str(output)
+
 
 def test_error_boundary_tracks_error_count():
     """Verify error count incremented on crash."""
@@ -615,6 +647,7 @@ def test_error_boundary_tracks_error_count():
 ```
 
 **Caching Tests** (NEW):
+
 ```python
 def test_composition_cache_hit():
     """Verify cache returns same object."""
@@ -622,6 +655,7 @@ def test_composition_cache_hit():
     render = Panel("test")
     cache.set("pane1", render)
     assert cache.get("pane1") is render
+
 
 def test_composition_cache_ttl():
     """Verify cache expires after TTL."""
@@ -634,6 +668,7 @@ def test_composition_cache_ttl():
 ### Integration Tests (test_integration.py)
 
 **Lifecycle Workflow**:
+
 ```python
 def test_full_pane_lifecycle():
     """Full lifecycle: create → mount → render → unmount → close."""
@@ -647,6 +682,7 @@ def test_full_pane_lifecycle():
 ```
 
 **Multi-Pane Workflow**:
+
 ```python
 def test_split_merge_workflow():
     """Create → split → split → focus rotate → close → close."""
@@ -663,6 +699,7 @@ def test_split_merge_workflow():
 ### E2E Tests (test_cli_integration.py)
 
 **CLI → TUI Progress**:
+
 ```python
 async def test_plan_loop_with_compositor():
     """Verify plan_loop_cmd updates TUI progress."""
@@ -680,6 +717,7 @@ async def test_plan_loop_with_compositor():
 ## Library Dependencies
 
 **No new dependencies needed**:
+
 - Textual (already used)
 - Rich (already used)
 - Standard library (time, dataclasses, logging)
@@ -689,12 +727,14 @@ async def test_plan_loop_with_compositor():
 ## Success Criteria
 
 ### Phase 1 (Lifecycle + Error Boundaries + Tests)
+
 - ✅ Panel lifecycle hooks functional
 - ✅ Error boundaries catch and display errors
 - ✅ 90%+ test coverage of lifecycle code
 - ✅ plan_loop_cmd progress visible in status bar
 
 ### Phase 2 (Caching + Profiling + CLI)
+
 - ✅ Composition caching reduces renders by 80%+
 - ✅ Frame time stats displayed in status bar
 - ✅ plan_loop_cmd fully integrated with TUI
@@ -704,12 +744,12 @@ async def test_plan_loop_with_compositor():
 
 ## Risk Assessment
 
-| Risk | Likelihood | Impact | Mitigation |
-|------|------------|--------|-----------|
-| PTY on Windows | High | Medium | Use fallback pipe mode (already in code) |
-| Shell integration issues | Medium | Medium | Extensive testing, fallback to bash |
-| Performance with 10+ panes | Low | Low | Caching reduces CPU, profiler shows stats |
-| Textual API changes | Low | Low | Dependency pinning in pyproject.toml |
+| Risk                       | Likelihood | Impact | Mitigation                                |
+| -------------------------- | ---------- | ------ | ----------------------------------------- |
+| PTY on Windows             | High       | Medium | Use fallback pipe mode (already in code)  |
+| Shell integration issues   | Medium     | Medium | Extensive testing, fallback to bash       |
+| Performance with 10+ panes | Low        | Low    | Caching reduces CPU, profiler shows stats |
+| Textual API changes        | Low        | Low    | Dependency pinning in pyproject.toml      |
 
 ---
 
@@ -722,6 +762,7 @@ async def test_plan_loop_with_compositor():
 ---
 
 **Next Steps**:
+
 1. Approve enhancement plan
 2. Implement Phase 1 (Lifecycle + Error + Tests)
 3. Verify plan_loop_cmd integration

@@ -1,7 +1,9 @@
 # Wave 4 Agent F Report
 
 ## Scope
+
 Completed wave-4 ownership for:
+
 - WL-079
 - WL-093
 - WL-094
@@ -11,6 +13,7 @@ Completed wave-4 ownership for:
 ## Concrete Changes
 
 ### WL-079: Deterministic benchmark smoke in CI docs/checklist
+
 - Added Task targets in `Taskfile.yml`:
   - `bench:rust:audit` (offline + locked deterministic audit benchmark command)
   - `bench:smoke:ci` (deterministic smoke using WL-079 wiring assertions)
@@ -23,6 +26,7 @@ Completed wave-4 ownership for:
   - CI step exists and runs `task bench:smoke:ci`
 
 ### WL-093: Escalated decisions queryable by existing govern list path
+
 - Added integration test in `tests/test_wl093_vetter_hitl_escalation.py`:
   - uses real `HITLApprovalWorkflow`
   - verifies escalation produces pending `await_approval`
@@ -30,11 +34,13 @@ Completed wave-4 ownership for:
 - This validates queryability through existing govern list pending path (no CLI path rewrite needed).
 
 ### WL-094: Evidence payload failed/passed check detail coverage
+
 - Added tests in `tests/test_wl094_vetter_evidence.py`:
   - exact failed/passed check-name detail coverage for mixed outcomes
   - explicit empty-side behavior (`failed_checks == []` for all-pass)
 
 ### WL-095: Quality scorer fallback semantics + error messaging tests
+
 - Improved `QualityScoreVetterCheck` error semantics in `src/thegent/govern/vetter/checks.py`:
   - wraps malformed JSON judge responses in `VetterConfigError` with explicit model context
   - wraps invalid payload shape in `VetterConfigError` with explicit model context
@@ -45,6 +51,7 @@ Completed wave-4 ownership for:
   - deterministic non-empty fallback message when critique is blank
 
 ### WL-096: max_revision_rounds never loops infinitely across repeated calls
+
 - Hardened orchestrator in `src/thegent/govern/vetter/orchestrator.py`:
   - added per-run internal revision round tracker
   - prevents perpetual `revision_requested` on repeated calls with unchanged run_context round
@@ -53,6 +60,7 @@ Completed wave-4 ownership for:
   - repeated calls without round bump escalate after cap when `on_fail="escalate"`
 
 ## Focused Validation
+
 - `python -m py_compile src/thegent/govern/vetter/orchestrator.py src/thegent/govern/vetter/checks.py tests/test_wl079_audit_bench.py tests/test_wl093_vetter_hitl_escalation.py tests/test_wl094_vetter_evidence.py tests/govern/test_vetter_models.py tests/test_wl092_vetter_orchestrator.py`
 - `uv run pytest -q tests/test_wl079_audit_bench.py`
   - pass: `6 passed`
@@ -66,6 +74,7 @@ Completed wave-4 ownership for:
   - pass: `2 passed`
 
 ## Files Touched
+
 - `.github/workflows/ci.yml`
 - `Taskfile.yml`
 - `docs/guides/QUALITY_ASSURANCE.md`

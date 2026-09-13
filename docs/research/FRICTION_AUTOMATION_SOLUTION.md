@@ -16,17 +16,20 @@ Agents were not automatically detecting and fixing CLI/UX friction patterns (lik
 ### Layer 1: Automated Hook Detection ✅
 
 **Implementation**:
+
 - `scripts/friction_detector.py` - Detects friction patterns in code/commands
 - `hooks/friction-detector.sh` - Runs automatically on every Write/Edit/Execute
 - Integrated into `hooks/posttool-dispatcher.sh` hook array
 
 **How It Works**:
+
 1. Hook runs automatically after every tool operation
 2. Scans content for friction patterns
 3. Outputs advisory warnings with priority, category, and solution
 4. Agent sees warnings and must act on them
 
 **Patterns Detected**:
+
 - ✅ `cd &&` → CLI should work from any directory
 - ✅ `2>&1` → CLI should handle stderr automatically
 - ✅ `head -n` → CLI should have `--limit` option
@@ -38,6 +41,7 @@ Agents were not automatically detecting and fixing CLI/UX friction patterns (lik
 ### Layer 2: Updated Instructions ✅
 
 **CLAUDE.md Updates**:
+
 - Added explicit reminder: "Hook detected friction? → Fix immediately or delegate"
 - Updated friction detection checklist with hook integration
 - Emphasized "don't wait for user to ask" behavior
@@ -45,6 +49,7 @@ Agents were not automatically detecting and fixing CLI/UX friction patterns (lik
 ### Layer 3: Behavioral Reminders ✅
 
 **Workflow Integration**:
+
 - Hook output is visible to agent
 - Agent must act on P1 friction immediately
 - Agent can delegate P2 friction to `thegent free --bg`

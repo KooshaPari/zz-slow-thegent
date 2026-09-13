@@ -3,6 +3,7 @@
 ## The Problem
 
 **Previous ranking was objectively wrong:**
+
 - Recommended Claude Haiku (#1) for NORMAL tasks
 - MiniMax M2.5 is strictly better on every metric
 
@@ -15,6 +16,7 @@
 **Definition:** A model is "optimal" if no other model is better on ALL metrics simultaneously.
 
 **Dominance check:**
+
 ```
 Model A dominates Model B if:
   A.quality ≥ B.quality AND
@@ -24,10 +26,11 @@ Model A dominates Model B if:
 ```
 
 **Example: MiniMax M2.5 dominates Claude Haiku**
+
 - Quality: 80.2% > 73.3% ✓ (MiniMax wins)
 - Speed: 85 > 70 ✓ (MiniMax wins)
 - Cost: $0.79 < $3.50 ✓ (MiniMax wins)
-→ **MiniMax strictly dominates. Haiku should never be recommended.**
+  → **MiniMax strictly dominates. Haiku should never be recommended.**
 
 ---
 
@@ -35,11 +38,11 @@ Model A dominates Model B if:
 
 Only **3 models** are on the Pareto frontier:
 
-| Rank | Model | Quality | Speed | Cost | Use Case |
-|------|-------|---------|-------|------|----------|
-| 1 | GPT-4o mini | 70% | 100 (ultra) | $0.375 | Cheap fallback |
-| 2 | **MiniMax M2.5** | **80.2%** | **85 (v-fast)** | **$0.79** | **BEST VALUE** |
-| 3 | Claude Opus 4.6 | 80.8% | 30 (slow) | $17.50 | Premium |
+| Rank | Model            | Quality   | Speed           | Cost      | Use Case       |
+| ---- | ---------------- | --------- | --------------- | --------- | -------------- |
+| 1    | GPT-4o mini      | 70%       | 100 (ultra)     | $0.375    | Cheap fallback |
+| 2    | **MiniMax M2.5** | **80.2%** | **85 (v-fast)** | **$0.79** | **BEST VALUE** |
+| 3    | Claude Opus 4.6  | 80.8%     | 30 (slow)       | $17.50    | Premium        |
 
 **All others (Haiku, Sonnet, Gemini Flash, etc.) are dominated and suboptimal.**
 
@@ -48,26 +51,34 @@ Only **3 models** are on the Pareto frontier:
 ## Corrected Task Assignments
 
 ### FAST ($50 budget)
+
 **Model:** MiniMax M2.5
+
 - Tokens: 63K
 - Quality: 80.2%
 - Cost efficiency: Best
 
 ### NORMAL ($200 budget) ← KEY FIX
+
 **Model:** MiniMax M2.5 (was: Claude Haiku ✗)
+
 - Tokens: 253K
 - Quality: 80.2% (vs Haiku 73.3%)
 - Cost: 4.4x cheaper
 - **Reason:** MiniMax dominates on quality, speed, AND cost
 
 ### COMPLEX ($150 budget)
+
 **Model:** MiniMax M2.5
+
 - Tokens: 190K
 - Quality: 80.2%
 - Cost efficiency: Best
 
 ### HIGH_COMPLEX ($50 budget)
+
 **Model:** MiniMax M2.5
+
 - Tokens: 63K
 - Quality: 80.2%
 - Cost efficiency: Only frontier option within budget
@@ -77,6 +88,7 @@ Only **3 models** are on the Pareto frontier:
 ## Why Previous Ranking Failed
 
 ### The Mistake
+
 Ranking by single metric (quality %) without considering cost and speed.
 
 ```
@@ -89,6 +101,7 @@ Quality rank:
 **Result:** Haiku appears lower → but it's not cost-adjusted.
 
 ### The Correct Approach
+
 Multi-objective optimization using Pareto frontier.
 
 ```
@@ -104,34 +117,36 @@ Pareto frontier (all three metrics):
 
 ## Key Facts
 
-| Fact | Value |
-|------|-------|
-| Models analyzed | 11 |
-| Models on frontier | 3 |
-| **Haiku vs MiniMax quality** | 73.3% vs 80.2% (+6.9pp to MiniMax) |
-| **Haiku vs MiniMax cost** | $3.50 vs $0.79 (4.4x cheaper to MiniMax) |
-| **Haiku vs MiniMax speed** | 70 vs 85 (faster to MiniMax) |
-| **Dominance result** | MiniMax wins all 3 metrics |
-| **Recommendation** | Replace Haiku with MiniMax M2.5 in all task categories |
+| Fact                         | Value                                                  |
+| ---------------------------- | ------------------------------------------------------ |
+| Models analyzed              | 11                                                     |
+| Models on frontier           | 3                                                      |
+| **Haiku vs MiniMax quality** | 73.3% vs 80.2% (+6.9pp to MiniMax)                     |
+| **Haiku vs MiniMax cost**    | $3.50 vs $0.79 (4.4x cheaper to MiniMax)               |
+| **Haiku vs MiniMax speed**   | 70 vs 85 (faster to MiniMax)                           |
+| **Dominance result**         | MiniMax wins all 3 metrics                             |
+| **Recommendation**           | Replace Haiku with MiniMax M2.5 in all task categories |
 
 ---
 
 ## Algorithm Complexity
 
-| Metric | Value |
-|--------|-------|
-| Time complexity | O(n²) where n = models |
-| For 11 models | ~121 comparisons ≈ <1ms |
-| For 100 models | ~10K comparisons ≈ <10ms |
-| Space complexity | O(n) |
-| **Scalability** | Excellent; can compute on every request |
+| Metric           | Value                                   |
+| ---------------- | --------------------------------------- |
+| Time complexity  | O(n²) where n = models                  |
+| For 11 models    | ~121 comparisons ≈ <1ms                 |
+| For 100 models   | ~10K comparisons ≈ <10ms                |
+| Space complexity | O(n)                                    |
+| **Scalability**  | Excellent; can compute on every request |
 
 ---
 
 ## Deliverables
 
 ### 1. Algorithm Pseudocode
+
 **File:** `docs/reference/PARETO_ALGORITHM_PSEUDOCODE.md`
+
 - Pseudocode
 - Python implementation (ready to copy)
 - TypeScript implementation
@@ -139,7 +154,9 @@ Pareto frontier (all three metrics):
 - Integration guide
 
 ### 2. Complete Analysis
+
 **File:** `docs/reference/PARETO_FRONTIER_ANALYSIS.md`
+
 - Algorithm definition
 - Speed level mapping
 - Dominance analysis for all 11 models
@@ -149,7 +166,9 @@ Pareto frontier (all three metrics):
 - Implementation notes
 
 ### 3. Corrected Ranking
+
 **File:** `docs/reference/MODEL_RANKING_CORRECTED.md`
+
 - Visual comparison
 - Dominance proof (MiniMax vs Haiku)
 - Cost-effectiveness analysis
@@ -157,7 +176,9 @@ Pareto frontier (all three metrics):
 - Algorithm explanation
 
 ### 4. Data Table
+
 **File:** `docs/reference/PARETO_FRONTIER_TABLE.md`
+
 - Master table (all 11 models)
 - Frontier models (3 total with details)
 - Dominated models (8 total with reasons)
@@ -166,7 +187,9 @@ Pareto frontier (all three metrics):
 - Cost efficiency rankings
 
 ### 5. Executive Summary
+
 **File:** `docs/reference/PARETO_EXECUTIVE_SUMMARY.md` (this file)
+
 - Quick overview
 - Key findings
 - Next steps
@@ -199,21 +222,25 @@ Pareto frontier (all three metrics):
 ## Why Pareto Frontier is Correct
 
 ### It Solves Multi-Objective Problems
+
 - Quality vs Cost vs Speed are conflicting objectives
 - Single-metric ranking ignores trade-offs
 - Pareto identifies the true "best" models
 
 ### It's Mathematically Rigorous
+
 - Well-established in optimization theory
 - Used in portfolio optimization, resource allocation
 - No arbitrary weighting required
 
 ### It's Practical
+
 - 3 frontier models vs 11 total (73% reduction in choices)
 - Clear decision logic for each budget tier
 - Automatically identifies dominated models
 
 ### It's Verifiable
+
 - Can prove no model on frontier is dominated
 - Can prove all off-frontier models are dominated
 - Property holds for any future models added
@@ -223,19 +250,25 @@ Pareto frontier (all three metrics):
 ## Risk Mitigation
 
 ### What if MiniMax M2.5 becomes unavailable?
+
 **Fallback:** Claude Opus 4.6 (next frontier model, higher quality)
+
 - Quality: 80.8% (+0.6pp)
 - Cost: $17.50 (22x more expensive)
 - Speed: 30 (slower)
 
 ### What if we need ultra-cheap option?
+
 **Fallback:** GPT-4o mini (first frontier model)
+
 - Quality: 70% (-10.2pp vs MiniMax)
 - Cost: $0.375 (47% cheaper)
 - Speed: 100 (faster)
 
 ### What if we discover a better model?
+
 **Process:**
+
 1. Add new model to dataset
 2. Recompute frontier (O(n²))
 3. If new model on frontier, update assignments
@@ -246,18 +279,21 @@ Pareto frontier (all three metrics):
 ## Validation
 
 ### Pareto Properties Verified
+
 - ✓ No frontier model is dominated
 - ✓ All off-frontier models are dominated
 - ✓ Frontier is minimal (cannot remove any model)
 - ✓ Frontier is complete (cannot add off-frontier model)
 
 ### Dominance Relationships Verified
+
 - ✓ MiniMax M2.5 dominates Claude Haiku (all 3 metrics)
 - ✓ Claude Opus not dominated (trades cost+speed for marginal quality)
 - ✓ GPT-4o mini not dominated (trades quality for cost+speed)
 - ✓ All 8 off-frontier models have at least one dominator
 
 ### Cost-Effectiveness Verified
+
 - ✓ MiniMax provides best quality per dollar ($0.0098/%)
 - ✓ GPT-4o mini second best ($0.0054/% if quality acceptable)
 - ✓ Claude Haiku suboptimal ($0.0477/% — dominated)
@@ -308,14 +344,12 @@ A: Never (dominated by MiniMax M2.5)
 **Version:** 1.0
 **Status:** Complete and verified
 
-
 ---
+
 ## See also
 
 - [WORK_STREAM.md](../reference/WORK_STREAM.md) — canonical backlog
 - [00-MASTER-INDEX.md](../plans/00-MASTER-INDEX.md) — plan index
-
-
 
 ---
 
@@ -325,15 +359,18 @@ A: Never (dominated by MiniMax M2.5)
 **Extended by:** Claude Code
 
 ### Changes Made
+
 1. Added practical implementation patterns
 2. Added configuration examples
 3. Enhanced cross-references to related documentation
 
 ### Cross-References Added
+
 - Related research and implementation guides
 - WORK_STREAM.md for tracking
 
 ### Practical Additions
+
 - Implementation templates
 - Configuration examples
 - Best practices

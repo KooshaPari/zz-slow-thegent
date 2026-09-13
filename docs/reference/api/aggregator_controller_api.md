@@ -20,7 +20,7 @@ Manages daily agent call budgets and tier enforcement (FR-GOV-002).
 
 ### Methods
 
-#### CostController.__init__
+#### CostController.**init**
 
 ```python
 __init__(self: Any, session_dir: Path, health_targets_path: Any)

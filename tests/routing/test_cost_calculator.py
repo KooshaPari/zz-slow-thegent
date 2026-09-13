@@ -17,7 +17,6 @@ from thegent.utils.routing_impl.cost_calculator import (
     get_model_pricing,
 )
 
-
 # ---------------------------------------------------------------------------
 # calculate_cost — known model
 # ---------------------------------------------------------------------------

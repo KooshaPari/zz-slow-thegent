@@ -21,7 +21,7 @@ Manages agent state transitions using Compare-And-Swap (CAS) principles.
 
 ### Methods
 
-#### LockFreeStateManager.__init__
+#### LockFreeStateManager.**init**
 
 ```python
 __init__(self: Any)

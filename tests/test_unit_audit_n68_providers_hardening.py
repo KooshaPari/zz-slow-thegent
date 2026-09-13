@@ -6,10 +6,10 @@ Contract surface: FR-GOV-PR-001..024
 import pytest
 
 from thegent.governance.providers import (
+    _BUILTIN_PROVIDERS,
     ProviderConfig,
     ProviderRegistry,
     ProviderType,
-    _BUILTIN_PROVIDERS,
     _initialize_registry,
 )
 

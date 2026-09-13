@@ -22,12 +22,11 @@ parity assertion is also run.
 
 from __future__ import annotations
 
-import orjson as json
 import os
 from typing import Any
 
+import orjson as json
 import pytest
-
 
 # ---------------------------------------------------------------------------
 # Helpers
@@ -127,7 +126,11 @@ EXTRA_MODEL_SUFFIX_CASES: list[tuple[str, str, list[str]]] = [
     (":nitro", "", ["nitro"]),  # leading colon — base is empty
     ("model:nitro:floor", "model", ["nitro", "floor"]),  # two known suffixes
     ("model:unknown1:nitro:unknown2", "model", ["nitro"]),  # unknowns filtered
-    ("prefix/model:thinking:online:extended", "prefix/model", ["thinking", "online", "extended"]),
+    (
+        "prefix/model:thinking:online:extended",
+        "prefix/model",
+        ["thinking", "online", "extended"],
+    ),
 ]
 
 

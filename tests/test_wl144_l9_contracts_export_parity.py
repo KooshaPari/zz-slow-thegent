@@ -36,7 +36,6 @@ import inspect
 
 import pytest
 
-
 # ---------------------------------------------------------------------------
 # Canonical ROB-010 surface — MUST be the SAME object via either import path
 # ---------------------------------------------------------------------------
@@ -95,7 +94,9 @@ def test_contract_version_class_is_same_via_both_paths():
 
 def test_contract_version_info_class_is_same_via_both_paths():
     from thegent.contracts import ContractVersionInfo as pkg_class  # noqa: N813
-    from thegent.contracts.registry import ContractVersionInfo as mod_class  # noqa: N813
+    from thegent.contracts.registry import (
+        ContractVersionInfo as mod_class,  # noqa: N813
+    )
 
     assert pkg_class is mod_class
 
@@ -357,11 +358,10 @@ def test_canonical_surface_is_import_order_independent():
     must still resolve the ROB-010 symbols from the registry module.
     """
     # Force-import the legacy modules first.
-    import thegent.contracts.adapters  # noqa: F401
-    import thegent.contracts.csm  # noqa: F401
-
     # Now re-import the package and check.
     import thegent.contracts as pkg
+    import thegent.contracts.adapters  # noqa: F401
+    import thegent.contracts.csm  # noqa: F401
     import thegent.contracts.registry as reg
 
     assert pkg.get_registry is reg.get_registry

@@ -1,6 +1,7 @@
 # Wave 5 — Agent F Status
 
 ## WL-079: CI checklist snippet for audit bench smoke verification
+
 - status: completed
 - changes:
   - `docs/guides/QUALITY_ASSURANCE.md`
@@ -12,6 +13,7 @@
     - `6 passed in 1.80s`
 
 ## WL-093: Assert escalation event includes lane/status fields in list path
+
 - status: completed
 - changes:
   - `tests/test_wl093_vetter_hitl_escalation.py`
@@ -21,6 +23,7 @@
     - `1 passed, 32 deselected in 32.09s`
 
 ## WL-094: Expand evidence tests for duration_ms/verdict payloads
+
 - status: completed
 - changes:
   - `tests/test_wl094_vetter_evidence.py`
@@ -30,6 +33,7 @@
     - `4 passed, 24 deselected in 27.17s`
 
 ## WL-095: Fallback selection tests when CapabilityIndex returns empty/None
+
 - status: completed
 - changes:
   - `tests/test_wl095_quality_score_vetter_check.py`
@@ -42,6 +46,7 @@
     - `2 passed, 46 deselected in 35.27s`
 
 ## WL-096: Regression test for repeated revision_requested with no round increment guard
+
 - status: completed
 - changes:
   - `tests/test_wl096_vetter_revision_queue.py`
@@ -51,5 +56,6 @@
     - `1 passed, 30 deselected in 32.14s`
 
 ## Notes
+
 - Did not modify `docs/reference/WORK_STREAM.md`.
 - Kept scope limited to requested wave-5 WL items.

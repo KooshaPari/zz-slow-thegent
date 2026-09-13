@@ -49,17 +49,17 @@ def log_friction(
 
 **Parameters**
 
-| Parameter | Type | Default | Description |
-|-----------|------|---------|-------------|
-| `category` | `str` | required | `dx`, `ux`, or `ax` |
-| `description` | `str` | required | What friction was observed |
-| `impact` | `str` | `"medium"` | `low`, `medium`, or `high` |
-| `task_id` | `str or None` | auto | Section header in log; auto-generated if omitted |
-| `friction_type` | `str` | `"general"` | Sub-type label (e.g. `verbosity`, `complexity`) |
-| `location` | `str` | `"unknown"` | File, function, or pattern where friction occurs |
-| `solution` | `str` | `""` | Proposed fix; defaults to `TBD` |
-| `priority` | `str` | `"P2"` | `P1` (blocking) or `P2` (improvement) |
-| `friction_log_path` | `Path or None` | default log path | Override for testing |
+| Parameter           | Type           | Default          | Description                                      |
+| ------------------- | -------------- | ---------------- | ------------------------------------------------ |
+| `category`          | `str`          | required         | `dx`, `ux`, or `ax`                              |
+| `description`       | `str`          | required         | What friction was observed                       |
+| `impact`            | `str`          | `"medium"`       | `low`, `medium`, or `high`                       |
+| `task_id`           | `str or None`  | auto             | Section header in log; auto-generated if omitted |
+| `friction_type`     | `str`          | `"general"`      | Sub-type label (e.g. `verbosity`, `complexity`)  |
+| `location`          | `str`          | `"unknown"`      | File, function, or pattern where friction occurs |
+| `solution`          | `str`          | `""`             | Proposed fix; defaults to `TBD`                  |
+| `priority`          | `str`          | `"P2"`           | `P1` (blocking) or `P2` (improvement)            |
+| `friction_log_path` | `Path or None` | default log path | Override for testing                             |
 
 **Returns**: `True` on success, `False` on write failure.
 
@@ -89,6 +89,7 @@ log_friction(
 Return the next actionable unclaimed items from `docs/reference/WORK_STREAM.md`.
 
 Items are excluded when:
+
 - They are already in the **CLAIMED** section.
 - They are already in the **COMPLETED** section.
 - Their `Depends` column references IDs not yet in COMPLETED.
@@ -106,11 +107,11 @@ def get_next_items(
 
 **Parameters**
 
-| Parameter | Type | Default | Description |
-|-----------|------|---------|-------------|
-| `limit` | `int` | `5` | Maximum items to return |
-| `priority` | `str or None` | `None` | Filter by priority (e.g. `"P1"`); `None` returns all |
-| `work_stream_path` | `Path or None` | default path | Override for testing |
+| Parameter          | Type           | Default      | Description                                          |
+| ------------------ | -------------- | ------------ | ---------------------------------------------------- |
+| `limit`            | `int`          | `5`          | Maximum items to return                              |
+| `priority`         | `str or None`  | `None`       | Filter by priority (e.g. `"P1"`); `None` returns all |
+| `work_stream_path` | `Path or None` | default path | Override for testing                                 |
 
 **Returns**: List of dicts with keys `id`, `title`, `source`, `priority`, `depends`.
 
@@ -150,13 +151,13 @@ def update_work_stream(
 
 **Parameters**
 
-| Parameter | Type | Default | Description |
-|-----------|------|---------|-------------|
-| `item_id` | `str` | required | Work-item ID |
-| `status` | `str` | required | `"claimed"` or `"completed"` |
-| `notes` | `str` | `""` | Optional notes stored in the row |
-| `agent_id` | `str` | `"agent-helpers"` | Agent performing the update |
-| `work_stream_path` | `Path or None` | default path | Override for testing |
+| Parameter          | Type           | Default           | Description                      |
+| ------------------ | -------------- | ----------------- | -------------------------------- |
+| `item_id`          | `str`          | required          | Work-item ID                     |
+| `status`           | `str`          | required          | `"claimed"` or `"completed"`     |
+| `notes`            | `str`          | `""`              | Optional notes stored in the row |
+| `agent_id`         | `str`          | `"agent-helpers"` | Agent performing the update      |
+| `work_stream_path` | `Path or None` | default path      | Override for testing             |
 
 **Returns**: `True` on success, `False` on write failure or missing file.
 
@@ -195,13 +196,13 @@ def run_quality_check(
 
 **Parameters**
 
-| Parameter | Type | Default | Description |
-|-----------|------|---------|-------------|
-| `project_root` | `Path or None` | repo root | Directory to run commands in |
-| `run_lint` | `bool` | `True` | Whether to run ruff |
-| `run_tests` | `bool` | `True` | Whether to run pytest |
-| `test_path` | `str or None` | `None` | Specific test path to pass to pytest |
-| `timeout` | `int` | `120` | Per-command timeout in seconds |
+| Parameter      | Type           | Default   | Description                          |
+| -------------- | -------------- | --------- | ------------------------------------ |
+| `project_root` | `Path or None` | repo root | Directory to run commands in         |
+| `run_lint`     | `bool`         | `True`    | Whether to run ruff                  |
+| `run_tests`    | `bool`         | `True`    | Whether to run pytest                |
+| `test_path`    | `str or None`  | `None`    | Specific test path to pass to pytest |
+| `timeout`      | `int`          | `120`     | Per-command timeout in seconds       |
 
 **Return shape**
 
@@ -212,7 +213,7 @@ def run_quality_check(
     "tests_passed": bool,
     "tests_output": str,
     "overall_passed": bool,  # lint_passed AND tests_passed
-    "errors": list[str],     # populated on any failure
+    "errors": list[str],  # populated on any failure
 }
 ```
 
@@ -242,6 +243,7 @@ result = run_quality_check(
 Read a configuration value from `ThegentSettings` with a default fallback.
 
 Falls back to `default` when:
+
 - `ThegentSettings` is not importable (running outside the package).
 - The key does not exist on the settings class.
 - Settings instantiation raises any exception.
@@ -254,10 +256,10 @@ def read_config(key: str, default: Any = None) -> Any:
 
 **Parameters**
 
-| Parameter | Type | Default | Description |
-|-----------|------|---------|-------------|
-| `key` | `str` | required | Attribute name on `ThegentSettings` |
-| `default` | `Any` | `None` | Fallback value |
+| Parameter | Type  | Default  | Description                         |
+| --------- | ----- | -------- | ----------------------------------- |
+| `key`     | `str` | required | Attribute name on `ThegentSettings` |
+| `default` | `Any` | `None`   | Fallback value                      |
 
 **Examples**
 
@@ -271,14 +273,14 @@ max_concurrency = read_config("max_concurrency", default=4)
 
 **Available keys** (subset of `ThegentSettings`):
 
-| Key | Type | Description |
-|-----|------|-------------|
-| `default_timeout` | `int` | Default agent timeout (seconds) |
-| `default_timeout_claude` | `int` | Claude-specific timeout |
-| `default_timeout_free` | `int` | Free-tier timeout |
-| `session_dir` | `Path` | Background session directory |
-| `cache_dir` | `Path` | Global cache directory |
-| `max_concurrency` | `int` | Max concurrent agents |
+| Key                      | Type   | Description                     |
+| ------------------------ | ------ | ------------------------------- |
+| `default_timeout`        | `int`  | Default agent timeout (seconds) |
+| `default_timeout_claude` | `int`  | Claude-specific timeout         |
+| `default_timeout_free`   | `int`  | Free-tier timeout               |
+| `session_dir`            | `Path` | Background session directory    |
+| `cache_dir`              | `Path` | Global cache directory          |
+| `max_concurrency`        | `int`  | Max concurrent agents           |
 
 ---
 
@@ -294,10 +296,10 @@ def format_summary(title: str, items: list[Any]) -> str:
 
 **Parameters**
 
-| Parameter | Type | Default | Description |
-|-----------|------|---------|-------------|
-| `title` | `str` | required | Summary heading |
-| `items` | `list[Any]` | required | Items to list; each converted via `str()` |
+| Parameter | Type        | Default  | Description                               |
+| --------- | ----------- | -------- | ----------------------------------------- |
+| `title`   | `str`       | required | Summary heading                           |
+| `items`   | `list[Any]` | required | Items to list; each converted via `str()` |
 
 **Returns**: Markdown string with a numbered list and UTC timestamp footer.
 

@@ -15,8 +15,9 @@ from pathlib import Path
 from typing import Any
 
 from cachetools import TTLCache
-from thegent.integrations.base import SerializableMixin
+
 from thegent.infra.fast_yaml_parser import yaml_load
+from thegent.integrations.base import SerializableMixin
 
 logger = logging.getLogger(__name__)
 
@@ -238,7 +239,11 @@ class CapabilityIndex:
                 if record is not None:
                     agents.append(record)
 
-        logger.debug("CapabilityIndex: loaded %d agents from %d dirs", len(agents), len(scan_dirs))
+        logger.debug(
+            "CapabilityIndex: loaded %d agents from %d dirs",
+            len(agents),
+            len(scan_dirs),
+        )
         return cls(agents)
 
     @classmethod

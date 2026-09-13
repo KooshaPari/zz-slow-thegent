@@ -33,29 +33,29 @@ An Architecture Decision Record (ADR) is a document that captures an important a
 
 ### ADR Lifecycle
 
-| Status | Description |
-|--------|-------------|
-| **Proposed** | Decision is under discussion, seeking feedback |
-| **Accepted** | Decision has been agreed upon and is in effect |
+| Status         | Description                                           |
+| -------------- | ----------------------------------------------------- |
+| **Proposed**   | Decision is under discussion, seeking feedback        |
+| **Accepted**   | Decision has been agreed upon and is in effect        |
 | **Deprecated** | Decision is no longer relevant or has been superseded |
-| **Superseded** | A newer ADR replaces this one (link to replacement) |
+| **Superseded** | A newer ADR replaces this one (link to replacement)   |
 
 ---
 
 ## ADR Status Matrix
 
-| ADR ID | Title | Status | Date | Owner |
-|--------|-------|--------|------|-------|
-| ADR-001 | Technology Stack Selection | Accepted | 2026-01-15 | Team Lead |
-| ADR-002 | Database Architecture | Accepted | 2026-01-20 | Architect |
-| ADR-003 | API Design Principles | Accepted | 2026-02-01 | API Team |
-| ADR-004 | Authentication and Authorization | Accepted | 2026-02-10 | Security Team |
-| ADR-005 | Deployment Strategy | Accepted | 2026-02-15 | DevOps |
-| ADR-006 | Caching Strategy | Proposed | 2026-03-01 | Performance Team |
-| ADR-007 | Event Sourcing vs CRUD | Accepted | 2026-03-10 | Architecture |
-| ADR-008 | Microservices vs Monolith | Accepted | 2026-03-15 | CTO |
-| ADR-009 | Testing Strategy | Accepted | 2026-03-20 | QA Lead |
-| ADR-010 | Observability and Monitoring | Accepted | 2026-03-25 | SRE Team |
+| ADR ID  | Title                            | Status   | Date       | Owner            |
+| ------- | -------------------------------- | -------- | ---------- | ---------------- |
+| ADR-001 | Technology Stack Selection       | Accepted | 2026-01-15 | Team Lead        |
+| ADR-002 | Database Architecture            | Accepted | 2026-01-20 | Architect        |
+| ADR-003 | API Design Principles            | Accepted | 2026-02-01 | API Team         |
+| ADR-004 | Authentication and Authorization | Accepted | 2026-02-10 | Security Team    |
+| ADR-005 | Deployment Strategy              | Accepted | 2026-02-15 | DevOps           |
+| ADR-006 | Caching Strategy                 | Proposed | 2026-03-01 | Performance Team |
+| ADR-007 | Event Sourcing vs CRUD           | Accepted | 2026-03-10 | Architecture     |
+| ADR-008 | Microservices vs Monolith        | Accepted | 2026-03-15 | CTO              |
+| ADR-009 | Testing Strategy                 | Accepted | 2026-03-20 | QA Lead          |
+| ADR-010 | Observability and Monitoring     | Accepted | 2026-03-25 | SRE Team         |
 
 ---
 
@@ -92,30 +92,35 @@ An Architecture Decision Record (ADR) is a document that captures an important a
 ### Architecture Patterns
 
 ADRs related to high-level architectural patterns and styles:
+
 - ADR-002: Database Architecture
 - ADR-008: Microservices vs Monolith
 
 ### Technology Choices
 
 ADRs related to specific technology selections:
+
 - ADR-001: Technology Stack Selection
 - ADR-004: Authentication and Authorization
 
 ### Design Principles
 
 ADRs establishing patterns and conventions:
+
 - ADR-003: API Design Principles
 - ADR-009: Testing Strategy
 
 ### Infrastructure
 
 ADRs related to deployment and operations:
+
 - ADR-005: Deployment Strategy
 - ADR-010: Observability and Monitoring
 
 ### Data Management
 
 ADRs related to data storage and flow:
+
 - ADR-007: Event Sourcing vs CRUD
 - ADR-006: Caching Strategy
 
@@ -136,6 +141,7 @@ The project requires a technology stack that balances developer productivity, pe
 #### Decision
 
 Selected stack:
+
 - **Frontend**: React with TypeScript
 - **Backend**: Rust (Axum/Tokio) for performance-critical paths, Node.js for rapid prototyping
 - **Database**: PostgreSQL for relational data, Redis for caching
@@ -144,11 +150,13 @@ Selected stack:
 #### Consequences
 
 **Positive**:
+
 - Rust provides excellent performance and type safety
 - TypeScript enables full-stack type sharing
 - PostgreSQL offers ACID compliance and rich querying
 
 **Negative**:
+
 - Rust has a steeper learning curve for new team members
 - More complex build pipeline required
 
@@ -173,6 +181,7 @@ Data storage requirements include relational data, time-series metrics, and docu
 #### Decision
 
 Polyglot persistence approach:
+
 - **Primary Store**: PostgreSQL for transactional data
 - **Cache Layer**: Redis for session and query caching
 - **Search**: Elasticsearch for full-text search (future consideration)
@@ -181,11 +190,13 @@ Polyglot persistence approach:
 #### Consequences
 
 **Positive**:
+
 - Each data type uses optimal storage
 - Clear separation of concerns
 - Can scale components independently
 
 **Negative**:
+
 - Operational complexity increases
 - Need expertise in multiple systems
 
@@ -204,6 +215,7 @@ APIs are the contract between services and clients. Consistent, well-designed AP
 #### Decision
 
 Adopt RESTful principles with the following specifics:
+
 - JSON for request/response bodies
 - Standard HTTP methods (GET, POST, PUT, DELETE, PATCH)
 - Resource-oriented URLs (/users/{id}, not /getUser)
@@ -213,11 +225,13 @@ Adopt RESTful principles with the following specifics:
 #### Consequences
 
 **Positive**:
+
 - Predictable API behavior
 - Easy to document with OpenAPI
 - Broad client support
 
 **Negative**:
+
 - REST may not fit all use cases (e.g., real-time)
 - Versioning adds maintenance overhead
 
@@ -243,11 +257,13 @@ Security is paramount. The system must authenticate users and services, authoriz
 #### Consequences
 
 **Positive**:
+
 - Industry-standard security practices
 - Stateless authentication enables horizontal scaling
 - Fine-grained permission control
 
 **Negative**:
+
 - Token revocation requires additional infrastructure
 - JWT size can impact request headers
 
@@ -273,11 +289,13 @@ Deployment must be reliable, reversible, and support zero-downtime updates. The 
 #### Consequences
 
 **Positive**:
+
 - Zero-downtime deployments
 - Easy rollback capability
 - Infrastructure as Code
 
 **Negative**:
+
 - Kubernetes complexity requires expertise
 - Resource overhead for small deployments
 
@@ -303,11 +321,13 @@ Database load and response latency can be reduced with strategic caching. Howeve
 #### Consequences
 
 **Positive**:
+
 - Reduced database load
 - Faster response times
 - Graceful degradation if cache fails
 
 **Negative**:
+
 - Cache consistency challenges
 - Additional infrastructure to manage
 
@@ -326,6 +346,7 @@ Audit requirements and need for temporal queries suggest event sourcing, but CRU
 #### Decision
 
 Hybrid approach:
+
 - **Core entities**: Event sourcing for audit-critical data
 - **Supporting data**: CRUD for simple lookup tables
 - **Projection**: Read models derived from event streams
@@ -334,11 +355,13 @@ Hybrid approach:
 #### Consequences
 
 **Positive**:
+
 - Complete audit trail
 - Temporal queries possible
 - Can rebuild state from events
 
 **Negative**:
+
 - Higher complexity
 - Eventual consistency in projections
 - Learning curve for team
@@ -365,11 +388,13 @@ Team is growing, different components have different scaling requirements. Need 
 #### Consequences
 
 **Positive**:
+
 - Faster development initially
 - Clear boundaries enable future extraction
 - Reduced operational overhead early on
 
 **Negative**:
+
 - Risk of tight coupling if boundaries not respected
 - Later extraction requires effort
 
@@ -388,6 +413,7 @@ Quality is non-negotiable. Testing must be comprehensive yet efficient, providin
 #### Decision
 
 Testing pyramid:
+
 - **Unit tests**: 70% coverage, fast, no I/O
 - **Integration tests**: 20%, test component interactions
 - **E2E tests**: 10%, critical user journeys only
@@ -397,11 +423,13 @@ Testing pyramid:
 #### Consequences
 
 **Positive**:
+
 - Fast feedback on most changes
 - High confidence in refactorings
 - Bugs caught early
 
 **Negative**:
+
 - Test maintenance requires discipline
 - E2E tests can be flaky
 
@@ -420,6 +448,7 @@ Production systems fail. When they do, we need to understand why quickly. Observ
 #### Decision
 
 Three pillars of observability:
+
 - **Metrics**: Prometheus for aggregation, Grafana for visualization
 - **Logs**: Structured JSON logging, centralized aggregation
 - **Traces**: Distributed tracing for request flows
@@ -428,11 +457,13 @@ Three pillars of observability:
 #### Consequences
 
 **Positive**:
+
 - Faster incident resolution
 - Data-driven capacity planning
 - Proactive issue detection
 
 **Negative**:
+
 - Storage costs for telemetry
 - Performance overhead of instrumentation
 
@@ -443,6 +474,7 @@ Three pillars of observability:
 ### When to Write an ADR
 
 Write an ADR when:
+
 1. Making a significant architectural decision
 2. Choosing between multiple viable alternatives
 3. Setting a pattern others should follow
@@ -465,12 +497,12 @@ Write an ADR when:
 
 ### ADR Template Selection Guide
 
-| Situation | Template to Use |
-|-----------|-----------------|
-| Technology choice | Technology Selection Template |
+| Situation            | Template to Use               |
+| -------------------- | ----------------------------- |
+| Technology choice    | Technology Selection Template |
 | Architecture pattern | Architecture Pattern Template |
-| Process/Workflow | Process Template |
-| Deprecation | Deprecation Template |
+| Process/Workflow     | Process Template              |
+| Deprecation          | Deprecation Template          |
 
 ---
 
@@ -498,21 +530,25 @@ What is the change that we're proposing or have agreed to implement?
 What becomes easier or more difficult to do because of this change?
 
 ### Positive
+
 - Benefit 1
 - Benefit 2
 
 ### Negative
+
 - Drawback 1
 - Drawback 2
 
 ## Alternatives Considered
 
 ### Alternative 1: [Name]
+
 - Pros: ...
 - Cons: ...
 - Why rejected: ...
 
 ### Alternative 2: [Name]
+
 - Pros: ...
 - Cons: ...
 - Why rejected: ...
@@ -538,6 +574,7 @@ What becomes easier or more difficult to do because of this change?
 Problem space and requirements driving this technology selection.
 
 ### Requirements
+
 - Must have: ...
 - Nice to have: ...
 - Constraints: ...
@@ -545,12 +582,14 @@ Problem space and requirements driving this technology selection.
 ## Options Considered
 
 ### Option 1: [Technology A]
+
 - Pros: ...
 - Cons: ...
 - Maturity: ...
 - Community: ...
 
 ### Option 2: [Technology B]
+
 - Pros: ...
 - Cons: ...
 - Maturity: ...
@@ -573,7 +612,7 @@ Selected [Technology X] because ...
 
 ### Template 3: Architecture Pattern ADR
 
-```markdown
+````markdown
 # ADR-NNN: Architecture Pattern - [Pattern Name]
 
 **Status**: [Proposed | Accepted | Deprecated | Superseded]
@@ -591,10 +630,12 @@ Detailed description of the pattern.
 ## Applicability
 
 When to use this pattern:
+
 - Scenario 1
 - Scenario 2
 
 When NOT to use:
+
 - Anti-pattern scenario
 
 ## Implementation
@@ -604,6 +645,7 @@ How to implement this pattern in our context:
 ```code
 Example code or diagram
 ```
+````
 
 ## Examples
 
@@ -613,7 +655,8 @@ Example code or diagram
 ## Consequences
 
 [Impact on system qualities: performance, security, maintainability, etc.]
-```
+
+````
 
 ### Template 4: Deprecation ADR
 
@@ -645,7 +688,7 @@ How to migrate from the deprecated item:
 ## Replacement
 
 Use [New approach] (see ADR-YYY).
-```
+````
 
 ### Template 5: Process/Workflow ADR
 
@@ -663,17 +706,19 @@ What workflow or process need are we addressing?
 ## Proposed Process
 
 ### Step 1: [Name]
+
 Description
 
 ### Step 2: [Name]
+
 Description
 
 ## Roles and Responsibilities
 
-| Role | Responsibility |
-|------|---------------|
-| Role A | Does X |
-| Role B | Approves Y |
+| Role   | Responsibility |
+| ------ | -------------- |
+| Role A | Does X         |
+| Role B | Approves Y     |
 
 ## Success Criteria
 
@@ -682,6 +727,7 @@ How do we know this process is working?
 ## Tooling
 
 Tools that support this process:
+
 - Tool 1: Purpose
 - Tool 2: Purpose
 ```
@@ -700,10 +746,10 @@ Tools that support this process:
 
 ## Changelog
 
-| Date | Change | Author |
-|------|--------|--------|
+| Date       | Change                     | Author            |
+| ---------- | -------------------------- | ----------------- |
 | 2026-04-05 | Initial ADR index creation | Architecture Team |
 
 ---
 
-*This document is a living document and will be updated as new decisions are made and old ones are revisited.*
+_This document is a living document and will be updated as new decisions are made and old ones are revisited._

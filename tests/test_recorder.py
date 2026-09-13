@@ -12,6 +12,8 @@ _schema_module = pytest.importorskip(
     "thegent.trace.schema",
     reason="thegent.trace.schema module removed; trace schema tests skipped",
 )
+from datetime import UTC
+
 from thegent.trace.recorder import (  # noqa: E402  (importorskip may skip before this)
     RecorderConfig,
     RedactionConfig,
@@ -248,7 +250,7 @@ class TestTraceCleanup:
     @pytest.mark.asyncio
     async def test_cleanup_expired_traces(self, tmp_path):
         """Test that expired traces are deleted."""
-        from datetime import datetime, timedelta, timezone
+        from datetime import datetime, timedelta
 
         cleanup = TraceCleanup(str(tmp_path), ttl_days=7)
 
@@ -257,7 +259,7 @@ class TestTraceCleanup:
         trace_file.write_text("test")
 
         # Set mtime to 10 days ago
-        old_time = (datetime.now(timezone.utc) - timedelta(days=10)).timestamp()
+        old_time = (datetime.now(UTC) - timedelta(days=10)).timestamp()
         import os
 
         os.utime(trace_file, (old_time, old_time))

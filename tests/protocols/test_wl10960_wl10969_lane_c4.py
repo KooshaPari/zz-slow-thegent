@@ -3,11 +3,13 @@
 from __future__ import annotations
 
 import orjson as json
-
 import pytest
 
 from thegent.protocols import jsonrpc_agent_server as server
-from thegent.protocols.jsonrpc_agent_server import SERVER_STATE, process_jsonrpc_line_full
+from thegent.protocols.jsonrpc_agent_server import (
+    SERVER_STATE,
+    process_jsonrpc_line_full,
+)
 
 
 def _reset_state() -> None:
@@ -48,7 +50,12 @@ def test_wl10963_resolve_turn_submit_response_target_rejects_invalid_shape() -> 
     # @trace WL-10963
     with pytest.raises(ValueError, match="Turn submit response target unresolved"):
         server._resolve_turn_submit_response_target(
-            {"request_has_id": True, "request_id": "req", "turn": {"id": "t"}, "approval_payload": 1}
+            {
+                "request_has_id": True,
+                "request_id": "req",
+                "turn": {"id": "t"},
+                "approval_payload": 1,
+            }
         )
 
 

@@ -5,6 +5,7 @@
 LiteLLM Router wrapper with full feature support.
 
 Provides comprehensive LiteLLM integration including:
+
 - Multi-provider routing (cheapest, fastest, latency-based, round_robin)
 - Response caching (in-memory or Redis)
 - Fallback chains with cooldown times
@@ -21,6 +22,7 @@ Provides comprehensive LiteLLM integration including:
 Enhanced router with full feature support.
 
 Wraps LiteLLM Router with:
+
 - Cost tracking integration
 - Alert management
 - Donut Architecture integration
@@ -29,7 +31,7 @@ Wraps LiteLLM Router with:
 
 ### Methods
 
-#### EnhancedRouter.__init__
+#### EnhancedRouter.**init**
 
 ```python
 __init__(self: Any, policy: Any)

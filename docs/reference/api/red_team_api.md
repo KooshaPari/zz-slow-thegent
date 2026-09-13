@@ -15,7 +15,7 @@ Autonomous agent for stress-testing thegent ecosystem.
 
 ### Methods
 
-#### RedTeamAgent.__init__
+#### RedTeamAgent.**init**
 
 ```python
 __init__(self: Any, target_registry: Any)

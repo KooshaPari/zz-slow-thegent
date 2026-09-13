@@ -5,12 +5,14 @@
 **What**: Implement a deterministic replay system that captures agent execution traces, re-executes workflows with identical inputs/parameters, and validates output consistency. Enables replay debugging, regression testing, and forensic analysis without re-running expensive LLM calls.
 
 **Why**: Current agent execution is non-deterministic. Once a session completes, re-running the same workflow with the same inputs may produce different outputs (model variance, provider routing changes, cache misses). This blocks:
+
 - Reproducing bugs in production
 - Regression testing after model upgrades
 - Cost analysis of "what-if" scenarios
 - Forensic debugging after failures
 
 **Impact**:
+
 - Deterministic testing pipeline (same inputs → same outputs)
 - 80% cost savings on replay vs. full re-execution (mock LLM calls)
 - Faster debugging and regression validation
@@ -64,6 +66,7 @@
 #### Trace Recording
 
 Capture complete execution metadata during normal operation:
+
 - **Session metadata**: task ID, model, provider, config, start/end time
 - **Tool calls**: All tool invocations (read, write, bash, MCP calls)
   - Input parameters (with sensitive redaction)
@@ -78,6 +81,7 @@ Capture complete execution metadata during normal operation:
 #### Trace Replay
 
 Re-execute workflow with recorded inputs:
+
 1. **Load trace**: Read JSONL file, parse tool calls in order
 2. **Mock execution**:
    - LLM calls → return mocked response (from trace)
@@ -90,6 +94,7 @@ Re-execute workflow with recorded inputs:
 #### Simulation Mode
 
 Use trace as baseline for parametric analysis:
+
 - **Modify inputs**: Change model, routing policy, config
 - **Replay**: Execute with modified inputs, compare outputs
 - **Cost/performance analysis**: Compare cost, latency, quality across scenarios
@@ -122,38 +127,45 @@ Use trace as baseline for parametric analysis:
 ### Components
 
 #### 1. TraceRecorder
+
 - Wraps tool execution pipeline
 - Captures all inputs, outputs, metadata
 - Async logging to JSONL (non-blocking)
 - TTL-based cleanup (keep 7 days by default)
 
 **Key methods**:
+
 - `record_tool_call(tool_name, inputs, result, duration, cost)`
 - `record_decision(decision_type, reasoning, choice)`
 - `flush()` — Ensure all writes persist
 
 #### 2. ReplayEngine
+
 - Load JSONL trace file
 - Inject mocks into tool pipeline
 - Execute workflow with mocked calls
 - Stream output to comparison engine
 
 **Key methods**:
+
 - `load_trace(trace_file) → List[ToolCall]`
 - `replay(workflow, trace, mode="mock") → ExecutionResult`
 - `compare(original, replayed) → DiffReport`
 
 #### 3. LLMCallMocker
+
 - Intercepts LLM call requests
 - Looks up trace for matching call (by model, inputs hash)
 - Returns traced response (deterministic)
 - Falls back to live call if trace missing (configurable)
 
 **Key methods**:
+
 - `mock_llm_call(model, prompt, params) → str | bytes`
 - `set_fallback_mode(mode)` — "live" | "error" | "zero"
 
 #### 4. DiffAnalyzer
+
 - Compare original vs. replayed execution
 - Classify differences:
   - **Deterministic**: Expected (config changes, model upgrades)
@@ -161,10 +173,12 @@ Use trace as baseline for parametric analysis:
 - Generate report with diff summaries
 
 **Key methods**:
+
 - `diff(original_result, replayed_result) → DiffReport`
 - `classify_diff(diff) → DeterministicChange | NonDeterministicChange`
 
 #### 5. TraceVariator (for simulation)
+
 - Modify trace inputs parametrically
   - Change model (gpt-5 → gemini-3)
   - Change routing policy (cheapest → pareto)
@@ -173,6 +187,7 @@ Use trace as baseline for parametric analysis:
 - Queue for batch replay
 
 **Key methods**:
+
 - `vary_model(trace, new_model) → Trace`
 - `vary_routing(trace, new_policy) → Trace`
 - `batch_vary(trace, parameter_grid) → List[Trace]`
@@ -203,6 +218,7 @@ class DiffReport:
     non_deterministic_changes: List[NonDeterministicChange]
     summary: str  # "100% match" | "2 divergences (deterministic)"
 
+
 @dataclass
 class DeterministicChange:
     tool_name: str
@@ -210,6 +226,7 @@ class DeterministicChange:
     original_output: str
     replayed_output: str
     reason: str  # "config change" | "model upgrade"
+
 
 @dataclass
 class NonDeterministicChange:
@@ -223,6 +240,7 @@ class NonDeterministicChange:
 ### Use Cases
 
 #### Use Case 1: Debugging Production Failure
+
 1. Capture failure trace in production
 2. Download trace file
 3. `thegent replay trace-prod-failure.jsonl --mode=mock`
@@ -231,6 +249,7 @@ class NonDeterministicChange:
 6. Fix bug, re-run to verify
 
 #### Use Case 2: Regression Testing After Model Upgrade
+
 1. Record baseline trace with old model
 2. Upgrade model in config
 3. `thegent replay trace-baseline.jsonl --vary-model=new-model`
@@ -239,6 +258,7 @@ class NonDeterministicChange:
 6. Manual review determines if changes acceptable
 
 #### Use Case 3: Cost Analysis
+
 1. Record trace for long task (e.g., 10-step workflow)
 2. Generate variations:
    - `--vary-model gemini-3-flash` (cheaper)
@@ -248,6 +268,7 @@ class NonDeterministicChange:
 5. Choose optimal configuration
 
 #### Use Case 4: Forensic Investigation
+
 1. Task fails in production
 2. Export failure trace + 5 prior successful traces
 3. `thegent replay --forensic trace-failed.jsonl trace-success-*.jsonl`
@@ -294,15 +315,15 @@ class NonDeterministicChange:
 
 ## Success Metrics
 
-| Metric | Target | Validation |
-|--------|--------|------------|
-| Trace record overhead | <10% | Timing measurements (before/after) |
-| Replay cost savings | >80% vs. live | Token counting (mocked vs. live) |
-| Output consistency (same inputs) | 100% | Diff report on baseline replay |
-| Regression detection (model change) | 100% accuracy | Manual review of classification |
-| Trace file compression | >50% | Actual file sizes |
-| CLI availability | `thegent replay` works | CLI test |
-| Integration readiness | Zero blocking issues | Integration test suite |
+| Metric                              | Target                 | Validation                         |
+| ----------------------------------- | ---------------------- | ---------------------------------- |
+| Trace record overhead               | <10%                   | Timing measurements (before/after) |
+| Replay cost savings                 | >80% vs. live          | Token counting (mocked vs. live)   |
+| Output consistency (same inputs)    | 100%                   | Diff report on baseline replay     |
+| Regression detection (model change) | 100% accuracy          | Manual review of classification    |
+| Trace file compression              | >50%                   | Actual file sizes                  |
+| CLI availability                    | `thegent replay` works | CLI test                           |
+| Integration readiness               | Zero blocking issues   | Integration test suite             |
 
 ---
 
@@ -336,19 +357,19 @@ class NonDeterministicChange:
 
 ### Technical Risks
 
-| Risk | Impact | Mitigation |
-|------|--------|-----------|
-| Trace file grows too large | Medium | TTL-based cleanup, compression |
-| Mock responses diverge from live | High | Validate traces on sample runs |
-| Sensitive data leaked in traces | High | Redaction policy, encryption at rest |
-| Replay engine overhead too high | Medium | Async recording, batch processing |
+| Risk                             | Impact | Mitigation                           |
+| -------------------------------- | ------ | ------------------------------------ |
+| Trace file grows too large       | Medium | TTL-based cleanup, compression       |
+| Mock responses diverge from live | High   | Validate traces on sample runs       |
+| Sensitive data leaked in traces  | High   | Redaction policy, encryption at rest |
+| Replay engine overhead too high  | Medium | Async recording, batch processing    |
 
 ### Operational Risks
 
-| Risk | Impact | Mitigation |
-|------|--------|-----------|
-| Disk quota exceeded | Medium | Quota enforcement, auto-cleanup |
-| Trace corruption | High | Checksum validation, recovery |
+| Risk                         | Impact | Mitigation                           |
+| ---------------------------- | ------ | ------------------------------------ |
+| Disk quota exceeded          | Medium | Quota enforcement, auto-cleanup      |
+| Trace corruption             | High   | Checksum validation, recovery        |
 | Complex traces hard to debug | Medium | Trace summarization, filtering tools |
 
 ---
@@ -356,28 +377,33 @@ class NonDeterministicChange:
 ## Implementation Phases
 
 ### Phase 1: Foundation (Week 1)
+
 - Trace data model (JSONL schema)
 - TraceRecorder implementation
 - File I/O and compression
 - Basic unit tests
 
 ### Phase 2: Replay (Week 2)
+
 - ReplayEngine implementation
 - LLMCallMocker
 - Execution mocking (file I/O, bash, APIs)
 - Integration tests
 
 ### Phase 3: Analysis (Week 3)
+
 - DiffAnalyzer implementation
 - Classification of deterministic vs. non-deterministic changes
 - Report generation
 
 ### Phase 4: Simulation (Week 4)
+
 - TraceVariator for parametric variations
 - Batch replay pipeline
 - CLI support (`thegent replay`, `thegent vary`)
 
 ### Phase 5: Integration (Week 5)
+
 - Integration with agent execution pipeline
 - Quality-gate integration for regression detection
 - Production deployment (canary)

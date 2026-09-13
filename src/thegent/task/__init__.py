@@ -1,11 +1,11 @@
 """Package: thegent.task"""
 
 from thegent.task.parser import (
-    parse_yaml_frontmatter,
-    parse_task_file,
     detect_task_format,
     extract_markdown_sections,
     parse_legacy_task,
+    parse_task_file,
+    parse_yaml_frontmatter,
 )
 from thegent.task.validator import (
     ValidationError,

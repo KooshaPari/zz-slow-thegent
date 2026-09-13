@@ -44,7 +44,10 @@ class ConnectorTimeoutRegistry:
         self._default_timeout = default_timeout
         self._timeouts: dict[str, float] = {}
 
-        logger.debug("Initialized ConnectorTimeoutRegistry with default_timeout=%s", default_timeout)
+        logger.debug(
+            "Initialized ConnectorTimeoutRegistry with default_timeout=%s",
+            default_timeout,
+        )
 
     def set_timeout(self, connector_id: str, timeout_seconds: float) -> None:
         """Set the timeout for a specific connector.

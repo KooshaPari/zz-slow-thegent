@@ -31,7 +31,11 @@ from thegent.protocols.turn_submit_boundaries import (
 def test_wl10670_provider_selection_separates_rule_evaluation_from_final_selection() -> None:
     # @trace WL-10670
     phase = build_provider_rule_evaluation_phase({"openai": 12, "anthropic": 9}, "weighted", "openai")
-    assert resolve_provider_final_selection_target(phase) == ({"openai": 12, "anthropic": 9}, "weighted", "openai")
+    assert resolve_provider_final_selection_target(phase) == (
+        {"openai": 12, "anthropic": 9},
+        "weighted",
+        "openai",
+    )
 
 
 def test_wl10671_workflow_progression_separates_guard_checks_from_execution() -> None:
@@ -59,7 +63,11 @@ def test_wl10672_hook_reliability_separates_registration_from_invocation() -> No
 def test_wl10673_policy_gating_separates_matching_from_enforcement() -> None:
     # @trace WL-10673
     phase = build_policy_match_phase("p-1", ["allow:team", "deny:none"], "allow")
-    assert resolve_policy_enforcement_plan_target(phase) == ("p-1", ["allow:team", "deny:none"], "allow")
+    assert resolve_policy_enforcement_plan_target(phase) == (
+        "p-1",
+        ["allow:team", "deny:none"],
+        "allow",
+    )
 
 
 def test_wl10674_queue_scheduling_separates_priority_from_execution() -> None:
@@ -86,7 +94,11 @@ def test_wl10677_observability_separates_events_from_serialization() -> None:
     # @trace WL-10677
     payload = {"latency_ms": 42}
     phase = build_observability_event_phase("turn_submit_completed", payload, "json")
-    assert resolve_observability_serialization_target(phase) == ("turn_submit_completed", payload, "json")
+    assert resolve_observability_serialization_target(phase) == (
+        "turn_submit_completed",
+        payload,
+        "json",
+    )
 
 
 def test_wl10678_cli_dispatch_separates_parse_from_handler_selection() -> None:

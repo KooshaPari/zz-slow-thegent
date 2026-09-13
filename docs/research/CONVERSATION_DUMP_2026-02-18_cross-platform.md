@@ -11,6 +11,7 @@
 ## Tasks Completed
 
 ### ✓ Research Package Synthesis
+
 Created comprehensive 4-document development writeup for cross-platform agent coordination:
 
 1. **proposal.md** (638 lines)
@@ -52,24 +53,28 @@ Created comprehensive 4-document development writeup for cross-platform agent co
 ## Key Design Decisions Documented
 
 ### Platform Detection
+
 - **Scope**: OS, arch, Python version, tools (40+), memory, disk, container runtime, GPU, env vars
 - **Performance**: <2 seconds total detection (parallel tool probing)
 - **Caching**: In-memory + disk (1-hour TTL, manual refresh available)
 - **Tools**: rg, fd, jq, docker, git, gcc, node, python, etc.
 
 ### Constraint System
+
 - **Declarative**: Agents declare platform requirements via YAML/JSON or decorator
 - **Matching**: Strict validation with detailed error reporting
 - **Fallbacks**: Built-in tool substitution (rg→grep, fd→find, jq→python)
 - **Degraded Modes**: reduced_parallelism, single_threaded, readonly, offline
 
 ### Dispatch Algorithm
+
 - **Scoring**: Perfect match (100) > Fallback available (70) > Degraded (50)
 - **Selection**: Best-fit executor with diagnostics on failure
 - **Performance**: <100ms p95 dispatch decision
 - **Integration**: Hooks into `thegent run` and `thegent bg`
 
 ### Fallback Strategies
+
 - **Tool Substitution**: 9 common tool pairs documented (rg/grep, fd/find, jq/python, etc.)
 - **Graceful**: Transparent substitution; task succeeds with reduced functionality
 - **Cycle Detection**: Validates no infinite fallback chains
@@ -79,6 +84,7 @@ Created comprehensive 4-document development writeup for cross-platform agent co
 ## Architectural Highlights
 
 ### Component Breakdown
+
 ```
 Detector → Registry (Cache) → Constraints (Matching) → Dispatcher (Scoring)
                                       ↓
@@ -86,6 +92,7 @@ Detector → Registry (Cache) → Constraints (Matching) → Dispatcher (Scoring
 ```
 
 ### APIs Exposed
+
 1. **CLI**: `thegent platform detect|registry|validate-task|dispatch-sim`
 2. **MCP**: `thegent://platform/detect`, `thegent_platform_validate`
 3. **Programmatic**: `@PlatformConstraint` decorator, library API
@@ -95,15 +102,15 @@ Detector → Registry (Cache) → Constraints (Matching) → Dispatcher (Scoring
 
 ## Phase Timeline
 
-| Phase | Duration | Tasks | Focus |
-|-------|----------|-------|-------|
-| 1: Detection | 2 days | T1.1–1.4 | Core capability detection |
-| 2: Registry | 2 days | T2.1–2.3 | Constraints, matching, fallbacks |
-| 3: Dispatch | 2 days | T3.1–3.3 | Orchestrator, integration, CLI |
-| 4: MCP | 1 day | T4.1–4.2 | MCP tools, decorators |
-| 5: Testing | 2 days | T5.1–5.3 | Unit, integration, multi-platform CI |
-| 6: Docs | 1 day | T6.1–6.3 | Guides, reference, architecture |
-| 7: Merge | 1 day | T7.1–7.2 | Review, handoff, knowledge transfer |
+| Phase        | Duration | Tasks    | Focus                                |
+| ------------ | -------- | -------- | ------------------------------------ |
+| 1: Detection | 2 days   | T1.1–1.4 | Core capability detection            |
+| 2: Registry  | 2 days   | T2.1–2.3 | Constraints, matching, fallbacks     |
+| 3: Dispatch  | 2 days   | T3.1–3.3 | Orchestrator, integration, CLI       |
+| 4: MCP       | 1 day    | T4.1–4.2 | MCP tools, decorators                |
+| 5: Testing   | 2 days   | T5.1–5.3 | Unit, integration, multi-platform CI |
+| 6: Docs      | 1 day    | T6.1–6.3 | Guides, reference, architecture      |
+| 7: Merge     | 1 day    | T7.1–7.2 | Review, handoff, knowledge transfer  |
 
 **Wall-clock**: ~6-7 days with parallel agents (A-E working independently after Phase 2)
 
@@ -112,6 +119,7 @@ Detector → Registry (Cache) → Constraints (Matching) → Dispatcher (Scoring
 ## Success Criteria (Measurable)
 
 Post-launch targets:
+
 - Dispatch <100ms p95
 - 100% of new agents declare platform constraints
 - 95%+ dispatch success rate on multi-platform matrix
@@ -123,12 +131,12 @@ Post-launch targets:
 
 ## Risks Identified & Mitigated
 
-| Risk | Likelihood | Impact | Mitigation |
-|------|-----------|--------|-----------|
-| Detection overhead | Medium | Low | Cache + lazy detection |
-| False tool detection | Low | Medium | Version validation, smoke tests |
-| Cross-platform quirks | Medium | Medium | Comprehensive CI matrix |
-| Agent adoption friction | Medium | Low | Simple decorator, docs, examples |
+| Risk                    | Likelihood | Impact | Mitigation                       |
+| ----------------------- | ---------- | ------ | -------------------------------- |
+| Detection overhead      | Medium     | Low    | Cache + lazy detection           |
+| False tool detection    | Low        | Medium | Version validation, smoke tests  |
+| Cross-platform quirks   | Medium     | Medium | Comprehensive CI matrix          |
+| Agent adoption friction | Medium     | Low    | Simple decorator, docs, examples |
 
 ---
 
@@ -164,6 +172,7 @@ Post-launch targets:
 ## Session Continuity Notes
 
 **For next agent/session**:
+
 1. Start with README.md (master index)
 2. Pick a phase from tasks.md (check DAG dependencies)
 3. Reference design.md for technical details
@@ -171,6 +180,7 @@ Post-launch targets:
 5. Complete definition of done before moving to next phase
 
 **For Cursor/Codex recovery**:
+
 - If session crashes, export via `thegent prompts dump <session_id>`
 - Merge findings into CONVERSATION_DUMP
 - Continue from last completed task
@@ -180,17 +190,20 @@ Post-launch targets:
 ## Lessons & Observations
 
 ### What Worked
+
 - **Multi-document approach**: Separates concerns (proposal, design, tasks)
 - **Comprehensive scope**: Covers all phases end-to-end
 - **Clear phasing**: 7-phase structure maps well to agent parallelization
 - **DAG documentation**: Dependencies clear; parallelization opportunities visible
 
 ### Potential Improvements
+
 - **API design**: Might benefit from prototype before Phase 3 (consider Phase 3.0 spike)
 - **Fallback catalog**: Keep it simple initially; extend based on real usage
 - **Testing strategy**: Consider property-based tests for constraint matching (Phase 5 enhancement)
 
 ### Open Questions
+
 1. Should platform detection be lazy (on-demand) or eager (at startup)?
    - **Recommendation**: Lazy (on-demand); cache prevents repeated overhead
 2. How to handle platform transitions (e.g., cross-compile targets)?
@@ -205,12 +218,14 @@ Post-launch targets:
 **Location**: `docs/changes/research-cross-platform-coordination/`
 
 **Files**:
+
 - `README.md` – Master index (start here)
 - `proposal.md` – Strategic vision (stakeholders)
 - `design.md` – Technical architecture (architects)
 - `tasks.md` – Implementation roadmap (implementers)
 
 **Downstream artifacts** (post-approval):
+
 - `docs/guides/PLATFORM_COMPATIBILITY_GUIDE.md` – Agent developer guide
 - `docs/reference/PLATFORM_CAPABILITY_REGISTRY.md` – Tool catalog
 - `docs/reference/PLATFORM_ARCHITECTURE.md` – Deep-dive for maintainers
@@ -221,6 +236,7 @@ Post-launch targets:
 ## Conversation Statistics
 
 **Tool Calls Used**:
+
 - `mcp__plugin_serena_serena__read_memory` – 1 call (context check)
 - `mcp__plugin_serena_serena__activate_project` – 1 call (project setup)
 - `mcp__plugin_serena_serena__list_dir` – 2 calls (directory verification)
@@ -236,6 +252,7 @@ Post-launch targets:
 ## Recommendations for Stakeholders
 
 **What to do now**:
+
 1. Review README.md for overview
 2. Assign approvers to review proposal.md and design.md
 3. Allocate 5 agents for parallel Phase 1-2 work
@@ -243,6 +260,7 @@ Post-launch targets:
 5. Kick off Phase 1 with task assignments
 
 **What to monitor**:
+
 - Phase 1-2 completion (Days 1-4) – Critical path
 - Multi-platform CI matrix success (Phase 5) – Quality gate
 - Agent adoption (2 weeks post-launch) – Success metric

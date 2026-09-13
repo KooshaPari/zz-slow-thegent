@@ -3,7 +3,6 @@
 from __future__ import annotations
 
 import asyncio
-from types import SimpleNamespace
 from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
@@ -291,7 +290,8 @@ class TestAutoLaunchSystemTryLaunchNext:
         system.launch_batch = AsyncMock()
 
         with patch(
-            "thegent.planning.auto_launch.check_agent_throttle", return_value=_ThrottleResult("ok", 5, 20, "ok")
+            "thegent.planning.auto_launch.check_agent_throttle",
+            return_value=_ThrottleResult("ok", 5, 20, "ok"),
         ):
             asyncio.get_event_loop().run_until_complete(system._try_launch_next())
 
@@ -345,7 +345,8 @@ class TestAutoLaunchSystemLaunchBatch:
         system._launch_item = AsyncMock()
 
         with patch(
-            "thegent.planning.auto_launch.check_agent_throttle", return_value=_ThrottleResult("ok", 5, 20, "ok")
+            "thegent.planning.auto_launch.check_agent_throttle",
+            return_value=_ThrottleResult("ok", 5, 20, "ok"),
         ):
             asyncio.get_event_loop().run_until_complete(system.launch_batch([{"item_id": "x", "prompt": "p"}]))
 

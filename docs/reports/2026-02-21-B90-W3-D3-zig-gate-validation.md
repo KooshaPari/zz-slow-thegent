@@ -19,16 +19,17 @@ tags: [wl-132, zig, abi, ci-gate, platform]
 
 **File**: `contracts/runtime/zig_abi_contract_v1.json`
 
-| Field | Value | Valid |
-|-------|-------|-------|
-| `contract_id` | `runtime.zig_abi.v1` | YES |
-| `version` | `1.0.0` | YES (semver X.Y.Z) |
-| `owner` | `runtime-platform` | YES |
-| `status` | `draft` | YES |
-| `abi.calling_convention` | `C` | YES |
-| `abi.symbols` count | 4 required symbols | YES |
+| Field                    | Value                | Valid              |
+| ------------------------ | -------------------- | ------------------ |
+| `contract_id`            | `runtime.zig_abi.v1` | YES                |
+| `version`                | `1.0.0`              | YES (semver X.Y.Z) |
+| `owner`                  | `runtime-platform`   | YES                |
+| `status`                 | `draft`              | YES                |
+| `abi.calling_convention` | `C`                  | YES                |
+| `abi.symbols` count      | 4 required symbols   | YES                |
 
 Required ABI symbols present:
+
 - `tg_zig_kernel_version` (function, required)
 - `tg_zig_init` (function, required)
 - `tg_zig_execute` (function, required)
@@ -69,10 +70,10 @@ and Rust crate compilation without requiring a running Zig toolchain. Specifical
 On platforms where Zig is not installed, the Python-layer tests continue to PASS because
 they only validate the JSON artifact and the Rust crate structure. The gate behavior is:
 
-| Scenario | Python tests | Zig CLI tests |
-|----------|-------------|---------------|
-| Zig available | PASS | PASS (can build) |
-| Zig NOT available | PASS | SKIP (not FAIL) |
+| Scenario          | Python tests | Zig CLI tests    |
+| ----------------- | ------------ | ---------------- |
+| Zig available     | PASS         | PASS (can build) |
+| Zig NOT available | PASS         | SKIP (not FAIL)  |
 
 The `test_zmx_interop_crate_builds` test uses `cargo check --quiet` which validates
 Rust compilation but does not require a Zig toolchain since the `zmx-native` Cargo

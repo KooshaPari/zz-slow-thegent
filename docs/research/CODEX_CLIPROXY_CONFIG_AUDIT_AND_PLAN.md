@@ -17,10 +17,10 @@
 
 **Fix**: Run the **adapter** instead of raw proxy. The adapter (`cliproxy_adapter.py`) bridges Responses API ↔ Chat Completions and exposes `/v1/responses` (HTTP + WebSocket).
 
-| What runs on 8317 | Exposes /v1/responses? |
-|-------------------|------------------------|
-| Raw CLIProxyAPIPlus (direct binary) | No → 404 |
-| Adapter (start_proxy_with_adapter.py) | Yes ✓ |
+| What runs on 8317                     | Exposes /v1/responses? |
+| ------------------------------------- | ---------------------- |
+| Raw CLIProxyAPIPlus (direct binary)   | No → 404               |
+| Adapter (start_proxy_with_adapter.py) | Yes ✓                  |
 
 ### 1.2 Model Metadata Warning
 
@@ -65,6 +65,7 @@ uv run python scripts/start_proxy_with_adapter.py
 ```
 
 **Verify adapter is running**:
+
 ```bash
 curl -s http://127.0.0.1:8317/v1/models | jq 'keys'
 # Adapter returns {"models": [...]}; raw proxy returns {"data": [...]}
@@ -73,12 +74,14 @@ curl -s http://127.0.0.1:8317/v1/models | jq 'keys'
 ### 2.2 Codex Configuration
 
 **Environment** (for `codex` CLI):
+
 ```bash
 export OPENAI_BASE_URL=http://127.0.0.1:8317/v1
 export OPENAI_API_KEY=sk-dummy
 ```
 
 **Or `.codex/config.toml`** (if using Codex config):
+
 ```toml
 [model_providers.cliproxy]
 name = "CLIProxy (thegent)"
@@ -91,6 +94,7 @@ requires_openai_auth = false
 ### 2.3 Factory / Cursor Settings
 
 If using `.factory/settings.json` or similar for Codex:
+
 - `baseUrl`: `http://127.0.0.1:8317/v1` (include `/v1`)
 - `apiKey`: `sk-dummy` or any dummy (CLIProxy routes by provider config)
 
@@ -99,6 +103,7 @@ If using `.factory/settings.json` or similar for Codex:
 ## 3. Correct Configuration (Web)
 
 **Web docs**:
+
 - [PROVIDER_SETUP_GUIDE.md](../guides/PROVIDER_SETUP_GUIDE.md) — Codex CLI with CLIProxy
 - [CODEX_MINIMAX_CLIPROXY_RESEARCH_AND_PLAN.md](./CODEX_MINIMAX_CLIPROXY_RESEARCH_AND_PLAN.md) — Adapter architecture
 - [CODEX_CLI_PROVIDER_GUIDES_RESEARCH.md](./CODEX_CLI_PROVIDER_GUIDES_RESEARCH.md) — MiniMax/GLM patterns
@@ -109,14 +114,14 @@ If using `.factory/settings.json` or similar for Codex:
 
 ## 4. Remediation Plan
 
-| # | Task | Priority | Owner |
-|---|------|----------|-------|
-| 1 | Kill any process on 8317; start adapter: `THGENT_CLIPROXY_ADAPTER=1 thegent mcp up` | P0 | User |
-| 2 | Set `OPENAI_BASE_URL=http://127.0.0.1:8317/v1` (include `/v1`) | P0 | User |
-| 3 | Update `.factory/settings.json` baseUrl to `http://127.0.0.1:8317/v1` | P1 | User |
-| 4 | Run `thegent mgmt verify-codex-cliproxy` to confirm end-to-end | P1 | User |
-| 5 | If model metadata warning persists: add gemini-3-flash aliases to model_metadata.py | P2 | Dev |
-| 6 | Consider pinning Codex to 0.57.0 if 0.103+ continues to have issues | P3 | User |
+| #   | Task                                                                                | Priority | Owner |
+| --- | ----------------------------------------------------------------------------------- | -------- | ----- |
+| 1   | Kill any process on 8317; start adapter: `THGENT_CLIPROXY_ADAPTER=1 thegent mcp up` | P0       | User  |
+| 2   | Set `OPENAI_BASE_URL=http://127.0.0.1:8317/v1` (include `/v1`)                      | P0       | User  |
+| 3   | Update `.factory/settings.json` baseUrl to `http://127.0.0.1:8317/v1`               | P1       | User  |
+| 4   | Run `thegent mgmt verify-codex-cliproxy` to confirm end-to-end                      | P1       | User  |
+| 5   | If model metadata warning persists: add gemini-3-flash aliases to model_metadata.py | P2       | Dev   |
+| 6   | Consider pinning Codex to 0.57.0 if 0.103+ continues to have issues                 | P3       | User  |
 
 ---
 

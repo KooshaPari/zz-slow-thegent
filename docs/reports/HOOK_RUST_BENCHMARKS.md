@@ -29,19 +29,20 @@
 
 **Phase 1 Complete**: `thegent-hooks` binary built with core subcommands. Benchmarks show:
 
-| Operation | Current (Shell) | Target (Rust) | Measured | Status |
-|-----------|----------------|---------------|----------|--------|
-| **Hook init** | 50-100ms | <5ms | 3-8ms | ✅ 94% faster |
-| **Cache key** | 20-50ms | <1ms | 0.2-0.5ms | ✅ 100x faster |
-| **Tool detection** | 60ms | 1ms | 0.8-1.2ms | ✅ 50x faster |
-| **PATH resolution** | 20ms | 0.5ms | 0.3-0.7ms | ✅ 60x faster |
-| **Git status** | 100ms | 10ms | 8-15ms | ✅ 85% faster |
-| **Changed files** | 50-200ms | 5-20ms | 4-18ms | ✅ 87% faster |
-| **Overall hook latency** | 200-300ms | 20-40ms | 25-50ms | ✅ 85% faster |
+| Operation                | Current (Shell) | Target (Rust) | Measured  | Status         |
+| ------------------------ | --------------- | ------------- | --------- | -------------- |
+| **Hook init**            | 50-100ms        | <5ms          | 3-8ms     | ✅ 94% faster  |
+| **Cache key**            | 20-50ms         | <1ms          | 0.2-0.5ms | ✅ 100x faster |
+| **Tool detection**       | 60ms            | 1ms           | 0.8-1.2ms | ✅ 50x faster  |
+| **PATH resolution**      | 20ms            | 0.5ms         | 0.3-0.7ms | ✅ 60x faster  |
+| **Git status**           | 100ms           | 10ms          | 8-15ms    | ✅ 85% faster  |
+| **Changed files**        | 50-200ms        | 5-20ms        | 4-18ms    | ✅ 87% faster  |
+| **Overall hook latency** | 200-300ms       | 20-40ms       | 25-50ms   | ✅ 85% faster  |
 
 ### 1.2 Impact Assessment
 
 **Performance Improvements**:
+
 - **Hook initialization**: 94% reduction (50ms → 3ms)
 - **Cache operations**: 100x speedup (20ms → 0.2ms)
 - **Tool detection**: 50x improvement (60ms → 1ms)
@@ -49,6 +50,7 @@
 - **Aggregate hook time**: 85% reduction (250ms → 37ms average)
 
 **Agent Responsiveness Impact**:
+
 - Pre-tool-use hooks (blocking agent start): ~10x faster
 - Post-tool-use hooks (blocking file operations): ~8x faster
 - Stop hooks (cleanup): ~6x faster
@@ -56,12 +58,12 @@
 
 ### 1.3 Business Value
 
-| Metric | Current | Rust | Improvement | Annual Impact |
-|--------|---------|------|-------------|---------------|
-| **Avg hook latency** | 250ms | 37ms | 213ms faster | 600+ agent-hours saved |
-| **Hook startup P95** | 120ms | 12ms | 91% reduction | ~100ms per 1000 hook runs |
-| **Git operation P99** | 200ms | 20ms | 90% reduction | Significant for large repos |
-| **Agent throughput** | 4 hooks/sec | 27 hooks/sec | **6.75x** | 1000+ extra tasks/day |
+| Metric                | Current     | Rust         | Improvement   | Annual Impact               |
+| --------------------- | ----------- | ------------ | ------------- | --------------------------- |
+| **Avg hook latency**  | 250ms       | 37ms         | 213ms faster  | 600+ agent-hours saved      |
+| **Hook startup P95**  | 120ms       | 12ms         | 91% reduction | ~100ms per 1000 hook runs   |
+| **Git operation P99** | 200ms       | 20ms         | 90% reduction | Significant for large repos |
+| **Agent throughput**  | 4 hooks/sec | 27 hooks/sec | **6.75x**     | 1000+ extra tasks/day       |
 
 ---
 
@@ -83,6 +85,7 @@ BENCH_MEASURE_RUNS=20
 ### 2.2 Hardware / Platform Specifications
 
 **Test Environment**:
+
 - **Platform**: macOS (Apple Silicon) + Linux (x86-64, various)
 - **Git**: 2.30+
 - **Bash**: 5.x+
@@ -93,12 +96,14 @@ BENCH_MEASURE_RUNS=20
 ### 2.3 Benchmark Harness
 
 **Tool**: `hyperfine` for CLI benchmarking
+
 - Warmup runs: 3 (discard)
 - Measure runs: 20 (report stats)
 - Auto-detection of outliers
 - JSON export for automated analysis
 
 **Script**: `scripts/benchmark-comprehensive.sh`
+
 - Runs all scenarios sequentially
 - Generates baseline/current split
 - Produces HTML+JSON report
@@ -127,6 +132,7 @@ Per benchmark run:
 ```
 
 **Key Metrics**:
+
 - **Mean**: Average execution time (primary metric)
 - **Median**: Middle value (robust to outliers)
 - **Stddev**: Variability (consistency measure)
@@ -183,6 +189,7 @@ Total: 25-65ms (average ~40ms)
 ```
 
 **Key Optimizations**:
+
 1. **Single binary instead of sourcing**: No line-by-line parsing
 2. **Compiled code instead of interpreted**: 50-100x faster evaluation
 3. **Fast hashing**: blake3 instead of sha256sum subprocess
@@ -192,11 +199,13 @@ Total: 25-65ms (average ~40ms)
 ### 3.2 Agent Responsiveness Impact
 
 **Pre-tool-use Hook (blocks agent start)**:
+
 - Current: 200ms average wait
 - Rust: 25-40ms average wait
 - **Agent perceives**: 175ms faster response time per tool use
 
 **Batch Processing Impact** (100 agent operations):
+
 - Current: 100 × 200ms = 20,000ms (20s) total
 - Rust: 100 × 40ms = 4,000ms (4s) total
 - **Improvement**: 16s saved per 100 ops = **4x faster batch throughput**
@@ -214,6 +223,7 @@ bash -lc 'source hooks/lib/common.sh && hook_init_full'
 ```
 
 **Results** (20 runs, macOS Apple Silicon):
+
 ```
 Command: bash -lc 'source hooks/lib/common.sh && hook_init_full'
   Mean   [50.2 ms]
@@ -231,6 +241,7 @@ echo '{"hook_name":"test","project_dir":"."}' | thegent-hooks init
 ```
 
 **Results** (20 runs, macOS Apple Silicon):
+
 ```
 Command: echo '{}' | thegent-hooks init
   Mean   [3.2 ms]
@@ -244,6 +255,7 @@ Command: echo '{}' | thegent-hooks init
 **Performance Ratio**: 50.2 / 3.2 = **15.7x faster**
 
 **Key Wins**:
+
 1. Binary (compiled) vs. shell (interpreted): ~10x
 2. Single init vs. multiple subprocess calls: ~5x
 3. No function definition overhead: ~1.5x
@@ -257,6 +269,7 @@ hook_cache_key "test-maturity" "$(git rev-parse HEAD)" "$(git diff --name-only)"
 ```
 
 **Results**:
+
 ```
 Command: hook_cache_key "test" "abc123" "file1.rs file2.rs"
   Mean   [24.5 ms]
@@ -274,6 +287,7 @@ thegent-hooks cache-key "test-maturity" "abc123" "file1.rs" "file2.rs"
 ```
 
 **Results**:
+
 ```
 Command: thegent-hooks cache-key "test" "abc123" "file1.rs" "file2.rs"
   Mean   [0.23 ms]
@@ -287,6 +301,7 @@ Command: thegent-hooks cache-key "test" "abc123" "file1.rs" "file2.rs"
 **Performance Ratio**: 24.5 / 0.23 = **106x faster** ⭐ Biggest improvement
 
 **Bottleneck Analysis**:
+
 - Shell version: git subprocess (10ms) + sha256sum subprocess (8ms) + jq (3ms) + overhead (3ms)
 - Rust version: blake3 in-process (0.1ms) + overhead (0.12ms)
 - **Subprocess savings**: 21ms per operation
@@ -300,6 +315,7 @@ command -v jq && command -v rg && command -v fd && echo "OK"
 ```
 
 **Results**:
+
 ```
 Command: command -v jq && command -v rg && command -v fd && echo "OK"
   Mean   [15.3 ms]
@@ -317,6 +333,7 @@ thegent-tool-detect --json | jq '.jq, .rg, .fd'
 ```
 
 **Results**:
+
 ```
 Command: thegent-tool-detect --json
   Mean   [0.31 ms]
@@ -340,6 +357,7 @@ git_cached status --short  # first call (no cache)
 ```
 
 **Results**:
+
 ```
 Command: git status --short
   Mean   [95.2 ms]
@@ -357,6 +375,7 @@ thegent-hooks git status --short  # with native Rust git (planned)
 ```
 
 **Expected Results** (based on gix benchmarks):
+
 ```
 Expected: 8-15 ms (with libgit2/gix)
 ```
@@ -374,6 +393,7 @@ git diff --name-only HEAD^ | head -100
 ```
 
 **Results**:
+
 ```
 Command: git diff --name-only
   Mean   [85.4 ms]
@@ -391,6 +411,7 @@ thegent-hooks changed-files --format=json | jq -r '.[]' | head -100
 ```
 
 **Results**:
+
 ```
 Command: thegent-hooks changed-files --format=json
   Mean   [10.3 ms]
@@ -515,13 +536,14 @@ Improvement: 66% faster (905ms → 305ms)
 
 **Hook init latency distribution**:
 
-| Percentile | Shell | Rust | Reduction |
-|------------|-------|------|-----------|
-| P50 (median) | 49.8ms | 3.0ms | 94% |
-| P95 | 54.1ms | 3.8ms | 93% |
-| P99 | 56.4ms | 4.2ms | 93% |
+| Percentile   | Shell  | Rust  | Reduction |
+| ------------ | ------ | ----- | --------- |
+| P50 (median) | 49.8ms | 3.0ms | 94%       |
+| P95          | 54.1ms | 3.8ms | 93%       |
+| P99          | 56.4ms | 4.2ms | 93%       |
 
 **Interpretation**:
+
 - Most hook runs: 94% faster
 - Worst-case (P99): Still 93% faster
 - **No tail latency regression** with Rust
@@ -532,25 +554,25 @@ Improvement: 66% faster (905ms → 305ms)
 
 ### 6.1 By Operation Type
 
-| Operation | Shell | Rust | Speedup | Improvement % |
-|-----------|-------|------|---------|---------------|
-| **Init** | 50ms | 3ms | 16.7x | 94% |
-| **Cache key** | 24ms | 0.23ms | 104x | 99% |
-| **Tool detection** | 15ms | 0.31ms | 48x | 98% |
-| **PATH resolve** | 18ms | 0.35ms | 51x | 98% |
-| **Git status** | 95ms | 12ms | 7.9x | 87% |
-| **Changed files** | 85ms | 10ms | 8.5x | 88% |
-| **File validate** | 35ms | 5ms | 7x | 86% |
+| Operation          | Shell | Rust   | Speedup | Improvement % |
+| ------------------ | ----- | ------ | ------- | ------------- |
+| **Init**           | 50ms  | 3ms    | 16.7x   | 94%           |
+| **Cache key**      | 24ms  | 0.23ms | 104x    | 99%           |
+| **Tool detection** | 15ms  | 0.31ms | 48x     | 98%           |
+| **PATH resolve**   | 18ms  | 0.35ms | 51x     | 98%           |
+| **Git status**     | 95ms  | 12ms   | 7.9x    | 87%           |
+| **Changed files**  | 85ms  | 10ms   | 8.5x    | 88%           |
+| **File validate**  | 35ms  | 5ms    | 7x      | 86%           |
 
 ### 6.2 Hook Categories
 
-| Hook Type | Baseline | Rust | Speedup | Notes |
-|-----------|----------|------|---------|-------|
-| **Simple validation** (pre-write) | 45ms | 15ms | 3x | Infrastructure dominates |
-| **Complex validation** (pre-write-full) | 120ms | 40ms | 3x | Still infrastructure-heavy |
-| **Git-heavy** (change-doc-tracker) | 150ms | 35ms | 4.3x | Git operations optimized |
-| **Cache-heavy** (complexity-ratchet) | 200ms | 50ms | 4x | Cache key generation optimized |
-| **Lint/test** (quality-gate) | 600ms | 510ms | 1.2x | Dominant time in task, not infrastructure |
+| Hook Type                               | Baseline | Rust  | Speedup | Notes                                     |
+| --------------------------------------- | -------- | ----- | ------- | ----------------------------------------- |
+| **Simple validation** (pre-write)       | 45ms     | 15ms  | 3x      | Infrastructure dominates                  |
+| **Complex validation** (pre-write-full) | 120ms    | 40ms  | 3x      | Still infrastructure-heavy                |
+| **Git-heavy** (change-doc-tracker)      | 150ms    | 35ms  | 4.3x    | Git operations optimized                  |
+| **Cache-heavy** (complexity-ratchet)    | 200ms    | 50ms  | 4x      | Cache key generation optimized            |
+| **Lint/test** (quality-gate)            | 600ms    | 510ms | 1.2x    | Dominant time in task, not infrastructure |
 
 ### 6.3 Impact on Agent Workload
 
@@ -641,16 +663,19 @@ Agent throughput improvement: 3,120ms → 405ms = **7.7x faster**
 ### 7.3 Optimization Recommendations by Phase
 
 **Phase 1** (Current): ✅ Achieved ~10x improvement overall
+
 - Core subcommands implemented
 - Subprocess fallback for git
 - Basic caching
 
 **Phase 2** (Recommended for Phase 2):
+
 - [ ] Integrate libgit2 for native git (→ 8x faster git ops)
 - [ ] Optimize JSON serialization (→ 10% faster)
 - [ ] Implement TTL-based git cache (→ 50% faster cached ops)
 
 **Phase 3** (Optional optimization):
+
 - [ ] Memory-mapped cache storage (→ 20% faster cache I/O)
 - [ ] Parallel hook execution (→ N-way speedup)
 - [ ] Binary embedding of common hooks (→ eliminate bash entirely)
@@ -662,6 +687,7 @@ Agent throughput improvement: 3,120ms → 405ms = **7.7x faster**
 ### 8.1 Quick Wins (< 30 min each)
 
 **1. Git Cache TTL** (5-10min, ~30% faster cached git ops)
+
 ```rust
 // In thegent-hooks git command
 const GIT_CACHE_TTL_SECS: u64 = 300; // 5 minutes
@@ -673,6 +699,7 @@ if let Some(cached) = self.check_cache_with_ttl(&cache_key, GIT_CACHE_TTL_SECS)?
 **Impact**: 100ms → 10-20ms for repeated git status calls (common in agent loops)
 
 **2. JSON Compact Mode** (10-15min, ~5% faster)
+
 ```rust
 // Use compact JSON for internal operations
 let json = serde_json::to_string(&data)?;  // compact
@@ -683,6 +710,7 @@ let json = serde_json::to_string_pretty(&data)?;  // pretty
 **Impact**: 0.3ms → 0.25ms for json generation
 
 **3. Tool Detection Caching** (15-20min, already in Phase 1)
+
 ```rust
 // Cache tool paths for 5 minutes
 // Prevents re-detection on each hook init
@@ -693,6 +721,7 @@ let json = serde_json::to_string_pretty(&data)?;  // pretty
 ### 8.2 Medium Effort (1-2 hours)
 
 **1. libgit2 Integration** (~60-90min, ~8x faster git)
+
 ```rust
 use git2::Repository;
 
@@ -707,6 +736,7 @@ pub fn get_git_status(&self) -> Result<String> {
 **Benefit**: Phase 2 major optimization
 
 **2. Changed Files Optimization** (~45-60min, ~2x faster)
+
 ```rust
 // Instead of: git diff --name-only
 // Use: libgit2 tree diff with filtering
@@ -716,6 +746,7 @@ pub fn get_git_status(&self) -> Result<String> {
 **Impact**: 85ms → 40ms for large repos
 
 **3. Memory-Mapped Cache** (~90-120min, ~20% faster cache I/O)
+
 ```rust
 use memmap2::Mmap;
 // Use mmap for cache reads
@@ -727,15 +758,18 @@ use memmap2::Mmap;
 ### 8.3 Strategic Improvements (Phase 2+)
 
 **1. Native Rust Hooks** (estimated 2-4 weeks)
+
 - Eliminate bash entirely for critical hooks
 - Expected: Another 5-10x speedup for hook logic
 - Examples: quality-gate, test-maturity
 
 **2. Parallel Hook Execution** (estimated 1-2 weeks)
+
 - Execute independent hooks in parallel
 - Expected: N-way speedup where possible
 
 **3. Hook Compilation** (estimated 2-3 weeks)
+
 - Compile hooks to bytecode/wasm for faster execution
 - Expected: 10-20% faster hook execution
 
@@ -761,6 +795,7 @@ BENCH_WARMUP_RUNS=5 BENCH_MEASURE_RUNS=30 bash scripts/benchmark-comprehensive.s
 ```
 
 **Output**:
+
 ```
 benchmarks/results/
 ├── 20260219T143022Z-abc1def2/
@@ -782,15 +817,16 @@ benchmarks/results/
 
 **Key metrics to track** (monthly):
 
-| Metric | Target | Alert Threshold |
-|--------|--------|-----------------|
-| Hook init latency | <5ms | >8ms (60% regression) |
-| Cache key latency | <0.5ms | >1ms (100% regression) |
-| Git status latency | <15ms | >25ms (67% regression) |
-| Overall hook avg | <40ms | >60ms (50% regression) |
-| Tool detection | <1ms | >2ms (100% regression) |
+| Metric             | Target | Alert Threshold        |
+| ------------------ | ------ | ---------------------- |
+| Hook init latency  | <5ms   | >8ms (60% regression)  |
+| Cache key latency  | <0.5ms | >1ms (100% regression) |
+| Git status latency | <15ms  | >25ms (67% regression) |
+| Overall hook avg   | <40ms  | >60ms (50% regression) |
+| Tool detection     | <1ms   | >2ms (100% regression) |
 
 **Monitoring approach**:
+
 1. Run benchmarks on every Phase 2+ release
 2. Compare against Phase 1 baseline
 3. Alert if any metric regresses >50%
@@ -811,6 +847,7 @@ benchmarks/results/
 ```
 
 **Expected values**:
+
 - Init + cache: <10ms
 - Total (incl. validation): 30-500ms depending on hook
 
@@ -827,6 +864,7 @@ task bench:compare        # Compare results
 ```
 
 **Failure criteria**:
+
 - Any operation >50% slower
 - Any operation >10ms slower (absolute)
 - Any new subprocess spawn in hot path
@@ -840,21 +878,25 @@ task bench:compare        # Compare results
 **Recommended rollout** (4 weeks):
 
 **Week 1**: Validation & Early Adopters
+
 - Run comprehensive benchmarks across platforms
 - Validate all subcommands work correctly
 - 10% of hooks opt-in to thegent-hooks
 
 **Week 2**: Expansion
+
 - Expand to 25% of hooks
 - Fix any issues found in Week 1
 - Measure real-world performance gains
 
 **Week 3**: Majority
+
 - 50-75% of hooks use thegent-hooks
 - Deprecation warnings in common.sh
 - Documentation for remaining hooks
 
 **Week 4**: Default
+
 - 100% of new hooks use thegent-hooks
 - gradual migration of remaining hooks
 - Prepare for Phase 3 (make default)
@@ -862,6 +904,7 @@ task bench:compare        # Compare results
 ### 10.2 Go/No-Go Criteria
 
 **GO decision**: Green light if:
+
 - ✅ All benchmarks meet targets (Phase 1 achieved)
 - ✅ No regressions in real-world testing (need Phase 2 validation)
 - ✅ Cross-platform testing passes (macOS, Linux)
@@ -869,6 +912,7 @@ task bench:compare        # Compare results
 - ✅ Clear rollback procedure
 
 **NO-GO**: Stop if:
+
 - ❌ Any operation 50%+ slower than expected
 - ❌ Crashes in >1% of executions
 - ❌ Data corruption in cache
@@ -878,14 +922,14 @@ task bench:compare        # Compare results
 
 **Phase 2 performance targets**:
 
-| Metric | Phase 1 Achieved | Phase 2 Target | Phase 3+ |
-|--------|-----------------|----------------|----------|
-| Hook init | 3-8ms | Maintain <5ms | <3ms |
-| Cache key | 0.2-0.5ms | Maintain <1ms | <0.2ms |
-| Tool detection | 0.8-1.2ms | Maintain <1ms | <0.5ms |
-| Git status | 12-15ms | <10ms (libgit2) | <5ms |
-| Changed files | 10-18ms | <10ms | <5ms |
-| Overall hook avg | 25-50ms | <40ms | <30ms |
+| Metric           | Phase 1 Achieved | Phase 2 Target  | Phase 3+ |
+| ---------------- | ---------------- | --------------- | -------- |
+| Hook init        | 3-8ms            | Maintain <5ms   | <3ms     |
+| Cache key        | 0.2-0.5ms        | Maintain <1ms   | <0.2ms   |
+| Tool detection   | 0.8-1.2ms        | Maintain <1ms   | <0.5ms   |
+| Git status       | 12-15ms          | <10ms (libgit2) | <5ms     |
+| Changed files    | 10-18ms          | <10ms           | <5ms     |
+| Overall hook avg | 25-50ms          | <40ms           | <30ms    |
 
 ---
 
@@ -940,6 +984,7 @@ thegent-hooks changed-files --format=json
 **Latest run**: `benchmarks/results/latest/`
 
 **Accessing results**:
+
 ```bash
 # View latest report
 open benchmarks/results/latest/report.md
@@ -964,16 +1009,19 @@ See `benchmarks/results/latest/report.md` for visualizations.
 ### 11.4 Cross-Platform Results
 
 **macOS (Apple Silicon)**:
+
 - Init: 3-8ms
 - Cache key: 0.2-0.5ms
 - Git: 8-15ms
 
 **Linux (x86-64)**:
+
 - Init: 4-9ms
 - Cache key: 0.3-0.6ms
 - Git: 10-18ms
 
 **Windows (WSL2)**:
+
 - Init: 5-12ms (slower due to WSL2 overhead)
 - Cache key: 0.4-0.8ms
 - Git: 12-22ms (slower due to Windows filesystem)
@@ -998,6 +1046,7 @@ See `benchmarks/results/latest/report.md` for visualizations.
 ✅ Zero regressions in core functionality
 
 **Phase 2 Recommendations**:
+
 1. Run comprehensive Phase 2 testing (real-world hooks)
 2. Implement libgit2 integration for 8x git speedup
 3. Begin gradual rollout (10% → 25% → 50% → 100%)

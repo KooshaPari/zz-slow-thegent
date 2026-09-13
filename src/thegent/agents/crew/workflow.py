@@ -38,7 +38,9 @@ class WorkflowEngine:
         """Add a stage to the workflow."""
         self.stages.append(stage)
 
-    def _build_stage_graph(self) -> tuple[dict[str, CrewStage], dict[str, int], dict[str, list[str]]]:
+    def _build_stage_graph(
+        self,
+    ) -> tuple[dict[str, CrewStage], dict[str, int], dict[str, list[str]]]:
         """Build and validate stage graph structures.
 
         Validation is intentionally strict: duplicate stage IDs, unknown

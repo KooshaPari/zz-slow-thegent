@@ -10,6 +10,7 @@ from datetime import UTC, datetime
 from enum import Enum
 from pathlib import Path
 from typing import Any
+
 from thegent.integrations.base import SerializableMixin
 
 
@@ -292,9 +293,8 @@ class AgentHierarchyManager:
         # Update parent's children list
         if parent_id:
             parent = self._agents.get(parent_id)
-            if parent:
-                if run_id not in parent.children_ids:
-                    parent.children_ids.append(run_id)
+            if parent and run_id not in parent.children_ids:
+                parent.children_ids.append(run_id)
 
         # Update team membership
         if team_id:
@@ -494,9 +494,7 @@ class AgentHierarchyManager:
         # Cross-team delegation requires approval
         if from_agent.team_id != to_agent.team_id:
             # Check if cross-team collaboration is allowed
-            if task_context and task_context.get("allow_cross_team", False):
-                return True
-            return False
+            return bool(task_context and task_context.get("allow_cross_team", False))
 
         # Specialists can delegate to peers or lower-level agents
         if from_agent.role == AgentRole.SPECIALIST:
@@ -663,9 +661,8 @@ class AgentHierarchyManager:
             path.append(node_id)
 
             agent = self._agents.get(node_id)
-            if agent and agent.parent_id:
-                if dfs(agent.parent_id):
-                    return True
+            if agent and agent.parent_id and dfs(agent.parent_id):
+                return True
 
             path.pop()
             return False
@@ -718,7 +715,12 @@ class AgentHierarchyManager:
                 elif lead.status != "active":
                     inconsistencies.append((team_id, f"Team lead '{team.lead_id}' is not active"))
                 elif lead.team_id != team_id:
-                    inconsistencies.append((team_id, f"Team lead '{team.lead_id}' not assigned to this team"))
+                    inconsistencies.append(
+                        (
+                            team_id,
+                            f"Team lead '{team.lead_id}' not assigned to this team",
+                        )
+                    )
 
             # Check all members exist and are active
             for member_id in team.members:
@@ -738,7 +740,11 @@ class AgentHierarchyManager:
         return inconsistencies
 
     def validate_before_register(
-        self, agent_id: str, run_id: str, parent_id: str | None = None, team_id: str | None = None
+        self,
+        agent_id: str,
+        run_id: str,
+        parent_id: str | None = None,
+        team_id: str | None = None,
     ) -> tuple[bool, str | None]:
         """
         Validate before registering a new agent.
@@ -765,7 +771,10 @@ class AgentHierarchyManager:
             # Check for circular relationship
             cycle = self.detect_circular_relationships(parent_id)
             if cycle and run_id in cycle:
-                return False, f"Would create circular relationship: {' -> '.join(cycle)}"
+                return (
+                    False,
+                    f"Would create circular relationship: {' -> '.join(cycle)}",
+                )
 
         # Validate team if provided
         if team_id:

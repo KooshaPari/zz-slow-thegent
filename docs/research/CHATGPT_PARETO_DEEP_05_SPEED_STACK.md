@@ -11,14 +11,15 @@
 
 Vendors mix at least four different things:
 
-| Metric | Description |
-|--------|-------------|
-| **TTFT** | Time to first token |
-| **ITL** | Inter-token latency (TPOT) |
-| **Output tokens/sec** | Streaming speed after first token |
+| Metric                   | Description                                |
+| ------------------------ | ------------------------------------------ |
+| **TTFT**                 | Time to first token                        |
+| **ITL**                  | Inter-token latency (TPOT)                 |
+| **Output tokens/sec**    | Streaming speed after first token          |
 | **Aggregate throughput** | Tokens/sec across many concurrent requests |
 
 **Router implication**: Don't store one `toks_per_sec`. Store a **profile**:
+
 - ttft_p50/p95
 - itl_p50/p95
 - tps_stream_p50/p95 (per request stream)
@@ -39,10 +40,10 @@ Vendors mix at least four different things:
 
 ### 2.2 Cerebras Code (Subscription, Daily Caps)
 
-| Tier | Tokens/Day | TPM | RPM |
-|------|------------|-----|-----|
-| Code Pro ($50/mo) | 24M | 1,000,000 | 50 |
-| Code Max ($200/mo) | 120M | 1,500,000 | 120 |
+| Tier               | Tokens/Day | TPM       | RPM |
+| ------------------ | ---------- | --------- | --- |
+| Code Pro ($50/mo)  | 24M        | 1,000,000 | 50  |
+| Code Max ($200/mo) | 120M       | 1,500,000 | 120 |
 
 - Powered by Qwen3-Coder, "up to 2,000 tokens/sec"
 - **Risks**: Queue time / utilization variance; burst/RPS causing 429s; limits can change
@@ -117,6 +118,7 @@ NIM microservices = prebuilt, optimized inference containers for NVIDIA GPUs. Ex
 ### 4.1 What They Are
 
 **Not general LLMs** — they are **file merge / patch-application engines** with:
+
 - Very high apply throughput (~10k tok/s class)
 - Strict prompt format: `<instruction>…</instruction><code>…</code><update>…</update>`
 - Quality = merge correctness, not reasoning
@@ -145,21 +147,23 @@ NIM microservices = prebuilt, optimized inference containers for NVIDIA GPUs. Ex
 
 ## 5. New Micro-Roles
 
-| Role | Purpose |
-|------|---------|
-| code_reasoner | Deep planning, debugging, architecture |
+| Role                 | Purpose                                           |
+| -------------------- | ------------------------------------------------- |
+| code_reasoner        | Deep planning, debugging, architecture            |
 | code_patch_generator | Outputs minimal edit snippet / patch instructions |
-| code_apply_patch | Morph/Relace-style file merge/apply |
-| code_scaffold_fast | High-throughput code drafting (Cerebras) |
-| code_small_transform | Small edits, formatting, rename, docstring |
+| code_apply_patch     | Morph/Relace-style file merge/apply               |
+| code_scaffold_fast   | High-throughput code drafting (Cerebras)          |
+| code_small_transform | Small edits, formatting, rename, docstring        |
 
 ### Hard Constraints per Role
 
 **code_apply_patch**:
+
 - Must support apply prompt format (`<instruction><code><update>` style)
 - Must support large file contexts (Relace lists 256k)
 
 **code_scaffold_fast**:
+
 - Prefers offers with high tps_stream and low ITL
 - Quality threshold lower than code_reasoner
 
@@ -209,16 +213,19 @@ throughput_tokens_s@concurrency (optional)
 ### 7.2 Role-Specific Speed Score
 
 **Interactive chat/edit**:
+
 ```
 speed = queue_p95_ms + ttft_p95_ms + E[out_tokens] * itl_p95_ms
 ```
 
 **Bulk generation**:
+
 ```
 speed = queue_p95_ms + ttft_p95_ms + E[out_tokens] / tps_stream_p50
 ```
 
 **Apply/patch**:
+
 ```
 speed = apply_ms_p95_per_file
 ```
@@ -228,25 +235,25 @@ speed = apply_ms_p95_per_file
 ## 8. Offer Schema Additions
 
 ```yaml
-speedProfileHints:  # vendor claims, priors
+speedProfileHints: # vendor claims, priors
   vendor_tps_stream: 2200
   vendor_ttft_ms: 100
   vendor_itl_ms: 0.5
 
-measuredSpeedProfile:  # from telemetry
+measuredSpeedProfile: # from telemetry
   ttft_p95_ms: 120
   itl_p95_ms: 0.6
   tps_stream_p50: 1800
   queue_p95_ms: 50
 
-quotaModel:  # Cerebras Code
+quotaModel: # Cerebras Code
   tokensPerDayCap: 120000000
   tpmCap: 1500000
   rpmCap: 120
 
-volatilityRisk: 0.3  # for preview/serverless
+volatilityRisk: 0.3 # for preview/serverless
 
-promptContract:  # Morph/Relace
+promptContract: # Morph/Relace
   contractType: apply_v1
   requiredFormat: "<instruction><code><update>"
   maxContextTokens: 256000
@@ -256,11 +263,11 @@ promptContract:  # Morph/Relace
 
 ## 9. ADR Additions (Speed Stack)
 
-| ADR | Decision |
-|-----|----------|
-| ADR-008 | Replace single "tokens/sec" with TTFT + ITL + throughput profile |
-| ADR-009 | Add Patch/Apply stage as first-class routing role |
-| ADR-010 | Model Cerebras Code as daily-quota bucket plan |
+| ADR     | Decision                                                             |
+| ------- | -------------------------------------------------------------------- |
+| ADR-008 | Replace single "tokens/sec" with TTFT + ITL + throughput profile     |
+| ADR-009 | Add Patch/Apply stage as first-class routing role                    |
+| ADR-010 | Model Cerebras Code as daily-quota bucket plan                       |
 | ADR-011 | Treat NVIDIA build.nvidia.com as volatile_free with limits-discovery |
 | ADR-012 | Store vendor speed claims as priors; routing uses measured telemetry |
 
@@ -278,11 +285,11 @@ promptContract:  # Morph/Relace
 
 ## 11. Ingestion Sources
 
-| Provider | Sources |
-|----------|---------|
-| Cerebras | inference-docs.cerebras.ai, Support FAQ, Pricing page, Blogs |
-| NVIDIA NIM | NIM microservices page, build.nvidia.com model cards, NIM docs, Forums |
-| Morph/Relace | OpenRouter model pages, Morph AWS case study, Relace engineering blog |
+| Provider     | Sources                                                                |
+| ------------ | ---------------------------------------------------------------------- |
+| Cerebras     | inference-docs.cerebras.ai, Support FAQ, Pricing page, Blogs           |
+| NVIDIA NIM   | NIM microservices page, build.nvidia.com model cards, NIM docs, Forums |
+| Morph/Relace | OpenRouter model pages, Morph AWS case study, Relace engineering blog  |
 
 ---
 

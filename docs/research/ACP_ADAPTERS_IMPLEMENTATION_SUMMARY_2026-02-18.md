@@ -14,12 +14,14 @@
 **Purpose**: Expose thegent agents as ACP-compatible agents.
 
 **Features**:
+
 - ✅ JSON-RPC over stdio transport
 - ✅ ACP protocol handlers (`initialize`, `agent/spawn`, `agent/message`, `agent/stop`)
 - ✅ Integration with `AgentRunner` interface
 - ✅ Error handling and logging
 
 **Usage**:
+
 ```bash
 # Run ACP server
 thegent acp server
@@ -37,12 +39,14 @@ acp Thegent {
 **Purpose**: Spawn external ACP agents from thegent.
 
 **Features**:
+
 - ✅ `AgentRunner` implementation for ACP agents
 - ✅ Subprocess spawning with JSON-RPC communication
 - ✅ Request/response handling
 - ✅ Error handling and timeout support
 
 **Usage**:
+
 ```bash
 # Spawn external ACP agent
 thegent acp client "npx -y @zed-industries/claude-agent-acp" --prompt "Analyze my code"
@@ -51,6 +55,7 @@ thegent acp client "npx -y @zed-industries/claude-agent-acp" --prompt "Analyze m
 ### 3. CLI Integration (`src/thegent/main.py`)
 
 **Added**:
+
 - ✅ `thegent acp server` command
 - ✅ `thegent acp client` command
 - ✅ Help text and documentation
@@ -58,6 +63,7 @@ thegent acp client "npx -y @zed-industries/claude-agent-acp" --prompt "Analyze m
 ### 4. Documentation
 
 **Created**:
+
 - ✅ `docs/research/ACP_ADAPTERS_DESIGN_2026-02-18.md` - Full design document
 - ✅ `docs/research/GSH_ANALYSIS_2026-02-18.md` - gsh analysis (context)
 - ✅ This summary document
@@ -81,12 +87,15 @@ External ACP Agents (claude-agent-acp, etc.)
 ## Testing Status
 
 ### ✅ Unit Tests
+
 - Not yet implemented (next step)
 
 ### ✅ Integration Tests
+
 - Not yet implemented (next step)
 
 ### ✅ End-to-End Tests
+
 - Not yet tested with gsh
 - Not yet tested with Zed
 
@@ -182,10 +191,7 @@ from thegent.acp.client import ACPClientAdapter
 from pathlib import Path
 
 # Create ACP client adapter
-adapter = ACPClientAdapter(
-    ["npx", "-y", "@zed-industries/claude-agent-acp"],
-    agent_name="claude-acp"
-)
+adapter = ACPClientAdapter(["npx", "-y", "@zed-industries/claude-agent-acp"], agent_name="claude-acp")
 
 # Run agent
 result = adapter.run(
@@ -213,6 +219,7 @@ print(f"Output: {result.stdout}")
 ## Files Created/Modified
 
 ### New Files
+
 - `src/thegent/acp/__init__.py`
 - `src/thegent/acp/server.py`
 - `src/thegent/acp/client.py`
@@ -221,6 +228,7 @@ print(f"Output: {result.stdout}")
 - `docs/research/ACP_ADAPTERS_IMPLEMENTATION_SUMMARY_2026-02-18.md`
 
 ### Modified Files
+
 - `src/thegent/main.py` (added `acp_app` and commands)
 
 ---

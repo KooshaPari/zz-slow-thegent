@@ -11,8 +11,6 @@ import pytest
 
 from thegent.utils.routing_impl.eval_router import (
     EvalRouter,
-    EvalRouteResult,
-    EvalScore,
     get_eval_router,
     reset_eval_router,
 )

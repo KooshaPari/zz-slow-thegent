@@ -11,8 +11,6 @@ from thegent.orchestration.hierarchical_dispatcher import (
     AgentLifecycleState,
     HierarchicalAgent,
     HierarchicalAgentRegistry,
-    HierarchicalDispatcher,
-    HierarchicalDispatchRequest,
     reset_global_registry,
 )
 

@@ -7,14 +7,14 @@
 
 ## Implementation Status (Full Spec)
 
-| Phase | Item | Status |
-|-------|------|--------|
-| P0 | Canonical schemas (offers, plans) | `config/routing/offers.schema.yaml`, `plans.schema.yaml` |
-| P0 | Route trace output | `RouteTrace`, `select_offer_with_trace()`, in `route_contract` when `--include-contract` |
-| P1 | Shadow pricing | `_get_shadow_multiplier()` in pareto_router, applied to effective_cost |
-| P1 | Economics integration | cost_tracker + cost_budget_mtd for shadow |
-| P4 | Fallback by failure type | `FAILURE_TYPE_FALLBACK_ORDER` (rate_limit, timeout, schema_tool) |
-| P4 | LiteLLM Pareto | `policy=pareto` → cost-based; `get_pareto_preferred_model()` |
+| Phase | Item                              | Status                                                                                   |
+| ----- | --------------------------------- | ---------------------------------------------------------------------------------------- |
+| P0    | Canonical schemas (offers, plans) | `config/routing/offers.schema.yaml`, `plans.schema.yaml`                                 |
+| P0    | Route trace output                | `RouteTrace`, `select_offer_with_trace()`, in `route_contract` when `--include-contract` |
+| P1    | Shadow pricing                    | `_get_shadow_multiplier()` in pareto_router, applied to effective_cost                   |
+| P1    | Economics integration             | cost_tracker + cost_budget_mtd for shadow                                                |
+| P4    | Fallback by failure type          | `FAILURE_TYPE_FALLBACK_ORDER` (rate_limit, timeout, schema_tool)                         |
+| P4    | LiteLLM Pareto                    | `policy=pareto` → cost-based; `get_pareto_preferred_model()`                             |
 
 ---
 
@@ -28,8 +28,8 @@
 
 ### 1.2 Components
 
-| File | Purpose |
-|------|---------|
+| File                                   | Purpose                                                                                |
+| -------------------------------------- | -------------------------------------------------------------------------------------- |
 | `src/thegent/routing/pareto_router.py` | Pareto selection logic, Offer model, `select_offer()`, `select_offer_with_fallbacks()` |
 
 ### 1.3 Usage
@@ -63,8 +63,8 @@ chain = select_offer_with_fallbacks(complexity_tier="complex", k=3)
 
 ### 2.2 Components
 
-| File | Purpose |
-|------|---------|
+| File                                 | Purpose                                                     |
+| ------------------------------------ | ----------------------------------------------------------- |
 | `src/thegent/routing/auto_router.py` | `auto_route()`, classifier system prompt, Gemini Flash call |
 
 ### 2.3 Usage
@@ -82,13 +82,13 @@ Agent or model `"auto"` triggers the auto router.
 
 ### 2.4 Config
 
-| Env | Default | Description |
-|-----|---------|-------------|
-| `THGENT_AUTO_ROUTER_ENABLED` | 1 | Enable auto router when agent/model is "auto" |
-| `THGENT_AUTO_ROUTER_CLASSIFIER_MODEL` | gemini-3-flash | Model for classification |
-| `THGENT_AUTO_ROUTER_USE_CLASSIFIER` | 1 | Use Gemini Flash to classify; if 0, assume moderate |
-| `THGENT_AUTO_ROUTER_MIN_QUALITY` | 0.0 | Min quality floor |
-| `THGENT_AUTO_ROUTER_MAX_COST_WEIGHT` | 2.0 | Max cost weight |
+| Env                                   | Default        | Description                                         |
+| ------------------------------------- | -------------- | --------------------------------------------------- |
+| `THGENT_AUTO_ROUTER_ENABLED`          | 1              | Enable auto router when agent/model is "auto"       |
+| `THGENT_AUTO_ROUTER_CLASSIFIER_MODEL` | gemini-3-flash | Model for classification                            |
+| `THGENT_AUTO_ROUTER_USE_CLASSIFIER`   | 1              | Use Gemini Flash to classify; if 0, assume moderate |
+| `THGENT_AUTO_ROUTER_MIN_QUALITY`      | 0.0            | Min quality floor                                   |
+| `THGENT_AUTO_ROUTER_MAX_COST_WEIGHT`  | 2.0            | Max cost weight                                     |
 
 ### 2.5 Classifier System Prompt
 
@@ -110,13 +110,13 @@ If classifier or Pareto fails → `antigravity/gemini-3-flash`
 
 ## 3. Integration Points
 
-| Location | Change |
-|----------|--------|
+| Location            | Change                                              |
+| ------------------- | --------------------------------------------------- |
 | `cli_impl.run_impl` | Auto router block when agent="auto" or model="auto" |
-| `cli_impl.bg_impl` | Same auto router block |
-| `models/catalog.py` | `policy="pareto"` in `resolve_route()` |
-| `config.py` | `auto_router_*` settings |
-| `main.py` | Help text for agent/model "auto" |
+| `cli_impl.bg_impl`  | Same auto router block                              |
+| `models/catalog.py` | `policy="pareto"` in `resolve_route()`              |
+| `config.py`         | `auto_router_*` settings                            |
+| `main.py`           | Help text for agent/model "auto"                    |
 
 ---
 
@@ -135,24 +135,24 @@ Rough quality tiers (0–1) per model in `pareto_router.QUALITY_PROXY`:
 
 ## 5. Canonical Schemas (Phase 0)
 
-| File | Purpose |
-|------|---------|
-| `config/routing/offers.schema.yaml` | Offer definitions (offerId, modelId, provider, planId, pricing) |
-| `config/routing/plans.schema.yaml` | Plan types (payg_token, fixed_bucket, prompt_rate_limited, volatile_free) |
+| File                                | Purpose                                                                   |
+| ----------------------------------- | ------------------------------------------------------------------------- |
+| `config/routing/offers.schema.yaml` | Offer definitions (offerId, modelId, provider, planId, pricing)           |
+| `config/routing/plans.schema.yaml`  | Plan types (payg_token, fixed_bucket, prompt_rate_limited, volatile_free) |
 
 ## 6. Shadow Pricing (Phase 1)
 
 - `_get_shadow_multiplier()`: 1 / max(remaining_ratio, ε)
 - Uses cost_tracker.get_budget_remaining() and cost_budget_mtd
-- effective_cost = cost_weight * shadow_multiplier
+- effective_cost = cost_weight \* shadow_multiplier
 - Applied in Pareto selection and dominance checks
 
 ## 7. Failure-Type Fallback (Phase 4)
 
-| Failure | Opt order |
-|---------|-----------|
-| rate_limit | cost → speed → quality |
-| timeout | speed → cost → quality |
+| Failure     | Opt order              |
+| ----------- | ---------------------- |
+| rate_limit  | cost → speed → quality |
+| timeout     | speed → cost → quality |
 | schema_tool | quality → cost → speed |
 
 ## 8. Related Research

@@ -8,14 +8,15 @@ import subprocess  # noqa: F401
 from pathlib import Path  # noqa: F401
 
 from thegent.agents.cliproxy_manager import ensure_proxy_running  # noqa: F401
+from thegent.agents.codex_proxy_adapter import CodexProxyAdapter  # noqa: F401
 from thegent.agents.codex_proxy_base import (  # noqa: F401
+    _PROVIDER_RETRY_CONFIG,
+    _PROXY_MODEL,
     CodexAuthError,
     CodexInstanceError,
     CodexModelError,
     CodexResult,
     CodexSandboxError,
-    _PROVIDER_RETRY_CONFIG,
-    _PROXY_MODEL,
     _build_config_flags,
     _check_and_track_instance,
     _create_isolated_home,
@@ -31,7 +32,6 @@ from thegent.agents.codex_proxy_base import (  # noqa: F401
     _write_config_override,
 )
 from thegent.agents.codex_proxy_runner import CodexProxyRunner  # noqa: F401
-from thegent.agents.codex_proxy_adapter import CodexProxyAdapter  # noqa: F401
 
 __all__ = [
     "CodexAuthError",

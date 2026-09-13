@@ -33,14 +33,14 @@ Implement an **Idea Seed Detection & Storage System** that:
 
 ### Key Deliverables
 
-| Component | Status | Impact |
-|-----------|--------|--------|
-| Pattern-based detection (explicit + implicit) | Phase 1 | Users flag or system auto-detects ideas |
-| JSONL + git-backed storage | Phase 1 | Durable persistence with audit trail |
-| Full-text indexing & search | Phase 2 | Ideas discoverable in <100ms |
-| CLI commands (collect, list, search, get, export) | Phase 2-4 | Human-friendly access |
-| MCP tools (collect, search, get, list) | Phase 3 | Agent-friendly access |
-| Export (JSON, Markdown, CSV) | Phase 4 | Share ideas with team/tools |
+| Component                                         | Status    | Impact                                  |
+| ------------------------------------------------- | --------- | --------------------------------------- |
+| Pattern-based detection (explicit + implicit)     | Phase 1   | Users flag or system auto-detects ideas |
+| JSONL + git-backed storage                        | Phase 1   | Durable persistence with audit trail    |
+| Full-text indexing & search                       | Phase 2   | Ideas discoverable in <100ms            |
+| CLI commands (collect, list, search, get, export) | Phase 2-4 | Human-friendly access                   |
+| MCP tools (collect, search, get, list)            | Phase 3   | Agent-friendly access                   |
+| Export (JSON, Markdown, CSV)                      | Phase 4   | Share ideas with team/tools             |
 
 ---
 
@@ -49,6 +49,7 @@ Implement an **Idea Seed Detection & Storage System** that:
 ### Success Criteria
 
 #### Functional
+
 - ✅ Detect ≥95% of explicitly flagged ideas (`$idea:`)
 - ✅ Detect ≥80% of implicit ideas (pattern matching)
 - ✅ Persistent storage in `.thegent/ideas/` with git commits
@@ -59,6 +60,7 @@ Implement an **Idea Seed Detection & Storage System** that:
 - ✅ 5 CLI commands working
 
 #### Quality
+
 - ✅ ≥85% test coverage
 - ✅ Zero external library dependencies (stdlib only)
 - ✅ Type hints throughout
@@ -166,6 +168,7 @@ Implement an **Idea Seed Detection & Storage System** that:
 ### Pattern Matching
 
 #### Explicit Detection
+
 ```
 Pattern: $idea:\s*(.+?)(?=$|$)
 Example: "$idea: Add lazy-loading to DAG compiler"
@@ -174,12 +177,14 @@ Confidence: 0.99 (user intent is explicit)
 ```
 
 #### Implicit Detection
+
 - `New idea:` / `Idea:` (confidence: 0.85)
 - `What if we` / `Consider:` (confidence: 0.80)
 - `I'm thinking about` / `Concept:` (confidence: 0.75)
 - 7+ regex patterns covering common idea phrases
 
 **Confidence Scoring**:
+
 - Explicit flag: 0.99
 - Implicit patterns: 0.70-0.90
 - Manual override: 0.0 or 1.0
@@ -205,6 +210,7 @@ Confidence: 0.99 (user intent is explicit)
 ### JSONL Append-Only Log
 
 **Why**:
+
 - Simple, human-readable
 - Efficient append (tail write only)
 - Natural git compatibility
@@ -212,6 +218,7 @@ Confidence: 0.99 (user intent is explicit)
 - Easy recovery (git history)
 
 **Write Process**:
+
 1. Serialize idea to JSON
 2. Append newline + JSON to `ideas.jsonl`
 3. Fsync for durability
@@ -221,12 +228,14 @@ Confidence: 0.99 (user intent is explicit)
 ### Git Integration
 
 **Audit Trail**:
+
 - One commit per idea (immediate)
 - Commit msg: `idea: {id} {short_text}`
 - Full history: `git log .thegent/ideas/`
 - Recovery: `git show <commit>:.thegent/ideas/ideas.jsonl`
 
 **Integrity**:
+
 - SHA-256 checksums stored in idea object
 - Verify on read: `sha256(idea_json) == idea.checksum`
 - Daily snapshots for audit trail
@@ -238,6 +247,7 @@ Confidence: 0.99 (user intent is explicit)
 ### Full-Text Index
 
 **Implementation**:
+
 - Inverted index: word → [idea_ids]
 - Tokenization: lowercase, stopword removal, stemming
 - Updated incrementally as ideas arrive
@@ -245,6 +255,7 @@ Confidence: 0.99 (user intent is explicit)
 **Performance**: <100ms search for 1000+ ideas
 
 **Index File** (`.thegent/ideas/ideas.index.json`):
+
 ```json
 {
   "inverted_index": {
@@ -269,6 +280,7 @@ Confidence: 0.99 (user intent is explicit)
 ### Commands
 
 #### `thegent ideas collect`
+
 ```bash
 # Collect ideas from recent sessions
 $ thegent ideas collect --since 6h
@@ -279,6 +291,7 @@ $ thegent ideas collect --git-commit
 ```
 
 #### `thegent ideas list`
+
 ```bash
 # List all ideas
 $ thegent ideas list
@@ -291,6 +304,7 @@ $ thegent ideas list --verbose
 ```
 
 #### `thegent ideas search`
+
 ```bash
 # Full-text search
 $ thegent ideas search "lazy loading"
@@ -303,6 +317,7 @@ $ thegent ideas search "feature" --limit 5 --offset 0
 ```
 
 #### `thegent ideas get`
+
 ```bash
 # Retrieve specific idea
 $ thegent ideas get idea_20260216_143022_abc123
@@ -312,6 +327,7 @@ $ thegent ideas get idea_20260216_143022_abc123 --format json
 ```
 
 #### `thegent ideas export`
+
 ```bash
 # Export to JSON
 $ thegent ideas export --format json --output ideas.json
@@ -358,15 +374,16 @@ for idea in ideas:
 
 **Deliverable**: Ideas detected and persistently stored
 
-| Task | Effort | Deliverable |
-|------|--------|-------------|
-| 1.1 Project Setup | 0.5d | Directory structure |
-| 1.2 Idea Schema | 1.5d | Pydantic models + validation |
-| 1.3 Detection Engine | 2d | Pattern matching + extraction |
-| 1.4 Storage Layer | 2d | JSONL + git integration |
-| 1.5 CLI collect | 1.5d | Working collect command |
+| Task                 | Effort | Deliverable                   |
+| -------------------- | ------ | ----------------------------- |
+| 1.1 Project Setup    | 0.5d   | Directory structure           |
+| 1.2 Idea Schema      | 1.5d   | Pydantic models + validation  |
+| 1.3 Detection Engine | 2d     | Pattern matching + extraction |
+| 1.4 Storage Layer    | 2d     | JSONL + git integration       |
+| 1.5 CLI collect      | 1.5d   | Working collect command       |
 
 **Success Criteria**:
+
 - ✅ Schema validates all fields
 - ✅ Detector ≥95% accurate on explicit ideas
 - ✅ Ideas persist to JSONL with git commits
@@ -379,14 +396,15 @@ for idea in ideas:
 
 **Deliverable**: Ideas searchable and filterable via CLI
 
-| Task | Effort | Deliverable |
-|------|--------|-------------|
-| 2.1 Full-Text Index | 1.5d | Inverted index, <100ms search |
-| 2.2 Metadata Indices | 1d | Date, tag, project filtering |
-| 2.3 Query Engine | 2d | Search, sort, paginate |
-| 2.4 Search/list/get | 1.5d | Three CLI commands |
+| Task                 | Effort | Deliverable                   |
+| -------------------- | ------ | ----------------------------- |
+| 2.1 Full-Text Index  | 1.5d   | Inverted index, <100ms search |
+| 2.2 Metadata Indices | 1d     | Date, tag, project filtering  |
+| 2.3 Query Engine     | 2d     | Search, sort, paginate        |
+| 2.4 Search/list/get  | 1.5d   | Three CLI commands            |
 
 **Success Criteria**:
+
 - ✅ Search <100ms for 1000+ ideas
 - ✅ Filtering works (tag, date, project)
 - ✅ Sorting by relevance/date works
@@ -399,13 +417,14 @@ for idea in ideas:
 
 **Deliverable**: Agents can discover and access ideas
 
-| Task | Effort | Deliverable |
-|------|--------|-------------|
-| 3.1 MCP Tools | 1.5d | 4 tools implemented |
-| 3.2 Server Integration | 1.5d | Registered with FastMCP |
-| 3.3 MCP Resources | 1d | Resources exposed |
+| Task                   | Effort | Deliverable             |
+| ---------------------- | ------ | ----------------------- |
+| 3.1 MCP Tools          | 1.5d   | 4 tools implemented     |
+| 3.2 Server Integration | 1.5d   | Registered with FastMCP |
+| 3.3 MCP Resources      | 1d     | Resources exposed       |
 
 **Success Criteria**:
+
 - ✅ All 4 tools functional
 - ✅ All 4 resources accessible
 - ✅ Agent tests pass
@@ -417,16 +436,17 @@ for idea in ideas:
 
 **Deliverable**: Production-ready, tested, documented system
 
-| Task | Effort | Deliverable |
-|------|--------|-------------|
-| 4.1 Export | 1.5d | JSON, Markdown, CSV export |
-| 4.2 Test Suite | 3d | ≥85% coverage, all scenarios |
-| 4.3 Documentation | 1.5d | User guide + API docs |
-| 4.4 Integration Tests | 1d | E2E workflows |
-| 4.5 Hook Integration | 1d | UserPromptSubmit hook |
-| 4.6 Performance | 1.5d | Benchmarks + optimization |
+| Task                  | Effort | Deliverable                  |
+| --------------------- | ------ | ---------------------------- |
+| 4.1 Export            | 1.5d   | JSON, Markdown, CSV export   |
+| 4.2 Test Suite        | 3d     | ≥85% coverage, all scenarios |
+| 4.3 Documentation     | 1.5d   | User guide + API docs        |
+| 4.4 Integration Tests | 1d     | E2E workflows                |
+| 4.5 Hook Integration  | 1d     | UserPromptSubmit hook        |
+| 4.6 Performance       | 1.5d   | Benchmarks + optimization    |
 
 **Success Criteria**:
+
 - ✅ All tests pass (≥85% coverage)
 - ✅ Documentation complete
 - ✅ Performance targets met
@@ -442,147 +462,166 @@ for idea in ideas:
 **Phase 1 Tasks**:
 
 1.1 **Project Setup** (0.5 days)
-   - Create `src/thegent/ideas/` directory
-   - Create `.thegent/ideas/` user data directory
-   - Add CLI entry point
-   - Setup `.gitignore`
 
-1.2 **Idea Schema** (1.5 days)
-   - Pydantic models for IdeaObject, IdeaSource, DetectionMeta
-   - Validation: length (50-5000 chars), format checks
-   - Checksum calculation (SHA-256)
-   - Serialization/deserialization
-   - ≥90% test coverage
+- Create `src/thegent/ideas/` directory
+- Create `.thegent/ideas/` user data directory
+- Add CLI entry point
+- Setup `.gitignore`
 
-1.3 **Detection Engine** (2 days)
-   - Explicit pattern matching ($idea flag)
-   - 7+ implicit patterns (what if, new idea, etc.)
-   - Confidence scoring (0.70-0.99)
-   - Metadata extraction (source, timestamp, context)
-   - Duplicate detection (text hash + fuzzy)
-   - Validation + error handling
-   - ≥90% test coverage
+  1.2 **Idea Schema** (1.5 days)
 
-1.4 **Storage Layer** (2 days)
-   - JSONL write/read (append-only)
-   - Fsync for durability
-   - Git integration (commit with metadata)
-   - Checksum verification
-   - Error handling
-   - Recovery capability
-   - ≥90% test coverage
+- Pydantic models for IdeaObject, IdeaSource, DetectionMeta
+- Validation: length (50-5000 chars), format checks
+- Checksum calculation (SHA-256)
+- Serialization/deserialization
+- ≥90% test coverage
 
-1.5 **CLI collect** (1.5 days)
-   - Command group `thegent ideas`
-   - Subcommand `collect` with `--since` option
-   - Session discovery integration
-   - Progress reporting
-   - Error handling
-   - Integration tests
+  1.3 **Detection Engine** (2 days)
+
+- Explicit pattern matching ($idea flag)
+- 7+ implicit patterns (what if, new idea, etc.)
+- Confidence scoring (0.70-0.99)
+- Metadata extraction (source, timestamp, context)
+- Duplicate detection (text hash + fuzzy)
+- Validation + error handling
+- ≥90% test coverage
+
+  1.4 **Storage Layer** (2 days)
+
+- JSONL write/read (append-only)
+- Fsync for durability
+- Git integration (commit with metadata)
+- Checksum verification
+- Error handling
+- Recovery capability
+- ≥90% test coverage
+
+  1.5 **CLI collect** (1.5 days)
+
+- Command group `thegent ideas`
+- Subcommand `collect` with `--since` option
+- Session discovery integration
+- Progress reporting
+- Error handling
+- Integration tests
 
 **Phase 2 Tasks**:
 
 2.1 **Full-Text Index** (1.5 days)
-   - Tokenizer (lowercase, stopword removal)
-   - Inverted index structure
-   - Index building + persistence
-   - Search execution (<100ms)
-   - Performance benchmarks
-   - ≥90% test coverage
 
-2.2 **Metadata Indices** (1 day)
-   - Date index (YYYY-MM-DD → ids)
-   - Tag index (tag → ids)
-   - Project index (project → ids)
-   - Status index (status → ids)
-   - Index persistence + update logic
-   - ≥90% test coverage
+- Tokenizer (lowercase, stopword removal)
+- Inverted index structure
+- Index building + persistence
+- Search execution (<100ms)
+- Performance benchmarks
+- ≥90% test coverage
 
-2.3 **Query Engine** (2 days)
-   - Query parser (tokenize, handle quotes)
-   - Full-text search + filtering
-   - Sorting (relevance, date, tag)
-   - Pagination (limit, offset)
-   - Result scoring (TF-IDF)
-   - Integration tests
+  2.2 **Metadata Indices** (1 day)
 
-2.4 **Search/list/get** (1.5 days)
-   - `ideas search` command
-   - `ideas list` command
-   - `ideas get` command
-   - Output formatting (table, JSON, CSV)
-   - Pagination options
-   - Integration tests
+- Date index (YYYY-MM-DD → ids)
+- Tag index (tag → ids)
+- Project index (project → ids)
+- Status index (status → ids)
+- Index persistence + update logic
+- ≥90% test coverage
+
+  2.3 **Query Engine** (2 days)
+
+- Query parser (tokenize, handle quotes)
+- Full-text search + filtering
+- Sorting (relevance, date, tag)
+- Pagination (limit, offset)
+- Result scoring (TF-IDF)
+- Integration tests
+
+  2.4 **Search/list/get** (1.5 days)
+
+- `ideas search` command
+- `ideas list` command
+- `ideas get` command
+- Output formatting (table, JSON, CSV)
+- Pagination options
+- Integration tests
 
 **Phase 3 Tasks**:
 
 3.1 **MCP Tools** (1.5 days)
-   - Implement 4 tools with input schemas
-   - Error handling
-   - Response formatting
-   - Tool tests
 
-3.2 **Server Integration** (1.5 days)
-   - Register tools with FastMCP
-   - Add to MCP manifest
-   - Implement resources
-   - Resource tests
+- Implement 4 tools with input schemas
+- Error handling
+- Response formatting
+- Tool tests
 
-3.3 **MCP Resources** (1 day)
-   - `thegent://ideas`
-   - `thegent://ideas/{id}`
-   - `thegent://ideas/recent`
-   - `thegent://ideas/by-tag/{tag}`
-   - Resource tests
+  3.2 **Server Integration** (1.5 days)
+
+- Register tools with FastMCP
+- Add to MCP manifest
+- Implement resources
+- Resource tests
+
+  3.3 **MCP Resources** (1 day)
+
+- `thegent://ideas`
+- `thegent://ideas/{id}`
+- `thegent://ideas/recent`
+- `thegent://ideas/by-tag/{tag}`
+- Resource tests
 
 **Phase 4 Tasks**:
 
 4.1 **Export** (1.5 days)
-   - JSON export
-   - Markdown export (formatted list)
-   - CSV export (tabular)
-   - Filtering + export command
-   - Export tests
 
-4.2 **Test Suite** (3 days)
-   - Unit tests: schema, detector, storage, index, query
-   - CLI tests: all commands
-   - MCP tool tests
-   - Export tests
-   - ≥85% coverage verification
+- JSON export
+- Markdown export (formatted list)
+- CSV export (tabular)
+- Filtering + export command
+- Export tests
 
-4.3 **Documentation** (1.5 days)
-   - User guide (how to flag ideas, examples)
-   - CLI reference (all commands)
-   - API docstrings (Google style)
-   - MCP documentation
-   - FAQ section
+  4.2 **Test Suite** (3 days)
 
-4.4 **Integration Tests** (1 day)
-   - End-to-end workflows
-   - Real prompt examples
-   - Git recovery scenarios
-   - Performance testing
+- Unit tests: schema, detector, storage, index, query
+- CLI tests: all commands
+- MCP tool tests
+- Export tests
+- ≥85% coverage verification
 
-4.5 **Hook Integration** (1 day)
-   - Create `hooks/idea-seed-detector.sh`
-   - Hook registry entry
-   - Automatic detection on UserPromptSubmit
-   - Configuration options
+  4.3 **Documentation** (1.5 days)
 
-4.6 **Performance** (1.5 days)
-   - Benchmark detection (<10ms)
-   - Benchmark storage (<50ms)
-   - Benchmark search (<100ms)
-   - Benchmark export (<500ms)
-   - Optimize indices
-   - Performance metrics/logging
+- User guide (how to flag ideas, examples)
+- CLI reference (all commands)
+- API docstrings (Google style)
+- MCP documentation
+- FAQ section
+
+  4.4 **Integration Tests** (1 day)
+
+- End-to-end workflows
+- Real prompt examples
+- Git recovery scenarios
+- Performance testing
+
+  4.5 **Hook Integration** (1 day)
+
+- Create `hooks/idea-seed-detector.sh`
+- Hook registry entry
+- Automatic detection on UserPromptSubmit
+- Configuration options
+
+  4.6 **Performance** (1.5 days)
+
+- Benchmark detection (<10ms)
+- Benchmark storage (<50ms)
+- Benchmark search (<100ms)
+- Benchmark export (<500ms)
+- Optimize indices
+- Performance metrics/logging
 
 ---
 
 ## 📁 File Structure
 
 ### Source Code
+
 ```
 src/thegent/ideas/
 ├── __init__.py              # Package, exports
@@ -598,6 +637,7 @@ src/thegent/ideas/
 ```
 
 ### Tests
+
 ```
 tests/ideas/
 ├── test_schema.py           # Schema validation tests
@@ -612,6 +652,7 @@ tests/ideas/
 ```
 
 ### Documentation
+
 ```
 docs/
 ├── guides/
@@ -631,6 +672,7 @@ docs/
 ## 🧪 Quality Standards
 
 ### Test Coverage
+
 - **Target**: ≥85% coverage
 - **Phase 1**: ≥90% per module
 - **Phase 2**: ≥90% per module
@@ -638,6 +680,7 @@ docs/
 - **Phase 4**: ≥85% overall
 
 ### Code Quality
+
 - **Type Hints**: Every function/class
 - **Docstrings**: Google style
 - **Line Length**: ≤100 chars
@@ -646,14 +689,15 @@ docs/
 - **Dependencies**: Zero external (stdlib only)
 
 ### Performance Targets
-| Operation | Target | Approach |
-|-----------|--------|----------|
-| Detect idea | <10ms | Pattern matching (no I/O) |
-| Store idea | <50ms | Sequential write + fsync |
-| Search 1000 ideas | <100ms | Inverted index (memory) |
-| Full export | <500ms | Stream writing + buffering |
-| Git commit | <100ms | Batch if needed |
-| Index rebuild | <1s | Incremental indexing |
+
+| Operation         | Target | Approach                   |
+| ----------------- | ------ | -------------------------- |
+| Detect idea       | <10ms  | Pattern matching (no I/O)  |
+| Store idea        | <50ms  | Sequential write + fsync   |
+| Search 1000 ideas | <100ms | Inverted index (memory)    |
+| Full export       | <500ms | Stream writing + buffering |
+| Git commit        | <100ms | Batch if needed            |
+| Index rebuild     | <1s    | Incremental indexing       |
 
 ---
 
@@ -691,6 +735,7 @@ docs/
 ## 📈 Success Metrics
 
 ### Functional Metrics
+
 - ✅ Idea detection accuracy ≥95% (explicit)
 - ✅ Idea detection accuracy ≥80% (implicit)
 - ✅ Search performance <100ms
@@ -698,12 +743,14 @@ docs/
 - ✅ Export completeness (all formats)
 
 ### Quality Metrics
+
 - ✅ Test coverage ≥85%
 - ✅ Zero bugs in Phase 1 (after testing)
 - ✅ Zero performance regressions
 - ✅ Zero external dependencies
 
 ### User Metrics
+
 - ✅ CLI commands intuitive (≤3 args each)
 - ✅ Documentation complete
 - ✅ Examples work as documented
@@ -713,15 +760,15 @@ docs/
 
 ## 🔄 Risk & Mitigation
 
-| Risk | Likelihood | Impact | Mitigation |
-|------|------------|--------|------------|
-| Pattern matching false positives | Medium | Low | Configurable patterns, manual override |
-| Storage bloat (many ideas) | Low | Low | Archiving, compression, pruning |
-| Git commit overhead | Low | Low | Batch commits, async writes |
-| Search performance degradation | Low | Medium | Caching, incremental indexing |
-| Users forget to flag ideas | Medium | Medium | Auto-detection patterns, reminders, docs |
-| Ideas not actionable | Low | Low | Export → backlog feature |
-| Privacy concerns (sensitive data) | Low | Medium | Redaction options, local-only storage |
+| Risk                              | Likelihood | Impact | Mitigation                               |
+| --------------------------------- | ---------- | ------ | ---------------------------------------- |
+| Pattern matching false positives  | Medium     | Low    | Configurable patterns, manual override   |
+| Storage bloat (many ideas)        | Low        | Low    | Archiving, compression, pruning          |
+| Git commit overhead               | Low        | Low    | Batch commits, async writes              |
+| Search performance degradation    | Low        | Medium | Caching, incremental indexing            |
+| Users forget to flag ideas        | Medium     | Medium | Auto-detection patterns, reminders, docs |
+| Ideas not actionable              | Low        | Low    | Export → backlog feature                 |
+| Privacy concerns (sensitive data) | Low        | Medium | Redaction options, local-only storage    |
 
 **Mitigation Strategy**: Phase-based delivery with testing at each phase. Risk re-evaluated after each phase.
 
@@ -729,13 +776,13 @@ docs/
 
 ## 📋 Effort Summary
 
-| Phase | Tasks | Effort | Actual |
-|-------|-------|--------|--------|
-| **Phase 1** | 5 | 7.5 days | — |
-| **Phase 2** | 4 | 6 days | — |
-| **Phase 3** | 3 | 4 days | — |
-| **Phase 4** | 6 | 9.5 days | — |
-| **TOTAL** | 18 | **26.5 days** | — |
+| Phase       | Tasks | Effort        | Actual |
+| ----------- | ----- | ------------- | ------ |
+| **Phase 1** | 5     | 7.5 days      | —      |
+| **Phase 2** | 4     | 6 days        | —      |
+| **Phase 3** | 3     | 4 days        | —      |
+| **Phase 4** | 6     | 9.5 days      | —      |
+| **TOTAL**   | 18    | **26.5 days** | —      |
 
 **Timeline**: 4 weeks at nominal pace (no blockers)
 
@@ -744,6 +791,7 @@ docs/
 ## ✅ Acceptance Checklist
 
 ### Phase 1 Completion
+
 - [ ] Project structure created
 - [ ] Schema implemented and validated
 - [ ] Detector with ≥95% accuracy
@@ -752,6 +800,7 @@ docs/
 - [ ] Phase 1 tests pass (≥90% coverage)
 
 ### Phase 2 Completion
+
 - [ ] Full-text index <100ms search
 - [ ] Metadata indices all working
 - [ ] Query engine with filtering/sorting
@@ -759,12 +808,14 @@ docs/
 - [ ] Phase 2 tests pass (≥90% coverage)
 
 ### Phase 3 Completion
+
 - [ ] All 4 MCP tools functional
 - [ ] MCP server integration complete
 - [ ] All resources accessible
 - [ ] Phase 3 tests pass (≥90% coverage)
 
 ### Phase 4 Completion
+
 - [ ] Export to JSON/MD/CSV works
 - [ ] Overall test coverage ≥85%
 - [ ] Documentation complete
@@ -774,6 +825,7 @@ docs/
 - [ ] Production-ready
 
 ### Overall Goals
+
 - [ ] Zero external library dependencies
 - [ ] Backward compatible with existing CLI
 - [ ] Works on macOS, Linux, Windows
@@ -785,24 +837,28 @@ docs/
 ## 🎬 Getting Started
 
 ### For Reviewers
+
 1. Read: Executive Summary (above)
 2. Skim: Architecture section
 3. Review: Risk & Mitigation
 4. Decision: Approve/Request Changes
 
 ### For Architects
+
 1. Read: Full document
 2. Review: System Architecture section
 3. Review: Integration Points section
 4. Provide: Architectural approval
 
 ### For Implementers
+
 1. Read: All sections
 2. Start: Phase 1 Task 1.1 (Project Setup)
 3. Follow: Task breakdown in each phase
 4. Track: Actual vs. estimated effort
 
 ### For QA/Testers
+
 1. Read: Quality Standards section
 2. Review: Test coverage targets
 3. Plan: Test cases for each phase
@@ -812,20 +868,20 @@ docs/
 
 ## 📞 Questions & Support
 
-| Question | Answer Source |
-|----------|----------------|
-| **What is the problem?** | Problem Statement section |
-| **How will we solve it?** | Solution Overview section |
-| **What's the architecture?** | System Architecture section |
-| **How do we detect ideas?** | Detection Algorithm section |
-| **How are ideas stored?** | Persistence Strategy section |
-| **How do we find ideas?** | Search & Indexing section |
-| **What commands exist?** | CLI Interface section |
-| **How do agents use ideas?** | MCP Integration section |
-| **What's the timeline?** | Implementation Phases section |
-| **What's the effort?** | Effort Summary section |
-| **What could go wrong?** | Risk & Mitigation section |
-| **How do we verify success?** | Acceptance Checklist section |
+| Question                      | Answer Source                 |
+| ----------------------------- | ----------------------------- |
+| **What is the problem?**      | Problem Statement section     |
+| **How will we solve it?**     | Solution Overview section     |
+| **What's the architecture?**  | System Architecture section   |
+| **How do we detect ideas?**   | Detection Algorithm section   |
+| **How are ideas stored?**     | Persistence Strategy section  |
+| **How do we find ideas?**     | Search & Indexing section     |
+| **What commands exist?**      | CLI Interface section         |
+| **How do agents use ideas?**  | MCP Integration section       |
+| **What's the timeline?**      | Implementation Phases section |
+| **What's the effort?**        | Effort Summary section        |
+| **What could go wrong?**      | Risk & Mitigation section     |
+| **How do we verify success?** | Acceptance Checklist section  |
 
 ---
 
@@ -846,6 +902,7 @@ docs/
 The **Idea Seed Detection & Storage System** is a focused, high-value feature that solves a real problem: preserving valuable ideas that emerge during development.
 
 **Key Success Factors**:
+
 1. **Pattern-based detection** - Captures both explicit (`$idea`) and implicit ideas
 2. **Simple storage** - JSONL + git = durable, auditable, recoverable
 3. **Fast search** - Full-text indexing for <100ms queries

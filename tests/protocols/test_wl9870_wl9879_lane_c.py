@@ -5,7 +5,10 @@ from __future__ import annotations
 import orjson as json
 
 from thegent.protocols import jsonrpc_agent_server as server
-from thegent.protocols.jsonrpc_agent_server import SERVER_STATE, process_jsonrpc_line_full
+from thegent.protocols.jsonrpc_agent_server import (
+    SERVER_STATE,
+    process_jsonrpc_line_full,
+)
 
 
 def _reset_state() -> None:
@@ -55,9 +58,7 @@ def test_wl9871_config_read_request_response_shape_is_stable() -> None:
 def test_wl9872_static_notification_mode_suppresses_response() -> None:
     # @trace WL-9872
     _reset_state()
-    response, notifications = process_jsonrpc_line_full(
-        json.dumps({"jsonrpc": "2.0", "method": "config/read"})
-    )
+    response, notifications = process_jsonrpc_line_full(json.dumps({"jsonrpc": "2.0", "method": "config/read"}))
     assert response is None
     assert notifications == []
 
@@ -77,9 +78,7 @@ def test_wl9873_session_start_request_registers_active_session() -> None:
 def test_wl9874_session_start_notification_creates_session_without_response() -> None:
     # @trace WL-9874
     _reset_state()
-    response, notifications = process_jsonrpc_line_full(
-        json.dumps({"jsonrpc": "2.0", "method": "session/start"})
-    )
+    response, notifications = process_jsonrpc_line_full(json.dumps({"jsonrpc": "2.0", "method": "session/start"}))
     assert response is None
     assert notifications == []
     assert len(SERVER_STATE.sessions) == 1
@@ -135,7 +134,14 @@ def test_wl9877_session_read_response_projects_turn_entries() -> None:
     assert submit_response is not None
     turn_id = submit_response["result"]["turn"]["id"]
     read_response, notifications = process_jsonrpc_line_full(
-        json.dumps({"jsonrpc": "2.0", "id": "read", "method": "session/read", "params": {"session_id": session_id}})
+        json.dumps(
+            {
+                "jsonrpc": "2.0",
+                "id": "read",
+                "method": "session/read",
+                "params": {"session_id": session_id},
+            }
+        )
     )
     assert read_response is not None
     assert any(item["id"] == turn_id for item in read_response["result"]["turns"])
@@ -166,7 +172,11 @@ def test_wl9879_turn_submit_notification_keeps_side_effects_without_response() -
     session_id = _start_session()
     response, notifications = process_jsonrpc_line_full(
         json.dumps(
-            {"jsonrpc": "2.0", "method": "turn/submit", "params": {"session_id": session_id, "input": "lane-c"}}
+            {
+                "jsonrpc": "2.0",
+                "method": "turn/submit",
+                "params": {"session_id": session_id, "input": "lane-c"},
+            }
         )
     )
     assert response is None

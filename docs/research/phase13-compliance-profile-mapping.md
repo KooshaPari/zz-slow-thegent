@@ -7,16 +7,17 @@
 > **WORK_STREAM ID:** phase13-compliance-profile
 
 ## 1. Jurisdiction Support
+
 Mapping of policy variants to legal and audit jurisdictions (WP-13002).
 
 ## 2. Profile Definitions
 
-| Profile | Focus | Jurisdiction | Mandatory Controls |
-|---------|-------|--------------|-------------------|
-| `EU-AI-ACT` | Ethics & Safety | European Union | Mandatory Human-in-loop for High Risk. |
-| `US-SEC` | Auditability | United States | Hash-chained audit trails, 7-year retention. |
-| `SOX` | Financial Integrity | Global / Financial | Mandatory Peer Review for spend > $500. |
-| `GDPR` | Data Privacy | European Union | PII-redaction on all log egress. |
+| Profile     | Focus               | Jurisdiction       | Mandatory Controls                           |
+| ----------- | ------------------- | ------------------ | -------------------------------------------- |
+| `EU-AI-ACT` | Ethics & Safety     | European Union     | Mandatory Human-in-loop for High Risk.       |
+| `US-SEC`    | Auditability        | United States      | Hash-chained audit trails, 7-year retention. |
+| `SOX`       | Financial Integrity | Global / Financial | Mandatory Peer Review for spend > $500.      |
+| `GDPR`      | Data Privacy        | European Union     | PII-redaction on all log egress.             |
 
 ## 3. Implementation Details
 
@@ -27,24 +28,29 @@ from dataclasses import dataclass
 from typing import Optional
 from enum import Enum
 
+
 class ComplianceProfile(Enum):
     EU_AI_ACT = "eu-ai-act"
     US_SEC = "us-sec"
     SOX = "sox"
     GDPR = "gdpr"
 
+
 @dataclass
 class ComplianceControl:
     """Represents a compliance control requirement."""
+
     id: str
     name: str
     description: str
     mandatory: bool
     enforcement: str  # "automatic", "manual", "audit"
 
+
 @dataclass
 class ComplianceProfile:
     """Represents a compliance profile with controls."""
+
     profile: ComplianceProfile
     jurisdiction: str
     controls: list[ComplianceControl]
@@ -69,16 +75,16 @@ EU_AI_ACT_PROFILE = ComplianceProfile(
             name="Human-in-the-Loop for High Risk",
             description="Mandatory human approval for high-risk AI actions",
             mandatory=True,
-            enforcement="automatic"
+            enforcement="automatic",
         ),
         ComplianceControl(
             id="TRANSPARENCY",
             name="AI Transparency",
             description="Disclose AI model usage and decision rationale",
             mandatory=True,
-            enforcement="automatic"
-        )
-    ]
+            enforcement="automatic",
+        ),
+    ],
 )
 
 US_SEC_PROFILE = ComplianceProfile(
@@ -90,16 +96,16 @@ US_SEC_PROFILE = ComplianceProfile(
             name="Hash-Chained Audit Trails",
             description="Immutable audit trail with cryptographic hashing",
             mandatory=True,
-            enforcement="automatic"
+            enforcement="automatic",
         ),
         ComplianceControl(
             id="RETENTION-7Y",
             name="7-Year Retention",
             description="Retain audit records for 7 years",
             mandatory=True,
-            enforcement="automatic"
-        )
-    ]
+            enforcement="automatic",
+        ),
+    ],
 )
 
 SOX_PROFILE = ComplianceProfile(
@@ -111,16 +117,16 @@ SOX_PROFILE = ComplianceProfile(
             name="Peer Review for Spend > $500",
             description="Mandatory peer review for financial transactions > $500",
             mandatory=True,
-            enforcement="automatic"
+            enforcement="automatic",
         ),
         ComplianceControl(
             id="SEGREGATION-DUTIES",
             name="Segregation of Duties",
             description="Prevent single user from initiating and approving transactions",
             mandatory=True,
-            enforcement="automatic"
-        )
-    ]
+            enforcement="automatic",
+        ),
+    ],
 )
 
 GDPR_PROFILE = ComplianceProfile(
@@ -132,23 +138,23 @@ GDPR_PROFILE = ComplianceProfile(
             name="PII Redaction on Log Egress",
             description="Automatically redact PII from all log outputs",
             mandatory=True,
-            enforcement="automatic"
+            enforcement="automatic",
         ),
         ComplianceControl(
             id="DATA-MINIMIZATION",
             name="Data Minimization",
             description="Collect and process only necessary personal data",
             mandatory=True,
-            enforcement="manual"
+            enforcement="manual",
         ),
         ComplianceControl(
             id="RIGHT-TO-DELETION",
             name="Right to Deletion",
             description="Support user data deletion requests",
             mandatory=True,
-            enforcement="manual"
-        )
-    ]
+            enforcement="manual",
+        ),
+    ],
 )
 ```
 
@@ -196,7 +202,7 @@ class ComplianceAuditTrail:
             "action": action,
             "context": context,
             "profile": profile.profile.value,
-            "controls_checked": [c.id for c in profile.get_mandatory_controls()]
+            "controls_checked": [c.id for c in profile.get_mandatory_controls()],
         }
 
         # Hash chain for US-SEC compliance
@@ -217,11 +223,11 @@ class ComplianceAuditTrail:
 - [x] Documentation complete (this document)
 
 ---
+
 ## See also
 
 - [WORK_STREAM.md](../reference/WORK_STREAM.md) — canonical backlog
 - [00-MASTER-INDEX.md](../plans/00-MASTER-INDEX.md) — plan index
-
 
 ---
 
@@ -231,15 +237,18 @@ class ComplianceAuditTrail:
 **Extended by:** Claude Code
 
 ### Changes Made
+
 1. Added practical implementation patterns
 2. Added configuration examples
 3. Enhanced cross-references to related docs
 
 ### Cross-References Added
+
 - Related research and implementation guides
 - WORK_STREAM.md for tracking
 
 ### Practical Additions
+
 - Implementation templates
 - Configuration examples
 - Best practices

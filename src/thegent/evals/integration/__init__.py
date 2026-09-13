@@ -1,4 +1,5 @@
 """Eval integration module."""
+
 from __future__ import annotations
 
 import re
@@ -28,6 +29,7 @@ class ContainsEvaluator:
 @dataclass
 class EvalCase:
     """An evaluation test case."""
+
     id: str = ""
     name: str = ""
     prompt: str = ""
@@ -38,6 +40,7 @@ class EvalCase:
 @dataclass
 class EvalResult:
     """Result of an evaluation."""
+
     case_id: str
     score: float
     passed: bool
@@ -48,6 +51,7 @@ class EvalResult:
 @dataclass
 class ExactMatchResult(EvalResult):
     """Exact match evaluation result."""
+
     actual: str = ""
 
 
@@ -74,6 +78,7 @@ class ExactMatchEvaluator:
 @dataclass
 class RegexResult(EvalResult):
     """Regex evaluation result."""
+
     pattern: str = ""
 
 
@@ -99,6 +104,7 @@ class RegexEvaluator:
 @dataclass
 class KeywordCoverageResult(EvalResult):
     """Keyword coverage evaluation result."""
+
     keywords: list[str] = field(default_factory=list)
     found: list[str] = field(default_factory=list)
 
@@ -154,7 +160,13 @@ class EvalSuite:
     def summary(self) -> dict[str, Any]:
         """Get summary statistics."""
         if not self._results:
-            return {"total": 0, "passed": 0, "failed": 0, "pass_rate": 0.0, "avg_score": 0.0}
+            return {
+                "total": 0,
+                "passed": 0,
+                "failed": 0,
+                "pass_rate": 0.0,
+                "avg_score": 0.0,
+            }
         total = len(self._results)
         passed = sum(1 for r in self._results if r.passed)
         avg_score = sum(r.score for r in self._results) / total if total else 0.0

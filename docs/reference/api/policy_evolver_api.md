@@ -14,7 +14,7 @@ Analyzes execution logs and proposes automatic policy adjustments.
 
 ### Methods
 
-#### PolicyEvolver.__init__
+#### PolicyEvolver.**init**
 
 ```python
 __init__(self: Any, session_dir: Path, settings: Any)

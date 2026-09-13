@@ -27,8 +27,8 @@ Add a script that runs on `chezmoi apply`:
 #!/usr/bin/env bash
 set -e
 if command -v thegent >/dev/null 2>&1; then
-  thegent install -t all
-  thegent install-shims
+thegent install -t all
+thegent install-shims
 fi
 ```
 
@@ -116,15 +116,15 @@ Run `home-manager switch` — no manual `thegent install` needed.
 
 ## 6. What thegent Installs
 
-| Target        | Path                          |
-|---------------|-------------------------------|
-| claude-code   | `~/.claude/` (skills, hooks)   |
-| cursor        | `~/.cursor/` (rules)           |
-| codex         | `~/.codex/`                   |
-| droid         | `~/.factory/`                |
-| envrc         | `~/.envrc`                    |
-| shell         | `~/.zshenv`, `~/.zshrc`, etc. |
-| shims         | `~/.local/bin`                |
+| Target      | Path                          |
+| ----------- | ----------------------------- |
+| claude-code | `~/.claude/` (skills, hooks)  |
+| cursor      | `~/.cursor/` (rules)          |
+| codex       | `~/.codex/`                   |
+| droid       | `~/.factory/`                 |
+| envrc       | `~/.envrc`                    |
+| shell       | `~/.zshenv`, `~/.zshrc`, etc. |
+| shims       | `~/.local/bin`                |
 
 Choose which paths to manage with your dotfile manager; thegent will merge/overwrite on `install`.
 

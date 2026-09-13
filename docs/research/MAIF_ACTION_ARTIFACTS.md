@@ -37,12 +37,10 @@ MAIF (Model-Aware Information Flow) action artifacts provide signed, immutable r
 from cryptography.hazmat.primitives.asymmetric import rsa
 from cryptography.hazmat.primitives import serialization
 
+
 def generate_signing_key():
     """Generate RSA key pair for signing."""
-    private_key = rsa.generate_private_key(
-        public_exponent=65537,
-        key_size=4096
-    )
+    private_key = rsa.generate_private_key(public_exponent=65537, key_size=4096)
 
     public_key = private_key.public_key()
 
@@ -50,7 +48,7 @@ def generate_signing_key():
     private_pem = private_key.private_bytes(
         encoding=serialization.Encoding.PEM,
         format=serialization.PrivateFormat.PKCS8,
-        encryption_algorithm=serialization.BestAvailableEncryption(b"password")
+        encryption_algorithm=serialization.BestAvailableEncryption(b"password"),
     )
 
     return private_key, public_key
@@ -65,27 +63,20 @@ import json
 from cryptography.hazmat.primitives import hashes
 from cryptography.hazmat.primitives.asymmetric import padding
 
-def sign_artifact(
-    artifact: dict,
-    private_key: rsa.RSAPrivateKey
-) -> str:
+
+def sign_artifact(artifact: dict, private_key: rsa.RSAPrivateKey) -> str:
     """Sign artifact with RSA private key."""
     # Create canonical payload
-    canonical = json.dumps({
-        "payload": artifact["payload"],
-        "timestamp": artifact["timestamp"],
-        "agent_id": artifact["agent_id"]
-    }, sort_keys=True)
+    canonical = json.dumps(
+        {"payload": artifact["payload"], "timestamp": artifact["timestamp"], "agent_id": artifact["agent_id"]},
+        sort_keys=True,
+    )
 
     # Calculate SHA-256 hash
     message_hash = hashlib.sha256(canonical.encode()).digest()
 
     # Sign with PKCS#1 v1.5 padding
-    signature = private_key.sign(
-        message_hash,
-        padding.PKCS1v15(),
-        hashes.SHA256()
-    )
+    signature = private_key.sign(message_hash, padding.PKCS1v15(), hashes.SHA256())
 
     return base64.b64encode(signature).decode()
 ```
@@ -93,28 +84,19 @@ def sign_artifact(
 ### Verification Process
 
 ```python
-def verify_artifact(
-    artifact: dict,
-    public_key: rsa.RSAPublicKey
-) -> bool:
+def verify_artifact(artifact: dict, public_key: rsa.RSAPublicKey) -> bool:
     """Verify artifact signature."""
     signature = base64.b64decode(artifact["signature"])
 
-    canonical = json.dumps({
-        "payload": artifact["payload"],
-        "timestamp": artifact["timestamp"],
-        "agent_id": artifact["agent_id"]
-    }, sort_keys=True)
+    canonical = json.dumps(
+        {"payload": artifact["payload"], "timestamp": artifact["timestamp"], "agent_id": artifact["agent_id"]},
+        sort_keys=True,
+    )
 
     message_hash = hashlib.sha256(canonical.encode()).digest()
 
     try:
-        public_key.verify(
-            signature,
-            message_hash,
-            padding.PKCS1v15(),
-            hashes.SHA256()
-        )
+        public_key.verify(signature, message_hash, padding.PKCS1v15(), hashes.SHA256())
         return True
     except:
         return False
@@ -128,6 +110,7 @@ def verify_artifact(
 import sqlite3
 from pathlib import Path
 from typing import Optional
+
 
 class MAIFArtifactStore:
     def __init__(self, db_path: Path):
@@ -157,30 +140,30 @@ class MAIFArtifactStore:
     def store(self, artifact: dict):
         """Store artifact in local cache."""
         conn = sqlite3.connect(self.db_path)
-        conn.execute("""
+        conn.execute(
+            """
             INSERT INTO artifacts VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-        """, (
-            artifact["artifact_id"],
-            artifact["action_type"],
-            json.dumps(artifact["payload"]),
-            artifact["signature"],
-            artifact["timestamp"],
-            artifact["agent_id"],
-            artifact["session_id"],
-            artifact["chain_of_thought"],
-            artifact["verification_key_id"],
-            artifact.get("previous_artifact_id")
-        ))
+        """,
+            (
+                artifact["artifact_id"],
+                artifact["action_type"],
+                json.dumps(artifact["payload"]),
+                artifact["signature"],
+                artifact["timestamp"],
+                artifact["agent_id"],
+                artifact["session_id"],
+                artifact["chain_of_thought"],
+                artifact["verification_key_id"],
+                artifact.get("previous_artifact_id"),
+            ),
+        )
         conn.commit()
         conn.close()
 
     def get(self, artifact_id: str) -> Optional[dict]:
         """Retrieve artifact by ID."""
         conn = sqlite3.connect(self.db_path)
-        row = conn.execute(
-            "SELECT * FROM artifacts WHERE artifact_id = ?",
-            (artifact_id,)
-        ).fetchone()
+        row = conn.execute("SELECT * FROM artifacts WHERE artifact_id = ?", (artifact_id,)).fetchone()
         conn.close()
 
         if row:
@@ -199,21 +182,14 @@ class RemoteProvenanceClient:
     async def submit_artifact(self, artifact: dict) -> str:
         """Submit artifact to remote server."""
         async with httpx.AsyncClient() as client:
-            resp = await client.post(
-                f"{self.base_url}/api/artifacts",
-                json=artifact,
-                headers=self.headers
-            )
+            resp = await client.post(f"{self.base_url}/api/artifacts", json=artifact, headers=self.headers)
             resp.raise_for_status()
             return resp.json()["artifact_id"]
 
     async def verify_artifact(self, artifact_id: str) -> bool:
         """Verify artifact with remote server."""
         async with httpx.AsyncClient() as client:
-            resp = await client.get(
-                f"{self.base_url}/api/artifacts/{artifact_id}/verify",
-                headers=self.headers
-            )
+            resp = await client.get(f"{self.base_url}/api/artifacts/{artifact_id}/verify", headers=self.headers)
             resp.raise_for_status()
             return resp.json()["valid"]
 ```
@@ -232,15 +208,11 @@ class MAIFHook:
         artifact = {
             "artifact_id": str(uuid.uuid4()),
             "action_type": "mcp_call",
-            "payload": {
-                "server": call.server,
-                "tool": call.tool,
-                "arguments": call.arguments
-            },
+            "payload": {"server": call.server, "tool": call.tool, "arguments": call.arguments},
             "timestamp": datetime.utcnow().isoformat(),
             "agent_id": "thegent",
             "session_id": current_session_id(),
-            "chain_of_thought": current_reasoning_trace()
+            "chain_of_thought": current_reasoning_trace(),
         }
 
         # Sign and store
@@ -252,11 +224,7 @@ class MAIFHook:
 
 ```python
 class MAIFMemoryIntegration:
-    async def store_with_provenance(
-        self,
-        memory: dict,
-        artifacts: List[dict]
-    ) -> str:
+    async def store_with_provenance(self, memory: dict, artifacts: List[dict]) -> str:
         """Store memory with associated MAIF artifacts."""
         memory_id = await self._store_memory(memory)
 

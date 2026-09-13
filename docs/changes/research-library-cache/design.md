@@ -30,19 +30,23 @@ cachetools Library
 from functools import wraps
 from cachetools import TTLCache, LRUCache, LFUCache, cached
 
+
 def get_cache_ttl(maxsize: int, ttl: int) -> TTLCache:
     """Return a TTL cache. Use with @cached decorator."""
     return TTLCache(maxsize=maxsize, ttl=ttl)
+
 
 def get_cache_lru(maxsize: int) -> LRUCache:
     """Return an LRU cache. Use with @cached decorator."""
     return LRUCache(maxsize=maxsize)
 
+
 def get_cache_lfu(maxsize: int) -> LFUCache:
     """Return an LFU cache. Use with @cached decorator."""
     return LFUCache(maxsize=maxsize)
 
-def cached_method(cache_or_factory, key=None, ttl=None, policy='lru'):
+
+def cached_method(cache_or_factory, key=None, ttl=None, policy="lru"):
     """
     Decorator for caching method results.
 
@@ -66,11 +70,13 @@ def cached_method(cache_or_factory, key=None, ttl=None, policy='lru'):
 ### Usage Patterns
 
 **Pattern 1: TTL Cache (function-level)**
+
 ```python
 from src.lib.project_cache import get_cache_ttl
 from cachetools import cached
 
 _cache = get_cache_ttl(maxsize=100, ttl=300)
+
 
 @cached(cache=_cache)
 def get_data(item_id: str) -> dict:
@@ -79,9 +85,11 @@ def get_data(item_id: str) -> dict:
 ```
 
 **Pattern 2: LRU Cache (class method)**
+
 ```python
 from src.lib.project_cache import get_cache_lru
 from cachetools import cached
+
 
 class DataManager:
     _cache = get_cache_lru(maxsize=50)
@@ -92,6 +100,7 @@ class DataManager:
 ```
 
 **Pattern 3: TTL + Thread Safety**
+
 ```python
 from src.lib.project_cache import get_cache_ttl
 from cachetools import cached
@@ -99,6 +108,7 @@ from threading import RLock
 
 _cache = get_cache_ttl(maxsize=100, ttl=300)
 _lock = RLock()
+
 
 @cached(cache=_cache, lock=_lock)
 def get_data_threadsafe(item_id: str):
@@ -110,6 +120,7 @@ def get_data_threadsafe(item_id: str):
 ### Discovery Phase
 
 Search for custom cache implementations:
+
 - `grep -r "class.*Cache" src/` - Find custom cache classes
 - `grep -r "def.*cache" src/` - Find cache-related functions
 - `grep -r "TTL\|LRU\|evict\|maxsize" src/` - Find manual cache logic
@@ -117,27 +128,30 @@ Search for custom cache implementations:
 
 ### Expected Custom Caches (Placeholder)
 
-| Module | Pattern | Type | LOC | Replacement |
-|--------|---------|------|-----|-------------|
-| `src/services/provider_cache.py` | Dict-based TTL | TTL | 40 | `cachetools.TTLCache` |
-| `src/lib/memo.py` | Manual LRU impl | LRU | 35 | `cachetools.LRUCache` |
-| `src/api/response_cache.py` | Custom eviction | Mixed | 30 | `cachetools.LFUCache` |
+| Module                           | Pattern         | Type  | LOC | Replacement           |
+| -------------------------------- | --------------- | ----- | --- | --------------------- |
+| `src/services/provider_cache.py` | Dict-based TTL  | TTL   | 40  | `cachetools.TTLCache` |
+| `src/lib/memo.py`                | Manual LRU impl | LRU   | 35  | `cachetools.LRUCache` |
+| `src/api/response_cache.py`      | Custom eviction | Mixed | 30  | `cachetools.LFUCache` |
 
-*(Exact modules TBD after discovery)*
+_(Exact modules TBD after discovery)_
 
 ## Migration Strategy
 
 ### Phase 1: Add Dependency
+
 - Add `cachetools==6.0.0` to `pyproject.toml`
 - Run `uv sync`
 - Verify no conflicts
 
 ### Phase 2: Create Wrapper
+
 - Create `src/lib/project_cache.py` (~30 LOC)
 - Add docstrings and examples
 - Add to type checking
 
 ### Phase 3: Replace Caches (per module)
+
 For each custom cache:
 
 1. **Identify**: Locate custom class, understand interface
@@ -147,11 +161,13 @@ For each custom cache:
 5. **Remove**: Delete custom cache class (verify no usage remains)
 
 ### Phase 4: Integration Testing
+
 - Run full test suite: `pytest`
 - Run quality gates: `task quality`
 - Verify coverage: `pytest --cov`
 
 ### Phase 5: Documentation
+
 - Update `docs/research/LIBRARY_FIRST_AUDIT_AND_PLAN.md` - mark caching as governed
 - Update project `CLAUDE.md` with caching pattern reference
 - Create `docs/guides/CACHE_PATTERNS.md` with best practices
@@ -163,9 +179,11 @@ For each custom cache:
 **Deprecations**: Custom cache classes will be removed (old code will fail to import)
 
 **Migration Path**:
+
 ```python
 # Old
 from src.lib.old_cache import LRUCache
+
 cache = LRUCache(maxsize=100)
 
 # New
@@ -173,6 +191,7 @@ from src.lib.project_cache import get_cache_lru
 from cachetools import cached
 
 cache = get_cache_lru(100)
+
 
 @cached(cache=cache)
 def my_func():
@@ -192,17 +211,20 @@ def my_func():
 ## Testing Strategy
 
 ### Unit Tests (Per Module)
+
 - Verify cache hits/misses work
 - Verify eviction (size and TTL)
 - Verify thread safety (if using locks)
 - Verify no functional changes to cached functions
 
 ### Integration Tests
+
 - Cache behavior across module boundaries
 - Concurrent access (multi-threaded tests)
 - Cache invalidation patterns
 
 ### Regression Tests
+
 - All existing tests must pass
 - Coverage threshold maintained (80%+)
 
@@ -216,26 +238,26 @@ def my_func():
 
 ## Files to Modify
 
-| File | Change | Type |
-|------|--------|------|
-| `pyproject.toml` | Add `cachetools==6.0.0` | dependency |
-| `src/lib/project_cache.py` | Create new wrapper | new file |
-| `src/services/provider_cache.py` | Replace custom cache | replace |
-| `src/lib/memo.py` | Replace custom cache | replace |
-| `src/api/response_cache.py` | Replace custom cache | replace |
-| Tests for above modules | Update imports, verify behavior | update |
-| `docs/research/LIBRARY_FIRST_AUDIT_AND_PLAN.md` | Mark caching as governed | update |
-| `CLAUDE.md` | Add caching to library preferences | update |
+| File                                            | Change                             | Type       |
+| ----------------------------------------------- | ---------------------------------- | ---------- |
+| `pyproject.toml`                                | Add `cachetools==6.0.0`            | dependency |
+| `src/lib/project_cache.py`                      | Create new wrapper                 | new file   |
+| `src/services/provider_cache.py`                | Replace custom cache               | replace    |
+| `src/lib/memo.py`                               | Replace custom cache               | replace    |
+| `src/api/response_cache.py`                     | Replace custom cache               | replace    |
+| Tests for above modules                         | Update imports, verify behavior    | update     |
+| `docs/research/LIBRARY_FIRST_AUDIT_AND_PLAN.md` | Mark caching as governed           | update     |
+| `CLAUDE.md`                                     | Add caching to library preferences | update     |
 
 ---
 
 ## Risk Assessment
 
-| Risk | Probability | Impact | Mitigation |
-|------|-------------|--------|-----------|
-| Breaking change to cache interface | Low | Medium | Thorough test coverage |
-| Performance regression | Very Low | Medium | Benchmark before/after |
-| Memory overhead | Very Low | Low | Monitor with profiler |
-| Thread safety issues | Low | High | Use `lock` param in decorator |
+| Risk                               | Probability | Impact | Mitigation                    |
+| ---------------------------------- | ----------- | ------ | ----------------------------- |
+| Breaking change to cache interface | Low         | Medium | Thorough test coverage        |
+| Performance regression             | Very Low    | Medium | Benchmark before/after        |
+| Memory overhead                    | Very Low    | Low    | Monitor with profiler         |
+| Thread safety issues               | Low         | High   | Use `lock` param in decorator |
 
 **Overall Risk**: Low (isolated change, well-tested library, good test coverage)

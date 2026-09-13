@@ -12,7 +12,7 @@ Alerts when cost exceeds a percentage threshold of budget.
 
 ### Methods
 
-#### BudgetAlert.__init__
+#### BudgetAlert.**init**
 
 ```python
 __init__(self: Any, threshold: float)
@@ -48,7 +48,7 @@ Enforces a maximum cost limit.
 
 ### Methods
 
-#### CostCap.__init__
+#### CostCap.**init**
 
 ```python
 __init__(self: Any, max_cost: float)
@@ -74,7 +74,7 @@ Tracks costs per session in real time.
 
 ### Methods
 
-#### CostTracker.__init__
+#### CostTracker.**init**
 
 ```python
 __init__(self: Any)

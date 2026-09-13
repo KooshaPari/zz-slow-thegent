@@ -7,38 +7,35 @@ from pathlib import Path
 
 import pytest
 
+from thegent.phench.models import (
+    RepoSelection,
+    RunnerCatalog,
+    RunnerCommand,
+    TargetLock,
+)
 from thegent.phench.service import (
+    add_module_to_target,
     add_repo,
     audit_shared_modules,
-    add_module_to_target,
+    audit_shared_modules_across_repos,
     build_module_manifest_payload,
     build_scan_candidates,
-    scan_shared_modules_across_repos,
-    materialize_module_candidate_manifest,
+    create_target_snapshot,
     get_env_profile,
-    discover_repos,
     init_target,
-    import_repos,
+    list_modules,
     list_targets,
-    list_target_snapshots,
     load_module_manifest,
     lock_target,
+    materialize_module_candidate_manifest,
     materialize_target,
-    show_target_snapshot,
-    build_project_execution_matrix,
-    set_repo_ref,
     run_env_doctor_for_target,
     run_target,
-    target_timeline,
-    target_status,
+    scan_shared_modules_across_repos,
     set_env_profile,
-    sync_target,
     sync_project_modules_from_repos,
-    list_modules,
-    audit_shared_modules_across_repos,
-    create_target_snapshot,
+    sync_target,
 )
-from thegent.phench.models import RepoSelection, RunnerCatalog, RunnerCommand, TargetLock
 from thegent.phench.store import read_dual
 
 
@@ -54,12 +51,19 @@ def _init_git_repo(path: Path) -> str:
     _run(["git", "config", "user.email", "test@example.com"], cwd=path)
     _run(["git", "config", "user.name", "Test User"], cwd=path)
     (path / "Taskfile.yml").write_text(
-        "version: '3'\ntasks:\n  hello:\n    cmds:\n      - echo hello\n", encoding="utf-8"
+        "version: '3'\ntasks:\n  hello:\n    cmds:\n      - echo hello\n",
+        encoding="utf-8",
     )
     (path / "README.md").write_text("hello\n", encoding="utf-8")
     _run(["git", "add", "."], cwd=path)
     _run(["git", "commit", "-m", "init"], cwd=path)
-    proc = subprocess.run(["git", "rev-parse", "HEAD"], cwd=str(path), capture_output=True, text=True, check=False)
+    proc = subprocess.run(
+        ["git", "rev-parse", "HEAD"],
+        cwd=str(path),
+        capture_output=True,
+        text=True,
+        check=False,
+    )
     assert proc.returncode == 0
     return proc.stdout.strip()
 
@@ -205,7 +209,9 @@ def test_list_modules_missing_root_returns_empty(tmp_path: Path, monkeypatch) ->
     assert list_modules() == []
 
 
-def test_audit_shared_modules_across_repos_excludes_default_repos_and_reports_shared_candidates(tmp_path: Path) -> None:
+def test_audit_shared_modules_across_repos_excludes_default_repos_and_reports_shared_candidates(
+    tmp_path: Path,
+) -> None:
     repos_root = tmp_path / "repos"
     alpha = repos_root / "repo-alpha"
     beta = repos_root / "repo-beta"
@@ -253,7 +259,9 @@ def test_audit_shared_modules_across_repos_excludes_default_repos_and_reports_sh
     assert "4sgm" in result["excluded_repos"]
 
 
-def test_audit_shared_modules_across_repos_respects_filters_and_min_repo_count(tmp_path: Path) -> None:
+def test_audit_shared_modules_across_repos_respects_filters_and_min_repo_count(
+    tmp_path: Path,
+) -> None:
     repos_root = tmp_path / "repos"
     alpha = repos_root / "repo-alpha"
     beta = repos_root / "repo-beta"
@@ -333,7 +341,9 @@ def test_audit_shared_modules_across_repos_moduleization_candidates_skip_existin
     assert result["moduleization_candidates"] == []
 
 
-def test_sync_project_modules_from_repos_invalid_manifest_raises_for_non_object_payload(tmp_path: Path) -> None:
+def test_sync_project_modules_from_repos_invalid_manifest_raises_for_non_object_payload(
+    tmp_path: Path,
+) -> None:
     repos_root = tmp_path / "repos"
     destination_root = tmp_path / "Phenotype" / "projects" / "modules"
     alpha = repos_root / "repo-alpha"
@@ -350,7 +360,9 @@ def test_sync_project_modules_from_repos_invalid_manifest_raises_for_non_object_
         )
 
 
-def test_sync_project_modules_from_repos_invalid_manifest_raises_for_invalid_json(tmp_path: Path) -> None:
+def test_sync_project_modules_from_repos_invalid_manifest_raises_for_invalid_json(
+    tmp_path: Path,
+) -> None:
     repos_root = tmp_path / "repos"
     destination_root = tmp_path / "Phenotype" / "projects" / "modules"
     beta = repos_root / "repo-beta"
@@ -366,7 +378,9 @@ def test_sync_project_modules_from_repos_invalid_manifest_raises_for_invalid_jso
         )
 
 
-def test_sync_project_modules_from_repos_dry_run_respects_default_excludes_and_module_filter(tmp_path: Path) -> None:
+def test_sync_project_modules_from_repos_dry_run_respects_default_excludes_and_module_filter(
+    tmp_path: Path,
+) -> None:
     repos_root = tmp_path / "repos"
     alpha = repos_root / "repo-alpha"
     beta = repos_root / "repo-beta"
@@ -407,7 +421,9 @@ def test_sync_project_modules_from_repos_dry_run_respects_default_excludes_and_m
     assert "trace-module" not in result["discovered_modules"]
 
 
-def test_sync_project_modules_from_repos_conflict_and_overwrite_controls_updates(tmp_path: Path) -> None:
+def test_sync_project_modules_from_repos_conflict_and_overwrite_controls_updates(
+    tmp_path: Path,
+) -> None:
     repos_root = tmp_path / "repos"
     destination_root = tmp_path / "Phenotype" / "projects" / "modules"
     alpha = repos_root / "repo-alpha"
@@ -481,7 +497,10 @@ def test_run_target_all_repos_serial_and_parallel(tmp_path: Path, monkeypatch) -
     materialize_target("stacky")
     monkeypatch.setattr(
         "thegent.phench.service.run_env_doctor_for_target",
-        lambda target, family=None: {"doctor_status": "pass", "missing_requirements": []},
+        lambda target, family=None: {
+            "doctor_status": "pass",
+            "missing_requirements": [],
+        },
     )
 
     monkeypatch.setattr(
@@ -507,7 +526,13 @@ def test_run_target_all_repos_serial_and_parallel(tmp_path: Path, monkeypatch) -
 
     monkeypatch.setattr("thegent.phench.service.run_command", _fake_run_command)
 
-    serial_code = run_target("stacky", runner="task", command_name="hello", all_repos=True, execution_mode="serial")
+    serial_code = run_target(
+        "stacky",
+        runner="task",
+        command_name="hello",
+        all_repos=True,
+        execution_mode="serial",
+    )
     assert serial_code == 0
     assert len(calls) == 2
 
@@ -538,7 +563,10 @@ def test_run_target_all_repos_requires_explicit_runner_and_command(tmp_path: Pat
     materialize_target("stacky2")
     monkeypatch.setattr(
         "thegent.phench.service.run_env_doctor_for_target",
-        lambda target, family=None: {"doctor_status": "pass", "missing_requirements": []},
+        lambda target, family=None: {
+            "doctor_status": "pass",
+            "missing_requirements": [],
+        },
     )
 
     with pytest.raises(ValueError):
@@ -566,7 +594,10 @@ def test_run_target_with_snapshot_id_runs_from_snapshot_state(tmp_path: Path, mo
     )
     monkeypatch.setattr(
         "thegent.phench.service._run_env_doctor_for_materializations",
-        lambda target, materializations, family=None: {"doctor_status": "pass", "missing_requirements": []},
+        lambda target, materializations, family=None: {
+            "doctor_status": "pass",
+            "missing_requirements": [],
+        },
     )
     calls: list[str] = []
     monkeypatch.setattr(
@@ -617,7 +648,10 @@ def test_run_target_with_invalid_snapshot_runtime_fails(tmp_path: Path, monkeypa
     snapshot = create_target_snapshot("snapbroken")
     monkeypatch.setattr(
         "thegent.phench.service.show_target_snapshot",
-        lambda target, snapshot_id, family=None: {"runtime": "bad-runtime", "lock": snapshot.get("lock", {})},
+        lambda target, snapshot_id, family=None: {
+            "runtime": "bad-runtime",
+            "lock": snapshot.get("lock", {}),
+        },
     )
 
     with pytest.raises(ValueError, match=r"snapshot '.*' has no runtime payload"):
@@ -680,7 +714,10 @@ def test_run_target_ref_override_rematerializes_runtime_checkout(tmp_path: Path,
     materialize_target("runref")
     monkeypatch.setattr(
         "thegent.phench.service.run_env_doctor_for_target",
-        lambda target, family=None: {"doctor_status": "pass", "missing_requirements": []},
+        lambda target, family=None: {
+            "doctor_status": "pass",
+            "missing_requirements": [],
+        },
     )
 
     resolved_refs: list[str] = []
@@ -756,7 +793,10 @@ def test_run_target_non_interactive_requires_explicit_runner_and_command(tmp_pat
     materialize_target("runnon")
     monkeypatch.setattr(
         "thegent.phench.service.run_env_doctor_for_target",
-        lambda target, family=None: {"doctor_status": "pass", "missing_requirements": []},
+        lambda target, family=None: {
+            "doctor_status": "pass",
+            "missing_requirements": [],
+        },
     )
 
     with pytest.raises(ValueError, match="requires runner policy"):
@@ -794,7 +834,10 @@ def test_run_target_uses_repo_policy_runner_command_and_ref(tmp_path: Path, monk
 
     monkeypatch.setattr(
         "thegent.phench.service.run_env_doctor_for_target",
-        lambda target, family=None: {"doctor_status": "pass", "missing_requirements": []},
+        lambda target, family=None: {
+            "doctor_status": "pass",
+            "missing_requirements": [],
+        },
     )
 
     observed_ref: list[str] = []
@@ -873,7 +916,10 @@ def test_run_target_all_repos_uses_policy_runner_when_allows_single_command_mode
 
     monkeypatch.setattr(
         "thegent.phench.service.run_env_doctor_for_target",
-        lambda target, family=None: {"doctor_status": "pass", "missing_requirements": []},
+        lambda target, family=None: {
+            "doctor_status": "pass",
+            "missing_requirements": [],
+        },
     )
     monkeypatch.setattr(
         "thegent.phench.service.build_runner_catalog",
@@ -916,7 +962,10 @@ def test_run_target_rejects_runner_flag_like_command_name(tmp_path: Path, monkey
     materialize_target("delta")
     monkeypatch.setattr(
         "thegent.phench.service.run_env_doctor_for_target",
-        lambda target, family=None: {"doctor_status": "pass", "missing_requirements": []},
+        lambda target, family=None: {
+            "doctor_status": "pass",
+            "missing_requirements": [],
+        },
     )
 
     with pytest.raises(ValueError):
@@ -1115,7 +1164,10 @@ def test_run_target_respects_per_repo_env_profile_override(tmp_path: Path, monke
     materialize_target("envprofile")
     monkeypatch.setattr(
         "thegent.phench.service.run_env_doctor_for_target",
-        lambda target, family=None: {"doctor_status": "pass", "missing_requirements": []},
+        lambda target, family=None: {
+            "doctor_status": "pass",
+            "missing_requirements": [],
+        },
     )
 
     set_env_profile("envprofile", "ci-a", {"ENV": "A"})
@@ -1194,7 +1246,10 @@ def test_env_profile_applies_to_run(tmp_path: Path, monkeypatch) -> None:
     materialize_target("zeta")
     monkeypatch.setattr(
         "thegent.phench.service.run_env_doctor_for_target",
-        lambda target, family=None: {"doctor_status": "pass", "missing_requirements": []},
+        lambda target, family=None: {
+            "doctor_status": "pass",
+            "missing_requirements": [],
+        },
     )
 
     set_env_profile("zeta", "ci", {"FOO": "BAR"})
@@ -1417,7 +1472,10 @@ def test_run_target_uses_module_overrides(tmp_path: Path, monkeypatch) -> None:
     set_env_profile("module-run", "ci", {"FROM_PROFILE": "1"})
     monkeypatch.setattr(
         "thegent.phench.service.run_env_doctor_for_target",
-        lambda target, family=None: {"doctor_status": "pass", "missing_requirements": []},
+        lambda target, family=None: {
+            "doctor_status": "pass",
+            "missing_requirements": [],
+        },
     )
     monkeypatch.setattr(
         "thegent.phench.service.build_catalog",
@@ -1469,7 +1527,9 @@ def test_audit_shared_modules(tmp_path: Path, monkeypatch) -> None:
     assert result["shared_modules"]["sharedpkg"] == ["a", "b"]
 
 
-def test_scan_shared_modules_across_repos_respects_excludes_and_minimum_repo_count(tmp_path: Path) -> None:
+def test_scan_shared_modules_across_repos_respects_excludes_and_minimum_repo_count(
+    tmp_path: Path,
+) -> None:
     phenotype_root = tmp_path / "Phenotype"
     repos_root = phenotype_root / "repos"
     repo_a = repos_root / "repo-a"
@@ -1490,7 +1550,10 @@ def test_scan_shared_modules_across_repos_respects_excludes_and_minimum_repo_cou
         exclude_repos={"repo-a"},
         min_repo_count=2,
     )
-    assert result["shared_modules"] == {"bothrepos": ["repo-b", "repo-c"], "sharedpkg": ["repo-b", "repo-c"]}
+    assert result["shared_modules"] == {
+        "bothrepos": ["repo-b", "repo-c"],
+        "sharedpkg": ["repo-b", "repo-c"],
+    }
 
     min3 = scan_shared_modules_across_repos(repos_root=repos_root, min_repo_count=3)
     assert min3["shared_modules"] == {"sharedpkg": ["repo-a", "repo-b", "repo-c"]}
@@ -1521,7 +1584,9 @@ def test_scan_shared_modules_across_repos_validates_exclude_ids(tmp_path: Path) 
         )
 
 
-def test_scan_shared_modules_across_repos_supports_worktree_root_mode(tmp_path: Path) -> None:
+def test_scan_shared_modules_across_repos_supports_worktree_root_mode(
+    tmp_path: Path,
+) -> None:
     phenotype_root = tmp_path / "Phenotype"
     worktrees_root = phenotype_root / "thegent-wtrees"
     repo_a = worktrees_root / "worktree-a"
@@ -1552,7 +1617,11 @@ def test_build_scan_candidates_generates_sorted_overlapping_candidates() -> None
         "scanmod-beta-3",
         "scanmod-zeta-2",
     ]
-    assert candidates[0]["manifest_template"]["repo_patterns"] == ["repo-a", "repo-b", "repo-c"]
+    assert candidates[0]["manifest_template"]["repo_patterns"] == [
+        "repo-a",
+        "repo-b",
+        "repo-c",
+    ]
     assert candidates[0]["repo_count"] == 3
     assert len(candidates[0]["module_name"]) <= 60
 
@@ -1784,7 +1853,9 @@ def _load_phench_cli_app(path: Path):
     return module
 
 
-def test_scan_shared_modules_across_repos_recommends_sorted_by_overlap(tmp_path: Path) -> None:
+def test_scan_shared_modules_across_repos_recommends_sorted_by_overlap(
+    tmp_path: Path,
+) -> None:
     phenotype_root = tmp_path / "Phenotype"
     repos_root = phenotype_root / "repos"
     repo_a = repos_root / "repo-a"
@@ -1804,7 +1875,12 @@ def test_scan_shared_modules_across_repos_recommends_sorted_by_overlap(tmp_path:
         repos_root=repos_root,
         min_repo_count=2,
     )
-    assert [item["module"] for item in result["recommended_modules"]] == ["alpha", "beta", "gamma", "shared"]
+    assert [item["module"] for item in result["recommended_modules"]] == [
+        "alpha",
+        "beta",
+        "gamma",
+        "shared",
+    ]
     assert result["recommended_modules"][0]["repo_count"] == 3
 
 
@@ -1861,7 +1937,12 @@ def test_scan_shared_repos_cli_candidates_now_sorted_by_overlap_and_schema(tmp_p
     )
     result = CliRunner().invoke(
         phench_cli.app,
-        ["scan-shared-repos", "--repos-root", str(tmp_path / "Phenotype" / "repos"), "--candidates"],
+        [
+            "scan-shared-repos",
+            "--repos-root",
+            str(tmp_path / "Phenotype" / "repos"),
+            "--candidates",
+        ],
     )
     assert result.exit_code == 0
     output = json.loads(result.output)
@@ -1997,7 +2078,11 @@ def test_phench_cli_scan_shared_repos_accepts_regex_and_omit_candidates(
             "recommended_modules": [],
         }
 
-    monkeypatch.setattr(phench_cli, "scan_shared_modules_across_repos", _fake_scan_shared_modules_across_repos)
+    monkeypatch.setattr(
+        phench_cli,
+        "scan_shared_modules_across_repos",
+        _fake_scan_shared_modules_across_repos,
+    )
     result = CliRunner().invoke(
         phench_cli.app,
         [
@@ -2049,7 +2134,9 @@ def test_materialize_module_manifest_cli_print_target_snippet_alias(
         }
 
     monkeypatch.setattr(
-        phench_cli, "materialize_module_candidate_manifest", _fake_materialize_module_candidate_manifest
+        phench_cli,
+        "materialize_module_candidate_manifest",
+        _fake_materialize_module_candidate_manifest,
     )
     result = CliRunner().invoke(
         phench_cli.app,
@@ -2077,7 +2164,12 @@ def test_cli_target_add_module_cmd_invokes_service(monkeypatch) -> None:
     phench_cli = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(phench_cli)
 
-    observed: dict[str, str | set[str] | None] = {"name": None, "module": None, "ref": None, "exclude": set()}
+    observed: dict[str, str | set[str] | None] = {
+        "name": None,
+        "module": None,
+        "ref": None,
+        "exclude": set(),
+    }
 
     def _fake_add_module_to_target(
         name: str,
@@ -2106,7 +2198,17 @@ def test_cli_target_add_module_cmd_invokes_service(monkeypatch) -> None:
     monkeypatch.setattr(phench_cli, "add_module_to_target", _fake_add_module_to_target)
     result = CliRunner().invoke(
         phench_cli.app,
-        ["target", "add-module", "smoke", "--module", "thegent-app", "--ref", "dev", "--exclude", "skip-me"],
+        [
+            "target",
+            "add-module",
+            "smoke",
+            "--module",
+            "thegent-app",
+            "--ref",
+            "dev",
+            "--exclude",
+            "skip-me",
+        ],
     )
     assert result.exit_code == 0
     assert observed["name"] == "smoke"

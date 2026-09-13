@@ -1,10 +1,9 @@
 from __future__ import annotations
 
-import orjson as json
 import subprocess
 from pathlib import Path
-from typing import Optional
 
+import orjson as json
 import pytest
 
 

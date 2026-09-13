@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import pytest
+
 from thegent.cli.commands import cli
 
 
@@ -38,7 +39,13 @@ def test_guardrails_show_cmd_wrapper_delegates(monkeypatch) -> None:
 def test_policy_check_cmd_wrapper_delegates(monkeypatch) -> None:
     captured: dict[str, object] = {}
 
-    def _fake(*, agent: str, model: str | None = None, lane: str = "standard", confidence: float = 1.0) -> None:
+    def _fake(
+        *,
+        agent: str,
+        model: str | None = None,
+        lane: str = "standard",
+        confidence: float = 1.0,
+    ) -> None:
         captured["agent"] = agent
         captured["model"] = model
         captured["lane"] = lane
@@ -48,4 +55,9 @@ def test_policy_check_cmd_wrapper_delegates(monkeypatch) -> None:
 
     cli.policy_check_cmd(agent="codex", model="gpt-5", lane="strict", confidence=0.75)
 
-    assert captured == {"agent": "codex", "model": "gpt-5", "lane": "strict", "confidence": 0.75}
+    assert captured == {
+        "agent": "codex",
+        "model": "gpt-5",
+        "lane": "strict",
+        "confidence": 0.75,
+    }

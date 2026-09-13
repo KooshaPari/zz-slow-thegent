@@ -1,7 +1,6 @@
 from __future__ import annotations
 
-from thegent.cli.commands import infra_cmds
-from thegent.cli.commands import cli
+from thegent.cli.commands import cli, infra_cmds
 
 
 def test_recover_status_wrapper_delegates_to_extracted_module(monkeypatch) -> None:
@@ -32,7 +31,9 @@ def test_forensics_snapshot_wrapper_delegates_to_extracted_module(monkeypatch) -
     assert captured["console"] is cli.forensics_snapshot_cmd.__globals__["console"]
 
 
-def test_infra_recover_status_wrapper_delegates_to_extracted_module(monkeypatch) -> None:
+def test_infra_recover_status_wrapper_delegates_to_extracted_module(
+    monkeypatch,
+) -> None:
     captured: dict[str, object] = {}
 
     def _fake(*, console) -> None:
@@ -45,7 +46,9 @@ def test_infra_recover_status_wrapper_delegates_to_extracted_module(monkeypatch)
     assert captured["console"] is infra_cmds.recover_status_cmd.__globals__["console"]
 
 
-def test_infra_forensics_snapshot_wrapper_delegates_to_extracted_module(monkeypatch) -> None:
+def test_infra_forensics_snapshot_wrapper_delegates_to_extracted_module(
+    monkeypatch,
+) -> None:
     captured: dict[str, object] = {}
 
     def _fake(*, run_id, phase, console) -> None:

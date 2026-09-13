@@ -12,8 +12,6 @@ separated from I/O and subprocess management. Coordinates:
 """
 
 import hashlib
-import time
-import uuid
 from datetime import UTC, datetime
 from pathlib import Path
 from typing import Any
@@ -51,7 +49,10 @@ class ExecutionOrchestrator:
         if registry.session_exists(session_id_from_token):
             existing = registry.find_by_token(idempotency_token)
             if existing and existing.get("status") == "completed":
-                _log.info("Replay detected for token %s; skipping execution.", idempotency_token)
+                _log.info(
+                    "Replay detected for token %s; skipping execution.",
+                    idempotency_token,
+                )
                 return {
                     "stdout": existing.get("stdout", ""),
                     "stderr": existing.get("stderr", ""),
@@ -75,6 +76,7 @@ class ExecutionOrchestrator:
             # Check for usage limit errors
             try:
                 from thegent.agents.resilience import is_usage_limit
+
                 if is_usage_limit(result):
                     return "usage_limit"
             except Exception:
@@ -104,11 +106,7 @@ class ExecutionOrchestrator:
         metadata = RunMeta(
             run_id=run_id,
             correlation_id=kwargs.get("correlation_id"),
-            source=(
-                AgentSource.THEGENT_SUBAGENT
-                if kwargs.get("task_id")
-                else AgentSource.THEGENT_RUN
-            ),
+            source=(AgentSource.THEGENT_SUBAGENT if kwargs.get("task_id") else AgentSource.THEGENT_RUN),
             interactivity=InteractivityMode.PTY,
             agent=agent or "unknown",
             model=model,

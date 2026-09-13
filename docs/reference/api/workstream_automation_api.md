@@ -12,7 +12,7 @@ Automate work stream markdown operations.
 
 ### Methods
 
-#### WorkStreamAutomation.__init__
+#### WorkStreamAutomation.**init**
 
 ```python
 __init__(self: Any, work_stream_path: Any)

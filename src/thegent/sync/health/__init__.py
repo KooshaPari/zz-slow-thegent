@@ -1,10 +1,12 @@
 """Stub module."""
+
 from dataclasses import dataclass
 
 
 @dataclass
 class ConnectorHealth:
     """Health status of a connector."""
+
     name: str = ""
     healthy: bool = True
     latency_ms: float = 0.0

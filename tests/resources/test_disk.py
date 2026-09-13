@@ -209,7 +209,10 @@ class TestGetIoStats:
 
     def test_psutil_exception_returns_empty(self) -> None:
         monitor = DiskMonitor()
-        with patch("thegent.resources.disk.psutil.disk_io_counters", side_effect=OSError("fail")):
+        with patch(
+            "thegent.resources.disk.psutil.disk_io_counters",
+            side_effect=OSError("fail"),
+        ):
             stats = monitor.get_io_stats()
         assert stats == []
 
@@ -229,7 +232,11 @@ class TestListDevices:
     """Tests for DiskMonitor.list_devices()."""
 
     def test_returns_sorted_device_names(self) -> None:
-        counters = {"sdb": _make_counters(), "sda": _make_counters(), "nvme0": _make_counters()}
+        counters = {
+            "sdb": _make_counters(),
+            "sda": _make_counters(),
+            "nvme0": _make_counters(),
+        }
         monitor = DiskMonitor()
         with patch("thegent.resources.disk.psutil.disk_io_counters", return_value=counters):
             devices = monitor.list_devices()
@@ -243,7 +250,10 @@ class TestListDevices:
 
     def test_psutil_exception_returns_empty(self) -> None:
         monitor = DiskMonitor()
-        with patch("thegent.resources.disk.psutil.disk_io_counters", side_effect=RuntimeError("oops")):
+        with patch(
+            "thegent.resources.disk.psutil.disk_io_counters",
+            side_effect=RuntimeError("oops"),
+        ):
             devices = monitor.list_devices()
         assert devices == []
 
@@ -255,7 +265,10 @@ class TestListDevices:
 
     def test_single_device(self) -> None:
         monitor = DiskMonitor()
-        with patch("thegent.resources.disk.psutil.disk_io_counters", return_value={"disk0": _make_counters()}):
+        with patch(
+            "thegent.resources.disk.psutil.disk_io_counters",
+            return_value={"disk0": _make_counters()},
+        ):
             devices = monitor.list_devices()
         assert devices == ["disk0"]
 
@@ -289,7 +302,10 @@ class TestGetDiskUsage:
 
     def test_oserror_returns_empty_dict(self) -> None:
         monitor = DiskMonitor()
-        with patch("thegent.resources.disk.psutil.disk_usage", side_effect=OSError("no such path")):
+        with patch(
+            "thegent.resources.disk.psutil.disk_usage",
+            side_effect=OSError("no such path"),
+        ):
             result = monitor.get_disk_usage("/nonexistent")
         assert result == {}
 

@@ -22,10 +22,10 @@ Canonical execution lanes (WP-1002).
 Priority and urgency lane model for task management (WP-1002, FR-019).
 
 Usage:
-    model = LaneModel()
-    model.get_priority("critical")  # 0 (highest)
-    model.is_protected("critical")   # True - bypasses overload rejection
-    model.reserved_slots_for_critical  # 2
+model = LaneModel()
+model.get_priority("critical") # 0 (highest)
+model.is_protected("critical") # True - bypasses overload rejection
+model.reserved_slots_for_critical # 2
 
 ### Methods
 

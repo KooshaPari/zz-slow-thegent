@@ -19,13 +19,13 @@
 
 **Agile Plus** = Agile with structured quality gates, upfront design, and production-ready deliverables.
 
-| Principle | Maximal MVP Application |
-|-----------|--------------------------|
-| **Sprint structure** | Defined sprints with clear deliverables; no "throwaway prototype" |
-| **Quality gates** | Unit tests, integration tests, type hints, lint before merge |
-| **Documentation** | API docs, architecture docs, runbooks from day one |
-| **Extensibility** | Plugin-style agent_executor; AgentAssigner strategy pattern |
-| **Observability** | MonitoringEngine, metrics, health checks in MVP |
+| Principle               | Maximal MVP Application                                                                   |
+| ----------------------- | ----------------------------------------------------------------------------------------- |
+| **Sprint structure**    | Defined sprints with clear deliverables; no "throwaway prototype"                         |
+| **Quality gates**       | Unit tests, integration tests, type hints, lint before merge                              |
+| **Documentation**       | API docs, architecture docs, runbooks from day one                                        |
+| **Extensibility**       | Plugin-style agent_executor; AgentAssigner strategy pattern                               |
+| **Observability**       | MonitoringEngine, metrics, health checks in MVP                                           |
 | **Maximal engineering** | Optimal minimal overhead, maintainability, scalability (per thegent SYNC_UPDATE plan §26) |
 
 **Out of scope for MVP** (defer to LangGraph phase): human-in-the-loop, conditional routing, durable checkpoints, nested teams.
@@ -50,30 +50,33 @@ Workflow (multi-crew, stages, depends_on)
 
 ### 2.2 MVP-Relevant Components
 
-| Component | MVP Value | Notes |
-|-----------|-----------|-------|
-| **Task.dependencies** | High | `add_dependency(task_id)` — linear/diamond resolution |
-| **TaskExecutor.resolve_dependencies** | High | Topological sort; `get_task_input` passes prior results |
-| **CrewExecutor.execute_hierarchical** | High | Manager/lead vs worker; priority tasks to managers |
-| **AgentAssigner** | Medium | SkillBasedAssigner matches task name to agent role |
-| **Workflow + CrewStage** | Medium | Multi-crew with stage dependencies; parallel stages |
-| **RouterManager** | High (maximal MVP) | Cost/performance routing; include |
-| **MonitoringEngine** | High (maximal MVP) | Include; production observability |
+| Component                             | MVP Value          | Notes                                                   |
+| ------------------------------------- | ------------------ | ------------------------------------------------------- |
+| **Task.dependencies**                 | High               | `add_dependency(task_id)` — linear/diamond resolution   |
+| **TaskExecutor.resolve_dependencies** | High               | Topological sort; `get_task_input` passes prior results |
+| **CrewExecutor.execute_hierarchical** | High               | Manager/lead vs worker; priority tasks to managers      |
+| **AgentAssigner**                     | Medium             | SkillBasedAssigner matches task name to agent role      |
+| **Workflow + CrewStage**              | Medium             | Multi-crew with stage dependencies; parallel stages     |
+| **RouterManager**                     | High (maximal MVP) | Cost/performance routing; include                       |
+| **MonitoringEngine**                  | High (maximal MVP) | Include; production observability                       |
 
 ### 2.3 Execution Modes (MVP Fit)
 
 **Sequential** (default):
+
 - Tasks execute in dependency order
 - `assign_tasks_to_agents()` uses AgentAssigner (round-robin by default)
 - No hierarchy; any agent can get any task
 
 **Hierarchical** (best for MVP with team lead):
+
 - Sorts agents by role: `"manager"` or `"lead"` first
 - Manager agents get priority tasks (first N tasks)
 - Worker agents get remaining tasks
 - **Limitation**: Role detection is string match on `agent.role.lower()`
 
 **Custom**:
+
 - Pluggable `custom_executor(crew, task_executor)` in crew.config
 - Escape hatch for custom logic
 
@@ -89,20 +92,21 @@ task.add_dependency(other_task.id)
 ```
 
 **MVP mapping to thegent**:
+
 - `DelegationRequest` ≈ Task (with dependencies)
 - `blockedBy` (Claude Code) ≈ `Task.dependencies`
 - **codex/cc/droid harness** (DirectAgentRunner, CodexProxyRunner, DroidRunner) ≈ agent_executor callback
 
 ### 2.5 What SmolGents Does NOT Have (MVP Gaps)
 
-| Gap | Impact | Workaround |
-|-----|--------|------------|
-| **No LLM execution** | TaskExecutor._run_task is mock | Register `agent_executor` callback that invokes actual agent |
-| **No CC integration** | Can't spawn Claude Code teammates | MVP: use thegent **codex/cc/droid harness** as agent_executor |
-| **No persistent state** | StateManager exists but not wired to Crew | Use DelegationRequest storage |
-| **No human-in-the-loop** | No interrupt/resume | Defer to LangGraph phase |
-| **No conditional routing** | Fixed assignment at start | Defer to LangGraph |
-| **Flat hierarchy** | Only manager vs worker, no nested teams | Accept for MVP |
+| Gap                        | Impact                                    | Workaround                                                    |
+| -------------------------- | ----------------------------------------- | ------------------------------------------------------------- |
+| **No LLM execution**       | TaskExecutor.\_run_task is mock           | Register `agent_executor` callback that invokes actual agent  |
+| **No CC integration**      | Can't spawn Claude Code teammates         | MVP: use thegent **codex/cc/droid harness** as agent_executor |
+| **No persistent state**    | StateManager exists but not wired to Crew | Use DelegationRequest storage                                 |
+| **No human-in-the-loop**   | No interrupt/resume                       | Defer to LangGraph phase                                      |
+| **No conditional routing** | Fixed assignment at start                 | Defer to LangGraph                                            |
+| **Flat hierarchy**         | Only manager vs worker, no nested teams   | Accept for MVP                                                |
 
 **MVP execution backend**: thegent already has a **codex/cc/droid harness**—DirectAgentRunner, CodexProxyRunner, DroidRunner, cursor_api_runner—with heliosShield harness wrapping when enabled. The MVP uses this existing harness, not TeammateManager.
 
@@ -123,12 +127,13 @@ task.add_dependency(other_task.id)
 
 ### 3.1 Why LangGraph + CC
 
-| Layer | Responsibility |
-|-------|-----------------|
-| **LangGraph** | State machine, conditional edges, durable execution, human-in-the-loop, subgraphs |
+| Layer           | Responsibility                                                                    |
+| --------------- | --------------------------------------------------------------------------------- |
+| **LangGraph**   | State machine, conditional edges, durable execution, human-in-the-loop, subgraphs |
 | **Claude Code** | Execution backend: team lead, teammates, context windows, JSON inboxes, blockedBy |
 
 **CC provides**:
+
 - Team lead coordinates, spawns teammates
 - Teammates in own context windows
 - `~/.claude/teams/{name}/inboxes/{agent}.json` for peer messaging
@@ -136,6 +141,7 @@ task.add_dependency(other_task.id)
 - TeammateTool: spawn, write, broadcast, read, list, shutdown
 
 **LangGraph provides**:
+
 - Explicit graph: nodes = agents/steps, edges = transitions
 - State: TypedDict/dataclass with reducers
 - Conditional edges: route based on state
@@ -166,6 +172,7 @@ task.add_dependency(other_task.id)
 ```
 
 **Node implementation**: Each LangGraph node that represents an agent:
+
 1. Writes task to CC task file (or uses TeammateTool.spawn)
 2. Sets blockedBy from state (previous task IDs)
 3. Waits for completion (poll inbox or task status)
@@ -175,21 +182,24 @@ task.add_dependency(other_task.id)
 ### 3.3 Key LangGraph Concepts for CC Integration
 
 **State**:
+
 ```python
 class CCWorkflowState(TypedDict):
-    task_list: list[dict]       # CC task format
-    completed_tasks: dict       # task_id -> result
-    current_phase: str          # planning, research, coding, review
-    blocked_by: dict            # task_id -> list of blocking task ids
+    task_list: list[dict]  # CC task format
+    completed_tasks: dict  # task_id -> result
+    current_phase: str  # planning, research, coding, review
+    blocked_by: dict  # task_id -> list of blocking task ids
     human_input: Optional[str]  # for interrupt/resume
 ```
 
 **Nodes**: Each node = one CC teammate invocation
+
 - `planner_node(state)` → spawn planner teammate, wait, return result
 - `researcher_node(state)` → spawn researcher, blockedBy planner, return result
 - etc.
 
 **Edges**:
+
 - `add_edge("planner", "researcher")` — linear pipeline
 - `add_conditional_edges("reviewer", route_by_review)` — pass/fail → redo coder or end
 - `add_edge("reviewer", "__interrupt__")` — human approval before merge
@@ -199,6 +209,7 @@ class CCWorkflowState(TypedDict):
 ### 3.4 heliosShield Mesh Interface (Alignment)
 
 From agent-mesh research:
+
 - Mesh treats each CLI process as **opaque**
 - Unit of coordination: **process**
 - Read-only monitoring of `~/.claude/teams/`, `~/.claude/tasks/`
@@ -247,19 +258,19 @@ From agent-mesh research:
 
 ## 5. SmolGents vs LangGraph: Conceptual Mapping
 
-| SmolGents | LangGraph | CC |
-|-----------|-----------|-----|
-| Crew | StateGraph (compiled) | Team |
-| Task | Node (or state channel) | Task file |
-| Task.dependencies | State.blockedBy / edge ordering | blockedBy in JSON |
-| Agent | Node implementation | Teammate |
-| AgentAssigner | Conditional edge / routing function | — |
-| CrewExecutor | graph.invoke(state) | — |
-| ExecutionMode.HIERARCHICAL | Node priority / subgraph | Team lead |
-| Workflow + CrewStage | Subgraph | — |
-| ResultAggregator | State reducer | — |
-| — | interrupt() / Command(resume=) | Human escalation |
-| — | Checkpointer | — |
+| SmolGents                  | LangGraph                           | CC                |
+| -------------------------- | ----------------------------------- | ----------------- |
+| Crew                       | StateGraph (compiled)               | Team              |
+| Task                       | Node (or state channel)             | Task file         |
+| Task.dependencies          | State.blockedBy / edge ordering     | blockedBy in JSON |
+| Agent                      | Node implementation                 | Teammate          |
+| AgentAssigner              | Conditional edge / routing function | —                 |
+| CrewExecutor               | graph.invoke(state)                 | —                 |
+| ExecutionMode.HIERARCHICAL | Node priority / subgraph            | Team lead         |
+| Workflow + CrewStage       | Subgraph                            | —                 |
+| ResultAggregator           | State reducer                       | —                 |
+| —                          | interrupt() / Command(resume=)      | Human escalation  |
+| —                          | Checkpointer                        | —                 |
 
 ---
 
@@ -319,9 +330,9 @@ From agent-mesh research:
 
 **Work stream items** (see [WORK_STREAM.md](../reference/WORK_STREAM.md)):
 
-| ID | Title | Priority |
-|----|-------|----------|
-| research-agent-hierarchy-mvp | Agent Hierarchy & Maximal MVP research | P1 |
-| impl-agent-crew-maximal-mvp | Implement Agent Crew stack | P1 |
-| impl-agent-crew-codex-harness | Wire codex/cc/droid harness as agent_executor | P1 |
-| research-agent-hierarchy-implementation | Implement AgentHierarchyManager (Phase 1) | P2 |
+| ID                                      | Title                                         | Priority |
+| --------------------------------------- | --------------------------------------------- | -------- |
+| research-agent-hierarchy-mvp            | Agent Hierarchy & Maximal MVP research        | P1       |
+| impl-agent-crew-maximal-mvp             | Implement Agent Crew stack                    | P1       |
+| impl-agent-crew-codex-harness           | Wire codex/cc/droid harness as agent_executor | P1       |
+| research-agent-hierarchy-implementation | Implement AgentHierarchyManager (Phase 1)     | P2       |

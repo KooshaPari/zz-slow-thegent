@@ -173,7 +173,14 @@ class TaskClassifier:
         estimated_tokens = int(word_count * 1.3)
 
         # Simple keyword-based complexity scoring
-        high_complex_keywords = ["architecture", "design", "refactor", "optimize", "security", "database"]
+        high_complex_keywords = [
+            "architecture",
+            "design",
+            "refactor",
+            "optimize",
+            "security",
+            "database",
+        ]
         complex_keywords = ["implement", "test", "debug", "fix", "improve", "handle"]
 
         complexity_score = 0.0
@@ -393,7 +400,11 @@ class TaskRouter:
             # Sort providers by score desc
             sorted_providers = sorted(char_scores.items(), key=lambda x: x[1], reverse=True)
             # Map top providers back to known model IDs (simplified)
-            mapping = {"codex": "gpt-5.3-codex", "claude": "claude-sonnet-4.5", "gemini": "gemini-3.1-pro"}
+            mapping = {
+                "codex": "gpt-5.3-codex",
+                "claude": "claude-sonnet-4.5",
+                "gemini": "gemini-3.1-pro",
+            }
             return [mapping[p] for p, _s in sorted_providers if p in mapping]
 
         if category == TaskCategory.FAST:
@@ -437,7 +448,11 @@ class TaskRouter:
             return {
                 "action": "split",
                 "reason": "Task exceeds complexity and size threshold for single run.",
-                "sub_tasks": ["Phase 1: Discovery", "Phase 2: Implementation", "Phase 3: Validation"],
+                "sub_tasks": [
+                    "Phase 1: Discovery",
+                    "Phase 2: Implementation",
+                    "Phase 3: Validation",
+                ],
                 "rationale": "Large complex tasks are more reliable when decomposed.",
             }
 

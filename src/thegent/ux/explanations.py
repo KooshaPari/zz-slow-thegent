@@ -29,9 +29,10 @@ Traces to: FR-015 (progressive disclosure), FR-039 (transport hints),
 from __future__ import annotations
 
 import logging
+from collections.abc import Sequence
 from dataclasses import dataclass, field
 from enum import IntEnum
-from typing import Any, Iterable, Mapping, Sequence
+from typing import Any
 
 _log = logging.getLogger(__name__)
 
@@ -95,24 +96,24 @@ class DecisionExplanation:
     # source attribution (which subsystem produced this explanation)
     source: str = "policy_engine"
 
-    def with_citation(self, ref: str) -> "DecisionExplanation":
+    def with_citation(self, ref: str) -> DecisionExplanation:
         """Return self with a citation added; fluent helper."""
         if ref and ref not in self.citations:
             self.citations.append(ref)
         return self
 
-    def with_chain_step(self, step: str) -> "DecisionExplanation":
+    def with_chain_step(self, step: str) -> DecisionExplanation:
         """Append a step to the reasoning chain."""
         if step and step not in self.chain:
             self.chain.append(step)
         return self
 
-    def with_audit_ref(self, ref: str) -> "DecisionExplanation":
+    def with_audit_ref(self, ref: str) -> DecisionExplanation:
         if ref and ref not in self.audit_refs:
             self.audit_refs.append(ref)
         return self
 
-    def with_action(self, action: str) -> "DecisionExplanation":
+    def with_action(self, action: str) -> DecisionExplanation:
         if action and action not in self.actions:
             self.actions.append(action)
         return self
@@ -145,57 +146,57 @@ class ExplanationBuilder:
     def __init__(self) -> None:
         self._exp = DecisionExplanation(title="")
 
-    def title(self, title: str) -> "ExplanationBuilder":
+    def title(self, title: str) -> ExplanationBuilder:
         self._exp.title = title
         return self
 
-    def verdict(self, verdict: str) -> "ExplanationBuilder":
+    def verdict(self, verdict: str) -> ExplanationBuilder:
         self._exp.verdict = verdict
         return self
 
-    def reason(self, reason: str) -> "ExplanationBuilder":
+    def reason(self, reason: str) -> ExplanationBuilder:
         self._exp.reason = reason
         return self
 
-    def reason_code(self, code: str) -> "ExplanationBuilder":
+    def reason_code(self, code: str) -> ExplanationBuilder:
         self._exp.reason_code = code
         return self
 
-    def rule_id(self, rid: str) -> "ExplanationBuilder":
+    def rule_id(self, rid: str) -> ExplanationBuilder:
         self._exp.rule_id = rid
         return self
 
-    def confidence(self, value: float | None) -> "ExplanationBuilder":
+    def confidence(self, value: float | None) -> ExplanationBuilder:
         self._exp.confidence = value
         return self
 
-    def source(self, source: str) -> "ExplanationBuilder":
+    def source(self, source: str) -> ExplanationBuilder:
         self._exp.source = source
         return self
 
-    def citation(self, ref: str) -> "ExplanationBuilder":
+    def citation(self, ref: str) -> ExplanationBuilder:
         self._exp.with_citation(ref)
         return self
 
-    def step(self, description: str) -> "ExplanationBuilder":
+    def step(self, description: str) -> ExplanationBuilder:
         self._exp.with_chain_step(description)
         return self
 
-    def rationale(self, *steps: str) -> "ExplanationBuilder":
+    def rationale(self, *steps: str) -> ExplanationBuilder:
         for s in steps:
             if s:
                 self._exp.rationale_steps.append(s)
         return self
 
-    def audit(self, ref: str) -> "ExplanationBuilder":
+    def audit(self, ref: str) -> ExplanationBuilder:
         self._exp.with_audit_ref(ref)
         return self
 
-    def action(self, description: str) -> "ExplanationBuilder":
+    def action(self, description: str) -> ExplanationBuilder:
         self._exp.with_action(description)
         return self
 
-    def metadata(self, **values: Any) -> "ExplanationBuilder":
+    def metadata(self, **values: Any) -> ExplanationBuilder:
         self._exp.metadata.update(values)
         return self
 
@@ -481,7 +482,10 @@ _EXCEPTION_HINTS: list[tuple[type[Exception], str]] = [
     (TimeoutError, "timeout — increase the timeout or check network latency"),
     (PermissionError, "permission denied — check file/process permissions"),
     (ConnectionError, "connection failed — verify endpoint availability"),
-    (ConnectionRefusedError, "connection refused — ensure the target service is running"),
+    (
+        ConnectionRefusedError,
+        "connection refused — ensure the target service is running",
+    ),
     (FileNotFoundError, "file not found — verify the path exists"),
     (ValueError, "validation error — check input format and constraints"),
     (KeyError, "missing key — verify the expected data structure"),

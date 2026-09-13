@@ -3,6 +3,7 @@
 Date: 2026-02-21
 
 ## WL-107
+
 - Status: blocked
 - Done this pass: wrote implementation-ready plan artifact.
 - Files changed:
@@ -11,6 +12,7 @@ Date: 2026-02-21
   - python -m py_compile src/thegent/agents/base.py src/thegent/agents/direct_agents.py src/thegent/agents/codex_proxy.py src/thegent/cli/apps/run.py src/thegent/cli/commands/cli.py src/thegent/cli/commands/impl.py tests/test_wl108_wl114_slices.py
 
 ## WL-108
+
 - Status: in-progress
 - Done this pass:
   - factored payload context usage into helper (`_append_context_usage`) and wired run payload through helper.
@@ -23,6 +25,7 @@ Date: 2026-02-21
   - python - <<'PY' ... smoke check for `_append_context_usage` ... PY
 
 ## WL-109
+
 - Status: blocked
 - Done this pass: wrote implementation-ready MCP LSP tools plan artifact.
 - Files changed:
@@ -31,6 +34,7 @@ Date: 2026-02-21
   - python -m py_compile src/thegent/agents/base.py src/thegent/agents/direct_agents.py src/thegent/agents/codex_proxy.py src/thegent/cli/apps/run.py src/thegent/cli/commands/cli.py src/thegent/cli/commands/impl.py tests/test_wl108_wl114_slices.py
 
 ## WL-110
+
 - Status: blocked
 - Done this pass: wrote implementation-ready stable resume API plan artifact.
 - Files changed:
@@ -39,6 +43,7 @@ Date: 2026-02-21
   - python -m py_compile src/thegent/agents/base.py src/thegent/agents/direct_agents.py src/thegent/agents/codex_proxy.py src/thegent/cli/apps/run.py src/thegent/cli/commands/cli.py src/thegent/cli/commands/impl.py tests/test_wl108_wl114_slices.py
 
 ## WL-114
+
 - Status: in-progress
 - Done this pass:
   - added repeatable `--image` option to run command surfaces.
@@ -61,4 +66,5 @@ Date: 2026-02-21
   - python - <<'PY' ... smoke check for `_normalize_image_paths` and codex `--image` args ... PY
 
 ## Notes
+
 - `pytest` execution is currently blocked in this environment due missing plugin dependency: `pytest_asyncio`.

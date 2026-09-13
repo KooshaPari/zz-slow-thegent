@@ -24,27 +24,30 @@
 
 ## 3. Architecture Options
 
-| Option | Isolation | Complexity | Use Case |
-|--------|-----------|------------|----------|
-| A. Subprocess + env filter | Low | Low | Filter env vars only |
-| B. Docker | Medium | Medium | Container per run |
-| C. Firecracker/gVisor | High | High | Strong isolation, cold start |
+| Option                     | Isolation | Complexity | Use Case                     |
+| -------------------------- | --------- | ---------- | ---------------------------- |
+| A. Subprocess + env filter | Low       | Low        | Filter env vars only         |
+| B. Docker                  | Medium    | Medium     | Container per run            |
+| C. Firecracker/gVisor      | High      | High       | Strong isolation, cold start |
 
 ---
 
 ## 4. Recommended Phased Approach
 
 ### Phase 1: Env and CWD Restriction
+
 - Restrict `cwd` to allowed prefixes.
 - Filter env vars to safe subset (PATH, HOME, etc.).
 - No new process isolation.
 
 ### Phase 2: Docker Runner
+
 - Optional `THGENT_SANDBOX_DOCKER_IMAGE` — run agent in container.
 - Mount only cwd (read-write) or read-only.
 - Network: none or allowlist.
 
 ### Phase 3: Firecracker (Future)
+
 - MicroVM per run for strongest isolation.
 - Higher latency; for high-trust environments.
 
@@ -52,12 +55,12 @@
 
 ## 5. Implementation Phases
 
-| Phase | Deliverable | Effort |
-|-------|-------------|--------|
-| P1 | Design doc (this) | Done |
-| P2 | CWD + env filter in runner | 1–2 days |
-| P3 | Docker runner option; config | 3–5 days |
-| P4 | Trust boundary doc; audit checklist | 1 day |
+| Phase | Deliverable                         | Effort   |
+| ----- | ----------------------------------- | -------- |
+| P1    | Design doc (this)                   | Done     |
+| P2    | CWD + env filter in runner          | 1–2 days |
+| P3    | Docker runner option; config        | 3–5 days |
+| P4    | Trust boundary doc; audit checklist | 1 day    |
 
 ---
 
@@ -67,11 +70,11 @@
 governance:
   sandbox:
     enabled: false
-    mode: env_filter  # env_filter | docker | none
+    mode: env_filter # env_filter | docker | none
     cwd_allowed_prefixes: []
     env_allowlist: ["PATH", "HOME", "LANG"]
-    docker_image: ""  # e.g. thegent-agent:latest
-    docker_network: none  # none | host | allowlist
+    docker_image: "" # e.g. thegent-agent:latest
+    docker_network: none # none | host | allowlist
 ```
 
 ---

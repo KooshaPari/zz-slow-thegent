@@ -18,7 +18,10 @@ def test_resource_allocation_no_race() -> None:
     Exactly 1 must succeed and 49 must receive ResourceAllocationError.
     This deterministically fails if the lock is removed from ResourcePool.
     """
-    from thegent.orchestration.resource.pool import ResourceAllocationError, ResourcePool
+    from thegent.orchestration.resource.pool import (
+        ResourceAllocationError,
+        ResourcePool,
+    )
 
     pool = ResourcePool(capacity=1)
     errors: list[Exception] = []
@@ -72,7 +75,10 @@ def test_resource_pool_available_tracks_allocations() -> None:
 @pytest.mark.requirement("FR-ORCH-001")
 def test_resource_pool_over_capacity_raises() -> None:
     """Allocating more than capacity must raise ResourceAllocationError."""
-    from thegent.orchestration.resource.pool import ResourceAllocationError, ResourcePool
+    from thegent.orchestration.resource.pool import (
+        ResourceAllocationError,
+        ResourcePool,
+    )
 
     pool = ResourcePool(capacity=2)
     pool.allocate("a", amount=2)

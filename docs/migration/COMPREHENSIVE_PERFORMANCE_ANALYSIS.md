@@ -5,6 +5,7 @@
 This document provides a deep, holistic analysis of performance bottlenecks in thegent's shell-based infrastructure and presents a comprehensive migration strategy to Rust/Go for optimal performance, robustness, and cross-platform compatibility.
 
 **Key Findings:**
+
 - Shell script overhead: 60-200ms per hook invocation
 - PATH resolution cascades causing 2m+ timeouts
 - Subprocess spawn overhead: 5-50ms per command
@@ -12,6 +13,7 @@ This document provides a deep, holistic analysis of performance bottlenecks in t
 - File system operations: 10-100x slower than native implementations
 
 **Expected Improvements:**
+
 - Overall hook latency: 200ms → 20ms (10x improvement)
 - PATH resolution: 2m+ → <10ms (1000x+ improvement)
 - Tool detection: 60ms → 1ms (60x improvement)
@@ -40,11 +42,13 @@ which codex
 **Specific Issues:**
 
 1. **Tool Detection Cascade** (lines 367-396 in `common.sh`):
+
    ```bash
    JQ_CMD="$(command -v jaq 2>/dev/null || command -v jq 2>/dev/null || echo jq)"
    RG_CMD="$(command -v rg 2>/dev/null || true)"
    FD_CMD="$(command -v fd 2>/dev/null || command -v fdfind 2>/dev/null || true)"
    ```
+
    - Each `command -v` spawns a subprocess
    - 6-8 subprocess spawns per hook initialization
    - If hooks are sourced during PATH resolution, this multiplies
@@ -63,23 +67,25 @@ which codex
 
 #### Critical Path Operations
 
-| Operation | Current (bash) | Target (Rust/Go) | Impact |
-|-----------|---------------|------------------|--------|
-| Tool detection | 60ms (6-8 subprocesses) | 1ms (single binary) | Called on every hook |
-| PATH resolution | 20ms (bash loop) | 0.5ms (native) | Called frequently |
-| Process scanning | 50ms (ps + subprocess) | 0.5ms (sysinfo) | Agent detection |
-| File discovery | 30ms (find subprocess) | 2ms (fd native) | Hook operations |
-| Git operations | 100ms (subprocess + cache) | 10ms (native) | Frequent |
-| JSON parsing | 5ms (jq subprocess) | 0.1ms (serde_json) | Every hook |
+| Operation        | Current (bash)             | Target (Rust/Go)    | Impact               |
+| ---------------- | -------------------------- | ------------------- | -------------------- |
+| Tool detection   | 60ms (6-8 subprocesses)    | 1ms (single binary) | Called on every hook |
+| PATH resolution  | 20ms (bash loop)           | 0.5ms (native)      | Called frequently    |
+| Process scanning | 50ms (ps + subprocess)     | 0.5ms (sysinfo)     | Agent detection      |
+| File discovery   | 30ms (find subprocess)     | 2ms (fd native)     | Hook operations      |
+| Git operations   | 100ms (subprocess + cache) | 10ms (native)       | Frequent             |
+| JSON parsing     | 5ms (jq subprocess)        | 0.1ms (serde_json)  | Every hook           |
 
 #### Shell Script Overhead
 
 **Subprocess Spawn Cost:**
+
 - macOS: 5-10ms per subprocess
 - Linux: 2-5ms per subprocess
 - Windows: 10-20ms per subprocess
 
 **Current Hook Execution:**
+
 ```
 Hook invocation: 200ms average
 ├─ Shell initialization: 50ms
@@ -97,6 +103,7 @@ Hook invocation: 200ms average
 ```
 
 **Target Hook Execution (Rust/Go):**
+
 ```
 Hook invocation: 20ms average
 ├─ Binary initialization: 2ms
@@ -160,23 +167,27 @@ Hook invocation: 20ms average
 ### 2.3 Cross-Platform Considerations
 
 **macOS (BSD):**
+
 - Different `find` syntax (no `-q`)
 - Different `stat` format
 - Case-insensitive filesystem by default
 - Different process APIs
 
 **Linux (GNU):**
+
 - Full GNU toolchain
 - `/proc` filesystem for process info
 - Standard POSIX compliance
 
 **Windows:**
+
 - No native shell
 - Different PATH semantics
 - Different process APIs
 - Case-insensitive filesystem
 
 **Solution**: Use Rust's cross-platform crates:
+
 - `sysinfo` for process operations
 - `walkdir` for file traversal
 - `which` crate for PATH resolution
@@ -225,17 +236,20 @@ Hook invocation: 20ms average
 #### A. Rust Extensions (Python Bindings)
 
 **1. thegent-discovery** (Already exists, needs build)
+
 - **Purpose**: Process and agent discovery
 - **Performance**: 100x faster than Python fallback
 - **Status**: Code exists, needs maturin build
 
 **2. thegent-tool-detect** (New)
+
 - **Purpose**: Fast tool detection with caching
 - **API**: `detect_tools() -> Dict[str, str]`
 - **Performance**: 60ms → 1ms
 - **Implementation**: Single binary scan, JSON cache
 
 **3. thegent-path-resolve** (New)
+
 - **Purpose**: Fast PATH resolution
 - **API**: `resolve_binary(name: str) -> Optional[str]`
 - **Performance**: 20ms → 0.5ms
@@ -244,6 +258,7 @@ Hook invocation: 20ms average
 #### B. Rust Binaries (Standalone)
 
 **1. thegent-hook-dispatcher** (New)
+
 - **Purpose**: Replace bash hook dispatchers
 - **Features**:
   - Parallel hook execution
@@ -253,6 +268,7 @@ Hook invocation: 20ms average
 - **Performance**: 200ms → 20ms per hook
 
 **2. thegent-git** (Exists, needs integration)
+
 - **Purpose**: Git operations with mutex handling
 - **Features**:
   - Lock detection and stealing
@@ -261,6 +277,7 @@ Hook invocation: 20ms average
 - **Performance**: 100ms → 10ms per operation
 
 **3. thegent-file-ops** (New)
+
 - **Purpose**: File discovery and operations
 - **Features**:
   - fd-like performance
@@ -271,6 +288,7 @@ Hook invocation: 20ms average
 #### C. Go Binaries (Concurrency-Heavy)
 
 **1. thegent-hook-daemon** (Enhancement)
+
 - **Purpose**: Long-running hook daemon
 - **Features**:
   - Connection pooling
@@ -305,6 +323,7 @@ find() {
 ```
 
 **Also**: Add to `.zshrc`:
+
 ```bash
 # Fast-path for which
 which() {
@@ -315,12 +334,14 @@ which() {
 #### 1.2 Build Rust Extensions
 
 **thegent-discovery:**
+
 ```bash
 cd thegent/crates/thegent-discovery
 maturin develop --release --features python
 ```
 
 **Verify:**
+
 ```python
 python3 -c "from thegent_discovery import DiscoveryInterface; print('OK')"
 ```
@@ -330,6 +351,7 @@ python3 -c "from thegent_discovery import DiscoveryInterface; print('OK')"
 **New crate**: `thegent/crates/thegent-tool-detect`
 
 **Cargo.toml:**
+
 ```toml
 [package]
 name = "thegent-tool-detect"
@@ -361,6 +383,7 @@ python = ["pyo3"]
 **Target**: Single Rust binary scan
 
 **Benefits**:
+
 - 60ms → 1ms (60x faster)
 - Eliminates subprocess overhead
 - Better caching
@@ -371,6 +394,7 @@ python = ["pyo3"]
 **Target**: Rust `thegent-path-resolve` extension
 
 **Benefits**:
+
 - 20ms → 0.5ms (40x faster)
 - Cross-platform compatibility
 - Better error handling
@@ -381,6 +405,7 @@ python = ["pyo3"]
 **Target**: Use `thegent_discovery` Rust extension
 
 **Benefits**:
+
 - 50ms → 0.5ms (100x faster)
 - More reliable
 - Better process tree walking
@@ -393,6 +418,7 @@ python = ["pyo3"]
 **Target**: Rust binary `thegent-hook-dispatcher`
 
 **Features**:
+
 - Parallel hook execution
 - Structured JSON I/O
 - Better error handling
@@ -404,6 +430,7 @@ python = ["pyo3"]
 **Target**: Native Rust implementation
 
 **Features**:
+
 - Parallel directory traversal
 - .gitignore respect
 - Better error messages
@@ -414,6 +441,7 @@ python = ["pyo3"]
 **Target**: Use `thegent-git` crate
 
 **Features**:
+
 - Native lock detection
 - Better cache management
 - Parallel operations
@@ -467,6 +495,7 @@ fn detect_tools() -> PyResult<HashMap<String, String>> {
 4. **Early Exit**: Stop on first match for each tool
 
 **Expected Performance:**
+
 - First run: 10ms (single PATH scan)
 - Cached: 0.1ms (file read)
 - vs Current: 60ms (6-8 subprocesses)
@@ -500,6 +529,7 @@ fn resolve_binary(name: &str, skip_dirs: Vec<String>) -> PyResult<Option<String>
 3. **Early Exit**: Stop on first match
 
 **Expected Performance:**
+
 - Current: 20ms (bash loop + subprocess)
 - Target: 0.5ms (native PATH scan)
 
@@ -555,6 +585,7 @@ impl HookDispatcher {
 5. **Logging**: Structured logging
 
 **Expected Performance:**
+
 - Current: 200ms per hook (bash overhead)
 - Target: 20ms per hook (native binary)
 
@@ -600,6 +631,7 @@ pub fn find_files(
 3. **.gitignore Respect**: Use `ignore` crate
 
 **Expected Performance:**
+
 - Current: 30ms (find subprocess)
 - Target: 2ms (native parallel traversal)
 
@@ -634,9 +666,11 @@ pub fn find_files(
 
 try:
     from thegent_tool_detect import detect_tools as _detect_tools_rust
+
     USE_RUST = True
 except ImportError:
     USE_RUST = False
+
 
 def detect_tools():
     """Detect tools with Rust fallback to bash."""
@@ -664,16 +698,19 @@ fi
 ### 6.3 Testing Strategy
 
 **Unit Tests:**
+
 - Rust: `cargo test`
 - Python: `pytest`
 - Integration: Test both paths
 
 **Performance Tests:**
+
 - Benchmark bash vs Rust
 - Measure latency improvements
 - Validate correctness
 
 **Compatibility Tests:**
+
 - Test on macOS, Linux, Windows
 - Test with different PATH configurations
 - Test with missing tools
@@ -684,25 +721,27 @@ fi
 
 ### 7.1 Expected Improvements
 
-| Operation | Current | Target | Speedup | Impact |
-|-----------|---------|--------|---------|--------|
-| Tool detection | 60ms | 1ms | 60x | High (every hook) |
-| PATH resolution | 20ms | 0.5ms | 40x | High (frequent) |
-| Process scanning | 50ms | 0.5ms | 100x | Medium (agent detection) |
-| File discovery | 30ms | 2ms | 15x | Medium (hooks) |
-| Git operations | 100ms | 10ms | 10x | High (frequent) |
-| JSON parsing | 5ms | 0.1ms | 50x | High (every hook) |
-| Hook dispatch | 200ms | 20ms | 10x | High (every tool use) |
+| Operation        | Current | Target | Speedup | Impact                   |
+| ---------------- | ------- | ------ | ------- | ------------------------ |
+| Tool detection   | 60ms    | 1ms    | 60x     | High (every hook)        |
+| PATH resolution  | 20ms    | 0.5ms  | 40x     | High (frequent)          |
+| Process scanning | 50ms    | 0.5ms  | 100x    | Medium (agent detection) |
+| File discovery   | 30ms    | 2ms    | 15x     | Medium (hooks)           |
+| Git operations   | 100ms   | 10ms   | 10x     | High (frequent)          |
+| JSON parsing     | 5ms     | 0.1ms  | 50x     | High (every hook)        |
+| Hook dispatch    | 200ms   | 20ms   | 10x     | High (every tool use)    |
 
 ### 7.2 Real-World Impact
 
 **Before Migration:**
+
 - Hook execution: 200ms average
 - Tool detection overhead: 60ms per hook
 - PATH resolution: 20ms per operation
 - **Total overhead**: ~280ms per hook invocation
 
 **After Migration:**
+
 - Hook execution: 20ms average
 - Tool detection overhead: 1ms (cached)
 - PATH resolution: 0.5ms per operation
@@ -711,6 +750,7 @@ fi
 **Improvement**: 13x faster overall
 
 **For 100 hook invocations per session:**
+
 - Before: 28 seconds overhead
 - After: 2.15 seconds overhead
 - **Time saved**: 25.85 seconds per session
@@ -723,12 +763,14 @@ fi
 
 **Risk**: Breaking existing functionality
 **Mitigation**:
+
 - Gradual migration with fallbacks
 - Extensive testing
 - Feature flags for new implementations
 
 **Risk**: Cross-platform issues
 **Mitigation**:
+
 - Use cross-platform Rust crates
 - Test on all platforms
 - CI/CD for multiple platforms
@@ -737,12 +779,14 @@ fi
 
 **Risk**: Rust implementation slower than expected
 **Mitigation**:
+
 - Benchmark before/after
 - Profile and optimize
 - Keep bash fallback
 
 **Risk**: Memory usage increase
 **Mitigation**:
+
 - Use zero-copy where possible
 - Monitor memory usage
 - Optimize data structures
@@ -751,12 +795,14 @@ fi
 
 **Risk**: Increased codebase complexity
 **Mitigation**:
+
 - Clear documentation
 - Code organization
 - Training for team
 
 **Risk**: Dependency management
 **Mitigation**:
+
 - Pin dependency versions
 - Regular updates
 - Security audits
@@ -766,36 +812,42 @@ fi
 ## 9. Implementation Timeline
 
 ### Week 1: Critical Fixes
+
 - [x] Fix `find -q` compatibility
 - [ ] Fix `which` timeout
 - [ ] Build `thegent_discovery` extension
 - [ ] Create `thegent-tool-detect` crate
 
 ### Week 2: Core Migrations
+
 - [ ] Implement tool detection in Rust
 - [ ] Implement PATH resolution in Rust
 - [ ] Integrate Rust extensions into Python
 - [ ] Update `common.sh` to use Rust
 
 ### Week 3: Advanced Features
+
 - [ ] Implement hook dispatcher in Rust
 - [ ] Implement file operations in Rust
 - [ ] Integrate git operations
 - [ ] Performance testing
 
 ### Week 4: Optimization
+
 - [ ] Parallel execution
 - [ ] Caching improvements
 - [ ] Memory optimization
 - [ ] Documentation
 
 ### Week 5: Testing & Validation
+
 - [ ] Cross-platform testing
 - [ ] Performance benchmarking
 - [ ] Compatibility testing
 - [ ] User acceptance testing
 
 ### Week 6: Deployment
+
 - [ ] Gradual rollout
 - [ ] Monitoring
 - [ ] Bug fixes
@@ -806,17 +858,20 @@ fi
 ## 10. Success Metrics
 
 ### Performance Metrics
+
 - Hook latency: <25ms (target: 20ms)
 - Tool detection: <2ms (target: 1ms)
 - PATH resolution: <1ms (target: 0.5ms)
 - Process scanning: <1ms (target: 0.5ms)
 
 ### Reliability Metrics
+
 - Error rate: <0.1%
 - Timeout rate: <0.01%
 - Cross-platform compatibility: 100%
 
 ### User Experience Metrics
+
 - `which` command: <10ms (target: <5ms)
 - Hook execution: <25ms (target: 20ms)
 - Overall responsiveness: 10x improvement
@@ -826,18 +881,21 @@ fi
 ## 11. References
 
 ### Research Sources
+
 - [ripgrep performance analysis](https://blog.burntsushi.net/ripgrep/)
 - [fd benchmarks](https://github.com/sharkdp/fd#benchmark)
 - [Maturin documentation](https://maturin.rs/)
 - [Rust performance book](https://nnethercote.github.io/perf-book/)
 
 ### Industry Examples
+
 - **ripgrep**: 5-10x faster than grep
 - **fd**: 10-20x faster than find
 - **Nushell**: Structured shell with native performance
 - **bat**: Rust-based cat replacement
 
 ### Best Practices
+
 - Use Rust for performance-critical paths
 - Use Go for concurrency-heavy operations
 - Maintain bash compatibility during migration
@@ -857,6 +915,7 @@ This comprehensive migration strategy addresses the root causes of performance i
 The gradual migration approach ensures zero downtime and maintains backward compatibility throughout the process.
 
 **Next Steps:**
+
 1. Implement Phase 1 fixes (this week)
 2. Build Rust extensions
 3. Begin core migrations

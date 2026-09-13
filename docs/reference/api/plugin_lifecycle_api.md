@@ -14,7 +14,7 @@ Manages the state and conformance of system plugins.
 
 ### Methods
 
-#### PluginLifecycleManager.__init__
+#### PluginLifecycleManager.**init**
 
 ```python
 __init__(self: Any)

@@ -3,6 +3,7 @@
 ## Overview
 
 This guide walks through setting up comprehensive monitoring for the thegent routing system. The setup includes:
+
 1. Data collection (logging to run_registry.jsonl)
 2. Query infrastructure (SQL database + queries)
 3. Dashboard platform (Grafana, Datadog, or custom)
@@ -15,6 +16,7 @@ This guide walks through setting up comprehensive monitoring for the thegent rou
 **Required Skills:** SQL, dashboard platform (Grafana or similar), monitoring basics
 
 **Prerequisites:**
+
 - Running thegent application with logging enabled
 - SQLite, PostgreSQL, or MySQL database access
 - Slack workspace (for alerts)
@@ -45,6 +47,7 @@ tail -1 ~/.thegent/session/run_registry.jsonl | jq .
 ```
 
 **Expected output:**
+
 ```json
 {
   "event": "finish",
@@ -102,11 +105,7 @@ cost_estimator = CostEstimator()
 cost_aggregator = CostAggregator(session_dir=Path.cwd())
 
 # On task completion:
-actual_cost = cost_estimator.estimate(
-    model=selected_model,
-    tokens_in=input_token_count,
-    tokens_out=output_token_count
-)
+actual_cost = cost_estimator.estimate(model=selected_model, tokens_in=input_token_count, tokens_out=output_token_count)
 ```
 
 **Add to RunMeta finish event:**
@@ -117,6 +116,7 @@ run_meta.ended_at_utc = datetime.now(UTC).isoformat()
 ```
 
 **Validation Checklist:**
+
 - [ ] All "finish" events have `actual_cost_usd` field
 - [ ] Cost values are > 0 and reasonable (0.001 - 2.0 for typical tasks)
 - [ ] Timestamp fields are in ISO 8601 UTC format
@@ -251,6 +251,7 @@ from pathlib import Path
 from datetime import datetime
 import sys
 
+
 def load_jsonl_to_sqlite(jsonl_path: str, db_path: str = "monitoring.db"):
     """Load JSONL run registry into SQLite."""
     conn = sqlite3.connect(db_path)
@@ -259,7 +260,7 @@ def load_jsonl_to_sqlite(jsonl_path: str, db_path: str = "monitoring.db"):
     loaded = 0
     errors = 0
 
-    with open(jsonl_path, 'r') as f:
+    with open(jsonl_path, "r") as f:
         for line_num, line in enumerate(f, 1):
             if not line.strip():
                 continue
@@ -268,15 +269,16 @@ def load_jsonl_to_sqlite(jsonl_path: str, db_path: str = "monitoring.db"):
                 data = json.loads(line)
 
                 # Only load "finish" events for now
-                if data.get('event') != 'finish':
+                if data.get("event") != "finish":
                     continue
 
                 # Extract fields
-                run_id = data.get('run_id')
+                run_id = data.get("run_id")
                 if not run_id:
                     raise ValueError("Missing run_id")
 
-                cursor.execute('''
+                cursor.execute(
+                    """
                     INSERT OR REPLACE INTO run_registry (
                         run_id, event, task_category, complexity_score,
                         estimated_cost, actual_cost_usd, routing_reason,
@@ -284,25 +286,27 @@ def load_jsonl_to_sqlite(jsonl_path: str, db_path: str = "monitoring.db"):
                         started_at_utc, ended_at_utc, constraint_violations,
                         used_fallback_model, escalation_status, created_at
                     ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-                ''', (
-                    run_id,
-                    data.get('event'),
-                    data.get('task_category'),
-                    data.get('complexity_score'),
-                    data.get('estimated_cost'),
-                    data.get('actual_cost_usd'),
-                    data.get('routing_reason'),
-                    data.get('selected_model'),
-                    data.get('status'),
-                    data.get('exit_code'),
-                    data.get('duration_s'),
-                    data.get('started_at_utc'),
-                    data.get('ended_at_utc'),
-                    json.dumps(data.get('constraint_violations', [])),
-                    data.get('used_fallback_model', False),
-                    data.get('escalation_status'),
-                    datetime.utcnow().isoformat()
-                ))
+                """,
+                    (
+                        run_id,
+                        data.get("event"),
+                        data.get("task_category"),
+                        data.get("complexity_score"),
+                        data.get("estimated_cost"),
+                        data.get("actual_cost_usd"),
+                        data.get("routing_reason"),
+                        data.get("selected_model"),
+                        data.get("status"),
+                        data.get("exit_code"),
+                        data.get("duration_s"),
+                        data.get("started_at_utc"),
+                        data.get("ended_at_utc"),
+                        json.dumps(data.get("constraint_violations", [])),
+                        data.get("used_fallback_model", False),
+                        data.get("escalation_status"),
+                        datetime.utcnow().isoformat(),
+                    ),
+                )
 
                 loaded += 1
 
@@ -321,6 +325,7 @@ def load_jsonl_to_sqlite(jsonl_path: str, db_path: str = "monitoring.db"):
 
     print(f"Loaded {loaded} records, {errors} errors")
     return loaded, errors
+
 
 if __name__ == "__main__":
     jsonl_path = sys.argv[1] if len(sys.argv) > 1 else "run_registry.jsonl"
@@ -442,6 +447,7 @@ psql -h localhost -U monitoring -d thegent < monitoring/test_queries.sql
 ```
 
 **Expected Output:**
+
 ```
 date       | fast | normal | total
 -----------|------|--------|-------
@@ -473,12 +479,14 @@ Run Time: real 0.045, user 0.043, sys 0.002
 ```
 
 **Expected Performance:**
+
 - Simple count: < 10ms
 - Grouped queries: 50-200ms (depends on data volume)
 - Percentile queries: 100-500ms
 - Multi-category aggregates: 50-150ms
 
 **If queries are slow:**
+
 1. Add missing indices (see schema above)
 2. Partition data by month (PostgreSQL)
 3. Migrate to materialized views for common aggregates
@@ -492,6 +500,7 @@ Run Time: real 0.045, user 0.043, sys 0.002
 **Objective:** Create dashboards using Grafana.
 
 **Prerequisites:**
+
 - Grafana running (docker, local install, or SaaS)
 - Database connection configured
 
@@ -512,23 +521,27 @@ Run Time: real 0.045, user 0.043, sys 0.002
 2. Add panels:
 
 **Panel 1: Cost Dashboard**
+
 - Query: SQL query from 1.1 (Daily Cost by Category)
 - Visualization: Bar Chart or Stacked Bars
 - Title: "Daily Cost by Category"
 - Y-axis: USD
 
 **Panel 2: Budget Utilization**
+
 - Query: SQL query from 1.2 (Budget Utilization)
 - Visualization: Gauge
 - Thresholds: 80% (orange), 100% (red)
 - Title: "Budget Utilization %"
 
 **Panel 3: Task Volume**
+
 - Query: SQL query from 4.1 (Task Volume)
 - Visualization: Time Series
 - Title: "Tasks Processed (7d)"
 
 **Panel 4: Error Rate**
+
 - Query: SQL query from 4.2 (Error Rate)
 - Visualization: Gauge or Stat
 - Title: "Error Rate %"
@@ -583,7 +596,7 @@ See Phase 5 for alert configuration.
    - Port: 3306 (MySQL) or 5432 (PostgreSQL)
    - Database: monitoring
    - Username: monitoring
-   - Password: ****
+   - Password: \*\*\*\*
 
 **Step 2: Create Custom Metrics**
 
@@ -627,6 +640,7 @@ import json
 app = Flask(__name__)
 DB_PATH = "monitoring.db"
 
+
 def query_db(sql):
     conn = sqlite3.connect(DB_PATH)
     conn.row_factory = sqlite3.Row
@@ -636,7 +650,8 @@ def query_db(sql):
     conn.close()
     return [dict(row) for row in results]
 
-@app.route('/api/daily-costs')
+
+@app.route("/api/daily-costs")
 def daily_costs():
     sql = """
     SELECT DATE(ended_at_utc) as date,
@@ -647,7 +662,8 @@ def daily_costs():
     """
     return jsonify(query_db(sql))
 
-@app.route('/api/budget-status')
+
+@app.route("/api/budget-status")
 def budget_status():
     sql = """
     SELECT task_category,
@@ -658,11 +674,13 @@ def budget_status():
     """
     return jsonify(query_db(sql))
 
-@app.route('/')
-def dashboard():
-    return render_template('dashboard.html')
 
-if __name__ == '__main__':
+@app.route("/")
+def dashboard():
+    return render_template("dashboard.html")
+
+
+if __name__ == "__main__":
     app.run(debug=True, port=5000)
 ```
 
@@ -694,6 +712,7 @@ from datetime import datetime
 
 SLACK_WEBHOOK = "https://hooks.slack.com/services/..."
 
+
 def send_alert(title, severity, message, data=None):
     """Send alert to Slack."""
 
@@ -709,9 +728,8 @@ def send_alert(title, severity, message, data=None):
                 "fields": [
                     {"title": "Severity", "value": severity, "short": True},
                     {"title": "Time", "value": datetime.utcnow().isoformat(), "short": True},
-                ] + (
-                    [{"title": k, "value": str(v), "short": True} for k, v in (data or {}).items()]
-                ),
+                ]
+                + ([{"title": k, "value": str(v), "short": True} for k, v in (data or {}).items()]),
                 "footer": "thegent-monitoring",
                 "ts": int(datetime.utcnow().timestamp()),
             }
@@ -721,12 +739,13 @@ def send_alert(title, severity, message, data=None):
     response = requests.post(SLACK_WEBHOOK, json=payload)
     return response.status_code == 200
 
+
 # Example usage:
 send_alert(
     "CATEGORY_BUDGET_WARNING",
     "WARNING",
     "Normal category budget at 80%",
-    {"Budget": "$160/$200", "Daily Burn": "$11.43", "Days to Exhaustion": "3.5"}
+    {"Budget": "$160/$200", "Daily Burn": "$11.43", "Days to Exhaustion": "3.5"},
 )
 ```
 
@@ -761,6 +780,7 @@ Add to crontab:
 ```python
 import pdpyras
 
+
 def send_pagerduty_alert(summary, severity, details):
     client = pdpyras.APISession(...)
     client.post(
@@ -773,7 +793,7 @@ def send_pagerduty_alert(summary, severity, details):
                 "service": {"type": "service_reference", "id": "..."},
                 "body": {"type": "incident_body", "details": details},
             }
-        }
+        },
     )
 ```
 
@@ -858,23 +878,32 @@ for i in range(50000):
     days_offset = random.randint(0, 89)
     run_date = start_date + timedelta(days=days_offset)
 
-    category = random.choice(['fast', 'normal', 'complex', 'high_complex'])
-    cost = {'fast': 0.01, 'normal': 0.15, 'complex': 0.44, 'high_complex': 1.07}[category]
+    category = random.choice(["fast", "normal", "complex", "high_complex"])
+    cost = {"fast": 0.01, "normal": 0.15, "complex": 0.44, "high_complex": 1.07}[category]
 
-    cursor.execute('''
+    cursor.execute(
+        """
         INSERT INTO run_registry (
             run_id, event, task_category, complexity_score,
             estimated_cost, actual_cost_usd, selected_model,
             status, exit_code, duration_s, started_at_utc, ended_at_utc
         ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-    ''', (
-        f'test-{i}', 'finish', category, random.randint(10, 95),
-        cost * 0.95, cost, 'minimax-m2.5',
-        random.choice(['success', 'timeout', 'error']),
-        random.choice([0, 1, 127]) if random.random() < 0.02 else 0,
-        random.uniform(0.1, 60.0),
-        run_date.isoformat(), run_date.isoformat()
-    ))
+    """,
+        (
+            f"test-{i}",
+            "finish",
+            category,
+            random.randint(10, 95),
+            cost * 0.95,
+            cost,
+            "minimax-m2.5",
+            random.choice(["success", "timeout", "error"]),
+            random.choice([0, 1, 127]) if random.random() < 0.02 else 0,
+            random.uniform(0.1, 60.0),
+            run_date.isoformat(),
+            run_date.isoformat(),
+        ),
+    )
 
 conn.commit()
 conn.close()
@@ -1004,6 +1033,7 @@ EOF
 ### Issue: Queries Too Slow
 
 **Diagnosis:**
+
 ```bash
 # Check index usage
 sqlite3 monitoring.db "EXPLAIN QUERY PLAN SELECT * FROM run_registry WHERE task_category='normal' AND DATE(ended_at_utc)='2025-02-14';"
@@ -1011,6 +1041,7 @@ sqlite3 monitoring.db "EXPLAIN QUERY PLAN SELECT * FROM run_registry WHERE task_
 ```
 
 **Fix:**
+
 - Add missing indices (see schema)
 - Partition data by month (PostgreSQL)
 - Create materialized views for common aggregates
@@ -1018,12 +1049,14 @@ sqlite3 monitoring.db "EXPLAIN QUERY PLAN SELECT * FROM run_registry WHERE task_
 ### Issue: Missing Fields in run_registry.jsonl
 
 **Diagnosis:**
+
 ```bash
 tail -100 run_registry.jsonl | jq '.task_category' | sort | uniq -c
 # If many nulls: logging not configured correctly
 ```
 
 **Fix:**
+
 - Update execution.py to log required fields
 - Ensure TaskRouter.route_task() is called
 - Verify CostAggregator.estimate_cost() is called
@@ -1031,6 +1064,7 @@ tail -100 run_registry.jsonl | jq '.task_category' | sort | uniq -c
 ### Issue: Dashboard Not Updating
 
 **Diagnosis:**
+
 ```bash
 # Check last data load time
 ls -la monitoring.db
@@ -1039,6 +1073,7 @@ sqlite3 monitoring.db "SELECT MAX(DATE(ended_at_utc)) FROM run_registry;"
 ```
 
 **Fix:**
+
 - Run manual sync: `python monitoring/load_jsonl.py run_registry.jsonl`
 - Check cron job: `crontab -l | grep load_jsonl`
 - Verify database connection in dashboard config
@@ -1046,6 +1081,7 @@ sqlite3 monitoring.db "SELECT MAX(DATE(ended_at_utc)) FROM run_registry;"
 ### Issue: Alerts Not Firing
 
 **Diagnosis:**
+
 ```bash
 # Check alert log
 tail -50 monitoring/alert.log
@@ -1054,6 +1090,7 @@ python monitoring/alert_engine.py check all
 ```
 
 **Fix:**
+
 - Verify Slack webhook URL is valid: `curl -X POST $WEBHOOK_URL ...`
 - Check alert query: run manually and verify results
 - Check alert threshold logic
@@ -1075,6 +1112,7 @@ python monitoring/alert_engine.py check all
 - [ ] Budget utilization alerts are working for all categories
 
 **Document Completion:**
+
 - [ ] MONITORING_DASHBOARD_SPEC.md completed
 - [ ] MONITORING_METRICS_REFERENCE.md completed
 - [ ] MONITORING_ALERT_RULES.md completed
@@ -1083,15 +1121,12 @@ python monitoring/alert_engine.py check all
 - [ ] Dashboard access verified
 - [ ] Alert channels tested
 
-
-
 ---
+
 ## See also
 
 - [WORK_STREAM.md](../reference/WORK_STREAM.md) — canonical backlog
 - [00-MASTER-INDEX.md](../plans/00-MASTER-INDEX.md) — plan index
-
-
 
 ---
 
@@ -1101,15 +1136,18 @@ python monitoring/alert_engine.py check all
 **Extended by:** Claude Code
 
 ### Changes Made
+
 1. Added practical implementation patterns
 2. Added configuration examples
 3. Enhanced cross-references to related documentation
 
 ### Cross-References Added
+
 - Related research and implementation guides
 - WORK_STREAM.md for tracking
 
 ### Practical Additions
+
 - Implementation templates
 - Configuration examples
 - Best practices

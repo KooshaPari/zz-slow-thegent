@@ -86,14 +86,22 @@ class DriftDetector:
             for name, base_content in baseline_contracts.items():
                 if name not in current_contracts:
                     report["policy_mismatches"].append(
-                        {"contract": name, "type": "removed", "diff": f"baseline/{name}"}
+                        {
+                            "contract": name,
+                            "type": "removed",
+                            "diff": f"baseline/{name}",
+                        }
                     )
                     report["drift_detected"] = True
                     continue
                 cur_content = current_contracts[name]
                 if cur_content != base_content:
                     report["policy_mismatches"].append(
-                        {"contract": name, "type": "changed", "diff": f"baseline/{name} -> current/{name}"}
+                        {
+                            "contract": name,
+                            "type": "changed",
+                            "diff": f"baseline/{name} -> current/{name}",
+                        }
                     )
                     report["drift_detected"] = True
             for name in current_contracts:

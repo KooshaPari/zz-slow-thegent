@@ -177,12 +177,12 @@ bash scripts/deploy-production.sh --dry-run
 
 The `scripts/` directory contains automated helpers:
 
-| Script | Purpose |
-|--------|---------|
-| `delegate_5_items.sh` | Delegate work items to agents |
-| `generate_writeups.sh` | Generate writeup documentation |
-| `validate-docs.sh` | Validate documentation quality |
-| `update_hooks_to_zsh.sh` | Configure git hooks |
+| Script                   | Purpose                        |
+| ------------------------ | ------------------------------ |
+| `delegate_5_items.sh`    | Delegate work items to agents  |
+| `generate_writeups.sh`   | Generate writeup documentation |
+| `validate-docs.sh`       | Validate documentation quality |
+| `update_hooks_to_zsh.sh` | Configure git hooks            |
 
 ---
 
@@ -213,6 +213,7 @@ LOG_LEVEL=info
 ## Quick Workflows
 
 ### Setup a new development environment
+
 ```bash
 pip install -e .
 cp .env.example .env
@@ -220,6 +221,7 @@ pytest              # Verify everything works
 ```
 
 ### Make and test a change
+
 ```bash
 # Edit files...
 ruff format .       # Format code
@@ -229,6 +231,7 @@ mypy src/           # Type check
 ```
 
 ### Deploy to production
+
 ```bash
 # Review changes
 git diff HEAD
@@ -242,6 +245,7 @@ bash scripts/deploy-production.sh            # Execute
 ```
 
 ### Debug a failing test
+
 ```bash
 # Run with verbose output
 pytest -vv tests/test_routing.py::test_semantic_similarity
@@ -257,17 +261,17 @@ pytest --pdb tests/test_routing.py
 
 ## Cheat Sheet
 
-| Task | Command |
-|------|---------|
-| Install | `pip install -e .` |
-| Test | `pytest` |
-| Format | `ruff format .` |
-| Lint | `ruff check . --fix` |
-| Type check | `mypy src/` |
-| Run app | `python -m semantic_tool_router` |
-| Deploy | `bash scripts/deploy-production.sh` |
-| Docs | `bash scripts/validate-docs.sh` |
-| Debug | `pytest -s --pdb` |
+| Task       | Command                             |
+| ---------- | ----------------------------------- |
+| Install    | `pip install -e .`                  |
+| Test       | `pytest`                            |
+| Format     | `ruff format .`                     |
+| Lint       | `ruff check . --fix`                |
+| Type check | `mypy src/`                         |
+| Run app    | `python -m semantic_tool_router`    |
+| Deploy     | `bash scripts/deploy-production.sh` |
+| Docs       | `bash scripts/validate-docs.sh`     |
+| Debug      | `pytest -s --pdb`                   |
 
 ---
 

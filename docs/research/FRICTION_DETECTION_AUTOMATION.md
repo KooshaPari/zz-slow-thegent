@@ -18,11 +18,13 @@ Friction detection is now **fully automated** via hooks. The system automaticall
 **Location**: `scripts/friction_detector.py`
 
 Detects friction patterns in:
+
 - Code files (Write/Edit operations)
 - Command strings (Execute operations)
 - Documentation
 
 **Patterns Detected**:
+
 - `cd &&` → CLI should work from any directory
 - `2>&1` → CLI should handle stderr automatically
 - `head -n` → CLI should have `--limit` option
@@ -38,6 +40,7 @@ Detects friction patterns in:
 **Event**: `PostToolUse` (Write|Edit|Execute)
 
 **Behavior**:
+
 - Runs automatically after every Write/Edit/Execute operation
 - Scans content for friction patterns
 - Outputs advisory warnings (non-blocking)
@@ -48,12 +51,14 @@ Detects friction patterns in:
 ### 3. Workflow Integration
 
 **Agent Behavior**:
+
 1. Hook runs automatically and detects friction
 2. Agent sees friction warnings in hook output
 3. Agent fixes friction immediately or delegates to `thegent free --bg`
 4. Agent logs friction using `log_friction()` if needed
 
 **CLAUDE.md Updates**:
+
 - Added explicit reminder to act on hook-detected friction
 - Updated friction detection checklist
 - Emphasized "don't wait for user to ask"

@@ -20,7 +20,6 @@ from __future__ import annotations
 from dataclasses import dataclass, field
 from typing import Any, Literal
 
-
 # ---------------------------------------------------------------------------
 # PriceConstraint
 # ---------------------------------------------------------------------------
@@ -243,10 +242,7 @@ def filter_models_by_preferences(
             key=lambda m: prefs.order.index(_provider_of(m)) if _provider_of(m) in prefs.order else len(prefs.order)
         )
 
-        if prefs.allow_fallbacks:
-            result = priority + fallback
-        else:
-            result = priority
+        result = priority + fallback if prefs.allow_fallbacks else priority
 
     return result
 

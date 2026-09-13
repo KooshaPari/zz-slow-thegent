@@ -14,7 +14,7 @@ Packager for system release documentation and artifacts.
 
 ### Methods
 
-#### ReleasePackager.__init__
+#### ReleasePackager.**init**
 
 ```python
 __init__(self: Any, workspace_root: Path)

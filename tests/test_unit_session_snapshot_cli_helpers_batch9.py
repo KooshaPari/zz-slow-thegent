@@ -1,7 +1,8 @@
 from __future__ import annotations
 
-import orjson as json
 from pathlib import Path
+
+import orjson as json
 
 from thegent.orchestration.state.session_scraper import SessionScraper
 from thegent.orchestration.state.session_snapshot_cli_helpers import (
@@ -104,7 +105,11 @@ def test_daily_totals_payload_includes_filters_when_provided(tmp_path: Path) -> 
     totals = snapshot_daily_totals_payload(scraper, trigger="tool_use", tag="t", since="2026-02-24T00:00:00Z")
 
     assert totals["total_snapshots"] == 1
-    assert totals["filters"] == {"trigger": "tool_use", "tag": "t", "since": "2026-02-24T00:00:00Z"}
+    assert totals["filters"] == {
+        "trigger": "tool_use",
+        "tag": "t",
+        "since": "2026-02-24T00:00:00Z",
+    }
 
 
 def test_daily_export_payload_forwards_filters_to_summary(tmp_path: Path) -> None:
@@ -127,10 +132,16 @@ def test_daily_export_payload_forwards_filters_to_summary(tmp_path: Path) -> Non
     )
     payload = json.loads(Path(exported["source_json"]).read_text(encoding="utf-8"))
 
-    assert payload["summary"]["filters"] == {"trigger": "tool_use", "tag": "t1", "since": "2026-02-25T00:00:00Z"}
+    assert payload["summary"]["filters"] == {
+        "trigger": "tool_use",
+        "tag": "t1",
+        "since": "2026-02-25T00:00:00Z",
+    }
 
 
-def test_daily_totals_payload_without_filters_has_no_filters_key(tmp_path: Path) -> None:
+def test_daily_totals_payload_without_filters_has_no_filters_key(
+    tmp_path: Path,
+) -> None:
     scraper = SessionScraper(project_root=tmp_path)
 
     totals = snapshot_daily_totals_payload(scraper)

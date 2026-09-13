@@ -11,6 +11,7 @@
 **Objective:** Identify all backwards compatibility, legacy, fallback, and deprecated patterns that should be removed given zero user debt.
 
 **Methodology:**
+
 - Pattern search: `deprecated`, `legacy`, `backward`, `compat`, `fallback`
 - Directory analysis: `cli/legacy/`, `*_legacy.py`, `*_deprecated.py`
 - Import analysis: Backward compat shims
@@ -20,14 +21,14 @@
 
 ## 📊 Findings Summary
 
-| Category | Count | Status | Priority |
-|----------|-------|--------|----------|
-| **Legacy Directories** | 1 | Found | P1 |
-| **Deprecated Files** | 3+ | Found | P1 |
-| **Backward Compat Patterns** | 5+ | Found | P1 |
-| **Import Fallbacks** | 2+ | Found | P2 |
-| **Backup Files** | 10+ | Found | P3 |
-| **Archive Directories** | Multiple | Found | P3 |
+| Category                     | Count    | Status | Priority |
+| ---------------------------- | -------- | ------ | -------- |
+| **Legacy Directories**       | 1        | Found  | P1       |
+| **Deprecated Files**         | 3+       | Found  | P1       |
+| **Backward Compat Patterns** | 5+       | Found  | P1       |
+| **Import Fallbacks**         | 2+       | Found  | P2       |
+| **Backup Files**             | 10+      | Found  | P3       |
+| **Archive Directories**      | Multiple | Found  | P3       |
 
 ---
 
@@ -38,6 +39,7 @@
 **Location:** `src/thegent/cli/legacy/`
 
 **Files Found:**
+
 - `cli_legacy.py`
 - `cli_impl.py`
 - `cli_sync.py`
@@ -54,11 +56,13 @@
 - `__init__.py`
 
 **Status:**
+
 - ✅ Already migrated to use `ThegentSettings` (no `os.environ` fallbacks)
 - ⚠️ Still exists as separate directory
 - ⚠️ May have callers still importing from `cli.legacy`
 
 **Action:**
+
 1. Find all imports: `grep -r "from.*cli.legacy\|import.*cli.legacy" src/`
 2. Update callers to use `cli.apps` or `cli.commands`
 3. Delete `cli/legacy/` directory entirely
@@ -71,6 +75,7 @@
 ### 2. Deprecated Tool Stubs (atoms-mcp-prod) ⚠️ **P1 - REMOVE**
 
 **Locations:**
+
 - `atoms-mcp-prod/src/atoms_mcp/tools/compliance_verification.py`
 - `atoms-mcp-prod/src/atoms_mcp/tools/duplicate_detection.py`
 - `atoms-mcp-prod/src/atoms_mcp/tools/entity_resolver.py`
@@ -78,6 +83,7 @@
 - `atoms-mcp-prod/src/atoms_mcp/tools/context.py`
 
 **Pattern:**
+
 ```python
 """Tool - DEPRECATED.
 
@@ -94,11 +100,13 @@ ComplianceVerificationTool = EntityOperations
 ```
 
 **Status:**
+
 - ⚠️ Backward-compat stubs with deprecation warnings
 - ⚠️ Functionality integrated into canonical implementations
 - ⚠️ Still imported by test files (76+ test files)
 
 **Action:**
+
 1. Update all test files to import from canonical location
 2. Remove stub files entirely
 3. Remove deprecation warnings (no longer needed)
@@ -110,6 +118,7 @@ ComplianceVerificationTool = EntityOperations
 ### 3. Import Fallbacks ⚠️ **P2 - REMOVE**
 
 **Pattern Found:**
+
 ```python
 # Import cosine_similarity with fallback
 try:
@@ -125,9 +134,11 @@ except ImportError:
 ```
 
 **Locations:**
+
 - `atoms-mcp-prod/src/atoms_mcp/tools/compliance_verification.py` (lines 13-29)
 
 **Action:**
+
 1. Fix import paths (ensure dependencies are correct)
 2. Remove fallback implementations
 3. Use single canonical import path
@@ -139,15 +150,18 @@ except ImportError:
 ### 4. Backward Compat Re-exports ⚠️ **P1 - REMOVE**
 
 **Pattern Found:**
+
 ```python
 # Re-export for backward compatibility
 ComplianceVerificationTool = EntityOperations
 ```
 
 **Locations:**
+
 - Multiple deprecated tool stubs
 
 **Action:**
+
 1. Remove re-exports
 2. Update all callers to use canonical names
 3. Remove backward compat comments
@@ -159,11 +173,13 @@ ComplianceVerificationTool = EntityOperations
 ### 5. Backup Files ⚠️ **P3 - REMOVE**
 
 **Patterns Found:**
+
 - `*.backup` files
 - `.env-backup-*` directories
 - `*.backup.*` timestamped files
 
 **Locations:**
+
 - `thegent/crates/Cargo.toml.backup`
 - `thegent/test_clode/claude-config/.claude.json.backup.*` (multiple)
 - `thegent/dummy_config/.claude.json.backup.*` (multiple)
@@ -173,6 +189,7 @@ ComplianceVerificationTool = EntityOperations
 - `trace/frontend/apps/web/public/specs/openapi.json.backup.*`
 
 **Action:**
+
 1. Delete all `*.backup` files
 2. Delete `.env-backup-*` directories
 3. Add `*.backup` to `.gitignore`
@@ -185,15 +202,18 @@ ComplianceVerificationTool = EntityOperations
 ### 6. Archive Directories ⚠️ **P3 - EVALUATE**
 
 **Locations:**
+
 - `trace/ARCHIVE/` - Large directory with historical code
 - `archive/` directories in various projects
 
 **Status:**
+
 - ✅ Historical reference (potentially valuable)
 - ⚠️ Clutters main codebase
 - ⚠️ May contain deprecated code
 
 **Action:**
+
 1. **EVALUATE** each archive directory
 2. **MOVE** to separate repo or `.git/archive/` if valuable
 3. **DELETE** if contains deprecated code
@@ -206,6 +226,7 @@ ComplianceVerificationTool = EntityOperations
 ### 7. Deprecation Warnings ⚠️ **P1 - REMOVE**
 
 **Pattern Found:**
+
 ```python
 warnings.warn(
     "tools.compliance_verification is deprecated. Use ... instead.",
@@ -215,10 +236,12 @@ warnings.warn(
 ```
 
 **Locations:**
+
 - Deprecated tool stubs
 - Potentially other deprecated code
 
 **Action:**
+
 1. Remove deprecation warnings
 2. Remove deprecated code entirely
 3. No need for warnings if code is deleted
@@ -232,6 +255,7 @@ warnings.warn(
 ### Phase 1: Immediate (Week 1)
 
 **Priority 1: Legacy CLI**
+
 - [ ] **PARITY CHECK:** Verify `cli/apps/` has all features from `cli/legacy/`
   - [ ] List all functions/commands in `cli/legacy/`
   - [ ] Verify each exists in `cli/apps/` or `cli/commands/`
@@ -249,6 +273,7 @@ warnings.warn(
 - [ ] Update documentation
 
 **Priority 2: Deprecated Stubs**
+
 - [ ] **PARITY CHECK:** Verify canonical implementations have all features
   - [ ] List all features in deprecated stubs
   - [ ] Verify each exists in canonical implementations
@@ -269,6 +294,7 @@ warnings.warn(
 - [ ] Remove deprecation warnings
 
 **Priority 3: Backup Files**
+
 - [ ] Find all backups: `find . -name "*.backup" -o -name ".env-backup-*"`
 - [ ] Delete backup files
 - [ ] Add `*.backup` to `.gitignore`
@@ -277,16 +303,19 @@ warnings.warn(
 ### Phase 2: Short-Term (Weeks 2-3)
 
 **Import Fallbacks:**
+
 - [ ] Fix import paths in `compliance_verification.py`
 - [ ] Remove fallback implementations
 - [ ] Ensure dependencies are correct
 
 **Backward Compat Re-exports:**
+
 - [ ] Find all re-exports: `grep -r "backward compat\|re-export" src/`
 - [ ] Update callers to canonical names
 - [ ] Remove re-exports
 
 **Archive Evaluation:**
+
 - [ ] Audit `trace/ARCHIVE/` contents
 - [ ] Move valuable archives to separate repo
 - [ ] Delete deprecated code from archives
@@ -294,6 +323,7 @@ warnings.warn(
 ### Phase 3: Ongoing
 
 **Pattern Prevention:**
+
 - [ ] Add CI checks for deprecated patterns
 - [ ] Add linting rules for fallbacks
 - [ ] Document removal process
@@ -303,6 +333,7 @@ warnings.warn(
 ## 🔍 Detection Commands
 
 ### Find Legacy Code
+
 ```bash
 # Find legacy directories
 find . -type d -name "legacy" -not -path "*/\.*" -not -path "*/node_modules/*"
@@ -315,6 +346,7 @@ grep -r "backward\|backwards\|compat" --include="*.py" src/ | grep -v "__pycache
 ```
 
 ### Find Backup Files
+
 ```bash
 # Find backup files
 find . -name "*.backup" -not -path "*/\.*" -not -path "*/node_modules/*"
@@ -327,6 +359,7 @@ find . -name "*.backup.*" -not -path "*/\.*"
 ```
 
 ### Find Import Fallbacks
+
 ```bash
 # Find try/except import patterns
 grep -r "try:.*import\|except.*import" --include="*.py" src/ | grep -v "__pycache__"
@@ -336,6 +369,7 @@ grep -r "fallback\|Fallback" --include="*.py" src/ | grep -v "__pycache__"
 ```
 
 ### Find Deprecation Warnings
+
 ```bash
 # Find deprecation warnings
 grep -r "DeprecationWarning\|deprecated" --include="*.py" src/ | grep -v "__pycache__"
@@ -346,6 +380,7 @@ grep -r "DeprecationWarning\|deprecated" --include="*.py" src/ | grep -v "__pyca
 ## ✅ Verification Checklist
 
 **Before Removal (Parity Verification):**
+
 - [ ] Parity verification completed
 - [ ] Feature comparison documented
 - [ ] All callers migrated
@@ -354,6 +389,7 @@ grep -r "DeprecationWarning\|deprecated" --include="*.py" src/ | grep -v "__pyca
 - [ ] Approval obtained
 
 **After Removal:**
+
 - [ ] No `cli/legacy/` directory exists
 - [ ] No deprecated tool stubs exist
 - [ ] No `*.backup` files in repo
@@ -370,12 +406,14 @@ grep -r "DeprecationWarning\|deprecated" --include="*.py" src/ | grep -v "__pyca
 ## 📊 Metrics
 
 **Before Removal:**
+
 - Legacy directories: 1
 - Deprecated files: 5+
 - Backup files: 10+
 - Import fallbacks: 2+
 
 **Target (After Removal):**
+
 - Legacy directories: 0
 - Deprecated files: 0
 - Backup files: 0

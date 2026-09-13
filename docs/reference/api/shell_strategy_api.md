@@ -12,7 +12,7 @@ Dual-shell strategy for POSIX and PowerShell.
 
 ### Methods
 
-#### DualShellStrategy.__init__
+#### DualShellStrategy.**init**
 
 ```python
 __init__(self: Any)

@@ -41,7 +41,7 @@ Uses the same SQLite database as ProjectRegistry (shared DB path).
 
 ### Methods
 
-#### ShadowAuditGit.__init__
+#### ShadowAuditGit.**init**
 
 ```python
 __init__(self: Any, db_path: Any)
@@ -70,7 +70,7 @@ Return audit entries for a project, ordered by creation time.
 **Parameters**:
 
 - `project_id`: The project whose audit log to retrieve.
-- `limit`: Maximum number of entries to return.  None means all.
+- `limit`: Maximum number of entries to return. None means all.
 
 ---
 
@@ -109,7 +109,7 @@ Return audit entries for a project, ordered by creation time.
 **Parameters**:
 
 - `project_id`: The project whose audit log to retrieve.
-- `limit`: Maximum number of entries to return.  None means all.
+- `limit`: Maximum number of entries to return. None means all.
 
 ---
 

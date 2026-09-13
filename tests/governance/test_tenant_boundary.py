@@ -1,7 +1,10 @@
 import pytest
 
 from thegent.governance.isolation import AccessDenied, TenantIsolationProvider
-from thegent.phases.policy_federation import FederatedPolicyEngine, PolicyConflictResolver
+from thegent.phases.policy_federation import (
+    FederatedPolicyEngine,
+    PolicyConflictResolver,
+)
 
 
 @pytest.fixture

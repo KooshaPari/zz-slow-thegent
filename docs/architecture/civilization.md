@@ -12,9 +12,11 @@ Welcome to the comprehensive Multi-Tenant Agent Civilization Framework design. T
 ## 📚 Documentation Set
 
 ### **Start Here** → [CIVILIZATION_ARCHITECTURE_SUMMARY.md](./CIVILIZATION_ARCHITECTURE_SUMMARY.md)
+
 **(16 min read)**
 
 Quick reference guide with:
+
 - Document overview and reading paths
 - Key architecture decisions with rationale
 - Core concepts glossary
@@ -30,6 +32,7 @@ Quick reference guide with:
 ## 📖 Core Documents
 
 ### 1. **[MULTI_TENANT_AGENT_CIVILIZATION_ARCHITECTURE.md](./MULTI_TENANT_AGENT_CIVILIZATION_ARCHITECTURE.md)**
+
 **(938 lines, ~30 min read)**
 
 **Complete system architecture covering:**
@@ -56,6 +59,7 @@ Quick reference guide with:
 ---
 
 ### 2. **[AGENT_IDENTITY_AND_DISCOVERY.md](./AGENT_IDENTITY_AND_DISCOVERY.md)**
+
 **(1,008 lines, ~35 min read)**
 
 **Complete agent identification and service discovery covering:**
@@ -79,41 +83,48 @@ Quick reference guide with:
 ---
 
 ### 3. **[CROSS_PROJECT_COORDINATION_PATTERNS.md](./CROSS_PROJECT_COORDINATION_PATTERNS.md)**
+
 **(895 lines, ~35 min read)**
 
 **Five core communication patterns with complete protocols:**
 
 **Pattern 1: Task Dispatch (L1 → L2/L3)**
+
 - Synchronous path (MCP, real-time)
 - Asynchronous path (queue-based, reliable)
 - Detailed message schemas (JSON)
 - Comparison table (sync vs async)
 
 **Pattern 2: Cross-Project Requests (L2 ↔ L2)**
+
 - Request-response flow with negotiation
 - Message schemas (request, accepted, deferred)
 - Shared deadline semantics
 - Cross-project credit tracking
 
 **Pattern 3: Peer-to-Peer Negotiation (L2 ↔ L2 same project)**
+
 - Semaphore-based resource coordination
 - Lease-based locking algorithm
 - Queue fairness mechanism
 - Lock acquisition and release algorithms
 
 **Pattern 4: Status & Escalation (L2/L3 → L1)**
+
 - Periodic heartbeat messages
 - Escalation triggers and policies
 - Detailed message schemas
 - Action recommendations
 
 **Pattern 5: Civilization-Wide Broadcasts (Events)**
+
 - Event bus architecture
 - Specific event schemas (resource breach, deadlock, agent failure)
 - TTL and acknowledgement semantics
 - Recommended actions for each event type
 
 **Plus:**
+
 - Error handling and timeouts (hierarchy table)
 - Retry logic with exponential backoff and jitter
 - Deadlock detection and prevention algorithms
@@ -127,44 +138,52 @@ Quick reference guide with:
 ---
 
 ### 4. **[CIVILIZATION_SCALE_PERFORMANCE.md](./CIVILIZATION_SCALE_PERFORMANCE.md)**
+
 **(837 lines, ~30 min read)**
 
 **Resource orchestration and load balancing covering:**
 
 **Global Resource Model**:
+
 - Resource types (CPU %, memory MB, network Mbps)
 - Resource state structure with civilization totals
 - Available vs quota tracking
 
 **Quota Allocation (3 algorithms)**:
+
 - Option 1: Equal share (simplest)
 - Option 2: Usage-based (adaptive)
 - Option 3: Priority-based (flexible)
 - Recommended hybrid approach with code examples
 
 **Load Balancing (3 strategies)**:
+
 - Strategy 1: Locality first (prefer same-project agents)
 - Strategy 2: Load balanced (fair distribution globally)
 - Strategy 3: Hybrid (locality with overflow) [RECOMMENDED]
 - Complete selection algorithm with code examples
 
 **Backpressure Mechanisms**:
+
 - Admission control (accept/reject decision algorithm)
 - Queueing strategy (when to queue)
 - Queue draining (releasing queued tasks when capacity available)
 
 **Resource Negotiation**:
+
 - Cross-project borrowing protocol
 - Quota adjustment semantics
 - Reclamation mechanics (lender reclaims borrowed resources)
 - Message schemas for requests and approvals
 
 **Performance Optimization**:
+
 - Caching and memoization (shared result cache)
 - Speculative execution (pipelining tasks)
 - Cross-project cache hit example
 
 **Observability**:
+
 - Per-agent metrics structure
 - Civilization-wide metrics JSON with 30+ fields
 - Health indicators and alert conditions
@@ -176,11 +195,13 @@ Quick reference guide with:
 ---
 
 ### 5. **[MULTI_TENANT_CONTROLLER_IMPLEMENTATION_PLAN.md](./MULTI_TENANT_CONTROLLER_IMPLEMENTATION_PLAN.md)**
+
 **(1,046 lines, ~40 min read)**
 
 **Step-by-step implementation roadmap covering:**
 
 **Phase 1: Foundation (Week 1-2)**
+
 - Task 1.1: Agent identity (UUID generation, persistence)
 - Task 1.2: File-based registry (CRUD, git persistence)
 - Task 1.3: Unified work stream (markdown format, state machine)
@@ -189,6 +210,7 @@ Quick reference guide with:
 - ~10-15 tool calls total
 
 **Phase 2: Single-Project Multi-Agent (Week 2-3)**
+
 - Task 2.1: Sync task dispatch (L1 → L2)
 - Task 2.2: Async task dispatch (queue-based)
 - Task 2.3: L2 task executor (execution + storage)
@@ -196,6 +218,7 @@ Quick reference guide with:
 - ~8-12 tool calls total
 
 **Phase 3: Cross-Project Coordination (Week 3-4)**
+
 - Task 3.1: Global work stream (centralized)
 - Task 3.2: Cross-project requests (agent-to-agent)
 - Task 3.3: Global resource state (civilization-wide tracking)
@@ -203,18 +226,21 @@ Quick reference guide with:
 - ~7-10 tool calls total
 
 **Phase 4: Observability & Governance (Week 4-5)**
+
 - Task 4.1: Metrics dashboard (civilization status)
 - Task 4.2: Deadlock detection (cycle finding)
 - Task 4.3: Audit logging (event trail)
 - ~5-7 tool calls total
 
 **Phase 5: Resilience & Optimization (Week 5-6)**
+
 - Task 5.1: Agent failure recovery (task reassignment)
 - Task 5.2: Load balancing algorithm (smart selection)
 - Task 5.3: Resource borrowing (quota negotiation)
 - ~6-9 tool calls total
 
 **Plus:**
+
 - Deployment strategy with prerequisites and checklist
 - Key decision points with rationale and alternatives
 - Rollback strategy for each phase
@@ -237,27 +263,32 @@ Quick reference guide with:
 ### By Role
 
 **Systems Architect / Designer**
+
 1. Read: [CIVILIZATION_ARCHITECTURE_SUMMARY.md](./CIVILIZATION_ARCHITECTURE_SUMMARY.md) (16 min)
 2. Read: [MULTI_TENANT_AGENT_CIVILIZATION_ARCHITECTURE.md](./MULTI_TENANT_AGENT_CIVILIZATION_ARCHITECTURE.md) (30 min)
 3. Reference: [CIVILIZATION_SCALE_PERFORMANCE.md](./CIVILIZATION_SCALE_PERFORMANCE.md) (30 min)
 
 **Implementation Lead**
+
 1. Read: [CIVILIZATION_ARCHITECTURE_SUMMARY.md](./CIVILIZATION_ARCHITECTURE_SUMMARY.md) (16 min)
 2. Read: [MULTI_TENANT_CONTROLLER_IMPLEMENTATION_PLAN.md](./MULTI_TENANT_CONTROLLER_IMPLEMENTATION_PLAN.md) (40 min)
 3. Reference: [AGENT_IDENTITY_AND_DISCOVERY.md](./AGENT_IDENTITY_AND_DISCOVERY.md) for Phase 1
 4. Reference: [CROSS_PROJECT_COORDINATION_PATTERNS.md](./CROSS_PROJECT_COORDINATION_PATTERNS.md) for Phase 2+
 
 **Backend/Infrastructure Engineer**
+
 1. Read: [AGENT_IDENTITY_AND_DISCOVERY.md](./AGENT_IDENTITY_AND_DISCOVERY.md) (35 min)
 2. Read: [CROSS_PROJECT_COORDINATION_PATTERNS.md](./CROSS_PROJECT_COORDINATION_PATTERNS.md) (35 min)
 3. Reference: [MULTI_TENANT_CONTROLLER_IMPLEMENTATION_PLAN.md](./MULTI_TENANT_CONTROLLER_IMPLEMENTATION_PLAN.md) (40 min)
 
 **Operations / SRE**
+
 1. Read: [CIVILIZATION_SCALE_PERFORMANCE.md](./CIVILIZATION_SCALE_PERFORMANCE.md) (30 min)
 2. Reference: [CIVILIZATION_ARCHITECTURE_SUMMARY.md](./CIVILIZATION_ARCHITECTURE_SUMMARY.md) (16 min)
 3. Reference: [CROSS_PROJECT_COORDINATION_PATTERNS.md](./CROSS_PROJECT_COORDINATION_PATTERNS.md) (error modes section)
 
 **QA / Tester**
+
 1. Read: [MULTI_TENANT_CONTROLLER_IMPLEMENTATION_PLAN.md](./MULTI_TENANT_CONTROLLER_IMPLEMENTATION_PLAN.md) (testing strategy section)
 2. Reference: [CROSS_PROJECT_COORDINATION_PATTERNS.md](./CROSS_PROJECT_COORDINATION_PATTERNS.md) (error scenarios)
 3. Reference: [CIVILIZATION_ARCHITECTURE_SUMMARY.md](./CIVILIZATION_ARCHITECTURE_SUMMARY.md) (failure modes table)
@@ -265,22 +296,27 @@ Quick reference guide with:
 ### By Phase
 
 **Phase 1: Foundation (Agent Identity + Registry)**
+
 - Start: [AGENT_IDENTITY_AND_DISCOVERY.md](./AGENT_IDENTITY_AND_DISCOVERY.md)
 - Plan: [MULTI_TENANT_CONTROLLER_IMPLEMENTATION_PLAN.md](./MULTI_TENANT_CONTROLLER_IMPLEMENTATION_PLAN.md) § Phase 1
 
 **Phase 2: Single-Project Multi-Agent (Task Dispatch)**
+
 - Start: [CROSS_PROJECT_COORDINATION_PATTERNS.md](./CROSS_PROJECT_COORDINATION_PATTERNS.md) § Pattern 1
 - Plan: [MULTI_TENANT_CONTROLLER_IMPLEMENTATION_PLAN.md](./MULTI_TENANT_CONTROLLER_IMPLEMENTATION_PLAN.md) § Phase 2
 
 **Phase 3: Cross-Project Coordination**
+
 - Start: [CROSS_PROJECT_COORDINATION_PATTERNS.md](./CROSS_PROJECT_COORDINATION_PATTERNS.md) § Patterns 2-3
 - Plan: [MULTI_TENANT_CONTROLLER_IMPLEMENTATION_PLAN.md](./MULTI_TENANT_CONTROLLER_IMPLEMENTATION_PLAN.md) § Phase 3
 
 **Phase 4: Observability**
+
 - Start: [CIVILIZATION_SCALE_PERFORMANCE.md](./CIVILIZATION_SCALE_PERFORMANCE.md) § Observability
 - Plan: [MULTI_TENANT_CONTROLLER_IMPLEMENTATION_PLAN.md](./MULTI_TENANT_CONTROLLER_IMPLEMENTATION_PLAN.md) § Phase 4
 
 **Phase 5: Resilience & Optimization**
+
 - Start: [CIVILIZATION_SCALE_PERFORMANCE.md](./CIVILIZATION_SCALE_PERFORMANCE.md) § Load Balancing
 - Plan: [MULTI_TENANT_CONTROLLER_IMPLEMENTATION_PLAN.md](./MULTI_TENANT_CONTROLLER_IMPLEMENTATION_PLAN.md) § Phase 5
 
@@ -289,6 +325,7 @@ Quick reference guide with:
 ## 🎯 Key Highlights
 
 ### Architecture Principles
+
 - **Distributed**: No central service needed (git-based state)
 - **Resilient**: Agent failures don't cascade (isolation, task reassignment)
 - **Simple**: Minimal dependencies (git, MCP, local files)
@@ -296,6 +333,7 @@ Quick reference guide with:
 - **Backwards Compatible**: Existing single-project swarms work unchanged
 
 ### Core Innovation
+
 - **Civilization Control Plane**: Decentralized coordination via git + MCP
 - **Agent Identity**: Global UUIDs immutable per agent, persistent across restarts
 - **Multi-Tier Hierarchy**: L1 (supervisor) → L2 (worker) → L3 (simulated)
@@ -303,6 +341,7 @@ Quick reference guide with:
 - **Eventual Consistency**: Decentralized state with ~30s propagation
 
 ### Scaling Path
+
 - **5-20 agents**: File-based + MCP (current design)
 - **20-50 agents**: File-based + MCP + optimization (caching, load balancing)
 - **50-100+ agents**: Consider centralized backend (future)
@@ -311,15 +350,15 @@ Quick reference guide with:
 
 ## 📊 Documentation Statistics
 
-| Document | Lines | Size | Read Time |
-|----------|-------|------|-----------|
-| [CIVILIZATION_ARCHITECTURE_SUMMARY.md](./CIVILIZATION_ARCHITECTURE_SUMMARY.md) | 392 | 15 KB | 16 min |
-| [MULTI_TENANT_AGENT_CIVILIZATION_ARCHITECTURE.md](./MULTI_TENANT_AGENT_CIVILIZATION_ARCHITECTURE.md) | 938 | 32 KB | 30 min |
-| [AGENT_IDENTITY_AND_DISCOVERY.md](./AGENT_IDENTITY_AND_DISCOVERY.md) | 1,008 | 29 KB | 35 min |
-| [CROSS_PROJECT_COORDINATION_PATTERNS.md](./CROSS_PROJECT_COORDINATION_PATTERNS.md) | 895 | 26 KB | 35 min |
-| [CIVILIZATION_SCALE_PERFORMANCE.md](./CIVILIZATION_SCALE_PERFORMANCE.md) | 837 | 24 KB | 30 min |
-| [MULTI_TENANT_CONTROLLER_IMPLEMENTATION_PLAN.md](./MULTI_TENANT_CONTROLLER_IMPLEMENTATION_PLAN.md) | 1,046 | 31 KB | 40 min |
-| **TOTAL** | **6,116** | **157 KB** | **~186 min** |
+| Document                                                                                             | Lines     | Size       | Read Time    |
+| ---------------------------------------------------------------------------------------------------- | --------- | ---------- | ------------ |
+| [CIVILIZATION_ARCHITECTURE_SUMMARY.md](./CIVILIZATION_ARCHITECTURE_SUMMARY.md)                       | 392       | 15 KB      | 16 min       |
+| [MULTI_TENANT_AGENT_CIVILIZATION_ARCHITECTURE.md](./MULTI_TENANT_AGENT_CIVILIZATION_ARCHITECTURE.md) | 938       | 32 KB      | 30 min       |
+| [AGENT_IDENTITY_AND_DISCOVERY.md](./AGENT_IDENTITY_AND_DISCOVERY.md)                                 | 1,008     | 29 KB      | 35 min       |
+| [CROSS_PROJECT_COORDINATION_PATTERNS.md](./CROSS_PROJECT_COORDINATION_PATTERNS.md)                   | 895       | 26 KB      | 35 min       |
+| [CIVILIZATION_SCALE_PERFORMANCE.md](./CIVILIZATION_SCALE_PERFORMANCE.md)                             | 837       | 24 KB      | 30 min       |
+| [MULTI_TENANT_CONTROLLER_IMPLEMENTATION_PLAN.md](./MULTI_TENANT_CONTROLLER_IMPLEMENTATION_PLAN.md)   | 1,046     | 31 KB      | 40 min       |
+| **TOTAL**                                                                                            | **6,116** | **157 KB** | **~186 min** |
 
 ---
 
@@ -344,16 +383,19 @@ This architecture is ready for implementation with:
 ## 🚀 Getting Started
 
 ### For Understanding the Architecture
+
 1. **Start here**: [CIVILIZATION_ARCHITECTURE_SUMMARY.md](./CIVILIZATION_ARCHITECTURE_SUMMARY.md) (16 min)
 2. **Deep dive**: Choose based on your role (see Quick Navigation)
 3. **Reference**: Use as needed during implementation
 
 ### For Implementation
+
 1. **Review Phase 1 plan**: [MULTI_TENANT_CONTROLLER_IMPLEMENTATION_PLAN.md](./MULTI_TENANT_CONTROLLER_IMPLEMENTATION_PLAN.md) § Phase 1
 2. **Read identity docs**: [AGENT_IDENTITY_AND_DISCOVERY.md](./AGENT_IDENTITY_AND_DISCOVERY.md)
 3. **Start coding**: ~10-15 tool calls for Phase 1 foundation
 
 ### For Decision Making
+
 1. **Review decisions**: [CIVILIZATION_ARCHITECTURE_SUMMARY.md](./CIVILIZATION_ARCHITECTURE_SUMMARY.md) § Key Decisions
 2. **Check alternatives**: Each document has decision rationale
 3. **Plan review**: Hold architecture review before Phase 1 implementation
@@ -362,15 +404,15 @@ This architecture is ready for implementation with:
 
 ## 📝 Document Index
 
-| # | Document | Type | Size | Purpose |
-|----|----------|------|------|---------|
-| 0 | **README_CIVILIZATION_ARCHITECTURE.md** | Index | This | Navigation guide |
-| 1 | **CIVILIZATION_ARCHITECTURE_SUMMARY.md** | Summary | 15 KB | Overview + quick reference |
-| 2 | **MULTI_TENANT_AGENT_CIVILIZATION_ARCHITECTURE.md** | Core | 32 KB | System architecture + design |
-| 3 | **AGENT_IDENTITY_AND_DISCOVERY.md** | Spec | 29 KB | Agent ID system + registry |
-| 4 | **CROSS_PROJECT_COORDINATION_PATTERNS.md** | Spec | 26 KB | Communication protocols |
-| 5 | **CIVILIZATION_SCALE_PERFORMANCE.md** | Spec | 24 KB | Resource orchestration |
-| 6 | **MULTI_TENANT_CONTROLLER_IMPLEMENTATION_PLAN.md** | Plan | 31 KB | Implementation roadmap |
+| #   | Document                                            | Type    | Size  | Purpose                      |
+| --- | --------------------------------------------------- | ------- | ----- | ---------------------------- |
+| 0   | **README_CIVILIZATION_ARCHITECTURE.md**             | Index   | This  | Navigation guide             |
+| 1   | **CIVILIZATION_ARCHITECTURE_SUMMARY.md**            | Summary | 15 KB | Overview + quick reference   |
+| 2   | **MULTI_TENANT_AGENT_CIVILIZATION_ARCHITECTURE.md** | Core    | 32 KB | System architecture + design |
+| 3   | **AGENT_IDENTITY_AND_DISCOVERY.md**                 | Spec    | 29 KB | Agent ID system + registry   |
+| 4   | **CROSS_PROJECT_COORDINATION_PATTERNS.md**          | Spec    | 26 KB | Communication protocols      |
+| 5   | **CIVILIZATION_SCALE_PERFORMANCE.md**               | Spec    | 24 KB | Resource orchestration       |
+| 6   | **MULTI_TENANT_CONTROLLER_IMPLEMENTATION_PLAN.md**  | Plan    | 31 KB | Implementation roadmap       |
 
 ---
 
@@ -390,14 +432,17 @@ This architecture is ready for implementation with:
 ## 💡 Architecture Highlights
 
 ### Distributed Coordination Without Central Service
+
 Uses git as distributed state store. All agents eventually consistent within ~30 seconds.
 
 ### Multi-Tier Agent Hierarchy
+
 - **L1**: Claude Code (supervisor, human-in-loop)
 - **L2**: Spawned agents (workers, autonomous)
 - **L3**: Simulated agents (e.g., Cursor windows, CLI agents)
 
 ### Five Core Communication Patterns
+
 1. **Task Dispatch**: L1 → L2/L3
 2. **Cross-Project Requests**: L2 ↔ L2 (negotiated)
 3. **P2P Negotiation**: L2 ↔ L2 (semaphore-based)
@@ -405,6 +450,7 @@ Uses git as distributed state store. All agents eventually consistent within ~30
 5. **Broadcasts**: Civilization-wide events
 
 ### Global Resource Management
+
 - Per-project quotas (CPU %, memory)
 - Load balancing with locality preference
 - Backpressure when overloaded
@@ -415,6 +461,7 @@ Uses git as distributed state store. All agents eventually consistent within ~30
 ## 📬 Questions & Feedback
 
 **For clarification on**:
+
 - Architecture decisions → See [CIVILIZATION_ARCHITECTURE_SUMMARY.md](./CIVILIZATION_ARCHITECTURE_SUMMARY.md) § Key Decisions
 - Agent identity → See [AGENT_IDENTITY_AND_DISCOVERY.md](./AGENT_IDENTITY_AND_DISCOVERY.md)
 - Communication protocols → See [CROSS_PROJECT_COORDINATION_PATTERNS.md](./CROSS_PROJECT_COORDINATION_PATTERNS.md)
@@ -426,4 +473,3 @@ Uses git as distributed state store. All agents eventually consistent within ~30
 **Status**: Ready for Review & Implementation
 **Created**: 2026-02-19
 **Version**: 1.0
-

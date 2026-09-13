@@ -51,12 +51,14 @@ OpenRouter is a unified API gateway providing access to 400+ language models fro
 **Base URL:** `https://openrouter.ai/api/v1`
 
 **OpenAI compatibility:** Full compatibility for `/chat/completions` and `/completions`. To use with OpenAI SDK, set:
+
 - `base_url` / `baseURL` to `https://openrouter.ai/api/v1`
 - `api_key` / `apiKey` to your OpenRouter API key
 
 **Overhead:** ~25-40ms additional latency over direct provider calls.
 
 **OpenAPI Specifications:**
+
 - YAML: `https://openrouter.ai/openapi.yaml`
 - JSON: `https://openrouter.ai/openapi.json`
 
@@ -94,11 +96,11 @@ Authorization: Bearer <OPENROUTER_API_KEY>
 
 There are three distinct key types with different permissions:
 
-| Key Type | Purpose | Create Via |
-|----------|---------|------------|
-| Regular API Key | Making completion/inference API calls | openrouter.ai/keys |
+| Key Type                    | Purpose                                                               | Create Via                     |
+| --------------------------- | --------------------------------------------------------------------- | ------------------------------ |
+| Regular API Key             | Making completion/inference API calls                                 | openrouter.ai/keys             |
 | Management/Provisioning Key | Managing other API keys programmatically; cannot make inference calls | Settings > Management API Keys |
-| OAuth-derived Key | User-authorized key from PKCE flow | OAuth PKCE exchange |
+| OAuth-derived Key           | User-authorized key from PKCE flow                                    | OAuth PKCE exchange            |
 
 ### 2.5 Security
 
@@ -130,6 +132,7 @@ OpenRouter model IDs follow the format:
 ```
 
 Examples:
+
 - `openai/gpt-4o`
 - `anthropic/claude-3.5-sonnet`
 - `google/gemini-2.5-pro`
@@ -145,30 +148,30 @@ Append suffixes to any model ID to change routing behavior:
 
 **Static Variants** (select a specific model version):
 
-| Suffix | Behavior |
-|--------|---------|
-| `:free` | Use the free-tier version; low rate limits |
-| `:extended` | Extended context window / output length |
+| Suffix      | Behavior                                         |
+| ----------- | ------------------------------------------------ |
+| `:free`     | Use the free-tier version; low rate limits       |
+| `:extended` | Extended context window / output length          |
 | `:thinking` | Reasoning-enabled variant (for supported models) |
-| `:exacto` | OpenRouter-curated high-quality endpoints only |
+| `:exacto`   | OpenRouter-curated high-quality endpoints only   |
 
 **Dynamic Variants** (change routing behavior for any model):
 
-| Suffix | Behavior |
-|--------|---------|
-| `:nitro` | Route to highest-throughput provider (`sort: "throughput"`) |
-| `:floor` | Route to lowest-cost provider (`sort: "price"`) |
-| `:online` | Inject live web search results into the prompt |
+| Suffix    | Behavior                                                    |
+| --------- | ----------------------------------------------------------- |
+| `:nitro`  | Route to highest-throughput provider (`sort: "throughput"`) |
+| `:floor`  | Route to lowest-cost provider (`sort: "price"`)             |
+| `:online` | Inject live web search results into the prompt              |
 
 Example: `anthropic/claude-3.5-sonnet:nitro` routes to the fastest available provider for Claude 3.5 Sonnet.
 
 ### 3.3 Special Model IDs
 
-| Model ID | Behavior |
-|----------|---------|
-| `openrouter/auto` | Auto Router (NotDiamond-powered intelligent model selection) |
-| `openrouter/free` | Free Models Router (selects from free models) |
-| `openrouter/bodybuilder` | Body Builder (generates API requests from natural language) |
+| Model ID                 | Behavior                                                     |
+| ------------------------ | ------------------------------------------------------------ |
+| `openrouter/auto`        | Auto Router (NotDiamond-powered intelligent model selection) |
+| `openrouter/free`        | Free Models Router (selects from free models)                |
+| `openrouter/bodybuilder` | Body Builder (generates API requests from natural language)  |
 
 ### 3.4 Model Permaslugs
 
@@ -180,24 +183,24 @@ Each model version has a `model_permaslug` — a timestamped, immutable identifi
 
 ### 4.1 Complete Endpoint List
 
-| Method | Path | Purpose | Auth Required |
-|--------|------|---------|---------------|
-| POST | `/api/v1/chat/completions` | Chat completions (primary) | API key |
-| POST | `/api/v1/completions` | Legacy text completions | API key |
-| GET | `/api/v1/models` | List all models | API key |
-| GET | `/api/v1/models/{author}/{slug}/endpoints` | List provider endpoints for a model | API key |
-| GET | `/api/v1/generation` | Get generation stats by ID | API key |
-| GET | `/api/v1/activity` | User activity analytics (30 days) | Management key |
-| GET | `/api/v1/key` | Get current API key details | API key |
-| GET | `/api/v1/credits` | Get account credit balance | Management key |
-| POST | `/api/v1/keys` | Create new API key | Management key |
-| GET | `/api/v1/keys` | List all API keys | Management key |
-| GET | `/api/v1/keys/{hash}` | Get a single API key | Management key |
-| DELETE | `/api/v1/keys/{hash}` | Delete an API key | Management key |
-| GET | `/auth` | OAuth PKCE authorization redirect | None |
-| POST | `/api/v1/auth/keys` | Exchange OAuth code for API key | None |
-| POST | `/api/v1/embeddings` | Text embeddings | API key |
-| POST | `/api/v1/responses` | Responses API (Beta) | API key |
+| Method | Path                                       | Purpose                             | Auth Required  |
+| ------ | ------------------------------------------ | ----------------------------------- | -------------- |
+| POST   | `/api/v1/chat/completions`                 | Chat completions (primary)          | API key        |
+| POST   | `/api/v1/completions`                      | Legacy text completions             | API key        |
+| GET    | `/api/v1/models`                           | List all models                     | API key        |
+| GET    | `/api/v1/models/{author}/{slug}/endpoints` | List provider endpoints for a model | API key        |
+| GET    | `/api/v1/generation`                       | Get generation stats by ID          | API key        |
+| GET    | `/api/v1/activity`                         | User activity analytics (30 days)   | Management key |
+| GET    | `/api/v1/key`                              | Get current API key details         | API key        |
+| GET    | `/api/v1/credits`                          | Get account credit balance          | Management key |
+| POST   | `/api/v1/keys`                             | Create new API key                  | Management key |
+| GET    | `/api/v1/keys`                             | List all API keys                   | Management key |
+| GET    | `/api/v1/keys/{hash}`                      | Get a single API key                | Management key |
+| DELETE | `/api/v1/keys/{hash}`                      | Delete an API key                   | Management key |
+| GET    | `/auth`                                    | OAuth PKCE authorization redirect   | None           |
+| POST   | `/api/v1/auth/keys`                        | Exchange OAuth code for API key     | None           |
+| POST   | `/api/v1/embeddings`                       | Text embeddings                     | API key        |
+| POST   | `/api/v1/responses`                        | Responses API (Beta)                | API key        |
 
 ---
 
@@ -220,21 +223,37 @@ Each model version has a `model_permaslug` — a timestamped, immutable identifi
 All message types follow this structure, with role-specific variations:
 
 **SystemMessage:**
+
 ```json
-{"role": "system", "content": "string | ContentArray", "name": "optional string"}
+{
+  "role": "system",
+  "content": "string | ContentArray",
+  "name": "optional string"
+}
 ```
 
 **UserMessage:**
+
 ```json
-{"role": "user", "content": "string | ContentArray", "name": "optional string"}
+{
+  "role": "user",
+  "content": "string | ContentArray",
+  "name": "optional string"
+}
 ```
 
 **DeveloperMessage:**
+
 ```json
-{"role": "developer", "content": "string | ContentArray", "name": "optional string"}
+{
+  "role": "developer",
+  "content": "string | ContentArray",
+  "name": "optional string"
+}
 ```
 
 **AssistantMessage:**
+
 ```json
 {
   "role": "assistant",
@@ -249,28 +268,50 @@ All message types follow this structure, with role-specific variations:
 ```
 
 **ToolResponseMessage:**
+
 ```json
-{"role": "tool", "content": "string | ContentArray", "tool_call_id": "required string"}
+{
+  "role": "tool",
+  "content": "string | ContentArray",
+  "tool_call_id": "required string"
+}
 ```
 
 ### 5.3 Content Item Types
 
 **Text:**
+
 ```json
-{"type": "text", "text": "string", "cache_control": {"type": "ephemeral", "ttl": "1h"}}
+{
+  "type": "text",
+  "text": "string",
+  "cache_control": { "type": "ephemeral", "ttl": "1h" }
+}
 ```
 
 **Image:**
+
 ```json
-{"type": "image_url", "image_url": {"url": "https://... or data:image/...", "detail": "auto|low|high"}}
+{
+  "type": "image_url",
+  "image_url": {
+    "url": "https://... or data:image/...",
+    "detail": "auto|low|high"
+  }
+}
 ```
 
 **Audio:**
+
 ```json
-{"type": "input_audio", "input_audio": {"data": "base64string", "format": "wav|mp3|..."}}
+{
+  "type": "input_audio",
+  "input_audio": { "data": "base64string", "format": "wav|mp3|..." }
+}
 ```
 
 **Video:**
+
 ```json
 {"type": "input_video", "video_url": {"url": "https://..."}}
 {"type": "video_url", "video_url": {"url": "https://..."}}
@@ -278,24 +319,24 @@ All message types follow this structure, with role-specific variations:
 
 ### 5.4 Generation Parameters
 
-| Parameter | Type | Range | Default | Description |
-|-----------|------|-------|---------|-------------|
-| `temperature` | float | 0.0–2.0 | 1.0 | Randomness/creativity |
-| `top_p` | float | 0.0–1.0 | 1.0 | Nucleus sampling threshold |
-| `top_k` | integer | 0+ | 0 | Top-K sampling (0 = disabled) |
-| `frequency_penalty` | float | -2.0–2.0 | 0.0 | Penalize repeated tokens by frequency |
-| `presence_penalty` | float | -2.0–2.0 | 0.0 | Penalize any repeated tokens |
-| `repetition_penalty` | float | 0.0–2.0 | 1.0 | Reduce repetition (alternative to above) |
-| `min_p` | float | 0.0–1.0 | 0.0 | Minimum token probability relative to top token |
-| `top_a` | float | 0.0–1.0 | 0.0 | Dynamic top-P; tokens must exceed `top_a * p_max^2` |
-| `seed` | integer | any | none | Deterministic sampling seed |
-| `max_tokens` | integer | 1+ | none | Maximum response tokens |
-| `max_completion_tokens` | integer | 1+ | none | Alias for max_tokens (OpenAI compat) |
-| `stop` | string/string[] | | none | Stop sequences |
-| `logit_bias` | map | -100 to 100 | none | Token ID → bias value |
-| `logprobs` | boolean | | false | Return log probabilities |
-| `top_logprobs` | integer | 0–20 | none | Top N log probability tokens |
-| `verbosity` | enum | low/medium/high/max | medium | Response verbosity (maps to Anthropic output_config.effort) |
+| Parameter               | Type            | Range               | Default | Description                                                 |
+| ----------------------- | --------------- | ------------------- | ------- | ----------------------------------------------------------- |
+| `temperature`           | float           | 0.0–2.0             | 1.0     | Randomness/creativity                                       |
+| `top_p`                 | float           | 0.0–1.0             | 1.0     | Nucleus sampling threshold                                  |
+| `top_k`                 | integer         | 0+                  | 0       | Top-K sampling (0 = disabled)                               |
+| `frequency_penalty`     | float           | -2.0–2.0            | 0.0     | Penalize repeated tokens by frequency                       |
+| `presence_penalty`      | float           | -2.0–2.0            | 0.0     | Penalize any repeated tokens                                |
+| `repetition_penalty`    | float           | 0.0–2.0             | 1.0     | Reduce repetition (alternative to above)                    |
+| `min_p`                 | float           | 0.0–1.0             | 0.0     | Minimum token probability relative to top token             |
+| `top_a`                 | float           | 0.0–1.0             | 0.0     | Dynamic top-P; tokens must exceed `top_a * p_max^2`         |
+| `seed`                  | integer         | any                 | none    | Deterministic sampling seed                                 |
+| `max_tokens`            | integer         | 1+                  | none    | Maximum response tokens                                     |
+| `max_completion_tokens` | integer         | 1+                  | none    | Alias for max_tokens (OpenAI compat)                        |
+| `stop`                  | string/string[] |                     | none    | Stop sequences                                              |
+| `logit_bias`            | map             | -100 to 100         | none    | Token ID → bias value                                       |
+| `logprobs`              | boolean         |                     | false   | Return log probabilities                                    |
+| `top_logprobs`          | integer         | 0–20                | none    | Top N log probability tokens                                |
+| `verbosity`             | enum            | low/medium/high/max | medium  | Response verbosity (maps to Anthropic output_config.effort) |
 
 ### 5.5 Response Format
 
@@ -324,7 +365,7 @@ All message types follow this structure, with role-specific variations:
 ```json
 {
   "stream": true,
-  "stream_options": {"include_usage": true}
+  "stream_options": { "include_usage": true }
 }
 ```
 
@@ -341,7 +382,7 @@ All message types follow this structure, with role-specific variations:
         "parameters": {
           "type": "object",
           "properties": {
-            "location": {"type": "string"}
+            "location": { "type": "string" }
           },
           "required": ["location"]
         },
@@ -422,14 +463,12 @@ Effort ratios applied to `max_tokens`: xhigh=0.95, high=0.80, medium=0.50, low=0
 ```
 
 When using OpenAI SDK, wrap non-standard fields in `extra_body`:
+
 ```python
 response = client.chat.completions.create(
     model="anthropic/claude-3.5-sonnet",
     messages=[...],
-    extra_body={
-        "models": ["anthropic/claude-3.5-sonnet", "openai/gpt-4o"],
-        "route": "fallback"
-    }
+    extra_body={"models": ["anthropic/claude-3.5-sonnet", "openai/gpt-4o"], "route": "fallback"},
 )
 ```
 
@@ -438,8 +477,12 @@ response = client.chat.completions.create(
 ```json
 {
   "plugins": [
-    {"id": "auto-router", "enabled": true, "allowed_models": ["anthropic/*", "openai/gpt-5*"]},
-    {"id": "moderation"},
+    {
+      "id": "auto-router",
+      "enabled": true,
+      "allowed_models": ["anthropic/*", "openai/gpt-5*"]
+    },
+    { "id": "moderation" },
     {
       "id": "web",
       "enabled": true,
@@ -450,9 +493,9 @@ response = client.chat.completions.create(
     {
       "id": "file-parser",
       "enabled": true,
-      "pdf": {"engine": "mistral-ocr"}
+      "pdf": { "engine": "mistral-ocr" }
     },
-    {"id": "response-healing", "enabled": true}
+    { "id": "response-healing", "enabled": true }
   ]
 }
 ```
@@ -464,9 +507,10 @@ Web search engine options: `"native"` | `"exa"` | omit for auto (native if avail
 File-parser PDF engine options: `"mistral-ocr"` | `"pdf-text"` | `"native"`
 
 `web_search_options` field (for native web search context sizing):
+
 ```json
 {
-  "web_search_options": {"search_context_size": "low|medium|high"}
+  "web_search_options": { "search_context_size": "low|medium|high" }
 }
 ```
 
@@ -495,23 +539,23 @@ File-parser PDF engine options: `"mistral-ocr"` | `"pdf-text"` | `"native"`
 
 ### 5.13 OpenRouter-Specific Fields
 
-| Field | Type | Description |
-|-------|------|-------------|
-| `transforms` | string[] | Message transformation strategies. `["middle-out"]` or `[]` to disable |
-| `models` | string[] | Fallback model list in priority order |
-| `route` | string | `"fallback"` or `"sort"` |
-| `provider` | object | Provider routing preferences (see above) |
-| `user` | string | Stable user identifier for caching and analytics |
-| `session_id` | string | Session identifier for observability |
-| `trace` | object | Tracing metadata for broadcast destinations |
-| `metadata` | object | Custom key-value pairs |
-| `prediction` | object | `{"type": "content", "content": "predicted text"}` for speculative decoding |
-| `debug` | object | `{"echo_upstream_body": true}` to debug transformed requests |
-| `reasoning` | object | Extended thinking configuration |
-| `plugins` | array | Plugin configurations |
-| `modalities` | string[] | Output modalities: `["text"]`, `["image"]`, `["text", "image"]` |
-| `image_config` | object | Image generation configuration |
-| `preset` | string | Preset slug to apply saved configuration |
+| Field          | Type     | Description                                                                 |
+| -------------- | -------- | --------------------------------------------------------------------------- |
+| `transforms`   | string[] | Message transformation strategies. `["middle-out"]` or `[]` to disable      |
+| `models`       | string[] | Fallback model list in priority order                                       |
+| `route`        | string   | `"fallback"` or `"sort"`                                                    |
+| `provider`     | object   | Provider routing preferences (see above)                                    |
+| `user`         | string   | Stable user identifier for caching and analytics                            |
+| `session_id`   | string   | Session identifier for observability                                        |
+| `trace`        | object   | Tracing metadata for broadcast destinations                                 |
+| `metadata`     | object   | Custom key-value pairs                                                      |
+| `prediction`   | object   | `{"type": "content", "content": "predicted text"}` for speculative decoding |
+| `debug`        | object   | `{"echo_upstream_body": true}` to debug transformed requests                |
+| `reasoning`    | object   | Extended thinking configuration                                             |
+| `plugins`      | array    | Plugin configurations                                                       |
+| `modalities`   | string[] | Output modalities: `["text"]`, `["image"]`, `["text", "image"]`             |
+| `image_config` | object   | Image generation configuration                                              |
+| `preset`       | string   | Preset slug to apply saved configuration                                    |
 
 ### 5.14 Presets
 
@@ -530,8 +574,8 @@ Append an incomplete assistant message to steer model completion:
 ```json
 {
   "messages": [
-    {"role": "user", "content": "Who are you?"},
-    {"role": "assistant", "content": "I am"}
+    { "role": "user", "content": "Who are you?" },
+    { "role": "assistant", "content": "I am" }
   ]
 }
 ```
@@ -613,19 +657,20 @@ Append an incomplete assistant message to steer model completion:
 
 OpenRouter normalizes finish reasons to these standard values:
 
-| Finish Reason | Meaning |
-|---------------|---------|
-| `stop` | Normal completion |
-| `length` | Hit max_tokens limit |
-| `tool_calls` | Model requested tool call |
+| Finish Reason    | Meaning                             |
+| ---------------- | ----------------------------------- |
+| `stop`           | Normal completion                   |
+| `length`         | Hit max_tokens limit                |
+| `tool_calls`     | Model requested tool call           |
 | `content_filter` | Content moderation stopped response |
-| `error` | Error during generation |
+| `error`          | Error during generation             |
 
 The raw provider finish reason is always available in `native_finish_reason`.
 
 ### 6.3 Response Model Field
 
 The `model` field in the response reflects the **actual model that handled the request**, which may differ from the requested model when:
+
 - Fallback models were used
 - Auto Router selected a different model
 - A model variant resolved to a specific endpoint
@@ -678,9 +723,13 @@ When web search plugin is active, `annotations` array is added to the message:
 ```json
 {
   "reasoning_details": [
-    {"type": "reasoning.text", "text": "Raw reasoning text", "signature": "optional"},
-    {"type": "reasoning.summary", "text": "High-level summary"},
-    {"type": "reasoning.encrypted", "data": "encrypted_content"}
+    {
+      "type": "reasoning.text",
+      "text": "Raw reasoning text",
+      "signature": "optional"
+    },
+    { "type": "reasoning.summary", "text": "High-level summary" },
+    { "type": "reasoning.encrypted", "data": "encrypted_content" }
   ]
 }
 ```
@@ -761,7 +810,7 @@ If an error occurs after tokens have already been streamed, the HTTP status code
       "error": {
         "code": 502,
         "message": "Provider error occurred",
-        "metadata": {"provider_name": "Anthropic"}
+        "metadata": { "provider_name": "Anthropic" }
       }
     }
   ]
@@ -793,7 +842,7 @@ For `/api/v1/completions` (non-chat), streaming choices use `text` instead of `d
 
 ```json
 {
-  "choices": [{"text": "chunk", "finish_reason": null}]
+  "choices": [{ "text": "chunk", "finish_reason": null }]
 }
 ```
 
@@ -822,7 +871,17 @@ OpenRouter's default three-tier strategy:
     "enforce_distillable_text": false,
     "only": ["Anthropic"],
     "ignore": ["Together"],
-    "quantizations": ["int4", "int8", "fp4", "fp6", "fp8", "fp16", "bf16", "fp32", "unknown"],
+    "quantizations": [
+      "int4",
+      "int8",
+      "fp4",
+      "fp6",
+      "fp8",
+      "fp16",
+      "bf16",
+      "fp32",
+      "unknown"
+    ],
     "sort": "price",
     "max_price": {
       "prompt": 1.0,
@@ -842,6 +901,7 @@ All `max_price` values are in USD per million tokens (or per unit for images/req
 ### 8.3 Sort Options
 
 Simple sort (string):
+
 ```json
 {"provider": {"sort": "price"}}
 {"provider": {"sort": "throughput"}}
@@ -849,6 +909,7 @@ Simple sort (string):
 ```
 
 Advanced sort (object):
+
 ```json
 {
   "provider": {
@@ -887,7 +948,7 @@ Percentile thresholds **deprioritize** rather than exclude. Requests still execu
 ### 8.5 Data Collection
 
 ```json
-{"provider": {"data_collection": "deny"}}
+{ "provider": { "data_collection": "deny" } }
 ```
 
 `"deny"` excludes providers that may store data non-transiently.
@@ -895,7 +956,7 @@ Percentile thresholds **deprioritize** rather than exclude. Requests still execu
 ### 8.6 Zero Data Retention (ZDR)
 
 ```json
-{"provider": {"zdr": true}}
+{ "provider": { "zdr": true } }
 ```
 
 Restricts routing to ZDR-compliant endpoints. Note: OpenRouter considers ephemeral KV caching (e.g., implicit caching on Gemini) as ZDR-compliant since it doesn't constitute persistent data retention.
@@ -903,7 +964,7 @@ Restricts routing to ZDR-compliant endpoints. Note: OpenRouter considers ephemer
 ### 8.7 Require Parameters
 
 ```json
-{"provider": {"require_parameters": true}}
+{ "provider": { "require_parameters": true } }
 ```
 
 Only routes to providers that support all parameters in the request (e.g., `tools`, `max_tokens`, specific `response_format` types). When `tools` or `tool_choice` are in the request, OpenRouter automatically routes only to tool-supporting providers (same effect without needing this field).
@@ -940,10 +1001,11 @@ Enterprise customers can enable EU-only routing via account settings. When enabl
 ### 9.1 Request Structure (Three-Turn Pattern)
 
 **Turn 1 - Initial request with tools:**
+
 ```json
 {
   "model": "openai/gpt-4o",
-  "messages": [{"role": "user", "content": "What's the weather in SF?"}],
+  "messages": [{ "role": "user", "content": "What's the weather in SF?" }],
   "tools": [
     {
       "type": "function",
@@ -953,7 +1015,7 @@ Enterprise customers can enable EU-only routing via account settings. When enabl
         "parameters": {
           "type": "object",
           "properties": {
-            "location": {"type": "string", "description": "City name"}
+            "location": { "type": "string", "description": "City name" }
           },
           "required": ["location"]
         }
@@ -965,24 +1027,33 @@ Enterprise customers can enable EU-only routing via account settings. When enabl
 ```
 
 **Turn 1 - Response with tool call:**
+
 ```json
 {
-  "choices": [{
-    "finish_reason": "tool_calls",
-    "message": {
-      "role": "assistant",
-      "content": null,
-      "tool_calls": [{
-        "id": "call_abc123",
-        "type": "function",
-        "function": {"name": "get_weather", "arguments": "{\"location\":\"San Francisco\"}"}
-      }]
+  "choices": [
+    {
+      "finish_reason": "tool_calls",
+      "message": {
+        "role": "assistant",
+        "content": null,
+        "tool_calls": [
+          {
+            "id": "call_abc123",
+            "type": "function",
+            "function": {
+              "name": "get_weather",
+              "arguments": "{\"location\":\"San Francisco\"}"
+            }
+          }
+        ]
+      }
     }
-  }]
+  ]
 }
 ```
 
 **Turn 2 - Follow-up with tool results (tools array must be included again):**
+
 ```json
 {
   "model": "openai/gpt-4o",
@@ -1000,7 +1071,7 @@ Enterprise customers can enable EU-only routing via account settings. When enabl
 ### 9.2 Parallel Tool Calls
 
 ```json
-{"parallel_tool_calls": true}
+{ "parallel_tool_calls": true }
 ```
 
 Default is `true`. When `false`, model requests one tool at a time sequentially.
@@ -1021,10 +1092,10 @@ OpenRouter transforms tool calls to match each provider's native format. From th
 
 ```json
 {
-  "response_format": {"type": "json_object"},
+  "response_format": { "type": "json_object" },
   "messages": [
-    {"role": "system", "content": "Always respond with valid JSON."},
-    {"role": "user", "content": "Give me user data"}
+    { "role": "system", "content": "Always respond with valid JSON." },
+    { "role": "user", "content": "Give me user data" }
   ]
 }
 ```
@@ -1044,9 +1115,9 @@ When using JSON mode, also instruct the model to produce JSON via system/user me
       "schema": {
         "type": "object",
         "properties": {
-          "name": {"type": "string"},
-          "age": {"type": "integer"},
-          "email": {"type": "string", "format": "email"}
+          "name": { "type": "string" },
+          "age": { "type": "integer" },
+          "email": { "type": "string", "format": "email" }
         },
         "required": ["name", "age"],
         "additionalProperties": false
@@ -1128,16 +1199,16 @@ When caching is used, OpenRouter makes a best effort to continue routing to the 
 
 ### 11.3 Provider-Specific Cache Behavior
 
-| Provider | Cache Type | Setup Required | Breakpoints |
-|----------|-----------|----------------|-------------|
-| OpenAI | Automatic | None | N/A |
-| Anthropic | Explicit | Yes (`cache_control`) | Max 4 per request |
-| Google Gemini 2.5 Pro/Flash | Implicit (automatic) | None | N/A |
-| Google Gemini (others) | Explicit | Yes (`cache_control`) | Only last breakpoint used |
-| DeepSeek | Automatic | None | N/A |
-| Grok | Automatic | None | N/A |
-| Moonshot | Automatic | None | N/A |
-| Groq | Automatic | None | N/A |
+| Provider                    | Cache Type           | Setup Required        | Breakpoints               |
+| --------------------------- | -------------------- | --------------------- | ------------------------- |
+| OpenAI                      | Automatic            | None                  | N/A                       |
+| Anthropic                   | Explicit             | Yes (`cache_control`) | Max 4 per request         |
+| Google Gemini 2.5 Pro/Flash | Implicit (automatic) | None                  | N/A                       |
+| Google Gemini (others)      | Explicit             | Yes (`cache_control`) | Only last breakpoint used |
+| DeepSeek                    | Automatic            | None                  | N/A                       |
+| Grok                        | Automatic            | None                  | N/A                       |
+| Moonshot                    | Automatic            | None                  | N/A                       |
+| Groq                        | Automatic            | None                  | N/A                       |
 
 **Anthropic minimum tokens:** 4,096 for Opus 4.5/Haiku 4.5, 1,024 for Opus 4.1/4/Sonnet 4.5/4
 
@@ -1176,24 +1247,29 @@ When caching is used, OpenRouter makes a best effort to continue routing to the 
 ### 12.1 Web Search Plugin
 
 **Enable via model suffix:**
+
 ```json
-{"model": "openai/gpt-4o:online"}
+{ "model": "openai/gpt-4o:online" }
 ```
 
 **Enable via plugins array:**
+
 ```json
 {
-  "plugins": [{
-    "id": "web",
-    "enabled": true,
-    "max_results": 5,
-    "search_prompt": "Custom citation instructions",
-    "engine": "native"
-  }]
+  "plugins": [
+    {
+      "id": "web",
+      "enabled": true,
+      "max_results": 5,
+      "search_prompt": "Custom citation instructions",
+      "engine": "native"
+    }
+  ]
 }
 ```
 
 Engine options:
+
 - `"native"`: Provider's built-in search (OpenAI, Anthropic, Perplexity, xAI). Forces native even if model doesn't support it (may error).
 - `"exa"`: Exa.ai keyword + embeddings search
 - Omit: Auto-select native if available, else Exa
@@ -1206,10 +1282,12 @@ Engine options:
 
 ```json
 {
-  "plugins": [{
-    "id": "file-parser",
-    "pdf": {"engine": "mistral-ocr"}
-  }]
+  "plugins": [
+    {
+      "id": "file-parser",
+      "pdf": { "engine": "mistral-ocr" }
+    }
+  ]
 }
 ```
 
@@ -1218,15 +1296,18 @@ PDF engine options: `"mistral-ocr"` | `"pdf-text"` | `"native"`
 Default: OpenRouter uses native file processing if available, else `mistral-ocr`.
 
 **Sending a PDF:**
+
 ```json
 {
-  "messages": [{
-    "role": "user",
-    "content": [
-      {"type": "file", "file": {"url": "https://example.com/doc.pdf"}},
-      {"type": "text", "text": "Summarize this document"}
-    ]
-  }]
+  "messages": [
+    {
+      "role": "user",
+      "content": [
+        { "type": "file", "file": { "url": "https://example.com/doc.pdf" } },
+        { "type": "text", "text": "Summarize this document" }
+      ]
+    }
+  ]
 }
 ```
 
@@ -1248,6 +1329,7 @@ Works with any model on OpenRouter, regardless of native PDF support.
 Activates automatically for non-streaming requests with `json_schema` or `json_object` response format.
 
 Fixes:
+
 - Missing brackets/commas/quotes
 - Markdown wrapping around JSON (extracts JSON from code blocks)
 - Trailing commas
@@ -1255,6 +1337,7 @@ Fixes:
 - Mixed content (isolates JSON from surrounding text)
 
 **Limitations:**
+
 - Non-streaming only
 - Cannot fix truncated responses (hit by `max_tokens`)
 - Some severely malformed JSON remains unrepairable
@@ -1266,10 +1349,12 @@ Fixes:
 ```json
 {
   "model": "openrouter/auto",
-  "plugins": [{
-    "id": "auto-router",
-    "allowed_models": ["anthropic/*", "openai/gpt-5*", "google/*"]
-  }]
+  "plugins": [
+    {
+      "id": "auto-router",
+      "allowed_models": ["anthropic/*", "openai/gpt-5*", "google/*"]
+    }
+  ]
 }
 ```
 
@@ -1299,13 +1384,13 @@ Uses NotDiamond's routing to select the optimal model based on prompt analysis. 
 
 If using `effort` with a `max_tokens` of 10,000:
 
-| Effort | Ratio | Budget Tokens |
-|--------|-------|---------------|
-| xhigh | 0.95 | 9,500 |
-| high | 0.80 | 8,000 |
-| medium | 0.50 | 5,000 |
-| low | 0.20 | 2,000 |
-| minimal | 0.10 | 1,000 |
+| Effort  | Ratio | Budget Tokens |
+| ------- | ----- | ------------- |
+| xhigh   | 0.95  | 9,500         |
+| high    | 0.80  | 8,000         |
+| medium  | 0.50  | 5,000         |
+| low     | 0.20  | 2,000         |
+| minimal | 0.10  | 1,000         |
 
 Capped at 128,000 maximum; minimum 1,024 tokens.
 
@@ -1313,10 +1398,10 @@ Capped at 128,000 maximum; minimum 1,024 tokens.
 
 ### 13.3 Model Support Matrix
 
-| Parameter | Supported Models |
-|-----------|-----------------|
-| `reasoning.effort` | OpenAI (o1/o3/GPT-5), Grok models |
-| `reasoning.max_tokens` | Gemini thinking, Anthropic, Alibaba Qwen |
+| Parameter                        | Supported Models                                                                      |
+| -------------------------------- | ------------------------------------------------------------------------------------- |
+| `reasoning.effort`               | OpenAI (o1/o3/GPT-5), Grok models                                                     |
+| `reasoning.max_tokens`           | Gemini thinking, Anthropic, Alibaba Qwen                                              |
 | Preserved reasoning across turns | OpenAI, Anthropic, Gemini, xAI, MiniMax, Kimi, INTELLECT-3, Nemotron 3, MiMo-V2, Z.ai |
 
 Note: The `:thinking` model variant is no longer supported for Anthropic models — use the `reasoning` parameter directly.
@@ -1324,7 +1409,7 @@ Note: The `:thinking` model variant is no longer supported for Anthropic models 
 ### 13.4 Excluding Reasoning from Response
 
 ```json
-{"reasoning": {"exclude": true}}
+{ "reasoning": { "exclude": true } }
 ```
 
 Model still uses reasoning internally; reasoning tokens are not returned in the response but are still billed as output tokens.
@@ -1349,19 +1434,21 @@ Include the previous `reasoning_details` when sending follow-up messages:
 
 ```json
 {
-  "messages": [{
-    "role": "user",
-    "content": [
-      {
-        "type": "image_url",
-        "image_url": {
-          "url": "https://example.com/image.jpg",
-          "detail": "auto"
-        }
-      },
-      {"type": "text", "text": "What's in this image?"}
-    ]
-  }]
+  "messages": [
+    {
+      "role": "user",
+      "content": [
+        {
+          "type": "image_url",
+          "image_url": {
+            "url": "https://example.com/image.jpg",
+            "detail": "auto"
+          }
+        },
+        { "type": "text", "text": "What's in this image?" }
+      ]
+    }
+  ]
 }
 ```
 
@@ -1375,13 +1462,18 @@ Multiple images can be sent in separate content array entries.
 
 ```json
 {
-  "messages": [{
-    "role": "user",
-    "content": [
-      {"type": "video_url", "video_url": {"url": "https://youtube.com/watch?v=..."}},
-      {"type": "text", "text": "Summarize this video"}
-    ]
-  }]
+  "messages": [
+    {
+      "role": "user",
+      "content": [
+        {
+          "type": "video_url",
+          "video_url": { "url": "https://youtube.com/watch?v=..." }
+        },
+        { "type": "text", "text": "Summarize this video" }
+      ]
+    }
+  ]
 }
 ```
 
@@ -1391,13 +1483,18 @@ Only models with video processing capabilities handle video inputs. OpenRouter o
 
 ```json
 {
-  "messages": [{
-    "role": "user",
-    "content": [
-      {"type": "input_audio", "input_audio": {"data": "base64audiodata", "format": "wav"}},
-      {"type": "text", "text": "Transcribe this audio"}
-    ]
-  }]
+  "messages": [
+    {
+      "role": "user",
+      "content": [
+        {
+          "type": "input_audio",
+          "input_audio": { "data": "base64audiodata", "format": "wav" }
+        },
+        { "type": "text", "text": "Transcribe this audio" }
+      ]
+    }
+  ]
 }
 ```
 
@@ -1412,15 +1509,18 @@ Uses the same `/api/v1/chat/completions` endpoint with the `modalities` field:
 ```json
 {
   "model": "openai/gpt-5-image",
-  "messages": [{"role": "user", "content": "Generate a sunset over mountains"}],
+  "messages": [
+    { "role": "user", "content": "Generate a sunset over mountains" }
+  ],
   "modalities": ["image"],
   "stream": false
 }
 ```
 
 For models producing both text and images (e.g., Gemini):
+
 ```json
-{"modalities": ["text", "image"]}
+{ "modalities": ["text", "image"] }
 ```
 
 ### 15.2 Image Configuration
@@ -1430,12 +1530,8 @@ For models producing both text and images (e.g., Gemini):
   "image_config": {
     "aspect_ratio": "16:9",
     "image_size": "2K",
-    "font_inputs": [
-      {"font_url": "https://...", "text": "Sample text"}
-    ],
-    "super_resolution_references": [
-      "https://reference-image-url.jpg"
-    ]
+    "font_inputs": [{ "font_url": "https://...", "text": "Sample text" }],
+    "super_resolution_references": ["https://reference-image-url.jpg"]
   }
 }
 ```
@@ -1452,18 +1548,20 @@ Super resolution references: max 4, cost $0.20 each, image-to-image requests onl
 
 ```json
 {
-  "choices": [{
-    "message": {
-      "role": "assistant",
-      "content": null,
-      "images": [
-        {
-          "type": "image_url",
-          "image_url": {"url": "data:image/png;base64,..."}
-        }
-      ]
+  "choices": [
+    {
+      "message": {
+        "role": "assistant",
+        "content": null,
+        "images": [
+          {
+            "type": "image_url",
+            "image_url": { "url": "data:image/png;base64,..." }
+          }
+        ]
+      }
     }
-  }]
+  ]
 }
 ```
 
@@ -1573,7 +1671,7 @@ All key management requires a Management/Provisioning key (cannot be a regular A
 ```json
 {
   "name": "my-app-key",
-  "limit": 10.00,
+  "limit": 10.0,
   "limit_reset": "monthly",
   "include_byok_in_limit": false,
   "expires_at": "2027-01-01T00:00:00Z"
@@ -1583,6 +1681,7 @@ All key management requires a Management/Provisioning key (cannot be a regular A
 `limit_reset` values: `"daily"` | `"weekly"` | `"monthly"` | `null` (no reset). Resets at midnight UTC; weeks are Monday–Sunday.
 
 **Response (201):**
+
 ```json
 {
   "key": "sk-or-v1-<actual-key-string-only-shown-once>",
@@ -1591,8 +1690,8 @@ All key management requires a Management/Provisioning key (cannot be a regular A
     "name": "my-app-key",
     "label": "display label",
     "disabled": false,
-    "limit": 10.00,
-    "limit_remaining": 10.00,
+    "limit": 10.0,
+    "limit_remaining": 10.0,
     "limit_reset": "monthly",
     "include_byok_in_limit": false,
     "usage": 0,
@@ -1633,7 +1732,7 @@ Returns the key metadata object (not the key string itself).
 **DELETE** `https://openrouter.ai/api/v1/keys/{hash}`
 
 ```json
-{"deleted": true}
+{ "deleted": true }
 ```
 
 ### 18.5 Get Current Key Info (any key type)
@@ -1645,14 +1744,14 @@ Returns 18-field object about the key used to authenticate:
 ```json
 {
   "label": "my-key",
-  "limit": 100.00,
-  "limit_remaining": 85.50,
+  "limit": 100.0,
+  "limit_remaining": 85.5,
   "limit_reset": "monthly",
   "include_byok_in_limit": false,
-  "usage": 14.50,
-  "usage_daily": 2.10,
-  "usage_weekly": 8.30,
-  "usage_monthly": 14.50,
+  "usage": 14.5,
+  "usage_daily": 2.1,
+  "usage_weekly": 8.3,
+  "usage_monthly": 14.5,
   "byok_usage": 0,
   "byok_usage_daily": 0,
   "byok_usage_weekly": 0,
@@ -1682,6 +1781,7 @@ GET https://openrouter.ai/auth?callback_url=https://yourapp.com/callback&code_ch
 ```
 
 Parameters:
+
 - `callback_url` (required): Your application's return URL
 - `code_challenge` (optional, recommended): Base64-encoded SHA-256 hash of `code_verifier`
 - `code_challenge_method` (optional): `"S256"` or `"plain"`
@@ -1689,6 +1789,7 @@ Parameters:
 ### 19.2 Step 2 — Receive Authorization Code
 
 After user authorizes, they are redirected to:
+
 ```
 https://yourapp.com/callback?code=<authorization_code>
 ```
@@ -1706,17 +1807,18 @@ https://yourapp.com/callback?code=<authorization_code>
 ```
 
 **Response:**
+
 ```json
-{"key": "sk-or-v1-<user-api-key>"}
+{ "key": "sk-or-v1-<user-api-key>" }
 ```
 
 ### 19.4 Error Codes
 
-| Code | Meaning |
-|------|---------|
-| 400 | Invalid `code_challenge_method` (mismatched with Step 1) |
-| 403 | Invalid code or `code_verifier` (user not logged in, or verification failed) |
-| 405 | Method Not Allowed (must use POST over HTTPS) |
+| Code | Meaning                                                                      |
+| ---- | ---------------------------------------------------------------------------- |
+| 400  | Invalid `code_challenge_method` (mismatched with Step 1)                     |
+| 403  | Invalid code or `code_verifier` (user not logged in, or verification failed) |
+| 405  | Method Not Allowed (must use POST over HTTPS)                                |
 
 ---
 
@@ -1731,8 +1833,8 @@ Requires management key.
 ```json
 {
   "data": {
-    "total_credits": 100.00,
-    "total_usage": 14.50
+    "total_credits": 100.0,
+    "total_usage": 14.5
   }
 }
 ```
@@ -1750,6 +1852,7 @@ Remaining balance = `total_credits - total_usage`
 ### 20.3 HTTP 402 Triggers
 
 Account receives `402 Payment Required` when:
+
 - Account has negative credit balance
 - API key has exceeded its credit limit
 - Even free model access requires non-negative balance
@@ -1767,6 +1870,7 @@ Requires management key. Provides last 30 completed UTC days of data.
 Query params: `date` (optional, YYYY-MM-DD format, limited to last 30 days)
 
 **Response:**
+
 ```json
 {
   "data": [
@@ -1804,6 +1908,7 @@ Query params: `id` (required, string, min 1 char)
 **Response:** Returns a `data` object with 34 properties including token counts, costs, latency, model used, and provider information.
 
 **Use cases:**
+
 - Post-hoc cost auditing
 - Asynchronous usage retrieval
 - Historical request analysis
@@ -1817,6 +1922,7 @@ Query params: `id` (required, string, min 1 char)
 ### 23.1 Free Model Rate Limits
 
 Models with `:free` suffix:
+
 - **20 requests per minute**
 - **200 requests per day** (if account has < 10 credits purchased)
 - **1,000 requests per day** (if account has ≥ 10 credits purchased)
@@ -1884,25 +1990,26 @@ The HTTP status code matches `error.code` when the original request is invalid o
 
 ### 24.2 HTTP Status Codes
 
-| Code | Meaning | Notes |
-|------|---------|-------|
-| 200 | Success | Also used for mid-stream errors after tokens have been sent |
-| 201 | Created | Used for key creation |
-| 400 | Bad Request | Invalid/missing params, CORS issues |
-| 401 | Unauthorized | Invalid credentials, expired OAuth session, disabled/invalid API key |
-| 402 | Payment Required | Insufficient credits or credit limit exceeded |
-| 403 | Forbidden | Input flagged by moderation; non-management key accessing management endpoints |
-| 404 | Not Found | Resource not found |
-| 405 | Method Not Allowed | Wrong HTTP method |
-| 408 | Request Timeout | Request exceeded time limit |
-| 429 | Too Many Requests | Rate limit exceeded |
-| 500 | Internal Server Error | Server error |
-| 502 | Bad Gateway | Model down or invalid upstream response |
-| 503 | Service Unavailable | No provider meets routing requirements |
+| Code | Meaning               | Notes                                                                          |
+| ---- | --------------------- | ------------------------------------------------------------------------------ |
+| 200  | Success               | Also used for mid-stream errors after tokens have been sent                    |
+| 201  | Created               | Used for key creation                                                          |
+| 400  | Bad Request           | Invalid/missing params, CORS issues                                            |
+| 401  | Unauthorized          | Invalid credentials, expired OAuth session, disabled/invalid API key           |
+| 402  | Payment Required      | Insufficient credits or credit limit exceeded                                  |
+| 403  | Forbidden             | Input flagged by moderation; non-management key accessing management endpoints |
+| 404  | Not Found             | Resource not found                                                             |
+| 405  | Method Not Allowed    | Wrong HTTP method                                                              |
+| 408  | Request Timeout       | Request exceeded time limit                                                    |
+| 429  | Too Many Requests     | Rate limit exceeded                                                            |
+| 500  | Internal Server Error | Server error                                                                   |
+| 502  | Bad Gateway           | Model down or invalid upstream response                                        |
+| 503  | Service Unavailable   | No provider meets routing requirements                                         |
 
 ### 24.3 Moderation Error Metadata
 
 When input is flagged (403):
+
 ```json
 {
   "metadata": {
@@ -1917,11 +2024,12 @@ When input is flagged (403):
 ### 24.4 Provider Error Metadata
 
 When a provider fails:
+
 ```json
 {
   "metadata": {
     "provider_name": "OpenAI",
-    "raw": {"original": "provider error body"}
+    "raw": { "original": "provider error body" }
   }
 }
 ```
@@ -1929,6 +2037,7 @@ When a provider fails:
 ### 24.5 503 Service Unavailable
 
 Returned when no available provider meets your routing requirements, e.g.:
+
 - `provider.only` specifies unavailable providers
 - All providers in `provider.order` are down
 - `max_price` constraints eliminate all providers
@@ -1941,6 +2050,7 @@ Returned when no available provider meets your routing requirements, e.g.:
 OpenRouter does not extensively document response headers, but based on observed behavior:
 
 **Standard Headers:**
+
 - `Content-Type: application/json` or `text/event-stream` (streaming)
 - `Transfer-Encoding: chunked` (streaming)
 
@@ -1957,10 +2067,11 @@ OpenRouter does not extensively document response headers, but based on observed
 Default behavior for models with ≤8k context:
 
 ```json
-{"transforms": ["middle-out"]}
+{ "transforms": ["middle-out"] }
 ```
 
 Middle-out removes content from the middle of the conversation when it exceeds the model's context limit, because LLMs pay less attention to middle content. Preserves:
+
 - First half of messages (for context)
 - Last half of messages (for recency)
 
@@ -1969,7 +2080,7 @@ For models: first targets models with context ≥50% of required tokens; falls b
 ### 26.2 Disabling Transforms
 
 ```json
-{"transforms": []}
+{ "transforms": [] }
 ```
 
 ### 26.3 Compatibility
@@ -2011,16 +2122,17 @@ Named configurations encapsulating provider routing, model selection, system pro
 
 ### 28.1 Guardrail Types
 
-| Type | Description |
-|------|-------------|
-| Budget limit | Spending cap in USD; resets daily/weekly/monthly; requests rejected when exceeded |
-| Model allowlist | Restrict to specific models (empty = allow all) |
-| Provider allowlist | Restrict to specific providers (empty = allow all) |
-| Zero Data Retention | Require ZDR-compatible providers for all requests |
+| Type                | Description                                                                       |
+| ------------------- | --------------------------------------------------------------------------------- |
+| Budget limit        | Spending cap in USD; resets daily/weekly/monthly; requests rejected when exceeded |
+| Model allowlist     | Restrict to specific models (empty = allow all)                                   |
+| Provider allowlist  | Restrict to specific providers (empty = allow all)                                |
+| Zero Data Retention | Require ZDR-compatible providers for all requests                                 |
 
 ### 28.2 Enforcement Logic
 
 When multiple guardrails apply:
+
 - **Allowlists:** Intersection (only options allowed by ALL guardrails)
 - **ZDR:** OR logic (enforced if ANY guardrail requires it)
 - **Budget limits:** Checked independently per user and per key
@@ -2043,7 +2155,7 @@ Only one guardrail can be directly assigned to a user or key.
 ### 28.5 Zero Data Retention (ZDR) Per-Request
 
 ```json
-{"provider": {"zdr": true}}
+{ "provider": { "zdr": true } }
 ```
 
 Ephemeral KV caching (Gemini implicit caching) is considered ZDR-compatible by OpenRouter's policy.
@@ -2105,80 +2217,80 @@ The `user` field in requests improves caching (sticky routing to same provider f
 
 ### 30.1 Request Differences
 
-| Feature | OpenAI | OpenRouter |
-|---------|--------|-----------|
-| Model field | `"gpt-4o"` | `"openai/gpt-4o"` (provider prefix required) |
-| `models` array | Not supported | Supported for fallbacks |
-| `route` field | Not supported | Supported: `"fallback"`, `"sort"` |
-| `provider` object | Not supported | Full provider routing config |
-| `transforms` field | Not supported | `["middle-out"]` or `[]` |
-| `plugins` array | Not supported (has different tools) | `web`, `file-parser`, `response-healing`, `auto-router` |
-| `reasoning.effort` | Supported (specific models) | Unified across all reasoning models |
-| `session_id` | Not supported | Supported for observability |
-| `trace` | Not supported | Full tracing metadata |
-| `metadata` | Not supported | Key-value observability metadata |
-| `preset` | Not supported | Named configuration preset |
-| `prediction` | `prediction` field | Same field, same format |
-| `top_k` | Not supported | Supported (forwarded to compatible providers) |
-| `min_p` | Not supported | Supported |
-| `top_a` | Not supported | Supported |
-| `repetition_penalty` | Not supported | Supported |
-| `verbosity` | Not supported | Maps to Anthropic output_config.effort |
+| Feature              | OpenAI                              | OpenRouter                                              |
+| -------------------- | ----------------------------------- | ------------------------------------------------------- |
+| Model field          | `"gpt-4o"`                          | `"openai/gpt-4o"` (provider prefix required)            |
+| `models` array       | Not supported                       | Supported for fallbacks                                 |
+| `route` field        | Not supported                       | Supported: `"fallback"`, `"sort"`                       |
+| `provider` object    | Not supported                       | Full provider routing config                            |
+| `transforms` field   | Not supported                       | `["middle-out"]` or `[]`                                |
+| `plugins` array      | Not supported (has different tools) | `web`, `file-parser`, `response-healing`, `auto-router` |
+| `reasoning.effort`   | Supported (specific models)         | Unified across all reasoning models                     |
+| `session_id`         | Not supported                       | Supported for observability                             |
+| `trace`              | Not supported                       | Full tracing metadata                                   |
+| `metadata`           | Not supported                       | Key-value observability metadata                        |
+| `preset`             | Not supported                       | Named configuration preset                              |
+| `prediction`         | `prediction` field                  | Same field, same format                                 |
+| `top_k`              | Not supported                       | Supported (forwarded to compatible providers)           |
+| `min_p`              | Not supported                       | Supported                                               |
+| `top_a`              | Not supported                       | Supported                                               |
+| `repetition_penalty` | Not supported                       | Supported                                               |
+| `verbosity`          | Not supported                       | Maps to Anthropic output_config.effort                  |
 
 ### 30.2 Response Differences
 
-| Feature | OpenAI | OpenRouter |
-|---------|--------|-----------|
-| `model` field | Reflects requested model | Reflects **actual model used** (may differ with fallbacks/auto-routing) |
-| `native_finish_reason` | Not present | Always present; raw provider finish reason |
-| `finish_reason` values | Provider-specific | Normalized: `stop`, `length`, `tool_calls`, `content_filter`, `error` |
-| `usage.cost` | Not present | Present: total cost in USD |
-| `usage.cost_details` | Not present | Present: upstream cost breakdown |
-| `usage.is_byok` | Not present | Present: whether BYOK key was used |
-| `cache_discount` | Not present | Present: cost savings from caching |
-| `server_tool_use` | Not present | Present: e.g., `{"web_search_requests": 1}` |
-| `annotations` | Present (GPT-4o with search) | Present (standardized for all models) |
+| Feature                | OpenAI                       | OpenRouter                                                              |
+| ---------------------- | ---------------------------- | ----------------------------------------------------------------------- |
+| `model` field          | Reflects requested model     | Reflects **actual model used** (may differ with fallbacks/auto-routing) |
+| `native_finish_reason` | Not present                  | Always present; raw provider finish reason                              |
+| `finish_reason` values | Provider-specific            | Normalized: `stop`, `length`, `tool_calls`, `content_filter`, `error`   |
+| `usage.cost`           | Not present                  | Present: total cost in USD                                              |
+| `usage.cost_details`   | Not present                  | Present: upstream cost breakdown                                        |
+| `usage.is_byok`        | Not present                  | Present: whether BYOK key was used                                      |
+| `cache_discount`       | Not present                  | Present: cost savings from caching                                      |
+| `server_tool_use`      | Not present                  | Present: e.g., `{"web_search_requests": 1}`                             |
+| `annotations`          | Present (GPT-4o with search) | Present (standardized for all models)                                   |
 
 ### 30.3 Streaming Differences
 
-| Feature | OpenAI | OpenRouter |
-|---------|--------|-----------|
-| SSE comments | Not sent | Sends `: OPENROUTER PROCESSING` comments |
-| Mid-stream errors | HTTP 200 with error in body | Same, plus `finish_reason: "error"` |
-| Debug chunk | Not present | First chunk with `debug` field when `debug.echo_upstream_body: true` |
+| Feature           | OpenAI                      | OpenRouter                                                           |
+| ----------------- | --------------------------- | -------------------------------------------------------------------- |
+| SSE comments      | Not sent                    | Sends `: OPENROUTER PROCESSING` comments                             |
+| Mid-stream errors | HTTP 200 with error in body | Same, plus `finish_reason: "error"`                                  |
+| Debug chunk       | Not present                 | First chunk with `debug` field when `debug.echo_upstream_body: true` |
 
 ### 30.4 Authentication Differences
 
-| Feature | OpenAI | OpenRouter |
-|---------|--------|-----------|
-| API key prefix | `sk-...` | `sk-or-v1-...` |
-| Attribution headers | Not supported | `HTTP-Referer` and `X-Title` optional |
-| Management keys | Not separate | Distinct management key type for key provisioning |
-| OAuth PKCE | Via organization management | Native first-class support |
+| Feature             | OpenAI                      | OpenRouter                                        |
+| ------------------- | --------------------------- | ------------------------------------------------- |
+| API key prefix      | `sk-...`                    | `sk-or-v1-...`                                    |
+| Attribution headers | Not supported               | `HTTP-Referer` and `X-Title` optional             |
+| Management keys     | Not separate                | Distinct management key type for key provisioning |
+| OAuth PKCE          | Via organization management | Native first-class support                        |
 
 ### 30.5 Endpoint Differences
 
-| Endpoint | OpenAI | OpenRouter |
-|----------|--------|-----------|
+| Endpoint         | OpenAI      | OpenRouter                          |
+| ---------------- | ----------- | ----------------------------------- |
 | `/v1/generation` | Not present | Present (post-request stats lookup) |
-| `/v1/activity` | Not present | Present (30-day analytics) |
-| `/v1/credits` | Not present | Present (credit balance) |
-| `/v1/key` | Not present | Present (key metadata) |
-| `/v1/keys` | Not present | Present (key management CRUD) |
-| `/auth` | Not present | Present (OAuth PKCE initiation) |
-| `/v1/auth/keys` | Not present | Present (OAuth code exchange) |
+| `/v1/activity`   | Not present | Present (30-day analytics)          |
+| `/v1/credits`    | Not present | Present (credit balance)            |
+| `/v1/key`        | Not present | Present (key metadata)              |
+| `/v1/keys`       | Not present | Present (key management CRUD)       |
+| `/auth`          | Not present | Present (OAuth PKCE initiation)     |
+| `/v1/auth/keys`  | Not present | Present (OAuth code exchange)       |
 
 ### 30.6 Behavioral Differences
 
-| Behavior | OpenAI | OpenRouter |
-|----------|--------|-----------|
-| Unsupported parameters | May error | Silently ignored and forwarded where possible |
-| Provider routing | N/A (single provider) | Multi-provider with weighted load balancing |
-| Automatic fallback | N/A | Automatic on 5xx or rate limit |
-| Default model | Must specify | Optional; uses user's default if omitted |
-| Latency overhead | None | ~25-40ms |
-| `transforms` default | N/A | `middle-out` applied to models ≤8k context |
-| Cancellation billing | Continues billing | Stops billing for supported providers when stream aborted |
+| Behavior               | OpenAI                | OpenRouter                                                |
+| ---------------------- | --------------------- | --------------------------------------------------------- |
+| Unsupported parameters | May error             | Silently ignored and forwarded where possible             |
+| Provider routing       | N/A (single provider) | Multi-provider with weighted load balancing               |
+| Automatic fallback     | N/A                   | Automatic on 5xx or rate limit                            |
+| Default model          | Must specify          | Optional; uses user's default if omitted                  |
+| Latency overhead       | None                  | ~25-40ms                                                  |
+| `transforms` default   | N/A                   | `middle-out` applied to models ≤8k context                |
+| Cancellation billing   | Continues billing     | Stops billing for supported providers when stream aborted |
 
 ---
 
@@ -2238,6 +2350,7 @@ Requires IAM permissions: `bedrock:InvokeModel` and `bedrock:InvokeModelWithResp
 ### 32.6 Google Vertex AI Configuration
 
 Service account JSON with optional region:
+
 ```json
 {
   "type": "service_account",
@@ -2255,35 +2368,35 @@ Requires IAM permissions: `aiplatform.endpoints.predict` and `aiplatform.endpoin
 
 ## Summary: Key OpenRouter-Specific Request Fields Reference
 
-| Field | Type | Purpose |
-|-------|------|---------|
-| `models` | string[] | Fallback model list in priority order |
-| `route` | string | `"fallback"` or `"sort"` |
-| `provider.order` | string[] | Ordered provider preference list |
-| `provider.allow_fallbacks` | boolean | Allow backup providers |
-| `provider.require_parameters` | boolean | Filter to param-supporting providers only |
-| `provider.data_collection` | string | `"allow"` or `"deny"` |
-| `provider.zdr` | boolean | Require Zero Data Retention providers |
-| `provider.only` | string[] | Provider whitelist |
-| `provider.ignore` | string[] | Provider blacklist |
-| `provider.quantizations` | string[] | Required quantization levels |
-| `provider.sort` | string/object | Sort providers by price/throughput/latency |
-| `provider.max_price` | object | Max price per million tokens |
-| `provider.preferred_min_throughput` | number/object | Throughput threshold (simple or percentile) |
-| `provider.preferred_max_latency` | number/object | Latency threshold (simple or percentile) |
-| `transforms` | string[] | `["middle-out"]` or `[]` |
-| `plugins` | array | web, file-parser, response-healing, auto-router |
-| `reasoning` | object | Extended thinking config |
-| `prediction` | object | Speculative decoding hint |
-| `debug` | object | `echo_upstream_body` for request inspection |
-| `user` | string | Stable user ID for analytics/caching |
-| `session_id` | string | Session ID for observability |
-| `trace` | object | Tracing metadata for broadcast |
-| `metadata` | object | Custom key-value observability data |
-| `preset` | string | Named configuration preset |
-| `modalities` | string[] | Output modalities for image generation |
-| `image_config` | object | Image generation parameters |
-| `web_search_options` | object | Native web search context size |
+| Field                               | Type          | Purpose                                         |
+| ----------------------------------- | ------------- | ----------------------------------------------- |
+| `models`                            | string[]      | Fallback model list in priority order           |
+| `route`                             | string        | `"fallback"` or `"sort"`                        |
+| `provider.order`                    | string[]      | Ordered provider preference list                |
+| `provider.allow_fallbacks`          | boolean       | Allow backup providers                          |
+| `provider.require_parameters`       | boolean       | Filter to param-supporting providers only       |
+| `provider.data_collection`          | string        | `"allow"` or `"deny"`                           |
+| `provider.zdr`                      | boolean       | Require Zero Data Retention providers           |
+| `provider.only`                     | string[]      | Provider whitelist                              |
+| `provider.ignore`                   | string[]      | Provider blacklist                              |
+| `provider.quantizations`            | string[]      | Required quantization levels                    |
+| `provider.sort`                     | string/object | Sort providers by price/throughput/latency      |
+| `provider.max_price`                | object        | Max price per million tokens                    |
+| `provider.preferred_min_throughput` | number/object | Throughput threshold (simple or percentile)     |
+| `provider.preferred_max_latency`    | number/object | Latency threshold (simple or percentile)        |
+| `transforms`                        | string[]      | `["middle-out"]` or `[]`                        |
+| `plugins`                           | array         | web, file-parser, response-healing, auto-router |
+| `reasoning`                         | object        | Extended thinking config                        |
+| `prediction`                        | object        | Speculative decoding hint                       |
+| `debug`                             | object        | `echo_upstream_body` for request inspection     |
+| `user`                              | string        | Stable user ID for analytics/caching            |
+| `session_id`                        | string        | Session ID for observability                    |
+| `trace`                             | object        | Tracing metadata for broadcast                  |
+| `metadata`                          | object        | Custom key-value observability data             |
+| `preset`                            | string        | Named configuration preset                      |
+| `modalities`                        | string[]      | Output modalities for image generation          |
+| `image_config`                      | object        | Image generation parameters                     |
+| `web_search_options`                | object        | Native web search context size                  |
 
 ---
 
@@ -2307,7 +2420,8 @@ Requires IAM permissions: `aiplatform.endpoints.predict` and `aiplatform.endpoin
 
 ---
 
-*Sources consulted:*
+_Sources consulted:_
+
 - https://openrouter.ai/docs/api/reference/overview
 - https://openrouter.ai/docs/api/api-reference/chat/send-chat-completion-request
 - https://openrouter.ai/docs/guides/routing/provider-selection

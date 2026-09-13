@@ -64,7 +64,7 @@ Registry for tracking subprocesses with automatic cleanup.
 
 ### Methods
 
-#### ProcessRegistry.__init__
+#### ProcessRegistry.**init**
 
 ```python
 __init__(self: Any)

@@ -74,9 +74,7 @@ def _resolved_module(name: str) -> str:
     ("func_name", "canonical_module"),
     list(CANONICAL_SOURCES.items()),
 )
-def test_shadowed_governance_cmd_resolves_to_canonical(
-    func_name: str, canonical_module: str
-) -> None:
+def test_shadowed_governance_cmd_resolves_to_canonical(func_name: str, canonical_module: str) -> None:
     """``from thegent.cli import <func>`` must resolve to the canonical
     governance module, not the WL-124 stub monolith.
 
@@ -141,10 +139,22 @@ def test_stub_module_only_contains_zero_returning_stubs(func_name: str) -> None:
 # delegation) — they only need to be present and callable on the
 # canonical module.
 IMPL_DISPATCH: dict[tuple[str, str], str] = {
-    ("escalate_add_cmd", "thegent.cli.governance.governance_escalation_hitl_cmds"): "escalate_add_impl",
-    ("escalate_list_cmd", "thegent.cli.governance.governance_escalation_hitl_cmds"): "escalate_list_impl",
-    ("escalate_resolve_cmd", "thegent.cli.governance.governance_escalation_hitl_cmds"): "escalate_resolve_impl",
-    ("sweep_cmd", "thegent.cli.governance.governance_escalation_hitl_cmds"): "sweep_impl",
+    (
+        "escalate_add_cmd",
+        "thegent.cli.governance.governance_escalation_hitl_cmds",
+    ): "escalate_add_impl",
+    (
+        "escalate_list_cmd",
+        "thegent.cli.governance.governance_escalation_hitl_cmds",
+    ): "escalate_list_impl",
+    (
+        "escalate_resolve_cmd",
+        "thegent.cli.governance.governance_escalation_hitl_cmds",
+    ): "escalate_resolve_impl",
+    (
+        "sweep_cmd",
+        "thegent.cli.governance.governance_escalation_hitl_cmds",
+    ): "sweep_impl",
 }
 
 
@@ -152,9 +162,7 @@ IMPL_DISPATCH: dict[tuple[str, str], str] = {
     ("func_name", "canonical_module"),
     list(CANONICAL_SOURCES.items()),
 )
-def test_canonical_module_owns_real_implementation(
-    func_name: str, canonical_module: str
-) -> None:
+def test_canonical_module_owns_real_implementation(func_name: str, canonical_module: str) -> None:
     """The canonical module must expose the named command. If the
     command is a delegation wrapper, the body must dispatch to a real
     ``*_impl`` symbol from ``thegent.cli.governance.governance_impl``
@@ -165,9 +173,7 @@ def test_canonical_module_owns_real_implementation(
     import inspect
 
     canon = importlib.import_module(canonical_module)
-    assert hasattr(canon, func_name), (
-        f"{canonical_module} no longer exposes {func_name}"
-    )
+    assert hasattr(canon, func_name), f"{canonical_module} no longer exposes {func_name}"
     assert callable(getattr(canon, func_name))
 
     dispatch_target = IMPL_DISPATCH.get((func_name, canonical_module))
@@ -219,7 +225,5 @@ def test_governance_impl_module_exposes_real_impl(impl_name: str) -> None:
     import importlib
 
     impl_mod = importlib.import_module("thegent.cli.governance.governance_impl")
-    assert hasattr(impl_mod, impl_name), (
-        f"thegent.cli.governance.governance_impl no longer exposes {impl_name}"
-    )
+    assert hasattr(impl_mod, impl_name), f"thegent.cli.governance.governance_impl no longer exposes {impl_name}"
     assert callable(getattr(impl_mod, impl_name))

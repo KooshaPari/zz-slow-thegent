@@ -3,11 +3,13 @@
 from __future__ import annotations
 
 import orjson as json
-
 import pytest
 
 from thegent.protocols import jsonrpc_agent_server as server
-from thegent.protocols.jsonrpc_agent_server import SERVER_STATE, process_jsonrpc_line_full
+from thegent.protocols.jsonrpc_agent_server import (
+    SERVER_STATE,
+    process_jsonrpc_line_full,
+)
 
 
 def _reset_state() -> None:
@@ -161,7 +163,11 @@ def test_wl9869_notification_mode_preserves_side_effects_without_response() -> N
     session_id = _start_session()
     response, notifications = process_jsonrpc_line_full(
         json.dumps(
-            {"jsonrpc": "2.0", "method": "turn/submit", "params": {"session_id": session_id, "input": "ae"}}
+            {
+                "jsonrpc": "2.0",
+                "method": "turn/submit",
+                "params": {"session_id": session_id, "input": "ae"},
+            }
         )
     )
     assert response is None

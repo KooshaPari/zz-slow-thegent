@@ -12,7 +12,7 @@ Compliance profile mapping.
 
 ### Methods
 
-#### ComplianceProfile.__init__
+#### ComplianceProfile.**init**
 
 ```python
 __init__(self: Any, profile_name: str)

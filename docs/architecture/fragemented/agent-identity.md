@@ -9,6 +9,7 @@
 ## Overview
 
 The Agent Identity and Discovery system provides:
+
 - **Unique global identifiers** for all agents across all projects
 - **Persistent identity** that survives agent restarts and project migrations
 - **Scalable service discovery** supporting 5-20 agents with <100ms lookup latency
@@ -27,11 +28,11 @@ The Agent Identity and Discovery system provides:
 
 **Components**:
 
-| Component | Type | Length | Format | Example |
-|-----------|------|--------|--------|---------|
-| `project` | String | 3-16 chars | lowercase, alphanumeric, dashes | `kush`, `atoms`, `my-project` |
-| `uuid` | String | 36 chars | UUID v4 (canonical RFC4122) | `8d3f2c1a-5e7b-4d2f-9e1c-6a8b3f2d1e0a` |
-| `L{tier}` | Enum | 2 chars | `L1`, `L2`, or `L3` | `L1` |
+| Component   | Type   | Length     | Format                           | Example                                |
+| ----------- | ------ | ---------- | -------------------------------- | -------------------------------------- |
+| `project`   | String | 3-16 chars | lowercase, alphanumeric, dashes  | `kush`, `atoms`, `my-project`          |
+| `uuid`      | String | 36 chars   | UUID v4 (canonical RFC4122)      | `8d3f2c1a-5e7b-4d2f-9e1c-6a8b3f2d1e0a` |
+| `L{tier}`   | Enum   | 2 chars    | `L1`, `L2`, or `L3`              | `L1`                                   |
 | `role-slug` | String | 3-32 chars | lowercase, alphanumeric, hyphens | `claude-code`, `runner-1`, `cursor-01` |
 
 ### Examples
@@ -55,21 +56,23 @@ atoms:3d4e5f6a-7b8c-9d0e-1f2a-3b4c-5d6e:L3:cursor-01
 
 ### Uniqueness Constraints
 
-| Level | Constraint | Implication |
-|-------|-----------|-------------|
-| Global | `{project}:{uuid}` is globally unique | Only one agent with given UUID in given project |
-| Per-Project | Multiple agents can have same `role-slug` | `runner-1`, `runner-2`, `runner-3` in same project |
-| Per-Agent | UUID is immutable | Identifies same agent across all projects it touches |
-| Per-Tier | Within project, can have multiple L1/L2/L3 agents | Multiple L2s in same project, each with unique UUID |
+| Level       | Constraint                                        | Implication                                          |
+| ----------- | ------------------------------------------------- | ---------------------------------------------------- |
+| Global      | `{project}:{uuid}` is globally unique             | Only one agent with given UUID in given project      |
+| Per-Project | Multiple agents can have same `role-slug`         | `runner-1`, `runner-2`, `runner-3` in same project   |
+| Per-Agent   | UUID is immutable                                 | Identifies same agent across all projects it touches |
+| Per-Tier    | Within project, can have multiple L1/L2/L3 agents | Multiple L2s in same project, each with unique UUID  |
 
 ### Special Cases
 
 **L1 Agent Identity Schemes:**
+
 - Claude Code: `{project}:L1:claude-code` (may have single UUID per project)
 - Claude (CLI): `{project}:L1:claude` (may share UUID across projects if CLI-global)
 - Cursor: `{project}:L1:cursor` (one Cursor window per project)
 
 **L3 Agent Naming:**
+
 - Cursor windows: `{project}:L3:cursor-01`, `cursor-02`, etc. (numbered)
 - CLI agents: `{project}:L3:cli-agent-01` (numbered)
 - External tools: `{project}:L3:tool-{tool_name}` (tool-specific)
@@ -97,6 +100,7 @@ def initialize_agent_identity(project: str, role: str, tier: str):
 ```
 
 **Persistence Locations**:
+
 ```
 ~/.claude/civilization/
 ├── kush/
@@ -113,6 +117,7 @@ def initialize_agent_identity(project: str, role: str, tier: str):
 ```
 
 **Guarantees**:
+
 - Same agent always gets same UUID across restarts
 - Agent UUID is immutable (persisted in `~/.claude/civilization/`)
 - If agent file deleted, new UUID generated (treated as new agent)
@@ -224,11 +229,7 @@ def initialize_agent_identity(project: str, role: str, tier: str):
       "last_heartbeat": "2026-02-19T14:37:35Z",
       "heartbeat_interval_seconds": 15,
       "parent_id": null,
-      "capabilities": [
-        "read_files",
-        "delegate_to_l2",
-        "researcher"
-      ],
+      "capabilities": ["read_files", "delegate_to_l2", "researcher"],
       "endpoints": {
         "mcp": "127.0.0.1:3848"
       },
@@ -254,11 +255,7 @@ def initialize_agent_identity(project: str, role: str, tier: str):
       "last_heartbeat": "2026-02-19T14:37:32Z",
       "heartbeat_interval_seconds": 60,
       "parent_id": "atoms:7e8f9a0b-1c2d-3e4f-5a6b-7c8d-9e0f:L1:claude",
-      "capabilities": [
-        "read_files",
-        "write_files",
-        "run_bash"
-      ],
+      "capabilities": ["read_files", "write_files", "run_bash"],
       "endpoints": {
         "mcp": "127.0.0.1:3849"
       },
@@ -328,16 +325,11 @@ def register_agent(agent_id: str, metadata: dict) -> bool:
     existing = find_agent_in_registry(agent_id, registry)
     if existing:
         # Update heartbeat, status
-        existing['last_heartbeat'] = now()
-        existing['current_state'] = metadata['current_state']
+        existing["last_heartbeat"] = now()
+        existing["current_state"] = metadata["current_state"]
     else:
         # Add new agent
-        registry['agents'].append({
-            'id': agent_id,
-            **metadata,
-            'created_at': now(),
-            'last_heartbeat': now()
-        })
+        registry["agents"].append({"id": agent_id, **metadata, "created_at": now(), "last_heartbeat": now()})
 
     write_registry(registry)
     git_commit(f"Register agent: {agent_id}")
@@ -358,8 +350,8 @@ def heartbeat(agent_id: str, current_state: dict) -> bool:
     if not agent:
         raise AgentNotFound(agent_id)
 
-    agent['last_heartbeat'] = now()
-    agent['current_state'] = current_state
+    agent["last_heartbeat"] = now()
+    agent["current_state"] = current_state
 
     write_registry(registry)
     # Batch commits: push every 30s or every 10 heartbeats
@@ -406,12 +398,14 @@ def lookup_agent(agent_id: str) -> dict:
 ### Option 1: File-Based Registry (Primary)
 
 **Strengths**:
+
 - Simple (no separate service)
 - Git-native (commits are audit trail)
 - Works offline
 - Compatible with existing projects
 
 **Weaknesses**:
+
 - ~1s lookup latency (need git pull)
 - Eventual consistency (~10s propagation)
 - Scaling concerns beyond 100 agents
@@ -434,27 +428,28 @@ class FileBasedRegistry:
 
         # Try file
         registry = self._read_registry()
-        for agent in registry['agents']:
-            if agent['id'] == agent_id:
+        for agent in registry["agents"]:
+            if agent["id"] == agent_id:
                 self.local_cache[agent_id] = CacheEntry(agent, ttl=self.cache_ttl)
                 return agent
 
         # Try git pull
-        subprocess.run(['git', 'pull'], cwd=os.path.dirname(self.registry_path))
+        subprocess.run(["git", "pull"], cwd=os.path.dirname(self.registry_path))
         registry = self._read_registry()
-        for agent in registry['agents']:
-            if agent['id'] == agent_id:
+        for agent in registry["agents"]:
+            if agent["id"] == agent_id:
                 self.local_cache[agent_id] = CacheEntry(agent, ttl=self.cache_ttl)
                 return agent
 
         raise AgentNotFound(agent_id)
 
     def _read_registry(self) -> dict:
-        with open(self.registry_path, 'r') as f:
+        with open(self.registry_path, "r") as f:
             return json.load(f)
 ```
 
 **Lookup Diagram**:
+
 ```
 lookup(agent_id)
   ├─ Cache hit? → return (10ms)
@@ -465,12 +460,14 @@ lookup(agent_id)
 ### Option 2: MCP Service Registry (Real-Time Alternative)
 
 **Strengths**:
+
 - <50ms lookup latency (local MCP call)
 - Real-time updates (push-based)
 - Scalable to 1000+ agents
 - Strong consistency
 
 **Weaknesses**:
+
 - Requires MCP server (extra process)
 - Single point of failure (can add replicas)
 - Offline not supported (unless local cache)
@@ -505,6 +502,7 @@ class MCPServiceRegistry:
 ```
 
 **MCP Tool Schema**:
+
 ```python
 @mcp.tool()
 async def registry_lookup(agent_id: str) -> dict:
@@ -514,33 +512,28 @@ async def registry_lookup(agent_id: str) -> dict:
     """
     return get_registry_db().lookup(agent_id)
 
+
 @mcp.tool()
 async def registry_list_agents(
-    project: str = None,
-    tier: str = None,
-    capability: str = None,
-    status: str = "active"
+    project: str = None, tier: str = None, capability: str = None, status: str = "active"
 ) -> list:
     """
     List agents matching filters.
     """
-    return get_registry_db().filter({
-        'project': project,
-        'tier': tier,
-        'capability': capability,
-        'status': status
-    })
+    return get_registry_db().filter({"project": project, "tier": tier, "capability": capability, "status": status})
 ```
 
 ### Option 3: Gossip Protocol (Peer Discovery)
 
 **Strengths**:
+
 - Fully decentralized (no central registry needed)
 - Resilient (survives network partitions)
 - P2P discovery (agents find each other directly)
 - Works offline
 
 **Weaknesses**:
+
 - 1-5s propagation (probabilistic)
 - Eventual consistency (temporary inconsistency)
 - Higher bandwidth (periodic gossip)
@@ -568,10 +561,10 @@ class GossipRegistry:
     def _send_heartbeat_to(self, peer_entry: AgentEntry):
         """Send heartbeat to peer agent."""
         message = {
-            'type': 'heartbeat',
-            'agent_id': self.agent_id,
-            'agents': list(self.known_agents.values()),  # Piggybacking
-            'timestamp': now()
+            "type": "heartbeat",
+            "agent_id": self.agent_id,
+            "agents": list(self.known_agents.values()),  # Piggybacking
+            "timestamp": now(),
         }
         self._send_message(peer_entry, message)
 
@@ -580,11 +573,11 @@ class GossipRegistry:
         Handle incoming heartbeat from peer.
         Merge view of agents from peer.
         """
-        for agent_entry in message['agents']:
+        for agent_entry in message["agents"]:
             self._merge_agent_entry(agent_entry)
 
         # Add peer to known peers
-        self.peers.add(message['agent_id'])
+        self.peers.add(message["agent_id"])
 
     def lookup(self, agent_id: str) -> AgentEntry:
         """Look up agent locally (gossip result)."""
@@ -597,6 +590,7 @@ class GossipRegistry:
 ```
 
 **Gossip Example** (timeline):
+
 ```
 T=0: Agent A boots, knows only itself
      ├─ A.known_agents = {A}
@@ -629,9 +623,9 @@ class HybridRegistry:
         self.mcp_registry = MCPServiceRegistry(mcp_endpoint) if mcp_endpoint else None
         self.gossip_registry = GossipRegistry()
         self.fallback_chain = [
-            self.file_registry,      # Fast, reliable
-            self.mcp_registry,       # Real-time, if available
-            self.gossip_registry,    # P2P fallback
+            self.file_registry,  # Fast, reliable
+            self.mcp_registry,  # Real-time, if available
+            self.gossip_registry,  # P2P fallback
         ]
 
     async def lookup(self, agent_id: str) -> AgentEntry:
@@ -740,9 +734,9 @@ async def resolve(agent_id: str, timeout: float = 5.0) -> AgentEndpoint:
 
     # Try endpoints in priority order
     endpoints = [
-        agent_entry['endpoints'].get('mcp'),
-        agent_entry['endpoints'].get('http'),
-        agent_entry['endpoints'].get('git_home'),
+        agent_entry["endpoints"].get("mcp"),
+        agent_entry["endpoints"].get("http"),
+        agent_entry["endpoints"].get("git_home"),
     ]
 
     for endpoint in endpoints:
@@ -756,7 +750,7 @@ async def resolve(agent_id: str, timeout: float = 5.0) -> AgentEndpoint:
                 agent_id=agent_id,
                 endpoint=endpoint,
                 protocol=result.protocol,  # mcp, http, or file
-                latency_ms=result.latency_ms
+                latency_ms=result.latency_ms,
             )
         except DialFailed:
             continue  # Try next endpoint
@@ -770,11 +764,11 @@ async def resolve(agent_id: str, timeout: float = 5.0) -> AgentEndpoint:
 
 ### Endpoint Fallback Chain
 
-| Priority | Protocol | Latency | Use Case |
-|----------|----------|---------|----------|
-| 1 | MCP (stdio) | <50ms | Task dispatch, real-time |
-| 2 | HTTP | 100-200ms | RESTful commands, fallback |
-| 3 | Git (file-based) | 500-1000ms | Async messages, eventual consistency |
+| Priority | Protocol         | Latency    | Use Case                             |
+| -------- | ---------------- | ---------- | ------------------------------------ |
+| 1        | MCP (stdio)      | <50ms      | Task dispatch, real-time             |
+| 2        | HTTP             | 100-200ms  | RESTful commands, fallback           |
+| 3        | Git (file-based) | 500-1000ms | Async messages, eventual consistency |
 
 ### Example: Task Dispatch with Fallback
 
@@ -860,23 +854,20 @@ class CRDTAgentEntry:
     CRDT-based agent entry.
     Supports concurrent updates without conflicts.
     """
+
     def __init__(self, agent_id: str):
         self.agent_id = agent_id
         self.clock = VectorClock()  # Per-agent logical clock
         self.last_heartbeat = Last_Writer_Wins(initial=None)
-        self.status = Multi_Value(initial='unknown')
+        self.status = Multi_Value(initial="unknown")
         self.current_state = Map()  # CRDT map for nested updates
 
     def update_heartbeat(self, timestamp: float, source_agent_id: str):
         """Update heartbeat with causal ordering."""
         self.clock.increment(source_agent_id)
-        self.last_heartbeat.update(
-            timestamp,
-            clock=self.clock,
-            source=source_agent_id
-        )
+        self.last_heartbeat.update(timestamp, clock=self.clock, source=source_agent_id)
 
-    def merge(self, other_entry: 'CRDTAgentEntry'):
+    def merge(self, other_entry: "CRDTAgentEntry"):
         """Merge two entries (from concurrent updates)."""
         self.clock.merge(other_entry.clock)
         self.last_heartbeat.merge(other_entry.last_heartbeat)
@@ -891,31 +882,34 @@ class CRDTAgentEntry:
 ### Heartbeat Mechanism
 
 **Heartbeat Interval** (by tier):
+
 - L1: Every 10 seconds
 - L2: Every 30 seconds
 - L3: Every 60 seconds (or longer if idle)
 
 **Stale Agent Detection**:
+
 ```python
 def mark_stale_agents(registry: dict, now: float):
     """
     Mark agents as stale if heartbeat expired.
     """
-    for agent in registry['agents']:
-        last_hb = datetime.fromisoformat(agent['last_heartbeat'])
-        heartbeat_interval = agent.get('heartbeat_interval_seconds', 30)
+    for agent in registry["agents"]:
+        last_hb = datetime.fromisoformat(agent["last_heartbeat"])
+        heartbeat_interval = agent.get("heartbeat_interval_seconds", 30)
         grace_period = heartbeat_interval * 3  # 3 missed heartbeats = stale
 
         if (now - last_hb.timestamp()) > grace_period:
-            agent['status'] = 'stale'
-            agent['status_reason'] = f"No heartbeat for {(now - last_hb.timestamp()):.0f}s"
-        elif agent['status'] == 'stale':
+            agent["status"] = "stale"
+            agent["status_reason"] = f"No heartbeat for {(now - last_hb.timestamp()):.0f}s"
+        elif agent["status"] == "stale":
             # Heartbeat recovered
-            agent['status'] = 'active'
-            agent['status_reason'] = None
+            agent["status"] = "active"
+            agent["status_reason"] = None
 ```
 
 **Registry Cleanup**:
+
 ```python
 def prune_stale_agents(registry: dict, max_stale_age_hours: int = 24):
     """
@@ -925,17 +919,17 @@ def prune_stale_agents(registry: dict, max_stale_age_hours: int = 24):
     active_agents = []
     pruned_count = 0
 
-    for agent in registry['agents']:
-        last_hb = datetime.fromisoformat(agent['last_heartbeat']).timestamp()
+    for agent in registry["agents"]:
+        last_hb = datetime.fromisoformat(agent["last_heartbeat"]).timestamp()
         stale_age_hours = (now - last_hb) / 3600
 
-        if agent['status'] == 'stale' and stale_age_hours > max_stale_age_hours:
+        if agent["status"] == "stale" and stale_age_hours > max_stale_age_hours:
             pruned_count += 1
             continue  # Skip this agent
 
         active_agents.append(agent)
 
-    registry['agents'] = active_agents
+    registry["agents"] = active_agents
     return pruned_count
 ```
 
@@ -958,7 +952,7 @@ async def verify_agent_identity(endpoint: str, claimed_agent_id: str) -> bool:
     client = await connect_mcp(endpoint)
 
     # Ask agent for identity proof
-    result = await client.call_tool('get_agent_identity')
+    result = await client.call_tool("get_agent_identity")
 
     # Verify claimed_agent_id matches returned agent_id
     if result.agent_id != claimed_agent_id:
@@ -977,15 +971,15 @@ def authorize_registry_update(updating_agent_id: str, entry_to_update: dict) -> 
     Only allow agent to update its own entry.
     """
     # Extract project from agent_id
-    updating_project = updating_agent_id.split(':')[0]
-    entry_project = entry_to_update['id'].split(':')[0]
+    updating_project = updating_agent_id.split(":")[0]
+    entry_project = entry_to_update["id"].split(":")[0]
 
     # Only same-project agents can update (prevent cross-project tampering)
     if updating_project != entry_project:
         return False
 
     # Only agent itself can update its own entry
-    if updating_agent_id != entry_to_update['id']:
+    if updating_agent_id != entry_to_update["id"]:
         return False
 
     return True
@@ -995,14 +989,13 @@ def authorize_registry_update(updating_agent_id: str, entry_to_update: dict) -> 
 
 ## Glossary
 
-| Term | Definition |
-|------|-----------|
-| **Agent ID** | Globally unique identifier: `{project}:{uuid}:L{tier}:{role-slug}` |
-| **UUID** | 36-character RFC4122 identifier, immutable per agent |
-| **Registry** | Golden source of truth for agent identity, location, capabilities |
-| **Heartbeat** | Periodic status update sent by agent (10-60s intervals) |
-| **Endpoint** | Network address where agent can be reached (MCP, HTTP, git) |
-| **Discovery** | Process of finding agents (registry lookup, gossip, MCP query) |
-| **CRDT** | Conflict-free Replicated Data Type (for concurrent updates) |
-| **Stale Agent** | Agent that hasn't sent heartbeat for >3x interval |
-
+| Term            | Definition                                                         |
+| --------------- | ------------------------------------------------------------------ |
+| **Agent ID**    | Globally unique identifier: `{project}:{uuid}:L{tier}:{role-slug}` |
+| **UUID**        | 36-character RFC4122 identifier, immutable per agent               |
+| **Registry**    | Golden source of truth for agent identity, location, capabilities  |
+| **Heartbeat**   | Periodic status update sent by agent (10-60s intervals)            |
+| **Endpoint**    | Network address where agent can be reached (MCP, HTTP, git)        |
+| **Discovery**   | Process of finding agents (registry lookup, gossip, MCP query)     |
+| **CRDT**        | Conflict-free Replicated Data Type (for concurrent updates)        |
+| **Stale Agent** | Agent that hasn't sent heartbeat for >3x interval                  |

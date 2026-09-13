@@ -56,39 +56,39 @@ l3 = factory.create_l3_agent("thegent", l2.agent_id)
 
 ## Common Operations
 
-| Operation | Code | Returns |
-|-----------|------|---------|
-| Get agent | `registry.get_agent(agent_id)` | `AgentIdentity \| None` |
-| Find all in project | `registry.get_agents_by_project("thegent")` | `List[AgentIdentity]` |
-| Find all L1 leaders | `registry.get_agents_by_level(AgentLevel.L1_STRATEGIC)` | `List[AgentIdentity]` |
-| Find by role | `registry.get_agents_by_role(AgentRole.BUILDER)` | `List[AgentIdentity]` |
-| Get hierarchy | `registry.get_hierarchy(l1_agent_id)` | `Dict[str, Any]` |
-| Heartbeat ping | `registry.update_heartbeat(agent_id)` | `bool` |
-| Find stale | `registry.get_stale_agents(ttl_seconds=300)` | `List[AgentIdentity]` |
-| Statistics | `registry.get_stats()` | `Dict[str, int]` |
+| Operation           | Code                                                    | Returns                 |
+| ------------------- | ------------------------------------------------------- | ----------------------- |
+| Get agent           | `registry.get_agent(agent_id)`                          | `AgentIdentity \| None` |
+| Find all in project | `registry.get_agents_by_project("thegent")`             | `List[AgentIdentity]`   |
+| Find all L1 leaders | `registry.get_agents_by_level(AgentLevel.L1_STRATEGIC)` | `List[AgentIdentity]`   |
+| Find by role        | `registry.get_agents_by_role(AgentRole.BUILDER)`        | `List[AgentIdentity]`   |
+| Get hierarchy       | `registry.get_hierarchy(l1_agent_id)`                   | `Dict[str, Any]`        |
+| Heartbeat ping      | `registry.update_heartbeat(agent_id)`                   | `bool`                  |
+| Find stale          | `registry.get_stale_agents(ttl_seconds=300)`            | `List[AgentIdentity]`   |
+| Statistics          | `registry.get_stats()`                                  | `Dict[str, int]`        |
 
 ---
 
 ## Agent Roles
 
-| Role | Use Case |
-|------|----------|
+| Role          | Use Case                                   |
+| ------------- | ------------------------------------------ |
 | `COORDINATOR` | Orchestration, scheduling, decision-making |
-| `RESEARCHER` | Investigation, analysis, discovery |
-| `BUILDER` | Implementation, construction, execution |
-| `INTEGRATOR` | Integration, coordination, testing |
-| `MONITOR` | Observation, health checks, metrics |
-| `GENERIC` | Default for L3 executors |
+| `RESEARCHER`  | Investigation, analysis, discovery         |
+| `BUILDER`     | Implementation, construction, execution    |
+| `INTEGRATOR`  | Integration, coordination, testing         |
+| `MONITOR`     | Observation, health checks, metrics        |
+| `GENERIC`     | Default for L3 executors                   |
 
 ---
 
 ## Agent Levels
 
-| Level | Example | Capabilities |
-|-------|---------|--------------|
-| **L1** | Coordinator | Orchestration, monitoring, escalation |
-| **L2** | Named Worker | Component execution, sub-delegation |
-| **L3** | Executor | Task execution, reporting |
+| Level  | Example      | Capabilities                          |
+| ------ | ------------ | ------------------------------------- |
+| **L1** | Coordinator  | Orchestration, monitoring, escalation |
+| **L2** | Named Worker | Component execution, sub-delegation   |
+| **L3** | Executor     | Task execution, reporting             |
 
 ---
 
@@ -117,25 +117,25 @@ Examples:
 agent = registry.get_agent(agent_id)
 
 # Identity
-agent.project                  # "thegent"
-agent.uuid                     # "abc123"
-agent.level                    # AgentLevel.L1_STRATEGIC
-agent.role                     # AgentRole.COORDINATOR
-agent.agent_id                 # Full ID string
+agent.project  # "thegent"
+agent.uuid  # "abc123"
+agent.level  # AgentLevel.L1_STRATEGIC
+agent.role  # AgentRole.COORDINATOR
+agent.agent_id  # Full ID string
 
 # Relationships
-agent.parent_agent_id          # Parent L1/L2 ID (or None)
-agent.child_agent_ids          # List of child IDs
-agent.peer_agent_ids           # Peer agents at same level
+agent.parent_agent_id  # Parent L1/L2 ID (or None)
+agent.child_agent_ids  # List of child IDs
+agent.peer_agent_ids  # Peer agents at same level
 
 # Status
-agent.is_active                # True/False
-agent.status_message           # "healthy", etc.
-agent.last_heartbeat           # Unix timestamp
+agent.is_active  # True/False
+agent.status_message  # "healthy", etc.
+agent.last_heartbeat  # Unix timestamp
 
 # Metadata
-agent.capabilities             # ["orchestration", "monitoring"]
-agent.scope_tags               # {"tier": "strategic"}
+agent.capabilities  # ["orchestration", "monitoring"]
+agent.scope_tags  # {"tier": "strategic"}
 ```
 
 ---
@@ -264,24 +264,24 @@ OK ✅
 
 ## Files
 
-| File | Purpose |
-|------|---------|
-| `scripts/agent_identity_system.py` | Core implementation (427 LOC) |
-| `scripts/test_agent_identity_system.py` | Test suite (361 LOC, 17 tests) |
-| `~/.claude/civilization/registry.json` | Global registry (created on first use) |
-| `docs/reference/PHASE_1_AGENT_IDENTITY_IMPLEMENTATION.md` | Full documentation |
-| `docs/guides/INTEGRATING_AGENT_IDENTITY_WITH_SWARM_CONTROLLER.md` | Integration guide |
+| File                                                              | Purpose                                |
+| ----------------------------------------------------------------- | -------------------------------------- |
+| `scripts/agent_identity_system.py`                                | Core implementation (427 LOC)          |
+| `scripts/test_agent_identity_system.py`                           | Test suite (361 LOC, 17 tests)         |
+| `~/.claude/civilization/registry.json`                            | Global registry (created on first use) |
+| `docs/reference/PHASE_1_AGENT_IDENTITY_IMPLEMENTATION.md`         | Full documentation                     |
+| `docs/guides/INTEGRATING_AGENT_IDENTITY_WITH_SWARM_CONTROLLER.md` | Integration guide                      |
 
 ---
 
 ## Common Errors & Fixes
 
-| Error | Cause | Fix |
-|-------|-------|-----|
-| `FileNotFoundError` | Registry path missing | Check `~/.claude/civilization/` exists |
-| `agent_id` is `None` | Agent not registered | Call `factory.create_*_agent()` first |
-| `get_agent()` returns `None` | Wrong agent ID | Check ID format: `{project}:{uuid}:L{1-3}:{role}` |
-| Stale agents not cleaned | Cleanup not called | Add `registry.unregister_agent()` in cleanup loop |
+| Error                        | Cause                 | Fix                                               |
+| ---------------------------- | --------------------- | ------------------------------------------------- |
+| `FileNotFoundError`          | Registry path missing | Check `~/.claude/civilization/` exists            |
+| `agent_id` is `None`         | Agent not registered  | Call `factory.create_*_agent()` first             |
+| `get_agent()` returns `None` | Wrong agent ID        | Check ID format: `{project}:{uuid}:L{1-3}:{role}` |
+| Stale agents not cleaned     | Cleanup not called    | Add `registry.unregister_agent()` in cleanup loop |
 
 ---
 

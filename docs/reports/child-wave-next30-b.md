@@ -4,6 +4,7 @@
 - Status: complete
 
 ## Changes
+
 - `src/thegent/cliproxy_adapter.py`
 - `src/thegent/cliproxy_request_transform.py`
 - `src/thegent/agents/cliproxy_manager.py`
@@ -14,4 +15,5 @@
 - `tests/routing/test_litellm_responses_handler.py`
 
 ## Validation
+
 - `.venv/bin/python -m pytest -q -p no:tach tests/test_integration_cliproxy_adapter.py tests/test_unit_cliproxy_adapter.py tests/routing/test_litellm_responses_handler.py tests/test_unit_cliproxy_manager.py` (124 passed)

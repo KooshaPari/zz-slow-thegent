@@ -18,14 +18,14 @@
 
 ## 2. Triggers for Governance Evolution
 
-| Trigger | When | Action |
-|---------|------|--------|
-| **New pattern in code** | Agent writes custom retry/cache/watch/circuit-breaker | Check if anti-pattern exists; if not, add to anti-patterns.md and LIBRARY_FIRST_AUDIT |
-| **Repeated violation** | Same pattern appears 2+ times in codebase | Propose governance rule; add to CLAUDE.md if generic |
-| **New integration type** | Adding MCP server, new provider, new CLI surface | Check docs for governance; add section if missing |
-| **Post-task completion** | Task touches governance domain (retry, cache, auth, etc.) | Checklist: "Does governance doc need updating?" |
-| **Code review finding** | Reviewer flags "could use library" | Propose anti-pattern addition; update governance |
-| **Hook detection** | suppress-* hooks fire on write/edit | Emit suggestion: "Consider adding to governance if pattern recurs" |
+| Trigger                  | When                                                      | Action                                                                                |
+| ------------------------ | --------------------------------------------------------- | ------------------------------------------------------------------------------------- |
+| **New pattern in code**  | Agent writes custom retry/cache/watch/circuit-breaker     | Check if anti-pattern exists; if not, add to anti-patterns.md and LIBRARY_FIRST_AUDIT |
+| **Repeated violation**   | Same pattern appears 2+ times in codebase                 | Propose governance rule; add to CLAUDE.md if generic                                  |
+| **New integration type** | Adding MCP server, new provider, new CLI surface          | Check docs for governance; add section if missing                                     |
+| **Post-task completion** | Task touches governance domain (retry, cache, auth, etc.) | Checklist: "Does governance doc need updating?"                                       |
+| **Code review finding**  | Reviewer flags "could use library"                        | Propose anti-pattern addition; update governance                                      |
+| **Hook detection**       | suppress-\* hooks fire on write/edit                      | Emit suggestion: "Consider adding to governance if pattern recurs"                    |
 
 ---
 
@@ -62,12 +62,12 @@ When exploring or refactoring the codebase:
 
 Agents should treat these as **governance domains** — when touching them, check and evolve governance:
 
-| Domain | Governance Docs | Proactive Action |
-|--------|-----------------|------------------|
-| Retry/backoff | anti-patterns, TENACITY_RETRY_AUDIT, LIBRARY_FIRST | Use tenacity; if custom, add to audit |
-| Caching | anti-patterns, LIBRARY_FIRST | Use cachetools; if custom, add pattern |
-| File watching | anti-patterns, LIBRARY_FIRST | Use watchdog; if polling, add pattern |
-| HTTP | anti-patterns | Use httpx |
+| Domain        | Governance Docs                                    | Proactive Action                       |
+| ------------- | -------------------------------------------------- | -------------------------------------- |
+| Retry/backoff | anti-patterns, TENACITY_RETRY_AUDIT, LIBRARY_FIRST | Use tenacity; if custom, add to audit  |
+| Caching       | anti-patterns, LIBRARY_FIRST                       | Use cachetools; if custom, add pattern |
+| File watching | anti-patterns, LIBRARY_FIRST                       | Use watchdog; if polling, add pattern  |
+| HTTP          | anti-patterns                                      | Use httpx                              |
 
 | Circuit breaker | LIBRARY_FIRST | Use pybreaker or document |
 | Logging | anti-patterns | Prefer structlog; document if stdlib |
@@ -93,7 +93,7 @@ Add to task-done / story-done workflows (or equivalent):
 
 ### Phase 3: Hook Enhancement (Optional)
 
-Extend suppress-* hooks to append a suggestion when they fire:
+Extend suppress-\* hooks to append a suggestion when they fire:
 
 - "Pattern detected. If this recurs, consider adding to docs/guides/anti-patterns.md."
 
@@ -140,11 +140,19 @@ from pathlib import Path
 from typing import List, Tuple
 
 GOVERNANCE_DOMAINS = [
-    "retry", "cache", "file_watch", "http", "auth",
-    "logging", "concurrency", "subprocess", "circuit_breaker"
+    "retry",
+    "cache",
+    "file_watch",
+    "http",
+    "auth",
+    "logging",
+    "concurrency",
+    "subprocess",
+    "circuit_breaker",
 ]
 
 ANTI_PATTERNS_PATH = Path(__file__).parent.parent / "docs" / "guides" / "anti-patterns.md"
+
 
 def check_governance_domains(file_path: Path) -> List[Tuple[str, int]]:
     """Check if file touches governance domains."""
@@ -165,12 +173,14 @@ def check_governance_domains(file_path: Path) -> List[Tuple[str, int]]:
 
     for domain, regexes in patterns.items():
         import re
+
         for i, regex in enumerate(regexes):
             if re.search(regex, content, re.IGNORECASE):
                 violations.append((domain, 0))
                 break
 
     return violations
+
 
 def run_checkpoint(file_path: Path):
     """Run governance checkpoint on a file."""
@@ -185,8 +195,10 @@ def run_checkpoint(file_path: Path):
         print(f"✅ {file_path.name} - No governance concerns")
         return True
 
+
 if __name__ == "__main__":
     import sys
+
     file_path = Path(sys.argv[1]) if len(sys.argv) > 1 else Path.cwd() / "src"
     run_checkpoint(file_path)
 ```
@@ -240,6 +252,7 @@ repos:
 - [RESEARCH_SEED_FRAGMENT_INVENTORY](./RESEARCH_SEED_FRAGMENT_INVENTORY_AND_SPRAWL_TODO.md) - Fragment inventory
 
 <!-- PHENOTYPE_GOVERNANCE_OVERLAY_V1 -->
+
 ## Phenotype Governance Overlay v1
 
 - Enforce `TDD + BDD + SDD` for all feature and workflow changes.
@@ -248,4 +261,3 @@ repos:
 - Keep local hot paths deterministic and low-latency; place distributed workflow logic behind durable orchestration boundaries.
 - Require policy gating, auditability, and traceable correlation IDs for agent and workflow actions.
 - Document architectural and protocol decisions before broad rollout changes.
-

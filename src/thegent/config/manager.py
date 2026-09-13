@@ -44,7 +44,11 @@ class ConfigManager:
                 data = orjson.loads(self.config_path.read_bytes())
             except orjson.JSONDecodeError as exc:
                 self.last_load_error = ConfigLoadError(self.config_path, "invalid_json", cause=exc)
-                logger.error("config_load_failed_invalid_json path=%s error=%s", self.config_path, exc)
+                logger.error(
+                    "config_load_failed_invalid_json path=%s error=%s",
+                    self.config_path,
+                    exc,
+                )
                 return {}
             except OSError as exc:
                 self.last_load_error = ConfigLoadError(self.config_path, "read_error", cause=exc)

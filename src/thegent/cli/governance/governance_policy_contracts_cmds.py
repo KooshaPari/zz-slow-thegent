@@ -37,7 +37,11 @@ def policy_show_cmd() -> None:
     )
     table.add_row("Agent Restriction", "Block 'unknown' in Prod/Critical", "[green]Active[/green]")
     table.add_row("Audit Signing", "SHA-256 Run Signatures", "[green]Active[/green]")
-    table.add_row("Override TTL (WP-3003)", f"{settings.override_ttl_seconds}s", "[green]Active[/green]")
+    table.add_row(
+        "Override TTL (WP-3003)",
+        f"{settings.override_ttl_seconds}s",
+        "[green]Active[/green]",
+    )
 
     console.print(table)
 

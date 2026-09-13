@@ -15,7 +15,7 @@ Design reference: docs/research/CACHING_INDEXING_PREWARMING_DEEP_RESEARCH.md §3
 
 In-memory file index with TTL-based invalidation.
 
-Builds the index once using ``os.scandir`` (faster than ``os.walk``),
+Builds the index once using `os.scandir` (faster than `os.walk`),
 then serves queries from memory until the TTL expires.
 
 Usage::
@@ -28,7 +28,7 @@ Usage::
 
 ### Methods
 
-#### FileIndex.__init__
+#### FileIndex.**init**
 
 ```python
 __init__(self: Any, ttl: Any)
@@ -42,7 +42,7 @@ __init__(self: Any, ttl: Any)
 build(self: Any, root: Path, exclude_dirs: Any)
 ```
 
-Scan *root* recursively and cache the result.
+Scan _root_ recursively and cache the result.
 
 **Parameters**:
 
@@ -50,7 +50,7 @@ Scan *root* recursively and cache the result.
 - `exclude_dirs`: Directory names to skip during traversal.
 - `force`: Rebuild even if a valid cached index exists.
 
-**Returns**: List of all non-excluded file paths found under *root*.
+**Returns**: List of all non-excluded file paths found under _root_.
 
 ---
 
@@ -60,9 +60,9 @@ Scan *root* recursively and cache the result.
 find(self: Any, pattern: str, root: Any)
 ```
 
-Return paths matching a glob *pattern* (e.g. ``src/**/*.py``).
+Return paths matching a glob _pattern_ (e.g. `src/**/*.py`).
 
-The index for *root* must already be built (or will be built on demand).
+The index for _root_ must already be built (or will be built on demand).
 
 ---
 
@@ -72,9 +72,9 @@ The index for *root* must already be built (or will be built on demand).
 find_by_ext(self: Any, ext: str, root: Any)
 ```
 
-Return paths with the given extension (e.g. ``".py"``).
+Return paths with the given extension (e.g. `".py"`).
 
-The leading dot is optional: ``"py"`` and ``".py"`` both work.
+The leading dot is optional: `"py"` and `".py"` both work.
 
 ---
 
@@ -84,7 +84,7 @@ The leading dot is optional: ``"py"`` and ``".py"`` both work.
 find_by_name(self: Any, name: str, root: Any)
 ```
 
-Return paths whose filename (last component) equals *name*.
+Return paths whose filename (last component) equals _name_.
 
 ---
 
@@ -94,7 +94,7 @@ Return paths whose filename (last component) equals *name*.
 invalidate(self: Any, root: Any)
 ```
 
-Manually expire the cache for *root* (or all roots if None).
+Manually expire the cache for _root_ (or all roots if None).
 
 ---
 
@@ -104,7 +104,7 @@ Manually expire the cache for *root* (or all roots if None).
 is_cached(self: Any, root: Path)
 ```
 
-Return True if a valid (non-expired) index exists for *root*.
+Return True if a valid (non-expired) index exists for _root_.
 
 ---
 
@@ -116,7 +116,7 @@ Return True if a valid (non-expired) index exists for *root*.
 build(self: Any, root: Path, exclude_dirs: Any)
 ```
 
-Scan *root* recursively and cache the result.
+Scan _root_ recursively and cache the result.
 
 **Parameters**:
 
@@ -124,7 +124,7 @@ Scan *root* recursively and cache the result.
 - `exclude_dirs`: Directory names to skip during traversal.
 - `force`: Rebuild even if a valid cached index exists.
 
-**Returns**: List of all non-excluded file paths found under *root*.
+**Returns**: List of all non-excluded file paths found under _root_.
 
 ---
 
@@ -134,9 +134,9 @@ Scan *root* recursively and cache the result.
 find(self: Any, pattern: str, root: Any)
 ```
 
-Return paths matching a glob *pattern* (e.g. ``src/**/*.py``).
+Return paths matching a glob _pattern_ (e.g. `src/**/*.py`).
 
-The index for *root* must already be built (or will be built on demand).
+The index for _root_ must already be built (or will be built on demand).
 
 ---
 
@@ -146,9 +146,9 @@ The index for *root* must already be built (or will be built on demand).
 find_by_ext(self: Any, ext: str, root: Any)
 ```
 
-Return paths with the given extension (e.g. ``".py"``).
+Return paths with the given extension (e.g. `".py"`).
 
-The leading dot is optional: ``"py"`` and ``".py"`` both work.
+The leading dot is optional: `"py"` and `".py"` both work.
 
 ---
 
@@ -158,7 +158,7 @@ The leading dot is optional: ``"py"`` and ``".py"`` both work.
 find_by_name(self: Any, name: str, root: Any)
 ```
 
-Return paths whose filename (last component) equals *name*.
+Return paths whose filename (last component) equals _name_.
 
 ---
 
@@ -168,7 +168,7 @@ Return paths whose filename (last component) equals *name*.
 invalidate(self: Any, root: Any)
 ```
 
-Manually expire the cache for *root* (or all roots if None).
+Manually expire the cache for _root_ (or all roots if None).
 
 ---
 
@@ -178,6 +178,6 @@ Manually expire the cache for *root* (or all roots if None).
 is_cached(self: Any, root: Path)
 ```
 
-Return True if a valid (non-expired) index exists for *root*.
+Return True if a valid (non-expired) index exists for _root_.
 
 ---

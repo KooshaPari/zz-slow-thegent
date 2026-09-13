@@ -7,8 +7,6 @@ Related to:
 
 from __future__ import annotations
 
-import pytest
-
 
 class TestQualityGateRetry:
     """Test quality gate retry behavior."""

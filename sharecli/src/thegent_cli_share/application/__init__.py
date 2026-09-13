@@ -2,15 +2,15 @@
 
 from .commands import (
     AcquireLockCommand,
-    ReleaseLockCommand,
     EnqueueTaskCommand,
     MergeCommand,
+    ReleaseLockCommand,
 )
 from .queries import (
     GetLockQuery,
-    ListLocksQuery,
-    GetQueueDepthQuery,
     GetMergeCandidatesQuery,
+    GetQueueDepthQuery,
+    ListLocksQuery,
 )
 
 __all__ = [

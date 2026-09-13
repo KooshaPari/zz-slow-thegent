@@ -23,7 +23,7 @@ Probes black-box agents to identify their characteristics.
 
 ### Methods
 
-#### AgentProber.__init__
+#### AgentProber.**init**
 
 ```python
 __init__(self: Any, agent_id: str)

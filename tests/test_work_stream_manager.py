@@ -4,8 +4,6 @@ import hashlib
 import threading
 from pathlib import Path
 
-import pytest
-
 from thegent.config import ThegentSettings
 from thegent.planning.work_stream import WorkStreamManager
 
@@ -80,7 +78,10 @@ def test_claim_fails_if_any_coordination_write_fails(tmp_path: Path, monkeypatch
     from thegent.utils import helpers
 
     def _fake_safe_write(
-        path: str | Path, content: str, expected_version: str | None = None, encoding: str = "utf-8"
+        path: str | Path,
+        content: str,
+        expected_version: str | None = None,
+        encoding: str = "utf-8",
     ) -> bool:
         return Path(path).name != "WORK_STREAM.md"
 
@@ -125,7 +126,10 @@ def test_complete_fails_when_remove_step_write_fails(tmp_path: Path, monkeypatch
     calls = {"work_stream": 0}
 
     def _fake_safe_write(
-        path: str | Path, content: str, expected_version: str | None = None, encoding: str = "utf-8"
+        path: str | Path,
+        content: str,
+        expected_version: str | None = None,
+        encoding: str = "utf-8",
     ) -> bool:
         if Path(path).name == "WORK_STREAM.md":
             calls["work_stream"] += 1
@@ -343,7 +347,9 @@ def test_claim_allows_when_dependency_is_completed(tmp_path: Path) -> None:
     assert "dependency_blocked" not in result
 
 
-def test_verify_work_stream_invariants_detects_claimed_completed_overlap(tmp_path: Path) -> None:
+def test_verify_work_stream_invariants_detects_claimed_completed_overlap(
+    tmp_path: Path,
+) -> None:
     _write_coordination_files(tmp_path)
     work_stream_path = tmp_path / "docs" / "reference" / "WORK_STREAM.md"
     work_stream_path.write_text(

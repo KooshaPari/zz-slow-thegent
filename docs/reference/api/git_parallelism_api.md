@@ -12,7 +12,7 @@ Manages parallel git operations using per-agent index files and plumbing.
 
 ### Methods
 
-#### GitParallelismManager.__init__
+#### GitParallelismManager.**init**
 
 ```python
 __init__(self: Any, project_root: Path, agent_id: str)

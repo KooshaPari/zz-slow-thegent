@@ -9,13 +9,13 @@ Covers specific uncovered lines: 722, 778, 1114-1115, 1697, 1705, 1748,
 
 from __future__ import annotations
 
-import orjson as json
 import time
 from pathlib import Path
 from typing import Any, Never
 from unittest.mock import MagicMock, patch
 
 import click.exceptions
+import orjson as json
 import pytest
 import typer
 
@@ -80,7 +80,12 @@ def _health_gate_result(**overrides) -> dict[str, Any]:
         "blocked_sessions_cap": 25,
         "strict_checks_enabled": False,
         "generated_at_utc": "2025-01-01T00:00:00Z",
-        "generated_query": {"owner": "ci", "all": False, "strict": False, "min_healthy_ratio": 1.0},
+        "generated_query": {
+            "owner": "ci",
+            "all": False,
+            "strict": False,
+            "min_healthy_ratio": 1.0,
+        },
         "summary": {"health": {"healthy": 5, "warning": 0, "error": 0, "missing": 0}},
         "decision_reasons": [],
     }
@@ -168,10 +173,19 @@ class TestContractsConformanceJsonFormat:
     def test_conformance_json_pass(self, mock_settings_cls) -> None:
         # @trace FR-CLI-778
         mock_settings_cls.return_value = _mock_settings()
-        mock_report = {"passed": 3, "total": 3, "failed": 0, "results": [], "drift_issues": []}
+        mock_report = {
+            "passed": 3,
+            "total": 3,
+            "failed": 0,
+            "results": [],
+            "drift_issues": [],
+        }
         from thegent.cli import contracts_conformance_cmd
 
-        with patch("thegent.contracts.conformance.run_conformance_suite", return_value=mock_report):
+        with patch(
+            "thegent.contracts.conformance.run_conformance_suite",
+            return_value=mock_report,
+        ):
             # Source returns early for JSON format without printing
             contracts_conformance_cmd(format="json")
 
@@ -362,7 +376,15 @@ class TestDagUpdateCmdDependsOnNormalized:
     @patch("thegent.cli._parse_dag_full")
     @patch("thegent.cli._resolve_cwd")
     def test_depends_on_normalized(
-        self, mock_cwd, mock_parse, mock_update, mock_cycles, mock_serialize, mock_write, mock_console, tmp_path
+        self,
+        mock_cwd,
+        mock_parse,
+        mock_update,
+        mock_cycles,
+        mock_serialize,
+        mock_write,
+        mock_console,
+        tmp_path,
     ) -> None:
         # @trace FR-CLI-2873
         dag_path = tmp_path / ".factory" / "dag-session.md"
@@ -401,7 +423,15 @@ class TestDagReconcileRunningSession:
     @patch("thegent.cli.ThegentSettings")
     @patch("thegent.cli._resolve_cwd")
     def test_running_session_keeps_task_running(
-        self, mock_cwd, mock_settings_cls, mock_parse, mock_status, mock_serialize, mock_write, mock_console, tmp_path
+        self,
+        mock_cwd,
+        mock_settings_cls,
+        mock_parse,
+        mock_status,
+        mock_serialize,
+        mock_write,
+        mock_console,
+        tmp_path,
     ) -> None:
         # @trace FR-CLI-2972
         dag_path = tmp_path / ".factory" / "dag-session.md"
@@ -551,7 +581,14 @@ class TestDagRunCmdTaskFilter:
     @patch("thegent.cli._resolve_cwd")
     @patch("thegent.cli._resolve_prompt", return_value="Do something")
     def test_specific_task_filter(
-        self, mock_prompt, mock_cwd, mock_parse, mock_ready, mock_reconcile, mock_console, tmp_path
+        self,
+        mock_prompt,
+        mock_cwd,
+        mock_parse,
+        mock_ready,
+        mock_reconcile,
+        mock_console,
+        tmp_path,
     ) -> None:
         # @trace FR-CLI-3406
         dag_path = tmp_path / ".factory" / "dag-session.md"
@@ -589,7 +626,14 @@ class TestDagRunCmdMaxParallelPriority:
     @patch("thegent.cli._resolve_cwd")
     @patch("thegent.cli._resolve_prompt", return_value="Do something")
     def test_max_parallel_priority(
-        self, mock_prompt, mock_cwd, mock_parse, mock_ready, mock_reconcile, mock_console, tmp_path
+        self,
+        mock_prompt,
+        mock_cwd,
+        mock_parse,
+        mock_ready,
+        mock_reconcile,
+        mock_console,
+        tmp_path,
     ) -> None:
         # @trace FR-CLI-3420
         dag_path = tmp_path / ".factory" / "dag-session.md"
@@ -598,9 +642,27 @@ class TestDagRunCmdMaxParallelPriority:
         mock_cwd.return_value = tmp_path
         doc = _make_dag_doc(
             tasks=[
-                {"id": "T1", "agent": "claude", "prompt": "Do T1", "status": "pending", "priority": "1"},
-                {"id": "T2", "agent": "claude", "prompt": "Do T2", "status": "pending", "priority": "10"},
-                {"id": "T3", "agent": "claude", "prompt": "Do T3", "status": "pending", "priority": "5"},
+                {
+                    "id": "T1",
+                    "agent": "claude",
+                    "prompt": "Do T1",
+                    "status": "pending",
+                    "priority": "1",
+                },
+                {
+                    "id": "T2",
+                    "agent": "claude",
+                    "prompt": "Do T2",
+                    "status": "pending",
+                    "priority": "10",
+                },
+                {
+                    "id": "T3",
+                    "agent": "claude",
+                    "prompt": "Do T3",
+                    "status": "pending",
+                    "priority": "5",
+                },
             ]
         )
         mock_parse.return_value = doc
@@ -622,7 +684,14 @@ class TestDagRunCmdMaxParallelPriority:
     @patch("thegent.cli._resolve_cwd")
     @patch("thegent.cli._resolve_prompt", return_value="Do something")
     def test_max_parallel_priority_except_branch(
-        self, mock_prompt, mock_cwd, mock_parse, mock_ready, mock_reconcile, mock_console, tmp_path
+        self,
+        mock_prompt,
+        mock_cwd,
+        mock_parse,
+        mock_ready,
+        mock_reconcile,
+        mock_console,
+        tmp_path,
     ) -> None:
         # @trace FR-CLI-3424
         dag_path = tmp_path / ".factory" / "dag-session.md"
@@ -639,7 +708,13 @@ class TestDagRunCmdMaxParallelPriority:
 
         doc = _make_dag_doc(
             tasks=[
-                {"id": "T1", "agent": "claude", "prompt": "Do T1", "status": "pending", "priority": "5"},
+                {
+                    "id": "T1",
+                    "agent": "claude",
+                    "prompt": "Do T1",
+                    "status": "pending",
+                    "priority": "5",
+                },
                 BrokenPriorityDict(id="T2", agent="claude", prompt="Do T2", status="pending"),
             ]
         )
@@ -726,7 +801,14 @@ class TestDagRunCmdMissingAgentSkips:
     @patch("thegent.cli._resolve_cwd")
     @patch("thegent.cli._resolve_prompt", return_value="")
     def test_missing_prompt_skips(
-        self, mock_prompt, mock_cwd, mock_parse, mock_ready, mock_reconcile, mock_console, tmp_path
+        self,
+        mock_prompt,
+        mock_cwd,
+        mock_parse,
+        mock_ready,
+        mock_reconcile,
+        mock_console,
+        tmp_path,
     ) -> None:
         # @trace FR-CLI-3461
         dag_path = tmp_path / ".factory" / "dag-session.md"
@@ -788,7 +870,13 @@ class TestDagRunCmdQuorumArbitration:
         mock_cwd.return_value = tmp_path
         doc = _make_dag_doc(
             tasks=[
-                {"id": "T1", "agent": "claude", "prompt": "Do T1", "status": "pending", "quorum": "2"},
+                {
+                    "id": "T1",
+                    "agent": "claude",
+                    "prompt": "Do T1",
+                    "status": "pending",
+                    "quorum": "2",
+                },
             ]
         )
         mock_parse.return_value = doc
@@ -841,7 +929,13 @@ class TestDagRunCmdRetryCount:
         mock_cwd.return_value = tmp_path
         doc = _make_dag_doc(
             tasks=[
-                {"id": "T1", "agent": "claude", "prompt": "Do T1", "status": "failed", "retry_count": "2"},
+                {
+                    "id": "T1",
+                    "agent": "claude",
+                    "prompt": "Do T1",
+                    "status": "failed",
+                    "retry_count": "2",
+                },
             ]
         )
         mock_parse.return_value = doc
@@ -885,7 +979,13 @@ class TestDagRunCmdRetryCount:
         mock_cwd.return_value = tmp_path
         doc = _make_dag_doc(
             tasks=[
-                {"id": "T1", "agent": "claude", "prompt": "Do T1", "status": "failed", "retry_count": "not-a-number"},
+                {
+                    "id": "T1",
+                    "agent": "claude",
+                    "prompt": "Do T1",
+                    "status": "failed",
+                    "retry_count": "not-a-number",
+                },
             ]
         )
         mock_parse.return_value = doc
@@ -945,7 +1045,11 @@ class TestDagSyncCmdSessionCompletion:
         rc_file = MagicMock()
         rc_file.exists.return_value = True
         rc_file.read_text.return_value = "1"
-        mock_paths.return_value = {"rc": rc_file, "stdout": MagicMock(), "stderr": MagicMock()}
+        mock_paths.return_value = {
+            "rc": rc_file,
+            "stdout": MagicMock(),
+            "stderr": MagicMock(),
+        }
 
         doc = _make_dag_doc(
             tasks=[
@@ -999,7 +1103,11 @@ class TestDagSyncCmdSessionCompletion:
         rc_file.exists.return_value = True
         # First call returns "0", second returns "1"
         rc_file.read_text.side_effect = ["0", "1"]
-        mock_paths.return_value = {"rc": rc_file, "stdout": MagicMock(), "stderr": MagicMock()}
+        mock_paths.return_value = {
+            "rc": rc_file,
+            "stdout": MagicMock(),
+            "stderr": MagicMock(),
+        }
 
         doc = _make_dag_doc(
             tasks=[
@@ -1019,7 +1127,13 @@ class TestDagSyncCmdSessionCompletion:
     @patch("thegent.cli._resolve_cwd")
     @patch("thegent.cli._find_session_meta", side_effect=typer.BadParameter("not found"))
     def test_sync_bad_parameter_breaks(
-        self, mock_find_meta, mock_cwd, mock_settings_cls, mock_parse, mock_console, tmp_path
+        self,
+        mock_find_meta,
+        mock_cwd,
+        mock_settings_cls,
+        mock_parse,
+        mock_console,
+        tmp_path,
     ) -> None:
         # @trace FR-CLI-3556
         dag_path = tmp_path / ".factory" / "dag-session.md"
@@ -1047,7 +1161,15 @@ class TestDagSyncCmdSessionCompletion:
     @patch("thegent.cli.ThegentSettings")
     @patch("thegent.cli._resolve_cwd")
     def test_sync_pid_still_running(
-        self, mock_cwd, mock_settings_cls, mock_parse, mock_find_meta, mock_read_meta, mock_pid, mock_console, tmp_path
+        self,
+        mock_cwd,
+        mock_settings_cls,
+        mock_parse,
+        mock_find_meta,
+        mock_read_meta,
+        mock_pid,
+        mock_console,
+        tmp_path,
     ) -> None:
         # @trace FR-CLI-3548
         dag_path = tmp_path / ".factory" / "dag-session.md"
@@ -1105,7 +1227,14 @@ class TestLogsFollowBranches:
     @patch("thegent.cli._find_session_meta")
     @patch("thegent.cli.ThegentSettings")
     def test_follow_file_disappears(
-        self, mock_settings_cls, mock_find_meta, mock_paths, mock_read_meta, mock_pid, mock_console, tmp_path
+        self,
+        mock_settings_cls,
+        mock_find_meta,
+        mock_paths,
+        mock_read_meta,
+        mock_pid,
+        mock_console,
+        tmp_path,
     ) -> None:
         # @trace FR-CLI-3876
         mock_settings_cls.return_value = _mock_settings()
@@ -1166,7 +1295,14 @@ class TestLogsFollowBranches:
     @patch("thegent.cli._find_session_meta")
     @patch("thegent.cli.ThegentSettings")
     def test_follow_reads_new_data_then_exits(
-        self, mock_settings_cls, mock_find_meta, mock_paths, mock_read_meta, mock_pid, mock_console, tmp_path
+        self,
+        mock_settings_cls,
+        mock_find_meta,
+        mock_paths,
+        mock_read_meta,
+        mock_pid,
+        mock_console,
+        tmp_path,
     ) -> None:
         # @trace FR-CLI-3882
         mock_settings_cls.return_value = _mock_settings()
@@ -1206,7 +1342,14 @@ class TestLogsFollowBranches:
     @patch("thegent.cli._find_session_meta")
     @patch("thegent.cli.ThegentSettings")
     def test_follow_file_truncated_resets_pos(
-        self, mock_settings_cls, mock_find_meta, mock_paths, mock_read_meta, mock_pid, mock_console, tmp_path
+        self,
+        mock_settings_cls,
+        mock_find_meta,
+        mock_paths,
+        mock_read_meta,
+        mock_pid,
+        mock_console,
+        tmp_path,
     ) -> None:
         # @trace FR-CLI-3879
         mock_settings_cls.return_value = _mock_settings()

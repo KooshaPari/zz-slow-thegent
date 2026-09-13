@@ -23,6 +23,7 @@ def _load_legacy_module() -> ModuleType:
     module = importlib.util.module_from_spec(spec)
     # Add to sys.modules BEFORE exec_module to ensure dataclasses works correctly
     import sys
+
     sys.modules[module_name] = module
     spec.loader.exec_module(module)
     return module

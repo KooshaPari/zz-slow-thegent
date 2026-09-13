@@ -3,6 +3,7 @@
 ## Overview
 
 Complete cross-platform installation for thegent supporting:
+
 - ✅ **macOS** (Intel & Apple Silicon)
 - ✅ **Linux** (Ubuntu, Debian, Fedora, Arch, etc.)
 - ✅ **Windows 11** (Native PowerShell)
@@ -12,6 +13,7 @@ Complete cross-platform installation for thegent supporting:
 ## Installation Scripts
 
 ### Bash/Zsh Script (Unix-like)
+
 ```bash
 # macOS, Linux, WSL2
 chmod +x install.sh
@@ -19,6 +21,7 @@ chmod +x install.sh
 ```
 
 ### PowerShell Script (All Platforms)
+
 ```powershell
 # Windows, macOS, Linux, WSL2
 pwsh -ExecutionPolicy Bypass -File install.ps1
@@ -32,11 +35,13 @@ pwsh -ExecutionPolicy Bypass -File install.ps1
 **Shell:** zsh (default), bash, PowerShell (via Homebrew)
 
 **Installation:**
+
 ```bash
 ./install.sh
 ```
 
 **Features:**
+
 - Full Homebrew integration
 - Native zsh support
 - Apple Silicon optimized
@@ -49,6 +54,7 @@ pwsh -ExecutionPolicy Bypass -File install.ps1
 **Shell:** bash, zsh, PowerShell (via snap/package)
 
 **Installation:**
+
 ```bash
 # Ubuntu/Debian
 sudo apt-get update
@@ -57,6 +63,7 @@ sudo apt-get install -y curl git
 ```
 
 **Features:**
+
 - Automatic package manager detection
 - Supports apt, yum, dnf, pacman
 - WSL2 detection and optimization
@@ -69,6 +76,7 @@ sudo apt-get install -y curl git
 **Shell:** PowerShell (pwsh)
 
 **Installation:**
+
 ```powershell
 # Option 1: PowerShell script
 pwsh -ExecutionPolicy Bypass -File install.ps1
@@ -78,6 +86,7 @@ pwsh -ExecutionPolicy Bypass -File install.ps1
 ```
 
 **Features:**
+
 - Scoop integration
 - PowerShell profile configuration
 - Windows PATH integration
@@ -90,6 +99,7 @@ pwsh -ExecutionPolicy Bypass -File install.ps1
 **Shell:** bash, zsh, PowerShell (via pwsh)
 
 **Installation:**
+
 ```bash
 # In WSL2 terminal
 ./install.sh
@@ -99,6 +109,7 @@ pwsh -ExecutionPolicy Bypass -File install.ps1
 ```
 
 **Features:**
+
 - Automatic WSL2 detection
 - Windows PATH integration
 - Cross-platform file access
@@ -110,55 +121,61 @@ pwsh -ExecutionPolicy Bypass -File install.ps1
 
 ### Universal Tools (Work on All Platforms)
 
-| Tool | macOS | Linux | Windows | WSL2 |
-|------|-------|-------|---------|------|
-| **mise** | ✅ | ✅ | ✅ | ✅ |
-| **tea** | ✅ | ✅ | ✅ | ✅ |
-| **chezmoi** | ✅ | ✅ | ✅ | ✅ |
-| **Python** | ✅ | ✅ | ✅ | ✅ |
-| **Node.js** | ✅ | ✅ | ✅ | ✅ |
-| **Ruby** | ✅ | ✅ | ✅ | ✅ |
-| **Rust** | ✅ | ✅ | ✅ | ✅ |
-| **Bun** | ✅ | ✅ | ✅ | ✅ |
+| Tool        | macOS | Linux | Windows | WSL2 |
+| ----------- | ----- | ----- | ------- | ---- |
+| **mise**    | ✅    | ✅    | ✅      | ✅   |
+| **tea**     | ✅    | ✅    | ✅      | ✅   |
+| **chezmoi** | ✅    | ✅    | ✅      | ✅   |
+| **Python**  | ✅    | ✅    | ✅      | ✅   |
+| **Node.js** | ✅    | ✅    | ✅      | ✅   |
+| **Ruby**    | ✅    | ✅    | ✅      | ✅   |
+| **Rust**    | ✅    | ✅    | ✅      | ✅   |
+| **Bun**     | ✅    | ✅    | ✅      | ✅   |
 
 ### Platform-Specific Tools
 
-| Tool | macOS | Linux | Windows | WSL2 |
-|------|-------|-------|---------|------|
-| **Homebrew** | ✅ | ✅ | ❌ | ✅ |
-| **Scoop** | ❌ | ❌ | ✅ | ❌ |
-| **apt/yum** | ❌ | ✅ | ❌ | ✅ |
-| **PowerShell** | ✅ | ✅ | ✅ | ✅ |
+| Tool           | macOS | Linux | Windows | WSL2 |
+| -------------- | ----- | ----- | ------- | ---- |
+| **Homebrew**   | ✅    | ✅    | ❌      | ✅   |
+| **Scoop**      | ❌    | ❌    | ✅      | ❌   |
+| **apt/yum**    | ❌    | ✅    | ❌      | ✅   |
+| **PowerShell** | ✅    | ✅    | ✅      | ✅   |
 
 ## Installation Flow
 
 ### 1. Platform Detection
+
 - Automatically detects OS (macOS, Linux, Windows, WSL2)
 - Detects package manager (Homebrew, apt, Scoop, etc.)
 - Detects shell (bash, zsh, PowerShell)
 
 ### 2. Package Manager Installation
+
 - Installs Homebrew (macOS/Linux) if missing
 - Installs Scoop (Windows) if missing
 - Updates system packages
 
 ### 3. Core Tools Installation
+
 - **mise** - Version manager
 - **tea** - Ephemeral package runner
 - **chezmoi** - Dotfile manager
 
 ### 4. System Packages
+
 - Git, curl, wget
 - Development tools (Python, Node, Ruby, Rust)
 - Shell tools (fzf, ripgrep, fd, bat, etc.)
 
 ### 5. Configuration
+
 - mise global tool versions
 - Shell configuration (.zshenv or PowerShell profile)
 - Templates directory
 - Helper scripts
 
 ### 6. thegent Setup
+
 - Installs dependencies
 - Builds Rust extensions
 - Sets up shell symlinks (Unix-like)
@@ -194,6 +211,7 @@ $env:PATH = "$HOME\.local\bin;$env:PATH"
 ```
 
 **Profile Locations:**
+
 - Windows: `$HOME\Documents\PowerShell\Microsoft.PowerShell_profile.ps1`
 - macOS/Linux: `~/.config/powershell/Microsoft.PowerShell_profile.ps1`
 
@@ -271,11 +289,13 @@ chezmoi apply
 ### Platform-Specific Sync
 
 **macOS/Linux:**
+
 ```bash
 brew bundle dump
 ```
 
 **Windows:**
+
 ```powershell
 scoop export > scoop-packages.json
 ```
@@ -285,11 +305,13 @@ scoop export > scoop-packages.json
 ### Windows Issues
 
 **PowerShell Execution Policy:**
+
 ```powershell
 Set-ExecutionPolicy RemoteSigned -Scope CurrentUser
 ```
 
 **Scoop Installation:**
+
 ```powershell
 iwr -useb get.scoop.sh | iex
 ```
@@ -297,6 +319,7 @@ iwr -useb get.scoop.sh | iex
 ### WSL2 Issues
 
 **Windows PATH Not Working:**
+
 ```bash
 # Check .wslconfig
 cat ~/.wslconfig
@@ -306,6 +329,7 @@ wsl --shutdown
 ```
 
 **File Permissions:**
+
 ```bash
 # Fix permissions
 sudo chown -R $USER:$USER ~/.local
@@ -314,6 +338,7 @@ sudo chown -R $USER:$USER ~/.local
 ### Linux Issues
 
 **Missing Dependencies:**
+
 ```bash
 # Ubuntu/Debian
 sudo apt-get install -y build-essential curl git
@@ -328,6 +353,7 @@ sudo pacman -S base-devel curl git
 ### macOS Issues
 
 **Homebrew Not Found:**
+
 ```bash
 eval "$(/opt/homebrew/bin/brew shellenv)"
 # or
@@ -336,39 +362,47 @@ eval "$(/usr/local/bin/brew shellenv)"
 
 ## Platform Comparison
 
-| Feature | macOS | Linux | Windows | WSL2 |
-|---------|-------|-------|---------|------|
-| Native Performance | ✅ | ✅ | ✅ | ⚠️ |
-| Package Manager | Homebrew | apt/yum/etc | Scoop | apt/yum/etc |
-| Shell Options | zsh, bash, pwsh | bash, zsh, pwsh | pwsh | bash, zsh, pwsh |
-| Windows Integration | ❌ | ❌ | ✅ | ✅ |
-| File System | APFS | ext4 | NTFS | ext4 (WSL) |
-| GUI Apps | ✅ | ✅ | ✅ | ⚠️ (via X11) |
+| Feature             | macOS           | Linux           | Windows | WSL2            |
+| ------------------- | --------------- | --------------- | ------- | --------------- |
+| Native Performance  | ✅              | ✅              | ✅      | ⚠️              |
+| Package Manager     | Homebrew        | apt/yum/etc     | Scoop   | apt/yum/etc     |
+| Shell Options       | zsh, bash, pwsh | bash, zsh, pwsh | pwsh    | bash, zsh, pwsh |
+| Windows Integration | ❌              | ❌              | ✅      | ✅              |
+| File System         | APFS            | ext4            | NTFS    | ext4 (WSL)      |
+| GUI Apps            | ✅              | ✅              | ✅      | ⚠️ (via X11)    |
 
 ## Best Practices
 
 ### 1. Use mise for Tool Versions
+
 Works identically on all platforms:
+
 ```bash
 mise install python@3.12
 mise use python@3.12
 ```
 
 ### 2. Use tea for Ephemeral Tools
+
 Run tools without installing:
+
 ```bash
 tea python@3.12 script.py
 ```
 
 ### 3. Use chezmoi for Configs
+
 Sync dotfiles across all platforms:
+
 ```bash
 chezmoi add ~/.zshrc
 chezmoi add $PROFILE
 ```
 
 ### 4. Platform-Specific Configs
+
 Use chezmoi templates for platform differences:
+
 ```bash
 chezmoi add --template ~/.zshrc
 ```

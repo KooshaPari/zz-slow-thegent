@@ -9,10 +9,9 @@ QA Governance: Test-first (TDD), 100% coverage target for resilience module.
 
 import asyncio
 import logging
-from unittest.mock import AsyncMock, MagicMock, call, patch
+from unittest.mock import MagicMock
 
 import pytest
-from tenacity import RetryError
 
 from thegent.resilience import (
     cas_retry,

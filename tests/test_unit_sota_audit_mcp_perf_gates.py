@@ -39,7 +39,6 @@ from thegent.mcp.server.mcp_perf_gates import (
     mcp_budget_context,
 )
 
-
 # ------------------------------------------------------------------
 # MCPBudgetExceeded contract
 # ------------------------------------------------------------------

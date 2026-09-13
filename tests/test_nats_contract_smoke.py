@@ -1,10 +1,9 @@
 """Unit tests for nats_contract_smoke.py"""
 
-import orjson as json
 import os
-import pytest
-import sys
 from unittest.mock import patch
+
+import pytest
 
 
 def _require_nats_servers() -> None:
@@ -28,7 +27,10 @@ def test_missing_nats_servers_fails():
 
 def test_wrong_event_bus_fails():
     """Test that wrong THEGENT_EVENT_BUS fails."""
-    with patch.dict(os.environ, {"THEGENT_EVENT_BUS": "local", "NATS_SERVERS": "nats://localhost:4222"}):
+    with patch.dict(
+        os.environ,
+        {"THEGENT_EVENT_BUS": "local", "NATS_SERVERS": "nats://localhost:4222"},
+    ):
         import nats_contract_smoke as smoke
 
         with pytest.raises(RuntimeError, match="THEGENT_EVENT_BUS is not 'nats'"):
@@ -37,7 +39,10 @@ def test_wrong_event_bus_fails():
 
 def test_nats_py_not_installed():
     """Test behavior when nats-py not installed."""
-    with patch.dict(os.environ, {"THEGENT_EVENT_BUS": "nats", "NATS_SERVERS": "nats://localhost:4222"}):
+    with patch.dict(
+        os.environ,
+        {"THEGENT_EVENT_BUS": "nats", "NATS_SERVERS": "nats://localhost:4222"},
+    ):
         import nats_contract_smoke as smoke
 
         # Mock _check_nats to simulate nats-py not installed
@@ -51,7 +56,10 @@ def test_nats_py_not_installed():
 
 def test_nats_connection_error():
     """Test NATS connection error handling."""
-    with patch.dict(os.environ, {"THEGENT_EVENT_BUS": "nats", "NATS_SERVERS": "nats://localhost:4222"}):
+    with patch.dict(
+        os.environ,
+        {"THEGENT_EVENT_BUS": "nats", "NATS_SERVERS": "nats://localhost:4222"},
+    ):
         import nats_contract_smoke as smoke
 
         async def mock_check():

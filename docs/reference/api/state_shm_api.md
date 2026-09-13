@@ -4,8 +4,8 @@
 
 BKM-05: State-SHM -- CircuitBreaker + XP tracker in memory-mapped Rust.
 
-This module provides ``CircuitBreakerShm`` and ``XpTracker``, backed by the
-``thegent_shm`` PyO3 Rust extension when available.  When the native extension
+This module provides `CircuitBreakerShm` and `XpTracker`, backed by the
+`thegent_shm` PyO3 Rust extension when available. When the native extension
 is not compiled/installed, a pure-Python in-process fallback is used so that
 all callers continue to work without any code change.
 
@@ -25,16 +25,16 @@ Usage::
     level = xp.level
 
 Environment variables:
-  THGENT_USE_NATIVE_SHM=0   Force pure-Python fallback even if extension available.
+THGENT_USE_NATIVE_SHM=0 Force pure-Python fallback even if extension available.
 
 Native extension layout (crates/thegent-shm):
-  SHMInterface.record_failure(target, category_int)
-  SHMInterface.is_open(target, category_int, threshold, window_s, recovery_s)
-  SHMInterface.award_xp(amount)
-  SHMInterface.get_xp_state()  -&gt; {"total_xp": int, "level": int} | None
-  SHMInterface.set_level(level)
-  SHMInterface.set_health_score(score)
-  SHMInterface.get_health_score()
+SHMInterface.record_failure(target, category_int)
+SHMInterface.is_open(target, category_int, threshold, window_s, recovery_s)
+SHMInterface.award_xp(amount)
+SHMInterface.get_xp_state() -&gt; {"total_xp": int, "level": int} | None
+SHMInterface.set_level(level)
+SHMInterface.set_health_score(score)
+SHMInterface.get_health_score()
 
 ---
 
@@ -43,21 +43,21 @@ Native extension layout (crates/thegent-shm):
 Circuit breaker state backed by memory-mapped Rust SHM or pure-Python fallback.
 
 States (mirroring Rust enum):
-  CLOSED   (0) -- normal, requests flow through
-  OPEN     (1) -- too many failures, requests blocked
-  HALF_OPEN (2)-- recovery window, one trial allowed
+CLOSED (0) -- normal, requests flow through
+OPEN (1) -- too many failures, requests blocked
+HALF_OPEN (2)-- recovery window, one trial allowed
 
 When the native extension is available, state is persisted to a memory-mapped
-file at ``path`` (created automatically, size determined by Rust crate constants).
-Multiple Python processes sharing the same ``path`` share state without locks.
+file at `path` (created automatically, size determined by Rust crate constants).
+Multiple Python processes sharing the same `path` share state without locks.
 
 When native is unavailable, state lives in process memory only (no cross-process
 sharing) and is lost on restart -- identical semantics to the existing
-``CircuitBreakerRegistry`` but without file I/O.
+`CircuitBreakerRegistry` but without file I/O.
 
 ### Methods
 
-#### CircuitBreakerShm.__init__
+#### CircuitBreakerShm.**init**
 
 ```python
 __init__(self: Any, path: Any, threshold: int, window_s: float, recovery_s: float)
@@ -103,7 +103,7 @@ Returns False when CLOSED (normal) or HALF_OPEN (trial allowed).
 record_failure(self: Any, target: str, category: str)
 ```
 
-Record one failure event for ``target`` in ``category``.
+Record one failure event for `target` in `category`.
 
 Increments the failure counter in the SHM region (or in-process dict).
 Thread-safe via Rust atomics when native; GIL-protected when fallback.
@@ -152,7 +152,7 @@ state_int(self: Any, target: str, category: str)
 
 Return integer state code (CLOSED=0, OPEN=1, HALF_OPEN=2).
 
-HALF_OPEN is approximated: if ``is_open`` returns False but failures
+HALF_OPEN is approximated: if `is_open` returns False but failures
 were recently at threshold, state is CLOSED (trial allowed).
 
 ---
@@ -163,13 +163,13 @@ were recently at threshold, state is CLOSED (trial allowed).
 
 Experience points / level tracker backed by memory-mapped Rust SHM or pure-Python.
 
-Provides a persistent XP accumulator: ``award(amount)`` increments total_xp and
-recomputes ``level`` (1000 XP per level).  When native, the value is persisted
+Provides a persistent XP accumulator: `award(amount)` increments total_xp and
+recomputes `level` (1000 XP per level). When native, the value is persisted
 across process restarts via the mmap'd file.
 
 ### Methods
 
-#### XpTracker.__init__
+#### XpTracker.**init**
 
 ```python
 __init__(self: Any, path: Any)
@@ -183,7 +183,7 @@ __init__(self: Any, path: Any)
 award(self: Any, amount: int)
 ```
 
-Add ``amount`` XP. Level is recomputed automatically.
+Add `amount` XP. Level is recomputed automatically.
 
 ---
 
@@ -223,7 +223,7 @@ Directly override level (useful for migration/seeding).
 state(self: Any)
 ```
 
-Return ``{"total_xp": int, "level": int}``.
+Return `{"total_xp": int, "level": int}`.
 
 ---
 
@@ -239,13 +239,13 @@ Total accumulated XP.
 
 ---
 
-## _PurePythonBreakerStore
+## \_PurePythonBreakerStore
 
 In-process dict-backed circuit breaker state (fallback when native unavailable).
 
 ### Methods
 
-#### _PurePythonBreakerStore.__init__
+#### \_PurePythonBreakerStore.**init**
 
 ```python
 __init__(self: Any)
@@ -253,7 +253,7 @@ __init__(self: Any)
 
 ---
 
-#### _PurePythonBreakerStore.clear
+#### \_PurePythonBreakerStore.clear
 
 ```python
 clear(self: Any, target: Any)
@@ -261,7 +261,7 @@ clear(self: Any, target: Any)
 
 ---
 
-#### _PurePythonBreakerStore.is_open
+#### \_PurePythonBreakerStore.is_open
 
 ```python
 is_open(self: Any, target: str, category: str, threshold: int, window_s: float, recovery_s: float)
@@ -269,7 +269,7 @@ is_open(self: Any, target: str, category: str, threshold: int, window_s: float, 
 
 ---
 
-#### _PurePythonBreakerStore.record_failure
+#### \_PurePythonBreakerStore.record_failure
 
 ```python
 record_failure(self: Any, target: str, category: str)
@@ -279,13 +279,13 @@ record_failure(self: Any, target: str, category: str)
 
 ---
 
-## _PurePythonXpStore
+## \_PurePythonXpStore
 
 In-process dict-backed XP/level state (fallback when native unavailable).
 
 ### Methods
 
-#### _PurePythonXpStore.__init__
+#### \_PurePythonXpStore.**init**
 
 ```python
 __init__(self: Any)
@@ -293,7 +293,7 @@ __init__(self: Any)
 
 ---
 
-#### _PurePythonXpStore.award
+#### \_PurePythonXpStore.award
 
 ```python
 award(self: Any, amount: int)
@@ -301,7 +301,7 @@ award(self: Any, amount: int)
 
 ---
 
-#### _PurePythonXpStore.state
+#### \_PurePythonXpStore.state
 
 ```python
 state(self: Any)
@@ -317,7 +317,7 @@ state(self: Any)
 award(self: Any, amount: int)
 ```
 
-Add ``amount`` XP. Level is recomputed automatically.
+Add `amount` XP. Level is recomputed automatically.
 
 ---
 
@@ -386,7 +386,7 @@ open_shm(path: Any)
 Open (or create) an SHM region and return (CircuitBreakerShm, XpTracker).
 
 Both objects share the same backing file so the Rust crate's single
-``SHMInterface`` layout is used for all regions (breakers + XP + health).
+`SHMInterface` layout is used for all regions (breakers + XP + health).
 
 Example::
 
@@ -402,7 +402,7 @@ Example::
 record_failure(self: Any, target: str, category: str)
 ```
 
-Record one failure event for ``target`` in ``category``.
+Record one failure event for `target` in `category`.
 
 Increments the failure counter in the SHM region (or in-process dict).
 Thread-safe via Rust atomics when native; GIL-protected when fallback.
@@ -459,7 +459,7 @@ Return True when the circuit is CLOSED or HALF_OPEN (request may proceed).
 state(self: Any)
 ```
 
-Return ``{"total_xp": int, "level": int}``.
+Return `{"total_xp": int, "level": int}`.
 
 ---
 
@@ -471,7 +471,7 @@ state_int(self: Any, target: str, category: str)
 
 Return integer state code (CLOSED=0, OPEN=1, HALF_OPEN=2).
 
-HALF_OPEN is approximated: if ``is_open`` returns False but failures
+HALF_OPEN is approximated: if `is_open` returns False but failures
 were recently at threshold, state is CLOSED (trial allowed).
 
 ---

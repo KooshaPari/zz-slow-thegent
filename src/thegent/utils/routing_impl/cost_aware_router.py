@@ -17,7 +17,9 @@ from enum import Enum
 from typing import Any, Literal
 
 from thegent.utils.routing_impl.pareto_router import ParetoRouter
-from thegent.utils.routing_impl.pareto_router import RouteCandidate as _ParetoRouteCandidate
+from thegent.utils.routing_impl.pareto_router import (
+    RouteCandidate as _ParetoRouteCandidate,
+)
 
 _log = logging.getLogger(__name__)
 
@@ -97,7 +99,12 @@ class CostMeter:
         self.cost_history: list[dict[str, Any]] = []
 
     async def record_cost(
-        self, project_id: str, model: str, input_tokens: int, output_tokens: int, cost: float
+        self,
+        project_id: str,
+        model: str,
+        input_tokens: int,
+        output_tokens: int,
+        cost: float,
     ) -> None:
         """Record cost for a single request (FR-COST-001)."""
         key = f"{project_id}:{model}"
@@ -149,7 +156,9 @@ class BudgetManager:
         # Return the most constrained budget's status
         most_constrained = min(relevant_budgets, key=lambda b: b.remaining)
         return BudgetStatus(
-            can_proceed=True, remaining_budget=most_constrained.remaining, utilization=most_constrained.utilization
+            can_proceed=True,
+            remaining_budget=most_constrained.remaining,
+            utilization=most_constrained.utilization,
         )
 
     def record_spend(self, project_id: str, cost: float) -> None:
@@ -180,7 +189,10 @@ class BudgetAwareRouter:
         self.degraded_at_pct = degraded_at_pct
 
     def route(
-        self, project_id: str, candidates: list[_ParetoRouteCandidate], strategy: str = "balanced"
+        self,
+        project_id: str,
+        candidates: list[_ParetoRouteCandidate],
+        strategy: str = "balanced",
     ) -> _ParetoRouteCandidate:
         """Select the best candidate given current budget state and Pareto strategy."""
         if not candidates:
@@ -191,7 +203,10 @@ class BudgetAwareRouter:
 
         if not status.can_proceed:
             # If strictly over budget, select the absolute cheapest candidate
-            _log.warning("Budget exceeded for project %s. Routing to cheapest candidate.", project_id)
+            _log.warning(
+                "Budget exceeded for project %s. Routing to cheapest candidate.",
+                project_id,
+            )
             return min(candidates, key=lambda c: c.cost_per_1k)  # type: ignore[attr-defined]
 
         # 2. Degraded Mode (90%+)
@@ -408,7 +423,9 @@ class ProviderBudgetRouter:
 _default_budget_router: ProviderBudgetRouter | None = None
 
 
-def get_provider_budget_router(configs: list[ProviderBudgetConfig] | None = None) -> ProviderBudgetRouter:
+def get_provider_budget_router(
+    configs: list[ProviderBudgetConfig] | None = None,
+) -> ProviderBudgetRouter:
     """Get or create the default ProviderBudgetRouter.
 
     On first call, builds configs from env vars:

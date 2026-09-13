@@ -23,7 +23,7 @@ Manages secure execution of agent code in a Wasm environment using Extism.
 
 ### Methods
 
-#### WasmSandbox.__init__
+#### WasmSandbox.**init**
 
 ```python
 __init__(self: Any, sandbox_id: str, config: Optional[SandboxConfig])

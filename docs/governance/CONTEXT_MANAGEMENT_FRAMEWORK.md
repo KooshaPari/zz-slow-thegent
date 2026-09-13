@@ -140,29 +140,29 @@ Every context package includes:
 
 ```yaml
 metadata:
-  version: "1.2.3"              # Ante version
+  version: "1.2.3" # Ante version
   release_date: "2026-02-20"
-  context_version: "1.0.0"      # Framework version
+  context_version: "1.0.0" # Framework version
   generated_date: "2026-02-20"
-  expiry_date: "2026-03-20"     # Typically 30 days
+  expiry_date: "2026-03-20" # Typically 30 days
   size_bytes: 524288
   checksum: "sha256:..."
-  
+
 coverage:
   apis:
     public: 100
     experimental: 5
     documented: 105
-  
+
 features:
-    documented: 23
-    total: 25
-    coverage: 92%
-  
+  documented: 23
+  total: 25
+  coverage: 92%
+
 quality:
-    broken_links: 0
-    tested_examples: 98%
-    last_audit: "2026-02-20"
+  broken_links: 0
+  tested_examples: 98%
+  last_audit: "2026-02-20"
 ```
 
 ---
@@ -234,6 +234,7 @@ Context customized for specific agents or use cases:
 **Trigger**: New documentation or feature
 
 **Process**:
+
 1. Documentation authored and reviewed
 2. Content quality verified
 3. Examples tested
@@ -249,6 +250,7 @@ Context customized for specific agents or use cases:
 **Trigger**: Context bundle generation
 
 **Process**:
+
 1. Select context appropriate for layers
 2. Format for LLM consumption
 3. Add context-specific metadata
@@ -263,6 +265,7 @@ Context customized for specific agents or use cases:
 **Trigger**: Release or scheduled update
 
 **Process**:
+
 1. Deploy to documentation site
 2. Publish llms.txt
 3. Update API feeds
@@ -277,6 +280,7 @@ Context customized for specific agents or use cases:
 **Trigger**: Ongoing access and usage
 
 **Process**:
+
 1. Monitor for issues
 2. Collect feedback
 3. Fix errors discovered
@@ -291,6 +295,7 @@ Context customized for specific agents or use cases:
 **Trigger**: Context superseded or deprecated
 
 **Process**:
+
 1. Mark as deprecated (3-6 months before)
 2. Link to replacement context
 3. Move to archive storage
@@ -323,16 +328,20 @@ When Ante makes breaking changes:
 # Breaking Change: Context Version 1.2.3
 
 ## What Changed
+
 [Description of change]
 
 ## Migration Path
+
 [How to update to new pattern]
 
 ## Temporary Support
+
 Context from 1.1.x still available in archive.
 Migration guide: [link]
 
 ## Deprecation Timeline
+
 - 1.2.3: Warning in context
 - 1.3.0: Deprecation notice
 - 1.4.0: Removed from standard context
@@ -354,12 +363,12 @@ context-archive/
 
 ### Preservation Policy
 
-| Context Age | Policy |
-|---|---|
-| Current (< 1 month) | Active distribution |
-| Recent (1-6 months) | Available but not promoted |
+| Context Age                     | Policy                         |
+| ------------------------------- | ------------------------------ |
+| Current (< 1 month)             | Active distribution            |
+| Recent (1-6 months)             | Available but not promoted     |
 | Historical (6 months - 2 years) | Archived, available on request |
-| Very Old (> 2 years) | Archived, lower priority |
+| Very Old (> 2 years)            | Archived, lower priority       |
 
 ---
 
@@ -390,24 +399,24 @@ Agent Request
 ```python
 def select_context(agent_profile):
     """Select appropriate context based on agent needs"""
-    
+
     base_layer = "standard"  # Default
-    
+
     # Adjust based on agent type
     if agent.type == "expert":
         base_layer = "comprehensive"
     elif agent.type == "simple":
         base_layer = "minimal"
-    
+
     # Adjust based on task complexity
     if task.complexity > 0.7:
         base_layer = "comprehensive"
-    
+
     # Filter based on permissions
     context = load_layer(base_layer)
     context = filter_by_permissions(context, agent.role)
     context = filter_by_apis(context, agent.allowed_apis)
-    
+
     return context
 ```
 
@@ -422,13 +431,13 @@ roles:
     apis: [core, basic-features]
     guides: [getting-started, common-patterns]
     examples: [basic-use-cases]
-    
+
   advanced:
     context_layer: comprehensive
     apis: [all-public]
     guides: [all]
     examples: [all]
-    
+
   expert:
     context_layer: extended
     apis: [all-public, experimental]
@@ -444,11 +453,11 @@ task_contexts:
   "debugging":
     include: [troubleshooting-guide, known-issues, debug-apis]
     exclude: [getting-started]
-    
+
   "optimization":
     include: [performance-guide, benchmarks, tuning-parameters]
     exclude: [basic-guides]
-    
+
   "migration":
     include: [migration-guide, breaking-changes, upgrade-path]
     exclude: [new-feature-guides]
@@ -462,18 +471,23 @@ task_contexts:
 You have access to comprehensive Ante documentation.
 
 ### Available APIs
+
 - [List of available APIs based on role/task]
 
 ### Documentation Layers
+
 You can reference:
+
 - API reference for exact signatures
 - How-to guides for common patterns
 - Examples for working solutions
 
 ### Known Limitations
+
 - [List of documented limitations]
 
 ### Context Metadata
+
 - Ante Version: 1.2.3
 - Context Generated: 2026-02-20
 - Validity: Until next release (2026-03-20)
@@ -490,6 +504,7 @@ You can reference:
 **Definition**: How recently documentation reflects current Ante behavior
 
 **Measurement**:
+
 ```
 Fresh = (today - last_verified_date) < acceptable_age
 ```
@@ -503,6 +518,7 @@ Fresh = (today - last_verified_date) < acceptable_age
 | Examples | 2 weeks | Execution |
 
 **Action on Stale Content**:
+
 ```
 If last_updated > max_age:
   1. Mark as "needs refresh"
@@ -516,14 +532,16 @@ If last_updated > max_age:
 **Definition**: Relevance of context to agent task
 
 **Factors**:
+
 - Task type match (debugging, building, etc.)
 - Feature match (which APIs needed)
 - Skill level match (basic, advanced, expert)
 - Context size vs. task complexity
 
 **Scoring Algorithm**:
+
 ```
-relevance_score = 
+relevance_score =
   0.4 * task_match +
   0.3 * feature_match +
   0.2 * skill_match +
@@ -558,7 +576,7 @@ Item Marked Stale
     ↓
 [Owner Notified]
     ↓
-[Review Current Behavior] 
+[Review Current Behavior]
     ↓
 [Update Documentation]
     ↓
@@ -582,6 +600,7 @@ Hard Expiry: 2026-03-27 (7 day grace period)
 ```
 
 **Action on Expiry**:
+
 1. Stop serving to new requests
 2. Warn existing consumers
 3. Provide link to new version
@@ -589,12 +608,12 @@ Hard Expiry: 2026-03-27 (7 day grace period)
 
 #### Refresh Schedule
 
-| Context Type | Refresh Interval |
-|---|---|
-| Static (API ref) | On Ante release |
-| Dynamic (known issues) | Weekly |
-| Operational (status) | Real-time to daily |
-| Agent-specific | Per deployment |
+| Context Type           | Refresh Interval   |
+| ---------------------- | ------------------ |
+| Static (API ref)       | On Ante release    |
+| Dynamic (known issues) | Weekly             |
+| Operational (status)   | Real-time to daily |
+| Agent-specific         | Per deployment     |
 
 ---
 
@@ -682,6 +701,7 @@ User Request
 ```
 
 **Cache Headers**:
+
 ```
 llms.txt: Cache-Control: public, max-age=3600 (1 hour)
 Version-manifest: Cache-Control: public, max-age=86400 (1 day)
@@ -696,16 +716,17 @@ Archive content: Cache-Control: immutable, max-age=31536000 (1 year)
 
 #### Size Targets
 
-| Layer | Target Size | Real Max |
-|---|---|---|
-| Minimal | 10-20 KB | 50 KB |
-| Standard | 100-200 KB | 300 KB |
-| Comprehensive | 500-1000 KB | 1.5 MB |
-| Extended | 1000+ KB | 3 MB |
+| Layer         | Target Size | Real Max |
+| ------------- | ----------- | -------- |
+| Minimal       | 10-20 KB    | 50 KB    |
+| Standard      | 100-200 KB  | 300 KB   |
+| Comprehensive | 500-1000 KB | 1.5 MB   |
+| Extended      | 1000+ KB    | 3 MB     |
 
 #### Compression Techniques
 
 1. **Content Deduplication**
+
    ```
    - Remove redundant explanations
    - Link to canonical versions
@@ -713,6 +734,7 @@ Archive content: Cache-Control: immutable, max-age=31536000 (1 year)
    ```
 
 2. **Structural Optimization**
+
    ```
    - Remove navigation markup
    - Flatten unnecessary nesting
@@ -753,6 +775,7 @@ def estimate_tokens(context_text):
     tokens = len(context_text) / 4
     return tokens
 
+
 # Example:
 # Standard layer: 170 KB = 170,000 * 8 bits = 42,500 tokens
 # Reasonable for most LLM context windows
@@ -761,6 +784,7 @@ def estimate_tokens(context_text):
 #### Token Optimization
 
 **Strategy**:
+
 1. For production agents: Use "minimal" layer + task-specific APIs
 2. For research: Use "comprehensive" layer
 3. For LLMs: Use "standard" layer by default
@@ -778,6 +802,7 @@ global-cdn/
 ```
 
 **Latency Targets**:
+
 - P50: < 50ms
 - P95: < 200ms
 - P99: < 500ms
@@ -789,9 +814,9 @@ For agents requiring multiple context layers:
 ```javascript
 // Fetch multiple context sources in parallel
 const contexts = await Promise.all([
-  fetch('/llms.txt?layer=core'),
-  fetch('/llms.txt?layer=feature&feature=auth'),
-  fetch('/llms.txt?layer=examples')
+  fetch("/llms.txt?layer=core"),
+  fetch("/llms.txt?layer=feature&feature=auth"),
+  fetch("/llms.txt?layer=examples"),
 ]);
 ```
 
@@ -903,12 +928,12 @@ Get latest: https://docs.antigma.ai/llms.txt
 
 ```yaml
 quality_metrics:
-  broken_links_count: 0              # Target: 0
-  tested_examples_pass_rate: 98%     # Target: > 95%
-  freshness_score: 8.2/10            # Target: > 8.0
-  completeness_score: 92%            # Target: > 90%
-  clarity_score: 7.8/10              # Target: > 7.0
-  
+  broken_links_count: 0 # Target: 0
+  tested_examples_pass_rate: 98% # Target: > 95%
+  freshness_score: 8.2/10 # Target: > 8.0
+  completeness_score: 92% # Target: > 90%
+  clarity_score: 7.8/10 # Target: > 7.0
+
   by_section:
     api_reference: 100%
     guides: 94%
@@ -934,11 +959,11 @@ usage_metrics:
 
 ```yaml
 performance_metrics:
-  generation_time: 2.3s             # Target: < 5s
+  generation_time: 2.3s # Target: < 5s
   file_size_uncompressed: 2.1 MB
   file_size_gzipped: 412 KB
-  cdn_latency_p50: 42ms             # Target: < 50ms
-  cdn_latency_p95: 156ms            # Target: < 200ms
+  cdn_latency_p50: 42ms # Target: < 50ms
+  cdn_latency_p95: 156ms # Target: < 200ms
 ```
 
 ### Monitoring Dashboard
@@ -973,23 +998,23 @@ Key metrics displayed on monitoring dashboard:
 
 **Alert Thresholds**:
 
-| Metric | Threshold | Action |
-|---|---|---|
-| Broken Links | > 0 | Page on-call |
-| Quality Score | < 8.0 | Create issue |
-| Stale Content | > 10% | Alert team |
-| Generation Failure | Any | Page on-call |
-| Latency P95 | > 500ms | Investigate |
+| Metric             | Threshold | Action       |
+| ------------------ | --------- | ------------ |
+| Broken Links       | > 0       | Page on-call |
+| Quality Score      | < 8.0     | Create issue |
+| Stale Content      | > 10%     | Alert team   |
+| Generation Failure | Any       | Page on-call |
+| Latency P95        | > 500ms   | Investigate  |
 
 ### Reporting Schedule
 
-| Report | Frequency | Owner |
-|---|---|---|
-| Quality Audit | Weekly | QA |
-| Usage Report | Weekly | Product |
-| Performance Report | Daily | Ops |
-| Comprehensive Review | Monthly | Lead |
-| Strategic Review | Quarterly | Steering |
+| Report               | Frequency | Owner    |
+| -------------------- | --------- | -------- |
+| Quality Audit        | Weekly    | QA       |
+| Usage Report         | Weekly    | Product  |
+| Performance Report   | Daily     | Ops      |
+| Comprehensive Review | Monthly   | Lead     |
+| Strategic Review     | Quarterly | Steering |
 
 ---
 
@@ -1001,6 +1026,7 @@ Key metrics displayed on monitoring dashboard:
 ## Pre-Release Context Bundle Checklist
 
 ### Content Coverage
+
 - [ ] All public APIs documented
 - [ ] Recent features included
 - [ ] Known issues documented
@@ -1008,6 +1034,7 @@ Key metrics displayed on monitoring dashboard:
 - [ ] Examples for major features
 
 ### Quality Assurance
+
 - [ ] No broken links
 - [ ] All code examples tested
 - [ ] Metadata complete
@@ -1015,6 +1042,7 @@ Key metrics displayed on monitoring dashboard:
 - [ ] Search index built
 
 ### Optimization
+
 - [ ] Size within targets
 - [ ] Compression applied
 - [ ] Redundancy removed
@@ -1022,6 +1050,7 @@ Key metrics displayed on monitoring dashboard:
 - [ ] Cache headers set
 
 ### Validation
+
 - [ ] Security scan passed
 - [ ] Format validation passed
 - [ ] Integration test passed
@@ -1029,6 +1058,7 @@ Key metrics displayed on monitoring dashboard:
 - [ ] User feedback reviewed
 
 ### Deployment
+
 - [ ] Version tagged
 - [ ] CDN pre-warmed
 - [ ] Notifications prepared
@@ -1036,6 +1066,7 @@ Key metrics displayed on monitoring dashboard:
 - [ ] Monitoring configured
 
 ### Sign-Off
+
 - [ ] Technical lead approval
 - [ ] Operations approval
 - [ ] Product approval
@@ -1052,7 +1083,7 @@ quality_scorecard:
       example_accuracy: 9/10
       metadata_completeness: 9/10
     score: 9.3/10
-  
+
   completeness:
     weight: 0.25
     sub_scores:
@@ -1060,7 +1091,7 @@ quality_scorecard:
       guide_coverage: 8/10
       example_coverage: 9/10
     score: 8.7/10
-  
+
   clarity:
     weight: 0.25
     sub_scores:
@@ -1068,14 +1099,14 @@ quality_scorecard:
       organization: 8/10
       navigation: 7/10
     score: 7.7/10
-  
+
   freshness:
     weight: 0.2
     sub_scores:
       age_score: 9/10
       test_currency: 9/10
     score: 9.0/10
-  
+
   overall_score: 8.55/10 (Target: > 8.0)
 ```
 
@@ -1087,30 +1118,35 @@ For each consumer integrating context:
 ## Consumer Integration Checklist
 
 ### Setup
+
 - [ ] API credentials obtained
 - [ ] Access level configured
 - [ ] Cache strategy defined
 - [ ] Update frequency planned
 
 ### Integration
+
 - [ ] Fetch endpoint integrated
 - [ ] Version handling implemented
 - [ ] Error handling implemented
 - [ ] Logging configured
 
 ### Testing
+
 - [ ] Happy path tested
 - [ ] Error cases tested
 - [ ] Performance validated
 - [ ] Load testing completed
 
 ### Deployment
+
 - [ ] Staging deployment successful
 - [ ] Production deployment plan ready
 - [ ] Rollback plan documented
 - [ ] Monitoring configured
 
 ### Ongoing
+
 - [ ] Usage metrics tracked
 - [ ] Quality feedback provided
 - [ ] Version upgrades planned

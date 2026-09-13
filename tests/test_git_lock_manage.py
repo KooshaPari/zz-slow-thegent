@@ -5,10 +5,10 @@ Covers worktree-safe .git resolution and lock file indexing.
 
 from __future__ import annotations
 
-import time
 import os
-from unittest.mock import Mock
+import time
 from pathlib import Path
+from unittest.mock import Mock
 
 from thegent import git_lock_manage as glm
 

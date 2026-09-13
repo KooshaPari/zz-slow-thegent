@@ -18,7 +18,10 @@ def test_resolve_author_env_supports_identity_map(monkeypatch: pytest.MonkeyPatc
     monkeypatch.setattr(
         identity,
         "_git_config_get",
-        lambda _project_root, key: {"user.name": "Base Name", "user.email": "base@example.com"}.get(key, ""),
+        lambda _project_root, key: {
+            "user.name": "Base Name",
+            "user.email": "base@example.com",
+        }.get(key, ""),
     )
     monkeypatch.setenv("THGENT_GIT_IDENTITY_MAP", profile_map)
     monkeypatch.setenv("GIT_AUTHOR_NAME", "from-git-env-name")
@@ -47,9 +50,10 @@ def test_resolve_author_env_uses_non_human_suffix(monkeypatch: pytest.MonkeyPatc
     monkeypatch.setattr(
         identity,
         "_git_config_get",
-        lambda _project_root, key: {"user.name": "Koosha Paridehpour", "user.email": "koosh+thegent@example.com"}.get(
-            key, ""
-        ),
+        lambda _project_root, key: {
+            "user.name": "Koosha Paridehpour",
+            "user.email": "koosh+thegent@example.com",
+        }.get(key, ""),
     )
     monkeypatch.setenv("GIT_AUTHOR_NAME", "Koosha Parikh")
     monkeypatch.setenv("GIT_AUTHOR_EMAIL", "koosh+thegent@example.com")
@@ -64,7 +68,10 @@ def test_resolve_author_env_allows_direct_overrides(monkeypatch: pytest.MonkeyPa
     monkeypatch.setattr(
         identity,
         "_git_config_get",
-        lambda _project_root, key: {"user.name": "Koosha Parid", "user.email": "ignore@example.com"}.get(key, ""),
+        lambda _project_root, key: {
+            "user.name": "Koosha Parid",
+            "user.email": "ignore@example.com",
+        }.get(key, ""),
     )
     monkeypatch.setenv("GIT_AUTHOR_NAME", "ignore-me")
     monkeypatch.setenv("GIT_AUTHOR_EMAIL", "ignore-me@example.com")

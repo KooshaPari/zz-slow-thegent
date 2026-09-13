@@ -42,7 +42,6 @@ from thegent.mcp.server import (
 )
 from thegent.ux.cli_cockpit import app as cockpit_app
 
-
 pytestmark = pytest.mark.unit
 
 

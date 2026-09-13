@@ -12,9 +12,9 @@ Disk I/O queue depth monitoring for thegent resource management.
 
 Per-device disk I/O counters from the OS.
 
-All ``*_count`` and ``*_bytes`` fields reflect cumulative totals
+All `*_count` and `*_bytes` fields reflect cumulative totals
 since boot (monotonically increasing), matching the semantics of
-``psutil.disk_io_counters()``.
+`psutil.disk_io_counters()`.
 
 ---
 
@@ -22,7 +22,7 @@ since boot (monotonically increasing), matching the semantics of
 
 Monitors disk I/O statistics and estimates queue depth.
 
-Uses ``psutil.disk_io_counters(perdisk=True)`` as the data source.
+Uses `psutil.disk_io_counters(perdisk=True)` as the data source.
 If psutil is not installed, all methods return empty results rather
 than raising, keeping callers resilient to missing dependencies.
 
@@ -42,18 +42,18 @@ Usage::
 get_disk_usage(self: Any, path: str)
 ```
 
-Return disk usage statistics for the filesystem at *path*.
+Return disk usage statistics for the filesystem at _path_.
 
-Wraps ``psutil.disk_usage(path)`` and converts the named-tuple to a
-plain dictionary with keys ``total``, ``used``, ``free``, and
-``percent``.
+Wraps `psutil.disk_usage(path)` and converts the named-tuple to a
+plain dictionary with keys `total`, `used`, `free`, and
+`percent`.
 
 **Parameters**:
 
 - `path`: Mount point or any path on the target filesystem.
 
-**Returns**: Dict with keys ``total``, ``used``, ``free``, ``percent``.
-Returns ``{}`` when psutil is unavailable or the path is invalid.
+**Returns**: Dict with keys `total`, `used`, `free`, `percent`.
+Returns `{}` when psutil is unavailable or the path is invalid.
 
 ---
 
@@ -68,10 +68,10 @@ Return per-device I/O counters.
 **Parameters**:
 
 - `device`: If given, return only stats for that device name.
-``None`` returns all devices.
+  `None` returns all devices.
 
 **Returns**: List of :class:`DiskIoStats`, one per block device.
-Returns ``[]`` when psutil is unavailable.
+Returns `[]` when psutil is unavailable.
 
 ---
 
@@ -83,9 +83,9 @@ list_devices(self: Any)
 
 Return names of all block devices reported by the OS.
 
-**Returns**: Sorted list of device name strings (e.g. ``["disk0", "disk1"]``
-on macOS or ``["sda", "sdb"]`` on Linux).
-Returns ``[]`` when psutil is unavailable.
+**Returns**: Sorted list of device name strings (e.g. `["disk0", "disk1"]`
+on macOS or `["sda", "sdb"]` on Linux).
+Returns `[]` when psutil is unavailable.
 
 ---
 
@@ -97,21 +97,21 @@ sample_queue_depth(self: Any, interval_s: float)
 
 Estimate I/O queue depth by comparing two snapshots.
 
-Takes two ``get_io_stats()`` snapshots separated by ``interval_s``
+Takes two `get_io_stats()` snapshots separated by `interval_s`
 seconds and derives:
 
-- ``utilization_pct``: fraction of the interval the device was busy
-  (using ``busy_time_ms`` when available, otherwise ``read_time_ms +
-  write_time_ms`` saturated at ``interval_s * 1000`` ms).
-- ``queue_depth``: average number of pending I/O requests during the
-  interval, estimated as ``utilization_fraction * io_rate``.
+- `utilization_pct`: fraction of the interval the device was busy
+  (using `busy_time_ms` when available, otherwise `read_time_ms +
+write_time_ms` saturated at `interval_s * 1000` ms).
+- `queue_depth`: average number of pending I/O requests during the
+  interval, estimated as `utilization_fraction * io_rate`.
 
 **Parameters**:
 
 - `interval_s`: Sampling window in seconds (must be &gt; 0).
 
 **Returns**: List of :class:`DiskQueueSample`, one per device seen in both
-snapshots.  Returns ``[]`` when psutil is unavailable.
+snapshots. Returns `[]` when psutil is unavailable.
 
 ---
 
@@ -121,13 +121,13 @@ snapshots.  Returns ``[]`` when psutil is unavailable.
 
 Estimated queue depth and utilization for one block device.
 
-``queue_depth`` is derived from Little's Law applied to the busy-time
-delta between two ``DiskIoStats`` samples:
+`queue_depth` is derived from Little's Law applied to the busy-time
+delta between two `DiskIoStats` samples:
 
     queue_depth = (busy_time_delta_ms / elapsed_ms)
                   * (io_count_delta / max(io_count_delta, 1))
 
-When ``busy_time_ms`` is unavailable (e.g. macOS), ``utilization_pct``
+When `busy_time_ms` is unavailable (e.g. macOS), `utilization_pct`
 is still computed from the combined read/write time delta.
 
 ---
@@ -138,18 +138,18 @@ is still computed from the combined read/write time delta.
 get_disk_usage(self: Any, path: str)
 ```
 
-Return disk usage statistics for the filesystem at *path*.
+Return disk usage statistics for the filesystem at _path_.
 
-Wraps ``psutil.disk_usage(path)`` and converts the named-tuple to a
-plain dictionary with keys ``total``, ``used``, ``free``, and
-``percent``.
+Wraps `psutil.disk_usage(path)` and converts the named-tuple to a
+plain dictionary with keys `total`, `used`, `free`, and
+`percent`.
 
 **Parameters**:
 
 - `path`: Mount point or any path on the target filesystem.
 
-**Returns**: Dict with keys ``total``, ``used``, ``free``, ``percent``.
-Returns ``{}`` when psutil is unavailable or the path is invalid.
+**Returns**: Dict with keys `total`, `used`, `free`, `percent`.
+Returns `{}` when psutil is unavailable or the path is invalid.
 
 ---
 
@@ -164,10 +164,10 @@ Return per-device I/O counters.
 **Parameters**:
 
 - `device`: If given, return only stats for that device name.
-``None`` returns all devices.
+  `None` returns all devices.
 
 **Returns**: List of :class:`DiskIoStats`, one per block device.
-Returns ``[]`` when psutil is unavailable.
+Returns `[]` when psutil is unavailable.
 
 ---
 
@@ -179,9 +179,9 @@ list_devices(self: Any)
 
 Return names of all block devices reported by the OS.
 
-**Returns**: Sorted list of device name strings (e.g. ``["disk0", "disk1"]``
-on macOS or ``["sda", "sdb"]`` on Linux).
-Returns ``[]`` when psutil is unavailable.
+**Returns**: Sorted list of device name strings (e.g. `["disk0", "disk1"]`
+on macOS or `["sda", "sdb"]` on Linux).
+Returns `[]` when psutil is unavailable.
 
 ---
 
@@ -193,20 +193,20 @@ sample_queue_depth(self: Any, interval_s: float)
 
 Estimate I/O queue depth by comparing two snapshots.
 
-Takes two ``get_io_stats()`` snapshots separated by ``interval_s``
+Takes two `get_io_stats()` snapshots separated by `interval_s`
 seconds and derives:
 
-- ``utilization_pct``: fraction of the interval the device was busy
-  (using ``busy_time_ms`` when available, otherwise ``read_time_ms +
-  write_time_ms`` saturated at ``interval_s * 1000`` ms).
-- ``queue_depth``: average number of pending I/O requests during the
-  interval, estimated as ``utilization_fraction * io_rate``.
+- `utilization_pct`: fraction of the interval the device was busy
+  (using `busy_time_ms` when available, otherwise `read_time_ms +
+write_time_ms` saturated at `interval_s * 1000` ms).
+- `queue_depth`: average number of pending I/O requests during the
+  interval, estimated as `utilization_fraction * io_rate`.
 
 **Parameters**:
 
 - `interval_s`: Sampling window in seconds (must be &gt; 0).
 
 **Returns**: List of :class:`DiskQueueSample`, one per device seen in both
-snapshots.  Returns ``[]`` when psutil is unavailable.
+snapshots. Returns `[]` when psutil is unavailable.
 
 ---

@@ -2,22 +2,25 @@
 
 from __future__ import annotations
 
-import orjson as json
-import logging
-from pathlib import Path
 import inspect
+import logging
 from collections.abc import AsyncIterable, Awaitable, Mapping
-from unittest.mock import Base
+from pathlib import Path
 from typing import TYPE_CHECKING, Any, cast
+from unittest.mock import Base
 
 import httpx
+import orjson as json
 from starlette.responses import Response, StreamingResponse
 
 if TYPE_CHECKING:
     from starlette.requests import Request
     from starlette.websockets import WebSocket
 
-from thegent.utils.routing_impl.litellm_router import build_dynamic_fallback_router, get_litellm_router
+from thegent.utils.routing_impl.litellm_router import (
+    build_dynamic_fallback_router,
+    get_litellm_router,
+)
 
 _log = logging.getLogger(__name__)
 
@@ -258,7 +261,9 @@ def _strip_thinking_signatures(content: Any) -> Any:
     return sanitized or [{"type": "text", "text": ""}]
 
 
-def _responses_input_to_messages(input_items: list[dict[str, Any]]) -> list[dict[str, Any]]:
+def _responses_input_to_messages(
+    input_items: list[dict[str, Any]],
+) -> list[dict[str, Any]]:
     """Convert Responses API input items to Chat Completions messages.
 
     OR-16: Preserves full content arrays (including cache_control, image_url, etc.)
@@ -577,7 +582,11 @@ async def handle_responses_request(request: Request) -> Response:
 
         if stream:
             return await handle_responses_stream(
-                request, chat_request, router, forward_headers=forward_headers, _models=_models
+                request,
+                chat_request,
+                router,
+                forward_headers=forward_headers,
+                _models=_models,
             )
 
         # Non-streaming request — route through LiteLLM Router for
@@ -745,7 +754,10 @@ async def handle_responses_stream(
                 response_obj = await response_obj
             async for chunk in response_obj:
                 # Translate Chat Completions → Responses API
-                chunk_dict = cast("dict[str, Any]", chunk.model_dump() if hasattr(chunk, "model_dump") else chunk)
+                chunk_dict = cast(
+                    "dict[str, Any]",
+                    chunk.model_dump() if hasattr(chunk, "model_dump") else chunk,
+                )
                 # OR-12: capture actual model from first chunk that carries it
                 chunk_model = chunk_dict.get("model") if isinstance(chunk_dict, dict) else None
                 if chunk_model and chunk_model != actual_model:
@@ -831,7 +843,10 @@ async def handle_responses_websocket(websocket: WebSocket) -> None:
         else:
             response_stream = cast("AsyncIterable[Any]", raw_response_stream)
         async for chunk in response_stream:
-            chunk_dict = cast("dict[str, Any]", chunk.model_dump() if hasattr(chunk, "model_dump") else chunk)
+            chunk_dict = cast(
+                "dict[str, Any]",
+                chunk.model_dump() if hasattr(chunk, "model_dump") else chunk,
+            )
             responses_event = _chat_completions_to_responses(chunk_dict)
             if responses_event:
                 await websocket.send_json(responses_event)

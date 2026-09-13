@@ -122,9 +122,7 @@ class TestInjectTimeConstraintRoundTrip:
         # every prompt before sending to the agent. Before AUDIT-N+11
         # this raised ``TypeError: _inject_time_constraint() got an
         # unexpected keyword argument 'summary_mode'`` on every call.
-        result = run_execution_core_helpers._inject_time_constraint_local(
-            "hello", 30, summary_mode=True
-        )
+        result = run_execution_core_helpers._inject_time_constraint_local("hello", 30, summary_mode=True)
         assert isinstance(result, str)
         assert "hello" in result
         assert "TIME CONSTRAINT" in result
@@ -149,10 +147,7 @@ class TestBuildObserveSummaryTrendScopeMoved:
         # @trace AUDIT-N+11-012
         # AUDIT-N+9 re-export contract holds: legacy path resolves.
         assert hasattr(cli_impl, "_build_observe_summary_trend_scope")
-        assert (
-            cli_impl._build_observe_summary_trend_scope
-            is observability_impl._build_observe_summary_trend_scope
-        )
+        assert cli_impl._build_observe_summary_trend_scope is observability_impl._build_observe_summary_trend_scope
 
     def test_impl_no_longer_defines_inline(self) -> None:
         # @trace AUDIT-N+11-013
@@ -199,8 +194,7 @@ class TestObservabilityImplSurfaceIntact:
         # @trace AUDIT-N+11-019
         src = inspect.getsource(observability_impl)
         assert "AUDIT-N+11" in src, (
-            "AUDIT-N+11 marker must be present in observability_impl.py "
-            "to document the WL-125 signature restoration"
+            "AUDIT-N+11 marker must be present in observability_impl.py to document the WL-125 signature restoration"
         )
 
     def test_audit_n9_marker_still_present(self) -> None:
@@ -219,9 +213,7 @@ class TestObservabilityImplSurfaceIntact:
         # @trace AUDIT-N+11-022 — AUDIT-N+10 governance surface preserved.
         assert hasattr(cli_impl, "escalate_add_impl")
         assert hasattr(cli_impl, "get_data_protection_status_impl")
-        assert (
-            cli_impl.escalate_add_impl is observability_impl.escalate_add_impl
-        )
+        assert cli_impl.escalate_add_impl is observability_impl.escalate_add_impl
 
 
 # ---------------------------------------------------------------------------
@@ -261,7 +253,10 @@ class TestAuditN11CarryForwardDocumented:
             ("_hash_observe_summary_payload", "hash_observe_summary_payload"),
             ("_hash_health_payload", "hash_health_payload"),
             ("_observe_summary_freshness_bucket", "observe_summary_freshness_bucket"),
-            ("_classify_observe_summary_trend_health", "classify_observe_summary_trend_health"),
+            (
+                "_classify_observe_summary_trend_health",
+                "classify_observe_summary_trend_health",
+            ),
             ("_load_observe_summary_snapshots", "load_observe_summary_snapshots"),
             ("_load_previous_health_snapshot", "load_previous_health_snapshot"),
             ("_append_health_snapshot", "append_health_snapshot"),
@@ -269,11 +264,8 @@ class TestAuditN11CarryForwardDocumented:
             ("_compact_health_snapshot_log", "compact_health_snapshot_log"),
         ]
         for n9_name, real_name in overlap_pairs:
-            assert hasattr(run_observe_helpers, real_name) or hasattr(
-                run_observe_helpers, n9_name
-            ), (
-                f"run_observe_helpers.{{{n9_name}, {real_name}}} missing — "
-                f"overlap surface drifted"
+            assert hasattr(run_observe_helpers, real_name) or hasattr(run_observe_helpers, n9_name), (
+                f"run_observe_helpers.{{{n9_name}, {real_name}}} missing — overlap surface drifted"
             )
 
 

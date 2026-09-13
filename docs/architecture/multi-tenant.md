@@ -68,6 +68,7 @@ The **Agent Civilization Framework** enables coordinated execution of 5-20 concu
 ### 1. Civilization Control Plane
 
 #### Agent Registry Service
+
 - **Responsibility**: Golden source of truth for all agent identity, location, capabilities
 - **Data**: Agent ID → metadata (project, tier, role, capabilities, availability, endpoint)
 - **Implementation**:
@@ -81,6 +82,7 @@ The **Agent Civilization Framework** enables coordinated execution of 5-20 concu
   - Reverse lookup: agent_id → project:location
 
 #### Work Orchestrator
+
 - **Responsibility**: Maintain global work stream with cross-project dependencies, dispatch tasks to agents
 - **Data**: Unified work stream (git-based `WORK_STREAM.md`) with metadata:
   - Task ID, description, status (PENDING/CLAIMED/BLOCKED/COMPLETED)
@@ -96,6 +98,7 @@ The **Agent Civilization Framework** enables coordinated execution of 5-20 concu
 - **Implementation**: Coordinated via git + async event loop (no central server)
 
 #### Resource Manager (Civilization-Scale)
+
 - **Responsibility**: Fair allocation of civilization-wide compute/memory/network resources
 - **Data**:
   - Global resource pool: {cpu_cores: N, memory_gb: M, network_bps: B}
@@ -109,6 +112,7 @@ The **Agent Civilization Framework** enables coordinated execution of 5-20 concu
 - **Implementation**: Lazy evaluation + periodic reconciliation (no locks)
 
 #### Event Bus
+
 - **Responsibility**: Async pub-sub for agent lifecycle events
 - **Events**:
   - `agent.started`, `agent.stopped`, `agent.failed`
@@ -121,6 +125,7 @@ The **Agent Civilization Framework** enables coordinated execution of 5-20 concu
 ### 2. Project-Scoped Layer
 
 #### Work Stream (Per-Project + Global)
+
 - **Global stream**: `WORK_STREAM.md` in shared home (e.g., `~/.claude/civilization/WORK_STREAM.md`)
 - **Per-project streams**: `docs/reference/WORK_STREAM.md` in each project (local view)
 - **Sync strategy**:
@@ -129,6 +134,7 @@ The **Agent Civilization Framework** enables coordinated execution of 5-20 concu
   - Conflict resolution: Last-write-wins with timestamp + agent_id
 
 #### Task State Machine
+
 ```
 PENDING (unassigned, no blockers)
   ↓ claim
@@ -144,6 +150,7 @@ CLAIMED (assigned to agent, agent_id recorded)
 ```
 
 #### Per-Project Metadata
+
 - Available agents (L2/L3 within project)
 - Agent capabilities and current load
 - Local resource quotas and usage
@@ -158,6 +165,7 @@ CLAIMED (assigned to agent, agent_id recorded)
 **Format**: `{project}:{uuid}:L{1-3}:{role-slug}`
 
 **Examples**:
+
 ```
 kush:8d3f2c1a-5e7b-4d2f-9e1c-6a8b3f2d1e0a:L1:claude-code
 kush:a1b2c3d4-e5f6-7a8b-9c0d-1e2f3a4b5c6d:L2:runner-1
@@ -169,6 +177,7 @@ thegent:5c6d7e8f-9a0b-1c2d-3e4f-5a6b-7c8d:L2:reviewer-1
 ```
 
 **Uniqueness Constraints**:
+
 - UUID generated at agent startup, persisted in agent's home
 - (project, role-slug) may not be unique, but (project, uuid) is globally unique
 - Example: Multiple L2:runner agents in same project have different UUIDs
@@ -192,8 +201,13 @@ thegent:5c6d7e8f-9a0b-1c2d-3e4f-5a6b-7c8d:L2:reviewer-1
       "role": "claude-code",
       "uuid": "8d3f2c1a-5e7b-4d2f-9e1c-6a8b3f2d1e0a",
       "capabilities": [
-        "read_files", "write_files", "run_bash", "delegate_to_l2",
-        "researcher", "planner", "implementer"
+        "read_files",
+        "write_files",
+        "run_bash",
+        "delegate_to_l2",
+        "researcher",
+        "planner",
+        "implementer"
       ],
       "status": "active",
       "endpoints": {
@@ -222,7 +236,12 @@ thegent:5c6d7e8f-9a0b-1c2d-3e4f-5a6b-7c8d:L2:reviewer-1
       "role": "runner-1",
       "uuid": "a1b2c3d4-e5f6-7a8b-9c0d-1e2f3a4b5c6d",
       "parent_id": "kush:8d3f2c1a-5e7b-4d2f-9e1c-6a8b3f2d1e0a:L1:claude-code",
-      "capabilities": ["read_files", "write_files", "run_tests", "delegate_to_l3"],
+      "capabilities": [
+        "read_files",
+        "write_files",
+        "run_tests",
+        "delegate_to_l3"
+      ],
       "status": "active",
       "endpoints": {
         "mcp": "localhost:3847",
@@ -324,6 +343,7 @@ thegent:5c6d7e8f-9a0b-1c2d-3e4f-5a6b-7c8d:L2:reviewer-1
 ### Service Discovery Mechanisms
 
 **Option 1: File-Based Registry (Recommended for Simplicity)**
+
 - **Location**: `~/.claude/civilization/registry.json`
 - **Discovery**: Agents read file at startup + subscribe to file change events (via watchdog)
 - **Latency**: ~100ms (git pull + file read)
@@ -331,6 +351,7 @@ thegent:5c6d7e8f-9a0b-1c2d-3e4f-5a6b-7c8d:L2:reviewer-1
 - **Scalability**: Works well for 5-20 agents; beyond 50, consider sharding
 
 **Option 2: MCP Service Registry (Recommended for Real-Time)**
+
 - **Architecture**: Dedicated MCP server exposing registry as resource + tools
 - **Discovery**: Agents query MCP endpoint at startup, cache locally
 - **Latency**: <50ms (local gRPC/MCP call)
@@ -339,6 +360,7 @@ thegent:5c6d7e8f-9a0b-1c2d-3e4f-5a6b-7c8d:L2:reviewer-1
 - **Fallback**: File-based if MCP unavailable
 
 **Option 3: Gossip Protocol (Recommended for Resilience)**
+
 - **Architecture**: Agents periodically exchange metadata with random peers
 - **Discovery**: P2P heartbeats + periodic full reconciliation
 - **Latency**: 1-5s (bounded gossip rounds)
@@ -347,6 +369,7 @@ thegent:5c6d7e8f-9a0b-1c2d-3e4f-5a6b-7c8d:L2:reviewer-1
 - **Use Case**: If control plane is unreliable or offline
 
 **Recommendation**: Hybrid approach:
+
 - Primary: MCP service (Option 2) for fast updates
 - Secondary: File-based (Option 1) as fallback
 - Tertiary: Gossip (Option 3) for P2P validation
@@ -372,6 +395,7 @@ dial(endpoint, timeout=5s)
 ```
 
 **Endpoint Priority** (try in order):
+
 1. MCP (lowest latency, preferred for task dispatch)
 2. HTTP (fallback, if MCP unavailable)
 3. Git home (fallback, use shared state via git)
@@ -384,6 +408,7 @@ dial(endpoint, timeout=5s)
 ### Pattern 1: Task Dispatch (L1 → L2/L3)
 
 **Synchronous path (for urgent tasks):**
+
 ```
 L1 creates task in WORK_STREAM.md
   ↓
@@ -403,6 +428,7 @@ L1 receives completion, updates WORK_STREAM.md, broadcasts unblock events
 ```
 
 **Asynchronous path (for bulk dispatch):**
+
 ```
 L1 writes task to WORK_STREAM.md + message queue (~/.claude/civilization/queues/l2_runner_1.mq)
   ↓
@@ -420,6 +446,7 @@ L2 works on task
 ```
 
 **Message Schema:**
+
 ```json
 {
   "type": "task_dispatch",
@@ -477,6 +504,7 @@ L2-A (kush:runner-1) realizes it needs Project B work
 ```
 
 **Message Schema (Cross-Project Request):**
+
 ```json
 {
   "type": "cross_project_request",
@@ -520,6 +548,7 @@ Runner-1 and Runner-2 both need to hit the same API
 ```
 
 **Message Schema (P2P Negotiation):**
+
 ```json
 {
   "type": "peer_negotiation",
@@ -535,6 +564,7 @@ Runner-1 and Runner-2 both need to hit the same API
 ### Pattern 4: Status & Escalation (L2/L3 → L1)
 
 **L2 agent sends status update to L1 parent:**
+
 ```
 L2 periodically (every 5 min) sends:
 {
@@ -560,6 +590,7 @@ L2 periodically (every 5 min) sends:
 ```
 
 **L2 escalates if blocked:**
+
 ```
 L2 waiting on cross-project task (atoms:research-library-async)
   └─ After 30 min (or deadline - 30 min), sends escalation:
@@ -583,6 +614,7 @@ L2 waiting on cross-project task (atoms:research-library-async)
 ### Pattern 5: Civilization-Wide Broadcast (Events)
 
 **Event: Resource threshold breach (CPU > 90%)**
+
 ```
 Resource Manager detects civilization CPU usage = 92%
   ├─ Publishes event to event bus
@@ -608,6 +640,7 @@ Resource Manager detects civilization CPU usage = 92%
 ```
 
 **Event: Deadlock Detected**
+
 ```
 Deadlock detector finds:
   Project X task A → blocked on Project Y task B
@@ -631,12 +664,12 @@ Publishes: {
 
 ### Task Timeout Policy
 
-| Scenario | Timeout | Action |
-|----------|---------|--------|
-| L2 task (claimed) | 30 min (default) | Escalate to L1, offer retry |
-| Cross-project dependency | deadline - 30 min (earlier) | Escalate, find alternative |
-| L3 task (long-running) | 2 hours (default) | Send heartbeat check, allow extension |
-| Resource allocation wait | 5 min | Reject task, offer queue position |
+| Scenario                 | Timeout                     | Action                                |
+| ------------------------ | --------------------------- | ------------------------------------- |
+| L2 task (claimed)        | 30 min (default)            | Escalate to L1, offer retry           |
+| Cross-project dependency | deadline - 30 min (earlier) | Escalate, find alternative            |
+| L3 task (long-running)   | 2 hours (default)           | Send heartbeat check, allow extension |
+| Resource allocation wait | 5 min                       | Reject task, offer queue position     |
 
 ### Retry Logic
 
@@ -662,6 +695,7 @@ task_dispatch(task_id, agent_id, retry_count=0)
 ### Deadlock Detection & Prevention
 
 **Detection** (runs every 60s):
+
 ```
 for each cross_project_task T with deadline D:
   ├─ if time_blocked(T) > D - 30min:
@@ -673,6 +707,7 @@ for each cross_project_task T with deadline D:
 ```
 
 **Prevention** (configured in WORK_STREAM.md):
+
 ```
 {
   "task_id": "kush:task-1",
@@ -690,22 +725,24 @@ for each cross_project_task T with deadline D:
 
 ### Source of Truth Hierarchy
 
-| State | Primary | Cache | Sync Method |
-|-------|---------|-------|-------------|
-| Agent registry | Git (`~/.claude/civilization/registry.json`) | MCP (in-mem), local agent state | git pull, MCP subscribe, gossip |
-| Work stream | Git (`WORK_STREAM.md`) | In-agent memory | git pull/push, event broadcast |
-| Resource usage | Git (`resource_state.json`) | MCP (in-mem), per-agent | periodic reconciliation (every 60s) |
-| Event log | Git (`event_log.ndjson`) | MCP stream | append-only, git push |
-| Task output | Project-local filesystem | N/A | direct read from task agent |
+| State          | Primary                                      | Cache                           | Sync Method                         |
+| -------------- | -------------------------------------------- | ------------------------------- | ----------------------------------- |
+| Agent registry | Git (`~/.claude/civilization/registry.json`) | MCP (in-mem), local agent state | git pull, MCP subscribe, gossip     |
+| Work stream    | Git (`WORK_STREAM.md`)                       | In-agent memory                 | git pull/push, event broadcast      |
+| Resource usage | Git (`resource_state.json`)                  | MCP (in-mem), per-agent         | periodic reconciliation (every 60s) |
+| Event log      | Git (`event_log.ndjson`)                     | MCP stream                      | append-only, git push               |
+| Task output    | Project-local filesystem                     | N/A                             | direct read from task agent         |
 
 ### Consistency Model: Eventual Consistency + CRDTs
 
 **Why eventual consistency?**
+
 - Cross-home-directory operations (cannot use centralized locks)
 - Agent autonomy (agents decide independently when to sync)
 - Offline tolerance (agents can work when git is unavailable)
 
 **Conflict Resolution for WORK_STREAM.md:**
+
 ```
 Agent A: updates task status → CLAIMED at T1 by agent A
 Agent B: updates same task → CLAIMED at T1.5 by agent B
@@ -719,6 +756,7 @@ On merge:
 ```
 
 **CRDT Approach** (optional, for high-concurrency projects):
+
 - Use YATA-style CRDTs for work stream
 - Each agent maintains local version of WORK_STREAM
 - Periodic 3-way merge: {local, git, remote}
@@ -826,13 +864,13 @@ L1 detects failure: {
 
 ## Agents
 
-| Agent ID | Tier | Role | Status | Load | Uptime | Last Heartbeat |
-|----------|------|------|--------|------|--------|----------------|
-| claude-code | L1 | supervisor | active | 40% | 8h 23m | 14:36:58 |
-| runner-1 | L2 | task_runner | active | 50% | 2h 15m | 14:36:57 |
-| researcher-1 | L2 | research | idle | 0% | 5h 12m | 14:36:55 |
-| cursor-1 | L3 | editor | active | 20% | 1h 30m | 14:36:52 |
-| cursor-2 | L3 | editor | active | 15% | 45m | 14:36:50 |
+| Agent ID     | Tier | Role        | Status | Load | Uptime | Last Heartbeat |
+| ------------ | ---- | ----------- | ------ | ---- | ------ | -------------- |
+| claude-code  | L1   | supervisor  | active | 40%  | 8h 23m | 14:36:58       |
+| runner-1     | L2   | task_runner | active | 50%  | 2h 15m | 14:36:57       |
+| researcher-1 | L2   | research    | idle   | 0%   | 5h 12m | 14:36:55       |
+| cursor-1     | L3   | editor      | active | 20%  | 1h 30m | 14:36:52       |
+| cursor-2     | L3   | editor      | active | 15%  | 45m    | 14:36:50       |
 
 ## Work Stream
 
@@ -843,9 +881,9 @@ L1 detects failure: {
 
 ## Cross-Project Dependencies
 
-| Task | Blocked On | Project | Status | Wait Time |
-|------|-----------|---------|--------|-----------|
-| feature-auth | atoms:research-async-lib | atoms | IN_PROGRESS | 32 min |
+| Task         | Blocked On               | Project | Status      | Wait Time |
+| ------------ | ------------------------ | ------- | ----------- | --------- |
+| feature-auth | atoms:research-async-lib | atoms   | IN_PROGRESS | 32 min    |
 
 ## Resource Usage
 
@@ -864,6 +902,7 @@ L1 detects failure: {
 ## Implementation Roadmap
 
 ### Phase 1: Foundation (Week 1-2)
+
 - [ ] Create agent identity scheme (ID format, UUID generation)
 - [ ] Implement file-based registry (`~/.claude/civilization/registry.json`)
 - [ ] Implement unified WORK_STREAM.md (git-based)
@@ -871,24 +910,28 @@ L1 detects failure: {
 - [ ] Heartbeat mechanism (agents send periodic status)
 
 ### Phase 2: Single-Project Multi-Agent (Week 2-3)
+
 - [ ] L1 → L2/L3 task dispatch (synchronous path)
 - [ ] L2 ↔ L2 peer coordination (semaphore-based)
 - [ ] Resource manager (per-project quotas)
 - [ ] Task timeout + escalation
 
 ### Phase 3: Cross-Project Coordination (Week 3-4)
+
 - [ ] MCP service registry (real-time updates)
 - [ ] Cross-project task requests
 - [ ] Cross-project dependency tracking
 - [ ] Event bus (git-based + MCP)
 
 ### Phase 4: Observability & Governance (Week 4-5)
+
 - [ ] Civilization metrics dashboard
 - [ ] Event log (audit trail)
 - [ ] Deadlock detection
 - [ ] Agent failure recovery
 
 ### Phase 5: Resilience & Optimization (Week 5-6)
+
 - [ ] Circuit breaker for unhealthy agents
 - [ ] Resource borrowing (quota negotiation)
 - [ ] Load balancing algorithm
@@ -899,11 +942,13 @@ L1 detects failure: {
 ## Backwards Compatibility
 
 **Single-project swarms remain unchanged:**
+
 - Existing `WORK_STREAM.md` in project directory works as before
 - New coordination layer is opt-in (agents can ignore global WORK_STREAM)
 - Civilization features disabled if `~/.claude/civilization/` does not exist
 
 **Migration path:**
+
 1. Deploy coordination infrastructure (Phase 1-2)
 2. Projects onboard individually (create registry entries, enable global WORK_STREAM)
 3. Cross-project features activate once 2+ projects enabled
@@ -912,19 +957,19 @@ L1 detects failure: {
 
 ## Glossary
 
-| Term | Definition |
-|------|-----------|
-| **Civilization** | The entire ecosystem of agents across all projects |
-| **Control Plane** | Shared services (registry, work orchestrator, resource manager, event bus) |
-| **L1 Agent** | Top-level agent (Claude Code, Cursor, etc.) that spawns L2/L3 |
-| **L2 Agent** | Sub-agent spawned by L1, executes work packages |
-| **L3 Agent** | Simulated agent (e.g., Cursor window), no internal task tool |
-| **Task** | Unit of work (claim, execute, complete, or fail) |
-| **Cross-Project Task** | Task assigned to agent in different project than requester |
-| **WORK_STREAM.md** | Unified work stream (global + per-project views) |
-| **Registry** | Source of truth for all agent identity, location, capabilities |
-| **Event Bus** | Async pub-sub for lifecycle events |
-| **Resource Manager** | Allocates CPU, memory, network across civilization |
+| Term                   | Definition                                                                 |
+| ---------------------- | -------------------------------------------------------------------------- |
+| **Civilization**       | The entire ecosystem of agents across all projects                         |
+| **Control Plane**      | Shared services (registry, work orchestrator, resource manager, event bus) |
+| **L1 Agent**           | Top-level agent (Claude Code, Cursor, etc.) that spawns L2/L3              |
+| **L2 Agent**           | Sub-agent spawned by L1, executes work packages                            |
+| **L3 Agent**           | Simulated agent (e.g., Cursor window), no internal task tool               |
+| **Task**               | Unit of work (claim, execute, complete, or fail)                           |
+| **Cross-Project Task** | Task assigned to agent in different project than requester                 |
+| **WORK_STREAM.md**     | Unified work stream (global + per-project views)                           |
+| **Registry**           | Source of truth for all agent identity, location, capabilities             |
+| **Event Bus**          | Async pub-sub for lifecycle events                                         |
+| **Resource Manager**   | Allocates CPU, memory, network across civilization                         |
 
 ---
 
@@ -935,4 +980,3 @@ L1 detects failure: {
 3. **Resource Enforcement**: Hard limits (reject tasks) or soft limits (queue with priority)?
 4. **Failure Isolation**: Does one project's failure cascade to others, or is it contained?
 5. **Cross-Project Security**: Should agents in Project A be able to read Project B's output? How to enforce?
-

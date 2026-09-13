@@ -1,13 +1,20 @@
 """Unit tests for kratos_contract_smoke.py"""
 
 import os
+from unittest.mock import MagicMock, patch
+
 import pytest
-from unittest.mock import patch, MagicMock
 
 
 def test_wrong_auth_provider_fails():
     """Test that wrong THEGENT_AUTH_PROVIDER fails."""
-    with patch.dict(os.environ, {"THEGENT_AUTH_PROVIDER": "local", "KRATOS_PUBLIC_URL": "http://localhost:4433"}):
+    with patch.dict(
+        os.environ,
+        {
+            "THEGENT_AUTH_PROVIDER": "local",
+            "KRATOS_PUBLIC_URL": "http://localhost:4433",
+        },
+    ):
         import kratos_contract_smoke as smoke
 
         with pytest.raises(RuntimeError, match="THEGENT_AUTH_PROVIDER is not 'kratos'"):
@@ -30,7 +37,13 @@ def test_missing_kratos_url_fails():
 
 def test_health_check_failure():
     """Test health check failure handling."""
-    with patch.dict(os.environ, {"THEGENT_AUTH_PROVIDER": "kratos", "KRATOS_PUBLIC_URL": "http://localhost:4433"}):
+    with patch.dict(
+        os.environ,
+        {
+            "THEGENT_AUTH_PROVIDER": "kratos",
+            "KRATOS_PUBLIC_URL": "http://localhost:4433",
+        },
+    ):
         import kratos_contract_smoke as smoke
 
         async def mock_check():
@@ -43,7 +56,13 @@ def test_health_check_failure():
 
 def test_health_check_success():
     """Test successful health check."""
-    with patch.dict(os.environ, {"THEGENT_AUTH_PROVIDER": "kratos", "KRATOS_PUBLIC_URL": "http://localhost:4433"}):
+    with patch.dict(
+        os.environ,
+        {
+            "THEGENT_AUTH_PROVIDER": "kratos",
+            "KRATOS_PUBLIC_URL": "http://localhost:4433",
+        },
+    ):
         with patch("urllib.request.urlopen") as mock_urlopen:
             mock_response = MagicMock()
             mock_response.getcode.return_value = 200

@@ -12,7 +12,7 @@ Research for psutil library.
 
 ### Methods
 
-#### LibraryPsutilResearch.__init__
+#### LibraryPsutilResearch.**init**
 
 ```python
 __init__(self: Any)

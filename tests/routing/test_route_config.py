@@ -26,7 +26,6 @@ from thegent.utils.routing_impl.route_config import (
     models_to_targets,
 )
 
-
 # ---------------------------------------------------------------------------
 # GW-10: RouteConfig
 # ---------------------------------------------------------------------------
@@ -158,7 +157,11 @@ class TestRouteConfig:
                 "strategy": "loadbalance",
                 "targets": [
                     {"provider": "openai", "model": "gpt-4o", "weight": 0.7},
-                    {"provider": "anthropic", "model": "claude-3-5-sonnet", "weight": 0.3},
+                    {
+                        "provider": "anthropic",
+                        "model": "claude-3-5-sonnet",
+                        "weight": 0.3,
+                    },
                 ],
             }
         }
@@ -241,7 +244,11 @@ class TestRouteConfig:
                         "strategy": "loadbalance",
                         "targets": [
                             {"provider": "openai", "model": "gpt-4o", "weight": 0.6},
-                            {"provider": "openai", "model": "gpt-4o-mini", "weight": 0.4},
+                            {
+                                "provider": "openai",
+                                "model": "gpt-4o-mini",
+                                "weight": 0.4,
+                            },
                         ],
                     },
                     {"provider": "anthropic", "model": "claude-3-5-sonnet"},

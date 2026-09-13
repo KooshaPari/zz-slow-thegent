@@ -2,12 +2,12 @@
 
 from __future__ import annotations
 
-import orjson as json
 import shutil
 import subprocess
 import sys
 from pathlib import Path
 
+import orjson as json
 import pytest
 
 
@@ -34,7 +34,9 @@ def test_regenerate_governance_fixtures_check_passes_on_canonical_tree() -> None
 
 
 @pytest.mark.unit
-def test_regenerate_governance_fixtures_requires_bump_when_manifest_drifted(tmp_path: Path) -> None:
+def test_regenerate_governance_fixtures_requires_bump_when_manifest_drifted(
+    tmp_path: Path,
+) -> None:
     src = _fixture_root()
     dst = tmp_path / "governance"
     shutil.copytree(src, dst)

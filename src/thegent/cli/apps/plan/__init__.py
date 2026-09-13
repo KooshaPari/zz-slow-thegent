@@ -27,19 +27,28 @@ else:
 
 if app is not None:
 
-    @app.command("verify-workstream", help="Verify WORK_STREAM.md invariants (exits 1 on violations).")
+    @app.command(
+        "verify-workstream",
+        help="Verify WORK_STREAM.md invariants (exits 1 on violations).",
+    )
     def _verify_workstream(
         cd: Path | None = typer.Option(None, "--cd", help="Project root containing docs/reference/WORK_STREAM.md"),
     ) -> None:
         plan_verify_workstream_cmd(cd=cd)
 
-    @app.command("lint-workstream", help="Lint WORK_STREAM.md schema (warnings to stdout, errors exit 1).")
+    @app.command(
+        "lint-workstream",
+        help="Lint WORK_STREAM.md schema (warnings to stdout, errors exit 1).",
+    )
     def _lint_workstream(
         cd: Path | None = typer.Option(None, "--cd", help="Project root containing docs/reference/WORK_STREAM.md"),
     ) -> None:
         plan_lint_workstream_cmd(cd=cd)
 
-    @app.command("normalize-workstream", help="Normalize WORK_STREAM.md (idempotent; reports changes).")
+    @app.command(
+        "normalize-workstream",
+        help="Normalize WORK_STREAM.md (idempotent; reports changes).",
+    )
     def _normalize_workstream(
         cd: Path | None = typer.Option(None, "--cd", help="Project root containing docs/reference/WORK_STREAM.md"),
     ) -> None:

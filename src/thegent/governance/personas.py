@@ -27,10 +27,24 @@ class PersonaManager:
         self._personas = {
             "operator": {"max_lane": "standard", "can_override": False},
             "incident_commander": {"max_lane": "critical", "can_override": True},
-            "compliance_officer": {"max_lane": "recovery", "can_override": False, "read_only": True},
+            "compliance_officer": {
+                "max_lane": "recovery",
+                "can_override": False,
+                "read_only": True,
+            },
             # Teammate personas (WP-16001)
-            "teammate": {"max_lane": "standard", "can_override": False, "role": "specialist", "priority": 1},
-            "team_lead": {"max_lane": "critical", "can_override": True, "role": "lead", "priority": 2},
+            "teammate": {
+                "max_lane": "standard",
+                "can_override": False,
+                "role": "specialist",
+                "priority": 1,
+            },
+            "team_lead": {
+                "max_lane": "critical",
+                "can_override": True,
+                "role": "lead",
+                "priority": 2,
+            },
         }
         self._discovered_teammates: dict[str, dict[str, Any]] = {}
 
@@ -72,6 +86,9 @@ class PersonaManager:
             return {"allowed": False, "reason": "Unknown persona."}
 
         if lane == "critical" and config["max_lane"] != "critical":
-            return {"allowed": False, "reason": f"Persona {persona} restricted from critical lane."}
+            return {
+                "allowed": False,
+                "reason": f"Persona {persona} restricted from critical lane.",
+            }
 
         return {"allowed": True, "config": config}

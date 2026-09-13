@@ -7,9 +7,9 @@ Related to:
 
 from __future__ import annotations
 
-import pytest
 from pathlib import Path
-from unittest.mock import patch
+
+import pytest
 
 
 class TestConfigPathValidation:
@@ -33,7 +33,6 @@ class TestConfigPathValidation:
 
     def test_config_expand_user(self) -> None:
         """Config path should expand user home."""
-        from thegent.agents.cliproxy_manager import expand_config_path
         # Test expansion works
 
 

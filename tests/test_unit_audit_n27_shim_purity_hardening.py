@@ -55,14 +55,12 @@ import inspect
 
 import pytest
 
-from thegent.cli.commands import impl
-from thegent.cli.commands import observability_impl
+from thegent.cli.commands import impl, observability_impl
 from thegent.cli.services import (
     run_audio_helpers,
     run_event_helpers,
     run_input_helpers,
 )
-
 
 # ---------------------------------------------------------------------------
 # Module paths. Centralized so a future rename only touches one constant.
@@ -143,7 +141,8 @@ class TestObservabilityImplIsCanonicalHome:
         same way as explicit kwargs."""
         obs = _load(OBSERVABILITY_IMPL)
         result = obs._resolve_audio_transcript_for_output(
-            injected_audio_transcript="from-input-file", result_audio_transcript="from-runner"
+            injected_audio_transcript="from-input-file",
+            result_audio_transcript="from-runner",
         )
         assert result == "from-runner"
 

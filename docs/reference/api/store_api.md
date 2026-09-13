@@ -12,7 +12,7 @@ SQLite-based storage for MAIF artifacts.
 
 ### Methods
 
-#### MAIFArtifactStore.__init__
+#### MAIFArtifactStore.**init**
 
 ```python
 __init__(self: Any, db_path: Path)

@@ -1,8 +1,8 @@
 """Integration tests for cliproxy_adapter: Responses API bridge."""
 
-import orjson as json
 from unittest.mock import patch
 
+import orjson as json
 import pytest
 
 from thegent.cliproxy_adapter import (
@@ -30,7 +30,11 @@ class TestAdapterResponsesBridge:
         body = {
             "model": "glm-5",
             "input": [
-                {"type": "message", "role": "user", "content": [{"type": "text", "text": "Hello"}]},
+                {
+                    "type": "message",
+                    "role": "user",
+                    "content": [{"type": "text", "text": "Hello"}],
+                },
             ],
             "stream": True,
         }
@@ -106,7 +110,13 @@ class TestAdapterResponsesBridge:
         body = json.dumps(
             {
                 "model": "gemini-3",
-                "input": [{"type": "message", "role": "user", "content": [{"type": "text", "text": "hi"}]}],
+                "input": [
+                    {
+                        "type": "message",
+                        "role": "user",
+                        "content": [{"type": "text", "text": "hi"}],
+                    }
+                ],
                 "stream": True,
             }
         ).encode()

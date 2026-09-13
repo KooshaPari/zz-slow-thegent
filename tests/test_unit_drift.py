@@ -1,9 +1,9 @@
 """Tests for WP-3005: Policy drift detection."""
 
-import orjson as json
 import time
 from unittest.mock import MagicMock
 
+import orjson as json
 import pytest
 
 from thegent.config import ThegentSettings
@@ -145,7 +145,8 @@ def test_drift_detector_detects_policy_contract_add_and_remove(mock_settings):
 def test_drift_detector_raises_on_invalid_baseline(mock_settings):
     baseline = mock_settings.session_dir / "policy_contracts_baseline.json"
     baseline.write_text(
-        json.dumps({"generated_at_utc": "2026-02-23T00:00:00+00:00", "contracts": []}).decode(), encoding="utf-8"
+        json.dumps({"generated_at_utc": "2026-02-23T00:00:00+00:00", "contracts": []}).decode(),
+        encoding="utf-8",
     )
 
     detector = DriftDetector(mock_settings)

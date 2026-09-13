@@ -18,7 +18,7 @@ Confirmation dialog with Yes/No buttons.
 
 ### Methods
 
-#### ConfirmDialog.__init__
+#### ConfirmDialog.**init**
 
 ```python
 __init__(self: Any, message: str, title: str, yes_label: str, no_label: str)
@@ -36,7 +36,7 @@ Modal dialog widget with title, content, and buttons.
 
 ### Methods
 
-#### Dialog.__init__
+#### Dialog.**init**
 
 ```python
 __init__(self: Any, title: str)
@@ -100,7 +100,7 @@ Manages dialogs and overlays.
 
 ### Methods
 
-#### DialogManager.__init__
+#### DialogManager.**init**
 
 ```python
 __init__(self: Any)
@@ -196,7 +196,7 @@ Dialog with text input field.
 
 ### Methods
 
-#### InputDialog.__init__
+#### InputDialog.**init**
 
 ```python
 __init__(self: Any, prompt: str, title: str, default: str, password: bool, placeholder: str)
@@ -226,7 +226,7 @@ Simple message dialog with text content.
 
 ### Methods
 
-#### MessageDialog.__init__
+#### MessageDialog.**init**
 
 ```python
 __init__(self: Any, message: str, title: str)
@@ -244,7 +244,7 @@ Full-screen overlay for dialogs and modals.
 
 ### Methods
 
-#### Overlay.__init__
+#### Overlay.**init**
 
 ```python
 __init__(self: Any)
@@ -262,7 +262,7 @@ Temporary notification toast.
 
 ### Methods
 
-#### Toast.__init__
+#### Toast.**init**
 
 ```python
 __init__(self: Any, message: str, duration: float, style: DialogStyle)

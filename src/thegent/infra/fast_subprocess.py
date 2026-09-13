@@ -15,10 +15,11 @@ Performance improvements:
 import asyncio
 import os
 import subprocess
-from thegent.infra.shim_subprocess import run as shim_run
 import sys
 import time
 from pathlib import Path
+
+from thegent.infra.shim_subprocess import run as shim_run
 
 
 def _record_history(
@@ -292,7 +293,14 @@ class FastSubprocess:
             pass
 
         start_time = time.time()
-        result = shim_run(cmd, cwd=str(cwd) if cwd else None, env=process_env, timeout=timeout, check=check, **kwargs)
+        result = shim_run(
+            cmd,
+            cwd=str(cwd) if cwd else None,
+            env=process_env,
+            timeout=timeout,
+            check=check,
+            **kwargs,
+        )
         duration = time.time() - start_time
 
         # WP-22001: Record in context-aware history
@@ -347,7 +355,13 @@ async def run_subprocess_async(
 ) -> subprocess.CompletedProcess:
     """Run subprocess asynchronously."""
     return await FastSubprocess.run_async(
-        cmd, cwd=cwd, env=env, timeout=timeout, check=check, capture_output=capture_output, **kwargs
+        cmd,
+        cwd=cwd,
+        env=env,
+        timeout=timeout,
+        check=check,
+        capture_output=capture_output,
+        **kwargs,
     )
 
 

@@ -218,7 +218,10 @@ class AgentRegistryService:
         return agent.metrics
 
     def discover_best_agent(
-        self, task_description: str, required_capabilities: list[AgentCapability], project_id: str | None = None
+        self,
+        task_description: str,
+        required_capabilities: list[AgentCapability],
+        project_id: str | None = None,
     ) -> Agent | None:
         """Discovery logic to find best agent for task."""
         candidates = self.list_agents(status=AgentStatus.ACTIVE, project_id=project_id)
@@ -230,6 +233,9 @@ class AgentRegistryService:
             return None
 
         # Sort by success rate and response time
-        candidates.sort(key=lambda a: (a.metrics.success_rate, -a.metrics.average_response_time), reverse=True)
+        candidates.sort(
+            key=lambda a: (a.metrics.success_rate, -a.metrics.average_response_time),
+            reverse=True,
+        )
 
         return candidates[0]

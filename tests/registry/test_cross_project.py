@@ -5,11 +5,11 @@ FR Traceability: FR-AGT-020 (cross-project persona discovery and search)
 
 from __future__ import annotations
 
-import orjson as json
 from datetime import UTC, datetime
 from pathlib import Path  # noqa: TC003 -- used at runtime for Path construction
 from textwrap import dedent
 
+import orjson as json
 import pytest
 
 from thegent.registry.cross_project import (
@@ -159,7 +159,13 @@ class TestPersonaRecord:
             last_seen=datetime(2026, 1, 1, tzinfo=UTC),
         )
         d = record.to_dict()
-        assert set(d) == {"name", "project_root", "capabilities", "persona_file", "last_seen"}
+        assert set(d) == {
+            "name",
+            "project_root",
+            "capabilities",
+            "persona_file",
+            "last_seen",
+        }
 
     def test_from_dict_round_trip(self, tmp_path: Path) -> None:
         """PersonaRecord survives a to_dict/from_dict round-trip."""
@@ -336,7 +342,11 @@ class TestSearch:
         agents_dir = _make_agents_dir(tmp_path)
         _write_persona(agents_dir, "reader.md", "---\nname: reader\ntools: read-only\n---\n")
         _write_persona(agents_dir, "writer.md", "---\nname: writer\ntools: write\n---\n")
-        _write_persona(agents_dir, "all.md", "---\nname: all\ntools: read-only, write, search\n---\n")
+        _write_persona(
+            agents_dir,
+            "all.md",
+            "---\nname: all\ntools: read-only, write, search\n---\n",
+        )
         reg.register_project(tmp_path)
 
     def test_search_finds_matching_capability(self, tmp_path: Path) -> None:

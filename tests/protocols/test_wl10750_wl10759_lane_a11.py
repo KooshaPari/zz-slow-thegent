@@ -5,8 +5,8 @@ from __future__ import annotations
 import pytest
 
 from thegent.protocols.turn_submit_boundaries import (
-    build_cli_dispatch_phase,
     build_cli_command_parse_phase,
+    build_cli_dispatch_phase,
     build_hook_invocation_phase,
     build_hook_registration_phase,
     build_observability_event_phase,
@@ -35,7 +35,11 @@ from thegent.protocols.turn_submit_boundaries import (
 def test_wl10750_policy_enforcement_keeps_discovery_inputs_separate_from_execution() -> None:
     # @trace WL-10750
     phase = build_hook_invocation_phase("policy.guard", "reg-10750", {"action": "allow"})
-    assert resolve_policy_enforcement_target(phase) == ("policy.guard", "reg-10750", {"action": "allow"})
+    assert resolve_policy_enforcement_target(phase) == (
+        "policy.guard",
+        "reg-10750",
+        {"action": "allow"},
+    )
 
     invalid_phase = build_hook_invocation_phase("policy.guard", "reg-10750", {"action": "allow"})
     invalid_phase["payload"] = "bad"
@@ -45,7 +49,11 @@ def test_wl10750_policy_enforcement_keeps_discovery_inputs_separate_from_executi
 
 def test_wl10751_sync_reliability_separates_scan_records_and_apply_mutation() -> None:
     # @trace WL-10751
-    phase = build_sync_diff_phase([{"file": "src/thegent/automation/workflow.py"}], "refresh sync state", "lane-a11")
+    phase = build_sync_diff_phase(
+        [{"file": "src/thegent/automation/workflow.py"}],
+        "refresh sync state",
+        "lane-a11",
+    )
     assert resolve_sync_commit_plan_target(phase) == (
         [{"file": "src/thegent/automation/workflow.py"}],
         "refresh sync state",
@@ -144,8 +152,16 @@ def test_wl10758_telemetry_separates_metric_collection_from_emitter_lifecycle() 
     # @trace WL-10758
     event_phase = build_observability_event_phase("queue.depth", {"depth": 2}, "json")
     emit_phase = build_sync_commit_phase([{"file": "metrics.log"}], "commit-10758", False)
-    assert resolve_observability_serialization_target(event_phase) == ("queue.depth", {"depth": 2}, "json")
-    assert resolve_observability_target(emit_phase) == ([{"file": "metrics.log"}], "commit-10758", False)
+    assert resolve_observability_serialization_target(event_phase) == (
+        "queue.depth",
+        {"depth": 2},
+        "json",
+    )
+    assert resolve_observability_target(emit_phase) == (
+        [{"file": "metrics.log"}],
+        "commit-10758",
+        False,
+    )
 
 
 def test_wl10759_provider_selection_keeps_fallback_and_primary_paths_separate() -> None:

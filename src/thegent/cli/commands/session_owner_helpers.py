@@ -1,7 +1,6 @@
 """Session owner helpers module."""
-from __future__ import annotations
-from typing import TYPE_CHECKING, Any
 
+from __future__ import annotations
 
 
 def get_session_owner(session_id: str) -> str | None:

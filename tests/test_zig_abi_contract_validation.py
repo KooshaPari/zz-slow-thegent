@@ -2,13 +2,12 @@
 
 from __future__ import annotations
 
-import orjson as json
 import subprocess
 import sys
 from pathlib import Path
 
+import orjson as json
 import pytest
-
 
 # @trace FR-RUNTIME-001
 
@@ -79,7 +78,9 @@ def test_validate_zig_abi_contract_passes_repo_contract() -> None:
 
 
 @pytest.mark.unit
-def test_validate_zig_abi_contract_fails_on_missing_required_field(tmp_path: Path) -> None:
+def test_validate_zig_abi_contract_fails_on_missing_required_field(
+    tmp_path: Path,
+) -> None:
     script = _repo_root() / "scripts" / "validate_zig_abi_contract.py"
     bad_contract = tmp_path / "zig_abi_contract_invalid.json"
 
@@ -112,7 +113,9 @@ def test_validate_zig_abi_contract_fails_on_missing_required_field(tmp_path: Pat
 
 
 @pytest.mark.unit
-def test_validate_zig_abi_contract_fails_on_missing_readiness_gates(tmp_path: Path) -> None:
+def test_validate_zig_abi_contract_fails_on_missing_readiness_gates(
+    tmp_path: Path,
+) -> None:
     script = _repo_root() / "scripts" / "validate_zig_abi_contract.py"
     bad_contract = tmp_path / "zig_abi_contract_missing_readiness.json"
     contract_payload = _valid_contract_payload()
@@ -132,7 +135,9 @@ def test_validate_zig_abi_contract_fails_on_missing_readiness_gates(tmp_path: Pa
 
 
 @pytest.mark.unit
-def test_validate_zig_abi_contract_fails_on_duplicate_required_tests(tmp_path: Path) -> None:
+def test_validate_zig_abi_contract_fails_on_duplicate_required_tests(
+    tmp_path: Path,
+) -> None:
     script = _repo_root() / "scripts" / "validate_zig_abi_contract.py"
     bad_contract = tmp_path / "zig_abi_contract_duplicate_tests.json"
     contract_payload = _valid_contract_payload()
@@ -161,7 +166,9 @@ def test_validate_zig_abi_contract_fails_on_duplicate_required_tests(tmp_path: P
 
 
 @pytest.mark.unit
-def test_check_zig_abi_artifact_detects_missing_required_symbols(tmp_path: Path) -> None:
+def test_check_zig_abi_artifact_detects_missing_required_symbols(
+    tmp_path: Path,
+) -> None:
     script = _repo_root() / "scripts" / "check_zig_abi_artifact.py"
     contract = _repo_root() / "contracts" / "runtime" / "zig_abi_contract_v1.json"
     symbols_fixture = tmp_path / "symbols.txt"
@@ -187,7 +194,9 @@ def test_check_zig_abi_artifact_detects_missing_required_symbols(tmp_path: Path)
 
 
 @pytest.mark.unit
-def test_check_zig_abi_artifact_passes_with_symbols_and_error_envelope(tmp_path: Path) -> None:
+def test_check_zig_abi_artifact_passes_with_symbols_and_error_envelope(
+    tmp_path: Path,
+) -> None:
     script = _repo_root() / "scripts" / "check_zig_abi_artifact.py"
     contract = _repo_root() / "contracts" / "runtime" / "zig_abi_contract_v1.json"
 

@@ -12,13 +12,13 @@
 
 Five highest-impact optimizations across the stack, ordered by estimated latency reduction per unit of effort:
 
-| Rank | Optimization | Subsystem | Est. Latency Reduction | Effort |
-|------|-------------|-----------|----------------------|--------|
-| 1 | Cache `get_litellm_router()` result — avoid re-building `model_list` on every request | routing/litellm_router.py | 10–50 ms per request | S |
-| 2 | Replace `asyncio.run()` inside sync thread (NeverIdleLoop) with proper async event loop | sitback/never_idle.py | Eliminate 50–200 ms event-loop-creation overhead per gardening tick | S |
-| 3 | Pool `httpx.AsyncClient` in `_forward_native_responses` — avoid client creation per request | routing/litellm_responses_handler.py | 5–15 ms per OR-18 request | S |
-| 4 | Replace custom SHA-256 in audit.rs with `sha2` crate — 10–20x faster hash computation | crates/thegent-router/src/audit.rs | Near-zero latency per routing decision; currently ~0.5–2 ms per hash | M |
-| 5 | Switch `AuditLogger::append` from open-per-write to a held `BufWriter` | crates/thegent-router/src/audit.rs | Eliminate O(N) file-open syscalls under burst traffic | M |
+| Rank | Optimization                                                                                | Subsystem                            | Est. Latency Reduction                                               | Effort |
+| ---- | ------------------------------------------------------------------------------------------- | ------------------------------------ | -------------------------------------------------------------------- | ------ |
+| 1    | Cache `get_litellm_router()` result — avoid re-building `model_list` on every request       | routing/litellm_router.py            | 10–50 ms per request                                                 | S      |
+| 2    | Replace `asyncio.run()` inside sync thread (NeverIdleLoop) with proper async event loop     | sitback/never_idle.py                | Eliminate 50–200 ms event-loop-creation overhead per gardening tick  | S      |
+| 3    | Pool `httpx.AsyncClient` in `_forward_native_responses` — avoid client creation per request | routing/litellm_responses_handler.py | 5–15 ms per OR-18 request                                            | S      |
+| 4    | Replace custom SHA-256 in audit.rs with `sha2` crate — 10–20x faster hash computation       | crates/thegent-router/src/audit.rs   | Near-zero latency per routing decision; currently ~0.5–2 ms per hash | M      |
+| 5    | Switch `AuditLogger::append` from open-per-write to a held `BufWriter`                      | crates/thegent-router/src/audit.rs   | Eliminate O(N) file-open syscalls under burst traffic                | M      |
 
 ---
 
@@ -26,36 +26,39 @@ Five highest-impact optimizations across the stack, ordered by estimated latency
 
 ### 2.1 Python Profiling
 
-| Tool | Use Case | Integration |
-|------|----------|-------------|
-| `py-spy` | CPU flamegraph with zero code change; attaches to running PID | `py-spy record -o flamegraph.svg --pid $(pgrep -f mcp/server.py)` |
-| `pyinstrument` | Per-request call tree with async support | Add `--profiler pyinstrument` to uvicorn/starlette dev startup |
-| `memray` | Memory allocation profiling; identifies large dict/list creation | `memray run -o output.bin python -m thegent mcp` |
-| `yappi` | Thread-aware profiling (critical for NeverIdleLoop threads) | `yappi.start(builtins=True); ... yappi.stop(); yappi.get_func_stats().print_all()` |
-| `asyncio` debug mode | Detect sync blocking in async paths | `PYTHONASYNCIODEBUG=1 python -m thegent mcp` |
+| Tool                 | Use Case                                                         | Integration                                                                        |
+| -------------------- | ---------------------------------------------------------------- | ---------------------------------------------------------------------------------- |
+| `py-spy`             | CPU flamegraph with zero code change; attaches to running PID    | `py-spy record -o flamegraph.svg --pid $(pgrep -f mcp/server.py)`                  |
+| `pyinstrument`       | Per-request call tree with async support                         | Add `--profiler pyinstrument` to uvicorn/starlette dev startup                     |
+| `memray`             | Memory allocation profiling; identifies large dict/list creation | `memray run -o output.bin python -m thegent mcp`                                   |
+| `yappi`              | Thread-aware profiling (critical for NeverIdleLoop threads)      | `yappi.start(builtins=True); ... yappi.stop(); yappi.get_func_stats().print_all()` |
+| `asyncio` debug mode | Detect sync blocking in async paths                              | `PYTHONASYNCIODEBUG=1 python -m thegent mcp`                                       |
 
 **Setup in pyproject.toml:** All tools are installable as dev extras. None require code changes for initial profiling. Recommended order: py-spy first (zero overhead, production-safe), then pyinstrument for targeted subsystem profiling.
 
 ### 2.2 Rust Profiling
 
-| Tool | Use Case | Integration |
-|------|----------|-------------|
-| `cargo-flamegraph` | CPU flamegraph for Rust binaries | `cargo flamegraph --bin quality-gate` |
-| `criterion` | Microbenchmarks for hot functions | Already have `crates/thegent-benchmark/`; add criterion benches for audit chain |
-| `perf` (Linux) / Instruments (macOS) | Low-level profiling | `cargo build --release && perf record target/release/quality-gate` |
-| `dhat` | Heap profiling for Rust | Add `dhat` feature flag to Cargo.toml |
+| Tool                                 | Use Case                          | Integration                                                                     |
+| ------------------------------------ | --------------------------------- | ------------------------------------------------------------------------------- |
+| `cargo-flamegraph`                   | CPU flamegraph for Rust binaries  | `cargo flamegraph --bin quality-gate`                                           |
+| `criterion`                          | Microbenchmarks for hot functions | Already have `crates/thegent-benchmark/`; add criterion benches for audit chain |
+| `perf` (Linux) / Instruments (macOS) | Low-level profiling               | `cargo build --release && perf record target/release/quality-gate`              |
+| `dhat`                               | Heap profiling for Rust           | Add `dhat` feature flag to Cargo.toml                                           |
 
 ### 2.3 MCP/FastMCP Profiling
 
 The `TimingMiddleware` is already registered in `mcp/server.py`. Enable structured logging output:
+
 ```
 THGENT_DEBUG=1 thegent mcp
 ```
+
 Middleware chain produces per-tool timing. Use this to identify which MCP tools are slow before profiling at code level.
 
 ### 2.4 Benchmarking Baseline
 
 Run before any optimization:
+
 ```bash
 # Python startup latency
 time python -c "import thegent.routing.litellm_router"
@@ -262,18 +265,18 @@ cargo bench --bench audit_bench 2>/dev/null || echo "no bench yet"
 
 ## 4. Quick Wins (S-effort, implementable in one WL item each)
 
-| ID | File | Function | Fix |
-|----|------|----------|-----|
-| QW-001 | `routing/litellm_router.py` | `get_litellm_router()` | Cache the `Router` instance as a module-level singleton; invalidate when circuit breaker state changes. Use `cachetools.TTLCache(maxsize=1, ttl=300)`. |
-| QW-002 | `routing/litellm_responses_handler.py` | `_forward_native_responses()` | Create a module-level `httpx.AsyncClient` singleton (or use `contextlib.asynccontextmanager` lifespan). |
-| QW-003 | `routing/litellm_responses_handler.py` | `_append_generation_id()` | Buffer generation IDs in an in-memory deque; flush to disk in a background task or on a schedule (every 5 s). |
-| QW-004 | `sitback/never_idle.py` | `NeverIdleLoop._run_once()` | Replace `asyncio.run()` with a persistent event loop stored as `self._loop`; call `self._loop.run_until_complete()`. |
-| QW-005 | `sitback/gardening.py` | `check_backlog()` / `check_traceability()` | Cache `read_text()` result keyed by file `mtime`; re-read only when mtime changes. |
-| QW-006 | `agents/cursor_api_runner.py` | `_is_cursor_api_reachable()` | Cache result in a `cachetools.TTLCache(maxsize=1, ttl=30)` keyed by `base_url`. |
-| QW-007 | `mcp/server.py` | `BearerAuthMiddleware.dispatch()` | Cache `ThegentSettings()` as a class-level attribute; reload only on `SIGHUP`. |
-| QW-008 | `agents/codex_proxy.py` | `_run_with_activity_monitoring()` | Reduce `time.sleep(0.5)` to `time.sleep(0.05)` to cut fast-task overhead from 500 ms to 50 ms. |
-| QW-009 | `routing/litellm_router.py` | `get_context_window()` | Build normalized lookup dict at module init; O(1) lookup instead of O(N) scan. |
-| QW-010 | `crates/thegent-router/src/audit.rs` | `AuditLogger::new()` | Replace `read_records().last()` with seek-to-end scan for last non-empty line (tail-read approach). |
+| ID     | File                                   | Function                                   | Fix                                                                                                                                                    |
+| ------ | -------------------------------------- | ------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| QW-001 | `routing/litellm_router.py`            | `get_litellm_router()`                     | Cache the `Router` instance as a module-level singleton; invalidate when circuit breaker state changes. Use `cachetools.TTLCache(maxsize=1, ttl=300)`. |
+| QW-002 | `routing/litellm_responses_handler.py` | `_forward_native_responses()`              | Create a module-level `httpx.AsyncClient` singleton (or use `contextlib.asynccontextmanager` lifespan).                                                |
+| QW-003 | `routing/litellm_responses_handler.py` | `_append_generation_id()`                  | Buffer generation IDs in an in-memory deque; flush to disk in a background task or on a schedule (every 5 s).                                          |
+| QW-004 | `sitback/never_idle.py`                | `NeverIdleLoop._run_once()`                | Replace `asyncio.run()` with a persistent event loop stored as `self._loop`; call `self._loop.run_until_complete()`.                                   |
+| QW-005 | `sitback/gardening.py`                 | `check_backlog()` / `check_traceability()` | Cache `read_text()` result keyed by file `mtime`; re-read only when mtime changes.                                                                     |
+| QW-006 | `agents/cursor_api_runner.py`          | `_is_cursor_api_reachable()`               | Cache result in a `cachetools.TTLCache(maxsize=1, ttl=30)` keyed by `base_url`.                                                                        |
+| QW-007 | `mcp/server.py`                        | `BearerAuthMiddleware.dispatch()`          | Cache `ThegentSettings()` as a class-level attribute; reload only on `SIGHUP`.                                                                         |
+| QW-008 | `agents/codex_proxy.py`                | `_run_with_activity_monitoring()`          | Reduce `time.sleep(0.5)` to `time.sleep(0.05)` to cut fast-task overhead from 500 ms to 50 ms.                                                         |
+| QW-009 | `routing/litellm_router.py`            | `get_context_window()`                     | Build normalized lookup dict at module init; O(1) lookup instead of O(N) scan.                                                                         |
+| QW-010 | `crates/thegent-router/src/audit.rs`   | `AuditLogger::new()`                       | Replace `read_records().last()` with seek-to-end scan for last non-empty line (tail-read approach).                                                    |
 
 ---
 
@@ -524,6 +527,7 @@ In `src/thegent/mcp/server.py`, `BearerAuthMiddleware.dispatch()` instantiates `
 **Source:** [docs/research/PERF_OPTIMIZATION_RESEARCH_2026-02-20.md]
 
 Create `benchmarks/` suite using `pytest-benchmark`:
+
 - `benchmarks/routing_benchmark.py`: measures `get_litellm_router()` build time, `build_litellm_model_list()`, `get_context_window()` miss path.
 - `benchmarks/mcp_benchmark.py`: measures `ThegentSettings()` construction, elicitation cache key generation.
 - `benchmarks/sitback_benchmark.py`: measures `asyncio.run()` loop creation overhead, `check_backlog()` file read.
@@ -544,6 +548,7 @@ This provides regression detection for all WL-070 through WL-077 optimizations.
 **Source:** [docs/research/PERF_OPTIMIZATION_RESEARCH_2026-02-20.md]
 
 Add `crates/thegent-router/benches/audit_bench.rs` using `criterion`:
+
 - Benchmark `AuditRecord::new()` (includes hash computation).
 - Benchmark `AuditLogger::append()` (includes file I/O).
 - Benchmark `AuditLogger::verify_chain()` for N=100, N=1000, N=10000 records.
@@ -554,4 +559,4 @@ Establishes before/after baselines for WL-074 (SHA-256 replacement) and WL-075 (
 
 ---
 
-*End of performance optimization research document.*
+_End of performance optimization research document._

@@ -1,4 +1,5 @@
 """Stub module."""
+
 from dataclasses import dataclass
 from typing import Any
 
@@ -6,6 +7,7 @@ from typing import Any
 @dataclass
 class RemoteProcess:
     """Remote process representation."""
+
     pid: int
     node: str
     command: str
@@ -28,6 +30,7 @@ __all__ = ["RemoteProcess", "RemoteRunner", "RemoteRunnerError", "load_config_fr
 def load_config_from_env() -> dict[str, Any]:
     """Load configuration from environment variables."""
     import os
+
     return {
         "host": os.environ.get("REMOTE_RUNNER_HOST", "localhost"),
         "port": int(os.environ.get("REMOTE_RUNNER_PORT", "8080")),

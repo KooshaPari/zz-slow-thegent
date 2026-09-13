@@ -14,7 +14,6 @@ from __future__ import annotations
 
 import json
 from pathlib import Path
-from types import SimpleNamespace
 
 import pytest
 
@@ -25,7 +24,6 @@ from thegent.governance.hitl import (
     HITLDecision,
     HITLManager,
     PolicyEngine,
-    RunContext,
 )
 
 pytestmark = pytest.mark.unit

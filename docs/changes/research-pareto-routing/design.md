@@ -36,13 +36,13 @@
 
 ### Component Responsibilities
 
-| Component | Responsibility | Language | File |
-|-----------|-----------------|----------|------|
-| **ParetoRouter** | Route selection, hysteresis orchestration | Rust | `crates/thegent-router/src/router.rs` |
-| **RiskCalculator** | Risk scoring (complexity, cost, dependencies) | Rust | `crates/thegent-router/src/risk.rs` |
-| **HysteresisManager** | Dwell time tracking, band checks | Rust | `crates/thegent-router/src/hysteresis.rs` |
-| **RouteExecutor** | Route-specific task execution | Python | `src/thegent/routing/executor.py` |
-| **AuditLogger** | Routing decisions, metrics | Python | `src/thegent/routing/audit.py` |
+| Component             | Responsibility                                | Language | File                                      |
+| --------------------- | --------------------------------------------- | -------- | ----------------------------------------- |
+| **ParetoRouter**      | Route selection, hysteresis orchestration     | Rust     | `crates/thegent-router/src/router.rs`     |
+| **RiskCalculator**    | Risk scoring (complexity, cost, dependencies) | Rust     | `crates/thegent-router/src/risk.rs`       |
+| **HysteresisManager** | Dwell time tracking, band checks              | Rust     | `crates/thegent-router/src/hysteresis.rs` |
+| **RouteExecutor**     | Route-specific task execution                 | Python   | `src/thegent/routing/executor.py`         |
+| **AuditLogger**       | Routing decisions, metrics                    | Python   | `src/thegent/routing/audit.py`            |
 
 ---
 
@@ -411,14 +411,17 @@ from enum import Enum
 from typing import Protocol
 import asyncio
 
+
 class Route(Enum):
     LIFECYCLE = "lifecycle"
     THE_GENT = "the_gent"
 
+
 class RouteExecutor(Protocol):
     """Protocol for route-specific executors"""
-    async def execute(self, task: Task) -> TaskResult:
-        ...
+
+    async def execute(self, task: Task) -> TaskResult: ...
+
 
 class LifecycleExecutor:
     """Fast, automated execution for low-risk tasks"""
@@ -446,6 +449,7 @@ class LifecycleExecutor:
     async def _run_task(self, task: Task) -> TaskResult:
         # Dispatch to fast agent
         pass
+
 
 class TheGentExecutor:
     """Plan-heavy, review-heavy execution for high-risk tasks"""
@@ -497,6 +501,7 @@ class TheGentExecutor:
 
 ```python
 # src/thegent/routing/orchestrator.py
+
 
 class RoutingOrchestrator:
     """Main orchestrator for Pareto routing"""
@@ -576,8 +581,7 @@ class RoutingOrchestrator:
             "lifecycle_count": metrics.lifecycle_count,
             "thegent_count": metrics.thegent_count,
             "lifecycle_percentage": (
-                metrics.lifecycle_count / metrics.total_decisions * 100
-                if metrics.total_decisions > 0 else 0
+                metrics.lifecycle_count / metrics.total_decisions * 100 if metrics.total_decisions > 0 else 0
             ),
             "hysteresis_activations": metrics.hysteresis_activations,
             "route_changes": metrics.route_changes,
@@ -588,6 +592,7 @@ class RoutingOrchestrator:
 
 ```python
 # src/thegent/routing/audit.py
+
 
 class AuditLogger:
     """Log routing decisions for compliance and debugging"""
@@ -615,8 +620,7 @@ class AuditLogger:
             },
             "hysteresis_applied": decision.hysteresis_applied,
             "dwell_remaining_ms": (
-                decision.dwell_remaining.total_seconds() * 1000
-                if decision.dwell_remaining else None
+                decision.dwell_remaining.total_seconds() * 1000 if decision.dwell_remaining else None
             ),
         }
 
@@ -740,14 +744,14 @@ log_level = "info"
 
 ### Metrics to Track
 
-| Metric | Type | Alerting |
-|--------|------|----------|
-| Lifecycle % | Gauge | Alert if <75% or >85% |
-| Avg risk (Lifecycle) | Gauge | Alert if >0.3 |
-| Avg risk (TheGent) | Gauge | Alert if <0.6 |
-| Route changes/min | Counter | Alert if >10/min |
-| Hysteresis activations | Counter | Informational |
-| Routing latency p99 | Histogram | Alert if >5ms |
+| Metric                 | Type      | Alerting              |
+| ---------------------- | --------- | --------------------- |
+| Lifecycle %            | Gauge     | Alert if <75% or >85% |
+| Avg risk (Lifecycle)   | Gauge     | Alert if >0.3         |
+| Avg risk (TheGent)     | Gauge     | Alert if <0.6         |
+| Route changes/min      | Counter   | Alert if >10/min      |
+| Hysteresis activations | Counter   | Informational         |
+| Routing latency p99    | Histogram | Alert if >5ms         |
 
 ### Dashboards
 
@@ -760,12 +764,12 @@ log_level = "info"
 
 ## Error Handling
 
-| Scenario | Handling | Recovery |
-|----------|----------|----------|
-| Risk calc fails | Log error, default to TheGent | Retry with fresh assessment |
-| Executor timeout | Escalate to The Gent (from Lifecycle) | Manual review |
-| Audit log full | Rotate log file | No impact on routing |
-| Invalid task | Reject with validation error | User must fix task |
+| Scenario         | Handling                              | Recovery                    |
+| ---------------- | ------------------------------------- | --------------------------- |
+| Risk calc fails  | Log error, default to TheGent         | Retry with fresh assessment |
+| Executor timeout | Escalate to The Gent (from Lifecycle) | Manual review               |
+| Audit log full   | Rotate log file                       | No impact on routing        |
+| Invalid task     | Reject with validation error          | User must fix task          |
 
 ---
 

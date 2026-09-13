@@ -10,10 +10,10 @@
 
 ## Step Results
 
-| Step | Display | Status | Duration (s) |
-| --- | --- | --- | ---: |
-| instruction-architecture | Instruction architecture contracts | passed | 0.38 |
-| quality | Canonical umbrella quality suite | failed(201) | 150.88 |
+| Step                     | Display                            | Status      | Duration (s) |
+| ------------------------ | ---------------------------------- | ----------- | -----------: |
+| instruction-architecture | Instruction architecture contracts | passed      |         0.38 |
+| quality                  | Canonical umbrella quality suite   | failed(201) |       150.88 |
 
 ## Logs
 

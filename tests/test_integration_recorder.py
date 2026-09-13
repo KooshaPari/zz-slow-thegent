@@ -18,7 +18,6 @@ thegent_trace_integration = pytest.importorskip(
     "thegent.trace.integration",
     reason="thegent.trace.integration module removed; recorder integration tests skipped",
 )
-from thegent.agents.base import AgentRunner, RunResult
 from thegent.trace.integration import (  # noqa: E402  (importorskip may skip before this)
     ExecutionMetrics,
     TracedAgentRunner,
@@ -27,6 +26,8 @@ from thegent.trace.integration import (  # noqa: E402  (importorskip may skip be
     estimate_trace_overhead,
 )
 from thegent.trace.recorder import RecorderConfig, TraceRecorder
+
+from thegent.agents.base import AgentRunner, RunResult
 
 
 class MockAgentRunner(AgentRunner):
@@ -57,7 +58,7 @@ class MockAgentRunner(AgentRunner):
         self.call_count += 1
 
         # Simulate execution
-        start = time.time()
+        time.time()
         time.sleep(self.execution_time_ms / 1000.0)
 
         return RunResult(
@@ -98,7 +99,7 @@ class TestTracedAgentRunner:
 
         traced_runner = TracedAgentRunner(base_runner, recorder)
 
-        result = traced_runner.run(
+        traced_runner.run(
             prompt="Test prompt",
             cwd=None,
             mode="write",

@@ -35,18 +35,13 @@ Covers:
 
 from __future__ import annotations
 
-import asyncio
-from dataclasses import dataclass, field
 from typing import Any
-from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
 
-from thegent.agents.plangent import Plan, PlangentExecutor, PlangentPlanner, PlanNode
-from thegent.orchestration.aggregator import ResultAggregator
-from thegent.orchestration.dispatcher import DispatchResult, SubAgentDispatcher
+from thegent.agents.plangent import Plan, PlangentExecutor, PlanNode
+from thegent.orchestration.dispatcher import DispatchResult
 from thegent.orchestration.plan import OrchestrationPlan
-
 
 # ---------------------------------------------------------------------------
 # Helpers and fixtures
@@ -122,7 +117,7 @@ class TestPlainPlanPath:
         async def runner(n: PlanNode) -> str:
             return f"async-result-{n.task}"
 
-        result_plan = await executor.execute_async(plan, runner)
+        await executor.execute_async(plan, runner)
         assert node.status == "done"
         assert node.result == "async-result-async-task"
 
@@ -137,7 +132,7 @@ class TestPlainPlanPath:
         def runner(n: PlanNode) -> str:
             raise RuntimeError("runner error")
 
-        result_plan = await executor.execute_async(plan, runner)
+        await executor.execute_async(plan, runner)
         assert node.status == "failed"
         assert "runner error" in (node.error or "")
 
@@ -158,7 +153,7 @@ class TestPlainPlanPath:
                 raise RuntimeError("intentional failure")
             return "ok"
 
-        result_plan = await executor.execute_async(plan, runner)
+        await executor.execute_async(plan, runner)
         # n1 failed; n2 was never dispatched because n1 failed before n2 was ready
         assert n1.status == "failed"
         assert n2.status == "pending"
@@ -177,7 +172,7 @@ class TestPlainPlanPath:
         async def runner(n: PlanNode) -> str:
             return "runner-output"
 
-        result_plan = await executor.execute_async(plan, runner, dispatcher=stub)  # type: ignore[arg-type]
+        await executor.execute_async(plan, runner, dispatcher=stub)  # type: ignore[arg-type]
         assert node.result == "runner-output"
 
     @pytest.mark.asyncio
@@ -200,7 +195,7 @@ class TestPlainPlanPath:
         node = PlanNode(task="sync-task")
         plan.nodes.append(node)
 
-        result_plan = executor.execute(plan, lambda n: "sync-result")
+        executor.execute(plan, lambda n: "sync-result")
         assert node.status == "done"
         assert node.result == "sync-result"
 
@@ -221,7 +216,7 @@ class TestOrchestrationPlanPath:
         node = plan.add_task("task-a", agent_hint="worker")
 
         stub = _StubDispatcher({node.id: _dispatch_result_success(node.id, "output-a")})
-        result_plan = await executor.execute_async(plan, lambda n: "ignored", dispatcher=stub)  # type: ignore[arg-type]
+        await executor.execute_async(plan, lambda n: "ignored", dispatcher=stub)  # type: ignore[arg-type]
 
         assert node.status == "done"
         assert node.result == "output-a"

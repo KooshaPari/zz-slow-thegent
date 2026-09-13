@@ -12,7 +12,7 @@ Research for native Rust hooks.
 
 ### Methods
 
-#### HookRustPhase4Research.__init__
+#### HookRustPhase4Research.**init**
 
 ```python
 __init__(self: Any)

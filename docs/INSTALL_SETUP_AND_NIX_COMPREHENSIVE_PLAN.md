@@ -40,92 +40,92 @@
 
 ### 2.1 User-Level (Home Directory)
 
-| Target | What It Does | Status |
-|--------|--------------|--------|
-| **claude-code** | ~/.claude/ (skills, hooks, agents) | ✅ |
-| **claude-desktop** | Library/Application Support/Claude (MCP) | ✅ |
-| **cursor** | ~/.cursor/ (skills-cursor) | ✅ |
-| **codex** | ~/.codex/ (MCP) | ✅ |
-| **droid** | ~/.factory/ (hooks, skills, config) | ✅ |
-| **envrc** | ~/.envrc (direnv, guarded use flake) | ✅ |
-| **shell** | ~/.zshenv, .zshrc, .zsh_bundle.zsh, etc. | ✅ |
+| Target             | What It Does                             | Status |
+| ------------------ | ---------------------------------------- | ------ |
+| **claude-code**    | ~/.claude/ (skills, hooks, agents)       | ✅     |
+| **claude-desktop** | Library/Application Support/Claude (MCP) | ✅     |
+| **cursor**         | ~/.cursor/ (skills-cursor)               | ✅     |
+| **codex**          | ~/.codex/ (MCP)                          | ✅     |
+| **droid**          | ~/.factory/ (hooks, skills, config)      | ✅     |
+| **envrc**          | ~/.envrc (direnv, guarded use flake)     | ✅     |
+| **shell**          | ~/.zshenv, .zshrc, .zsh_bundle.zsh, etc. | ✅     |
 
 ### 2.2 User-Level Shims (~/.local/bin)
 
-| Command | What It Does | Status |
-|---------|--------------|--------|
-| **install-shims** | git, grep→rg, find→fd, jq→jaq, uv, npm, role accelerators | ✅ |
-| **install-shims --system** | git wrapper to /usr/local/bin (nix/direnv) | ✅ (auto-sudo) |
+| Command                    | What It Does                                              | Status         |
+| -------------------------- | --------------------------------------------------------- | -------------- |
+| **install-shims**          | git, grep→rg, find→fd, jq→jaq, uv, npm, role accelerators | ✅             |
+| **install-shims --system** | git wrapper to /usr/local/bin (nix/direnv)                | ✅ (auto-sudo) |
 
 ### 2.3 System-Level (Planned / Partial)
 
-| Target | What It Does | Status |
-|--------|--------------|--------|
-| **install-shims --system** | Git wrapper for nix/direnv/agents | ✅ |
-| **install -t system** | /opt/thegent or /usr/local/thegent (agent-as-system-user) | 🔲 Planned |
-| **git lock-cleanup** | Stale index.lock removal + launchd/systemd | 🔲 Phase 3 |
-| **MCP launchd service** | Background MCP for agents | ✅ (wizard) |
+| Target                     | What It Does                                              | Status      |
+| -------------------------- | --------------------------------------------------------- | ----------- |
+| **install-shims --system** | Git wrapper for nix/direnv/agents                         | ✅          |
+| **install -t system**      | /opt/thegent or /usr/local/thegent (agent-as-system-user) | 🔲 Planned  |
+| **git lock-cleanup**       | Stale index.lock removal + launchd/systemd                | 🔲 Phase 3  |
+| **MCP launchd service**    | Background MCP for agents                                 | ✅ (wizard) |
 
 ### 2.4 Auto-Install / Auto-Setup (LSP, IDE)
 
-| Component | What It Does | Status |
-|-----------|--------------|--------|
-| **LSP auto-install** | Auto-install pyright, typescript-language-server, rust-analyzer, gopls, etc. when missing | ✅ |
-| **IDE auto-setup** | Auto-detect JetBrains, Serena plugin, Ghostty shell integration | ✅ |
-| **Auto-init on MCP start** | Runs auto-setup when `thegent serve` starts | ✅ |
-| **thegent lsp auto-setup** | CLI to run all IDE/LSP setup | ✅ |
+| Component                  | What It Does                                                                              | Status |
+| -------------------------- | ----------------------------------------------------------------------------------------- | ------ |
+| **LSP auto-install**       | Auto-install pyright, typescript-language-server, rust-analyzer, gopls, etc. when missing | ✅     |
+| **IDE auto-setup**         | Auto-detect JetBrains, Serena plugin, Ghostty shell integration                           | ✅     |
+| **Auto-init on MCP start** | Runs auto-setup when `thegent serve` starts                                               | ✅     |
+| **thegent lsp auto-setup** | CLI to run all IDE/LSP setup                                                              | ✅     |
 
 ### 2.5 Bootstrap Methods (First-Time Install)
 
-| Method | Command | Platform |
-|--------|---------|----------|
-| **pip** | `pip install thegent` | All |
-| **Homebrew** | `brew install thegent` | macOS |
-| **Nix profile** | `nix profile install github:router-for-me/thegent` | Nix |
-| **winget** | `winget install router-for-me.thegent` | Windows |
-| **apt/yum** | `apt install thegent` / `yum install thegent` | Linux |
-| **curl \| sh** | (Not implemented) | — |
-| **nix run** | `nix run github:router-for-me/thegent` | Nix (ephemeral) |
-| **Determinate Nix** | `curl -fsSL https://install.determinate.systems/nix \| sh` | Nix (7M+ installs; flakes enabled) |
-| **pipx** | `pipx install thegent` | Isolated Python app (no venv pollution) |
-| **uv** | `uv tool install thegent` or `uvx thegent` | Fast; thegent flake uses uv |
+| Method              | Command                                                    | Platform                                |
+| ------------------- | ---------------------------------------------------------- | --------------------------------------- |
+| **pip**             | `pip install thegent`                                      | All                                     |
+| **Homebrew**        | `brew install thegent`                                     | macOS                                   |
+| **Nix profile**     | `nix profile install github:router-for-me/thegent`         | Nix                                     |
+| **winget**          | `winget install router-for-me.thegent`                     | Windows                                 |
+| **apt/yum**         | `apt install thegent` / `yum install thegent`              | Linux                                   |
+| **curl \| sh**      | (Not implemented)                                          | —                                       |
+| **nix run**         | `nix run github:router-for-me/thegent`                     | Nix (ephemeral)                         |
+| **Determinate Nix** | `curl -fsSL https://install.determinate.systems/nix \| sh` | Nix (7M+ installs; flakes enabled)      |
+| **pipx**            | `pipx install thegent`                                     | Isolated Python app (no venv pollution) |
+| **uv**              | `uv tool install thegent` or `uvx thegent`                 | Fast; thegent flake uses uv             |
 
 ### 2.6 Shim Variants (Discovery)
 
-| Shim System | Location | Purpose |
-|-------------|----------|---------|
-| **install-shims** (Python) | main.py `_install_tool_accelerators` | git, grep→rg, find→fd, jq→jaq, uv, npm, role accelerators |
-| **install-thegent-shims.sh** | scripts/ | Rust `thegent-shims` binary; thegent-git, thegent-grep, thegent-agent |
-| **runtime-dispatch** | crates/thegent-runtime/install.sh | Symlinks git, grep, find, ls, du, cat, node, npm, npx, python, pip |
+| Shim System                  | Location                             | Purpose                                                               |
+| ---------------------------- | ------------------------------------ | --------------------------------------------------------------------- |
+| **install-shims** (Python)   | main.py `_install_tool_accelerators` | git, grep→rg, find→fd, jq→jaq, uv, npm, role accelerators             |
+| **install-thegent-shims.sh** | scripts/                             | Rust `thegent-shims` binary; thegent-git, thegent-grep, thegent-agent |
+| **runtime-dispatch**         | crates/thegent-runtime/install.sh    | Symlinks git, grep, find, ls, du, cat, node, npm, npx, python, pip    |
 
 **Note:** Python `install-shims` is the primary path. Rust scripts may be legacy or alternate builds.
 
 ### 2.7 Gaps (Not in Install Today)
 
-| Gap | Description |
-|-----|-------------|
-| **Full system install** | No `thegent install -t system` for /opt/thegent layout |
-| **Lock-cleanup daemon** | No `thegent git lock-cleanup` or timer |
-| **Nix/home-manager module** | No declarative Nix module for thegent |
-| **Single-command full setup** | `install -t all` covers user targets but not shims, system git, lock-cleanup |
-| **Bootstrap curl \| sh** | No one-liner for first-time install |
-| **setup --hooks** | No `thegent setup --hooks` for pre-commit/husky/thegent hooks (SETUP_PROPOSED) |
-| **setup --skills** | No `thegent setup --skills` to sync skills template (SETUP_PROPOSED) |
-| **devcontainer** | No .devcontainer/ for Codespaces/VS Code | — |
-| **pipx/uv in INSTALLATION** | Not documented | — |
-| **chezmoi/dotfile integration** | No templates for dotfile managers | — |
+| Gap                             | Description                                                                    |
+| ------------------------------- | ------------------------------------------------------------------------------ | --- |
+| **Full system install**         | No `thegent install -t system` for /opt/thegent layout                         |
+| **Lock-cleanup daemon**         | No `thegent git lock-cleanup` or timer                                         |
+| **Nix/home-manager module**     | No declarative Nix module for thegent                                          |
+| **Single-command full setup**   | `install -t all` covers user targets but not shims, system git, lock-cleanup   |
+| **Bootstrap curl \| sh**        | No one-liner for first-time install                                            |
+| **setup --hooks**               | No `thegent setup --hooks` for pre-commit/husky/thegent hooks (SETUP_PROPOSED) |
+| **setup --skills**              | No `thegent setup --skills` to sync skills template (SETUP_PROPOSED)           |
+| **devcontainer**                | No .devcontainer/ for Codespaces/VS Code                                       | —   |
+| **pipx/uv in INSTALLATION**     | Not documented                                                                 | —   |
+| **chezmoi/dotfile integration** | No templates for dotfile managers                                              | —   |
 
 ### 2.8 Dotfile Managers (Non-Nix Alternative)
 
 Users who don't use Nix often use dotfile managers. thegent install targets overlap with what these manage:
 
-| Tool | Stars | Key Features | Overlap with thegent |
-|------|-------|--------------|----------------------|
-| **chezmoi** | 18k | Single binary, templates, private files, 1Password | ~/.zshrc, ~/.envrc, ~/.claude |
-| **yadm** | 6k | Git-based, encryption, alternate files | Same |
-| **Home Manager** | 9k | Nix; declarative | Full overlap (Nix path) |
-| **dotbot** | 7.8k | Lightweight, symlinks | Same |
-| **dotter** | 1.9k | Rust, templating | Same |
+| Tool             | Stars | Key Features                                       | Overlap with thegent          |
+| ---------------- | ----- | -------------------------------------------------- | ----------------------------- |
+| **chezmoi**      | 18k   | Single binary, templates, private files, 1Password | ~/.zshrc, ~/.envrc, ~/.claude |
+| **yadm**         | 6k    | Git-based, encryption, alternate files             | Same                          |
+| **Home Manager** | 9k    | Nix; declarative                                   | Full overlap (Nix path)       |
+| **dotbot**       | 7.8k  | Lightweight, symlinks                              | Same                          |
+| **dotter**       | 1.9k  | Rust, templating                                   | Same                          |
 
 **Implication:** thegent could provide chezmoi templates or document how to add thegent config to existing dotfile repos. See [dotfiles.github.io/utilities](https://dotfiles.github.io/utilities/).
 
@@ -150,14 +150,14 @@ Users who don't use Nix often use dotfile managers. thegent install targets over
 
 ### 4.1 Patterns
 
-| Pattern | Tool | Purpose |
-|---------|------|---------|
-| **User env + dotfiles** | home-manager | Declarative ~/.config, ~/.zshrc, packages |
-| **Dev shells** | flakes + direnv | `nix develop` or `use flake` per project |
-| **nix-direnv** | nix-direnv | Caches `use flake`; fast `cd` into project |
-| **macOS system** | nix-darwin | Declarative system config (launchd, etc.) |
-| **NixOS** | NixOS config | Full OS + home-manager module |
-| **nix profile** | nix profile install | Imperative user env; `~/.nix-profile` |
+| Pattern                 | Tool                | Purpose                                    |
+| ----------------------- | ------------------- | ------------------------------------------ |
+| **User env + dotfiles** | home-manager        | Declarative ~/.config, ~/.zshrc, packages  |
+| **Dev shells**          | flakes + direnv     | `nix develop` or `use flake` per project   |
+| **nix-direnv**          | nix-direnv          | Caches `use flake`; fast `cd` into project |
+| **macOS system**        | nix-darwin          | Declarative system config (launchd, etc.)  |
+| **NixOS**               | NixOS config        | Full OS + home-manager module              |
+| **nix profile**         | nix profile install | Imperative user env; `~/.nix-profile`      |
 
 ### 4.2 nix-direnv (Critical for Flakes)
 
@@ -184,11 +184,11 @@ Users who don't use Nix often use dotfile managers. thegent install targets over
 
 ### 4.5 nix profile vs nix develop
 
-| Command | Scope | Persistence |
-|---------|-------|-------------|
+| Command               | Scope                     | Persistence              |
+| --------------------- | ------------------------- | ------------------------ |
 | `nix profile install` | User env (~/.nix-profile) | Persistent across shells |
-| `nix develop` | Project shell | Only in that shell |
-| `use flake` (direnv) | Project dir | Auto-loads on `cd` |
+| `nix develop`         | Project shell             | Only in that shell       |
+| `use flake` (direnv)  | Project dir               | Auto-loads on `cd`       |
 
 ### 4.6 nix-darwin (macOS)
 
@@ -198,12 +198,12 @@ Users who don't use Nix often use dotfile managers. thegent install targets over
 
 ### 4.7 Config Sharing (Typical)
 
-| Approach | How | Use Case |
-|----------|-----|----------|
-| **Dotfiles repo** | Git repo with .zshrc, .config etc.; symlink or copy | Non-Nix |
-| **home-manager flake** | Flake with home-manager config; `home-manager switch --flake .` | Nix users |
-| **Dev shell flake** | `flake.nix` per project; `use flake` in .envrc | Per-project tools |
-| **nix-darwin flake** | Flake with darwin config; `darwin-rebuild switch --flake .` | macOS system |
+| Approach               | How                                                             | Use Case          |
+| ---------------------- | --------------------------------------------------------------- | ----------------- |
+| **Dotfiles repo**      | Git repo with .zshrc, .config etc.; symlink or copy             | Non-Nix           |
+| **home-manager flake** | Flake with home-manager config; `home-manager switch --flake .` | Nix users         |
+| **Dev shell flake**    | `flake.nix` per project; `use flake` in .envrc                  | Per-project tools |
+| **nix-darwin flake**   | Flake with darwin config; `darwin-rebuild switch --flake .`     | macOS system      |
 
 ### 4.8 devenv (Alternative to Raw Flakes)
 
@@ -222,6 +222,7 @@ Users who don't use Nix often use dotfile managers. thegent install targets over
 ### 4.10 home-manager programs.claude-code (Precedent)
 
 home-manager has native `programs.claude-code` with:
+
 - `settings`, `agents`, `commands`, `hooks`, `memory`, `rules`, `skills`
 - `mcpServers`, `enableMcpIntegration` (merge with `programs.mcp.servers`)
 - `rulesDir`, `agentsDir`, `commandsDir`, `hooksDir`, `skillsDir`
@@ -287,24 +288,24 @@ home-manager has native `programs.claude-code` with:
 
 ### 5.5 Optimize Existing Nix Setups
 
-| Optimization | How |
-|--------------|-----|
-| **Avoid direnv hang** | envrc template with flake guard, non-interactive skip |
-| **Git lock for nix** | install-shims --system |
-| **Stale locks** | lock-cleanup daemon (works regardless of Nix) |
-| **Shell startup** | thegent shell config (lazy compinit, FUNCNEST guard) |
-| **Shared hooks** | thegent hooks in ~/.claude, discoverable by Nix dev shell |
+| Optimization          | How                                                       |
+| --------------------- | --------------------------------------------------------- |
+| **Avoid direnv hang** | envrc template with flake guard, non-interactive skip     |
+| **Git lock for nix**  | install-shims --system                                    |
+| **Stale locks**       | lock-cleanup daemon (works regardless of Nix)             |
+| **Shell startup**     | thegent shell config (lazy compinit, FUNCNEST guard)      |
+| **Shared hooks**      | thegent hooks in ~/.claude, discoverable by Nix dev shell |
 
 ### 5.6 Nix User Checklist (Concrete Steps)
 
-| Step | Action | Why |
-|------|--------|-----|
-| 1 | Install nix-direnv | Fast `use flake` on `cd` |
-| 2 | Add `use flake` to project .envrc | Auto-load thegent dev shell |
-| 3 | `thegent install -t envrc` for ~/.envrc | Guarded; no FUNCNEST in home |
-| 4 | `thegent install-shims --system` | Nix/direnv use lock-aware git |
-| 5 | (Future) home-manager module | Declarative thegent in config |
-| 6 | (Future) lock-cleanup daemon | Remove stale index.lock |
+| Step | Action                                  | Why                           |
+| ---- | --------------------------------------- | ----------------------------- |
+| 1    | Install nix-direnv                      | Fast `use flake` on `cd`      |
+| 2    | Add `use flake` to project .envrc       | Auto-load thegent dev shell   |
+| 3    | `thegent install -t envrc` for ~/.envrc | Guarded; no FUNCNEST in home  |
+| 4    | `thegent install-shims --system`        | Nix/direnv use lock-aware git |
+| 5    | (Future) home-manager module            | Declarative thegent in config |
+| 6    | (Future) lock-cleanup daemon            | Remove stale index.lock       |
 
 ---
 
@@ -389,16 +390,16 @@ home-manager has native `programs.claude-code` with:
 
 ## 7. Quick Reference: Install Commands
 
-| Command | Scope | Sudo? |
-|---------|-------|-------|
-| `thegent install -t all` | User home (agents, shell, envrc) | No |
-| `thegent install -t shell` | Shell config only | No |
-| `thegent install -t envrc` | ~/.envrc only | No |
-| `thegent install-shims` | ~/.local/bin shims | No |
-| `thegent install-shims --system` | /usr/local/bin git wrapper | Yes (auto) |
-| `thegent install-shims --system --uninstall` | Restore original git | Yes (auto) |
-| `thegent setup --full` | install -t all, install-shims, install-shims --system, lock-cleanup service, MCP (macOS) | Yes when needed |
-| `thegent install -t system` (proposed) | /opt/thegent | Yes |
+| Command                                      | Scope                                                                                    | Sudo?           |
+| -------------------------------------------- | ---------------------------------------------------------------------------------------- | --------------- |
+| `thegent install -t all`                     | User home (agents, shell, envrc)                                                         | No              |
+| `thegent install -t shell`                   | Shell config only                                                                        | No              |
+| `thegent install -t envrc`                   | ~/.envrc only                                                                            | No              |
+| `thegent install-shims`                      | ~/.local/bin shims                                                                       | No              |
+| `thegent install-shims --system`             | /usr/local/bin git wrapper                                                               | Yes (auto)      |
+| `thegent install-shims --system --uninstall` | Restore original git                                                                     | Yes (auto)      |
+| `thegent setup --full`                       | install -t all, install-shims, install-shims --system, lock-cleanup service, MCP (macOS) | Yes when needed |
+| `thegent install -t system` (proposed)       | /opt/thegent                                                                             | Yes             |
 
 ---
 
@@ -465,22 +466,22 @@ darwin-rebuild switch
 
 ## 9. File Reference
 
-| Purpose | Path |
-|---------|------|
-| Git lock-cleanup | thegent/src/thegent/git_lock_manage.py |
-| Install logic | thegent/src/thegent/install.py |
-| Flake | thegent/flake.nix |
-| envrc template | thegent/shell/envrc.home.template |
-| home-manager module | thegent/nix/home-manager.nix |
-| PATCHES audit | docs/PATCHES_OPTIMIZATION_AUDIT_AND_PLAN.md |
-| GIT index lock plan | thegent/docs/research/GIT_INDEX_LOCK_OS_LEVEL_AND_AGENT_SYSTEM_USER_PLAN.md |
-| INSTALLATION guide | thegent/docs/guides/INSTALLATION.md |
-| SETUP_PROPOSED_ITEMS | thegent/docs/plans/SETUP_PROPOSED_ITEMS.md |
-| AUTO_INSTALL_AUTO_SETUP | thegent/docs/research/AUTO_INSTALL_AUTO_SETUP_IMPLEMENTATION_2026-02-18.md |
-| install-thegent-shims.sh | thegent/scripts/install-thegent-shims.sh |
-| runtime-dispatch install | thegent/crates/thegent-runtime/install.sh |
-| Starship + direnv | thegent/docs/guides/STARSHIP_DIRENV_SETUP.md |
-| HYBRID_ENV_SETUP | thegent/docs/checklists/HYBRID_ENV_SETUP_CHECKLIST.md |
+| Purpose                  | Path                                                                        |
+| ------------------------ | --------------------------------------------------------------------------- |
+| Git lock-cleanup         | thegent/src/thegent/git_lock_manage.py                                      |
+| Install logic            | thegent/src/thegent/install.py                                              |
+| Flake                    | thegent/flake.nix                                                           |
+| envrc template           | thegent/shell/envrc.home.template                                           |
+| home-manager module      | thegent/nix/home-manager.nix                                                |
+| PATCHES audit            | docs/PATCHES_OPTIMIZATION_AUDIT_AND_PLAN.md                                 |
+| GIT index lock plan      | thegent/docs/research/GIT_INDEX_LOCK_OS_LEVEL_AND_AGENT_SYSTEM_USER_PLAN.md |
+| INSTALLATION guide       | thegent/docs/guides/INSTALLATION.md                                         |
+| SETUP_PROPOSED_ITEMS     | thegent/docs/plans/SETUP_PROPOSED_ITEMS.md                                  |
+| AUTO_INSTALL_AUTO_SETUP  | thegent/docs/research/AUTO_INSTALL_AUTO_SETUP_IMPLEMENTATION_2026-02-18.md  |
+| install-thegent-shims.sh | thegent/scripts/install-thegent-shims.sh                                    |
+| runtime-dispatch install | thegent/crates/thegent-runtime/install.sh                                   |
+| Starship + direnv        | thegent/docs/guides/STARSHIP_DIRENV_SETUP.md                                |
+| HYBRID_ENV_SETUP         | thegent/docs/checklists/HYBRID_ENV_SETUP_CHECKLIST.md                       |
 
 ---
 
@@ -501,12 +502,12 @@ thegent install -w   # Wizard
 
 ## 11. MCP & Provider Setup (Complementary)
 
-| Command | Purpose |
-|---------|---------|
-| `thegent cliproxy login <provider>` | OAuth for Claude, OpenAI, etc. |
-| `thegent cliproxy ensure-config` | Ensure cliproxy config exists |
-| `thegent mcp up` | Start MCP + proxy via process-compose |
-| `thegent install -w` | Wizard includes MCP service (launchd) option |
+| Command                             | Purpose                                      |
+| ----------------------------------- | -------------------------------------------- |
+| `thegent cliproxy login <provider>` | OAuth for Claude, OpenAI, etc.               |
+| `thegent cliproxy ensure-config`    | Ensure cliproxy config exists                |
+| `thegent mcp up`                    | Start MCP + proxy via process-compose        |
+| `thegent install -w`                | Wizard includes MCP service (launchd) option |
 
 **Gap:** `thegent setup` or `install -t all` does not auto-run cliproxy login; user must configure providers separately.
 
@@ -514,51 +515,51 @@ thegent install -w   # Wizard
 
 ## 12. New Discoveries (Summary)
 
-| Discovery | Source | Action |
-|-----------|--------|--------|
-| **AUTO_INSTALL_AUTO_SETUP** | LSP, IDE, Serena, Ghostty | Already implemented; document in plan |
-| **SETUP_PROPOSED_ITEMS** | Hooks, skills, MCP mounts, ECC | Add setup --hooks, --skills phases |
-| **Shim variants** | install-thegent-shims.sh, runtime-dispatch | Clarify Python install-shims is primary |
-| **nix-direnv** | use flake caching | Add to Nix section |
-| **nix profile install** | INSTALLATION.md | Add to bootstrap methods |
-| **Starship + direnv** | Project-specific .starship.toml | Optional envrc enhancement |
-| **HYBRID_ENV_SETUP** | Cross-device (Mac/Windows) | Reference for multi-machine users |
-| **mcps.nix** | MCP presets for home-manager + devenv | Model for thegent home-manager module |
-| **devenv** | Declarative dev envs; claude.code, git-hooks | Alternative to raw flakes; consider devenv module |
-| **Determinate Nix Installer** | curl \| sh; 7M+ installs; flakes by default | Reference for bootstrap pattern |
-| **home-manager programs.claude-code** | Native module; settings, agents, mcpServers | Precedent for thegent module design |
-| **FlakeHub** | flakehub.com — flake registry | Publish thegent flake |
-| **zero-to-nix** | Flake concepts, flake references | Documentation reference |
-| **pipx** | Isolated Python CLI install | Add to INSTALLATION; alternative to pip |
-| **uv** | Fast Python manager; uv tool install | thegent flake uses uv; add to docs |
-| **devcontainer** | containers.dev; Codespaces | Phase I: .devcontainer/ |
-| **dotfile managers** | chezmoi 18k★, yadm, dotbot | Phase J: templates or integration guide |
-| **nix-direnv** | Caching use_flake; direnv-instant | Recommend for Nix users; async loading |
-| **thegent nix** | GitHub search: 0 results | No existing Nix package; first-mover |
+| Discovery                             | Source                                       | Action                                            |
+| ------------------------------------- | -------------------------------------------- | ------------------------------------------------- |
+| **AUTO_INSTALL_AUTO_SETUP**           | LSP, IDE, Serena, Ghostty                    | Already implemented; document in plan             |
+| **SETUP_PROPOSED_ITEMS**              | Hooks, skills, MCP mounts, ECC               | Add setup --hooks, --skills phases                |
+| **Shim variants**                     | install-thegent-shims.sh, runtime-dispatch   | Clarify Python install-shims is primary           |
+| **nix-direnv**                        | use flake caching                            | Add to Nix section                                |
+| **nix profile install**               | INSTALLATION.md                              | Add to bootstrap methods                          |
+| **Starship + direnv**                 | Project-specific .starship.toml              | Optional envrc enhancement                        |
+| **HYBRID_ENV_SETUP**                  | Cross-device (Mac/Windows)                   | Reference for multi-machine users                 |
+| **mcps.nix**                          | MCP presets for home-manager + devenv        | Model for thegent home-manager module             |
+| **devenv**                            | Declarative dev envs; claude.code, git-hooks | Alternative to raw flakes; consider devenv module |
+| **Determinate Nix Installer**         | curl \| sh; 7M+ installs; flakes by default  | Reference for bootstrap pattern                   |
+| **home-manager programs.claude-code** | Native module; settings, agents, mcpServers  | Precedent for thegent module design               |
+| **FlakeHub**                          | flakehub.com — flake registry                | Publish thegent flake                             |
+| **zero-to-nix**                       | Flake concepts, flake references             | Documentation reference                           |
+| **pipx**                              | Isolated Python CLI install                  | Add to INSTALLATION; alternative to pip           |
+| **uv**                                | Fast Python manager; uv tool install         | thegent flake uses uv; add to docs                |
+| **devcontainer**                      | containers.dev; Codespaces                   | Phase I: .devcontainer/                           |
+| **dotfile managers**                  | chezmoi 18k★, yadm, dotbot                   | Phase J: templates or integration guide           |
+| **nix-direnv**                        | Caching use_flake; direnv-instant            | Recommend for Nix users; async loading            |
+| **thegent nix**                       | GitHub search: 0 results                     | No existing Nix package; first-mover              |
 
 ---
 
 ## 13. Research References (DDG/Web)
 
-| Topic | URL |
-|-------|-----|
-| Nix Flakes | [nixos.wiki/wiki/Flakes](https://nixos.wiki/wiki/Flakes) |
-| zero-to-nix Flakes | [zero-to-nix.com/concepts/flakes](https://zero-to-nix.com/concepts/flakes) |
-| Home Manager | [github.com/nix-community/home-manager](https://github.com/nix-community/home-manager) |
-| home-manager claude-code | [home-manager/.../claude-code.nix](https://github.com/nix-community/home-manager/blob/master/modules/programs/claude-code.nix) |
-| mcps.nix | [github.com/roman/mcps.nix](https://github.com/roman/mcps.nix) |
-| devenv | [devenv.sh](https://devenv.sh) |
-| Determinate Nix Installer | [github.com/DeterminateSystems/nix-installer](https://github.com/DeterminateSystems/nix-installer) |
-| FlakeHub | [flakehub.com](https://flakehub.com) |
-| nix-community impermanence | [github.com/nix-community/impermanence](https://github.com/nix-community/impermanence) |
-| nix-darwin | [github.com/LnL7/nix-darwin](https://github.com/LnL7/nix-darwin) |
-| pipx | [pypa.github.io/pipx](https://pypa.github.io/pipx/) |
-| uv | [docs.astral.sh/uv](https://docs.astral.sh/uv/) |
-| devcontainer spec | [containers.dev/implementors/json_reference](https://containers.dev/implementors/json_reference/) |
-| dotfile utilities | [dotfiles.github.io/utilities](https://dotfiles.github.io/utilities/) |
-| chezmoi | [github.com/twpayne/chezmoi](https://github.com/twpayne/chezmoi) |
-| nix-direnv | [github.com/nix-community/nix-direnv](https://github.com/nix-community/nix-direnv) |
-| direnv-instant | [github.com/Mic92/direnv-instant](https://github.com/Mic92/direnv-instant) — async direnv with nix-direnv |
+| Topic                      | URL                                                                                                                            |
+| -------------------------- | ------------------------------------------------------------------------------------------------------------------------------ |
+| Nix Flakes                 | [nixos.wiki/wiki/Flakes](https://nixos.wiki/wiki/Flakes)                                                                       |
+| zero-to-nix Flakes         | [zero-to-nix.com/concepts/flakes](https://zero-to-nix.com/concepts/flakes)                                                     |
+| Home Manager               | [github.com/nix-community/home-manager](https://github.com/nix-community/home-manager)                                         |
+| home-manager claude-code   | [home-manager/.../claude-code.nix](https://github.com/nix-community/home-manager/blob/master/modules/programs/claude-code.nix) |
+| mcps.nix                   | [github.com/roman/mcps.nix](https://github.com/roman/mcps.nix)                                                                 |
+| devenv                     | [devenv.sh](https://devenv.sh)                                                                                                 |
+| Determinate Nix Installer  | [github.com/DeterminateSystems/nix-installer](https://github.com/DeterminateSystems/nix-installer)                             |
+| FlakeHub                   | [flakehub.com](https://flakehub.com)                                                                                           |
+| nix-community impermanence | [github.com/nix-community/impermanence](https://github.com/nix-community/impermanence)                                         |
+| nix-darwin                 | [github.com/LnL7/nix-darwin](https://github.com/LnL7/nix-darwin)                                                               |
+| pipx                       | [pypa.github.io/pipx](https://pypa.github.io/pipx/)                                                                            |
+| uv                         | [docs.astral.sh/uv](https://docs.astral.sh/uv/)                                                                                |
+| devcontainer spec          | [containers.dev/implementors/json_reference](https://containers.dev/implementors/json_reference/)                              |
+| dotfile utilities          | [dotfiles.github.io/utilities](https://dotfiles.github.io/utilities/)                                                          |
+| chezmoi                    | [github.com/twpayne/chezmoi](https://github.com/twpayne/chezmoi)                                                               |
+| nix-direnv                 | [github.com/nix-community/nix-direnv](https://github.com/nix-community/nix-direnv)                                             |
+| direnv-instant             | [github.com/Mic92/direnv-instant](https://github.com/Mic92/direnv-instant) — async direnv with nix-direnv                      |
 
 ---
 

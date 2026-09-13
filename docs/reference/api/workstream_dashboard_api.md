@@ -16,7 +16,7 @@ Panel showing concurrency limits and usage.
 
 ### Methods
 
-#### ConcurrencyPanel.__init__
+#### ConcurrencyPanel.**init**
 
 ```python
 __init__(self: Any)
@@ -44,7 +44,7 @@ Table showing item dependencies.
 
 ### Methods
 
-#### DependenciesTable.__init__
+#### DependenciesTable.**init**
 
 ```python
 __init__(self: Any)
@@ -72,7 +72,7 @@ Panel showing auto-launch system health and gardening status.
 
 ### Methods
 
-#### GardenerPanel.__init__
+#### GardenerPanel.**init**
 
 ```python
 __init__(self: Any)
@@ -100,7 +100,7 @@ KPI panel showing TRAFFIC metrics.
 
 ### Methods
 
-#### KPIPanel.__init__
+#### KPIPanel.**init**
 
 ```python
 __init__(self: Any)
@@ -128,7 +128,7 @@ Table showing agent reputation scores.
 
 ### Methods
 
-#### ReputationTable.__init__
+#### ReputationTable.**init**
 
 ```python
 __init__(self: Any)
@@ -156,7 +156,7 @@ Table showing active sessions.
 
 ### Methods
 
-#### SessionsTable.__init__
+#### SessionsTable.**init**
 
 ```python
 __init__(self: Any)
@@ -184,7 +184,7 @@ Statistics panel showing key metrics.
 
 ### Methods
 
-#### StatsPanel.__init__
+#### StatsPanel.**init**
 
 ```python
 __init__(self: Any)
@@ -212,7 +212,7 @@ Real-time workstream monitoring dashboard.
 
 ### Methods
 
-#### WorkstreamDashboard.__init__
+#### WorkstreamDashboard.**init**
 
 ```python
 __init__(self: Any)
@@ -270,7 +270,7 @@ Table showing workstream items.
 
 ### Methods
 
-#### WorkstreamItemsTable.__init__
+#### WorkstreamItemsTable.**init**
 
 ```python
 __init__(self: Any)
@@ -298,7 +298,7 @@ Table showing agent XP and levels.
 
 ### Methods
 
-#### XPTable.__init__
+#### XPTable.**init**
 
 ```python
 __init__(self: Any)

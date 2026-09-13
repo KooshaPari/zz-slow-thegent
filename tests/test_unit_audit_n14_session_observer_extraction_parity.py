@@ -37,10 +37,7 @@ from unittest.mock import patch
 
 import pytest
 
-from thegent.cli.commands import impl
-from thegent.cli.commands import observability_impl
-from thegent.cli.commands import session_impl
-
+from thegent.cli.commands import impl, observability_impl, session_impl
 
 # ---------------------------------------------------------------------------
 # Module paths. Centralized so a future rename only touches one constant.
@@ -112,7 +109,9 @@ class TestImplReExportIdentity:
         assert "timed_out" in sig.parameters
 
     # @trace FR-AUDIT-N+14-007
-    def test_impl_module_does_not_locally_define_run_background_session_observer(self) -> None:
+    def test_impl_module_does_not_locally_define_run_background_session_observer(
+        self,
+    ) -> None:
         """impl.py must NOT define ``_run_background_session_observer`` —
         the canonical home is session_impl and impl is a re-export shim."""
         src = inspect.getsource(impl)
@@ -145,7 +144,9 @@ class TestObservabilityImplLegacyStub:
     observability surface."""
 
     # @trace FR-AUDIT-N+14-009
-    def test_observability_impl_run_background_session_observer_is_callable(self) -> None:
+    def test_observability_impl_run_background_session_observer_is_callable(
+        self,
+    ) -> None:
         assert callable(observability_impl._run_background_session_observer)
 
     # @trace FR-AUDIT-N+14-010

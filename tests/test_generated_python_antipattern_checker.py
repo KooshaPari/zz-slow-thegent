@@ -1,9 +1,10 @@
 from __future__ import annotations
 
-import orjson as json
 import subprocess
 import sys
 from pathlib import Path
+
+import orjson as json
 
 
 def test_generated_python_antipattern_checker_fails_on_error(tmp_path: Path) -> None:

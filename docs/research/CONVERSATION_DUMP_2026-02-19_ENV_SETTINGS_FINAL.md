@@ -13,6 +13,7 @@
 Successfully consolidated **6 files** worth of environment variable access (14 occurrences) into `ThegentSettings` dependency injection. Added **8 new configuration fields** with auto-detecting validators. Remaining 4 files (14 occurrences) delegated for batch completion.
 
 ### Key Achievements
+
 - ✅ Updated core `ThegentSettings` with new env-aware fields
 - ✅ Refactored test infrastructure to use `monkeypatch` instead of direct env mutation
 - ✅ Improved test isolation and fixture-based configuration
@@ -27,16 +28,16 @@ Successfully consolidated **6 files** worth of environment variable access (14 o
 
 **Changes**: Added 8 new fields with validators
 
-| Field | Type | Env Var | Auto-Detect | Default |
-|-------|------|---------|-------------|---------|
-| `analytics_site_id` | str | THGENT_ANALYTICS_SITE_ID | No | "thegent" |
-| `siem_endpoint_url` | str \| None | THGENT_SIEM_ENDPOINT_URL | No | None |
-| `virtual_env` | Path \| None | VIRTUAL_ENV | ✅ Yes | None |
-| `shell_path` | str | SHELL | ✅ Yes | "/bin/zsh" |
-| `appdata_path` | Path \| None | APPDATA | ✅ Yes | None |
-| `cliproxy_backend_url` | str \| None | THGENT_CLIPROXY_BACKEND_URL | No | None |
-| `check_leaks` | bool | CHECK_LEAKS | ✅ Yes | False |
-| `testing_mode` | bool | THGENT_TESTING | ✅ Yes | False |
+| Field                  | Type         | Env Var                     | Auto-Detect | Default    |
+| ---------------------- | ------------ | --------------------------- | ----------- | ---------- |
+| `analytics_site_id`    | str          | THGENT_ANALYTICS_SITE_ID    | No          | "thegent"  |
+| `siem_endpoint_url`    | str \| None  | THGENT_SIEM_ENDPOINT_URL    | No          | None       |
+| `virtual_env`          | Path \| None | VIRTUAL_ENV                 | ✅ Yes      | None       |
+| `shell_path`           | str          | SHELL                       | ✅ Yes      | "/bin/zsh" |
+| `appdata_path`         | Path \| None | APPDATA                     | ✅ Yes      | None       |
+| `cliproxy_backend_url` | str \| None  | THGENT_CLIPROXY_BACKEND_URL | No          | None       |
+| `check_leaks`          | bool         | CHECK_LEAKS                 | ✅ Yes      | False      |
+| `testing_mode`         | bool         | THGENT_TESTING              | ✅ Yes      | False      |
 
 **Validators**: All fields properly handle pydantic env var parsing + auto-detection when not explicitly set.
 
@@ -48,12 +49,12 @@ Successfully consolidated **6 files** worth of environment variable access (14 o
 
 ```python
 # BEFORE
-site_id=os.getenv("ANALYTICS_SITE_ID", "thegent")
-endpoint_url=os.getenv("SIEM_ENDPOINT_URL")
+site_id = os.getenv("ANALYTICS_SITE_ID", "thegent")
+endpoint_url = os.getenv("SIEM_ENDPOINT_URL")
 
 # AFTER
-site_id=self.settings.analytics_site_id
-endpoint_url=self.settings.siem_endpoint_url
+site_id = self.settings.analytics_site_id
+endpoint_url = self.settings.siem_endpoint_url
 ```
 
 **Risk**: LOW - settings already injected in `__init__`
@@ -67,6 +68,7 @@ endpoint_url=self.settings.siem_endpoint_url
 ```python
 # BEFORE
 os.environ["THGENT_TESTING"] = "1"
+
 
 # AFTER
 @pytest.fixture(autouse=True)
@@ -89,6 +91,7 @@ def _set_testing_mode_for_all_tests(monkeypatch) -> None:
 with patch.dict(os.environ, {}, clear=False):
     if "THGENT_CONTROL_PLANE_URL" in os.environ:
         del os.environ["THGENT_CONTROL_PLANE_URL"]
+
 
 # AFTER
 def test_returns_env_provider_by_default(self, monkeypatch) -> None:
@@ -168,11 +171,12 @@ if settings.virtual_env:
 
 **Location**: Lines 173, 211, 219
 **Changes**:
+
 - Remove env mutation (line 173)
 - Use settings for subprocess env (line 211)
 - Handle cliproxy_backend_url (line 125)
-**Documentation**: `docs/research/TASK_IMPL_DEX_MAIN.md`
-**Estimated Time**: 8 minutes
+  **Documentation**: `docs/research/TASK_IMPL_DEX_MAIN.md`
+  **Estimated Time**: 8 minutes
 
 **Key**: Avoid global os.environ mutations; pass via subprocess env dict instead.
 
@@ -182,11 +186,12 @@ if settings.virtual_env:
 
 **Location**: Lines 251, 309, 397, 437, 1686
 **Changes**:
+
 - Refactor PATH mutation (line 251)
 - Replace 3x SHELL detection with settings.shell_path
 - Replace APPDATA detection with settings.appdata_path
-**Documentation**: `docs/research/TASK_IMPL_INSTALL.md`
-**Estimated Time**: 15 minutes
+  **Documentation**: `docs/research/TASK_IMPL_INSTALL.md`
+  **Estimated Time**: 15 minutes
 
 **Risk**: HIGHEST - critical installer path; test on all platforms (macOS, Windows, Linux)
 
@@ -196,33 +201,35 @@ if settings.virtual_env:
 
 **Location**: Lines 56, 67, 119, 120, 125
 **Changes**:
+
 - Keep PATH lookup as-is (system var)
 - Replace THGENT_DEBUG with settings.debug ✅ (field exists)
 - Replace THGENT_RELOAD with settings.reload ✅ (field exists)
 - Use settings.cliproxy_backend_url for backend setup
-**Documentation**: `docs/research/TASK_IMPL_START_PROXY.md`
-**Estimated Time**: 8 minutes
+  **Documentation**: `docs/research/TASK_IMPL_START_PROXY.md`
+  **Estimated Time**: 8 minutes
 
 ---
 
 ## Summary Statistics
 
-| Category | Count |
-|----------|-------|
-| **Total Files** | 10 |
-| **Total Occurrences** | ~30 |
-| **Completed Files** | 6 |
-| **Completed Occurrences** | 14 |
-| **Remaining Files** | 4 |
-| **Remaining Occurrences** | 14 |
-| **New ThegentSettings Fields** | 8 |
-| **Field Validators** | 6 (with auto-detect) |
+| Category                       | Count                |
+| ------------------------------ | -------------------- |
+| **Total Files**                | 10                   |
+| **Total Occurrences**          | ~30                  |
+| **Completed Files**            | 6                    |
+| **Completed Occurrences**      | 14                   |
+| **Remaining Files**            | 4                    |
+| **Remaining Occurrences**      | 14                   |
+| **New ThegentSettings Fields** | 8                    |
+| **Field Validators**           | 6 (with auto-detect) |
 
 ---
 
 ## Verification Checklist
 
 ### Completed
+
 - [x] All new ThegentSettings fields added
 - [x] All validators implemented with auto-detect
 - [x] auto_launch.py updated (2 changes)
@@ -233,6 +240,7 @@ if settings.virtual_env:
 - [x] All completed files syntax-verified
 
 ### Pending (After delegation)
+
 - [ ] mcp_manage.py updated (2 changes)
 - [ ] dex_main.py updated (3 changes)
 - [ ] install.py updated (5 changes)
@@ -245,18 +253,21 @@ if settings.virtual_env:
 ## Design Rationale
 
 ### Why Auto-Detecting Validators?
+
 - **Backward compatible**: Existing code continues to work via env vars
 - **Explicit configuration**: New code can set values explicitly
 - **Single source of truth**: ThegentSettings field is canonical
 - **Test-friendly**: Can be overridden in tests without env mutation
 
 ### Why Monkeypatch Over patch.dict?
+
 - **Built-in pytest fixture**: No external dependencies
 - **Proper isolation**: Changes reverted after test
 - **Type-safe**: IDE can trace through fixture
 - **Cleaner syntax**: Less boilerplate
 
 ### Why Intentionally Keep Some?
+
 - **CHECK_LEAKS**: Debug flag, minimal overhead when not needed
 - **PATH in scripts**: System environment, read-only, no need to configure
 - The principle is to eliminate unnecessary coupling, not be dogmatic
@@ -276,6 +287,7 @@ if settings.virtual_env:
 ## Next Steps for Implementation
 
 1. **Run remaining 4 batches**:
+
    ```bash
    # Create work items in WORK_STREAM.md
    # Then delegate:
@@ -283,6 +295,7 @@ if settings.virtual_env:
    ```
 
 2. **Verify completeness** (after all agents finish):
+
    ```bash
    # Should return ZERO matches
    grep -r "os\.environ\|os\.getenv" src/ tests/ scripts/ \
@@ -292,6 +305,7 @@ if settings.virtual_env:
    ```
 
 3. **Run full test suite**:
+
    ```bash
    pytest tests/ -v
    thegent --help  # Basic CLI test
@@ -310,18 +324,18 @@ if settings.virtual_env:
 
 ## Files Modified
 
-| File | Changes | Status |
-|------|---------|--------|
-| src/thegent/config.py | +8 fields, +6 validators | ✅ DONE |
-| src/thegent/planning/auto_launch.py | -2 os.getenv | ✅ DONE |
-| conftest.py | -1 env mutation, +1 fixture | ✅ DONE |
-| tests/test_unit_config_provider.py | -2 patch.dict → monkeypatch | ✅ DONE |
-| tests/test_platform_paths.py | -1 fixture, +4 monkeypatch | ✅ DONE |
-| tests/test_resource_leaks.py | reviewed (+else) | ✅ DONE |
-| src/thegent/mcp_manage.py | 2 changes pending | ⏳ DELEGATED |
-| src/thegent/dex_main.py | 3 changes pending | ⏳ DELEGATED |
-| src/thegent/install.py | 5 changes pending | ⏳ DELEGATED |
-| scripts/start_proxy_with_adapter.py | 4 changes pending | ⏳ DELEGATED |
+| File                                | Changes                     | Status       |
+| ----------------------------------- | --------------------------- | ------------ |
+| src/thegent/config.py               | +8 fields, +6 validators    | ✅ DONE      |
+| src/thegent/planning/auto_launch.py | -2 os.getenv                | ✅ DONE      |
+| conftest.py                         | -1 env mutation, +1 fixture | ✅ DONE      |
+| tests/test_unit_config_provider.py  | -2 patch.dict → monkeypatch | ✅ DONE      |
+| tests/test_platform_paths.py        | -1 fixture, +4 monkeypatch  | ✅ DONE      |
+| tests/test_resource_leaks.py        | reviewed (+else)            | ✅ DONE      |
+| src/thegent/mcp_manage.py           | 2 changes pending           | ⏳ DELEGATED |
+| src/thegent/dex_main.py             | 3 changes pending           | ⏳ DELEGATED |
+| src/thegent/install.py              | 5 changes pending           | ⏳ DELEGATED |
+| scripts/start_proxy_with_adapter.py | 4 changes pending           | ⏳ DELEGATED |
 
 ---
 

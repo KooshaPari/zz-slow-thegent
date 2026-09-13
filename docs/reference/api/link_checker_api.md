@@ -12,7 +12,7 @@ Check links in markdown files.
 
 ### Methods
 
-#### LinkChecker.__init__
+#### LinkChecker.**init**
 
 ```python
 __init__(self: Any, base_dir: Any)

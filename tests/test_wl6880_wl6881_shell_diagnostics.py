@@ -2,11 +2,11 @@
 
 from __future__ import annotations
 
+import platform as py_platform
 import subprocess
 from pathlib import Path
 
 import pytest
-import platform as py_platform
 
 from thegent import shell_cli
 
@@ -116,7 +116,9 @@ def test_wl6881_shell_platform_probe_success(monkeypatch: pytest.MonkeyPatch) ->
     assert rows["Zsh Version"] == "5.9"
 
 
-def test_wl6881_shell_platform_probe_execution_failure(monkeypatch: pytest.MonkeyPatch) -> None:
+def test_wl6881_shell_platform_probe_execution_failure(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
     monkeypatch.setattr(py_platform, "system", lambda: "Darwin")
     monkeypatch.setattr(py_platform, "platform", lambda: "Mock Platform")
     monkeypatch.setattr(py_platform, "machine", lambda: "arm64")

@@ -36,12 +36,14 @@ Beyond CPU, memory, FD, and load average:
 - Confidence scoring
 
 **Leak Detection**:
+
 - Tracks resource growth rates over time windows
 - Detects memory leaks (>10MB/hour), FD leaks (>1 FD/hour), child process leaks (>0.1 proc/hour)
 - Severity classification: none, low, medium, high, critical
 - Integrated into `ExtendedResourceSnapshot.leak_metrics`
 
 **Usage**:
+
 ```python
 from thegent.orchestration.resource_management import ResourcePredictionEngine, sample_extended_resources
 
@@ -111,6 +113,7 @@ print(f"Leak severity: {snapshot.leak_metrics.leak_severity}")
   - Leak rates: 0.8MB/h memory, 0.08 FD/h
 
 **Usage**:
+
 ```python
 from thegent.orchestration.resource_management import create_harness_cards
 
@@ -121,7 +124,7 @@ cursor_card = cards["cursor-agent"]
 estimated = cursor_card.estimate_resources(
     session_count=10,
     isolated=False,
-    use_p95=True  # Use p95 for conservative planning
+    use_p95=True,  # Use p95 for conservative planning
 )
 
 # Returns comprehensive dictionary with min/avg/peak/p95 for all resources:
@@ -144,6 +147,7 @@ estimated = cursor_card.estimate_resources(
 ```
 
 **Key Features**:
+
 - **Statistical Modeling**: All resources modeled with distributions, not single values
 - **Comprehensive Tracking**: Child processes, threads, sockets, network connections
 - **Leak Detection**: Built-in leak rate tracking and detection
@@ -160,6 +164,7 @@ estimated = cursor_card.estimate_resources(
 - Optimization suggestions
 
 **Usage**:
+
 ```python
 from thegent.orchestration.resource_management import BottleneckDetector
 
@@ -180,6 +185,7 @@ contentions = detector.detect_resource_contention(snapshot, harness_cards)
 - **EARLY_TERMINATION**: Terminate slow providers early
 
 **Usage**:
+
 ```python
 from thegent.orchestration.speculative_strategies import (
     SpeculativeStrategy,
@@ -204,6 +210,7 @@ providers = select_speculative_providers(["free", "claude", "gemini"], config.st
 - Adaptive rebalancing
 
 **Usage**:
+
 ```python
 from thegent.orchestration.work_chunking import compute_optimal_chunk_size, chunk_work_items
 
@@ -226,6 +233,7 @@ The `ConcurrencyController` now uses:
 4. **Bottleneck detection** for contention-aware limits
 
 **Example**:
+
 ```python
 cc = ConcurrencyController(session_dir, use_load_based=True)
 if cc.acquire(lane="standard", harness_type="codex"):

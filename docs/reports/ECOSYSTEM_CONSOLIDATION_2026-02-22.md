@@ -6,11 +6,11 @@ Track 4 consolidates the thegent ecosystem, absorbing adjacent tools and decommi
 
 ## Sub-Project Split
 
-| Sub-Project | Purpose | Location |
-|-------------|---------|----------|
-| thegent-cli | CLI command dispatch, output formatting | `sub-projects/thegent-cli/` |
+| Sub-Project    | Purpose                                     | Location                       |
+| -------------- | ------------------------------------------- | ------------------------------ |
+| thegent-cli    | CLI command dispatch, output formatting     | `sub-projects/thegent-cli/`    |
 | thegent-agents | Agent orchestration, planning, memory, team | `sub-projects/thegent-agents/` |
-| thegent-mcp | Unified MCP tool aggregator (500+ tools) | `sub-projects/thegent-mcp/` |
+| thegent-mcp    | Unified MCP tool aggregator (500+ tools)    | `sub-projects/thegent-mcp/`    |
 
 ## Absorption: zen-mcp-server -> thegent-mcp
 
@@ -31,6 +31,7 @@ Both projects archived with `ARCHIVED.md`. Superseded by thegent architecture.
 ## Data Preservation
 
 All persistent data unchanged:
+
 - Session logs: `~/.thegent/sessions/run_registry.jsonl`
 - Config: `~/.thegent/config.toml`
 - Artifacts: `~/.thegent/artifacts/`

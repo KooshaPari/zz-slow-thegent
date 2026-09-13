@@ -5,11 +5,11 @@ Traces to: FR-AUDIT-001 through FR-AUDIT-020
 
 from __future__ import annotations
 
-import orjson as json
 import os
 import textwrap
 from typing import TYPE_CHECKING
 
+import orjson as json
 import pytest
 
 from thegent.audit.system_audit import (
@@ -265,7 +265,9 @@ def test_audit_agents_warn_for_empty_md_file(tmp_project: Path) -> None:
     assert any(r.item == "empty-agent" for r in warn)
 
 
-def test_audit_agents_missing_when_referenced_in_bounded_contexts(tmp_project: Path) -> None:
+def test_audit_agents_missing_when_referenced_in_bounded_contexts(
+    tmp_project: Path,
+) -> None:
     """Traces to: FR-AUDIT-010 -- MISSING when bounded-contexts.yaml references absent agent."""
     # Need at least one real .md file so the function doesn't exit early with WARN
     (tmp_project / "agents" / "real-agent.md").write_text("# Real Agent\nA working persona.\n", encoding="utf-8")
@@ -446,7 +448,14 @@ def test_format_report_shows_fix_suggestion_for_issues(tmp_project: Path) -> Non
     report = AuditReport(timestamp="2026-01-01T00:00:00+00:00")
     report.add_results(
         [
-            AuditResult("hooks", "missing-hook", AuditStatus.MISSING, "x", "y", "Create hooks/missing-hook.sh"),
+            AuditResult(
+                "hooks",
+                "missing-hook",
+                AuditStatus.MISSING,
+                "x",
+                "y",
+                "Create hooks/missing-hook.sh",
+            ),
         ]
     )
     auditor = SystemAuditor(project_root=tmp_project)

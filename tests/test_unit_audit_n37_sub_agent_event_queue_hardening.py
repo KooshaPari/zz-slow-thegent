@@ -89,7 +89,6 @@ from thegent.orchestration.sub_agent_dispatcher import (
 )
 from thegent.orchestration.unified_worker import UnifiedWorkerDaemon
 
-
 # ---------------------------------------------------------------------------
 # Helpers
 # ---------------------------------------------------------------------------
@@ -293,7 +292,9 @@ class TestGlobalQueueThreadSafe:
 class TestDispatcherEventPublishing:
     """@trace FR-ORC-067, FR-ORC-068, FR-ORC-069, FR-ORC-070"""
 
-    def test_dispatch_publishes_started_and_completed_when_event_queue_bound(self) -> None:
+    def test_dispatch_publishes_started_and_completed_when_event_queue_bound(
+        self,
+    ) -> None:
         q = _make_event_queue()
         dispatcher = SubAgentDispatcher(
             capability_index=CapabilityIndex(),
@@ -315,7 +316,6 @@ class TestDispatcherEventPublishing:
 
     def test_dispatch_emits_no_completed_when_budget_exceeded(self) -> None:
         """@trace FR-ORC-068"""
-        from thegent.orchestration.budget_tracker import BudgetExceededError
 
         mock_budget = MagicMock()
         mock_budget.check.side_effect = BudgetExceededError(node_id="req_budget_test", budget=0, actual=1)
@@ -415,7 +415,10 @@ class TestUnifiedWorkerDaemonSurface:
 
     def test_daemon_falls_back_to_global_queue(self) -> None:
         """When no event_queue is passed, the daemon binds to the global singleton."""
-        from thegent.orchestration.event_queue import get_global_event_queue, reset_global_event_queue
+        from thegent.orchestration.event_queue import (
+            get_global_event_queue,
+            reset_global_event_queue,
+        )
 
         reset_global_event_queue()
         daemon = UnifiedWorkerDaemon()
@@ -448,7 +451,11 @@ class TestUnifiedWorkerDaemonSurface:
         with patch("thegent.orchestration.unified_worker._dispatch_post_agent_run_hook") as mock_hook:
             task = asyncio.create_task(daemon._consume_events())
             q.put(
-                _make_event(request_id="req_x", event_type=SubAgentEventType.COMPLETED, payload={"agent_type": "audit"})
+                _make_event(
+                    request_id="req_x",
+                    event_type=SubAgentEventType.COMPLETED,
+                    payload={"agent_type": "audit"},
+                )
             )
             # Give the consumer a chance to dequeue.
             for _ in range(20):

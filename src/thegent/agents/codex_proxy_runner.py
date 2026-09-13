@@ -16,13 +16,9 @@ from pathlib import Path
 from thegent.agents.base import AgentRunner, RunResult
 from thegent.agents.cliproxy_manager import ensure_proxy_running
 from thegent.agents.codex_proxy_base import (
-    CodexAuthError,
-    CodexInstanceError,
-    CodexModelError,
-    CodexResult,
-    CodexSandboxError,
     _LITELLM_CONTEXT_WINDOW_MAX,
     _PROXY_MODEL,
+    CodexInstanceError,
     _build_config_flags,
     _check_and_track_instance,
     _create_isolated_home,
@@ -147,7 +143,13 @@ class CodexProxyRunner(AgentRunner):
             lightweight_config.update(config)
 
         codex_cmd = _resolve_codex()
-        cmd = [codex_cmd, "exec", "-", "--skip-git-repo-check", "--dangerously-bypass-approvals-and-sandbox"]
+        cmd = [
+            codex_cmd,
+            "exec",
+            "-",
+            "--skip-git-repo-check",
+            "--dangerously-bypass-approvals-and-sandbox",
+        ]
 
         # Add lightweight config flags
         cmd.extend(_build_config_flags(lightweight_config))
@@ -216,7 +218,10 @@ class CodexProxyRunner(AgentRunner):
         # WL-116: Handle audio transcript inputs
         audio_transcript: str | None = None
         if audio_paths:
-            from thegent.agents.audio_inputs import inject_transcript_into_prompt, load_transcripts
+            from thegent.agents.audio_inputs import (
+                inject_transcript_into_prompt,
+                load_transcripts,
+            )
 
             audio_transcript, _audio_sources = load_transcripts(audio_paths)
             if audio_transcript:
@@ -238,7 +243,16 @@ class CodexProxyRunner(AgentRunner):
         # Route via LiteLLM Router if enabled and not zen
         if self._use_litellm_router and self.agent_name != "zen":
             result = self._run_via_litellm_router(
-                prompt, cwd, mode, timeout, model, use_stream, live_output, on_stdout, on_stderr, env=env
+                prompt,
+                cwd,
+                mode,
+                timeout,
+                model,
+                use_stream,
+                live_output,
+                on_stdout,
+                on_stderr,
+                env=env,
             )
             # WL-116: Add audio_transcript to result if audio was processed
             if audio_transcript:
@@ -580,7 +594,15 @@ class CodexProxyRunner(AgentRunner):
     ) -> RunResult:
         """Execute via native codex CLI (for codex provider)."""
         # Current implementation uses codex CLI already
-        return self.run(prompt, cwd, mode, timeout, agent_model=model, run_id=run_id, session_id=session_id)
+        return self.run(
+            prompt,
+            cwd,
+            mode,
+            timeout,
+            agent_model=model,
+            run_id=run_id,
+            session_id=session_id,
+        )
 
     def _execute_litellm_api(
         self,
@@ -703,9 +725,9 @@ class CodexProxyRunner(AgentRunner):
         # Execute with retry using tenacity
         from tenacity import (
             retry,
+            retry_if_exception_type,
             stop_after_attempt,
             wait_exponential,
-            retry_if_exception_type,
         )
 
         @retry(
@@ -773,15 +795,28 @@ class CodexProxyRunner(AgentRunner):
     ) -> tuple[list[dict[str, str]], ContextCompactionResult]:
         """Build Litellm messages and compact optional skill context when needed."""
         turns: list[dict[str, str]] = [
-            {"role": "system", "content": "You are running inside the thegent codex proxy runner."},
+            {
+                "role": "system",
+                "content": "You are running inside the thegent codex proxy runner.",
+            },
         ]
 
         skill_suffix = self.get_skill_prompt_suffix().strip()
         if skill_suffix:
             turns.append({"role": "system", "content": skill_suffix})
 
-        turns.append({"role": "system", "content": f"Execution agent={self.agent_name} model={model}"})
-        turns.append({"role": "system", "content": f"Execution mode={mode} cwd={cwd or Path.cwd()}."})
+        turns.append(
+            {
+                "role": "system",
+                "content": f"Execution agent={self.agent_name} model={model}",
+            }
+        )
+        turns.append(
+            {
+                "role": "system",
+                "content": f"Execution mode={mode} cwd={cwd or Path.cwd()}.",
+            }
+        )
         turns.append({"role": "user", "content": prompt})
 
         compactor = ContextCompactor()

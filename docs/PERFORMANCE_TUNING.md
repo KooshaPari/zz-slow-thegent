@@ -6,13 +6,13 @@ This guide covers the performance optimizations implemented in thegent.
 
 The following performance features are available:
 
-| Feature | Module | Purpose |
-|---------|--------|---------|
-| Multi-Level Cache | `thegent.cache` | Reduce API calls, improve response time |
-| Dynamic Scaling | `thegent.scaling` | Adaptive concurrency control |
-| Shell Timeout | `thegent.shell` | Configurable command timeouts with retry |
-| Process Cleanup | `thegent.process` | Prevent resource leaks |
-| Teammate System | `thegent.teammates` | Parallel task delegation |
+| Feature           | Module              | Purpose                                  |
+| ----------------- | ------------------- | ---------------------------------------- |
+| Multi-Level Cache | `thegent.cache`     | Reduce API calls, improve response time  |
+| Dynamic Scaling   | `thegent.scaling`   | Adaptive concurrency control             |
+| Shell Timeout     | `thegent.shell`     | Configurable command timeouts with retry |
+| Process Cleanup   | `thegent.process`   | Prevent resource leaks                   |
+| Teammate System   | `thegent.teammates` | Parallel task delegation                 |
 
 ## Caching
 
@@ -49,7 +49,7 @@ from thegent.cache import TieredCache
 
 cache = TieredCache(l1_ttl=60.0, l2_ttl=3600.0)
 cache.set("key", "value")  # Sets in both tiers
-result = cache.get("key")   # Checks L1, then L2, promotes to L1
+result = cache.get("key")  # Checks L1, then L2, promotes to L1
 ```
 
 ### Cache Statistics
@@ -79,11 +79,7 @@ print(f"Pressure: {sample.pressure_score}")
 ```python
 from thegent.scaling import DynamicLimiter
 
-limiter = DynamicLimiter(
-    min_limit=1,
-    max_limit=100,
-    initial_limit=10
-)
+limiter = DynamicLimiter(min_limit=1, max_limit=100, initial_limit=10)
 
 # Adjusts automatically based on system pressure
 limiter.acquire()
@@ -99,7 +95,7 @@ from thegent.shell import ShellExecutor, ShellConfig
 
 config = ShellConfig(
     default_timeout=300.0,  # 5 minutes
-    max_retries=3
+    max_retries=3,
 )
 
 executor = ShellExecutor(config)
@@ -114,11 +110,7 @@ else:
 ### Retry with Backoff
 
 ```python
-config = ShellConfig(
-    max_retries=3,
-    retry_base_delay=1.0,
-    retry_exponential_base=2.0
-)
+config = ShellConfig(max_retries=3, retry_base_delay=1.0, retry_exponential_base=2.0)
 # Delays: 1s, 2s, 4s
 ```
 
@@ -142,12 +134,9 @@ for t in teammates:
 from thegent.teammates import Delegate, DelegationRequest
 
 delegate = Delegate(registry)
-result = delegate.delegate(DelegationRequest(
-    teammate_id="coder",
-    task="Refactor the authentication module",
-    priority="HIGH",
-    timeout=300.0
-))
+result = delegate.delegate(
+    DelegationRequest(teammate_id="coder", task="Refactor the authentication module", priority="HIGH", timeout=300.0)
+)
 
 print(f"Task ID: {result.id}")
 print(f"Status: {result.status}")
@@ -155,13 +144,13 @@ print(f"Status: {result.status}")
 
 ## Performance Targets
 
-| Metric | Target |
-|--------|--------|
-| L1 cache hit latency | <10ms |
-| Cache hit rate | >60% |
-| Shell timeout success | >80% |
+| Metric                 | Target |
+| ---------------------- | ------ |
+| L1 cache hit latency   | <10ms  |
+| Cache hit rate         | >60%   |
+| Shell timeout success  | >80%   |
 | Delegation latency P50 | <100ms |
-| Memory per idle agent | <2MB |
+| Memory per idle agent  | <2MB   |
 
 ## Benchmarking
 

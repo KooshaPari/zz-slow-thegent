@@ -14,6 +14,7 @@ This document provides implementation documentation for `thegent-shims`, a Rust-
 ### Purpose
 
 Replace shell-based shims with fast Rust binaries for:
+
 - Git operations (multi-tenant lock coordination, index.lock handling)
 - Tool accelerators (grep→rg, find→fd, jq→jaq)
 - Agent accelerators (codex, copilot)
@@ -24,11 +25,13 @@ Replace shell-based shims with fast Rust binaries for:
 **Current State**: Multiple agents working on implementation (see WORK_STREAM.md CLAIMED section)
 
 **Components**:
+
 - Rust binary: `thegent-shims` (in development)
 - Shim installation: `install-shims` command (exists)
 - Integration: Hook system and CLI (planned)
 
 **Related Work**:
+
 - `thegent-hooks` Rust binary already exists (Phase 1 complete)
 - Shell shims currently in use (`hooks/lib/git-wrapper.sh`, etc.)
 - Migration path: Shell → Rust shims → Full Rust hooks
@@ -57,24 +60,29 @@ Replace shell-based shims with fast Rust binaries for:
 ### Implementation Plan
 
 **Phase 1**: Core shim framework
+
 - [ ] Rust project structure
 - [ ] Command routing logic
 - [ ] Binary build system
 
 **Phase 2**: Git shim implementation
+
 - [ ] Lock coordination
 - [ ] Index.lock handling
 - [ ] Git command passthrough
 
 **Phase 3**: Tool accelerator shims
+
 - [ ] rg, fd, jaq wrappers
 - [ ] Fallback to system binaries
 
 **Phase 4**: Agent accelerator shims
+
 - [ ] codex/copilot exec wrappers
 - [ ] Path resolution
 
 **Phase 5**: Integration
+
 - [ ] Install-shims integration
 - [ ] Hook system integration
 - [ ] Testing and validation

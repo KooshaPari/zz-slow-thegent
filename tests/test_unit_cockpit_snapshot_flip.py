@@ -35,7 +35,6 @@ from typer.testing import CliRunner
 from thegent.ux.cli_cockpit import app as cockpit_app
 from thegent.ux.cli_sota import app as sota_app
 
-
 # Per-mismatch sub-keys the JSON envelope MUST expose — shared with the
 # parity suite so we don't drift the contract across files.
 _MISMATCH_SUBKEYS: tuple[str, ...] = ("index", "fields", "expected", "actual")
@@ -728,7 +727,9 @@ class TestSnapshotFlipMultiFieldHelpers:
         # Explicit verdict first (first-seen), then the preset tail.
         assert fields == ["verdict", "override_applied", "cached"]
 
-    def test_normalise_snapshot_flip_fields_preset_deduped_against_existing(self) -> None:
+    def test_normalise_snapshot_flip_fields_preset_deduped_against_existing(
+        self,
+    ) -> None:
         from thegent.ux.cli_cockpit import _normalise_snapshot_flip_fields
 
         fields = _normalise_snapshot_flip_fields(

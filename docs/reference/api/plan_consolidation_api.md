@@ -12,7 +12,7 @@ Automate plan consolidation.
 
 ### Methods
 
-#### PlanConsolidation.__init__
+#### PlanConsolidation.**init**
 
 ```python
 __init__(self: Any, plans_dir: Any)

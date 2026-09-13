@@ -15,7 +15,7 @@ Runs cost-sensitivity experiments.
 
 ### Methods
 
-#### ExperimentRunner.__init__
+#### ExperimentRunner.**init**
 
 ```python
 __init__(self: Any)
@@ -39,7 +39,7 @@ Simulates FederatedPolicyEngine with namespace inheritance.
 
 ### Methods
 
-#### FederatedPolicyEngineSim.__init__
+#### FederatedPolicyEngineSim.**init**
 
 ```python
 __init__(self: Any, namespaces: list[PolicyNamespace])

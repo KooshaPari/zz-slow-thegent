@@ -6,6 +6,7 @@ This stub exists for backwards compatibility with existing tests.
 """
 
 from __future__ import annotations
+
 from dataclasses import dataclass
 from typing import Any
 
@@ -13,6 +14,7 @@ from typing import Any
 @dataclass
 class OmegaExecutionResult:
     """Result of omega execution."""
+
     success: bool
     plan: dict[str, Any] | None = None
     errors: list[str] | None = None

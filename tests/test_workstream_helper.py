@@ -30,7 +30,10 @@ _SCRIPTS_DIR = Path(__file__).parent.parent / "scripts"
 _HELPER_PATH = _SCRIPTS_DIR / "workstream_helper.py"
 
 if not _HELPER_PATH.exists():
-    pytest.skip(f"script not present (tracked follow-up): {_HELPER_PATH.name}", allow_module_level=True)
+    pytest.skip(
+        f"script not present (tracked follow-up): {_HELPER_PATH.name}",
+        allow_module_level=True,
+    )
 
 _spec = importlib.util.spec_from_file_location("workstream_helper", _HELPER_PATH)
 assert _spec is not None

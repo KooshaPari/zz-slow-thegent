@@ -48,27 +48,33 @@ def run_suite(iterations: int, *, mode: str = "warm") -> dict[str, Any]:
         except TypeError:
             return None
 
-    rows.append(_try_bench(
-        "coerce_issue_types_list",
-        lambda: _coerce_issue_types([{"type": t} for t in ("a", "b", "c")]),
-        iterations=iterations,
-    ))
-    rows.append(_try_bench(
-        "cache_elicitation_key",
-        lambda: _cache_elicitation_key("Working directory?"),
-        iterations=iterations,
-    ))
-    rows.append(_try_bench(
-        "get_server_meta_impl",
-        lambda: get_server_meta_impl(
-            health_payload_schema_version="health-schema-v1",
-            health_payload_types=("session_contract_health_gate",),
-            observe_summary_payload_schema_version="observe-summary-schema-v1",
-            observe_summary_payload_types=("observe_summary",),
-            health_policy_profiles=["strict_ci", "warn_only"],
-        ),
-        iterations=max(1_000, iterations // 10),
-    ))
+    rows.append(
+        _try_bench(
+            "coerce_issue_types_list",
+            lambda: _coerce_issue_types([{"type": t} for t in ("a", "b", "c")]),
+            iterations=iterations,
+        )
+    )
+    rows.append(
+        _try_bench(
+            "cache_elicitation_key",
+            lambda: _cache_elicitation_key("Working directory?"),
+            iterations=iterations,
+        )
+    )
+    rows.append(
+        _try_bench(
+            "get_server_meta_impl",
+            lambda: get_server_meta_impl(
+                health_payload_schema_version="health-schema-v1",
+                health_payload_types=("session_contract_health_gate",),
+                observe_summary_payload_schema_version="observe-summary-schema-v1",
+                observe_summary_payload_types=("observe_summary",),
+                health_policy_profiles=["strict_ci", "warn_only"],
+            ),
+            iterations=max(1_000, iterations // 10),
+        )
+    )
     rows = [r for r in rows if r is not None]
     return {"suite": "python-benchmark-suite-v1", "mode": mode, "benchmarks": rows}
 

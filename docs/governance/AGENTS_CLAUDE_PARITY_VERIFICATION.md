@@ -12,6 +12,7 @@
 **Status:** **IDENTICAL**
 
 Both files contain:
+
 - Same title: "FORBIDDEN: Killing Agent or Terminal Processes"
 - Same forbidden commands (with code block formatting)
 - Same correct alternatives (with code block formatting)
@@ -19,6 +20,7 @@ Both files contain:
 - Same security enforcement details
 
 **Location:**
+
 - `AGENTS.md`: Lines 9-41
 - `CLAUDE.md`: Lines 9-55
 
@@ -29,6 +31,7 @@ Both files contain:
 **Status:** **IDENTICAL**
 
 Both files contain:
+
 - Same title: "FORBIDDEN: Fallbacks, Legacy Compatibility, and Silent Failures"
 - Same forbidden patterns list
 - Same correct approach guidelines
@@ -37,6 +40,7 @@ Both files contain:
 - Same enforcement details
 
 **Location:**
+
 - `AGENTS.md`: Lines 45-91
 - `CLAUDE.md`: Lines 59-105
 
@@ -44,13 +48,13 @@ Both files contain:
 
 ## 📋 Content Comparison
 
-| Section | AGENTS.md | CLAUDE.md | Status |
-|---------|-----------|-----------|--------|
-| **Killing Agent Processes** | ✅ Present | ✅ Present | ✅ Identical |
-| **Fallbacks/Legacy Rules** | ✅ Present | ✅ Present | ✅ Identical |
-| **Heavy Web Research** | ✅ Present | ✅ Present | ⚠️ Different format |
-| **Library-First Policy** | ✅ Present | ✅ Present | ⚠️ Different format |
-| **Context Management** | ✅ Present | ✅ Present | ⚠️ Different format |
+| Section                     | AGENTS.md  | CLAUDE.md  | Status              |
+| --------------------------- | ---------- | ---------- | ------------------- |
+| **Killing Agent Processes** | ✅ Present | ✅ Present | ✅ Identical        |
+| **Fallbacks/Legacy Rules**  | ✅ Present | ✅ Present | ✅ Identical        |
+| **Heavy Web Research**      | ✅ Present | ✅ Present | ⚠️ Different format |
+| **Library-First Policy**    | ✅ Present | ✅ Present | ⚠️ Different format |
+| **Context Management**      | ✅ Present | ✅ Present | ⚠️ Different format |
 
 **Note:** Format differences are acceptable - AGENTS.md and CLAUDE.md serve different purposes and may have different structures. The **critical security and fallback rules are identical**, which is the requirement.
 
@@ -82,12 +86,14 @@ diff -u <(sed -n '/FORBIDDEN: Fallbacks/,/^---$/p' AGENTS.md) <(sed -n '/FORBIDD
 ## 📝 Maintenance Notes
 
 **When updating critical rules:**
+
 1. Update `AGENTS.md` first
 2. Immediately update `CLAUDE.md` to match
 3. Verify with diff commands above
 4. Document any intentional differences
 
 **Critical sections to keep in sync:**
+
 - Security rules (killing processes)
 - Fallback/legacy compatibility rules
 - Any other "FORBIDDEN" sections

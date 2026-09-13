@@ -105,7 +105,12 @@ class TestLogFriction:
 
     def test_custom_task_id_used(self, tmp_friction_log: Path) -> None:
         """Explicit task_id appears as section header."""
-        log_friction("ax", "AX issue", task_id="ax-custom-001", friction_log_path=tmp_friction_log)
+        log_friction(
+            "ax",
+            "AX issue",
+            task_id="ax-custom-001",
+            friction_log_path=tmp_friction_log,
+        )
         content = tmp_friction_log.read_text(encoding="utf-8")
         assert "### ax-custom-001" in content
 
@@ -117,7 +122,12 @@ class TestLogFriction:
 
     def test_solution_recorded(self, tmp_friction_log: Path) -> None:
         """Provided solution appears in entry."""
-        log_friction("dx", "Some dx issue", solution="Use library X", friction_log_path=tmp_friction_log)
+        log_friction(
+            "dx",
+            "Some dx issue",
+            solution="Use library X",
+            friction_log_path=tmp_friction_log,
+        )
         content = tmp_friction_log.read_text(encoding="utf-8")
         assert "Use library X" in content
 

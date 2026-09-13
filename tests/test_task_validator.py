@@ -2,8 +2,6 @@
 
 from pathlib import Path
 
-import pytest
-
 from thegent.task.validator import (
     ValidationError,
     ValidationResult,

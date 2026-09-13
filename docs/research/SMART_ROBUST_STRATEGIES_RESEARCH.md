@@ -24,33 +24,33 @@ This document synthesizes external research and industry patterns into **smart a
 
 Process relationships are a **kernel-managed family tree with obligations**:
 
-| Concept | Definition | thegent Relevance |
-|---------|------------|-------------------|
-| **Zombie** | Child has exited; parent has not reaped exit status via `wait*()` | LSP/MCP parents that don't reap → process table pressure |
+| Concept    | Definition                                                              | thegent Relevance                                             |
+| ---------- | ----------------------------------------------------------------------- | ------------------------------------------------------------- |
+| **Zombie** | Child has exited; parent has not reaped exit status via `wait*()`       | LSP/MCP parents that don't reap → process table pressure      |
 | **Orphan** | Parent exited; child still running; kernel re-parents to init/subreaper | Our prune targets — LSPs/MCPs whose Cursor/Claude parent died |
-| **Daemon** | Intentionally detached; supervised by service manager | `thegent serve`, prune-periodic, process-compose |
+| **Daemon** | Intentionally detached; supervised by service manager                   | `thegent serve`, prune-periodic, process-compose              |
 
 **Key insight**: Zombie is a **cleanup failure**; orphan is an **ownership change**; daemon is a **service design choice**. Classify first, then act.
 
 ### 2.2 Production Debugging Playbook (from thelinuxcode.com)
 
-| Step | Command / Action |
-|------|------------------|
-| 1. Find suspicious states | `ps -eo pid,ppid,stat,tty,etime,cmd \| rg 'service-name'` |
-| 2. Inspect parent-child tree | `pstree -pal` |
-| 3. Per-process kernel view | `cat /proc/<pid>/status`, `cat /proc/<pid>/stat` |
-| 4. Trace wait/reap behavior | `strace -f -p <pid> -e trace=wait4,waitid` |
-| 5. Validate service supervision | `systemctl status`, `journalctl -u <unit>` |
-| 6. Container PID 1 check | Use init shim (tini) if app is PID 1 and spawns children |
+| Step                            | Command / Action                                          |
+| ------------------------------- | --------------------------------------------------------- |
+| 1. Find suspicious states       | `ps -eo pid,ppid,stat,tty,etime,cmd \| rg 'service-name'` |
+| 2. Inspect parent-child tree    | `pstree -pal`                                             |
+| 3. Per-process kernel view      | `cat /proc/<pid>/status`, `cat /proc/<pid>/stat`          |
+| 4. Trace wait/reap behavior     | `strace -f -p <pid> -e trace=wait4,waitid`                |
+| 5. Validate service supervision | `systemctl status`, `journalctl -u <unit>`                |
+| 6. Container PID 1 check        | Use init shim (tini) if app is PID 1 and spawns children  |
 
 ### 2.3 Strategies for Robust Child Management
 
-| Strategy | Description | Applicability to thegent |
-|----------|-------------|--------------------------|
-| **SIGCHLD + drain loop** | Parent installs SIGCHLD handler; drains all exited children with `waitpid(-1, WNOHANG)` until none left | thegent subprocess spawns (run, bg, hooks) |
-| **Shutdown path drains children** | Before parent exits, explicitly wait for all registered child PIDs | MCP server, process-compose |
-| **One child manager component** | Centralize spawn, timeout, signal, wait semantics | `execution.py`, `cli_impl.py` |
-| **pidfd-based management** | Linux 5.3+ `pidfd_open` for race-resistant lifecycle | Future: replace PID-based tracking |
+| Strategy                          | Description                                                                                             | Applicability to thegent                   |
+| --------------------------------- | ------------------------------------------------------------------------------------------------------- | ------------------------------------------ |
+| **SIGCHLD + drain loop**          | Parent installs SIGCHLD handler; drains all exited children with `waitpid(-1, WNOHANG)` until none left | thegent subprocess spawns (run, bg, hooks) |
+| **Shutdown path drains children** | Before parent exits, explicitly wait for all registered child PIDs                                      | MCP server, process-compose                |
+| **One child manager component**   | Centralize spawn, timeout, signal, wait semantics                                                       | `execution.py`, `cli_impl.py`              |
+| **pidfd-based management**        | Linux 5.3+ `pidfd_open` for race-resistant lifecycle                                                    | Future: replace PID-based tracking         |
 
 ---
 
@@ -107,11 +107,11 @@ Each IDE instance (or each project tab) spawns its own LSP process. Multi-projec
 
 ### 4.2 Existing Solutions
 
-| Project | Language | Approach | Key Features |
-|---------|----------|----------|--------------|
-| **lspx** (thefrontside) | TypeScript/Deno | Multiplexer + supervisor + shell | Combines multiple LSPs (ts, tailwind, eslint) into one connection; restarts failed servers |
-| **lsp-mux** (mrvnmyr) | Go | Per-project, per-language shared server | Unix socket; first client spawns server; others connect; 10min linger after last disconnect |
-| **lsplex** (joaotavora) | C++ | Experimental proxy/multiplexer | Archive; minimal |
+| Project                 | Language        | Approach                                | Key Features                                                                                |
+| ----------------------- | --------------- | --------------------------------------- | ------------------------------------------------------------------------------------------- |
+| **lspx** (thefrontside) | TypeScript/Deno | Multiplexer + supervisor + shell        | Combines multiple LSPs (ts, tailwind, eslint) into one connection; restarts failed servers  |
+| **lsp-mux** (mrvnmyr)   | Go              | Per-project, per-language shared server | Unix socket; first client spawns server; others connect; 10min linger after last disconnect |
+| **lsplex** (joaotavora) | C++             | Experimental proxy/multiplexer          | Archive; minimal                                                                            |
 
 ### 4.3 lsp-mux Architecture (Most Relevant)
 
@@ -128,13 +128,13 @@ Editor 3 ─┘
 
 ### 4.4 thegent Mapping (MTSP-04)
 
-| lsp-mux concept | thegent equivalent |
-|-----------------|-------------------|
-| `.lspmux` marker | `PROJECT_DIR` from session / cwd |
-| Per-project + per-language | `(project_root, language)` key |
-| Unix socket | `~/.cache/thegent/lsp-sockets/<hash>.sock` |
-| Linger 10min | `THGENT_LSP_LINGER_SEC` |
-| Serena (uvx) | Primary target — replace per-call `uvx serena` with shared daemon |
+| lsp-mux concept            | thegent equivalent                                                |
+| -------------------------- | ----------------------------------------------------------------- |
+| `.lspmux` marker           | `PROJECT_DIR` from session / cwd                                  |
+| Per-project + per-language | `(project_root, language)` key                                    |
+| Unix socket                | `~/.cache/thegent/lsp-sockets/<hash>.sock`                        |
+| Linger 10min               | `THGENT_LSP_LINGER_SEC`                                           |
+| Serena (uvx)               | Primary target — replace per-call `uvx serena` with shared daemon |
 
 **Strategy**: Implement or integrate an lsp-mux–style proxy for Serena. thegent `serve` could host it, or we wrap `lsp-mux` / `lspx` for stdio LSPs.
 
@@ -176,13 +176,13 @@ Editor 3 ─┘
 
 ### 6.2 Enhanced Strategies
 
-| Strategy | Description | Effort | Impact |
-|----------|-------------|--------|--------|
-| **RSS-aware prune** | Sort candidates by RSS; kill highest first when over threshold | 8–12 tool calls | Medium — frees more memory per kill |
-| **Age-based decay** | Prefer killing processes with longest `etime` (idle longer) | 4–6 tool calls | Medium — reduces risk of killing active |
-| **Graceful SIGTERM first** | Send SIGTERM; wait 2–5s; SIGKILL only if still alive | 2–4 tool calls | Low — cleaner shutdown |
-| **Zombie detection** | Count zombies (`stat=Z`); alert or trigger parent restart | 6–8 tool calls | Medium — different problem than orphans |
-| **Process group kill** | When killing parent, use `kill(-pgid, SIGTERM)` to kill whole group | 4–6 tool calls | Medium — avoids orphaned children of LSP |
+| Strategy                   | Description                                                         | Effort          | Impact                                   |
+| -------------------------- | ------------------------------------------------------------------- | --------------- | ---------------------------------------- |
+| **RSS-aware prune**        | Sort candidates by RSS; kill highest first when over threshold      | 8–12 tool calls | Medium — frees more memory per kill      |
+| **Age-based decay**        | Prefer killing processes with longest `etime` (idle longer)         | 4–6 tool calls  | Medium — reduces risk of killing active  |
+| **Graceful SIGTERM first** | Send SIGTERM; wait 2–5s; SIGKILL only if still alive                | 2–4 tool calls  | Low — cleaner shutdown                   |
+| **Zombie detection**       | Count zombies (`stat=Z`); alert or trigger parent restart           | 6–8 tool calls  | Medium — different problem than orphans  |
+| **Process group kill**     | When killing parent, use `kill(-pgid, SIGTERM)` to kill whole group | 4–6 tool calls  | Medium — avoids orphaned children of LSP |
 
 ### 6.3 Graceful Shutdown Sequence (SIGTERM → SIGKILL)
 
@@ -193,31 +193,31 @@ Editor 3 ─┘
 4. Ignore ESRCH (process may have exited between check and kill)
 ```
 
-| Phase | Signal | Wait | Rationale |
-|-------|--------|------|----------|
+| Phase    | Signal  | Wait | Rationale                                |
+| -------- | ------- | ---- | ---------------------------------------- |
 | Graceful | SIGTERM | 2–5s | LSP can flush buffers, close connections |
-| Forced | SIGKILL | 0 | No response to SIGTERM → assume hung |
+| Forced   | SIGKILL | 0    | No response to SIGTERM → assume hung     |
 
 **Process group kill**: `kill(-pgid, SIGTERM)` ensures child LSPs (e.g. tsserver, pyright) are terminated with parent; avoids new orphans.
 
 ### 6.4 Failure Mode Mitigations
 
-| Risk | Mitigation |
-|------|------------|
-| False positive (kill active LSP) | Orphan-by-ppid; age-based decay; dry-run |
-| Prune during heavy load | Cooldown; memory threshold only when critical |
-| Race (process exits between scan and kill) | `kill(pid, 0)` check before kill; ignore ESRCH |
-| Zombie buildup | Separate zombie count; recommend parent restart |
-| Orphaned children of killed LSP | Process group kill; or recursive kill children first |
+| Risk                                       | Mitigation                                           |
+| ------------------------------------------ | ---------------------------------------------------- |
+| False positive (kill active LSP)           | Orphan-by-ppid; age-based decay; dry-run             |
+| Prune during heavy load                    | Cooldown; memory threshold only when critical        |
+| Race (process exits between scan and kill) | `kill(pid, 0)` check before kill; ignore ESRCH       |
+| Zombie buildup                             | Separate zombie count; recommend parent restart      |
+| Orphaned children of killed LSP            | Process group kill; or recursive kill children first |
 
 ### 6.5 Prune Strategy Selection Matrix
 
-| Scenario | Preferred Strategy |
-|----------|-------------------|
-| Memory critical | RSS-aware; kill highest first |
-| Many idle processes | Age-based; kill longest etime |
-| Mixed load | RSS + age hybrid (weighted score) |
-| cc-status bloat | Lower threshold for cc-status; kill first |
+| Scenario            | Preferred Strategy                                   |
+| ------------------- | ---------------------------------------------------- |
+| Memory critical     | RSS-aware; kill highest first                        |
+| Many idle processes | Age-based; kill longest etime                        |
+| Mixed load          | RSS + age hybrid (weighted score)                    |
+| cc-status bloat     | Lower threshold for cc-status; kill first            |
 | Zombie accumulation | Separate path; alert; don't prune (parent must reap) |
 
 ---
@@ -226,32 +226,32 @@ Editor 3 ─┘
 
 ### 7.1 When to Use Which Process Model
 
-| Lifetime | Recommended Model | thegent Example |
-|----------|-------------------|-----------------|
-| Seconds | Child with strict wait/timeout | Hook subprocess, single tool call |
-| Minutes to hours | Supervisor-managed worker | `thegent run`, `thegent bg` |
-| Long-lived | Foreground under service manager | `thegent serve`, prune-periodic |
-| Variable | Explicit job manager | DAG tasks, gardener |
+| Lifetime         | Recommended Model                | thegent Example                   |
+| ---------------- | -------------------------------- | --------------------------------- |
+| Seconds          | Child with strict wait/timeout   | Hook subprocess, single tool call |
+| Minutes to hours | Supervisor-managed worker        | `thegent run`, `thegent bg`       |
+| Long-lived       | Foreground under service manager | `thegent serve`, prune-periodic   |
+| Variable         | Explicit job manager             | DAG tasks, gardener               |
 
 ### 7.2 LSP Multiplexing: Build vs Integrate
 
-| Option | Pros | Cons |
-|--------|------|------|
-| **Integrate lsp-mux** | Proven; Go; per-project sockets | May need fork for Serena; stdio vs socket |
-| **Integrate lspx** | Multi-LSP; supervisor; Deno | Deno dependency; different architecture |
-| **Build minimal proxy** | Full control; Python/Node in-tree | 15–25 tool calls; maintenance |
-| **Upstream Serena** | Serena adds multiplexing | External; timeline unknown |
+| Option                  | Pros                              | Cons                                      |
+| ----------------------- | --------------------------------- | ----------------------------------------- |
+| **Integrate lsp-mux**   | Proven; Go; per-project sockets   | May need fork for Serena; stdio vs socket |
+| **Integrate lspx**      | Multi-LSP; supervisor; Deno       | Deno dependency; different architecture   |
+| **Build minimal proxy** | Full control; Python/Node in-tree | 15–25 tool calls; maintenance             |
+| **Upstream Serena**     | Serena adds multiplexing          | External; timeline unknown                |
 
 **Recommendation**: Phase 1 — Evaluate lsp-mux for Serena (stdio→socket adapter). Phase 2 — If mismatch, build minimal thegent-lsp-proxy.
 
 ### 7.3 Child Death Handling: Where to Apply
 
-| Spawner | PR_SET_PDEATHSIG | Pipe | Subreaper |
-|---------|------------------|------|-----------|
-| Cursor/Claude (LSP) | IDE change | N/A | IDE change |
-| thegent run/bg | N/A (we are parent) | Optional for subagents | Possible in executor |
-| thegent serve (MCP) | For mounted tools | For subprocess tools | For MCP subprocesses |
-| process-compose | N/A | N/A | Use `is_daemon: true` |
+| Spawner             | PR_SET_PDEATHSIG    | Pipe                   | Subreaper             |
+| ------------------- | ------------------- | ---------------------- | --------------------- |
+| Cursor/Claude (LSP) | IDE change          | N/A                    | IDE change            |
+| thegent run/bg      | N/A (we are parent) | Optional for subagents | Possible in executor  |
+| thegent serve (MCP) | For mounted tools   | For subprocess tools   | For MCP subprocesses  |
+| process-compose     | N/A                 | N/A                    | Use `is_daemon: true` |
 
 ---
 
@@ -259,62 +259,62 @@ Editor 3 ─┘
 
 ### Phase 1: Quick Wins (1–2 weeks)
 
-| Task | Description | Effort |
-|------|-------------|--------|
-| RSS-aware prune | Kill highest-RSS orphans first | 8–12 |
-| Graceful SIGTERM | SIGTERM → wait → SIGKILL | 2–4 |
-| Zombie count metric | Report zombie count in `thegent ps` / prune dry-run | 4–6 |
+| Task                | Description                                         | Effort |
+| ------------------- | --------------------------------------------------- | ------ |
+| RSS-aware prune     | Kill highest-RSS orphans first                      | 8–12   |
+| Graceful SIGTERM    | SIGTERM → wait → SIGKILL                            | 2–4    |
+| Zombie count metric | Report zombie count in `thegent ps` / prune dry-run | 4–6    |
 
 ### Phase 2: Structural (2–4 weeks)
 
-| Task | Description | Effort |
-|------|-------------|--------|
-| LSP multiplexing POC | Evaluate lsp-mux + Serena; document integration path | 10–15 |
-| Pipe-based child death | Add to thegent-spawned subagents (optional) | 6–10 |
-| Per-project session dir | `THGENT_SESSION_DIR=./.thegent/sessions` | 6–10 |
+| Task                    | Description                                          | Effort |
+| ----------------------- | ---------------------------------------------------- | ------ |
+| LSP multiplexing POC    | Evaluate lsp-mux + Serena; document integration path | 10–15  |
+| Pipe-based child death  | Add to thegent-spawned subagents (optional)          | 6–10   |
+| Per-project session dir | `THGENT_SESSION_DIR=./.thegent/sessions`             | 6–10   |
 
 ### Phase 3: MTSP (1–2 months)
 
-| Task | Description | Effort |
-|------|-------------|--------|
-| Serena multiplexing | Implement or integrate; single daemon per project | 15–25 |
-| Per-project cgroups | Optional; Linux; user cgroups v2 | 15–20 |
-| Centralized child manager | One component for spawn/timeout/signal/wait | 20–30 |
+| Task                      | Description                                       | Effort |
+| ------------------------- | ------------------------------------------------- | ------ |
+| Serena multiplexing       | Implement or integrate; single daemon per project | 15–25  |
+| Per-project cgroups       | Optional; Linux; user cgroups v2                  | 15–20  |
+| Centralized child manager | One component for spawn/timeout/signal/wait       | 20–30  |
 
 ### Phase 4: Ecosystem (Ongoing)
 
-| Task | Owner | Notes |
-|------|-------|-------|
-| PR_SET_PDEATHSIG for LSP | Cursor/Claude | Upstream request |
-| Subreaper for IDE | Cursor/Claude | Upstream request |
-| Type checker sharing | Research | IDE extension config |
-| cc-status upstream feedback | Community | Anthropic |
+| Task                        | Owner         | Notes                |
+| --------------------------- | ------------- | -------------------- |
+| PR_SET_PDEATHSIG for LSP    | Cursor/Claude | Upstream request     |
+| Subreaper for IDE           | Cursor/Claude | Upstream request     |
+| Type checker sharing        | Research      | IDE extension config |
+| cc-status upstream feedback | Community     | Anthropic            |
 
 ---
 
 ## 9. Cross-References
 
-| Doc | Relevance |
-|-----|-----------|
-| [SWARM_PROCESS_AUTOMATION_DEEP_RESEARCH](./SWARM_PROCESS_AUTOMATION_DEEP_RESEARCH.md) | Full automation taxonomy, triggers, platform details |
-| [MEMORY_OPTIMIZATION_LONG_TERM_PLAN](./MEMORY_OPTIMIZATION_LONG_TERM_PLAN.md) | LSP triplet, cc-status, Spotlight; phased status |
-| [SWARM_OPTIMIZATION_SCHEDULING_DEEP_RESEARCH](./SWARM_OPTIMIZATION_SCHEDULING_DEEP_RESEARCH.md) | Scheduling theory, load balancing, industry systems |
-| [SYSTEM_RESOURCES_FD_CPU_DEEP_RESEARCH](./SYSTEM_RESOURCES_FD_CPU_DEEP_RESEARCH.md) | FD, CPU, threads, ports; sampling; Activity Monitor mapping |
+| Doc                                                                                             | Relevance                                                   |
+| ----------------------------------------------------------------------------------------------- | ----------------------------------------------------------- |
+| [SWARM_PROCESS_AUTOMATION_DEEP_RESEARCH](./SWARM_PROCESS_AUTOMATION_DEEP_RESEARCH.md)           | Full automation taxonomy, triggers, platform details        |
+| [MEMORY_OPTIMIZATION_LONG_TERM_PLAN](./MEMORY_OPTIMIZATION_LONG_TERM_PLAN.md)                   | LSP triplet, cc-status, Spotlight; phased status            |
+| [SWARM_OPTIMIZATION_SCHEDULING_DEEP_RESEARCH](./SWARM_OPTIMIZATION_SCHEDULING_DEEP_RESEARCH.md) | Scheduling theory, load balancing, industry systems         |
+| [SYSTEM_RESOURCES_FD_CPU_DEEP_RESEARCH](./SYSTEM_RESOURCES_FD_CPU_DEEP_RESEARCH.md)             | FD, CPU, threads, ports; sampling; Activity Monitor mapping |
 | [ADVANCED_STRATEGIES_AND_RESILIENCE_RESEARCH](./ADVANCED_STRATEGIES_AND_RESILIENCE_RESEARCH.md) | Retry, backoff, jitter, circuit breaker, bulkhead, fairness |
-| [PROCESS_OPTIMIZATION_PLAN](../plans/PROCESS_OPTIMIZATION_PLAN.md) | MTSP roadmap, tool migration |
-| [SWARM_PROCESS_OPTIMIZATIONS](../reference/SWARM_PROCESS_OPTIMIZATIONS.md) | User-facing quick reference |
+| [PROCESS_OPTIMIZATION_PLAN](../plans/PROCESS_OPTIMIZATION_PLAN.md)                              | MTSP roadmap, tool migration                                |
+| [SWARM_PROCESS_OPTIMIZATIONS](../reference/SWARM_PROCESS_OPTIMIZATIONS.md)                      | User-facing quick reference                                 |
 
 ---
 
 ## 10. Bibliography & Sources
 
-| Source | Topic |
-|--------|-------|
-| [thelinuxcode.com: Zombie vs Orphan vs Daemon](https://thelinuxcode.com/zombie-vs-orphan-vs-daemon-processes-a-practical-production-guide-for-2026/) | Process lifecycle, production playbook, debugging |
-| [tech-champion.com: Child process dies when parent exits](https://tech-champion.com/linux/how-to-ensure-a-child-process-dies-when-its-parent-exits/) | PR_SET_PDEATHSIG, pipe-based detection |
-| [man7.org: prctl(2)](https://man7.org/linux/man-pages/man2/prctl.2.html) | PR_SET_PDEATHSIG, PR_SET_CHILD_SUBREAPER |
-| [github.com/thefrontside/lspx](https://github.com/thefrontside/lspx) | LSP multiplexer, supervisor, multi-LSP merge |
-| [github.com/mrvnmyr/lsp-mux](https://github.com/mrvnmyr/lsp-mux) | Per-project, per-language LSP sharing; Unix sockets |
+| Source                                                                                                                                               | Topic                                               |
+| ---------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------- |
+| [thelinuxcode.com: Zombie vs Orphan vs Daemon](https://thelinuxcode.com/zombie-vs-orphan-vs-daemon-processes-a-practical-production-guide-for-2026/) | Process lifecycle, production playbook, debugging   |
+| [tech-champion.com: Child process dies when parent exits](https://tech-champion.com/linux/how-to-ensure-a-child-process-dies-when-its-parent-exits/) | PR_SET_PDEATHSIG, pipe-based detection              |
+| [man7.org: prctl(2)](https://man7.org/linux/man-pages/man2/prctl.2.html)                                                                             | PR_SET_PDEATHSIG, PR_SET_CHILD_SUBREAPER            |
+| [github.com/thefrontside/lspx](https://github.com/thefrontside/lspx)                                                                                 | LSP multiplexer, supervisor, multi-LSP merge        |
+| [github.com/mrvnmyr/lsp-mux](https://github.com/mrvnmyr/lsp-mux)                                                                                     | Per-project, per-language LSP sharing; Unix sockets |
 
 ---
 
@@ -470,14 +470,14 @@ Editor 3 ─┘
 **Extended on**: 2026-02-17
 **Extensions added**: Strategy implementation checklist (§11), Quick reference decision tree (§12)
 
-| Section | Added Content |
-|---------|---------------|
-| §11.1 | Process Lifecycle Checklist (Zombie, Orphan, Daemon) |
-| §11.2 | Prune Strategy Checklist (RSS-aware, Age-based, Graceful Shutdown, Process Group Kill) |
-| §11.3 | LSP Multiplexing Checklist (Research, POC, Implementation) |
-| §11.4 | Child Death Handling Checklist (PR_SET_PDEATHSIG, Pipe, Subreaper) |
-| §11.5 | Resource Isolation Checklist (cgroups, ulimit) |
-| §12 | Quick Reference Decision Tree for smart prune decisions |
+| Section | Added Content                                                                          |
+| ------- | -------------------------------------------------------------------------------------- |
+| §11.1   | Process Lifecycle Checklist (Zombie, Orphan, Daemon)                                   |
+| §11.2   | Prune Strategy Checklist (RSS-aware, Age-based, Graceful Shutdown, Process Group Kill) |
+| §11.3   | LSP Multiplexing Checklist (Research, POC, Implementation)                             |
+| §11.4   | Child Death Handling Checklist (PR_SET_PDEATHSIG, Pipe, Subreaper)                     |
+| §11.5   | Resource Isolation Checklist (cgroups, ulimit)                                         |
+| §12     | Quick Reference Decision Tree for smart prune decisions                                |
 
 ---
 

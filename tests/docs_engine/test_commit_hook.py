@@ -24,8 +24,20 @@ def test_worklog_created(tmp_path):
 def test_worklog_sequential_numbering(tmp_path):
     docs_root = tmp_path / "docs"
     db = tmp_path / "test.db"
-    p1 = write_worklog_entry(docs_root=docs_root, db_path=db, commit_sha="a", commit_msg="first", files_changed=[])
-    p2 = write_worklog_entry(docs_root=docs_root, db_path=db, commit_sha="b", commit_msg="second", files_changed=[])
+    p1 = write_worklog_entry(
+        docs_root=docs_root,
+        db_path=db,
+        commit_sha="a",
+        commit_msg="first",
+        files_changed=[],
+    )
+    p2 = write_worklog_entry(
+        docs_root=docs_root,
+        db_path=db,
+        commit_sha="b",
+        commit_msg="second",
+        files_changed=[],
+    )
     assert p1.name == "WL-0001.md"
     assert p2.name == "WL-0002.md"
 

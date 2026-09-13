@@ -14,7 +14,7 @@ Manages atomic blocks of operations with rollback support.
 
 ### Methods
 
-#### TransactionManager.__init__
+#### TransactionManager.**init**
 
 ```python
 __init__(self: Any, run_id: str)

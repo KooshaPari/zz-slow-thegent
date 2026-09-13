@@ -12,7 +12,7 @@ Optimize cost vs quality trade-offs.
 
 ### Methods
 
-#### CostQualityOptimizer.__init__
+#### CostQualityOptimizer.**init**
 
 ```python
 __init__(self: Any)

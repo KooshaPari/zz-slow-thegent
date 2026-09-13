@@ -64,10 +64,20 @@ class EnhancedError(Exception):
         console.print(f"[red]{self.context.error_message}[/red]\n")
 
         # What happened
-        console.print(Panel(f"[bold]What happened:[/bold]\n{self.context.what_happened}", border_style="red"))
+        console.print(
+            Panel(
+                f"[bold]What happened:[/bold]\n{self.context.what_happened}",
+                border_style="red",
+            )
+        )
 
         # Why it happened
-        console.print(Panel(f"[bold]Why it happened:[/bold]\n{self.context.why_it_happened}", border_style="yellow"))
+        console.print(
+            Panel(
+                f"[bold]Why it happened:[/bold]\n{self.context.why_it_happened}",
+                border_style="yellow",
+            )
+        )
 
         # How to fix
         fix_text = "\n".join(f"  • {fix}" for fix in self.context.how_to_fix)
@@ -154,7 +164,10 @@ def create_config_error(message: str, config_file: Path, suggestion: str | None 
 
 
 def create_runtime_error(
-    message: str, runtime: str, available_runtimes: list[str], suggestion: str | None = None
+    message: str,
+    runtime: str,
+    available_runtimes: list[str],
+    suggestion: str | None = None,
 ) -> InfraRuntimeError:
     """Create a runtime error with context."""
     context = ErrorContext(

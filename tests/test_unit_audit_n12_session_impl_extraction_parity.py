@@ -42,11 +42,8 @@ from unittest.mock import MagicMock
 
 import pytest
 
-from thegent.cli.commands import impl
-from thegent.cli.commands import session_impl
-from thegent.cli.commands import observability_impl
+from thegent.cli.commands import impl, observability_impl, session_impl
 from thegent.cli.services import observability as services_observability
-
 
 # ---------------------------------------------------------------------------
 # 1. session_impl module exists and exports the canonical 14 helpers
@@ -295,7 +292,10 @@ class TestWL125DispatchBridges:
 
         def _fake(**kwargs: Any) -> dict[str, Any]:
             captured.update(kwargs)
-            return {"trend_snapshot_health": "warning", "trend_snapshot_health_score": 81}
+            return {
+                "trend_snapshot_health": "warning",
+                "trend_snapshot_health_score": 81,
+            }
 
         monkeypatch.setattr(
             "thegent.cli.commands.impl.run_observe_helpers.classify_observe_summary_trend_health",
@@ -370,7 +370,11 @@ class TestWL125DispatchBridges:
         )
         result = impl._load_observe_summary_snapshots("sig", "{}", 5)
         assert result == [{"record_type": "observe_summary_snapshot"}]
-        assert captured == {"scope_signature": "sig", "scope_key_json": "{}", "limit": 5}
+        assert captured == {
+            "scope_signature": "sig",
+            "scope_key_json": "{}",
+            "limit": 5,
+        }
 
     # @trace FR-AUDIT-N+12-025
     def test_load_observe_summary_snapshots_legacy(self, tmp_path: Path) -> None:
@@ -472,7 +476,12 @@ class TestImplAllCleanedUp:
     def test_impl_all_excludes_undefined_dag_entries(self) -> None:
         """Stale dag entries (``_coerce_issue_types``, ``_check_dag_cycles``,
         ``dag_list_impl``, ``dag_raw_impl``) removed from ``__all__``."""
-        for name in ("_coerce_issue_types", "_check_dag_cycles", "dag_list_impl", "dag_raw_impl"):
+        for name in (
+            "_coerce_issue_types",
+            "_check_dag_cycles",
+            "dag_list_impl",
+            "dag_raw_impl",
+        ):
             assert name not in impl.__all__, f"stale entry {name} in impl.__all__"
 
     # @trace FR-AUDIT-N+12-032

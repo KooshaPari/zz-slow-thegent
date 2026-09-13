@@ -21,7 +21,7 @@ Manages multiple terminal panes.
 
 ### Methods
 
-#### TerminalManager.__init__
+#### TerminalManager.**init**
 
 ```python
 __init__(self: Any)
@@ -89,7 +89,7 @@ Widget that displays terminal output and executes commands.
 
 ### Methods
 
-#### TerminalPane.__init__
+#### TerminalPane.**init**
 
 ```python
 __init__(self: Any)

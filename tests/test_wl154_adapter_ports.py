@@ -25,6 +25,7 @@ import pytest
 
 from thegent.adapters import ports as ports_module
 from thegent.adapters.ports import (
+    PLUGIN_HOST,
     AdapterRegistry,
     AuthPort,
     CachePort,
@@ -33,7 +34,6 @@ from thegent.adapters.ports import (
     HTTPClientPort,
     LoadedPlugin,
     MetricsPort,
-    PLUGIN_HOST,
     PluginHost,
     PluginInterface,
     ProviderExecutionPort,
@@ -43,7 +43,6 @@ from thegent.adapters.ports import (
     register_driver,
     register_router,
 )
-
 
 # ---------------------------------------------------------------------------
 # Helpers

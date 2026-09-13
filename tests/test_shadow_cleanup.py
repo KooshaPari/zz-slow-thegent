@@ -10,13 +10,9 @@ Covers:
 
 from __future__ import annotations
 
-import shutil
 import time
 from pathlib import Path
 from unittest.mock import MagicMock, patch
-
-import pytest
-
 
 # ---------------------------------------------------------------------------
 # WL-036: mcp_prune shadow cleanup
@@ -172,7 +168,10 @@ class TestMcpPruneShadowIntegration:
             patch("thegent.orchestration.pruning.prune._prune_stale_shadow_and_logs") as mock_shadow,
             patch("thegent.orchestration.pruning.prune.list_tmux_panes", return_value=[]),
             patch("thegent.orchestration.pruning.prune.kill_process", return_value=True),
-            patch("thegent.orchestration.pruning.prune.is_orphan_by_ppid", return_value=True),
+            patch(
+                "thegent.orchestration.pruning.prune.is_orphan_by_ppid",
+                return_value=True,
+            ),
         ):
             mock_ps.return_value = MagicMock(stdout=fake_ps_output, returncode=0)
             mock_shadow.return_value = (0, 0)

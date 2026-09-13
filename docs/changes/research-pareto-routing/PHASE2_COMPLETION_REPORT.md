@@ -22,6 +22,7 @@ Phase 2 of the Pareto Routing with Hysteresis project has been **successfully co
 **Status**: COMPLETE
 
 **Deliverables**:
+
 - ✅ `crates/thegent-router/src/hysteresis.rs` - Full implementation (180+ lines)
 - ✅ `crates/thegent-router/tests/hysteresis_tests.rs` - 8 integration tests
 - ✅ `hysteresis.rs` unit tests - 15+ internal tests
@@ -36,6 +37,7 @@ The `HysteresisManager` struct implements 4-condition damping logic:
 4. **Large Risk Change** → Override dwell: Risk changes >0.20 override dwell time protection
 
 **Configuration**:
+
 ```rust
 band_width: 0.15              // ±15% around decision threshold
 dwell_time: 300s              // 5 minutes minimum hold
@@ -44,6 +46,7 @@ override_threshold: 0.20      // Risk change > 0.20 overrides
 ```
 
 **Test Coverage**: 23+ test cases covering:
+
 - Band boundary precision
 - Dwell time enforcement
 - Max dwell forcing re-evaluation
@@ -61,6 +64,7 @@ override_threshold: 0.20      // Risk change > 0.20 overrides
 **Status**: COMPLETE
 
 **Deliverables**:
+
 - ✅ Enhanced `crates/thegent-router/src/router.rs` with hysteresis
 - ✅ New method: `route_with_session()` for session-aware routing
 - ✅ `crates/thegent-router/tests/router_hysteresis_tests.rs` - 10 integration tests
@@ -80,10 +84,12 @@ pub fn route_with_session(&self, session_id: &str, factors: &RiskFactors) -> Rou
 ```
 
 **New Fields Added**:
+
 - `session_states: Mutex<HashMap<String, SessionState>>` - Per-session routing memory
 - `hysteresis_activations` counter - Tracks hysteresis-prevented switches
 
 **SessionState Structure**:
+
 ```rust
 struct SessionState {
     current_mode: RoutingMode,           // Current routing decision
@@ -93,6 +99,7 @@ struct SessionState {
 ```
 
 **Test Coverage**: 10 integration tests:
+
 - Single session routing stability
 - Multi-session isolation
 - Mode switching with hysteresis tracking
@@ -102,6 +109,7 @@ struct SessionState {
 - Metrics accumulation
 
 **Validation**:
+
 - ✅ Achieves 80±5% Lifecycle / 20±5% TheGent split (verified on 1000+ tasks)
 - ✅ Prevents oscillation: `<1 s`witch per 1000 tasks in steady state
 - ✅ Independent session states with no crosstalk
@@ -114,6 +122,7 @@ struct SessionState {
 **Status**: COMPLETE
 
 **Deliverables**:
+
 - ✅ `crates/thegent-router/src/python.rs` - Complete PyO3 module (300+ lines)
 - ✅ `Cargo.toml` configured with PyO3 dependencies and `cdylib` crate-type
 - ✅ Full Python class bindings for all Rust types
@@ -156,6 +165,7 @@ lifecycle_pct = router.lifecycle_percentage()
 ```
 
 **Python Class Bindings**:
+
 1. **PyParetoRouter** - Main router with full API
 2. **PyRiskCalculator** - Risk computation
 3. **PyRiskFactors** - Task parameters
@@ -165,6 +175,7 @@ lifecycle_pct = router.lifecycle_percentage()
 7. **PyComplexityLevel** - Enum (SIMPLE, MODERATE, COMPLEX, VERY_COMPLEX)
 
 **Test Coverage**: 11 FFI tests verifying:
+
 - Python instantiation of all Rust types
 - Risk calculation via FFI
 - Routing decisions via FFI
@@ -175,6 +186,7 @@ lifecycle_pct = router.lifecycle_percentage()
 - Lifecycle percentage calculations
 
 **Build Status**:
+
 - ✅ Builds with `PYO3_USE_ABI3_FORWARD_COMPATIBILITY=1`
 - ✅ Compatible with Python 3.14 (via ABI3 stable interface)
 - ✅ No warnings or errors in build
@@ -184,6 +196,7 @@ lifecycle_pct = router.lifecycle_percentage()
 ## Test Results Summary
 
 ### Unit Tests (49 tests)
+
 - ✅ hysteresis module: 15 tests (internal)
 - ✅ risk module: 18 tests
 - ✅ router module: 14 tests
@@ -191,12 +204,14 @@ lifecycle_pct = router.lifecycle_percentage()
 - **Result**: 49/49 PASSED (100%)
 
 ### Integration Tests (29 tests)
+
 - ✅ hysteresis_tests.rs: 8 tests
 - ✅ router_hysteresis_tests.rs: 10 tests
 - ✅ python_ffi_tests.rs: 11 tests
 - **Result**: 29/29 PASSED (100%)
 
 ### Overall Results
+
 - **Total Tests**: 78
 - **Passed**: 78 (100%)
 - **Failed**: 0
@@ -207,6 +222,7 @@ lifecycle_pct = router.lifecycle_percentage()
 ## Code Quality Metrics
 
 ### Coverage
+
 - **Hysteresis module**: 100% coverage
   - 15 unit tests covering all code paths
   - 8 integration tests covering real-world scenarios
@@ -220,12 +236,14 @@ lifecycle_pct = router.lifecycle_percentage()
   - Type conversion and round-trip verified
 
 ### Performance Benchmarks
+
 - **Hysteresis check**: `<1μs` (well under `<500μs` target)
 - **Router decision**: `<1ms` typical
 - **Test execution**: `<2s` for all 78 tests
 - **Memory usage**: Negligible (HashMap-based per-session state)
 
 ### Code Quality
+
 - ✅ No Clippy warnings
 - ✅ All tests pass consistently
 - ✅ No panics or unwraps in happy path
@@ -238,6 +256,7 @@ lifecycle_pct = router.lifecycle_percentage()
 ## Technical Highlights
 
 ### Hysteresis Logic Innovation
+
 The implementation features an optimized condition-check order that ensures **large risk changes override dwell protection even in the middle of the dwell window**. This was achieved by moving the large-change check ahead of the dwell-active check:
 
 ```rust
@@ -253,14 +272,18 @@ if time_since_switch < self.dwell_time {
 ```
 
 ### Session State Management
+
 The router maintains independent routing state per session via a thread-safe HashMap, enabling:
+
 - Isolated hysteresis per session
 - No cross-session interference
 - Accurate per-session metrics
 - Support for parallel session execution
 
 ### Python-Rust Integration
+
 Complete FFI binding with PyO3 provides:
+
 - Seamless Python-Rust interoperability
 - Type-safe conversions
 - Performance with minimal overhead
@@ -271,18 +294,21 @@ Complete FFI binding with PyO3 provides:
 ## Acceptance Criteria Verification
 
 ### P2.1 Acceptance Criteria
+
 - ✅ Dwell time enforcement prevents switches `<5min` (verified in tests)
 - ✅ Max dwell (30min) forces re-evaluation (verified in tests)
 - ✅ Large risk changes override dwell (verified with 0.22 > 0.20 override)
 - ✅ No stuck tasks in steady state (verified in oscillation tests)
 
 ### P2.2 Acceptance Criteria
+
 - ✅ Router respects hysteresis band (verified with 0.15 band test cases)
 - ✅ Dwell time prevents oscillation (`<1 s`witch/1000 tasks verified)
 - ✅ Metrics track activations (hysteresis_activations counter)
 - ✅ 80/20 split maintained (verified on 1000-task test runs)
 
 ### P2.3 Acceptance Criteria
+
 - ✅ `pip install -e .` works (with PYO3_USE_ABI3_FORWARD_COMPATIBILITY=1)
 - ✅ Can import `thegent_router` in Python (11 FFI tests confirm)
 - ✅ All Rust structs callable from Python (all types exposed and tested)
@@ -292,11 +318,13 @@ Complete FFI binding with PyO3 provides:
 ## Critical Fixes Applied
 
 ### Test Timing Issues (Resolved)
+
 **Issue**: Tests relying on precise `Instant::now()` timing were flaky due to clock resolution
 **Solution**: Refactored tests to use explicit duration calculations (e.g., `Instant::now() - Duration::from_secs(400)`)
 **Result**: All 78 tests now consistently pass
 
 ### Condition Check Order (Optimized)
+
 **Issue**: Large risk changes weren't overriding dwell in all cases
 **Solution**: Moved large-change check before dwell-active check
 **Result**: Correct behavioral semantics - large changes now properly override dwell
@@ -306,6 +334,7 @@ Complete FFI binding with PyO3 provides:
 ## Files Delivered
 
 ### Rust Implementation Files
+
 - `crates/thegent-router/src/hysteresis.rs` - HysteresisManager (180+ lines)
 - `crates/thegent-router/src/router.rs` - Enhanced ParetoRouter (400+ lines)
 - `crates/thegent-router/src/python.rs` - PyO3 bindings (300+ lines)
@@ -313,12 +342,14 @@ Complete FFI binding with PyO3 provides:
 - `crates/thegent-router/Cargo.toml` - PyO3 dependencies configured
 
 ### Test Files
+
 - `crates/thegent-router/tests/hysteresis_tests.rs` - 8 integration tests
 - `crates/thegent-router/tests/router_hysteresis_tests.rs` - 10 integration tests
 - `crates/thegent-router/tests/python_ffi_tests.rs` - 11 FFI tests
 - Integrated unit tests in respective modules - 49 tests
 
 ### Documentation
+
 - This completion report
 - Inline documentation in source code
 - Function-level documentation with examples
@@ -328,6 +359,7 @@ Complete FFI binding with PyO3 provides:
 ## Dependencies and Integration
 
 ### Cargo Dependencies
+
 ```toml
 [dependencies]
 serde = { version = "1.0", features = ["derive"] }
@@ -337,6 +369,7 @@ pyo3 = { version = "0.23", features = ["extension-module"] }
 ```
 
 ### Workspace Integration
+
 - ✅ Added to `crates/Cargo.toml` workspace members
 - ✅ Builds with workspace resolver v2
 - ✅ Compatible with other workspace crates
@@ -374,6 +407,7 @@ The Phase 2 implementation is complete and fully tested. All Phase 3 dependencie
 **Ready for Phase 3**: YES
 
 **Next Steps**:
+
 1. Initiate Phase 3: Integration (P3.1 - P3.4)
 2. Create Python wrapper examples
 3. Set up CI integration testing

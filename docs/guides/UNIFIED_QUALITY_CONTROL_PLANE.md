@@ -33,6 +33,7 @@ This guide describes the contract-first quality control plane used by `thegent`.
 - Promotion: move pilots to blocking after stability and flake budget review.
 
 Current wiring:
+
 - `.github/workflows/ci.yml` includes `quality-unified` job for `pull_request` and nightly `schedule`.
 - Gate policy contract: `contracts/unified-quality-gate-policy-v1.json`
 - Gate policy schema: `schemas/unified-quality-gate-policy-v1.schema.json`

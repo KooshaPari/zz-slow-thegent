@@ -14,6 +14,7 @@ import logging
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
+
 from thegent.integrations.base import SerializableMixin
 
 _log = logging.getLogger(__name__)

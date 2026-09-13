@@ -106,7 +106,7 @@ clean = merge_files(
     ours=Path("ours.py"),
     theirs=Path("theirs.py"),
     output=Path("merged.py"),
-    path_hint="src/parser.py",   # optional: helps mergiraf detect the language
+    path_hint="src/parser.py",  # optional: helps mergiraf detect the language
 )
 
 if not clean:
@@ -125,10 +125,10 @@ If mergiraf is not installed, `merge_files` automatically falls back to
 `git merge-file --diff3`. If `git` is also unavailable, it copies the `ours`
 version to `output` and returns `False`. The agent workflow is never blocked.
 
-| Tool available | Strategy |
-|----------------|----------|
-| mergiraf       | AST-aware 3-way merge |
-| git only       | `git merge-file --diff3` |
+| Tool available | Strategy                              |
+| -------------- | ------------------------------------- |
+| mergiraf       | AST-aware 3-way merge                 |
+| git only       | `git merge-file --diff3`              |
 | neither        | Copy `ours` to output, return `False` |
 
 ---
@@ -144,6 +144,7 @@ Python, Rust, TypeScript, JavaScript, Java, Go, C, C++, and more.
 
 **Mergiraf not recognized after install:**
 Ensure the binary is on your `PATH`:
+
 ```bash
 echo $PATH
 which mergiraf
@@ -153,6 +154,7 @@ which mergiraf
 Confirm `.gitattributes` is committed and contains `*.py merge=mergiraf`.
 
 **Debugging a bad merge:**
+
 ```bash
 mergiraf merge base.py ours.py theirs.py -o merged.py --debug /tmp/merge-debug/
 ```

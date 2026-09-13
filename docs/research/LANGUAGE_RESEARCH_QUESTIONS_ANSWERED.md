@@ -1,10 +1,11 @@
-<DONE>
----
+## <DONE>
+
 title: Language Research Questions - Answered (February 2026)
 date: 2026-02-23
 status: COMPLETE
 owner: claude-code
 tags: [research, mojo, rust, zig, carbon, go]
+
 ---
 
 # Language Research Questions: Answered (February 2026)
@@ -18,18 +19,21 @@ tags: [research, mojo, rust, zig, carbon, go]
 **Status:** Pre-1.0, not production-ready as of February 2026
 
 #### Details
+
 - **Current Version:** 0.25.1 (November 2025)
 - **1.0 Target:** H1 2026 (April-June 2026 estimated)
 - **Production Use Cases:** Modular internal AI workloads only; no public production backends found
 - **Compiler Status:** Closed-source (open-sourcing planned for 2026, not done yet)
 
 #### Stdlib Coverage
+
 - **Networking:** Minimal; relies on Python interop
 - **Database:** No native drivers; must use Python FFI (psycopg3, redis-py, neo4j-driver)
 - **Async I/O:** Planned; currently uses "fibers" (experimental), not yet integrated with type/memory model
 - **File System:** Incomplete; many APIs missing for phase 1
 
 #### Bottom Line
+
 **NOT production-ready for server-side workloads in 2026.** You would be on a pre-1.0 codebase with breaking changes expected. For a 14.5K LOC storage layer, this is too risky. Wait until late 2026 (1.0 release) + 6-12 months ecosystem maturation.
 
 ---
@@ -39,17 +43,20 @@ tags: [research, mojo, rust, zig, carbon, go]
 **Answer:** MLIR gives meaningful perf advantages **only for numeric/algorithmic workloads, not DB operations.**
 
 #### Where MLIR Shines
+
 - **JSON Parsing:** 6.5 GB/s on Apple Silicon, 52% faster than fastest Rust/C++ JSON parsers (mojo-json benchmark)
 - **Numeric computation:** Vector operations, SIMD optimization, ML kernels
 - **Compile time:** MLIR-based codegen is faster than rustc
 
 #### Where MLIR Doesn't Help (Your Use Case)
+
 - **PostgreSQL queries:** MLIR doesn't optimize network I/O or query execution; driver bottleneck is protocol/connection, not CPU
 - **Redis operations:** I/O-bound (network latency dominates); MLIR helps nothing
 - **Neo4j traversal:** Graph traversal I/O-bound; MLIR can't optimize server roundtrips
 - **JSON serialization:** MLIR helps parse incoming JSON, but most latency is DB query itself
 
 #### Performance Reality
+
 ```
 Mojo JSON parsing: 6.5 GB/s (MLIR helps ✅)
     BUT: your bottleneck is PostgreSQL query time (5-10ms), not JSON parsing (< 1ms)
@@ -69,11 +76,13 @@ Difference lost in the noise of 5ms+ DB query latency
 **Answer:** Yes, but with a performance cost
 
 #### Interop Mechanism
+
 - Mojo uses **CPython runtime without modification** for full ecosystem compatibility
 - You can import any third-party Python module directly from Mojo code
 - You can construct Python objects and call Python functions from Mojo
 
 #### Practical Pattern (2026)
+
 ```python
 # Mojo code calling Python
 from python import Python
@@ -88,11 +97,13 @@ result = conn.execute("SELECT * FROM users")
 ```
 
 #### Cost
+
 - **Every Mojo/Python boundary crossing incurs performance overhead**
 - For a DB layer making dozens of queries per HTTP request, this compounds
 - Measured impact: 2-4x slower than native drivers
 
 #### Coverage
+
 - SQLAlchemy: ✅ Callable via FFI (but slower)
 - psycopg3: ✅ Callable via FFI (but slower)
 - redis-py: ✅ Callable via FFI (but slower)
@@ -105,6 +116,7 @@ result = conn.execute("SELECT * FROM users")
 ### 4. Native Database Drivers: Do Mojo/Carbon Have Them?
 
 #### Mojo
+
 - **PostgreSQL:** ❌ No native driver (must use psycopg3 via FFI)
 - **Redis:** ❌ No native driver (must use redis-py via FFI)
 - **Neo4j:** ❌ No native driver (must use neo4j-driver via FFI)
@@ -112,6 +124,7 @@ result = conn.execute("SELECT * FROM users")
 **Status:** Ecosystem is Python interop-first; no one has written native Mojo drivers. Unlikely before late 2026.
 
 #### Carbon
+
 - **PostgreSQL:** ❌ No drivers at all
 - **Redis:** ❌ No drivers at all
 - **Neo4j:** ❌ No drivers at all
@@ -119,6 +132,7 @@ result = conn.execute("SELECT * FROM users")
 **Status:** MVP 0.1 not until Q4 2026; ecosystem nonexistent. Zero production usage possible.
 
 #### Zig (for comparison)
+
 - **PostgreSQL:** ✅ pg.zig (community-driven, works per Feb 2026 blog post)
 - **Redis:** ✅ Community libraries available
 - **Neo4j:** ❌ Not found; would need custom implementation
@@ -130,6 +144,7 @@ result = conn.execute("SELECT * FROM users")
 **Status:** Experimental. MVP 0.1 targeting end of 2026 (very ambitious goal).
 
 #### Key Facts
+
 - **Current Release:** Nightly experimental builds only
 - **0.1 MVP Target:** Q4 2026 (latest estimate; "very ambitious goal")
 - **1.0 Target:** After 2028
@@ -138,6 +153,7 @@ result = conn.execute("SELECT * FROM users")
 - **Ecosystem:** Zero (no frameworks, drivers, or libraries)
 
 #### Why It's Not Viable
+
 1. 0.1 MVP won't land until Dec 2026 at earliest (in 10 months)
 2. 1.0 is 2+ years away (after 2028)
 3. Even 0.1 MVP will be experimental, not production-ready
@@ -212,6 +228,7 @@ result = conn.execute("SELECT * FROM users")
 ## Summary Rankings (Storage Layer Specific)
 
 ### By Production Readiness
+
 1. **Rust** ✅ — 1.0 stable, full ecosystem
 2. **Go** ✅ — 1.0 stable, proven at scale
 3. **Zig** ⚠️ — 1.0 expected 2026 (uncertain timing)
@@ -219,6 +236,7 @@ result = conn.execute("SELECT * FROM users")
 5. **Carbon** ❌ — Pre-MVP, no ecosystem
 
 ### By Database Driver Quality
+
 1. **Rust** ✅ pgx (fastest, most complete)
 2. **Go** ✅ pgx/sqlc (excellent, proven)
 3. **Zig** ⚠️ pg.zig (works but community-driven)
@@ -226,6 +244,7 @@ result = conn.execute("SELECT * FROM users")
 5. **Carbon** ❌ None
 
 ### By Performance Ceiling
+
 1. **Rust** 🥇 C++ tier, zero-cost abstractions
 2. **Zig** 🥇 C++ tier, no GC
 3. **Go** 🥈 2-3x slower than Rust/Zig, GC pauses
@@ -233,6 +252,7 @@ result = conn.execute("SELECT * FROM users")
 5. **Carbon** ❌ Unknown, pre-MVP
 
 ### By Developer Velocity
+
 1. **Go** ✅ 1-2 weeks ramp-up, fast iteration
 2. **Mojo** ✅ Python syntax familiar, but FFI cost
 3. **Rust** ⚠️ 2-3 weeks ramp-up, powerful refactoring
@@ -240,6 +260,7 @@ result = conn.execute("SELECT * FROM users")
 5. **Carbon** ❌ Not viable
 
 ### By Python Interop
+
 1. **Mojo** ✅ Direct FFI to psycopg3/redis-py/etc
 2. **Go** ❌ No interop (separate process only)
 3. **Rust** ❌ No direct interop (would be slow)
@@ -251,6 +272,7 @@ result = conn.execute("SELECT * FROM users")
 ## Final Recommendation
 
 ### **PRIMARY: Rust + Axum/SQLx (Tier 1)**
+
 - **Maturity:** Production-ready, 1.0+ stable
 - **DB Drivers:** Best-in-class (pgx fastest)
 - **Performance:** C++ tier, no GC pauses
@@ -259,6 +281,7 @@ result = conn.execute("SELECT * FROM users")
 - **Timeline:** 6-10 weeks for 14.5K LOC
 
 ### **SECONDARY: Go + GORM/sqlc (Tier 1)**
+
 - **Maturity:** Production-ready, 1.0+ stable
 - **DB Drivers:** Excellent (pgx/sqlc)
 - **Performance:** 2-3x slower than Rust, but acceptable
@@ -267,6 +290,7 @@ result = conn.execute("SELECT * FROM users")
 - **Timeline:** 4-6 weeks for 14.5K LOC
 
 ### **CONDITIONAL: Zig (Tier 2, Wait for 1.0)**
+
 - **Maturity:** 1.0 expected 2026 (timing uncertain)
 - **DB Drivers:** Exists (pg.zig) but less mature
 - **Performance:** C++ tier, no GC
@@ -275,6 +299,7 @@ result = conn.execute("SELECT * FROM users")
 - **Timeline:** 8-12 weeks for 14.5K LOC
 
 ### **NOT READY: Mojo (Tier 3, Wait for Ecosystem)**
+
 - **Maturity:** Pre-1.0, breaking changes expected
 - **DB Drivers:** FFI only (2-4x slower)
 - **Performance:** FFI overhead kills benefits
@@ -283,6 +308,7 @@ result = conn.execute("SELECT * FROM users")
 - **Timeline:** 10+ weeks with FFI overhead
 
 ### **ELIMINATED: Carbon (Tier 4, Too Early)**
+
 - **Maturity:** MVP 0.1 in Q4 2026 (not production)
 - **DB Drivers:** None (zero ecosystem)
 - **Performance:** Unknown
@@ -295,24 +321,29 @@ result = conn.execute("SELECT * FROM users")
 ## Sources
 
 ### Mojo
+
 - [Mojo Roadmap](https://docs.modular.com/mojo/roadmap/) — 1.0 target H1 2026
 - [Path to Mojo 1.0](https://www.modular.com/blog/the-path-to-mojo-1-0) — Timeline + feature set
 - [Mojo Python Interop](https://docs.modular.com/mojo/manual/python/) — CPython FFI details
 - [Mojo JSON Parsing](https://atsentia.com/blog/mojo-json-beats-rust-cpp/) — 6.5 GB/s benchmark
 
 ### Carbon
+
 - [Carbon Roadmap](https://github.com/carbon-language/carbon-lang/blob/trunk/docs/project/roadmap.md) — 0.1 Q4 2026, 1.0 after 2028
-- [Wikipedia: Carbon](https://en.wikipedia.org/wiki/Carbon_(programming_language)) — Status + design goals
+- [Wikipedia: Carbon](<https://en.wikipedia.org/wiki/Carbon_(programming_language)>) — Status + design goals
 
 ### Zig
+
 - [Zig Web Backend Feb 2026](https://lalinsky.com/2026/02/19/six-months-of-yak-shaving-a-zig-web-backend-stack.html) — Real production backend
 - [Zig 1.0 Timeline](https://ziglang.org/devlog/2025/) — 2026 release expected
 
 ### Go
+
 - [Go Production Case Study](https://medium.com/@the_atomic_architect/we-ran-go-rust-postgresql-and-kubernetes-in-production-for-two-years-heres-what-actually-78d99b2b9020) — 2-year Go production report
 - [Go ORM Comparison 2026](https://encore.cloud/resources/go-orms) — pgx/sqlc/GORM comparison
 
 ### Rust
+
 - [Rust Async Evolution 2026](https://blog.jetbrains.com/rust/2026/02/17/the-evolution-of-async-rust-from-tokio-to-high-level-applications/) — Tokio ecosystem status
 - [Rust Web Frameworks 2026](https://aarambhdevhub.medium.com/rust-web-frameworks-in-2026-axum-vs-actix-web-rocket-vs-warp-vs-salvo-which-one-should-you-2db3792c79a2) — Axum v0.8.8 status
 

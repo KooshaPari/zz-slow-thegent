@@ -72,7 +72,9 @@ def no_agent_adapter() -> ACPServerAdapter:
 
 
 @pytest.fixture
-def adapter_with_mock_sessions(no_agent_adapter: ACPServerAdapter) -> tuple[ACPServerAdapter, MagicMock]:
+def adapter_with_mock_sessions(
+    no_agent_adapter: ACPServerAdapter,
+) -> tuple[ACPServerAdapter, MagicMock]:
     """Adapter paired with a mock backend wired into its SessionEndpoints."""
     backend = _make_backend()
     no_agent_adapter.session_endpoints = SessionEndpoints(backend=backend)
@@ -276,7 +278,13 @@ class TestRpcSessionAttach:
         backend.list.return_value = []
         backend.create.return_value = True
 
-        resp = await inst.handle_jsonrpc({"id": 1, "method": "session/attach", "params": {"session_name": "new-sess"}})
+        resp = await inst.handle_jsonrpc(
+            {
+                "id": 1,
+                "method": "session/attach",
+                "params": {"session_name": "new-sess"},
+            }
+        )
 
         assert "result" in resp
         assert resp["result"]["session_id"] == "new-sess"
@@ -289,7 +297,13 @@ class TestRpcSessionAttach:
         inst, backend = adapter_with_mock_sessions
         backend.list.return_value = [ZmxSession(name="old-sess", state="running")]
 
-        resp = await inst.handle_jsonrpc({"id": 1, "method": "session/attach", "params": {"session_name": "old-sess"}})
+        resp = await inst.handle_jsonrpc(
+            {
+                "id": 1,
+                "method": "session/attach",
+                "params": {"session_name": "old-sess"},
+            }
+        )
 
         assert resp["result"]["status"] == "attached"
 
@@ -339,7 +353,11 @@ class TestRpcSessionInspect:
         backend.capture.return_value = "alpha\nbeta\ngamma"
 
         resp = await inst.handle_jsonrpc(
-            {"id": 2, "method": "session/inspect", "params": {"session_id": "s1", "last_lines": 3}}
+            {
+                "id": 2,
+                "method": "session/inspect",
+                "params": {"session_id": "s1", "last_lines": 3},
+            }
         )
 
         assert "result" in resp
@@ -402,7 +420,11 @@ class TestRpcSessionSend:
         backend.send_keys = MagicMock(return_value=True)
 
         resp = await inst.handle_jsonrpc(
-            {"id": 3, "method": "session/send", "params": {"session_id": "s1", "text": "ls", "enter": True}}
+            {
+                "id": 3,
+                "method": "session/send",
+                "params": {"session_id": "s1", "text": "ls", "enter": True},
+            }
         )
 
         assert "result" in resp
@@ -415,7 +437,11 @@ class TestRpcSessionSend:
         no_agent_adapter.session_endpoints = SessionEndpoints(backend=backend)
 
         resp = await no_agent_adapter.handle_jsonrpc(
-            {"id": 3, "method": "session/send", "params": {"session_id": "s1", "text": "ls"}}
+            {
+                "id": 3,
+                "method": "session/send",
+                "params": {"session_id": "s1", "text": "ls"},
+            }
         )
 
         assert resp["result"]["success"] is False
@@ -426,7 +452,11 @@ class TestRpcSessionSend:
         no_agent_adapter.session_endpoints._backend_resolved = True
 
         resp = await no_agent_adapter.handle_jsonrpc(
-            {"id": 3, "method": "session/send", "params": {"session_id": "s", "text": "x"}}
+            {
+                "id": 3,
+                "method": "session/send",
+                "params": {"session_id": "s", "text": "x"},
+            }
         )
         assert resp["result"]["success"] is False
 
@@ -437,7 +467,13 @@ class TestRpcSessionSend:
         inst, backend = adapter_with_mock_sessions
         backend.send_keys = MagicMock(return_value=True)
 
-        await inst.handle_jsonrpc({"id": 3, "method": "session/send", "params": {"session_id": "s1", "text": "cmd"}})
+        await inst.handle_jsonrpc(
+            {
+                "id": 3,
+                "method": "session/send",
+                "params": {"session_id": "s1", "text": "cmd"},
+            }
+        )
 
         # With enter=False no newline should be appended
         backend.send_keys.assert_called_once_with("s1", "cmd")
@@ -467,7 +503,12 @@ class TestStarletteSessionRoutes:
 
         resp = client.post(
             "/rpc",
-            json={"jsonrpc": "2.0", "id": 10, "method": "session/attach", "params": {"session_name": "web-session"}},
+            json={
+                "jsonrpc": "2.0",
+                "id": 10,
+                "method": "session/attach",
+                "params": {"session_name": "web-session"},
+            },
         )
         assert resp.status_code == 200
         body = resp.json()
@@ -483,7 +524,12 @@ class TestStarletteSessionRoutes:
 
         resp = client.post(
             "/rpc",
-            json={"jsonrpc": "2.0", "id": 11, "method": "session/inspect", "params": {"session_id": "s1"}},
+            json={
+                "jsonrpc": "2.0",
+                "id": 11,
+                "method": "session/inspect",
+                "params": {"session_id": "s1"},
+            },
         )
         assert resp.status_code == 200
         assert resp.json()["result"]["lines"] == ["line-a", "line-b"]
@@ -516,7 +562,10 @@ class TestStarletteSessionRoutes:
         assert resp.status_code == 422
 
     def test_initialize_lists_session_methods(self, client: TestClient) -> None:
-        resp = client.post("/rpc", json={"jsonrpc": "2.0", "id": 0, "method": "initialize", "params": {}})
+        resp = client.post(
+            "/rpc",
+            json={"jsonrpc": "2.0", "id": 0, "method": "initialize", "params": {}},
+        )
         methods = resp.json()["result"]["capabilities"]["methods"]
         assert "session/attach" in methods
         assert "session/inspect" in methods

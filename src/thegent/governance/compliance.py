@@ -606,7 +606,11 @@ class RetentionEnforcer:
         if not policies:
             raise KeyError(f"No retention policies for tenant: {tenant_id}")
 
-        summary: dict = {"tenant_id": tenant_id, "purged_by_policy": {}, "total_purged": 0}
+        summary: dict = {
+            "tenant_id": tenant_id,
+            "purged_by_policy": {},
+            "total_purged": 0,
+        }
 
         for policy in policies:
             if policy.consent_required:
@@ -726,7 +730,11 @@ class AuditExporter:
         return export
 
     def reconcile_export(
-        self, *, expected_count: int, since_days: int | None = None, kind_filter: list | None = None
+        self,
+        *,
+        expected_count: int,
+        since_days: int | None = None,
+        kind_filter: list | None = None,
     ) -> dict:
         """Validate exported record count against an expected value."""
         exported = self.export_json(since_days=since_days, kind_filter=kind_filter)

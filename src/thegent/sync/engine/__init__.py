@@ -1,4 +1,5 @@
 """Stub module."""
+
 from __future__ import annotations
 
 from dataclasses import dataclass
@@ -8,6 +9,7 @@ from typing import Any
 @dataclass
 class SyncEngineConfig:
     """Sync engine configuration."""
+
     enabled: bool = True
     interval: int = 60
 

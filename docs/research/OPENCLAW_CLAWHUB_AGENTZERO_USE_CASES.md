@@ -11,11 +11,11 @@
 
 ## 1. System Overview
 
-| System | Focus | Key Capabilities |
-|--------|-------|------------------|
-| **OpenClaw** | Personal AI assistant | Multi-channel (WhatsApp, Telegram, Slack, Discord, etc.); Gateway WS control plane; Pi agent; SKILL.md skills; ClawHub registry |
-| **ClawHub** | Skill registry | Publish/browse AgentSkills; versioned like npm; vector search; `npx clawhub install <skill>` |
-| **Agent Zero** | Agentic framework | Multi-agent (superior/subordinate); MCP server+client; SKILL.md; computer-as-tool; memory/RAG; Docker |
+| System         | Focus                 | Key Capabilities                                                                                                                |
+| -------------- | --------------------- | ------------------------------------------------------------------------------------------------------------------------------- |
+| **OpenClaw**   | Personal AI assistant | Multi-channel (WhatsApp, Telegram, Slack, Discord, etc.); Gateway WS control plane; Pi agent; SKILL.md skills; ClawHub registry |
+| **ClawHub**    | Skill registry        | Publish/browse AgentSkills; versioned like npm; vector search; `npx clawhub install <skill>`                                    |
+| **Agent Zero** | Agentic framework     | Multi-agent (superior/subordinate); MCP server+client; SKILL.md; computer-as-tool; memory/RAG; Docker                           |
 
 ---
 
@@ -59,13 +59,14 @@ thegent is an **MCP server + agent hook system** for governing AI agent lifecycl
 
 **Idea:** Publish thegent skills to ClawHub; optionally pull skills from ClawHub.
 
-| Action | Effort | Value |
-|--------|--------|-------|
-| Publish `agent-orchestra`, `sitback-agent` to ClawHub | Low | Discoverability for OpenClaw/Agent Zero users |
-| Add `thegent skill install clawhub:<name>` (or similar) | Medium | Pull community skills into thegent |
-| Verify ClawHub skill format vs thegent SKILL.md | Low | Prerequisite for above |
+| Action                                                  | Effort | Value                                         |
+| ------------------------------------------------------- | ------ | --------------------------------------------- |
+| Publish `agent-orchestra`, `sitback-agent` to ClawHub   | Low    | Discoverability for OpenClaw/Agent Zero users |
+| Add `thegent skill install clawhub:<name>` (or similar) | Medium | Pull community skills into thegent            |
+| Verify ClawHub skill format vs thegent SKILL.md         | Low    | Prerequisite for above                        |
 
 **Next steps:**
+
 1. Inspect ClawHub skill bundle format (e.g. `npx clawhub install sonoscli` output).
 2. Compare with `skills/agent-orchestra/SKILL.md` structure.
 3. If compatible, document publish flow; consider CLI integration.
@@ -74,14 +75,15 @@ thegent is an **MCP server + agent hook system** for governing AI agent lifecycl
 
 **Idea:** Agent Zero connects to thegent MCP server; uses workflow tools.
 
-| thegent MCP Tool | Agent Zero Use |
-|------------------|----------------|
-| `thegent_do_next` | Get next actionable item from WORK_STREAM |
-| `thegent_run` / `thegent_bg` | Execute task via thegent routing |
-| `thegent_memory_add` | Record observations into audit log |
-| `thegent_memory_scrape_session` | Ingest user prompts/intents |
+| thegent MCP Tool                | Agent Zero Use                            |
+| ------------------------------- | ----------------------------------------- |
+| `thegent_do_next`               | Get next actionable item from WORK_STREAM |
+| `thegent_run` / `thegent_bg`    | Execute task via thegent routing          |
+| `thegent_memory_add`            | Record observations into audit log        |
+| `thegent_memory_scrape_session` | Ingest user prompts/intents               |
 
 **Flow:**
+
 ```
 Agent Zero agent
   → connects to thegent MCP (thegent serve)
@@ -92,6 +94,7 @@ Agent Zero agent
 ```
 
 **Next steps:**
+
 1. Document "Agent Zero + thegent" setup in `docs/guides/` or `docs/reference/`.
 2. Provide example Agent Zero config to add thegent MCP server.
 3. Optional: Add Agent Zero to `docs/reference/TOUCHPOINT_INTEGRATION_DEEP_DIVE.md`.
@@ -100,11 +103,11 @@ Agent Zero agent
 
 **Idea:** OpenClaw Pi agent could call thegent for governance.
 
-| Consideration | Assessment |
-|---------------|------------|
+| Consideration  | Assessment                                          |
+| -------------- | --------------------------------------------------- |
 | OpenClaw focus | Consumer channels (WhatsApp, Telegram); not dev/CLI |
-| thegent focus | Governance, hooks, Pareto routing |
-| Overlap | Low — different surfaces |
+| thegent focus  | Governance, hooks, Pareto routing                   |
+| Overlap        | Low — different surfaces                            |
 
 **Verdict:** No strong use case. OpenClaw users wanting thegent-style governance would need custom integration; not a natural fit.
 
@@ -112,24 +115,24 @@ Agent Zero agent
 
 ## 5. What Doesn't Fit thegent's Slice
 
-| Feature | Why |
-|---------|-----|
-| OpenClaw multi-channel | thegent is CLI/terminal, not messaging |
-| Agent Zero subagents | thegent uses WORK_STREAM + DAG, not superior/subordinate |
-| OpenClaw Gateway | thegent has its own MCP server |
-| Agent Zero memory/RAG | thegent has `thegent_memory_*`; different design |
+| Feature                | Why                                                      |
+| ---------------------- | -------------------------------------------------------- |
+| OpenClaw multi-channel | thegent is CLI/terminal, not messaging                   |
+| Agent Zero subagents   | thegent uses WORK_STREAM + DAG, not superior/subordinate |
+| OpenClaw Gateway       | thegent has its own MCP server                           |
+| Agent Zero memory/RAG  | thegent has `thegent_memory_*`; different design         |
 
 ---
 
 ## 6. Implementation Checklist
 
-| Task | File / Location | Priority |
-|------|-----------------|----------|
-| Verify ClawHub skill format | Manual inspection | P1 |
-| Document Agent Zero + thegent MCP setup | `docs/guides/` or `docs/reference/` | P1 |
-| Publish agent-orchestra to ClawHub (if format OK) | clawhub.ai | P2 |
-| Add ClawHub skill install path to thegent (optional) | `commands/` or `cli_impl.py` | P3 |
-| Update TOUCHPOINT_INTEGRATION_DEEP_DIVE with Agent Zero | `docs/reference/` | P3 |
+| Task                                                    | File / Location                     | Priority |
+| ------------------------------------------------------- | ----------------------------------- | -------- |
+| Verify ClawHub skill format                             | Manual inspection                   | P1       |
+| Document Agent Zero + thegent MCP setup                 | `docs/guides/` or `docs/reference/` | P1       |
+| Publish agent-orchestra to ClawHub (if format OK)       | clawhub.ai                          | P2       |
+| Add ClawHub skill install path to thegent (optional)    | `commands/` or `cli_impl.py`        | P3       |
+| Update TOUCHPOINT_INTEGRATION_DEEP_DIVE with Agent Zero | `docs/reference/`                   | P3       |
 
 ---
 
@@ -157,15 +160,18 @@ Agent Zero agent
 **Extended by:** Claude Code
 
 ### Changes Made
+
 1. Added use case patterns
 2. Added implementation examples
 3. Enhanced cross-references
 
 ### Cross-References Added
+
 - OPENCLAW_AGENTZERO_AS_MAIN_AGENT_RESEARCH.md
 - SWARM_PROCESS_AUTOMATION_DEEP_RESEARCH.md
 
 ### Practical Additions
+
 - Use case templates
 - Configuration examples
 

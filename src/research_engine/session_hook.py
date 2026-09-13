@@ -1,4 +1,5 @@
 """Session hook for research engine."""
+
 from __future__ import annotations
 
 

@@ -13,10 +13,10 @@ Traces to:
 from __future__ import annotations
 
 import json as _stdlib_json
-import orjson as json
 import tempfile
 from pathlib import Path
 
+import orjson as json
 import pytest
 
 from thegent.governance.federated_policy import (
@@ -26,12 +26,8 @@ from thegent.governance.federated_policy import (
 )
 from thegent.governance.federation import (
     JURISDICTION_PROFILES,
-    ArbitrationLog,
-    ConsentRelayStore,
     FederatedPolicyManager,
-    FederationManager,
     PolicyNamespace,
-    _apply_jurisdiction_overlay,
 )
 
 # ---------------------------------------------------------------------------
@@ -262,7 +258,15 @@ def test_load_from_file_registers_rules() -> None:
 @pytest.mark.unit
 def test_load_from_file_scope_case_insensitive() -> None:
     """FR-GOV-001: scope field in JSON is case-insensitive."""
-    data = [{"rule_id": "r1", "scope": "global", "condition": "flag", "action": "deny", "priority": 1}]
+    data = [
+        {
+            "rule_id": "r1",
+            "scope": "global",
+            "condition": "flag",
+            "action": "deny",
+            "priority": 1,
+        }
+    ]
     with tempfile.NamedTemporaryFile(mode="w", suffix=".json", delete=False) as fh:
         _stdlib_json.dump(data, fh)
         tmp_path = Path(fh.name)
@@ -456,7 +460,9 @@ def test_fed_003_profile_additive_preserves_base_fields(
 
 
 @pytest.mark.unit
-def test_fed_003_base_lower_risk_threshold_kept(fed_manager: FederatedPolicyManager) -> None:
+def test_fed_003_base_lower_risk_threshold_kept(
+    fed_manager: FederatedPolicyManager,
+) -> None:
     # @trace FR-FED-003
     base = {"risk_threshold": 0.3}
     result = fed_manager.apply_jurisdiction_constraints(base, "EU")
@@ -472,7 +478,9 @@ def test_fed_003_apply_by_profile_name(fed_manager: FederatedPolicyManager) -> N
 
 
 @pytest.mark.unit
-def test_fed_003_unknown_region_returns_base(fed_manager: FederatedPolicyManager) -> None:
+def test_fed_003_unknown_region_returns_base(
+    fed_manager: FederatedPolicyManager,
+) -> None:
     # @trace FR-FED-003
     base = {"risk_threshold": 0.9}
     result = fed_manager.apply_jurisdiction_constraints(base, "UNKNOWN")
@@ -513,7 +521,9 @@ def test_fed_004_relay_returns_artifact(fed_manager: FederatedPolicyManager) -> 
 
 
 @pytest.mark.unit
-def test_fed_004_relay_has_sha256_signature(fed_manager: FederatedPolicyManager) -> None:
+def test_fed_004_relay_has_sha256_signature(
+    fed_manager: FederatedPolicyManager,
+) -> None:
     # @trace FR-FED-004
     ns1 = PolicyNamespace("org1", "pay", "prod")
     ns2 = PolicyNamespace("org2", "billing", "prod")
@@ -578,7 +588,9 @@ def test_fed_005_arbitration_applied_flag(fed_manager: FederatedPolicyManager) -
 
 
 @pytest.mark.unit
-def test_fed_005_empty_policies_returns_empty(fed_manager: FederatedPolicyManager) -> None:
+def test_fed_005_empty_policies_returns_empty(
+    fed_manager: FederatedPolicyManager,
+) -> None:
     # @trace FR-FED-005
     assert fed_manager.arbitrate_conflict([]) == {}
 
@@ -612,7 +624,9 @@ def test_fed_005_require_audit_or(fed_manager: FederatedPolicyManager) -> None:
 
 
 @pytest.mark.unit
-def test_fed_006_empty_base_dir_reports_empty(fed_manager: FederatedPolicyManager) -> None:
+def test_fed_006_empty_base_dir_reports_empty(
+    fed_manager: FederatedPolicyManager,
+) -> None:
     # @trace FR-FED-006
     health = fed_manager.get_federation_health()
     assert health["status"] == "empty"

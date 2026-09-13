@@ -7,6 +7,7 @@
 **Why**: Current monolithic task handling lacks cost efficiency and risk differentiation. A Pareto-based approach routes 80% of tasks through fast, low-cost automated execution while reserving complex tasks for thorough planning and review. Hysteresis prevents oscillation when task risk hovers near the routing threshold.
 
 **Impact**:
+
 - 30-50% cost savings on routine tasks
 - Faster turnaround for low-complexity work
 - Higher quality for high-risk decisions
@@ -41,14 +42,15 @@
 
 ### Routing Strategy
 
-| Risk Level | % Tasks | Route | Execution Model | Cost Profile |
-|------------|---------|-------|-----------------|--------------|
-| **Low Risk** | 80% | Lifecycle Loop | Fast, automated | $0.01–0.05/task |
-| **High Risk** | 20% | The Gent Loop | Plan/Operator/Reviewer | $0.10–0.50/task |
+| Risk Level    | % Tasks | Route          | Execution Model        | Cost Profile    |
+| ------------- | ------- | -------------- | ---------------------- | --------------- |
+| **Low Risk**  | 80%     | Lifecycle Loop | Fast, automated        | $0.01–0.05/task |
+| **High Risk** | 20%     | The Gent Loop  | Plan/Operator/Reviewer | $0.10–0.50/task |
 
 ### Risk Classification
 
 **Low-Risk Indicators** (default to Lifecycle):
+
 - Simple, well-defined refactoring
 - Straightforward requirements
 - No external dependencies
@@ -56,6 +58,7 @@
 - Non-security-critical
 
 **High-Risk Indicators** (require The Gent):
+
 - Complex architecture changes
 - Ambiguous or novel requirements
 - External API/service dependencies
@@ -84,6 +87,7 @@ When in [0.3, 0.7] band:
 ```
 
 **Benefits**:
+
 - Prevents task thrashing
 - Reduces re-routing overhead
 - Stabilizes execution plans
@@ -159,14 +163,14 @@ Task → Risk Assessment → Hysteresis Check → Route Selection
 
 ## Success Metrics
 
-| Metric | Target | Validation |
-|--------|--------|------------|
-| Low-risk task %age | 80% ± 5% | Metrics dashboard |
-| Cost/task (low-risk) | <$0.05 | Cost tracking |
-| Cost/task (high-risk) | <$0.50 | Cost tracking |
-| Oscillation events | <1 per 10M tasks | Audit logs |
-| Route stability (dwell) | >95% respect dwell | Hysteresis logs |
-| Latency (routing) | <1ms p99 | Performance metrics |
+| Metric                  | Target             | Validation          |
+| ----------------------- | ------------------ | ------------------- |
+| Low-risk task %age      | 80% ± 5%           | Metrics dashboard   |
+| Cost/task (low-risk)    | <$0.05             | Cost tracking       |
+| Cost/task (high-risk)   | <$0.50             | Cost tracking       |
+| Oscillation events      | <1 per 10M tasks   | Audit logs          |
+| Route stability (dwell) | >95% respect dwell | Hysteresis logs     |
+| Latency (routing)       | <1ms p99           | Performance metrics |
 
 ---
 
@@ -185,12 +189,12 @@ Task → Risk Assessment → Hysteresis Check → Route Selection
 
 ### Integration Points
 
-| System | Integration | Purpose |
-|--------|-------------|---------|
-| Task Dispatch | Read risk metadata | Risk assessment |
-| Cost Tracking | Emit route cost tags | Cost attribution |
-| Monitoring | Publish routing metrics | Observability |
-| Audit Log | Write routing decisions | Compliance |
+| System        | Integration             | Purpose          |
+| ------------- | ----------------------- | ---------------- |
+| Task Dispatch | Read risk metadata      | Risk assessment  |
+| Cost Tracking | Emit route cost tags    | Cost attribution |
+| Monitoring    | Publish routing metrics | Observability    |
+| Audit Log     | Write routing decisions | Compliance       |
 
 ---
 
@@ -198,41 +202,45 @@ Task → Risk Assessment → Hysteresis Check → Route Selection
 
 ### Technical Risks
 
-| Risk | Impact | Mitigation |
-|------|--------|-----------|
-| Risk calculation fails | Medium | Default to The Gent (safe) |
-| Hysteresis causes stuck tasks | Low | Max dwell 30min + force re-eval |
-| Incorrect risk classification | Medium | Feedback loop, manual override |
-| Threshold oscillation | Low | Hysteresis band prevents |
+| Risk                          | Impact | Mitigation                      |
+| ----------------------------- | ------ | ------------------------------- |
+| Risk calculation fails        | Medium | Default to The Gent (safe)      |
+| Hysteresis causes stuck tasks | Low    | Max dwell 30min + force re-eval |
+| Incorrect risk classification | Medium | Feedback loop, manual override  |
+| Threshold oscillation         | Low    | Hysteresis band prevents        |
 
 ### Operational Risks
 
-| Risk | Impact | Mitigation |
-|------|--------|-----------|
-| Cost explosion (wrong route) | High | Hard budget cap, auto-throttle |
-| Performance degradation | Medium | SLO monitoring, circuit breaker |
-| User confusion | Low | Clear routing docs, transparency |
+| Risk                         | Impact | Mitigation                       |
+| ---------------------------- | ------ | -------------------------------- |
+| Cost explosion (wrong route) | High   | Hard budget cap, auto-throttle   |
+| Performance degradation      | Medium | SLO monitoring, circuit breaker  |
+| User confusion               | Low    | Clear routing docs, transparency |
 
 ---
 
 ## Implementation Phases
 
 ### Phase 1: Foundation (Week 1)
+
 - Risk calculator implementation
 - Basic routing logic without hysteresis
 - Unit tests
 
 ### Phase 2: Hysteresis (Week 2)
+
 - Hysteresis manager
 - Dwell time enforcement
 - Integration tests
 
 ### Phase 3: Integration (Week 3)
+
 - Integrate with Economic Governance
 - Audit logging
 - Performance tuning
 
 ### Phase 4: Validation (Week 4)
+
 - Production deployment (canary)
 - Metrics collection
 - Feedback loop

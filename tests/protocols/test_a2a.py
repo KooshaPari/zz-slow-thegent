@@ -6,7 +6,6 @@
 from __future__ import annotations
 
 import orjson as json
-
 import pytest
 
 from thegent.protocols.a2a import (

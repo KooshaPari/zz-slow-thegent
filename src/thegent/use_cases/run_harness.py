@@ -2,7 +2,6 @@
 
 import os
 from pathlib import Path
-from typing import Optional
 
 from thegent.adapters.claude_harness import ClaudeHarness
 from thegent.adapters.codex_harness import CodexHarness
@@ -25,15 +24,15 @@ class RunHarness:
     def run_interactive(
         self,
         model_alias: str,
-        provider: Optional[str] = None,
-        resume: Optional[str] = None,
-        prompt: Optional[str] = None,
+        provider: str | None = None,
+        resume: str | None = None,
+        prompt: str | None = None,
         *,
-        cd: Optional[Path] = None,
+        cd: Path | None = None,
         print_mode: bool = False,
         debug: bool = False,
-        add_dir: Optional[list[str]] = None,
-        sandbox: Optional[str] = None,
+        add_dir: list[str] | None = None,
+        sandbox: str | None = None,
         full_auto: bool = False,
         search: bool = True,
         no_alt_screen: bool = False,
@@ -83,9 +82,9 @@ class RunHarness:
         self,
         model: str,
         prompt: str,
-        cd: Optional[Path] = None,
-        add_dir: Optional[list[str]] = None,
-        sandbox: Optional[str] = None,
+        cd: Path | None = None,
+        add_dir: list[str] | None = None,
+        sandbox: str | None = None,
     ) -> None:
         """Headless execution (subclass override for Codex-specific logic)."""
         raise NotImplementedError("Use case must handle exec mode per harness")
@@ -93,10 +92,10 @@ class RunHarness:
     def _build_passthrough_args(
         self,
         *,
-        cd: Optional[Path] = None,
+        cd: Path | None = None,
         debug: bool = False,
-        add_dir: Optional[list[str]] = None,
-        sandbox: Optional[str] = None,
+        add_dir: list[str] | None = None,
+        sandbox: str | None = None,
         full_auto: bool = False,
         search: bool = True,
         no_alt_screen: bool = False,
@@ -120,20 +119,20 @@ class RunHarness:
             args.append("--no-alt-screen")
         return args
 
-    def run_native(self, args: Optional[list[str]] = None) -> None:
+    def run_native(self, args: list[str] | None = None) -> None:
         """Bypass proxy and run native binary directly."""
         binary_path = self.harness.find_binary(require_native=True)
         if not binary_path:
-            self.console.print(
-                f"[red]Error: native '{self.harness.get_binary_name()}' CLI not found.[/red]"
-            )
+            self.console.print(f"[red]Error: native '{self.harness.get_binary_name()}' CLI not found.[/red]")
             raise SystemExit(1)
 
         cmd = [binary_path]
         if args:
             cmd.extend(args)
 
-        self.console.print(f"[bold green]Starting native {self.harness.get_binary_name()} (proxy bypass)...[/bold green]")
+        self.console.print(
+            f"[bold green]Starting native {self.harness.get_binary_name()} (proxy bypass)...[/bold green]"
+        )
         os.execvpe(cmd[0], cmd, os.environ.copy())
 
     def ensure_harness_installed(self) -> str:

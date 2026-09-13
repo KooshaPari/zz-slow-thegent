@@ -27,12 +27,14 @@ This audit identifies **extensive existing research** on multi-agent systems, hi
 **Three Coordination Strategies:**
 
 #### Strategy 1: Hierarchical (Leader-Follower)
+
 - Centralized coordination with leader agent
 - Leader assigns tasks to workers
 - Parallel execution of assignments
 - **Recommendation**: Use for multi-view orchestration
 
 #### Strategy 2: Peer-to-Peer (Bidding)
+
 - Decentralized coordination via bidding
 - Tasks announced to all agents
 - Collect bids (cost estimates)
@@ -40,12 +42,14 @@ This audit identifies **extensive existing research** on multi-agent systems, hi
 - **Recommendation**: Use for normal load scenarios
 
 #### Strategy 3: Hybrid (Adaptive)
+
 - Adaptive strategy switching based on load
 - High load (>0.7) → Hierarchical
 - Normal load → P2P
 - **Recommendation**: Use for trace's view orchestration
 
 **Key Patterns:**
+
 - DAG-based execution with TopologicalSorter
 - PERT/Monte Carlo planning
 - State persistence via SQLAlchemy
@@ -59,29 +63,31 @@ This audit identifies **extensive existing research** on multi-agent systems, hi
 ### 2.1 SmolGents Architecture (smolgents/docs/ARCHITECTURE.md)
 
 **Execution Modes:**
+
 - **Sequential**: Tasks executed one after another
 - **Hierarchical**: Based on agent hierarchy (managers first)
 - **Custom**: User-defined execution logic
 
 **CrewExecutor Hierarchical Implementation:**
+
 ```python
 def execute_hierarchical(self):
     # Sort agents by role (managers first)
-    sorted_agents = sorted(agents, key=lambda a: (
-        0 if "manager" in a.role.lower() or "lead" in a.role.lower() else 1,
-        a.role
-    ))
+    sorted_agents = sorted(
+        agents, key=lambda a: (0 if "manager" in a.role.lower() or "lead" in a.role.lower() else 1, a.role)
+    )
 
     # Assign priority tasks to managers
     manager_agents = [a for a in sorted_agents if "manager" in a.role.lower()]
     worker_agents = [a for a in sorted_agents if a not in manager_agents]
 
     # Assign tasks hierarchically
-    priority_tasks = tasks[:len(manager_agents)]
-    regular_tasks = tasks[len(manager_agents):]
+    priority_tasks = tasks[: len(manager_agents)]
+    regular_tasks = tasks[len(manager_agents) :]
 ```
 
 **Key Components:**
+
 - TaskExecutor: Synchronous task execution
 - CrewExecutor: Multi-agent orchestration
 - RouterManager: Unified routing interface
@@ -95,27 +101,32 @@ def execute_hierarchical(self):
 **Hierarchical Blackboard System:**
 
 #### Global Blackboard
+
 - Stores high-level goals and "Global Constants"
 - Orchestrated by Commander Swarm (high-level planners)
 
 #### Regional Blackboards (Swarms)
+
 - Each functional swarm has its own regional blackboard
 - Agents coordinate locally using Stigmergy
 - Modify regional `WORK_STREAM.md`
 
 **Multi-Swarm Communication:**
+
 - Stigmergic Handoff via "Handoff Artifacts"
 - Frontend Swarm completes UI → posts Conformance_Artifact
 - Security Swarm detects artifact → triggers Pen-Test Cycle
 - Indirect coordination allows independent scaling
 
 **Scaling Mechanics:**
+
 - Redis databases partitioned by Swarm_ID
 - Global Shared Log provides unified audit trail
 - Each swarm has Adaptive Concurrency Controller
 - Hysteresis per swarm (different scales per swarm)
 
 **Federated Governance:**
+
 - Global Policies: Mandatory for all swarms
 - Local Policies: Specific to swarm
 
@@ -126,6 +137,7 @@ def execute_hierarchical(self):
 ### 3.1 File-Based IPC Protocol (heliosShield/compass_artifact_wf-0975646a-645a-4dd9-82ca-5d096f2e188a_text_markdown.md)
 
 **Core Architecture:**
+
 - File-based IPC on tmpfs (`/dev/shm/`)
 - Maildir pattern for lock-free message queues
 - Atomic `rename()` for crash-safe operations
@@ -133,6 +145,7 @@ def execute_hierarchical(self):
 - `inotifywait` for event-driven reactivity
 
 **Coordination Directory Structure:**
+
 ```
 /dev/shm/agent-coord/
 ├── registry/           # Agent capability manifests (JSON)
@@ -148,12 +161,14 @@ def execute_hierarchical(self):
 ```
 
 **Key Patterns:**
+
 - Task claiming via atomic `mkdir`
 - Heartbeat-based failure detection
 - Intent broadcasting prevents conflicts
 - Directory-level partitioning (assign `src/auth/` to one agent)
 
 **Message Envelope Format:**
+
 ```json
 {
   "id": "msg-uuid",
@@ -173,6 +188,7 @@ def execute_hierarchical(self):
 ### 3.2 Agent Mesh Research (heliosShield/agent-mesh-research-r3-consensus-escalation-2026.md)
 
 **Claude Code Agent Teams:**
+
 - Team lead coordinates, spawns teammates
 - Teammates work independently in own context windows
 - Shared task list with dependency tracking
@@ -180,12 +196,14 @@ def execute_hierarchical(self):
 - Split pane mode via tmux/iTerm2
 
 **TeammateTool Operations (13 total):**
+
 - spawnTeam, spawn, write, broadcast, read, list, shutdown
 - Directory: `~/.claude/teams/{name}/inboxes/{agent}.json`
 - Task files: `~/.claude/tasks/{team-name}/{n}.json`
 - `blockedBy` dependency tracking with auto-unblock
 
 **Mesh Layer Interface Pattern:**
+
 - Treat each CLI process as atomic unit
 - Don't reach into CLI internal hierarchies
 - Use standard coordination primitives
@@ -199,12 +217,14 @@ def execute_hierarchical(self):
 **CRITICAL**: Operate as strategic manager, not worker. Delegate to subagents.
 
 **Keep in Main Context:**
+
 - User intent and requirements
 - Strategic decisions and trade-offs
 - Summaries of completed work
 - Critical architectural knowledge
 
 **Delegate to Subagents:**
+
 - File exploration (>3 files)
 - Pattern searches across codebase
 - Multi-file implementations
@@ -212,6 +232,7 @@ def execute_hierarchical(self):
 - Test execution
 
 **Subagent Swarm (Async Orchestration):**
+
 - Call task agents async (don't block)
 - Max 50 concurrent task agents at a time
 - Work in between (planning, monitoring)
@@ -233,12 +254,14 @@ def execute_hierarchical(self):
 **Multi-Agent Task Decomposition Framework:**
 
 **Problem:** Single monolithic agents struggle with:
+
 - Token limit constraints
 - Role overload (reasoning, planning, tool selection, execution)
 - Inefficient resource utilization
 - Error propagation from early missteps
 
 **Solution:** Decompose into specialized agents:
+
 ```
 User Query
     ↓
@@ -254,27 +277,32 @@ User Query
 ```
 
 **Key Design Principles:**
+
 1. **Solvability**: Each subtask independently solvable
 2. **Completeness**: All aspects decomposed
 3. **Non-Redundancy**: No overlapping responsibilities
 
 **Results:**
+
 - Knapsack problem: 3% → 95% accuracy
 - Task assignment: Up to 100% accuracy
 - Travel planning: 2.92% → 42.68% success rate (14x improvement)
 
 **Model Routing Economics:**
+
 - Phi-3 (local): ~$0.10/1M tokens
 - Claude 3.5 Haiku: ~$0.80/1M tokens
 - Claude 3.5 Sonnet: ~$3.00/1M tokens
 - GPT-4 Turbo: ~$10.00/1M tokens
 
 **Routing Decision Framework:**
+
 1. Lightweight Complexity Estimation (5-10 tokens)
 2. k-Nearest Neighbor Matching
 3. Hierarchical Filtering
 
 **Cost Savings:**
+
 - Anthropic: 27% cost savings within Q1
 - Industry average: 30-50% cost reduction
 - Up to 80% savings with routing + prompt optimization
@@ -286,35 +314,37 @@ User Query
 ### 5.1 Kimaki Multi-Agent System (kimaki/COMPREHENSIVE-MULTI-AGENT-PLAN.md)
 
 **Agent Pool Registry:**
+
 ```typescript
 interface AgentRegistration {
-  id: string
-  name: string
-  pronunciation: string
-  role: string
-  personality: string
-  systemPrompt: string
-  voice: string
-  expertise: string[]
+  id: string;
+  name: string;
+  pronunciation: string;
+  role: string;
+  personality: string;
+  systemPrompt: string;
+  voice: string;
+  expertise: string[];
 
   // Project assignments
   projects: Array<{
-    projectId: string
-    role: 'primary' | 'secondary' | 'consultant'
-    permissions: string[]
-  }>
+    projectId: string;
+    role: "primary" | "secondary" | "consultant";
+    permissions: string[];
+  }>;
 
   // Collaboration rules
   collaborationRules: {
-    canInitiateWith: string[]
-    mustConsultWith: string[]
-    ignoreAgents: string[]
-    autoJoinTopics: string[]
-  }
+    canInitiateWith: string[];
+    mustConsultWith: string[];
+    ignoreAgents: string[];
+    autoJoinTopics: string[];
+  };
 }
 ```
 
 **Project Context Manager:**
+
 - Maintains context for each project
 - Assigned agents with roles (lead, contributor, consultant)
 - Conversation history
@@ -322,6 +352,7 @@ interface AgentRegistration {
 - Integrations (GitHub, Jira, Slack)
 
 **Conversation Rules Engine:**
+
 - Ignore Rules (when agents should NOT interact)
 - Collaboration Rules (when agents SHOULD interact)
 - Moderation Rules (user as moderator)
@@ -332,6 +363,7 @@ interface AgentRegistration {
 ### 5.2 Teammates Research (thegent/docs/research/TEAMMATES_RESEARCH_AND_PLAN.md)
 
 **Claude Code Teammates Characteristics:**
+
 - Delegation: Primary orchestrator breaks down tasks
 - Specialization: Teammates have specific roles
 - Collaboration: Multiple agents work on same codebase
@@ -340,23 +372,27 @@ interface AgentRegistration {
 **Implementation Strategy: "Teammate Swarm"**
 
 **Orchestration (Thegent Layer):**
+
 - `thegent sitback` as primary entry point
 - `thegent teammates list`: Discover specialized personas
 - `thegent teammates delegate <persona> <prompt>`: Spawn async sub-agent
 - Status Tracking: Use EvidenceGraph to link actions
 
 **Coordination (heliosShield Layer):**
+
 - Git Parallelism (Phase 6): Multiple agents commit concurrently
 - Smart Merge (Phase 7): AST-aware conflict resolution
 - Task Coordination (Phase 11): Filesystem-native task queue
 
 **Handoff Protocol (Task Tool Layer):**
+
 - `<Thought>`: Internal reasoning
 - `<Action>`: The delegated task
 - `<Result>`: The teammate's output
 - `<Handoff>`: Explicit transfer with confidence scores
 
 **TeammateManager Implementation:**
+
 - `list_personas()`: Discover teammates from agent markdown files
 - `delegate()`: Delegate task to teammate
 - `update_status()`: Update delegation status
@@ -369,6 +405,7 @@ interface AgentRegistration {
 ### 6.1 heliosShield Coordination (heliosShield/docs/architecture/)
 
 **System Hierarchy:**
+
 ```
 heliosShield/
 ├── bin/harness                 # Dispatcher + CLI
@@ -382,11 +419,13 @@ heliosShield/
 ```
 
 **Runtime Planes:**
+
 - Control Plane: Rule resolution, strategy dispatch, queue arbitration
 - Data Plane: Command execution, cache read/write, lock handoff
 - State Plane: `var/cache`, `var/locks`, `var/coordination`
 
 **Strategies:**
+
 - `coalesce`: Dedupe + cache (flock + cache files)
 - `queue`: Bounded parallelism (ticket queue + slot locks)
 - `priority_q`: Explicit priority (queue alias)
@@ -429,6 +468,7 @@ heliosShield/
 ### 7.2 Implementation Gaps
 
 **What Exists:**
+
 - ✅ Coordination strategies (hierarchical, P2P, hybrid)
 - ✅ Execution modes (sequential, hierarchical, custom)
 - ✅ File-based IPC protocol
@@ -436,6 +476,7 @@ heliosShield/
 - ✅ Team/swarm concepts
 
 **What's Missing:**
+
 - ❌ Unified hierarchy manager implementation
 - ❌ Explicit parent-child relationship tracking
 - ❌ Team management API

@@ -8,7 +8,6 @@ Traces to: FR-SYNC-001 through FR-SYNC-020
 
 from __future__ import annotations
 
-import textwrap
 from typing import TYPE_CHECKING
 from unittest.mock import MagicMock, patch
 
@@ -440,11 +439,25 @@ class TestSyncAll:
         cmd = _make_cmd(tmp_path)
         with (
             patch.object(
-                cmd, "sync_work_stream", return_value=OperationResult("work-stream", SyncOperationStatus.SUCCESS)
+                cmd,
+                "sync_work_stream",
+                return_value=OperationResult("work-stream", SyncOperationStatus.SUCCESS),
             ),
-            patch.object(cmd, "sync_config", return_value=OperationResult("config", SyncOperationStatus.SUCCESS)),
-            patch.object(cmd, "sync_agents", return_value=OperationResult("agents", SyncOperationStatus.SUCCESS)),
-            patch.object(cmd, "sync_hooks", return_value=OperationResult("hooks", SyncOperationStatus.SUCCESS)),
+            patch.object(
+                cmd,
+                "sync_config",
+                return_value=OperationResult("config", SyncOperationStatus.SUCCESS),
+            ),
+            patch.object(
+                cmd,
+                "sync_agents",
+                return_value=OperationResult("agents", SyncOperationStatus.SUCCESS),
+            ),
+            patch.object(
+                cmd,
+                "sync_hooks",
+                return_value=OperationResult("hooks", SyncOperationStatus.SUCCESS),
+            ),
         ):
             result = cmd.sync_all()
         assert isinstance(result, SyncResult)
@@ -455,11 +468,25 @@ class TestSyncAll:
         cmd = _make_cmd(tmp_path)
         with (
             patch.object(
-                cmd, "sync_work_stream", return_value=OperationResult("work-stream", SyncOperationStatus.SUCCESS)
+                cmd,
+                "sync_work_stream",
+                return_value=OperationResult("work-stream", SyncOperationStatus.SUCCESS),
             ),
-            patch.object(cmd, "sync_config", return_value=OperationResult("config", SyncOperationStatus.SUCCESS)),
-            patch.object(cmd, "sync_agents", return_value=OperationResult("agents", SyncOperationStatus.SUCCESS)),
-            patch.object(cmd, "sync_hooks", return_value=OperationResult("hooks", SyncOperationStatus.SUCCESS)),
+            patch.object(
+                cmd,
+                "sync_config",
+                return_value=OperationResult("config", SyncOperationStatus.SUCCESS),
+            ),
+            patch.object(
+                cmd,
+                "sync_agents",
+                return_value=OperationResult("agents", SyncOperationStatus.SUCCESS),
+            ),
+            patch.object(
+                cmd,
+                "sync_hooks",
+                return_value=OperationResult("hooks", SyncOperationStatus.SUCCESS),
+            ),
         ):
             result = cmd.sync_all()
         assert result.success is True
@@ -473,9 +500,21 @@ class TestSyncAll:
                 "sync_work_stream",
                 return_value=OperationResult("work-stream", SyncOperationStatus.FAILED, errors=["bad"]),
             ),
-            patch.object(cmd, "sync_config", return_value=OperationResult("config", SyncOperationStatus.SUCCESS)),
-            patch.object(cmd, "sync_agents", return_value=OperationResult("agents", SyncOperationStatus.SUCCESS)),
-            patch.object(cmd, "sync_hooks", return_value=OperationResult("hooks", SyncOperationStatus.SUCCESS)),
+            patch.object(
+                cmd,
+                "sync_config",
+                return_value=OperationResult("config", SyncOperationStatus.SUCCESS),
+            ),
+            patch.object(
+                cmd,
+                "sync_agents",
+                return_value=OperationResult("agents", SyncOperationStatus.SUCCESS),
+            ),
+            patch.object(
+                cmd,
+                "sync_hooks",
+                return_value=OperationResult("hooks", SyncOperationStatus.SUCCESS),
+            ),
         ):
             result = cmd.sync_all()
         assert result.success is False
@@ -501,11 +540,25 @@ class TestSyncAll:
         cmd = _make_cmd(tmp_path)
         with (
             patch.object(
-                cmd, "sync_work_stream", return_value=OperationResult("work-stream", SyncOperationStatus.SUCCESS)
+                cmd,
+                "sync_work_stream",
+                return_value=OperationResult("work-stream", SyncOperationStatus.SUCCESS),
             ),
-            patch.object(cmd, "sync_config", return_value=OperationResult("config", SyncOperationStatus.SUCCESS)),
-            patch.object(cmd, "sync_agents", return_value=OperationResult("agents", SyncOperationStatus.SUCCESS)),
-            patch.object(cmd, "sync_hooks", return_value=OperationResult("hooks", SyncOperationStatus.SUCCESS)),
+            patch.object(
+                cmd,
+                "sync_config",
+                return_value=OperationResult("config", SyncOperationStatus.SUCCESS),
+            ),
+            patch.object(
+                cmd,
+                "sync_agents",
+                return_value=OperationResult("agents", SyncOperationStatus.SUCCESS),
+            ),
+            patch.object(
+                cmd,
+                "sync_hooks",
+                return_value=OperationResult("hooks", SyncOperationStatus.SUCCESS),
+            ),
         ):
             result = cmd.sync_all()
         serialised = json.dumps(result.to_dict().decode())
@@ -516,11 +569,25 @@ class TestSyncAll:
         cmd = _make_cmd(tmp_path)
         with (
             patch.object(
-                cmd, "sync_work_stream", return_value=OperationResult("work-stream", SyncOperationStatus.SUCCESS)
+                cmd,
+                "sync_work_stream",
+                return_value=OperationResult("work-stream", SyncOperationStatus.SUCCESS),
             ),
-            patch.object(cmd, "sync_config", return_value=OperationResult("config", SyncOperationStatus.SUCCESS)),
-            patch.object(cmd, "sync_agents", return_value=OperationResult("agents", SyncOperationStatus.SUCCESS)),
-            patch.object(cmd, "sync_hooks", return_value=OperationResult("hooks", SyncOperationStatus.SUCCESS)),
+            patch.object(
+                cmd,
+                "sync_config",
+                return_value=OperationResult("config", SyncOperationStatus.SUCCESS),
+            ),
+            patch.object(
+                cmd,
+                "sync_agents",
+                return_value=OperationResult("agents", SyncOperationStatus.SUCCESS),
+            ),
+            patch.object(
+                cmd,
+                "sync_hooks",
+                return_value=OperationResult("hooks", SyncOperationStatus.SUCCESS),
+            ),
         ):
             result = cmd.sync_all()
         assert result.finished_at != ""

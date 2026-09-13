@@ -3,10 +3,10 @@
 from __future__ import annotations
 
 import hashlib
-import orjson as json
 from datetime import UTC, datetime
 from typing import TYPE_CHECKING
 
+import orjson as json
 import pytest
 import typer
 
@@ -43,7 +43,12 @@ def _build_audit(total: int, healthy: int, *, owner: str = "alice") -> dict:
             "contract_only": 0,
             "untracked": 0,
             "strict_checks_enabled": False,
-            "health": {"healthy": healthy, "warning": warning, "error": error, "missing": 0},
+            "health": {
+                "healthy": healthy,
+                "warning": warning,
+                "error": error,
+                "missing": 0,
+            },
         },
     }
 
@@ -352,7 +357,8 @@ class TestHealthPolicyAndTrend:
             "issue_counts": {"left": 3, "right": 3},
         }
         snapshot_path.write_text(
-            "\n".join([json.dumps(oldest).decode(), json.dumps(latest).decode()]) + "\n", encoding="utf-8"
+            "\n".join([json.dumps(oldest).decode(), json.dumps(latest).decode()]) + "\n",
+            encoding="utf-8",
         )
 
         trend = cli_impl.session_contract_health_trend_impl(
@@ -485,7 +491,13 @@ class TestHealthPolicyAndTrend:
             "payload_signature": {},
         }
         snapshot_path.write_text(
-            "\n".join([json.dumps(previous_snapshot).decode(), json.dumps(latest_snapshot).decode()]) + "\n",
+            "\n".join(
+                [
+                    json.dumps(previous_snapshot).decode(),
+                    json.dumps(latest_snapshot).decode(),
+                ]
+            )
+            + "\n",
             encoding="utf-8",
         )
         monkeypatch.setattr(

@@ -3,14 +3,16 @@
 from __future__ import annotations
 
 import time
-from unittest.mock import patch
 
 import pytest
 
 from thegent.infra.progress import SpinnerThrottle, throttled_spinner
-from thegent.ux.explanations import EXPLANATION_MAP, explain_exception, explain_exit_code
+from thegent.ux.explanations import (
+    EXPLANATION_MAP,
+    explain_exception,
+    explain_exit_code,
+)
 from thegent.ux.kpis.traffic import progress_bar, progress_bar_with_eta
-
 
 # ---------------------------------------------------------------------------
 # SpinnerThrottle

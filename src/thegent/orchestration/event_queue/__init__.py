@@ -292,7 +292,7 @@ class SubAgentEventQueue:
             with self._lock:
                 evt.clear()
 
-    async def stream(self, timeout: float) -> "AsyncIterator[Any]":
+    async def stream(self, timeout: float) -> AsyncIterator[Any]:
         """Yield events indefinitely until ``timeout`` seconds of inactivity.
 
         Raises
@@ -311,13 +311,13 @@ class SubAgentEventQueue:
         while True:
             remaining = deadline - loop.time()
             if remaining <= 0:
-                raise asyncio.TimeoutError(
+                raise TimeoutError(
                     f"SubAgentEventQueue.stream: no event within {timeout}s",
                 )
             try:
                 event = await asyncio.wait_for(self.get(), timeout=remaining)
-            except asyncio.TimeoutError as exc:
-                raise asyncio.TimeoutError(
+            except TimeoutError as exc:
+                raise TimeoutError(
                     f"SubAgentEventQueue.stream: no event within {timeout}s",
                 ) from exc
             yield event
@@ -360,9 +360,7 @@ def _is_sub_agent_event_like(event: Any) -> bool:
     """
     if event is None:
         return False
-    if hasattr(event, "request_id") and hasattr(event, "event_type") and hasattr(event, "payload"):
-        return True
-    return False
+    return bool(hasattr(event, "request_id") and hasattr(event, "event_type") and hasattr(event, "payload"))
 
 
 # ---------------------------------------------------------------------------

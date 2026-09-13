@@ -1,8 +1,8 @@
 """Tests for `thegent git` command options."""
 
-import pytest
 from unittest.mock import MagicMock, patch
 
+import pytest
 from typer.testing import CliRunner
 
 from thegent.cli.apps.main import app
@@ -59,8 +59,14 @@ def test_git_commit_respects_lock_options() -> None:
     fake_manager.update_ref_cas.return_value = True
 
     with (
-        patch("thegent.cli.commands.cli_git.GitParallelismManager", return_value=fake_manager),
-        patch("thegent.cli.commands.cli_git.subprocess.check_output", return_value="old-hash\n"),
+        patch(
+            "thegent.cli.commands.cli_git.GitParallelismManager",
+            return_value=fake_manager,
+        ),
+        patch(
+            "thegent.cli.commands.cli_git.subprocess.check_output",
+            return_value="old-hash\n",
+        ),
     ):
         result = runner.invoke(
             app,

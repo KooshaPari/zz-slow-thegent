@@ -31,8 +31,18 @@ def test_worktree_governance_refresh_rebases_onto_remote_ref(tmp_path: Path) -> 
 
     local_file = active_path / "local-change.txt"
     local_file.write_text("local\n", encoding="utf-8")
-    subprocess.run(["git", "add", local_file.name], cwd=active_path, check=True, capture_output=True)
-    subprocess.run(["git", "commit", "-q", "-m", "local"], cwd=active_path, check=True, capture_output=True)
+    subprocess.run(
+        ["git", "add", local_file.name],
+        cwd=active_path,
+        check=True,
+        capture_output=True,
+    )
+    subprocess.run(
+        ["git", "commit", "-q", "-m", "local"],
+        cwd=active_path,
+        check=True,
+        capture_output=True,
+    )
 
     refresh = run_script(repo_root, "refresh", anchor, "--remote", "origin", "--ref", "origin/canary")
     assert refresh.returncode == 0, refresh.stderr
@@ -60,8 +70,18 @@ def test_worktree_governance_refresh_uses_default_remote_branch(tmp_path: Path) 
 
     local_file = active_path / "local-change.txt"
     local_file.write_text("local\n", encoding="utf-8")
-    subprocess.run(["git", "add", local_file.name], cwd=active_path, check=True, capture_output=True)
-    subprocess.run(["git", "commit", "-q", "-m", "local"], cwd=active_path, check=True, capture_output=True)
+    subprocess.run(
+        ["git", "add", local_file.name],
+        cwd=active_path,
+        check=True,
+        capture_output=True,
+    )
+    subprocess.run(
+        ["git", "commit", "-q", "-m", "local"],
+        cwd=active_path,
+        check=True,
+        capture_output=True,
+    )
 
     refresh = run_script(repo_root, "refresh", anchor, "--remote", "origin")
     assert refresh.returncode == 0, refresh.stderr
@@ -86,8 +106,18 @@ def test_worktree_governance_refresh_supports_merge_strategy(tmp_path: Path) -> 
 
     local_file = active_path / "local-change.txt"
     local_file.write_text("local\n", encoding="utf-8")
-    subprocess.run(["git", "add", local_file.name], cwd=active_path, check=True, capture_output=True)
-    subprocess.run(["git", "commit", "-q", "-m", "local"], cwd=active_path, check=True, capture_output=True)
+    subprocess.run(
+        ["git", "add", local_file.name],
+        cwd=active_path,
+        check=True,
+        capture_output=True,
+    )
+    subprocess.run(
+        ["git", "commit", "-q", "-m", "local"],
+        cwd=active_path,
+        check=True,
+        capture_output=True,
+    )
 
     refresh = run_script(
         repo_root,
@@ -130,9 +160,32 @@ def test_worktree_governance_refresh_fails_on_dirty_worktree(tmp_path: Path) -> 
 @pytest.mark.parametrize(
     ("args", "expected_error"),
     [
-        (("refresh", "fix-mcp-timeout", "--remote", "bad/remote", "--ref", "origin/canary"), "invalid remote name"),
-        (("refresh", "fix-mcp-timeout", "--remote", "origin", "--ref", "origin/missing"), "invalid upstream ref"),
-        (("refresh", "fix-mcp-timeout", "--remote", "origin", "--strategy", "bad"), "invalid strategy"),
+        (
+            (
+                "refresh",
+                "fix-mcp-timeout",
+                "--remote",
+                "bad/remote",
+                "--ref",
+                "origin/canary",
+            ),
+            "invalid remote name",
+        ),
+        (
+            (
+                "refresh",
+                "fix-mcp-timeout",
+                "--remote",
+                "origin",
+                "--ref",
+                "origin/missing",
+            ),
+            "invalid upstream ref",
+        ),
+        (
+            ("refresh", "fix-mcp-timeout", "--remote", "origin", "--strategy", "bad"),
+            "invalid strategy",
+        ),
     ],
 )
 def test_worktree_governance_refresh_rejects_invalid_inputs(

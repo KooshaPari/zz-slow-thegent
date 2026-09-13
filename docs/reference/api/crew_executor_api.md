@@ -12,7 +12,7 @@ Execute crew tasks.
 
 ### Methods
 
-#### CrewExecutor.__init__
+#### CrewExecutor.**init**
 
 ```python
 __init__(self: Any, crew: Any)

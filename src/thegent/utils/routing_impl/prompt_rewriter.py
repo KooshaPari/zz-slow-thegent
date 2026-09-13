@@ -150,9 +150,7 @@ def _rule_matches(rule: RewriteRule, provider: str, model: str) -> bool:
     """
     if rule.providers and provider not in rule.providers:
         return False
-    if rule.models and not any(model.startswith(prefix) for prefix in rule.models):
-        return False
-    return True
+    return not (rule.models and not any(model.startswith(prefix) for prefix in rule.models))
 
 
 def rewrite_prompt(

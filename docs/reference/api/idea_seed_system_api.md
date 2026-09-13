@@ -12,7 +12,7 @@ System for detecting and storing idea seeds.
 
 ### Methods
 
-#### IdeaSeedSystem.__init__
+#### IdeaSeedSystem.**init**
 
 ```python
 __init__(self: Any, storage_path: Any)

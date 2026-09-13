@@ -34,23 +34,23 @@ All providers use CLIProxyAPIPlus native config. Provider/model definitions are 
 
 All providers use `thegent cliproxy login <provider>`. **OAuth (preferred):** browser opens → log in → tokens stored. **API-key (minimax, nim only):** open URL → prompt for key → save to config. Use `--force` to re-enter.
 
-| Provider    | Command                    | Notes                          |
-|-------------|----------------------------|--------------------------------|
-| Claude      | `thegent cliproxy login claude`   | Anthropic OAuth                |
-| Codex       | `thegent cliproxy login codex`    | OpenAI OAuth                   |
-| Gemini      | `thegent cliproxy login gemini`   | Google OAuth                   |
-| Copilot     | `thegent cliproxy login copilot`  | GitHub Copilot OAuth           |
-| Antigravity | `thegent cliproxy login antigravity` | Antigravity OAuth          |
-| Qwen        | `thegent cliproxy login qwen`     | Alibaba Qwen OAuth             |
-| iFlow       | `thegent cliproxy login iflow`    | iFlow OAuth (GLM)              |
-| Kimi        | `thegent cliproxy login kimi`     | Moonshot Kimi OAuth            |
-| Kiro        | `thegent cliproxy login kiro`     | AWS CodeWhisperer (Google OAuth) |
-| Kiro AWS    | `thegent cliproxy login kiro-aws` | Kiro via AWS Builder ID        |
-| Kiro import | `thegent cliproxy login kiro-import` | Import from Kiro IDE       |
-| Roo         | `thegent cliproxy login roo` / `thegent login roo`     | Roo Code Cloud (runs `roo auth login`)    |
-| Kilo        | `thegent cliproxy login kilo` / `thegent login kilo`     | Kilo auth wizard (runs `kilo auth`)  |
-| MiniMax     | `thegent cliproxy login minimax`                        | API-key only (no OAuth)                  |
-| NIM         | `thegent cliproxy login nim`                            | NVIDIA NIM API-key only (no OAuth)       |
+| Provider    | Command                                              | Notes                                  |
+| ----------- | ---------------------------------------------------- | -------------------------------------- |
+| Claude      | `thegent cliproxy login claude`                      | Anthropic OAuth                        |
+| Codex       | `thegent cliproxy login codex`                       | OpenAI OAuth                           |
+| Gemini      | `thegent cliproxy login gemini`                      | Google OAuth                           |
+| Copilot     | `thegent cliproxy login copilot`                     | GitHub Copilot OAuth                   |
+| Antigravity | `thegent cliproxy login antigravity`                 | Antigravity OAuth                      |
+| Qwen        | `thegent cliproxy login qwen`                        | Alibaba Qwen OAuth                     |
+| iFlow       | `thegent cliproxy login iflow`                       | iFlow OAuth (GLM)                      |
+| Kimi        | `thegent cliproxy login kimi`                        | Moonshot Kimi OAuth                    |
+| Kiro        | `thegent cliproxy login kiro`                        | AWS CodeWhisperer (Google OAuth)       |
+| Kiro AWS    | `thegent cliproxy login kiro-aws`                    | Kiro via AWS Builder ID                |
+| Kiro import | `thegent cliproxy login kiro-import`                 | Import from Kiro IDE                   |
+| Roo         | `thegent cliproxy login roo` / `thegent login roo`   | Roo Code Cloud (runs `roo auth login`) |
+| Kilo        | `thegent cliproxy login kilo` / `thegent login kilo` | Kilo auth wizard (runs `kilo auth`)    |
+| MiniMax     | `thegent cliproxy login minimax`                     | API-key only (no OAuth)                |
+| NIM         | `thegent cliproxy login nim`                         | NVIDIA NIM API-key only (no OAuth)     |
 
 **Flow (CLIProxy providers):** Run the command → browser opens → log in → tokens stored in `~/.cli-proxy-api`. CLIProxyAPIPlus merges them into config on first proxy start.
 
@@ -62,20 +62,20 @@ All providers use `thegent cliproxy login <provider>`. **OAuth (preferred):** br
 
 Use this table when choosing harness commands (`clode`, `dex`, `roid`) and cliproxy login targets.
 
-| Alias | Typical model ID | Primary provider route(s) | Login command |
-|-------|------------------|---------------------------|---------------|
-| `clode` (default, no model arg) | `gemini-3-flash` | `gemini` flash path | `thegent cliproxy login gemini` |
-| `dex` (default, no model arg) | `gemini-3-flash` | `gemini` flash path | `thegent cliproxy login gemini` |
-| `dex` (explicit model alias) | `gpt-5.3-codex` | `codex` (non-spark) | `thegent cliproxy login codex` |
-| `high` / `xhigh` | `gpt-5.3-codex-high` / `gpt-5.3-codex-xhigh` | `codex` (available on `clode` + `dex`) | `thegent cliproxy login codex` |
-| `haiku` | `claude-haiku-4.5` | `claude`, `antigravity`, `codex`, `kiro` | `thegent cliproxy login claude` |
-| `opus` | `claude-opus-4.6` | `claude`, `antigravity`, `kiro` | `thegent cliproxy login claude` |
-| `sonnet` | `anthropic/claude-sonnet-4-20250514` | `openrouter` | `thegent cliproxy login claude` (or `openrouter` route config) |
-| `flash` | `gemini-3-flash` | `gemini` (or proxy-mapped alternatives) | `thegent cliproxy login gemini` |
-| `mini` | `gpt-5-mini` | `codex`/OpenAI-compatible routes | `thegent cliproxy login codex` |
-| `glm` | `glm-5` | `iflow`, `kilo`, `nim`, `minimax` (catalog dependent) | `thegent cliproxy login iflow` / `nim` / `minimax` |
-| `max` | `minimax-m2.5` | `minimax` | `thegent cliproxy login minimax` |
-| `composer` | Cursor/OpenAI-compatible model alias | `cursor` + configured backend route | `thegent cliproxy login cursor` |
+| Alias                           | Typical model ID                             | Primary provider route(s)                             | Login command                                                  |
+| ------------------------------- | -------------------------------------------- | ----------------------------------------------------- | -------------------------------------------------------------- |
+| `clode` (default, no model arg) | `gemini-3-flash`                             | `gemini` flash path                                   | `thegent cliproxy login gemini`                                |
+| `dex` (default, no model arg)   | `gemini-3-flash`                             | `gemini` flash path                                   | `thegent cliproxy login gemini`                                |
+| `dex` (explicit model alias)    | `gpt-5.3-codex`                              | `codex` (non-spark)                                   | `thegent cliproxy login codex`                                 |
+| `high` / `xhigh`                | `gpt-5.3-codex-high` / `gpt-5.3-codex-xhigh` | `codex` (available on `clode` + `dex`)                | `thegent cliproxy login codex`                                 |
+| `haiku`                         | `claude-haiku-4.5`                           | `claude`, `antigravity`, `codex`, `kiro`              | `thegent cliproxy login claude`                                |
+| `opus`                          | `claude-opus-4.6`                            | `claude`, `antigravity`, `kiro`                       | `thegent cliproxy login claude`                                |
+| `sonnet`                        | `anthropic/claude-sonnet-4-20250514`         | `openrouter`                                          | `thegent cliproxy login claude` (or `openrouter` route config) |
+| `flash`                         | `gemini-3-flash`                             | `gemini` (or proxy-mapped alternatives)               | `thegent cliproxy login gemini`                                |
+| `mini`                          | `gpt-5-mini`                                 | `codex`/OpenAI-compatible routes                      | `thegent cliproxy login codex`                                 |
+| `glm`                           | `glm-5`                                      | `iflow`, `kilo`, `nim`, `minimax` (catalog dependent) | `thegent cliproxy login iflow` / `nim` / `minimax`             |
+| `max`                           | `minimax-m2.5`                               | `minimax`                                             | `thegent cliproxy login minimax`                               |
+| `composer`                      | Cursor/OpenAI-compatible model alias         | `cursor` + configured backend route                   | `thegent cliproxy login cursor`                                |
 
 Check current resolved routing before long runs:
 
@@ -89,26 +89,26 @@ thegent list-models --provider minimax
 
 For local Ollama routing, thegent normalizes these provider aliases to canonical `ollama` before route/model resolution:
 
-| Input alias | Canonical provider |
-|-------------|--------------------|
-| `ollama-local` | `ollama` |
-| `local-ollama` | `ollama` |
-| `ollama-localhost` | `ollama` |
-| `ollama@localhost` | `ollama` |
+| Input alias        | Canonical provider |
+| ------------------ | ------------------ |
+| `ollama-local`     | `ollama`           |
+| `local-ollama`     | `ollama`           |
+| `ollama-localhost` | `ollama`           |
+| `ollama@localhost` | `ollama`           |
 
-Normalization is case-insensitive and trims surrounding whitespace, so values like ` OLLAMA-LOCAL ` and `local-ollama` resolve identically.
+Normalization is case-insensitive and trims surrounding whitespace, so values like `OLLAMA-LOCAL` and `local-ollama` resolve identically.
 
 ## WL-118: `thegent doctor` Ollama remediation playbook
 
 Use `thegent doctor` to validate local Ollama routing prerequisites before running `--provider ollama`.
 
-| Doctor output signal | Meaning | Actionable remediation |
-|---|---|---|
-| `Ollama CLI not found in PATH` | `ollama` binary is missing | Install from `https://ollama.com/download`, then reopen shell and run `which ollama` |
-| `daemon is not reachable on 127.0.0.1:11434` | daemon not running/listening | Start daemon: `ollama serve`, then re-run `thegent doctor` |
-| `daemon probe timed out on 127.0.0.1:11434` | daemon hung or overloaded | Restart daemon and verify endpoint: `curl http://127.0.0.1:11434/api/tags` |
-| `reachable ... but no local models are installed` | daemon is up but model catalog empty | Pull at least one model, for example: `ollama pull llama3.3` |
-| `endpoint returned HTTP <code>` | daemon returned an API error | Check `ollama serve` logs, confirm `/api/tags` returns HTTP 200, then retry |
+| Doctor output signal                              | Meaning                              | Actionable remediation                                                               |
+| ------------------------------------------------- | ------------------------------------ | ------------------------------------------------------------------------------------ |
+| `Ollama CLI not found in PATH`                    | `ollama` binary is missing           | Install from `https://ollama.com/download`, then reopen shell and run `which ollama` |
+| `daemon is not reachable on 127.0.0.1:11434`      | daemon not running/listening         | Start daemon: `ollama serve`, then re-run `thegent doctor`                           |
+| `daemon probe timed out on 127.0.0.1:11434`       | daemon hung or overloaded            | Restart daemon and verify endpoint: `curl http://127.0.0.1:11434/api/tags`           |
+| `reachable ... but no local models are installed` | daemon is up but model catalog empty | Pull at least one model, for example: `ollama pull llama3.3`                         |
+| `endpoint returned HTTP <code>`                   | daemon returned an API error         | Check `ollama serve` logs, confirm `/api/tags` returns HTTP 200, then retry          |
 
 Quick remediation loop:
 
@@ -122,14 +122,15 @@ thegent doctor
 
 ## API key env vars and auth mode
 
-| Env var | Used by | Typical mode |
-|---------|---------|--------------|
-| `ANTHROPIC_API_KEY` | Claude/Anthropic-compatible path | OAuth-derived token or direct key |
-| `OPENAI_API_KEY` | OpenAI/Codex-compatible path | OAuth-derived token, direct key, or `sk-dummy` for local proxy adapter flows |
-| `GOOGLE_API_KEY` | Gemini direct path | Direct API key |
-| `THGENT_ZEN_API_KEY` | Zen provider path | Direct API key |
+| Env var              | Used by                          | Typical mode                                                                 |
+| -------------------- | -------------------------------- | ---------------------------------------------------------------------------- |
+| `ANTHROPIC_API_KEY`  | Claude/Anthropic-compatible path | OAuth-derived token or direct key                                            |
+| `OPENAI_API_KEY`     | OpenAI/Codex-compatible path     | OAuth-derived token, direct key, or `sk-dummy` for local proxy adapter flows |
+| `GOOGLE_API_KEY`     | Gemini direct path               | Direct API key                                                               |
+| `THGENT_ZEN_API_KEY` | Zen provider path                | Direct API key                                                               |
 
 Notes:
+
 - For most cliproxy providers, preferred auth is `thegent cliproxy login <provider>` (OAuth/token-file).
 - API-key-only providers in this guide: `minimax`, `nim`.
 - For Codex CLI against local cliproxy, `OPENAI_BASE_URL=http://127.0.0.1:8317/v1` with a proxy-accepted key (`sk-dummy` in local adapter examples) is expected.
@@ -138,12 +139,12 @@ Notes:
 
 Use adapter mode when you want one endpoint and provider failover. Use native mode when you must bypass thegent/cliproxy routing.
 
-| Mode | What happens | Command pattern |
-|------|--------------|-----------------|
-| Adapter (default) | Harness routes through thegent + cliproxy provider model mapping | `clode haiku ...`, `dex flash ...`, `thegent run ...` |
-| Native bypass (`clode`) | Calls native Claude CLI directly | `clode --native` |
-| Native bypass (`dex`) | Calls native Codex CLI directly | `dex --native` |
-| Droid alias passthrough (`roid`) | Rewrites alias to droid model flag and forwards args | `roid flash ...` / `roid flash exec ...` |
+| Mode                             | What happens                                                     | Command pattern                                       |
+| -------------------------------- | ---------------------------------------------------------------- | ----------------------------------------------------- |
+| Adapter (default)                | Harness routes through thegent + cliproxy provider model mapping | `clode haiku ...`, `dex flash ...`, `thegent run ...` |
+| Native bypass (`clode`)          | Calls native Claude CLI directly                                 | `clode --native`                                      |
+| Native bypass (`dex`)            | Calls native Codex CLI directly                                  | `dex --native`                                        |
+| Droid alias passthrough (`roid`) | Rewrites alias to droid model flag and forwards args             | `roid flash ...` / `roid flash exec ...`              |
 
 ## Failover expectations
 
@@ -220,10 +221,10 @@ thegent doctor
 
 CLIProxyAPIPlus accepts a `cursor:` top-level key. Two auth variants:
 
-| Variant | When to use | Config key |
-|---------|-------------|------------|
-| `token-file` | sk-... from cursor-api `/build-key` | `token-file: "<path>"` |
-| `auth-token` | zero-action (IDE auto-injects) | `auth-token: "${CURSOR_API_AUTH_TOKEN}"` |
+| Variant      | When to use                         | Config key                               |
+| ------------ | ----------------------------------- | ---------------------------------------- |
+| `token-file` | sk-... from cursor-api `/build-key` | `token-file: "<path>"`                   |
+| `auth-token` | zero-action (IDE auto-injects)      | `auth-token: "${CURSOR_API_AUTH_TOKEN}"` |
 
 ### Option A — Zero-action (recommended)
 
@@ -233,7 +234,7 @@ Log in to Cursor IDE only. Set `THGENT_CURSOR_API_TOKEN` to cursor-api `AUTH_TOK
 # ~/.config/thegent/cliproxy-config.yaml
 cursor:
   - cursor-api-url: "http://127.0.0.1:3000"
-    auth-token: "${CURSOR_API_AUTH_TOKEN}"   # Must match cursor-api AUTH_TOKEN env
+    auth-token: "${CURSOR_API_AUTH_TOKEN}" # Must match cursor-api AUTH_TOKEN env
 ```
 
 Token is auto-read from Cursor IDE storage (`state.vscdb`). No manual copy required.
@@ -299,12 +300,12 @@ The first readable file wins.
 
 ### Environment variables
 
-| Variable | Default | Purpose |
-|----------|---------|---------|
-| `THGENT_CURSOR_API_URL` | `http://127.0.0.1:3000` | cursor-api base URL |
-| `THGENT_CURSOR_API_TOKEN` | `` | sk-... or AUTH_TOKEN (written to token file when sk-...) |
-| `THGENT_CURSOR_TOKEN_FILE` | auto | Override token-file path |
-| `THGENT_CURSOR_TOKEN_REFRESH_INTERVAL` | 300 | Seconds between token re-reads |
+| Variable                               | Default                 | Purpose                                                  |
+| -------------------------------------- | ----------------------- | -------------------------------------------------------- |
+| `THGENT_CURSOR_API_URL`                | `http://127.0.0.1:3000` | cursor-api base URL                                      |
+| `THGENT_CURSOR_API_TOKEN`              | ``                      | sk-... or AUTH_TOKEN (written to token file when sk-...) |
+| `THGENT_CURSOR_TOKEN_FILE`             | auto                    | Override token-file path                                 |
+| `THGENT_CURSOR_TOKEN_REFRESH_INTERVAL` | 300                     | Seconds between token re-reads                           |
 
 ---
 
@@ -403,13 +404,13 @@ kiro:
 
 ## thegent run commands
 
-| Agent      | Command                    | Default model      |
-|------------|----------------------------|--------------------|
-| cliproxy   | `thegent run cliproxy "..."`   | gemini-3-flash     |
-| minimax    | `thegent run minimax "..."`    | minimax-m2.5       |
-| glm        | `thegent run glm "..."`        | glm-5              |
-| roo        | `thegent run roo "..."`        | roo-default        |
-| kilo       | `thegent run kilo "..."`       | kilo-default       |
+| Agent      | Command                        | Default model        |
+| ---------- | ------------------------------ | -------------------- |
+| cliproxy   | `thegent run cliproxy "..."`   | gemini-3-flash       |
+| minimax    | `thegent run minimax "..."`    | minimax-m2.5         |
+| glm        | `thegent run glm "..."`        | glm-5                |
+| roo        | `thegent run roo "..."`        | roo-default          |
+| kilo       | `thegent run kilo "..."`       | kilo-default         |
 | cursor-api | `thegent run cursor-api "..."` | claude-4.5-opus-high |
 
 ---
@@ -425,6 +426,7 @@ Codex uses the Responses API; CLIProxyAPIPlus only exposes Chat Completions. **E
 Use catalog model IDs (e.g. `minimax-m2.5`, `glm-5`, `gemini-3-flash`). For custom provider config patterns, see [MiniMax Codex CLI guide](https://platform.minimax.io/docs/coding-plan/codex-cli).
 
 **Agent self-service (no user intervention):**
+
 - `thegent mgmt ensure-proxy` — Ensure MCP+proxy running (starts via process-compose if needed)
 - `thegent mgmt verify-codex-cliproxy` — Full verification: ensure proxy, run `codex exec`, report pass/fail
 - `task mgmt:verify-codex-cliproxy` — Same via Taskfile
@@ -482,7 +484,6 @@ export ZEN_API_KEY="<your-zen-key>"        # recognized as fallback
 - [AGENT_PLATFORMS_KILO_ROO_OPencode_CLIPROXY_RESEARCH.md](../research/AGENT_PLATFORMS_KILO_ROO_OPencode_CLIPROXY_RESEARCH.md)
 - [CLIPROXY_API_AND_THGENT_UNIFIED_PLAN.md](../plans/CLIPROXY_API_AND_THGENT_UNIFIED_PLAN.md)
 - Cursor zero-action spec: `docs/guides/CURSOR_ZERO_ACTION_FLOW_SPEC.md` (in heliosShield)
-
 
 ---
 
@@ -554,9 +555,9 @@ OPENAI_BASE_URL=http://127.0.0.1:8317/v1 OPENAI_API_KEY=sk-dummy codex exec - "O
 
 ## Operational env vars
 
-| Variable | Purpose | Default |
-|----------|---------|---------|
-| `THGENT_DEFAULT_ROUTING` | Route policy (`prefer_direct`, `prefer_proxy`, `failover`) | `prefer_direct` |
-| `THGENT_DEBUG` | Enable debug tags and verbose diagnostics | `0` |
-| `THGENT_CLIPROXY_ADAPTER` | Enable Responses->Chat adapter for Codex via cliproxy | `0` |
-| `THGENT_CURSOR_TOKEN_REFRESH_INTERVAL` | Cursor token-file refresh cadence (seconds) | `300` |
+| Variable                               | Purpose                                                    | Default         |
+| -------------------------------------- | ---------------------------------------------------------- | --------------- |
+| `THGENT_DEFAULT_ROUTING`               | Route policy (`prefer_direct`, `prefer_proxy`, `failover`) | `prefer_direct` |
+| `THGENT_DEBUG`                         | Enable debug tags and verbose diagnostics                  | `0`             |
+| `THGENT_CLIPROXY_ADAPTER`              | Enable Responses->Chat adapter for Codex via cliproxy      | `0`             |
+| `THGENT_CURSOR_TOKEN_REFRESH_INTERVAL` | Cursor token-file refresh cadence (seconds)                | `300`           |

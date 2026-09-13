@@ -445,7 +445,9 @@ def test_release_from_different_coordinator_instance(tmp_path: Path) -> None:
     assert c1.get_active_leases() == []
 
 
-def test_cleanup_from_different_coordinator_affects_shared_store(tmp_path: Path) -> None:
+def test_cleanup_from_different_coordinator_affects_shared_store(
+    tmp_path: Path,
+) -> None:
     """Cleanup by one coordinator removes expired leases visible to another."""
     shared = tmp_path / "shared_leases.json"
     c1 = DistributedResourceCoordinator(lease_file=shared)

@@ -25,12 +25,12 @@ thegent plan next
 
 ## Recommended Team Defaults
 
-| Area | Recommendation |
-|------|----------------|
-| Routing | Use explicit provider/model for critical jobs |
-| Budgets | Enforce environment-level spend caps |
-| Validation | Run quality checks on each merge candidate |
-| Recovery | Prefer continuation/takeover over restarting context |
+| Area       | Recommendation                                       |
+| ---------- | ---------------------------------------------------- |
+| Routing    | Use explicit provider/model for critical jobs        |
+| Budgets    | Enforce environment-level spend caps                 |
+| Validation | Run quality checks on each merge candidate           |
+| Recovery   | Prefer continuation/takeover over restarting context |
 
 ## Common Pitfalls
 

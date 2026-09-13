@@ -40,22 +40,26 @@ cp target/release/thegent-{git,grep,find,agent} ~/.local/bin/
 ## Features
 
 ### thegent-git
+
 - TTL cache for read-only ops (status, diff, log)
 - Index lock handling with adaptive backoff
 - Agent passthrough (codex, copilot, dex, claude, cursor)
 - Cache invalidation on write
 
 ### thegent-grep
+
 - Ripgrep routing for recursive searches
 - Graceful fallback to grep for unsupported patterns
 - Automatic default excludes
 
 ### thegent-find
+
 - fd routing for standard patterns
 - Fallback to find for complex patterns
 - Cross-platform support
 
 ### thegent-agent
+
 - Fallback chains (dex → codex)
 - Environment preservation
 - Direct execution (no shell)

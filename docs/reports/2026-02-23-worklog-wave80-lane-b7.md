@@ -8,6 +8,7 @@
 ## Claimed Slice
 
 Canonical next unclaimed slice selected after excluding lane-c7 claim of `WL-10990..WL-10999`:
+
 - `WL-11000..WL-11009`
 
 ## Implemented Items

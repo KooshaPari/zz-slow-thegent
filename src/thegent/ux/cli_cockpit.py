@@ -157,10 +157,11 @@ from __future__ import annotations
 
 import json
 import logging
-import time
 import sys
+import time
+from collections.abc import Callable
 from pathlib import Path
-from typing import Any, Callable, Optional
+from typing import Any
 
 import typer
 from rich.console import Console
@@ -209,7 +210,6 @@ err_console = Console(stderr=True)
 from thegent.ux.cli_errors import exc_text as _exc_text  # noqa: E402, F401
 from thegent.ux.cli_errors import exc_text as _rich_escape  # noqa: E402, F401
 
-
 _LOGGER = logging.getLogger(__name__)
 
 
@@ -225,7 +225,7 @@ app = typer.Typer(
 )
 
 
-def _resolve_clock(epoch: Optional[float]) -> Callable[[], float]:
+def _resolve_clock(epoch: float | None) -> Callable[[], float]:
     """Build a deterministic clock callable from ``--clock <epoch>``.
 
     ``None`` means use wall-clock (``time.time``), which is the right
@@ -264,7 +264,7 @@ def _resolve_clock(epoch: Optional[float]) -> Callable[[], float]:
 # subsystem; the CLI helper gates the attach behind a lazy import so
 # ``cockpit render`` still works against synthetic snapshots that
 # never touch the MCP audit trail.
-def _attach_mcp_audit_stats(cockpit: "OperatorCockpit") -> Optional[str]:
+def _attach_mcp_audit_stats(cockpit: OperatorCockpit) -> str | None:
     """Attach ``mcp_audit_stats`` to ``cockpit``; return ``None`` on success.
 
     Returns a human-readable error string when the import fails so the
@@ -297,7 +297,7 @@ def _attach_mcp_audit_stats(cockpit: "OperatorCockpit") -> Optional[str]:
 # *opt-in* contract. A dedicated helper keeps the single-context and
 # batch ``--json`` paths in lockstep on the envelope shape — both
 # call this and write the result under the ``mcp_audit_stats`` key.
-def _fetch_pre_check_mcp_stats() -> tuple[Optional[dict[str, Any]], Optional[str]]:
+def _fetch_pre_check_mcp_stats() -> tuple[dict[str, Any] | None, str | None]:
     """Return ``(stats, error)`` for the ``pre-check --include-mcp-audit`` block.
 
     ``stats`` is the live MCP audit-trail singleton dict (or ``None``
@@ -328,19 +328,19 @@ def _fetch_pre_check_mcp_stats() -> tuple[Optional[dict[str, Any]], Optional[str
 
 @app.command("render", help="Render the 4-pane operator cockpit to stdout.")
 def cockpit_render(
-    runs_json: Optional[Path] = typer.Option(
+    runs_json: Path | None = typer.Option(
         None,
         "--runs",
         help="JSON file with [{run_id, state, lane, agent, confidence, elapsed_s}]",
     ),
-    overrides_json: Optional[Path] = typer.Option(
+    overrides_json: Path | None = typer.Option(
         None,
         "--overrides",
         help="JSON file with [{rule_id, by, reason, expires_in_s}]",
     ),
     progress_done: int = typer.Option(0, "--progress-done", help="Done count for header bar"),
     progress_total: int = typer.Option(100, "--progress-total", help="Total count for header bar"),
-    clock: Optional[float] = typer.Option(
+    clock: float | None = typer.Option(
         None,
         "--clock",
         help="Pin wall clock (epoch seconds) for deterministic replay",
@@ -462,10 +462,10 @@ def _fetch_mcp_audit_entries(
     *,
     include: bool,
     lines: int,
-    kind: Optional[str],
-    agent: Optional[str],
-    outcome: Optional[str],
-) -> tuple[list[Any], Optional[dict[str, Any]], Optional[str]]:
+    kind: str | None,
+    agent: str | None,
+    outcome: str | None,
+) -> tuple[list[Any], dict[str, Any] | None, str | None]:
     """Return ``(entries, stats, error)`` for the cockpit traffic audit block.
 
     Returns ``([], None, None)`` when ``include=False`` so the caller can
@@ -559,13 +559,13 @@ def _render_audit_rows(entries: list[Any], max_rows: int) -> list[str]:
 
 @traffic_app.command("summary", help="Render a TRAFFIC KPI snapshot to stdout.")
 def cockpit_traffic_summary(
-    events_json: Optional[Path] = typer.Option(
+    events_json: Path | None = typer.Option(
         None,
         "--events",
         help="JSON file with [{ts, lane, agent, status, duration_ms, override_active}]",
     ),
     window_s: float = typer.Option(60.0, "--window", help="Window length in seconds"),
-    clock: Optional[float] = typer.Option(
+    clock: float | None = typer.Option(
         None,
         "--clock",
         help="Pin wall clock (epoch seconds) for deterministic replay",
@@ -592,7 +592,7 @@ def cockpit_traffic_summary(
             "returned when --include-mcp-audit is set. Default 10."
         ),
     ),
-    mcp_kind: Optional[str] = typer.Option(
+    mcp_kind: str | None = typer.Option(
         None,
         "--mcp-kind",
         help=(
@@ -601,12 +601,12 @@ def cockpit_traffic_summary(
             "kinds."
         ),
     ),
-    mcp_agent: Optional[str] = typer.Option(
+    mcp_agent: str | None = typer.Option(
         None,
         "--mcp-agent",
         help="Filter the audit entries by agent name (exact match).",
     ),
-    mcp_outcome: Optional[str] = typer.Option(
+    mcp_outcome: str | None = typer.Option(
         None,
         "--mcp-outcome",
         help="Filter the audit entries by outcome (ok, error, budget_exceeded).",
@@ -712,7 +712,7 @@ def cockpit_pre_check(
     model: str = typer.Option("", "--model", help="Model name (e.g. 'gpt-4o')"),
     lane: str = typer.Option("standard", "--lane", help="Lane: standard|critical|recovery|deferral"),
     environment: str = typer.Option("development", "--env", help="Environment: development|staging|production"),
-    confidence: Optional[float] = typer.Option(None, "--confidence", help="Confidence 0..1"),
+    confidence: float | None = typer.Option(None, "--confidence", help="Confidence 0..1"),
     prompt: str = typer.Option("", "--prompt", help="Prompt (hashed into the cache key)"),
     namespace: str = typer.Option(
         "global",
@@ -724,7 +724,7 @@ def cockpit_pre_check(
             "single-context ``PolicyContext.namespace``."
         ),
     ),
-    default_policy: Optional[str] = typer.Option(
+    default_policy: str | None = typer.Option(
         None,
         "--default-policy",
         help=(
@@ -737,12 +737,12 @@ def cockpit_pre_check(
     ),
     json_output: bool = typer.Option(False, "--json", help="Emit JSON decision"),
     dry_run: bool = typer.Option(True, "--dry-run/--commit", help="Default dry-run; pass --commit to cache"),
-    batch: Optional[Path] = typer.Option(
+    batch: Path | None = typer.Option(
         None,
         "--batch",
         help="Replay a corpus of PolicyContext JSONs in one pass (file or dir of *.json).",
     ),
-    audit_path: Optional[Path] = typer.Option(
+    audit_path: Path | None = typer.Option(
         None,
         "--audit-path",
         help="Persist every batch decision to this JSONL file (defaults to the cockpit appender's path).",
@@ -807,7 +807,6 @@ def cockpit_pre_check(
             PolicyEngine,
             evaluate_pre_check,
         )
-        from .cockpit import DecisionNotice
         from .decision_audit import DecisionAuditAppender
     except Exception as exc:  # pragma: no cover - import guard
         err_console.print(f"[red]governance unavailable:[/red] {_exc_text(exc)}")
@@ -914,7 +913,7 @@ def _run_pre_check_batch(
     persist_audit: bool,
     append_audit: bool,
     json_output: bool,
-    namespace_override: Optional[str] = None,
+    namespace_override: str | None = None,
     # AUDIT-N+26 (SOTA audit pass 12): when set, emit a trailing
     # ``_pre_check_envelope_v1`` line containing the MCP audit-trail
     # singleton stats after the line-delimited decisions so the
@@ -1005,7 +1004,7 @@ def _build_batch_decision_log(
     batch: Path,
     engine_factory: Callable[[], Any],
     use_engine: bool,
-    namespace_override: Optional[str] = None,
+    namespace_override: str | None = None,
 ) -> tuple[list[Any], list[Any], list[DecisionNotice]]:
     """Shared batch pipeline used by ``pre-check --batch`` and ``replay``.
 
@@ -1058,7 +1057,7 @@ def _build_batch_decision_log(
 
 def _load_pre_check_corpus(
     path: Path,
-    namespace_override: Optional[str] = None,
+    namespace_override: str | None = None,
 ) -> list[Any]:
     """Load a ``--batch`` input into a flat list of ``PolicyContext``.
 
@@ -1274,7 +1273,7 @@ def _apply_snapshot_flips(
 
 
 def _normalise_snapshot_flip_fields(
-    snapshot_flip: Optional[str | list[str]],
+    snapshot_flip: str | list[str] | None,
     snapshot_flip_all: bool,
 ) -> list[str]:
     """Reduce ``--snapshot-flip`` + ``--snapshot-flip-all`` into a single list.
@@ -1354,8 +1353,8 @@ def _compare_decision(
 
 def _format_mismatch(
     idx: int,
-    expected: Optional[dict[str, Any]],
-    actual: Optional[dict[str, Any]],
+    expected: dict[str, Any] | None,
+    actual: dict[str, Any] | None,
     diff_fields: list[str],
 ) -> str:
     """Stable text format for one mismatch row: ``mismatch[i]: ...``.
@@ -1408,7 +1407,7 @@ def cockpit_replay(
             "or an object with a ``decisions`` key holding the same list."
         ),
     ),
-    audit_path: Optional[Path] = typer.Option(
+    audit_path: Path | None = typer.Option(
         None,
         "--audit-path",
         help="Persist every replay decision to this JSONL file (defaults to cockpit appender's path).",
@@ -1428,7 +1427,7 @@ def cockpit_replay(
         "--namespace",
         help="Federated policy namespace (pinned unless an entry declares its own).",
     ),
-    default_policy: Optional[str] = typer.Option(
+    default_policy: str | None = typer.Option(
         None,
         "--default-policy",
         help="Enable federated policy lookup with this default namespace on --commit.",
@@ -1454,12 +1453,12 @@ def cockpit_replay(
             "When set to anything other than 'text', delegates to `thegent sota replay`."
         ),
     ),
-    report_path: Optional[Path] = typer.Option(
+    report_path: Path | None = typer.Option(
         None,
         "--report-path",
         help="Write the report to this file (delegated to sota replay; default: stdout).",
     ),
-    snapshot_flip: Optional[list[str]] = typer.Option(
+    snapshot_flip: list[str] | None = typer.Option(
         None,
         "--snapshot-flip",
         help=(
@@ -1661,7 +1660,7 @@ def cockpit_replay(
         # Persist decisions via the same appender pattern as pre-check
         # so the JSONL shape stays identical (the spec's "replay
         # writes a JSONL that matches the per-line appender output").
-        audit_str: Optional[str] = None
+        audit_str: str | None = None
         if audit_path is not None:
             appender = DecisionAuditAppender(audit_path=audit_path)
             if not audit_append:
@@ -1709,11 +1708,11 @@ def _emit_replay_summary(
     matched: bool,
     mismatches: list[dict[str, Any]],
     decisions: list[dict[str, Any]],
-    audit_path: Optional[str],
+    audit_path: str | None,
     json_output: bool,
-    flipped: Optional[list[str]] = None,
-    batch: Optional[Path] = None,
-    compare: Optional[Path] = None,
+    flipped: list[str] | None = None,
+    batch: Path | None = None,
+    compare: Path | None = None,
 ) -> None:
     """Render the replay outcome (text or JSON) and write to stdout.
 
@@ -1797,7 +1796,7 @@ audit_app = typer.Typer(
 @audit_app.command("tail", help="Print the last N decisions from the audit JSONL.")
 def cockpit_audit_tail(
     n: int = typer.Option(20, "--lines", "-n", help="Number of lines to print"),
-    audit_path: Optional[Path] = typer.Option(
+    audit_path: Path | None = typer.Option(
         None,
         "--path",
         help="Override the default ~/.thegent/cockpit_decisions.jsonl",
@@ -1837,7 +1836,7 @@ def cockpit_audit_decision_tail(
         "-i",
         help="Poll cadence in seconds when --follow is set.",
     ),
-    audit_path: Optional[Path] = typer.Option(
+    audit_path: Path | None = typer.Option(
         None,
         "--path",
         help="Override the default ~/.thegent/cockpit_decisions.jsonl",
@@ -1934,7 +1933,7 @@ def cockpit_audit_decision_tail(
 
 
 def _follow_audit_log(
-    appender: "DecisionAuditAppender",
+    appender: DecisionAuditAppender,
     *,
     interval_s: float,
     max_events: int,
@@ -2040,19 +2039,19 @@ def _follow_audit_log(
 )
 def cockpit_audit_mcp_tail(
     n: int = typer.Option(20, "--lines", "-n", help="Number of entries to print (most recent first)"),
-    kind: Optional[str] = typer.Option(
+    kind: str | None = typer.Option(
         None,
         "--kind",
         help=(
             "Filter by AuditEntryKind: tool_invocation, resource_read, gate_check, or error. Omit to print all kinds."
         ),
     ),
-    agent: Optional[str] = typer.Option(
+    agent: str | None = typer.Option(
         None,
         "--agent",
         help="Filter by agent name (exact match).",
     ),
-    outcome: Optional[str] = typer.Option(
+    outcome: str | None = typer.Option(
         None,
         "--outcome",
         help="Filter by outcome (ok, error, budget_exceeded).",
@@ -2192,10 +2191,7 @@ def cockpit_audit_mcp_tail(
             # wrap with ``to_dict()``); normalise so JSON mode never
             # crashes on enum types in ``kind``.
             for entry in entries:
-                if hasattr(entry, "to_dict"):
-                    payload = entry.to_dict()
-                else:
-                    payload = entry
+                payload = entry.to_dict() if hasattr(entry, "to_dict") else entry
                 typer.echo(json.dumps(payload, indent=None, sort_keys=True, default=str))
             return
 
@@ -2242,7 +2238,7 @@ app.add_typer(audit_app, name="audit")
 # ---------------------------------------------------------------------------
 
 
-def _load_runs(path: Optional[Path]) -> list[RunEvent]:
+def _load_runs(path: Path | None) -> list[RunEvent]:
     """Parse a JSON file of run dicts into :class:`RunEvent` instances."""
     if path is None:
         return []
@@ -2270,7 +2266,7 @@ def _load_runs(path: Optional[Path]) -> list[RunEvent]:
     return out
 
 
-def _load_overrides(path: Optional[Path]) -> list[OverrideEvent]:
+def _load_overrides(path: Path | None) -> list[OverrideEvent]:
     """Parse a JSON file of override dicts into :class:`OverrideEvent`."""
     if path is None:
         return []
@@ -2291,7 +2287,7 @@ def _load_overrides(path: Optional[Path]) -> list[OverrideEvent]:
     return out
 
 
-def _load_traffic_events(path: Optional[Path]) -> list[TrafficEvent]:
+def _load_traffic_events(path: Path | None) -> list[TrafficEvent]:
     """Parse a JSON file of traffic event dicts."""
     if path is None:
         return []
@@ -2314,7 +2310,7 @@ def _load_traffic_events(path: Optional[Path]) -> list[TrafficEvent]:
     return out
 
 
-def _as_optional_float(value: Any) -> Optional[float]:
+def _as_optional_float(value: Any) -> float | None:
     """Return ``None`` for missing/None values; otherwise coerce to float."""
     if value is None:
         return None

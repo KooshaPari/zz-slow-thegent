@@ -12,7 +12,7 @@ Manages autonomous model promotion based on performance metrics.
 
 ### Methods
 
-#### ModelPromoter.__init__
+#### ModelPromoter.**init**
 
 ```python
 __init__(self: Any, settings: ThegentSettings)

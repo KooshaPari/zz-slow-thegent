@@ -18,6 +18,7 @@
 ### Key Responsibilities
 
 Documentation processes are maintained by:
+
 - **Documentation Coordinator**: Overall process management
 - **Technical Leads**: Feature documentation and accuracy
 - **Content Team**: Writing, editing, formatting
@@ -26,6 +27,7 @@ Documentation processes are maintained by:
 ### Documentation Calendar
 
 **Typical Release Cycle**:
+
 - **T-12 weeks**: Release planning, documentation assessment
 - **T-8 weeks**: Feature documentation begins
 - **T-4 weeks**: Feature documentation complete, review begins
@@ -46,6 +48,7 @@ Documentation processes are maintained by:
 **Process**:
 
 1. **Identify Documentation Scope**
+
    ```
    For each feature/change in release:
    - Is documentation needed? (APIs, user-facing changes, behavior)
@@ -62,24 +65,29 @@ Documentation processes are maintained by:
    - List items needing updates
 
 3. **Create Documentation Plan**
+
    ```markdown
    # Release X.Y.Z Documentation Plan
 
    ## New Documentation Needed
+
    - [ ] Feature A - API Reference (Owner: Name)
    - [ ] Feature B - How-To Guide (Owner: Name)
    - [ ] Breaking Change C - Migration Guide (Owner: Name)
 
    ## Documentation Updates
+
    - [ ] Update API index
    - [ ] Update feature matrix
    - [ ] Refresh examples
 
    ## Deprecations
+
    - [ ] Archive feature X docs
    - [ ] Create migration guide for feature Y
 
    ## Timeline
+
    - Draft deadline: T-6 weeks
    - Review deadline: T-4 weeks
    - Final approval: T-2 weeks
@@ -107,6 +115,7 @@ Documentation processes are maintained by:
    - Create example scenarios
 
 2. **Prepare Documentation**
+
    ```
    For each required documentation piece:
    - Create file in appropriate directory
@@ -125,9 +134,10 @@ Documentation processes are maintained by:
    - Provide troubleshooting tips
 
 4. **Build Documentation Set**
+
    ```
    Example: New Authentication Feature
-   
+
    ├── api-reference/
    │   ├── auth-session.md       (API reference)
    │   ├── auth-token.md          (API reference)
@@ -202,28 +212,33 @@ Documentation processes are maintained by:
    - All feature docs should be merged
 
 2. **Final Validation** (Checklist)
+
    ```markdown
    ## Release Documentation Validation
 
    ### Completeness
+
    - [ ] All new features documented
    - [ ] All APIs with examples
    - [ ] All breaking changes documented
    - [ ] Migration guides prepared
 
    ### Accuracy
+
    - [ ] Code examples tested against build
    - [ ] API signatures match implementation
    - [ ] Examples use correct syntax
    - [ ] Warnings/notes accurate
 
    ### Quality
+
    - [ ] No broken links
    - [ ] Consistent formatting
    - [ ] Consistent terminology
    - [ ] Proper headers/metadata
 
    ### Readiness
+
    - [ ] Changelog finalized
    - [ ] Release notes prepared
    - [ ] Deprecated items archived
@@ -339,6 +354,7 @@ Collect and maintain official Ante documentation from all available sources for 
 **Process**:
 
 1. **Maintain Source Registry**
+
    ```yaml
    sources:
      - name: "Official Docs"
@@ -346,7 +362,7 @@ Collect and maintain official Ante documentation from all available sources for 
        type: "primary"
        frequency: "on-release"
        last_collected: "2026-02-20"
-       
+
      - name: "API Reference"
        url: "https://api.antigma.ai/docs"
        type: "primary"
@@ -365,13 +381,14 @@ Collect and maintain official Ante documentation from all available sources for 
 **Process**:
 
 1. **Execute Collection**
+
    ```bash
    # Archive official docs
    wget -m -np -k \
      --user-agent="Ante-Archiver/1.0" \
      -P archive/docs/ \
      https://docs.antigma.ai
-   
+
    # Archive release assets
    curl -s https://api.github.com/repos/AntigmaLabs/ante/releases/latest \
      | jq -r '.assets[].browser_download_url' \
@@ -406,6 +423,7 @@ Collect and maintain official Ante documentation from all available sources for 
 **Process**:
 
 1. **Convert HTML to Markdown**
+
    ```bash
    # Using pandoc
    pandoc archive/docs/latest/index.html \
@@ -414,6 +432,7 @@ Collect and maintain official Ante documentation from all available sources for 
    ```
 
 2. **Post-Process Markdown**
+
    ```python
    # Clean up conversion artifacts
    - Fix relative links
@@ -438,6 +457,7 @@ Collect and maintain official Ante documentation from all available sources for 
 **Process**:
 
 1. **Create Index**
+
    ```markdown
    # Ante Documentation Archive
 
@@ -453,6 +473,7 @@ Collect and maintain official Ante documentation from all available sources for 
    ```
 
 2. **Add Metadata**
+
    ```yaml
    archive_metadata:
      date: 2026-02-20
@@ -472,13 +493,13 @@ Collect and maintain official Ante documentation from all available sources for 
 
 ### Archive Maintenance Schedule
 
-| Task | Frequency | Owner |
-|---|---|---|
-| Verify source accessibility | Weekly | Tech Lead |
-| Collect new releases | On-release | Coordinator |
-| Update archive | Biweekly | Tech Lead |
-| Clean old archives | Monthly | Ops |
-| Full re-collection | Quarterly | Coordinator |
+| Task                        | Frequency  | Owner       |
+| --------------------------- | ---------- | ----------- |
+| Verify source accessibility | Weekly     | Tech Lead   |
+| Collect new releases        | On-release | Coordinator |
+| Update archive              | Biweekly   | Tech Lead   |
+| Clean old archives          | Monthly    | Ops         |
+| Full re-collection          | Quarterly  | Coordinator |
 
 ---
 
@@ -487,6 +508,7 @@ Collect and maintain official Ante documentation from all available sources for 
 ### When to Add Feature Documentation
 
 Create documentation when:
+
 - [ ] New public API added
 - [ ] User-facing behavior changed
 - [ ] New architectural component added
@@ -501,11 +523,13 @@ Create documentation when:
 # Feature Documentation Plan: [Feature Name]
 
 ## Feature Overview
+
 - What the feature does
 - Who uses it
 - What problems it solves
 
 ## Documentation Requirements
+
 - [ ] API Reference - required/optional
 - [ ] How-to Guide - required/optional
 - [ ] Conceptual Guide - required/optional
@@ -513,6 +537,7 @@ Create documentation when:
 - [ ] Code Examples - required/optional
 
 ## Acceptance Criteria
+
 - [ ] All APIs documented with examples
 - [ ] Common use cases covered
 - [ ] Examples tested and working
@@ -520,6 +545,7 @@ Create documentation when:
 - [ ] Ready for user consumption
 
 ## Owner & Timeline
+
 - Technical SME: [Name]
 - Writer: [Name]
 - Deadline: [Date]
@@ -545,12 +571,14 @@ status: active
 **Description**: What the function does.
 
 **Parameters**:
+
 - `param1` (type): Description
 - `param2` (type): Description
 
 **Returns**: (type) Description
 
 **Throws**:
+
 - `ErrorType`: When this occurs
 - `ErrorType`: When this occurs
 
@@ -560,10 +588,11 @@ status: active
 \`\`\`javascript
 // Example code that runs
 const result = function_name(arg1, arg2);
-console.log(result);  // Output: ...
+console.log(result); // Output: ...
 \`\`\`
 
 **See Also**:
+
 - [Related Function](../api-reference/other.md)
 - [How-To Guide](../guides/feature-usage.md)
 ```
@@ -584,6 +613,7 @@ status: active
 ## Prerequisites
 
 Before starting, ensure you have:
+
 - [ ] Ante version X.Y.Z or later
 - [ ] Required permission/access
 - [ ] Basic understanding of [concept]
@@ -619,8 +649,8 @@ Complete working example with explanation.
 ## Troubleshooting
 
 | Problem | Cause | Solution |
-|---|---|---|
-| Error X | Cause | Fix |
+| ------- | ----- | -------- |
+| Error X | Cause | Fix      |
 
 ## See Also
 
@@ -635,9 +665,9 @@ Create `examples/[feature]-[use-case].js`:
 ```javascript
 /**
  * Example: [Feature] - [Use Case]
- * 
+ *
  * This example demonstrates how to [specific task]
- * 
+ *
  * Prerequisites: Ante version X.Y.Z+
  */
 
@@ -655,19 +685,22 @@ Create `examples/[feature]-[use-case].js`:
 **Type**: [API Reference / Guide / Examples]
 
 ### Changes Made
+
 - [ ] API reference created/updated
-- [ ] How-to guide created/updated  
+- [ ] How-to guide created/updated
 - [ ] Examples created/tested
 - [ ] Cross-references added
 - [ ] Related docs updated
 
 ### Testing Checklist
+
 - [ ] Code examples tested
 - [ ] Links verified
 - [ ] Formatting validated
 - [ ] Tone consistent
 
 ### Review Checklist
+
 - [ ] Technically accurate
 - [ ] Complete for feature scope
 - [ ] Clear and understandable
@@ -698,6 +731,7 @@ documentation/
 #### Weekly Tasks
 
 1. **Monitor for Issues** (1 hour)
+
    ```
    - Check for reported documentation bugs
    - Review new issues/questions
@@ -714,15 +748,17 @@ documentation/
 #### Monthly Tasks
 
 1. **Link Validation** (2 hours)
+
    ```bash
    # Run link checker
    markdown-link-check documentation/**/*.md
-   
+
    # Fix broken links
    # Update redirects if needed
    ```
 
 2. **Freshness Review** (2 hours)
+
    ```
    - Check documents haven't been updated in > 6 months
    - Verify information is still accurate
@@ -731,10 +767,11 @@ documentation/
    ```
 
 3. **Search Index Update** (1 hour)
+
    ```bash
    # Rebuild search index
    npm run docs:build-search
-   
+
    # Test search functionality
    # Verify results relevant
    ```
@@ -761,13 +798,13 @@ documentation/
 
 ### Common Maintenance Issues
 
-| Issue | Solution |
-|---|---|
-| Broken links | Run link checker, update URLs or create redirects |
-| Outdated examples | Test against current version, update code |
-| Unclear writing | Request editorial review, revise for clarity |
-| Missing documentation | Create issue, assign to feature owner |
-| Orphaned pages | Move to archive or delete if truly unused |
+| Issue                 | Solution                                          |
+| --------------------- | ------------------------------------------------- |
+| Broken links          | Run link checker, update URLs or create redirects |
+| Outdated examples     | Test against current version, update code         |
+| Unclear writing       | Request editorial review, revise for clarity      |
+| Missing documentation | Create issue, assign to feature owner             |
+| Orphaned pages        | Move to archive or delete if truly unused         |
 
 ---
 
@@ -780,6 +817,7 @@ Generate `llms.txt` file for consumption by LLM systems, containing curated docu
 ### File Format
 
 `llms.txt` contains:
+
 - Core documentation
 - API reference
 - Examples
@@ -872,24 +910,28 @@ grep -c "##" llms.txt        # Check organization
 ## llms.txt Validation Checklist
 
 ### Coverage
+
 - [ ] All public APIs included
 - [ ] Examples for major features
 - [ ] Architecture described
 - [ ] Limitations documented
 
 ### Accuracy
+
 - [ ] All information current
 - [ ] Code examples correct
 - [ ] API signatures match
 - [ ] No broken references
 
 ### Format
+
 - [ ] Structure clear and consistent
 - [ ] Headers hierarchical
 - [ ] Code blocks properly marked
 - [ ] Links working
 
 ### Optimization
+
 - [ ] File size acceptable
 - [ ] No redundant content
 - [ ] Navigation removed
@@ -898,13 +940,13 @@ grep -c "##" llms.txt        # Check organization
 
 ### Update Schedule
 
-| Event | Action |
-|---|---|
-| New release | Regenerate complete |
-| Minor update | Update affected sections |
-| New API | Add to reference section |
-| Deprecation | Add migration info |
-| Monthly | Check freshness, regenerate if needed |
+| Event        | Action                                |
+| ------------ | ------------------------------------- |
+| New release  | Regenerate complete                   |
+| Minor update | Update affected sections              |
+| New API      | Add to reference section              |
+| Deprecation  | Add migration info                    |
+| Monthly      | Check freshness, regenerate if needed |
 
 ---
 
@@ -940,6 +982,7 @@ Process:
 ```
 
 **Test Framework**:
+
 ```markdown
 \`\`\`javascript
 // Example: Feature - Use Case
@@ -958,18 +1001,21 @@ console.log(result);
 ## Pre-Release Documentation Validation
 
 ### Spot Checks (Sample 20% of documentation)
+
 - [ ] Examples still work
 - [ ] APIs match implementation
 - [ ] Screenshots/diagrams current
 - [ ] Tone consistent
 
 ### Critical Path Verification
+
 - [ ] All new features documented
 - [ ] All breaking changes documented
 - [ ] All deprecations documented
 - [ ] Release notes complete
 
 ### User Testing
+
 - [ ] Run through getting started guide
 - [ ] Test major workflows
 - [ ] Verify examples work as written
@@ -1002,20 +1048,22 @@ Output:
 ```markdown
 **Title**: [Section] - [Brief Issue]
 
-**Type**: 
+**Type**:
+
 - [ ] Broken Link
 - [ ] Incorrect Information
 - [ ] Missing Documentation
 - [ ] Unclear Wording
 - [ ] Broken Example
 
-**Description**: 
+**Description**:
 [Detailed description of issue]
 
 **Expected Behavior**:
 [What should be correct]
 
 **Affected Documentation**:
+
 - Link to affected page
 - Version: X.Y.Z
 
@@ -1030,6 +1078,7 @@ Output:
 ### When to Use Hotfixes
 
 Use hotfix process for:
+
 - Critical security documentation
 - Breaking changes not caught before release
 - Incorrect API documentation
@@ -1058,11 +1107,11 @@ Normal  → Standard Review (24 hours)
 
 ### Emergency Review SLA
 
-| Severity | Review Time | Approval | Deploy |
-|---|---|---|---|
-| Critical | 1 hour | Lead | Immediate |
-| Urgent | 4 hours | Maintainer | ASAP |
-| Normal | 24 hours | Maintainer | Next batch |
+| Severity | Review Time | Approval   | Deploy     |
+| -------- | ----------- | ---------- | ---------- |
+| Critical | 1 hour      | Lead       | Immediate  |
+| Urgent   | 4 hours     | Maintainer | ASAP       |
+| Normal   | 24 hours    | Maintainer | Next batch |
 
 ### Post-Hotfix
 
@@ -1087,17 +1136,18 @@ Normal  → Standard Review (24 hours)
 
 ### Recommended Tools
 
-| Tool | Purpose | Command |
-|---|---|---|
-| `markdown-lint` | Validate markdown | `npm run lint:docs` |
-| `markdown-link-check` | Verify links | `npm run check:links` |
-| `vale` | Style checking | `npm run lint:style` |
-| `pandoc` | Convert formats | `pandoc input.html -o output.md` |
-| `doctoc` | Generate TOCs | `doctoc docs/` |
+| Tool                  | Purpose           | Command                          |
+| --------------------- | ----------------- | -------------------------------- |
+| `markdown-lint`       | Validate markdown | `npm run lint:docs`              |
+| `markdown-link-check` | Verify links      | `npm run check:links`            |
+| `vale`                | Style checking    | `npm run lint:style`             |
+| `pandoc`              | Convert formats   | `pandoc input.html -o output.md` |
+| `doctoc`              | Generate TOCs     | `doctoc docs/`                   |
 
 ### Automation Scripts
 
 Maintain scripts in `scripts/`:
+
 - `generate-llms-txt.js` - Generate LLM context file
 - `validate-docs.js` - Run all validation checks
 - `test-examples.js` - Test code examples

@@ -39,7 +39,6 @@ from pathlib import Path
 
 import pytest
 
-
 # ---------------------------------------------------------------------------
 # Module paths. Centralized so a future rename only touches one constant.
 # ---------------------------------------------------------------------------
@@ -480,7 +479,13 @@ class TestObservabilityRoundTrip:
         # ``run_observe_helpers.append_observe_summary_snapshot`` takes
         # 6 positional args so the impl-side bridge must mirror that.
         obs._append_observe_summary_snapshot(
-            {"payload_type": "observe_summary", "kpis": {}, "drift": {}, "escalation": {}, "generated_query": {}},
+            {
+                "payload_type": "observe_summary",
+                "kpis": {},
+                "drift": {},
+                "escalation": {},
+                "generated_query": {},
+            },
             {"payload_type": "observe_summary", "limit": 100},
             "sig-123",
             '{"payload_type":"observe_summary","limit":100}',
@@ -488,7 +493,13 @@ class TestObservabilityRoundTrip:
             {"trend_snapshot_health": "good", "trend_previous_samples_requested": 0},
         )
         obs._append_observe_summary_snapshot(
-            {"payload_type": "observe_summary", "kpis": {}, "drift": {}, "escalation": {}, "generated_query": {}},
+            {
+                "payload_type": "observe_summary",
+                "kpis": {},
+                "drift": {},
+                "escalation": {},
+                "generated_query": {},
+            },
             {"payload_type": "observe_summary", "limit": 100},
             "sig-124",
             '{"payload_type":"observe_summary","limit":100}',

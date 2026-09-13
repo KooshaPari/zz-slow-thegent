@@ -21,7 +21,7 @@ Requires administrative privileges for most operations.
 
 ### Methods
 
-#### OSUserManager.__init__
+#### OSUserManager.**init**
 
 ```python
 __init__(self: Any, prefix: str)

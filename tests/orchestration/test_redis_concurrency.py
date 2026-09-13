@@ -43,7 +43,6 @@ from thegent.orchestration.consensus.redis_concurrency import (
     make_redis_concurrency_controller,
 )
 
-
 # ---------------------------------------------------------------------------
 # RedisConfig tests — assert the real dataclass contract
 # ---------------------------------------------------------------------------

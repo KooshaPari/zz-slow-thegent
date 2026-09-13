@@ -1,4 +1,5 @@
 ### [WL-5840] sync line 741 backlog marker
+
 **Status:** COMPLETED
 **Priority:** P2
 **Area:** backlog,bulk
@@ -9,6 +10,7 @@ Replaced `sync.pull` placeholder behavior with concrete source validation and fi
 **Evidence:** `uv run pytest -q tests/commands/test_sync.py -k "TestSyncPull and not push"` (6 passed, 38 deselected).
 
 ### [WL-5841] sync line 745 backlog marker
+
 **Status:** COMPLETED
 **Priority:** P2
 **Area:** backlog,bulk
@@ -19,6 +21,7 @@ Removed pull-path stub semantics and implemented source-side artifact discovery 
 **Evidence:** `uv run pytest -q tests/commands/test_sync.py -k "TestSyncPull and not push"` (6 passed, 38 deselected).
 
 ### [WL-5842] aggregator line 142 backlog marker
+
 **Status:** COMPLETED
 **Priority:** P2
 **Area:** backlog,bulk
@@ -29,6 +32,7 @@ Converted silent exception handling to explicit warning logging for MTD rollup f
 **Evidence:** `uv run pytest -q tests/test_unit_governance.py -k "get_mtd_total or get_category_mtd_total"` (7 passed, 36 deselected).
 
 ### [WL-5843] aggregator line 179 backlog marker
+
 **Status:** COMPLETED
 **Priority:** P2
 **Area:** backlog,bulk
@@ -39,6 +43,7 @@ Removed `except: pass` in category MTD rollup and emit explicit warnings on read
 **Evidence:** `uv run pytest -q tests/test_unit_governance.py -k "get_mtd_total or get_category_mtd_total"` (7 passed, 36 deselected).
 
 ### [WL-5844] desktop_automation line 124 backlog marker
+
 **Status:** COMPLETED
 **Priority:** P2
 **Area:** backlog,bulk
@@ -49,6 +54,7 @@ Desktop screen-size parsing now fails loudly on malformed macOS bounds output an
 **Evidence:** code path verified in `src/thegent/cross_platform/desktop_automation.py`.
 
 ### [WL-5845] desktop_automation line 135 backlog marker
+
 **Status:** COMPLETED
 **Priority:** P2
 **Area:** backlog,bulk
@@ -59,6 +65,7 @@ Desktop screen-size behavior now raises `NotImplementedError` for unsupported pl
 **Evidence:** code path verified in `src/thegent/cross_platform/desktop_automation.py`.
 
 ### [WL-5846] security line 72 backlog marker
+
 **Status:** COMPLETED
 **Priority:** P2
 **Area:** backlog,bulk
@@ -69,6 +76,7 @@ Security process-inspection exception path now records warning state and recomme
 **Evidence:** code path verified in `src/thegent/cross_platform/security.py`.
 
 ### [WL-5847] design_language line 101 backlog marker
+
 **Status:** COMPLETED
 **Priority:** P2
 **Area:** backlog,bulk
@@ -79,6 +87,7 @@ Design language token application now requires all critical tokens and raises `K
 **Evidence:** `uv run pytest -q tests/test_wl681x_lane_d.py -k wl6816` (2 passed, 10 deselected).
 
 ### [WL-5848] dex_cli_helpers line 76 backlog marker
+
 **Status:** COMPLETED
 **Priority:** P2
 **Area:** backlog,bulk
@@ -89,6 +98,7 @@ Dex argv extraction now fails loudly on invalid argv containers/entries with str
 **Evidence:** `uv run pytest -q tests/test_wl6910_wl6919_lane_f.py -k wl6915` (3 passed, 24 deselected).
 
 ### [WL-5849] dex_main line 49 backlog marker
+
 **Status:** COMPLETED
 **Priority:** P2
 **Area:** backlog,bulk

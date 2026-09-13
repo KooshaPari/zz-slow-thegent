@@ -9,7 +9,7 @@ Fail fast, fail loudly. No silent fallbacks, no legacy shims.
 from __future__ import annotations
 
 import time
-from enum import Enum
+from enum import StrEnum
 from typing import Any, Literal, Protocol, runtime_checkable
 
 from pydantic import BaseModel, ConfigDict, Field
@@ -22,7 +22,7 @@ class VetterConfigError(Exception):
     """
 
 
-class VetterVerdict(str, Enum):
+class VetterVerdict(StrEnum):
     """Four-verdict taxonomy for all vetting decisions.
 
     # @trace WL-090

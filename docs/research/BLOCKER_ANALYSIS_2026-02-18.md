@@ -10,6 +10,7 @@
 ## Executive Summary
 
 A critical mismatch has been detected between:
+
 1. **EXECUTION_KICKOFF_2026-02-18.md** - Specifies Phase 2-3 tasks for async snapshots and caching
 2. **WORK_STREAM.md** - Shows Phases 0-5 marked COMPLETED with harness coordination features
 
@@ -22,6 +23,7 @@ A critical mismatch has been detected between:
 ### The Discrepancy
 
 #### EXECUTION_KICKOFF Phase 2 (Async State & Snapshots)
+
 ```markdown
 | TGNT-P2.1 | Async state snapshots (jq serialization) | TGNT-P0.4 | ~5min | Use jq for JSON extraction + timestamps |
 | TGNT-P2.2 | State diff calculation (recursive, null handling) | TGNT-P2.1 | ~8min | Detect changed fields, preserve structure |
@@ -32,6 +34,7 @@ A critical mismatch has been detected between:
 **Purpose:** Add snapshot/timeline capabilities to harness state management.
 
 #### EXECUTION_KICKOFF Phase 3 (Caching & Metrics)
+
 ```markdown
 | TGNT-P3.1 | Rebuild strategy (invalidation heuristics) | TGNT-P0.4 | ~8min | When to invalidate entire cache vs partial |
 | TGNT-P3.2 | Partial rebuild (diff-aware re-execution) | TGNT-P3.1 | ~10min | Only re-run affected downstream items |
@@ -43,7 +46,9 @@ A critical mismatch has been detected between:
 **Purpose:** Add caching strategy and metrics optimization.
 
 #### WORK_STREAM.md Phases 0-5 (Completed)
+
 Shows **already-completed** thegent harness features:
+
 - **Phase 0**: Symlink dispatch, agent detection, rules parser, coalesce/queue/debounce strategies, safety mechanisms
 - **Phase 1**: Lock timeouts, stale-while-revalidate, Prometheus metrics, compression, JSON export
 - **Phase 2**: 5-level priority queue, priority aging, fair share scheduling, semantic coalescing, queue timeout protection
@@ -58,16 +63,19 @@ Shows **already-completed** thegent harness features:
 ## Root Cause Analysis
 
 ### Question 1: Are Phases 0-5 Actually Implemented?
+
 **Observation:** The WORK_STREAM shows completion dates and effort estimates for 30+ tasks, but no git commits, code files, or tests were found that implement these features.
 
 **Conclusion:** Phases 0-5 are **documented aspirations** (planned work), not actual implementations.
 
 ### Question 2: What Does EXECUTION_KICKOFF Expect?
+
 **Observation:** EXECUTION_KICKOFF references "TGNT-P2.1 → TGNT-P2.4" (async snapshots) and "TGNT-P3.1 → TGNT-P3.5" (caching), treating them as **new work to be implemented**.
 
 **Conclusion:** EXECUTION_KICKOFF treats these as **future tasks**, not as dependent on prior implementation.
 
 ### Question 3: Why Are Phases 0-5 Marked COMPLETED If No Code Exists?
+
 **Hypothesis 1:** The WORK_STREAM was auto-generated or copy-pasted from a template and not updated to reflect actual work.
 
 **Hypothesis 2:** The completion dates (2026-02-15 to 2026-02-18) are placeholders, and work is still in-progress.
@@ -79,17 +87,20 @@ Shows **already-completed** thegent harness features:
 ## Impact Assessment
 
 ### Blocked Work Items
+
 - **TGNT-P2.1 → TGNT-P2.4**: Cannot start (tasks undefined in WORK_STREAM)
 - **TGNT-P3.1 → TGNT-P3.5**: Cannot start (tasks undefined in WORK_STREAM)
 - **researcher-1 agent**: Blocked (no Phase 2 tasks to claim)
 - **builder-1 agent**: Blocked (no Phase 3 tasks to claim)
 
 ### SLO Impact
+
 - **Batch 1 (Phase 2-3)**: Target start 2026-02-18 13:00, target complete 2026-02-18 13:40. **Now BLOCKED (indeterminate duration).**
 - **Batch 2 (Phase 4-5)**: Depends on Phase 2-3 completion. **BLOCKED transitively.**
 - **Batch 3+ (Phase 6+)**: BLOCKED transitively.
 
 ### Team Utilization
+
 - **L1 (coordinator)**: ACTIVE but waiting for clarification
 - **researcher-1**: IDLE → ACTIVE (analyzing blocker)
 - **builder-1**: IDLE (paused waiting for clarification)
@@ -102,38 +113,47 @@ Shows **already-completed** thegent harness features:
 ## Decision Points for L1
 
 ### Option A: Execute Phase 2-3 as Defined in EXECUTION_KICKOFF
+
 **Action:** Add the Phase 2-3 tasks to WORK_STREAM.md PENDING section and begin execution.
 
 **Impact:**
+
 - Unblocks researcher-1 and builder-1 immediately
 - Aligns with kickoff plan (Batch 1 target: 40 min)
 - Assumes Phases 0-5 completion dates are aspirational (OK to proceed in parallel)
 
 **Prerequisites:**
+
 - Confirm that Phase 2-3 tasks are independent of Phase 0-5 (which they appear to be)
 - Adjust Phase 0-5 completion dates to "PENDING" or "ASPIRATIONAL"
 
 ### Option B: Stop and Reconcile All Phases
+
 **Action:** Halt all work. Audit actual state of Phases 0-5 code. Decide what's really needed.
 
 **Impact:**
+
 - Longer delay (1-2 hours for audit + planning)
 - Ensures clarity before proceeding
 - May discover missing implementations in Phases 0-5
 
 **Prerequisites:**
+
 - Full code audit of thegent harness
 - Dependency analysis: Do Phases 2-3 really depend on 0-1 being fully implemented?
 
 ### Option C: Start with Phase 2-3, Audit 0-5 in Parallel
+
 **Action:** Begin Phase 2-3 as planned (Option A), assign separate agent to audit Phases 0-5 in background.
 
 **Impact:**
+
 - Keeps Batch 1 moving (maintains SLO)
 - Parallel audit of Phase 0-5 (non-blocking)
 - Merge results: If 0-5 is missing, either backfill or remove from WORK_STREAM
 
 **Prerequisites:**
+
 - Separate agent available for audit
 - Risk: Phase 2-3 work may need to be redone if Phase 0-5 assumptions are wrong
 
@@ -142,6 +162,7 @@ Shows **already-completed** thegent harness features:
 ## Evidence & References
 
 ### Files Analyzed
+
 1. `/Users/kooshapari/temp-PRODVERCEL/485/kush/docs/reference/WORK_STREAM.md` (1-432 lines)
    - Lines 26-89: Phases 0-5 (all marked COMPLETED)
    - Lines 91-203: Phases 6-18 (all marked PENDING)
@@ -153,7 +174,7 @@ Shows **already-completed** thegent harness features:
 
 3. Code search: `find /Users/kooshapari/temp-PRODVERCEL/485/kush -type f -name "*.py" -o -name "*.sh" -o -name "*.rs"`
    - Results: 500+ files in `/crun/` subdirectory (crun project)
-   - **No files** implementing TGNT-P0.* through TGNT-P5.* tasks found
+   - **No files** implementing TGNT-P0._ through TGNT-P5._ tasks found
    - No harness-specific code detected
 
 4. Git status: Not a git repository at `/Users/kooshapari/temp-PRODVERCEL/485/kush`

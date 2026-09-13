@@ -75,7 +75,11 @@ class MetaGovernance:
         else:
             # Default constitutional rules
             self.rules = [
-                Rule("G-META-01", ConstitutionalPrinciple.SAFETY, "Never delete core system configuration files."),
+                Rule(
+                    "G-META-01",
+                    ConstitutionalPrinciple.SAFETY,
+                    "Never delete core system configuration files.",
+                ),
                 Rule(
                     "G-META-02",
                     ConstitutionalPrinciple.PRIVACY,
@@ -122,10 +126,16 @@ class MetaGovernance:
             if rule.principle == ConstitutionalPrinciple.SAFETY and (
                 "delete" in action_description.lower() or "config" in action_description.lower()
             ):
-                return False, f"Action violates {rule.rule_id} ({rule.principle.value}): {rule.description}"
+                return (
+                    False,
+                    f"Action violates {rule.rule_id} ({rule.principle.value}): {rule.description}",
+                )
 
             if rule.principle == ConstitutionalPrinciple.PRIVACY and ("secret" in tags or "credential" in tags):
-                return False, f"Action violates {rule.rule_id} ({rule.principle.value}): {rule.description}"
+                return (
+                    False,
+                    f"Action violates {rule.rule_id} ({rule.principle.value}): {rule.description}",
+                )
 
         return True, None
 

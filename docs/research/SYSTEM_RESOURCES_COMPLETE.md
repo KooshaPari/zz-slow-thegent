@@ -3,6 +3,7 @@
 
 > **Status**: Complete | **Version**: 1.0 | **Date**: 2026-02-16
 > **Related**:
+>
 > - [System Resources FD CPU Deep Research](./SYSTEM_RESOURCES_FD_CPU_DEEP_RESEARCH.md)
 > - [Swarm Complete](./SWARM_COMPLETE.md)
 > - [Process Optimization Plan](../plans/PROCESS_OPTIMIZATION_PLAN.md)
@@ -25,6 +26,7 @@
 ### 1.1 Key Concepts
 
 Activity Monitor–style metrics (CPU %, memory, FD count, threads, ports) are essential for:
+
 - **ConcurrencyController** gates (FD, memory, load)
 - **Prune prioritization** (RSS-aware, FD-aware)
 - **`thegent ps` / `thegent observe`** — extend to system process view
@@ -32,14 +34,14 @@ Activity Monitor–style metrics (CPU %, memory, FD count, threads, ports) are e
 
 ### 1.2 Current State
 
-| Component | Status | Location |
-|-----------|--------|----------|
-| **ResourceSnapshot** | ✅ Implemented | `load_based_limits.py` |
-| **FD sampling (Linux)** | ✅ Implemented | `/proc/self/fd` |
-| **FD sampling (macOS)** | ⚠️ Partial | Falls back to 0 |
-| **Memory sampling** | ✅ Implemented | `/proc/meminfo` (Linux), `vm_stat` (macOS) |
-| **Load average** | ✅ Implemented | `os.getloadavg()` |
-| **Per-process metrics** | ❌ Not implemented | — |
+| Component               | Status             | Location                                   |
+| ----------------------- | ------------------ | ------------------------------------------ |
+| **ResourceSnapshot**    | ✅ Implemented     | `load_based_limits.py`                     |
+| **FD sampling (Linux)** | ✅ Implemented     | `/proc/self/fd`                            |
+| **FD sampling (macOS)** | ⚠️ Partial         | Falls back to 0                            |
+| **Memory sampling**     | ✅ Implemented     | `/proc/meminfo` (Linux), `vm_stat` (macOS) |
+| **Load average**        | ✅ Implemented     | `os.getloadavg()`                          |
+| **Per-process metrics** | ❌ Not implemented | —                                          |
 
 ### 1.3 Gaps
 
@@ -61,9 +63,11 @@ import platform
 from typing import Tuple, Optional
 from dataclasses import dataclass
 
+
 @dataclass
 class ResourceSnapshot:
     """System resource snapshot."""
+
     fd_used: int
     fd_limit: int
     mem_available_mb: int
@@ -71,6 +75,7 @@ class ResourceSnapshot:
     load_5m: float
     load_15m: float
     cpu_count: int
+
 
 def sample_resources() -> ResourceSnapshot:
     """Sample system resources (cross-platform)."""
@@ -98,6 +103,7 @@ def sample_resources() -> ResourceSnapshot:
         cpu_count=cpu_count,
     )
 
+
 def _get_fd_usage(system: str) -> Tuple[int, int]:
     """Get FD usage (used, limit)."""
     if system == "Linux":
@@ -109,6 +115,7 @@ def _get_fd_usage(system: str) -> Tuple[int, int]:
 
         # Get limit
         import resource
+
         soft, hard = resource.getrlimit(resource.RLIMIT_NOFILE)
         return fd_count, soft
 
@@ -122,23 +129,23 @@ def _get_fd_usage(system: str) -> Tuple[int, int]:
                 timeout=1.0,
             )
             # Filter out .txt (loaded libraries)
-            fd_count = len([
-                line for line in result.stdout.splitlines()
-                if " txt " not in line
-            ])
+            fd_count = len([line for line in result.stdout.splitlines() if " txt " not in line])
         except (subprocess.TimeoutExpired, FileNotFoundError):
             fd_count = 0
 
         # Get limit
         import resource
+
         soft, hard = resource.getrlimit(resource.RLIMIT_NOFILE)
         return fd_count, soft
 
     else:
         # Windows or unknown
         import resource
+
         soft, hard = resource.getrlimit(resource.RLIMIT_NOFILE)
         return 0, soft
+
 
 def _get_memory_available_mb(system: str) -> int:
     """Get available memory in MB."""
@@ -192,6 +199,7 @@ from functools import lru_cache
 from time import time
 from typing import Dict
 
+
 class CachedResourceSampler:
     """Resource sampler with caching for expensive operations."""
 
@@ -233,9 +241,11 @@ class CachedResourceSampler:
 from dataclasses import dataclass
 from typing import Optional
 
+
 @dataclass
 class ProcessMetrics:
     """Per-process resource metrics."""
+
     pid: int
     name: str
     rss_mb: float
@@ -243,6 +253,7 @@ class ProcessMetrics:
     fd_count: int
     thread_count: int
     port_count: int
+
 
 def get_process_metrics(pid: int) -> Optional[ProcessMetrics]:
     """Get metrics for a specific process."""
@@ -254,6 +265,7 @@ def get_process_metrics(pid: int) -> Optional[ProcessMetrics]:
         return _get_process_metrics_macos(pid)
     else:
         return None
+
 
 def _get_process_metrics_linux(pid: int) -> Optional[ProcessMetrics]:
     """Get process metrics on Linux."""
@@ -304,6 +316,7 @@ def _get_process_metrics_linux(pid: int) -> Optional[ProcessMetrics]:
     except (OSError, ValueError, IndexError):
         return None
 
+
 def _get_process_metrics_macos(pid: int) -> Optional[ProcessMetrics]:
     """Get process metrics on macOS."""
     try:
@@ -340,10 +353,7 @@ def _get_process_metrics_macos(pid: int) -> Optional[ProcessMetrics]:
                 text=True,
                 timeout=1.0,
             )
-            fd_count = len([
-                line for line in result.stdout.splitlines()
-                if " txt " not in line
-            ])
+            fd_count = len([line for line in result.stdout.splitlines() if " txt " not in line])
         except (subprocess.TimeoutExpired, FileNotFoundError):
             fd_count = 0
 
@@ -362,6 +372,7 @@ def _get_process_metrics_macos(pid: int) -> Optional[ProcessMetrics]:
     except (OSError, ValueError, IndexError, subprocess.TimeoutExpired):
         return None
 
+
 def _count_ports_linux(pid: int) -> int:
     """Count open ports for process on Linux."""
     try:
@@ -373,6 +384,7 @@ def _count_ports_linux(pid: int) -> int:
         return len([line for line in result.stdout.splitlines() if "TCP" in line or "UDP" in line])
     except (FileNotFoundError, subprocess.TimeoutExpired):
         return 0
+
 
 def _count_ports_macos(pid: int) -> int:
     """Count open ports for process on macOS."""
@@ -399,6 +411,7 @@ def get_all_process_metrics(pids: list[int]) -> list[ProcessMetrics]:
         if metric:
             metrics.append(metric)
     return metrics
+
 
 def get_top_processes_by_rss(n: int = 20) -> list[ProcessMetrics]:
     """Get top N processes by RSS."""
@@ -434,14 +447,17 @@ def get_top_processes_by_rss(n: int = 20) -> list[ProcessMetrics]:
 ```python
 from dataclasses import dataclass
 
+
 @dataclass
 class LimitGateConfig:
     """Resource gate configuration."""
+
     fd_threshold: float = 0.75  # Block when FD ≥ 75%
     memory_threshold_mb: int = 256  # Block when memory < 256 MB
     load_per_cpu_max: float = 1.5  # Block when load ≥ 1.5× CPU
     thread_threshold: Optional[int] = None  # Block when threads > threshold
     port_threshold: Optional[int] = None  # Block when ports > threshold
+
 
 def check_gates(snapshot: ResourceSnapshot, config: LimitGateConfig) -> Tuple[bool, list[str]]:
     """Check if resource gates allow execution."""
@@ -526,6 +542,7 @@ def prioritize_processes_for_prune(
 
     return [m.pid for m in metrics]
 
+
 def prune_orphans_rss_aware(
     threshold: int = 12,
     sort_by: str = "rss",
@@ -541,7 +558,7 @@ def prune_orphans_rss_aware(
     prioritized = prioritize_processes_for_prune(orphans, sort_by=sort_by)
 
     # Kill top N processes
-    to_kill = prioritized[:len(orphans) - threshold]
+    to_kill = prioritized[: len(orphans) - threshold]
     killed = 0
 
     for pid in to_kill:
@@ -593,7 +610,7 @@ gates:
 sampling:
   cache_ttl: 5.0
   fd_cache_ttl: 60.0
-  method: auto  # auto | lsof | proc
+  method: auto # auto | lsof | proc
 
 prune:
   sort_by: rss
@@ -608,14 +625,17 @@ prune:
 ### 7.1 Common Issues
 
 **Issue**: macOS FD count always 0
+
 - **Solution**: Use `lsof` method, enable caching
 - **Config**: `THGENT_FD_SAMPLE_METHOD=lsof`, `THGENT_FD_SAMPLE_CACHE_SEC=60`
 
 **Issue**: Prune too aggressive
+
 - **Solution**: Increase threshold, adjust sort order
 - **Config**: `THGENT_PRUNE_SORT_BY=rss`, `THGENT_AUTO_PRUNE_THRESHOLD=20`
 
 **Issue**: Resource gates always block
+
 - **Solution**: Check thresholds, verify sampling
 - **Debug**: `thegent observe resources`
 
@@ -624,6 +644,7 @@ prune:
 ```python
 # Enable debug logging
 import logging
+
 logging.basicConfig(level=logging.DEBUG)
 
 # Check resource snapshot
@@ -666,7 +687,7 @@ print(f"Allowed: {allowed}, Violations: {violations}")
 
 ---
 
-*Generated: 2026-02-16 | Version: 1.0 | Status: Complete*
+_Generated: 2026-02-16 | Version: 1.0 | Status: Complete_
 
 ---
 
@@ -676,15 +697,18 @@ print(f"Allowed: {allowed}, Violations: {violations}")
 **Extended by:** Claude Code
 
 ### Changes Made
+
 1. Added planning patterns
 2. Added implementation roadmap
 3. Enhanced cross-references
 
 ### Cross-References Added
+
 - WORK_STREAM.md
 - Implementation guides
 
 ### Practical Additions
+
 - Planning templates
 - Roadmap configurations
 

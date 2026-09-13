@@ -1,8 +1,9 @@
 from __future__ import annotations
 
-import orjson as json
+import contextlib
 from pathlib import Path
 
+import orjson as json
 import pytest
 
 from thegent.orchestration.state.session_scraper import SessionScraper
@@ -25,17 +26,25 @@ edited src/thegent/cli/apps/main.py
 tracking #wl155 #session-memory
 """
 
-    monkeypatch.setattr("thegent.orchestration.state.session_scraper.list_tmux_panes", lambda: [_Pane("%1")])
-    monkeypatch.setattr("thegent.orchestration.state.session_scraper.is_claude_code_pane", lambda pane: True)
+    monkeypatch.setattr(
+        "thegent.orchestration.state.session_scraper.list_tmux_panes",
+        lambda: [_Pane("%1")],
+    )
+    monkeypatch.setattr(
+        "thegent.orchestration.state.session_scraper.is_claude_code_pane",
+        lambda pane: True,
+    )
     monkeypatch.setattr(
         "thegent.orchestration.state.session_scraper.capture_tmux_pane",
         lambda pane_id, last_lines=150: sample_capture,
     )
     monkeypatch.setattr(
-        "thegent.orchestration.state.session_scraper.SessionScraper.scrape_claude_history", lambda self: []
+        "thegent.orchestration.state.session_scraper.SessionScraper.scrape_claude_history",
+        lambda self: [],
     )
     monkeypatch.setattr(
-        "thegent.orchestration.state.session_scraper.SessionScraper.scrape_ante_history", lambda self: []
+        "thegent.orchestration.state.session_scraper.SessionScraper.scrape_ante_history",
+        lambda self: [],
     )
 
     snapshot = scraper.collect_snapshot(trigger="tool_use")
@@ -56,10 +65,12 @@ def test_persist_snapshot_writes_json(monkeypatch, tmp_path: Path) -> None:
 
     monkeypatch.setattr("thegent.orchestration.state.session_scraper.list_tmux_panes", list)
     monkeypatch.setattr(
-        "thegent.orchestration.state.session_scraper.SessionScraper.scrape_claude_history", lambda self: ["p1"]
+        "thegent.orchestration.state.session_scraper.SessionScraper.scrape_claude_history",
+        lambda self: ["p1"],
     )
     monkeypatch.setattr(
-        "thegent.orchestration.state.session_scraper.SessionScraper.scrape_ante_history", lambda self: ["p2"]
+        "thegent.orchestration.state.session_scraper.SessionScraper.scrape_ante_history",
+        lambda self: ["p2"],
     )
 
     out_dir = tmp_path / "snapshots"
@@ -78,10 +89,12 @@ def test_persist_snapshot_emits_created_event(monkeypatch, tmp_path: Path) -> No
 
     monkeypatch.setattr("thegent.orchestration.state.session_scraper.list_tmux_panes", list)
     monkeypatch.setattr(
-        "thegent.orchestration.state.session_scraper.SessionScraper.scrape_claude_history", lambda self: ["p1"]
+        "thegent.orchestration.state.session_scraper.SessionScraper.scrape_claude_history",
+        lambda self: ["p1"],
     )
     monkeypatch.setattr(
-        "thegent.orchestration.state.session_scraper.SessionScraper.scrape_ante_history", lambda self: []
+        "thegent.orchestration.state.session_scraper.SessionScraper.scrape_ante_history",
+        lambda self: [],
     )
 
     request_id = "req-123"
@@ -110,7 +123,10 @@ def test_persist_snapshot_emits_failed_event(monkeypatch, tmp_path: Path) -> Non
     def _raise_collect(self, trigger: str = "manual"):
         raise RuntimeError("boom")
 
-    monkeypatch.setattr("thegent.orchestration.state.session_scraper.SessionScraper.collect_snapshot", _raise_collect)
+    monkeypatch.setattr(
+        "thegent.orchestration.state.session_scraper.SessionScraper.collect_snapshot",
+        _raise_collect,
+    )
 
     request_id = "req-fail-1"
     with pytest.raises(RuntimeError, match="boom"):
@@ -148,7 +164,12 @@ def test_list_snapshots_filters_by_trigger_and_tag(monkeypatch, tmp_path: Path) 
         "tags": ["wl155"],
         "sources": [],
     }
-    payload_b = {**payload_a, "snapshot_id": "snapshot-b", "trigger": "error", "tags": ["wl156"]}
+    payload_b = {
+        **payload_a,
+        "snapshot_id": "snapshot-b",
+        "trigger": "error",
+        "tags": ["wl156"],
+    }
 
     path_a = snapshots_dir / "snapshot-a.json"
     path_b = snapshots_dir / "snapshot-b.json"
@@ -261,10 +282,12 @@ def test_snapshot_created_event_payload_schema_validation(monkeypatch, tmp_path:
 
     monkeypatch.setattr("thegent.orchestration.state.session_scraper.list_tmux_panes", list)
     monkeypatch.setattr(
-        "thegent.orchestration.state.session_scraper.SessionScraper.scrape_claude_history", lambda self: ["prompt1"]
+        "thegent.orchestration.state.session_scraper.SessionScraper.scrape_claude_history",
+        lambda self: ["prompt1"],
     )
     monkeypatch.setattr(
-        "thegent.orchestration.state.session_scraper.SessionScraper.scrape_ante_history", lambda self: []
+        "thegent.orchestration.state.session_scraper.SessionScraper.scrape_ante_history",
+        lambda self: [],
     )
 
     request_id = "req-evt-001"
@@ -307,18 +330,19 @@ def test_snapshot_failed_event_payload_schema_validation(monkeypatch, tmp_path: 
     def _raise_runtime(self, trigger: str = "manual"):
         raise RuntimeError("test failure message")
 
-    monkeypatch.setattr("thegent.orchestration.state.session_scraper.SessionScraper.collect_snapshot", _raise_runtime)
+    monkeypatch.setattr(
+        "thegent.orchestration.state.session_scraper.SessionScraper.collect_snapshot",
+        _raise_runtime,
+    )
 
     request_id = "req-evt-fail-001"
-    try:
+    with contextlib.suppress(RuntimeError):
         scraper.persist_snapshot(
             trigger="timer:15m",
             out_dir=tmp_path / "snapshots",
             request_event_id=request_id,
             event_log=event_log,
         )
-    except RuntimeError:
-        pass
 
     events = [json.loads(line) for line in event_log.read_text(encoding="utf-8").splitlines() if line.strip()]
     assert len(events) == 1
@@ -341,14 +365,22 @@ def test_trigger_normalization_applied_to_persisted_snapshot(monkeypatch, tmp_pa
 
     monkeypatch.setattr("thegent.orchestration.state.session_scraper.list_tmux_panes", list)
     monkeypatch.setattr(
-        "thegent.orchestration.state.session_scraper.SessionScraper.scrape_claude_history", lambda self: []
+        "thegent.orchestration.state.session_scraper.SessionScraper.scrape_claude_history",
+        lambda self: [],
     )
     monkeypatch.setattr(
-        "thegent.orchestration.state.session_scraper.SessionScraper.scrape_ante_history", lambda self: []
+        "thegent.orchestration.state.session_scraper.SessionScraper.scrape_ante_history",
+        lambda self: [],
     )
 
     # Test valid triggers per schema
-    for trigger in ["manual", "hook:pre-commit", "hook:post-test", "timer:15m", "session:end"]:
+    for trigger in [
+        "manual",
+        "hook:pre-commit",
+        "hook:post-test",
+        "timer:15m",
+        "session:end",
+    ]:
         path = scraper.persist_snapshot(trigger=trigger, out_dir=out_dir)
         snapshot = scraper.load_snapshot(path)
         assert snapshot is not None

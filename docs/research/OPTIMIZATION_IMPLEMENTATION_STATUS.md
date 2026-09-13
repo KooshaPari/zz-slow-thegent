@@ -11,6 +11,7 @@
 ### Batch 1: Core Parsers & Monitoring ✅ COMPLETE
 
 #### 1. Fast Process Monitor ✅ DONE
+
 - **File**: `src/thegent/infra/fast_process_monitor.py`
 - **Status**: Fully implemented and integrated
 - **Performance**: 10-100x faster than psutil on Linux
@@ -18,6 +19,7 @@
 - **Integration**: Used in doctor.py, resource_monitor.py, mcp_server.py
 
 #### 2. Fast YAML Parser ✅ DONE
+
 - **File**: `src/thegent/infra/fast_yaml_parser.py`
 - **Status**: Fully implemented
 - **Performance**: 3-5x faster with oyaml, 2-3x faster with ruamel.yaml
@@ -25,6 +27,7 @@
 - **Integration**: Ready for migration (see migration guide)
 
 #### 3. Fast TOML Parser ✅ DONE
+
 - **File**: `src/thegent/infra/fast_toml_parser.py`
 - **Status**: Fully implemented
 - **Performance**: 10-20x faster with rtoml, 3-5x faster with tomli
@@ -32,6 +35,7 @@
 - **Integration**: Ready for migration (see migration guide)
 
 #### 4. Fast File Watcher ✅ DONE
+
 - **File**: `src/thegent/infra/fast_file_watcher.py`
 - **Status**: Fully implemented
 - **Performance**: 5-10x faster with watchfiles
@@ -41,6 +45,7 @@
 ### Batch 2: Validation & Operations ✅ COMPLETE
 
 #### 5. Fast JSON Schema Validator ✅ DONE
+
 - **File**: `src/thegent/infra/fast_json_schema.py`
 - **Status**: Fully implemented
 - **Performance**: 2-3x faster than jsonschema
@@ -49,6 +54,7 @@
 - **Integration**: Ready for migration
 
 #### 6. Fast File Operations ✅ DONE
+
 - **File**: `src/thegent/infra/fast_file_ops.py`
 - **Status**: Fully implemented
 - **Performance**: Zero-copy on Linux (sendfile), optimized on all platforms
@@ -59,6 +65,7 @@
 - **Integration**: Ready for migration
 
 #### 7. Fast HTTP Client ✅ DONE
+
 - **File**: `src/thegent/infra/fast_http_client.py`
 - **Status**: Fully implemented
 - **Performance**: 2-3x faster with curl_cffi
@@ -69,6 +76,7 @@
 ### Batch 3: Async & Utilities ✅ COMPLETE
 
 #### 8. Fast Subprocess Execution ✅ DONE
+
 - **File**: `src/thegent/infra/fast_subprocess.py`
 - **Status**: Fully implemented
 - **Performance**: Non-blocking async execution, optimized process creation
@@ -80,6 +88,7 @@
 - **Integration**: Ready for migration
 
 #### 9. Multi-Tier Caching ✅ DONE
+
 - **File**: `src/thegent/infra/fast_cache.py`
 - **Status**: Fully implemented
 - **Performance**: Better cache hit rates, persistent caching
@@ -92,6 +101,7 @@
 - **Integration**: Ready for migration
 
 #### 10. Fast String Operations ✅ DONE
+
 - **File**: `src/thegent/infra/fast_string_ops.py`
 - **Status**: Fully implemented
 - **Performance**: 10-100x faster fuzzy matching with rapidfuzz
@@ -104,6 +114,7 @@
 - **Integration**: Ready for migration (rapidfuzz already installed!)
 
 #### 11. Fast UUID Generation ✅ DONE
+
 - **File**: `src/thegent/infra/fast_uuid.py`
 - **Status**: Fully implemented
 - **Performance**: 2-5x faster UUID generation with fastuuid
@@ -117,6 +128,7 @@
 ### Batch 4: Networking & Utilities ✅ COMPLETE
 
 #### 12. Fast WebSocket Client ✅ DONE
+
 - **File**: `src/thegent/infra/fast_websocket.py`
 - **Status**: Fully implemented
 - **Performance**: Modern websockets library (faster than websocket-client)
@@ -129,6 +141,7 @@
 - **Integration**: Ready for migration (websockets already installed!)
 
 #### 13. Fast Compression ✅ DONE
+
 - **File**: `src/thegent/infra/fast_compression.py`
 - **Status**: Fully implemented
 - **Performance**: Better compression with brotli/zstd, faster with zstd
@@ -141,6 +154,7 @@
 - **Integration**: Ready for migration
 
 #### 14. Fast Path Operations ✅ DONE
+
 - **File**: `src/thegent/infra/fast_path_ops.py`
 - **Status**: Fully implemented
 - **Performance**: Direct os.path operations (faster than pathlib for simple ops)
@@ -156,6 +170,7 @@
 ## 📋 Migration Status
 
 ### Files Ready for YAML Migration (11 files)
+
 - `thegent/agents/cliproxy_manager.py`
 - `thegent/dex_main.py`
 - `thegent/clode_main.py`
@@ -168,6 +183,7 @@
 - `thegent/integration/plan_system.py`
 
 ### Files Ready for Watchdog Migration (1 file)
+
 - `thegent/governance/triggers.py`
 
 ---
@@ -212,21 +228,21 @@ pip install tomli tomli-w
 
 ### After Installing Fast Backends:
 
-| Operation | Current | With Fast Backend | Improvement |
-|-----------|---------|-------------------|-------------|
-| YAML parsing | PyYAML (100ms) | oyaml (20-30ms) | **3-5x faster** |
-| TOML parsing | tomlkit (50ms) | rtoml (2-5ms) | **10-20x faster** |
-| File watching | watchdog (high CPU) | watchfiles (low CPU) | **5-10x faster** |
-| Process monitoring | psutil (500ms) | FastProcessMonitor (20-50ms) | **10-100x faster** |
+| Operation          | Current             | With Fast Backend            | Improvement        |
+| ------------------ | ------------------- | ---------------------------- | ------------------ |
+| YAML parsing       | PyYAML (100ms)      | oyaml (20-30ms)              | **3-5x faster**    |
+| TOML parsing       | tomlkit (50ms)      | rtoml (2-5ms)                | **10-20x faster**  |
+| File watching      | watchdog (high CPU) | watchfiles (low CPU)         | **5-10x faster**   |
+| Process monitoring | psutil (500ms)      | FastProcessMonitor (20-50ms) | **10-100x faster** |
 
 ### Current Status (Fallbacks):
 
-| Operation | Current Backend | Status |
-|-----------|----------------|--------|
-| YAML parsing | PyYAML | ✅ Working (fallback) |
-| TOML parsing | tomlkit | ✅ Working (fallback) |
-| File watching | watchdog | ✅ Working (fallback) |
-| Process monitoring | psutil | ✅ Working (fallback) |
+| Operation          | Current Backend | Status                |
+| ------------------ | --------------- | --------------------- |
+| YAML parsing       | PyYAML          | ✅ Working (fallback) |
+| TOML parsing       | tomlkit         | ✅ Working (fallback) |
+| File watching      | watchdog        | ✅ Working (fallback) |
+| Process monitoring | psutil          | ✅ Working (fallback) |
 
 **Note**: All fast parsers work with fallbacks. Install fast backends for maximum performance.
 
@@ -264,9 +280,11 @@ toml_dump(data, "output.toml")
 from thegent.infra import watch_files
 from watchfiles import Change
 
+
 def on_change(changes):
     for change, path in changes:
         print(f"{change}: {path}")
+
 
 # Watch files (automatically uses watchfiles if available)
 watch_files("/path/to/watch", on_change, recursive=True)
@@ -295,6 +313,7 @@ for proc in monitor.iter_processes():
 ## ✅ Implementation Checklist
 
 ### Batch 1: Core Parsers & Monitoring ✅
+
 - [x] Fast Process Monitor implementation
 - [x] Fast YAML Parser implementation
 - [x] Fast TOML Parser implementation
@@ -304,6 +323,7 @@ for proc in monitor.iter_processes():
 - [x] Documentation updated
 
 ### Batch 2: Validation & Operations ✅
+
 - [x] Fast JSON Schema Validator implementation
 - [x] Fast File Operations implementation
 - [x] Fast HTTP Client implementation
@@ -311,6 +331,7 @@ for proc in monitor.iter_processes():
 - [x] Documentation updated
 
 ### Batch 3: Async & Utilities ✅
+
 - [x] Fast Subprocess Execution implementation
 - [x] Multi-Tier Caching implementation
 - [x] Fast String Operations implementation
@@ -319,6 +340,7 @@ for proc in monitor.iter_processes():
 - [x] Documentation updated
 
 ### Batch 4: Networking & Utilities ✅
+
 - [x] Fast WebSocket Client implementation
 - [x] Fast Compression implementation
 - [x] Fast Path Operations implementation
@@ -326,6 +348,7 @@ for proc in monitor.iter_processes():
 - [x] Documentation updated
 
 ### Next Steps
+
 - [ ] Install fast backends (oyaml/ruamel.yaml, rtoml/tomli, fastjsonschema, curl_cffi, cachetools, diskcache)
 - [ ] Migrate YAML usage (11 files)
 - [ ] Migrate watchdog usage (1 file)
@@ -352,6 +375,7 @@ for proc in monitor.iter_processes():
 ## 🔄 Rollback Plan
 
 If issues occur:
+
 1. Fast parsers automatically fall back to standard libraries
 2. No breaking changes - same API
 3. Can revert imports if needed (see migration guide)

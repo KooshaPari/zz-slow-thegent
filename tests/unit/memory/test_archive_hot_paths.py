@@ -39,7 +39,9 @@ def memory_mesh(tmp_path: Path) -> MemoryMeshV2:
     # Cleanup is implicit (tmp_path); mesh itself holds no resources.
 
 
-def test_archive_hot_paths_archives_every_key_when_no_counter(memory_mesh: MemoryMeshV2) -> None:
+def test_archive_hot_paths_archives_every_key_when_no_counter(
+    memory_mesh: MemoryMeshV2,
+) -> None:
     """With no ``access_counts`` override, every working-memory key is archived."""
     memory_mesh.set_working("k1", "v1")
     memory_mesh.set_working("k2", "v2")
@@ -59,7 +61,9 @@ def test_archive_hot_paths_archives_every_key_when_no_counter(memory_mesh: Memor
     assert contents == ["k1='v1'", "k2='v2'", "k3={'nested': True}"]
 
 
-def test_archive_hot_paths_honours_access_counts_threshold(memory_mesh: MemoryMeshV2) -> None:
+def test_archive_hot_paths_honours_access_counts_threshold(
+    memory_mesh: MemoryMeshV2,
+) -> None:
     """With ``access_counts``, only keys meeting ``threshold`` are archived."""
     memory_mesh.set_working("hot", "h-value")
     memory_mesh.set_working("warm", "w-value")
@@ -140,7 +144,9 @@ def test_archive_hot_paths_returns_sorted_for_snapshot_stability(
     assert memory_mesh.archive_hot_paths(task_id="t-6") == ["a", "m", "z"]
 
 
-def test_archive_hot_paths_metadata_carries_access_count(memory_mesh: MemoryMeshV2) -> None:
+def test_archive_hot_paths_metadata_carries_access_count(
+    memory_mesh: MemoryMeshV2,
+) -> None:
     """Each archived row carries ``access_count`` in its metadata JSON."""
     memory_mesh.set_working("k", "v")
     memory_mesh.archive_hot_paths(

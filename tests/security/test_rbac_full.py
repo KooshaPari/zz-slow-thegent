@@ -2,8 +2,6 @@
 
 from __future__ import annotations
 
-import pytest
-
 
 class TestRoleEnum:
     """Tests for Role enum."""
@@ -51,7 +49,7 @@ class TestRBACManagerHasPermission:
 
     def test_admin_has_all_permissions(self) -> None:
         """Admin role has all permissions."""
-        from thegent.security.rbac import RBACManager, Role, Permission
+        from thegent.security.rbac import Permission, RBACManager, Role
 
         manager = RBACManager()
         assert manager.has_permission(Role.ADMIN, Permission.RUN_AGENT) is True
@@ -60,7 +58,7 @@ class TestRBACManagerHasPermission:
 
     def test_operator_has_limited_permissions(self) -> None:
         """Operator has limited permissions."""
-        from thegent.security.rbac import RBACManager, Role, Permission
+        from thegent.security.rbac import Permission, RBACManager, Role
 
         manager = RBACManager()
         assert manager.has_permission(Role.OPERATOR, Permission.RUN_AGENT) is True
@@ -68,7 +66,7 @@ class TestRBACManagerHasPermission:
 
     def test_auditor_read_only(self) -> None:
         """Auditor has read-only permissions."""
-        from thegent.security.rbac import RBACManager, Role, Permission
+        from thegent.security.rbac import Permission, RBACManager, Role
 
         manager = RBACManager()
         assert manager.has_permission(Role.AUDITOR, Permission.VIEW_LOGS) is True
@@ -76,14 +74,14 @@ class TestRBACManagerHasPermission:
 
     def test_incident_commander_has_emergency(self) -> None:
         """Incident commander has emergency override."""
-        from thegent.security.rbac import RBACManager, Role, Permission
+        from thegent.security.rbac import Permission, RBACManager, Role
 
         manager = RBACManager()
         assert manager.has_permission(Role.INCIDENT_COMMANDER, Permission.EMERGENCY_OVERRIDE) is True
 
     def test_invalid_role_returns_false(self) -> None:
         """Invalid role returns False."""
-        from thegent.security.rbac import RBACManager, Permission
+        from thegent.security.rbac import Permission, RBACManager
 
         manager = RBACManager()
         assert manager.has_permission("not_a_role", Permission.RUN_AGENT) is False
@@ -146,21 +144,21 @@ class TestRBACManagerMapOperation:
 
     def test_orchestrate_run_maps_to_run_agent(self) -> None:
         """orchestrate run maps to RUN_AGENT."""
-        from thegent.security.rbac import RBACManager, Permission
+        from thegent.security.rbac import Permission, RBACManager
 
         manager = RBACManager()
         assert manager._map_operation_to_permission("orchestrate run") == Permission.RUN_AGENT
 
     def test_govern_purge_maps_to_purge_data(self) -> None:
         """govern purge maps to PURGE_DATA."""
-        from thegent.security.rbac import RBACManager, Permission
+        from thegent.security.rbac import Permission, RBACManager
 
         manager = RBACManager()
         assert manager._map_operation_to_permission("govern purge") == Permission.PURGE_DATA
 
     def test_logs_maps_to_view_logs(self) -> None:
         """logs maps to VIEW_LOGS."""
-        from thegent.security.rbac import RBACManager, Permission
+        from thegent.security.rbac import Permission, RBACManager
 
         manager = RBACManager()
         assert manager._map_operation_to_permission("logs") == Permission.VIEW_LOGS
@@ -178,7 +176,7 @@ class TestRBACManagerHelpers:
 
     def test_get_role_permissions(self) -> None:
         """get_role_permissions returns permissions for role."""
-        from thegent.security.rbac import RBACManager, Role, Permission
+        from thegent.security.rbac import Permission, RBACManager, Role
 
         manager = RBACManager()
         perms = manager.get_role_permissions(Role.ADMIN)
@@ -200,7 +198,7 @@ class TestRolePermissionsMapping:
 
     def test_all_roles_have_permissions(self) -> None:
         """All roles have at least one permission."""
-        from thegent.security.rbac import RBACManager, Role, Permission
+        from thegent.security.rbac import RBACManager, Role
 
         manager = RBACManager()
         for role in Role:
@@ -209,7 +207,7 @@ class TestRolePermissionsMapping:
 
     def test_admin_has_all_permissions(self) -> None:
         """Admin has all defined permissions."""
-        from thegent.security.rbac import RBACManager, Role, Permission
+        from thegent.security.rbac import Permission, RBACManager, Role
 
         manager = RBACManager()
         admin_perms = manager.get_role_permissions(Role.ADMIN)

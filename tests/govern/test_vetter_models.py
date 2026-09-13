@@ -17,10 +17,10 @@ Covers:
 from __future__ import annotations
 
 import asyncio
-import orjson as json
 from pathlib import Path
 from unittest.mock import AsyncMock, MagicMock, patch
 
+import orjson as json
 import pytest
 
 from thegent.govern.vetter.checks import (
@@ -485,7 +485,10 @@ async def test_quality_score_check_auto_model_uses_capability_index_recommendati
     fake_index.all_agents.return_value = [fake_agent]
 
     with (
-        patch("thegent.agents.capability_index.CapabilityIndex.get", return_value=fake_index),
+        patch(
+            "thegent.agents.capability_index.CapabilityIndex.get",
+            return_value=fake_index,
+        ),
         patch("litellm.acompletion", new_callable=AsyncMock, return_value=mock_response),
     ):
         check = QualityScoreVetterCheck(judge_model="auto")
@@ -653,7 +656,10 @@ async def test_ruff_check_fails_on_violations():
     # @trace WL-090
     diff = "--- a/src/foo.py\n+++ b/src/foo.py\n+import os\n"
     mock_proc = AsyncMock()
-    mock_proc.communicate.return_value = (b"src/foo.py:1:1: F401 'os' imported but unused", None)
+    mock_proc.communicate.return_value = (
+        b"src/foo.py:1:1: F401 'os' imported but unused",
+        None,
+    )
     mock_proc.returncode = 1
     with patch("asyncio.create_subprocess_exec", return_value=mock_proc):
         check = RuffCheck()

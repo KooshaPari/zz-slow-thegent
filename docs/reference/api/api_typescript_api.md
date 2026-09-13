@@ -12,7 +12,7 @@ Generate TypeScript/JavaScript API documentation.
 
 ### Methods
 
-#### TypeScriptAPIGenerator.__init__
+#### TypeScriptAPIGenerator.**init**
 
 ```python
 __init__(self: Any)

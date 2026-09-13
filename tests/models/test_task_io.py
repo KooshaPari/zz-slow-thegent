@@ -82,7 +82,11 @@ class TestTaskInput:
 
     def test_extra_fields_preserved(self) -> None:
         """Extra fields are preserved (extra='allow') for forward compat."""
-        data: dict[str, Any] = {"task": "t", "future_field": "value", "another_field": 42}
+        data: dict[str, Any] = {
+            "task": "t",
+            "future_field": "value",
+            "another_field": 42,
+        }
         ti = TaskInput.model_validate(data)
         assert ti.model_extra is not None
         assert ti.model_extra.get("future_field") == "value"

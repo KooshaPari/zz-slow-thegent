@@ -32,12 +32,12 @@ Merge only when both mandatory harness contract gates pass.
 
 Use this compact checklist to verify the contract gates and document outcomes.
 
-| Check | Command | Expected outcome |
-|---|---|---|
-| Sitback contracts gate | `task quality:sitback-contracts` | Exit code `0`; contract suite reports pass |
-| Harness model contracts gate | `task quality:harness-model-contracts` | Exit code `0`; contract suite reports pass |
-| Gate list present in governance summary | `rg -n "task quality:(sitback-contracts|harness-model-contracts)" docs/governance/GOVERNANCE_SUMMARY.md` | Exactly 2 matches |
-| Evidence subsection present | `rg -n "^## Contract Verification Evidence$" docs/governance/GOVERNANCE_SUMMARY.md` | Exactly 1 match |
+| Check                                   | Command                                                                             | Expected outcome                                                 |
+| --------------------------------------- | ----------------------------------------------------------------------------------- | ---------------------------------------------------------------- | ----------------- |
+| Sitback contracts gate                  | `task quality:sitback-contracts`                                                    | Exit code `0`; contract suite reports pass                       |
+| Harness model contracts gate            | `task quality:harness-model-contracts`                                              | Exit code `0`; contract suite reports pass                       |
+| Gate list present in governance summary | `rg -n "task quality:(sitback-contracts                                             | harness-model-contracts)" docs/governance/GOVERNANCE_SUMMARY.md` | Exactly 2 matches |
+| Evidence subsection present             | `rg -n "^## Contract Verification Evidence$" docs/governance/GOVERNANCE_SUMMARY.md` | Exactly 1 match                                                  |
 
 ## Quick Links
 
@@ -46,34 +46,36 @@ Use this compact checklist to verify the contract gates and document outcomes.
 - WBS coordination: `docs/reference/WBS_AGENT_PROGRESS.md`
 
 ## Batch-1 Agent-6 Verification Note (2026-02-21)
+
 - Command: `uv run pytest -k inject_proxy_models tests/routing/test_request_extensions.py`
 - Signal: PASS (`7 passed, 12 deselected`)
 
 ## Regression-Spiral Guardrail (2026-02-21)
+
 - After every batch merge, run `task quality:harness-contracts:list-check` first, then run both mandatory gates: `task quality:sitback-contracts` and `task quality:harness-model-contracts`.
 - Treat merge readiness as blocked until all three commands exit with code `0` in the post-merge run.
 
 ## Operator Checklist (List-Check vs Quick vs Full)
 
-| Chain | Command | Use when |
-|---|---|---|
-| List-check only | `task quality:harness-contracts:list-check` | Verify harness contract task names are present before running any gate chain |
-| Smoke alias | `task quality:list-check` | Run the same list-check through the short alias for a quick preflight |
-| Quick harness chain | `task quality:harness-contracts:quick` | Run a fast local harness sanity check before commit |
-| Full harness chain | `task quality:harness-contracts` | Run merge-readiness and post-merge harness verification |
+| Chain               | Command                                     | Use when                                                                     |
+| ------------------- | ------------------------------------------- | ---------------------------------------------------------------------------- |
+| List-check only     | `task quality:harness-contracts:list-check` | Verify harness contract task names are present before running any gate chain |
+| Smoke alias         | `task quality:list-check`                   | Run the same list-check through the short alias for a quick preflight        |
+| Quick harness chain | `task quality:harness-contracts:quick`      | Run a fast local harness sanity check before commit                          |
+| Full harness chain  | `task quality:harness-contracts`            | Run merge-readiness and post-merge harness verification                      |
 
 ## Runtime Modularization Matrix (WL-130)
 
 Source: `contracts/runtime/runtime-modularization-matrix.json`
 Last Updated: 2026-02-21
 
-| Workload | Current | Target | Priority | Status |
-|----------|---------|--------|----------|--------|
-| CLI dispatch | Python monolith (cli.py, impl.py) | Python frontmatter + Rust helpers | P0 | in_progress |
-| Policy/gate evaluation | Mixed Python + shell (hooks pipeline) | Rust backmatter (thegent-hooks) | P0 | in_progress |
-| MCP transport/tool registry | Python monolith (mcp/server.py) | Python thin transport + Rust utilities | P1 | planned |
-| Low-level memory/layout primitives | Zig POC interop | Zig ABI contract (thegent-zmx-interop) | P2 | planned |
-| Deterministic scoring/ranking kernels | Placeholder Python/Mojo bridge | Mojo kernel contracts | P2 | planned |
+| Workload                              | Current                               | Target                                 | Priority | Status      |
+| ------------------------------------- | ------------------------------------- | -------------------------------------- | -------- | ----------- |
+| CLI dispatch                          | Python monolith (cli.py, impl.py)     | Python frontmatter + Rust helpers      | P0       | in_progress |
+| Policy/gate evaluation                | Mixed Python + shell (hooks pipeline) | Rust backmatter (thegent-hooks)        | P0       | in_progress |
+| MCP transport/tool registry           | Python monolith (mcp/server.py)       | Python thin transport + Rust utilities | P1       | planned     |
+| Low-level memory/layout primitives    | Zig POC interop                       | Zig ABI contract (thegent-zmx-interop) | P2       | planned     |
+| Deterministic scoring/ranking kernels | Placeholder Python/Mojo bridge        | Mojo kernel contracts                  | P2       | planned     |
 
 > Machine-readable contract: `contracts/runtime/runtime-modularization-matrix.json`
 
@@ -81,16 +83,17 @@ Last Updated: 2026-02-21
 
 The polyglot runtime modularization matrix is maintained at `contracts/runtime/runtime-modularization-matrix.json`.
 
-| Runtime | Workload | Status |
-|---------|----------|--------|
-| Python  | parse_model_suffix baseline | done |
+| Runtime | Workload                    | Status      |
+| ------- | --------------------------- | ----------- |
+| Python  | parse_model_suffix baseline | done        |
 | Rust    | parse_model_suffixes (PyO3) | in_progress |
-| Zig     | ABI contract v1.0.0 | in_progress |
-| Mojo    | deterministic kernel smoke | in_progress |
+| Zig     | ABI contract v1.0.0         | in_progress |
+| Mojo    | deterministic kernel smoke  | in_progress |
 
 For promotion criteria, see `docs/governance/POLYGLOT_RUNTIME_COVERAGE_AND_CONVERSION_MATRIX_2026-02-21.md`.
 
 <!-- PHENOTYPE_GOVERNANCE_OVERLAY_V1 -->
+
 ## Phenotype Governance Overlay v1
 
 - Enforce `TDD + BDD + SDD` for all feature and workflow changes.

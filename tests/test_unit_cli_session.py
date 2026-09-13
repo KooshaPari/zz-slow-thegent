@@ -67,7 +67,10 @@ class TestRunCommand:
     @patch("thegent.cli.commands.cli.run_cmd")
     def test_run_with_routing(self, mock_run_cmd) -> None:
         # @trace FR-CLI-009
-        result = runner.invoke(app, ["run", "agent", "task", "--agent", "claude", "--routing", "prefer_proxy"])
+        result = runner.invoke(
+            app,
+            ["run", "agent", "task", "--agent", "claude", "--routing", "prefer_proxy"],
+        )
         assert result.exit_code == 0
 
     @patch("thegent.cli.commands.cli.run_cmd")

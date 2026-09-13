@@ -17,7 +17,6 @@ from thegent.ux.cockpit import (
     render_cockpit,
 )
 
-
 pytestmark = pytest.mark.unit
 
 
@@ -255,7 +254,7 @@ class TestRender:
         assert "standard" in out
 
     def test_render_includes_sparkline(self) -> None:
-        c = OperatorCockpit()
+        OperatorCockpit()
         cfg = CockpitConfig(show_sparkline=True, sparkline_width=8)
         cockpit = OperatorCockpit(config=cfg)
         cockpit.tick(
@@ -292,7 +291,13 @@ class TestSnapshot:
         c = OperatorCockpit()
         c.tick(
             runs=[
-                RunEvent(run_id="r1", state=RunState.ACTIVE, lane="critical", agent="cursor", confidence=0.7),
+                RunEvent(
+                    run_id="r1",
+                    state=RunState.ACTIVE,
+                    lane="critical",
+                    agent="cursor",
+                    confidence=0.7,
+                ),
             ],
             overrides=[OverrideEvent(rule_id="x", by="alice", reason="r", expires_in_s=10)],
             progress=(1, 1),
@@ -626,7 +631,6 @@ class TestRenderPerformance:
         """
         from thegent.ux.cockpit import (
             MAX_DECISION_NOTICES,
-            MAX_RUNS_PANE_ROWS,
         )
 
         cockpit = self._worst_case_cockpit()

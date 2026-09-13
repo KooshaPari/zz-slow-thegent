@@ -12,7 +12,7 @@ Disk queue depth monitoring.
 
 ### Methods
 
-#### DiskQueueDepth.__init__
+#### DiskQueueDepth.**init**
 
 ```python
 __init__(self: Any)

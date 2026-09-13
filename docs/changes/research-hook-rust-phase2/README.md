@@ -23,17 +23,20 @@ Phase 2 builds on the successful Phase 1 research to deliver a complete Rust-bas
 ## Quick Start
 
 ### For Project Managers
+
 1. Read **proposal.md** § "Business Drivers" and "Success Criteria"
 2. Review **tasks.md** § "Summary by Week" for timeline
 3. Check **tasks.md** § "Risk Register" for contingencies
 
 ### For Engineers
+
 1. Read **design.md** § "Architecture Overview" for the big picture
 2. Check **design.md** § "Hook-by-Hook Design" for specific implementation patterns
 3. See **tasks.md** § "Dependency Graph" to understand task sequencing
 4. Start with **tasks.md** § Phase 2.0 (Setup)
 
 ### For Operations
+
 1. Read **design.md** § "Deployment & Migration"
 2. See **tasks.md** § "2.4.4 - Deployment Playbook"
 3. Review **proposal.md** § "Appendix B" for performance targets
@@ -45,6 +48,7 @@ Phase 2 builds on the successful Phase 1 research to deliver a complete Rust-bas
 ### proposal.md (Business-focused)
 
 **Sections**:
+
 - Executive Summary - High-level vision and outcomes
 - Problem Statement - Context from Phase 1 findings
 - Business Drivers - Performance SLA, DX, reliability, maintenance
@@ -63,6 +67,7 @@ Phase 2 builds on the successful Phase 1 research to deliver a complete Rust-bas
 ### design.md (Technical-focused)
 
 **Sections**:
+
 - Architecture Overview - System diagram, design principles
 - Hook-by-Hook Design - Detailed Rust implementation for each of 9 hooks
   - 2.1 stop-reconcile (StateManager)
@@ -84,6 +89,7 @@ Phase 2 builds on the successful Phase 1 research to deliver a complete Rust-bas
 ### tasks.md (Execution-focused)
 
 **Sections**:
+
 - WBS Overview - 30 tasks across 4 phases (2.0-2.4)
 - Phase 2.0 (Kickoff) - 2 tasks, 4h
 - Phase 2.1 (Week 1) - 7 tasks, ~14h
@@ -108,30 +114,30 @@ Phase 2 builds on the successful Phase 1 research to deliver a complete Rust-bas
 
 ### Performance
 
-| Metric | Current (Bash) | Target (Rust) | Improvement |
-|--------|----------------|---------------|------------|
-| Stop event latency | 700-1000ms | 150-250ms | **75-80%** |
-| Single hook | 80-150ms | 20-35ms | **60-75%** |
-| Memory per hook | 15-20MB | 2-5MB | **75-80%** |
+| Metric             | Current (Bash) | Target (Rust) | Improvement |
+| ------------------ | -------------- | ------------- | ----------- |
+| Stop event latency | 700-1000ms     | 150-250ms     | **75-80%**  |
+| Single hook        | 80-150ms       | 20-35ms       | **60-75%**  |
+| Memory per hook    | 15-20MB        | 2-5MB         | **75-80%**  |
 
 ### Quality
 
-| Metric | Target |
-|--------|--------|
-| Test coverage | ≥80% (enforced by CI) |
-| Type safety | No unsafe code in app logic |
+| Metric              | Target                            |
+| ------------------- | --------------------------------- |
+| Test coverage       | ≥80% (enforced by CI)             |
+| Type safety         | No unsafe code in app logic       |
 | Bash ↔ Rust parity | 100% (all 45 test scenarios pass) |
-| Cross-platform | Passing on macOS, Linux, WSL |
+| Cross-platform      | Passing on macOS, Linux, WSL      |
 
 ### Scope
 
-| Category | Count |
-|----------|-------|
-| Hooks to migrate | 9 |
-| Library modules (new) | 3 (state, validation, analysis) |
-| Integration tests | 40+ |
-| Performance benchmarks | 3+ |
-| Total Rust code (estimated) | ~1200 LOC (vs 2500 LOC Bash) |
+| Category                    | Count                           |
+| --------------------------- | ------------------------------- |
+| Hooks to migrate            | 9                               |
+| Library modules (new)       | 3 (state, validation, analysis) |
+| Integration tests           | 40+                             |
+| Performance benchmarks      | 3+                              |
+| Total Rust code (estimated) | ~1200 LOC (vs 2500 LOC Bash)    |
 
 ---
 
@@ -164,6 +170,7 @@ Phase 2 builds on the successful Phase 1 research to deliver a complete Rust-bas
 ## Prerequisites
 
 **Before starting Phase 2**:
+
 - [ ] Phase 1 research complete and approved
 - [ ] Phase 1 technical spec and implementation guide available
 - [ ] thegent-hooks library stable (1.0.0+)
@@ -251,22 +258,22 @@ tasks.md (Who + Sequencing)
 
 ### Architecture Decisions
 
-| Decision | Rationale |
-|----------|-----------|
-| **One binary per hook** | Separation of concerns, easier to test, independent versioning |
-| **Shared library** | Reuse governance logic, reduce duplication, type safety |
-| **Async deferred to Phase 3** | Phase 2 focuses on correctness; Phase 3 for optimization |
-| **Backward compatibility** | No breaking changes to hook interface or behavior |
-| **Semantic versioning** | Clear version contract (1.x = Phase 1, 2.x = Phase 2) |
+| Decision                      | Rationale                                                      |
+| ----------------------------- | -------------------------------------------------------------- |
+| **One binary per hook**       | Separation of concerns, easier to test, independent versioning |
+| **Shared library**            | Reuse governance logic, reduce duplication, type safety        |
+| **Async deferred to Phase 3** | Phase 2 focuses on correctness; Phase 3 for optimization       |
+| **Backward compatibility**    | No breaking changes to hook interface or behavior              |
+| **Semantic versioning**       | Clear version contract (1.x = Phase 1, 2.x = Phase 2)          |
 
 ### Why This Approach Over Alternatives
 
-| Alternative | Why Not |
-|-----------|---------|
-| Monolithic binary with subcommands | Harder to test independently, deployment coupling |
-| Async from start (Phase 2) | Complexity overload, correctness more important |
-| Custom error handling per hook | Code duplication; library approach more maintainable |
-| Keep some Bash hooks | Defeats maintenance benefits; parity harder to verify |
+| Alternative                        | Why Not                                               |
+| ---------------------------------- | ----------------------------------------------------- |
+| Monolithic binary with subcommands | Harder to test independently, deployment coupling     |
+| Async from start (Phase 2)         | Complexity overload, correctness more important       |
+| Custom error handling per hook     | Code duplication; library approach more maintainable  |
+| Keep some Bash hooks               | Defeats maintenance benefits; parity harder to verify |
 
 ---
 
@@ -319,6 +326,7 @@ A: Documented in risk register. Fallback: profile and optimize remaining hot-pat
 ## Document Maintenance
 
 This package is a living document. Update sections as:
+
 - Tasks complete (mark in tasks.md status table)
 - Risks emerge (add to risk register)
 - Decisions made (document in design.md § "Architecture Decisions")
@@ -328,14 +336,14 @@ This package is a living document. Update sections as:
 
 ## Appendix: Glossary
 
-| Term | Definition |
-|------|-----------|
-| Hook | Pre/PostToolUse, Stop event handler (Bash/Rust binary) |
-| Dispatcher | Rust binary that spawns hooks and collects results |
-| Governance Library | Rust crate (thegent-hooks) with reusable logic |
-| Stop Event | Claude Code lifecycle event; ~12 hooks run in parallel |
-| Parity | Behavioral equivalence between Bash and Rust versions |
-| Latency Budget | 5-15s total for Stop event; current 600-800ms used |
+| Term               | Definition                                             |
+| ------------------ | ------------------------------------------------------ |
+| Hook               | Pre/PostToolUse, Stop event handler (Bash/Rust binary) |
+| Dispatcher         | Rust binary that spawns hooks and collects results     |
+| Governance Library | Rust crate (thegent-hooks) with reusable logic         |
+| Stop Event         | Claude Code lifecycle event; ~12 hooks run in parallel |
+| Parity             | Behavioral equivalence between Bash and Rust versions  |
+| Latency Budget     | 5-15s total for Stop event; current 600-800ms used     |
 
 ---
 

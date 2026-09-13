@@ -1,9 +1,6 @@
 """Tests for crew harness integration."""
 
-from pathlib import Path
 from unittest.mock import MagicMock, patch
-
-import pytest
 
 from thegent.agents.base import RunResult
 from thegent.agents.crew.executor import ExecutionResult
@@ -19,7 +16,10 @@ class TestCrewHarness:
         # Setup mock runner
         mock_runner = MagicMock()
         mock_runner.run.return_value = RunResult(
-            exit_code=0, stdout="Task completed successfully", stderr="", timed_out=False
+            exit_code=0,
+            stdout="Task completed successfully",
+            stderr="",
+            timed_out=False,
         )
         mock_runner_class.return_value = mock_runner
 

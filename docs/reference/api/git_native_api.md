@@ -5,15 +5,15 @@
 BKM-06: Thin Python wrapper for thegent-git native binary.
 
 Provides HEAD, status, and diff-stat git metadata without spawning the git
-CLI.  Two execution strategies (tried in order):
+CLI. Two execution strategies (tried in order):
 
-1. ``thegent-git`` binary (Rust, gitoxide/git2 backend) — zero-process-spawn.
-2. ``git`` subprocess fallback — always available on any developer machine.
+1. `thegent-git` binary (Rust, gitoxide/git2 backend) — zero-process-spawn.
+2. `git` subprocess fallback — always available on any developer machine.
 
 The fallback is intentionally kept as a standalone, fully functional path so
 the module works even when the Rust binary has not been compiled.
 
-FR-GIT-001  @trace FR-GIT-001
+FR-GIT-001 @trace FR-GIT-001
 
 ---
 
@@ -21,11 +21,11 @@ FR-GIT-001  @trace FR-GIT-001
 
 Native git metadata provider.
 
-Tries the ``thegent-git`` binary first; falls back to ``git`` subprocess.
+Tries the `thegent-git` binary first; falls back to `git` subprocess.
 
 ### Methods
 
-#### GitNative.__init__
+#### GitNative.**init**
 
 ```python
 __init__(self: Any, repo_path: Any)

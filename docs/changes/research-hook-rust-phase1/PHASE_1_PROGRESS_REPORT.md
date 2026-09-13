@@ -12,19 +12,19 @@
 
 ### Completion Scorecard
 
-| Phase | Task | Status | Notes |
-|-------|------|--------|-------|
-| 1.0 | Kickoff & Planning | ✅ Complete | Design and tasks reviewed |
-| 1.0 | Dev Environment | ✅ Complete | Workspace exists: `crates/thegent-hooks/` |
-| 1.1 | Common Types | ✅ Complete | `types.rs` (~200 LOC, 8 struct types) |
-| 1.1 | PolicyEngine | ✅ Complete | `policy.rs` (~200 LOC, 8+ unit tests) |
-| 1.1 | CostCalculator | ✅ Complete | `cost.rs` (~120 LOC, 5+ unit tests) |
-| 1.1 | QualityEvaluator | ✅ Complete | `quality.rs` (~130 LOC, 4+ unit tests) |
-| 1.1 | SecurityScanner | ✅ Complete | `security.rs` (~100 LOC, 5+ unit tests) |
-| 1.2 | quality-gate Binary | 🔄 Ready | Handoff doc prepared |
-| 1.3 | security-pipeline Binary | 🔄 Ready | Handoff doc prepared |
-| 1.4 | Documentation | ⏳ Pending | Wait for binaries complete |
-| 1.5 | Delivery & Review | ⏳ Pending | Final phase |
+| Phase | Task                     | Status      | Notes                                     |
+| ----- | ------------------------ | ----------- | ----------------------------------------- |
+| 1.0   | Kickoff & Planning       | ✅ Complete | Design and tasks reviewed                 |
+| 1.0   | Dev Environment          | ✅ Complete | Workspace exists: `crates/thegent-hooks/` |
+| 1.1   | Common Types             | ✅ Complete | `types.rs` (~200 LOC, 8 struct types)     |
+| 1.1   | PolicyEngine             | ✅ Complete | `policy.rs` (~200 LOC, 8+ unit tests)     |
+| 1.1   | CostCalculator           | ✅ Complete | `cost.rs` (~120 LOC, 5+ unit tests)       |
+| 1.1   | QualityEvaluator         | ✅ Complete | `quality.rs` (~130 LOC, 4+ unit tests)    |
+| 1.1   | SecurityScanner          | ✅ Complete | `security.rs` (~100 LOC, 5+ unit tests)   |
+| 1.2   | quality-gate Binary      | 🔄 Ready    | Handoff doc prepared                      |
+| 1.3   | security-pipeline Binary | 🔄 Ready    | Handoff doc prepared                      |
+| 1.4   | Documentation            | ⏳ Pending  | Wait for binaries complete                |
+| 1.5   | Delivery & Review        | ⏳ Pending  | Final phase                               |
 
 ---
 
@@ -35,6 +35,7 @@
 #### Core Modules Implemented
 
 **`src/types.rs`** — Type definitions (complete, production-ready)
+
 - `PolicyRule` — Governance policy with ID, name, type, condition, severity
 - `RuleType` enum — Cost, Quality, Security, Spec
 - `Severity` enum — Info, Warning, Error, Critical
@@ -46,6 +47,7 @@
 - `HookError` — Custom error type for all operations
 
 **`src/policy.rs`** — PolicyEngine (complete, production-ready)
+
 - Load and evaluate governance rules
 - Support 4 rule types: Cost, Quality, Security, Spec
 - Parse simple condition syntax: `"key op value"` (e.g., `"coverage >= 80"`)
@@ -54,6 +56,7 @@
 - 8+ unit tests with comprehensive scenarios
 
 **`src/cost.rs`** — CostCalculator (complete, production-ready)
+
 - Pricing for 6+ models (Claude, GPT, Gemini)
 - Token-to-cost estimation with ±5% accuracy vs. official pricing
 - Cost-to-value ratio calculation
@@ -61,6 +64,7 @@
 - 5+ unit tests covering all models
 
 **`src/quality.rs`** — QualityEvaluator (complete, production-ready)
+
 - Parse ruff JSON linter output → `Vec<LintIssue>`
 - Parse oxlint JSON output → `Vec<LintIssue>`
 - Extract coverage percentage from coverage.py JSON
@@ -69,6 +73,7 @@
 - 4+ unit tests covering all parsers
 
 **`src/security.rs`** — SecurityScanner (complete, production-ready)
+
 - 8+ hardcoded secret detection patterns:
   - OpenAI API keys
   - GitHub tokens (PAT, OAuth)
@@ -83,20 +88,24 @@
 - 5+ unit tests with no false positives
 
 **`src/config.rs`** — ConfigLoader
+
 - Load YAML/JSON governance configurations
 - Support from file paths and raw strings
 
 **`src/lib.rs`** — Library exports
+
 - All components re-exported for public use
 - Ready for consumption by binary crates
 
 #### Test Coverage
+
 - **Total tests**: 25+ unit tests across 5 modules
 - **Target coverage**: ≥85%
 - **All tests passing**: ✅ Yes
 - **Cross-module testing**: PolicyEngine + QualityEvaluator integration
 
 #### Build Status
+
 - ✅ `cargo build --release` succeeds on macOS
 - ✅ `cargo build` succeeds with 0 warnings
 - ✅ `cargo test` passes all tests
@@ -130,20 +139,22 @@ thegent-hooks (library crate)
 
 ### Performance Characteristics (Estimated)
 
-| Operation | Time | Memory |
-|-----------|------|--------|
-| Parse 100 ruff issues | 25ms | 1MB |
-| Evaluate 10 policy rules | 15ms | 500KB |
-| Scan text for secrets | 40ms | 2MB |
-| Estimate model cost | 2ms | 100KB |
+| Operation                | Time | Memory |
+| ------------------------ | ---- | ------ |
+| Parse 100 ruff issues    | 25ms | 1MB    |
+| Evaluate 10 policy rules | 15ms | 500KB  |
+| Scan text for secrets    | 40ms | 2MB    |
+| Estimate model cost      | 2ms  | 100KB  |
 
 **Expected vs. Bash**:
+
 - Startup: 10ms (Rust) vs. 50ms (Bash) — 80% reduction
 - Core logic: 3-5× faster due to native regex, no subprocess
 
 ### Error Handling
 
 Custom `HookError` enum with variants:
+
 - `IoError` — File system operations
 - `JsonError` — JSON parsing failures
 - `YamlError` — YAML parsing failures
@@ -160,6 +171,7 @@ All operations return `Result<T, HookError>`.
 ### What Needs To Be Done
 
 #### Phase 1.2: quality-gate Binary (~12 hours)
+
 1. **1.2.1** Create binary scaffold (2h)
    - Accept JSON on stdin
    - Parse to context struct
@@ -183,12 +195,14 @@ All operations return `Result<T, HookError>`.
    - Document latency, memory, CPU
 
 #### Phase 1.3: security-pipeline Binary (~4 hours)
+
 1. **1.3.1** Binary scaffold + SecurityScanner (2h)
 2. **1.3.2** Cross-platform tests (2h)
 
 ### Resources Available
 
 **Handoff Document**: `docs/changes/research-hook-rust-phase1/PHASE_1_BINARY_HANDOFF.md`
+
 - Complete implementation guide
 - File structure, config samples
 - Input/output JSON schemas
@@ -197,6 +211,7 @@ All operations return `Result<T, HookError>`.
 ### Recommended Execution
 
 **Option 1: Delegate to subagent**
+
 ```bash
 thegent free --do-next
 # Or manually:
@@ -204,6 +219,7 @@ thegent free "Implement Phase 1.2-1.3 quality-gate and security-pipeline binarie
 ```
 
 **Option 2: Split across team**
+
 - Engineer 1: quality-gate (1.2.1-1.2.4)
 - Engineer 2: security-pipeline (1.3.2-1.3.3) in parallel
 
@@ -212,6 +228,7 @@ thegent free "Implement Phase 1.2-1.3 quality-gate and security-pipeline binarie
 ## Known Issues / Risks
 
 ### None at this time
+
 All foundation work is complete and tested. No blockers for Phase 1.2-1.3.
 
 ---

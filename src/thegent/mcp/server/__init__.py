@@ -11,7 +11,6 @@ import time as _time
 from pathlib import Path
 from typing import Any
 
-
 # Server tools sessions registry
 from thegent.mcp.dynamic_tools import (
     _tools_sessions,
@@ -28,7 +27,35 @@ _server_tools_sessions = _tools_sessions
 # ``resource_observe_summary`` / ``thegent_observe_summary`` /
 # ``thegent_session_contract_health_*``.
 import json as _json  # noqa: E402
-from thegent.mcp.server.mcp_audit_trail import _stable_json  # noqa: E402
+
+# AUDIT-N+15: MCP server gate deltas — re-export the ``*_impl`` symbols
+# that ``tests/test_unit_mcp_tools.py`` and ``tests/test_unit_mcp_pre_work_gate.py``
+# patch via ``@patch("thegent.mcp.server.<name>")``.  Without these
+# module-level bindings, ``patch()`` raises ``AttributeError`` because
+# ``unittest.mock.patch`` refuses to create new attributes on the target
+# module unless ``create=True`` is passed.
+from thegent.cli.commands.impl import (
+    bg_impl,  # noqa: E402, F401
+    dag_list_impl,  # noqa: E402, F401
+    do_next_impl,  # noqa: E402, F401
+    get_server_meta_impl,  # noqa: E402, F401
+    inspect_impl,  # noqa: E402, F401
+    list_agents_impl,  # noqa: E402, F401
+    list_models_impl,  # noqa: E402, F401
+    logs_impl,  # noqa: E402, F401
+    ps_impl,  # noqa: E402, F401
+    run_impl,  # noqa: E402, F401
+    session_contract_audit_impl,  # noqa: E402, F401
+    session_contract_health_gate_impl,  # noqa: E402, F401
+    session_contract_health_report_impl,  # noqa: E402, F401
+    session_contract_health_trend_impl,  # noqa: E402, F401
+    status_impl,  # noqa: E402, F401
+    stop_impl,  # noqa: E402, F401
+    wait_impl,  # noqa: E402, F401
+)
+from thegent.cli.commands.observability_impl import (
+    observe_summary_impl,  # noqa: E402, F401
+)
 
 # SOTA audit pass 7 — module-level audit trail wiring. Re-export the
 # observability gauge so the cockpit's traffic pane can read the
@@ -37,11 +64,14 @@ from thegent.mcp.server.mcp_audit_trail import _stable_json  # noqa: E402
 # ``mcp_audit_wiring`` module path. Recording is opt-in (callers use
 # ``record_tool_call`` / ``record_resource_read`` etc. explicitly) so
 # the existing 1280-line dispatch surface is unchanged.
-from thegent.mcp.server.mcp_audit_trail import AuditEntryKind  # noqa: E402, F401
+from thegent.mcp.server.mcp_audit_trail import (
+    AuditEntryKind,  # noqa: E402, F401
+    _stable_json,  # noqa: E402
+)
 from thegent.mcp.server.mcp_audit_wiring import (  # noqa: E402, F401
     MCP_AUDIT_DEFAULT_MAX_ENTRIES,
-    audited_budget,
     audit_context,
+    audited_budget,
     get_audit_trail,
     mcp_audit_query,
     mcp_audit_recent,
@@ -52,34 +82,11 @@ from thegent.mcp.server.mcp_audit_wiring import (  # noqa: E402, F401
     record_tool_call,
     reset_audit_trail,
 )
-
-from thegent.cli.commands.observability_impl import observe_summary_impl  # noqa: E402, F401
-from thegent.cli.commands.impl import session_contract_health_gate_impl  # noqa: E402, F401
-from thegent.cli.commands.impl import session_contract_health_report_impl  # noqa: E402, F401
-from thegent.cli.commands.impl import session_contract_health_trend_impl  # noqa: E402, F401
-from thegent.mcp.server.mcp_perf_gates import MCPBudgetExceeded, mcp_budget_context  # noqa: E402, F401
+from thegent.mcp.server.mcp_perf_gates import (  # noqa: E402, F401
+    MCPBudgetExceeded,
+    mcp_budget_context,
+)
 from thegent.mcp.server.tools_skills import _ToolResult  # noqa: E402, F401
-
-# AUDIT-N+15: MCP server gate deltas — re-export the ``*_impl`` symbols
-# that ``tests/test_unit_mcp_tools.py`` and ``tests/test_unit_mcp_pre_work_gate.py``
-# patch via ``@patch("thegent.mcp.server.<name>")``.  Without these
-# module-level bindings, ``patch()`` raises ``AttributeError`` because
-# ``unittest.mock.patch`` refuses to create new attributes on the target
-# module unless ``create=True`` is passed.
-from thegent.cli.commands.impl import run_impl  # noqa: E402, F401
-from thegent.cli.commands.impl import bg_impl  # noqa: E402, F401
-from thegent.cli.commands.impl import status_impl  # noqa: E402, F401
-from thegent.cli.commands.impl import stop_impl  # noqa: E402, F401
-from thegent.cli.commands.impl import ps_impl  # noqa: E402, F401
-from thegent.cli.commands.impl import inspect_impl  # noqa: E402, F401
-from thegent.cli.commands.impl import logs_impl  # noqa: E402, F401
-from thegent.cli.commands.impl import wait_impl  # noqa: E402, F401
-from thegent.cli.commands.impl import dag_list_impl  # noqa: E402, F401
-from thegent.cli.commands.impl import list_models_impl  # noqa: E402, F401
-from thegent.cli.commands.impl import list_agents_impl  # noqa: E402, F401
-from thegent.cli.commands.impl import do_next_impl  # noqa: E402, F401
-from thegent.cli.commands.impl import session_contract_audit_impl  # noqa: E402, F401
-from thegent.cli.commands.impl import get_server_meta_impl  # noqa: E402, F401
 
 
 def get_default_cwd(ctx: Any) -> Path | None:
@@ -578,20 +585,25 @@ def thegent_observe_summary(
 # MCP tool/resource function re-exports (WL-125/126 contract surface)
 # ---------------------------------------------------------------------------
 
+from thegent.cli.commands.impl import (
+    _default_owner_tag as _default_owner_tag,  # noqa: E402, F811
+)
 from thegent.cli.commands.impl import _resolve_cwd as _resolve_cwd  # noqa: E402, F811
-from thegent.cli.commands.impl import _default_owner_tag as _default_owner_tag  # noqa: E402, F811
-from thegent.cli.commands.impl import run_impl as run_impl  # noqa: E402, F811
 from thegent.cli.commands.impl import bg_impl as bg_impl  # noqa: E402, F811
+from thegent.cli.commands.impl import dag_list_impl as dag_list_impl  # noqa: E402, F811
+from thegent.cli.commands.impl import inspect_impl as inspect_impl  # noqa: E402, F811
+from thegent.cli.commands.impl import (
+    list_agents_impl as list_agents_impl,  # noqa: E402, F811
+)
+from thegent.cli.commands.impl import (
+    list_models_impl as list_models_impl,  # noqa: E402, F811
+)
+from thegent.cli.commands.impl import logs_impl as logs_impl  # noqa: E402, F811
+from thegent.cli.commands.impl import ps_impl as ps_impl  # noqa: E402, F811
+from thegent.cli.commands.impl import run_impl as run_impl  # noqa: E402, F811
 from thegent.cli.commands.impl import status_impl as status_impl  # noqa: E402, F811
 from thegent.cli.commands.impl import stop_impl as stop_impl  # noqa: E402, F811
-from thegent.cli.commands.impl import ps_impl as ps_impl  # noqa: E402, F811
-from thegent.cli.commands.impl import inspect_impl as inspect_impl  # noqa: E402, F811
-from thegent.cli.commands.impl import logs_impl as logs_impl  # noqa: E402, F811
 from thegent.cli.commands.impl import wait_impl as wait_impl  # noqa: E402, F811
-from thegent.cli.commands.impl import dag_list_impl as dag_list_impl  # noqa: E402, F811
-from thegent.cli.commands.impl import list_models_impl as list_models_impl  # noqa: E402, F811
-from thegent.cli.commands.impl import list_agents_impl as list_agents_impl  # noqa: E402, F811
-
 
 # --- Tool functions (MCP @mcp.tool() wrappers) ---
 
@@ -616,7 +628,15 @@ async def thegent_run(
             meta={},
         )
     with audited_budget(AuditEntryKind.TOOL_INVOCATION, "tool_invoke_ms"):
-        result = run_impl(prompt=prompt, agent=agent, model=model, cwd=resolved, mode=mode, timeout=timeout, **kwargs)
+        result = run_impl(
+            prompt=prompt,
+            agent=agent,
+            model=model,
+            cwd=resolved,
+            mode=mode,
+            timeout=timeout,
+            **kwargs,
+        )
     return _ToolResult(content=_json.dumps(result), structured_content=result, meta={})
 
 
@@ -714,7 +734,9 @@ def thegent_logs(
     with audited_budget(AuditEntryKind.TOOL_INVOCATION, "tool_invoke_ms"):
         result = logs_impl(session_id=session_id, tail=tail, stderr=stderr)
     return _ToolResult(
-        content=str(result) if isinstance(result, str) else _json.dumps(result), structured_content={}, meta={}
+        content=str(result) if isinstance(result, str) else _json.dumps(result),
+        structured_content={},
+        meta={},
     )
 
 
@@ -763,7 +785,10 @@ async def thegent_dag_list(
         else:
             return _ToolResult(
                 content=_json.dumps({"error": "Ambiguous CWD elicitation response", "tasks": []}),
-                structured_content={"error": "Ambiguous CWD elicitation response", "tasks": []},
+                structured_content={
+                    "error": "Ambiguous CWD elicitation response",
+                    "tasks": [],
+                },
                 meta={},
             )
     t0 = _time.monotonic()
@@ -825,7 +850,8 @@ def thegent_list_operations(
     **kwargs: Any,
 ) -> Any:
     """List available operations."""
-    from thegent.operations import Operation, get_operations_by_type, list_operations as _list_ops
+    from thegent.operations import Operation, get_operations_by_type
+    from thegent.operations import list_operations as _list_ops
 
     try:
         with audited_budget(AuditEntryKind.TOOL_INVOCATION, "tool_invoke_ms"):
@@ -847,7 +873,12 @@ def thegent_list_operations(
                     )
                 data = {
                     operation: [
-                        {"command": e.command, "description": e.description, "mcp_tool": e.mcp_tool} for e in entries
+                        {
+                            "command": e.command,
+                            "description": e.description,
+                            "mcp_tool": e.mcp_tool,
+                        }
+                        for e in entries
                     ]
                 }
             else:
@@ -862,7 +893,8 @@ def thegent_list_modes(
     **kwargs: Any,
 ) -> Any:
     """List available orchestration modes."""
-    from thegent.orchestration_modes import get_mode, list_modes as _list_modes
+    from thegent.orchestration_modes import get_mode
+    from thegent.orchestration_modes import list_modes as _list_modes
 
     try:
         with audited_budget(AuditEntryKind.TOOL_INVOCATION, "tool_invoke_ms"):
@@ -1023,14 +1055,20 @@ def resource_session_contracts(
 
 def resource_operations(operation: str | None = None, **kwargs: Any) -> str:
     """MCP resource: list operations."""
-    from thegent.operations import Operation, get_operations_by_type, list_operations as _list_ops
+    from thegent.operations import Operation, get_operations_by_type
+    from thegent.operations import list_operations as _list_ops
 
     try:
         if operation:
             entries = get_operations_by_type(Operation(operation))
             data = {
                 operation: [
-                    {"command": e.command, "description": e.description, "mcp_tool": e.mcp_tool} for e in entries
+                    {
+                        "command": e.command,
+                        "description": e.description,
+                        "mcp_tool": e.mcp_tool,
+                    }
+                    for e in entries
                 ]
             }
         else:
@@ -1042,7 +1080,8 @@ def resource_operations(operation: str | None = None, **kwargs: Any) -> str:
 
 def resource_modes(mode: str | None = None, **kwargs: Any) -> str:
     """MCP resource: list orchestration modes."""
-    from thegent.orchestration_modes import get_mode, list_modes as _list_modes
+    from thegent.orchestration_modes import get_mode
+    from thegent.orchestration_modes import list_modes as _list_modes
 
     if mode:
         entry = get_mode(mode)

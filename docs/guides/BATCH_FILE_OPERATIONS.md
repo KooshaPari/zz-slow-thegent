@@ -36,16 +36,21 @@ files = batch_read_files(["/path/to/file1.py", "/path/to/file2.py"])
 
 # Write multiple files (atomic)
 from batch_file_ops import batch_write_files
-result = batch_write_files([
-    ("/path/to/file1.py", "content 1"),
-    ("/path/to/file2.py", "content 2"),
-])
+
+result = batch_write_files(
+    [
+        ("/path/to/file1.py", "content 1"),
+        ("/path/to/file2.py", "content 2"),
+    ]
+)
 
 # Edit multiple files (search/replace)
-result = batch_edit_files([
-    ("/path/to/file1.py", "old_text", "new_text"),
-    ("/path/to/file2.py", "search", "replace"),
-])
+result = batch_edit_files(
+    [
+        ("/path/to/file1.py", "old_text", "new_text"),
+        ("/path/to/file2.py", "search", "replace"),
+    ]
+)
 
 # Delete multiple files (atomic)
 result = batch_delete_files(["/path/to/file1.py", "/path/to/file2.py"])
@@ -59,17 +64,19 @@ Read multiple files in a single operation with optional offset/limit:
 from batch_file_ops import batch_read_files
 
 # Read entire files
-files = batch_read_files([
-    "docs/file1.md",
-    "docs/file2.md",
-    "docs/file3.md",
-])
+files = batch_read_files(
+    [
+        "docs/file1.md",
+        "docs/file2.md",
+        "docs/file3.md",
+    ]
+)
 
 # Read with offset and limit (efficient for large files)
 files = batch_read_files(
     ["docs/large_file.md"],
     offsets={"docs/large_file.md": 100},  # Start at line 100
-    limits={"docs/large_file.md": 50}     # Read 50 lines
+    limits={"docs/large_file.md": 50},  # Read 50 lines
 )
 
 # Results are in a dict
@@ -85,11 +92,14 @@ Write multiple files atomically with automatic rollback:
 from batch_file_ops import batch_write_files
 
 # Write files atomically
-result = batch_write_files([
-    ("src/module1.py", "def func1(): pass"),
-    ("src/module2.py", "def func2(): pass"),
-    ("src/module3.py", "def func3(): pass"),
-], atomic=True)
+result = batch_write_files(
+    [
+        ("src/module1.py", "def func1(): pass"),
+        ("src/module2.py", "def func2(): pass"),
+        ("src/module3.py", "def func3(): pass"),
+    ],
+    atomic=True,
+)
 
 # Check results
 print(f"Wrote {result.successful}/{result.total} files")
@@ -108,21 +118,29 @@ Edit multiple files with search/replace, atomic by default:
 from batch_file_ops import batch_edit_files
 
 # Edit files
-result = batch_edit_files([
-    ("src/file1.py", "old_import", "new_import"),
-    ("src/file2.py", "deprecated_func", "new_func"),
-    ("src/file3.py", "OLD_CONSTANT", "NEW_CONSTANT"),
-])
+result = batch_edit_files(
+    [
+        ("src/file1.py", "old_import", "new_import"),
+        ("src/file2.py", "deprecated_func", "new_func"),
+        ("src/file3.py", "OLD_CONSTANT", "NEW_CONSTANT"),
+    ]
+)
 
 # Replace only first N occurrences
-result = batch_edit_files([
-    ("src/file.py", "pattern", "replacement"),
-], count=1)  # Replace only first occurrence
+result = batch_edit_files(
+    [
+        ("src/file.py", "pattern", "replacement"),
+    ],
+    count=1,
+)  # Replace only first occurrence
 
 # Replace all occurrences
-result = batch_edit_files([
-    ("src/file.py", "pattern", "replacement"),
-], count=-1)  # Replace all
+result = batch_edit_files(
+    [
+        ("src/file.py", "pattern", "replacement"),
+    ],
+    count=-1,
+)  # Replace all
 ```
 
 ### Batch Delete Files
@@ -133,11 +151,14 @@ Delete multiple files atomically with automatic rollback:
 from batch_file_ops import batch_delete_files
 
 # Delete files atomically
-result = batch_delete_files([
-    "old_file1.py",
-    "old_file2.py",
-    "deprecated/module.py",
-], atomic=True)
+result = batch_delete_files(
+    [
+        "old_file1.py",
+        "old_file2.py",
+        "deprecated/module.py",
+    ],
+    atomic=True,
+)
 
 # On failure, files are restored from backup
 if result.failed > 0:
@@ -153,10 +174,12 @@ if result.failed > 0:
 from batch_file_ops import batch_edit_files, BatchFileOpsError
 
 try:
-    result = batch_edit_files([
-        ("file1.py", "search", "replace"),
-        ("file2.py", "nonexistent", "replace"),  # Will fail
-    ])
+    result = batch_edit_files(
+        [
+            ("file1.py", "search", "replace"),
+            ("file2.py", "nonexistent", "replace"),  # Will fail
+        ]
+    )
 except BatchFileOpsError as e:
     print(f"Operation failed: {e}")
     print(f"Errors: {e.errors}")
@@ -177,22 +200,16 @@ from batch_file_ops import BatchFileOps
 ops = BatchFileOps(create_backups=True, verbose=True)
 
 # Read with custom encoding
-files = ops.batch_read_files(
-    ["file1.txt", "file2.txt"],
-    encoding="latin-1"
-)
+files = ops.batch_read_files(["file1.txt", "file2.txt"], encoding="latin-1")
 
 # Write with rollback on any failure
-result = ops.batch_write_files(
-    [("file1.txt", "content1"), ("file2.txt", "content2")],
-    atomic=True
-)
+result = ops.batch_write_files([("file1.txt", "content1"), ("file2.txt", "content2")], atomic=True)
 
 # Edit specific count
 result = ops.batch_edit_files(
     [("file.py", "foo", "bar")],
     atomic=True,
-    count=2  # Replace first 2 occurrences
+    count=2,  # Replace first 2 occurrences
 )
 ```
 
@@ -202,25 +219,26 @@ result = ops.batch_edit_files(
 result = batch_write_files([...])
 
 # Total operations
-print(result.total)        # Total files
-print(result.successful)   # Successfully modified
-print(result.failed)       # Failed operations
+print(result.total)  # Total files
+print(result.successful)  # Successfully modified
+print(result.failed)  # Failed operations
 
 # Backup information
-print(result.backup_dir)   # Location of backups
+print(result.backup_dir)  # Location of backups
 print(result.duration_ms)  # Operation duration
 
 # Per-operation details
 for op in result.operations:
-    print(op.file_path)        # File path
-    print(op.operation_type)   # 'read', 'write', 'edit', 'delete'
-    print(op.success)          # Boolean success
-    print(op.error_message)    # Error details if failed
-    print(op.result)           # Operation-specific metadata
-    print(op.timestamp)        # ISO timestamp
+    print(op.file_path)  # File path
+    print(op.operation_type)  # 'read', 'write', 'edit', 'delete'
+    print(op.success)  # Boolean success
+    print(op.error_message)  # Error details if failed
+    print(op.result)  # Operation-specific metadata
+    print(op.timestamp)  # ISO timestamp
 
 # Convert to JSON
 import json
+
 json_str = json.dumps(result.to_dict(), indent=2)
 ```
 
@@ -289,11 +307,7 @@ py_files = list(Path(".").rglob("*.py"))
 # Build edit operations
 operations = []
 for py_file in py_files:
-    operations.append((
-        str(py_file),
-        "from old_module import func",
-        "from new_module import func"
-    ))
+    operations.append((str(py_file), "from old_module import func", "from new_module import func"))
 
 # Apply atomically
 result = batch_edit_files(operations, atomic=True)
@@ -325,10 +339,7 @@ for path, content in files_content.items():
     processed[path] = new_content
 
 # 3. Write all files atomically
-result = batch_write_files(
-    [(path, content) for path, content in processed.items()],
-    atomic=True
-)
+result = batch_write_files([(path, content) for path, content in processed.items()], atomic=True)
 
 print(f"Refactored {result.successful}/{result.total} files")
 ```
@@ -380,9 +391,11 @@ from batch_file_ops import batch_write_files
 import shutil
 from pathlib import Path
 
-result = batch_write_files([
-    ("file1.py", "new content"),
-])
+result = batch_write_files(
+    [
+        ("file1.py", "new content"),
+    ]
+)
 
 # Backup location
 backup_dir = Path(result.backup_dir)
@@ -407,12 +420,15 @@ The module provides strong atomicity guarantees:
 from batch_file_ops import batch_write_files, BatchFileOpsError
 
 try:
-    result = batch_write_files([
-        ("file1.py", "content1"),
-        ("file2.py", "content2"),
-        # Imagine file3 write fails (permission denied)
-        ("file3.py", "content3"),
-    ], atomic=True)
+    result = batch_write_files(
+        [
+            ("file1.py", "content1"),
+            ("file2.py", "content2"),
+            # Imagine file3 write fails (permission denied)
+            ("file3.py", "content3"),
+        ],
+        atomic=True,
+    )
 except BatchFileOpsError as e:
     # ALL files are rolled back to original state
     # Backups are created before any modification
@@ -460,6 +476,7 @@ python3 scripts/batch_file_ops.py --write file "content" --verbose
 ```python
 # Ensure parent directories are writable
 from pathlib import Path
+
 parent = Path(file_path).parent
 parent.mkdir(parents=True, exist_ok=True)
 ```
@@ -481,9 +498,9 @@ files = list(range(10000))
 chunk_size = 500
 
 for i in range(0, len(files), chunk_size):
-    chunk = files[i:i+chunk_size]
+    chunk = files[i : i + chunk_size]
     result = batch_write_files([...])
-    print(f"Processed chunk {i//chunk_size + 1}")
+    print(f"Processed chunk {i // chunk_size + 1}")
 ```
 
 ## See Also

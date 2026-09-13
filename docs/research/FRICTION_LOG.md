@@ -11,6 +11,7 @@
 **Agents**: Log friction points using `log_friction()` or manually add entries below.
 
 **Format**:
+
 ```markdown
 ## [task-id]
 

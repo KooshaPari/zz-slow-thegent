@@ -25,6 +25,7 @@
 ### 1. Fork Guard Running During direnv Evaluation
 
 **Issue**: `_thegent_fork_guard_periodic` runs in `precmd_functions`, which fires during direnv evaluation, causing:
+
 - Process count checks during direnv load
 - Potential hangs if `pgrep`/`ps` are slow
 - Conflicts with direnv's own process management
@@ -71,6 +72,7 @@ unset DIRENV_IN_ENVRC
 ### 2. Improved Fork Guard Error Handling
 
 **Changes**:
+
 - Better error handling for `pgrep`/`ps` commands
 - Default to `0` if command fails
 - More robust pid count parsing
@@ -137,11 +139,13 @@ DIRENV_IN_ENVRC=1 zsh -c 'source ~/.zsh_safeguards.zsh && _thegent_fork_guard'
 ## Expected Behavior
 
 ### Before Fix
+
 - ❌ `ent_fork_guard:2: no matches found: (faster)` error
 - ❌ direnv hangs during `.envrc` evaluation
 - ❌ Fork guard runs during direnv, causing conflicts
 
 ### After Fix
+
 - ✅ No glob pattern errors
 - ✅ direnv loads quickly (<1s)
 - ✅ Fork guard skips during direnv evaluation

@@ -22,6 +22,7 @@ Codex CLI → cliproxy_adapter.py → CLIProxyAPIPlus → Providers
 ```
 
 **Problems**:
+
 1. Double translation layer (adapter + CLIProxyAPIPlus)
 2. Model routing happens in CLIProxyAPIPlus, not leveraging LiteLLM Router
 3. Doesn't use LiteLLM's routing, caching, fallback capabilities
@@ -35,6 +36,7 @@ Codex CLI → cliproxy_adapter.py → LiteLLM Router → Providers
 ```
 
 **Benefits**:
+
 1. Single translation layer (Responses API → Chat Completions)
 2. LiteLLM Router handles model routing, fallback, caching
 3. Leverages LiteLLM's cost optimization and routing policies
@@ -63,6 +65,7 @@ From the codex-proxy repository:
 **Target**: Option to proxy to LiteLLM Router when available
 
 **Implementation**:
+
 ```python
 # In cliproxy_adapter.py
 async def proxy_handler(request: Request) -> Response:
@@ -83,6 +86,7 @@ async def proxy_handler(request: Request) -> Response:
 **File**: `src/thegent/routing/litellm_responses_handler.py` (new)
 
 **Functionality**:
+
 - Accept Responses API format
 - Translate to Chat Completions
 - Call LiteLLM Router
@@ -125,11 +129,13 @@ async def proxy_handler(request: Request) -> Response:
 ## Configuration
 
 **Environment Variable**:
+
 ```bash
 export THGENT_USE_LITELLM_ROUTER=1  # Use LiteLLM Router instead of CLIProxyAPIPlus
 ```
 
 **Codex CLI Setup**:
+
 ```bash
 export OPENAI_BASE_URL=http://localhost:8765
 export OPENAI_API_KEY=sk-dummy

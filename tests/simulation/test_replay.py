@@ -10,10 +10,10 @@ Covers: load_session, replay, replay_from_event, compare_sessions,
 from __future__ import annotations
 
 import ast
-import orjson as json
 import time
 from pathlib import Path
 
+import orjson as json
 import pytest
 
 from thegent.simulation.replay import (

@@ -11,7 +11,10 @@ class APIEvolutionManager:
 
     def __init__(self, current_version: str = "2.0") -> None:
         self.current_version = current_version
-        self._compat_flags: dict[str, bool] = {"v1_legacy_parsing": True, "v2_strict_envelopes": False}
+        self._compat_flags: dict[str, bool] = {
+            "v1_legacy_parsing": True,
+            "v2_strict_envelopes": False,
+        }
 
     def negotiate_version(self, client_version: str) -> dict[str, Any]:
         """Negotiate the best API version for the client."""

@@ -1,9 +1,9 @@
 """Simple MCP client for testing thegent server. Handles SSE responses."""
 
 import asyncio
-import orjson as json
 
 import httpx
+import orjson as json
 
 
 async def _get_mcp_response(url: str, payload: dict, headers: dict, timeout: float = 15.0):
@@ -50,7 +50,10 @@ async def test_mcp() -> None:
         "jsonrpc": "2.0",
         "id": 3,
         "method": "tools/call",
-        "params": {"name": "thegent_run", "arguments": {"agent": "gemini", "prompt": "echo Hello from FastMCP"}},
+        "params": {
+            "name": "thegent_run",
+            "arguments": {"agent": "gemini", "prompt": "echo Hello from FastMCP"},
+        },
     }
     await _get_mcp_response(url, payload, headers, timeout=30.0)
 

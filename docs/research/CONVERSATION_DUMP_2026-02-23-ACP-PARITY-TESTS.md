@@ -18,6 +18,7 @@ Created comprehensive parity test suite for thegent ACP adapter vs CLIProxy Go A
 ### Test Coverage
 
 #### 1. Python ACP Adapter Tests (5 tests)
+
 - `TestPythonAcpAdapter::test_translate_simple_message` — Single-turn message parsing
 - `TestPythonAcpAdapter::test_parse_multi_turn` — Multi-turn conversation parsing
 - `TestPythonAcpAdapter::test_parse_preserves_content` — Content preservation verification
@@ -25,6 +26,7 @@ Created comprehensive parity test suite for thegent ACP adapter vs CLIProxy Go A
 - `TestPythonAcpAdapter::test_format_acp_response_with_error` — Error response formatting
 
 #### 2. Parity Tests (5 tests)
+
 - `TestParity::test_parity_simple_message` — Python vs Go: simple text message
 - `TestParity::test_parity_multi_turn` — Python vs Go: multi-turn conversation
 - `TestParity::test_parity_system_prompt` — Python vs Go: system prompt preservation
@@ -32,6 +34,7 @@ Created comprehensive parity test suite for thegent ACP adapter vs CLIProxy Go A
 - `TestParity::test_parity_minimal_request` — Python vs Go: minimal valid request
 
 #### 3. Edge Case Tests (6 tests)
+
 - `TestEdgeCases::test_parse_invalid_json` — Rejects malformed JSON
 - `TestEdgeCases::test_parse_non_dict_json` — Rejects non-dict JSON (arrays, primitives)
 - `TestEdgeCases::test_parse_empty_string` — Handles empty payload
@@ -40,10 +43,12 @@ Created comprehensive parity test suite for thegent ACP adapter vs CLIProxy Go A
 - `TestEdgeCases::test_response_format_with_all_fields` — Response with all fields
 
 #### 4. Integration Tests (2 tests)
+
 - `TestIntegration::test_round_trip_parse_and_respond` — Parse request → format response round-trip
 - `TestIntegration::test_large_conversation_handling` — Handle 100-message conversation
 
 #### 5. Spec Compliance Tests (3 tests)
+
 - `TestSpecCompliance::test_acp_request_structure` — Verify model and messages fields
 - `TestSpecCompliance::test_acp_message_structure` — Verify each message has role and content
 - `TestSpecCompliance::test_acp_response_structure` — Verify response has all required fields
@@ -113,6 +118,7 @@ tests/adapters/test_parity_adapters_vs_cliproxy.py::TestSpecCompliance::test_acp
 #### Python Side (`parse_acp_payload` / `format_acp_response`)
 
 **Input Parsing**:
+
 ```python
 def parse_acp_payload(payload: str) -> tuple[dict[str, Any] | None, str | None]:
     """Parse ACP payload JSON into context dict."""
@@ -126,6 +132,7 @@ def parse_acp_payload(payload: str) -> tuple[dict[str, Any] | None, str | None]:
 ```
 
 **Output Formatting**:
+
 ```python
 def format_acp_response(
     *,
@@ -150,6 +157,7 @@ def format_acp_response(
 #### Go Side (`acp_adapter.go`)
 
 **Translation**:
+
 ```go
 func (a *ACPAdapter) Translate(_ context.Context, req *ChatCompletionRequest) (*ACPRequest, error) {
     if req == nil {
@@ -167,6 +175,7 @@ func (a *ACPAdapter) Translate(_ context.Context, req *ChatCompletionRequest) (*
 ```
 
 **Parity Assertion**: Both adapters:
+
 1. ✅ Preserve `model` field exactly as-is
 2. ✅ Preserve all messages with `role` and `content` fields
 3. ✅ Handle multi-turn conversations with system prompts
@@ -176,28 +185,31 @@ func (a *ACPAdapter) Translate(_ context.Context, req *ChatCompletionRequest) (*
 ## Data Structures
 
 ### Input Format (ChatCompletionRequest)
+
 ```json
 {
   "model": "claude-3.5-sonnet",
   "messages": [
-    {"role": "user", "content": "Hello"},
-    {"role": "assistant", "content": "Hi there"}
+    { "role": "user", "content": "Hello" },
+    { "role": "assistant", "content": "Hi there" }
   ]
 }
 ```
 
 ### Output Format (ACPRequest)
+
 ```json
 {
   "model": "claude-3.5-sonnet",
   "messages": [
-    {"role": "user", "content": "Hello"},
-    {"role": "assistant", "content": "Hi there"}
+    { "role": "user", "content": "Hello" },
+    { "role": "assistant", "content": "Hi there" }
   ]
 }
 ```
 
 ### Response Format
+
 ```json
 {
   "success": true,
@@ -211,6 +223,7 @@ func (a *ACPAdapter) Translate(_ context.Context, req *ChatCompletionRequest) (*
 ## Future Enhancements
 
 1. **Go Binary Integration**: When Go binary is compiled and deployed:
+
    ```python
    result = subprocess.run(
        ["<path-to-go-binary>"],

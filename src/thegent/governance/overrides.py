@@ -100,7 +100,12 @@ class OverrideManager:
         )
 
         self._save_override(override)
-        _log.info("Applied override for policy %s by %s for %d min", policy_id, by, duration_minutes)
+        _log.info(
+            "Applied override for policy %s by %s for %d min",
+            policy_id,
+            by,
+            duration_minutes,
+        )
         return override
 
     def get_override(self, policy_id: str) -> PolicyOverride | None:

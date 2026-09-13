@@ -3,6 +3,7 @@
 **Follows** `07`–`16`. **Snapshot:** 2026-03-24. **Intent:** Full XDD Mastery (TDD/SDD/BDD).
 
 ## Slice 1 — TDD & Unit Testing (8)
+
 1. **Red**: Write failing tests for `ModelSelector.tsx` updates.
 2. **Green**: Implement the minimal fix to pass tests.
 3. **Refactor**: Clean up the code while keeping tests green.
@@ -13,6 +14,7 @@
 8. **Assert**: Standardize `expect` assertions across the org.
 
 ## Slice 2 — SDD & Schema-Driven (8)
+
 9. **OpenAPI**: Standardize `openapi.json` for all internal services.
 10. **Zod**: Create `Zod` schemas for all incoming `LocalBus` events.
 11. **Client**: Generate `TypeScript` clients from `OpenAPI` specs.
@@ -23,6 +25,7 @@
 16. **Version**: Implement schema versioning and migration rules.
 
 ## Slice 3 — BDD & User-Centric (8)
+
 17. **Feature**: Create `gherkin` style feature files for `heliosApp`.
 18. **Scenarios**: Define 'Given-When-Then' scenarios for `Lane` creation.
 19. **Playwright**: Implement `BDD` tests using `Cucumber` or `Playwright`.
@@ -33,4 +36,5 @@
 24. **Metrics**: Track 'Time to First Interaction' for all features.
 
 ## Slice 4 — Meta (1)
+
 25. **Task Update**: Record XDD progress in `ACTIVE_BACKLOG.md`.

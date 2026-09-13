@@ -40,7 +40,6 @@ from thegent.execution import (
     MessageEntry,
 )
 
-
 # ---------------------------------------------------------------------------
 # EscalationQueue — NEW-1: per-instance RLock
 # ---------------------------------------------------------------------------
@@ -54,9 +53,8 @@ class TestEscalationQueueAppendLock:
         assert hasattr(queue, "_append_lock"), "EscalationQueue must expose _append_lock"
         lock = queue._append_lock
         # RLock supports re-entry from the same thread.
-        with lock:
-            with lock:  # re-entry: would deadlock if Lock, not RLock
-                pass
+        with lock, lock:  # re-entry: would deadlock if Lock, not RLock
+            pass
 
     def test_concurrent_add_serialised(self, tmp_path: Path) -> None:
         queue = EscalationQueue(str(tmp_path))
@@ -473,7 +471,15 @@ class TestMessageEntryValidation:
             MessageEntry(role="user", content="hi", timestamp=123)  # type: ignore[arg-type]
 
     def test_init_accepts_known_roles(self) -> None:
-        for role in ("system", "user", "assistant", "tool", "developer", "function", ""):
+        for role in (
+            "system",
+            "user",
+            "assistant",
+            "tool",
+            "developer",
+            "function",
+            "",
+        ):
             entry = MessageEntry(role=role, content="hi")
             assert entry.role == role
 

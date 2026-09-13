@@ -9,8 +9,8 @@ This page tests the cross-project link plugin functionality.
 - [heliosShield Guide](~heliosShield:/README.md)
 - [trace Overview](~trace:/docs/index.md)
 
-
 ---
+
 ## See also
 
 - [WORK_STREAM.md](../reference/WORK_STREAM.md) — canonical backlog

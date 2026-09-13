@@ -10,20 +10,21 @@ circuit-breaker state consistency.
 from __future__ import annotations
 
 import asyncio
-import orjson as json
-from unittest.mock import AsyncMock, MagicMock, patch
 
+import orjson as json
 import pybreaker
 import pytest
 
-from thegent.agents.provider_loop import ProviderLoopTimeout, run_with_provider_loop_timeout
+from thegent.agents.provider_loop import (
+    ProviderLoopTimeout,
+    run_with_provider_loop_timeout,
+)
 from thegent.utils.routing_impl.circuit_breaker import (
     CircuitOpenError,
     ProviderCircuitBreaker,
     ProviderCircuitBreakerConfig,
     ProviderCircuitBreakerRegistry,
 )
-
 
 # ---------------------------------------------------------------------------
 # MAST F-01: Provider drops connection mid-stream

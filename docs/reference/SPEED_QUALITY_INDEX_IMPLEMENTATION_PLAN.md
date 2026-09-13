@@ -8,27 +8,29 @@
 
 ## Implementation Summary
 
-| Component | Status |
-|-----------|--------|
-| `speed_values.py` | Done — TPS+latency+success, p95 penalty, config params, TTL cache |
-| `quality_values.py` | Done — TB2.0+SWE+AIME, benchmarks path override, TTL cache |
-| `benchmarks.json` | Done — bundled in models/ |
-| ParetoRouter | Done — dominates() and get_pareto_front() use indices |
-| cost_quality policy | Done — uses quality_index for floor (was cost_weight bug) |
-| Config | Done — speed_index_tps_max, latency_max_ms, cache_ttl, benchmarks_path |
-| CLI | Done — `models speed-index`, `models quality-index`, `--no-cache` |
-| Task router | Done — speed_demon uses pareto+speed |
-| Tests | Done — TestSpeedQualityIndices in test_unit_models.py |
+| Component           | Status                                                                 |
+| ------------------- | ---------------------------------------------------------------------- |
+| `speed_values.py`   | Done — TPS+latency+success, p95 penalty, config params, TTL cache      |
+| `quality_values.py` | Done — TB2.0+SWE+AIME, benchmarks path override, TTL cache             |
+| `benchmarks.json`   | Done — bundled in models/                                              |
+| ParetoRouter        | Done — dominates() and get_pareto_front() use indices                  |
+| cost_quality policy | Done — uses quality_index for floor (was cost_weight bug)              |
+| Config              | Done — speed_index_tps_max, latency_max_ms, cache_ttl, benchmarks_path |
+| CLI                 | Done — `models speed-index`, `models quality-index`, `--no-cache`      |
+| Task router         | Done — speed_demon uses pareto+speed                                   |
+| Tests               | Done — TestSpeedQualityIndices in test_unit_models.py                  |
 
 ---
 
 ## Executive Summary
 
 Currently thegent uses:
+
 - **Speed**: Static `Route.latency_ms` only; ParetoRouter "speed" = `min(front, key=latency_ms)`; ObjectiveSelector uses `avg_latency_ms` from `models_meta.py`. No TPS, no composite index.
 - **Quality**: Static `Route.accuracy_score` only; ParetoRouter "quality" = `max(front, key=accuracy_score)`. Terminal Bench 2.0 scores exist only in docs; no combined quality index.
 
 This plan defines:
+
 1. **Speed index** — Composite of TPS + latency + X (e.g. success_rate), using proxy metrics, mapped to model–provider pairs.
 2. **Quality index** — Composite of Terminal Bench 2.0 + SWE-Bench + AIME + parser quality (extensible), loaded from config/JSON.
 
@@ -40,13 +42,14 @@ Both indices feed into routing (ParetoRouter, ObjectiveSelector, task_router).
 
 ### 1.1 Data Sources
 
-| Source | Fields | Granularity | Availability |
-|--------|--------|-------------|--------------|
-| **Proxy metrics** | `tps_1m`, `latency_p50_ms`, `latency_p95_ms`, `success_rate` | Per provider | Live (CLIProxyAPIPlus GET /v1/metrics/providers) |
-| **Catalog Route** | `latency_ms` | Per route (model–provider) | Static fallback |
-| **Cost values** | — | — | Used for provider→model mapping pattern |
+| Source            | Fields                                                       | Granularity                | Availability                                     |
+| ----------------- | ------------------------------------------------------------ | -------------------------- | ------------------------------------------------ |
+| **Proxy metrics** | `tps_1m`, `latency_p50_ms`, `latency_p95_ms`, `success_rate` | Per provider               | Live (CLIProxyAPIPlus GET /v1/metrics/providers) |
+| **Catalog Route** | `latency_ms`                                                 | Per route (model–provider) | Static fallback                                  |
+| **Cost values**   | —                                                            | —                          | Used for provider→model mapping pattern          |
 
 **Proxy metrics shape** (from `fetch_provider_metrics`):
+
 ```json
 {
   "codex": {
@@ -67,6 +70,7 @@ Both indices feed into routing (ParetoRouter, ObjectiveSelector, task_router).
 ### 1.2 Speed Index Formula
 
 **Design goals**:
+
 - Higher index = faster (better).
 - Combine throughput (TPS) and latency; optionally success_rate.
 - Normalize to 0–1 or 0–100 for routing.
@@ -78,6 +82,7 @@ speed_index = w1 * norm_tps + w2 * norm_latency + w3 * norm_success
 ```
 
 Where:
+
 - `norm_tps = min(1, tps_1m / TPS_MAX)` — TPS_MAX default 200 (tokens/sec)
 - `norm_latency = max(0, 1 - latency_p50_ms / LATENCY_MAX)` — LATENCY_MAX default 10000 ms
 - `norm_success = success_rate` (already 0–1)
@@ -85,12 +90,15 @@ Where:
 **Default weights**: `w1=0.4`, `w2=0.5`, `w3=0.1` (latency-weighted; TPS secondary).
 
 **Alternative (inverse-latency style, like ObjectiveSelector)**:
+
 ```
 speed_score = (w1 / (1 + latency_p50/1000)) + (w2 * min(1, tps_1m/200)) + (w3 * success_rate)
 ```
+
 Then normalize to 0–1 for consistency with quality.
 
 **Fallback**: When proxy unreachable, use `Route.latency_ms` only:
+
 ```
 speed_index_fallback = max(0, 1 - latency_ms / 10000)
 ```
@@ -100,6 +108,7 @@ speed_index_fallback = max(0, 1 - latency_ms / 10000)
 **Location**: `src/thegent/models/speed_values.py`
 
 **API**:
+
 ```python
 def get_model_provider_speed_index(
     model_id: str,
@@ -111,6 +120,7 @@ def get_model_provider_speed_index(
     Uses proxy metrics when reachable; falls back to Route.latency_ms.
     """
 
+
 def get_model_provider_speed_indices(
     settings: ThegentSettings | None = None,
 ) -> dict[str, dict[str, float]]:
@@ -121,12 +131,14 @@ def get_model_provider_speed_indices(
 ```
 
 **Internal logic**:
+
 1. Call `fetch_provider_metrics(settings)`.
 2. If metrics available: for each catalog route, get provider metrics; compute `speed_index` from `tps_1m`, `latency_p50_ms`, `success_rate`.
 3. If proxy unreachable: use `Route.latency_ms` for `speed_index_fallback`.
 4. Return dict keyed by (model_id, provider).
 
 **Config** (optional, in `thegent.yaml` or env):
+
 ```yaml
 speed_index:
   tps_max: 200
@@ -139,13 +151,13 @@ speed_index:
 
 ### 1.4 Integration Points
 
-| Component | Change |
-|-----------|--------|
-| **ParetoRouter** | Add `speed_index` to Route (or compute on-the-fly). "speed" strategy: `max(front, key=speed_index)` instead of `min(front, key=latency_ms)`. |
-| **ObjectiveSelector** | Replace `latency_score = 1 - avg_latency_ms/10000` with `speed_index` from `speed_values` when available. |
-| **Catalog Route** | Optionally add `speed_index: float` field (computed at resolution time from speed_values). |
-| **Task router** | When selecting "speed_demon" or similar, prefer routes with highest speed_index. |
-| **CLI** | `thegent metrics` already shows tps_1m, latency_p50; add `thegent speed-index` to show per-model-provider speed indices. |
+| Component             | Change                                                                                                                                       |
+| --------------------- | -------------------------------------------------------------------------------------------------------------------------------------------- |
+| **ParetoRouter**      | Add `speed_index` to Route (or compute on-the-fly). "speed" strategy: `max(front, key=speed_index)` instead of `min(front, key=latency_ms)`. |
+| **ObjectiveSelector** | Replace `latency_score = 1 - avg_latency_ms/10000` with `speed_index` from `speed_values` when available.                                    |
+| **Catalog Route**     | Optionally add `speed_index: float` field (computed at resolution time from speed_values).                                                   |
+| **Task router**       | When selecting "speed_demon" or similar, prefer routes with highest speed_index.                                                             |
+| **CLI**               | `thegent metrics` already shows tps_1m, latency_p50; add `thegent speed-index` to show per-model-provider speed indices.                     |
 
 ### 1.5 Data Flow
 
@@ -170,30 +182,31 @@ speed_values.get_model_provider_speed_indices()
 
 ### 2.1 Data Sources
 
-| Source | Fields | Granularity | Availability |
-|--------|--------|-------------|--------------|
-| **Terminal Bench 2.0** | TB2.0 score (0–100%) | Per model | `PARETO_FRONTIER_TERMINAL_BENCH_2_0.md`, or JSON |
-| **SWE-Bench** | SWE-Bench % | Per model | Docs, MODEL_SELECTION_INDEX.md |
-| **AIME** | AIME % (reasoning) | Per model | Docs (GLM-5 92.7%, Opus 85%, etc.) |
-| **Parser quality** | TBD (e.g. JSON/tool-call parse success) | Per model | Future: runtime metrics |
-| **Route.accuracy_score** | 0.0–1.0 | Per route | Static fallback in catalog |
+| Source                   | Fields                                  | Granularity | Availability                                     |
+| ------------------------ | --------------------------------------- | ----------- | ------------------------------------------------ |
+| **Terminal Bench 2.0**   | TB2.0 score (0–100%)                    | Per model   | `PARETO_FRONTIER_TERMINAL_BENCH_2_0.md`, or JSON |
+| **SWE-Bench**            | SWE-Bench %                             | Per model   | Docs, MODEL_SELECTION_INDEX.md                   |
+| **AIME**                 | AIME % (reasoning)                      | Per model   | Docs (GLM-5 92.7%, Opus 85%, etc.)               |
+| **Parser quality**       | TBD (e.g. JSON/tool-call parse success) | Per model   | Future: runtime metrics                          |
+| **Route.accuracy_score** | 0.0–1.0                                 | Per route   | Static fallback in catalog                       |
 
 **TB2.0 scores** (from PARETO_FRONTIER_TERMINAL_BENCH_2_0.md):
 
-| Model | TB2.0 | SWE-Bench (ref) |
-|-------|-------|-----------------|
-| GPT-5.3-Codex | 64.7% | 56.8% |
-| Claude Opus 4.6 | 62.9% | 80.8% |
-| Codex-Spark | 58.4% | ~50% |
-| GLM-5 | 56.2% | 92.7% (AIME) |
-| Gemini 3 Flash | 51.7% | 78.0% |
-| MiniMax M2.5 | 51.7% | 80.2% |
-| Claude Sonnet 4.5 | 42.8% | 77.2% |
-| Claude Haiku 4.5 | 28.3% | 73.3% |
+| Model             | TB2.0 | SWE-Bench (ref) |
+| ----------------- | ----- | --------------- |
+| GPT-5.3-Codex     | 64.7% | 56.8%           |
+| Claude Opus 4.6   | 62.9% | 80.8%           |
+| Codex-Spark       | 58.4% | ~50%            |
+| GLM-5             | 56.2% | 92.7% (AIME)    |
+| Gemini 3 Flash    | 51.7% | 78.0%           |
+| MiniMax M2.5      | 51.7% | 80.2%           |
+| Claude Sonnet 4.5 | 42.8% | 77.2%           |
+| Claude Haiku 4.5  | 28.3% | 73.3%           |
 
 ### 2.2 Quality Index Formula
 
 **Design goals**:
+
 - Higher index = better quality.
 - Primary: Terminal Bench 2.0 (thegent is terminal/CLI agent).
 - Optional: SWE-Bench, AIME for mixed workloads.
@@ -206,6 +219,7 @@ quality_index = w1 * norm_tb2 + w2 * norm_swe + w3 * norm_aime + w4 * norm_parse
 ```
 
 Where:
+
 - `norm_tb2 = tb2_score / 100` (TB2.0 already 0–100%)
 - `norm_swe = swe_score / 100`
 - `norm_aime = aime_score / 100`
@@ -259,6 +273,7 @@ Where:
 **Location**: `src/thegent/models/quality_values.py`
 
 **API**:
+
 ```python
 def get_model_quality_index(
     model_id: str,
@@ -270,12 +285,14 @@ def get_model_quality_index(
     Uses benchmarks JSON when available; falls back to Route.accuracy_score.
     """
 
+
 def get_all_model_quality_indices(
     settings: ThegentSettings | None = None,
 ) -> dict[str, float]:
     """
     Returns: {model_id: quality_index}
     """
+
 
 def get_model_provider_quality_indices(
     settings: ThegentSettings | None = None,
@@ -287,12 +304,14 @@ def get_model_provider_quality_indices(
 ```
 
 **Internal logic**:
+
 1. Load `benchmarks.json` from config path or default.
 2. For each model in catalog: compute `quality_index` from TB2.0 + SWE + AIME (weighted).
 3. Missing benchmark → use `Route.accuracy_score` for that route.
 4. Normalize to 0–1.
 
 **Config**:
+
 ```yaml
 quality_index:
   benchmarks_path: "config/benchmarks.json"
@@ -305,13 +324,13 @@ quality_index:
 
 ### 2.5 Integration Points
 
-| Component | Change |
-|-----------|--------|
-| **ParetoRouter** | "quality" strategy: use `quality_index` from quality_values (or Route.accuracy_score if not available). |
-| **ObjectiveSelector** | Replace `quality_score = meta.quality_score` with `get_model_quality_index(model_id)` when available. |
-| **Catalog Route** | Optionally add `quality_index: float` (computed at resolution or from quality_values). |
-| **Task router** | Quality floor checks use quality_index. |
-| **CLI** | `thegent quality-index` to show per-model quality indices. |
+| Component             | Change                                                                                                  |
+| --------------------- | ------------------------------------------------------------------------------------------------------- |
+| **ParetoRouter**      | "quality" strategy: use `quality_index` from quality_values (or Route.accuracy_score if not available). |
+| **ObjectiveSelector** | Replace `quality_score = meta.quality_score` with `get_model_quality_index(model_id)` when available.   |
+| **Catalog Route**     | Optionally add `quality_index: float` (computed at resolution or from quality_values).                  |
+| **Task router**       | Quality floor checks use quality_index.                                                                 |
+| **CLI**               | `thegent quality-index` to show per-model quality indices.                                              |
 
 ### 2.6 Data Flow
 
@@ -384,11 +403,13 @@ Model IDs must match catalog canonical IDs (e.g. `gpt-5.3-codex`, `claude-opus-4
 Currently `Route` has `latency_ms`, `accuracy_score` (static). To use live indices:
 
 **Option A: Compute at resolution**
+
 - When `policy == "pareto"`, call `get_model_provider_speed_indices()` and `get_model_provider_quality_indices()`.
 - Build enriched route list with `speed_index` and `quality_index` per (model, provider).
 - ParetoRouter operates on enriched routes.
 
 **Option B: Add fields to Route**
+
 - Add `speed_index: float | None` and `quality_index: float | None` to `Route`/`ResolvedRoute`.
 - Catalog builder or a separate "enricher" populates these from speed_values/quality_values before routing.
 
@@ -396,12 +417,12 @@ Currently `Route` has `latency_ms`, `accuracy_score` (static). To use live indic
 
 ### 4.2 ParetoRouter Strategy Updates
 
-| Strategy | Before | After |
-|----------|--------|-------|
-| `speed` | `min(front, key=lambda p: p.latency_ms)` | `max(front, key=lambda p: p.speed_index or (1 - p.latency_ms/10000))` |
-| `quality` | `max(front, key=lambda p: p.accuracy_score)` | `max(front, key=lambda p: p.quality_index or p.accuracy_score)` |
-| `cost` | unchanged | unchanged |
-| `balanced` | `(1/cost) + (1000/latency) + (accuracy*10)` | `(1/cost) + (speed_index*10) + (quality_index*10)` |
+| Strategy   | Before                                       | After                                                                 |
+| ---------- | -------------------------------------------- | --------------------------------------------------------------------- |
+| `speed`    | `min(front, key=lambda p: p.latency_ms)`     | `max(front, key=lambda p: p.speed_index or (1 - p.latency_ms/10000))` |
+| `quality`  | `max(front, key=lambda p: p.accuracy_score)` | `max(front, key=lambda p: p.quality_index or p.accuracy_score)`       |
+| `cost`     | unchanged                                    | unchanged                                                             |
+| `balanced` | `(1/cost) + (1000/latency) + (accuracy*10)`  | `(1/cost) + (speed_index*10) + (quality_index*10)`                    |
 
 ---
 
@@ -420,13 +441,14 @@ weighted_score = quality * weights.quality + latency * weights.latency + cost * 
 
 ```python
 # Use speed_index when available (per model-provider)
-speed_index = get_model_provider_speed_index(model_id, provider) or max(0, 1.0 - meta.avg_latency_ms/10000)
+speed_index = get_model_provider_speed_index(model_id, provider) or max(0, 1.0 - meta.avg_latency_ms / 10000)
 quality_index = get_model_quality_index(model_id) or meta.quality_score
 cost_score = max(0, 1.0 - (total_cost / 0.1))
 weighted_score = (quality_index * weights.quality) + (speed_index * weights.latency) + (cost_score * weights.cost)
 ```
 
 **Note**: ObjectiveSelector works with `candidate_ids` (model IDs). For model–provider, we need to either:
+
 - Resolve provider per model (e.g. prefer_direct) and use that for speed_index, or
 - Use best speed_index across providers for that model.
 
@@ -467,27 +489,27 @@ weighted_score = (quality_index * weights.quality) + (speed_index * weights.late
 
 ## Part 7: File Summary
 
-| File | Purpose |
-|------|---------|
-| `src/thegent/models/speed_values.py` | NEW | Speed index from proxy metrics |
-| `src/thegent/models/quality_values.py` | NEW | Quality index from benchmarks.json |
-| `config/benchmarks.json` | NEW | TB2.0, SWE-Bench, AIME scores |
-| `src/thegent/models/catalog.py` | MODIFY | ParetoRouter strategy logic |
-| `src/thegent/planning/selector.py` | MODIFY | ObjectiveSelector uses indices |
-| `src/thegent/planning/models_meta.py` | OPTIONAL | Fallback quality_score |
-| `src/thegent/cli.py` | MODIFY | Add speed-index, quality-index commands |
-| `docs/reference/SPEED_QUALITY_INDEX_IMPLEMENTATION_PLAN.md` | THIS |
+| File                                                        | Purpose  |
+| ----------------------------------------------------------- | -------- | --------------------------------------- |
+| `src/thegent/models/speed_values.py`                        | NEW      | Speed index from proxy metrics          |
+| `src/thegent/models/quality_values.py`                      | NEW      | Quality index from benchmarks.json      |
+| `config/benchmarks.json`                                    | NEW      | TB2.0, SWE-Bench, AIME scores           |
+| `src/thegent/models/catalog.py`                             | MODIFY   | ParetoRouter strategy logic             |
+| `src/thegent/planning/selector.py`                          | MODIFY   | ObjectiveSelector uses indices          |
+| `src/thegent/planning/models_meta.py`                       | OPTIONAL | Fallback quality_score                  |
+| `src/thegent/cli.py`                                        | MODIFY   | Add speed-index, quality-index commands |
+| `docs/reference/SPEED_QUALITY_INDEX_IMPLEMENTATION_PLAN.md` | THIS     |
 
 ---
 
 ## Part 8: Dependencies & Risks
 
-| Risk | Mitigation |
-|------|------------|
-| Proxy unreachable | Fallback to catalog latency; quality to accuracy_score |
+| Risk                 | Mitigation                                                        |
+| -------------------- | ----------------------------------------------------------------- |
+| Proxy unreachable    | Fallback to catalog latency; quality to accuracy_score            |
 | Benchmark data stale | Document refresh cadence; `thegent setup perf` (future) to ingest |
-| Model ID mismatch | Normalize via `catalog.normalize_model_id()` |
-| Performance | Cache speed/quality indices (TTL 60s) when proxy used |
+| Model ID mismatch    | Normalize via `catalog.normalize_model_id()`                      |
+| Performance          | Cache speed/quality indices (TTL 60s) when proxy used             |
 
 ---
 
@@ -495,23 +517,23 @@ weighted_score = (quality_index * weights.quality) + (speed_index * weights.late
 
 ### Speed Index X Factors
 
-| Factor | Source | Notes |
-|--------|--------|-------|
-| **success_rate** | Proxy metrics | Already in formula; reduces index when provider fails |
-| **latency_p95_ms** | Proxy metrics | Optional: penalize tail latency |
-| **queue_depth** | Future proxy | If proxy reports queue depth, penalize high queue |
-| **regional_latency** | Future | Geo-based latency adjustment |
+| Factor               | Source        | Notes                                                 |
+| -------------------- | ------------- | ----------------------------------------------------- |
+| **success_rate**     | Proxy metrics | Already in formula; reduces index when provider fails |
+| **latency_p95_ms**   | Proxy metrics | Optional: penalize tail latency                       |
+| **queue_depth**      | Future proxy  | If proxy reports queue depth, penalize high queue     |
+| **regional_latency** | Future        | Geo-based latency adjustment                          |
 
 ### Quality Index X Factors
 
-| Factor | Source | Notes |
-|--------|--------|-------|
+| Factor             | Source          | Notes                                       |
+| ------------------ | --------------- | ------------------------------------------- |
 | **parser_quality** | Runtime metrics | JSON/tool-call parse success rate per model |
-| **SWE-Bench** | benchmarks.json | Code editing; weight 0.2 default |
-| **AIME** | benchmarks.json | Reasoning; weight 0.1 default |
-| **GPQA** | benchmarks.json | Domain knowledge; optional |
-| **MMLU** | benchmarks.json | General knowledge; optional |
-| **custom_bench** | User config | Extensible key in benchmarks.json |
+| **SWE-Bench**      | benchmarks.json | Code editing; weight 0.2 default            |
+| **AIME**           | benchmarks.json | Reasoning; weight 0.1 default               |
+| **GPQA**           | benchmarks.json | Domain knowledge; optional                  |
+| **MMLU**           | benchmarks.json | General knowledge; optional                 |
+| **custom_bench**   | User config     | Extensible key in benchmarks.json           |
 
 To add a new benchmark: extend `benchmarks.json` with a new key (e.g. `"gpqa"`) and add weight in config.
 
@@ -564,7 +586,6 @@ To add a new benchmark: extend `benchmarks.json` with a new key (e.g. `"gpqa"`) 
 - `selector.py` — ObjectiveSelector
 - `cliproxy_manager.fetch_provider_metrics` — Proxy metrics API
 
-
 ---
 
 ## EXTENSION_SUMMARY
@@ -573,15 +594,18 @@ To add a new benchmark: extend `benchmarks.json` with a new key (e.g. `"gpqa"`) 
 **Extended by:** Claude Code
 
 ### Changes Made
+
 1. Added practical implementation patterns
 2. Added configuration examples
 3. Enhanced cross-references to related documentation
 
 ### Cross-References Added
+
 - Related research and implementation guides
 - WORK_STREAM.md for tracking
 
 ### Practical Additions
+
 - Implementation templates
 - Configuration examples
 - Best practices

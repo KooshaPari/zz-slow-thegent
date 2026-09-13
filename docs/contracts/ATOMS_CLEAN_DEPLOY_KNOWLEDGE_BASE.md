@@ -9,22 +9,22 @@ It codifies the canonical path and operational defaults used by this repo's auto
 
 ### `../atoms-mcp-prod`
 
-| Surface | Source | Status |
-|---|---|---|
-| Clean entrypoint | `Taskfile.yml` -> `clean` target | Canonical |
-| Clean CLI command | `cli.py` -> `clean()` (`atoms clean`) | Canonical |
-| Vercel deployment config | `vercel.json` | Canonical |
-| Deployment guide | `docs/DEPLOYMENT_GUIDE.md` | Canonical |
-| Cloud Run helper | `scripts/deploy_gcp.sh` | Non-canonical (legacy helper)
+| Surface                  | Source                                | Status                        |
+| ------------------------ | ------------------------------------- | ----------------------------- |
+| Clean entrypoint         | `Taskfile.yml` -> `clean` target      | Canonical                     |
+| Clean CLI command        | `cli.py` -> `clean()` (`atoms clean`) | Canonical                     |
+| Vercel deployment config | `vercel.json`                         | Canonical                     |
+| Deployment guide         | `docs/DEPLOYMENT_GUIDE.md`            | Canonical                     |
+| Cloud Run helper         | `scripts/deploy_gcp.sh`               | Non-canonical (legacy helper) |
 
 ### `../agentapi/atomsAgent`
 
-| Surface | Source | Status |
-|---|---|---|
-| Cloud Run command surface | `src/atomsAgent/cli/commands/cloud_run.py` | Canonical |
-| Cloud Run deploy docs | `docs/guides/deployment.md` | Canonical |
-| Infrastructure target | `infrastructure/README.md` (IAC: SST Ion for Cloud Run) | Canonical |
-| Legacy deploy path | Pulumi references removed from current flow | Deprecated |
+| Surface                   | Source                                                  | Status     |
+| ------------------------- | ------------------------------------------------------- | ---------- |
+| Cloud Run command surface | `src/atomsAgent/cli/commands/cloud_run.py`              | Canonical  |
+| Cloud Run deploy docs     | `docs/guides/deployment.md`                             | Canonical  |
+| Infrastructure target     | `infrastructure/README.md` (IAC: SST Ion for Cloud Run) | Canonical  |
+| Legacy deploy path        | Pulumi references removed from current flow             | Deprecated |
 
 ## 82) Canonical Clean/Deploy Path (as used by thegent)
 
@@ -99,6 +99,7 @@ Contract checks fail with non-zero exit codes and emit strict error details for 
 ## Operational Check
 
 Before any release-like cleanup/deploy operation:
+
 1. Verify the target repo path matches the canonical entry above.
 2. Verify the command matches canonical clean/deploy operation.
 3. Verify env inputs are present in at least one allowed source from the contract.

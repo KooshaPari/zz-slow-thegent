@@ -139,13 +139,12 @@ class TeammateManager:
                 )
 
                 # Heuristic teammate check if not already confirmed
-                if not is_teammate:
-                    if (
-                        "teammate" in content.lower()
-                        or "specialized agent" in content.lower()
-                        or "persona" in content.lower()
-                    ):
-                        is_teammate = True
+                if not is_teammate and (
+                    "teammate" in content.lower()
+                    or "specialized agent" in content.lower()
+                    or "persona" in content.lower()
+                ):
+                    is_teammate = True
 
                 # Only include if it looks like a teammate
                 if not is_teammate:
@@ -233,7 +232,11 @@ class TeammateManager:
 
         # Create delegation request
         request = DelegationRequest(
-            id=req_id, teammate_id=teammate_id, parent_run_id=parent_run_id, prompt=prompt, status="pending"
+            id=req_id,
+            teammate_id=teammate_id,
+            parent_run_id=parent_run_id,
+            prompt=prompt,
+            status="pending",
         )
         self._delegations[req_id] = request
         self._save()
@@ -275,9 +278,14 @@ class TeammateManager:
             bridge = heliosShieldBridge()
             if bridge.is_available():
                 bridge.create_shared_task(
-                    task_id=req_id, description=f"Delegated from {parent_run_id}: {prompt[:50]}..."
+                    task_id=req_id,
+                    description=f"Delegated from {parent_run_id}: {prompt[:50]}...",
                 )
-                bridge.broadcast_intent(agent_id=f"thegent:{parent_run_id}", intent_type="delegate", target=teammate_id)
+                bridge.broadcast_intent(
+                    agent_id=f"thegent:{parent_run_id}",
+                    intent_type="delegate",
+                    target=teammate_id,
+                )
         except ImportError:
             # heliosShield bridge not available, continue without it
             pass

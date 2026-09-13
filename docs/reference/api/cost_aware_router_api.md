@@ -42,7 +42,7 @@ Routes to optimal candidates while respecting cost budgets (FR-COST-003, WP-1004
 
 ### Methods
 
-#### BudgetAwareRouter.__init__
+#### BudgetAwareRouter.**init**
 
 ```python
 __init__(self: Any, budget_manager: BudgetManager, pareto_router: Any, warn_at_pct: float, degraded_at_pct: float)
@@ -70,7 +70,7 @@ Raised when spend has exceeded a configured budget limit (FR-COST-002).
 
 ### Methods
 
-#### BudgetExceededError.__init__
+#### BudgetExceededError.**init**
 
 ```python
 __init__(self: Any, budget_type: str, limit: float, current: float)
@@ -86,7 +86,7 @@ Manages budget allocations and enforcement (FR-COST-003).
 
 ### Methods
 
-#### BudgetManager.__init__
+#### BudgetManager.**init**
 
 ```python
 __init__(self: Any)
@@ -146,7 +146,7 @@ Simplified cost-aware router that selects candidates based on budget state.
 
 ### Methods
 
-#### CostAwareRouter.__init__
+#### CostAwareRouter.**init**
 
 ```python
 __init__(self: Any, budget: CostBudget, tracker: SimpleCostTracker)
@@ -178,7 +178,7 @@ Real-time cost metering for projects and models (FR-COST-001).
 
 ### Methods
 
-#### CostMeter.__init__
+#### CostMeter.**init**
 
 ```python
 __init__(self: Any)
@@ -204,7 +204,7 @@ Tracks session and daily cost totals.
 
 ### Methods
 
-#### SimpleCostTracker.__init__
+#### SimpleCostTracker.**init**
 
 ```python
 __init__(self: Any)
@@ -246,7 +246,7 @@ session_total(self: Any)
 
 ---
 
-## _SimpleCandidate
+## \_SimpleCandidate
 
 Route candidate for simplified CostAwareRouter.
 

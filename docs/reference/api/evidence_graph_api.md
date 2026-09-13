@@ -14,7 +14,7 @@ Graph of evidence artifacts with deterministic bundling.
 
 ### Methods
 
-#### EvidenceGraph.__init__
+#### EvidenceGraph.**init**
 
 ```python
 __init__(self: Any, session_dir: Path)

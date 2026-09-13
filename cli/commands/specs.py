@@ -2,11 +2,11 @@
 CLI commands for specs/WBS/PRD generation.
 """
 
-import orjson as json
 import sys
 from pathlib import Path
 
 import click
+import orjson as json
 
 # Add thegent to path
 sys.path.insert(0, str(Path(__file__).parent.parent.parent.parent))
@@ -27,21 +27,27 @@ def specs():
 @specs.command()
 @click.option("--max-projects", type=int, help="Maximum number of projects to analyze")
 @click.option("--max-files", type=int, default=200, help="Maximum files per project")
-@click.option("--base-path", type=str, default=None, help="Base path for analysis (defaults to current directory)")
+@click.option(
+    "--base-path",
+    type=str,
+    default=None,
+    help="Base path for analysis (defaults to current directory)",
+)
 @click.option("--output-dir", type=str, default="docs/specs")
 def generate(max_projects, max_files, base_path, output_dir):
     """Generate specs, WBS, and PRDs for all projects."""
-    if base_path is None:
-        base_path = Path.cwd()
-    else:
-        base_path = Path(base_path)
+    base_path = Path.cwd() if base_path is None else Path(base_path)
     output_dir = Path(output_dir)
 
     console.print("[bold blue]Starting specs/WBS/PRD generation...[/bold blue]")
 
     generator = SpecsGenerator(base_path)
 
-    with Progress(SpinnerColumn(), TextColumn("[progress.description]{task.description}"), console=console) as progress:
+    with Progress(
+        SpinnerColumn(),
+        TextColumn("[progress.description]{task.description}"),
+        console=console,
+    ) as progress:
         task1 = progress.add_task("Analyzing projects...", total=None)
         generator.analyze_all_projects(max_projects=max_projects, max_files_per_project=max_files)
         progress.update(task1, completed=True)
@@ -84,7 +90,10 @@ def generate(max_projects, max_files, base_path, output_dir):
     if generator.cross_analyzer:
         table.add_row("Relationships Found", str(len(generator.cross_analyzer.relationships)))
         table.add_row("Shared Features", str(len(generator.cross_analyzer.unified_features)))
-        table.add_row("Unified Work Streams", str(len(generator.cross_analyzer.unified_work_streams)))
+        table.add_row(
+            "Unified Work Streams",
+            str(len(generator.cross_analyzer.unified_work_streams)),
+        )
         table.add_row("Unified PRDs", str(len(generator.cross_analyzer.unified_prds)))
 
     console.print(table)

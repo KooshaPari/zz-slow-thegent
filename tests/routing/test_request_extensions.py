@@ -23,7 +23,6 @@ from thegent.cliproxy_adapter import (
 )
 from thegent.utils.routing_impl import harness_model_mapping
 
-
 # ---------------------------------------------------------------------------
 # GW-44: extract_provider_gateway_options
 # ---------------------------------------------------------------------------
@@ -233,7 +232,9 @@ def canonical_to_openrouter_fixture(monkeypatch: pytest.MonkeyPatch) -> dict[str
 
 
 @pytest.mark.requirement("FR-REQEXT-047")
-def test_inject_proxy_models_adds_missing(canonical_to_openrouter_fixture: dict[str, str]) -> None:
+def test_inject_proxy_models_adds_missing(
+    canonical_to_openrouter_fixture: dict[str, str],
+) -> None:
     """Canonical aliases not in the models list are injected."""
     models: list[dict] = [{"id": "gpt-4o", "object": "model"}]
     result = inject_proxy_models(models)
@@ -248,7 +249,9 @@ def test_inject_proxy_models_adds_missing(canonical_to_openrouter_fixture: dict[
 
 
 @pytest.mark.requirement("FR-REQEXT-047")
-def test_inject_proxy_models_no_duplicates(canonical_to_openrouter_fixture: dict[str, str]) -> None:
+def test_inject_proxy_models_no_duplicates(
+    canonical_to_openrouter_fixture: dict[str, str],
+) -> None:
     """Aliases already present in the list are not duplicated."""
     # Seed list with all canonical aliases
     initial = [{"id": alias, "object": "model"} for alias in canonical_to_openrouter_fixture]
@@ -362,7 +365,9 @@ def test_inject_proxy_models_repeated_noop_idempotency_three_calls(
 
 
 @pytest.mark.requirement("FR-REQEXT-047")
-def test_inject_proxy_models_empty_list(canonical_to_openrouter_fixture: dict[str, str]) -> None:
+def test_inject_proxy_models_empty_list(
+    canonical_to_openrouter_fixture: dict[str, str],
+) -> None:
     """Starting from an empty list injects all canonical aliases."""
     result = inject_proxy_models([])
 
@@ -411,7 +416,11 @@ def test_inject_proxy_models_preserves_non_target_model_names_untouched(
 
     result = inject_proxy_models(existing)
 
-    assert result[0] == {"id": "vendor-x/custom-model-v2", "object": "model", "extra": "keep"}
+    assert result[0] == {
+        "id": "vendor-x/custom-model-v2",
+        "object": "model",
+        "extra": "keep",
+    }
     assert result[1] == {"id": "another-provider/model.alpha", "object": "model"}
 
 

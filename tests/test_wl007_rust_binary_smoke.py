@@ -6,7 +6,6 @@ from pathlib import Path
 
 import pytest
 
-
 ROOT = Path(__file__).resolve().parents[1]
 CARGO_WORKDIR = ROOT / "crates"
 HELP_TIMEOUT_SECONDS = 90
@@ -18,7 +17,17 @@ def _has_rust_toolchain() -> bool:
 
 
 def _run_help(bin_name: str) -> subprocess.CompletedProcess[str]:
-    cmd = ["cargo", "run", "-q", "-p", "thegent-hooks", "--bin", bin_name, "--", "--help"]
+    cmd = [
+        "cargo",
+        "run",
+        "-q",
+        "-p",
+        "thegent-hooks",
+        "--bin",
+        bin_name,
+        "--",
+        "--help",
+    ]
     try:
         return subprocess.run(
             cmd,

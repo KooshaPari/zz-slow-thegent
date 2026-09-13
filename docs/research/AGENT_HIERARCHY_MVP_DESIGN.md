@@ -12,12 +12,14 @@
 The **Agent Hierarchy MVP** enables lightweight, specialized agents (SmolGents) coordinated by a manager agent with a minimal but complete coordination protocol. This is a **pragmatic simplification** of the full hierarchy system documented in `AGENT_HIERARCHY_AND_TEAM_STRUCTURE.md`, focused on MVP completeness rather than maximum features.
 
 **Key Design Principles**:
+
 1. **Minimal Viable**: MVP covers manager + 4-6 SmolGent types; excludes advanced features until Phase 2
 2. **File-Based IPC**: Simple, atomic, cross-process using JSON files and Maildir pattern (atomic `mv`)
 3. **Opt-In Harnesses**: Core MVP works standalone; Codex/CC/Droid harnesses bolt on as Phase 3
 4. **No Breaking Changes**: Extends existing `teammates.py` and agent runners; preserves API
 
 **MVP Scope**:
+
 - Manager agent that routes work to SmolGents
 - 4-6 focused SmolGent types (code-search, code-gen, test-gen, doc-gen, refactor, review)
 - File-based work queues and result delivery
@@ -26,6 +28,7 @@ The **Agent Hierarchy MVP** enables lightweight, specialized agents (SmolGents) 
 - Error handling and retry
 
 **Out of Scope for MVP** (Phase 2+):
+
 - Advanced routing algorithms
 - Team-level coordination
 - Cross-team collaboration
@@ -108,14 +111,14 @@ The **Agent Hierarchy MVP** enables lightweight, specialized agents (SmolGents) 
 
 ### 2.1 Core SmolGent Types (MVP)
 
-| Type | Purpose | Input | Output | Execution |
-|------|---------|-------|--------|-----------|
-| **code-search** | Find patterns/files in codebase | Query (glob, regex, keywords) | Matching files + context | Native tools (rg, fd, ag) |
-| **code-gen** | Generate code snippets/modules | Spec (requirements, template) | Generated code + tests | Codex (Phase 3) or direct LLM |
-| **test-gen** | Generate test cases | Code + coverage gaps | Test file + assertions | Direct LLM or droid |
-| **doc-gen** | Generate documentation | Codebase context | Markdown docs | Direct LLM |
-| **refactor** | Apply code transformations | Pattern + replacement rules | Refactored code + changes | CodeMod or AST tools |
-| **review** | Code review & validation | Code + criteria | Findings + scores | Direct LLM |
+| Type            | Purpose                         | Input                         | Output                    | Execution                     |
+| --------------- | ------------------------------- | ----------------------------- | ------------------------- | ----------------------------- |
+| **code-search** | Find patterns/files in codebase | Query (glob, regex, keywords) | Matching files + context  | Native tools (rg, fd, ag)     |
+| **code-gen**    | Generate code snippets/modules  | Spec (requirements, template) | Generated code + tests    | Codex (Phase 3) or direct LLM |
+| **test-gen**    | Generate test cases             | Code + coverage gaps          | Test file + assertions    | Direct LLM or droid           |
+| **doc-gen**     | Generate documentation          | Codebase context              | Markdown docs             | Direct LLM                    |
+| **refactor**    | Apply code transformations      | Pattern + replacement rules   | Refactored code + changes | CodeMod or AST tools          |
+| **review**      | Code review & validation        | Code + criteria               | Findings + scores         | Direct LLM                    |
 
 ### 2.2 SmolGent Interface
 
@@ -123,25 +126,29 @@ The **Agent Hierarchy MVP** enables lightweight, specialized agents (SmolGents) 
 @dataclass
 class SmolGentTask:
     """Task routed to a SmolGent."""
-    task_id: str                          # Unique task ID
-    smolgent_type: str                    # "code-search", "code-gen", etc.
-    prompt: str                           # Task description
-    context: dict[str, Any]               # Execution context
-    timeout: int = 300                    # Task timeout (seconds)
-    retries: int = 3                      # Retry attempts
-    priority: int = 5                     # 1=highest, 10=lowest
+
+    task_id: str  # Unique task ID
+    smolgent_type: str  # "code-search", "code-gen", etc.
+    prompt: str  # Task description
+    context: dict[str, Any]  # Execution context
+    timeout: int = 300  # Task timeout (seconds)
+    retries: int = 3  # Retry attempts
+    priority: int = 5  # 1=highest, 10=lowest
+
 
 @dataclass
 class SmolGentResult:
     """Result from a SmolGent execution."""
-    task_id: str                          # Original task ID
-    smolgent_type: str                    # Type that executed
+
+    task_id: str  # Original task ID
+    smolgent_type: str  # Type that executed
     status: Literal["success", "failure", "timeout"]
-    output: str                           # Task output
-    metadata: dict[str, Any]              # Execution metadata
-    duration_secs: float                  # Execution time
-    error_msg: str | None = None          # Error if failed
-    try_count: int = 1                    # Number of attempts
+    output: str  # Task output
+    metadata: dict[str, Any]  # Execution metadata
+    duration_secs: float  # Execution time
+    error_msg: str | None = None  # Error if failed
+    try_count: int = 1  # Number of attempts
+
 
 class SmolGentBase(AgentRunner):
     """Base class for all SmolGents."""
@@ -349,6 +356,7 @@ def write_task_atomically(task: SmolGentTask) -> Path:
     tmp_file.replace(final_file)  # Atomic on POSIX
     return final_file
 
+
 def claim_task_atomically(task_id: str) -> SmolGentTask | None:
     """Atomically claim a task from inbox."""
     inbox_file = Path(".mgmt/inbox") / f"{task_id}.new"
@@ -364,6 +372,7 @@ def claim_task_atomically(task_id: str) -> SmolGentTask | None:
     except FileExistsError:
         # Already claimed by another process
         return None
+
 
 def write_result_atomically(result: SmolGentResult) -> Path:
     """Write result to results/ atomically."""
@@ -548,13 +557,13 @@ class SmolGentRunner:
 
 ### 4.1 MVP Execution Modes
 
-| Mode | Setup | Execution | Harness |
-|------|-------|-----------|---------|
-| **Local (MVP)** | Direct Python classes | Subagent (thegent free/bg) or threads | None |
-| **Distributed (Phase 2)** | Multiple processes | Pool of SmolGent workers | None |
-| **Codex Harness (Phase 3)** | Codex + Python sandbox | Codex for code-gen, code-search | Yes |
-| **CC Harness (Phase 3)** | Claude Code integration | CC for code generation/review | Yes |
-| **Droid Harness (Phase 3)** | Factory droid exec | Droids for long-running tasks | Yes |
+| Mode                        | Setup                   | Execution                             | Harness |
+| --------------------------- | ----------------------- | ------------------------------------- | ------- |
+| **Local (MVP)**             | Direct Python classes   | Subagent (thegent free/bg) or threads | None    |
+| **Distributed (Phase 2)**   | Multiple processes      | Pool of SmolGent workers              | None    |
+| **Codex Harness (Phase 3)** | Codex + Python sandbox  | Codex for code-gen, code-search       | Yes     |
+| **CC Harness (Phase 3)**    | Claude Code integration | CC for code generation/review         | Yes     |
+| **Droid Harness (Phase 3)** | Factory droid exec      | Droids for long-running tasks         | Yes     |
 
 ### 4.2 MVP Local Execution (Threads)
 
@@ -587,6 +596,7 @@ class CodeGenSmolGent(SmolGentBase):
         if use_subagent := task.context.get("use_subagent", False):
             # Spawn subagent for code generation
             from thegent.cli_impl import run_impl
+
             result = run_impl(
                 agent="free",  # or "claude"
                 prompt=task.prompt,
@@ -616,15 +626,21 @@ class CodeGenSmolGent(SmolGentBase):
 ```python
 class SmolGentError(Exception):
     """Base SmolGent error."""
+
     pass
+
 
 class TransientSmolGentError(SmolGentError):
     """Retryable error (timeout, rate limit, transient crash)."""
+
     pass
+
 
 class PermanentSmolGentError(SmolGentError):
     """Non-retryable error (bad input, unsupported task type)."""
+
     pass
+
 
 def classify_error(error: Exception) -> type[SmolGentError]:
     """Classify error as transient or permanent."""
@@ -640,6 +656,7 @@ def classify_error(error: Exception) -> type[SmolGentError]:
 @dataclass
 class SmolGentResult:
     """Result includes retry metadata."""
+
     task_id: str
     smolgent_type: str
     status: Literal["success", "failure", "timeout"]
@@ -648,6 +665,7 @@ class SmolGentResult:
     duration_secs: float
     error_msg: str | None = None
     try_count: int = 1  # How many times was this attempted?
+
 
 class ManagerRetryLogic:
     """Handles retry for failed tasks."""
@@ -682,17 +700,17 @@ class ManagerRetryLogic:
 
 ### 6.1 Latency Breakdown
 
-| Component | Latency | Notes |
-|-----------|---------|-------|
-| Manager routing | 100-500ms | LLM call to identify SmolGents |
-| Task write (atomicity) | <1ms | File write + atomic move |
-| SmolGent startup | 100-200ms | Process/thread spawn |
-| Task execution | 1-30s | Actual work (varies by type) |
-| Result write | <1ms | Atomic move |
-| Result polling (1 iteration) | 10ms | Check .mgmt/results/ |
-| Aggregation | 100-500ms | LLM call to combine results |
-| **Total (best case)** | **2-10s** | Sequential, no parallelism |
-| **Total (with parallelism)** | **1-5s** | Multiple SmolGents in parallel |
+| Component                    | Latency   | Notes                          |
+| ---------------------------- | --------- | ------------------------------ |
+| Manager routing              | 100-500ms | LLM call to identify SmolGents |
+| Task write (atomicity)       | <1ms      | File write + atomic move       |
+| SmolGent startup             | 100-200ms | Process/thread spawn           |
+| Task execution               | 1-30s     | Actual work (varies by type)   |
+| Result write                 | <1ms      | Atomic move                    |
+| Result polling (1 iteration) | 10ms      | Check .mgmt/results/           |
+| Aggregation                  | 100-500ms | LLM call to combine results    |
+| **Total (best case)**        | **2-10s** | Sequential, no parallelism     |
+| **Total (with parallelism)** | **1-5s**  | Multiple SmolGents in parallel |
 
 ### 6.2 Throughput Model
 
@@ -710,12 +728,12 @@ Estimated throughput:
 
 ### 6.3 Resource Model
 
-| Resource | Per SmolGent | Notes |
-|----------|--------------|-------|
-| Memory | 10-50MB | Varies by type (code-search uses rg, minimal) |
-| CPU | 1 core active during execution | Mostly idle (I/O bound) |
-| Storage | .mgmt/ dir: <100MB | Task files + results (gc periodically) |
-| Network | 0-1MB/s | Optional LLM calls (code-gen, review) |
+| Resource | Per SmolGent                   | Notes                                         |
+| -------- | ------------------------------ | --------------------------------------------- |
+| Memory   | 10-50MB                        | Varies by type (code-search uses rg, minimal) |
+| CPU      | 1 core active during execution | Mostly idle (I/O bound)                       |
+| Storage  | .mgmt/ dir: <100MB             | Task files + results (gc periodically)        |
+| Network  | 0-1MB/s                        | Optional LLM calls (code-gen, review)         |
 
 ---
 
@@ -734,6 +752,7 @@ class TeammateManager:
         # NEW: Initialize SmolGent coordinator
         self.smolgent_coordinator = SmolGentCoordinator(settings)
 
+
 # Extend existing AgentRunner interface
 class SmolGentBase(AgentRunner):
     """SmolGents implement AgentRunner interface."""
@@ -748,6 +767,7 @@ class SmolGentBase(AgentRunner):
     ) -> RunResult:
         """SmolGent runs as a normal agent runner."""
         pass
+
 
 # New: coordinator that ties it together
 class SmolGentCoordinator:
@@ -785,30 +805,12 @@ thegent teams delegate ml-team "Train model on dataset"
 ```python
 # .claude/smolgent-config.json
 {
-  "enabled": true,
-  "num_workers": 4,
-  "execution_mode": "local",  # or "distributed", "codex", "cc", "droid"
-  "smolgent_types": [
-    "code-search",
-    "code-gen",
-    "test-gen",
-    "doc-gen",
-    "refactor",
-    "review"
-  ],
-  "retry_policy": {
-    "max_retries": 3,
-    "initial_backoff_ms": 100,
-    "max_backoff_ms": 5000
-  },
-  "timeouts": {
-    "code-search": 60,
-    "code-gen": 300,
-    "test-gen": 300,
-    "doc-gen": 120,
-    "refactor": 180,
-    "review": 180
-  }
+    "enabled": true,
+    "num_workers": 4,
+    "execution_mode": "local",  # or "distributed", "codex", "cc", "droid"
+    "smolgent_types": ["code-search", "code-gen", "test-gen", "doc-gen", "refactor", "review"],
+    "retry_policy": {"max_retries": 3, "initial_backoff_ms": 100, "max_backoff_ms": 5000},
+    "timeouts": {"code-search": 60, "code-gen": 300, "test-gen": 300, "doc-gen": 120, "refactor": 180, "review": 180},
 }
 ```
 
@@ -819,6 +821,7 @@ thegent teams delegate ml-team "Train model on dataset"
 ### Phase 1: MVP Core (Weeks 1-2)
 
 **Deliverables**:
+
 - SmolGentBase interface + 2 implementations (code-search, review)
 - ManagerAgent with routing
 - File-based IPC (Maildir pattern)
@@ -826,6 +829,7 @@ thegent teams delegate ml-team "Train model on dataset"
 - Local thread pool executor
 
 **Success Criteria**:
+
 - Manager can route simple prompts to SmolGents
 - Code search and review work end-to-end
 - Results aggregate correctly
@@ -834,12 +838,14 @@ thegent teams delegate ml-team "Train model on dataset"
 ### Phase 2: Extended SmolGents (Weeks 3-4)
 
 **Deliverables**:
+
 - Remaining SmolGent types (code-gen, test-gen, doc-gen, refactor)
 - Distributed execution (process pool)
 - Advanced routing (LLM-based task decomposition)
 - Enhanced error handling + retry
 
 **Success Criteria**:
+
 - All 6 SmolGent types working
 - Multi-process execution stable
 - Retry logic functioning
@@ -848,12 +854,14 @@ thegent teams delegate ml-team "Train model on dataset"
 ### Phase 3: Harness Integration (Weeks 5-6)
 
 **Deliverables**:
+
 - Codex harness for code-gen/search
 - Claude Code harness for review/gen
 - Droid harness for long-running tasks
 - Harness auto-selection logic
 
 **Success Criteria**:
+
 - Harnesses properly isolate (no resource leaks)
 - Fallback to direct LLM working
 - Harness-specific performance gains measured
@@ -895,18 +903,19 @@ src/thegent/smolgents/
 
 ## 10. Comparison: MVP vs Full Hierarchy
 
-| Aspect | MVP | Full Hierarchy |
-|--------|-----|---|
-| **Scope** | Manager + 6 SmolGents | Multi-level teams |
-| **Coordination** | File-based IPC | Structured messages + DB |
-| **Team Support** | No teams (flat) | Hierarchical teams |
-| **Execution** | Local threads (Phase 1) | Distributed + harnesses |
-| **Routing** | Simple LLM-based | Advanced algorithm |
-| **Result Aggregation** | Basic concatenation | Structured synthesis |
-| **Implementation Effort** | ~2 weeks | ~8 weeks |
-| **Complexity** | Low | High |
+| Aspect                    | MVP                     | Full Hierarchy           |
+| ------------------------- | ----------------------- | ------------------------ |
+| **Scope**                 | Manager + 6 SmolGents   | Multi-level teams        |
+| **Coordination**          | File-based IPC          | Structured messages + DB |
+| **Team Support**          | No teams (flat)         | Hierarchical teams       |
+| **Execution**             | Local threads (Phase 1) | Distributed + harnesses  |
+| **Routing**               | Simple LLM-based        | Advanced algorithm       |
+| **Result Aggregation**    | Basic concatenation     | Structured synthesis     |
+| **Implementation Effort** | ~2 weeks                | ~8 weeks                 |
+| **Complexity**            | Low                     | High                     |
 
 **Why MVP First?**
+
 - Delivers value quickly (weeks vs months)
 - Foundation for full hierarchy
 - Validates file-based IPC approach
@@ -914,6 +923,7 @@ src/thegent/smolgents/
 - Allows harness experiments
 
 **Path to Full Hierarchy**:
+
 1. MVP works → Promote SmolGents to team members
 2. Create TeamLead agent type
 3. Extend coordinator → HierarchyManager
@@ -927,17 +937,20 @@ src/thegent/smolgents/
 ### 11.1 Execution Model Options
 
 **Option A: Thread Pool (MVP Choice)**
+
 - ✅ Simple, no process overhead
 - ❌ Python GIL limits parallelism for CPU-bound tasks
 - ❌ Shared memory can cause bugs
 
 **Option B: Process Pool**
+
 - ✅ True parallelism
 - ✅ Isolation (good for sandboxing)
 - ❌ Higher overhead, IPC complexity
 - ✅ Better for Phase 2
 
 **Option C: Async/Await**
+
 - ✅ High concurrency
 - ❌ Requires async SmolGents
 - ❌ More complex error handling
@@ -947,11 +960,13 @@ src/thegent/smolgents/
 ### 11.2 Harness Integration
 
 **Option A: SmolGents invoke harness directly**
+
 - ✅ Simple, no extra layer
 - ❌ Harness logic spread across SmolGents
 - ❌ Harder to swap harnesses
 
 **Option B: Harness layer between Manager & SmolGents**
+
 - ✅ Centralized harness logic
 - ✅ Easy to swap/extend
 - ❌ Extra indirection
@@ -961,11 +976,13 @@ src/thegent/smolgents/
 ### 11.3 Result Aggregation
 
 **Option A: Manager aggregates all results**
+
 - ✅ Simple, no data loss
 - ❌ Manager becomes a bottleneck for large result sets
 - ❌ Aggregation logic tightly coupled
 
 **Option B: SmolGents self-aggregate**
+
 - ✅ Distributed aggregation
 - ❌ Harder to debug
 - ❌ Race conditions possible
@@ -1012,13 +1029,13 @@ src/thegent/smolgents/
 
 ## 13. Risk Mitigation
 
-| Risk | Probability | Impact | Mitigation |
-|------|-------------|--------|-----------|
-| File IPC race conditions | Medium | High | Use atomic `mv`, extensive testing |
-| SmolGent timeout during execution | Medium | Medium | Configurable timeouts, graceful degradation |
-| Manager bottleneck with many tasks | Low | Medium | Move to distributed in Phase 2 |
-| Harness integration complexity (Phase 3) | Low | Medium | Design harness layer carefully in MVP |
-| Result data loss on crash | Low | High | Persistent .mgmt/ directory, cleanup policies |
+| Risk                                     | Probability | Impact | Mitigation                                    |
+| ---------------------------------------- | ----------- | ------ | --------------------------------------------- |
+| File IPC race conditions                 | Medium      | High   | Use atomic `mv`, extensive testing            |
+| SmolGent timeout during execution        | Medium      | Medium | Configurable timeouts, graceful degradation   |
+| Manager bottleneck with many tasks       | Low         | Medium | Move to distributed in Phase 2                |
+| Harness integration complexity (Phase 3) | Low         | Medium | Design harness layer carefully in MVP         |
+| Result data loss on crash                | Low         | High   | Persistent .mgmt/ directory, cleanup policies |
 
 ---
 

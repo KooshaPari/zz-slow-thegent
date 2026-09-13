@@ -191,7 +191,10 @@ class DirectAgentRunner(AgentRunner):
         # WL-116: Handle audio transcript inputs
         audio_transcript: str | None = None
         if audio_paths:
-            from thegent.agents.audio_inputs import inject_transcript_into_prompt, load_transcripts
+            from thegent.agents.audio_inputs import (
+                inject_transcript_into_prompt,
+                load_transcripts,
+            )
 
             audio_transcript, _audio_sources = load_transcripts(audio_paths)
             if audio_transcript:
@@ -201,7 +204,16 @@ class DirectAgentRunner(AgentRunner):
         # Route via LiteLLM Router if enabled and not opencode
         if self._use_litellm_router and self.agent_name != "opencode":
             result = self._run_via_litellm_router(
-                prompt, cwd, mode, timeout, model, use_stream, live_output, on_stdout, on_stderr, env=env
+                prompt,
+                cwd,
+                mode,
+                timeout,
+                model,
+                use_stream,
+                live_output,
+                on_stdout,
+                on_stderr,
+                env=env,
             )
             # WL-116: Add audio_transcript to result if audio was processed
             if audio_transcript:

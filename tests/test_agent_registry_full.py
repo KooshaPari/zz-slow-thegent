@@ -20,12 +20,11 @@ import pytest
 import yaml
 
 from thegent.agents.capability_index import (
-    AgentRecord,
     AgentRecommendation,
+    AgentRecord,
     CapabilityIndex,
     DoctorResult,
     _coerce_list,
-    _load_agent_file,
     _parse_frontmatter,
     _tf_idf_score,
     _tokenize,
@@ -194,10 +193,22 @@ class TestCapabilityIndexBuild:
         _write_agent_md(
             dir_a,
             "agent-a",
-            {"name": "agent-a", "description": "Agent A", "capabilities": ["python"], "model": "haiku"},
+            {
+                "name": "agent-a",
+                "description": "Agent A",
+                "capabilities": ["python"],
+                "model": "haiku",
+            },
         )
         _write_agent_md(
-            dir_b, "agent-b", {"name": "agent-b", "description": "Agent B", "capabilities": ["go"], "model": "sonnet"}
+            dir_b,
+            "agent-b",
+            {
+                "name": "agent-b",
+                "description": "Agent B",
+                "capabilities": ["go"],
+                "model": "sonnet",
+            },
         )
         with patch("thegent.agents.capability_index._glob_agent_dirs", return_value=[]):
             idx = CapabilityIndex.build(extra_dirs=[dir_a, dir_b])
@@ -209,7 +220,10 @@ class TestCapabilityIndexBuild:
         # Unclosed frontmatter block
         bad_file.write_text("---\nname: broken\n", encoding="utf-8")
         good_file = tmp_path / "good.md"
-        good_file.write_text("---\nname: good-agent\ndescription: Fine\nmodel: haiku\n---\nBody.", encoding="utf-8")
+        good_file.write_text(
+            "---\nname: good-agent\ndescription: Fine\nmodel: haiku\n---\nBody.",
+            encoding="utf-8",
+        )
         with patch("thegent.agents.capability_index._glob_agent_dirs", return_value=[]):
             idx = CapabilityIndex.build(extra_dirs=[tmp_path])
         names = [a.name for a in idx.all_agents()]
@@ -250,7 +264,14 @@ class TestRecommendationScoring:
     def test_empty_task_returns_no_recommendations(self, tmp_path: Path) -> None:
         idx = self._make_index_with_agents(
             tmp_path,
-            [{"name": "agent-a", "description": "Python developer", "capabilities": ["python"], "model": "haiku"}],
+            [
+                {
+                    "name": "agent-a",
+                    "description": "Python developer",
+                    "capabilities": ["python"],
+                    "model": "haiku",
+                }
+            ],
         )
         recs = idx.recommend("")
         assert recs == []
@@ -333,7 +354,14 @@ class TestRecommendationScoring:
     def test_no_match_returns_empty_list(self, tmp_path: Path) -> None:
         idx = self._make_index_with_agents(
             tmp_path,
-            [{"name": "go-dev", "description": "Go developer", "capabilities": ["go"], "model": "haiku"}],
+            [
+                {
+                    "name": "go-dev",
+                    "description": "Go developer",
+                    "capabilities": ["go"],
+                    "model": "haiku",
+                }
+            ],
         )
         recs = idx.recommend("blockchain smart contract solidity")
         # May or may not match; just ensure it's a list
@@ -410,7 +438,14 @@ class TestDoctorChecks:
     def test_healthy_agent_passes_doctor(self, tmp_path: Path) -> None:
         idx = self._make_index(
             tmp_path,
-            [{"name": "healthy", "description": "A fine agent", "capabilities": ["python"], "model": "haiku"}],
+            [
+                {
+                    "name": "healthy",
+                    "description": "A fine agent",
+                    "capabilities": ["python"],
+                    "model": "haiku",
+                }
+            ],
         )
         results = idx.doctor()
         assert len(results) == 1
@@ -423,7 +458,13 @@ class TestDoctorChecks:
     def test_missing_model_and_runner_flagged(self, tmp_path: Path) -> None:
         idx = self._make_index(
             tmp_path,
-            [{"name": "no-runner", "description": "No runner config", "capabilities": ["python"]}],
+            [
+                {
+                    "name": "no-runner",
+                    "description": "No runner config",
+                    "capabilities": ["python"],
+                }
+            ],
         )
         results = idx.doctor()
         assert len(results) == 1
@@ -460,7 +501,14 @@ class TestDoctorChecks:
     def test_empty_runner_string_flagged(self, tmp_path: Path) -> None:
         idx = self._make_index(
             tmp_path,
-            [{"name": "empty-runner", "description": "Empty runner", "capabilities": [], "runner": ""}],
+            [
+                {
+                    "name": "empty-runner",
+                    "description": "Empty runner",
+                    "capabilities": [],
+                    "runner": "",
+                }
+            ],
         )
         results = idx.doctor()
         r = results[0]
@@ -469,7 +517,14 @@ class TestDoctorChecks:
     def test_doctor_result_has_name_and_path(self, tmp_path: Path) -> None:
         idx = self._make_index(
             tmp_path,
-            [{"name": "my-agent", "description": "Some agent", "capabilities": [], "model": "haiku"}],
+            [
+                {
+                    "name": "my-agent",
+                    "description": "Some agent",
+                    "capabilities": [],
+                    "model": "haiku",
+                }
+            ],
         )
         results = idx.doctor()
         r = results[0]
@@ -481,8 +536,17 @@ class TestDoctorChecks:
         idx = self._make_index(
             tmp_path,
             [
-                {"name": "agent-a", "description": "A", "capabilities": ["x"], "model": "haiku"},
-                {"name": "agent-b", "description": "B", "capabilities": ["y"]},  # Missing model/runner
+                {
+                    "name": "agent-a",
+                    "description": "A",
+                    "capabilities": ["x"],
+                    "model": "haiku",
+                },
+                {
+                    "name": "agent-b",
+                    "description": "B",
+                    "capabilities": ["y"],
+                },  # Missing model/runner
             ],
         )
         results = idx.doctor()
@@ -587,7 +651,11 @@ class TestAutoAgentSelection:
             from thegent.cli.apps.run import app
 
             runner = CliRunner()
-            result = runner.invoke(app, ["agent", "write documentation for my module"], catch_exceptions=True)
+            runner.invoke(
+                app,
+                ["agent", "write documentation for my module"],
+                catch_exceptions=True,
+            )
             # run_cmd should have been called with agent="doc-writer"
             if mock_run_cmd.called:
                 call_kwargs = mock_run_cmd.call_args
@@ -605,7 +673,7 @@ class TestAutoAgentSelection:
             runner = CliRunner()
             with patch("thegent.cli.commands.cli.run_cmd") as mock_run_cmd:
                 mock_run_cmd.return_value = None
-                result = runner.invoke(
+                runner.invoke(
                     app,
                     ["agent", "do some task", "--no-auto-agent"],
                     catch_exceptions=True,

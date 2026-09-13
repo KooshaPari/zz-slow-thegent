@@ -1,16 +1,17 @@
 """Tests for SerializableMixin."""
 
-import pytest
 from dataclasses import dataclass, field
-from datetime import datetime, timezone
-from enum import Enum, StrEnum
+from datetime import UTC, datetime
+from enum import StrEnum
 from pathlib import Path
 from typing import Any
+
+import pytest
 
 from thegent.integrations.base import SerializableMixin
 
 
-class Status(str, Enum):
+class Status(StrEnum):
     """Test status enum."""
 
     PENDING = "pending"
@@ -58,7 +59,7 @@ class TestToDict:
             name="Alice",
             age=30,
             status=Status.ACTIVE,
-            created_at=datetime(2024, 1, 15, 10, 30, 0, tzinfo=timezone.utc),
+            created_at=datetime(2024, 1, 15, 10, 30, 0, tzinfo=UTC),
             home_path=Path("/home/alice"),
         )
         result = person.to_dict()
@@ -75,7 +76,7 @@ class TestToDict:
             name="Bob",
             age=25,
             status=Status.DONE,
-            created_at=datetime(2024, 1, 1, tzinfo=timezone.utc),
+            created_at=datetime(2024, 1, 1, tzinfo=UTC),
             home_path=Path("/tmp"),
         )
         result = person.to_dict()
@@ -85,7 +86,7 @@ class TestToDict:
 
     def test_datetime_with_timezone(self):
         """Test datetime with timezone serialization."""
-        dt = datetime(2024, 6, 15, 14, 30, 0, tzinfo=timezone.utc)
+        dt = datetime(2024, 6, 15, 14, 30, 0, tzinfo=UTC)
         person = Person(
             name="Charlie",
             age=35,
@@ -103,7 +104,7 @@ class TestToDict:
             name="Diana",
             age=28,
             status=Status.ACTIVE,
-            created_at=datetime(2024, 1, 1, tzinfo=timezone.utc),
+            created_at=datetime(2024, 1, 1, tzinfo=UTC),
             home_path=Path("/tmp"),
             metadata={"key": "value", "nested": {"inner": 123}},
         )
@@ -118,7 +119,7 @@ class TestToDict:
             name="Eve",
             age=22,
             status=Status.PENDING,
-            created_at=datetime(2024, 1, 1, tzinfo=timezone.utc),
+            created_at=datetime(2024, 1, 1, tzinfo=UTC),
             home_path=Path("/tmp"),
             tags=["tag1", "tag2", "tag3"],
         )
@@ -133,7 +134,7 @@ class TestToDict:
             name="Frank",
             age=40,
             status=Status.ACTIVE,
-            created_at=datetime(2024, 1, 1, tzinfo=timezone.utc),
+            created_at=datetime(2024, 1, 1, tzinfo=UTC),
             home_path=Path("/tmp"),
             address=address,
         )
@@ -149,7 +150,7 @@ class TestToDict:
             name="Grace",
             age=50,
             status=Status.DONE,
-            created_at=datetime(2024, 1, 1, tzinfo=timezone.utc),
+            created_at=datetime(2024, 1, 1, tzinfo=UTC),
             home_path=Path("/tmp"),
             address=None,
         )
@@ -217,7 +218,7 @@ class TestRoundTrip:
             name="Alice",
             age=30,
             status=Status.ACTIVE,
-            created_at=datetime(2024, 1, 15, 10, 30, 0, tzinfo=timezone.utc),
+            created_at=datetime(2024, 1, 15, 10, 30, 0, tzinfo=UTC),
             home_path=Path("/home/alice"),
             metadata={"key": "value"},
             tags=["tag1"],

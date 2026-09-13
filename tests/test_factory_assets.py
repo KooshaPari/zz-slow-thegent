@@ -23,7 +23,10 @@ def test_install_writes_owned_assets_and_receipt(tmp_path: Path) -> None:
 
 
 def test_uninstall_removes_only_owned_assets(tmp_path: Path) -> None:
-    from thegent.install.factory_assets import install_factory_assets, uninstall_factory_assets
+    from thegent.install.factory_assets import (
+        install_factory_assets,
+        uninstall_factory_assets,
+    )
 
     root = tmp_path / "factory"
     install_factory_assets(root)

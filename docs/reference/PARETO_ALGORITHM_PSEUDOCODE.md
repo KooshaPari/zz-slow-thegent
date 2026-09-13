@@ -3,6 +3,7 @@
 ## Overview
 
 This document provides:
+
 1. **High-level pseudocode** for Pareto frontier calculation
 2. **Low-level implementation** ready for Python/TypeScript/Go
 3. **Test cases** to verify correctness
@@ -149,30 +150,33 @@ from enum import Enum
 
 class SpeedLevel(Enum):
     """Speed classification with numerical scores."""
+
     ULTRA_FAST = 100  # Gemini Flash, GPT-4o mini: 180-220 tok/s
-    VERY_FAST = 85    # MiniMax M2.5: ~150 tok/s
-    FAST = 70         # Claude Haiku, GPT-4o mini TTFT: 300-1200ms
-    MODERATE = 50     # Gemini Pro, Claude Sonnet TTFT: 400-1500ms
-    SLOW = 30         # Claude Opus, GLM-5: 1500-2000ms
+    VERY_FAST = 85  # MiniMax M2.5: ~150 tok/s
+    FAST = 70  # Claude Haiku, GPT-4o mini TTFT: 300-1200ms
+    MODERATE = 50  # Gemini Pro, Claude Sonnet TTFT: 400-1500ms
+    SLOW = 30  # Claude Opus, GLM-5: 1500-2000ms
 
 
 @dataclass
 class Model:
     """Model specification with quality, speed, and cost metrics."""
+
     name: str
-    quality_pct: float              # SWE-Bench score, 0-100%
-    speed_score: int                # 0-100 scale (see SpeedLevel)
-    cost_per_m_tokens: float        # USD per million tokens
+    quality_pct: float  # SWE-Bench score, 0-100%
+    speed_score: int  # 0-100 scale (see SpeedLevel)
+    cost_per_m_tokens: float  # USD per million tokens
 
 
 @dataclass
 class ParetoResult:
     """Result of Pareto frontier computation."""
+
     model: Model
-    dominated_by: List[str]         # Names of models that dominate this one
-    dominates: List[str]            # Names of models this one dominates
-    is_frontier: bool               # True if on Pareto frontier
-    dominance_count: int = 0        # Number of models this one dominates
+    dominated_by: List[str]  # Names of models that dominate this one
+    dominates: List[str]  # Names of models this one dominates
+    is_frontier: bool  # True if on Pareto frontier
+    dominance_count: int = 0  # Number of models this one dominates
 
 
 def dominates(model_a: Model, model_b: Model) -> bool:
@@ -193,9 +197,9 @@ def dominates(model_a: Model, model_b: Model) -> bool:
 
     # At least one strict improvement
     has_improvement = (
-        model_a.quality_pct > model_b.quality_pct or
-        model_a.speed_score > model_b.speed_score or
-        model_a.cost_per_m_tokens < model_b.cost_per_m_tokens
+        model_a.quality_pct > model_b.quality_pct
+        or model_a.speed_score > model_b.speed_score
+        or model_a.cost_per_m_tokens < model_b.cost_per_m_tokens
     )
 
     return quality_ok and speed_ok and cost_ok and has_improvement
@@ -212,11 +216,7 @@ def compute_pareto_frontier(models: List[Model]) -> List[Model]:
     frontier = []
 
     for candidate in models:
-        is_dominated = any(
-            dominates(other, candidate)
-            for other in models
-            if other is not candidate
-        )
+        is_dominated = any(dominates(other, candidate) for other in models if other is not candidate)
 
         if not is_dominated:
             frontier.append(candidate)
@@ -240,23 +240,17 @@ def analyze_models(models: List[Model]) -> Tuple[List[ParetoResult], List[Model]
     results = []
     for model in models:
         # Find models that dominate this one
-        dominated_by = [
-            m.name for m in models
-            if m is not model and dominates(m, model)
-        ]
+        dominated_by = [m.name for m in models if m is not model and dominates(m, model)]
 
         # Find models this one dominates
-        dominates_list = [
-            m.name for m in models
-            if m is not model and dominates(model, m)
-        ]
+        dominates_list = [m.name for m in models if m is not model and dominates(model, m)]
 
         result = ParetoResult(
             model=model,
             dominated_by=dominated_by,
             dominates=dominates_list,
             is_frontier=model in frontier_models,
-            dominance_count=len(dominates_list)
+            dominance_count=len(dominates_list),
         )
         results.append(result)
 
@@ -350,11 +344,13 @@ def test_frontier_size():
 
 def test_frontier_sorted_by_cost():
     """Frontier should be sorted by cost ascending."""
-    frontier = compute_pareto_frontier([
-        Model("Expensive", 85, 50, 15.00),
-        Model("Cheap", 70, 100, 0.375),
-        Model("Medium", 80, 85, 0.79),
-    ])
+    frontier = compute_pareto_frontier(
+        [
+            Model("Expensive", 85, 50, 15.00),
+            Model("Cheap", 70, 100, 0.375),
+            Model("Medium", 80, 85, 0.79),
+        ]
+    )
 
     costs = [m.cost_per_m_tokens for m in frontier]
     assert costs == sorted(costs), "Frontier should be sorted by cost"
@@ -392,55 +388,58 @@ def test_transitivity_not_assumed():
 ```typescript
 // pareto_frontier.ts
 interface Model {
-    name: string;
-    qualityPct: number;     // 0-100
-    speedScore: number;     // 0-100
-    costPerMTokens: number; // USD
+  name: string;
+  qualityPct: number; // 0-100
+  speedScore: number; // 0-100
+  costPerMTokens: number; // USD
 }
 
 interface ParetoResult {
-    model: Model;
-    isOnFrontier: boolean;
-    dominatedBy: string[];
-    dominates: string[];
+  model: Model;
+  isOnFrontier: boolean;
+  dominatedBy: string[];
+  dominates: string[];
 }
 
 function dominates(modelA: Model, modelB: Model): boolean {
-    if (modelA === modelB) return false;
+  if (modelA === modelB) return false;
 
-    const qualityOk = modelA.qualityPct >= modelB.qualityPct;
-    const speedOk = modelA.speedScore >= modelB.speedScore;
-    const costOk = modelA.costPerMTokens <= modelB.costPerMTokens;
+  const qualityOk = modelA.qualityPct >= modelB.qualityPct;
+  const speedOk = modelA.speedScore >= modelB.speedScore;
+  const costOk = modelA.costPerMTokens <= modelB.costPerMTokens;
 
-    const hasImprovement =
-        modelA.qualityPct > modelB.qualityPct ||
-        modelA.speedScore > modelB.speedScore ||
-        modelA.costPerMTokens < modelB.costPerMTokens;
+  const hasImprovement =
+    modelA.qualityPct > modelB.qualityPct ||
+    modelA.speedScore > modelB.speedScore ||
+    modelA.costPerMTokens < modelB.costPerMTokens;
 
-    return qualityOk && speedOk && costOk && hasImprovement;
+  return qualityOk && speedOk && costOk && hasImprovement;
 }
 
 function computeParetoFrontier(models: Model[]): Model[] {
-    const frontier = models.filter(candidate =>
-        !models.some(other => other !== candidate && dominates(other, candidate))
-    );
+  const frontier = models.filter(
+    (candidate) =>
+      !models.some(
+        (other) => other !== candidate && dominates(other, candidate),
+      ),
+  );
 
-    return frontier.sort((a, b) => a.costPerMTokens - b.costPerMTokens);
+  return frontier.sort((a, b) => a.costPerMTokens - b.costPerMTokens);
 }
 
 function analyzeModels(models: Model[]): ParetoResult[] {
-    const frontier = new Set(computeParetoFrontier(models));
+  const frontier = new Set(computeParetoFrontier(models));
 
-    return models.map(model => ({
-        model,
-        isOnFrontier: frontier.has(model),
-        dominatedBy: models
-            .filter(m => m !== model && dominates(m, model))
-            .map(m => m.name),
-        dominates: models
-            .filter(m => m !== model && dominates(model, m))
-            .map(m => m.name),
-    }));
+  return models.map((model) => ({
+    model,
+    isOnFrontier: frontier.has(model),
+    dominatedBy: models
+      .filter((m) => m !== model && dominates(m, model))
+      .map((m) => m.name),
+    dominates: models
+      .filter((m) => m !== model && dominates(model, m))
+      .map((m) => m.name),
+  }));
 }
 ```
 
@@ -451,15 +450,18 @@ function analyzeModels(models: Model[]): ParetoResult[] {
 ### 4.1 Where to Add Code
 
 **File:** `src/thegent/models/optimizer.py` (NEW)
+
 ```python
 # Create new file with pareto_frontier.py implementation
 # Import and expose via __init__.py
 ```
 
 **File:** `src/thegent/governance/cost.py` (UPDATE)
+
 ```python
 # Import pareto frontier module
 from thegent.models.optimizer import compute_pareto_frontier, analyze_models
+
 
 class CostGovernor:
     def recommend_models_for_budget(self, budget_usd: float) -> List[Model]:
@@ -469,6 +471,7 @@ class CostGovernor:
 ```
 
 **File:** `src/thegent/models/catalog.py` (UPDATE)
+
 ```python
 # Add frontier metadata to Route/Model objects
 @dataclass
@@ -481,6 +484,7 @@ class Route:
 ### 4.2 CLI Command
 
 **File:** `commands/model-optimize` (NEW)
+
 ```bash
 #!/bin/bash
 # Usage: thegent model-optimize --show-frontier --by-budget 200
@@ -553,7 +557,6 @@ class Route:
 **Complexity:** O(n²) time, O(n) space
 **Test Coverage:** 5 critical test cases defined
 
-
 ---
 
 ## EXTENSION_SUMMARY
@@ -562,15 +565,18 @@ class Route:
 **Extended by:** Claude Code
 
 ### Changes Made
+
 1. Added practical implementation patterns
 2. Added configuration examples
 3. Enhanced cross-references to related documentation
 
 ### Cross-References Added
+
 - Related research and implementation guides
 - WORK_STREAM.md for tracking
 
 ### Practical Additions
+
 - Implementation templates
 - Configuration examples
 - Best practices

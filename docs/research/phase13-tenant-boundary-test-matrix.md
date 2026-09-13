@@ -7,17 +7,18 @@
 > **WORK_STREAM ID:** phase13-tenant-boundary
 
 ## 1. Objective
+
 Verify strict isolation between federated namespaces and prevent cross-tenant policy leakage.
 
 ## 2. Test Cases
 
-| ID | Category | Description | Success Criteria |
-|----|----------|-------------|------------------|
-| TB-001 | Isolation | Attempt to read Policy A from Tenant B's context. | Access Denied / Not Found. |
-| TB-002 | Inheritance | Tenant A (Org level) defines a "No High-Cost Models" policy. | Sub-project A1 inherits and enforces the policy. |
-| TB-003 | Overrides | Tenant A (Project level) overrides Org level "Standard Lane" policy. | Project context uses the override; other projects use Org default. |
-| TB-004 | Leakage | Run A emits telemetry. Tenant B attempts to access it via session ID. | Access Denied. |
-| TB-005 | Conflict | Two namespaces provide conflicting "Auto-Approve" rules for the same action. | Conflict arbitration engine resolves via precedence. |
+| ID     | Category    | Description                                                                  | Success Criteria                                                   |
+| ------ | ----------- | ---------------------------------------------------------------------------- | ------------------------------------------------------------------ |
+| TB-001 | Isolation   | Attempt to read Policy A from Tenant B's context.                            | Access Denied / Not Found.                                         |
+| TB-002 | Inheritance | Tenant A (Org level) defines a "No High-Cost Models" policy.                 | Sub-project A1 inherits and enforces the policy.                   |
+| TB-003 | Overrides   | Tenant A (Project level) overrides Org level "Standard Lane" policy.         | Project context uses the override; other projects use Org default. |
+| TB-004 | Leakage     | Run A emits telemetry. Tenant B attempts to access it via session ID.        | Access Denied.                                                     |
+| TB-005 | Conflict    | Two namespaces provide conflicting "Auto-Approve" rules for the same action. | Conflict arbitration engine resolves via precedence.               |
 
 ## 3. Test Implementation
 
@@ -29,13 +30,16 @@ import pytest
 from thegent.phases.policy_federation import FederatedPolicyEngine
 from thegent.governance.isolation import TenantIsolationProvider
 
+
 @pytest.fixture
 def tenant_a_engine():
     return FederatedPolicyEngine(namespace="acme.payments")
 
+
 @pytest.fixture
 def tenant_b_engine():
     return FederatedPolicyEngine(namespace="competitor.analytics")
+
 
 @pytest.fixture
 def isolation_provider():
@@ -108,16 +112,10 @@ def test_tb004_telemetry_leakage(isolation_provider):
 
     # Attempt to access from Tenant B
     with pytest.raises(AccessDenied):
-        telemetry = isolation_provider.get_session_telemetry(
-            "competitor.analytics",
-            "session-1"
-        )
+        telemetry = isolation_provider.get_session_telemetry("competitor.analytics", "session-1")
 
     # Verify Tenant A can access its own telemetry
-    telemetry_a = isolation_provider.get_session_telemetry(
-        "acme.payments",
-        "session-1"
-    )
+    telemetry_a = isolation_provider.get_session_telemetry("acme.payments", "session-1")
     assert telemetry_a is not None
 ```
 
@@ -133,7 +131,7 @@ def test_tb005_policy_conflict():
     # Define conflicting policies
     policies = [
         {"namespace": "acme", "rules": {"auto_approve": False}},
-        {"namespace": "acme.payments", "rules": {"auto_approve": True}}
+        {"namespace": "acme.payments", "rules": {"auto_approve": True}},
     ]
 
     # Resolve conflict (project overrides org)
@@ -152,11 +150,11 @@ def test_tb005_policy_conflict():
 - [ ] All tests passing (pending implementation)
 
 ---
+
 ## See also
 
 - [WORK_STREAM.md](../reference/WORK_STREAM.md) — canonical backlog
 - [00-MASTER-INDEX.md](../plans/00-MASTER-INDEX.md) — plan index
-
 
 ---
 
@@ -166,15 +164,18 @@ def test_tb005_policy_conflict():
 **Extended by:** Claude Code
 
 ### Changes Made
+
 1. Added practical implementation patterns
 2. Added configuration examples
 3. Enhanced cross-references to related docs
 
 ### Cross-References Added
+
 - Related research and implementation guides
 - WORK_STREAM.md for tracking
 
 ### Practical Additions
+
 - Implementation templates
 - Configuration examples
 - Best practices

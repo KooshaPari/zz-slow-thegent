@@ -7,10 +7,10 @@ Frecency-ranked cache: combines frequency + recency scoring.
 Frecency = frequency × recency, where recency decays exponentially over time.
 
 Formula:
-    score = access_count × e^(-λ × age_seconds)
-    λ     = ln(2) / half_life_seconds
+score = access_count × e^(-λ × age_seconds)
+λ = ln(2) / half_life_seconds
 
-A ``half_life_seconds`` of 3600 (1 hour) means an item's *recency* component
+A `half_life_seconds` of 3600 (1 hour) means an item's _recency_ component
 halves every hour regardless of access count.
 
 Optionally persists frecency data via a :class:`~thegent.cache.MultiLevelCache`
@@ -26,7 +26,7 @@ Frecency-ranked in-memory cache with optional persistence.
 
 ### Methods
 
-#### FrecencyCache.__init__
+#### FrecencyCache.**init**
 
 ```python
 __init__(self: Any, maxsize: int, half_life_seconds: float, storage: Any)
@@ -40,22 +40,22 @@ __init__(self: Any, maxsize: int, half_life_seconds: float, storage: Any)
 access(self: Any, key: str)
 ```
 
-Record an access for *key* and return the updated frecency score.
+Record an access for _key_ and return the updated frecency score.
 
-On first access, a new entry is created with ``access_count = 1``.
-On subsequent accesses, ``access_count`` is incremented, ``last_access``
+On first access, a new entry is created with `access_count = 1`.
+On subsequent accesses, `access_count` is incremented, `last_access`
 is refreshed, and the score is recomputed.
 
-If a ``storage`` backend was provided, the updated entry is persisted.
+If a `storage` backend was provided, the updated entry is persisted.
 
-If the cache is at ``maxsize`` capacity after inserting a new key, the
+If the cache is at `maxsize` capacity after inserting a new key, the
 lowest-scored entry is evicted to maintain the size bound.
 
 **Parameters**:
 
 - `key`: Identifier for the accessed item.
 
-**Returns**: The new frecency score for *key*.
+**Returns**: The new frecency score for _key_.
 
 ---
 
@@ -75,11 +75,11 @@ Remove all entries from memory and (if configured) from storage.
 evict_lowest(self: Any, n: int)
 ```
 
-Evict the *n* lowest-scored entries and return their keys.
+Evict the _n_ lowest-scored entries and return their keys.
 
 **Parameters**:
 
-- `n`: Number of entries to evict.  Clamped to the current entry count.
+- `n`: Number of entries to evict. Clamped to the current entry count.
 
 **Returns**: List of evicted keys.
 
@@ -91,7 +91,7 @@ Evict the *n* lowest-scored entries and return their keys.
 get_entry(self: Any, key: str)
 ```
 
-Return the :class:`FrecencyEntry` for *key*, or ``None`` if absent.
+Return the :class:`FrecencyEntry` for _key_, or `None` if absent.
 
 The entry's score is recomputed before it is returned.
 
@@ -123,12 +123,12 @@ Maximum number of entries held in memory.
 score(self: Any, key: str)
 ```
 
-Return the current frecency score for *key* without recording an access.
+Return the current frecency score for _key_ without recording an access.
 
 The score is recomputed using current wall-clock time so it reflects
 elapsed decay even without new accesses.
 
-**Returns**: Current score, or ``0.0`` if the key is unknown.
+**Returns**: Current score, or `0.0` if the key is unknown.
 
 ---
 
@@ -138,15 +138,15 @@ elapsed decay even without new accesses.
 top_n(self: Any, n: int)
 ```
 
-Return the *n* highest-scoring entries, sorted descending.
+Return the _n_ highest-scoring entries, sorted descending.
 
 Scores are recomputed at call time to account for decay since last
 access.
 
 **Parameters**:
 
-- `n`: Number of entries to return.  If *n* exceeds the number of
-tracked entries, all entries are returned.
+- `n`: Number of entries to return. If _n_ exceeds the number of
+  tracked entries, all entries are returned.
 
 **Returns**: List of :class:`FrecencyEntry` sorted by score descending.
 
@@ -166,7 +166,7 @@ Snapshot of frecency data for a single key.
 age_seconds(self: Any, now: Any)
 ```
 
-Return elapsed seconds since ``last_access``.
+Return elapsed seconds since `last_access`.
 
 ---
 
@@ -181,9 +181,9 @@ Recompute frecency score using the exponential decay formula.
 **Parameters**:
 
 - `half_life`: Half-life in seconds for the recency decay factor.
-- `now`:       Reference time (defaults to current UTC time).
+- `now`: Reference time (defaults to current UTC time).
 
-**Returns**: Updated score.  The entry's ``score`` attribute is mutated in place.
+**Returns**: Updated score. The entry's `score` attribute is mutated in place.
 
 ---
 
@@ -207,7 +207,7 @@ Example usage::
 
 ### Methods
 
-#### FrecencyModelSelector.__init__
+#### FrecencyModelSelector.**init**
 
 ```python
 __init__(self: Any, maxsize: int, half_life_seconds: float, storage: Any)
@@ -231,13 +231,13 @@ Underlying :class:`FrecencyCache` for advanced access.
 preferred_model(self: Any, candidates: list[str])
 ```
 
-Return the highest-scoring model from *candidates*.
+Return the highest-scoring model from _candidates_.
 
 If none of the candidates have been recorded yet (all score 0), the
 first candidate is returned as a tiebreaker.
 
-**Returns**: The model identifier with the highest frecency score, or ``None``
-if *candidates* is empty.
+**Returns**: The model identifier with the highest frecency score, or `None`
+if _candidates_ is empty.
 
 ---
 
@@ -247,7 +247,7 @@ if *candidates* is empty.
 record_use(self: Any, model_id: str)
 ```
 
-Record that *model_id* was used.  Returns the updated score.
+Record that _model_id_ was used. Returns the updated score.
 
 ---
 
@@ -257,7 +257,7 @@ Record that *model_id* was used.  Returns the updated score.
 score(self: Any, model_id: str)
 ```
 
-Return the current frecency score for *model_id*.
+Return the current frecency score for _model_id_.
 
 ---
 
@@ -267,7 +267,7 @@ Return the current frecency score for *model_id*.
 top_models(self: Any, n: int)
 ```
 
-Return the *n* most frecently used model identifiers.
+Return the _n_ most frecently used model identifiers.
 
 ---
 
@@ -279,22 +279,22 @@ Return the *n* most frecently used model identifiers.
 access(self: Any, key: str)
 ```
 
-Record an access for *key* and return the updated frecency score.
+Record an access for _key_ and return the updated frecency score.
 
-On first access, a new entry is created with ``access_count = 1``.
-On subsequent accesses, ``access_count`` is incremented, ``last_access``
+On first access, a new entry is created with `access_count = 1`.
+On subsequent accesses, `access_count` is incremented, `last_access`
 is refreshed, and the score is recomputed.
 
-If a ``storage`` backend was provided, the updated entry is persisted.
+If a `storage` backend was provided, the updated entry is persisted.
 
-If the cache is at ``maxsize`` capacity after inserting a new key, the
+If the cache is at `maxsize` capacity after inserting a new key, the
 lowest-scored entry is evicted to maintain the size bound.
 
 **Parameters**:
 
 - `key`: Identifier for the accessed item.
 
-**Returns**: The new frecency score for *key*.
+**Returns**: The new frecency score for _key_.
 
 ---
 
@@ -304,7 +304,7 @@ lowest-scored entry is evicted to maintain the size bound.
 age_seconds(self: Any, now: Any)
 ```
 
-Return elapsed seconds since ``last_access``.
+Return elapsed seconds since `last_access`.
 
 ---
 
@@ -334,11 +334,11 @@ Remove all entries from memory and (if configured) from storage.
 evict_lowest(self: Any, n: int)
 ```
 
-Evict the *n* lowest-scored entries and return their keys.
+Evict the _n_ lowest-scored entries and return their keys.
 
 **Parameters**:
 
-- `n`: Number of entries to evict.  Clamped to the current entry count.
+- `n`: Number of entries to evict. Clamped to the current entry count.
 
 **Returns**: List of evicted keys.
 
@@ -350,7 +350,7 @@ Evict the *n* lowest-scored entries and return their keys.
 get_entry(self: Any, key: str)
 ```
 
-Return the :class:`FrecencyEntry` for *key*, or ``None`` if absent.
+Return the :class:`FrecencyEntry` for _key_, or `None` if absent.
 
 The entry's score is recomputed before it is returned.
 
@@ -382,13 +382,13 @@ Maximum number of entries held in memory.
 preferred_model(self: Any, candidates: list[str])
 ```
 
-Return the highest-scoring model from *candidates*.
+Return the highest-scoring model from _candidates_.
 
 If none of the candidates have been recorded yet (all score 0), the
 first candidate is returned as a tiebreaker.
 
-**Returns**: The model identifier with the highest frecency score, or ``None``
-if *candidates* is empty.
+**Returns**: The model identifier with the highest frecency score, or `None`
+if _candidates_ is empty.
 
 ---
 
@@ -403,9 +403,9 @@ Recompute frecency score using the exponential decay formula.
 **Parameters**:
 
 - `half_life`: Half-life in seconds for the recency decay factor.
-- `now`:       Reference time (defaults to current UTC time).
+- `now`: Reference time (defaults to current UTC time).
 
-**Returns**: Updated score.  The entry's ``score`` attribute is mutated in place.
+**Returns**: Updated score. The entry's `score` attribute is mutated in place.
 
 ---
 
@@ -415,7 +415,7 @@ Recompute frecency score using the exponential decay formula.
 record_use(self: Any, model_id: str)
 ```
 
-Record that *model_id* was used.  Returns the updated score.
+Record that _model_id_ was used. Returns the updated score.
 
 ---
 
@@ -425,7 +425,7 @@ Record that *model_id* was used.  Returns the updated score.
 score(self: Any, model_id: str)
 ```
 
-Return the current frecency score for *model_id*.
+Return the current frecency score for _model_id_.
 
 ---
 
@@ -435,7 +435,7 @@ Return the current frecency score for *model_id*.
 top_models(self: Any, n: int)
 ```
 
-Return the *n* most frecently used model identifiers.
+Return the _n_ most frecently used model identifiers.
 
 ---
 
@@ -445,15 +445,15 @@ Return the *n* most frecently used model identifiers.
 top_n(self: Any, n: int)
 ```
 
-Return the *n* highest-scoring entries, sorted descending.
+Return the _n_ highest-scoring entries, sorted descending.
 
 Scores are recomputed at call time to account for decay since last
 access.
 
 **Parameters**:
 
-- `n`: Number of entries to return.  If *n* exceeds the number of
-tracked entries, all entries are returned.
+- `n`: Number of entries to return. If _n_ exceeds the number of
+  tracked entries, all entries are returned.
 
 **Returns**: List of :class:`FrecencyEntry` sorted by score descending.
 

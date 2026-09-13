@@ -56,14 +56,14 @@ OpenAI, Azure OpenAI, Anthropic, AWS Bedrock, Google Vertex AI, Google Gemini, C
 
 Kong supports all topologies:
 
-| Mode | Description |
-|------|-------------|
-| **Kong OSS** | Open source, self-hosted. No GUI (Kong Manager). Basic AI plugins (ai-proxy, ai-prompt-guard, ai-prompt-decorator, ai-prompt-template, ai-request-transformer, ai-response-transformer) are free. |
-| **Kong Gateway Enterprise** | Self-hosted with enterprise license. Full plugin catalog, Kong Manager GUI, RBAC, advanced analytics, SSO/OIDC. |
-| **Kong Konnect (SaaS)** | Cloud-managed control plane, self-hosted or cloud data planes. Konnect Advanced Analytics for pre-built dashboards. Free tier available for AI Gateway. |
-| **Hybrid** | Control plane in Konnect/Enterprise, data planes self-hosted or cloud. |
-| **DB-less** | No PostgreSQL required. Declarative YAML config only. Ideal for Kubernetes / KIC. |
-| **Kong Ingress Controller (KIC)** | Kubernetes-native. CRDs map to Kong entities. |
+| Mode                              | Description                                                                                                                                                                                       |
+| --------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Kong OSS**                      | Open source, self-hosted. No GUI (Kong Manager). Basic AI plugins (ai-proxy, ai-prompt-guard, ai-prompt-decorator, ai-prompt-template, ai-request-transformer, ai-response-transformer) are free. |
+| **Kong Gateway Enterprise**       | Self-hosted with enterprise license. Full plugin catalog, Kong Manager GUI, RBAC, advanced analytics, SSO/OIDC.                                                                                   |
+| **Kong Konnect (SaaS)**           | Cloud-managed control plane, self-hosted or cloud data planes. Konnect Advanced Analytics for pre-built dashboards. Free tier available for AI Gateway.                                           |
+| **Hybrid**                        | Control plane in Konnect/Enterprise, data planes self-hosted or cloud.                                                                                                                            |
+| **DB-less**                       | No PostgreSQL required. Declarative YAML config only. Ideal for Kubernetes / KIC.                                                                                                                 |
+| **Kong Ingress Controller (KIC)** | Kubernetes-native. CRDs map to Kong entities.                                                                                                                                                     |
 
 ### Pricing (2026 estimates)
 
@@ -111,34 +111,34 @@ As of February 2026, Kong has **21 AI plugins**:
 
 ### Free / OSS Plugins
 
-| Plugin | Function |
-|--------|----------|
-| `ai-proxy` | Core routing to single LLM provider |
-| `ai-prompt-decorator` | Prepend/append system messages to chat history |
-| `ai-prompt-guard` | Regex-based allow/deny list for prompts |
-| `ai-prompt-template` | Fill-in-the-blank prompt templates with injection prevention |
-| `ai-request-transformer` | LLM rewrites upstream request bodies |
-| `ai-response-transformer` | LLM rewrites upstream response bodies |
+| Plugin                    | Function                                                     |
+| ------------------------- | ------------------------------------------------------------ |
+| `ai-proxy`                | Core routing to single LLM provider                          |
+| `ai-prompt-decorator`     | Prepend/append system messages to chat history               |
+| `ai-prompt-guard`         | Regex-based allow/deny list for prompts                      |
+| `ai-prompt-template`      | Fill-in-the-blank prompt templates with injection prevention |
+| `ai-request-transformer`  | LLM rewrites upstream request bodies                         |
+| `ai-response-transformer` | LLM rewrites upstream response bodies                        |
 
 ### Enterprise / AI License Required
 
-| Plugin | Function |
-|--------|----------|
-| `ai-proxy-advanced` | Multi-provider load balancing with 7 algorithms |
-| `ai-rate-limiting-advanced` | Token- and cost-based rate limiting |
-| `ai-semantic-cache` | Vector similarity response caching (Redis/pgvector) |
-| `ai-semantic-prompt-guard` | Embedding-based semantic allow/deny (multilingual) |
-| `ai-semantic-response-guard` | Semantic filtering of LLM responses |
-| `ai-rag-injector` | Automated RAG context injection at gateway layer |
-| `ai-pii-sanitizer` | PII detection/redaction in prompts (20+ categories, 12 languages) |
-| `ai-prompt-compressor` | Reduce token count via LLM compression (up to 5x savings) |
-| `ai-llm-as-judge` | Use an LLM to evaluate/compare other LLM responses |
-| `ai-mcp-proxy` | MCP protocol gateway (passthrough, conversion, aggregation) |
-| `ai-mcp-oauth2` | OAuth2 for MCP endpoints |
-| `ai-aws-guardrails` | AWS Bedrock Guardrails integration |
-| `ai-azure-content-safety` | Azure Content Safety integration |
-| `ai-gcp-model-armor` | Google Cloud Model Armor integration |
-| `ai-lakera-guard` | Lakera Guard prompt injection detection |
+| Plugin                       | Function                                                          |
+| ---------------------------- | ----------------------------------------------------------------- |
+| `ai-proxy-advanced`          | Multi-provider load balancing with 7 algorithms                   |
+| `ai-rate-limiting-advanced`  | Token- and cost-based rate limiting                               |
+| `ai-semantic-cache`          | Vector similarity response caching (Redis/pgvector)               |
+| `ai-semantic-prompt-guard`   | Embedding-based semantic allow/deny (multilingual)                |
+| `ai-semantic-response-guard` | Semantic filtering of LLM responses                               |
+| `ai-rag-injector`            | Automated RAG context injection at gateway layer                  |
+| `ai-pii-sanitizer`           | PII detection/redaction in prompts (20+ categories, 12 languages) |
+| `ai-prompt-compressor`       | Reduce token count via LLM compression (up to 5x savings)         |
+| `ai-llm-as-judge`            | Use an LLM to evaluate/compare other LLM responses                |
+| `ai-mcp-proxy`               | MCP protocol gateway (passthrough, conversion, aggregation)       |
+| `ai-mcp-oauth2`              | OAuth2 for MCP endpoints                                          |
+| `ai-aws-guardrails`          | AWS Bedrock Guardrails integration                                |
+| `ai-azure-content-safety`    | Azure Content Safety integration                                  |
+| `ai-gcp-model-armor`         | Google Cloud Model Armor integration                              |
+| `ai-lakera-guard`            | Lakera Guard prompt injection detection                           |
 
 ---
 
@@ -154,12 +154,12 @@ The core AI plugin. Takes an OpenAI-format request, translates it to the target 
 plugins:
   - name: ai-proxy
     config:
-      route_type: llm/v1/chat        # llm/v1/chat | llm/v1/completions | llm/v1/embeddings
+      route_type: llm/v1/chat # llm/v1/chat | llm/v1/completions | llm/v1/embeddings
       auth:
         header_name: Authorization
         header_value: "Bearer ${OPENAI_API_KEY}"
       model:
-        provider: openai             # openai | anthropic | azure | bedrock | gemini | cohere | mistral | etc.
+        provider: openai # openai | anthropic | azure | bedrock | gemini | cohere | mistral | etc.
         name: gpt-4o
         options:
           max_tokens: 1024
@@ -202,16 +202,16 @@ Enterprise-tier replacement for ai-proxy that supports **multiple targets** with
 
 ### Core Differences from ai-proxy
 
-| Feature | ai-proxy | ai-proxy-advanced |
-|---------|----------|-------------------|
-| Targets | 1 | Unlimited |
-| Load balancing | None | 7 algorithms |
-| Failover | No | Yes (configurable criteria) |
-| Circuit breakers | No | Yes (v3.13+) |
-| Cost routing | No | Yes (lowest-usage by cost) |
-| Semantic routing | No | Yes (vector similarity) |
-| Health checks | No | Yes (v3.13+) |
-| Native LLM format | No | Yes (skip OpenAI translation) |
+| Feature           | ai-proxy | ai-proxy-advanced             |
+| ----------------- | -------- | ----------------------------- |
+| Targets           | 1        | Unlimited                     |
+| Load balancing    | None     | 7 algorithms                  |
+| Failover          | No       | Yes (configurable criteria)   |
+| Circuit breakers  | No       | Yes (v3.13+)                  |
+| Cost routing      | No       | Yes (lowest-usage by cost)    |
+| Semantic routing  | No       | Yes (vector similarity)       |
+| Health checks     | No       | Yes (v3.13+)                  |
+| Native LLM format | No       | Yes (skip OpenAI translation) |
 
 ### Configuration Example
 
@@ -220,7 +220,7 @@ plugins:
   - name: ai-proxy-advanced
     config:
       balancer:
-        algorithm: lowest-latency   # algorithm selection
+        algorithm: lowest-latency # algorithm selection
         retries: 3
         failover_criteria:
           - http_429
@@ -273,6 +273,7 @@ Uses **Peak EWMA** (Exponentially Weighted Moving Average) to track response tim
 ### 5. Lowest-Usage
 
 Routes based on resource consumption:
+
 - `prompt_tokens` — minimize input token usage
 - `completion_tokens` — minimize output token usage
 - `cost` (v3.10+) — minimize financial cost (pricing per million tokens configured per target)
@@ -282,6 +283,7 @@ Routes based on resource consumption:
 The most sophisticated algorithm. Uses vector embeddings to route each prompt to the model whose **description** is most semantically similar to the prompt content.
 
 **How it works:**
+
 1. Each target has a `description` string (e.g., "Expert in Python programming")
 2. On each request, Kong embeds the user prompt using a configured embedding model (e.g., OpenAI `text-embedding-3-small`)
 3. Cosine similarity is computed in Redis VSS against stored description embeddings
@@ -334,14 +336,14 @@ The `ai-semantic-cache` plugin intercepts LLM requests and checks a vector datab
 
 ### Storage Backends
 
-| Backend | Notes |
-|---------|-------|
-| Redis (with VSS) | Primary option since 3.8 |
-| AWS MemoryDB for Redis | Managed Redis with VSS, added 3.12 |
-| PostgreSQL + pgvector | Added 3.10 |
-| AWS ElastiCache | IAM-based credential rotation |
-| Azure Managed Redis | IAM-based |
-| Google Cloud Memorystore | IAM-based |
+| Backend                  | Notes                              |
+| ------------------------ | ---------------------------------- |
+| Redis (with VSS)         | Primary option since 3.8           |
+| AWS MemoryDB for Redis   | Managed Redis with VSS, added 3.12 |
+| PostgreSQL + pgvector    | Added 3.10                         |
+| AWS ElastiCache          | IAM-based credential rotation      |
+| Azure Managed Redis      | IAM-based                          |
+| Google Cloud Memorystore | IAM-based                          |
 
 ### Configuration
 
@@ -362,18 +364,18 @@ plugins:
           port: 6379
         dimensions: 1536
         distance_metric: cosine
-        threshold: 0.85        # Similarity cutoff (higher = stricter)
-      cache_ttl: 300            # Default 300s
+        threshold: 0.85 # Similarity cutoff (higher = stricter)
+      cache_ttl: 300 # Default 300s
 ```
 
 ### Cache Headers
 
-| Header | Meaning |
-|--------|---------|
-| `X-Cache-Status` | `Hit` / `Miss` |
-| `X-Cache-Key` | Hash of the cached entry |
-| `Age` | Seconds since caching |
-| `X-Cache-Ttl` | Remaining TTL |
+| Header           | Meaning                  |
+| ---------------- | ------------------------ |
+| `X-Cache-Status` | `Hit` / `Miss`           |
+| `X-Cache-Key`    | Hash of the cached entry |
+| `Age`            | Seconds since caching    |
+| `X-Cache-Ttl`    | Remaining TTL            |
 
 ### Cache Control Respect
 
@@ -382,6 +384,7 @@ Respects standard HTTP cache directives: `no-store`, `no-cache`, `private`, `max
 ### Exact vs Semantic Caching
 
 Both modes run simultaneously:
+
 - **Exact cache**: Hash-match on identical prompts (faster lookup, zero embedding cost)
 - **Semantic cache**: VSS search for near-matches
 
@@ -399,20 +402,20 @@ Extends the standard Rate Limiting Advanced plugin with LLM token awareness.
 
 ### Token Count Strategies
 
-| Strategy | What Is Counted |
-|----------|----------------|
-| `total_tokens` | Prompt + completion tokens combined |
-| `prompt_tokens` | Input tokens only |
-| `completion_tokens` | Output tokens only |
-| `cost` | Financial cost (USD) based on per-million-token pricing |
+| Strategy            | What Is Counted                                         |
+| ------------------- | ------------------------------------------------------- |
+| `total_tokens`      | Prompt + completion tokens combined                     |
+| `prompt_tokens`     | Input tokens only                                       |
+| `completion_tokens` | Output tokens only                                      |
+| `cost`              | Financial cost (USD) based on per-million-token pricing |
 
 ### Window Strategies
 
-| Strategy | How Counters Are Stored |
-|----------|------------------------|
-| `local` | Per-node in-memory (fast, less accurate across cluster) |
-| `cluster` | Shared via data store (accurate, higher latency) |
-| `redis` | Redis-backed (accurate, moderate latency) |
+| Strategy  | How Counters Are Stored                                 |
+| --------- | ------------------------------------------------------- |
+| `local`   | Per-node in-memory (fast, less accurate across cluster) |
+| `cluster` | Shared via data store (accurate, higher latency)        |
+| `redis`   | Redis-backed (accurate, moderate latency)               |
 
 ### Rate Limit Response Headers
 
@@ -505,11 +508,13 @@ Uses an LLM to **rewrite the upstream request body** before routing.
 4. That transformed version becomes the new upstream request body
 
 **Use cases:**
+
 - Normalize inconsistent client request formats
 - Inject metadata or context into prompts automatically
 - Translate requests from one format/schema to another
 
 **Configuration:**
+
 ```yaml
 plugins:
   - name: ai-request-transformer
@@ -539,6 +544,7 @@ Uses an LLM to **rewrite the upstream response body** before returning to the cl
 **Special feature**: If `parse_llm_response_json_instructions: true`, Kong parses JSON instructions in the LLM response to set response headers, status codes, and replacement bodies.
 
 **Use cases:**
+
 - Format LLM responses to match client expectations
 - Redact or summarize responses
 - Add metadata to responses
@@ -553,12 +559,14 @@ Uses an LLM to **rewrite the upstream response body** before returning to the cl
 Injects predefined messages into the user's chat history, either prepended (before) or appended (after) the user's messages.
 
 **Use cases:**
+
 - Inject system prompts invisible to the end user
 - Add context, persona, or constraint messages
 - Inject guardrail instructions
 - Add conversation history boilerplate
 
 **Configuration:**
+
 ```yaml
 plugins:
   - name: ai-prompt-decorator
@@ -578,6 +586,7 @@ The user never sees these injected messages.
 Admins define structured prompt templates with `{{variable}}` placeholders. Users fill in variables rather than crafting free-form prompts.
 
 **Template definition** (admin-configured):
+
 ```json
 {
   "name": "summarize-document",
@@ -591,6 +600,7 @@ Admins define structured prompt templates with `{{variable}}` placeholders. User
 ```
 
 **Client request:**
+
 ```json
 {
   "messages": "{template://summarize-document}",
@@ -612,6 +622,7 @@ Admins define structured prompt templates with `{{variable}}` placeholders. User
 Kong AI Gateway exposes LLM-specific metrics through multiple channels:
 
 **Prometheus (standard Kong metrics + AI extensions):**
+
 - Token counts (prompt, completion, total) per provider/model/consumer
 - Request latency (TTFT — time to first token, end-to-end)
 - Error rates by provider
@@ -619,6 +630,7 @@ Kong AI Gateway exposes LLM-specific metrics through multiple channels:
 - Cost per request
 
 **OpenTelemetry (Span Attributes per GenAI spec):**
+
 - `gen_ai.system` (provider name)
 - `gen_ai.request.model`
 - `gen_ai.usage.input_tokens`
@@ -631,15 +643,15 @@ Full request/response bodies can be logged (with redaction options) for complian
 
 ### Integrations
 
-| Platform | Method |
-|----------|--------|
-| Grafana | Grafana Dashboard 24057 (official Kong AI Gateway dashboard) |
-| Prometheus | Native scrape endpoint |
-| Datadog | Crest Data Systems Kong AI Gateway integration |
-| Dynatrace | Native Kong AI observability integration |
-| Langfuse | Kong AI plugin integration for LLM tracing |
-| AWS CloudWatch | OpenTelemetry export |
-| Konnect Advanced Analytics | Pre-built dashboards (Konnect/Enterprise only) |
+| Platform                   | Method                                                       |
+| -------------------------- | ------------------------------------------------------------ |
+| Grafana                    | Grafana Dashboard 24057 (official Kong AI Gateway dashboard) |
+| Prometheus                 | Native scrape endpoint                                       |
+| Datadog                    | Crest Data Systems Kong AI Gateway integration               |
+| Dynatrace                  | Native Kong AI observability integration                     |
+| Langfuse                   | Kong AI plugin integration for LLM tracing                   |
+| AWS CloudWatch             | OpenTelemetry export                                         |
+| Konnect Advanced Analytics | Pre-built dashboards (Konnect/Enterprise only)               |
 
 ### Konnect Advanced Analytics (Enterprise/Konnect)
 
@@ -689,12 +701,12 @@ The most agentic-focused new capability. Kong acts as an MCP (Model Context Prot
 
 ### Four Operating Modes
 
-| Mode | Description |
-|------|-------------|
-| `passthrough-listener` | Routes MCP requests to an upstream MCP server. Kong adds auth, rate limiting, observability. |
-| `conversion-listener` | Converts REST API endpoints into MCP tools AND accepts incoming MCP requests on the same path. |
-| `conversion-only` | Converts REST APIs to MCP tools but does not accept MCP requests directly. Aggregated by a `listener` plugin. |
-| `listener` | Aggregates tools from multiple `conversion-only` plugins via tag matching. Creates a unified MCP endpoint. |
+| Mode                   | Description                                                                                                   |
+| ---------------------- | ------------------------------------------------------------------------------------------------------------- |
+| `passthrough-listener` | Routes MCP requests to an upstream MCP server. Kong adds auth, rate limiting, observability.                  |
+| `conversion-listener`  | Converts REST API endpoints into MCP tools AND accepts incoming MCP requests on the same path.                |
+| `conversion-only`      | Converts REST APIs to MCP tools but does not accept MCP requests directly. Aggregated by a `listener` plugin. |
+| `listener`             | Aggregates tools from multiple `conversion-only` plugins via tag matching. Creates a unified MCP endpoint.    |
 
 ### Protocol Translation
 
@@ -724,6 +736,7 @@ MCP Client
 ### Why This Matters
 
 MCP is becoming the protocol standard for AI agent tool use. Kong's MCP proxy means:
+
 1. Any existing REST API becomes an MCP tool without code changes
 2. Third-party MCP servers get enterprise governance (auth, rate limiting, audit logging) transparently
 3. Multiple MCP tool sources aggregated into a single MCP endpoint for agents
@@ -855,12 +868,12 @@ This enables Git-as-source-of-truth for Kong configuration, including all AI plu
 
 Testing basic proxy performance under identical hardware (12 CPUs):
 
-| Product | Relative Throughput | P95 Latency vs Kong |
-|---------|--------------------|--------------------|
-| Kong Konnect | Baseline (highest) | Baseline |
-| Portkey | ~200% slower | ~65% higher latency |
-| LiteLLM | ~800% slower | ~86% higher latency |
-| WireMock (raw) | Closest to Kong | Near baseline |
+| Product        | Relative Throughput | P95 Latency vs Kong |
+| -------------- | ------------------- | ------------------- |
+| Kong Konnect   | Baseline (highest)  | Baseline            |
+| Portkey        | ~200% slower        | ~65% higher latency |
+| LiteLLM        | ~800% slower        | ~86% higher latency |
+| WireMock (raw) | Closest to Kong     | Near baseline       |
 
 **Caveat**: Kong ran this benchmark internally and published it. The test measured basic proxy performance without AI-specific plugins active. Real-world performance with semantic caching, rate limiting, and PII sanitization active would differ.
 
@@ -875,27 +888,27 @@ Testing basic proxy performance under identical hardware (12 CPUs):
 
 ## 20. Comparison: Kong vs OpenRouter vs LiteLLM vs Portkey
 
-| Dimension | Kong AI Gateway | OpenRouter | LiteLLM | Portkey |
-|-----------|----------------|------------|---------|---------|
-| **Architecture** | Plugin on API gateway | Cloud-native AI router | Python proxy + SDK | Cloud + self-hosted |
-| **Self-hostable** | Yes (OSS + Enterprise) | No (cloud-only) | Yes (OSS) | Yes (Enterprise) |
-| **Provider count** | 12+ (curated, full integration) | 500+ (breadth-first) | 100+ | 200+ |
-| **Load balancing** | 7 algorithms incl. semantic | Basic (fallback) | Fallback/round-robin | Round-robin + fallback |
-| **Semantic routing** | Yes (vector-based, native) | No | No | No |
-| **Semantic caching** | Yes (Redis/pgvector) | No | No | Yes |
-| **Rate limiting** | Token + cost + request | None | Basic | Yes |
-| **Prompt guards** | Regex + semantic (vector) | None | Basic | Yes |
-| **PII sanitization** | Yes (20+ categories, 12 langs) | No | No | Partial |
-| **RAG injection** | Yes (gateway-level) | No | No | No |
-| **MCP gateway** | Yes (4 modes, ACLs) | No | Yes (MCP server) | No |
-| **Observability** | Deep (OTel, Prometheus, Grafana, Datadog, Dynatrace, Langfuse) | Basic | Basic + Langfuse | Yes (Langfuse) |
-| **Declarative config** | Yes (decK YAML) | No | Partial (YAML proxy config) | No |
-| **RBAC / Workspaces** | Yes (Enterprise) | No | No | Yes |
-| **Governance** | Enterprise-grade (audit logs, SSO, RBAC, Dev Portal) | None | None | Partial |
-| **Customization** | Lua plugins (niche) | None | Python | JavaScript |
-| **Performance** | Highest (Nginx/LuaJIT) | High (cloud) | Lowest | Medium |
-| **Cost** | High ($50k+/year Enterprise) | Free tier + per-call | Free (OSS) | Free + Enterprise |
-| **Best fit** | Enterprise, existing Kong users, compliance-heavy | Developers, prototyping | Platform teams, OSS, multi-provider | Teams wanting observability + caching |
+| Dimension              | Kong AI Gateway                                                | OpenRouter              | LiteLLM                             | Portkey                               |
+| ---------------------- | -------------------------------------------------------------- | ----------------------- | ----------------------------------- | ------------------------------------- |
+| **Architecture**       | Plugin on API gateway                                          | Cloud-native AI router  | Python proxy + SDK                  | Cloud + self-hosted                   |
+| **Self-hostable**      | Yes (OSS + Enterprise)                                         | No (cloud-only)         | Yes (OSS)                           | Yes (Enterprise)                      |
+| **Provider count**     | 12+ (curated, full integration)                                | 500+ (breadth-first)    | 100+                                | 200+                                  |
+| **Load balancing**     | 7 algorithms incl. semantic                                    | Basic (fallback)        | Fallback/round-robin                | Round-robin + fallback                |
+| **Semantic routing**   | Yes (vector-based, native)                                     | No                      | No                                  | No                                    |
+| **Semantic caching**   | Yes (Redis/pgvector)                                           | No                      | No                                  | Yes                                   |
+| **Rate limiting**      | Token + cost + request                                         | None                    | Basic                               | Yes                                   |
+| **Prompt guards**      | Regex + semantic (vector)                                      | None                    | Basic                               | Yes                                   |
+| **PII sanitization**   | Yes (20+ categories, 12 langs)                                 | No                      | No                                  | Partial                               |
+| **RAG injection**      | Yes (gateway-level)                                            | No                      | No                                  | No                                    |
+| **MCP gateway**        | Yes (4 modes, ACLs)                                            | No                      | Yes (MCP server)                    | No                                    |
+| **Observability**      | Deep (OTel, Prometheus, Grafana, Datadog, Dynatrace, Langfuse) | Basic                   | Basic + Langfuse                    | Yes (Langfuse)                        |
+| **Declarative config** | Yes (decK YAML)                                                | No                      | Partial (YAML proxy config)         | No                                    |
+| **RBAC / Workspaces**  | Yes (Enterprise)                                               | No                      | No                                  | Yes                                   |
+| **Governance**         | Enterprise-grade (audit logs, SSO, RBAC, Dev Portal)           | None                    | None                                | Partial                               |
+| **Customization**      | Lua plugins (niche)                                            | None                    | Python                              | JavaScript                            |
+| **Performance**        | Highest (Nginx/LuaJIT)                                         | High (cloud)            | Lowest                              | Medium                                |
+| **Cost**               | High ($50k+/year Enterprise)                                   | Free tier + per-call    | Free (OSS)                          | Free + Enterprise                     |
+| **Best fit**           | Enterprise, existing Kong users, compliance-heavy              | Developers, prototyping | Platform teams, OSS, multi-provider | Teams wanting observability + caching |
 
 ### Kong's Unique Strengths
 
@@ -931,24 +944,24 @@ Testing basic proxy performance under identical hardware (12 CPUs):
 
 ### What Kong Has That thegent Lacks (or Could Steal)
 
-| Kong Feature | Relevance to thegent | Priority |
-|-------------|----------------------|----------|
-| **Semantic load balancing** | Route agent tasks to specialist models by content similarity | HIGH |
-| **Priority-based failover** | Tiered fallback: GPT-4o → Claude → Mistral | HIGH |
-| **Lowest-latency EWMA routing** | Route to fastest model for latency-sensitive agent steps | HIGH |
-| **Semantic caching** | Cache identical/similar agent queries (huge cost savings in loops) | HIGH |
-| **Token-based rate limiting** | Budget enforcement per agent, per team, per project | HIGH |
-| **PII sanitization** | Strip PII before sending agent context to LLMs | MEDIUM |
-| **Prompt decoration (middleware)** | Inject system prompts at routing layer, not agent layer | MEDIUM |
-| **Prompt guard (semantic)** | Block jailbreaks/misuse in multi-tenant agent deployments | MEDIUM |
-| **RAG injection at router layer** | Standardize RAG context injection across all agents | MEDIUM |
-| **MCP proxy with ACLs** | Fine-grained tool access control per agent identity | HIGH |
-| **Declarative config** | Git-traceable routing config for reproducible deployments | MEDIUM |
-| **LLM-as-judge** | Automated quality evaluation across model variants | LOW |
-| **Prompt compression** | Reduce token cost for verbose agent contexts | LOW |
-| **Cost-based routing** | Route to cheapest adequate model for each task type | HIGH |
-| **Circuit breakers** | Stop routing to degraded providers automatically | HIGH |
-| **Consistent-hashing** | Sticky session routing for multi-turn agent conversations | MEDIUM |
+| Kong Feature                       | Relevance to thegent                                               | Priority |
+| ---------------------------------- | ------------------------------------------------------------------ | -------- |
+| **Semantic load balancing**        | Route agent tasks to specialist models by content similarity       | HIGH     |
+| **Priority-based failover**        | Tiered fallback: GPT-4o → Claude → Mistral                         | HIGH     |
+| **Lowest-latency EWMA routing**    | Route to fastest model for latency-sensitive agent steps           | HIGH     |
+| **Semantic caching**               | Cache identical/similar agent queries (huge cost savings in loops) | HIGH     |
+| **Token-based rate limiting**      | Budget enforcement per agent, per team, per project                | HIGH     |
+| **PII sanitization**               | Strip PII before sending agent context to LLMs                     | MEDIUM   |
+| **Prompt decoration (middleware)** | Inject system prompts at routing layer, not agent layer            | MEDIUM   |
+| **Prompt guard (semantic)**        | Block jailbreaks/misuse in multi-tenant agent deployments          | MEDIUM   |
+| **RAG injection at router layer**  | Standardize RAG context injection across all agents                | MEDIUM   |
+| **MCP proxy with ACLs**            | Fine-grained tool access control per agent identity                | HIGH     |
+| **Declarative config**             | Git-traceable routing config for reproducible deployments          | MEDIUM   |
+| **LLM-as-judge**                   | Automated quality evaluation across model variants                 | LOW      |
+| **Prompt compression**             | Reduce token cost for verbose agent contexts                       | LOW      |
+| **Cost-based routing**             | Route to cheapest adequate model for each task type                | HIGH     |
+| **Circuit breakers**               | Stop routing to degraded providers automatically                   | HIGH     |
+| **Consistent-hashing**             | Sticky session routing for multi-turn agent conversations          | MEDIUM   |
 
 ### thegent's Advantages Over Kong
 

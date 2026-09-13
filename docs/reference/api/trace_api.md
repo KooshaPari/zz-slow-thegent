@@ -5,6 +5,7 @@
 Deterministic replay system for agent execution traces.
 
 This package provides:
+
 - TraceRecorder: Record agent execution to JSONL traces
 - ReplayEngine: Replay traces with mocked LLM/file I/O
 - DiffAnalyzer: Compare original vs. replayed execution

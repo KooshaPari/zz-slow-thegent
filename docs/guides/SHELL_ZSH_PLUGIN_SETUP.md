@@ -120,12 +120,14 @@ Add to `~/.zshrc.local`:
 **Fixes:**
 
 1. **Use fd instead** (thegent prefers fd):
+
    ```bash
    brew install fd
    # fd has no -q; use fd ... 2>/dev/null for quiet
    ```
 
 2. **Install GNU find** (if you need find -q):
+
    ```bash
    brew install findutils
    # Use gfind for GNU find
@@ -142,6 +144,7 @@ Add to `~/.zshrc.local`:
 **Recommended:**
 
 1. **~/.zshrc.secrets** (create manually, add to .gitignore):
+
    ```zsh
    # Source from ~/.zshrc.local only if file exists
    [[ -f ~/.zshrc.secrets ]] && source ~/.zshrc.secrets
@@ -195,11 +198,11 @@ brew install sheldon
 
 ## 9. Proposed Custom Plugins (create if needed)
 
-| Plugin idea | Purpose | Effort |
-|-------------|---------|--------|
-| **thegent-prompt** | Minimal prompt showing agent/session context when `AGENT_ID` set | Small |
-| **thegent-fd-find** | Shell function: `find` → `fd` when safe (single path, no -exec) | Small |
-| **thegent-mise-hook** | Auto `mise install` on `cd` when `.mise.toml` present | Small |
+| Plugin idea           | Purpose                                                          | Effort |
+| --------------------- | ---------------------------------------------------------------- | ------ |
+| **thegent-prompt**    | Minimal prompt showing agent/session context when `AGENT_ID` set | Small  |
+| **thegent-fd-find**   | Shell function: `find` → `fd` when safe (single path, no -exec)  | Small  |
+| **thegent-mise-hook** | Auto `mise install` on `cd` when `.mise.toml` present            | Small  |
 
 ---
 
@@ -234,13 +237,13 @@ If you have a backup of your previous 150KB bundle:
 
 ## 12. Troubleshooting
 
-| Error | Fix |
-|-------|-----|
+| Error                           | Fix                                                                                                                                 |
+| ------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------- |
 | `zsh-nvm-x-*.zsh: no such file` | You're using old bundle. Run `thegent install --target system --target user` to get minimal bundle. Plugins go in `~/.zshrc.local`. |
-| `find: illegal option -- q` | Remove `-q` from find call, or use `fd`, or install `findutils` and use `gfind`. |
-| `prompt.zsh: no such file` | Install starship or powerlevel10k; add to .zshrc.local. |
-| `fzf-tab` not working | Ensure fzf installed; load fzf-tab **after** compinit. |
-| Slow startup | Use lazy loading: `zinit ice wait'1'` or defer plugin sourcing. |
+| `find: illegal option -- q`     | Remove `-q` from find call, or use `fd`, or install `findutils` and use `gfind`.                                                    |
+| `prompt.zsh: no such file`      | Install starship or powerlevel10k; add to .zshrc.local.                                                                             |
+| `fzf-tab` not working           | Ensure fzf installed; load fzf-tab **after** compinit.                                                                              |
+| Slow startup                    | Use lazy loading: `zinit ice wait'1'` or defer plugin sourcing.                                                                     |
 
 ---
 
@@ -250,7 +253,6 @@ If you have a backup of your previous 150KB bundle:
 - [FIX_SHELL_CORRUPTION.md](./FIX_SHELL_CORRUPTION.md) — eval/ls corruption
 - [shell/zshrc.local.template](../../shell/zshrc.local.template) — template file
 
-
 ---
 
 ## EXTENSION_SUMMARY
@@ -259,15 +261,18 @@ If you have a backup of your previous 150KB bundle:
 **Extended by:** Claude Code
 
 ### Changes Made
+
 1. Added practical implementation patterns
 2. Added configuration examples
 3. Enhanced cross-references to related documentation
 
 ### Cross-References Added
+
 - Related research and implementation guides
 - WORK_STREAM.md for tracking
 
 ### Practical Additions
+
 - Implementation templates
 - Configuration examples
 - Best practices

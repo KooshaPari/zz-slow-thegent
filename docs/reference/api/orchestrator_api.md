@@ -10,7 +10,7 @@
 
 ### Methods
 
-#### CatalogSyncComponent.__init__
+#### CatalogSyncComponent.**init**
 
 ```python
 __init__(self: Any)
@@ -28,7 +28,7 @@ __init__(self: Any)
 
 ### Methods
 
-#### DagSyncComponent.__init__
+#### DagSyncComponent.**init**
 
 ```python
 __init__(self: Any)
@@ -46,7 +46,7 @@ __init__(self: Any)
 
 ### Methods
 
-#### RulesSyncComponent.__init__
+#### RulesSyncComponent.**init**
 
 ```python
 __init__(self: Any)
@@ -62,7 +62,7 @@ __init__(self: Any)
 
 ### Methods
 
-#### SyncComponent.__init__
+#### SyncComponent.**init**
 
 ```python
 __init__(self: Any, name: str, description: str, depends_on: Any)
@@ -76,7 +76,7 @@ __init__(self: Any, name: str, description: str, depends_on: Any)
 
 ### Methods
 
-#### SyncOrchestrator.__init__
+#### SyncOrchestrator.**init**
 
 ```python
 __init__(self: Any, registry: Any)
@@ -90,7 +90,7 @@ __init__(self: Any, registry: Any)
 
 ### Methods
 
-#### SyncRegistry.__init__
+#### SyncRegistry.**init**
 
 ```python
 __init__(self: Any)
@@ -152,7 +152,7 @@ to_dict(self: Any)
 
 ### Methods
 
-#### WorkStreamSyncComponent.__init__
+#### WorkStreamSyncComponent.**init**
 
 ```python
 __init__(self: Any)

@@ -3,23 +3,26 @@
 # @trace WL-159
 """
 
-import orjson as json
 import tempfile
 from collections.abc import Generator
 from pathlib import Path
 from unittest.mock import patch
 
+import orjson as json
 import pytest
 
 from thegent.commands.sync import SyncCommand, SyncOperationStatus
-from thegent.observability.prometheus import get_metrics_collector, reset_metrics_collector
+from thegent.observability.prometheus import (
+    get_metrics_collector,
+    reset_metrics_collector,
+)
 
 
 class TestBoardSyncWorkflow:
     """Test suite for board sync operationalization."""
 
     @pytest.fixture
-    def temp_project(self) -> Generator[Path, None, None]:
+    def temp_project(self) -> Generator[Path]:
         """Create temporary project structure for testing."""
         with tempfile.TemporaryDirectory() as tmpdir:
             root = Path(tmpdir)
@@ -300,7 +303,10 @@ class TestBoardSyncWorkflow:
             def sync(self, board_id: str, work_stream_items: list[dict[str, str]]) -> dict[str, object]:
                 return _fake_sync(board_id=board_id, work_stream_items=work_stream_items)
 
-        with patch("thegent.sync.board_adapters.resolve_board_adapter", return_value=_FakeAdapter()):
+        with patch(
+            "thegent.sync.board_adapters.resolve_board_adapter",
+            return_value=_FakeAdapter(),
+        ):
             result = cmd.sync_board(board_id="777", source="github", dry_run=False, write_batch_size=2)
 
         assert result.status == SyncOperationStatus.SUCCESS
@@ -332,7 +338,10 @@ class TestBoardSyncWorkflow:
                 assert work_stream_items == items
                 return fake_result
 
-        with patch("thegent.sync.board_adapters.resolve_board_adapter", return_value=_FakeAdapter()):
+        with patch(
+            "thegent.sync.board_adapters.resolve_board_adapter",
+            return_value=_FakeAdapter(),
+        ):
             result = cmd._perform_board_sync("123", "github", items)
 
         assert result["synced"] == fake_result["synced"]
@@ -399,7 +408,7 @@ class TestBoardSyncErrorHandling:
     """Test error handling in board sync."""
 
     @pytest.fixture
-    def temp_project(self) -> Generator[Path, None, None]:
+    def temp_project(self) -> Generator[Path]:
         """Create temporary project structure."""
         with tempfile.TemporaryDirectory() as tmpdir:
             root = Path(tmpdir)
@@ -420,7 +429,10 @@ class TestBoardSyncErrorHandling:
             result = cmd.sync_board(board_id="123", source="github", dry_run=False)
 
         # Should succeed with 0 items parsed
-        assert result.status in (SyncOperationStatus.SUCCESS, SyncOperationStatus.SKIPPED)
+        assert result.status in (
+            SyncOperationStatus.SUCCESS,
+            SyncOperationStatus.SKIPPED,
+        )
 
     def test_board_sync_exception_handling(self, temp_project: Path) -> None:
         """Board sync should report errors properly."""
@@ -433,7 +445,12 @@ class TestBoardSyncErrorHandling:
         with patch.object(
             cmd,
             "_perform_board_sync",
-            return_value={"synced": 1, "failed": 0, "updated_items": [{"id": "WL-159"}], "errors": []},
+            return_value={
+                "synced": 1,
+                "failed": 0,
+                "updated_items": [{"id": "WL-159"}],
+                "errors": [],
+            },
         ):
             result = cmd.sync_board(board_id="123", source="github", dry_run=False)
 
@@ -502,7 +519,13 @@ class TestBoardSyncErrorHandling:
         with patch.object(
             cmd,
             "_perform_board_sync",
-            return_value={"synced": 1, "failed": 0, "updated_items": [{"id": "WL-214"}], "errors": [], "batches": 1},
+            return_value={
+                "synced": 1,
+                "failed": 0,
+                "updated_items": [{"id": "WL-214"}],
+                "errors": [],
+                "batches": 1,
+            },
         ):
             result = cmd.replay_dead_letters(source="github", board_id="123", limit=10, dry_run=False)
 

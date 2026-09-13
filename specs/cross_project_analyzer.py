@@ -178,7 +178,22 @@ class CrossProjectAnalyzer:
         normalized = re.sub(r"[^\w\s]", "", title.lower())
         words = normalized.split()
         # Remove common words
-        stop_words = {"the", "a", "an", "and", "or", "but", "in", "on", "at", "to", "for", "of", "with", "by"}
+        stop_words = {
+            "the",
+            "a",
+            "an",
+            "and",
+            "or",
+            "but",
+            "in",
+            "on",
+            "at",
+            "to",
+            "for",
+            "of",
+            "with",
+            "by",
+        }
         words = [w for w in words if w not in stop_words and len(w) > 2]
         return " ".join(sorted(words))  # Sort for consistency
 
@@ -281,7 +296,6 @@ class CrossProjectAnalyzer:
         """Group projects by relationships."""
         # Use relationship graph to find connected components
         groups = {}
-        visited = set()
 
         for rel in self.relationships:
             if rel.strength > 0.5:  # Strong relationships only

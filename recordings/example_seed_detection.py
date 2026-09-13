@@ -46,7 +46,11 @@ async def record_seed_detection_demo() -> None:
                 # Click input field
                 ("click", "input[type='text'][placeholder*='Seed']", None),
                 # Type a seed value
-                ("type", "input[type='text'][placeholder*='Seed']", "example_seed_12345"),
+                (
+                    "type",
+                    "input[type='text'][placeholder*='Seed']",
+                    "example_seed_12345",
+                ),
                 # Wait a moment for validation
                 ("sleep", "1000", None),
                 # Click analyze button

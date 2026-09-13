@@ -18,7 +18,6 @@ from thegent.governance.vetter import (
     VetterSeverity,
 )
 
-
 # ---------------------------------------------------------------------------
 # Concrete check fixture — used across TestVetterCheck tests
 # ---------------------------------------------------------------------------

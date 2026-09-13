@@ -1,4 +1,5 @@
 """Stub module."""
+
 from typing import Any
 
 
@@ -22,11 +23,13 @@ class RetryPolicy:
     def get_delay(self, attempt: int) -> float:
         """Get delay before next retry."""
         import math
+
         return min(self.base_delay * (2**attempt), self.max_delay)
 
 
 class OperationMode:
     """Operation mode for retries."""
+
     SYNC = "sync"
     ASYNC = "async"
 

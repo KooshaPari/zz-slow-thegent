@@ -38,10 +38,10 @@ Chosen option: **MADR**, because it lives in the repo (no external tooling), is 
 
 ### Consequences
 
-* Good, because decisions are durable + searchable.
-* Good, because new contributors can read the rationale for past decisions.
-* Bad, because the ADRs add documentation overhead.
-* Neutral, because MADR is just markdown — no tooling lock-in.
+- Good, because decisions are durable + searchable.
+- Good, because new contributors can read the rationale for past decisions.
+- Bad, because the ADRs add documentation overhead.
+- Neutral, because MADR is just markdown — no tooling lock-in.
 
 ### Confirmation
 
@@ -53,27 +53,27 @@ Chosen option: **MADR**, because it lives in the repo (no external tooling), is 
 
 ### MADR
 
-* Good, because lives in the repo, no external tooling.
-* Good, because well-known template.
-* Bad, because requires manual discipline to add new ADRs.
+- Good, because lives in the repo, no external tooling.
+- Good, because well-known template.
+- Bad, because requires manual discipline to add new ADRs.
 
 ### adr-tools
 
-* Good, because CLI-driven.
-* Bad, because adds tooling dependency.
-* Bad, because not all developers will install the CLI.
+- Good, because CLI-driven.
+- Bad, because adds tooling dependency.
+- Bad, because not all developers will install the CLI.
 
 ### Lightweight decision log
 
-* Good, because simplest.
-* Bad, because not searchable.
-* Bad, because doesn't scale beyond a handful of decisions.
+- Good, because simplest.
+- Bad, because not searchable.
+- Bad, because doesn't scale beyond a handful of decisions.
 
 ### No decision log
 
-* Good, because zero overhead.
-* Bad, because institutional knowledge is lost when contributors leave.
-* Bad, because new contributors don't know why things are the way they are.
+- Good, because zero overhead.
+- Bad, because institutional knowledge is lost when contributors leave.
+- Bad, because new contributors don't know why things are the way they are.
 ```
 
 ## How to apply
@@ -97,6 +97,7 @@ OmniRoute is the reference repo for AU2 (AU2=3). It has 4 ADRs in `docs/adr/`, i
 ## How to validate
 
 After applying:
+
 1. `ls docs/decisions/` — should show at least 1 ADR + README.md
 2. `grep "decisions\|ADR" README.md` — should find a reference
 3. The ADR file follows the MADR template (Status, Context, Decision, Consequences sections)

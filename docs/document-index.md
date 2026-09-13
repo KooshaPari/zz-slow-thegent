@@ -305,35 +305,36 @@ This is a comprehensive, searchable alphabetical index of all documentation in t
 ## Search Tips
 
 **Use Ctrl+F (Cmd+F on Mac) to search this page for:**
+
 - Keywords: `security`, `deployment`, `API`, `swarm`, `agent`, etc.
 - File types: `prd.md`, `guide`, `architecture`, etc.
 - Topics: `memory`, `MCP`, `migration`, `configuration`, etc.
 
 ## Document Statistics
 
-| Category | Count |
-|----------|-------|
-| API Reference | 5 |
-| Architecture | 6 |
-| Concepts | 3 |
-| Context: Governance | 11 |
-| Context: Releases | 5 |
-| Context: Wiki & Examples | 40 |
-| Context: System | 3 |
-| Deployment | 6 |
-| Development | 1 |
-| Guides | 20 |
-| Plans | 4 |
-| Projects | 10 |
-| Reference | 11 |
-| References | 3 |
-| Reports | 17 |
-| Research | 45 |
-| Specifications | 31 |
-| Top-Level | 14 |
-| Troubleshooting | 2 |
-| Archives | 3 |
-| **TOTAL** | **237** |
+| Category                 | Count   |
+| ------------------------ | ------- |
+| API Reference            | 5       |
+| Architecture             | 6       |
+| Concepts                 | 3       |
+| Context: Governance      | 11      |
+| Context: Releases        | 5       |
+| Context: Wiki & Examples | 40      |
+| Context: System          | 3       |
+| Deployment               | 6       |
+| Development              | 1       |
+| Guides                   | 20      |
+| Plans                    | 4       |
+| Projects                 | 10      |
+| Reference                | 11      |
+| References               | 3       |
+| Reports                  | 17      |
+| Research                 | 45      |
+| Specifications           | 31      |
+| Top-Level                | 14      |
+| Troubleshooting          | 2       |
+| Archives                 | 3       |
+| **TOTAL**                | **237** |
 
 ---
 

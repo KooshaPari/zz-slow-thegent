@@ -5,6 +5,7 @@
 Pareto-first router: hard constraints → Pareto frontier → lexicographic selection.
 
 Implements the ChatGPT Pareto research design:
+
 - Offer = provider + model + cost_weight + quality proxy
 - Hard constraints filter first (capability, cost cap, quality floor)
 - Pareto frontier = non-dominated offers on (speed, cost, quality)

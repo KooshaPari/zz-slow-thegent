@@ -12,7 +12,7 @@ Monitors and regulates actions to meet defined Service Level Objectives.
 
 ### Methods
 
-#### SLORegulator.__init__
+#### SLORegulator.**init**
 
 ```python
 __init__(self: Any, latency_slo_ms: float, error_slo_rate: float)

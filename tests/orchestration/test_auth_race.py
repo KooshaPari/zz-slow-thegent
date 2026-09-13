@@ -68,7 +68,7 @@ class TestBearerAuthRaceCondition:
 
             # Simulate concurrent dispatch calls
             app = AsyncMock()
-            middleware = BearerAuthMiddleware(app)
+            BearerAuthMiddleware(app)
 
             async def fake_dispatch(request, call_next):
                 if BearerAuthMiddleware._settings is None:
@@ -114,7 +114,7 @@ class TestBearerAuthMiddlewareValidation:
         request.headers = {}
 
         call_next = AsyncMock(return_value=MagicMock())
-        result = await middleware.dispatch(request, call_next)
+        await middleware.dispatch(request, call_next)
         call_next.assert_called_once_with(request)
 
     @pytest.mark.asyncio
@@ -170,7 +170,7 @@ class TestBearerAuthMiddlewareValidation:
         request.headers = {"Authorization": "Bearer valid_token"}
 
         call_next = AsyncMock(return_value=MagicMock())
-        result = await middleware.dispatch(request, call_next)
+        await middleware.dispatch(request, call_next)
         call_next.assert_called_once_with(request)
 
     @pytest.mark.asyncio
@@ -188,5 +188,5 @@ class TestBearerAuthMiddlewareValidation:
         request.headers = {}
 
         call_next = AsyncMock(return_value=MagicMock())
-        result = await middleware.dispatch(request, call_next)
+        await middleware.dispatch(request, call_next)
         call_next.assert_called_once_with(request)

@@ -9,7 +9,7 @@ graceful degradation when a connector experiences repeated failures.
 from __future__ import annotations
 
 import logging
-from datetime import datetime, UTC
+from datetime import UTC, datetime
 from enum import Enum
 
 logger = logging.getLogger(__name__)

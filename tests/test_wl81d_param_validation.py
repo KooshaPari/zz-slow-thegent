@@ -69,7 +69,10 @@ class TestPlanModeParameterValidation:
 
     def test_plan_mode_rejects_unknown_fields(self) -> None:
         """PlanMode should reject unknown fields."""
-        invalid_call = {"name": "EnterPlanMode", "arguments": {"goal": "test", "unknown_field": "bad"}}
+        invalid_call = {
+            "name": "EnterPlanMode",
+            "arguments": {"goal": "test", "unknown_field": "bad"},
+        }
 
         # Unknown fields should cause test failure
         if "unknown_field" in invalid_call.get("arguments", {}):

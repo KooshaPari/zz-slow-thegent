@@ -12,7 +12,7 @@ Enhanced changed files detection.
 
 ### Methods
 
-#### ChangedFilesEnhance.__init__
+#### ChangedFilesEnhance.**init**
 
 ```python
 __init__(self: Any)

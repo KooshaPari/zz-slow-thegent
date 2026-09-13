@@ -7,6 +7,7 @@ Primary WLs: `WL-132`, `WL-133`
 ## Scope Closed
 
 Completed Track E closeout for Zig ABI and Mojo deterministic kernel promotion by finalizing:
+
 - production-contract gate tasks,
 - CI fail-closed gate wiring,
 - contract-gate documentation,
@@ -17,7 +18,9 @@ Unrelated edits in the repository were not modified.
 ## Implemented Changes
 
 ### 1) Canonical production-contract gate tasks (Taskfile)
+
 Updated `Taskfile.yml` with runtime gate tasks:
+
 - `quality:runtime-contracts:zig-abi`
   - validates `contracts/runtime/zig_abi_contract_v1.json`
   - validates symbol + error-envelope conformance via `scripts/check_zig_abi_artifact.py`
@@ -30,21 +33,28 @@ Updated `Taskfile.yml` with runtime gate tasks:
 Also wired `task quality` to include `task quality:runtime-contracts` so runtime contracts are part of canonical quality execution.
 
 ### 2) CI fail-closed wiring
+
 Updated `.github/workflows/ci.yml` mandatory contract gate step to run:
+
 - `task quality:runtime-contracts`
 
 The quality step now fails closed on any of:
+
 - sitback contract lane failure,
 - harness model contract lane failure,
 - runtime contract lane failure.
 
 ### 3) Deterministic Zig artifact fixtures
+
 Added static runtime fixtures used by the Zig artifact checker lane:
+
 - `tests/fixtures/runtime/zig_abi_symbols_fixture.txt`
 - `tests/fixtures/runtime/zig_abi_error_envelope_fixture.json`
 
 ### 4) Documentation updates
+
 Updated contract-gate docs:
+
 - `docs/guides/QUALITY_ASSURANCE.md`
   - added new section: **Runtime Promotion Contract Gates (WL-132/WL-133)**
   - documents canonical commands and enforced guarantees
@@ -53,7 +63,9 @@ Updated contract-gate docs:
     - `task quality:runtime-contracts:zig-abi`
 
 ### 5) WORK_STREAM status closeout
+
 Updated `docs/reference/WORK_STREAM.md`:
+
 - WL-132
   - status -> `COMPLETED (2026-02-21)`
   - blocked-by -> `none`
@@ -72,6 +84,7 @@ task quality:runtime-contracts
 ```
 
 Observed result:
+
 - Zig lane:
   - contract validation passed
   - artifact symbol/envelope contract checks passed

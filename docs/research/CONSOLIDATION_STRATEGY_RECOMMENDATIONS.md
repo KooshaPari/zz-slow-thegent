@@ -10,6 +10,7 @@
 ## Strategic Positioning
 
 ### Current Strengths (thegent)
+
 1. **Unique governance stack:** Hook system + cost enforcement + polyglot
 2. **CLI-first design:** Native integration with development workflows
 3. **Provider routing:** Unified proxy for 15+ LLM providers
@@ -18,6 +19,7 @@
 6. **No external dependencies:** Self-contained, no SaaS lock-in
 
 ### Market Gaps
+
 1. **Routing breadth:** 15 providers vs. 100+ (LiteLLM/OpenRouter)
 2. **Observability:** Basic hooks vs. purpose-built platforms (AgentOps)
 3. **Multi-language DAGs:** Adequate vs. superior (Temporal, Dagger)
@@ -55,6 +57,7 @@ Legend:
 ## Consolidation Paths
 
 ### Path A: Status Quo (Stable)
+
 **Keep thegent as-is; no consolidation**
 
 ```
@@ -71,12 +74,14 @@ Current Architecture:
 ```
 
 **Pros:**
+
 - Zero engineering overhead
 - No integration risk
 - Single point of control
 - Self-contained
 
 **Cons:**
+
 - Limited provider coverage
 - Basic observability
 - No deterministic replay
@@ -89,6 +94,7 @@ Current Architecture:
 ---
 
 ### Path B: Thin Integration Layer (RECOMMENDED)
+
 **Keep thegent core, add best-of-breed observability + routing**
 
 ```
@@ -110,6 +116,7 @@ Current Architecture:
 ```
 
 **Implementation Timeline:**
+
 ```
 Week 1:    LiteLLM adapter (provider abstraction)
 Week 1-2:  AgentOps SDK integration (observability decorator)
@@ -125,6 +132,7 @@ Risk: LOW
 **Integration Details:**
 
 1. **LiteLLM Adapter** (2-3 weeks)
+
    ```python
    # Wrapper around existing CLIProxyAPI
    class LiteLLMRouter:
@@ -133,47 +141,47 @@ Risk: LOW
 
        def route(self, model, prompt, **kwargs):
            # Cost tracking happens at request level
-           response = self.router.completion(
-               model=model,
-               messages=prompt,
-               **kwargs
-           )
+           response = self.router.completion(model=model, messages=prompt, **kwargs)
            # Still use thegent's governance hooks
            self._emit_governance_hook("llm_call", response)
            return response
+
 
    # Integrate into thegent agent runner
    agent_runner.router = LiteLLMRouter(config)
    ```
 
 2. **AgentOps Integration** (1-2 weeks)
+
    ```python
    # Decorator pattern - orthogonal to thegent
    from agentops import Session
 
-   @Session.instrument_agent(
-       name="researcher",
-       cost_limit_cents=1000
-   )
+
+   @Session.instrument_agent(name="researcher", cost_limit_cents=1000)
    def run_agent(agent_id, prompt):
        return thegent.run(agent_id, prompt)
    ```
 
 3. **MCP Server Wrapper** (1 week)
+
    ```python
    from mcp.server import Server
 
    server = Server("thegent-agents")
 
+
    @server.tool()
    async def agent_researcher(query: str) -> str:
        return await thegent.run("researcher", query)
+
 
    # Register in MCP Registry
    # Enables tool discovery across frameworks
    ```
 
 **Pros:**
+
 - 60% improvement in routing + observability
 - Minimal impact on existing code
 - Can be rolled out incrementally
@@ -181,6 +189,7 @@ Risk: LOW
 - LiteLLM is MIT-licensed (self-hosted)
 
 **Cons:**
+
 - Multiple monitoring layers (potential confusion)
 - AgentOps adds SaaS dependency
 - Cost tracking spread across 2 systems (thegent + LiteLLM)
@@ -192,6 +201,7 @@ Risk: LOW
 ---
 
 ### Path C: Full Stack Consolidation (Optional)
+
 **Replace modules with best-of-breed alternatives; maintain thegent as governance backbone**
 
 ```
@@ -249,18 +259,21 @@ FTE: 2-3 engineers full-time
 ```
 
 **Phase 2 Details: LangGraph Integration**
+
 - Requires state schema refactoring
 - Python-only (thegent's strength already)
 - Benefits complex DAGs (5+ agent chains)
 - 25% faster execution for DAG-heavy workflows
 
 **Phase 3 Details: Temporal Backend**
+
 - Deterministic replay (not in thegent)
 - Multi-language support (Go, Java, TypeScript)
 - Enterprise-grade distributed execution
 - 12-16 week effort (substantial)
 
 **Pros:**
+
 - Best-of-breed for each domain
 - Reduced custom code maintenance
 - Industry-standard tools
@@ -268,6 +281,7 @@ FTE: 2-3 engineers full-time
 - Deterministic replay (Temporal)
 
 **Cons:**
+
 - Very long timeline (9-12 months)
 - High integration complexity
 - Multiple external dependencies
@@ -277,6 +291,7 @@ FTE: 2-3 engineers full-time
 **Best for:** **Large enterprises (>$100M), mission-critical systems**
 
 **Recommendation:** **SPLIT APPROACH**
+
 - Phase 1: Implement immediately (Q1 2026)
 - Phase 2: Implement if DAG workloads exceed 30% of use cases
 - Phase 3: Implement only if deterministic replay is business requirement
@@ -321,6 +336,7 @@ Key Thresholds:
 ## Cost-Benefit Analysis
 
 ### Path A: Status Quo
+
 - **Engineering Cost:** $0
 - **Licensing Cost:** $0
 - **Observability Gap:** Unquantified
@@ -329,6 +345,7 @@ Key Thresholds:
 - **ROI:** Not applicable
 
 ### Path B: Thin Integration (RECOMMENDED)
+
 - **Engineering Cost:** 2-3 engineers × 3-4 weeks = $75-100K
 - **Licensing Cost:** $200-500/month (AgentOps Series A pricing TBD)
 - **Observability Gain:** 60% improvement
@@ -338,6 +355,7 @@ Key Thresholds:
 - **ROI:** **500%+ (conservative estimate)**
 
 ### Path C: Full Consolidation
+
 - **Engineering Cost:** 6 engineers × 6 months = $450K
 - **Licensing Cost:** $1K-2K/month (Temporal Cloud optional)
 - **Observability Gain:** 90% improvement
@@ -352,33 +370,39 @@ Key Thresholds:
 ## Risk & Mitigation
 
 ### Path B Risks
-| Risk | Probability | Impact | Mitigation |
-|------|-------------|--------|-----------|
-| AgentOps SaaS lock-in | Medium | Low | Keep thegent hooks; AgentOps optional |
-| LiteLLM upgrade breaks | Low | Medium | Use adapter pattern; version pinning |
-| Cost double-counting | Low | Medium | Consolidate cost tracking post-integration |
-| Multi-layer debugging | Medium | Low | Structured logging + alerting |
+
+| Risk                   | Probability | Impact | Mitigation                                 |
+| ---------------------- | ----------- | ------ | ------------------------------------------ |
+| AgentOps SaaS lock-in  | Medium      | Low    | Keep thegent hooks; AgentOps optional      |
+| LiteLLM upgrade breaks | Low         | Medium | Use adapter pattern; version pinning       |
+| Cost double-counting   | Low         | Medium | Consolidate cost tracking post-integration |
+| Multi-layer debugging  | Medium      | Low    | Structured logging + alerting              |
 
 ### Path C Risks
-| Risk | Probability | Impact | Mitigation |
-|------|-------------|--------|-----------|
-| LangGraph state schema | High | High | Prototype first; backward-compatible wrapper |
-| Temporal deployment | High | High | Start with single-node; scale later |
-| Over-engineering | High | Medium | Phased rollout; measure before each phase |
-| Team learning curve | High | Medium | Training + documentation; slow rollout |
+
+| Risk                   | Probability | Impact | Mitigation                                   |
+| ---------------------- | ----------- | ------ | -------------------------------------------- |
+| LangGraph state schema | High        | High   | Prototype first; backward-compatible wrapper |
+| Temporal deployment    | High        | High   | Start with single-node; scale later          |
+| Over-engineering       | High        | Medium | Phased rollout; measure before each phase    |
+| Team learning curve    | High        | Medium | Training + documentation; slow rollout       |
 
 ---
 
 ## Recommendation Summary
 
 ### For Startups (<$10M revenue)
+
 **DECISION:** Path A (Status Quo)
+
 - thegent is sufficient
 - Consolidation overhead unjustified
 - **Revisit in 18 months**
 
 ### For Scaling Teams (10-50M revenue)
+
 **DECISION:** Path B (Thin Integration)
+
 - Implement immediately (Q1 2026)
 - Timeline: 3-4 weeks
 - Team: 2-3 engineers
@@ -386,7 +410,9 @@ Key Thresholds:
 - **Then revisit in 12 months for Phase 2**
 
 ### For Enterprises (>$100M revenue)
+
 **DECISION:** Path B + Phase 2 (Split Approach)
+
 - Implement Path B immediately (Q1 2026)
 - Evaluate Phase 2 (LangGraph) at Q2 checkup
 - Evaluate Phase 3 (Temporal) at Q3 checkup
@@ -398,6 +424,7 @@ Key Thresholds:
 ## Implementation Checklist (Path B: Thin Integration)
 
 ### Week 1: LiteLLM Adapter
+
 - [ ] Fork LiteLLM; create thegent adapter wrapper
 - [ ] Implement provider routing proxy
 - [ ] Add cost tracking hooks
@@ -405,6 +432,7 @@ Key Thresholds:
 - [ ] Document adapter API
 
 ### Week 1-2: AgentOps Integration
+
 - [ ] Create AgentOps account (Series A pricing TBD)
 - [ ] Install SDK
 - [ ] Create @instrument_agent decorator
@@ -412,6 +440,7 @@ Key Thresholds:
 - [ ] Test session replay
 
 ### Week 2: MCP Server Wrapper
+
 - [ ] Install MCP SDK (v1.0)
 - [ ] Wrap 5-10 core agents as MCP servers
 - [ ] Register in MCP Registry (preview)
@@ -419,6 +448,7 @@ Key Thresholds:
 - [ ] Document MCP endpoint
 
 ### Week 3: Integration Testing
+
 - [ ] End-to-end tests (agent → LiteLLM → AgentOps)
 - [ ] Stress test (100+ concurrent agents)
 - [ ] Cost validation (token counting)
@@ -426,6 +456,7 @@ Key Thresholds:
 - [ ] Document troubleshooting
 
 ### Week 4: Rollout
+
 - [ ] Deploy LiteLLM proxy (staging)
 - [ ] Deploy AgentOps SDK (staging)
 - [ ] Deploy MCP servers (staging)
@@ -460,30 +491,34 @@ Q1 2027: Post-integration optimization
 ## Decision Required
 
 **Question 1:** Should we pursue Path B (Thin Integration) or Path A (Status Quo)?
+
 - **Recommendation:** Path B (3-4 week investment, 500%+ ROI)
 
 **Question 2:** Should we commit to Phase 2 (LangGraph) at the outset?
+
 - **Recommendation:** Defer to Q2 2026 evaluation (wait for business metrics)
 
 **Question 3:** Should we plan for Phase 3 (Temporal) now or later?
+
 - **Recommendation:** Plan for Q3 2026; defer commitment until business case clear
 
 **Question 4:** MCP standardization mandatory or optional?
+
 - **Recommendation:** Mandatory (Q4 2026); highest ROI per engineering effort
 
 ---
 
 ## Appendix: Framework Lifecycle Status (Feb 2026)
 
-| Framework | Status | Recommendation | Confidence |
-|-----------|--------|-----------------|-----------|
-| OpenAI Agents SDK | Stable | Avoid (OpenAI-locked) | High |
-| LangGraph | Rapid growth | Monitor (not urgent) | High |
-| CrewAI | Production | Monitor (good for specific patterns) | High |
-| AutoGen | Transitioning | Avoid (wait for Agent Framework) | High |
-| Prefect | Mature | Monitor (good for workflows) | High |
-| Temporal | Production | Monitor (for Phase 3) | High |
-| Dagger | Production | Monitor (for polyglot) | High |
-| LiteLLM | Production | **Integrate Phase 1** | Very High |
-| AgentOps | Series A | **Integrate Phase 1** | High |
-| MCP | v1.0 (Nov 2025) | **Integrate Phase 1** | Very High |
+| Framework         | Status          | Recommendation                       | Confidence |
+| ----------------- | --------------- | ------------------------------------ | ---------- |
+| OpenAI Agents SDK | Stable          | Avoid (OpenAI-locked)                | High       |
+| LangGraph         | Rapid growth    | Monitor (not urgent)                 | High       |
+| CrewAI            | Production      | Monitor (good for specific patterns) | High       |
+| AutoGen           | Transitioning   | Avoid (wait for Agent Framework)     | High       |
+| Prefect           | Mature          | Monitor (good for workflows)         | High       |
+| Temporal          | Production      | Monitor (for Phase 3)                | High       |
+| Dagger            | Production      | Monitor (for polyglot)               | High       |
+| LiteLLM           | Production      | **Integrate Phase 1**                | Very High  |
+| AgentOps          | Series A        | **Integrate Phase 1**                | High       |
+| MCP               | v1.0 (Nov 2025) | **Integrate Phase 1**                | Very High  |

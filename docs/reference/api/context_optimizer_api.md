@@ -14,7 +14,7 @@ Optimizes context for LLM interactions.
 
 ### Methods
 
-#### ContextOptimizer.__init__
+#### ContextOptimizer.**init**
 
 ```python
 __init__(self: Any, max_tokens: Any, target_tokens: Any)

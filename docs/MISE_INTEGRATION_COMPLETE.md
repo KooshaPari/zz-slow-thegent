@@ -3,28 +3,33 @@
 ## ✅ All Features Implemented
 
 ### 1. System Dependency Installation
+
 - **Homebrew**: Auto-installs if missing
 - **mise**: Installs via Homebrew or Nix
 - **Git repos**: Can clone repositories with branch support
 
 ### 2. Command Integration
+
 - `thegent setup --system-deps` - Install mise during setup
 - `thegent setup --system-deps --nix` - Use Nix instead of Homebrew
 - `thegent install --system-deps` - Install mise during install
 - `thegent install --system-deps --nix` - Use Nix instead of Homebrew
 
 ### 3. Shell Hook Auto-Configuration
+
 - Automatically detects shell type (zsh, bash, etc.)
 - Creates `.zshenv` if missing (preferred over `.zshrc`)
 - Adds mise hooks before direnv hooks for precedence
 - Sets `MISE_ENV=1` so direnv knows to skip
 
 ### 4. Performance Optimization
+
 - Optimized `.envrc` for fast exit when mise is active
 - Updated shell templates to load mise first
 - Prevents 2217s shell startup delays
 
 ### 5. Post-Install Verification
+
 - Verifies mise is in PATH
 - Checks mise version
 - Confirms shell hooks are configured
@@ -58,6 +63,7 @@ thegent install --system-deps --dry-run
 ## Verification
 
 After installation, verification automatically runs:
+
 - ✅ mise found in PATH
 - ✅ mise version: 2026.2.13
 - ✅ mise hook found in .zshenv

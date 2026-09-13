@@ -16,7 +16,6 @@ import pytest
 
 from thegent.utils.routing_impl.model_suffix_parser import parse_model_suffixes
 
-
 # ---------------------------------------------------------------------------
 # Parity test cases — mirrors the Rust model_suffix_tests module
 # ---------------------------------------------------------------------------

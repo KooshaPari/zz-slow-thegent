@@ -3,16 +3,20 @@
 from __future__ import annotations
 
 import asyncio
-import orjson as json
 from pathlib import Path
 from types import SimpleNamespace
 from typing import Any
 
+import orjson as json
 import pytest
 from typer.testing import CliRunner
 
 from thegent.cli.apps.sync import app
-from thegent.integrations.workstream_autosync import WorkstreamAutosyncConfig, WorkstreamAutosyncRunner, WorkstreamItem
+from thegent.integrations.workstream_autosync import (
+    WorkstreamAutosyncConfig,
+    WorkstreamAutosyncRunner,
+    WorkstreamItem,
+)
 from thegent.mcp.manage import mcp_down, mcp_up
 
 
@@ -37,9 +41,14 @@ def _autopilot_config(**overrides: Any) -> Any:
 
 @pytest.mark.unit
 @pytest.mark.requirement("WL-172")
-def test_autopilot_doctor_reports_missing_core_enablement(monkeypatch: pytest.MonkeyPatch) -> None:
+def test_autopilot_doctor_reports_missing_core_enablement(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
     config = _autopilot_config(enabled=False)
-    monkeypatch.setattr("thegent.integrations.workstream_autosync.load_autosync_config_from_env", lambda: config)
+    monkeypatch.setattr(
+        "thegent.integrations.workstream_autosync.load_autosync_config_from_env",
+        lambda: config,
+    )
 
     result = CliRunner().invoke(app, ["autopilot", "doctor", "--format", "json"])
 
@@ -62,7 +71,10 @@ def test_autopilot_doctor_reports_missing_required_mappings(monkeypatch: pytest.
         github_project_number=1,
     )
     monkeypatch.setenv("GITHUB_TOKEN", "ghp_test")
-    monkeypatch.setattr("thegent.integrations.workstream_autosync.load_autosync_config_from_env", lambda: config)
+    monkeypatch.setattr(
+        "thegent.integrations.workstream_autosync.load_autosync_config_from_env",
+        lambda: config,
+    )
 
     result = CliRunner().invoke(app, ["autopilot", "doctor", "--format", "json"])
 

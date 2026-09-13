@@ -448,9 +448,27 @@ class TestCatalogMergeRoutes:
         """_merge_routes skips duplicate provider+model_alias."""
         from thegent.models.catalog import Route, _merge_routes
 
-        r1 = Route(provider="gemini", backend_type="direct", model_alias="flash", priority=0, cost_weight=0.3)
-        r2 = Route(provider="gemini", backend_type="direct", model_alias="flash", priority=10, cost_weight=0.8)
-        r3 = Route(provider="claude", backend_type="direct", model_alias="haiku", priority=0, cost_weight=0.3)
+        r1 = Route(
+            provider="gemini",
+            backend_type="direct",
+            model_alias="flash",
+            priority=0,
+            cost_weight=0.3,
+        )
+        r2 = Route(
+            provider="gemini",
+            backend_type="direct",
+            model_alias="flash",
+            priority=10,
+            cost_weight=0.8,
+        )
+        r3 = Route(
+            provider="claude",
+            backend_type="direct",
+            model_alias="haiku",
+            priority=0,
+            cost_weight=0.3,
+        )
         merged = _merge_routes([r1], [r2, r3])
         assert len(merged) == 2
         providers = {(r.provider, r.model_alias) for r in merged}
@@ -462,7 +480,13 @@ class TestCatalogMergeRoutes:
         """_merge_routes with empty base returns all extras."""
         from thegent.models.catalog import Route, _merge_routes
 
-        r1 = Route(provider="test", backend_type="direct", model_alias="m1", priority=0, cost_weight=0.3)
+        r1 = Route(
+            provider="test",
+            backend_type="direct",
+            model_alias="m1",
+            priority=0,
+            cost_weight=0.3,
+        )
         merged = _merge_routes([], [r1])
         assert len(merged) == 1
 
@@ -485,7 +509,10 @@ class TestNonStringModelIdSkipped:
 class TestToContractViewScrapedException:
     """Tests for to_contract_view scraped exception fallback (lines 308-317)."""
 
-    @patch("thegent.models.scrapers.get_scraped_catalog", side_effect=RuntimeError("scraper down"))
+    @patch(
+        "thegent.models.scrapers.get_scraped_catalog",
+        side_effect=RuntimeError("scraper down"),
+    )
     def test_to_contract_view_scraped_exception(self, mock_scraped) -> None:
         # @trace FR-MOD-005
         """to_contract_view falls back to static when scraped raises."""

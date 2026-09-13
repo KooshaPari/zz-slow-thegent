@@ -179,9 +179,7 @@ def _matches_factory_entry(
         return False
     if entry.get("enabled", True) is False:
         return False
-    if not (entry.get("api_key") or entry.get(api_key)):
-        return False
-    return True
+    return entry.get("api_key") or entry.get(api_key)
 
 
 def _extract_factory_api_key(

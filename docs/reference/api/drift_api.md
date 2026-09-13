@@ -12,7 +12,7 @@ Detects drift in policy state and cleans up stale overrides.
 
 ### Methods
 
-#### DriftDetector.__init__
+#### DriftDetector.**init**
 
 ```python
 __init__(self: Any, settings: ThegentSettings)

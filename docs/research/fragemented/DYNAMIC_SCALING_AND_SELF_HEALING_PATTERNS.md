@@ -44,18 +44,18 @@ Modern distributed systems require **resilience by design**. This document synth
 
 ### Pattern Families
 
-| Pattern | Purpose | Key Mechanism | When to Use |
-|---------|---------|---------------|-----------|
-| **Circuit Breaker** | Pause before failing | Tracks failures; opens/closes state | External service calls, APIs |
-| **Bulkhead** | Isolate failures | Separate thread pools/resources | CPU-bound, I/O-bound isolation |
-| **Throttling** | Control load | Queue, rate limit, reject | Prevent overload, backpressure |
-| **Exponential Backoff** | Reduce retries | Increasing wait between attempts | Transient failures |
-| **Adaptive Concurrency** | Scale with success | Adjust parallel workers | Dynamic workload handling |
-| **Health Checks** | Monitor state | Periodic heartbeat | Detect failures early |
-| **Auto-Restart** | Resume operation | Restart on failure | Process crashes, hangs |
-| **Graceful Degradation** | Reduce, not kill | Drop low-priority work | Resource exhaustion |
-| **Resource Pooling** | Prevent starvation | Reuse connections, threads | Database, HTTP connections |
-| **Load Shedding** | Reject work | Drop excess load | Overload protection |
+| Pattern                  | Purpose              | Key Mechanism                       | When to Use                    |
+| ------------------------ | -------------------- | ----------------------------------- | ------------------------------ |
+| **Circuit Breaker**      | Pause before failing | Tracks failures; opens/closes state | External service calls, APIs   |
+| **Bulkhead**             | Isolate failures     | Separate thread pools/resources     | CPU-bound, I/O-bound isolation |
+| **Throttling**           | Control load         | Queue, rate limit, reject           | Prevent overload, backpressure |
+| **Exponential Backoff**  | Reduce retries       | Increasing wait between attempts    | Transient failures             |
+| **Adaptive Concurrency** | Scale with success   | Adjust parallel workers             | Dynamic workload handling      |
+| **Health Checks**        | Monitor state        | Periodic heartbeat                  | Detect failures early          |
+| **Auto-Restart**         | Resume operation     | Restart on failure                  | Process crashes, hangs         |
+| **Graceful Degradation** | Reduce, not kill     | Drop low-priority work              | Resource exhaustion            |
+| **Resource Pooling**     | Prevent starvation   | Reuse connections, threads          | Database, HTTP connections     |
+| **Load Shedding**        | Reject work          | Drop excess load                    | Overload protection            |
 
 ---
 
@@ -66,6 +66,7 @@ Modern distributed systems require **resilience by design**. This document synth
 **Concept**: Monitor failures; automatically open circuit when threshold exceeded; half-open for recovery.
 
 **State Machine**:
+
 ```
         CLOSED (healthy)
            ↓ (failure threshold exceeded)
@@ -79,23 +80,27 @@ Modern distributed systems require **resilience by design**. This document synth
 ```
 
 **Key Parameters**:
+
 - `failure_threshold`: Number of failures before opening (e.g., 5)
 - `timeout_seconds`: Time in OPEN state before trying HALF_OPEN (e.g., 60s)
 - `success_threshold`: Number of successes in HALF_OPEN before closing (e.g., 3)
 - `window_size`: Sliding window for tracking failures (e.g., 10 calls)
 
 **When to Use**:
+
 - External API calls (network might recover)
 - Database connections (pool might exhaust)
 - Microservice calls (downstream service might restart)
 - Any "call-wait-fail" scenario
 
 **Benefits**:
+
 - Prevents cascading failures
 - Reduces load on failing service
 - Fast-fail behavior (no hanging requests)
 
 **Drawback**:
+
 - Requests fail immediately in OPEN state (expected behavior)
 
 ---
@@ -107,6 +112,7 @@ Modern distributed systems require **resilience by design**. This document synth
 **Types**:
 
 #### Thread Pool Bulkhead
+
 ```
 Main Thread Pool → [Task 1, Task 2, Task 3]
 CPU-Bound Pool → [CPU Task 1, CPU Task 2]
@@ -116,6 +122,7 @@ I/O-Bound Pool → [API Call 1, API Call 2]
 One pool exhaustion doesn't block others.
 
 #### Connection Pool Bulkhead
+
 ```
 Main DB Pool (20 connections) → General queries
 Analytics Pool (5 connections) → Reporting queries
@@ -123,6 +130,7 @@ Batch Pool (10 connections) → Bulk operations
 ```
 
 #### Semaphore Bulkhead
+
 ```
 Limit concurrent calls to resource:
 max_concurrent = 10
@@ -131,11 +139,13 @@ available = 3
 ```
 
 **When to Use**:
+
 - Mixed CPU-bound and I/O-bound workloads
 - Multiple service dependencies
 - Protecting critical paths from resource exhaustion
 
 **Configuration**:
+
 - **CPU-bound**: Set pool size = CPU cores (e.g., 8)
 - **I/O-bound**: Set pool size = CPU cores × 2-4 (e.g., 32)
 - **Mixed**: Use separate bulkheads for each type
@@ -149,6 +159,7 @@ available = 3
 **Strategies**:
 
 #### Rate Limiting (Token Bucket)
+
 ```
 Tokens per second: 100
 Bucket capacity: 1000
@@ -160,6 +171,7 @@ Request arrives → Check tokens
 ```
 
 #### Queuing with Backpressure
+
 ```
 Load → Queue (max=1000) → Worker Pool (size=50)
 
@@ -168,12 +180,14 @@ Caller → Slow down, retry, or fail gracefully
 ```
 
 #### Adaptive Throttling
+
 ```
 Success rate > 95%? → Increase rate (ramp up)
 Success rate < 80%? → Decrease rate (ramp down)
 ```
 
 **When to Use**:
+
 - API rate limits (external services)
 - Database connection pooling
 - Message queue systems
@@ -186,6 +200,7 @@ Success rate < 80%? → Decrease rate (ramp down)
 **Concept**: Increase wait time between retries; add randomness to prevent thundering herd.
 
 **Formula**:
+
 ```
 wait_time = min(max_wait, base_wait × (2 ^ attempt) + random_jitter)
 
@@ -200,11 +215,13 @@ Attempt 7: 60s (capped)
 ```
 
 **Why Jitter**:
+
 - Prevents coordinated retries from multiple clients
 - Spreads load naturally over time
 - Reduces "thundering herd" effect
 
 **Configuration**:
+
 - `base_wait`: Starting wait (1-2s for network; 100ms for local)
 - `max_wait`: Maximum wait (30-60s typical)
 - `jitter_factor`: Randomness (0.0-1.0, typically 0.1-0.5)
@@ -217,6 +234,7 @@ Attempt 7: 60s (capped)
 **Concept**: Adjust parallelism based on success rate (Little's Law).
 
 **Formula**:
+
 ```
 optimal_concurrency = throughput × latency
 
@@ -227,6 +245,7 @@ Dynamic adjustment:
 ```
 
 **Example**:
+
 ```
 Initial concurrency: 10
 Success rate: 98% → Increase to 11
@@ -235,12 +254,14 @@ Success rate recovers → Increase to 10
 ```
 
 **When to Use**:
+
 - Load varies dramatically
 - Latency SLOs matter
 - System can handle variable load
 - Not fixed-scale workloads
 
 **Benefits**:
+
 - Automatically finds optimal concurrency
 - Adapts to resource changes
 - Better utilization without overload
@@ -256,6 +277,7 @@ Success rate recovers → Increase to 10
 **Types**:
 
 #### Liveness Probe
+
 ```
 Question: "Is the service running?"
 Answer: "Yes" (process exists, can respond)
@@ -265,6 +287,7 @@ Timeout: 5 seconds
 ```
 
 #### Readiness Probe
+
 ```
 Question: "Is the service ready to serve requests?"
 Answer: "Yes" (all dependencies available, warmed up)
@@ -274,6 +297,7 @@ Timeout: 3 seconds
 ```
 
 #### Startup Probe
+
 ```
 Question: "Is the service still starting up?"
 Answer: "Yes" (waiting for dependencies)
@@ -283,6 +307,7 @@ Frequency: Every 1 second
 ```
 
 **Implementation**:
+
 ```python
 # Simple HTTP health check
 GET /health/live → 200 OK if running
@@ -302,6 +327,7 @@ GET /health/startup → 200 OK if fully started
 ```
 
 **Configuration**:
+
 - Liveness: 10s interval, 3 failures to restart
 - Readiness: 5s interval, 2 failures to remove
 - Startup: 1s interval, 30s max startup time
@@ -315,6 +341,7 @@ GET /health/startup → 200 OK if fully started
 **Policy Types**:
 
 #### Immediate Restart
+
 ```
 Process exits → Restart immediately
 
@@ -325,6 +352,7 @@ Use when:
 ```
 
 #### Exponential Backoff Restart
+
 ```
 Attempt 1: Restart now
 Attempt 2: Wait 2s, restart
@@ -340,6 +368,7 @@ Use when:
 ```
 
 #### Circuit Breaker Restart
+
 ```
 If restart_count > 5 in 10 minutes:
   → OPEN: Don't restart (alert human)
@@ -355,6 +384,7 @@ Use when:
 ```
 
 **Configuration**:
+
 ```yaml
 restart_policy:
   strategy: "exponential_backoff"
@@ -364,7 +394,7 @@ restart_policy:
   max_retries: 10
   circuit_breaker:
     failure_threshold: 5
-    timeout_seconds: 600  # 10 minutes
+    timeout_seconds: 600 # 10 minutes
 ```
 
 ---
@@ -376,6 +406,7 @@ restart_policy:
 **Strategies**:
 
 #### Feature Degradation
+
 ```
 Database unavailable?
   ✓ Cache hits: Serve from cache
@@ -385,6 +416,7 @@ Database unavailable?
 ```
 
 #### Load Shedding
+
 ```
 Queue > 95% capacity?
   1. Drop lowest-priority work
@@ -394,6 +426,7 @@ Queue > 95% capacity?
 ```
 
 #### Timeout with Fallback
+
 ```
 Call external service:
   timeout: 5s
@@ -402,6 +435,7 @@ Call external service:
 ```
 
 #### Cascading Degradation
+
 ```
 Level 1: Full service
 Level 2: Reduce query complexity (no joins)
@@ -411,6 +445,7 @@ Level 5: Return error page or SLA-based response
 ```
 
 **When to Use**:
+
 - Dependencies fail (database, external API)
 - Resource exhaustion (memory, CPU)
 - Traffic spikes
@@ -425,6 +460,7 @@ Level 5: Return error page or SLA-based response
 **Types**:
 
 #### Database Connection Pool
+
 ```
 Pool size: 20 connections
 Idle timeout: 5 minutes
@@ -440,6 +476,7 @@ Benefits:
 ```
 
 #### HTTP Connection Pool
+
 ```
 Pool size: 100 sockets per host
 Timeout: 60 seconds
@@ -451,6 +488,7 @@ Benefits:
 ```
 
 #### Thread Pool
+
 ```
 Fixed pool: 50 threads
 Queue capacity: 1000 tasks
@@ -462,6 +500,7 @@ Benefits:
 ```
 
 #### Object Pool (Cache)
+
 ```
 Pool: [Object1, Object2, ..., ObjectN]
 Reuse after use
@@ -472,6 +511,7 @@ Benefits:
 ```
 
 **Configuration**:
+
 - **Connection pools**: Size = (core_count × 2) to (core_count × 4)
 - **Thread pools**: Size = core_count (CPU) or core_count × 2-4 (I/O)
 - **Idle timeout**: 5-30 minutes
@@ -486,6 +526,7 @@ Benefits:
 **Strategies**:
 
 #### Priority-Based Shedding
+
 ```
 Level 0: Critical (user requests)
 Level 1: Important (batch jobs)
@@ -498,6 +539,7 @@ When overloaded → Drop from Level 3 first
 ```
 
 #### Queue-Depth Based
+
 ```
 Queue size policy:
   < 50%: Accept all
@@ -509,6 +551,7 @@ This prevents queue from growing unbounded
 ```
 
 #### Timeout-Based
+
 ```
 Task deadline: 10 seconds
 Processing time: 8 seconds
@@ -519,6 +562,7 @@ Deadline vs. remaining time?
 ```
 
 **Response to Shed Request**:
+
 ```
 HTTP 503 Service Unavailable
 Retry-After: 60
@@ -540,6 +584,7 @@ Retry-After: 60
 **Installation**: `pip install tenacity`
 
 **Features**:
+
 - Exponential backoff with jitter
 - Multiple stop conditions (max retries, timeout)
 - Retry on specific exceptions
@@ -547,6 +592,7 @@ Retry-After: 60
 - Async support
 
 **Example**:
+
 ```python
 from tenacity import (
     retry,
@@ -554,6 +600,7 @@ from tenacity import (
     wait_exponential,
     retry_if_exception_type,
 )
+
 
 @retry(
     stop=stop_after_attempt(5),
@@ -569,12 +616,14 @@ def call_external_api():
 **Installation**: `pip install pybreaker`
 
 **Features**:
+
 - State management (CLOSED, OPEN, HALF_OPEN)
 - Configurable thresholds
 - Listeners for state changes
 - Async support
 
 **Example**:
+
 ```python
 from pybreaker import CircuitBreaker
 
@@ -583,6 +632,7 @@ breaker = CircuitBreaker(
     timeout_seconds=60,
     listeners=[on_open, on_close],
 )
+
 
 def call_api():
     try:
@@ -596,14 +646,17 @@ def call_api():
 **Installation**: `pip install resilience4py`
 
 **Features**:
+
 - Circuit breaker, bulkhead, retry, timeout
 - Chainable decorators
 - Metrics and monitoring
 - Async support
 
 **Example**:
+
 ```python
 from resilience4py import CircuitBreaker, Bulkhead, Retry
+
 
 @CircuitBreaker(max_failures=5, timeout=60)
 @Bulkhead(max_concurrent_calls=10)
@@ -617,22 +670,26 @@ async def call_external_service():
 **Installation**: `pip install apscheduler`
 
 **Features**:
+
 - Scheduled task execution
 - Multiple schedulers (cron, interval, date)
 - Job persistence
 - Async support
 
 **Example**:
+
 ```python
 from apscheduler.schedulers.background import BackgroundScheduler
 from apscheduler.triggers.interval import IntervalTrigger
 
 scheduler = BackgroundScheduler()
 
+
 @scheduler.scheduled_job(IntervalTrigger(seconds=10))
 def health_check():
     # Runs every 10 seconds
     check_system_health()
+
 
 scheduler.start()
 ```
@@ -642,19 +699,23 @@ scheduler.start()
 **Installation**: `pip install pydantic`
 
 **Features**:
+
 - Type-safe configuration
 - Validation on load
 - Environment variable support
 
 **Example**:
+
 ```python
 from pydantic import BaseModel, Field
+
 
 class ResilienceConfig(BaseModel):
     circuit_breaker_threshold: int = Field(default=5, ge=1, le=100)
     timeout_seconds: float = Field(default=30, gt=0, le=300)
     retry_max_attempts: int = Field(default=3, ge=1, le=10)
     bulkhead_max_concurrent: int = Field(default=50, ge=1, le=1000)
+
 
 config = ResilienceConfig()
 ```
@@ -664,6 +725,7 @@ config = ResilienceConfig()
 #### Systemd (Linux Native)
 
 **Service Configuration**:
+
 ```ini
 [Unit]
 Description=My Agent Service
@@ -683,6 +745,7 @@ WantedBy=multi-user.target
 ```
 
 **Auto-restart policy**:
+
 - `Restart=on-failure` — Restart if exit code != 0
 - `RestartSec=10` — Wait 10s between restarts
 - `StartLimitBurst=5` — Max 5 restarts in interval
@@ -693,6 +756,7 @@ WantedBy=multi-user.target
 **Installation**: `pip install supervisor`
 
 **Configuration**:
+
 ```ini
 [program:agent]
 command=/usr/bin/python /app/agent.py
@@ -706,6 +770,7 @@ stdout_logfile_backups=5
 ```
 
 **Features**:
+
 - Python-native process management
 - Automatic restart
 - Log rotation
@@ -714,6 +779,7 @@ stdout_logfile_backups=5
 #### Tmux (Session Recovery)
 
 **Session Management**:
+
 ```bash
 # Create session
 tmux new-session -d -s agent-1
@@ -729,6 +795,7 @@ tmux list-sessions
 ```
 
 **Recovery**:
+
 ```bash
 # Session survives terminal disconnect
 # Reconnect later:
@@ -740,6 +807,7 @@ tmux attach-session -t agent-1
 #### Docker Health Checks
 
 **Dockerfile**:
+
 ```dockerfile
 FROM python:3.12
 
@@ -752,6 +820,7 @@ CMD ["python", "/app/agent.py"]
 ```
 
 **Health Check Script**:
+
 ```python
 #!/usr/bin/env python
 import requests
@@ -768,6 +837,7 @@ sys.exit(1)  # Unhealthy
 ```
 
 **Docker Compose**:
+
 ```yaml
 services:
   agent:
@@ -788,6 +858,7 @@ services:
 #### Kubernetes Probes
 
 **Liveness Probe** (is it alive?):
+
 ```yaml
 livenessProbe:
   httpGet:
@@ -800,6 +871,7 @@ livenessProbe:
 ```
 
 **Readiness Probe** (is it ready?):
+
 ```yaml
 readinessProbe:
   httpGet:
@@ -812,6 +884,7 @@ readinessProbe:
 ```
 
 **Startup Probe** (is it still starting?):
+
 ```yaml
 startupProbe:
   httpGet:
@@ -855,17 +928,20 @@ startupProbe:
 **Concept**: Periodic health check (5-10 seconds).
 
 **Implementation**:
+
 ```python
 import time
 import asyncio
 from dataclasses import dataclass
 from enum import Enum
 
+
 class HealthStatus(Enum):
     HEALTHY = "healthy"
     SLOW = "slow"
     UNHEALTHY = "unhealthy"
     CRASHED = "crashed"
+
 
 @dataclass
 class AgentHealth:
@@ -874,6 +950,7 @@ class AgentHealth:
     last_heartbeat: float
     response_time_ms: float
     error_count: int
+
 
 async def health_check_agent(agent_id: str, timeout: float = 5.0) -> AgentHealth:
     """Check if agent is responsive."""
@@ -916,6 +993,7 @@ async def health_check_agent(agent_id: str, timeout: float = 5.0) -> AgentHealth
             error_count=999,
         )
 
+
 async def monitor_agent_health(agent_ids: list[str], interval_sec: int = 10):
     """Continuously monitor agent health."""
     while True:
@@ -945,10 +1023,12 @@ async def monitor_agent_health(agent_ids: list[str], interval_sec: int = 10):
 **Concept**: Pause agent (preserve state) instead of killing (lose state).
 
 **Implementation**:
+
 ```python
 import signal
 from enum import Enum
 from dataclasses import dataclass
+
 
 class AgentState(Enum):
     RUNNING = "running"
@@ -956,12 +1036,14 @@ class AgentState(Enum):
     DRAINING = "draining"  # Finishing current task
     RESTARTING = "restarting"
 
+
 @dataclass
 class Agent:
     pid: int
     state: AgentState
     current_task: str = None
     checkpoint: dict = None
+
 
 async def pause_agent(agent: Agent, graceful: bool = True):
     """Pause agent gracefully."""
@@ -979,6 +1061,7 @@ async def pause_agent(agent: Agent, graceful: bool = True):
         agent.state = AgentState.PAUSED
         print(f"Agent {agent.pid} paused (state preserved)")
 
+
 async def resume_agent(agent: Agent):
     """Resume paused agent."""
     if agent.state == AgentState.PAUSED:
@@ -986,6 +1069,7 @@ async def resume_agent(agent: Agent):
         os.kill(agent.pid, signal.SIGCONT)
         agent.state = AgentState.RUNNING
         print(f"Agent {agent.pid} resumed")
+
 
 async def restart_agent_with_backoff(agent: Agent, max_retries: int = 5):
     """Restart with exponential backoff."""
@@ -1024,15 +1108,18 @@ async def restart_agent_with_backoff(agent: Agent, max_retries: int = 5):
 **Concept**: Monitor CPU, memory, disk; take action if exceeded.
 
 **Implementation**:
+
 ```python
 import psutil
 from dataclasses import dataclass
+
 
 @dataclass
 class ResourceThresholds:
     cpu_percent_max: float = 80.0
     memory_percent_max: float = 85.0
     memory_gb_max: float = 8.0
+
 
 async def monitor_agent_resources(
     agent_pid: int,
@@ -1046,7 +1133,7 @@ async def monitor_agent_resources(
         cpu_percent = process.cpu_percent(interval=1)
         memory_info = process.memory_info()
         memory_percent = process.memory_percent()
-        memory_gb = memory_info.rss / (1024 ** 3)
+        memory_gb = memory_info.rss / (1024**3)
 
         # Check thresholds
         if cpu_percent > thresholds.cpu_percent_max:
@@ -1074,15 +1161,18 @@ async def monitor_agent_resources(
 **Concept**: Don't accept new work if overloaded.
 
 **Implementation**:
+
 ```python
 from collections import deque
 from dataclasses import dataclass
+
 
 @dataclass
 class QueueMetrics:
     size: int
     capacity: int
     load_percent: float
+
 
 class BackpressureQueue:
     def __init__(self, max_size: int = 1000):
@@ -1140,6 +1230,7 @@ class BackpressureQueue:
 **Concept**: Stop accepting new work; finish current tasks.
 
 **Implementation**:
+
 ```python
 class AgentSwarm:
     def __init__(self, num_agents: int = 10):
@@ -1162,10 +1253,7 @@ class AgentSwarm:
         # Step 2: Wait for agents to finish current tasks
         start = time.time()
         while time.time() - start < timeout:
-            active_tasks = sum(
-                1 for agent in self.agents
-                if agent.current_task is not None
-            )
+            active_tasks = sum(1 for agent in self.agents if agent.current_task is not None)
             if active_tasks == 0:
                 print("Step 2: All agents finished their tasks")
                 break
@@ -1198,10 +1286,12 @@ from enum import Enum
 from typing import Callable, Any
 import time
 
+
 class CircuitBreakerState(Enum):
-    CLOSED = "closed"      # Normal operation
-    OPEN = "open"          # Failing fast
+    CLOSED = "closed"  # Normal operation
+    OPEN = "open"  # Failing fast
     HALF_OPEN = "half_open"  # Testing recovery
+
 
 class CircuitBreaker:
     def __init__(
@@ -1282,6 +1372,7 @@ class CircuitBreaker:
 import asyncio
 from typing import Callable, Any
 
+
 class Bulkhead:
     """Isolate resources to prevent cascading failures."""
 
@@ -1299,10 +1390,7 @@ class Bulkhead:
             acquired = self.semaphore._value > 0
             if not acquired and self.active_count >= self.max_concurrent:
                 self.rejected_count += 1
-                raise Exception(
-                    f"{self.name}: Bulkhead exhausted "
-                    f"({self.active_count}/{self.max_concurrent})"
-                )
+                raise Exception(f"{self.name}: Bulkhead exhausted ({self.active_count}/{self.max_concurrent})")
 
             # Acquire permit (might wait)
             async with self.semaphore:
@@ -1314,6 +1402,7 @@ class Bulkhead:
         except asyncio.QueueFull:
             self.rejected_count += 1
             raise
+
 
 class MultiResourceBulkhead:
     """Multiple bulkheads for different resource types."""
@@ -1354,6 +1443,7 @@ class MultiResourceBulkhead:
 import asyncio
 from functools import wraps
 
+
 async def with_timeout_and_fallback(
     func,
     timeout_sec: float,
@@ -1374,22 +1464,23 @@ async def with_timeout_and_fallback(
         else:
             raise
 
+
 # Decorator version
 def timeout_with_fallback(timeout_sec: float, fallback_value=None):
     def decorator(func):
         @wraps(func)
         async def wrapper(*args, **kwargs):
             try:
-                return await asyncio.wait_for(
-                    func(*args, **kwargs),
-                    timeout=timeout_sec
-                )
+                return await asyncio.wait_for(func(*args, **kwargs), timeout=timeout_sec)
             except asyncio.TimeoutError:
                 if fallback_value is not None:
                     return fallback_value
                 raise
+
         return wrapper
+
     return decorator
+
 
 # Usage
 @timeout_with_fallback(timeout_sec=5, fallback_value=[])
@@ -1407,6 +1498,7 @@ import os
 from dataclasses import asdict, dataclass
 from typing import Any
 
+
 @dataclass
 class TaskCheckpoint:
     task_id: str
@@ -1415,6 +1507,7 @@ class TaskCheckpoint:
     state: dict[str, Any]
     timestamp: float
     error: str = None
+
 
 class CheckpointManager:
     def __init__(self, checkpoint_dir: str = "/tmp/checkpoints"):
@@ -1444,6 +1537,7 @@ class CheckpointManager:
         if os.path.exists(filename):
             os.remove(filename)
 
+
 class ResumableTask:
     """Task that can be paused and resumed."""
 
@@ -1455,7 +1549,7 @@ class ResumableTask:
         # Determine starting point
         start_idx = 0
         if checkpoint:
-            print(f"Resuming task {task_id} at {checkpoint.progress*100:.1f}%")
+            print(f"Resuming task {task_id} at {checkpoint.progress * 100:.1f}%")
             start_idx = checkpoint.state.get("last_step_idx", 0)
 
         # Execute steps
@@ -1503,6 +1597,7 @@ import asyncio
 from tenacity import retry, stop_after_attempt, wait_exponential
 from pybreaker import CircuitBreaker
 
+
 class ResilientHTTPClient:
     def __init__(self):
         self.client = httpx.AsyncClient(timeout=30)
@@ -1517,6 +1612,7 @@ class ResilientHTTPClient:
     )
     async def get(self, url: str, **kwargs) -> dict:
         """GET with retry and circuit breaker."""
+
         async def _make_request():
             response = await self.client.get(url, **kwargs)
             response.raise_for_status()
@@ -1526,6 +1622,7 @@ class ResilientHTTPClient:
 
     async def close(self):
         await self.client.aclose()
+
 
 # Usage
 client = ResilientHTTPClient()
@@ -1543,12 +1640,14 @@ import asyncio
 import time
 from dataclasses import dataclass
 
+
 @dataclass
 class ConcurrencyStats:
     current: int
     success_count: int
     failure_count: int
     success_rate: float
+
 
 class AdaptiveConcurrency:
     def __init__(self, initial: int = 10, min_conc: int = 1, max_conc: int = 100):
@@ -1596,10 +1695,7 @@ class AdaptiveConcurrency:
                     self.failure_count += 1
                     raise
 
-        return await asyncio.gather(
-            *[bounded_task(t) for t in tasks],
-            return_exceptions=True
-        )
+        return await asyncio.gather(*[bounded_task(t) for t in tasks], return_exceptions=True)
 
     def get_stats(self) -> ConcurrencyStats:
         total = self.success_count + self.failure_count
@@ -1652,6 +1748,7 @@ ADAPTIVE_CONCURRENCY_FAILURE_THRESHOLD=0.80
 
 ```python
 from pydantic_settings import BaseSettings
+
 
 class ResilienceSettings(BaseSettings):
     # Circuit breaker
@@ -1757,6 +1854,7 @@ services:
 from dataclasses import dataclass
 from datetime import datetime
 
+
 @dataclass
 class ResilienceMetrics:
     # Circuit breaker
@@ -1783,6 +1881,7 @@ class ResilienceMetrics:
     # Timestamp
     timestamp: datetime
 
+
 class MetricsCollector:
     def __init__(self):
         self.metrics = []
@@ -1805,11 +1904,9 @@ class MetricsCollector:
             f"# HELP resilience_cb_failures Circuit breaker failures",
             f"# TYPE resilience_cb_failures counter",
             f"resilience_cb_failures {latest.cb_failures}",
-
             f"# HELP resilience_bulkhead_utilization Bulkhead utilization",
             f"# TYPE resilience_bulkhead_utilization gauge",
             f"resilience_bulkhead_utilization {latest.bh_utilization}",
-
             f"# HELP resilience_health_check_passed Health checks passed",
             f"# TYPE resilience_health_check_passed counter",
             f"resilience_health_check_passed {latest.health_checks_passed}",
@@ -1823,6 +1920,7 @@ class MetricsCollector:
 import json
 import logging
 from dataclasses import asdict
+
 
 class JSONFormatter(logging.Formatter):
     def format(self, record):
@@ -1844,6 +1942,7 @@ class JSONFormatter(logging.Formatter):
 
         return json.dumps(log_data)
 
+
 # Setup
 logger = logging.getLogger(__name__)
 handler = logging.StreamHandler()
@@ -1851,13 +1950,16 @@ handler.setFormatter(JSONFormatter())
 logger.addHandler(handler)
 
 # Usage
-logger.info("Circuit breaker state changed", extra={
-    "circuit_breaker": {
-        "name": "api_service",
-        "state": "OPEN",
-        "failures": 5,
-    }
-})
+logger.info(
+    "Circuit breaker state changed",
+    extra={
+        "circuit_breaker": {
+            "name": "api_service",
+            "state": "OPEN",
+            "failures": 5,
+        }
+    },
+)
 ```
 
 ---
@@ -1867,6 +1969,7 @@ logger.info("Circuit breaker state changed", extra={
 ### ❌ Anti-Pattern 1: Silent Failures
 
 **Bad**:
+
 ```python
 def call_api():
     try:
@@ -1876,6 +1979,7 @@ def call_api():
 ```
 
 **Good**:
+
 ```python
 def call_api():
     try:
@@ -1890,6 +1994,7 @@ def call_api():
 ### ❌ Anti-Pattern 2: Infinite Retries
 
 **Bad**:
+
 ```python
 @retry(
     stop=never,  # Retries forever!
@@ -1899,6 +2004,7 @@ def call_api():
 ```
 
 **Good**:
+
 ```python
 @retry(
     stop=stop_after_attempt(3),
@@ -1912,6 +2018,7 @@ def call_api():
 ### ❌ Anti-Pattern 3: Retrying Non-Idempotent Operations
 
 **Bad**:
+
 ```python
 @retry()
 async def transfer_money(account_a, account_b, amount):
@@ -1922,6 +2029,7 @@ async def transfer_money(account_a, account_b, amount):
 ```
 
 **Good**:
+
 ```python
 @retry(
     retry=retry_if_exception_type(NetworkError),
@@ -1942,6 +2050,7 @@ async def transfer_money_idempotent(transaction_id, account_a, account_b, amount
 ### ❌ Anti-Pattern 4: Not Monitoring Circuit Breaker State
 
 **Bad**:
+
 ```python
 breaker = CircuitBreaker()
 # Never check if breaker is OPEN
@@ -1949,6 +2058,7 @@ breaker = CircuitBreaker()
 ```
 
 **Good**:
+
 ```python
 breaker = CircuitBreaker()
 try:
@@ -1963,6 +2073,7 @@ except CircuitBreaker.CircuitBreakerOpenException:
 ### ❌ Anti-Pattern 5: Fixed Concurrency in Variable Load
 
 **Bad**:
+
 ```python
 semaphore = asyncio.Semaphore(50)  # Fixed
 # If load doubles, still 50; overloaded
@@ -1970,6 +2081,7 @@ semaphore = asyncio.Semaphore(50)  # Fixed
 ```
 
 **Good**:
+
 ```python
 adaptive = AdaptiveConcurrency(initial=10)
 # Automatically adjusts based on success rate
@@ -1981,12 +2093,14 @@ adaptive = AdaptiveConcurrency(initial=10)
 ### ❌ Anti-Pattern 6: Killing Instead of Pausing
 
 **Bad**:
+
 ```python
 os.kill(agent_pid, signal.SIGKILL)  # Immediate death
 # State lost, in-progress work abandoned
 ```
 
 **Good**:
+
 ```python
 await pause_agent(agent_pid)  # SIGSTOP (pause)
 # State preserved, can resume
@@ -2001,18 +2115,18 @@ await pause_agent(agent_pid)  # SIGSTOP (pause)
 
 ### When to Use Each Pattern
 
-| Scenario | Pattern | Reason |
-|----------|---------|--------|
-| External API might fail temporarily | Circuit Breaker + Retry | Prevent cascading; let transient failures pass |
-| CPU vs I/O mixed workload | Bulkhead | Isolate; prevent CPU starvation of I/O |
-| Preventing thundering herd | Exponential Backoff + Jitter | Spread retries over time |
-| System overloaded | Load Shedding + Backpressure | Reject gracefully; protect core |
-| Service unresponsive | Health Check + Auto-Restart | Detect early; recover automatically |
-| High variance load | Adaptive Concurrency | Scale to actual demand |
-| Need to preserve work | Checkpoint + Resume | Survive crashes; continue work |
-| Must finish current work | Graceful Drain | Safety before restart |
-| Preventing starvation | Resource Pooling | Reuse; prevent exhaustion |
-| Resource limits exceeded | Bulkhead + Timeout | Isolate; fail fast |
+| Scenario                            | Pattern                      | Reason                                         |
+| ----------------------------------- | ---------------------------- | ---------------------------------------------- |
+| External API might fail temporarily | Circuit Breaker + Retry      | Prevent cascading; let transient failures pass |
+| CPU vs I/O mixed workload           | Bulkhead                     | Isolate; prevent CPU starvation of I/O         |
+| Preventing thundering herd          | Exponential Backoff + Jitter | Spread retries over time                       |
+| System overloaded                   | Load Shedding + Backpressure | Reject gracefully; protect core                |
+| Service unresponsive                | Health Check + Auto-Restart  | Detect early; recover automatically            |
+| High variance load                  | Adaptive Concurrency         | Scale to actual demand                         |
+| Need to preserve work               | Checkpoint + Resume          | Survive crashes; continue work                 |
+| Must finish current work            | Graceful Drain               | Safety before restart                          |
+| Preventing starvation               | Resource Pooling             | Reuse; prevent exhaustion                      |
+| Resource limits exceeded            | Bulkhead + Timeout           | Isolate; fail fast                             |
 
 ---
 
@@ -2038,6 +2152,7 @@ await pause_agent(agent_pid)  # SIGSTOP (pause)
 ## References & Further Reading
 
 ### Tools
+
 - **Tenacity**: https://tenacity.readthedocs.io/
 - **PyBreaker**: https://github.com/danielfm/pybreaker
 - **Resilience4py**: https://github.com/davisb10/resilience4py
@@ -2046,11 +2161,13 @@ await pause_agent(agent_pid)  # SIGSTOP (pause)
 - **APScheduler**: https://apscheduler.readthedocs.io/
 
 ### Papers & Articles
+
 - "Release It! Design and Deploy Production-Ready Software" by Michael Nygard (Circuit Breaker pattern origin)
 - "The Tail at Scale" (Google, 2013) - Adaptive strategies
 - "Google SRE Book" - Resilience and operational excellence
 
 ### Standards
+
 - Kubernetes Probes: https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/
 - Prometheus Metrics: https://prometheus.io/docs/instrumenting/exposition_formats/
 

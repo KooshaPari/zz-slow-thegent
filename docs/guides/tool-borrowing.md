@@ -73,15 +73,15 @@ thegent tools list --json
 
 Write or update `mcp.json` in the target directory.
 
-| Option | Default | Description |
-|--------|---------|-------------|
-| `TOOL_NAMES` | (all) | Comma-separated tool names |
-| `--output-dir`, `-o` | `.` | Target directory |
-| `--host` | `127.0.0.1` | thegent MCP server host |
-| `--port` | `3847` | thegent MCP server port |
-| `--no-merge` | False | Overwrite instead of merging |
-| `--claude-md` | False | Print CLAUDE.md snippet to stdout |
-| `--check` | False | Verify server reachability first |
+| Option               | Default     | Description                       |
+| -------------------- | ----------- | --------------------------------- |
+| `TOOL_NAMES`         | (all)       | Comma-separated tool names        |
+| `--output-dir`, `-o` | `.`         | Target directory                  |
+| `--host`             | `127.0.0.1` | thegent MCP server host           |
+| `--port`             | `3847`      | thegent MCP server port           |
+| `--no-merge`         | False       | Overwrite instead of merging      |
+| `--claude-md`        | False       | Print CLAUDE.md snippet to stdout |
+| `--check`            | False       | Verify server reachability first  |
 
 ### `thegent tools show NAME`
 
@@ -140,17 +140,17 @@ if borrower.validate_server_reachable():
 
 ## Available Tool Categories
 
-| Category | Label | Example Tools |
-|----------|-------|---------------|
-| `session` | Session Management | `thegent_run`, `thegent_ps`, `thegent_stop` |
-| `planning` | Planning and Work Streams | `thegent_do_next`, `thegent_plan_progress` |
-| `dag` | DAG Task Management | `thegent_dag_list`, `thegent_dag_status` |
-| `research` | Web Research | `thegent_ddg_search`, `thegent_scrape_url` |
-| `discovery` | Agent and Model Discovery | `thegent_list_agents`, `thegent_list_models` |
-| `queue` | Task Queue | `thegent_queue_add`, `thegent_queue_claim` |
-| `escalation` | Escalations | `thegent_escalate_add`, `thegent_escalate_list` |
-| `history` | History and Continuity | `thegent_history`, `thegent_continuity_snapshot` |
-| `execution` | Agent Execution | `thegent_free`, `thegent_retry` |
+| Category     | Label                     | Example Tools                                    |
+| ------------ | ------------------------- | ------------------------------------------------ |
+| `session`    | Session Management        | `thegent_run`, `thegent_ps`, `thegent_stop`      |
+| `planning`   | Planning and Work Streams | `thegent_do_next`, `thegent_plan_progress`       |
+| `dag`        | DAG Task Management       | `thegent_dag_list`, `thegent_dag_status`         |
+| `research`   | Web Research              | `thegent_ddg_search`, `thegent_scrape_url`       |
+| `discovery`  | Agent and Model Discovery | `thegent_list_agents`, `thegent_list_models`     |
+| `queue`      | Task Queue                | `thegent_queue_add`, `thegent_queue_claim`       |
+| `escalation` | Escalations               | `thegent_escalate_add`, `thegent_escalate_list`  |
+| `history`    | History and Continuity    | `thegent_history`, `thegent_continuity_snapshot` |
+| `execution`  | Agent Execution           | `thegent_free`, `thegent_retry`                  |
 
 ## Generated mcp.json Format
 

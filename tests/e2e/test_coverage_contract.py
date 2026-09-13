@@ -2,9 +2,8 @@
 
 from __future__ import annotations
 
-from pathlib import Path
 import re
-
+from pathlib import Path
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
 TASKFILE = REPO_ROOT / "Taskfile.yml"
@@ -14,7 +13,12 @@ CI_WORKFLOW = REPO_ROOT / ".github" / "workflows" / "ci.yml"
 
 def test_taskfile_defines_explicit_coverage_lifecycle_tasks() -> None:
     text = TASKFILE.read_text(encoding="utf-8")
-    for task_name in ("coverage:clean:", "coverage:run:", "coverage:report:", "coverage:ci:"):
+    for task_name in (
+        "coverage:clean:",
+        "coverage:run:",
+        "coverage:report:",
+        "coverage:ci:",
+    ):
         assert task_name in text, f"Taskfile.yml must define `{task_name[:-1]}`"
 
 

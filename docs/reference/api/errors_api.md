@@ -16,7 +16,7 @@ Raised when there is a configuration-related failure.
 
 ### Methods
 
-#### ConfigError.__init__
+#### ConfigError.**init**
 
 ```python
 __init__(self: Any, message: str, remediation_hint: Any)
@@ -36,7 +36,7 @@ Raised when an MCP-related failure occurs.
 
 ### Methods
 
-#### MCPError.__init__
+#### MCPError.**init**
 
 ```python
 __init__(self: Any, message: str, remediation_hint: Any)
@@ -56,7 +56,7 @@ Raised when an AI provider (Anthropic, Google, etc.) returns an error.
 
 ### Methods
 
-#### ProviderError.__init__
+#### ProviderError.**init**
 
 ```python
 __init__(self: Any, message: str, remediation_hint: Any)
@@ -74,7 +74,7 @@ Base class for all errors in thegent.
 
 ### Methods
 
-#### ThegentError.__init__
+#### ThegentError.**init**
 
 ```python
 __init__(self: Any, message: str, remediation_hint: Any)

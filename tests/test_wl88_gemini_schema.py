@@ -5,8 +5,9 @@ Related to CLIProxyAPI#1649 - incorrect renaming of parameters to parametersJson
 
 from __future__ import annotations
 
-import pytest
 from unittest.mock import patch
+
+import pytest
 
 
 class TestGeminiSchemaMapping:
@@ -19,7 +20,13 @@ class TestGeminiSchemaMapping:
         Issue: CLIProxyAPI#1649 - incorrect renaming of parameters to parametersJsonSchema
         """
         # Gemini tools should use 'parameters', not 'parametersJsonSchema'
-        tool_def = {"name": "test_tool", "parameters": {"type": "object", "properties": {"query": {"type": "string"}}}}
+        tool_def = {
+            "name": "test_tool",
+            "parameters": {
+                "type": "object",
+                "properties": {"query": {"type": "string"}},
+            },
+        }
 
         result = mock_transform(tool_def, provider="gemini")
 
@@ -30,7 +37,13 @@ class TestGeminiSchemaMapping:
     @patch("thegent.cliproxy_adapter._transform_gemini_tool")
     def test_openai_tools_use_parameters_schema(self, mock_transform) -> None:
         """OpenAI-style tools should use 'parameters' field."""
-        tool_def = {"name": "test_tool", "parameters": {"type": "object", "properties": {"query": {"type": "string"}}}}
+        tool_def = {
+            "name": "test_tool",
+            "parameters": {
+                "type": "object",
+                "properties": {"query": {"type": "string"}},
+            },
+        }
 
         result = mock_transform(tool_def, provider="openai")
 

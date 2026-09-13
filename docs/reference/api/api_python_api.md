@@ -12,7 +12,7 @@ Generate Python API documentation from docstrings.
 
 ### Methods
 
-#### PythonAPIGenerator.__init__
+#### PythonAPIGenerator.**init**
 
 ```python
 __init__(self: Any)

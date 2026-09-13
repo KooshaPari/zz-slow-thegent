@@ -13,13 +13,13 @@ import logging
 import threading
 import time
 from dataclasses import dataclass, field
-from enum import Enum
+from enum import StrEnum
 from typing import ClassVar
 
 _log = logging.getLogger(__name__)
 
 
-class BudgetPeriod(str, Enum):
+class BudgetPeriod(StrEnum):
     """Supported budget reset period lengths."""
 
     DAILY = "daily"

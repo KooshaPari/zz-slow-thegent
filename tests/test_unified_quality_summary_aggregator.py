@@ -1,16 +1,19 @@
 from __future__ import annotations
 
-import orjson as json
 import subprocess
 import sys
 from pathlib import Path
+
+import orjson as json
 
 
 def _repo_root() -> Path:
     return Path(__file__).resolve().parents[1]
 
 
-def test_unified_quality_summary_aggregator_emits_schema_valid_payload(tmp_path: Path) -> None:
+def test_unified_quality_summary_aggregator_emits_schema_valid_payload(
+    tmp_path: Path,
+) -> None:
     hooks = tmp_path / "artifacts" / "hooks"
     quality = tmp_path / "artifacts" / "quality"
     hooks.mkdir(parents=True)

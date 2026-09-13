@@ -10,7 +10,7 @@ key is scoped per policy value.
 from __future__ import annotations
 
 from threading import Thread
-from unittest.mock import MagicMock, call, patch
+from unittest.mock import MagicMock, patch
 
 
 class TestGetLitellmRouterCaching:
@@ -27,7 +27,8 @@ class TestGetLitellmRouterCaching:
         sentinel = MagicMock(name="router_sentinel")
 
         with patch(
-            "thegent.utils.routing_impl.litellm_router._build_litellm_router", return_value=sentinel
+            "thegent.utils.routing_impl.litellm_router._build_litellm_router",
+            return_value=sentinel,
         ) as mock_build:
             from thegent.utils.routing_impl.litellm_router import get_litellm_router
 
@@ -43,7 +44,8 @@ class TestGetLitellmRouterCaching:
         sentinel = MagicMock(name="router_once")
 
         with patch(
-            "thegent.utils.routing_impl.litellm_router._build_litellm_router", return_value=sentinel
+            "thegent.utils.routing_impl.litellm_router._build_litellm_router",
+            return_value=sentinel,
         ) as mock_build:
             from thegent.utils.routing_impl.litellm_router import get_litellm_router
 
@@ -63,7 +65,10 @@ class TestGetLitellmRouterCaching:
             call_count["n"] += 1
             return router_a if policy == "cost-based-routing" else router_b
 
-        with patch("thegent.utils.routing_impl.litellm_router._build_litellm_router", side_effect=fake_build):
+        with patch(
+            "thegent.utils.routing_impl.litellm_router._build_litellm_router",
+            side_effect=fake_build,
+        ):
             from thegent.utils.routing_impl.litellm_router import get_litellm_router
 
             r1 = get_litellm_router("cost-based-routing")
@@ -86,9 +91,13 @@ class TestGetLitellmRouterCaching:
         responses = [first, second]
 
         with patch(
-            "thegent.utils.routing_impl.litellm_router._build_litellm_router", side_effect=responses
+            "thegent.utils.routing_impl.litellm_router._build_litellm_router",
+            side_effect=responses,
         ) as mock_build:
-            from thegent.utils.routing_impl.litellm_router import _router_cache, get_litellm_router
+            from thegent.utils.routing_impl.litellm_router import (
+                _router_cache,
+                get_litellm_router,
+            )
 
             r1 = get_litellm_router("cost-based-routing")
             # Manually expire the cache entry to simulate TTL elapse
@@ -108,7 +117,10 @@ class TestGetLitellmRouterCaching:
             build_count["n"] += 1
             return MagicMock(name=f"router_{build_count['n']}")
 
-        with patch("thegent.utils.routing_impl.litellm_router._build_litellm_router", side_effect=fake_build):
+        with patch(
+            "thegent.utils.routing_impl.litellm_router._build_litellm_router",
+            side_effect=fake_build,
+        ):
             from thegent.utils.routing_impl.litellm_router import get_litellm_router
 
             results = []

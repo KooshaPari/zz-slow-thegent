@@ -8,9 +8,9 @@ from __future__ import annotations
 import asyncio
 import logging
 import time
-from collections.abc import Awaitable
+from collections.abc import Awaitable, Callable
 from functools import wraps
-from typing import Any, Callable, ParamSpec, TypeVar
+from typing import Any, ParamSpec, TypeVar
 
 logger = logging.getLogger(__name__)
 
@@ -47,7 +47,12 @@ def retry_with_backoff(
                     if attempt < max_attempts - 1:
                         delay = min(base_delay * (exponential_base**attempt), max_delay)
                         logger.warning(
-                            "Retry %d/%d for %s after %.1fs: %s", attempt + 1, max_attempts, func.__name__, delay, e
+                            "Retry %d/%d for %s after %.1fs: %s",
+                            attempt + 1,
+                            max_attempts,
+                            func.__name__,
+                            delay,
+                            e,
                         )
                         time.sleep(delay)
             raise last_exception  # type: ignore
@@ -136,7 +141,7 @@ class RetryContext:
         self.attempt = 0
         self.last_error: Exception | None = None
 
-    async def __aenter__(self) -> "RetryContext":
+    async def __aenter__(self) -> RetryContext:
         self.attempt += 1
         return self
 

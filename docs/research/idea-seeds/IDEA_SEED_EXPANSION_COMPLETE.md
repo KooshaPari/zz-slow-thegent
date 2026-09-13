@@ -23,6 +23,7 @@
 **Full Expansion**: See [CONVERSATION_DUMP_2026-02-16_EXPANDED.md](./CONVERSATION_DUMP_2026-02-16_EXPANDED.md#4-idea-seed-system)
 
 **BACKLOG Item**:
+
 - **ID**: `research-idea-seed-system`
 - **Title**: Idea seed detection & storage system
 - **Source**: `docs/research/idea-seeds/seed_cursor_20260216T103017Z_*_199.md`
@@ -80,6 +81,7 @@
 **BACKLOG:** `research-idea-seed-system` already in [WORK_STREAM.md](../../reference/WORK_STREAM.md). Spec: [IDEA_SEEDS_SESSION_STORAGE.md](../IDEA_SEEDS_SESSION_STORAGE.md), [PROMPT_HISTORY_COLLECTION_AND_AUDIT_SYSTEM.md](../../plans/PROMPT_HISTORY_COLLECTION_AND_AUDIT_SYSTEM.md). Sprawl inventory: [RESEARCH_SEED_FRAGMENT_INVENTORY_AND_SPRAWL_TODO.md](../RESEARCH_SEED_FRAGMENT_INVENTORY_AND_SPRAWL_TODO.md).
 
 **Next Steps**:
+
 1. Implement idea seed detection system
 2. Add to WORK_STREAM BACKLOG
 3. Create implementation plan
@@ -87,10 +89,10 @@
 ---
 
 **See Also**:
+
 - [CONVERSATION_DUMP_2026-02-16_EXPANDED.md](./CONVERSATION_DUMP_2026-02-16_EXPANDED.md#4-idea-seed-system)
 - [PROMPT_HISTORY_COLLECTION_AND_AUDIT_SYSTEM.md](../../plans/PROMPT_HISTORY_COLLECTION_AND_AUDIT_SYSTEM.md)
 - [IDEA_SEEDS_SESSION_STORAGE.md](./IDEA_SEEDS_SESSION_STORAGE.md)
-
 
 ---
 

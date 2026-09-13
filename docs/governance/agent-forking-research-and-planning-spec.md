@@ -11,6 +11,7 @@ The objective is to evaluate and then implement a practical fork model that maxi
 Current multi-agent execution in this workspace has strong support for wave-based orchestration via `spawn_agent`, but each spawned worker has independent session state.
 
 Goals:
+
 1. Increase parallel throughput for large, context-heavy tasks.
 2. Preserve semantic continuity across agents through explicit memory synchronization.
 3. Keep failure domains bounded (rollback, conflict control, and auditability).
@@ -26,6 +27,7 @@ Goals:
 ## 4. Research Findings (Current Ecosystem)
 
 ### 4.1 OpenAI and tool-call parallelism
+
 1. OpenAI function calling supports multi-turn tool-based orchestration with configurable strictness.
 2. The API can emit multiple tool calls and exposes `parallel_tool_calls` behavior and strict schema mode options.
 3. Parallel calls are useful for independent calls but can weaken strict schema behavior in some flows.
@@ -33,12 +35,14 @@ Goals:
 Source: https://platform.openai.com/docs/guides/function-calling/prompt-chaining
 
 ### 4.2 OpenAI-style handoff/swarm patterns
+
 1. Swarm-style patterns center on handoff and shared message context at the conversation level.
 2. Practical systems still require a coordinator to control turn-taking, context sharing strategy, and conflict arbitration.
 
 Source: https://microsoft.github.io/autogen/0.7.3/user-guide/agentchat-user-guide/swarm.html
 
 ### 4.3 CrewAI/flow orchestration
+
 1. Crew/flow style frameworks expose explicit processes, delegation, asynchronous execution, and process composition.
 2. These frameworks are useful as blueprints for role decomposition, validation gates, and traceability.
 3. They still converge on centralized execution control around state and task graph.
@@ -46,6 +50,7 @@ Source: https://microsoft.github.io/autogen/0.7.3/user-guide/agentchat-user-guid
 Source: https://docs.crewai.com/en/core-concepts/Tasks
 
 ### 4.4 LangGraph custom workflows
+
 1. LangGraph style workflows give explicit control over branching, parallel steps, and deterministic graph control.
 2. This maps well to mixed-mode execution where model tasks and deterministic steps need combined orchestration.
 
@@ -54,17 +59,20 @@ Source: https://docs.langchain.com/oss/python/langchain/multi-agent/custom-workf
 ## 5. Design Alternatives
 
 ### 5.1 Alternative A — Single Agent, High-Granularity Internal Parallelization
+
 - No forks.
 - Single long context agent decomposes and executes internally.
 - Best for: low branching problems with low IO concurrency.
 - Weakness: limited wall-clock gains.
 
 ### 5.2 Alternative B — Parallel Specialist Agents (Heterogeneous)
+
 - Fixed roles (planner, implementer, verifier, reporter).
 - Best for: clear domain boundaries.
 - Weakness: context handoff complexity and dependency management.
 
 ### 5.3 Alternative C — Same-Agent Fork (Proposed)
+
 - Spawn N workers with the same persona and constraints.
 - Every fork receives identical bootstrap snapshot.
 - Shared persistent memory plane manages facts, decisions, and lock state.
@@ -72,6 +80,7 @@ Source: https://docs.langchain.com/oss/python/langchain/multi-agent/custom-workf
 - Risk: merge and conflict management complexity.
 
 ### 5.4 Alternative D — Stateful Graph Orchestrator
+
 - Deterministic graph engine handles task graph and state transitions.
 - Workers used as execution nodes; coordinator remains deterministic.
 - Best for: long-running regulated tasks with auditable transitions.
@@ -83,32 +92,37 @@ The practical system should combine worker cloning semantics with graph-level de
 ### 6.1 Core components
 
 1. `orchestrator` service
+
 - Owns task graph and state transitions.
 - Enforces ownership and conflict rules.
 - Routes work to forked workers.
 
 2. `fork_controller`
+
 - Issues worker jobs with a standardized bootstrap block.
 - Tracks lifecycle states: `pending`, `running`, `blocked`, `done`, `failed`, `deferred`.
 
 3. `shared_memory_bus`
+
 - Immutable append log for facts and claims.
 - Conflict ledger with file lock hints and last-writer metadata.
 - Shared objective and invariants file.
 
 4. `evidence_store`
-4.1 Every lane writes discovery notes.
-4.2 Every lane writes command evidence.
-4.3 Every lane writes assumptions.
-4.4 Every lane writes confidence tags.
-4.5 Every lane writes verification result.
+   4.1 Every lane writes discovery notes.
+   4.2 Every lane writes command evidence.
+   4.3 Every lane writes assumptions.
+   4.4 Every lane writes confidence tags.
+   4.5 Every lane writes verification result.
 
 5. `resolver`
+
 - Performs conflict resolution by deterministic precedence.
 - Merges compatible findings automatically.
 - Escalates semantic conflicts to coordinator agent.
 
 6. `quality_gates`
+
 - Per-lane validation matrix and parent-level gate tasks.
 - Runs lightweight checks first, then full gates.
 
@@ -187,22 +201,26 @@ All fork workers must output JSON blocks following a fixed schema:
 ### 8.1 Key metrics
 
 1. Throughput
+
 - tasks/hour
 - elapsed time vs serial baseline
 - parallel efficiency ratio
 
 2. Quality
+
 - false merge rate
 - unresolved conflict ratio
 - evidence completeness score
 - validation pass-at-least-once success
 
 3. Behavioral control
+
 - context drift score
 - repeated rework rate
 - average lane blocker time
 
 4. Cost and reliability
+
 - tool call count
 - duplicate findings rate
 - token overhead per finished task
@@ -228,6 +246,7 @@ All fork workers must output JSON blocks following a fixed schema:
 1. Pilot in non-production maintenance waves first.
 2. Expand to quality gates and cross-repo validation once conflict rates are stable.
 3. Apply strictness defaults:
+
 - quality gates remain explicit and always-on
 - no implicit skip behavior
 - all skipped checks require governance reason with evidence id
@@ -237,8 +256,10 @@ All fork workers must output JSON blocks following a fixed schema:
 1. Draft operational runbook and worker contract schema in `governance/agent-forking/`.
 2. Add one pilot playbook for `thegent` quality task.
 3. Add two templates:
+
 - `fork_plan.md`
 - `fork_lane_report.md`
+
 4. Add simple CI-style validator for lane report schema.
 5. Run pilot on 3 representative tasks and publish first research note under `governance/agent-forking/observations/`.
 

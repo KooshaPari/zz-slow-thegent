@@ -4,7 +4,13 @@ import typer
 from rich.console import Console
 from rich.table import Table
 
-from thegent.agents.unified_registry import Agent, AgentCapability, AgentRegistryService, AgentStatus, ProjectAssignment
+from thegent.agents.unified_registry import (
+    Agent,
+    AgentCapability,
+    AgentRegistryService,
+    AgentStatus,
+    ProjectAssignment,
+)
 
 app = typer.Typer(help="Manage unified agent registry")
 console = Console()

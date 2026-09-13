@@ -10,16 +10,16 @@
 
 ### ✅ Approved Library Usage
 
-| Library | Module | Decision | Rationale | ADR |
-|---------|--------|----------|-----------|-----|
-| **pybreaker** | routing/circuit_breaker.py | ✅ APPROVED | Industry-standard circuit breaker; pybreaker is battle-tested | WP-2001 |
-| **watchdog** | native/watcher_daemon.py | ✅ APPROVED | Standard file watching library; no custom os.walk | BKM-09 |
-| **FastMCP** | mcp/server.py | ✅ APPROVED | MCP server framework; not reinventing protocol | - |
-| **LiteLLM** | routing/litellm_router.py | ✅ APPROVED | Multi-provider LLM routing abstraction | - |
-| **psutil** | infra/fast_process_monitor.py | ✅ APPROVED | Cross-platform process metrics; no /proc parsing | - |
-| **pydantic** | infra/config_wizard.py | ✅ APPROVED | Config validation and schema; standard de facto | - |
-| **Rich** | infra/config_wizard.py | ✅ APPROVED | TUI formatting and panels; no custom terminal code | - |
-| **httpx** | routing (3 imports) | ✅ APPROVED | Modern async HTTP client | - |
+| Library       | Module                        | Decision    | Rationale                                                     | ADR     |
+| ------------- | ----------------------------- | ----------- | ------------------------------------------------------------- | ------- |
+| **pybreaker** | routing/circuit_breaker.py    | ✅ APPROVED | Industry-standard circuit breaker; pybreaker is battle-tested | WP-2001 |
+| **watchdog**  | native/watcher_daemon.py      | ✅ APPROVED | Standard file watching library; no custom os.walk             | BKM-09  |
+| **FastMCP**   | mcp/server.py                 | ✅ APPROVED | MCP server framework; not reinventing protocol                | -       |
+| **LiteLLM**   | routing/litellm_router.py     | ✅ APPROVED | Multi-provider LLM routing abstraction                        | -       |
+| **psutil**    | infra/fast_process_monitor.py | ✅ APPROVED | Cross-platform process metrics; no /proc parsing              | -       |
+| **pydantic**  | infra/config_wizard.py        | ✅ APPROVED | Config validation and schema; standard de facto               | -       |
+| **Rich**      | infra/config_wizard.py        | ✅ APPROVED | TUI formatting and panels; no custom terminal code            | -       |
+| **httpx**     | routing (3 imports)           | ✅ APPROVED | Modern async HTTP client                                      | -       |
 
 ---
 
@@ -30,6 +30,7 @@
 **Decision:** KEEP CUSTOM (198 LOC)
 
 **Justification:**
+
 - Pure stdlib implementation (threading, time, collections, dataclasses)
 - No external dependencies = zero transitive dependency risk
 - Optimized for LLM gating (sliding-window, per-key locks)
@@ -37,6 +38,7 @@
 - Performance-critical path justifies specialization
 
 **Alternative Considered:** `limits` library
+
 - Pros: Standard library, feature-rich
 - Cons: Adds dependency, may be overkill
 - Decision: Stdlib-only is acceptable for routing criticality
@@ -50,16 +52,19 @@
 **Decision:** KEEP CUSTOM (480 LOC) - but monitor for refactor to cachetools
 
 **Justification:**
+
 - Hybrid multi-strategy cache (sliding-window + TTL + semantic)
 - Domain-specific: embedding-aware caching for LLM prompts
 - Custom eviction policy not standard in cachetools
 
 **Alternative Considered:** `cachetools`
+
 - Pros: Standard library (LRU, LRUDict, TTLCache, RRCache)
 - Cons: Doesn't handle semantic dedup natively
 - Decision: Keep custom for now, but abstract strategy interface for v2 migration
 
 **Recommendation:**
+
 1. Extract abstract `CacheStrategy` interface
 2. Implement `CacheToolsLRUStrategy`, `CacheToolsTTLStrategy`
 3. Plan v2 refactor when semantic caching maturity increases
@@ -71,6 +76,7 @@
 **Decision:** KEEP CUSTOM (385 LOC)
 
 **Justification:**
+
 - Requires embedding-based deduplication
 - Not available in any standard library
 - Domain-specific to LLM routing optimization
@@ -84,12 +90,14 @@
 **Decision:** KEEP CUSTOM (423 LOC) + PyO3 Rust extension
 
 **Justification:**
+
 - Performance-critical shared memory state
 - PyO3 Rust extension for speed (crates/thegent-shm)
 - Pure-Python fallback for portability
 - No external Python dependencies
 
 **Pattern:** Best practice - native extension + fallback
+
 - Logging informs when fallback activated
 - No silent failures or graceful degradation
 - Users can opt in via `THGENT_USE_NATIVE_SHM`
@@ -103,6 +111,7 @@
 **Decision:** Uses Rich library ✅ APPROVED (308 LOC wrapper)
 
 **Justification:**
+
 - Rich handles all TUI rendering (panels, tables, prompts)
 - Custom logic: config flow, validation, env handling
 - Clear separation: Rich for presentation, thegent for orchestration
@@ -116,6 +125,7 @@
 **Decision:** Uses psutil library ✅ APPROVED (465 LOC wrapper)
 
 **Justification:**
+
 - psutil handles OS-level process introspection
 - Custom logic: thegent-specific monitoring hooks, resource limits enforcement
 - No /proc parsing or platform-specific code
@@ -129,6 +139,7 @@
 **Decision:** KEEP CUSTOM (564 LOC)
 
 **Justification:**
+
 - Polyglot runtime bridge (Mojo integration)
 - No library available for Mojo FFI
 - Domain-specific to thegent's multi-runtime support
@@ -142,6 +153,7 @@
 **Decision:** KEEP CUSTOM (579 LOC)
 
 **Justification:**
+
 - WASM plugin loading and execution
 - No standard library for WASM sandboxing in Python
 - Domain-specific to thegent's extensibility model
@@ -158,11 +170,13 @@
 **Gap:** No systematic retry strategy
 
 **Recommended Library:** `tenacity`
+
 - Decorators for exponential backoff + jitter
 - Excellent for transient failures (network, rate limits)
 - Use case: provider routing, API calls
 
 **Decision Needed:** Add tenacity for:
+
 ```python
 @retry(
     wait=wait_exponential_jitter(multiplier=1, min=4, max=10),
@@ -182,11 +196,13 @@ def call_provider(self, provider: str) -> Response:
 **Gap:** No structured logging for aggregation/alerting
 
 **Recommended Library:** `structlog`
+
 - Structured JSON output
 - Context binding (correlation IDs, spans)
 - Integration with observability platforms
 
 **Migration Path:**
+
 1. Phase 1: Add structlog to new code
 2. Phase 2: Migrate MCP server logging to structlog
 3. Phase 3: Migrate routing/infra logging
@@ -201,6 +217,7 @@ def call_provider(self, provider: str) -> Response:
 **Gap:** No version tracking or migration system
 
 **Recommended:** Add to config schema:
+
 ```python
 class ThegentConfig(BaseModel):
     _schema_version: int = 2  # Bump on breaking changes
@@ -208,6 +225,7 @@ class ThegentConfig(BaseModel):
 ```
 
 **Decision Needed:** Is schema versioning required?
+
 - Optional: Useful if breaking changes anticipated
 - Recommendation: Add if planning multi-major releases
 
@@ -252,13 +270,13 @@ class ThegentConfig(BaseModel):
 
 ### Library Usage by Module
 
-| Module | Total LOC | Library LOC | Custom LOC | Library % |
-|--------|-----------|-------------|-----------|-----------|
-| Routing | 11,111 | 1,637 | 9,474 | 15% |
-| Native | 1,710 | 471 | 1,239 | 28% |
-| Infra | 11,185 | 1,073 | 10,112 | 10% |
-| MCP | 7,421 | 1,086 | 6,335 | 15% |
-| **TOTAL** | **31,427** | **4,267** | **27,160** | **14%** |
+| Module    | Total LOC  | Library LOC | Custom LOC | Library % |
+| --------- | ---------- | ----------- | ---------- | --------- |
+| Routing   | 11,111     | 1,637       | 9,474      | 15%       |
+| Native    | 1,710      | 471         | 1,239      | 28%       |
+| Infra     | 11,185     | 1,073       | 10,112     | 10%       |
+| MCP       | 7,421      | 1,086       | 6,335      | 15%       |
+| **TOTAL** | **31,427** | **4,267**   | **27,160** | **14%**   |
 
 **Interpretation:** 86% custom logic is appropriate (domain-specific, governance, orchestration). 14% library integration is correct for infrastructure foundation.
 
@@ -266,12 +284,12 @@ class ThegentConfig(BaseModel):
 
 ## ADR References
 
-| Item | ADR | Status |
-|------|-----|--------|
-| Circuit Breaker (pybreaker) | WP-2001 | ✅ Approved |
-| Rate Limiter (stdlib) | WP-2039 | ⚠️ Needs ADR |
-| Watcher Daemon (watchdog) | BKM-09 | ✅ Approved |
-| State-SHM (PyO3 + fallback) | BKM-05 | ✅ Approved |
+| Item                        | ADR     | Status       |
+| --------------------------- | ------- | ------------ |
+| Circuit Breaker (pybreaker) | WP-2001 | ✅ Approved  |
+| Rate Limiter (stdlib)       | WP-2039 | ⚠️ Needs ADR |
+| Watcher Daemon (watchdog)   | BKM-09  | ✅ Approved  |
+| State-SHM (PyO3 + fallback) | BKM-05  | ✅ Approved  |
 
 ---
 
@@ -292,12 +310,14 @@ class ThegentConfig(BaseModel):
 **Date:** 2026-02-21
 
 **Summary:**
+
 - ✅ 8 libraries in use correctly (pybreaker, watchdog, FastMCP, LiteLLM, psutil, pydantic, Rich, httpx)
 - ✅ 8 custom modules justified (rate_limiter, cache, semantic_cache, state_shm, mojo_bridge, wasm_plugin, config_wizard wrapper, project_tenancy)
 - ⚠️ 2 gaps identified (tenacity for retry, structlog for logging) - future work
 - ✅ 100% compliant with CLAUDE.md library-first policy for standard problems
 
 **Key Files Audited:**
+
 - routing/circuit_breaker.py (411 LOC) → uses pybreaker ✅
 - native/watcher_daemon.py (471 LOC) → uses watchdog ✅
 - native/state_shm.py (423 LOC) → uses PyO3 + fallback ✅

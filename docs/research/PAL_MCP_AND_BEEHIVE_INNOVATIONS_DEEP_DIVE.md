@@ -10,6 +10,7 @@
 ## Executive Summary
 
 BeehiveInnovations has developed **PAL MCP** (Provider Abstraction Layer - Model Context Protocol), a sophisticated multi-model orchestration framework with:
+
 - **Multi-model consensus workflows** via extensible tool architecture
 - **CLI subagent spawning** (clink tool) for isolated context execution
 - **Context revival** mechanisms for cross-session continuity
@@ -31,6 +32,7 @@ Related projects from Coder Inc. (**Mux**, **Coder-MCP**) provide complementary 
 ### 1.1 Core Architecture
 
 PAL MCP operates as a **Model Context Protocol server** that bridges Claude Code, Gemini CLI, Codex CLI, and other AI harnesses to:
+
 1. Automatically or manually select models for specific tasks
 2. Orchestrate multi-model workflows (e.g., planner → analyzer → reviewer)
 3. Maintain context continuity across tool/model transitions
@@ -40,17 +42,18 @@ PAL MCP operates as a **Model Context Protocol server** that bridges Claude Code
 
 ### 1.2 Supported Providers
 
-| Provider | Models | Context | Auth | Notes |
-|----------|--------|---------|------|-------|
-| **Gemini** | Flash, Pro, 2.0, O3 | 1M tokens | GOOGLE_API_KEY | Extended thinking modes (128-32k tokens) |
-| **OpenAI** | GPT-5, O-series, o1 | 128k-200k | OPENAI_API_KEY | Vision support, extended reasoning |
-| **Azure OpenAI** | GPT-4, GPT-5 | 128k | AZURE_OPENAI_* env vars | Enterprise auth |
-| **X.AI (Grok)** | Grok-2, Grok-3 | 128k | XAI_API_KEY | Fast inference |
-| **OpenRouter** | 50+ models | Varies | OPENROUTER_API_KEY | Meta-provider; routes to optimal backend |
-| **DIAL** | Custom deployments | Varies | DIAL_* config | Private/self-hosted LLMs |
-| **Ollama** | Local models | Local VRAM | localhost:11434 | On-device inference |
+| Provider         | Models              | Context    | Auth                     | Notes                                    |
+| ---------------- | ------------------- | ---------- | ------------------------ | ---------------------------------------- |
+| **Gemini**       | Flash, Pro, 2.0, O3 | 1M tokens  | GOOGLE_API_KEY           | Extended thinking modes (128-32k tokens) |
+| **OpenAI**       | GPT-5, O-series, o1 | 128k-200k  | OPENAI_API_KEY           | Vision support, extended reasoning       |
+| **Azure OpenAI** | GPT-4, GPT-5        | 128k       | AZURE*OPENAI*\* env vars | Enterprise auth                          |
+| **X.AI (Grok)**  | Grok-2, Grok-3      | 128k       | XAI_API_KEY              | Fast inference                           |
+| **OpenRouter**   | 50+ models          | Varies     | OPENROUTER_API_KEY       | Meta-provider; routes to optimal backend |
+| **DIAL**         | Custom deployments  | Varies     | DIAL\_\* config          | Private/self-hosted LLMs                 |
+| **Ollama**       | Local models        | Local VRAM | localhost:11434          | On-device inference                      |
 
 **Provider selection strategy**: Auto-mode decision matrix based on:
+
 - Task type (reasoning vs. formatting vs. coding)
 - Context window requirements (small task → GPT-5-mini; large codebase → Gemini 1M)
 - Cost vs. quality tradeoff
@@ -59,6 +62,7 @@ PAL MCP operates as a **Model Context Protocol server** that bridges Claude Code
 ### 1.3 Core Tools (Enabled by Default)
 
 #### 1.3.1 **chat** - Multi-turn Brainstorming
+
 ```
 Purpose: Interactive discussion with multiple models in parallel
 Workflow:
@@ -72,6 +76,7 @@ Cost: Proportional to number of models engaged
 ```
 
 #### 1.3.2 **consensus** - Multi-Model Debate Engine
+
 ```
 Purpose: Structured decision-making via model debate with assigned stances
 Workflow:
@@ -92,6 +97,7 @@ Key capability: Prevents groupthink, surfaces tradeoffs
 ```
 
 #### 1.3.3 **planner** - Project Breakdown
+
 ```
 Purpose: Decompose complex projects into actionable tasks
 Workflow:
@@ -103,6 +109,7 @@ Cost: Single model call (usually Gemini for 1M context advantage)
 ```
 
 #### 1.3.4 **codereview**, **precommit**, **debug** - Code Quality Workflows
+
 ```
 codereview: Multi-model code inspection
   - Models critique code from different angles (performance, security, style)
@@ -121,6 +128,7 @@ debug: Incident investigation
 ```
 
 #### 1.3.5 **apilookup** - Current API Documentation Search
+
 ```
 Purpose: Real-time API reference during development
 Mechanism: Triggers web search to pull current API docs
@@ -130,14 +138,14 @@ Integrates: With Gemini's native web search capability
 
 ### 1.4 Advanced Tools (Disabled by Default, Enable as Needed)
 
-| Tool | Purpose | Cost | Notes |
-|------|---------|------|-------|
-| **analyze** | Architecture & pattern discovery | High | Requires code indexing; context-intensive |
-| **refactor** | Code transformation | High | AST-based analysis; model-specific |
-| **testgen** | Automatic test suite generation | High | Requires code understanding |
-| **secaudit** | Security vulnerability scanning | High | Custom prompts for OWASP/CWE |
-| **docgen** | API documentation generation | Medium | From code + docstrings |
-| **tracer** | Execution trace analysis | Medium | For performance debugging |
+| Tool         | Purpose                          | Cost   | Notes                                     |
+| ------------ | -------------------------------- | ------ | ----------------------------------------- |
+| **analyze**  | Architecture & pattern discovery | High   | Requires code indexing; context-intensive |
+| **refactor** | Code transformation              | High   | AST-based analysis; model-specific        |
+| **testgen**  | Automatic test suite generation  | High   | Requires code understanding               |
+| **secaudit** | Security vulnerability scanning  | High   | Custom prompts for OWASP/CWE              |
+| **docgen**   | API documentation generation     | Medium | From code + docstrings                    |
+| **tracer**   | Execution trace analysis         | Medium | For performance debugging                 |
 
 ### 1.5 Key Feature: CLI Subagents (clink Tool)
 
@@ -194,6 +202,7 @@ Benefit: True multi-session continuity without repeating analysis
 ```
 
 **Implementation**: Requires:
+
 - Redis for conversation history storage
 - Trigger on context reset detection (model inference)
 - Summary prompt template (in systemprompts/context_revival_prompt.py)
@@ -276,13 +285,13 @@ zen-mcp-server/src/
 
 ### 2.2 Key Files to Absorb
 
-| File | Purpose | Thegent Mapping |
-|------|---------|-----------------|
-| `domain/workflows.py` | Consensus, clink orchestration | `agents/orchestration/multi_model_workflow.py` |
-| `application/tool_runner.py` | Tool execution dispatch | `mcp/tool_dispatch_helpers.py` (extend) |
-| `infrastructure/providers/` | Multi-provider routing | `infrastructure/llm_providers/` (extend) |
-| `shared/context/context_aware_predictor.py` | Context management | `shared/context/` (existing; enhance) |
-| `systemprompts/*.py` | Specialized reasoning prompts | `docs/reference/system_prompts/` |
+| File                                        | Purpose                        | Thegent Mapping                                |
+| ------------------------------------------- | ------------------------------ | ---------------------------------------------- |
+| `domain/workflows.py`                       | Consensus, clink orchestration | `agents/orchestration/multi_model_workflow.py` |
+| `application/tool_runner.py`                | Tool execution dispatch        | `mcp/tool_dispatch_helpers.py` (extend)        |
+| `infrastructure/providers/`                 | Multi-provider routing         | `infrastructure/llm_providers/` (extend)       |
+| `shared/context/context_aware_predictor.py` | Context management             | `shared/context/` (existing; enhance)          |
+| `systemprompts/*.py`                        | Specialized reasoning prompts  | `docs/reference/system_prompts/`               |
 
 ### 2.3 Local zen-mcp-server File Structure Summary
 
@@ -308,6 +317,7 @@ Found in local /zen-mcp-server:
 **Status**: Active, 48+ releases
 
 #### What It Does
+
 - Multi-agent orchestration desktop/browser app
 - Runs agents in parallel on local or remote infrastructure (Coder Workspaces)
 - Central UI shows git divergence, status, cost tracking
@@ -316,6 +326,7 @@ Found in local /zen-mcp-server:
 #### Key Architecture Patterns
 
 **Runtime Modes** (Isolation Strategy):
+
 ```
 1. Local: Direct project directory execution
 2. Worktree: Git-based isolation (different branches per agent)
@@ -325,17 +336,20 @@ Benefit: Prevents merge conflicts, enables true parallelism
 ```
 
 **Agent Loop**:
+
 - Custom agent definitions via Markdown files
 - Plan/Exec mode (similar to Claude Code)
 - Opportunistic context compaction
 - Mode prompts for specialized instructions
 
 **Sub-Agent Orchestration**:
+
 - Central "Orchestrator" agent coordinates work
 - Specialized agents (planner, implementer, reviewer) run in parallel
 - Mux automatically applies patches and resolves conflicts
 
 #### Absorption into thegent
+
 - **Maps to**: `agents/agent_runner.py` (strategy pattern extension)
 - **Reuse**: Plan/exec mode logic, agent discovery/configuration
 - **Custom**: Mux uses Markdown agent definitions; thegent uses Python. Bridge via adapter pattern.
@@ -348,18 +362,21 @@ Benefit: Prevents merge conflicts, enables true parallelism
 **Status**: Active (87 commits)
 
 #### What It Does
+
 - MCP server that adds persistent memory + semantic code search to Claude
 - AST-based code analysis (Python, JS, TS)
 - Redis-backed vector storage for semantic search
 - Learns from existing code patterns for generation
 
 #### Key Capabilities
+
 1. **Cross-session memory**: Semantic code index persists across Claude resets
 2. **Code quality metrics**: Detects code smells, complexity
 3. **Context-aware scaffolding**: Generates new code matching project style
 4. **Relationship mapping**: Understands file dependencies
 
 #### Absorption into thegent
+
 - **Maps to**: `infrastructure/code_analysis/` (new layer)
 - **Reuse**: AST parsing patterns, Redis integration, vector storage
 - **Enhancement**: Add to thegent's context manager for persistent code knowledge
@@ -374,12 +391,12 @@ Benefit: Prevents merge conflicts, enables true parallelism
 
 ### 4.1 Core MCP/Agent Projects
 
-| Project | Stars | Purpose | License | Status |
-|---------|-------|---------|---------|--------|
-| **pal-mcp-server** | 11.1k | Provider Abstraction Layer (main focus) | MIT | Active |
-| **zen-mcp-server** | 5k+ | Hexagonal MCP reference impl | MIT | Active (in /local) |
-| **ClaudeAutoResponder** | 52 | Terminal interaction automation | MIT | Archived |
-| (Others: mostly Swift/iOS forks) | — | Mobile/macOS dev utilities | Various | Mixed |
+| Project                          | Stars | Purpose                                 | License | Status             |
+| -------------------------------- | ----- | --------------------------------------- | ------- | ------------------ |
+| **pal-mcp-server**               | 11.1k | Provider Abstraction Layer (main focus) | MIT     | Active             |
+| **zen-mcp-server**               | 5k+   | Hexagonal MCP reference impl            | MIT     | Active (in /local) |
+| **ClaudeAutoResponder**          | 52    | Terminal interaction automation         | MIT     | Archived           |
+| (Others: mostly Swift/iOS forks) | —     | Mobile/macOS dev utilities              | Various | Mixed              |
 
 ### 4.2 Relevant Patterns from Beehive
 
@@ -457,7 +474,8 @@ system_prompts/
 ```
 
 **Adaptation**:
-- Extract from PAL-MCP/systemprompts/*.py
+
+- Extract from PAL-MCP/systemprompts/\*.py
 - Convert to Markdown (more readable, version-controllable)
 - Extend with thegent agent personas
 - Add FR traceability (each prompt maps to capability)
@@ -501,30 +519,38 @@ Auto-selection matrix logic:
 ### 6.1 Domain Layer (thegent/src/domain/)
 
 **Absorb**:
+
 - Multi-model consensus workflow spec
 - CLI subagent spawning contract
 - Context revival detection logic
 
 **New Models**:
+
 ```python
 # src/domain/models/
 
+
 class ConsensusRequest:
     """Multi-model debate request"""
+
     decision: str
     stances: Dict[str, AgentPersona]  # Model → role (pro/con/neutral)
     thinking_depth: int  # 128-32768 tokens
     context_files: List[Path]
 
+
 class SubagentSpawnRequest:
     """CLI subagent isolation request"""
+
     tool_name: str
     persona: AgentPersona
     context_budget: int  # Isolated context size
     timeout_seconds: int
 
+
 class ContextRevivalTrigger:
     """Cross-session continuity mechanism"""
+
     session_id: str
     prior_conversation_tokens: int
     detected_reset: bool
@@ -533,11 +559,13 @@ class ContextRevivalTrigger:
 ### 6.2 Application Layer (thegent/src/application/)
 
 **Absorb**:
+
 - Tool orchestration handlers
 - MCP protocol dispatch extensions
 - Agent lifecycle management
 
 **New Use Cases**:
+
 ```python
 # src/application/
 
@@ -554,15 +582,17 @@ class ContextRevivalUseCase:
 ### 6.3 Infrastructure Layer (thegent/src/infrastructure/)
 
 **Extend**:
+
 - LLM providers (add Grok, Ollama, OpenRouter, DIAL)
 - Storage layer (Redis for context history)
 - Monitoring (track multi-model cost, latency)
 
 **New Modules**:
+
 ```python
 # src/infrastructure/orchestration/
-consensus_engine.py         # Debate orchestrator
-subagent_spawner.py         # Process isolation
+consensus_engine.py  # Debate orchestrator
+subagent_spawner.py  # Process isolation
 context_revival_handler.py  # History synthesis
 
 # src/infrastructure/providers/
@@ -575,6 +605,7 @@ provider_auto_selector.py
 ### 6.4 Presentation Layer (thegent CLI / MCP)
 
 **Extend**:
+
 - New MCP tools: `consensus`, `clink`, `context-revival`
 - CLI commands for multi-model workflows
 - Agent status/cost tracking
@@ -584,28 +615,34 @@ provider_auto_selector.py
 ## 7. Detailed Absorption Tasks
 
 ### Task 1: Consensus Tool Implementation
+
 **Effort**: Medium (3-4 hours)
 **Files**:
+
 - Extract: PAL-MCP/tools/consensus.py, systemprompts/consensus_prompt.py
 - Create: src/thegent/infrastructure/orchestration/consensus_engine.py
 - Create: tests/unit/orchestration/test_consensus_engine.py
 - Add FR traceability: FR-AGENT-CONSENSUS (new requirement)
 
 **Deliverables**:
+
 - `ConsensusOrchestrator` class with multi-model stance routing
 - Unit tests (100% coverage)
 - Integration test with mock Gemini + OpenAI
 - Example notebook: `docs/examples/consensus_workflow.ipynb`
 
 ### Task 2: CLI Subagent Spawning (clink)
+
 **Effort**: Medium (4-5 hours)
 **Files**:
+
 - Extract: PAL-MCP/tools/clink.py
 - Create: src/thegent/infrastructure/orchestration/subagent_spawner.py
 - Create: src/thegent/mcp/mcp_clink_tool.py
 - Create: tests/integration/test_subagent_spawning.py
 
 **Deliverables**:
+
 - `SubagentSpawner` with process isolation
 - IPC via stdio/websocket
 - Timeout + failure handling
@@ -613,35 +650,43 @@ provider_auto_selector.py
 - E2E test spawning Codex as subagent
 
 ### Task 3: Context Revival (Cross-Session Continuity)
+
 **Effort**: High (5-7 hours)
 **Files**:
+
 - Extract: PAL-MCP/docs/context-revival.md patterns
 - Create: src/thegent/infrastructure/context/revival_handler.py
 - Create: src/thegent/infrastructure/storage/conversation_history.py
 - Create: docs/reference/system_prompts/context_revival_prompt.md
 
 **Deliverables**:
+
 - Context reset detection logic
 - Redis-backed conversation history
 - Model-agnostic summary synthesis
 - Integration with MessageHandler lifecycle
 
 ### Task 4: System Prompts Framework
+
 **Effort**: Low (2-3 hours)
 **Files**:
+
 - Create: docs/reference/system_prompts/ (directory)
 - Create: 8+ `.md` files (consensus, codereview, planner, etc.)
 - Create: src/thegent/shared/prompts/prompt_loader.py
 
 **Deliverables**:
+
 - Reusable prompt library
 - Per-tool specialization
-- FR traceability (each prompt → FR-AGENT-TOOL-*)
+- FR traceability (each prompt → FR-AGENT-TOOL-\*)
 - Version control (Markdown for diffs)
 
 ### Task 5: Multi-Provider Extension
+
 **Effort**: Medium (3-4 hours)
 **Files**:
+
 - Create: src/thegent/infrastructure/providers/grok_provider.py
 - Create: src/thegent/infrastructure/providers/ollama_provider.py
 - Create: src/thegent/infrastructure/providers/openrouter_provider.py
@@ -649,6 +694,7 @@ provider_auto_selector.py
 - Create: src/thegent/infrastructure/providers/provider_auto_selector.py
 
 **Deliverables**:
+
 - 3 new providers fully implemented
 - Auto-selection matrix based on task/budget
 - Provider feature detection (thinking_modes, context_window)
@@ -658,37 +704,41 @@ provider_auto_selector.py
 
 ## 8. Risk & Mitigation
 
-| Risk | Impact | Mitigation |
-|------|--------|-----------|
-| **PAL-MCP license unclear** | Legal, adoption | Confirm MIT license in repo ASAP |
-| **Context revival needs Redis** | Dependency, complexity | Optional feature; fallback to in-memory (session-scoped) |
-| **Subagent spawning fragile** | Reliability | Comprehensive IPC error handling + timeout guards |
-| **Multi-model consensus expensive** | Cost | Configurable "thinking_depth" + cost tracking |
-| **Provider keys sprawl (.env)** | Security, ops | Reuse thegent's existing secrets management |
+| Risk                                | Impact                 | Mitigation                                               |
+| ----------------------------------- | ---------------------- | -------------------------------------------------------- |
+| **PAL-MCP license unclear**         | Legal, adoption        | Confirm MIT license in repo ASAP                         |
+| **Context revival needs Redis**     | Dependency, complexity | Optional feature; fallback to in-memory (session-scoped) |
+| **Subagent spawning fragile**       | Reliability            | Comprehensive IPC error handling + timeout guards        |
+| **Multi-model consensus expensive** | Cost                   | Configurable "thinking_depth" + cost tracking            |
+| **Provider keys sprawl (.env)**     | Security, ops          | Reuse thegent's existing secrets management              |
 
 ---
 
 ## 9. Recommended Roadmap
 
 **Phase 1 (Week 1): Foundation**
+
 - [ ] Extract PAL-MCP project structure + docs
 - [ ] Confirm licensing + contribution guidelines
 - [ ] Create system prompts framework
 - [ ] Add multi-provider skeleton (Grok, Ollama, OpenRouter)
 
 **Phase 2 (Week 2): Core Workflows**
+
 - [ ] Implement consensus orchestrator
 - [ ] Implement subagent spawner
 - [ ] Integrate context revival handler
 - [ ] Unit test all core logic
 
 **Phase 3 (Week 3): Integration & Testing**
+
 - [ ] MCP tool registration (consensus, clink)
 - [ ] Integration tests (real provider calls)
 - [ ] E2E test multi-agent workflows
 - [ ] Cost tracking + monitoring
 
 **Phase 4 (Week 4): Docs & Deployment**
+
 - [ ] API documentation (consensus, clink, context-revival)
 - [ ] Example notebooks
 - [ ] Deployment guide (Docker, cloud)
@@ -708,6 +758,7 @@ provider_auto_selector.py
 6. **Cost transparency** — Track model selection, thinking depth, token usage
 
 **thegent Hexagonal Mapping**:
+
 - **Domain**: Workflow specs (consensus, clink, context-revival)
 - **Application**: Orchestration use cases, lifecycle management
 - **Infrastructure**: Provider routing, process isolation, history storage
@@ -718,16 +769,19 @@ provider_auto_selector.py
 ## 11. Related Projects Summary
 
 ### Mux (Coder)
+
 - **Pattern**: Parallel agent orchestration with git isolation
 - **Reuse**: Agent discovery/configuration, plan/exec mode
 - **Integration**: Optional; complements thegent's orchestration
 
 ### Coder-MCP
+
 - **Pattern**: Persistent code intelligence via semantic search
 - **Reuse**: AST parsing, Redis integration, vector storage
 - **Integration**: Optional; enhances code context for agents
 
 ### BeehiveInnovations Portfolio
+
 - **61+ repos**: Mix of original + iOS/Swift forks
 - **Core**: pal-mcp-server (11.1k stars) + zen-mcp-server
 - **Alignment**: Multi-model orchestration philosophy
@@ -737,20 +791,24 @@ provider_auto_selector.py
 ## 12. Sources & References
 
 ### PAL-MCP
+
 - **Main Repo**: https://github.com/BeehiveInnovations/pal-mcp-server
 - **Docs**: README, consensus.md, advanced-usage.md, context-revival.md (in repo)
 - **Getting Started**: https://github.com/BeehiveInnovations/pal-mcp-server/blob/main/docs/getting-started.md
 
 ### Zen MCP (Reference Implementation)
+
 - **Local Path**: `/Users/kooshapari/temp-PRODVERCEL/485/kush/zen-mcp-server`
 - **Architecture**: Hexagonal (domain/application/infrastructure/presentation)
 - **Key Modules**: systemprompts/, tools/, providers/, src/shared/
 
 ### Coder Projects
+
 - **Mux**: https://github.com/coder/mux
 - **Coder-MCP**: https://github.com/coder-mcp/coder-mcp
 
 ### BeehiveInnovations
+
 - **GitHub Org**: https://github.com/BeehiveInnovations
 - **Portfolio**: 61+ repos (mostly forks, 5-6 core projects)
 
@@ -765,10 +823,10 @@ PAL-MCP provides a **production-proven pattern** for multi-model orchestration t
 3. **Cross-session continuity** (context revival)
 
 Absorption into thegent should prioritize:
+
 1. **Consensus orchestration** (high value, medium effort)
 2. **System prompts framework** (low effort, high reusability)
 3. **Multi-provider routing** (medium effort, essential for flexibility)
 4. **Context revival** (high effort, high value for long-running projects)
 
 Timeline: **4 weeks** (1 week per phase) with parallel work on infrastructure integration.
-

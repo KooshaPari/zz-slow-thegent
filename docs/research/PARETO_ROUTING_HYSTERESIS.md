@@ -11,6 +11,7 @@ Pareto routing optimizes cost-quality trade-offs by selecting the optimal model 
 ### Why Hysteresis Matters
 
 Without hysteresis, a request at the boundary might flip between two models based on minor input variations, causing:
+
 - Inconsistent user experience
 - Increased latency from routing changes
 - Poor cache utilization
@@ -24,6 +25,7 @@ C(request) = α * token_cost + β * latency_penalty + γ * quality_score
 ```
 
 Where:
+
 - `α, β, γ`: Tunable weights
 - `token_cost`: $/1M tokens
 - `latency_penalty`: ms over baseline
@@ -45,9 +47,9 @@ def calculate_pareto_frontier(models: List[Model]) -> List[Tuple[float, float]]:
     efficient = []
     for model in models:
         is_dominated = any(
-            other.cost <= model.cost and
-            other.quality >= model.quality and
-            (other.cost < model.cost or other.quality > model.quality)
+            other.cost <= model.cost
+            and other.quality >= model.quality
+            and (other.cost < model.cost or other.quality > model.quality)
             for other in models
         )
         if not is_dominated:
@@ -83,6 +85,7 @@ from dataclasses import dataclass
 from typing import Optional, Tuple
 import time
 
+
 @dataclass
 class RoutingDecision:
     model: str
@@ -90,13 +93,9 @@ class RoutingDecision:
     cost: float
     quality: float
 
+
 class ParetoRouter:
-    def __init__(
-        self,
-        models: List[Model],
-        hysteresis_threshold: float = 0.05,
-        cache_ttl: int = 300
-    ):
+    def __init__(self, models: List[Model], hysteresis_threshold: float = 0.05, cache_ttl: int = 300):
         self.models = models
         self.hysteresis_threshold = hysteresis_threshold
         self.decision_cache = TTLCache(maxsize=1000, ttl=cache_ttl)
@@ -108,11 +107,7 @@ class ParetoRouter:
 
         # Check hysteresis
         if self.last_decision:
-            in_zone = self._in_hysteresis_zone(
-                cost, quality,
-                self.last_decision.cost,
-                self.last_decision.quality
-            )
+            in_zone = self._in_hysteresis_zone(cost, quality, self.last_decision.cost, self.last_decision.quality)
             if in_zone:
                 return self.last_decision.model
 
@@ -120,40 +115,30 @@ class ParetoRouter:
         optimal = self._find_optimal(cost, quality)
 
         # Cache decision
-        self.last_decision = RoutingDecision(
-            model=optimal.name,
-            timestamp=time.time(),
-            cost=cost,
-            quality=quality
-        )
+        self.last_decision = RoutingDecision(model=optimal.name, timestamp=time.time(), cost=cost, quality=quality)
 
         return optimal.name
 
-    def _in_hysteresis_zone(
-        self,
-        cost: float, quality: float,
-        last_cost: float, last_quality: float
-    ) -> bool:
+    def _in_hysteresis_zone(self, cost: float, quality: float, last_cost: float, last_quality: float) -> bool:
         cost_range = max(m.cost for m in self.models) - min(m.cost for m in self.models)
         quality_range = max(m.quality for m in self.models) - min(m.quality for m in self.models)
 
         cost_delta = abs(cost - last_cost) / cost_range
         quality_delta = abs(quality - last_quality) / quality_range
 
-        return (cost_delta < self.hysteresis_threshold and
-                quality_delta < self.hysteresis_threshold)
+        return cost_delta < self.hysteresis_threshold and quality_delta < self.hysteresis_threshold
 ```
 
 ## Test Cases
 
 ### Boundary Conditions
 
-| Input | Expected | Reason |
-|-------|----------|---------|
-| Request at frontier edge | Model A | Clear winner |
-| Request at center | Cache hit | Hysteresis |
-| Request far from frontier | Nearest model | Extension |
-| Rapid successive requests | Consistent model | Cache hit |
+| Input                     | Expected         | Reason       |
+| ------------------------- | ---------------- | ------------ |
+| Request at frontier edge  | Model A          | Clear winner |
+| Request at center         | Cache hit        | Hysteresis   |
+| Request far from frontier | Nearest model    | Extension    |
+| Rapid successive requests | Consistent model | Cache hit    |
 
 ### Hysteresis Behavior
 
@@ -176,11 +161,11 @@ def test_hysteresis():
 
 ### Performance Benchmarks
 
-| Metric | Target | Measurement |
-|--------|--------|-------------|
-| Routing latency | < 1ms | P99 |
-| Cache hit rate | > 80% | Daily |
-| Oscillation rate | < 1% | Hourly |
+| Metric           | Target | Measurement |
+| ---------------- | ------ | ----------- |
+| Routing latency  | < 1ms  | P99         |
+| Cache hit rate   | > 80%  | Daily       |
+| Oscillation rate | < 1%   | Hourly      |
 
 ---
 
@@ -198,7 +183,7 @@ def test_hysteresis():
 
 ### Cross-References Added
 
-- PARETO_FRONTIER_*.md documents
+- PARETO*FRONTIER*\*.md documents
 - MODEL_ROUTING_INDEX.md
 - WP-1004, WP-5001
 

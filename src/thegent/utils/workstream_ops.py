@@ -4,17 +4,20 @@ import contextlib
 import logging
 import os
 import tempfile
+from collections.abc import Iterator
 from datetime import UTC, datetime
 from pathlib import Path
-from typing import IO, Iterator
-from typing import Any
+from typing import IO, Any
 
 try:
     import fcntl
 except ImportError:  # pragma: no cover - platform-specific
     fcntl = None  # type: ignore[assignment]
 
-from thegent.commands.workstream import lint_workstream_schema, normalize_workstream_sections
+from thegent.commands.workstream import (
+    lint_workstream_schema,
+    normalize_workstream_sections,
+)
 from thegent.utils.helpers import safe_read_file
 from thegent.utils.reusable_helpers import ReusableHelpers
 
@@ -192,7 +195,10 @@ class WorkStreamOps:
 
                 return _atomic_write(self.work_stream_path, "\n".join(lines) + "\n")
         except BlockingIOError:
-            logger.warning("Could not acquire claim lock for %s; another writer is active.", self.work_stream_path)
+            logger.warning(
+                "Could not acquire claim lock for %s; another writer is active.",
+                self.work_stream_path,
+            )
             return False
         except RuntimeError as exc:
             logger.error("Could not claim item due lock setup error: %s", exc)
@@ -251,7 +257,10 @@ class WorkStreamOps:
 
                 return _atomic_write(self.work_stream_path, "\n".join(lines) + "\n")
         except BlockingIOError:
-            logger.warning("Could not acquire complete lock for %s; another writer is active.", self.work_stream_path)
+            logger.warning(
+                "Could not acquire complete lock for %s; another writer is active.",
+                self.work_stream_path,
+            )
             return False
         except RuntimeError as exc:
             logger.error("Could not complete item due lock setup error: %s", exc)

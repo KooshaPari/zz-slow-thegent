@@ -13,6 +13,7 @@
 GitJournal is a micro-commit journaling system built on top of git's object model that provides a local-only audit trail for file changes. This document outlines the comprehensive enhancement plan based on existing research and current implementation analysis.
 
 **Key Findings:**
+
 - GitJournal already implements core micro-commit functionality using git plumbing commands
 - Integration exists via CLI (`thegent audit journal`) and MCP tools
 - Secret scrubbing is implemented using regex patterns
@@ -25,15 +26,15 @@ GitJournal is a micro-commit journaling system built on top of git's object mode
 
 ### 1.1 Core Features
 
-| Feature | Status | Location |
-|---------|--------|----------|
-| **Micro-commit journaling** | ✅ Implemented | `shadow_audit_git.py` |
-| **Local-only refs (never pushed)** | ✅ Implemented | `refs/audit/{session_id}` namespace |
-| **Secret scrubbing** | ✅ Implemented | Regex patterns in `_SECRET_PATTERNS` |
-| **Session management** | ✅ Implemented | `list_sessions()`, `prune_old_sessions()` |
-| **File history tracking** | ✅ Implemented | `get_file_history()` |
-| **CLI integration** | ✅ Implemented | `thegent audit journal` |
-| **MCP tools** | ✅ Implemented | 7 MCP tools exposed |
+| Feature                            | Status         | Location                                  |
+| ---------------------------------- | -------------- | ----------------------------------------- |
+| **Micro-commit journaling**        | ✅ Implemented | `shadow_audit_git.py`                     |
+| **Local-only refs (never pushed)** | ✅ Implemented | `refs/audit/{session_id}` namespace       |
+| **Secret scrubbing**               | ✅ Implemented | Regex patterns in `_SECRET_PATTERNS`      |
+| **Session management**             | ✅ Implemented | `list_sessions()`, `prune_old_sessions()` |
+| **File history tracking**          | ✅ Implemented | `get_file_history()`                      |
+| **CLI integration**                | ✅ Implemented | `thegent audit journal`                   |
+| **MCP tools**                      | ✅ Implemented | 7 MCP tools exposed                       |
 
 ### 1.2 Current Architecture
 
@@ -65,6 +66,7 @@ GitJournal is a micro-commit journaling system built on top of git's object mode
 ### 1.3 Exposed Interfaces
 
 **CLI Commands:**
+
 ```bash
 thegent audit journal list          # List all sessions
 thegent audit journal status        # Show session status
@@ -74,6 +76,7 @@ thegent audit journal show         # Show audit log
 ```
 
 **MCP Tools:**
+
 - `git_journal_create_session` - Create new journal session
 - `git_journal_record_change` - Record a file change
 - `git_journal_create_snapshot` - Create snapshot commit
@@ -88,36 +91,36 @@ thegent audit journal show         # Show audit log
 
 ### 2.1 Web Research (from git_audit_search_results.md)
 
-| Finding | Source | Relevance |
-|---------|--------|-----------|
-| **gitoxide (gix)** - Pure Rust, 5-20x faster than libgit2 | ddgr search | Performance optimization |
-| **FSMonitor** - Efficient filesystem monitoring (Git 2.37+) | ddgr search | Real-time change detection |
-| **GitGuardian/TruffleHog** - Secret scanning | ddgr search | Enhanced secret detection |
-| **SHA-256 migration** - Stronger security | ddgr search | Cryptographic attestation |
-| **Packfiles** - Efficient delta compression | ddgr search | Content-addressable storage |
-| **watchman** - Efficient file watching | ddgr search | Real-time event streaming |
+| Finding                                                     | Source      | Relevance                   |
+| ----------------------------------------------------------- | ----------- | --------------------------- |
+| **gitoxide (gix)** - Pure Rust, 5-20x faster than libgit2   | ddgr search | Performance optimization    |
+| **FSMonitor** - Efficient filesystem monitoring (Git 2.37+) | ddgr search | Real-time change detection  |
+| **GitGuardian/TruffleHog** - Secret scanning                | ddgr search | Enhanced secret detection   |
+| **SHA-256 migration** - Stronger security                   | ddgr search | Cryptographic attestation   |
+| **Packfiles** - Efficient delta compression                 | ddgr search | Content-addressable storage |
+| **watchman** - Efficient file watching                      | ddgr search | Real-time event streaming   |
 
 ### 2.2 Tooling Research (from GIT_TOOLING_AUDIT_AND_PLAN.md)
 
-| Technology | Current | Recommended | Priority |
-|------------|---------|-------------|----------|
-| Git operations | libgit2 (git2 crate) | gix (gitoxide) | P1 |
-| File watching | subprocess git commands | watchman/fswatch | P2 |
-| Secret scanning | Regex patterns | Native scanner (BKM-11) | P1 |
-| Event streaming | Not implemented | Kafka integration | P2 |
-| Content-addressable | Git native | Enhanced packfile strategy | P2 |
-| Cryptographic attestation | Not implemented | Sigstore integration | P1 |
+| Technology                | Current                 | Recommended                | Priority |
+| ------------------------- | ----------------------- | -------------------------- | -------- |
+| Git operations            | libgit2 (git2 crate)    | gix (gitoxide)             | P1       |
+| File watching             | subprocess git commands | watchman/fswatch           | P2       |
+| Secret scanning           | Regex patterns          | Native scanner (BKM-11)    | P1       |
+| Event streaming           | Not implemented         | Kafka integration          | P2       |
+| Content-addressable       | Git native              | Enhanced packfile strategy | P2       |
+| Cryptographic attestation | Not implemented         | Sigstore integration       | P1       |
 
 ### 2.3 Integration Points
 
-| Component | Integration | Status |
-|-----------|-------------|--------|
-| **ShadowAuditGit** | SQLite + secret scrubbing | ✅ Implemented |
-| **MCP Server** | 7 journal tools | ✅ Implemented |
-| **CLI** | `audit journal` commands | ✅ Implemented |
-| **Native Secret Scanner** | Integration planned | 🔄 Pending |
-| **gix library** | Not integrated | ❌ Pending |
-| **Event streaming** | Not implemented | ❌ Pending |
+| Component                 | Integration               | Status         |
+| ------------------------- | ------------------------- | -------------- |
+| **ShadowAuditGit**        | SQLite + secret scrubbing | ✅ Implemented |
+| **MCP Server**            | 7 journal tools           | ✅ Implemented |
+| **CLI**                   | `audit journal` commands  | ✅ Implemented |
+| **Native Secret Scanner** | Integration planned       | 🔄 Pending     |
+| **gix library**           | Not integrated            | ❌ Pending     |
+| **Event streaming**       | Not implemented           | ❌ Pending     |
 
 ---
 
@@ -125,29 +128,32 @@ thegent audit journal show         # Show audit log
 
 ### 3.1 Priority Matrix
 
-| Priority | Enhancement | Impact | Effort | Dependencies |
-|----------|-------------|--------|--------|--------------|
-| **P1** | gix migration (micro-commit performance) | High | Medium | None |
-| **P1** | Native secret scanner integration | High | Low | BKM-11 (completed) |
-| **P1** | Real-time file change detection | High | Medium | FSMonitor/watchman |
-| **P1** | Cryptographic attestation | High | Medium | Sigstore |
-| **P2** | Event streaming for audit updates | Medium | High | Kafka |
-| **P2** | Content-addressable storage optimization | Medium | Medium | None |
-| **P2** | SHA-256 repository support | Medium | Low | Git 2.42+ |
+| Priority | Enhancement                              | Impact | Effort | Dependencies       |
+| -------- | ---------------------------------------- | ------ | ------ | ------------------ |
+| **P1**   | gix migration (micro-commit performance) | High   | Medium | None               |
+| **P1**   | Native secret scanner integration        | High   | Low    | BKM-11 (completed) |
+| **P1**   | Real-time file change detection          | High   | Medium | FSMonitor/watchman |
+| **P1**   | Cryptographic attestation                | High   | Medium | Sigstore           |
+| **P2**   | Event streaming for audit updates        | Medium | High   | Kafka              |
+| **P2**   | Content-addressable storage optimization | Medium | Medium | None               |
+| **P2**   | SHA-256 repository support               | Medium | Low    | Git 2.42+          |
 
 ### 3.2 Phase Breakdown
 
 **Phase 1: Performance & Security (Immediate)**
+
 - [ ] Migrate to gix for 10x faster git operations
 - [ ] Integrate native secret scanner
 - [ ] Add real-time file watching
 
 **Phase 2: Attestation & Streaming (Short-term)**
+
 - [ ] Implement cryptographic attestation
 - [ ] Add event streaming support
 - [ ] SHA-256 repository support
 
 **Phase 3: Optimization (Medium-term)**
+
 - [ ] Content-addressable storage tuning
 - [ ] Batch micro-commit optimization
 - [ ] Advanced packfile strategies
@@ -159,6 +165,7 @@ thegent audit journal show         # Show audit log
 ### 4.1 gix Migration for Micro-commits
 
 **Current Implementation (subprocess-based):**
+
 ```python
 def _run_git(self, *args: str, input_data: Optional[bytes] = None) -> str:
     result = subprocess.run(
@@ -172,6 +179,7 @@ def _run_git(self, *args: str, input_data: Optional[bytes] = None) -> str:
 ```
 
 **Enhanced Implementation (gix-based):**
+
 ```python
 from gix import Repository, ObjectId
 from gix::hash::Kind as HashKind
@@ -221,13 +229,13 @@ class GitJournalGix:
 
 **Performance Comparison:**
 
-| Operation | Current (subprocess) | gix-based | Speedup |
-|-----------|---------------------|-----------|---------|
-| hash-object | ~50ms | ~1ms | **50x** |
-| mktree | ~30ms | ~0.5ms | **60x** |
-| commit-tree | ~40ms | ~1ms | **40x** |
-| update-ref | ~20ms | ~0.5ms | **40x** |
-| Micro-commit total | ~140ms | ~3ms | **47x** |
+| Operation          | Current (subprocess) | gix-based | Speedup |
+| ------------------ | -------------------- | --------- | ------- |
+| hash-object        | ~50ms                | ~1ms      | **50x** |
+| mktree             | ~30ms                | ~0.5ms    | **60x** |
+| commit-tree        | ~40ms                | ~1ms      | **40x** |
+| update-ref         | ~20ms                | ~0.5ms    | **40x** |
+| Micro-commit total | ~140ms               | ~3ms      | **47x** |
 
 ### 4.2 Real-time File Change Detection
 
@@ -237,6 +245,7 @@ class GitJournalGix:
 import subprocess
 from pathlib import Path
 from typing import Callable, Optional
+
 
 class FileWatcher:
     """Real-time file change detection using watchman."""
@@ -255,8 +264,20 @@ class FileWatcher:
         )
         # Subscribe to changes
         self._process = subprocess.Popen(
-            ["watchman", "subscribe", str(self.repo_root), "audit-changes",
-             "--fields", "name,type", "-e", "M", "-e", "A", "-e", "D"],
+            [
+                "watchman",
+                "subscribe",
+                str(self.repo_root),
+                "audit-changes",
+                "--fields",
+                "name,type",
+                "-e",
+                "M",
+                "-e",
+                "A",
+                "-e",
+                "D",
+            ],
             stdout=subprocess.PIPE,
             text=True,
         )
@@ -308,6 +329,7 @@ class GitJournalRealtime(GitJournal):
 ### 4.3 Native Secret Scanner Integration
 
 **Current (regex-based):**
+
 ```python
 _SECRET_PATTERNS: list[tuple[str, re.Pattern[str]]] = [
     ("openai_api_key", re.compile(r"sk-[a-zA-Z0-9]{48}")),
@@ -316,8 +338,10 @@ _SECRET_PATTERNS: list[tuple[str, re.Pattern[str]]] = [
 ```
 
 **Enhanced (native scanner):**
+
 ```python
 from thegent.governance.native_secret_scan import scan_secrets, SecretMatch
+
 
 class GitJournalSecure(GitJournal):
     """GitJournal with enhanced secret scanning."""
@@ -419,6 +443,7 @@ class GitJournalAttested(GitJournal):
 from kafka import KafkaProducer, KafkaConsumer
 import json
 
+
 class AuditEvent:
     """Audit event for streaming."""
 
@@ -440,6 +465,7 @@ class AuditEvent:
 
     def to_dict(self) -> dict:
         return self.__dict__
+
 
 class GitJournalStreaming(GitJournal):
     """GitJournal with event streaming for audit updates."""
@@ -555,6 +581,7 @@ journal = GitJournalStreaming(
     bootstrap_servers="localhost:9092",
 )
 
+
 # All features combined (composition)
 class GitJournalComplete(
     GitJournalAttested,
@@ -562,6 +589,7 @@ class GitJournalComplete(
     GitJournalStreaming,
 ):
     """Complete GitJournal with all enhancements."""
+
     pass
 ```
 
@@ -612,6 +640,7 @@ async def git_journal_create_session(
 ):
     """Create a new git journal session."""
 
+
 @server.tool()
 async def git_journal_record_change(
     repo_path: str,
@@ -622,10 +651,12 @@ async def git_journal_record_change(
 ):
     """Record a file change in the journal."""
 
+
 # ... more tools
 ```
 
 **Enhancement:** Add streaming version of MCP tools:
+
 ```python
 @server.tool()
 async def git_journal_streaming_session(
@@ -653,6 +684,7 @@ def audit_journal(
 ```
 
 **Enhancement:** Add new CLI options:
+
 ```python
 @app.command("journal")
 def audit_journal(
@@ -682,6 +714,7 @@ journal = GitJournal(repo_root=Path.cwd(), session_id="my-session")
 ```
 
 **Enhancement:** Unified audit view:
+
 ```python
 class UnifiedAudit:
     """Combined audit view from ShadowAuditGit and GitJournal."""
@@ -696,9 +729,7 @@ class UnifiedAudit:
         journal_entries = self.journal.get_audit_log()
 
         # Merge and sort by timestamp
-        combined = [
-            {"source": "commit", **c.model_dump()} for c in commits
-        ] + [
+        combined = [{"source": "commit", **c.model_dump()} for c in commits] + [
             {"source": "journal", **j} for j in journal_entries
         ]
         return sorted(combined, key=lambda x: x["created_at"])
@@ -726,22 +757,24 @@ thegent audit journal snapshot --session "$SESSION_ID" --path "$REPO_ROOT"
 
 ### 7.1 Current Performance Bottlenecks
 
-| Operation | Time (ms) | Bottleneck |
-|-----------|-----------|------------|
-| subprocess spawn | ~10-20ms | Process creation overhead |
-| git hash-object | ~30-50ms | Subprocess + git overhead |
-| git mktree | ~20-30ms | Subprocess + git overhead |
-| git commit-tree | ~30-40ms | Subprocess + git overhead |
-| Micro-commit total | ~90-140ms | Sum of above |
+| Operation          | Time (ms) | Bottleneck                |
+| ------------------ | --------- | ------------------------- |
+| subprocess spawn   | ~10-20ms  | Process creation overhead |
+| git hash-object    | ~30-50ms  | Subprocess + git overhead |
+| git mktree         | ~20-30ms  | Subprocess + git overhead |
+| git commit-tree    | ~30-40ms  | Subprocess + git overhead |
+| Micro-commit total | ~90-140ms | Sum of above              |
 
 ### 7.2 Optimization Strategies
 
 **1. gix Migration (Primary):**
+
 - Eliminates subprocess overhead
 - Direct object database access
 - Expected: 10-50x speedup
 
 **2. Batch Operations:**
+
 ```python
 class GitJournalBatched(GitJournal):
     """GitJournal with batched commits for high-frequency changes."""
@@ -751,8 +784,7 @@ class GitJournalBatched(GitJournal):
         self.batch_size = batch_size
         self._pending_changes: list[tuple[Path, Optional[bytes], str]] = []
 
-    def record_file_change(self, file_path: Path, content: Optional[bytes],
-                          action: str = "modified") -> str:
+    def record_file_change(self, file_path: Path, content: Optional[bytes], action: str = "modified") -> str:
         self._pending_changes.append((file_path, content, action))
 
         if len(self._pending_changes) >= self.batch_size:
@@ -768,6 +800,7 @@ class GitJournalBatched(GitJournal):
 ```
 
 **3. Caching:**
+
 ```python
 class GitJournalCached(GitJournal):
     """GitJournal with object caching."""
@@ -786,12 +819,12 @@ class GitJournalCached(GitJournal):
 
 ### 7.3 Benchmark Targets
 
-| Metric | Current | Target | Improvement |
-|--------|---------|--------|-------------|
-| Micro-commit latency | ~100ms | <5ms | 20x |
-| Snapshot (1000 files) | ~100s | <2s | 50x |
-| Session list | ~50ms | <5ms | 10x |
-| Memory usage | ~10MB | <5MB | 2x |
+| Metric                | Current | Target | Improvement |
+| --------------------- | ------- | ------ | ----------- |
+| Micro-commit latency  | ~100ms  | <5ms   | 20x         |
+| Snapshot (1000 files) | ~100s   | <2s    | 50x         |
+| Session list          | ~50ms   | <5ms   | 10x         |
+| Memory usage          | ~10MB   | <5MB   | 2x          |
 
 ---
 
@@ -799,18 +832,19 @@ class GitJournalCached(GitJournal):
 
 ### 8.1 Current Security Features
 
-| Feature | Implementation | Status |
-|---------|---------------|--------|
-| **Local-only refs** | `refs/audit/*` never pushed | ✅ |
-| **Secret scrubbing** | Regex patterns in Python | ✅ |
-| **SQL injection** | Parameterized queries | ✅ |
-| **Path traversal** | Path.resolve() validation | ✅ |
+| Feature              | Implementation              | Status |
+| -------------------- | --------------------------- | ------ |
+| **Local-only refs**  | `refs/audit/*` never pushed | ✅     |
+| **Secret scrubbing** | Regex patterns in Python    | ✅     |
+| **SQL injection**    | Parameterized queries       | ✅     |
+| **Path traversal**   | Path.resolve() validation   | ✅     |
 
 ### 8.2 Security Enhancements
 
 **1. Enhanced Secret Detection (Native Scanner):**
 
 The native secret scanner (BKM-11) provides comprehensive detection:
+
 - 14+ secret patterns with obfuscated triggers
 - Binary-based for performance
 - Falls back to Python regex if unavailable
@@ -864,8 +898,7 @@ class IntegrityVerifier:
     def verify_chain(self, session_id: str) -> bool:
         """Verify commit chain integrity."""
         result = subprocess.run(
-            ["git", "fsck", "--no-progress",
-             f"refs/audit/{session_id}"],
+            ["git", "fsck", "--no-progress", f"refs/audit/{session_id}"],
             cwd=self.repo_root,
             capture_output=True,
         )
@@ -879,13 +912,13 @@ class IntegrityVerifier:
 
 ### 8.3 Threat Model
 
-| Threat | Mitigation | Priority |
-|--------|------------|----------|
-| Secret leakage in journal | Native secret scanner | P1 |
-| Tampering with audit log | Cryptographic attestation | P1 |
-| Unauthorized access | Session-based ACL | P1 |
-|Replay attacks | Timestamp verification | P2 |
-| Denial of service | Rate limiting, batch limits | P2 |
+| Threat                    | Mitigation                  | Priority |
+| ------------------------- | --------------------------- | -------- |
+| Secret leakage in journal | Native secret scanner       | P1       |
+| Tampering with audit log  | Cryptographic attestation   | P1       |
+| Unauthorized access       | Session-based ACL           | P1       |
+| Replay attacks            | Timestamp verification      | P2       |
+| Denial of service         | Rate limiting, batch limits | P2       |
 
 ---
 
@@ -893,30 +926,30 @@ class IntegrityVerifier:
 
 ### Phase 1: Performance & Core Security (Week 1-2)
 
-| Task | Effort | Dependencies |
-|------|--------|--------------|
-| Migrate GitJournal to gix | 4-6h | None |
-| Integrate native secret scanner | 2-3h | BKM-11 |
-| Add real-time file watching | 4-5h | None |
-| Update tests | 2-3h | Above |
+| Task                            | Effort | Dependencies |
+| ------------------------------- | ------ | ------------ |
+| Migrate GitJournal to gix       | 4-6h   | None         |
+| Integrate native secret scanner | 2-3h   | BKM-11       |
+| Add real-time file watching     | 4-5h   | None         |
+| Update tests                    | 2-3h   | Above        |
 
 ### Phase 2: Attestation & Streaming (Week 3-4)
 
-| Task | Effort | Dependencies |
-|------|--------|--------------|
-| Add cryptographic attestation | 4-5h | Phase 1 |
-| Implement event streaming | 6-8h | Kafka availability |
-| Add SHA-256 support | 2-3h | None |
-| CLI enhancements | 2-3h | Above |
+| Task                          | Effort | Dependencies       |
+| ----------------------------- | ------ | ------------------ |
+| Add cryptographic attestation | 4-5h   | Phase 1            |
+| Implement event streaming     | 6-8h   | Kafka availability |
+| Add SHA-256 support           | 2-3h   | None               |
+| CLI enhancements              | 2-3h   | Above              |
 
 ### Phase 3: Optimization (Week 5-6)
 
-| Task | Effort | Dependencies |
-|------|--------|--------------|
-| Batch commit optimization | 3-4h | Phase 1 |
-| Object caching | 2-3h | None |
-| Performance benchmarking | 2-3h | All above |
-| Documentation | 2-3h | All above |
+| Task                      | Effort | Dependencies |
+| ------------------------- | ------ | ------------ |
+| Batch commit optimization | 3-4h   | Phase 1      |
+| Object caching            | 2-3h   | None         |
+| Performance benchmarking  | 2-3h   | All above    |
+| Documentation             | 2-3h   | All above    |
 
 ---
 
@@ -958,6 +991,7 @@ The phased implementation allows for incremental value delivery while maintainin
 ---
 
 **Next Steps:**
+
 1. Begin Phase 1 with gix migration
 2. Integrate native secret scanner
 3. Add real-time file watching
@@ -965,5 +999,5 @@ The phased implementation allows for incremental value delivery while maintainin
 
 ---
 
-*Document Status: Enhancement Plan Ready*
-*Last Updated: 2026-02-20*
+_Document Status: Enhancement Plan Ready_
+_Last Updated: 2026-02-20_

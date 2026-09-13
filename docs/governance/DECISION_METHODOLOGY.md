@@ -17,6 +17,7 @@ This acts as a regression guard to prevent breaking changes.
 **🤖 AI Agent Pattern: Agents systematically add fallbacks**
 
 AI coding agents (Claude, Codex, ChatGPT) have a systemic tendency to add fallbacks and legacy compatibility even when explicitly told not to. This requires:
+
 - Explicit rules in AGENTS.md/CLAUDE.md
 - "Aim towards" framing (positive direction, not just "don't do X")
 - Fail fast philosophy (code should fail and stop)
@@ -38,6 +39,7 @@ Is this code kept for backwards compatibility?
 ```
 
 **Examples:**
+
 - ❌ Legacy CLI directory → **REMOVE**
 - ❌ Deprecated tool stubs → **REMOVE**
 - ❌ Backward compat re-exports → **REMOVE**
@@ -60,6 +62,7 @@ Is this a fallback pattern?
 ```
 
 **Examples:**
+
 - ✅ Performance: Fast JSON parser with slow fallback → **KEEP**
 - ❌ Compatibility: New API with old API fallback → **REMOVE**
 - ❌ Dependency: Import fallback → **REMOVE** (fix imports instead)
@@ -85,6 +88,7 @@ Are there multiple implementations of the same thing?
 ```
 
 **Examples:**
+
 - ❌ Same parsing logic in 2 files → **CONSOLIDATE**
 - ✅ Native Rust vs Python implementation → **KEEP BOTH**
 - ✅ Multiple routing strategies → **KEEP BOTH** (strategy pattern)
@@ -111,6 +115,7 @@ Is this a new concept or variation of existing?
 ```
 
 **Examples:**
+
 - ✅ New agent type solving new problem → **NEW CONCEPT**
 - ✅ Different routing algorithm → **VARIATION** (strategy)
 - ✅ Fast vs slow implementation → **IMPLEMENTATION DETAIL**
@@ -137,6 +142,7 @@ Is this an archive or backup?
 ```
 
 **Examples:**
+
 - ✅ Historical architecture docs → **ARCHIVE** (move to separate repo)
 - ❌ `*.backup` files → **DELETE** (use git)
 - ❌ Deprecated code → **DELETE** (no archive needed)
@@ -212,6 +218,7 @@ Is this an archive or backup?
 ## ✅ Good Patterns (Do This)
 
 1. ✅ **Performance fallbacks** (documented)
+
    ```python
    def fast_parse(data):
        try:
@@ -221,6 +228,7 @@ Is this an archive or backup?
    ```
 
 2. ✅ **Strategy pattern** (distinct strategies)
+
    ```python
    class Router:
        strategies = {
@@ -241,17 +249,17 @@ Is this an archive or backup?
 
 ## 🎯 Decision Matrix
 
-| Pattern | Keep? | Rationale |
-|---------|-------|-----------|
-| Backwards compat shim | ❌ NO | No user debt |
-| Deprecated code | ❌ NO | Delete immediately |
-| Compatibility fallback | ❌ NO | Fix instead of fallback |
-| Performance fallback | ✅ YES | If documented |
-| Exact duplication | ❌ NO | Consolidate |
-| Strategy pattern | ✅ YES | If distinct strategies |
-| Native optimization | ✅ YES | Performance-critical |
-| Backup files | ❌ NO | Use git |
-| Archive (historical) | ✅ YES | Move to separate repo |
+| Pattern                | Keep?  | Rationale               |
+| ---------------------- | ------ | ----------------------- |
+| Backwards compat shim  | ❌ NO  | No user debt            |
+| Deprecated code        | ❌ NO  | Delete immediately      |
+| Compatibility fallback | ❌ NO  | Fix instead of fallback |
+| Performance fallback   | ✅ YES | If documented           |
+| Exact duplication      | ❌ NO  | Consolidate             |
+| Strategy pattern       | ✅ YES | If distinct strategies  |
+| Native optimization    | ✅ YES | Performance-critical    |
+| Backup files           | ❌ NO  | Use git                 |
+| Archive (historical)   | ✅ YES | Move to separate repo   |
 
 ---
 

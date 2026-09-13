@@ -4,9 +4,9 @@
 
 BKM-08: Python wrapper for the thegent-discovery binary.
 
-DiscoveryClient calls the ``thegent-discovery`` binary (built from
-``crates/thegent-discovery/src/main.rs``) via a single subprocess and returns
-structured Python objects.  When the binary is not found on PATH it falls back
+DiscoveryClient calls the `thegent-discovery` binary (built from
+`crates/thegent-discovery/src/main.rs`) via a single subprocess and returns
+structured Python objects. When the binary is not found on PATH it falls back
 to individual subprocess / psutil calls so the module is always usable.
 
 Usage::
@@ -26,14 +26,14 @@ FR-trace: BKM-08 (PYTHON_FRONTMATTER_NATIVE_BACKMATTER_AUDIT_PLAN.md)
 
 ## DiscoveryClient
 
-Thin Python wrapper around the ``thegent-discovery`` binary (BKM-08).
+Thin Python wrapper around the `thegent-discovery` binary (BKM-08).
 
 Falls back to individual subprocess / psutil calls when the binary is not
 available so that callers always get usable results.
 
 ### Methods
 
-#### DiscoveryClient.__init__
+#### DiscoveryClient.**init**
 
 ```python
 __init__(self: Any)
@@ -53,7 +53,7 @@ Return combined discovery: sessions + tools + processes.
 
 - `pattern`: Optional process filter regex.
 
-**Returns**: Dict with keys: ``sessions``, ``tools``, ``processes``.
+**Returns**: Dict with keys: `sessions`, `tools`, `processes`.
 
 ---
 
@@ -68,10 +68,10 @@ Return matching processes as a list of dicts.
 **Parameters**:
 
 - `pattern`: Optional regex pattern to filter by process name or
-command line. Defaults to the built-in agent pattern.
+  command line. Defaults to the built-in agent pattern.
 
-**Returns**: List of process dicts with keys: ``pid``, ``ppid``, ``name``,
-``cmd``, ``memory_kb``, ``cpu_usage``, ``run_time_s``.
+**Returns**: List of process dicts with keys: `pid`, `ppid`, `name`,
+`cmd`, `memory_kb`, `cpu_usage`, `run_time_s`.
 
 ---
 
@@ -83,8 +83,8 @@ sessions(self: Any)
 
 Return tmux/screen sessions as a list of dicts.
 
-**Returns**: List of session dicts with keys: ``session_name``, ``windows``,
-``created``, ``attached``, ``source``.
+**Returns**: List of session dicts with keys: `session_name`, `windows`,
+`created`, `attached`, `source`.
 
 ---
 
@@ -96,7 +96,7 @@ tools(self: Any)
 
 Return tool availability as a list of dicts.
 
-**Returns**: List of dicts with keys: ``tool``, ``available``, ``path``.
+**Returns**: List of dicts with keys: `tool`, `available`, `path`.
 
 ---
 
@@ -106,7 +106,7 @@ Return tool availability as a list of dicts.
 tools_map(self: Any)
 ```
 
-Convenience: return ``{"tool": available}`` dict.
+Convenience: return `{"tool": available}` dict.
 
 **Returns**: Mapping of tool name to availability boolean.
 
@@ -126,7 +126,7 @@ Return combined discovery: sessions + tools + processes.
 
 - `pattern`: Optional process filter regex.
 
-**Returns**: Dict with keys: ``sessions``, ``tools``, ``processes``.
+**Returns**: Dict with keys: `sessions`, `tools`, `processes`.
 
 ---
 
@@ -141,10 +141,10 @@ Return matching processes as a list of dicts.
 **Parameters**:
 
 - `pattern`: Optional regex pattern to filter by process name or
-command line. Defaults to the built-in agent pattern.
+  command line. Defaults to the built-in agent pattern.
 
-**Returns**: List of process dicts with keys: ``pid``, ``ppid``, ``name``,
-``cmd``, ``memory_kb``, ``cpu_usage``, ``run_time_s``.
+**Returns**: List of process dicts with keys: `pid`, `ppid`, `name`,
+`cmd`, `memory_kb`, `cpu_usage`, `run_time_s`.
 
 ---
 
@@ -156,8 +156,8 @@ sessions(self: Any)
 
 Return tmux/screen sessions as a list of dicts.
 
-**Returns**: List of session dicts with keys: ``session_name``, ``windows``,
-``created``, ``attached``, ``source``.
+**Returns**: List of session dicts with keys: `session_name`, `windows`,
+`created`, `attached`, `source`.
 
 ---
 
@@ -169,7 +169,7 @@ tools(self: Any)
 
 Return tool availability as a list of dicts.
 
-**Returns**: List of dicts with keys: ``tool``, ``available``, ``path``.
+**Returns**: List of dicts with keys: `tool`, `available`, `path`.
 
 ---
 
@@ -179,7 +179,7 @@ Return tool availability as a list of dicts.
 tools_map(self: Any)
 ```
 
-Convenience: return ``{"tool": available}`` dict.
+Convenience: return `{"tool": available}` dict.
 
 **Returns**: Mapping of tool name to availability boolean.
 

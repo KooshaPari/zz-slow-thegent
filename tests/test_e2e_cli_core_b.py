@@ -1,12 +1,12 @@
 """E2E tests for thegent CLI (read-only, deterministic)."""
 
-import orjson as json
 import sys
 from pathlib import Path
 from unittest.mock import MagicMock
 
 import pytest
-from tests.e2e.cli_assertions import expected_trend_health_signature, load_cli_json
+
+from tests.e2e.cli_assertions import load_cli_json
 from tests.e2e.cli_runner_compat import CompatCliRunner
 
 sys.modules.setdefault("thegent_git", MagicMock())
@@ -196,7 +196,11 @@ class TestHealthTrendPayloadType:
         monkeypatch.setenv("THGENT_HEALTH_SNAPSHOT_PATH", str(snapshot_path))
         result = runner.invoke(
             app,
-            ["session-contract-health-trend", "--payload-type", "session_contract_health_gate"],
+            [
+                "session-contract-health-trend",
+                "--payload-type",
+                "session_contract_health_gate",
+            ],
         )
         assert result.exit_code == 0
         assert "gate" in result.stdout.lower() or "trend" in result.stdout.lower()
@@ -609,7 +613,10 @@ class TestDagProbeBaselineId:
             "| T1 | gemini | hello | — | pending |\n"
         )
         monkeypatch.setenv("THGENT_SESSION_DIR", str(session_dir))
-        result = runner.invoke(app, ["dag", "probe", "--baseline-id", "ckpt_unknown_e2e", "--cd", str(project)])
+        result = runner.invoke(
+            app,
+            ["dag", "probe", "--baseline-id", "ckpt_unknown_e2e", "--cd", str(project)],
+        )
         assert result.exit_code == 1
         assert "not found" in result.stdout.lower() or "not found" in result.stderr.lower()
 

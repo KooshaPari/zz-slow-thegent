@@ -1,4 +1,4 @@
-from typing import Any, IO
+from typing import IO, Any
 
 def safe_load(stream: str | bytes | IO[str] | IO[bytes]) -> Any: ...
 def load(stream: str | bytes | IO[str] | IO[bytes], Loader: Any = ...) -> Any: ...  # noqa: N803

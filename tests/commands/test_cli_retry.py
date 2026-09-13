@@ -128,7 +128,10 @@ class TestSpawnWithEagainRetry:
 
     def test_does_not_retry_on_value_error(self) -> None:
         """Non-OSError exceptions must propagate immediately."""
-        with patch("thegent.cli.commands.impl.subprocess.Popen", side_effect=ValueError("bad args")) as mock_popen:
+        with patch(
+            "thegent.cli.commands.impl.subprocess.Popen",
+            side_effect=ValueError("bad args"),
+        ) as mock_popen:
             with pytest.raises(ValueError):
                 _spawn_with_eagain_retry(["echo"], **self._make_popen_args())
 

@@ -38,13 +38,21 @@ class TestIsOrphanByPpid:
     def test_orphan_chain_to_init(self) -> None:
         # LSP (100) -> non-agent parent (50) -> init (1); no agent
         parent_map = {100: 50, 50: 1}
-        cmd_map = {100: "node pyright", 50: "/usr/libexec/non-agent-helper", 1: "/sbin/init"}
+        cmd_map = {
+            100: "node pyright",
+            50: "/usr/libexec/non-agent-helper",
+            1: "/sbin/init",
+        }
         assert is_orphan_by_ppid(100, parent_map, cmd_map) is True
 
     def test_keep_when_agent_in_chain(self) -> None:
         # LSP (100) -> cursor-agent (50) -> ...
         parent_map = {100: 50, 50: 1}
-        cmd_map = {100: "node pyright", 50: "cursor-agent --resume=abc", 1: "/sbin/init"}
+        cmd_map = {
+            100: "node pyright",
+            50: "cursor-agent --resume=abc",
+            1: "/sbin/init",
+        }
         assert is_orphan_by_ppid(100, parent_map, cmd_map) is False
 
     def test_keep_when_claude_parent(self) -> None:

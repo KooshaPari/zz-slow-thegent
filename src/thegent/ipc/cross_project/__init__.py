@@ -1,6 +1,5 @@
 """Stub module."""
 
-
 from dataclasses import dataclass, field
 from datetime import datetime
 
@@ -8,6 +7,7 @@ from datetime import datetime
 @dataclass
 class IpcMessage:
     """IPC message for cross-project communication."""
+
     id: str = ""
     sender: str = ""
     recipient: str = ""
@@ -66,7 +66,13 @@ class CrossProjectIpcServer:
         self._running = False
 
 
-__all__ = ["BROADCAST_ADDR", "CrossProjectIPC", "CrossProjectIpc", "CrossProjectIpcServer", "_inbox_name"]
+__all__ = [
+    "BROADCAST_ADDR",
+    "CrossProjectIPC",
+    "CrossProjectIpc",
+    "CrossProjectIpcServer",
+    "_inbox_name",
+]
 
 
 def _inbox_name(project_id: str, entity_id: str) -> str:

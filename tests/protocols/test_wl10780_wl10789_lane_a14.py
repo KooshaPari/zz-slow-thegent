@@ -10,7 +10,6 @@ from thegent.protocols.turn_submit_boundaries import (
     build_observability_event_phase,
     build_policy_match_phase,
     build_provider_selection_phase,
-    build_provider_rule_evaluation_phase,
     build_queue_priority_phase,
     build_retry_loop_phase,
     build_session_state_update_phase,
@@ -20,7 +19,6 @@ from thegent.protocols.turn_submit_boundaries import (
     resolve_hook_invocation_target,
     resolve_observability_serialization_target,
     resolve_policy_enforcement_plan_target,
-    resolve_provider_final_selection_target,
     resolve_queue_execution_target,
     resolve_session_persistence_plan_target,
     resolve_sync_commit_plan_target,
@@ -57,7 +55,11 @@ def test_wl10781_queue_throughput_separates_intake_and_worker_fanout_boundaries(
 def test_wl10782_telemetry_separates_metric_collection_and_emitter_lifecycle() -> None:
     # @trace WL-10782
     phase = build_observability_event_phase("queue.depth", {"depth": 10}, "json")
-    assert resolve_observability_serialization_target(phase) == ("queue.depth", {"depth": 10}, "json")
+    assert resolve_observability_serialization_target(phase) == (
+        "queue.depth",
+        {"depth": 10},
+        "json",
+    )
 
     invalid_phase = build_observability_event_phase("queue.depth", {"depth": 10}, "json")
     invalid_phase["event_payload"] = "bad"
@@ -93,7 +95,11 @@ def test_wl10784_policy_enforcement_separates_rule_discovery_and_action_executio
 
 def test_wl10785_sync_reliability_separates_scan_records_and_mutation_apply_metadata() -> None:
     # @trace WL-10785
-    phase = build_sync_diff_phase([{"file": "src/thegent/integrations/gh_project_sync.py"}], "apply sync", "lane-a14")
+    phase = build_sync_diff_phase(
+        [{"file": "src/thegent/integrations/gh_project_sync.py"}],
+        "apply sync",
+        "lane-a14",
+    )
     assert resolve_sync_commit_plan_target(phase) == (
         [{"file": "src/thegent/integrations/gh_project_sync.py"}],
         "apply sync",
@@ -101,7 +107,9 @@ def test_wl10785_sync_reliability_separates_scan_records_and_mutation_apply_meta
     )
 
     invalid_phase = build_sync_diff_phase(
-        [{"file": "src/thegent/integrations/gh_project_sync.py"}], "apply sync", "lane-a14"
+        [{"file": "src/thegent/integrations/gh_project_sync.py"}],
+        "apply sync",
+        "lane-a14",
     )
     invalid_phase["diff_records"] = ["bad"]
     with pytest.raises(ValueError, match="invalid diff record"):

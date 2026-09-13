@@ -94,7 +94,11 @@ class AlertManager:
             )
             return resp.status_code == 200
         except httpx.HTTPStatusError as e:
-            logger.error("Alert webhook HTTP error: %s %s", e.response.status_code, e.response.reason_phrase)
+            logger.error(
+                "Alert webhook HTTP error: %s %s",
+                e.response.status_code,
+                e.response.reason_phrase,
+            )
             return False
         except httpx.RequestError as e:
             logger.error("Alert webhook HTTP error: %s", e)

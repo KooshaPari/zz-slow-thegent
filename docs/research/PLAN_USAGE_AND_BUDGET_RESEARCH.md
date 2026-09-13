@@ -8,13 +8,13 @@
 
 ## Executive Summary
 
-| Approach | Providers | Data Source | thegent Integration |
-|----------|-----------|-------------|---------------------|
-| **CLIProxyAPIPlus** `GET /v1/metrics/providers` | All proxy-backed | Proxy metrics | ✅ `thegent_provider_usage`, `thegent observe usage` |
-| **Tokscale** `bunx tokscale` | OpenCode, Claude, Codex, Gemini, Cursor, Amp, Droid, OpenClaw, Pi | Session files | Recommended external tool |
-| **Z.ai glm-plan-usage** | GLM Coding Plan only | Z.ai API | Claude Code plugin; Node.js |
-| **Provider dashboards** | Anthropic, OpenAI, Google, MiniMax, Z.ai | Web consoles | Manual |
-| **Provider usage APIs** | Anthropic, OpenAI | REST APIs | Future integration |
+| Approach                                        | Providers                                                         | Data Source   | thegent Integration                                  |
+| ----------------------------------------------- | ----------------------------------------------------------------- | ------------- | ---------------------------------------------------- |
+| **CLIProxyAPIPlus** `GET /v1/metrics/providers` | All proxy-backed                                                  | Proxy metrics | ✅ `thegent_provider_usage`, `thegent observe usage` |
+| **Tokscale** `bunx tokscale`                    | OpenCode, Claude, Codex, Gemini, Cursor, Amp, Droid, OpenClaw, Pi | Session files | Recommended external tool                            |
+| **Z.ai glm-plan-usage**                         | GLM Coding Plan only                                              | Z.ai API      | Claude Code plugin; Node.js                          |
+| **Provider dashboards**                         | Anthropic, OpenAI, Google, MiniMax, Z.ai                          | Web consoles  | Manual                                               |
+| **Provider usage APIs**                         | Anthropic, OpenAI                                                 | REST APIs     | Future integration                                   |
 
 ---
 
@@ -23,6 +23,7 @@
 **Endpoint:** `GET http://127.0.0.1:{cliproxy_port}/v1/metrics/providers`
 
 **Response shape:**
+
 ```json
 {
   "nim": {"latency_p50_ms": 1200, "tps_1m": 45, "cost_per_1k": 0.22, "success_rate": 0.98},
@@ -32,6 +33,7 @@
 ```
 
 **thegent usage:**
+
 - `thegent observe usage` — CLI table + cost status
 - `thegent_provider_usage` — MCP tool
 - `clode --policy cheapest` — uses metrics for GLM backend selection
@@ -45,21 +47,22 @@
 
 **Supported clients and data locations:**
 
-| Client | Data Location |
-|--------|---------------|
-| OpenCode | `~/.local/share/opencode/opencode.db` or `storage/message/` |
-| Claude Code | `~/.claude/projects/` |
-| OpenClaw | `~/.openclaw/agents/` (+ legacy `.clawdbot`, `.moltbot`) |
-| Codex CLI | `~/.codex/sessions/` |
-| Gemini CLI | `~/.gemini/tmp/*/chats/` |
-| Cursor IDE | API sync → `~/.config/tokscale/cursor-cache/` |
-| Amp (AmpCode) | `~/.local/share/amp/threads/` |
-| Droid (Factory) | `~/.factory/sessions/` |
-| Pi | `~/.pi/agent/sessions/` |
+| Client          | Data Location                                               |
+| --------------- | ----------------------------------------------------------- |
+| OpenCode        | `~/.local/share/opencode/opencode.db` or `storage/message/` |
+| Claude Code     | `~/.claude/projects/`                                       |
+| OpenClaw        | `~/.openclaw/agents/` (+ legacy `.clawdbot`, `.moltbot`)    |
+| Codex CLI       | `~/.codex/sessions/`                                        |
+| Gemini CLI      | `~/.gemini/tmp/*/chats/`                                    |
+| Cursor IDE      | API sync → `~/.config/tokscale/cursor-cache/`               |
+| Amp (AmpCode)   | `~/.local/share/amp/threads/`                               |
+| Droid (Factory) | `~/.factory/sessions/`                                      |
+| Pi              | `~/.pi/agent/sessions/`                                     |
 
 **Pricing:** LiteLLM pricing data; tiered pricing; cache token discounts.
 
 **Commands:**
+
 ```bash
 tokscale                    # TUI
 tokscale --light            # Table
@@ -84,6 +87,7 @@ tokscale pricing "claude-3-5-sonnet"  # Lookup pricing
 **Usage:** In Claude Code, run `/glm-plan-usage:usage-query`
 
 **Implementation:**
+
 - Command triggers `usage-query-agent` → `usage-query-skill`
 - Skill runs `node scripts/query-usage.mjs`
 - Returns usage payload or error
@@ -126,13 +130,14 @@ tokscale pricing "claude-3-5-sonnet"  # Lookup pricing
 
 ## 5. Session File Locations (for Parsing)
 
-| Tool | Location |
-|------|----------|
-| **Codex** | `~/.codex/sessions/*.jsonl` (token_count events) |
-| **Claude Code** | `~/.claude/projects/{path}/*.jsonl` |
-| **Gemini CLI** | `~/.gemini/tmp/*/chats/session-*.json` |
+| Tool            | Location                                         |
+| --------------- | ------------------------------------------------ |
+| **Codex**       | `~/.codex/sessions/*.jsonl` (token_count events) |
+| **Claude Code** | `~/.claude/projects/{path}/*.jsonl`              |
+| **Gemini CLI**  | `~/.gemini/tmp/*/chats/session-*.json`           |
 
 **Session retention:**
+
 - Claude Code: 30 days default; set `cleanupPeriodDays: 9999999999` in `~/.claude/settings.json` to disable.
 - Gemini CLI: Disabled by default.
 - Codex: No cleanup.
@@ -141,14 +146,14 @@ tokscale pricing "claude-3-5-sonnet"  # Lookup pricing
 
 ## 6. thegent Existing Usage/Budget Support
 
-| Component | Location | Purpose |
-|-----------|----------|---------|
-| `CostAggregator` | `governance/cost.py` | MTD total, by category, daily total, budget check |
-| `CostEstimator` | `governance/cost.py` | Per-run cost estimate from pricing table |
-| `cost_status_cmd` | `cli.py` | `thegent observe cost-status` |
-| `govern_cost_cmd` | `cli.py` | `thegent govern cost` — daily aggregation |
-| `usage_cmd` | `cli.py` | `thegent observe usage` — provider metrics + cost |
-| Config | `config.py` | `cost_budget_mtd`, `cost_tracking_enabled` |
+| Component         | Location             | Purpose                                           |
+| ----------------- | -------------------- | ------------------------------------------------- |
+| `CostAggregator`  | `governance/cost.py` | MTD total, by category, daily total, budget check |
+| `CostEstimator`   | `governance/cost.py` | Per-run cost estimate from pricing table          |
+| `cost_status_cmd` | `cli.py`             | `thegent observe cost-status`                     |
+| `govern_cost_cmd` | `cli.py`             | `thegent govern cost` — daily aggregation         |
+| `usage_cmd`       | `cli.py`             | `thegent observe usage` — provider metrics + cost |
+| Config            | `config.py`          | `cost_budget_mtd`, `cost_tracking_enabled`        |
 
 ---
 
@@ -184,6 +189,7 @@ import json
 from datetime import datetime
 from pathlib import Path
 
+
 class UsageCollector:
     """Collect usage metrics from CLIProxyAPIPlus."""
 
@@ -215,10 +221,11 @@ class UsageCollector:
             lines.append(f"   Latency (P50): {latency}ms")
             lines.append(f"   Throughput: {tps} req/s")
             lines.append(f"   Cost: ${cost}/1K tokens")
-            lines.append(f"   Success Rate: {success*100:.1f}%")
+            lines.append(f"   Success Rate: {success * 100:.1f}%")
 
         lines.append("\n" + "-" * 50)
         return "\n".join(lines)
+
 
 if __name__ == "__main__":
     collector = UsageCollector()

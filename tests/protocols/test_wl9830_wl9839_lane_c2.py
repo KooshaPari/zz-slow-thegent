@@ -3,11 +3,13 @@
 from __future__ import annotations
 
 import orjson as json
-
 import pytest
 
 from thegent.protocols import jsonrpc_agent_server as server
-from thegent.protocols.jsonrpc_agent_server import SERVER_STATE, process_jsonrpc_line_full
+from thegent.protocols.jsonrpc_agent_server import (
+    SERVER_STATE,
+    process_jsonrpc_line_full,
+)
 
 
 def _reset_state() -> None:
@@ -66,7 +68,13 @@ def test_wl9833_execution_phase_fails_loudly_on_unresolved_parse_shape() -> None
     # @trace WL-9833
     with pytest.raises(ValueError, match="Turn submit execution target unresolved"):
         server._build_turn_submit_execution_phase(
-            {"session_id": None, "session": None, "user_input": None, "requires_approval": None, "approval_diff": None}
+            {
+                "session_id": None,
+                "session": None,
+                "user_input": None,
+                "requires_approval": None,
+                "approval_diff": None,
+            }
         )
 
 

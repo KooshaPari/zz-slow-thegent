@@ -8,14 +8,11 @@ Source: src/thegent/governance/kill_switch.py
 
 from __future__ import annotations
 
-import os
-import tempfile
 import time
 from pathlib import Path
 from unittest.mock import patch
 
 import pytest
-
 
 # ---------------------------------------------------------------------------
 # Import target — must survive the hardening patch
@@ -60,9 +57,9 @@ class TestKSActivate:
 
     def test_activate_writes_timestamp(self, tmp_path: Path) -> None:
         ks = SafetyKillSwitch(str(tmp_path))
-        before = time.time()
+        time.time()
         ks.activate("test")
-        after = time.time()
+        time.time()
         content = ks.trigger_file.read_text()
         assert "KILLED_AT:" in content
 

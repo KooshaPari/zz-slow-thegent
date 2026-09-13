@@ -8,7 +8,7 @@ Validates task metadata against configured constraints.
 
 ### Methods
 
-#### ConstraintValidator.__init__
+#### ConstraintValidator.**init**
 
 ```python
 __init__(self: Any, config: ThegentSettings)
@@ -38,7 +38,7 @@ Categorizes tasks based on prompt analysis and heuristics.
 
 ### Methods
 
-#### TaskClassifier.__init__
+#### TaskClassifier.**init**
 
 ```python
 __init__(self: Any, config: ThegentSettings)
@@ -55,6 +55,7 @@ classify(self: Any, prompt: str, agent_role: Any)
 Classify task complexity based on prompt content.
 
 Heuristics:
+
 - Word count (token estimate proxy)
 - Keywords (architecture, design -> HIGH_COMPLEX)
 - Structure (bullets, code blocks -> COMPLEX)
@@ -70,6 +71,7 @@ detect_role(self: Any, prompt: str, agent_role: Any)
 Detect task role from agent metadata or prompt keywords.
 
 Priority:
+
 1. Agent-specified role (from agent frontmatter)
 2. Auto-detect from prompt keywords
 3. Default to "workhorse"
@@ -91,7 +93,7 @@ Orchestrates task classification and constraint validation.
 
 ### Methods
 
-#### TaskRouter.__init__
+#### TaskRouter.**init**
 
 ```python
 __init__(self: Any, config: ThegentSettings)
@@ -214,6 +216,7 @@ detect_role(self: Any, prompt: str, agent_role: Any)
 Detect task role from agent metadata or prompt keywords.
 
 Priority:
+
 1. Agent-specified role (from agent frontmatter)
 2. Auto-detect from prompt keywords
 3. Default to "workhorse"

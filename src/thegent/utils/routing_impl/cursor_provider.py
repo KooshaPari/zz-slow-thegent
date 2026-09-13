@@ -14,6 +14,7 @@ Capabilities:
 
 from __future__ import annotations
 
+import contextlib
 import logging
 import time
 from dataclasses import dataclass, field
@@ -130,14 +131,15 @@ class CursorExecutorManager:
         current = self._provider.get_token()
         if current == self._last_token:
             return 0
-        _log.info("cursor token rotated — rebinding %d active executor(s)", len(self._active_clients))
+        _log.info(
+            "cursor token rotated — rebinding %d active executor(s)",
+            len(self._active_clients),
+        )
         count = 0
         for client in list(self._active_clients):
             if hasattr(client, "aclose"):
-                try:
+                with contextlib.suppress(Exception):
                     await client.aclose()
-                except Exception:
-                    pass
             count += 1
         self._active_clients.clear()
         self._last_token = current

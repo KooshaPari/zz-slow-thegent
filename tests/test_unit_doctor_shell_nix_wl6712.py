@@ -14,7 +14,11 @@ def _result(name: str, category: str) -> SimpleNamespace:
 
 
 def test_check_nix_timeout_is_warn(monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> None:
-    monkeypatch.setattr(doctor_shell_nix.shutil, "which", lambda name: "/usr/bin/nix" if name == "nix" else None)
+    monkeypatch.setattr(
+        doctor_shell_nix.shutil,
+        "which",
+        lambda name: "/usr/bin/nix" if name == "nix" else None,
+    )
     monkeypatch.setattr(
         doctor_shell_nix,
         "run_subprocess_optimized",
@@ -30,7 +34,11 @@ def test_check_nix_timeout_is_warn(monkeypatch: pytest.MonkeyPatch, tmp_path: Pa
 
 
 def test_check_nix_permission_error_is_fail(monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> None:
-    monkeypatch.setattr(doctor_shell_nix.shutil, "which", lambda name: "/usr/bin/nix" if name == "nix" else None)
+    monkeypatch.setattr(
+        doctor_shell_nix.shutil,
+        "which",
+        lambda name: "/usr/bin/nix" if name == "nix" else None,
+    )
     monkeypatch.setattr(
         doctor_shell_nix,
         "run_subprocess_optimized",
@@ -47,7 +55,11 @@ def test_check_nix_permission_error_is_fail(monkeypatch: pytest.MonkeyPatch, tmp
 
 
 def test_check_nix_nonzero_exit_is_fail(monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> None:
-    monkeypatch.setattr(doctor_shell_nix.shutil, "which", lambda name: "/usr/bin/nix" if name == "nix" else None)
+    monkeypatch.setattr(
+        doctor_shell_nix.shutil,
+        "which",
+        lambda name: "/usr/bin/nix" if name == "nix" else None,
+    )
     monkeypatch.setattr(
         doctor_shell_nix,
         "run_subprocess_optimized",
@@ -64,7 +76,11 @@ def test_check_nix_nonzero_exit_is_fail(monkeypatch: pytest.MonkeyPatch, tmp_pat
 
 
 def test_check_nix_success_reports_ok(monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> None:
-    monkeypatch.setattr(doctor_shell_nix.shutil, "which", lambda name: "/usr/bin/nix" if name == "nix" else None)
+    monkeypatch.setattr(
+        doctor_shell_nix.shutil,
+        "which",
+        lambda name: "/usr/bin/nix" if name == "nix" else None,
+    )
     monkeypatch.setattr(
         doctor_shell_nix,
         "run_subprocess_optimized",

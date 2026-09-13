@@ -73,7 +73,11 @@ def compare_results(before: Path, after: Path) -> dict:
     with open(after) as f:
         after_data = json.load(f)
 
-    return {"before": before_data.get("summary", {}), "after": after_data.get("summary", {}), "improvement": {}}
+    return {
+        "before": before_data.get("summary", {}),
+        "after": after_data.get("summary", {}),
+        "improvement": {},
+    }
 
 
 def main():
@@ -85,7 +89,7 @@ def main():
 
     results = run_benchmark(compare=args.compare, swarm=args.swarm)
 
-    filepath = save_results(results, args.output)
+    save_results(results, args.output)
 
     if results["success"] or "error" in results:
         pass

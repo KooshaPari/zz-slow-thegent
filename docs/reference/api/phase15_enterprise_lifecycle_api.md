@@ -12,7 +12,7 @@ Research framework for enterprise lifecycle.
 
 ### Methods
 
-#### Phase15EnterpriseLifecycleResearch.__init__
+#### Phase15EnterpriseLifecycleResearch.**init**
 
 ```python
 __init__(self: Any)

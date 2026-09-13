@@ -15,7 +15,7 @@ Synthesizes memory artifacts from multiple agents into a unified view.
 
 ### Methods
 
-#### SwarmMemoryConsolidator.__init__
+#### SwarmMemoryConsolidator.**init**
 
 ```python
 __init__(self: Any, swarm_id: str, local_memory: DualMemory)

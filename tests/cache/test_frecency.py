@@ -7,7 +7,7 @@ from __future__ import annotations
 
 import math
 import threading
-from datetime import datetime, timedelta, timezone
+from datetime import UTC, datetime, timedelta
 from typing import TYPE_CHECKING
 from unittest.mock import patch
 
@@ -17,7 +17,10 @@ import pytest
 # Converting from `pytest.fail` to `pytest.importorskip` lets the file collect
 # cleanly when diskcache is absent (CI may not always install every optional
 # dep) while still skipping every test when diskcache is missing.
-pytest.importorskip("diskcache", reason="diskcache dependency is required for frecency persistence tests")
+pytest.importorskip(
+    "diskcache",
+    reason="diskcache dependency is required for frecency persistence tests",
+)
 
 from thegent.cache.frecency import (
     FrecencyCache,
@@ -37,7 +40,7 @@ if TYPE_CHECKING:
 
 def _make_past(seconds: float) -> datetime:
     """Return a UTC datetime that is *seconds* in the past."""
-    return datetime.now(timezone.utc) - timedelta(seconds=seconds)
+    return datetime.now(UTC) - timedelta(seconds=seconds)
 
 
 def _expected_score(access_count: int, age_seconds: float, half_life: float) -> float:
@@ -74,7 +77,7 @@ class TestFrecencyEntry:
 
     def test_age_seconds_returns_zero_immediately(self) -> None:
         # @trace FR-CACHE-002
-        now = datetime.now(timezone.utc)
+        now = datetime.now(UTC)
         entry = FrecencyEntry(key="k", score=0.0, access_count=1, last_access=now)
         assert entry.age_seconds(now) == 0.0
 
@@ -82,14 +85,14 @@ class TestFrecencyEntry:
         # @trace FR-CACHE-002
         last = _make_past(120)
         entry = FrecencyEntry(key="k", score=0.0, access_count=1, last_access=last)
-        now = datetime.now(timezone.utc)
+        now = datetime.now(UTC)
         age = entry.age_seconds(now)
         assert 119.0 <= age <= 121.0
 
     def test_recalculate_score_formula(self) -> None:
         # @trace FR-CACHE-002
         # With age=0, score should equal access_count * 1.0
-        now = datetime.now(timezone.utc)
+        now = datetime.now(UTC)
         entry = FrecencyEntry(key="k", score=0.0, access_count=5, last_access=now)
         score = entry.recalculate_score(half_life=3600.0, now=now)
         assert score == pytest.approx(5.0, rel=1e-9)
@@ -98,23 +101,23 @@ class TestFrecencyEntry:
         # @trace FR-CACHE-002
         last = _make_past(3600)  # exactly one half-life ago
         entry = FrecencyEntry(key="k", score=0.0, access_count=4, last_access=last)
-        now = datetime.now(timezone.utc)
+        now = datetime.now(UTC)
         score = entry.recalculate_score(half_life=3600.0, now=now)
         # After one half-life, score ≈ 4 * 0.5 = 2.0
         assert score == pytest.approx(2.0, rel=0.01)
 
     def test_recalculate_score_mutates_entry(self) -> None:
         # @trace FR-CACHE-002
-        now = datetime.now(timezone.utc)
+        now = datetime.now(UTC)
         entry = FrecencyEntry(key="k", score=0.0, access_count=3, last_access=now)
         new_score = entry.recalculate_score(half_life=3600.0, now=now)
         assert entry.score == new_score
 
     def test_created_defaults_to_now(self) -> None:
         # @trace FR-CACHE-002
-        before = datetime.now(timezone.utc)
+        before = datetime.now(UTC)
         entry = FrecencyEntry(key="k", score=0.0, access_count=0, last_access=before)
-        after = datetime.now(timezone.utc)
+        after = datetime.now(UTC)
         assert before <= entry.created <= after
 
 
@@ -239,7 +242,7 @@ class TestFrecencyDecay:
         half_life = 1000.0
         cache = FrecencyCache(maxsize=10, half_life_seconds=half_life)
 
-        fixed_now = datetime(2025, 1, 1, 12, 0, 0, tzinfo=timezone.utc)
+        fixed_now = datetime(2025, 1, 1, 12, 0, 0, tzinfo=UTC)
         past = fixed_now - timedelta(seconds=half_life)  # exactly 1 half-life ago
 
         with patch("thegent.cache.frecency._utcnow", return_value=fixed_now):

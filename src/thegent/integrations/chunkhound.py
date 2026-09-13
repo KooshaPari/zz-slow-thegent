@@ -40,7 +40,11 @@ class ChunkHoundClient:
 
     def _load_config(self) -> ChunkHoundConfig:
         config = cast("ChunkHoundConfig", ChunkHoundConfig.from_env("CHUNKHOUND_"))
-        config.enabled = os.environ.get("THEGENT_ENABLE_CHUNKHOUND", "").lower() in ("1", "true", "yes")
+        config.enabled = os.environ.get("THEGENT_ENABLE_CHUNKHOUND", "").lower() in (
+            "1",
+            "true",
+            "yes",
+        )
         return config
 
     @property

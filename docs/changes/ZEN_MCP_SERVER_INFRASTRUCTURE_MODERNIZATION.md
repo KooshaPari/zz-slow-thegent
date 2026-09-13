@@ -11,6 +11,7 @@
 ## Current State Analysis
 
 ### Strengths
+
 ✅ Already uses uv (has uv.lock)  
 ✅ Already uses ruff for linting/formatting  
 ✅ Already uses zuban for type checking  
@@ -21,6 +22,7 @@
 ✅ Well-structured codebase
 
 ### Issues
+
 ❌ Configuration scattered across multiple files  
 ❌ Still has .env file (should use YAML)  
 ❌ No pydantic-settings implementation  
@@ -36,7 +38,9 @@
 ### Phase 1: Configuration Modernization (10 hours)
 
 #### 1.1 Create Pydantic Settings Structure
+
 **File:** `src/zen_mcp/config/settings.py`
+
 ```python
 from pydantic_settings import BaseSettings, SettingsConfigDict
 from pydantic import Field, SecretStr, field_validator
@@ -44,76 +48,84 @@ from typing import Optional, List
 import yaml
 from pathlib import Path
 
+
 class LLMProviderSettings(BaseSettings):
     """LLM provider configuration"""
+
     openai_api_key: Optional[SecretStr] = None
     anthropic_api_key: Optional[SecretStr] = None
     openrouter_api_key: Optional[SecretStr] = None
-    
+
+
 class DatabaseSettings(BaseSettings):
     """Database configuration"""
+
     url: SecretStr = Field(default="sqlite:///zen_mcp.db")
     pool_size: int = 5
     max_overflow: int = 10
     echo: bool = False
 
+
 class ZenSettings(BaseSettings):
     """Main Zen MCP settings"""
+
     model_config = SettingsConfigDict(
-        env_prefix='ZEN_',
-        env_nested_delimiter='__',
+        env_prefix="ZEN_",
+        env_nested_delimiter="__",
         case_sensitive=False,
         env_ignore_empty=True,
-        yaml_file='config.yml',
-        secrets_dir='.'
+        yaml_file="config.yml",
+        secrets_dir=".",
     )
-    
+
     # App settings
     app_name: str = "zen-mcp-server"
     debug: bool = False
     log_level: str = "INFO"
-    
+
     # Server settings
     host: str = "0.0.0.0"
     port: int = 8000
-    
+
     # Components
     llm_providers: LLMProviderSettings = Field(default_factory=LLMProviderSettings)
     database: DatabaseSettings = Field(default_factory=DatabaseSettings)
-    
+
     # Features
     enable_caching: bool = True
     cache_ttl: int = 3600
     enable_metrics: bool = True
     enable_tracing: bool = False
-    
+
     # Zen-specific
     max_context_length: int = 128000
     default_model: str = "gpt-4"
     enable_streaming: bool = True
-    
+
     @classmethod
     def load(cls):
         """Load settings from YAML files"""
-        config_path = Path('config.yml')
-        secrets_path = Path('secrets.yml')
-        
+        config_path = Path("config.yml")
+        secrets_path = Path("secrets.yml")
+
         config = {}
         if config_path.exists():
-            with open(config_path, 'r') as f:
+            with open(config_path, "r") as f:
                 config = yaml.safe_load(f) or {}
-        
+
         secrets = {}
         if secrets_path.exists():
-            with open(secrets_path, 'r') as f:
+            with open(secrets_path, "r") as f:
                 secrets = yaml.safe_load(f) or {}
-        
+
         merged = {**config, **secrets}
         return cls(**merged)
 ```
 
 #### 1.2 Create config.yml
+
 **File:** `config.yml`
+
 ```yaml
 # Zen MCP Server Configuration (Non-sensitive)
 
@@ -148,7 +160,7 @@ tools:
     - "code_analysis"
     - "task_management"
     - "context_building"
-  
+
 # Resource configurations
 resources:
   max_file_size_mb: 10
@@ -161,7 +173,9 @@ resources:
 ```
 
 #### 1.3 Create secrets.yml.example
+
 **File:** `secrets.yml.example`
+
 ```yaml
 # Zen MCP Server Secrets (Sensitive)
 # Copy to secrets.yml and fill in your values
@@ -183,12 +197,15 @@ monitoring:
 ```
 
 #### 1.4 Update Code to Use Settings
+
 **File:** `src/zen_mcp/server.py` (example)
+
 ```python
 from zen_mcp.config.settings import ZenSettings
 
 # Load settings once at startup
 settings = ZenSettings.load()
+
 
 # Use throughout application
 def get_llm_client():
@@ -199,6 +216,7 @@ def get_llm_client():
 ```
 
 #### 1.5 Remove .env File
+
 ```bash
 # Migrate all .env values to config.yml and secrets.yml
 # Then remove .env
@@ -213,6 +231,7 @@ echo "secrets.yml" >> .gitignore
 ### Phase 2: Code Quality Enhancement (10 hours)
 
 #### 2.1 Add Missing Tools to pyproject.toml
+
 ```toml
 [project.optional-dependencies]
 dev = [
@@ -224,6 +243,7 @@ dev = [
 ```
 
 #### 2.2 Configure Bandit
+
 ```toml
 [tool.bandit]
 targets = ["src"]
@@ -232,6 +252,7 @@ skips = ["B101", "B601"]  # Skip assert and shell injection (if needed)
 ```
 
 #### 2.3 Configure Vulture
+
 ```toml
 [tool.vulture]
 paths = ["src/zen_mcp"]
@@ -241,7 +262,9 @@ ignore_names = ["main", "app", "cli", "settings"]
 ```
 
 #### 2.4 Setup Pre-commit Hooks
+
 **File:** `.pre-commit-config.yaml`
+
 ```yaml
 repos:
   - repo: https://github.com/astral-sh/ruff-pre-commit
@@ -270,6 +293,7 @@ repos:
 ```
 
 #### 2.5 Install and Run Pre-commit
+
 ```bash
 # Install pre-commit
 uv pip install pre-commit
@@ -286,30 +310,38 @@ pre-commit run --all-files
 ### Phase 3: Documentation & Cleanup (10 hours)
 
 #### 3.1 Update README.md
+
 Add sections for:
+
 - Configuration (how to use config.yml and secrets.yml)
 - Development setup (using uv)
 - Code quality tools
 - Pre-commit hooks
 
 #### 3.2 Create Configuration Documentation
+
 **File:** `docs/configuration.md`
-```markdown
+
+````markdown
 # Configuration Guide
 
 ## Overview
+
 Zen MCP Server uses YAML-based configuration with pydantic-settings for type safety.
 
 ## Files
+
 - `config.yml` - Non-sensitive configuration (git-tracked)
 - `secrets.yml` - Sensitive data like API keys (git-ignored)
 - `secrets.yml.example` - Template for secrets
 
 ## Setup
+
 1. Copy secrets template:
    ```bash
    cp secrets.yml.example secrets.yml
    ```
+````
 
 2. Edit secrets.yml with your values
 
@@ -319,8 +351,10 @@ Zen MCP Server uses YAML-based configuration with pydantic-settings for type saf
    ```
 
 ## Configuration Options
+
 [Document all settings from ZenSettings class]
-```
+
+````
 
 #### 3.3 Clean Up Legacy Files
 ```bash
@@ -332,10 +366,12 @@ rm -f requirements*.txt
 
 # Clean up build artifacts
 rm -rf build/ dist/ *.egg-info/
-```
+````
 
 #### 3.4 Update work-prompts
+
 Update work-prompts to reference new configuration approach:
+
 - `work-prompts/python-patterns-guide.md`
 - `work-prompts/tdd-architecture-prompts.md`
 
@@ -344,6 +380,7 @@ Update work-prompts to reference new configuration approach:
 ## Migration Steps
 
 ### Step 1: Backup
+
 ```bash
 cd zen-mcp-server
 git checkout -b backup/pre-modernization
@@ -353,6 +390,7 @@ git checkout -b feature/infrastructure-modernization
 ```
 
 ### Step 2: Create Configuration Structure
+
 ```bash
 # Create config directory
 mkdir -p src/zen_mcp/config
@@ -366,6 +404,7 @@ cp secrets.yml.example secrets.yml
 ```
 
 ### Step 3: Implement Settings
+
 ```bash
 # Implement ZenSettings class
 # Update code to use new settings
@@ -374,6 +413,7 @@ uv run python -c "from zen_mcp.config.settings import ZenSettings; print(ZenSett
 ```
 
 ### Step 4: Add Quality Tools
+
 ```bash
 # Install new tools
 uv pip install bandit vulture cloc pre-commit
@@ -387,6 +427,7 @@ pre-commit run --all-files
 ```
 
 ### Step 5: Run Quality Checks
+
 ```bash
 # Ruff
 ruff check --fix .
@@ -403,6 +444,7 @@ zuban check src/
 ```
 
 ### Step 6: Update Documentation
+
 ```bash
 # Update README.md
 # Create docs/configuration.md
@@ -410,6 +452,7 @@ zuban check src/
 ```
 
 ### Step 7: Test Everything
+
 ```bash
 # Run tests
 uv run pytest
@@ -422,6 +465,7 @@ uv run python -c "from zen_mcp.config.settings import ZenSettings; s = ZenSettin
 ```
 
 ### Step 8: Clean Up
+
 ```bash
 # Remove old files
 rm .env
@@ -441,6 +485,7 @@ git commit -m "feat: modernize infrastructure with YAML config and enhanced qual
 If issues arise:
 
 1. **Immediate Rollback:**
+
    ```bash
    git checkout backup/pre-modernization
    ```
@@ -477,12 +522,15 @@ If issues arise:
 ## Risks & Mitigations
 
 ### Risk 1: Configuration Migration Incomplete
+
 **Mitigation:** Comprehensive testing, gradual migration
 
 ### Risk 2: Breaking Changes for Users
+
 **Mitigation:** Clear migration guide, backward compatibility where possible
 
 ### Risk 3: Test Failures
+
 **Mitigation:** Update tests to use new settings, comprehensive test coverage
 
 ---
@@ -500,4 +548,3 @@ If issues arise:
 3. Create migration guide for users
 4. Update CI/CD pipelines
 5. Consider adding configuration validation CLI command
-

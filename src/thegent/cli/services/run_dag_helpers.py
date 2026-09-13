@@ -11,11 +11,11 @@ if TYPE_CHECKING:
     from thegent.cli.commands.dag_impl import DagDocument
 
 
-def parse_dag_full(path: Path) -> "DagDocument":
+def parse_dag_full(path: Path) -> DagDocument:
     return dag_impl._parse_dag_full(path)
 
 
-def serialize_dag(doc: "DagDocument") -> str:
+def serialize_dag(doc: DagDocument) -> str:
     return dag_impl._serialize_dag(doc)
 
 
@@ -31,12 +31,12 @@ def validate_agent(agent: str) -> str | None:
     return dag_impl._validate_agent(agent)
 
 
-def validate_dag(doc: "DagDocument") -> list[str]:
+def validate_dag(doc: DagDocument) -> list[str]:
     return dag_impl._validate_dag(doc)
 
 
 def dag_update_task(
-    doc: "DagDocument",
+    doc: DagDocument,
     task_id: str,
     *,
     status: str | None = None,

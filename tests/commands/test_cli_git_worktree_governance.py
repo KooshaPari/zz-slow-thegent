@@ -18,7 +18,11 @@ def _assert_refresh_argv(argv: list[str]) -> None:
     assert argv[1] == "refresh"
     assert argv[2] == "fix-mcp-timeout"
     options = dict(zip(argv[3::2], argv[4::2], strict=False))
-    assert options == {"--remote": "origin", "--ref": "origin/canary", "--strategy": "rebase"}
+    assert options == {
+        "--remote": "origin",
+        "--ref": "origin/canary",
+        "--strategy": "rebase",
+    }
 
 
 def _assert_migrate_argv(argv: list[str]) -> None:
@@ -36,7 +40,10 @@ def test_git_worktree_governance_new_invokes_script(tmp_path: Path) -> None:
 
     completed = MagicMock(returncode=0, stdout="created\n", stderr="")
     with (
-        patch("thegent.cli.commands.cli_git_worktree_governance._script_path", return_value=script),
+        patch(
+            "thegent.cli.commands.cli_git_worktree_governance._script_path",
+            return_value=script,
+        ),
         patch(
             "thegent.cli.commands.cli_git_worktree_governance.subprocess.run",
             return_value=completed,
@@ -61,7 +68,13 @@ def test_git_worktree_governance_new_invokes_script(tmp_path: Path) -> None:
     assert "created" in result.output
     mock_run.assert_called_once()
     assert mock_run.call_args.args[0][0] == str(script)
-    assert mock_run.call_args.args[0][1:] == ["new", "backend", "m", "fix-mcp-timeout", "main"]
+    assert mock_run.call_args.args[0][1:] == [
+        "new",
+        "backend",
+        "m",
+        "fix-mcp-timeout",
+        "main",
+    ]
 
 
 def test_git_worktree_governance_prune_dry_run_invokes_script(tmp_path: Path) -> None:
@@ -72,7 +85,10 @@ def test_git_worktree_governance_prune_dry_run_invokes_script(tmp_path: Path) ->
 
     completed = MagicMock(returncode=0, stdout="[DRY-RUN]\n", stderr="")
     with (
-        patch("thegent.cli.commands.cli_git_worktree_governance._script_path", return_value=script),
+        patch(
+            "thegent.cli.commands.cli_git_worktree_governance._script_path",
+            return_value=script,
+        ),
         patch(
             "thegent.cli.commands.cli_git_worktree_governance.subprocess.run",
             return_value=completed,
@@ -139,7 +155,10 @@ def test_worktree_governance_refresh_invokes_script(
 
     completed = MagicMock(returncode=0, stdout="[OK] refreshed worktree\n", stderr="")
     with (
-        patch("thegent.cli.commands.cli_git_worktree_governance._script_path", return_value=script),
+        patch(
+            "thegent.cli.commands.cli_git_worktree_governance._script_path",
+            return_value=script,
+        ),
         patch(
             "thegent.cli.commands.cli_git_worktree_governance.subprocess.run",
             return_value=completed,
@@ -203,13 +222,19 @@ def test_worktree_governance_migrate_legacy_invokes_script(
 
     completed = MagicMock(returncode=0, stdout="[OK] migrated legacy worktree\n", stderr="")
     with (
-        patch("thegent.cli.commands.cli_git_worktree_governance._script_path", return_value=script),
+        patch(
+            "thegent.cli.commands.cli_git_worktree_governance._script_path",
+            return_value=script,
+        ),
         patch(
             "thegent.cli.commands.cli_git_worktree_governance.subprocess.run",
             return_value=completed,
         ) as mock_run,
     ):
-        result = runner.invoke(invoke_app, [part.format(root=tmp_path, legacy=legacy_path) for part in invoke_args])
+        result = runner.invoke(
+            invoke_app,
+            [part.format(root=tmp_path, legacy=legacy_path) for part in invoke_args],
+        )
 
     assert result.exit_code == 0
     assert "[OK] migrated legacy worktree" in result.output
@@ -227,7 +252,10 @@ def test_root_worktree_new_invokes_script(tmp_path: Path) -> None:
 
     completed = MagicMock(returncode=0, stdout="created\n", stderr="")
     with (
-        patch("thegent.cli.commands.cli_git_worktree_governance._script_path", return_value=script),
+        patch(
+            "thegent.cli.commands.cli_git_worktree_governance._script_path",
+            return_value=script,
+        ),
         patch(
             "thegent.cli.commands.cli_git_worktree_governance.subprocess.run",
             return_value=completed,
@@ -235,13 +263,28 @@ def test_root_worktree_new_invokes_script(tmp_path: Path) -> None:
     ):
         result = runner.invoke(
             main_app,
-            ["worktree", "new", "backend", "m", "fix-mcp-timeout", "main", "--root", str(tmp_path)],
+            [
+                "worktree",
+                "new",
+                "backend",
+                "m",
+                "fix-mcp-timeout",
+                "main",
+                "--root",
+                str(tmp_path),
+            ],
         )
 
     assert result.exit_code == 0
     assert "created" in result.output
     mock_run.assert_called_once()
-    assert mock_run.call_args.args[0][1:] == ["new", "backend", "m", "fix-mcp-timeout", "main"]
+    assert mock_run.call_args.args[0][1:] == [
+        "new",
+        "backend",
+        "m",
+        "fix-mcp-timeout",
+        "main",
+    ]
 
 
 def test_root_worktree_check_preserves_root_path_with_spaces(tmp_path: Path) -> None:
@@ -254,7 +297,10 @@ def test_root_worktree_check_preserves_root_path_with_spaces(tmp_path: Path) -> 
 
     completed = MagicMock(returncode=0, stdout="[OK] worktree governance check passed\n", stderr="")
     with (
-        patch("thegent.cli.commands.cli_git_worktree_governance._script_path", return_value=script),
+        patch(
+            "thegent.cli.commands.cli_git_worktree_governance._script_path",
+            return_value=script,
+        ),
         patch(
             "thegent.cli.commands.cli_git_worktree_governance.subprocess.run",
             return_value=completed,
@@ -289,7 +335,10 @@ def test_git_worktree_governance_new_propagates_script_failure(tmp_path: Path) -
 
     completed = MagicMock(returncode=7, stdout="", stderr="boom\n")
     with (
-        patch("thegent.cli.commands.cli_git_worktree_governance._script_path", return_value=script),
+        patch(
+            "thegent.cli.commands.cli_git_worktree_governance._script_path",
+            return_value=script,
+        ),
         patch(
             "thegent.cli.commands.cli_git_worktree_governance.subprocess.run",
             return_value=completed,

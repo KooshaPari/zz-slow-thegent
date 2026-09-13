@@ -8,6 +8,7 @@ GW-26: DualCache with in-memory L1 + optional disk/Redis L2.
 
 from __future__ import annotations
 
+import contextlib
 import hashlib
 import json
 import logging
@@ -244,10 +245,8 @@ class DiskCache:
             namespace=data.get("namespace", namespace),
         )
         if entry.is_expired:
-            try:
+            with contextlib.suppress(OSError):
                 path.unlink(missing_ok=True)
-            except OSError:
-                pass
             _log.debug("DiskCache: expired entry deleted key=%s ns=%s", key, namespace)
             return None
         return entry
@@ -288,10 +287,8 @@ class DiskCache:
             os.replace(tmp_path, path)
         except OSError:
             # Clean up temp file on failure, then re-raise
-            try:
+            with contextlib.suppress(OSError):
                 os.unlink(tmp_path)
-            except OSError:
-                pass
             raise
 
         _log.debug("DiskCache: wrote key=%s ns=%s path=%s", key, namespace, path)

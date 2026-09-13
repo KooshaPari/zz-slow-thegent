@@ -14,13 +14,14 @@ Run from project root. Uses cwd as ROOT. Requires PyYAML.
 
 from __future__ import annotations
 
-import orjson as json
 import os
 import subprocess
 import sys
 import time
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from pathlib import Path
+
+import orjson as json
 
 # Resolved at runtime (see _resolve_paths)
 ROOT: Path = Path.cwd()
@@ -75,9 +76,7 @@ def _detect_ts(root: Path) -> bool:
     if any((root / p).exists() for p in indicators):
         return True
     extension_dir = root / "extensions" / "vscode"
-    if extension_dir.is_dir() and any(extension_dir.glob("*.ts")):
-        return True
-    return False
+    return bool(extension_dir.is_dir() and any(extension_dir.glob("*.ts")))
 
 
 def _ts_steps(_: Path) -> dict[str, dict]:
@@ -184,10 +183,7 @@ def _build_custom_detector(spec: dict):
         for path in dirs:
             if (root / path).is_dir():
                 return True
-        for pattern in globs:
-            if any(root.glob(pattern)):
-                return True
-        return False
+        return any(any(root.glob(pattern)) for pattern in globs)
 
     return detect
 

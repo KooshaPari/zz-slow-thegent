@@ -18,22 +18,44 @@ Provider/model definitions from internal JSON (no factory config dependency).
 from __future__ import annotations
 
 import logging
-import os
-import subprocess
-import sys
-import webbrowser
 from pathlib import Path
 from typing import Any
 
+import httpx
 import orjson as json
 
-import httpx
-
 from thegent.config import ThegentSettings
-from thegent.domain.provider_config import OAUTH_ONLY_PROVIDERS
 from thegent.infra.fast_subprocess import run_subprocess_optimized
-from thegent.infra.fast_yaml_parser import yaml_load, yaml_dumps
-from thegent.infra.shim_subprocess import run as shim_run
+from thegent.use_cases.manage_cliproxy_config import (  # noqa: F401
+    _CLIPROXY_DATA_DIR,
+    _FACTORY_PROVIDER_PATTERNS,
+    _OAUTH_AUTH_PREFIXES,
+    _PROVIDER_PATCHERS,
+    PROVIDER_LOGIN_CONFIG,
+    ProviderDefinitionsLoadError,
+    _build_provider_login_config,
+    _ensure_config,
+    _get_claude_aliases,
+    _get_factory_api_key,
+    _get_provider_definitions,
+    _has_oauth_credentials,
+    _has_provider_credentials,
+    _inject_api_key_into_cliproxy,
+    _inject_cursor_into_cliproxy,
+    _inject_kiro_into_cliproxy,
+    _load_json,
+    _patch_glm_provider,
+    _patch_kilo_provider,
+    _patch_minimax_provider,
+    _patch_provider_aliases,
+    _patch_roo_provider,
+    _resolve_claude_aliases,
+)
+from thegent.use_cases.manage_cliproxy_login import (  # noqa: F401
+    _LOGIN_FLAGS,
+    run_login,
+    run_login_unified,
+)
 
 # Re-export process-management primitives from the use_case layer so callers
 # that imported them via this module keep working without changes.
@@ -59,42 +81,15 @@ from thegent.use_cases.manage_cliproxy_runtime import (  # noqa: F401
     resolve_binary,
     start_proxy_managed,
 )
-from thegent.use_cases.manage_cliproxy_config import (  # noqa: F401
-    PROVIDER_LOGIN_CONFIG,
-    ProviderDefinitionsLoadError,
-    _CLIPROXY_DATA_DIR,
-    _FACTORY_PROVIDER_PATTERNS,
-    _OAUTH_AUTH_PREFIXES,
-    _PROVIDER_PATCHERS,
-    _build_provider_login_config,
-    _ensure_config,
-    _get_claude_aliases,
-    _get_factory_api_key,
-    _get_provider_definitions,
-    _has_oauth_credentials,
-    _has_provider_credentials,
-    _inject_api_key_into_cliproxy,
-    _inject_cursor_into_cliproxy,
-    _inject_kiro_into_cliproxy,
-    _load_json,
-    _patch_glm_provider,
-    _patch_kilo_provider,
-    _patch_minimax_provider,
-    _patch_provider_aliases,
-    _patch_roo_provider,
-    _resolve_claude_aliases,
-)
-from thegent.use_cases.manage_cliproxy_login import (  # noqa: F401
-    _LOGIN_FLAGS,
-    run_login,
-    run_login_unified,
-)
 
 _LOG = logging.getLogger(__name__)
 
 _CLIPROXY_DATA_DIR = Path(__file__).parent / "cliproxy_data"
 
-_LAST_PROVIDER_METRICS_STATUS: dict[str, Any] = {"status": "not_requested", "metrics": None}
+_LAST_PROVIDER_METRICS_STATUS: dict[str, Any] = {
+    "status": "not_requested",
+    "metrics": None,
+}
 
 # ---------------------------------------------------------------------------
 # Provider metrics fetch (kept here because the test suite imports it via
@@ -102,7 +97,9 @@ _LAST_PROVIDER_METRICS_STATUS: dict[str, Any] = {"status": "not_requested", "met
 # ---------------------------------------------------------------------------
 
 
-def fetch_provider_metrics(settings: ThegentSettings | None = None) -> dict[str, dict] | None:
+def fetch_provider_metrics(
+    settings: ThegentSettings | None = None,
+) -> dict[str, dict] | None:
     """Fetch per-provider metrics from CLIProxyAPIPlus GET /v1/metrics/providers."""
     global _LAST_PROVIDER_METRICS_STATUS  # noqa: PLW0603
     settings = settings or ThegentSettings()

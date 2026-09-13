@@ -14,6 +14,7 @@
 Many shell hooks and Python utilities invoke `git` via subprocess. These are intentional — they wrap the system git binary and do not need a Rust library migration.
 
 Key locations:
+
 - `hooks/` — various `.sh` hook scripts call `git status`, `git diff`, `git log`
 - `cli/` — Python CLI subcommands use `subprocess.run(["git", ...])` for operations like `git rev-parse`
 - `commands/` — command implementations that check HEAD, branch, and diff state
@@ -25,11 +26,13 @@ These subprocess calls are **retained as-is**. Migrating them to native Rust wou
 **Crate:** `crates/thegent-git/` (BKM-06)
 
 **Previous state (before BKM-06 migration):**
+
 - Primary dependency: `git2 = "0.20.4"` — libgit2 C bindings
 - gix dependency: `gix = "0.79.0"` (optional, stub-only)
 - `gix_impl` module: contained stubs returning errors
 
 **Current state (post-migration):**
+
 - Primary dependency: `gix = "0.79.0"` with `status` + `dirwalk` features (enabled by default)
 - `git2 = "0.20.4"` retained as required dep for Python extension fallback
 - `gix_impl` module: **fully implemented** with real gix calls
@@ -43,16 +46,16 @@ These subprocess calls are **retained as-is**. Migrating them to native Rust wou
 
 ### Rationale
 
-| Criterion | git2 (libgit2) | gix (gitoxide) |
-|-----------|----------------|----------------|
-| Language | C bindings | Pure Rust |
-| System deps | libgit2 + openssl + libssh2 | None |
-| Async support | Poor (blocking C calls) | Native async (gix-async) |
-| Performance | Good | Equal or better (SIMD via `max-performance-safe`) |
-| Safety | C FFI unsafe surface | Safe Rust throughout |
-| Binary size | Larger (C + Rust) | Smaller (Rust only) |
-| Cross-compile | Hard (C toolchain needed) | Easy (cargo cross) |
-| Status check | `repo.statuses()` | `repo.is_dirty()` / `Platform::into_iter()` |
+| Criterion     | git2 (libgit2)              | gix (gitoxide)                                    |
+| ------------- | --------------------------- | ------------------------------------------------- |
+| Language      | C bindings                  | Pure Rust                                         |
+| System deps   | libgit2 + openssl + libssh2 | None                                              |
+| Async support | Poor (blocking C calls)     | Native async (gix-async)                          |
+| Performance   | Good                        | Equal or better (SIMD via `max-performance-safe`) |
+| Safety        | C FFI unsafe surface        | Safe Rust throughout                              |
+| Binary size   | Larger (C + Rust)           | Smaller (Rust only)                               |
+| Cross-compile | Hard (C toolchain needed)   | Easy (cargo cross)                                |
+| Status check  | `repo.statuses()`           | `repo.is_dirty()` / `Platform::into_iter()`       |
 
 ### Feature Flags (thegent-git)
 
@@ -65,6 +68,7 @@ python = ["pyo3"]          # Python extension module
 ```
 
 To revert to git2 only (not recommended):
+
 ```
 cargo build --no-default-features
 ```
@@ -73,27 +77,27 @@ cargo build --no-default-features
 
 ## 3. API Mapping: git2 → gix
 
-| Operation | git2 | gix |
-|-----------|------|-----|
-| Open repo | `Repository::discover(path)` | `gix::discover(path)` |
-| HEAD SHA | `repo.head()?.target()` | `repo.head_id()?.to_hex()` |
-| Branch name | `repo.head()?.shorthand()` | `repo.head()?.kind` → `Kind::Symbolic(r)` → `r.name.shorten()` |
-| Is dirty | custom status loop | `repo.is_dirty()` (requires `status` feature) |
-| Status list | `repo.statuses()` iterator | `repo.status(progress).into_iter()` |
-| Diff text | `repo.diff_tree_to_workdir_with_index()` | subprocess `git diff` (gix yields structured data) |
-| Diff stats | `diff.stats()` | parse patch text from `git diff --stat` |
-| Object ID | `git2::Oid` | `gix::ObjectId` |
-| Reference | `git2::Reference` | `gix_ref::Reference` (field `.name: FullName`) |
+| Operation   | git2                                     | gix                                                            |
+| ----------- | ---------------------------------------- | -------------------------------------------------------------- |
+| Open repo   | `Repository::discover(path)`             | `gix::discover(path)`                                          |
+| HEAD SHA    | `repo.head()?.target()`                  | `repo.head_id()?.to_hex()`                                     |
+| Branch name | `repo.head()?.shorthand()`               | `repo.head()?.kind` → `Kind::Symbolic(r)` → `r.name.shorten()` |
+| Is dirty    | custom status loop                       | `repo.is_dirty()` (requires `status` feature)                  |
+| Status list | `repo.statuses()` iterator               | `repo.status(progress).into_iter()`                            |
+| Diff text   | `repo.diff_tree_to_workdir_with_index()` | subprocess `git diff` (gix yields structured data)             |
+| Diff stats  | `diff.stats()`                           | parse patch text from `git diff --stat`                        |
+| Object ID   | `git2::Oid`                              | `gix::ObjectId`                                                |
+| Reference   | `git2::Reference`                        | `gix_ref::Reference` (field `.name: FullName`)                 |
 
 ### Type Changes
 
-| git2 Type | gix Type | Notes |
-|-----------|----------|-------|
-| `git2::Oid` | `gix::ObjectId` | `.to_string()` works on both |
-| `git2::Repository` | `gix::Repository` | open via `gix::discover()` |
-| `git2::Reference` | `gix_ref::Reference` | name via `.name.shorten()` |
-| `git2::Status` | `gix::status::index_worktree::iter::Item` | enum variant matching |
-| `git2::DiffFormat::Patch` | N/A (subprocess) | gix produces structured data |
+| git2 Type                 | gix Type                                  | Notes                        |
+| ------------------------- | ----------------------------------------- | ---------------------------- |
+| `git2::Oid`               | `gix::ObjectId`                           | `.to_string()` works on both |
+| `git2::Repository`        | `gix::Repository`                         | open via `gix::discover()`   |
+| `git2::Reference`         | `gix_ref::Reference`                      | name via `.name.shorten()`   |
+| `git2::Status`            | `gix::status::index_worktree::iter::Item` | enum variant matching        |
+| `git2::DiffFormat::Patch` | N/A (subprocess)                          | gix produces structured data |
 
 ---
 
@@ -112,6 +116,7 @@ pub mod gix_impl {
 ```
 
 These are imported by `thegent-hooks` as:
+
 ```rust
 use thegent_git::gix_impl;
 ```
@@ -131,6 +136,7 @@ gix = { version = "0.79.0", default-features = false, features = [
 ```
 
 The workspace `[workspace.dependencies]` in `crates/Cargo.toml` provides a shared definition:
+
 ```toml
 [workspace.dependencies]
 gix = { version = "0.79.0", default-features = false, features = ["max-performance-safe"] }
@@ -162,6 +168,7 @@ The following git2-backed items in `lib.rs` have not been migrated yet because t
 2. **Public lib functions** (`head_sha`, `branch_name`, `is_dirty`, `status_short`, `diff_stats`) — still use git2 directly. The `gix_impl` module provides the gix-native equivalents; a follow-up task should flip the public functions to delegate to `gix_impl` when the `gix` feature is active.
 
 The `gix_impl` module is now the canonical gix entry point. A follow-up task should:
+
 1. Move Python extension to use `gix_impl::*` functions
 2. Deprecate the git2-backed public functions
 3. Remove `git2` as a required dep once the Python extension is gix-native

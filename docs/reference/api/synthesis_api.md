@@ -15,7 +15,7 @@ Orchestrates neural-symbolic program generation.
 
 ### Methods
 
-#### ProgramSynthesizer.__init__
+#### ProgramSynthesizer.**init**
 
 ```python
 __init__(self: Any, run_id: str)

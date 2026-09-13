@@ -30,7 +30,7 @@ Manages isolated resources for agents.
 
 ### Methods
 
-#### ResourceIsolator.__init__
+#### ResourceIsolator.**init**
 
 ```python
 __init__(self: Any, base_tmp_dir: Path)

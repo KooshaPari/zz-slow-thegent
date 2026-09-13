@@ -15,7 +15,7 @@ import sys
 import textwrap
 import types
 from typing import TYPE_CHECKING
-from unittest.mock import MagicMock, patch
+from unittest.mock import patch
 
 import pytest
 
@@ -276,7 +276,8 @@ class TestSyncResearch:
         cmd = _make_cmd(tmp_path, work_stream_path=ws)
 
         with patch(
-            "thegent.commands.sync._locked_file_access", side_effect=BlockingIOError(11, "resource unavailable")
+            "thegent.commands.sync._locked_file_access",
+            side_effect=BlockingIOError(11, "resource unavailable"),
         ):
             with patch.dict(sys.modules, {"thegent.cli.commands.impl": _stub_impl(merged=0)}):
                 op = cmd.sync_research()
@@ -371,4 +372,9 @@ class TestSyncAllWithNewOps:
         result = cmd.sync_all()
         assert isinstance(result, SyncResult)
         assert len(result.operations) == 4
-        assert set(ops_called) == {"sync_work_stream", "sync_config", "sync_agents", "sync_hooks"}
+        assert set(ops_called) == {
+            "sync_work_stream",
+            "sync_config",
+            "sync_agents",
+            "sync_hooks",
+        }

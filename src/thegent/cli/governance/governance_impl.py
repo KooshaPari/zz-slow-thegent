@@ -20,12 +20,10 @@ mirroring the AUDIT-N+9 observability pattern.
 
 from __future__ import annotations
 
-import os
 from pathlib import Path
 from typing import Any
 
 from thegent.config import ThegentSettings
-
 
 # ---------------------------------------------------------------------------
 # Internal helpers
@@ -328,8 +326,9 @@ def sweep_impl(
 # ``thegent.cli.governance.governance_impl`` get the same function object).
 # ---------------------------------------------------------------------------
 
-from thegent.cli.commands.observability_impl import escalate_add_impl  # noqa: E402, F401
-
+from thegent.cli.commands.observability_impl import (
+    escalate_add_impl,  # noqa: E402, F401
+)
 
 __all__ = [
     "escalate_add_impl",

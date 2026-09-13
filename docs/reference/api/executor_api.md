@@ -36,6 +36,7 @@ Assign tasks to agents.
 Orchestrates agent-task execution in crews.
 
 Manages:
+
 - Task-to-agent assignment
 - Multi-agent coordination
 - Result consolidation
@@ -43,7 +44,7 @@ Manages:
 
 ### Methods
 
-#### CrewExecutor.__init__
+#### CrewExecutor.**init**
 
 ```python
 __init__(self: Any, crew: Crew, task_executor: Any, agent_assigner: Any)
@@ -160,6 +161,7 @@ Assign tasks to agents based on role/capability matching.
 Executes tasks with dependency resolution.
 
 Handles:
+
 - Topological sorting of tasks
 - Dependency resolution
 - Task execution via agent_executor callback
@@ -167,7 +169,7 @@ Handles:
 
 ### Methods
 
-#### TaskExecutor.__init__
+#### TaskExecutor.**init**
 
 ```python
 __init__(self: Any, max_retries: int, timeout_seconds: int, agent_executor: Any)

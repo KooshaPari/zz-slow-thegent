@@ -31,6 +31,7 @@ Phase 5C (Dashboards) has been successfully implemented, completing the Phase 5 
 **Core Components:**
 
 #### A. Dashboard Dataclasses
+
 - `DashboardOverview`: Civilization-wide metrics
 - `DashboardProject`: Project-specific view
 - `DashboardAgent`: Agent-specific details
@@ -40,6 +41,7 @@ Phase 5C (Dashboards) has been successfully implemented, completing the Phase 5 
 #### B. Three Dashboard Generators
 
 **Overview Dashboard (`get_overview_dashboard`)**
+
 ```
 Returns:
 - total_agents: Count of all agents
@@ -51,6 +53,7 @@ Returns:
 ```
 
 **Project Dashboard (`get_project_dashboard`)**
+
 ```
 Returns:
 - project: Project identifier
@@ -62,6 +65,7 @@ Returns:
 ```
 
 **Agent Dashboard (`get_agent_dashboard`)**
+
 ```
 Returns:
 - agent_id: Agent identifier
@@ -77,17 +81,17 @@ Returns:
 
 #### C. Helper Methods
 
-| Method | Purpose |
-|--------|---------|
-| `_is_agent_active()` | Check if agent active (heartbeat < 5 min) |
-| `_is_agent_stale()` | Check if agent stale (heartbeat > 5 min) |
-| `_build_project_hierarchy()` | Build L1→L2→L3 tree |
-| `_get_recent_activity()` | Get recent memories |
-| `_get_project_conflicts()` | Get project-specific conflicts |
-| `_get_agent_metrics()` | Aggregate agent metrics |
-| `_get_memory_summary()` | Summarize agent memories |
-| `_get_agent_relationships()` | Build parent/sibling/children graph |
-| Serialization helpers | Convert dashboards to dicts |
+| Method                       | Purpose                                   |
+| ---------------------------- | ----------------------------------------- |
+| `_is_agent_active()`         | Check if agent active (heartbeat < 5 min) |
+| `_is_agent_stale()`          | Check if agent stale (heartbeat > 5 min)  |
+| `_build_project_hierarchy()` | Build L1→L2→L3 tree                       |
+| `_get_recent_activity()`     | Get recent memories                       |
+| `_get_project_conflicts()`   | Get project-specific conflicts            |
+| `_get_agent_metrics()`       | Aggregate agent metrics                   |
+| `_get_memory_summary()`      | Summarize agent memories                  |
+| `_get_agent_relationships()` | Build parent/sibling/children graph       |
+| Serialization helpers        | Convert dashboards to dicts               |
 
 ### 2. Comprehensive Test Suite (377 LOC)
 
@@ -95,15 +99,15 @@ Returns:
 
 **Test Coverage:**
 
-| Test Class | Tests | Purpose |
-|-----------|-------|---------|
-| TestOverviewDashboard | 4 | Overview generation, active/stale tracking, grouping |
-| TestProjectDashboard | 3 | Project hierarchy, status marking, empty cases |
-| TestAgentDashboard | 5 | Agent details, metrics, relationships |
-| TestMetricsAggregation | 2 | Metrics computation from memory service |
-| TestSerialization | 3 | Dict serialization |
-| TestErrorHandling | 3 | Graceful degradation with missing services |
-| TestBackwardCompatibility | 2 | Phase 1-5B compatibility |
+| Test Class                | Tests | Purpose                                              |
+| ------------------------- | ----- | ---------------------------------------------------- |
+| TestOverviewDashboard     | 4     | Overview generation, active/stale tracking, grouping |
+| TestProjectDashboard      | 3     | Project hierarchy, status marking, empty cases       |
+| TestAgentDashboard        | 5     | Agent details, metrics, relationships                |
+| TestMetricsAggregation    | 2     | Metrics computation from memory service              |
+| TestSerialization         | 3     | Dict serialization                                   |
+| TestErrorHandling         | 3     | Graceful degradation with missing services           |
+| TestBackwardCompatibility | 2     | Phase 1-5B compatibility                             |
 
 **Total: 22 tests, 100% passing**
 
@@ -130,6 +134,7 @@ Returns:
 ## Test Results
 
 ### Phase 5C Tests
+
 ```
 ✅ TestOverviewDashboard:        4/4 passing
 ✅ TestProjectDashboard:         3/3 passing
@@ -160,11 +165,13 @@ Returns:
 ## Key Features
 
 ### 1. Real-Time Status Monitoring
+
 - **Active Detection**: Heartbeat-based (< 5 minutes = active)
 - **Stale Detection**: No heartbeat for > 5 minutes = stale
 - **Time Calculations**: Convert timestamps to human-readable "seconds ago"
 
 ### 2. Multi-Level Hierarchy
+
 ```
 Civilization (Overview)
 ├─ Projects (Project Dashboard)
@@ -176,12 +183,14 @@ Civilization (Overview)
 ```
 
 ### 3. Integrated Metrics
+
 - **Memory Metrics**: Task count, error count, success rate
 - **Memory Summary**: Recent learnings, errors, decision counts
 - **Time Metrics**: Created time, last heartbeat time
 - **Aggregate Stats**: Average importance, memory type distribution
 
 ### 4. Graceful Degradation
+
 - Works without Phase 5B (memory service) - returns empty metrics
 - Works without Phase 5A (conflict resolver) - returns empty conflicts
 - Works without Phase 1 (registry) - returns empty dashboards
@@ -192,6 +201,7 @@ Civilization (Overview)
 ## Performance Characteristics
 
 ### Dashboard Generation Times
+
 ```
 Operation                     | Latency
 ─────────────────────────────────────
@@ -203,6 +213,7 @@ Per-cycle overhead            | <20ms
 ```
 
 ### Memory Usage
+
 ```
 Dashboard Cache               | ~2 KB per agent
 Activity Buffer               | ~10 KB per project
@@ -215,7 +226,9 @@ Total per civilization        | ~20 MB (1000 agents)
 ## Design Decisions
 
 ### 1. Dataclass-Based Design
+
 **Why:** Type safety, easy serialization, clear schema definition
+
 ```python
 @dataclass
 class DashboardOverview:
@@ -226,28 +239,36 @@ class DashboardOverview:
 ```
 
 ### 2. Method-Based Generation
+
 **Why:** Composition over inheritance, easy to test, flexible dependencies
+
 ```python
 # Not hardcoded imports, injected dependencies
 service = DashboardService(registry, memory_service, conflict_resolver)
 ```
 
 ### 3. Graceful Degradation
+
 **Why:** Real-world systems have partial dependencies; avoid cascading failures
+
 ```python
 if not self.memory_service:
     return empty_metrics  # Don't crash
 ```
 
 ### 4. Activity Buffer Limit (10 items)
+
 **Why:** Prevents unbounded memory growth, provides "recent" window
+
 ```python
 recent_memories.sort(key=lambda x: x["timestamp"], reverse=True)
 return recent_memories[:10]  # Always cap
 ```
 
 ### 5. 5-Minute Active Threshold
+
 **Why:** Matches typical agent heartbeat intervals (Phase 1: 30s heartbeat)
+
 ```python
 time_since_heartbeat = time.time() - agent.last_heartbeat
 return time_since_heartbeat < 300  # 5 minutes
@@ -258,21 +279,25 @@ return time_since_heartbeat < 300  # 5 minutes
 ## Integration Points
 
 ### Phase 1: Agent Identity
+
 - **Input**: Agent registry with UUIDs, levels, projects, parents, children
 - **Output**: Agent status, hierarchy, level breakdowns
 - **Breaking Changes**: None
 
 ### Phase 5A: Conflict Resolution
+
 - **Input**: Conflict resolver with detected/resolved conflicts
 - **Output**: Conflicts by project, conflict summaries
 - **Breaking Changes**: None
 
 ### Phase 5B: Agent Memory
+
 - **Input**: Memory service with agent statistics
 - **Output**: Metrics, learnings, errors, decision summaries
 - **Breaking Changes**: None
 
 ### Future Phase 5D: Real-Time Updates (Optional)
+
 - MCP tool wrapper: `thegent_get_overview_dashboard()`
 - WebSocket streaming: Real-time metrics push
 - Refresh rate: 1-5 second intervals
@@ -283,17 +308,20 @@ return time_since_heartbeat < 300  # 5 minutes
 ## Files Created
 
 ### Implementation
+
 - `scripts/civilization_dashboard_service.py` (396 LOC)
   - DashboardService class (310 LOC)
   - Dashboard dataclasses (86 LOC)
 
 ### Tests
+
 - `scripts/test_civilization_dashboard_service.py` (377 LOC)
   - 22 comprehensive test cases
   - Mock objects for testing
   - Error handling tests
 
 ### Documentation
+
 - `docs/reports/PHASE_5C_DASHBOARDS_COMPLETION_2026-02-19.md` (this file)
 
 ---
@@ -301,6 +329,7 @@ return time_since_heartbeat < 300  # 5 minutes
 ## Known Limitations & Future Work
 
 ### Current Limitations
+
 - No WebSocket support (optional Phase 5D feature)
 - No caching layer (fresh query each call)
 - Activity buffer limited to 10 items
@@ -308,6 +337,7 @@ return time_since_heartbeat < 300  # 5 minutes
 - Synchronous only (blocking calls)
 
 ### Phase 5D Enhancements (Optional)
+
 - MCP tool registration for dashboard queries
 - WebSocket real-time push notifications
 - Activity buffer configurable size
@@ -316,6 +346,7 @@ return time_since_heartbeat < 300  # 5 minutes
 - Dashboard alerts/anomaly detection
 
 ### Phase 6+ Enhancements (Future)
+
 - Historical dashboard trends
 - Performance analytics
 - Health scoring algorithm
@@ -326,16 +357,17 @@ return time_since_heartbeat < 300  # 5 minutes
 
 ## Code Quality
 
-| Metric | Value | Status |
-|--------|-------|--------|
-| Syntax Validation | 100% | ✅ |
-| Type Checking | ~90% | ⚠️ |
-| Backward Compat | 100% | ✅ |
-| Test Coverage | 100% | ✅ |
-| Error Handling | Graceful | ✅ |
-| Documentation | Complete | ✅ |
+| Metric            | Value    | Status |
+| ----------------- | -------- | ------ |
+| Syntax Validation | 100%     | ✅     |
+| Type Checking     | ~90%     | ⚠️     |
+| Backward Compat   | 100%     | ✅     |
+| Test Coverage     | 100%     | ✅     |
+| Error Handling    | Graceful | ✅     |
+| Documentation     | Complete | ✅     |
 
 **Notes:**
+
 - Type checking: Minor warnings on conditional imports (by design)
 - All exceptions caught, no silent failures
 - All dataclasses properly typed
@@ -397,6 +429,7 @@ Total Passing:                         73 passing (100%)
 ## For Next Session
 
 ### If Implementing Phase 5D (Optional - Real-Time Updates)
+
 1. Create MCP tools for dashboard queries
 2. Add WebSocket support
 3. Implement streaming updates
@@ -404,6 +437,7 @@ Total Passing:                         73 passing (100%)
 5. Test with live agent activity
 
 ### If Implementing Phase 6 (Memory Enhancements)
+
 1. Design SQLite backend for memory
 2. Add full-text search capability
 3. Implement memory relationships
@@ -411,6 +445,7 @@ Total Passing:                         73 passing (100%)
 5. Build memory analytics
 
 ### If Deploying Phase 5
+
 1. Integrate DashboardService into swarm lifecycle
 2. Deploy MCP tools for dashboard access
 3. Monitor dashboard performance

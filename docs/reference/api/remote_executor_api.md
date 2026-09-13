@@ -15,13 +15,13 @@ not specify an explicit target node on the :class:`RemoteTask`.
 
 Environment variable configuration (read at construction time):
 
-* ``THGENT_REMOTE_NODES`` — comma-separated list of hostnames/IPs.
-* ``THGENT_REMOTE_SSH_USER`` — SSH login user (optional; defaults to
+- `THGENT_REMOTE_NODES` — comma-separated list of hostnames/IPs.
+- `THGENT_REMOTE_SSH_USER` — SSH login user (optional; defaults to
   the current OS user when omitted).
 
 ### Methods
 
-#### RemoteExecutor.__init__
+#### RemoteExecutor.**init**
 
 ```python
 __init__(self: Any, nodes: Any, ssh_user: Any)
@@ -35,9 +35,9 @@ __init__(self: Any, nodes: Any, ssh_user: Any)
 available_nodes(self: Any)
 ```
 
-Return the subset of configured nodes reachable via ``ping``.
+Return the subset of configured nodes reachable via `ping`.
 
-Each node is tested with a single ICMP packet (``ping -c 1 -W 2``).
+Each node is tested with a single ICMP packet (`ping -c 1 -W 2`).
 Unreachable nodes are logged at DEBUG level and omitted from the
 result.
 
@@ -52,7 +52,7 @@ originally configured.
 execute(self: Any, task: RemoteTask)
 ```
 
-Execute *task* on a remote node via SSH.
+Execute _task_ on a remote node via SSH.
 
 **Parameters**:
 
@@ -90,9 +90,9 @@ Describes a task to be executed on a remote node.
 available_nodes(self: Any)
 ```
 
-Return the subset of configured nodes reachable via ``ping``.
+Return the subset of configured nodes reachable via `ping`.
 
-Each node is tested with a single ICMP packet (``ping -c 1 -W 2``).
+Each node is tested with a single ICMP packet (`ping -c 1 -W 2`).
 Unreachable nodes are logged at DEBUG level and omitted from the
 result.
 
@@ -107,7 +107,7 @@ originally configured.
 execute(self: Any, task: RemoteTask)
 ```
 
-Execute *task* on a remote node via SSH.
+Execute _task_ on a remote node via SSH.
 
 **Parameters**:
 
@@ -118,6 +118,6 @@ Execute *task* on a remote node via SSH.
 **Raises**:
 
 - `RemoteExecutorError`: If no nodes are configured, node selection
-fails, or the SSH process cannot be spawned.
+  fails, or the SSH process cannot be spawned.
 
 ---

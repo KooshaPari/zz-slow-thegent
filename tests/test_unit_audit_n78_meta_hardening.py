@@ -13,12 +13,9 @@ Source: src/thegent/governance/meta.py
 from __future__ import annotations
 
 import json
-import tempfile
 from pathlib import Path
 
-import pytest
-
-from thegent.governance.meta import MetaGovernance, Rule, ConstitutionalPrinciple
+from thegent.governance.meta import MetaGovernance
 
 
 class TestMetaGovernanceInit:
@@ -81,7 +78,7 @@ class TestValidateAction:
 class TestSaveConstitution:
     def test_creates_parent_dirs(self, tmp_path):
         path = tmp_path / "a" / "b" / "constitution.json"
-        mg = MetaGovernance(constitution_path=path)
+        MetaGovernance(constitution_path=path)
         assert path.exists()
 
     def test_persists_rules(self, tmp_path):

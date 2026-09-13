@@ -65,6 +65,7 @@ normalize_path(None)
 ```
 
 **Raises**:
+
 - `TypeError` if `path` is not `str`, `Path`, or `None`.
 
 ---
@@ -92,6 +93,7 @@ safe_join("/tmp/sandbox", "sub", "..", "other.txt")
 ```
 
 **Raises**:
+
 - `ValueError` if the joined path would escape `base`.
 
 **Security note**: Always use `safe_join` (not the `/` operator) when any path component comes from user input, configuration files, or environment variables.
@@ -105,10 +107,10 @@ Return `True` if `child` is at or below `parent` in the filesystem tree.
 Both paths are fully resolved (symlinks expanded, `..` collapsed) before comparison.
 
 ```python
-is_within("/tmp/foo/bar.txt", "/tmp/foo")    # True
-is_within("/tmp/foo", "/tmp/foo")            # True  (same path)
-is_within("/tmp/foo", "/tmp/foo/bar")        # False (parent is not within child)
-is_within("/tmp/foo_extra", "/tmp/foo")      # False (prefix != path component)
+is_within("/tmp/foo/bar.txt", "/tmp/foo")  # True
+is_within("/tmp/foo", "/tmp/foo")  # True  (same path)
+is_within("/tmp/foo", "/tmp/foo/bar")  # False (parent is not within child)
+is_within("/tmp/foo_extra", "/tmp/foo")  # False (prefix != path component)
 ```
 
 **Note on symlinks**: `/tmp/link/file` where `link -> /tmp/real` will report `True` for `is_within("/tmp/link/file", "/tmp/real")` because both sides are resolved.
@@ -120,10 +122,10 @@ is_within("/tmp/foo_extra", "/tmp/foo")      # False (prefix != path component)
 Check whether `path` exists without raising on permission or OS errors.
 
 ```python
-safe_exists("/tmp")                         # True
-safe_exists("/nonexistent/path")            # False
-safe_exists("/root/secret")                 # False  (PermissionError caught)
-safe_exists("~/projects")                   # True  (~ expanded before check)
+safe_exists("/tmp")  # True
+safe_exists("/nonexistent/path")  # False
+safe_exists("/root/secret")  # False  (PermissionError caught)
+safe_exists("~/projects")  # True  (~ expanded before check)
 ```
 
 Unlike `Path.exists()`, this never propagates `PermissionError` or `OSError`.
@@ -158,12 +160,13 @@ ensure_dir("/tmp/myapp/logs")
 ensure_dir("~/.thegent/sessions")
 # PosixPath('/Users/username/.thegent/sessions')
 
-ensure_dir("/tmp")   # already exists -- no error
+ensure_dir("/tmp")  # already exists -- no error
 ```
 
 **Returns**: Resolved absolute `Path` of the created/existing directory.
 
 **Raises**:
+
 - `NotADirectoryError` if `path` exists but is a file.
 - `PermissionError` if the directory cannot be created.
 
@@ -173,13 +176,13 @@ ensure_dir("/tmp")   # already exists -- no error
 
 These are lower-level utilities retained from the original implementation.
 
-| Function | Description |
-|---|---|
-| `path_to_str(path)` | Convert `Path`/`str`/`None` to `str`; `None` returns `""`. |
-| `get_common_ancestor(*paths)` | Find the common ancestor directory of multiple paths. |
-| `is_same_path(p1, p2)` | Check if two paths refer to the same filesystem object (handles symlinks). |
-| `is_absolute_or_relative(path)` | `True` if path is absolute; `False` if relative (`~` counts as relative). |
-| `strip_common_prefix(paths)` | Strip common directory prefix from a list of paths; useful for display. |
+| Function                        | Description                                                                |
+| ------------------------------- | -------------------------------------------------------------------------- |
+| `path_to_str(path)`             | Convert `Path`/`str`/`None` to `str`; `None` returns `""`.                 |
+| `get_common_ancestor(*paths)`   | Find the common ancestor directory of multiple paths.                      |
+| `is_same_path(p1, p2)`          | Check if two paths refer to the same filesystem object (handles symlinks). |
+| `is_absolute_or_relative(path)` | `True` if path is absolute; `False` if relative (`~` counts as relative).  |
+| `strip_common_prefix(paths)`    | Strip common directory prefix from a list of paths; useful for display.    |
 
 ---
 
@@ -196,6 +199,7 @@ safe_join:      ValueError raised immediately                    -- SAFE
 ```
 
 **Rules**:
+
 1. Never use `Path.__truediv__` (`/`) or `os.path.join` with user input.
 2. Always use `safe_join(base, user_input)`.
 3. After any join, validate with `is_within(result, base)` if you have separate join logic.
@@ -207,6 +211,7 @@ safe_join:      ValueError raised immediately                    -- SAFE
 ### Symlink Resolution
 
 All functions that call `.resolve()` expand symlinks. This means:
+
 - A symlinked directory is treated as its real location for containment checks.
 - Circular symlinks will raise an `OSError` from Python's `resolve()` (not caught).
 
@@ -223,13 +228,14 @@ CONFIG_BASE = normalize_path("~/.myapp")
 ensure_dir(CONFIG_BASE)
 
 config_file = safe_join(CONFIG_BASE, "config.toml")
-logs_dir    = ensure_dir(safe_join(CONFIG_BASE, "logs"))
+logs_dir = ensure_dir(safe_join(CONFIG_BASE, "logs"))
 ```
 
 ### User Input Validation
 
 ```python
 from scripts.path_utils import normalize_path, is_within, safe_join
+
 
 def process_user_file(user_path: str, allowed_base: str) -> Path:
     """Process user-provided file path safely."""
@@ -276,14 +282,14 @@ Path comparisons via `.relative_to()` are case-sensitive on Linux and macOS (usu
 
 ## Migration Guide
 
-| Old pattern | New pattern |
-|---|---|
-| `os.path.expanduser("~/.app")` | `normalize_path("~/.app")` |
-| `os.path.join(base, user_input)` | `safe_join(base, user_input)` |
-| `base / user_input` | `safe_join(base, user_input)` |
-| `path.exists()` (may raise) | `safe_exists(path)` |
-| `os.makedirs(path, exist_ok=True)` | `ensure_dir(path)` |
-| `str(path)` (None-unsafe) | `path_to_str(path)` |
+| Old pattern                        | New pattern                   |
+| ---------------------------------- | ----------------------------- |
+| `os.path.expanduser("~/.app")`     | `normalize_path("~/.app")`    |
+| `os.path.join(base, user_input)`   | `safe_join(base, user_input)` |
+| `base / user_input`                | `safe_join(base, user_input)` |
+| `path.exists()` (may raise)        | `safe_exists(path)`           |
+| `os.makedirs(path, exist_ok=True)` | `ensure_dir(path)`            |
+| `str(path)` (None-unsafe)          | `path_to_str(path)`           |
 
 ---
 

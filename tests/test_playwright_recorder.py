@@ -8,10 +8,10 @@ Tests cover:
 - Result serialization
 """
 
-import orjson as json
 import tempfile
 from pathlib import Path
 
+import orjson as json
 import pytest  # type: ignore
 from pydantic_core import ValidationError
 
@@ -65,7 +65,10 @@ def _mock_playwright(monkeypatch: pytest.MonkeyPatch) -> None:
         async def start(self) -> _FakePlaywright:
             return _FakePlaywright()
 
-    monkeypatch.setattr("thegent.doc_tools.playwright_recorder.async_playwright", lambda: _FakeAsyncPlaywright())
+    monkeypatch.setattr(
+        "thegent.doc_tools.playwright_recorder.async_playwright",
+        lambda: _FakeAsyncPlaywright(),
+    )
 
 
 class TestRecordingConfig:

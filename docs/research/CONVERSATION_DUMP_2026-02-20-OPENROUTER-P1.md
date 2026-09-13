@@ -11,6 +11,7 @@ P0 blockers (WL-001 through WL-005) were already complete.
 ## Fixes Applied
 
 ### OR-08: HTTP-Referer and X-Title Headers
+
 **File:** `src/thegent/cliproxy_adapter.py` lines 27-41, 486-495, 624
 
 Added `_OPENROUTER_REFERER = "https://thegent.dev"`, `_OPENROUTER_TITLE = "thegent"` constants,
@@ -21,7 +22,9 @@ Only injects when `"openrouter.ai"` is found in backend URL. Uses `setdefault` s
 headers are not overwritten.
 
 ### OR-09: Forward `transforms` and `provider` fields in Responses API transform
+
 **Files:**
+
 - `src/thegent/cliproxy_adapter.py` lines 81-144 (`_responses_to_chat_completions`)
 - `src/thegent/routing/litellm_responses_handler.py` lines 115-174 (`_responses_to_chat_completions`)
 
@@ -34,6 +37,7 @@ Also extended to forward all standard optional sampling parameters (`top_p`, `to
 `tool_choice`, `parallel_tool_calls`, `stream_options`) — only when non-None.
 
 ### OR-10: Fix tool call streaming in transform mode
+
 **File:** `src/thegent/routing/litellm_responses_handler.py` lines 184-208 (`_chat_completions_to_responses`)
 
 The `_chat_completions_to_responses` function previously only extracted `delta.content` and returned
@@ -45,7 +49,9 @@ Note: `cliproxy_adapter.py` already had full tool call streaming support (GW-07,
 `tool_call_delta_events`, `tool_call_closing_events`). OR-10 fills the gap in the LiteLLM handler path.
 
 ### OR-11: Fix OpenRouter error format
+
 **Files:**
+
 - `src/thegent/routing/litellm_responses_handler.py` lines 15-35, 47-79
 
 Extended `_ERROR_STATUS_MAP` with entries for `"insufficient credits"` (402), `"payment required"` (402),
@@ -58,7 +64,9 @@ Updated streaming error payload in `handle_responses_stream` to include `code` f
 Updated WebSocket error send to include `code` field and use `contextlib.suppress` (fixed pre-existing SIM105).
 
 ### OR-12: Propagate actual model name from SSE chunks
+
 **Files:**
+
 - `src/thegent/cliproxy_adapter.py` line 673 (already present as GW-09, now labeled OR-12)
 - `src/thegent/routing/litellm_responses_handler.py` lines 290-319 (`handle_responses_stream`)
 - `src/thegent/routing/litellm_responses_handler.py` lines 248-251 (non-streaming path)
@@ -71,9 +79,11 @@ In `handle_responses_request` (non-streaming): uses `getattr(response, "model", 
 the actual model from the LiteLLM response object.
 
 ### OR-13: Handle OpenRouter-specific HTTP error codes
+
 **File:** `src/thegent/cliproxy_adapter.py` lines 530-553 (classes), 627-746 (`_proxy_stream`)
 
 Added:
+
 - `_NO_RETRY_STATUS_CODES: frozenset = {401, 402, 403, 400}` — hard-stop codes
 - `_RETRY_MAX_ATTEMPTS: dict = {408: 1, 502: 3, 503: 3}` — max retry attempts per code
 - `InsufficientCreditsError(RuntimeError)` — raised on 402, must not be retried
@@ -86,7 +96,9 @@ immediately yields error SSE and returns. On 408/502/503: raises `_RetryableStre
 retries up to max attempts.
 
 ### OR-14: Include `usage.cost` in `response.completed`
+
 **Files:**
+
 - `src/thegent/cliproxy_adapter.py` lines 354-393 (`_ResponsesStreamState.closing_events`)
 - `src/thegent/routing/litellm_responses_handler.py` lines 263-274 (non-streaming path)
 
@@ -99,6 +111,7 @@ In non-streaming `handle_responses_request`: extracts `usage.total_cost` from Li
 and includes it as `usage.cost` in the Responses API output when present.
 
 ### OR-15: Fix `/v1/models` to include OpenRouter proxy models
+
 **File:** `src/thegent/cliproxy_adapter.py` lines 763-814, 922
 
 Added `_OPENROUTER_PROXY_MODELS` list — 5 canonical OpenRouter model stubs:
@@ -112,6 +125,7 @@ Updated `_transform_models_response` signature to accept `inject_openrouter: boo
 Updated `proxy_handler` call site to pass `inject_openrouter=_is_openrouter_backend(backend)`.
 
 ### OR-16: Preserve content arrays in Responses transform
+
 **File:** `src/thegent/routing/litellm_responses_handler.py` lines 83-105 (`_responses_input_to_messages`)
 
 The previous implementation in `litellm_responses_handler.py` collapsed content arrays to plain

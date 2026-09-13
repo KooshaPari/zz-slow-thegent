@@ -6,16 +6,17 @@ filesystem notification, intent broadcast, conflict detection, and WAL.
 
 from __future__ import annotations
 
-import orjson as json
+import fcntl
 import logging
 import os
-import fcntl
 import threading
 import time
 import uuid
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
+
+import orjson as json
 
 try:
     from watchfiles import watch
@@ -263,7 +264,12 @@ class IntentBroadcaster:
         self.intents_dir.mkdir(parents=True, exist_ok=True, mode=0o1777)
 
     def broadcast(
-        self, agent_id: str, intent: str, target: str, operation: str = "read", metadata: dict[str, Any] | None = None
+        self,
+        agent_id: str,
+        intent: str,
+        target: str,
+        operation: str = "read",
+        metadata: dict[str, Any] | None = None,
     ) -> str:
         """Write a typed intent record and return the intent ID."""
         intent_id = f"{int(time.time())}.{uuid.uuid4().hex}"
@@ -391,7 +397,12 @@ class WriteAheadLog:
 
     def log(self, operation: str, data: dict[str, Any]):
         """Append entry to WAL before execution."""
-        entry = {"timestamp": time.time(), "op": operation, "data": data, "id": uuid.uuid4().hex}
+        entry = {
+            "timestamp": time.time(),
+            "op": operation,
+            "data": data,
+            "id": uuid.uuid4().hex,
+        }
         with open(self.wal_file, "a") as f:
             fcntl.flock(f, fcntl.LOCK_EX)
             f.write(json.dumps(entry).decode() + "\n")

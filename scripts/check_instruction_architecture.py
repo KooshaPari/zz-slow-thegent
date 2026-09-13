@@ -201,10 +201,7 @@ def _validate_wrapper_delegation(
         return Finding(
             kind="pre_work_gate_wrapper_logic_leak",
             path=_display_path(module_path),
-            message=(
-                f"Wrapper `{wrapper_name}` must delegate to "
-                f"`pre_work_gate_helpers.{helper_name}`."
-            ),
+            message=(f"Wrapper `{wrapper_name}` must delegate to `pre_work_gate_helpers.{helper_name}`."),
         )
 
     expected_params = [arg.arg for arg in target.args.posonlyargs + target.args.args + target.args.kwonlyargs]
@@ -282,7 +279,9 @@ def _validate_orchestration_wrapper_delegation(
 
     call_expr: ast.Call | None = None
     stmt = body[0]
-    if (isinstance(stmt, ast.Return) and stmt.value is not None and isinstance(stmt.value, ast.Call)) or (isinstance(stmt, ast.Expr) and isinstance(stmt.value, ast.Call)):
+    if (isinstance(stmt, ast.Return) and stmt.value is not None and isinstance(stmt.value, ast.Call)) or (
+        isinstance(stmt, ast.Expr) and isinstance(stmt.value, ast.Call)
+    ):
         call_expr = stmt.value
 
     if call_expr is None:
@@ -301,10 +300,7 @@ def _validate_orchestration_wrapper_delegation(
         return Finding(
             kind="orchestration_wrapper_logic_leak",
             path=_display_path(module_path),
-            message=(
-                f"Wrapper `{wrapper_name}` must delegate directly to "
-                f"`work_stream_orchestration.{helper_name}`."
-            ),
+            message=(f"Wrapper `{wrapper_name}` must delegate directly to `work_stream_orchestration.{helper_name}`."),
         )
 
     expected_params = [arg.arg for arg in target.args.posonlyargs + target.args.args + target.args.kwonlyargs]
@@ -480,9 +476,7 @@ def validate_mcp_server_boundary(
         return findings
 
     top_level_functions = [
-        node
-        for node in module_ast.body
-        if isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef))
+        node for node in module_ast.body if isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef))
     ]
     if len(top_level_functions) > max_top_level_functions:
         findings.append(

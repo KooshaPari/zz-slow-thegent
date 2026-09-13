@@ -9,7 +9,15 @@ from pathlib import Path
 from typing import Any
 
 ALLOWED_PHASES = {"analysis", "execution", "verification", "handoff"}
-ALLOWED_FINDING_TYPES = {"discovery", "decision", "claim", "risk", "patch", "test", "question"}
+ALLOWED_FINDING_TYPES = {
+    "discovery",
+    "decision",
+    "claim",
+    "risk",
+    "patch",
+    "test",
+    "question",
+}
 ALLOWED_SEVERITY = {"low", "med", "high", "critical"}
 ALLOWED_STATUS = {"pass", "fail", "skip"}
 
@@ -167,7 +175,13 @@ def _validate_report(payload: dict[str, Any], path: Path, errors: list[str]) -> 
 
     _validate_string(payload.get("lane_id", ""), 3, path, "lane_id", errors)
     _validate_string(payload.get("plan_id", ""), 3, path, "plan_id", errors)
-    _validate_string(payload.get("agent_context_version", ""), 1, path, "agent_context_version", errors)
+    _validate_string(
+        payload.get("agent_context_version", ""),
+        1,
+        path,
+        "agent_context_version",
+        errors,
+    )
 
     if payload.get("phase") not in ALLOWED_PHASES:
         errors.append(f"{path}:phase must be one of {sorted(ALLOWED_PHASES)}")

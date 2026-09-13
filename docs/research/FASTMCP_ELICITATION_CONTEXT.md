@@ -26,14 +26,14 @@ async def elicit(
 
 ### Overloads by `response_type`
 
-| `response_type` | Return type |
-|----------------|-------------|
-| `None` | `AcceptedElicitation[dict[str, Any]]` (empty dict) |
-| `type[T]` (e.g. `str`, `int`, `MyModel`) | `AcceptedElicitation[T]` |
-| `list[str]` (single-select options) | `AcceptedElicitation[str]` |
-| `dict[str, dict[str, str]]` (key → title mapping) | `AcceptedElicitation[str]` (selected key) |
-| `list[list[str]]` (multi-select) | `AcceptedElicitation[list[str]]` |
-| `list[dict[str, dict[str, str]]]` (multi-select with titles) | `AcceptedElicitation[list[str]]` |
+| `response_type`                                              | Return type                                        |
+| ------------------------------------------------------------ | -------------------------------------------------- |
+| `None`                                                       | `AcceptedElicitation[dict[str, Any]]` (empty dict) |
+| `type[T]` (e.g. `str`, `int`, `MyModel`)                     | `AcceptedElicitation[T]`                           |
+| `list[str]` (single-select options)                          | `AcceptedElicitation[str]`                         |
+| `dict[str, dict[str, str]]` (key → title mapping)            | `AcceptedElicitation[str]` (selected key)          |
+| `list[list[str]]` (multi-select)                             | `AcceptedElicitation[list[str]]`                   |
+| `list[dict[str, dict[str, str]]]` (multi-select with titles) | `AcceptedElicitation[list[str]]`                   |
 
 ### Behavior
 
@@ -52,6 +52,7 @@ async def elicit(
 # fastmcp.server.elicitation
 class AcceptedElicitation(BaseModel, Generic[T]):
     """Result when user accepts the elicitation."""
+
     action: Literal["accept"] = "accept"
     data: T
 ```
@@ -64,12 +65,16 @@ class AcceptedElicitation(BaseModel, Generic[ElicitSchemaModelT]):
     action: Literal["accept"] = "accept"
     data: ElicitSchemaModelT
 
+
 class DeclinedElicitation(BaseModel):
     """Result when user declines the elicitation."""
+
     action: Literal["decline"] = "decline"
+
 
 class CancelledElicitation(BaseModel):
     """Result when user cancels the elicitation."""
+
     action: Literal["cancel"] = "cancel"
 ```
 
@@ -161,6 +166,7 @@ Dependency that resolves to the active FastMCP `Context` for the current MCP ope
 ```python
 from fastmcp.dependencies import CurrentContext
 
+
 @mcp.tool()
 async def my_tool(ctx: Context = CurrentContext()) -> str:
     await ctx.info("Processing...")
@@ -176,22 +182,21 @@ async def my_tool(ctx: Context = CurrentContext()) -> str:
 
 ## Quick Reference
 
-| API | Purpose |
-|-----|---------|
+| API                                  | Purpose                                                                                                 |
+| ------------------------------------ | ------------------------------------------------------------------------------------------------------- |
 | `ctx.elicit(message, response_type)` | Request user input; returns `AcceptedElicitation[T]` \| `DeclinedElicitation` \| `CancelledElicitation` |
-| `ctx.info(msg)` | Send INFO log to client |
-| `ctx.debug(msg)` | Send DEBUG log to client |
-| `ctx.error(msg)` | Send ERROR log to client |
-| `ctx.warning(msg)` | Send WARNING log to client |
-| `CurrentContext()` | Dependency for injecting `Context` into tools/resources/prompts |
-
+| `ctx.info(msg)`                      | Send INFO log to client                                                                                 |
+| `ctx.debug(msg)`                     | Send DEBUG log to client                                                                                |
+| `ctx.error(msg)`                     | Send ERROR log to client                                                                                |
+| `ctx.warning(msg)`                   | Send WARNING log to client                                                                              |
+| `CurrentContext()`                   | Dependency for injecting `Context` into tools/resources/prompts                                         |
 
 ---
+
 ## See also
 
 - [WORK_STREAM.md](../reference/WORK_STREAM.md) — canonical backlog
 - [00-MASTER-INDEX.md](../plans/00-MASTER-INDEX.md) — plan index
-
 
 ---
 
@@ -201,15 +206,18 @@ async def my_tool(ctx: Context = CurrentContext()) -> str:
 **Extended by:** Claude Code
 
 ### Changes Made
+
 1. Added elicitation patterns
 2. Added context management examples
 3. Enhanced cross-references
 
 ### Cross-References Added
+
 - FASTMCP_MIDDLEWARE.md
 - FASTMCP_TRANSFORMS_DEPLOYMENT.md
 
 ### Practical Additions
+
 - Elicitation templates
 - Context handling examples
 

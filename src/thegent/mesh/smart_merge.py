@@ -272,14 +272,8 @@ def _merge_with_git_merge_file(
         tmp_path.write_bytes(ours.read_bytes())
 
         output_dir = output.parent
-        if base.parent == output_dir:
-            base_arg = base.name
-        else:
-            base_arg = str(base)
-        if theirs.parent == output_dir:
-            theirs_arg = theirs.name
-        else:
-            theirs_arg = str(theirs)
+        base_arg = base.name if base.parent == output_dir else str(base)
+        theirs_arg = theirs.name if theirs.parent == output_dir else str(theirs)
 
         result = shim_run(
             [

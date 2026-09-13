@@ -13,16 +13,13 @@ Covers:
 
 from __future__ import annotations
 
-import orjson as json
 import os
 import sys
-import tempfile
-from io import StringIO
+from datetime import UTC
 from pathlib import Path
 from unittest.mock import MagicMock, patch
 
-import pytest
-
+import orjson as json
 
 # ---------------------------------------------------------------------------
 # WP-4001: Actionable Error Messages
@@ -115,9 +112,8 @@ class TestJsonOutputRegistryList:
         rec.name = name
         rec.project_root = Path(project)
         rec.capabilities = caps
-        from datetime import timezone
 
-        rec.last_seen = datetime(2025, 1, 1, 12, 0, tzinfo=timezone.utc)
+        rec.last_seen = datetime(2025, 1, 1, 12, 0, tzinfo=UTC)
         return rec
 
     def test_json_format_empty_registry(self, capsys) -> None:
@@ -219,8 +215,9 @@ class TestShellCompletions:
     """
 
     def test_main_app_has_completion_enabled(self) -> None:
-        from thegent.cli.apps.main import app
         from typer.main import get_command
+
+        from thegent.cli.apps.main import app
 
         click_cmd = get_command(app)
         # When add_completion=True typer injects --install-completion and
@@ -253,7 +250,16 @@ class TestHelpExamples:
         from thegent.cli.help_examples import COMMAND_EXAMPLES
 
         assert isinstance(COMMAND_EXAMPLES, dict)
-        required_keys = {"free", "run", "plan", "registry", "status", "doctor", "govern", "mcp"}
+        required_keys = {
+            "free",
+            "run",
+            "plan",
+            "registry",
+            "status",
+            "doctor",
+            "govern",
+            "mcp",
+        }
         for key in required_keys:
             assert key in COMMAND_EXAMPLES, f"Missing examples for command: {key}"
             examples = COMMAND_EXAMPLES[key]
@@ -464,9 +470,17 @@ class TestDoctorRunnerChecks:
         # Patch out side-effects — the DoctorCheck.name must match what we assert
         with (
             patch.object(runner, "_check_python_version", return_value=_ok("python_version")),
-            patch.object(runner, "_check_anthropic_api_key", return_value=_ok("anthropic_api_key")),
+            patch.object(
+                runner,
+                "_check_anthropic_api_key",
+                return_value=_ok("anthropic_api_key"),
+            ),
             patch.object(runner, "_check_thegent_dir", return_value=_ok("thegent_home_dir")),
-            patch.object(runner, "_check_thegent_dir_writable", return_value=_ok("thegent_dir_writable")),
+            patch.object(
+                runner,
+                "_check_thegent_dir_writable",
+                return_value=_ok("thegent_dir_writable"),
+            ),
             patch.object(runner, "_check_thegent_sessions_dir", return_value=_ok("sessions")),
             patch.object(runner, "_check_pyproject_toml", return_value=_ok("pyproject")),
             patch.object(runner, "_check_config_yaml", return_value=_ok("config_yaml")),
@@ -474,7 +488,11 @@ class TestDoctorRunnerChecks:
             patch.object(runner, "_check_cargo", return_value=_ok("cargo")),
             patch.object(runner, "_check_mcp_config_dir", return_value=_ok("mcp_config")),
             patch.object(runner, "_check_stale_shadow_dirs", return_value=_ok("stale")),
-            patch.object(runner, "_check_shadow_dirs_count", return_value=_ok("shadow_dirs_count")),
+            patch.object(
+                runner,
+                "_check_shadow_dirs_count",
+                return_value=_ok("shadow_dirs_count"),
+            ),
         ):
             checks = runner.run_checks()
 

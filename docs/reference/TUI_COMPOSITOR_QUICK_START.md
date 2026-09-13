@@ -10,12 +10,21 @@
 # All components are available from the main module
 from thegent.compositor import (
     # Layout Engine
-    LayoutEngine, LayoutNode, Direction, Size,
+    LayoutEngine,
+    LayoutNode,
+    Direction,
+    Size,
     # Components
-    OutputWidget, StatusWidget, SidebarWidget,
-    HeaderWidget, FooterStatusBar, MetricsPanel, ProgressIndicator,
+    OutputWidget,
+    StatusWidget,
+    SidebarWidget,
+    HeaderWidget,
+    FooterStatusBar,
+    MetricsPanel,
+    ProgressIndicator,
     # Pane Management
-    CompositApp, PaneManager
+    CompositApp,
+    PaneManager,
 )
 ```
 
@@ -105,11 +114,7 @@ sidebar.add_agent("agent-2", "Worker 2", "idle")
 sidebar.update_agent_status("agent-1", "done")
 
 # Session info
-sidebar.update_session_info(
-    session_id="sess_xyz",
-    start_time="14:30:45",
-    uptime="00:10:30"
-)
+sidebar.update_session_info(session_id="sess_xyz", start_time="14:30:45", uptime="00:10:30")
 ```
 
 ### MetricsPanel - Metrics Display
@@ -122,11 +127,7 @@ metrics = MetricsPanel()
 
 # Add metrics
 metrics.update_metric("requests", "1234")
-metrics.update_metrics({
-    "cpu": "45%",
-    "memory": "2.1GB",
-    "latency": "123ms"
-})
+metrics.update_metrics({"cpu": "45%", "memory": "2.1GB", "latency": "123ms"})
 ```
 
 ### ProgressIndicator - Progress Tracking
@@ -197,9 +198,8 @@ constraints = LayoutConstraints(
 ```python
 from textual.app import App, ComposeResult
 from textual.containers import Horizontal, Vertical
-from thegent.compositor import (
-    OutputWidget, StatusWidget, SidebarWidget, HeaderWidget, FooterStatusBar
-)
+from thegent.compositor import OutputWidget, StatusWidget, SidebarWidget, HeaderWidget, FooterStatusBar
+
 
 class SimpleAgent(App):
     def compose(self) -> ComposeResult:
@@ -216,6 +216,7 @@ class SimpleAgent(App):
 
         output.write("Agent started", style="green")
         status.update_status("running", model="claude-opus")
+
 
 if __name__ == "__main__":
     app = SimpleAgent()
@@ -251,11 +252,8 @@ def stream_output(output_widget, lines):
 ```python
 def setup_agents(sidebar, agents):
     for agent in agents:
-        sidebar.add_agent(
-            agent_id=agent.id,
-            name=agent.name,
-            status=agent.status
-        )
+        sidebar.add_agent(agent_id=agent.id, name=agent.name, status=agent.status)
+
 
 def update_agent(sidebar, agent_id, new_status):
     sidebar.update_agent_status(agent_id, new_status)
@@ -282,11 +280,13 @@ OutputWidget {
 ## Performance Tips
 
 1. **Batch Updates** - Update multiple metrics at once
+
    ```python
    metrics.update_metrics({...})  # Better than individual updates
    ```
 
 2. **Reuse Components** - Create once, update many times
+
    ```python
    output = OutputWidget()  # Create once
    # ... use many times with write()
@@ -308,11 +308,11 @@ OutputWidget {
 print(output.line_count)  # Number of lines
 
 # Status widget
-print(status.status)      # Current status
-print(status.tokens_used) # Current tokens
+print(status.status)  # Current status
+print(status.tokens_used)  # Current tokens
 
 # Sidebar widget
-print(sidebar.agents)     # Dictionary of agents
+print(sidebar.agents)  # Dictionary of agents
 ```
 
 ### View Generated CSS
@@ -335,15 +335,15 @@ print(css)
 
 ## Quick Reference
 
-| Component | Purpose | Key Method |
-|-----------|---------|-----------|
-| LayoutEngine | Layout calculations | create_vertical_stack() |
-| OutputWidget | Display output | write() |
-| StatusWidget | Show status | update_status() |
-| SidebarWidget | Track agents | add_agent() |
-| HeaderWidget | App title | render() |
-| MetricsPanel | Show metrics | update_metrics() |
-| ProgressIndicator | Show progress | update_progress() |
+| Component         | Purpose             | Key Method              |
+| ----------------- | ------------------- | ----------------------- |
+| LayoutEngine      | Layout calculations | create_vertical_stack() |
+| OutputWidget      | Display output      | write()                 |
+| StatusWidget      | Show status         | update_status()         |
+| SidebarWidget     | Track agents        | add_agent()             |
+| HeaderWidget      | App title           | render()                |
+| MetricsPanel      | Show metrics        | update_metrics()        |
+| ProgressIndicator | Show progress       | update_progress()       |
 
 ---
 

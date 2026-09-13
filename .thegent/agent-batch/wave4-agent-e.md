@@ -1,7 +1,9 @@
 # Wave 4 - Agent E Report
 
 ## Scope
+
 Implemented the assigned Wave-4 slices:
+
 - WL-121: boundary checker strict switch for CI with non-breaking default behavior
 - WL-123: alias migration utility + replacement suggestion docs/wiring
 - WL-124: one additional CLI command group extraction with backward-compatible wrappers
@@ -11,6 +13,7 @@ Implemented the assigned Wave-4 slices:
 ## Changes
 
 ### WL-121
+
 - Added strict/advisory mode switch to the boundary checker:
   - default mode remains advisory (prints violations, exits 0)
   - `--strict` enables CI-failing mode (exits non-zero on violations)
@@ -23,6 +26,7 @@ Implemented the assigned Wave-4 slices:
   - `tests/test_wl121_core_boundary_checker.py`
 
 ### WL-123
+
 - Added concrete deprecated-alias replacement map and migration output mode:
   - `--format migration` prints `legacy -> canonical` suggestions
 - Added task wiring:
@@ -36,6 +40,7 @@ Implemented the assigned Wave-4 slices:
   - `tests/test_wl123_deprecated_quality_aliases.py`
 
 ### WL-124
+
 - Extracted a small CLI command group from monolith `cli.py`:
   - new module: `src/thegent/cli/commands/team_commands.py`
   - moved handlers: `team_create_cmd`, `team_task_add_cmd`, `team_task_list_cmd`
@@ -48,6 +53,7 @@ Implemented the assigned Wave-4 slices:
   - `tests/test_wl124_125_126_monolith_baselines.py`
 
 ### WL-125
+
 - Extracted additional impl helper/service:
   - new module: `src/thegent/cli/services/run_input_helpers.py`
   - moved logic for image input normalization/capability checks, context usage payload shaping, and grounding-source resolution
@@ -60,6 +66,7 @@ Implemented the assigned Wave-4 slices:
   - `tests/test_wl124_125_126_monolith_baselines.py`
 
 ### WL-126
+
 - Split one additional MCP server helper into dedicated module:
   - new: `src/thegent/mcp/server_result_helpers.py` (`stable_json`, `error_result`)
 - Safe re-export:
@@ -74,14 +81,17 @@ Implemented the assigned Wave-4 slices:
 ## Focused Validation
 
 ### Syntax/Compile
+
 - `python -m py_compile scripts/check_thegent_core_boundary.py scripts/check_deprecated_quality_aliases.py src/thegent/cli/commands/team_commands.py src/thegent/cli/services/run_input_helpers.py src/thegent/mcp/server_result_helpers.py`
   - result: pass
 
 ### Targeted test suites
+
 - `uv run pytest -q tests/test_wl121_core_boundary_checker.py tests/test_wl123_deprecated_quality_aliases.py tests/test_wl124_125_126_monolith_baselines.py tests/commands/test_team_commands_compat.py tests/test_wl125_run_input_helpers_parity.py`
   - result: `21 passed`
 
 ### Script/task checks
+
 - `uv run python scripts/check_thegent_core_boundary.py`
   - result: pass (advisory default)
 - `uv run python scripts/check_thegent_core_boundary.py --strict`
@@ -98,6 +108,7 @@ Implemented the assigned Wave-4 slices:
   - result: non-zero (expected strict behavior)
 
 ### Noted unrelated failure during broader focused run
+
 - Command:
   - `uv run pytest -q tests/test_wl121_core_boundary_checker.py tests/test_wl123_deprecated_quality_aliases.py tests/test_wl124_125_126_monolith_baselines.py tests/commands/test_team_commands_compat.py tests/test_wl125_run_input_helpers_parity.py tests/test_wl108_wl114_slices.py tests/test_wl119_grounding_sources.py`
 - Result:
@@ -105,5 +116,6 @@ Implemented the assigned Wave-4 slices:
   - failure surface: remote execution path uses `OptionInfo` in subprocess args (`TypeError`), unrelated to wave-4 WL edits above.
 
 ## Notes
+
 - `docs/reference/WORK_STREAM.md` was not modified.
 - Unrelated working tree changes were left untouched.

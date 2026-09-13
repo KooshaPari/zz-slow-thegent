@@ -5,22 +5,23 @@
 
 from __future__ import annotations
 
-from difflib import HtmlDiff
 from dataclasses import asdict, dataclass
+from datetime import UTC
+from difflib import HtmlDiff
 from pathlib import Path
 from typing import Any
 
 import orjson
 
 from thegent.integrations.base import SerializableMixin
+from thegent.integrations.sync_policy_contract import (
+    SyncPolicyContract,
+    load_sync_policy_contract,
+)
 from thegent.integrations.sync_provenance import (
     SyncProvenanceStamp,
     chain_provenance_stamps,
     verify_provenance_chain,
-)
-from thegent.integrations.sync_policy_contract import (
-    SyncPolicyContract,
-    load_sync_policy_contract,
 )
 
 
@@ -95,9 +96,9 @@ class SyncAuditor:
         Returns:
             SyncPolicyAudit with current policies.
         """
-        from datetime import datetime, timezone
+        from datetime import datetime
 
-        now = datetime.now(timezone.utc).isoformat()
+        now = datetime.now(UTC).isoformat()
 
         return SyncPolicyAudit(
             enabled_connectors=self._enabled_connectors,
@@ -223,11 +224,11 @@ class SyncAuditor:
         secret: str,
     ) -> SyncProvenanceStamp:
         """Append a signed artifact to the in-memory audit chain."""
-        from datetime import datetime, timezone
+        from datetime import datetime
 
         base_stamp = SyncProvenanceStamp(
             sync_id=sync_id,
-            timestamp=datetime.now(timezone.utc).isoformat(),
+            timestamp=datetime.now(UTC).isoformat(),
             source=source,
             operator=operator,
             cycle_number=cycle_number,

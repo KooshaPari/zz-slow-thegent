@@ -1,6 +1,8 @@
 """Output parser for extracting structured data from model outputs."""
+
 from __future__ import annotations
 
+import contextlib
 import json
 import re
 from dataclasses import dataclass
@@ -15,6 +17,7 @@ PARSE_TRUNCATED = "truncated"
 @dataclass
 class ParseResult:
     """Result of parsing output."""
+
     success: bool
     data: dict[str, Any] | None = None
     error: str = ""
@@ -72,15 +75,16 @@ def extract_condensed_structured(raw: str, schema: dict[str, Any] | None = None)
     Returns:
         Extracted structured data
     """
-    result: dict[str, Any] = {"text": raw, "schema_version": OUTPUT_PARSER_SCHEMA_VERSION}
+    result: dict[str, Any] = {
+        "text": raw,
+        "schema_version": OUTPUT_PARSER_SCHEMA_VERSION,
+    }
 
     # Try to extract JSON from the raw output
     json_match = re.search(r"\{[^{}]*\}", raw, re.DOTALL)
     if json_match:
-        try:
+        with contextlib.suppress(json.JSONDecodeError):
             result["parsed"] = json.loads(json_match.group(0))
-        except json.JSONDecodeError:
-            pass
 
     return result
 

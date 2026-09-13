@@ -18,6 +18,7 @@ status: in_progress
 ### Phase 2.1: Provider Scoring System (Week 3, Days 1-2)
 
 #### Task 2.1.1: Implement DefaultProviderScorer ✅ COMPLETE
+
 - **Objective**: Create provider scoring with reliability/latency/cost normalization
 - **Inputs**: ProviderMetrics (reliability, latency_p99, cost)
 - **Outputs**: ProviderScore (0-10 composite score)
@@ -34,6 +35,7 @@ status: in_progress
 - **Completion Date**: 2026-02-18
 
 #### Task 2.1.2: Implement ProviderRegistry ✅ COMPLETE
+
 - **Objective**: Create extensible provider registry with configuration
 - **Inputs**: Built-in provider configs (gemini-flash, claude-haiku, gpt-4o-mini, etc.)
 - **Outputs**: Queryable registry with lookup, fallback chain methods
@@ -50,6 +52,7 @@ status: in_progress
 - **Completion Date**: 2026-02-18
 
 #### Task 2.1.3: Create Provider Metrics Collection ✅ COMPLETE
+
 - **Objective**: Infrastructure to collect/update provider performance metrics
 - **Inputs**: Execution results (success/error, latency, tokens used)
 - **Outputs**: Metrics stored in local cache (JSONL format)
@@ -70,6 +73,7 @@ status: in_progress
 ### Phase 2.2: Value & Cost Estimation (Week 3, Days 3-4)
 
 #### Task 2.2.1: Implement ValueEstimator
+
 - **Objective**: Estimate task value (complexity, business impact, priority)
 - **Inputs**: Task object with type, category, priority hints
 - **Outputs**: TaskValue with estimated value (0-10 scale) and confidence (0-1)
@@ -86,6 +90,7 @@ status: in_progress
 - **File**: `thegent/src/thegent/governance/value.py`
 
 #### Task 2.2.2: Implement CostEstimator
+
 - **Objective**: Estimate task cost for given provider
 - **Inputs**: Task object, provider_id
 - **Outputs**: CostEstimate (USD, token estimate, confidence)
@@ -101,6 +106,7 @@ status: in_progress
 - **File**: `thegent/src/thegent/governance/cost.py`
 
 #### Task 2.2.3: Build Token Estimation Database
+
 - **Objective**: Create historical token estimate database for task types
 - **Inputs**: Task type → (input_tokens, output_tokens) mapping
 - **Outputs**: Configuration file with estimates for 20+ task categories
@@ -120,6 +126,7 @@ status: in_progress
 ### Phase 2.3: Cost-Aware Router (Week 4, Days 1-2)
 
 #### Task 2.3.1: Implement CostAwareRouter
+
 - **Objective**: Route tasks to providers based on cost-to-value ratio
 - **Inputs**: Task object, list of available providers
 - **Outputs**: RoutingDecision with selected provider, ratios, rationale
@@ -136,6 +143,7 @@ status: in_progress
 - **File**: `thegent/src/thegent/governance/router.py`
 
 #### Task 2.3.2: Implement Fallback Chain Execution
+
 - **Objective**: Execute task with provider fallback
 - **Inputs**: RoutingDecision, task, execution context
 - **Outputs**: Result or error after trying fallback chain
@@ -152,6 +160,7 @@ status: in_progress
 - **File**: `thegent/src/thegent/governance/executor.py`
 
 #### Task 2.3.3: Create Audit Log Storage
+
 - **Objective**: Persist routing decisions for compliance & analysis
 - **Inputs**: RoutingDecision objects
 - **Outputs**: Immutable audit log (JSON/JSONL format)
@@ -171,6 +180,7 @@ status: in_progress
 ### Phase 2.4: Integration & Testing (Week 4, Days 3-5)
 
 #### Task 2.4.1: Integrate with Pareto Router
+
 - **Objective**: Wire economic governance into Pareto routing
 - **Inputs**: Pareto router, economic router
 - **Outputs**: Task → Pareto (risk) + Economic (cost-aware) → Route decision
@@ -186,6 +196,7 @@ status: in_progress
 - **File**: `thegent/src/thegent/orchestration/pareto_router.py`
 
 #### Task 2.4.2: Performance Testing
+
 - **Objective**: Validate performance against SLO targets
 - **Inputs**: Router, load test scenario (100 concurrent tasks)
 - **Outputs**: Performance report (latency p99, throughput, cost)
@@ -202,6 +213,7 @@ status: in_progress
 - **File**: `tests/performance/test_economic_governance.py`
 
 #### Task 2.4.3: Cost Accuracy Validation
+
 - **Objective**: Verify cost predictions vs. actual billed costs
 - **Inputs**: 1000 task executions across providers
 - **Outputs**: Cost prediction report (error rates, calibration)
@@ -217,6 +229,7 @@ status: in_progress
 - **File**: `docs/reports/cost_prediction_validation.md`
 
 #### Task 2.4.4: Comprehensive Integration Tests
+
 - **Objective**: Test all components end-to-end
 - **Inputs**: Value estimator, cost estimator, router, executor, audit log
 - **Outputs**: Integration test suite (>20 tests, >90% path coverage)
@@ -237,6 +250,7 @@ status: in_progress
 ### Phase 2.5: Documentation & Deployment (Week 4, Days 5)
 
 #### Task 2.5.1: Create Operator Runbook
+
 - **Objective**: Documentation for configuring & operating economic governance
 - **Inputs**: Configuration schema, audit log queries, troubleshooting
 - **Outputs**: Runbook: setup, monitoring, troubleshooting
@@ -252,6 +266,7 @@ status: in_progress
 - **File**: `docs/guides/ECONOMIC_GOVERNANCE_RUNBOOK.md`
 
 #### Task 2.5.2: Create Cost Analysis Report
+
 - **Objective**: Baseline cost analysis & savings projection
 - **Inputs**: Provider pricing, estimated task distribution, current routing
 - **Outputs**: Report: current costs, savings projections, ROI
@@ -267,6 +282,7 @@ status: in_progress
 - **File**: `docs/reports/COST_ANALYSIS_BASELINE.md`
 
 #### Task 2.5.3: Create Deployment Plan
+
 - **Objective**: Staged rollout strategy & rollback plan
 - **Inputs**: Integration test results, cost validation report
 - **Outputs**: Deployment plan: stages, metrics, rollback triggers
@@ -319,18 +335,19 @@ Parallel tracks:
 
 ## Risk Assessment
 
-| Risk | Mitigation | Task |
-|------|-----------|------|
+| Risk                       | Mitigation                             | Task       |
+| -------------------------- | -------------------------------------- | ---------- |
 | Cost estimation inaccuracy | Validation task (2.4.3), learning loop | Task 2.4.3 |
-| Provider unavailable | Fallback chain (2.3.2) | Task 2.3.2 |
-| Performance regression | Performance testing (2.4.2) | Task 2.4.2 |
-| Integration complexity | Staged integration (2.4.1) | Task 2.4.1 |
+| Provider unavailable       | Fallback chain (2.3.2)                 | Task 2.3.2 |
+| Performance regression     | Performance testing (2.4.2)            | Task 2.4.2 |
+| Integration complexity     | Staged integration (2.4.1)             | Task 2.4.1 |
 
 ---
 
 ## Success Criteria Summary
 
 ### By End of Week 3
+
 - [x] Provider scoring working ✅ (2.1.1 complete)
 - [x] Metrics collection functional ✅ (2.1.3 complete)
 - [ ] Value & cost estimation functional (2.2.1-2.2.3)
@@ -338,6 +355,7 @@ Parallel tracks:
 - [x] All unit tests passing (>90% coverage) ✅ (65+ Phase 2.1 tests)
 
 ### By End of Week 4
+
 - [ ] Router integrated with Pareto (2.3.1 + 2.4.1)
 - [ ] Performance tests passing (2.4.2)
 - [ ] Cost prediction validated (>90% accuracy) (2.4.3)
@@ -345,6 +363,7 @@ Parallel tracks:
 - [ ] Runbook complete (2.5.1)
 
 ### By End of Phase 2
+
 - [ ] 30-50% cost savings projected
 - [ ] Ready for staged rollout
 - [ ] Zero production incidents in testing

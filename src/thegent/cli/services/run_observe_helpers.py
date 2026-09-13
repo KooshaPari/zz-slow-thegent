@@ -3,11 +3,12 @@
 from __future__ import annotations
 
 import hashlib
-import orjson as json
 import os
 from datetime import UTC, datetime
 from pathlib import Path
 from typing import Any
+
+import orjson as json
 
 from thegent.config import ThegentSettings
 
@@ -20,7 +21,10 @@ def hash_observe_summary_payload(payload: dict[str, Any]) -> dict[str, str]:
         key: value for key, value in payload.items() if key not in {"generated_at_utc", "payload_signature"}
     }
     body = json.dumps(payload_for_hash, option=json.OPT_SORT_KEYS).decode()
-    return {"algorithm": "sha256", "value": hashlib.sha256(body.encode("utf-8")).hexdigest()}
+    return {
+        "algorithm": "sha256",
+        "value": hashlib.sha256(body.encode("utf-8")).hexdigest(),
+    }
 
 
 def build_observe_summary_trend_scope(
@@ -171,7 +175,8 @@ def classify_observe_summary_trend_health(
             "THGENT_OBSERVE_SUMMARY_TREND_HEALTH_DEFICIT_PENALTY_PER_MISSING_SAMPLE", 15
         ),
         "invalid_timestamp_penalty_per_event": parse_observe_summary_env_float(
-            "THGENT_OBSERVE_SUMMARY_TREND_HEALTH_INVALID_TIMESTAMP_PENALTY_PER_EVENT", 12
+            "THGENT_OBSERVE_SUMMARY_TREND_HEALTH_INVALID_TIMESTAMP_PENALTY_PER_EVENT",
+            12,
         ),
         "stale_penalty": parse_observe_summary_env_float("THGENT_OBSERVE_SUMMARY_TREND_HEALTH_STALE_PENALTY", 8),
         "critical_penalty": parse_observe_summary_env_float("THGENT_OBSERVE_SUMMARY_TREND_HEALTH_CRITICAL_PENALTY", 20),

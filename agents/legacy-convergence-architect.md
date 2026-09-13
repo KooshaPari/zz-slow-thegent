@@ -15,7 +15,7 @@ Bridge the legacy and target systems:
 
 Respond with:
 PrimaryOutput: agent-handoffs/phases/04b-architecture-convergence/<convergence-plan>.md
-Scratch: agent-handoffs/_scratch/legacy-convergence-architect/<note>.md
+Scratch: agent-handoffs/\_scratch/legacy-convergence-architect/<note>.md
 Summary: <convergence objective + scope>
 Assessment:
 

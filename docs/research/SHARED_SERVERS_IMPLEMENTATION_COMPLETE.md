@@ -9,6 +9,7 @@
 ### Completed Tasks
 
 #### 1. ✅ Enhanced Shared MCP Manager
+
 - **File:** `thegent/src/thegent/shared_mcp_manager.py`
 - **Updates:**
   - Complete server startup logic with `mcp_up()` integration
@@ -17,6 +18,7 @@
   - Proper error handling and lockfile management
 
 #### 2. ✅ Enhanced Shared LSP Manager
+
 - **File:** `thegent/src/thegent/shared_lsp_manager.py`
 - **Updates:**
   - Complete LSP server startup logic
@@ -25,6 +27,7 @@
   - Lockfile tracking
 
 #### 3. ✅ Session Integration Module
+
 - **File:** `thegent/src/thegent/shared_server_integration.py`
 - **Features:**
   - `initialize_shared_servers_for_session()` - Auto-initialize on session start
@@ -32,11 +35,13 @@
   - `get_session_server_info()` - Status and debugging
 
 #### 4. ✅ Integrated into Session Lifecycle
+
 - **File:** `thegent/src/thegent/main.py`
 - **Integration:** `_run_role_cmd()` now initializes shared servers automatically
 - **Behavior:** System-wide by default, scopes down only when needed
 
 #### 5. ✅ CLI Commands for Management
+
 - **File:** `thegent/src/thegent/cli_commands_shared_servers.py`
 - **Commands:**
   - `thegent shared status` - Show server status
@@ -44,6 +49,7 @@
   - `thegent shared scope` - Show scope (system/project)
 
 #### 6. ✅ CLI Integration
+
 - **File:** `thegent/src/thegent/cli.py`
 - **Integration:** Shared server commands added to main CLI
 
@@ -69,6 +75,7 @@ Memory Savings: 87-90%
 ### Per-Project Scoping (When Needed)
 
 Projects can opt into isolation by creating:
+
 ```
 .thegent/isolate_servers
 ```
@@ -80,6 +87,7 @@ This triggers project-scoped servers instead of system-wide.
 ### Automatic (Default)
 
 Shared servers initialize automatically when sessions start:
+
 ```python
 # In _run_role_cmd() - automatic
 initialize_shared_servers_for_session(project_root=cd)
@@ -123,10 +131,12 @@ thegent shared status
 ## Files Created/Modified
 
 ### Created
+
 - `thegent/src/thegent/shared_server_integration.py`
 - `thegent/src/thegent/cli_commands_shared_servers.py`
 
 ### Modified
+
 - `thegent/src/thegent/shared_mcp_manager.py` - Enhanced startup logic
 - `thegent/src/thegent/shared_lsp_manager.py` - Enhanced startup logic
 - `thegent/src/thegent/main.py` - Session integration

@@ -196,7 +196,12 @@ def print_command_header(command: str, description: str) -> None:
         command: Command name
         description: Command description
     """
-    console.print(Panel(f"[bold cyan]{command}[/bold cyan]\n[dim]{description}[/dim]", border_style="cyan"))
+    console.print(
+        Panel(
+            f"[bold cyan]{command}[/bold cyan]\n[dim]{description}[/dim]",
+            border_style="cyan",
+        )
+    )
 
 
 def print_section_header(title: str) -> None:

@@ -5,6 +5,7 @@
 Contract registry and canonical schema for thegent orchestration.
 
 Provides:
+
 - ContractRegistry: authoritative contract versioning and compatibility
 - CanonicalStructuredMessage (CSM): unified schema for agent outputs
 - OutputAdapter: protocol for provider-specific output normalization

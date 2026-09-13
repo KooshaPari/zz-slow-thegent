@@ -14,6 +14,7 @@ The heliosShield Bridge implementation for thegent is **COMPLETE** and ready for
 **File**: `src/thegent/governance/heliosShield_bridge.py`
 
 **Components Implemented**:
+
 - ✅ `heliosShieldBridge` class
   - ✅ `__init__()` - Initializes bridge with harness root detection
   - ✅ `is_available()` - Checks if heliosShield coordination layer is initialized
@@ -22,6 +23,7 @@ The heliosShield Bridge implementation for thegent is **COMPLETE** and ready for
   - ✅ `get_session_state()` - Deep inspection of session state from heliosShield var/ dirs
 
 **Integration Points**:
+
 - ✅ Integrated in `src/thegent/governance/teammates.py` (line 160)
 - ✅ API documentation in `docs/reference/api/heliosShield_bridge_api.md`
 
@@ -30,6 +32,7 @@ The heliosShield Bridge implementation for thegent is **COMPLETE** and ready for
 **File**: `src/thegent/governance/heliosShield_bridge.py`
 
 **Components Implemented**:
+
 - ✅ `SmartMerge` class
   - ✅ `__init__()` - Initializes with mergiraf detection
   - ✅ `merge_files()` - AST-aware merge using Mergiraf or git fallback
@@ -39,6 +42,7 @@ The heliosShield Bridge implementation for thegent is **COMPLETE** and ready for
 **File**: `tests/unit/governance/test_heliosShield_bridge.py`
 
 **Test Classes**:
+
 - ✅ `TestheliosShieldBridge` - 14 test cases covering:
   - Availability checks (3 tests)
   - Task creation (4 tests)

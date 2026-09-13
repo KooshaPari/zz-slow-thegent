@@ -1,4 +1,5 @@
 """Stub module for phench_observability CLI commands."""
+
 from __future__ import annotations
 
 from typing import Any

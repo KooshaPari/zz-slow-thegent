@@ -46,10 +46,8 @@ from typing import Any
 
 import pytest
 
-from thegent.cli.commands import impl
-from thegent.cli.commands import observability_impl
+from thegent.cli.commands import impl, observability_impl
 from thegent.cli.services import observability as services_observability
-
 
 # ---------------------------------------------------------------------------
 # 1. observability_impl exposes _build_observe_trend_payload as the canonical
@@ -219,7 +217,11 @@ class TestBuildObserveTrendPayloadDormantWire:
         return value is surfaced under ``escalation_breakdown``."""
 
         def _fake_trend(**kwargs: Any) -> dict[str, Any]:
-            return {"trend_summary": {}, "trend_scope_signature": "sig", "trend_snapshot_ids": []}
+            return {
+                "trend_summary": {},
+                "trend_scope_signature": "sig",
+                "trend_snapshot_ids": [],
+            }
 
         def _fake_escalation(**kwargs: Any) -> dict[str, Any]:
             return {
@@ -245,7 +247,11 @@ class TestBuildObserveTrendPayloadDormantWire:
         captured: dict[str, Any] = {}
 
         def _fake_trend(**kwargs: Any) -> dict[str, Any]:
-            return {"trend_summary": {}, "trend_scope_signature": "s", "trend_snapshot_ids": []}
+            return {
+                "trend_summary": {},
+                "trend_scope_signature": "s",
+                "trend_snapshot_ids": [],
+            }
 
         def _fake_escalation(**kwargs: Any) -> dict[str, Any]:
             captured["pending"] = kwargs.get("pending")
@@ -300,7 +306,11 @@ class TestBuildObserveTrendPayloadResilience:
         function returns safe defaults without propagating."""
 
         def _fake_trend(**kwargs: Any) -> dict[str, Any]:
-            return {"trend_summary": {}, "trend_scope_signature": "sig", "trend_snapshot_ids": []}
+            return {
+                "trend_summary": {},
+                "trend_scope_signature": "sig",
+                "trend_snapshot_ids": [],
+            }
 
         def _raise(**_kwargs: Any) -> dict[str, Any]:
             raise RuntimeError("dormant-core exploded")
@@ -339,12 +349,21 @@ class TestObserveSummaryImplWL120DormantWire:
         monkeypatch.setattr(
             observability_impl,
             "_collect_observe_kpis",
-            lambda *_a, **_kw: {"total": 0, "fallback_rate": 0.0, "success_rate": 1.0, "avg_confidence": 1.0},
+            lambda *_a, **_kw: {
+                "total": 0,
+                "fallback_rate": 0.0,
+                "success_rate": 1.0,
+                "avg_confidence": 1.0,
+            },
         )
         monkeypatch.setattr(
             observability_impl,
             "_collect_observe_drift",
-            lambda *_a, **_kw: {"within_budget": True, "structural_rate_pct": 0.0, "semantic_rate_pct": 0.0},
+            lambda *_a, **_kw: {
+                "within_budget": True,
+                "structural_rate_pct": 0.0,
+                "semantic_rate_pct": 0.0,
+            },
         )
         monkeypatch.setattr(
             observability_impl,
@@ -381,7 +400,11 @@ class TestObserveSummaryImplWL120DormantWire:
         assert payload["trend_scope_signature"] == "outer-sig"
         assert payload["wl120_dormant_round_trip"] is True
         # Outer mirrored keys are present.
-        assert result["escalation_breakdown"] == {"escalation_rows": [], "top_rows": [], "past_sla_count": 0}
+        assert result["escalation_breakdown"] == {
+            "escalation_rows": [],
+            "top_rows": [],
+            "past_sla_count": 0,
+        }
         assert result["trend_scope_signature"] == "outer-sig"
         # Outer wl120_dormant_round_trip mirrors the dormant flag.
         assert result["wl120_dormant_round_trip"] is True
@@ -393,7 +416,11 @@ class TestObserveSummaryImplWL120DormantWire:
         the existing parity suite stays green."""
 
         def _fake_trend(**kwargs: Any) -> dict[str, Any]:
-            return {"trend_summary": {}, "trend_scope_signature": "s", "trend_snapshot_ids": []}
+            return {
+                "trend_summary": {},
+                "trend_scope_signature": "s",
+                "trend_snapshot_ids": [],
+            }
 
         def _fake_escalation(**kwargs: Any) -> dict[str, Any]:
             return {"escalation_rows": [], "top_rows": [], "past_sla_count": 0}
@@ -438,7 +465,11 @@ class TestObserveSummaryImplWL120DormantWire:
         ``trend_samples`` arg under the AUDIT-N+13 wire-up."""
 
         def _fake_trend(**kwargs: Any) -> dict[str, Any]:
-            return {"trend_summary": {}, "trend_scope_signature": "s", "trend_snapshot_ids": []}
+            return {
+                "trend_summary": {},
+                "trend_scope_signature": "s",
+                "trend_snapshot_ids": [],
+            }
 
         def _fake_escalation(**kwargs: Any) -> dict[str, Any]:
             return {"escalation_rows": [], "top_rows": [], "past_sla_count": 0}
@@ -469,7 +500,11 @@ class TestObserveSummaryImplWL120DormantWire:
             raise RuntimeError("dormant-core exploded")
 
         monkeypatch.setattr(services_observability, "build_observe_summary_trend", _raise_trend)
-        monkeypatch.setattr(services_observability, "build_observe_summary_escalation", _raise_escalation)
+        monkeypatch.setattr(
+            services_observability,
+            "build_observe_summary_escalation",
+            _raise_escalation,
+        )
         self._stub_inner_helpers(monkeypatch)
 
         from thegent.cli.commands.observability_impl import observe_summary_impl

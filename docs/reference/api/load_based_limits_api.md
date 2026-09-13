@@ -19,7 +19,7 @@ WP-Y6: Prevents thrashing by using upper/lower thresholds and dwell time.
 
 ### Methods
 
-#### HysteresisController.__init__
+#### HysteresisController.**init**
 
 ```python
 __init__(self: Any, upper_threshold: float, lower_threshold: float, dwell_time_s: int)
@@ -46,6 +46,7 @@ Returns the new limit (either changed or held).
 Configuration for each resource gate. Thresholds are 0.0–1.0 (utilization).
 
 Uses resource-based limits with safety buffers:
+
 - Minimum buffer: 5% (hard limit, prevents crashes)
 - Discretionary buffer: 15% (soft limit, allows scaling)
 - No fixed concurrent limit - scales with available resources
@@ -58,7 +59,7 @@ Uses resource-based limits with safety buffers:
 from_dict(cls: Any, d: Any)
 ```
 
-Build config from dict (e.g. settings). Supports concurrency_ prefix.
+Build config from dict (e.g. settings). Supports concurrency\_ prefix.
 
 ---
 
@@ -93,7 +94,7 @@ Returns (effective_limit, gate_details).
 from_dict(cls: Any, d: Any)
 ```
 
-Build config from dict (e.g. settings). Supports concurrency_ prefix.
+Build config from dict (e.g. settings). Supports concurrency\_ prefix.
 
 ---
 

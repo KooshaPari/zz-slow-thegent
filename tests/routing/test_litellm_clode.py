@@ -17,10 +17,10 @@ FR traceability:
 
 from __future__ import annotations
 
-import orjson as json
 from typing import Any
 from unittest.mock import AsyncMock, MagicMock, patch
 
+import orjson as json
 import pytest  # noqa: F401 -- collected by pytest; needed for mark decorators
 from starlette.applications import Starlette
 from starlette.routing import Route, WebSocketRoute
@@ -182,7 +182,11 @@ class TestRouteRegistration:
             app, _ = _build_isolated_app()
             client = TestClient(app, raise_server_exceptions=False)
             body = json.dumps(_make_responses_body().decode()).encode()
-            resp = client.post("/v1/responses", content=body, headers={"Content-Type": "application/json"})
+            resp = client.post(
+                "/v1/responses",
+                content=body,
+                headers={"Content-Type": "application/json"},
+            )
         # Route is registered — not 404/405
         assert resp.status_code != 404
         assert resp.status_code != 405
@@ -206,7 +210,11 @@ class TestNonStreamingResponseFormat:
             app, _ = _build_isolated_app()
             client = TestClient(app, raise_server_exceptions=False)
             body = json.dumps(_make_responses_body(content="Hi").decode()).encode()
-            resp = client.post("/v1/responses", content=body, headers={"Content-Type": "application/json"})
+            resp = client.post(
+                "/v1/responses",
+                content=body,
+                headers={"Content-Type": "application/json"},
+            )
         assert resp.status_code == 200
 
     def test_post_returns_output_array(self) -> None:
@@ -219,7 +227,11 @@ class TestNonStreamingResponseFormat:
             app, _ = _build_isolated_app()
             client = TestClient(app, raise_server_exceptions=False)
             body = json.dumps(_make_responses_body().decode()).encode()
-            resp = client.post("/v1/responses", content=body, headers={"Content-Type": "application/json"})
+            resp = client.post(
+                "/v1/responses",
+                content=body,
+                headers={"Content-Type": "application/json"},
+            )
         data = resp.json()
         assert "output" in data
         assert isinstance(data["output"], list)
@@ -235,7 +247,11 @@ class TestNonStreamingResponseFormat:
             app, _ = _build_isolated_app()
             client = TestClient(app, raise_server_exceptions=False)
             body = json.dumps(_make_responses_body().decode()).encode()
-            resp = client.post("/v1/responses", content=body, headers={"Content-Type": "application/json"})
+            resp = client.post(
+                "/v1/responses",
+                content=body,
+                headers={"Content-Type": "application/json"},
+            )
         item = resp.json()["output"][0]
         assert item["type"] == "message"
 
@@ -249,7 +265,11 @@ class TestNonStreamingResponseFormat:
             app, _ = _build_isolated_app()
             client = TestClient(app, raise_server_exceptions=False)
             body = json.dumps(_make_responses_body().decode()).encode()
-            resp = client.post("/v1/responses", content=body, headers={"Content-Type": "application/json"})
+            resp = client.post(
+                "/v1/responses",
+                content=body,
+                headers={"Content-Type": "application/json"},
+            )
         item = resp.json()["output"][0]
         assert item["role"] == "assistant"
 
@@ -264,7 +284,11 @@ class TestNonStreamingResponseFormat:
             app, _ = _build_isolated_app()
             client = TestClient(app, raise_server_exceptions=False)
             body = json.dumps(_make_responses_body().decode()).encode()
-            resp = client.post("/v1/responses", content=body, headers={"Content-Type": "application/json"})
+            resp = client.post(
+                "/v1/responses",
+                content=body,
+                headers={"Content-Type": "application/json"},
+            )
         item = resp.json()["output"][0]
         assert item["content"][0]["text"] == expected
 
@@ -278,7 +302,11 @@ class TestNonStreamingResponseFormat:
             app, _ = _build_isolated_app()
             client = TestClient(app, raise_server_exceptions=False)
             body = json.dumps(_make_responses_body().decode()).encode()
-            resp = client.post("/v1/responses", content=body, headers={"Content-Type": "application/json"})
+            resp = client.post(
+                "/v1/responses",
+                content=body,
+                headers={"Content-Type": "application/json"},
+            )
         assert "application/json" in resp.headers.get("content-type", "")
 
     def test_router_acompletion_called_with_correct_model(self) -> None:
@@ -291,7 +319,11 @@ class TestNonStreamingResponseFormat:
             app, _ = _build_isolated_app()
             client = TestClient(app, raise_server_exceptions=False)
             body = json.dumps(_make_responses_body(model="claude-sonnet-4.5").decode()).encode()
-            client.post("/v1/responses", content=body, headers={"Content-Type": "application/json"})
+            client.post(
+                "/v1/responses",
+                content=body,
+                headers={"Content-Type": "application/json"},
+            )
         call_kwargs = mock_router.acompletion.call_args
         assert call_kwargs.kwargs["model"] == "claude-sonnet-4.5"
 
@@ -305,7 +337,11 @@ class TestNonStreamingResponseFormat:
             app, _ = _build_isolated_app()
             client = TestClient(app, raise_server_exceptions=False)
             body = json.dumps(_make_responses_body(content="Tell me a joke").decode()).encode()
-            client.post("/v1/responses", content=body, headers={"Content-Type": "application/json"})
+            client.post(
+                "/v1/responses",
+                content=body,
+                headers={"Content-Type": "application/json"},
+            )
         call_kwargs = mock_router.acompletion.call_args
         messages = call_kwargs.kwargs["messages"]
         assert messages[0]["content"] == "Tell me a joke"
@@ -330,7 +366,11 @@ class TestStreamingSSEResponseFormat:
             app, _ = _build_isolated_app()
             client = TestClient(app, raise_server_exceptions=False)
             body = json.dumps(_make_responses_body(stream=True).decode()).encode()
-            resp = client.post("/v1/responses", content=body, headers={"Content-Type": "application/json"})
+            resp = client.post(
+                "/v1/responses",
+                content=body,
+                headers={"Content-Type": "application/json"},
+            )
         assert resp.status_code == 200
 
     def test_streaming_response_content_type_is_event_stream(self) -> None:
@@ -344,7 +384,11 @@ class TestStreamingSSEResponseFormat:
             app, _ = _build_isolated_app()
             client = TestClient(app, raise_server_exceptions=False)
             body = json.dumps(_make_responses_body(stream=True).decode()).encode()
-            resp = client.post("/v1/responses", content=body, headers={"Content-Type": "application/json"})
+            resp = client.post(
+                "/v1/responses",
+                content=body,
+                headers={"Content-Type": "application/json"},
+            )
         assert "text/event-stream" in resp.headers.get("content-type", "")
 
     def test_streaming_response_cache_control_no_cache(self) -> None:
@@ -357,7 +401,11 @@ class TestStreamingSSEResponseFormat:
             app, _ = _build_isolated_app()
             client = TestClient(app, raise_server_exceptions=False)
             body = json.dumps(_make_responses_body(stream=True).decode()).encode()
-            resp = client.post("/v1/responses", content=body, headers={"Content-Type": "application/json"})
+            resp = client.post(
+                "/v1/responses",
+                content=body,
+                headers={"Content-Type": "application/json"},
+            )
         assert resp.headers.get("cache-control") == "no-cache"
 
     def test_streaming_response_events_have_sse_data_prefix(self) -> None:
@@ -371,7 +419,11 @@ class TestStreamingSSEResponseFormat:
             app, _ = _build_isolated_app()
             client = TestClient(app, raise_server_exceptions=False)
             body = json.dumps(_make_responses_body(stream=True).decode()).encode()
-            resp = client.post("/v1/responses", content=body, headers={"Content-Type": "application/json"})
+            resp = client.post(
+                "/v1/responses",
+                content=body,
+                headers={"Content-Type": "application/json"},
+            )
         events = [e for e in resp.text.split("\n\n") if e.strip()]
         for event in events:
             assert event.strip().startswith("data: "), f"Event did not start with 'data: ': {event!r}"
@@ -387,7 +439,11 @@ class TestStreamingSSEResponseFormat:
             app, _ = _build_isolated_app()
             client = TestClient(app, raise_server_exceptions=False)
             body = json.dumps(_make_responses_body(stream=True).decode()).encode()
-            resp = client.post("/v1/responses", content=body, headers={"Content-Type": "application/json"})
+            resp = client.post(
+                "/v1/responses",
+                content=body,
+                headers={"Content-Type": "application/json"},
+            )
         events = [e for e in resp.text.split("\n\n") if e.strip()]
         content_events = []
         for event in events:
@@ -408,7 +464,11 @@ class TestStreamingSSEResponseFormat:
             app, _ = _build_isolated_app()
             client = TestClient(app, raise_server_exceptions=False)
             body = json.dumps(_make_responses_body(stream=True).decode()).encode()
-            resp = client.post("/v1/responses", content=body, headers={"Content-Type": "application/json"})
+            resp = client.post(
+                "/v1/responses",
+                content=body,
+                headers={"Content-Type": "application/json"},
+            )
         events = [e for e in resp.text.split("\n\n") if e.strip()]
         last = json.loads(events[-1].strip().removeprefix("data: "))
         assert last == {"type": "response.completed"}
@@ -424,7 +484,11 @@ class TestStreamingSSEResponseFormat:
             app, _ = _build_isolated_app()
             client = TestClient(app, raise_server_exceptions=False)
             body = json.dumps(_make_responses_body(stream=True).decode()).encode()
-            resp = client.post("/v1/responses", content=body, headers={"Content-Type": "application/json"})
+            resp = client.post(
+                "/v1/responses",
+                content=body,
+                headers={"Content-Type": "application/json"},
+            )
         events_parsed = [json.loads(e.strip().removeprefix("data: ")) for e in resp.text.split("\n\n") if e.strip()]
         content_events = [e for e in events_parsed if e.get("type") == "response.output_item.added"]
         assert len(content_events) == 3
@@ -449,7 +513,11 @@ class TestErrorHandling:
             app, _ = _build_isolated_app()
             client = TestClient(app, raise_server_exceptions=False)
             body = json.dumps(_make_responses_body().decode()).encode()
-            resp = client.post("/v1/responses", content=body, headers={"Content-Type": "application/json"})
+            resp = client.post(
+                "/v1/responses",
+                content=body,
+                headers={"Content-Type": "application/json"},
+            )
         assert resp.status_code == 429
 
     def test_unknown_error_returns_500(self) -> None:
@@ -463,7 +531,11 @@ class TestErrorHandling:
             app, _ = _build_isolated_app()
             client = TestClient(app, raise_server_exceptions=False)
             body = json.dumps(_make_responses_body().decode()).encode()
-            resp = client.post("/v1/responses", content=body, headers={"Content-Type": "application/json"})
+            resp = client.post(
+                "/v1/responses",
+                content=body,
+                headers={"Content-Type": "application/json"},
+            )
         assert resp.status_code == 500
 
     def test_error_response_body_has_error_key(self) -> None:
@@ -477,7 +549,11 @@ class TestErrorHandling:
             app, _ = _build_isolated_app()
             client = TestClient(app, raise_server_exceptions=False)
             body = json.dumps(_make_responses_body().decode()).encode()
-            resp = client.post("/v1/responses", content=body, headers={"Content-Type": "application/json"})
+            resp = client.post(
+                "/v1/responses",
+                content=body,
+                headers={"Content-Type": "application/json"},
+            )
         data = resp.json()
         assert "error" in data
         assert "message" in data["error"]
@@ -493,7 +569,11 @@ class TestErrorHandling:
             app, _ = _build_isolated_app()
             client = TestClient(app, raise_server_exceptions=False)
             body = json.dumps(_make_responses_body(stream=True).decode()).encode()
-            resp = client.post("/v1/responses", content=body, headers={"Content-Type": "application/json"})
+            resp = client.post(
+                "/v1/responses",
+                content=body,
+                headers={"Content-Type": "application/json"},
+            )
         assert resp.status_code == 200  # SSE starts 200 even on error
         events = [e for e in resp.text.split("\n\n") if e.strip()]
         first = json.loads(events[0].strip().removeprefix("data: "))
@@ -510,7 +590,11 @@ class TestErrorHandling:
             app, _ = _build_isolated_app()
             client = TestClient(app, raise_server_exceptions=False)
             body = json.dumps(_make_responses_body().decode()).encode()
-            resp = client.post("/v1/responses", content=body, headers={"Content-Type": "application/json"})
+            resp = client.post(
+                "/v1/responses",
+                content=body,
+                headers={"Content-Type": "application/json"},
+            )
         assert resp.status_code == 401
 
 
@@ -530,7 +614,9 @@ class TestWebSocketResponsesRoute:
             "thegent.utils.routing_impl.litellm_responses_handler.get_litellm_router",
             return_value=mock_router,
         ):
-            from thegent.utils.routing_impl.litellm_responses_handler import handle_responses_websocket
+            from thegent.utils.routing_impl.litellm_responses_handler import (
+                handle_responses_websocket,
+            )
 
             app = Starlette(routes=[WebSocketRoute("/v1/responses/ws", handle_responses_websocket)])
             client = TestClient(app)
@@ -556,7 +642,9 @@ class TestWebSocketResponsesRoute:
             "thegent.utils.routing_impl.litellm_responses_handler.get_litellm_router",
             return_value=mock_router,
         ):
-            from thegent.utils.routing_impl.litellm_responses_handler import handle_responses_websocket
+            from thegent.utils.routing_impl.litellm_responses_handler import (
+                handle_responses_websocket,
+            )
 
             app = Starlette(routes=[WebSocketRoute("/v1/responses/ws", handle_responses_websocket)])
             client = TestClient(app)
@@ -580,7 +668,9 @@ class TestWebSocketResponsesRoute:
             "thegent.utils.routing_impl.litellm_responses_handler.get_litellm_router",
             return_value=mock_router,
         ):
-            from thegent.utils.routing_impl.litellm_responses_handler import handle_responses_websocket
+            from thegent.utils.routing_impl.litellm_responses_handler import (
+                handle_responses_websocket,
+            )
 
             app = Starlette(routes=[WebSocketRoute("/v1/responses/ws", handle_responses_websocket)])
             client = TestClient(app)

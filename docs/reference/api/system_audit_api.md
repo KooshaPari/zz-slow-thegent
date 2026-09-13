@@ -5,6 +5,7 @@
 System audit framework: detect drift between declared config and actual state.
 
 This module checks:
+
 - Hooks: registered in hook-config.yaml vs hook scripts on disk
 - Agents: agent .md files on disk vs any agent registry
 - Config: ThegentSettings fields vs actual environment variables set
@@ -92,7 +93,7 @@ Detects drift between declared configuration and actual on-disk state.
 
 ### Methods
 
-#### SystemAuditor.__init__
+#### SystemAuditor.**init**
 
 ```python
 __init__(self: Any, project_root: Any)
@@ -109,6 +110,7 @@ audit_agents(self: Any)
 Verify agent .md files in agents/ are valid and parseable.
 
 Checks:
+
 - agents/ directory exists
 - Each .md file is non-empty
 - Any agent referenced in bounded-contexts.yaml (if present) is on disk
@@ -123,7 +125,7 @@ audit_config(self: Any)
 
 Compare ThegentSettings field defaults against actual environment.
 
-For each field that has a corresponding THGENT_* environment variable
+For each field that has a corresponding THGENT\_\* environment variable
 we report whether the env var is set (non-default) or absent (default).
 We also flag env vars whose values diverge from the declared default.
 
@@ -137,7 +139,8 @@ audit_dependencies(self: Any)
 
 Compare pyproject.toml declared dependencies against installed packages.
 
-Uses importlib.metadata to check installed distributions.  Reports:
+Uses importlib.metadata to check installed distributions. Reports:
+
 - MISSING: declared but not installed
 - OK: present and version satisfies declared specifier
 - DRIFT: present but version does not satisfy declared specifier
@@ -153,9 +156,9 @@ audit_hooks(self: Any)
 
 Compare hooks declared in hook-config.yaml against scripts on disk.
 
-For each hook entry in the config's ``hooks:`` section we check that a
-corresponding ``.sh`` file exists under ``hooks/``.  We also flag any
-``.sh`` files in the hooks directory that are *not* registered in config.
+For each hook entry in the config's `hooks:` section we check that a
+corresponding `.sh` file exists under `hooks/`. We also flag any
+`.sh` files in the hooks directory that are _not_ registered in config.
 
 ---
 
@@ -165,7 +168,7 @@ corresponding ``.sh`` file exists under ``hooks/``.  We also flag any
 export_json(self: Any, report: AuditReport, path: Path)
 ```
 
-Write machine-readable JSON audit report to *path*.
+Write machine-readable JSON audit report to _path_.
 
 ---
 
@@ -210,6 +213,7 @@ audit_agents(self: Any)
 Verify agent .md files in agents/ are valid and parseable.
 
 Checks:
+
 - agents/ directory exists
 - Each .md file is non-empty
 - Any agent referenced in bounded-contexts.yaml (if present) is on disk
@@ -224,7 +228,7 @@ audit_config(self: Any)
 
 Compare ThegentSettings field defaults against actual environment.
 
-For each field that has a corresponding THGENT_* environment variable
+For each field that has a corresponding THGENT\_\* environment variable
 we report whether the env var is set (non-default) or absent (default).
 We also flag env vars whose values diverge from the declared default.
 
@@ -238,7 +242,8 @@ audit_dependencies(self: Any)
 
 Compare pyproject.toml declared dependencies against installed packages.
 
-Uses importlib.metadata to check installed distributions.  Reports:
+Uses importlib.metadata to check installed distributions. Reports:
+
 - MISSING: declared but not installed
 - OK: present and version satisfies declared specifier
 - DRIFT: present but version does not satisfy declared specifier
@@ -254,9 +259,9 @@ audit_hooks(self: Any)
 
 Compare hooks declared in hook-config.yaml against scripts on disk.
 
-For each hook entry in the config's ``hooks:`` section we check that a
-corresponding ``.sh`` file exists under ``hooks/``.  We also flag any
-``.sh`` files in the hooks directory that are *not* registered in config.
+For each hook entry in the config's `hooks:` section we check that a
+corresponding `.sh` file exists under `hooks/`. We also flag any
+`.sh` files in the hooks directory that are _not_ registered in config.
 
 ---
 
@@ -266,7 +271,7 @@ corresponding ``.sh`` file exists under ``hooks/``.  We also flag any
 export_json(self: Any, report: AuditReport, path: Path)
 ```
 
-Write machine-readable JSON audit report to *path*.
+Write machine-readable JSON audit report to _path_.
 
 ---
 

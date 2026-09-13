@@ -1,4 +1,5 @@
 """Stub module."""
+
 from dataclasses import dataclass
 
 
@@ -14,6 +15,7 @@ class EthicalProofGenerator:
 @dataclass
 class FormalEthicalProof:
     """Formal ethical proof for verification."""
+
     statement: str = ""
     proof: str = ""
     verified: bool = False

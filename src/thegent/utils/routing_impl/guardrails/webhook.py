@@ -7,11 +7,11 @@ Sends request data to a webhook URL, expects {verdict: "allow"|"block", transfor
 
 from __future__ import annotations
 
-import orjson as json
 import logging
 from dataclasses import dataclass
 
 import httpx
+import orjson as json
 
 _log = logging.getLogger(__name__)
 

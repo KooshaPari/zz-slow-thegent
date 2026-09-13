@@ -3,11 +3,13 @@
 from __future__ import annotations
 
 import orjson as json
-
 import pytest
 
 from thegent.protocols import jsonrpc_agent_server as server
-from thegent.protocols.jsonrpc_agent_server import SERVER_STATE, process_jsonrpc_line_full
+from thegent.protocols.jsonrpc_agent_server import (
+    SERVER_STATE,
+    process_jsonrpc_line_full,
+)
 
 
 def _reset_state() -> None:
@@ -53,7 +55,12 @@ def test_wl10982_resolve_turn_submit_execution_target_rejects_bad_shape() -> Non
     # @trace WL-10982
     with pytest.raises(ValueError, match="Turn submit execution target unresolved"):
         server._resolve_turn_submit_execution_target(
-            {"session_id": None, "session": {}, "user_input": "x", "requires_approval": False}
+            {
+                "session_id": None,
+                "session": {},
+                "user_input": "x",
+                "requires_approval": False,
+            }
         )
 
 
@@ -73,7 +80,11 @@ def test_wl10983_execute_turn_submit_with_approval_stores_payload_and_notificati
         "---\n+++\n",
         notifications,
     )
-    assert payload == {"id": "approval-0001", "status": "requested", "diff": "---\n+++\n"}
+    assert payload == {
+        "id": "approval-0001",
+        "status": "requested",
+        "diff": "---\n+++\n",
+    }
     assert turn["status"] == "awaiting_approval"
     assert turn["approval_id"] == "approval-0001"
     assert SERVER_STATE.approvals["approval-0001"]["status"] == "requested"
@@ -141,7 +152,11 @@ def test_wl10986_apply_turn_submit_side_effects_with_approval_keeps_approval_pay
     approval_payload = server._apply_turn_submit_side_effects(
         "session-1", "turn-1", turn, "x", True, "diff", notifications
     )
-    assert approval_payload == {"id": "approval-0001", "status": "requested", "diff": "diff"}
+    assert approval_payload == {
+        "id": "approval-0001",
+        "status": "requested",
+        "diff": "diff",
+    }
     assert turn["status"] == "awaiting_approval"
     assert turn["approval_id"] == "approval-0001"
     assert notifications[0]["method"] == "turn/started"

@@ -5,9 +5,9 @@
 
 from __future__ import annotations
 
-import orjson as json
 import re
 
+import orjson as json
 import pytest
 
 from thegent.governance.diff_renderer import (
@@ -15,7 +15,6 @@ from thegent.governance.diff_renderer import (
     DiffRenderer,
     HITLDiffPayload,
 )
-
 
 # ---------------------------------------------------------------------------
 # DiffPayload tests

@@ -15,6 +15,7 @@
 **AI Agent Pattern:** AI coding agents (Claude, Codex, ChatGPT) **systematically add fallbacks and legacy compatibility** even when explicitly told not to. This is a systemic issue requiring explicit guardrails and verification.
 
 **Implication:**
+
 - ✅ **FIRST:** Verify feature parity and complete migration
 - ✅ **THEN:** Remove deprecated code immediately
 - ✅ No fallback shims or compatibility layers
@@ -32,30 +33,35 @@
 ### 1.1 Backwards Compatibility Patterns Found
 
 #### ✅ **Already Removed (Good)**
+
 - Environment variable fallbacks: `os.environ.get()` → `ThegentSettings` (40+ files migrated)
 - Legacy dependency replacements: md5→sha2, lazy_static→OnceLock (complete)
 
 #### ⚠️ **Remaining Patterns (To Remove)**
 
 **Pattern 1: Legacy CLI Directory**
+
 - **Location:** `src/thegent/cli/legacy/`
 - **Status:** Still exists, but migrated to use `ThegentSettings`
 - **Action:** **DELETE** - No backwards compat needed
 - **Rationale:** No external users depend on legacy CLI
 
 **Pattern 2: Deprecated Tool Stubs (atoms-mcp-prod)**
+
 - **Files:** `tools/compliance_verification.py`, `tools/duplicate_detection.py`, `tools/entity_resolver.py`
 - **Status:** Backward-compat stubs with warnings
 - **Action:** **DELETE** - Update all callers, remove stubs
 - **Rationale:** Functionality integrated into canonical implementations
 
 **Pattern 3: Import Fallbacks**
+
 - **Pattern:** `try: from X import Y; except ImportError: from Z import Y`
 - **Example:** `compliance_verification.py` lines 13-29
 - **Action:** **REMOVE** - Use single canonical import path
 - **Rationale:** No need for fallbacks if dependencies are managed
 
 **Pattern 4: Runtime Fallbacks**
+
 - **Pattern:** `try: fast_path(); except: slow_path()`
 - **Status:** May exist in performance-critical paths
 - **Action:** **EVALUATE** - Keep only if performance-critical AND documented
@@ -66,30 +72,35 @@
 #### **High-Priority Duplications**
 
 **1. CLI Implementations**
+
 - `cli/legacy/` vs `cli/apps/` vs `cli/commands/`
 - **Status:** Multiple CLI entry points
 - **Action:** **CONSOLIDATE** - Single canonical CLI (`cli/apps/`)
 - **Timeline:** Immediate
 
 **2. Configuration Management**
+
 - `config.py` vs `config_provider.py` vs `governance/config_provider_cp.py`
 - **Status:** Multiple config systems
 - **Action:** **CONSOLIDATE** - Single `ThegentSettings` (already in progress)
 - **Timeline:** Complete migration
 
 **3. Discovery Systems**
+
 - `discovery.py` vs `native/discovery_native.py`
 - **Status:** Native vs Python implementations
 - **Action:** **EVALUATE** - Keep both if performance-critical, document clearly
 - **Rationale:** Performance optimization is acceptable duplication
 
 **4. State Management**
+
 - `native/state_shm.py` vs `orchestration/state/shm.py` vs `orchestration/state/shadow.py`
 - **Status:** Multiple SHM implementations
 - **Action:** **CONSOLIDATE** - Single canonical SHM system
 - **Timeline:** Phase 2
 
 **5. Routing Systems**
+
 - `routing/litellm_router.py` vs `routing/auto_router.py` vs `routing/pareto_router.py` vs `agents/crew/router.py`
 - **Status:** Multiple routing strategies
 - **Action:** **EVALUATE** - Keep if distinct strategies, consolidate if overlapping
@@ -100,18 +111,21 @@
 #### **Variations Found**
 
 **1. Agent Implementations**
+
 - `agents/codex_proxy.py`, `agents/droid.py`, `agents/direct_agents.py`, `agents/smolgents/`, `agents/crew/`
 - **Status:** Multiple agent types
 - **Action:** **EVALUATE** - Keep if distinct capabilities, consolidate if overlapping
 - **Decision Framework:** See Section 2.2
 
 **2. Execution Systems**
+
 - `execution.py`, `orchestration/execution/`, `agents/crew/executor.py`
 - **Status:** Multiple execution paths
 - **Action:** **CONSOLIDATE** - Single execution engine with strategy pattern
 - **Timeline:** Phase 3
 
 **3. IPC Mechanisms**
+
 - `infra/ipc.py`, `infra/shm_manager.py`, `native/state_shm.py`
 - **Status:** Multiple IPC systems
 - **Action:** **CONSOLIDATE** - Single IPC abstraction (Rust-based)
@@ -122,6 +136,7 @@
 #### **Current State**
 
 **Archives:**
+
 - `trace/ARCHIVE/` - Historical code/config
 - `archive/` directories in various projects
 - **Status:** Historical reference
@@ -129,6 +144,7 @@
 - **Rationale:** Historical context valuable, but shouldn't clutter main codebase
 
 **Backups:**
+
 - `*.backup` files scattered throughout
 - `.env-backup-*` directories
 - `*.backup.*` timestamped files
@@ -137,6 +153,7 @@
 - **Rationale:** Git provides version history, backups are redundant
 
 **Deprecated Code:**
+
 - Files marked `DEPRECATED` but still present
 - **Status:** Should be removed
 - **Action:** **DELETE** - No deprecation period needed
@@ -187,32 +204,39 @@
 #### **Decision Framework: New Concept vs Variation**
 
 **Question 1: Does it solve a NEW problem?**
+
 - ✅ **YES** → New concept, create new module
 - ❌ **NO** → Variation, extend existing concept
 
 **Question 2: Is it a different STRATEGY for same problem?**
+
 - ✅ **YES** → Strategy pattern, add to existing module
 - ❌ **NO** → Duplication, consolidate
 
 **Question 3: Does it have distinct CAPABILITIES?**
+
 - ✅ **YES** → New concept, create new module
 - ❌ **NO** → Variation, extend existing
 
 **Question 4: Is it a PERFORMANCE optimization?**
+
 - ✅ **YES** → Implementation detail, same module
 - ❌ **NO** → Evaluate as new concept
 
 #### **Naming Convention**
 
 **New Concept:**
+
 - New module: `agents/new_agent_type/`
 - Clear name indicating distinct capability
 
 **Variation:**
+
 - Extend existing: `agents/existing_agent/variation.py`
 - Or: `agents/existing_agent/strategies/variation.py`
 
 **Strategy:**
+
 - Same module: `routing/strategies/strategy_name.py`
 - Pluggable via configuration
 
@@ -221,16 +245,19 @@
 #### **Automated Detection**
 
 **Code Similarity:**
+
 - Use `jscpd` or similar for duplicate detection
 - Threshold: >80% similarity = candidate for consolidation
 - Action: Review manually, consolidate if exact duplication
 
 **Import Analysis:**
+
 - Track which modules import which
 - Identify unused imports (dead code)
 - Action: Remove unused code
 
 **Function Signature Matching:**
+
 - Same function name in multiple files
 - Same parameters, different implementations
 - Action: Consolidate or rename for clarity
@@ -238,11 +265,13 @@
 #### **Manual Review Triggers**
 
 **When to Review:**
+
 - Before adding new module: Check for existing similar functionality
 - During refactoring: Identify consolidation opportunities
 - Quarterly audit: Comprehensive redundancy review
 
 **Review Checklist:**
+
 - [ ] Does this solve a problem already solved?
 - [ ] Can existing code be extended instead?
 - [ ] Is the difference meaningful or accidental?
@@ -253,12 +282,14 @@
 #### **AI Agent Considerations**
 
 **Systemic Issue:** AI coding agents have a **latent urge to "make it work"** leading to:
+
 - Silent fallbacks that hide failures
 - Legacy compatibility shims
 - Over-engineering (migration systems for simple changes)
 - "Hiding bugs" instead of fixing them
 
 **Prevention Strategy:**
+
 1. **Explicit Instructions:** Rules in `AGENTS.md`/`CLAUDE.md` must be explicit and referenced
 2. **"Aim Towards" Framing:** Frame removals positively, explain goals and why
 3. **Fail Fast Philosophy:** Code should fail and stop, no silent fallbacks
@@ -266,6 +297,7 @@
 5. **CI Checks:** Automated detection of fallback patterns
 
 **Example Framing:**
+
 ```
 BAD: "Don't add fallbacks"
 GOOD: "Now that we have fully transitioned to a new system and it has been
@@ -277,10 +309,12 @@ of responsibilities. Once finished, we have a fresh system with no technical deb
 #### **Removal Process (With Parity Verification)**
 
 **Step 1: Identify Legacy Code**
+
 - Search for: `deprecated`, `legacy`, `backward`, `compat`, `fallback`
 - Review: `cli/legacy/`, `*_legacy.py`, `*_deprecated.py`
 
 **Step 2: Verify Parity (REGRESSION GUARD)**
+
 - ✅ **REQUIRED:** Identify canonical replacement
 - ✅ **REQUIRED:** Verify feature parity (all features supported)
 - ✅ **REQUIRED:** Verify migration completeness (all callers migrated)
@@ -289,28 +323,33 @@ of responsibilities. Once finished, we have a fresh system with no technical deb
 - ⚠️ **DO NOT PROCEED** if parity not verified
 
 **Step 3: Find All Callers**
+
 - Use `grep` to find imports/usages
 - List all files that depend on legacy code
 - Verify all callers use canonical implementation
 
 **Step 4: Update Callers**
+
 - Update all callers to use canonical implementation
 - No gradual migration - update all at once
 - Ensure all functionality preserved
 
 **Step 5: Verify Migration**
+
 - Run full test suite
 - Compare behavior: old vs new
 - Verify no functionality lost
 - Check for broken imports
 
 **Step 6: Delete Legacy Code**
+
 - Remove legacy files entirely
 - Remove from imports
 - Update documentation
 - Remove deprecation warnings
 
 **Step 7: Final Verification**
+
 - Run tests again
 - Check for broken imports
 - Confirm no references remain
@@ -346,14 +385,17 @@ Treat thegent governance as a **superset orchestrator** over native language too
 15. Preserve native-tool parity: upgrade custom behavior when upstream tools catch up.
 
 **Pattern: `try: new(); except: old()`**
+
 - **Action:** Remove `except` clause entirely
 - **Rationale:** If new code fails, fix it, don't fallback
 
 **Pattern: `if legacy_flag: old(); else: new()`**
+
 - **Action:** Remove flag and old code
 - **Rationale:** No need for feature flags if no users
 
 **Pattern: Import fallbacks**
+
 - **Action:** Fix imports, remove fallbacks
 - **Rationale:** Dependencies should be managed, not worked around
 
@@ -362,21 +404,25 @@ Treat thegent governance as a **superset orchestrator** over native language too
 #### **Archive Policy**
 
 **What to Archive:**
+
 - ✅ Historical reference (moved implementations)
 - ✅ Research documents (completed research)
 - ✅ Design decisions (ADRs, architecture docs)
 
 **What NOT to Archive:**
+
 - ❌ Deprecated code (delete instead)
 - ❌ Backup files (use git)
 - ❌ Temporary files (delete)
 
 **Archive Location:**
+
 - Separate git repo: `thegent-archive/`
 - Or: `.git/archive/` directory (not tracked)
 - Or: External documentation site
 
 **Archive Structure:**
+
 ```
 archive/
   YYYY-MM-DD-description/
@@ -388,16 +434,19 @@ archive/
 #### **Backup Policy**
 
 **No Backup Files:**
+
 - ❌ No `*.backup` files in repo
 - ❌ No `.env-backup-*` directories
 - ❌ No timestamped backup files
 
 **Use Git Instead:**
+
 - ✅ Git history for version tracking
 - ✅ Git tags for releases
 - ✅ Git branches for experiments
 
 **Exception:**
+
 - ✅ Build artifacts (`.build/`, `target/`) - in `.gitignore`
 - ✅ Temporary test files - cleaned up automatically
 
@@ -412,6 +461,7 @@ archive/
 ### **Parity Verification Checklist**
 
 **Before Removal:**
+
 - [ ] **Identify Canonical Replacement**
   - What is the new implementation?
   - Where is it located?
@@ -449,24 +499,28 @@ archive/
 **Verifier:** [Name]
 
 ### Feature Comparison
-| Feature | Old Implementation | New Implementation | Status |
-|---------|-------------------|-------------------|--------|
-| Feature 1 | ✅ | ✅ | ✅ Parity |
-| Feature 2 | ✅ | ✅ | ✅ Parity |
-| Feature 3 | ✅ | ❌ | ⚠️ Missing - [Action] |
+
+| Feature   | Old Implementation | New Implementation | Status                |
+| --------- | ------------------ | ------------------ | --------------------- |
+| Feature 1 | ✅                 | ✅                 | ✅ Parity             |
+| Feature 2 | ✅                 | ✅                 | ✅ Parity             |
+| Feature 3 | ✅                 | ❌                 | ⚠️ Missing - [Action] |
 
 ### Migration Status
+
 - [ ] All callers identified
 - [ ] All callers migrated
 - [ ] Tests updated
 - [ ] Documentation updated
 
 ### Test Results
+
 - [ ] Behavioral tests pass
 - [ ] Performance acceptable
 - [ ] No regressions
 
 ### Approval
+
 - [ ] Parity verified
 - [ ] Migration complete
 - [ ] Ready for removal
@@ -475,6 +529,7 @@ archive/
 ### **Automated Parity Checks**
 
 **CI/CD Integration:**
+
 ```bash
 # Run parity tests before removal
 pytest tests/parity/ --markers parity_check
@@ -484,6 +539,7 @@ python scripts/verify_parity.py --old old_module --new new_module
 ```
 
 **Test Structure:**
+
 ```python
 # tests/parity/test_cli_legacy_parity.py
 def test_cli_legacy_parity():
@@ -496,6 +552,7 @@ def test_cli_legacy_parity():
 ### **Regression Guard Enforcement**
 
 **Pre-Removal Gate:**
+
 - ✅ Parity verification required
 - ✅ Migration completeness required
 - ✅ Test results required
@@ -503,6 +560,7 @@ def test_cli_legacy_parity():
 - ⚠️ **BLOCK** removal if any check fails
 
 **Post-Removal Verification:**
+
 - ✅ Run full test suite
 - ✅ Verify no broken imports
 - ✅ Check for regressions
@@ -515,6 +573,7 @@ def test_cli_legacy_parity():
 ### 3.1 Immediate Actions (Week 1)
 
 **Priority 1: Remove Legacy CLI**
+
 - [ ] **PARITY CHECK:** Verify `cli/apps/` has all features from `cli/legacy/`
 - [ ] **MIGRATION CHECK:** Verify all callers migrated to `cli/apps/`
 - [ ] **TEST CHECK:** Run tests comparing old vs new behavior
@@ -524,6 +583,7 @@ def test_cli_legacy_parity():
 - [ ] Update documentation
 
 **Priority 2: Remove Deprecated Stubs**
+
 - [ ] **PARITY CHECK:** Verify canonical implementations have all features
 - [ ] **MIGRATION CHECK:** Verify all test files use canonical imports
 - [ ] **TEST CHECK:** Run tests with canonical implementations
@@ -533,6 +593,7 @@ def test_cli_legacy_parity():
 - [ ] Remove deprecation warnings
 
 **Priority 3: Clean Backup Files**
+
 - [ ] Find all `*.backup` files
 - [ ] **VERIFY:** No active code depends on backup files
 - [ ] Delete backup files
@@ -542,16 +603,19 @@ def test_cli_legacy_parity():
 ### 3.2 Short-Term Actions (Weeks 2-4)
 
 **Consolidation Phase 1:**
+
 - [ ] Consolidate config systems → `ThegentSettings`
 - [ ] Consolidate SHM implementations → single system
 - [ ] Consolidate IPC mechanisms → Rust-based abstraction
 
 **Redundancy Removal:**
+
 - [ ] Run code similarity analysis
 - [ ] Identify duplicate functions
 - [ ] Consolidate or rename for clarity
 
 **Concept Audit:**
+
 - [ ] Review agent implementations
 - [ ] Document distinct capabilities
 - [ ] Consolidate overlapping implementations
@@ -559,16 +623,19 @@ def test_cli_legacy_parity():
 ### 3.3 Medium-Term Actions (Months 2-3)
 
 **Consolidation Phase 2:**
+
 - [ ] Consolidate execution systems
 - [ ] Consolidate routing strategies (if overlapping)
 - [ ] Consolidate discovery systems (if overlapping)
 
 **Archive Migration:**
+
 - [ ] Move historical archives to separate repo
 - [ ] Document archive policy
 - [ ] Set up archive maintenance process
 
 **Governance Automation:**
+
 - [ ] Set up CI checks for deprecated patterns
 - [ ] Add linting rules for fallbacks
 - [ ] Create audit scripts
@@ -576,17 +643,20 @@ def test_cli_legacy_parity():
 ### 3.4 Ongoing Governance
 
 **Quarterly Audits:**
+
 - [ ] Redundancy review
 - [ ] Concept explosion check
 - [ ] Legacy code audit
 - [ ] Archive cleanup
 
 **Pre-Commit Checks:**
+
 - [ ] No `*.backup` files
 - [ ] No deprecated patterns
 - [ ] No backwards compat code
 
 **Documentation:**
+
 - [ ] Keep decision records updated
 - [ ] Document consolidation decisions
 - [ ] Maintain architecture diagrams
@@ -600,6 +670,7 @@ def test_cli_legacy_parity():
 #### **CI/CD Checks**
 
 **Pattern Detection:**
+
 ```bash
 # Check for deprecated patterns
 grep -r "deprecated\|legacy\|backward\|compat" --include="*.py" src/
@@ -608,6 +679,7 @@ grep -r "try:.*except.*fallback" --include="*.py" src/
 ```
 
 **Code Similarity:**
+
 ```bash
 # Install jscpd
 npm install -g jscpd
@@ -617,6 +689,7 @@ jscpd src/ --min-lines 10 --min-tokens 50 --threshold 80
 ```
 
 **Import Analysis:**
+
 ```bash
 # Find unused imports
 ruff check --select F401 src/
@@ -625,6 +698,7 @@ ruff check --select F401 src/
 #### **Linting Rules**
 
 **Ruff Configuration:**
+
 ```toml
 [tool.ruff.lint]
 # Disallow deprecated patterns
@@ -636,6 +710,7 @@ select = ["F", "E", "W", "B", "C4"]
 ```
 
 **Custom Rules:**
+
 - No `*.backup` files in repo
 - No `deprecated` without removal date
 - No `backward compat` comments
@@ -645,6 +720,7 @@ select = ["F", "E", "W", "B", "C4"]
 #### **Pre-Commit Checklist**
 
 Before committing:
+
 - [ ] No backwards compatibility code added
 - [ ] No fallback patterns introduced
 - [ ] No duplicate implementations created
@@ -655,6 +731,7 @@ Before committing:
 #### **Code Review Checklist**
 
 Reviewers check:
+
 - [ ] Does this duplicate existing functionality?
 - [ ] Is backwards compatibility needed? (Answer: NO)
 - [ ] Are fallbacks necessary? (Answer: NO, except performance)
@@ -669,16 +746,19 @@ Reviewers check:
 #### **Violation Levels**
 
 **Level 1: Warning**
+
 - Minor pattern violation
 - Action: Fix in next commit
 - Example: Import fallback in non-critical code
 
 **Level 2: Block**
+
 - Significant violation
 - Action: Fix before merge
 - Example: New backwards compat code
 
 **Level 3: Revert**
+
 - Critical violation
 - Action: Revert commit
 - Example: Deprecated code reintroduced
@@ -697,6 +777,7 @@ Reviewers check:
 ### 5.1 Good Patterns ✅
 
 **Performance Fallback (Acceptable):**
+
 ```python
 # ✅ GOOD: Performance optimization, documented
 def fast_json_parse(data: bytes) -> dict:
@@ -708,6 +789,7 @@ def fast_json_parse(data: bytes) -> dict:
 ```
 
 **Strategy Pattern (Acceptable):**
+
 ```python
 # ✅ GOOD: Multiple strategies, pluggable
 class Router:
@@ -719,6 +801,7 @@ class Router:
 ```
 
 **Native Optimization (Acceptable):**
+
 ```python
 # ✅ GOOD: Native vs Python, performance-critical
 if IS_NATIVE_AVAILABLE:
@@ -730,6 +813,7 @@ else:
 ### 5.2 Bad Patterns ❌
 
 **Backwards Compatibility (Remove):**
+
 ```python
 # ❌ BAD: Backwards compat shim
 def old_function():
@@ -738,6 +822,7 @@ def old_function():
 ```
 
 **Import Fallback (Remove):**
+
 ```python
 # ❌ BAD: Import fallback
 try:
@@ -747,6 +832,7 @@ except ImportError:
 ```
 
 **Duplicate Implementation (Remove):**
+
 ```python
 # ❌ BAD: Same logic, different file
 # file1.py
@@ -759,6 +845,7 @@ def parse_config():
 ```
 
 **Backup Files (Remove):**
+
 ```bash
 # ❌ BAD: Backup files in repo
 config.py.backup
@@ -771,6 +858,7 @@ config.py.backup
 **Example 1: Removing Legacy CLI**
 
 **Before:**
+
 ```
 cli/
   legacy/
@@ -780,6 +868,7 @@ cli/
 ```
 
 **After:**
+
 ```
 cli/
   apps/
@@ -787,6 +876,7 @@ cli/
 ```
 
 **Migration Steps:**
+
 1. Find all imports of `cli.legacy`
 2. Update to `cli.apps`
 3. Delete `cli/legacy/` directory
@@ -795,10 +885,12 @@ cli/
 **Example 2: Consolidating Config**
 
 **Before:**
+
 ```python
 # config.py
 def get_config():
     return os.environ.get("THGENT_X", "default")
+
 
 # config_provider.py
 def get_config():
@@ -806,9 +898,11 @@ def get_config():
 ```
 
 **After:**
+
 ```python
 # config.py (canonical)
 from thegent.config import ThegentSettings
+
 
 def get_config():
     settings = ThegentSettings()
@@ -816,6 +910,7 @@ def get_config():
 ```
 
 **Migration Steps:**
+
 1. Migrate `config_provider.py` to use `ThegentSettings`
 2. Update all callers
 3. Delete `config_provider.py`
@@ -828,16 +923,19 @@ def get_config():
 ### 6.1 Key Metrics
 
 **Redundancy Metrics:**
+
 - Code similarity percentage (target: <5%)
 - Duplicate function count (target: 0)
 - Unused import count (target: 0)
 
 **Legacy Metrics:**
+
 - Deprecated code files (target: 0)
 - Backwards compat patterns (target: 0)
 - Fallback patterns (target: 0, except performance)
 
 **Archive Metrics:**
+
 - Backup files in repo (target: 0)
 - Archive size (track growth)
 - Archive access frequency
@@ -845,16 +943,19 @@ def get_config():
 ### 6.2 Reporting
 
 **Weekly:**
+
 - New violations detected
 - Fixes completed
 - Patterns introduced
 
 **Monthly:**
+
 - Redundancy audit results
 - Legacy code removal progress
 - Archive cleanup status
 
 **Quarterly:**
+
 - Comprehensive audit
 - Policy review
 - Metrics trend analysis
@@ -904,6 +1005,7 @@ def get_config():
 **Authority:** Architecture team
 
 <!-- PHENOTYPE_GOVERNANCE_OVERLAY_V1 -->
+
 ## Phenotype Governance Overlay v1
 
 - Enforce `TDD + BDD + SDD` for all feature and workflow changes.
@@ -912,4 +1014,3 @@ def get_config():
 - Keep local hot paths deterministic and low-latency; place distributed workflow logic behind durable orchestration boundaries.
 - Require policy gating, auditability, and traceable correlation IDs for agent and workflow actions.
 - Document architectural and protocol decisions before broad rollout changes.
-

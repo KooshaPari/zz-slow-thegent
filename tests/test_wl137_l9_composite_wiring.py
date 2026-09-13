@@ -40,7 +40,6 @@ from unittest.mock import MagicMock, patch
 
 import pytest
 
-
 # ---------------------------------------------------------------------------
 # 1. Wire-up regression: every new helper must be referenced from run_impl_core
 # ---------------------------------------------------------------------------
@@ -120,7 +119,9 @@ def test_run_impl_core_inline_fragments_removed(forbidden_fragment: str, run_imp
     )
 
 
-def test_run_impl_core_lost_duplicate_settings_rebind(run_impl_core_source: str) -> None:
+def test_run_impl_core_lost_duplicate_settings_rebind(
+    run_impl_core_source: str,
+) -> None:
     """The redundant ``settings = ThegentSettings()`` mid-body must be gone.
 
     Pre-WL137 the orchestrator re-bound ``settings`` and ``impl_ns`` mid-
@@ -445,7 +446,7 @@ def patch_get_run_cost_tracker(helpers_module, tracker):
 
     @contextmanager
     def _patch():
-        original = helpers_module._phase_init_tracker.__globals__.get("get_run_cost_tracker")
+        helpers_module._phase_init_tracker.__globals__.get("get_run_cost_tracker")
         # The helper does a module-level import inside its body, so we must
         # patch the symbol inside ``thegent.cost.tracker`` instead.
         import thegent.cost.tracker as cost_tracker_mod

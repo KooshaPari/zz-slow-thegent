@@ -9,18 +9,21 @@
 ## 1. Developer Experience Tools
 
 ### 1.1 KemingHe/common-devx
+
 - **GitHub**: https://github.com/KemingHe
 - **Focus**: Developer experience optimization
 - **Key Project**: Buckeye GPT (AI cost reduction)
 - **Relevance**: DX patterns for CLI tools
 
 ### 1.2 stakpak/devx
+
 - **GitHub**: https://github.com/stakpak/devx
 - **Focus**: Configuration management tool
 - **Tech**: CUE-powered, supports K8s, Terraform, Compose, GitHub Actions
 - **Relevance**: Config validation patterns for CLIProxyAPI
 
 ### 1.3 WorkOS/awesome-developer-experience
+
 - **GitHub**: https://github.com/workos/awesome-developer-experience
 - **Focus**: Curated DX resources
 - **Relevance**: Best practices and tool references
@@ -30,6 +33,7 @@
 ## 2. AI Service Provider Frameworks
 
 ### 2.1 bar181/aisp-open-core
+
 - **GitHub**: https://github.com/bar181/aisp-open-core
 - **Focus**: AISP (AI Symbolic Programming) v5.1
 - **Key Innovation**: AI-first, specification-driven development
@@ -41,6 +45,7 @@
 - **Relevance**: Pattern for specification-driven API design
 
 ### 2.2 aipotheosis-labs/aci
+
 - **GitHub**: https://github.com/aipotheosis-labs/aci
 - **Focus**: ACI.dev platform
 - **Features**:
@@ -54,6 +59,7 @@
 ## 3. Vector Database & AI Infrastructure
 
 ### 3.1 ruvnet/ruvector
+
 - **GitHub**: https://github.com/ruvnet/ruvector
 - **Focus**: High-performance distributed vector database
 - **Tech Stack**: Rust, WASM, Raft consensus
@@ -72,6 +78,7 @@
 - **Relevance**: Embedding storage for semantic search in CLI docs
 
 ### 3.2 ruvnet/ruv.io Ecosystem
+
 - **Profile**: https://github.com/ruvnet (3,200+ followers)
 - **Projects**:
   - `agentic-flow`: AI agent framework (352x faster execution)
@@ -89,6 +96,7 @@
 ## 4. Documentation Linting & Testing
 
 ### 4.1 errata-ai/vale
+
 - **GitHub**: https://github.com/errata-ai/vale
 - **Focus**: Markup-aware prose linter
 - **Features**:
@@ -102,18 +110,20 @@
 - **Relevance**: Enforce consistent documentation style in CLIProxyAPI
 
 ### 4.2 testthedocs Ecosystem
+
 - **GitHub**: https://github.com/testthedocs
 - **Key Projects**:
 
-| Project | Purpose |
-|---------|---------|
-| `vale-styles` | Pre-packaged style guides |
-| `awesome-docs` | Curated documentation tools |
-| `rakpart` | Container-based doc checks |
-| `redactor` | Documentation QA framework |
+| Project            | Purpose                       |
+| ------------------ | ----------------------------- |
+| `vale-styles`      | Pre-packaged style guides     |
+| `awesome-docs`     | Curated documentation tools   |
+| `rakpart`          | Container-based doc checks    |
+| `redactor`         | Documentation QA framework    |
 | `swagger-markdown` | Swagger to Markdown converter |
 
 ### 4.3 rakpart (Archived)
+
 - **Features**:
   - Markdown Lint, Remark Lint, Doc8
   - HTML testing, link checking
@@ -122,6 +132,7 @@
 - **Integrates**: 18F Content Guide, PlainLanguage standards
 
 ### 4.4 18F Content Guide
+
 - **URL**: https://guides.18f.gov/content-guide/
 - **Focus**: Clear government content
 - **Principles**:
@@ -135,6 +146,7 @@
 ## 5. Documentation Testing Tools
 
 ### 5.1 Doc Detective
+
 - **GitHub**: https://github.com/doc-detective/doc-detective
 - **Focus**: Documentation testing framework
 - **Features**:
@@ -144,6 +156,7 @@
   - Browser automation
 
 ### 5.2 docsastests.com Tools
+
 - **Testing**: Doc Detective, doctest, LinkChecker, Cypress, Playwright
 - **API Testing**: Postman, Dredd, Pact
 - **Style**: Vale
@@ -156,6 +169,7 @@
 ### 6.1 For CLIProxyAPI++ Documentation
 
 1. **Adopt Vale Linter**
+
    ```bash
    brew install vale
    vale --config .vale.ini docs/
@@ -200,14 +214,14 @@
 
 ## 7. Integration Opportunities
 
-| Source | Feature | Potential Use |
-|--------|---------|---------------|
-| ruvector | Vector DB | Semantic search in docs/logs |
-| Vale | Linting | Enforce doc style guide |
-| rakpart | Container checks | CI doc validation |
-| aisp | Spec-driven design | API contract testing |
-| agentic-flow | Agent patterns | Multi-provider routing |
-| 18F Guide | Style standards | User-facing docs |
+| Source       | Feature            | Potential Use                |
+| ------------ | ------------------ | ---------------------------- |
+| ruvector     | Vector DB          | Semantic search in docs/logs |
+| Vale         | Linting            | Enforce doc style guide      |
+| rakpart      | Container checks   | CI doc validation            |
+| aisp         | Spec-driven design | API contract testing         |
+| agentic-flow | Agent patterns     | Multi-provider routing       |
+| 18F Guide    | Style standards    | User-facing docs             |
 
 ---
 

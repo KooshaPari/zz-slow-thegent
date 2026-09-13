@@ -2,11 +2,11 @@
 
 from __future__ import annotations
 
-from collections import Counter
 import hashlib
-from pathlib import Path
 import re
 import shlex
+from collections import Counter
+from pathlib import Path
 
 from tests.e2e import test_split_hygiene
 

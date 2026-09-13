@@ -15,9 +15,10 @@ from pathlib import Path
 
 import pytest
 
+from thegent.agents import cliproxy_manager  # noqa: F401
+
 # Import targets — import them here so sys.modules lookup below works
 from thegent.use_cases import manage_cliproxy_login  # noqa: F401
-from thegent.agents import cliproxy_manager  # noqa: F401
 
 # ---------------------------------------------------------------------------
 # Module surface

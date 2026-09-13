@@ -8,7 +8,7 @@ from __future__ import annotations
 
 def worktree_list_cmd() -> list[dict]:
     """List all worktrees.
-    
+
     Returns:
         List of worktree dictionaries.
     """
@@ -17,12 +17,12 @@ def worktree_list_cmd() -> list[dict]:
 
 def worktree_create_cmd(name: str, branch: str | None = None, **kwargs) -> dict:
     """Create a new worktree.
-    
+
     Args:
         name: Worktree name.
         branch: Branch name (optional).
         **kwargs: Additional options.
-        
+
     Returns:
         Created worktree dictionary.
     """
@@ -31,10 +31,10 @@ def worktree_create_cmd(name: str, branch: str | None = None, **kwargs) -> dict:
 
 def worktree_governance_check(worktree_path: str) -> dict:
     """Check governance status of a worktree.
-    
+
     Args:
         worktree_path: Path to worktree.
-        
+
     Returns:
         Governance check result dictionary.
     """

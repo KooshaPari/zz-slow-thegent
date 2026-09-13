@@ -26,7 +26,6 @@ from thegent.ux.cockpit import (
 )
 from thegent.ux.kpis.traffic import TrafficDashboard, TrafficEvent
 
-
 pytestmark = pytest.mark.unit
 
 

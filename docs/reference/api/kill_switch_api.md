@@ -15,7 +15,7 @@ Hard-wired emergency stop for all agent processes.
 
 ### Methods
 
-#### SafetyKillSwitch.__init__
+#### SafetyKillSwitch.**init**
 
 ```python
 __init__(self: Any, workspace_root: str)

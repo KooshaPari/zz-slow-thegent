@@ -17,17 +17,16 @@ Traces to: FR-GOV-007 (governance violation detection), FR-GOV-006 (native binar
 from __future__ import annotations
 
 import dataclasses
-import orjson as json
 import subprocess
 from pathlib import Path
 from unittest.mock import patch
 
+import orjson as json
 import pytest
 
 from thegent.governance.native_governance_scan import (
     GovernanceViolation,
     NativeGovernanceScanner,
-    _find_binary,
     _parse_binary_output,
     _python_check_contract,
     _python_scan_all,
@@ -376,7 +375,14 @@ def test_parse_binary_output_parses_violations() -> None:
     payload = json.dumps(
         {
             "violation_count": 1,
-            "violations": [{"rule": "hardcoded-credential", "severity": "error", "line": 5, "message": "cred at 5"}],
+            "violations": [
+                {
+                    "rule": "hardcoded-credential",
+                    "severity": "error",
+                    "line": 5,
+                    "message": "cred at 5",
+                }
+            ],
         }
     )
     result = _parse_binary_output(payload)

@@ -15,7 +15,7 @@ Manages commands sent to physical IoT or robotic devices.
 
 ### Methods
 
-#### physicalWorldBridge.__init__
+#### physicalWorldBridge.**init**
 
 ```python
 __init__(self: Any, bridge_id: str)

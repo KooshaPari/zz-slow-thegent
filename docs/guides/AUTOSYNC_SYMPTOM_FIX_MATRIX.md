@@ -4,18 +4,18 @@ This matrix provides a quick diagnostic and remediation guide for common autosyn
 
 ## Symptom-to-Fix Reference
 
-| Symptom | Likely Cause | Diagnostic Command | Fix Command | Reference |
-|---------|--------------|-------------------|------------|-----------|
-| Drift detected in sync | Schema mismatch or stale mapping | `thegent autosync drift-check <connector>` | `thegent autosync remap <connector>` | docs/guides/AUTOSYNC_CONFLICT_RESOLUTION.md |
-| Conflict queue full, sync blocked | Too many unresolved conflicts | `thegent autosync conflicts-list <connector>` | `thegent autosync resolve-conflicts <connector> --auto` | docs/guides/AUTOSYNC_CONFLICT_RESOLUTION.md |
-| Auth token expired, 401 errors | OAuth token expired or revoked | `thegent autosync auth-status <connector>` | `thegent autosync refresh-auth <connector>` | docs/guides/AUTOSYNC_AUTH_TROUBLESHOOTING.md |
-| Rate limit hit, backoff active | Connector rate limit exhausted | `thegent autosync quota-status <connector>` | `thegent autosync backoff --reset <connector>` | docs/guides/AUTOSYNC_RATE_LIMITING.md |
-| Sync stuck, no progress | Process deadlocked or hung | `thegent autosync status <connector> --verbose` | `thegent autosync restart <connector>` | docs/guides/AUTOSYNC_LIFECYCLE.md |
-| Board ID collision, write rejected | Duplicate board ID assignment | `thegent autosync board-ids <connector> --check-dups` | `thegent autosync reindex-boards <connector>` | docs/guides/AUTOSYNC_BOARD_MANAGEMENT.md |
-| Startup validation failed | Connector not ready or misconfigured | `thegent autosync startup-validate <connector>` | `thegent autosync configure <connector> --interactive` | docs/guides/AUTOSYNC_STARTUP.md |
-| Rollback needed, revert state | Production issue, need to recover | `thegent autosync snapshots list <connector>` | `thegent autosync rollback <connector> <snapshot-id>` | docs/guides/AUTOSYNC_ROLLBACK.md |
-| Mapping stale, schema evolved | Connector schema changed upstream | `thegent autosync schema-diff <connector>` | `thegent autosync schema-sync <connector>` | docs/guides/AUTOSYNC_SCHEMA_EVOLUTION.md |
-| Writer lock held, writes blocked | Another process holds write lock | `thegent autosync lock-status <connector>` | `thegent autosync lock-release <connector> --force` | docs/guides/AUTOSYNC_LOCKING.md |
+| Symptom                            | Likely Cause                         | Diagnostic Command                                    | Fix Command                                             | Reference                                    |
+| ---------------------------------- | ------------------------------------ | ----------------------------------------------------- | ------------------------------------------------------- | -------------------------------------------- |
+| Drift detected in sync             | Schema mismatch or stale mapping     | `thegent autosync drift-check <connector>`            | `thegent autosync remap <connector>`                    | docs/guides/AUTOSYNC_CONFLICT_RESOLUTION.md  |
+| Conflict queue full, sync blocked  | Too many unresolved conflicts        | `thegent autosync conflicts-list <connector>`         | `thegent autosync resolve-conflicts <connector> --auto` | docs/guides/AUTOSYNC_CONFLICT_RESOLUTION.md  |
+| Auth token expired, 401 errors     | OAuth token expired or revoked       | `thegent autosync auth-status <connector>`            | `thegent autosync refresh-auth <connector>`             | docs/guides/AUTOSYNC_AUTH_TROUBLESHOOTING.md |
+| Rate limit hit, backoff active     | Connector rate limit exhausted       | `thegent autosync quota-status <connector>`           | `thegent autosync backoff --reset <connector>`          | docs/guides/AUTOSYNC_RATE_LIMITING.md        |
+| Sync stuck, no progress            | Process deadlocked or hung           | `thegent autosync status <connector> --verbose`       | `thegent autosync restart <connector>`                  | docs/guides/AUTOSYNC_LIFECYCLE.md            |
+| Board ID collision, write rejected | Duplicate board ID assignment        | `thegent autosync board-ids <connector> --check-dups` | `thegent autosync reindex-boards <connector>`           | docs/guides/AUTOSYNC_BOARD_MANAGEMENT.md     |
+| Startup validation failed          | Connector not ready or misconfigured | `thegent autosync startup-validate <connector>`       | `thegent autosync configure <connector> --interactive`  | docs/guides/AUTOSYNC_STARTUP.md              |
+| Rollback needed, revert state      | Production issue, need to recover    | `thegent autosync snapshots list <connector>`         | `thegent autosync rollback <connector> <snapshot-id>`   | docs/guides/AUTOSYNC_ROLLBACK.md             |
+| Mapping stale, schema evolved      | Connector schema changed upstream    | `thegent autosync schema-diff <connector>`            | `thegent autosync schema-sync <connector>`              | docs/guides/AUTOSYNC_SCHEMA_EVOLUTION.md     |
+| Writer lock held, writes blocked   | Another process holds write lock     | `thegent autosync lock-status <connector>`            | `thegent autosync lock-release <connector> --force`     | docs/guides/AUTOSYNC_LOCKING.md              |
 
 ## Usage
 

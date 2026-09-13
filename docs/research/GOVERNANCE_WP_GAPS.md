@@ -11,16 +11,17 @@
 
 ### Current Implementation
 
-| Component | Location | Behavior |
-|-----------|-----------|----------|
-| Override flag | `main.py`, `cli.py` | `--override "reason"` on run/bg |
-| OverrideRegistry | `execution.py` | Stores `(owner, reason, expires_at)` |
-| TTL config | `config.py` | `override_ttl_seconds` (default 86400 = 24h) |
-| Policy bypass | `cli_impl.py` 993–1005 | If deny + override_reason → allow; if deny + has_unexpired → allow |
+| Component        | Location               | Behavior                                                           |
+| ---------------- | ---------------------- | ------------------------------------------------------------------ |
+| Override flag    | `main.py`, `cli.py`    | `--override "reason"` on run/bg                                    |
+| OverrideRegistry | `execution.py`         | Stores `(owner, reason, expires_at)`                               |
+| TTL config       | `config.py`            | `override_ttl_seconds` (default 86400 = 24h)                       |
+| Policy bypass    | `cli_impl.py` 993–1005 | If deny + override_reason → allow; if deny + has_unexpired → allow |
 
 ### Revalidation on Expiry
 
 When TTL expires:
+
 - `OverrideRegistry.has_unexpired(owner)` returns `False`
 - Policy re-evaluates; if still deny, user must supply `--override` again
 - No cached bypass; re-justification required
@@ -37,11 +38,11 @@ When TTL expires:
 
 ### Current Implementation
 
-| Component | Location | Behavior |
-|-----------|-----------|----------|
-| Retention | `config.py` | `THGENT_RETENTION_DAYS_SESSIONS` |
-| Archive | `cli.py` | `govern archive` archives old sessions |
-| Data protection | `cli.py` | `govern data-protection` reports WP-3006 status |
+| Component       | Location    | Behavior                                        |
+| --------------- | ----------- | ----------------------------------------------- |
+| Retention       | `config.py` | `THGENT_RETENTION_DAYS_SESSIONS`                |
+| Archive         | `cli.py`    | `govern archive` archives old sessions          |
+| Data protection | `cli.py`    | `govern data-protection` reports WP-3006 status |
 
 ### Gaps
 
@@ -51,11 +52,11 @@ When TTL expires:
 
 ### Implementation Options
 
-| Option | Description | Effort | Status |
-|--------|-------------|--------|--------|
-| A | Add `domain` field to session metadata; `govern archive --domain gdpr` | 1–2 days | ✓ Done |
-| B | Tiered: `--tier hot` (30d), `--tier cold` (1yr); move to cold storage path | 2–3 days | ✓ Done |
-| C | Config: `THGENT_RETENTION_BY_DOMAIN={"gdpr": 365, "soc2": 2555}` | 1 day | ✓ Done |
+| Option | Description                                                                | Effort   | Status |
+| ------ | -------------------------------------------------------------------------- | -------- | ------ |
+| A      | Add `domain` field to session metadata; `govern archive --domain gdpr`     | 1–2 days | ✓ Done |
+| B      | Tiered: `--tier hot` (30d), `--tier cold` (1yr); move to cold storage path | 2–3 days | ✓ Done |
+| C      | Config: `THGENT_RETENTION_BY_DOMAIN={"gdpr": 365, "soc2": 2555}`           | 1 day    | ✓ Done |
 
 **Status:** A + B + C complete. `govern compliance-report` generates retention report.
 
@@ -65,16 +66,16 @@ When TTL expires:
 
 ### Current Implementation
 
-| Component | Location | Behavior |
-|-----------|-----------|----------|
-| EscalationQueue | `execution.py` | add(), list_pending(), resolve(); JSONL in session_dir |
-| govern escalate add | `main.py`, `cli.py` | Manual add: run_id, reason, sla_minutes, owner, lane |
-| govern escalate list | `main.py`, `cli.py` | List pending; `--past-sla` for items past SLA |
-| govern escalate resolve | `main.py`, `cli.py` | Mark run_id resolved |
-| Auto-add on deny | `cli_impl.py` | Policy deny → add to queue (escalation_sla_minutes) |
-| Config | `config.py` | `escalation_sla_minutes` (default 30) |
-| RUNBOOK | `RUNBOOK.md` | Escalation links |
-| Risk registry | `09-RISK-REGISTRY.md` | SLA targets per risk |
+| Component               | Location              | Behavior                                               |
+| ----------------------- | --------------------- | ------------------------------------------------------ |
+| EscalationQueue         | `execution.py`        | add(), list_pending(), resolve(); JSONL in session_dir |
+| govern escalate add     | `main.py`, `cli.py`   | Manual add: run_id, reason, sla_minutes, owner, lane   |
+| govern escalate list    | `main.py`, `cli.py`   | List pending; `--past-sla` for items past SLA          |
+| govern escalate resolve | `main.py`, `cli.py`   | Mark run_id resolved                                   |
+| Auto-add on deny        | `cli_impl.py`         | Policy deny → add to queue (escalation_sla_minutes)    |
+| Config                  | `config.py`           | `escalation_sla_minutes` (default 30)                  |
+| RUNBOOK                 | `RUNBOOK.md`          | Escalation links                                       |
+| Risk registry           | `09-RISK-REGISTRY.md` | SLA targets per risk                                   |
 
 ### Gaps
 
@@ -84,12 +85,12 @@ When TTL expires:
 
 ### Implementation Options
 
-| Option | Description | Effort | Status |
-|--------|-------------|--------|--------|
-| A | EscalationQueue with add(blocked_run, sla_minutes) | 2–3 days | ✓ Done |
-| B | `thegent govern escalate list` — list items past SLA | 1 day | ✓ Done |
-| C | Integrate with DLQ: when recovery exhausted, add to escalation queue | 1–2 days | Deferred |
-| D | Priority dispatch; continuity snapshots; handoff confirm | 1 day | ✓ Done |
+| Option | Description                                                          | Effort   | Status   |
+| ------ | -------------------------------------------------------------------- | -------- | -------- |
+| A      | EscalationQueue with add(blocked_run, sla_minutes)                   | 2–3 days | ✓ Done   |
+| B      | `thegent govern escalate list` — list items past SLA                 | 1 day    | ✓ Done   |
+| C      | Integrate with DLQ: when recovery exhausted, add to escalation queue | 1–2 days | Deferred |
+| D      | Priority dispatch; continuity snapshots; handoff confirm             | 1 day    | ✓ Done   |
 
 **Status:** A + B + D complete. `orchestrate handoff` includes escalation backlog; `orchestrate handoff-confirm` for incoming-owner confirmation.
 
@@ -99,12 +100,12 @@ When TTL expires:
 
 Remaining optional/deferred gaps that can be added as work items when prioritized:
 
-| ID | Title | Source | Priority | Notes |
-|----|-------|--------|----------|-------|
-| gov-wp-3003-enhance | Emit governance.override.expired when cached override used but record expired | GOVERNANCE_WP_GAPS.md §WP-3003 | P3 | Optional enhancement |
-| gov-wp-3008-dlq | Integrate EscalationQueue with DLQ: when recovery exhausted, add to escalation | GOVERNANCE_WP_GAPS.md §WP-3008 | P2 | Option C deferred |
+| ID                  | Title                                                                          | Source                         | Priority | Notes                |
+| ------------------- | ------------------------------------------------------------------------------ | ------------------------------ | -------- | -------------------- |
+| gov-wp-3003-enhance | Emit governance.override.expired when cached override used but record expired  | GOVERNANCE_WP_GAPS.md §WP-3003 | P3       | Optional enhancement |
+| gov-wp-3008-dlq     | Integrate EscalationQueue with DLQ: when recovery exhausted, add to escalation | GOVERNANCE_WP_GAPS.md §WP-3008 | P2       | Option C deferred    |
 
-*Most WP-3003, WP-3006, WP-3008 items are complete. See References.*
+_Most WP-3003, WP-3006, WP-3008 items are complete. See References._
 
 ---
 
@@ -123,15 +124,18 @@ Remaining optional/deferred gaps that can be added as work items when prioritize
 **Extended by:** Claude Code
 
 ### Changes Made
+
 1. Added governance gap patterns
 2. Added WP configurations
 3. Enhanced cross-references
 
 ### Cross-References Added
+
 - GOVERNANCE_POLICY_AUDIT_RESEARCH.md
 - PROACTIVE_GOVERNANCE_EVOLUTION_PLAN.md
 
 ### Practical Additions
+
 - Gap templates
 - WP configurations
 
@@ -145,6 +149,7 @@ Remaining optional/deferred gaps that can be added as work items when prioritize
 - [RESEARCH_SEED_FRAGMENT_INVENTORY](./RESEARCH_SEED_FRAGMENT_INVENTORY_AND_SPRAWL_TODO.md) - Fragment inventory
 
 <!-- PHENOTYPE_GOVERNANCE_OVERLAY_V1 -->
+
 ## Phenotype Governance Overlay v1
 
 - Enforce `TDD + BDD + SDD` for all feature and workflow changes.
@@ -153,4 +158,3 @@ Remaining optional/deferred gaps that can be added as work items when prioritize
 - Keep local hot paths deterministic and low-latency; place distributed workflow logic behind durable orchestration boundaries.
 - Require policy gating, auditability, and traceable correlation IDs for agent and workflow actions.
 - Document architectural and protocol decisions before broad rollout changes.
-

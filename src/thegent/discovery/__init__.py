@@ -6,13 +6,13 @@ available, falling back to the original psutil-based scan otherwise.
 """
 
 import contextlib
-from importlib import import_module
-import orjson as json
 import logging
 from datetime import UTC, datetime
+from importlib import import_module
 from pathlib import Path
 from typing import Any
 
+import orjson as json
 import psutil
 from pydantic import BaseModel, Field
 
@@ -88,7 +88,15 @@ def get_current_agent_id() -> str:
         parent = current.parent()
         if parent:
             parent_name = parent.name().lower()
-            agent_names = {"thegent", "codex", "copilot", "claude", "cursor-agent", "opencode", "zen"}
+            agent_names = {
+                "thegent",
+                "codex",
+                "copilot",
+                "claude",
+                "cursor-agent",
+                "opencode",
+                "zen",
+            }
             for agent in agent_names:
                 if agent in parent_name:
                     return f"{agent}-{os.getpid()}"
@@ -141,11 +149,21 @@ def register_discovered_agent(
         except Exception as e:
             _log.warning(f"Failed to read discovered agent file {file_path}: {e}")
             agent_data = DiscoveredAgent(
-                pid=pid, ppid=ppid, agent=agent, cwd=cwd, command=command, args_preview=args_preview
+                pid=pid,
+                ppid=ppid,
+                agent=agent,
+                cwd=cwd,
+                command=command,
+                args_preview=args_preview,
             ).model_dump()
     else:
         agent_data = DiscoveredAgent(
-            pid=pid, ppid=ppid, agent=agent, cwd=cwd, command=command, args_preview=args_preview
+            pid=pid,
+            ppid=ppid,
+            agent=agent,
+            cwd=cwd,
+            command=command,
+            args_preview=args_preview,
         ).model_dump()
 
     # Store new optional fields
@@ -220,7 +238,15 @@ def _is_triggered_by_agent_process() -> bool:
 
         # Check current process name
         current_name = current.name().lower()
-        agent_names = {"thegent", "codex", "copilot", "claude", "cursor-agent", "opencode", "zen"}
+        agent_names = {
+            "thegent",
+            "codex",
+            "copilot",
+            "claude",
+            "cursor-agent",
+            "opencode",
+            "zen",
+        }
         if any(agent in current_name for agent in agent_names):
             return True
 

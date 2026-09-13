@@ -16,6 +16,7 @@
 ## Fixes Applied
 
 ### 1. Installed `~/.zshenv`
+
 ```bash
 cp shell/.zshenv ~/.zshenv
 ```
@@ -23,6 +24,7 @@ cp shell/.zshenv ~/.zshenv
 This sets up PATH early with `~/.local/bin` first.
 
 ### 2. Created `.mise.toml`
+
 ```toml
 [tools]
 node = "lts"
@@ -31,14 +33,17 @@ node = "lts"
 This tells mise to install Node.js LTS.
 
 ### 3. Install Node.js via mise
+
 ```bash
 mise install
 ```
 
 ### 4. Install thegent
+
 Created a wrapper script at `~/.local/bin/thegent` that calls `uv run thegent`.
 
 Alternatively, use `uv run thegent` directly or install via:
+
 ```bash
 # Create wrapper (already done)
 cat > ~/.local/bin/thegent << 'EOF'
@@ -49,6 +54,7 @@ chmod +x ~/.local/bin/thegent
 ```
 
 ### 5. Create Node.js symlink (if mise not working)
+
 ```bash
 ln -sf /opt/homebrew/bin/node ~/.local/bin/node
 ```
@@ -60,21 +66,27 @@ ln -sf /opt/homebrew/bin/node ~/.local/bin/node
 After running `exec zsh` in your terminal:
 
 1. **Verify PATH:**
+
    ```bash
    echo $PATH | grep -o "$HOME/.local/bin"
    ```
+
    Should show: `/Users/kooshapari/.local/bin`
 
 2. **Verify Node.js:**
+
    ```bash
    node --version
    ```
+
    Should show: `v20.x.x` or similar
 
 3. **Verify thegent:**
+
    ```bash
    thegent --help
    ```
+
    Should show thegent help.
 
 4. **If Node.js still missing:**
@@ -124,7 +136,6 @@ After this, everything should work in new terminals.
 - [SHELL_ENVIRONMENT_COMPLETE.md](./SHELL_ENVIRONMENT_COMPLETE.md) — shell environment
 - [00-MASTER-INDEX.md](../plans/00-MASTER-INDEX.md) — plan index
 
-
 ---
 
 ## EXTENSION_SUMMARY
@@ -133,15 +144,18 @@ After this, everything should work in new terminals.
 **Extended by:** Claude Code
 
 ### Changes Made
+
 1. Added practical implementation patterns
 2. Added configuration examples
 3. Enhanced cross-references to related documentation
 
 ### Cross-References Added
+
 - Related research and implementation guides
 - WORK_STREAM.md for tracking
 
 ### Practical Additions
+
 - Implementation templates
 - Configuration examples
 - Best practices

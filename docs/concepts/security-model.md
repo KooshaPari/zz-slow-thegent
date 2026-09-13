@@ -74,6 +74,7 @@ curl -H "Authorization: Bearer eyJhbGciOi..." http://localhost:8000/api/plans
 ```
 
 **Token Structure:**
+
 ```
 Header.Payload.Signature
 
@@ -88,6 +89,7 @@ Signature: HMACSHA256(header + "." + payload, secret)
 **Cons:** Token interception risk, key management needed
 
 **Token Lifecycle:**
+
 ```bash
 # Issue token (login)
 POST /api/auth/login
@@ -164,13 +166,13 @@ CRUN uses Role-Based Access Control (RBAC):
 
 ### Roles
 
-| Role | Capabilities | Use Case |
-|------|--------------|----------|
-| **Admin** | All operations | System owner |
-| **Operator** | Create/monitor plans, view metrics | Production operator |
-| **Developer** | Generate plans, analyze code, execute | Developer |
-| **Viewer** | Read-only access to plans and results | Stakeholder, audit |
-| **Anonymous** | No access (unless disabled) | N/A |
+| Role          | Capabilities                          | Use Case            |
+| ------------- | ------------------------------------- | ------------------- |
+| **Admin**     | All operations                        | System owner        |
+| **Operator**  | Create/monitor plans, view metrics    | Production operator |
+| **Developer** | Generate plans, analyze code, execute | Developer           |
+| **Viewer**    | Read-only access to plans and results | Stakeholder, audit  |
+| **Anonymous** | No access (unless disabled)           | N/A                 |
 
 ### Role Permissions
 
@@ -216,6 +218,7 @@ curl -X POST http://localhost:8000/api/users/bob/roles \
 ### Data at Rest
 
 **Default Storage (SQLite):**
+
 ```bash
 # Data stored in local SQLite database
 .crun/crun.db
@@ -228,6 +231,7 @@ chmod 600 .crun/crun.db
 ```
 
 **PostgreSQL Storage (Recommended for Production):**
+
 ```bash
 # Store in production-grade database
 CRUN_DB_URL=postgresql://user:pass@server:5432/crun
@@ -246,6 +250,7 @@ CREATE TABLE secrets (
 ### Data in Transit
 
 **HTTP (Insecure, avoid in production):**
+
 ```bash
 # Unencrypted communication
 http://localhost:8000/api/plans
@@ -253,6 +258,7 @@ http://localhost:8000/api/plans
 ```
 
 **HTTPS (Recommended):**
+
 ```bash
 # Encrypted communication
 https://localhost:8000/api/plans
@@ -264,6 +270,7 @@ CRUN_SSL_KEY_FILE=/path/to/key.pem
 ```
 
 **TLS Version & Ciphers:**
+
 ```bash
 # Force TLS 1.2+
 CRUN_TLS_MIN_VERSION=1.2
@@ -275,6 +282,7 @@ CRUN_TLS_CIPHERS=HIGH:!aNULL:!MD5
 ### Sensitive Data Handling
 
 **API Keys:** Never log or expose
+
 ```bash
 # ❌ DON'T: Log API keys
 logger.info(f"API Key: {api_key}")
@@ -284,6 +292,7 @@ logger.info(f"API Key: ...{api_key[-4:]}")
 ```
 
 **Passwords:** Always hash, never store plaintext
+
 ```bash
 from passlib.context import CryptContext
 
@@ -295,6 +304,7 @@ pwd_context.verify(password, hashed)
 ```
 
 **Secrets Configuration:**
+
 ```bash
 # Use secret management systems
 # AWS Secrets Manager, HashiCorp Vault, etc.
@@ -311,6 +321,7 @@ pwd_context.verify(password, hashed)
 ### Network Isolation
 
 **Single Machine:**
+
 ```bash
 # Bind to localhost only (default, secure)
 CRUN_HOST=127.0.0.1
@@ -321,6 +332,7 @@ CRUN_PORT=8000
 ```
 
 **Cloud Deployment:**
+
 ```bash
 # Use private networks
 # AWS: VPC, Security Groups
@@ -369,15 +381,16 @@ All inputs validated before processing:
 ```python
 from pydantic import BaseModel, Field, validator
 
+
 class PlanRequest(BaseModel):
     description: str = Field(..., min_length=1, max_length=10000)
     max_tokens: int = Field(default=4000, ge=100, le=10000)
-    
-    @validator('description')
+
+    @validator("description")
     def no_script_injection(cls, v):
         # Prevent script injection
-        if '<script>' in v.lower():
-            raise ValueError('Invalid content')
+        if "<script>" in v.lower():
+            raise ValueError("Invalid content")
         return v
 ```
 
@@ -391,9 +404,9 @@ class PlanResponse(BaseModel):
     description: str
     # ✓ DO: Exclude sensitive data
     # ✗ DON'T: Include API_KEY in response
-    
+
     class Config:
-        exclude = {'api_key', 'password', 'secret'}
+        exclude = {"api_key", "password", "secret"}
 ```
 
 ### Error Handling
@@ -406,7 +419,7 @@ try:
     result = process()
 except Exception:
     logger.exception("Processing failed")  # Detailed log
-    return {"error": "Processing failed"}   # Generic response
+    return {"error": "Processing failed"}  # Generic response
 
 # ✗ DON'T: Expose stack trace
 except Exception as e:
@@ -433,6 +446,7 @@ curl http://localhost:8000/api/plans?token=$TOKEN
 
 **Risk:** Code execution on the machine  
 **Mitigation:**
+
 ```bash
 # Restrict workspace access to current user
 chmod 700 .crun
@@ -445,6 +459,7 @@ CRUN_WORKSPACE_ROOT=/mnt/external  # Mount read-only
 
 **Risk:** Agents execute arbitrary commands  
 **Mitigation:**
+
 ```bash
 # Run agents in sandboxed environment
 CRUN_AGENT_SANDBOX=true
@@ -457,6 +472,7 @@ CRUN_AGENT_ALLOWED_COMMANDS=python,bash,npm,pip
 
 **Risk:** DoS via large file uploads  
 **Mitigation:**
+
 ```bash
 # Limit file size
 CRUN_MAX_FILE_SIZE=100MB
@@ -467,6 +483,7 @@ CRUN_MAX_REQUEST_SIZE=500MB
 
 **Risk:** SSRF (Server-Side Request Forgery)  
 **Mitigation:**
+
 ```bash
 # Whitelist allowed URLs
 CRUN_ALLOWED_DOMAINS=api.openai.com,api.anthropic.com
@@ -479,6 +496,7 @@ CRUN_PREVENT_INTERNAL_IPS=true
 
 **Risk:** Using vulnerable packages  
 **Mitigation:**
+
 ```bash
 # Regular dependency updates
 pip install --upgrade -r requirements.txt
@@ -496,12 +514,14 @@ safety check
 ### For Development
 
 1. **Use Virtual Environments**
+
    ```bash
    python3 -m venv venv
    source venv/bin/activate
    ```
 
 2. **Never Commit Secrets**
+
    ```bash
    # .gitignore
    .env
@@ -511,6 +531,7 @@ safety check
    ```
 
 3. **Regular Updates**
+
    ```bash
    pip list --outdated
    pip install --upgrade pip
@@ -524,6 +545,7 @@ safety check
 ### For Production
 
 1. **Use HTTPS/TLS**
+
    ```bash
    CRUN_ENABLE_HTTPS=true
    CRUN_SSL_CERT_FILE=/etc/ssl/certs/server.crt
@@ -536,6 +558,7 @@ safety check
    - Rotate API keys regularly
 
 3. **Database Security**
+
    ```bash
    # Use PostgreSQL, not SQLite
    # Enable SSL for database connections
@@ -550,21 +573,23 @@ safety check
    - DDoS protection
 
 5. **Monitoring & Logging**
+
    ```bash
    # Enable audit logging
    CRUN_AUDIT_LOG_ENABLED=true
    CRUN_AUDIT_LOG_FILE=.crun/audit.log
-   
+
    # Monitor for suspicious activity
    # Alert on failed authentication attempts
    # Track privilege escalations
    ```
 
 6. **Regular Backups**
+
    ```bash
    # Daily backups
    pg_dump crun > backup_$(date +%Y%m%d).sql
-   
+
    # Test restore procedure
    psql crun < backup_*.sql
    ```

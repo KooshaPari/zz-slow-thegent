@@ -8,7 +8,7 @@ requests and that expiry causes a fresh check to be issued.
 
 from __future__ import annotations
 
-from unittest.mock import MagicMock, patch
+from unittest.mock import patch
 
 
 class TestCursorApiReachabilityCache:
@@ -24,7 +24,8 @@ class TestCursorApiReachabilityCache:
         self._clear_cache()
 
         with patch(
-            "thegent.agents.cursor_api_runner._check_cursor_api_reachable", return_value=(True, False)
+            "thegent.agents.cursor_api_runner._check_cursor_api_reachable",
+            return_value=(True, False),
         ) as mock_check:
             from thegent.agents.cursor_api_runner import _is_cursor_api_reachable
 
@@ -40,7 +41,8 @@ class TestCursorApiReachabilityCache:
         self._clear_cache()
 
         with patch(
-            "thegent.agents.cursor_api_runner._check_cursor_api_reachable", return_value=(False, False)
+            "thegent.agents.cursor_api_runner._check_cursor_api_reachable",
+            return_value=(False, False),
         ) as mock_check:
             from thegent.agents.cursor_api_runner import _is_cursor_api_reachable
 
@@ -62,7 +64,10 @@ class TestCursorApiReachabilityCache:
             call_args_log.append((url, token))
             return (True, False)
 
-        with patch("thegent.agents.cursor_api_runner._check_cursor_api_reachable", side_effect=fake_check):
+        with patch(
+            "thegent.agents.cursor_api_runner._check_cursor_api_reachable",
+            side_effect=fake_check,
+        ):
             from thegent.agents.cursor_api_runner import _is_cursor_api_reachable
 
             _is_cursor_api_reachable("http://localhost:7001", "tok")
@@ -84,7 +89,10 @@ class TestCursorApiReachabilityCache:
             "thegent.agents.cursor_api_runner._check_cursor_api_reachable",
             side_effect=responses,
         ) as mock_check:
-            from thegent.agents.cursor_api_runner import _is_cursor_api_reachable, _reachability_cache
+            from thegent.agents.cursor_api_runner import (
+                _is_cursor_api_reachable,
+                _reachability_cache,
+            )
 
             r1 = _is_cursor_api_reachable("http://localhost:7777", "tok")
             # Simulate TTL expiry by clearing the cache
@@ -106,7 +114,8 @@ class TestCursorApiReachabilityCache:
         self._clear_cache()
 
         with patch(
-            "thegent.agents.cursor_api_runner._check_cursor_api_reachable", return_value=(True, False)
+            "thegent.agents.cursor_api_runner._check_cursor_api_reachable",
+            return_value=(True, False),
         ) as mock_check:
             from thegent.agents.cursor_api_runner import _is_cursor_api_reachable
 
@@ -123,7 +132,10 @@ class TestCursorApiReachabilityCache:
             call_log.append(token)
             return (True, False)
 
-        with patch("thegent.agents.cursor_api_runner._check_cursor_api_reachable", side_effect=fake_check):
+        with patch(
+            "thegent.agents.cursor_api_runner._check_cursor_api_reachable",
+            side_effect=fake_check,
+        ):
             from thegent.agents.cursor_api_runner import _is_cursor_api_reachable
 
             _is_cursor_api_reachable("http://localhost:7777", "token-a")

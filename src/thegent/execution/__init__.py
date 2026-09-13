@@ -5,13 +5,16 @@ for thegent agent workflows.
 """
 
 from __future__ import annotations
-from dataclasses import dataclass, field
-from enum import Enum
-from pathlib import Path
-from typing import Any
+
+import contextlib
 import json
 import math
 import time
+from dataclasses import dataclass, field
+from datetime import UTC
+from enum import Enum, StrEnum
+from pathlib import Path
+from typing import Any
 
 try:
     import httpx
@@ -202,7 +205,10 @@ class PolicyEngine:
 
         # Policy 1: Critical lane + confidence < 0.9 = deny
         if lane == "critical" and confidence is not None and confidence < 0.9:
-            return "deny", f"Confidence {confidence} below threshold 0.9 for critical lane"
+            return (
+                "deny",
+                f"Confidence {confidence} below threshold 0.9 for critical lane",
+            )
 
         # Policy 2: Unknown agent in production = deny
         if environment == "production" and model and model.lower() in ("unknown", "untrusted"):
@@ -218,7 +224,10 @@ class PolicyEngine:
 
         # Policy 5: Production + confidence below threshold = deny
         if environment == "production" and confidence is not None and confidence < trust_score_threshold:
-            return "deny", f"Confidence {confidence} below threshold {trust_score_threshold}"
+            return (
+                "deny",
+                f"Confidence {confidence} below threshold {trust_score_threshold}",
+            )
 
         # Policy 6: Critical lane + drift exceeds budget = deny
         if lane == "critical":
@@ -379,10 +388,8 @@ class CheckpointRegistry:
                         line = line.strip()
                         if not line:
                             continue
-                        try:
+                        with contextlib.suppress(json.JSONDecodeError):
                             self._checkpoints.append(json.loads(line))
-                        except json.JSONDecodeError:
-                            pass
             except OSError:
                 pass
 
@@ -431,8 +438,8 @@ class EscalationQueue:
     _VALID_PRIORITIES: frozenset[int] = frozenset({1, 2, 3, 4, 5})
 
     def __init__(self, session_dir: str = "") -> None:
-        from pathlib import Path
         import threading
+        from pathlib import Path
 
         self.session_dir = Path(session_dir) if session_dir else Path.cwd()
         self.queue_path = self.session_dir / "escalation_queue.jsonl"
@@ -538,7 +545,7 @@ class EscalationQueue:
                 empty / not str, ``priority`` is not in {1..5}, or
                 ``sla_minutes`` is a negative int.
         """
-        from datetime import datetime, timezone, timedelta
+        from datetime import datetime, timedelta, timezone
 
         # AUDIT-N+32 NEW-2: defensive input validation. The previous
         # implementation accepted ``run_id=None`` and ``reason=""``
@@ -580,9 +587,9 @@ class EscalationQueue:
                 try:
                     blocked_dt = datetime.fromisoformat(blocked_at_utc.replace("Z", "+00:00"))
                 except (ValueError, TypeError):
-                    blocked_dt = datetime.now(timezone.utc)
+                    blocked_dt = datetime.now(UTC)
             else:
-                blocked_dt = datetime.now(timezone.utc)
+                blocked_dt = datetime.now(UTC)
             escalate_dt = blocked_dt + timedelta(minutes=sla_minutes)
             item["escalate_by_utc"] = escalate_dt.isoformat().replace("+00:00", "Z")
         if blocked_at_utc is not None:
@@ -669,7 +676,7 @@ class EscalationQueue:
                                 continue
                             try:
                                 escalate_dt = datetime.fromisoformat(escalate_by.replace("Z", "+00:00"))
-                                now = datetime.now(timezone.utc)
+                                now = datetime.now(UTC)
                                 is_past_sla = now >= escalate_dt
                                 if is_past_sla:
                                     # AUDIT-N+32 NEW-7: deep copy so
@@ -803,7 +810,7 @@ class MessageEntry:
         return f"MessageEntry(role={self.role!r}, content={self.content!r}, timestamp={self.timestamp!r})"
 
     @classmethod
-    def from_dict(cls, data: dict[str, Any]) -> "MessageEntry":
+    def from_dict(cls, data: dict[str, Any]) -> MessageEntry:
         """AUDIT-N+32 NEW-10: build a ``MessageEntry`` from a dict.
 
         Accepts dict-shaped input with missing fields (defaults
@@ -845,8 +852,8 @@ class OverrideRegistry:
     _VALID_STATUS = frozenset({"active", "expired", "revoked"})
 
     def __init__(self, session_dir: str = "") -> None:
-        from pathlib import Path
         import threading
+        from pathlib import Path
 
         self.session_dir = Path(session_dir) if session_dir else Path.cwd()
         self.registry_path = self.session_dir / "override_registry.jsonl"
@@ -923,19 +930,19 @@ class OverrideRegistry:
                 ``reason`` is not a string, or ``ttl_seconds`` is
                 not a non-negative int.
         """
-        from datetime import datetime, timezone, timedelta
+        from datetime import datetime, timedelta, timezone
 
         # AUDIT-N+30 NEW-3: defensive input validation. Fires
         # before any state mutation or JSONL write so a buggy
         # orchestrator cannot silently poison the audit trail.
         self._validate_record_inputs(owner, reason, ttl_seconds)
 
-        expires_at = datetime.now(timezone.utc) + timedelta(seconds=ttl_seconds)
+        expires_at = datetime.now(UTC) + timedelta(seconds=ttl_seconds)
         record = {
             "owner": owner,
             "reason": reason,
             "expires_at_utc": expires_at.isoformat(),
-            "timestamp": datetime.now(timezone.utc).isoformat(),
+            "timestamp": datetime.now(UTC).isoformat(),
             "status": "active",
         }
         with self._append_lock:
@@ -978,7 +985,7 @@ class OverrideRegistry:
         import logging
         from datetime import datetime, timezone
 
-        now = datetime.now(timezone.utc)
+        now = datetime.now(UTC)
         for record in self._records:
             if record.get("owner") != owner:
                 continue
@@ -1166,14 +1173,10 @@ class ConcurrencyController:
 
         if effective_lane == "critical":
             # Critical can ONLY use critical slots
-            if critical_used < self.critical_lane_slots:
-                return True
-            return False
+            return critical_used < self.critical_lane_slots
         else:
             # Standard can ONLY use standard slots (no overflow to critical)
-            if standard_used < self.standard_lane_slots:
-                return True
-            return False
+            return standard_used < self.standard_lane_slots
 
     def release(self, lane: str = "standard") -> None:
         """Release a concurrency slot."""
@@ -1195,7 +1198,9 @@ class ConcurrencyController:
             }
 
         # Detector present - call its methods
-        from thegent.orchestration.resource.resource_management import sample_extended_resources
+        from thegent.orchestration.resource.resource_management import (
+            sample_extended_resources,
+        )
 
         snapshot = sample_extended_resources()
         harness_cards = getattr(self, "harness_cards", {})
@@ -1436,8 +1441,8 @@ class RunRegistry:
         well-formed (``run_id="__header__"`` + ``prev_hash="0"*64`` + a
         real sha256 ``hash`` field).
         """
-        import json
         import hashlib
+        import json
 
         with self._append_lock:
             self.runs[run.run_id] = run
@@ -1515,7 +1520,12 @@ class RunRegistry:
                 self.runs.pop(run.run_id, None)
                 raise
 
-    def register_pause(self, run_id: str, reason: str = "manual", metadata: dict[str, Any] | None = None) -> None:
+    def register_pause(
+        self,
+        run_id: str,
+        reason: str = "manual",
+        metadata: dict[str, Any] | None = None,
+    ) -> None:
         """Register a run pause."""
         self._states[run_id] = RunState.PAUSED
         self._pause_reasons[run_id] = reason
@@ -1581,8 +1591,8 @@ class RunRegistry:
           with a debug log so clock-skew-derived underflow does not
           poison downstream analytics.
         """
-        import json
         import hashlib
+        import json
         import math
 
         # AUDIT-N+29 NEW-5: defensive input validation, fires BEFORE
@@ -1598,7 +1608,7 @@ class RunRegistry:
             # Defensive default — callers must supply at least one timestamp.
             import datetime as _dt
 
-            canonical_ended_at = _dt.datetime.now(_dt.timezone.utc).isoformat()
+            canonical_ended_at = _dt.datetime.now(_dt.UTC).isoformat()
 
         # AUDIT-N+29 NEW-9: duration clamping. ``NaN`` / ``±inf`` are
         # rejected outright (they would poison downstream P50/P99
@@ -1910,7 +1920,7 @@ class RunRegistry:
                                 # Determine retention days based on domain_tag
                                 domain_tag = data.get("domain_tag", "")
                                 retention_days = by_domain.get(domain_tag, default_days)
-                                cutoff = datetime.now(timezone.utc).timestamp() - (retention_days * 86400)
+                                cutoff = datetime.now(UTC).timestamp() - (retention_days * 86400)
                                 if dt.timestamp() < cutoff:
                                     purged += 1
                                     continue
@@ -2213,7 +2223,7 @@ class CheckpointRegistry:
         # inside the locked section) cannot deadlock.
         self._append_lock = threading.RLock()
 
-    def create_checkpoint(self, reason: str, dag_content: str, owner: str) -> "CheckpointMeta":
+    def create_checkpoint(self, reason: str, dag_content: str, owner: str) -> CheckpointMeta:
         """Create a new checkpoint.
 
         AUDIT-N+31 NEW-2: defensive input validation. Fires before
@@ -2344,7 +2354,11 @@ class HandoffManager:
 
         key = f"{from_agent}->{to_agent}"
         with self._append_lock:
-            self._handoffs[key] = {"from": from_agent, "to": to_agent, "context": context}
+            self._handoffs[key] = {
+                "from": from_agent,
+                "to": to_agent,
+                "context": context,
+            }
 
     def get_handoff(self, from_agent: str, to_agent: str) -> dict[str, Any] | None:
         """Get a handoff by agents.
@@ -2438,9 +2452,8 @@ class KPIManager:
 
     def get_kpis(self) -> dict[str, Any]:
         """Get all KPIs with computed metrics."""
-        from thegent.execution import RunRegistry
         from thegent.contracts.telemetry import ContractTelemetry
-        from thegent.execution import InterruptionTracker
+        from thegent.execution import InterruptionTracker, RunRegistry
 
         registry = RunRegistry(self._session_dir)
         telemetry = ContractTelemetry(self._session_dir)
@@ -2489,7 +2502,7 @@ class InterruptionTracker:
 # ---------------------------------------------------------------------------
 
 
-class AgentSource(str, Enum):
+class AgentSource(StrEnum):
     """Origin of a run — mirrors the runtime semantics used by the
     decomposed run/bg orchestrators."""
 
@@ -2498,7 +2511,7 @@ class AgentSource(str, Enum):
     EXTERNAL = "external"
 
 
-class InteractivityMode(str, Enum):
+class InteractivityMode(StrEnum):
     """Whether the run streams to a PTY or writes to headless log files."""
 
     PTY = "pty"

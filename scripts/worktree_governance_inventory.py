@@ -12,6 +12,7 @@ from typing import Any
 
 _DEFAULT_PRIMARY_MARKER = ".thegent-primary-main"
 
+
 @dataclass(frozen=True)
 class WorktreeInventoryEntry:
     path: str

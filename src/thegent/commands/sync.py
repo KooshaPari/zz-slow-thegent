@@ -7,7 +7,7 @@ This stub exists for backwards compatibility with existing tests.
 
 from __future__ import annotations
 
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
 
@@ -52,7 +52,12 @@ class SyncOperationStatus:
 class SyncCommand:
     """Sync command implementation."""
 
-    def __init__(self, project_dir: Path | str = ".", project_root: Path | str | None = None, **kwargs) -> None:
+    def __init__(
+        self,
+        project_dir: Path | str = ".",
+        project_root: Path | str | None = None,
+        **kwargs,
+    ) -> None:
         self.name = "sync"
         self.project_dir = Path(project_dir) if project_dir else Path()
         self.project_root = Path(project_root) if project_root else self.project_dir
@@ -95,7 +100,11 @@ class SyncCommand:
                     success=False,
                     message="Push completed with partial hook failures",
                     status=SyncOperationStatus.FAILED,
-                    details={"files_uploaded": 2, "files_failed": 1, "target": str(target)},
+                    details={
+                        "files_uploaded": 2,
+                        "files_failed": 1,
+                        "target": str(target),
+                    },
                 )
 
         return OperationResult(
@@ -103,6 +112,7 @@ class SyncCommand:
             message="Push completed",
             details={"files_uploaded": 2, "target": str(target)},
         )
+
     def pull(self, source: str | Path | None = None, **kwargs) -> OperationResult:
         """Pull from source."""
         return OperationResult(success=True, message="Pull completed")
@@ -116,7 +126,7 @@ class SyncCommand:
         hooks_dir = self.project_root / "hooks"
         if not hooks_dir.exists():
             return set()
-        return {f.stem for f in hooks_dir.iterdir() if f.is_file() and not f.name.startswith('.')}
+        return {f.stem for f in hooks_dir.iterdir() if f.is_file() and not f.name.startswith(".")}
 
 
 __all__ = ["OperationResult", "SyncCommand", "SyncOperationStatus", "SyncResult"]

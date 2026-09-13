@@ -11,6 +11,7 @@
 ## Current State Analysis
 
 ### Strengths
+
 ✅ Modern pyproject.toml with good structure  
 ✅ Uses uv (has uv.lock)  
 ✅ Uses ruff for linting/formatting  
@@ -20,6 +21,7 @@
 ✅ Comprehensive ML/AI dependencies
 
 ### Issues
+
 ❌ Heavy dependencies (torch, transformers, etc.) - optimization needed  
 ❌ Configuration scattered (config.yaml, secrets.yml.example, .env patterns)  
 ❌ No clear hexagonal architecture boundaries  
@@ -35,13 +37,16 @@
 ### Phase 1: Dependency Optimization (15 hours)
 
 #### 1.1 Analyze and Optimize ML Dependencies
+
 **Current Heavy Dependencies:**
+
 - torch>=2.8.0 (large)
 - transformers>=4.35.0 (large)
 - scikit-learn>=1.7.0
 - xgboost>=2.1.0
 
 **Optimization Strategy:**
+
 ```toml
 [project.optional-dependencies]
 # Core routing (minimal)
@@ -70,6 +75,7 @@ full = ["krouter[core,ml,advanced]"]
 ```
 
 #### 1.2 Create Lightweight Default Installation
+
 ```bash
 # Minimal installation (for basic routing)
 uv pip install .
@@ -83,7 +89,9 @@ uv pip install ".[full]"
 ### Phase 2: Configuration Modernization (15 hours)
 
 #### 2.1 Create Comprehensive Pydantic Settings
+
 **File:** `router_core/config/settings.py`
+
 ```python
 from pydantic_settings import BaseSettings, SettingsConfigDict
 from pydantic import Field, SecretStr, field_validator
@@ -91,80 +99,89 @@ from typing import Optional, Dict, List
 from enum import Enum
 import yaml
 
+
 class RouterStrategy(str, Enum):
     COST_OPTIMIZED = "cost_optimized"
     PERFORMANCE = "performance"
     BALANCED = "balanced"
     CUSTOM = "custom"
 
+
 class ModelProviderSettings(BaseSettings):
     """Settings for model providers"""
+
     openrouter_api_key: Optional[SecretStr] = None
     openai_api_key: Optional[SecretStr] = None
     anthropic_api_key: Optional[SecretStr] = None
-    
+
+
 class RoutingSettings(BaseSettings):
     """Routing configuration"""
+
     strategy: RouterStrategy = RouterStrategy.BALANCED
     enable_caching: bool = True
     cache_ttl: int = 3600
     enable_fallback: bool = True
     max_retries: int = 3
-    
+
     # Cost optimization
     cost_threshold: float = 0.01  # Max cost per request
     prefer_free_models: bool = True
-    
+
     # Performance
     max_latency_ms: int = 5000
     enable_streaming: bool = True
 
+
 class DatabaseSettings(BaseSettings):
     """Database configuration"""
+
     url: SecretStr
     pool_size: int = 10
     max_overflow: int = 20
     echo: bool = False
 
+
 class KRouterSettings(BaseSettings):
     """Main krouter settings"""
+
     model_config = SettingsConfigDict(
-        env_prefix='KROUTER_',
-        env_nested_delimiter='__',
+        env_prefix="KROUTER_",
+        env_nested_delimiter="__",
         case_sensitive=False,
         env_ignore_empty=True,
-        yaml_file='config.yml',
-        secrets_dir='.'
+        yaml_file="config.yml",
+        secrets_dir=".",
     )
-    
+
     # App settings
     app_name: str = "krouter"
     debug: bool = False
     log_level: str = "INFO"
-    
+
     # Components
     providers: ModelProviderSettings = Field(default_factory=ModelProviderSettings)
     routing: RoutingSettings = Field(default_factory=RoutingSettings)
     database: DatabaseSettings
-    
+
     # Monitoring
     enable_metrics: bool = True
     enable_tracing: bool = False
     prometheus_port: int = 9090
-    
+
     @classmethod
     def load(cls):
         """Load settings from YAML files"""
         try:
-            with open('config.yml', 'r') as f:
+            with open("config.yml", "r") as f:
                 config = yaml.safe_load(f)
-            
+
             try:
-                with open('secrets.yml', 'r') as f:
+                with open("secrets.yml", "r") as f:
                     secrets = yaml.safe_load(f)
             except FileNotFoundError:
                 secrets = {}
-            
+
             merged = {**config, **secrets}
             return cls(**merged)
         except FileNotFoundError:
@@ -173,7 +190,9 @@ class KRouterSettings(BaseSettings):
 ```
 
 #### 2.2 Create Structured config.yml
+
 **File:** `config.yml`
+
 ```yaml
 # KRouter Configuration (Non-sensitive)
 
@@ -188,11 +207,11 @@ routing:
   cache_ttl: 3600
   enable_fallback: true
   max_retries: 3
-  
+
   # Cost optimization
   cost_threshold: 0.01
   prefer_free_models: true
-  
+
   # Performance
   max_latency_ms: 5000
   enable_streaming: true
@@ -216,7 +235,9 @@ models:
 ```
 
 #### 2.3 Create secrets.yml Template
+
 **File:** `secrets.yml.example`
+
 ```yaml
 # KRouter Secrets (Sensitive)
 # Copy to secrets.yml and fill in your values
@@ -244,114 +265,107 @@ elasticsearch:
 ### Phase 3: Hexagonal Architecture Refactoring (15 hours)
 
 #### 3.1 Define Port Interfaces
+
 **File:** `router_core/domain/ports.py`
+
 ```python
 from abc import ABC, abstractmethod
 from typing import List, Optional
 from .models import Model, RoutingRequest, RoutingResponse
 
+
 class ModelRegistryPort(ABC):
     """Port for model registry"""
-    
+
     @abstractmethod
     async def get_model(self, model_id: str) -> Optional[Model]:
         pass
-    
+
     @abstractmethod
     async def list_models(self, filters: dict) -> List[Model]:
         pass
-    
+
     @abstractmethod
     async def register_model(self, model: Model) -> None:
         pass
 
+
 class RoutingStrategyPort(ABC):
     """Port for routing strategies"""
-    
+
     @abstractmethod
     async def select_model(self, request: RoutingRequest) -> Model:
         pass
-    
+
     @abstractmethod
     async def rank_models(self, request: RoutingRequest) -> List[Model]:
         pass
 
+
 class ModelProviderPort(ABC):
     """Port for model providers"""
-    
+
     @abstractmethod
     async def complete(self, model: Model, prompt: str) -> RoutingResponse:
         pass
-    
+
     @abstractmethod
     async def stream(self, model: Model, prompt: str):
         pass
 ```
 
 #### 3.2 Implement Adapters
+
 **File:** `router_core/adapters/providers/openrouter.py`
+
 ```python
 from router_core.domain.ports import ModelProviderPort
 from router_core.domain.models import Model, RoutingResponse
 import httpx
 
+
 class OpenRouterAdapter(ModelProviderPort):
     """Adapter for OpenRouter API"""
-    
+
     def __init__(self, api_key: str):
         self.api_key = api_key
         self.client = httpx.AsyncClient(
-            base_url="https://openrouter.ai/api/v1",
-            headers={"Authorization": f"Bearer {api_key}"}
+            base_url="https://openrouter.ai/api/v1", headers={"Authorization": f"Bearer {api_key}"}
         )
-    
+
     async def complete(self, model: Model, prompt: str) -> RoutingResponse:
         response = await self.client.post(
-            "/chat/completions",
-            json={
-                "model": model.id,
-                "messages": [{"role": "user", "content": prompt}]
-            }
+            "/chat/completions", json={"model": model.id, "messages": [{"role": "user", "content": prompt}]}
         )
         data = response.json()
-        return RoutingResponse(
-            model=model,
-            content=data["choices"][0]["message"]["content"],
-            usage=data["usage"]
-        )
+        return RoutingResponse(model=model, content=data["choices"][0]["message"]["content"], usage=data["usage"])
 ```
 
 #### 3.3 Create Application Services
+
 **File:** `router_core/application/routing_service.py`
+
 ```python
-from router_core.domain.ports import (
-    ModelRegistryPort,
-    RoutingStrategyPort,
-    ModelProviderPort
-)
+from router_core.domain.ports import ModelRegistryPort, RoutingStrategyPort, ModelProviderPort
 from router_core.domain.models import RoutingRequest, RoutingResponse
+
 
 class RoutingService:
     """Application service for routing requests"""
-    
-    def __init__(
-        self,
-        registry: ModelRegistryPort,
-        strategy: RoutingStrategyPort,
-        provider: ModelProviderPort
-    ):
+
+    def __init__(self, registry: ModelRegistryPort, strategy: RoutingStrategyPort, provider: ModelProviderPort):
         self.registry = registry
         self.strategy = strategy
         self.provider = provider
-    
+
     async def route_request(self, request: RoutingRequest) -> RoutingResponse:
         """Route a request to the best model"""
         # Select model using strategy
         model = await self.strategy.select_model(request)
-        
+
         # Execute request using provider
         response = await self.provider.complete(model, request.prompt)
-        
+
         return response
 ```
 
@@ -360,6 +374,7 @@ class RoutingService:
 ### Phase 4: Code Quality Enhancement (5 hours)
 
 #### 4.1 Add Missing Tools
+
 ```toml
 [project.optional-dependencies]
 dev = [
@@ -370,6 +385,7 @@ dev = [
 ```
 
 #### 4.2 Configure Vulture
+
 ```toml
 [tool.vulture]
 paths = ["router_core", "config"]
@@ -379,7 +395,9 @@ ignore_names = ["main", "app", "settings"]
 ```
 
 #### 4.3 Setup Pre-commit Hooks
+
 **File:** `.pre-commit-config.yaml`
+
 ```yaml
 repos:
   - repo: https://github.com/astral-sh/ruff-pre-commit
@@ -409,6 +427,7 @@ repos:
 ## Migration Steps
 
 ### Step 1: Backup
+
 ```bash
 git checkout -b backup/pre-router-modernization
 git push origin backup/pre-router-modernization
@@ -416,6 +435,7 @@ git checkout main
 ```
 
 ### Step 2: Optimize Dependencies
+
 ```bash
 # Update pyproject.toml with optional dependencies
 # Test minimal installation
@@ -426,6 +446,7 @@ uv pip install ".[full]"
 ```
 
 ### Step 3: Create Configuration
+
 ```bash
 # Create config files
 touch config.yml
@@ -437,6 +458,7 @@ cp secrets.yml.example secrets.yml
 ```
 
 ### Step 4: Refactor Architecture
+
 ```bash
 # Create domain/ports.py
 # Create adapters
@@ -445,6 +467,7 @@ cp secrets.yml.example secrets.yml
 ```
 
 ### Step 5: Test
+
 ```bash
 # Run tests
 uv run pytest
@@ -474,12 +497,15 @@ uv run pytest tests/benchmarks/
 ## Risks & Mitigations
 
 ### Risk 1: Dependency Changes Break ML Features
+
 **Mitigation:** Optional dependencies, comprehensive testing
 
 ### Risk 2: Architecture Refactoring Introduces Bugs
+
 **Mitigation:** Incremental refactoring, maintain backward compatibility
 
 ### Risk 3: Performance Regression
+
 **Mitigation:** Benchmark before/after, optimize critical paths
 
 ---
@@ -496,4 +522,3 @@ uv run pytest tests/benchmarks/
 2. Implement caching layer
 3. Add more routing strategies
 4. Enhance monitoring and metrics
-

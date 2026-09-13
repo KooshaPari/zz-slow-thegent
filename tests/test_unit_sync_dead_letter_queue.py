@@ -2,16 +2,16 @@
 
 from __future__ import annotations
 
-import orjson as json
-
 from datetime import UTC, datetime, timedelta
+
+import orjson as json
 
 from thegent.sync.dead_letter_queue import (
     DEFAULT_BOARD_DEAD_LETTER_BACKOFF_MULTIPLIER,
     DEFAULT_BOARD_DEAD_LETTER_MAX_ATTEMPTS,
     DEFAULT_BOARD_DEAD_LETTER_RETRY_DELAY_SECONDS,
-    RemoteWriteDeadLetterRecord,
     RemoteWriteDeadLetterQueue,
+    RemoteWriteDeadLetterRecord,
     compute_backoff_seconds,
 )
 

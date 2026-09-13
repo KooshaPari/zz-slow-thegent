@@ -1,15 +1,18 @@
 # Wave 76 Lane F Worklog (2026-02-23)
 
 ## Scope
+
 - Lane ownership: F
 - Batch: F1..F10
 - Source cutoff: after Lane E slice (`WL-9460..WL-9469` in `docs/reports/bulk-wi-s76-lane-e.md`)
 - Implemented items: `WL-9470..WL-9479` (next open block in `docs/reports/bulk-wi-s77-lane-a.md`)
 
 ## Implementation Summary
+
 Applied a fail-fast dependency validation and parse/execute separation in `WorkflowEngine`.
 
 ### Code changes
+
 - `src/thegent/agents/crew/workflow.py`
   - Added `_build_stage_graph()` to parse + validate stage graph before execution.
   - Added strict validation for:
@@ -19,6 +22,7 @@ Applied a fail-fast dependency validation and parse/execute separation in `Workf
   - Kept topological sort + cycle detection in `resolve_stage_dependencies()` with validated graph inputs.
 
 ### Tests
+
 - `tests/test_crew.py`
   - Added 10 regression tests with trace tags:
     - `test_wl9470_resolve_three_stage_chain`
@@ -33,13 +37,17 @@ Applied a fail-fast dependency validation and parse/execute separation in `Workf
     - `test_wl9479_execute_uses_resolved_stage_order`
 
 ## Validation
+
 Executed:
+
 - `uv run python -m pytest tests/test_crew.py -k "wl947 or workflow"`
 
 Result:
+
 - 12 passed, 26 deselected
 
 ## Item Mapping
+
 - F1 -> WL-9470
 - F2 -> WL-9471
 - F3 -> WL-9472

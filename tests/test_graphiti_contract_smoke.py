@@ -1,13 +1,12 @@
 """Unit tests for graphiti_contract_smoke.py"""
 
-import orjson as json
 import os
 import sys
 from pathlib import Path
-from unittest.mock import patch, MagicMock
+from unittest.mock import MagicMock, patch
 
+import orjson as json
 import pytest
-
 
 # Add scripts directory to path for imports
 sys.path.insert(0, Path(Path(__file__).parent, "..", "scripts"))
@@ -16,6 +15,7 @@ sys.path.insert(0, Path(Path(__file__).parent, "..", "scripts"))
 def _reload_and_require_env() -> None:
     """Helper to reload module and require env var."""
     import importlib
+
     import graphiti_contract_smoke as smoke
 
     importlib.reload(smoke)
@@ -49,7 +49,7 @@ def test_successful_health_check():
         with patch("urllib.request.urlopen", return_value=mock_response):
             import graphiti_contract_smoke as smoke
 
-            result = json.loads(smoke.main.__doc__)  # Just check imports work
+            json.loads(smoke.main.__doc__)  # Just check imports work
             # Smoke script will exit via SystemExit on success
 
 

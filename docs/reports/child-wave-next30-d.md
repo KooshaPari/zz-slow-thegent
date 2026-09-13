@@ -4,6 +4,7 @@
 - Status: complete
 
 ## Changes
+
 - `src/thegent/infra/ipc.py`
 - `src/thegent/context/context_injection.py`
 - `tests/infra/test_ipc_context_injection.py`
@@ -12,6 +13,7 @@
   - `docs/reference/WBS_AGENT_PROGRESS.md`
 
 ## Validation
+
 - `./.venv/bin/python -m pytest -q -p no:tach tests/infra/test_ipc_context_injection.py` (4 passed)
 - `./.venv/bin/python -m pytest -q -p no:tach tests/mesh/test_cache.py` (20 passed)
 - `./.venv/bin/python -m pytest -q -p no:tach tests/test_wl681x_lane_d.py -k tier2_bwrap` (1 passed)

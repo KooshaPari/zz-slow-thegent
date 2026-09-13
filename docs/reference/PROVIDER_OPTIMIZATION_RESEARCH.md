@@ -35,25 +35,25 @@ Research on rate limits, retry behavior, and best practices for all LLM provider
 
 ## All Providers Configured
 
-| Provider | Max Attempts | Min Wait | Max Wait | Backoff | Timeout | CB Fail | CB Timeout |
-|----------|--------------|-----------|----------|---------|---------|---------|------------|
-| minimax | 5 | 2.0s | 120.0s | 2.0 | 300s | 5 | 60s |
-| glm | 4 | 2.0s | 60.0s | 1.5 | 180s | 4 | 45s |
-| openai | 3 | 1.0s | 30.0s | 2.0 | 120s | 5 | 30s |
-| claude | 4 | 2.0s | 60.0s | 2.0 | 180s | 5 | 45s |
-| gemini | 3 | 1.0s | 30.0s | 1.5 | 120s | 5 | 30s |
-| deepseek | 3 | 1.0s | 20.0s | 1.5 | 120s | 5 | 30s |
-| openrouter | 3 | 1.0s | 30.0s | 2.0 | 120s | 5 | 30s |
-| nim | 3 | 1.0s | 30.0s | 1.5 | 120s | 4 | 30s |
-| kilo | 3 | 1.0s | 30.0s | 1.5 | 120s | 4 | 30s |
-| ollama | 2 | 0.5s | 5.0s | 1.5 | 300s | 3 | 15s |
-| codex | 3 | 1.0s | 30.0s | 2.0 | 120s | 5 | 30s |
-| cursor | 3 | 1.0s | 30.0s | 2.0 | 120s | 5 | 30s |
-| antigravity | 3 | 1.0s | 30.0s | 2.0 | 120s | 5 | 30s |
-| kimi | 4 | 2.0s | 60.0s | 1.5 | 180s | 4 | 45s |
-| qwen | 3 | 1.0s | 30.0s | 1.5 | 120s | 4 | 30s |
-| meta | 3 | 1.0s | 30.0s | 1.5 | 120s | 4 | 30s |
-| roo | 3 | 1.0s | 30.0s | 1.5 | 120s | 4 | 30s |
+| Provider    | Max Attempts | Min Wait | Max Wait | Backoff | Timeout | CB Fail | CB Timeout |
+| ----------- | ------------ | -------- | -------- | ------- | ------- | ------- | ---------- |
+| minimax     | 5            | 2.0s     | 120.0s   | 2.0     | 300s    | 5       | 60s        |
+| glm         | 4            | 2.0s     | 60.0s    | 1.5     | 180s    | 4       | 45s        |
+| openai      | 3            | 1.0s     | 30.0s    | 2.0     | 120s    | 5       | 30s        |
+| claude      | 4            | 2.0s     | 60.0s    | 2.0     | 180s    | 5       | 45s        |
+| gemini      | 3            | 1.0s     | 30.0s    | 1.5     | 120s    | 5       | 30s        |
+| deepseek    | 3            | 1.0s     | 20.0s    | 1.5     | 120s    | 5       | 30s        |
+| openrouter  | 3            | 1.0s     | 30.0s    | 2.0     | 120s    | 5       | 30s        |
+| nim         | 3            | 1.0s     | 30.0s    | 1.5     | 120s    | 4       | 30s        |
+| kilo        | 3            | 1.0s     | 30.0s    | 1.5     | 120s    | 4       | 30s        |
+| ollama      | 2            | 0.5s     | 5.0s     | 1.5     | 300s    | 3       | 15s        |
+| codex       | 3            | 1.0s     | 30.0s    | 2.0     | 120s    | 5       | 30s        |
+| cursor      | 3            | 1.0s     | 30.0s    | 2.0     | 120s    | 5       | 30s        |
+| antigravity | 3            | 1.0s     | 30.0s    | 2.0     | 120s    | 5       | 30s        |
+| kimi        | 4            | 2.0s     | 60.0s    | 1.5     | 180s    | 4       | 45s        |
+| qwen        | 3            | 1.0s     | 30.0s    | 1.5     | 120s    | 4       | 30s        |
+| meta        | 3            | 1.0s     | 30.0s    | 1.5     | 120s    | 4       | 30s        |
+| roo         | 3            | 1.0s     | 30.0s    | 1.5     | 120s    | 4       | 30s        |
 
 ## Implementation Status
 
@@ -62,4 +62,5 @@ Research on rate limits, retry behavior, and best practices for all LLM provider
 - [x] Circuit breaker settings per provider
 
 ## Files Created
+
 - `src/thegent/utils/provider_retry_config.py`

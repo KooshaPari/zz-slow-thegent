@@ -12,7 +12,7 @@ Research framework for advanced cost routing.
 
 ### Methods
 
-#### CostRoutingResearch.__init__
+#### CostRoutingResearch.**init**
 
 ```python
 __init__(self: Any)

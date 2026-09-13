@@ -12,7 +12,7 @@ Manages the lifecycle of work packages across WORK_STREAM, WBS_AGENT_PROGRESS, a
 
 ### Methods
 
-#### WorkStreamManager.__init__
+#### WorkStreamManager.**init**
 
 ```python
 __init__(self: Any, settings: ThegentSettings, base_dir: Any)

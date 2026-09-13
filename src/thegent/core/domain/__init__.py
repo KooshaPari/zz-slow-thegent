@@ -106,9 +106,7 @@ class SLAAgreement:
         now = datetime.now()
         if self.valid_from and now < self.valid_from:
             return False
-        if self.valid_until and now > self.valid_until:
-            return False
-        return True
+        return not (self.valid_until and now > self.valid_until)
 
 
 @dataclass
@@ -158,9 +156,7 @@ class Attestation:
 class ContractRegistry:
     """Registry for managing contracts."""
 
-    contracts: dict[str, SLAAgreement | ComplianceContract] = field(
-        default_factory=dict
-    )
+    contracts: dict[str, SLAAgreement | ComplianceContract] = field(default_factory=dict)
 
     def register(self, contract: SLAAgreement | ComplianceContract) -> None:
         """Register a contract."""
@@ -175,22 +171,16 @@ class ContractRegistry:
         if contract_type == ContractType.SLA:
             return [c for c in self.contracts.values() if isinstance(c, SLAAgreement)]
         elif contract_type == ContractType.COMPLIANCE:
-            return [
-                c for c in self.contracts.values()
-                if isinstance(c, ComplianceContract)
-            ]
+            return [c for c in self.contracts.values() if isinstance(c, ComplianceContract)]
         return []
 
     def active_slas(self) -> list[SLAAgreement]:
         """Get all active SLAs."""
-        return [
-            c for c in self.contracts.values()
-            if isinstance(c, SLAAgreement) and c.is_active()
-        ]
+        return [c for c in self.contracts.values() if isinstance(c, SLAAgreement) and c.is_active()]
 
 
 @dataclass
-class ParsedOutput(Generic[T]):
+class ParsedOutput[T]:
     """Container for parsed output with metadata."""
 
     content: T

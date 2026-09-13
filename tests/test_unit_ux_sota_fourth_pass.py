@@ -53,7 +53,6 @@ from thegent.ux.explanations import (
     render_explanation,
 )
 
-
 pytestmark = pytest.mark.unit
 
 
@@ -369,7 +368,10 @@ class TestExplanationsRendererConsolidated:
 
         # Each helper returns a list of strings and handles empty inputs.
         empty_exp = DecisionExplanation(title="x", source="")
-        assert _header_lines(empty_exp, width=80) == ["x" + " " * (80 - 6 - len("x")) + " [?]", "=" * 80]
+        assert _header_lines(empty_exp, width=80) == [
+            "x" + " " * (80 - 6 - len("x")) + " [?]",
+            "=" * 80,
+        ]
         assert _core_attribute_lines(empty_exp, label_width=14) == []
         assert _actions_lines(empty_exp) == []
         assert _citations_lines(empty_exp) == []

@@ -23,7 +23,6 @@ from typer.testing import CliRunner
 from thegent.ux.cli_cockpit import app as cockpit_app
 from thegent.ux.decision_audit import DecisionAuditAppender
 
-
 runner = CliRunner()
 pytestmark = pytest.mark.unit
 
@@ -48,11 +47,27 @@ class TestCockpitRender:
     def test_render_with_frozen_clock_is_deterministic(self) -> None:
         a = runner.invoke(
             cockpit_app,
-            ["render", "--clock", "1700000000.0", "--progress-done", "3", "--progress-total", "7"],
+            [
+                "render",
+                "--clock",
+                "1700000000.0",
+                "--progress-done",
+                "3",
+                "--progress-total",
+                "7",
+            ],
         )
         b = runner.invoke(
             cockpit_app,
-            ["render", "--clock", "1700000000.0", "--progress-done", "3", "--progress-total", "7"],
+            [
+                "render",
+                "--clock",
+                "1700000000.0",
+                "--progress-done",
+                "3",
+                "--progress-total",
+                "7",
+            ],
         )
         assert a.exit_code == 0
         assert b.exit_code == 0
@@ -142,9 +157,27 @@ class TestCockpitTraffic:
         events.write_text(
             json.dumps(
                 [
-                    {"ts": 1700000000.0, "lane": "critical", "agent": "cursor", "status": "ok", "duration_ms": 120},
-                    {"ts": 1700000000.5, "lane": "standard", "agent": "claude", "status": "error", "duration_ms": 80},
-                    {"ts": 1700000001.0, "lane": "critical", "agent": "cursor", "status": "ok", "duration_ms": 200},
+                    {
+                        "ts": 1700000000.0,
+                        "lane": "critical",
+                        "agent": "cursor",
+                        "status": "ok",
+                        "duration_ms": 120,
+                    },
+                    {
+                        "ts": 1700000000.5,
+                        "lane": "standard",
+                        "agent": "claude",
+                        "status": "error",
+                        "duration_ms": 80,
+                    },
+                    {
+                        "ts": 1700000001.0,
+                        "lane": "critical",
+                        "agent": "cursor",
+                        "status": "ok",
+                        "duration_ms": 200,
+                    },
                 ]
             ),
             encoding="utf-8",
@@ -695,7 +728,16 @@ class TestCockpitDispatchedFromMain:
 
         result = runner.invoke(
             main_app,
-            ["cockpit", "render", "--clock", "1700000000.0", "--progress-done", "1", "--progress-total", "2"],
+            [
+                "cockpit",
+                "render",
+                "--clock",
+                "1700000000.0",
+                "--progress-done",
+                "1",
+                "--progress-total",
+                "2",
+            ],
         )
         assert result.exit_code == 0
         assert "operator cockpit" in result.output

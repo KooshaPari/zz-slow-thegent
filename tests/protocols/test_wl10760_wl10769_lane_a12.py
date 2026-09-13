@@ -17,16 +17,16 @@ from thegent.protocols.turn_submit_boundaries import (
     build_session_state_update_phase,
     build_workflow_guard_phase,
     resolve_cli_handler_selection_target,
+    resolve_hook_invocation_target,
+    resolve_observability_serialization_target,
     resolve_policy_enforcement_plan_target,
     resolve_provider_final_selection_target,
     resolve_queue_execution_target,
     resolve_retry_outcome_target,
-    resolve_hook_invocation_target,
     resolve_session_persistence_plan_target,
     resolve_session_persistence_target,
     resolve_terminal_outcome_target,
     resolve_workflow_execution_target,
-    resolve_observability_serialization_target,
 )
 
 
@@ -42,7 +42,11 @@ def test_wl10760_queue_throughput_separates_intake_order_from_worker_fanout() ->
 def test_wl10761_telemetry_separates_metric_payload_from_emitter_serialization() -> None:
     # @trace WL-10761
     phase = build_observability_event_phase("queue.depth", {"depth": 7}, "json")
-    assert resolve_observability_serialization_target(phase) == ("queue.depth", {"depth": 7}, "json")
+    assert resolve_observability_serialization_target(phase) == (
+        "queue.depth",
+        {"depth": 7},
+        "json",
+    )
 
     bad_phase = build_observability_event_phase("queue.depth", {"depth": 7}, "json")
     bad_phase["event_payload"] = "bad"
@@ -81,7 +85,11 @@ def test_wl10763_policy_enforcement_separates_rule_matching_from_action_executio
 def test_wl10764_sync_reliability_separates_claim_updates_from_persistence_revision() -> None:
     # @trace WL-10764
     phase = build_session_state_update_phase("session-64", {"status": "running"}, 2)
-    assert resolve_session_persistence_plan_target(phase) == ("session-64", {"status": "running"}, 2)
+    assert resolve_session_persistence_plan_target(phase) == (
+        "session-64",
+        {"status": "running"},
+        2,
+    )
 
     with pytest.raises(ValueError, match="invalid persistence_revision"):
         resolve_session_persistence_plan_target(build_session_state_update_phase("session-64", {}, -1))
@@ -121,7 +129,11 @@ def test_wl10767_session_lifecycle_separates_queue_priority_from_dispatch_window
 def test_wl10768_cli_behavior_separates_schema_token_parse_from_handler_resolution() -> None:
     # @trace WL-10768
     phase = build_cli_command_parse_phase("queue push", ["queue", "push"], "queue_handler")
-    assert resolve_cli_handler_selection_target(phase) == ("queue push", ["queue", "push"], "queue_handler")
+    assert resolve_cli_handler_selection_target(phase) == (
+        "queue push",
+        ["queue", "push"],
+        "queue_handler",
+    )
 
     with pytest.raises(ValueError, match="invalid parsed token"):
         resolve_cli_handler_selection_target(

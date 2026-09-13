@@ -36,7 +36,6 @@ from thegent.mcp.server import (
 )
 from thegent.ux.cli_cockpit import app as cockpit_app
 
-
 pytestmark = pytest.mark.unit
 
 
@@ -87,7 +86,14 @@ class TestMcpTailRegistration:
         assert result.exit_code == 0
         clean = _strip_ansi(result.output)
         # The filter flags that the CLI exposes should appear in --help.
-        for needle in ("--kind", "--lines", "--agent", "--outcome", "--stats", "--json"):
+        for needle in (
+            "--kind",
+            "--lines",
+            "--agent",
+            "--outcome",
+            "--stats",
+            "--json",
+        ):
             assert needle in clean, f"missing {needle!r} in:\n{clean}"
 
 

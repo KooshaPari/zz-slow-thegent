@@ -1,9 +1,10 @@
 from __future__ import annotations
 
-import orjson as json
 import subprocess
 import sys
 from pathlib import Path
+
+import orjson as json
 
 
 def test_mutation_perf_pilot_emits_artifact(tmp_path: Path) -> None:

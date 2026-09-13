@@ -15,14 +15,11 @@ Traces to: WP-3001
 from __future__ import annotations
 
 import json
-import tempfile
 from pathlib import Path
 
 import pytest
 
 from thegent.governance.health_scorer import (
-    DimensionScore,
-    HealthReport,
     HealthScorer,
 )
 
@@ -431,14 +428,28 @@ class TestTypedDictShapes:
         """DimensionScore has all required keys."""
         scorer = HealthScorer(config_file)
         result = scorer.score_dimension("test_coverage", 50)
-        required_keys = {"dimension", "weight", "target", "actual", "direction", "score", "status"}
+        required_keys = {
+            "dimension",
+            "weight",
+            "target",
+            "actual",
+            "direction",
+            "score",
+            "status",
+        }
         assert set(result.keys()) == required_keys
 
     def test_health_report_has_required_keys(self, config_file: Path) -> None:
         """HealthReport has all required keys."""
         scorer = HealthScorer(config_file)
         report = scorer.generate_report({"test_coverage": 50})
-        required_keys = {"version", "overall_score", "status", "dimensions", "timestamp"}
+        required_keys = {
+            "version",
+            "overall_score",
+            "status",
+            "dimensions",
+            "timestamp",
+        }
         assert set(report.keys()) == required_keys
 
     def test_dimensions_in_report_are_dimension_scores(self, config_file: Path) -> None:

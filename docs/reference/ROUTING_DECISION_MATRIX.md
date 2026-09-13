@@ -9,18 +9,19 @@
 
 ## Overview: Task Categories and Budget Allocation
 
-| Category | Token Range | Monthly Budget | Cost/Call Limit | Calls/Month | Quality Floor | Speed SLA | Use Cases |
-|---|---|---|---|---|---|---|---|
-| **FAST** | 50–500 tokens | $50 | $0.002 | ~25,000 | 70% | <1s TTFT | Interactive, chat, quick queries |
-| **NORMAL** | 500–3K tokens | $200 | $0.05 | ~4,000 | 73% | <5s | Default tier, standard implementations |
-| **COMPLEX** | 3K–10K tokens | $150 | $0.15 | ~1,000 | 75% | <20s | Multi-step reasoning, debugging, analysis |
-| **HIGH_COMPLEX** | >10K tokens | $50 | $0.85 | ~60 | 80% | <60s | Architecture decisions, novel problems, final review |
+| Category         | Token Range   | Monthly Budget | Cost/Call Limit | Calls/Month | Quality Floor | Speed SLA | Use Cases                                            |
+| ---------------- | ------------- | -------------- | --------------- | ----------- | ------------- | --------- | ---------------------------------------------------- |
+| **FAST**         | 50–500 tokens | $50            | $0.002          | ~25,000     | 70%           | <1s TTFT  | Interactive, chat, quick queries                     |
+| **NORMAL**       | 500–3K tokens | $200           | $0.05           | ~4,000      | 73%           | <5s       | Default tier, standard implementations               |
+| **COMPLEX**      | 3K–10K tokens | $150           | $0.15           | ~1,000      | 75%           | <20s      | Multi-step reasoning, debugging, analysis            |
+| **HIGH_COMPLEX** | >10K tokens   | $50            | $0.85           | ~60         | 80%           | <60s      | Architecture decisions, novel problems, final review |
 
 ---
 
 ## FAST CATEGORY (50–500 tokens input, 100–1K output)
 
 ### Category Parameters
+
 - **Performance Requirement:** ≥70% (SWE-Bench or equivalent)
 - **Speed SLA:** <1 second TTFT (time-to-first-token)
 - **Instantaneous Budget Limit:** $0.002 per call
@@ -29,12 +30,12 @@
 
 ### Hard Constraints Check
 
-| # | Constraint | Check | Result | Models Passing |
-|---|---|---|---|---|
-| 1 | Quality ≥ 70% | SWE-Bench score or equivalent | ✓ | Haiku (73%), Gemini Flash (78%), GPT-4o mini (70%) |
-| 2 | Cost ≤ $0.002/call | Haiku: $3.50/M × 0.5K avg = $0.00175 | ✓ | Haiku ✓, Gemini Flash ($1.50–3/M × 0.5K = $0.001) ✓, GPT-4o mini ($0.375/M × 0.5K = $0.0002) ✓ |
-| 3 | Cumulative ≤ $50/mo | 25,000 calls × $0.002 = $50 | ✓ | All three models ✓ |
-| 4 | Speed < 1s TTFT | P50 latency must be <600ms | ✓ | Gemini Flash (150–600ms) ✓, GPT-4o mini (200–800ms) ⚠ P99 exceeds, Haiku (300–1200ms) ✗ P99 >1s |
+| #   | Constraint          | Check                                | Result | Models Passing                                                                                   |
+| --- | ------------------- | ------------------------------------ | ------ | ------------------------------------------------------------------------------------------------ |
+| 1   | Quality ≥ 70%       | SWE-Bench score or equivalent        | ✓      | Haiku (73%), Gemini Flash (78%), GPT-4o mini (70%)                                               |
+| 2   | Cost ≤ $0.002/call  | Haiku: $3.50/M × 0.5K avg = $0.00175 | ✓      | Haiku ✓, Gemini Flash ($1.50–3/M × 0.5K = $0.001) ✓, GPT-4o mini ($0.375/M × 0.5K = $0.0002) ✓   |
+| 3   | Cumulative ≤ $50/mo | 25,000 calls × $0.002 = $50          | ✓      | All three models ✓                                                                               |
+| 4   | Speed < 1s TTFT     | P50 latency must be <600ms           | ✓      | Gemini Flash (150–600ms) ✓, GPT-4o mini (200–800ms) ⚠ P99 exceeds, Haiku (300–1200ms) ✗ P99 >1s |
 
 **Hard Constraint Verdict:** Gemini Flash, GPT-4o mini meet all hard constraints. Haiku fails speed SLA (P99 > 1s) but acceptable if <5s SLA pushed up or interactive requirement relaxed.
 
@@ -79,19 +80,20 @@ ROUTE_FAST(request):
 
 ### Monitoring & Alerts
 
-| Metric | Alert Threshold | Action |
-|---|---|---|
-| Gemini daily calls | >500 | Switch to Haiku fallback |
-| Gemini cost cumulative | >$40/mo (80% of $50) | Begin mixing in Haiku |
-| Haiku cost cumulative | >$40/mo (if primary) | Switch to GPT-4o for new requests |
-| Average response time | >600ms | Trigger load testing; consider splitting volume |
-| Error rate | >2% | Escalate to NORMAL category |
+| Metric                 | Alert Threshold      | Action                                          |
+| ---------------------- | -------------------- | ----------------------------------------------- |
+| Gemini daily calls     | >500                 | Switch to Haiku fallback                        |
+| Gemini cost cumulative | >$40/mo (80% of $50) | Begin mixing in Haiku                           |
+| Haiku cost cumulative  | >$40/mo (if primary) | Switch to GPT-4o for new requests               |
+| Average response time  | >600ms               | Trigger load testing; consider splitting volume |
+| Error rate             | >2%                  | Escalate to NORMAL category                     |
 
 ---
 
 ## NORMAL CATEGORY (500–3K tokens input, 500–3K output)
 
 ### Category Parameters
+
 - **Performance Requirement:** ≥73% (SWE-Bench or equivalent)
 - **Speed SLA:** <5 seconds TTFT
 - **Instantaneous Budget Limit:** $0.05 per call
@@ -101,12 +103,12 @@ ROUTE_FAST(request):
 
 ### Hard Constraints Check
 
-| # | Constraint | Check | Result | Models Passing |
-|---|---|---|---|---|
-| 1 | Quality ≥ 73% | SWE-Bench score | ✓ | Haiku (73%), Sonnet (77%), Gemini Flash (78%), Minimax (80%), Opus (81%) |
-| 2 | Cost ≤ $0.05/call | Haiku: $3.50/M × 1.5K avg = $0.0525 | ⚠ | Haiku barely passes (edge case); Gemini ($2/M × 1.5K = $0.003) ✓, Sonnet ($10.50/M × 1.5K = $0.015) ✓ |
-| 3 | Cumulative ≤ $200/mo | 4,000 calls × $0.05 = $200 | ✓ | All models ✓ |
-| 4 | Speed < 5s TTFT | P50 latency must be <3s | ✓ | Haiku (300–1200ms) ✓, Sonnet (400–1500ms) ✓, Gemini (150–600ms) ✓ |
+| #   | Constraint           | Check                               | Result | Models Passing                                                                                        |
+| --- | -------------------- | ----------------------------------- | ------ | ----------------------------------------------------------------------------------------------------- |
+| 1   | Quality ≥ 73%        | SWE-Bench score                     | ✓      | Haiku (73%), Sonnet (77%), Gemini Flash (78%), Minimax (80%), Opus (81%)                              |
+| 2   | Cost ≤ $0.05/call    | Haiku: $3.50/M × 1.5K avg = $0.0525 | ⚠     | Haiku barely passes (edge case); Gemini ($2/M × 1.5K = $0.003) ✓, Sonnet ($10.50/M × 1.5K = $0.015) ✓ |
+| 3   | Cumulative ≤ $200/mo | 4,000 calls × $0.05 = $200          | ✓      | All models ✓                                                                                          |
+| 4   | Speed < 5s TTFT      | P50 latency must be <3s             | ✓      | Haiku (300–1200ms) ✓, Sonnet (400–1500ms) ✓, Gemini (150–600ms) ✓                                     |
 
 **Hard Constraint Verdict:** All major models pass. Haiku is at edge of cost limit (hits $0.0525/call for 1.5K token tasks); safer to assume max 1.2K avg for Haiku in NORMAL.
 
@@ -163,27 +165,28 @@ ROUTE_NORMAL(request):
 
 ### Budget Enforcement (2x Limit Policy)
 
-| Threshold | Action | Notes |
-|---|---|---|
-| $50 cumulative (25% of $200) | None; proceed normally | Green zone |
-| $160 cumulative (80% of $200) | **WARN:** Log alert; consider shifting to Minimax for remaining month | Yellow zone; require approval for expensive routes |
-| $200 cumulative (100% of $200) | **BLOCK:** No new NORMAL requests; escalate to COMPLEX or queue | Red zone; hard stop |
+| Threshold                      | Action                                                                | Notes                                              |
+| ------------------------------ | --------------------------------------------------------------------- | -------------------------------------------------- |
+| $50 cumulative (25% of $200)   | None; proceed normally                                                | Green zone                                         |
+| $160 cumulative (80% of $200)  | **WARN:** Log alert; consider shifting to Minimax for remaining month | Yellow zone; require approval for expensive routes |
+| $200 cumulative (100% of $200) | **BLOCK:** No new NORMAL requests; escalate to COMPLEX or queue       | Red zone; hard stop                                |
 
 ### Monitoring & Alerts
 
-| Metric | Alert Threshold | Action |
-|---|---|---|
-| Haiku cost cumulative | >$120/mo (60% of $200) | Begin mixing in Gemini/Minimax |
-| Haiku error rate | >1.5% | Switch to Sonnet for problematic task types |
-| Average response time | >3s | Load testing; consider batching |
-| Quality regression | <72% (below floor) | Switch to Sonnet for that task subtype |
-| Cumulative at 80% | $160/mo | Alert ops; prepare to escalate tasks |
+| Metric                | Alert Threshold        | Action                                      |
+| --------------------- | ---------------------- | ------------------------------------------- |
+| Haiku cost cumulative | >$120/mo (60% of $200) | Begin mixing in Gemini/Minimax              |
+| Haiku error rate      | >1.5%                  | Switch to Sonnet for problematic task types |
+| Average response time | >3s                    | Load testing; consider batching             |
+| Quality regression    | <72% (below floor)     | Switch to Sonnet for that task subtype      |
+| Cumulative at 80%     | $160/mo                | Alert ops; prepare to escalate tasks        |
 
 ---
 
 ## COMPLEX CATEGORY (3K–10K tokens input, 1K–5K output)
 
 ### Category Parameters
+
 - **Performance Requirement:** ≥75% (SWE-Bench or equivalent; quality jump vs. NORMAL)
 - **Speed SLA:** <20 seconds TTFT
 - **Instantaneous Budget Limit:** $0.15 per call
@@ -193,12 +196,12 @@ ROUTE_NORMAL(request):
 
 ### Hard Constraints Check
 
-| # | Constraint | Check | Result | Models Passing |
-|---|---|---|---|---|
-| 1 | Quality ≥ 75% | SWE-Bench score | ✓ | Sonnet (77%), Gemini Flash (78%), Minimax (80%), Opus (81%) |
-| 2 | Cost ≤ $0.15/call | Sonnet: $10.50/M × 5K avg = $0.0525 | ✓ | Sonnet ✓, Gemini ($2/M × 5K = $0.01) ✓, Minimax ($0.79/M × 5K = $0.004) ✓, Opus ($17.50/M × 5K = $0.0875) ✓ |
-| 3 | Cumulative ≤ $150/mo | 1,000 calls × $0.15 = $150 | ✓ | All models ✓ |
-| 4 | Speed < 20s TTFT | P50 latency must be <15s | ✓ | All models ✓ (even Opus at 1.76s + overhead << 15s) |
+| #   | Constraint           | Check                               | Result | Models Passing                                                                                              |
+| --- | -------------------- | ----------------------------------- | ------ | ----------------------------------------------------------------------------------------------------------- |
+| 1   | Quality ≥ 75%        | SWE-Bench score                     | ✓      | Sonnet (77%), Gemini Flash (78%), Minimax (80%), Opus (81%)                                                 |
+| 2   | Cost ≤ $0.15/call    | Sonnet: $10.50/M × 5K avg = $0.0525 | ✓      | Sonnet ✓, Gemini ($2/M × 5K = $0.01) ✓, Minimax ($0.79/M × 5K = $0.004) ✓, Opus ($17.50/M × 5K = $0.0875) ✓ |
+| 3   | Cumulative ≤ $150/mo | 1,000 calls × $0.15 = $150          | ✓      | All models ✓                                                                                                |
+| 4   | Speed < 20s TTFT     | P50 latency must be <15s            | ✓      | All models ✓ (even Opus at 1.76s + overhead << 15s)                                                         |
 
 **Hard Constraint Verdict:** Sonnet, Gemini, Minimax, and Opus all pass. Haiku (73%) dropped due to quality floor.
 
@@ -260,28 +263,29 @@ ROUTE_COMPLEX(request):
 
 ### Budget Enforcement (2x Limit Policy)
 
-| Threshold | Action | Notes |
-|---|---|---|
-| $50 cumulative (33% of $150) | None; proceed normally | Green zone |
-| $120 cumulative (80% of $150) | **WARN:** Log alert; evaluate if remaining tasks can wait until next month | Yellow zone; require approval for Opus-tier requests |
-| $150 cumulative (100% of $150) | **BLOCK:** No new COMPLEX requests; escalate to HIGH_COMPLEX queue | Red zone; hard stop |
+| Threshold                      | Action                                                                     | Notes                                                |
+| ------------------------------ | -------------------------------------------------------------------------- | ---------------------------------------------------- |
+| $50 cumulative (33% of $150)   | None; proceed normally                                                     | Green zone                                           |
+| $120 cumulative (80% of $150)  | **WARN:** Log alert; evaluate if remaining tasks can wait until next month | Yellow zone; require approval for Opus-tier requests |
+| $150 cumulative (100% of $150) | **BLOCK:** No new COMPLEX requests; escalate to HIGH_COMPLEX queue         | Red zone; hard stop                                  |
 
 ### Monitoring & Alerts
 
-| Metric | Alert Threshold | Action |
-|---|---|---|
-| Sonnet cost cumulative | >$90/mo (60% of $150) | Begin mixing in Gemini/Minimax for well-defined tasks |
-| Sonnet error rate | >2% | Escalate problematic tasks to Opus for review |
-| Opus cost per-request | >$0.50 (indicates 6K+ token task) | Warn user; may overflow monthly budget in single request |
-| Gemini daily calls | >100 | Monitor quota; may need fallback to Sonnet |
-| Average response time | >10s | Load analysis; consider batching |
-| Cumulative at 80% | $120/mo | Alert ops; freeze non-urgent COMPLEX tasks |
+| Metric                 | Alert Threshold                   | Action                                                   |
+| ---------------------- | --------------------------------- | -------------------------------------------------------- |
+| Sonnet cost cumulative | >$90/mo (60% of $150)             | Begin mixing in Gemini/Minimax for well-defined tasks    |
+| Sonnet error rate      | >2%                               | Escalate problematic tasks to Opus for review            |
+| Opus cost per-request  | >$0.50 (indicates 6K+ token task) | Warn user; may overflow monthly budget in single request |
+| Gemini daily calls     | >100                              | Monitor quota; may need fallback to Sonnet               |
+| Average response time  | >10s                              | Load analysis; consider batching                         |
+| Cumulative at 80%      | $120/mo                           | Alert ops; freeze non-urgent COMPLEX tasks               |
 
 ---
 
 ## HIGH_COMPLEX CATEGORY (>10K tokens, >5K output)
 
 ### Category Parameters
+
 - **Performance Requirement:** ≥80% (SWE-Bench or equivalent; mission-critical quality)
 - **Speed SLA:** <60 seconds TTFT (offline/batch acceptable)
 - **Instantaneous Budget Limit:** $0.85 per call
@@ -291,12 +295,12 @@ ROUTE_COMPLEX(request):
 
 ### Hard Constraints Check
 
-| # | Constraint | Check | Result | Models Passing |
-|---|---|---|---|---|
-| 1 | Quality ≥ 80% | SWE-Bench score | ✓ | Opus (81%), Minimax (80%), GLM-5 (92.7% AIME) |
-| 2 | Cost ≤ $0.85/call | Opus: $17.50/M × 8K avg = $0.14 | ✓ | Opus ✓ ($0.14), Minimax ($0.79/M × 8K = $0.006) ✓, GLM-5 ($1/M × 8K = $0.008) ✓ |
-| 3 | Cumulative ≤ $50/mo | 60 calls × $0.85 = $51 | ⚠ | Budget is *tight*; Opus alone at $0.14/call = 357 calls max, but expected 60 calls = only $8.40/mo, so very safe margin |
-| 4 | Speed < 60s TTFT | P50 latency <40s | ✓ | Opus (1760ms) ✓, all models ✓ |
+| #   | Constraint          | Check                           | Result | Models Passing                                                                                                          |
+| --- | ------------------- | ------------------------------- | ------ | ----------------------------------------------------------------------------------------------------------------------- |
+| 1   | Quality ≥ 80%       | SWE-Bench score                 | ✓      | Opus (81%), Minimax (80%), GLM-5 (92.7% AIME)                                                                           |
+| 2   | Cost ≤ $0.85/call   | Opus: $17.50/M × 8K avg = $0.14 | ✓      | Opus ✓ ($0.14), Minimax ($0.79/M × 8K = $0.006) ✓, GLM-5 ($1/M × 8K = $0.008) ✓                                         |
+| 3   | Cumulative ≤ $50/mo | 60 calls × $0.85 = $51          | ⚠     | Budget is _tight_; Opus alone at $0.14/call = 357 calls max, but expected 60 calls = only $8.40/mo, so very safe margin |
+| 4   | Speed < 60s TTFT    | P50 latency <40s                | ✓      | Opus (1760ms) ✓, all models ✓                                                                                           |
 
 **Hard Constraint Verdict:** Opus, Minimax, and GLM-5 pass. Sonnet (77%), Haiku (73%), Gemini Flash (78%) dropped due to 80% quality floor.
 
@@ -346,31 +350,31 @@ ROUTE_HIGH_COMPLEX(request):
 
 ### Budget Enforcement (Hard Caps, No Overflow)
 
-| Threshold | Action | Notes |
-|---|---|---|
-| $40 cumulative (80% of $50) | **WARN:** Log alert; next HIGH_COMPLEX request requires manager approval | Yellow zone; escalation protocol |
-| $50 cumulative (100% of $50) | **BLOCK:** No new HIGH_COMPLEX requests without budget reallocation; escalate to human review | Red zone; hard stop |
+| Threshold                    | Action                                                                                        | Notes                            |
+| ---------------------------- | --------------------------------------------------------------------------------------------- | -------------------------------- |
+| $40 cumulative (80% of $50)  | **WARN:** Log alert; next HIGH_COMPLEX request requires manager approval                      | Yellow zone; escalation protocol |
+| $50 cumulative (100% of $50) | **BLOCK:** No new HIGH_COMPLEX requests without budget reallocation; escalate to human review | Red zone; hard stop              |
 
 ### Monitoring & Alerts
 
-| Metric | Alert Threshold | Action |
-|---|---|---|
-| Opus cost cumulative | >$40/mo (80% of $50) | Alert ops; next request requires approval |
-| Monthly call count | >80 (above expected 60) | Investigate spike; may indicate category misclassification |
-| Opus error rate | >3% | Escalate problematic tasks to manual review |
-| Response latency | >30s | Opus may be under load; queue remaining requests |
-| Cumulative at limit | $50/mo | Hard freeze; all subsequent requests denied until next month |
+| Metric               | Alert Threshold         | Action                                                       |
+| -------------------- | ----------------------- | ------------------------------------------------------------ |
+| Opus cost cumulative | >$40/mo (80% of $50)    | Alert ops; next request requires approval                    |
+| Monthly call count   | >80 (above expected 60) | Investigate spike; may indicate category misclassification   |
+| Opus error rate      | >3%                     | Escalate problematic tasks to manual review                  |
+| Response latency     | >30s                    | Opus may be under load; queue remaining requests             |
+| Cumulative at limit  | $50/mo                  | Hard freeze; all subsequent requests denied until next month |
 
 ---
 
 ## Cross-Category Budget View
 
-| Category | Monthly Budget | Primary Model | Fallback Chain | Total Commits |
-|---|---|---|---|---|
-| FAST | $50 | Gemini Flash → Haiku → GPT-4o mini | 3 | $450 cumulative |
-| NORMAL | $200 | Haiku → Gemini → Sonnet → Minimax | 4 |  |
-| COMPLEX | $150 | Sonnet → Gemini → Opus → Minimax | 4 |  |
-| HIGH_COMPLEX | $50 | Opus → Minimax (→ Sonnet if de-escalated) | 2 |  |
+| Category     | Monthly Budget | Primary Model                             | Fallback Chain | Total Commits   |
+| ------------ | -------------- | ----------------------------------------- | -------------- | --------------- |
+| FAST         | $50            | Gemini Flash → Haiku → GPT-4o mini        | 3              | $450 cumulative |
+| NORMAL       | $200           | Haiku → Gemini → Sonnet → Minimax         | 4              |                 |
+| COMPLEX      | $150           | Sonnet → Gemini → Opus → Minimax          | 4              |                 |
+| HIGH_COMPLEX | $50            | Opus → Minimax (→ Sonnet if de-escalated) | 2              |                 |
 
 **Total Monthly Budget:** $450
 **Current Spend:** $550/mo
@@ -432,15 +436,12 @@ A: No. Cursor's pricing ($0.50/M effective, but $600-1000/mo overflow risk) is v
 **Q: How often should we re-evaluate the frontier matrix?**
 A: Q1 2026 (next quarterly benchmark release). If major pricing changes occur mid-quarter, reassess immediately. Log benchmark dates in the routing system.
 
-
-
 ---
+
 ## See also
 
 - [WORK_STREAM.md](../reference/WORK_STREAM.md) — canonical backlog
 - [00-MASTER-INDEX.md](../plans/00-MASTER-INDEX.md) — plan index
-
-
 
 ---
 
@@ -450,15 +451,18 @@ A: Q1 2026 (next quarterly benchmark release). If major pricing changes occur mi
 **Extended by:** Claude Code
 
 ### Changes Made
+
 1. Added practical implementation patterns
 2. Added configuration examples
 3. Enhanced cross-references to related documentation
 
 ### Cross-References Added
+
 - Related research and implementation guides
 - WORK_STREAM.md for tracking
 
 ### Practical Additions
+
 - Implementation templates
 - Configuration examples
 - Best practices

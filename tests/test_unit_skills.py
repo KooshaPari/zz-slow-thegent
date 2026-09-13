@@ -1,9 +1,9 @@
 """Tests for skills auto-discovery and MCP integration."""
 
-import orjson as json
 from pathlib import Path
 from unittest.mock import patch
 
+import orjson as json
 import pytest
 
 
@@ -129,7 +129,10 @@ class TestSkillDiscovery:
         skill_dir.mkdir(parents=True)
         (skill_dir / "SKILL.md").write_text("# MD only skill", encoding="utf-8")
 
-        monkeypatch.setattr("thegent.skills.discovery._get_all_skills_dirs", lambda: [tmp_path / "skills"])
+        monkeypatch.setattr(
+            "thegent.skills.discovery._get_all_skills_dirs",
+            lambda: [tmp_path / "skills"],
+        )
 
         skills = discover_skills()
         assert len(skills) == 1
@@ -144,7 +147,10 @@ class TestSkillDiscovery:
         skill_dir.mkdir(parents=True)
         (skill_dir / "SKILL.md").write_text("# Instructions", encoding="utf-8")
 
-        monkeypatch.setattr("thegent.skills.discovery._get_all_skills_dirs", lambda: [tmp_path / "skills"])
+        monkeypatch.setattr(
+            "thegent.skills.discovery._get_all_skills_dirs",
+            lambda: [tmp_path / "skills"],
+        )
 
         skill = load_skill("md-only-load")
         assert skill is not None
@@ -174,11 +180,21 @@ class TestSkillDiscovery:
         skill_dir.mkdir(parents=True)
         (skill_dir / "SKILL.md").write_text("# Has content", encoding="utf-8")
         (skill_dir / "skill.json").write_text(
-            json.dumps({"name": "   ", "description": "bad", "version": "1.0.0", "entrypoint": "x"}).decode(),
+            json.dumps(
+                {
+                    "name": "   ",
+                    "description": "bad",
+                    "version": "1.0.0",
+                    "entrypoint": "x",
+                }
+            ).decode(),
             encoding="utf-8",
         )
 
-        monkeypatch.setattr("thegent.skills.discovery._get_all_skills_dirs", lambda: [tmp_path / "skills"])
+        monkeypatch.setattr(
+            "thegent.skills.discovery._get_all_skills_dirs",
+            lambda: [tmp_path / "skills"],
+        )
         assert discover_skills() == []
 
     def test_load_skill_rejects_empty_name(self):
@@ -258,8 +274,6 @@ class TestCLISkillsCommands:
 
     def test_skills_list_command(self):
         """Test the skills list CLI command."""
-        from io import StringIO
-        from unittest.mock import patch
 
         from thegent.cli.apps.skills import skills_list
 
@@ -283,7 +297,6 @@ class TestCLISkillsCommands:
 
     def test_skills_show_command_not_found(self):
         """Test the skills show CLI command for non-existent skill."""
-        from unittest.mock import patch
 
         import pytest
 

@@ -12,7 +12,7 @@ Validate code examples in documentation.
 
 ### Methods
 
-#### CodeExampleValidator.__init__
+#### CodeExampleValidator.**init**
 
 ```python
 __init__(self: Any, check_syntax: bool, run_tests: bool)

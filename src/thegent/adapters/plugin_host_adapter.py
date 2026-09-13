@@ -13,7 +13,6 @@ from __future__ import annotations
 
 import logging
 import subprocess
-import sys
 from dataclasses import dataclass, field
 from pathlib import Path
 from typing import TYPE_CHECKING, Any
@@ -21,14 +20,13 @@ from typing import TYPE_CHECKING, Any
 from thegent.infra.wasm_plugin import (
     ExtismRuntime,
     PluginStatus,
-    ResourceLimits,
     WasmCapability,
     WasmPluginMetadata,
     WasmRuntimeStatus,
 )
 
 if TYPE_CHECKING:
-    from collections.abc import Iterable
+    pass
 
 _log = logging.getLogger(__name__)
 
@@ -351,9 +349,7 @@ class PluginHostAdapter:
         """
         return {
             "host_running": self._host_process is not None,
-            "process_alive": (
-                self._host_process.poll() is None if self._host_process else False
-            ),
+            "process_alive": (self._host_process.poll() is None if self._host_process else False),
             "runtime_status": self.runtime_status.value,
             "plugins_loaded": len(self._loaded_plugins),
             "plugin_ids": list(self._loaded_plugins.keys()),

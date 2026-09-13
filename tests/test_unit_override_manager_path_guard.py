@@ -35,7 +35,6 @@ from thegent.governance.overrides import (
     _validate_policy_id,
 )
 
-
 pytestmark = pytest.mark.unit
 
 

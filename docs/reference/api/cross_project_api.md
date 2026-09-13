@@ -31,8 +31,8 @@ Message file format (JSON, one message per file)::
         "reply_to": "&lt;msg_id&gt;" | null
     }
 
-Atomicity guarantee: every delivery uses ``os.rename`` from ``tmp/`` to
-``new/``, which is atomic on POSIX filesystems.  Concurrent senders writing
+Atomicity guarantee: every delivery uses `os.rename` from `tmp/` to
+`new/`, which is atomic on POSIX filesystems. Concurrent senders writing
 to the same inbox are safe because each file name contains a UUID.
 
 ---
@@ -41,12 +41,12 @@ to the same inbox are safe because each file name contains a UUID.
 
 File-based IPC client for cross-project agent communication.
 
-Each instance is bound to a single ``(project_root, agent_id)`` pair and
-writes/reads from ``IPC_DIR`` (``~/.thegent/ipc/`` by default).
+Each instance is bound to a single `(project_root, agent_id)` pair and
+writes/reads from `IPC_DIR` (`~/.thegent/ipc/` by default).
 
 ### Methods
 
-#### CrossProjectIpc.__init__
+#### CrossProjectIpc.**init**
 
 ```python
 __init__(self: Any, agent_id: str, project_root: Path)
@@ -60,7 +60,7 @@ __init__(self: Any, agent_id: str, project_root: Path)
 ack(self: Any, msg_id: str)
 ```
 
-Acknowledge receipt of *msg_id*, removing it from the inbox.
+Acknowledge receipt of _msg_id_, removing it from the inbox.
 
 Idempotent — safe to call more than once or on an unknown ID.
 
@@ -78,15 +78,15 @@ broadcast(self: Any, topic: str, payload: dict)
 
 Broadcast a message to all listening agents.
 
-Delivers to the well-known ``broadcast`` inbox so that any agent
+Delivers to the well-known `broadcast` inbox so that any agent
 polling that inbox receives it.
 
 **Parameters**:
 
-- `topic`:   Message topic.
+- `topic`: Message topic.
 - `payload`: Arbitrary JSON-serialisable data.
 
-**Returns**: The unique ``msg_id``.
+**Returns**: The unique `msg_id`.
 
 ---
 
@@ -96,7 +96,7 @@ polling that inbox receives it.
 list_pending(self: Any)
 ```
 
-Return all messages waiting in this agent's ``new/`` inbox.
+Return all messages waiting in this agent's `new/` inbox.
 
 ---
 
@@ -108,14 +108,14 @@ receive(self: Any, timeout: float)
 
 Claim the next message from this agent's inbox.
 
-When *timeout* is 0 the call is non-blocking; when *timeout* &gt; 0 it
+When _timeout_ is 0 the call is non-blocking; when _timeout_ &gt; 0 it
 polls until a message arrives or the timeout elapses.
 
 **Parameters**:
 
-- `timeout`: Maximum seconds to wait.  0 means non-blocking.
+- `timeout`: Maximum seconds to wait. 0 means non-blocking.
 
-**Returns**: The claimed :class:`IpcMessage`, or ``None`` if none arrived.
+**Returns**: The claimed :class:`IpcMessage`, or `None` if none arrived.
 
 ---
 
@@ -129,9 +129,9 @@ Claim the next broadcast message.
 
 **Parameters**:
 
-- `timeout`: Maximum seconds to wait.  0 means non-blocking.
+- `timeout`: Maximum seconds to wait. 0 means non-blocking.
 
-**Returns**: The claimed :class:`IpcMessage`, or ``None``.
+**Returns**: The claimed :class:`IpcMessage`, or `None`.
 
 ---
 
@@ -141,16 +141,16 @@ Claim the next broadcast message.
 receive_topic(self: Any, topic: str, timeout: float)
 ```
 
-Claim the next message matching *topic* from this agent's inbox.
+Claim the next message matching _topic_ from this agent's inbox.
 
-Messages that do not match *topic* are left untouched in the inbox.
+Messages that do not match _topic_ are left untouched in the inbox.
 
 **Parameters**:
 
-- `topic`:   The topic string to filter on.
+- `topic`: The topic string to filter on.
 - `timeout`: Maximum seconds to wait.
 
-**Returns**: The first matching :class:`IpcMessage`, or ``None``.
+**Returns**: The first matching :class:`IpcMessage`, or `None`.
 
 ---
 
@@ -160,14 +160,14 @@ Messages that do not match *topic* are left untouched in the inbox.
 reply(self: Any, original: IpcMessage, payload: dict)
 ```
 
-Send a reply to the sender of *original*.
+Send a reply to the sender of _original_.
 
 **Parameters**:
 
 - `original`: The message being replied to.
-- `payload`:  Reply payload.
+- `payload`: Reply payload.
 
-**Returns**: The unique ``msg_id`` of the reply.
+**Returns**: The unique `msg_id` of the reply.
 
 ---
 
@@ -177,15 +177,15 @@ Send a reply to the sender of *original*.
 send(self: Any, recipient: str, topic: str, payload: dict)
 ```
 
-Send a message to *recipient*.
+Send a message to _recipient_.
 
 **Parameters**:
 
-- `recipient`: Target address (``"&lt;project_root&gt;:&lt;agent_id&gt;"``).
-- `topic`:     Message topic / type string.
-- `payload`:   Arbitrary JSON-serialisable data.
+- `recipient`: Target address (`"&lt;project_root&gt;:&lt;agent_id&gt;"`).
+- `topic`: Message topic / type string.
+- `payload`: Arbitrary JSON-serialisable data.
 
-**Returns**: The unique ``msg_id`` of the sent message.
+**Returns**: The unique `msg_id` of the sent message.
 
 ---
 
@@ -195,7 +195,7 @@ Send a message to *recipient*.
 
 Long-running server that dispatches incoming IPC messages to handlers.
 
-Handlers are registered per topic.  An optional ``default_handler`` is
+Handlers are registered per topic. An optional `default_handler` is
 called for messages whose topic has no specific handler.
 
 Example::
@@ -206,7 +206,7 @@ Example::
 
 ### Methods
 
-#### CrossProjectIpcServer.__init__
+#### CrossProjectIpcServer.**init**
 
 ```python
 __init__(self: Any, ipc: CrossProjectIpc)
@@ -220,11 +220,11 @@ __init__(self: Any, ipc: CrossProjectIpc)
 register(self: Any, topic: str, handler: Callable[(Any, None)])
 ```
 
-Register a *handler* for messages with the given *topic*.
+Register a _handler_ for messages with the given _topic_.
 
 **Parameters**:
 
-- `topic`:   The topic string to match.
+- `topic`: The topic string to match.
 - `handler`: Callable that receives an :class:`IpcMessage`.
 
 ---
@@ -240,7 +240,7 @@ Start the dispatch loop.
 **Parameters**:
 
 - `max_iterations`: Stop after processing this many iterations
-(useful for testing).  ``None`` means run forever.
+  (useful for testing). `None` means run forever.
 
 ---
 
@@ -250,7 +250,7 @@ Start the dispatch loop.
 set_default_handler(self: Any, handler: Callable[(Any, None)])
 ```
 
-Set a catch-all *handler* for unregistered topics.
+Set a catch-all _handler_ for unregistered topics.
 
 ---
 
@@ -310,7 +310,7 @@ Serialise to a JSON string.
 ack(self: Any, msg_id: str)
 ```
 
-Acknowledge receipt of *msg_id*, removing it from the inbox.
+Acknowledge receipt of _msg_id_, removing it from the inbox.
 
 Idempotent — safe to call more than once or on an unknown ID.
 
@@ -328,15 +328,15 @@ broadcast(self: Any, topic: str, payload: dict)
 
 Broadcast a message to all listening agents.
 
-Delivers to the well-known ``broadcast`` inbox so that any agent
+Delivers to the well-known `broadcast` inbox so that any agent
 polling that inbox receives it.
 
 **Parameters**:
 
-- `topic`:   Message topic.
+- `topic`: Message topic.
 - `payload`: Arbitrary JSON-serialisable data.
 
-**Returns**: The unique ``msg_id``.
+**Returns**: The unique `msg_id`.
 
 ---
 
@@ -366,7 +366,7 @@ Deserialise from a JSON string.
 list_pending(self: Any)
 ```
 
-Return all messages waiting in this agent's ``new/`` inbox.
+Return all messages waiting in this agent's `new/` inbox.
 
 ---
 
@@ -378,14 +378,14 @@ receive(self: Any, timeout: float)
 
 Claim the next message from this agent's inbox.
 
-When *timeout* is 0 the call is non-blocking; when *timeout* &gt; 0 it
+When _timeout_ is 0 the call is non-blocking; when _timeout_ &gt; 0 it
 polls until a message arrives or the timeout elapses.
 
 **Parameters**:
 
-- `timeout`: Maximum seconds to wait.  0 means non-blocking.
+- `timeout`: Maximum seconds to wait. 0 means non-blocking.
 
-**Returns**: The claimed :class:`IpcMessage`, or ``None`` if none arrived.
+**Returns**: The claimed :class:`IpcMessage`, or `None` if none arrived.
 
 ---
 
@@ -399,9 +399,9 @@ Claim the next broadcast message.
 
 **Parameters**:
 
-- `timeout`: Maximum seconds to wait.  0 means non-blocking.
+- `timeout`: Maximum seconds to wait. 0 means non-blocking.
 
-**Returns**: The claimed :class:`IpcMessage`, or ``None``.
+**Returns**: The claimed :class:`IpcMessage`, or `None`.
 
 ---
 
@@ -411,16 +411,16 @@ Claim the next broadcast message.
 receive_topic(self: Any, topic: str, timeout: float)
 ```
 
-Claim the next message matching *topic* from this agent's inbox.
+Claim the next message matching _topic_ from this agent's inbox.
 
-Messages that do not match *topic* are left untouched in the inbox.
+Messages that do not match _topic_ are left untouched in the inbox.
 
 **Parameters**:
 
-- `topic`:   The topic string to filter on.
+- `topic`: The topic string to filter on.
 - `timeout`: Maximum seconds to wait.
 
-**Returns**: The first matching :class:`IpcMessage`, or ``None``.
+**Returns**: The first matching :class:`IpcMessage`, or `None`.
 
 ---
 
@@ -430,11 +430,11 @@ Messages that do not match *topic* are left untouched in the inbox.
 register(self: Any, topic: str, handler: Callable[(Any, None)])
 ```
 
-Register a *handler* for messages with the given *topic*.
+Register a _handler_ for messages with the given _topic_.
 
 **Parameters**:
 
-- `topic`:   The topic string to match.
+- `topic`: The topic string to match.
 - `handler`: Callable that receives an :class:`IpcMessage`.
 
 ---
@@ -445,14 +445,14 @@ Register a *handler* for messages with the given *topic*.
 reply(self: Any, original: IpcMessage, payload: dict)
 ```
 
-Send a reply to the sender of *original*.
+Send a reply to the sender of _original_.
 
 **Parameters**:
 
 - `original`: The message being replied to.
-- `payload`:  Reply payload.
+- `payload`: Reply payload.
 
-**Returns**: The unique ``msg_id`` of the reply.
+**Returns**: The unique `msg_id` of the reply.
 
 ---
 
@@ -467,7 +467,7 @@ Start the dispatch loop.
 **Parameters**:
 
 - `max_iterations`: Stop after processing this many iterations
-(useful for testing).  ``None`` means run forever.
+  (useful for testing). `None` means run forever.
 
 ---
 
@@ -477,15 +477,15 @@ Start the dispatch loop.
 send(self: Any, recipient: str, topic: str, payload: dict)
 ```
 
-Send a message to *recipient*.
+Send a message to _recipient_.
 
 **Parameters**:
 
-- `recipient`: Target address (``"&lt;project_root&gt;:&lt;agent_id&gt;"``).
-- `topic`:     Message topic / type string.
-- `payload`:   Arbitrary JSON-serialisable data.
+- `recipient`: Target address (`"&lt;project_root&gt;:&lt;agent_id&gt;"`).
+- `topic`: Message topic / type string.
+- `payload`: Arbitrary JSON-serialisable data.
 
-**Returns**: The unique ``msg_id`` of the sent message.
+**Returns**: The unique `msg_id` of the sent message.
 
 ---
 
@@ -495,7 +495,7 @@ Send a message to *recipient*.
 set_default_handler(self: Any, handler: Callable[(Any, None)])
 ```
 
-Set a catch-all *handler* for unregistered topics.
+Set a catch-all _handler_ for unregistered topics.
 
 ---
 

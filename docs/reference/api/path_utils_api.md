@@ -9,6 +9,7 @@ across Windows, macOS, and Linux. All functions return pathlib.Path objects
 to avoid str/Path mixing and ensure type safety.
 
 Key features:
+
 - Automatic ~ expansion and .. resolution
 - Cross-platform separator handling
 - Directory traversal attack prevention (safe_join / is_within)
@@ -16,14 +17,14 @@ Key features:
 - Relative path computation for logging/display
 
 Usage:
-    from scripts.path_utils import (
-        normalize_path,
-        safe_join,
-        is_within,
-        safe_exists,
-        rel_to_cwd,
-        ensure_dir,
-    )
+from scripts.path_utils import (
+normalize_path,
+safe_join,
+is_within,
+safe_exists,
+rel_to_cwd,
+ensure_dir,
+)
 
     path = normalize_path("~/projects/myfile.txt")
     file = safe_join(base_dir, user_input)
@@ -38,19 +39,19 @@ Usage:
 ensure_dir(path: Any)
 ```
 
-Create *path* as a directory (including parents) if it does not exist.
+Create _path_ as a directory (including parents) if it does not exist.
 
-Equivalent to ``mkdir -p``.  Does nothing if the directory already exists.
+Equivalent to `mkdir -p`. Does nothing if the directory already exists.
 
 **Parameters**:
 
-- `path`: Directory path to create (``~`` expansion applied).
+- `path`: Directory path to create (`~` expansion applied).
 
 **Returns**: Resolved absolute :class:`~pathlib.Path` of the created/existing directory.
 
 **Raises**:
 
-- `NotADirectoryError`: If *path* exists but is a file.
+- `NotADirectoryError`: If _path_ exists but is a file.
 - `PermissionError`: If the directory cannot be created.
 
 **Examples**:
@@ -88,15 +89,15 @@ PosixPath('/home/user')
 is_absolute_or_relative(path: Any)
 ```
 
-Return ``True`` if *path* is absolute, ``False`` if relative.
+Return `True` if _path_ is absolute, `False` if relative.
 
-Note: ``~`` paths are treated as relative until expanded.
+Note: `~` paths are treated as relative until expanded.
 
 **Parameters**:
 
 - `path`: Path to inspect.
 
-**Returns**: ``True`` if the path is absolute.
+**Returns**: `True` if the path is absolute.
 
 **Examples**:
 
@@ -119,7 +120,7 @@ False
 is_same_path(path1: Any, path2: Any)
 ```
 
-Return ``True`` if two paths refer to the same filesystem object.
+Return `True` if two paths refer to the same filesystem object.
 
 Uses :meth:`~pathlib.Path.samefile` when both paths exist (handles
 symlinks correctly) and falls back to resolved-path comparison otherwise.
@@ -129,7 +130,7 @@ symlinks correctly) and falls back to resolved-path comparison otherwise.
 - `path1`: First path.
 - `path2`: Second path.
 
-**Returns**: ``True`` if paths refer to the same object.
+**Returns**: `True` if paths refer to the same object.
 
 ---
 
@@ -139,17 +140,17 @@ symlinks correctly) and falls back to resolved-path comparison otherwise.
 is_within(child: Any, parent: Any)
 ```
 
-Return ``True`` if *child* is at or below *parent* in the filesystem tree.
+Return `True` if _child_ is at or below _parent_ in the filesystem tree.
 
-Both paths are resolved (symlinks expanded, ``..`` collapsed) before the
+Both paths are resolved (symlinks expanded, `..` collapsed) before the
 containment check so they cannot fool the comparison.
 
 **Parameters**:
 
 - `child`: Path to test.
-- `parent`: Directory that *child* must be contained in.
+- `parent`: Directory that _child_ must be contained in.
 
-**Returns**: ``True`` if *child* equals *parent* or is a descendant of *parent*.
+**Returns**: `True` if _child_ equals _parent_ or is a descendant of _parent_.
 
 **Examples**:
 
@@ -174,20 +175,20 @@ normalize_path(path: Any, base: Any)
 
 Normalize a path with ~ expansion and absolute resolution.
 
-If *path* is relative and *base* is given, the path is resolved relative
-to *base*.  If *base* is omitted, relative paths are resolved against the
+If _path_ is relative and _base_ is given, the path is resolved relative
+to _base_. If _base_ is omitted, relative paths are resolved against the
 current working directory.
 
 **Parameters**:
 
-- `path`: Input path as string or Path object. ``None`` returns the CWD.
+- `path`: Input path as string or Path object. `None` returns the CWD.
 - `base`: Optional base directory for resolving relative paths.
 
 **Returns**: Normalized absolute :class:`~pathlib.Path`.
 
 **Raises**:
 
-- `TypeError`: If *path* is not ``str``, :class:`~pathlib.Path`, or ``None``.
+- `TypeError`: If _path_ is not `str`, :class:`~pathlib.Path`, or `None`.
 
 **Examples**:
 
@@ -210,13 +211,13 @@ PosixPath('/current/working/directory')
 path_to_str(path: Any)
 ```
 
-Convert a path to a string, handling ``None`` gracefully.
+Convert a path to a string, handling `None` gracefully.
 
 **Parameters**:
 
-- `path`: Path object, string, or ``None``.
+- `path`: Path object, string, or `None`.
 
-**Returns**: String representation of *path*, or ``''`` for ``None``.
+**Returns**: String representation of _path_, or `''` for `None`.
 
 ---
 
@@ -226,17 +227,17 @@ Convert a path to a string, handling ``None`` gracefully.
 rel_to_cwd(path: Any)
 ```
 
-Return *path* relative to the current working directory when possible.
+Return _path_ relative to the current working directory when possible.
 
-If *path* is not under the CWD the resolved absolute path is returned
-unchanged.  Intended for human-readable display and logging — not for
+If _path_ is not under the CWD the resolved absolute path is returned
+unchanged. Intended for human-readable display and logging — not for
 filesystem operations.
 
 **Parameters**:
 
-- `path`: Path to make relative (``~`` expansion applied).
+- `path`: Path to make relative (`~` expansion applied).
 
-**Returns**: Relative :class:`~pathlib.Path` when *path* is inside the CWD,
+**Returns**: Relative :class:`~pathlib.Path` when _path_ is inside the CWD,
 otherwise the absolute :class:`~pathlib.Path`.
 
 **Examples**:
@@ -257,17 +258,17 @@ PosixPath('/etc/hosts')
 safe_exists(path: Any)
 ```
 
-Check whether *path* exists without raising on permission or OS errors.
+Check whether _path_ exists without raising on permission or OS errors.
 
 Unlike :meth:`~pathlib.Path.exists`, this function catches
-:class:`PermissionError` and :class:`OSError` and returns ``False``
+:class:`PermissionError` and :class:`OSError` and returns `False`
 instead of propagating them.
 
 **Parameters**:
 
-- `path`: Path to check (``~`` expansion is applied).
+- `path`: Path to check (`~` expansion is applied).
 
-**Returns**: ``True`` if the path exists and is accessible; ``False`` otherwise.
+**Returns**: `True` if the path exists and is accessible; `False` otherwise.
 
 **Examples**:
 
@@ -290,22 +291,22 @@ False
 safe_join(base: Any)
 ```
 
-Join *base* with *parts*, blocking any directory traversal escape.
+Join _base_ with _parts_, blocking any directory traversal escape.
 
-Resolves the joined path and verifies it remains inside *base*.  Raises
-:class:`ValueError` if any ``..`` component or absolute override would
-navigate the result outside *base*.
+Resolves the joined path and verifies it remains inside _base_. Raises
+:class:`ValueError` if any `..` component or absolute override would
+navigate the result outside _base_.
 
 **Parameters**:
 
 - `base`: The trusted base directory.
 - `*parts`: Path components to join (may be user-supplied / untrusted).
 
-**Returns**: Absolute :class:`~pathlib.Path` strictly inside (or equal to) *base*.
+**Returns**: Absolute :class:`~pathlib.Path` strictly inside (or equal to) _base_.
 
 **Raises**:
 
-- `ValueError`: If the joined path escapes *base*.
+- `ValueError`: If the joined path escapes _base_.
 
 **Examples**:
 

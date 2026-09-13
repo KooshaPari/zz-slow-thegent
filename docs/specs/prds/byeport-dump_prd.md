@@ -9,22 +9,20 @@
 
 ## 2. Objectives
 
-
 ## 3. Success Metrics
 
-- *Technical Readiness**:
+- \*Technical Readiness\*\*:
 - ✅ All 10 providers pass smoke tests
 - ✅ End-to-end deployment successful on all providers
 - ✅ Rollback tested and working
 - ✅ Security audit passed
 - ✅ Performance benchmarks met
-- *Documentation Readiness**:
+- \*Documentation Readiness\*\*:
 - ✅ API documentation 100% complete
 - ✅ User guides for all providers
 - ✅ Migration guide from AWS-only
 
 ## 4. Stakeholders
-
 
 ## 5. Target Users
 
@@ -39,5400 +37,2977 @@
 
 Individual components, functions, providers
 
-
 ### FR-2: Integration Tests (20%)
 
 Multi-component interactions, API compatibility
-
 
 ### FR-3: E2E Tests (10%)
 
 Full workflows, real application deployments
 
-
 ### FR-4: Core packages
 
->85% coverage
-
+> 85% coverage
 
 ### FR-5: Provider packages
 
->80% coverage
-
+> 80% coverage
 
 ### FR-6: CLI commands
 
->70% coverage
-
+> 70% coverage
 
 ### FR-7: Utilities
 
->90% coverage
-
+> 90% coverage
 
 ### FR-8: 2.1 Scope
 
-
-
-
 ### FR-9: 2.2 Go Unit Tests
-
-
-
 
 ### FR-10: 2.3 Test Coverage Goals
 
-
-
-
 ### FR-11: 2.4 Running Unit Tests
-
-
-
 
 ### FR-12: 3.1 Scope
 
-
-
-
 ### FR-13: 3.2 Docker Test Containers
-
-
-
 
 ### FR-14: 3.3 API Compatibility Tests
 
-
-
-
 ### FR-15: 3.4 Provider-Specific Integration Tests
-
-
-
 
 ### FR-16: 3.5 Running Integration Tests
 
-
-
-
 ### FR-17: 4.1 Scope
-
-
-
 
 ### FR-18: 4.2 E2E Test Scenarios
 
-
-
-
 ### FR-19: 4.3 Performance E2E Tests
-
-
-
 
 ### FR-20: 4.4 Running E2E Tests
 
-
-
-
 ### FR-21: 5.1 API Compatibility Matrix
-
-
-
 
 ### FR-22: 5.2 SDK Compatibility Testing
 
-
-
-
 ### FR-23: 5.3 Running Compatibility Tests
-
-
-
 
 ### FR-24: 6.1 Benchmarks
 
-
-
-
 ### FR-25: 6.2 Load Testing
-
-
-
 
 ### FR-26: 7.1 GitHub Actions Workflow
 
-
-
-
 ### FR-27: 8.1 Fixtures
-
-
-
 
 ### FR-28: 8.2 Test Helpers
 
-
-
-
 ### FR-29: 9.1 Coverage Reports
-
-
-
 
 ### FR-30: 9.2 Test Dashboards
 
-
-
-
 ### FR-31: 1. Import Tests ✅
-
-
-
 
 ### FR-32: 2. Storage Operations ✅
 
-
-
-
 ### FR-33: 3. Database Client ✅
-
-
-
 
 ### FR-34: 4. Process Monitoring ✅
 
-
-
-
 ### FR-35: 5. Event Bus ✅
-
-
-
 
 ### FR-36: Zen MCP Server ✅
 
-
-
-
 ### FR-37: Atoms Project ✅
-
-
-
 
 ### FR-38: Storage (All Backends)
 
-
-
-
 ### FR-39: Database (All Adapters)
-
-
-
 
 ### FR-40: Migrations
 
-
-
-
 ### FR-41: OAuth
-
-
-
 
 ### FR-42: Required
 
-
-
-
 ### FR-43: Install Command
-
-
-
 
 ### FR-44: Storage-Kit ✅
 
-
-
-
 ### FR-45: DB-Kit ✅
-
-
-
 
 ### FR-46: Process-Monitor-SDK ✅
 
-
-
-
 ### FR-47: Stream-Kit Events ✅
-
-
-
 
 ### FR-48: AuthKit-Client ✅
 
-
-
-
 ### FR-49: Zen MCP Server
-
-
-
 
 ### FR-50: Atoms Project
 
-
-
-
 ### FR-51: Code Reduction
-
-
-
 
 ### FR-52: Feature Additions
 
-
-
-
 ### FR-53: Type Safety
-
-
-
 
 ### FR-54: Architecture
 
-
-
-
 ### FR-55: Documentation
-
-
-
 
 ### FR-56: SDKs
 
-
-
-
 ### FR-57: Integration
-
-
-
 
 ### FR-58: Documentation
 
-
-
-
 ### FR-59: Testing
-
-
-
 
 ### FR-60: For Zen MCP Server
 
-
-
-
 ### FR-61: For Atoms
-
-
-
 
 ### FR-62: Compute Resources
 
-
-
-
 ### FR-63: Database Resources
-
-
-
 
 ### FR-64: Network Resources
 
-
-
-
 ### FR-65: Auto-Scaling
-
-
-
 
 ### FR-66: Deployment Strategies
 
-
-
-
 ### FR-67: Health Checks
-
-
-
 
 ### FR-68: Monitoring & Observability
 
-
-
-
 ### FR-69: Vercel
-
-
-
 
 ### FR-70: Render
 
-
-
-
 ### FR-71: Supabase
-
-
-
 
 ### FR-72: Neon
 
-
-
-
 ### FR-73: Upstash
-
-
-
 
 ### FR-74: PlanetScale
 
-
-
-
 ### FR-75: Fly.io
-
-
-
 
 ### FR-76: Railway
 
-
-
-
 ### FR-77: Koyeb
-
-
-
 
 ### FR-78: Full-Stack Web App (JAMstack)
 
-
-
-
 ### FR-79: Full-Stack with Backend API
-
-
-
 
 ### FR-80: Microservices Architecture
 
-
-
-
 ### FR-81: Choose Vercel If:
-
-
-
 
 ### FR-82: Choose Render If:
 
-
-
-
 ### FR-83: Choose Supabase If:
-
-
-
 
 ### FR-84: Choose Neon If:
 
-
-
-
 ### FR-85: Choose Upstash If:
-
-
-
 
 ### FR-86: Choose Fly.io If:
 
-
-
-
 ### FR-87: From Heroku (Paid) to Free Tier
-
-
-
 
 ### FR-88: From AWS (Paid) to Free Tier
 
-
-
-
 ### FR-89: Render Free Tier Sleep
-
-
-
 
 ### FR-90: Supabase Storage Limits
 
-
-
-
 ### FR-91: Neon Compute Hours
-
-
-
 
 ### FR-92: Vercel
 
 Edge runtime, ISR, serverless functions
 
-
 ### FR-93: Render
 
 Web services, background workers, PostgreSQL
-
 
 ### FR-94: Supabase
 
 Full stack (DB, Auth, Storage, Realtime)
 
-
 ### FR-95: Fly.io
 
 Multi-region deployment
-
 
 ### FR-96: Upstash
 
 Redis with REST API
 
-
 ### FR-97: Neon/PlanetScale
 
 Database branching
-
 
 ### FR-98: AWS
 
 S3, Lambda, DynamoDB (via LocalStack)
 
-
 ### FR-99: Hot Reload
 
 Automatic service restart on code changes
-
 
 ### FR-100: File Watcher
 
 Debounced rebuild with 500ms delay
 
-
 ### FR-101: Database Branching
 
 Test schema changes in isolation
-
 
 ### FR-102: Live Sync
 
 Real-time updates to running services
 
-
 ### FR-103: Integration Tests
 
 Automated setup/teardown with real services
-
 
 ### FR-104: Load Tests
 
 Configurable VUs, RPS, duration, response time metrics
 
-
 ### FR-105: Chaos Engineering
 
 Latency injection, failure simulation, resource exhaustion
-
 
 ### FR-106: Prometheus
 
 Metrics collection (9090)
 
-
 ### FR-107: Grafana
 
 Visualization dashboards (3003)
-
 
 ### FR-108: Loki
 
 Log aggregation (3100)
 
-
 ### FR-109: Traefik
 
 Request tracing and routing (8082)
-
 
 ### FR-110: Cost Tracker
 
 Real-time cost monitoring (8086)
 
-
 ### FR-111: Languages
 
 Go 1.21+, TypeScript, Bash
-
 
 ### FR-112: Runtimes
 
 Node.js 20+, Deno 1.40+
 
-
 ### FR-113: Databases
 
 PostgreSQL 15, MySQL 8, Redis 7
-
 
 ### FR-114: Monitoring
 
 Prometheus, Grafana, Loki
 
-
 ### FR-115: CLI
 
 Cobra + Viper
-
 
 ### FR-116: UI
 
 Bubbletea + Lipgloss
 
-
 ### FR-117: Documentation
 
 Full design docs in this directory
-
 
 ### FR-118: GitHub
 
 https://github.com/byteport/local
 
-
 ### FR-119: Discord
 
 https://discord.gg/byteport
-
 
 ### FR-120: Email
 
 support@byteport.dev
 
-
 ### FR-121: 1. Main Design Document
-
-
-
 
 ### FR-122: 2. Docker Compose Reference
 
-
-
-
 ### FR-123: 3. Implementation Examples
-
-
-
 
 ### FR-124: 4. Project Structure & Quick Reference
 
-
-
-
 ### FR-125: Production Parity
-
-
-
 
 ### FR-126: Multi-Cloud Support
 
-
-
-
 ### FR-127: Cost Transparency
-
-
-
 
 ### FR-128: Development Experience
 
-
-
-
 ### FR-129: Testing Suite
-
-
-
 
 ### FR-130: Monitoring & Observability
 
-
-
-
 ### FR-131: Installation
-
-
-
 
 ### FR-132: Basic Usage
 
-
-
-
 ### FR-133: Orchestration
-
-
-
 
 ### FR-134: Service Emulation
 
-
-
-
 ### FR-135: Configuration System
-
-
-
 
 ### FR-136: Cost Engine
 
-
-
-
 ### FR-137: Testing Framework
-
-
-
 
 ### FR-138: Phase 1: Foundation (Weeks 1-2)
 
-
-
-
 ### FR-139: Phase 2: Core Emulators (Weeks 3-6)
-
-
-
 
 ### FR-140: Phase 3: Additional Services (Weeks 7-8)
 
-
-
-
 ### FR-141: Phase 4: Developer Experience (Weeks 9-10)
-
-
-
 
 ### FR-142: Phase 5: Testing & Monitoring (Weeks 11-12)
 
-
-
-
 ### FR-143: Phase 6: Documentation & Polish (Weeks 13-14)
-
-
-
 
 ### FR-144: Local Development
 
-
-
-
 ### FR-145: Integration Testing
-
-
-
 
 ### FR-146: Load Testing
 
-
-
-
 ### FR-147: Chaos Engineering
-
-
-
 
 ### FR-148: Production Migration
 
-
-
-
 ### FR-149: System Requirements
-
-
-
 
 ### FR-150: Technology Stack
 
-
-
-
 ### FR-151: Performance
-
-
-
 
 ### FR-152: For Developers
 
-
-
-
 ### FR-153: For Teams
 
-
-
-
 ### FR-154: For Organizations
-
-
-
 
 ### FR-155: Review Design Documents
 
 - Read `BYTEPORT_VIRTUAL_CLOUD_CLIENT_DESIGN.md`
 
-
 ### FR-156: Explore Examples
 
 - Check `IMPLEMENTATION_EXAMPLES.md`
-
 
 ### FR-157: Reference Materials
 
 - Use `PROJECT_STRUCTURE.md` for CLI commands
 
-
 ### FR-158: Start Implementation
 
 - Follow Phase 1 roadmap
-
 
 ### FR-159: Lines of Code:
 
 4,450 → 1,450 (67% reduction)
 
-
 ### FR-160: Core Files:
 
 27 → 19 (30% reduction)
-
 
 ### FR-161: Complexity:
 
 Significantly reduced through pheno-sdk abstractions
 
-
 ### FR-162: New Implementation:
 
 `/Users/kooshapari/temp-PRODVERCEL/485/kush/atoms_mcp/`
-
 
 ### FR-163: Old Implementation:
 
 `/Users/kooshapari/temp-PRODVERCEL/485/kush/atoms_mcp-old/`
 
-
 ### FR-164: Pheno-SDK:
 
 `/Users/kooshapari/temp-PRODVERCEL/485/kush/pheno-sdk/`
 
-
 ### FR-165: Code Metrics
-
-
-
 
 ### FR-166: Structure Comparison
 
-
-
-
 ### FR-167: 1. Services Layer (100%)
-
-
-
 
 ### FR-168: 2. Authentication Layer (100%)
 
-
-
-
 ### FR-169: 3. Infrastructure Layer (100%)
-
-
-
 
 ### FR-170: 4. Tools Layer (100% Core)
 
-
-
-
 ### FR-171: 5. Server & API (100%)
-
-
-
 
 ### FR-172: 6. Configuration (100%)
 
-
-
-
 ### FR-173: 7. Documentation (100%)
-
-
-
 
 ### FR-174: Integrated Kits (3/6)
 
-
-
-
 ### FR-175: Planned Kits (3/6)
-
-
-
 
 ### FR-176: Health & Status
 
-
-
-
 ### FR-177: Entity Operations
-
-
-
 
 ### FR-178: Search Operations
 
-
-
-
 ### FR-179: Code Quality
-
-
-
 
 ### FR-180: Architecture
 
-
-
-
 ### FR-181: Developer Experience
-
-
-
 
 ### FR-182: Immediate (Ready Now)
 
-
-
-
 ### FR-183: Short-term (Next Week)
-
-
-
 
 ### FR-184: Medium-term (Next Month)
 
-
-
-
 ### FR-185: Documentation
 
-
-
-
 ### FR-186: Locations
-
-
-
 
 ### FR-187: Modular Architecture Wins
 
 - Pheno-sdk kits made everything simpler
 
-
 ### FR-188: Type Safety Matters
 
 - Caught bugs early with type hints
-
 
 ### FR-189: Less is More
 
 - 67% less code, same functionality
 
-
 ### FR-190: Standards Help
 
 - Following pheno-sdk conventions improved consistency
-
 
 ### FR-191: Testing First
 
 - Kit-level tests made integration smoother
 
-
 ### FR-192: Button
-
-
-
 
 ### FR-193: Card
 
-
-
-
 ### FR-194: Dialog
-
-
-
 
 ### FR-195: Alert
 
-
-
-
 ### FR-196: Badge
-
-
-
 
 ### FR-197: Input
 
-
-
-
 ### FR-198: Select
-
-
-
 
 ### FR-199: MultiSelect
 
-
-
-
 ### FR-200: Checkbox
-
-
-
 
 ### FR-201: Switch
 
-
-
-
 ### FR-202: Textarea
-
-
-
 
 ### FR-203: Table
 
-
-
-
 ### FR-204: Avatar
-
-
-
 
 ### FR-205: Tooltip
 
-
-
-
 ### FR-206: Tabs
-
-
-
 
 ### FR-207: Sidebar
 
-
-
-
 ### FR-208: Command
-
-
-
 
 ### FR-209: Toast
 
-
-
-
 ### FR-210: LoadingSpinner
-
-
-
 
 ### FR-211: AlertDialog
 
-
-
-
 ### FR-212: ScrollArea
-
-
-
 
 ### FR-213: Separator
 
-
-
-
 ### FR-214: Popover
-
-
-
 
 ### FR-215: Sheet
 
-
-
-
 ### FR-216: SkipLink
-
-
-
 
 ### FR-217: LiveRegion
 
-
-
-
 ### FR-218: FocusManagement
-
-
-
 
 ### FR-219: KeyboardShortcutsDialog
 
-
-
-
 ### FR-220: DocumentEditor
-
-
-
 
 ### FR-221: ProjectCard
 
-
-
-
 ### FR-222: OrganizationInvitations
-
-
-
 
 ### FR-223: DataGrid
 
-
-
-
 ### FR-224: useAuth
-
-
-
 
 ### FR-225: useDebounce
 
-
-
-
 ### FR-226: useLocalStorage
-
-
-
 
 ### FR-227: useIntersectionObserver
 
-
-
-
 ### FR-228: Component Composition
-
-
-
 
 ### FR-229: Performance
 
-
-
-
 ### FR-230: Accessibility
-
-
-
 
 ### FR-231: Testing
 
-
-
-
 ### FR-232: Documentation
-
-
-
 
 ### FR-233: 1.1 Core Components
 
-
-
-
 ### FR-234: 1.2 Design Principles
-
-
-
 
 ### FR-235: 2.1 Detection Engine Architecture
 
-
-
-
 ### FR-236: 2.2 Multi-Framework Detection Patterns
-
-
-
 
 ### FR-237: 2.3 Package Manager Detection
 
-
-
-
 ### FR-238: 2.4 Monorepo Detection and Workspace Handling
-
-
-
 
 ### FR-239: 2.5 Version Detection from Lockfiles
 
-
-
-
 ### FR-240: 2.6 Security and Compliance Scanning
-
-
-
 
 ### FR-241: 3.1 Next.js Optimizations
 
-
-
-
 ### FR-242: 3.2 Python Framework Optimizations
-
-
-
 
 ### FR-243: 3.3 Go Optimizations
 
-
-
-
 ### FR-244: 3.4 Rust Optimizations
-
-
-
 
 ### FR-245: 4.1 Layer Caching Strategy
 
-
-
-
 ### FR-246: 4.2 Build Cache Management
-
-
-
 
 ### FR-247: 4.3 Parallel Build Stages
 
-
-
-
 ### FR-248: 5.1 Environment-Specific Builds
-
-
-
 
 ### FR-249: 5.2 Asset Optimization
 
-
-
-
 ### FR-250: 5.3 Source Map Generation
-
-
-
 
 ### FR-251: 6.1 Vercel Optimizations
 
-
-
-
 ### FR-252: 6.2 Render Optimizations
-
-
-
 
 ### FR-253: 6.3 Fly.io Optimizations
 
-
-
-
 ### FR-254: 6.4 Cloud Run Optimizations
-
-
-
 
 ### FR-255: 7.1 Enhanced BuildPack Model
 
-
-
-
 ### FR-256: 7.2 Complete Configuration Example
-
-
-
 
 ### FR-257: 8.1 Build Performance Metrics
 
-
-
-
 ### FR-258: 8.2 Runtime Performance Metrics
-
-
-
 
 ### FR-259: 8.3 Benchmark Targets
 
-
-
-
 ### FR-260: Phase 1: Core Detection Enhancement (Weeks 1-2)
-
-
-
 
 ### FR-261: Phase 2: Framework-Specific Optimizations (Weeks 3-5)
 
-
-
-
 ### FR-262: Phase 3: Multi-Stage Build System (Weeks 6-7)
-
-
-
 
 ### FR-263: Phase 4: Cloud-Specific Features (Weeks 8-9)
 
-
-
-
 ### FR-264: Phase 5: Security and Compliance (Week 10)
-
-
-
 
 ### FR-265: Phase 6: Testing and Benchmarking (Weeks 11-12)
 
-
-
-
 ### FR-266: Build Performance
-
-
-
 
 ### FR-267: Developer Experience
 
-
-
-
 ### FR-268: Runtime Performance
 
-
-
-
 ### FR-269: Security
-
-
-
 
 ### FR-270: Modular Detection
 
 Composable detection patterns that can be combined
 
-
 ### FR-271: Layer Optimization
 
 Aggressive caching with minimal runtime images
-
 
 ### FR-272: Framework-Aware
 
 Deep understanding of framework-specific optimizations
 
-
 ### FR-273: Cloud-Agnostic
 
 Support for Vercel, Render, Fly.io, and generic deployments
-
 
 ### FR-274: Security-First
 
 Built-in vulnerability scanning and license compliance
 
-
 ### FR-275: Performance-Driven
 
 Benchmarking and optimization at every stage
-
 
 ### FR-276: Existing buildpacks continue to work
 
 The current 8 buildpacks are preserved
 
-
 ### FR-277: Auto-migration
 
 Old BuildPack configs are automatically upgraded
-
 
 ### FR-278: Fallback detection
 
 If enhanced detection fails, falls back to current method
 
-
 ### FR-279: Optional features
 
 All new features are opt-in via configuration
-
 
 ### FR-280: Detect and optimize
 
 for 20+ frameworks across multiple languages
 
-
 ### FR-281: Support monorepos
 
 with intelligent workspace detection
-
 
 ### FR-282: Minimize build times
 
 through advanced caching and parallel builds
 
-
 ### FR-283: Reduce image sizes
 
 by 30-60% with multi-stage optimization
-
 
 ### FR-284: Enhance security
 
 with built-in vulnerability and license scanning
 
-
 ### FR-285: Enable cloud-specific
 
 optimizations for Vercel, Render, Fly.io, and more
-
 
 ### FR-286: Go
 
 Structs with JSON tags
 
-
 ### FR-287: Python
 
 Pydantic models with validation
-
 
 ### FR-288: TypeScript
 
 Interfaces with full type safety
 
-
 ### FR-289: Go
 
 Channels with error handling
-
 
 ### FR-290: Python
 
 Sync/async generators
 
-
 ### FR-291: TypeScript
 
 Async generators
-
 
 ### FR-292: Go
 
 Full context.Context support for cancellation
 
-
 ### FR-293: Python
 
 Async client with proper cleanup
-
 
 ### FR-294: TypeScript
 
 AbortController for request cancellation
 
-
 ### FR-295: Core Features (All SDKs)
-
-
-
 
 ### FR-296: Go SDK
 
-
-
-
 ### FR-297: Python SDK
-
-
-
 
 ### FR-298: TypeScript SDK
 
-
-
-
 ### FR-299: Go
-
-
-
 
 ### FR-300: Python
 
-
-
-
 ### FR-301: TypeScript
-
-
-
 
 ### FR-302: Go
 
-
-
-
 ### FR-303: Python
-
-
-
 
 ### FR-304: TypeScript
 
-
-
-
 ### FR-305: 1. Client Initialization
-
-
-
 
 ### FR-306: 2. Request/Response Models
 
-
-
-
 ### FR-307: 3. Error Handling
-
-
-
 
 ### FR-308: 4. Streaming
 
-
-
-
 ### FR-309: 5. Context Support
-
-
-
 
 ### FR-310: Concurrent Deployments (Go)
 
-
-
-
 ### FR-311: Async/Await (Python)
-
-
-
 
 ### FR-312: Type-Safe Streaming (TypeScript)
 
-
-
-
 ### FR-313: Go
-
-
-
 
 ### FR-314: Python
 
-
-
-
 ### FR-315: TypeScript
-
-
-
 
 ### FR-316: Go
 
-
-
-
 ### FR-317: Python
-
-
-
 
 ### FR-318: TypeScript
 
-
-
-
 ### FR-319: Next.js API Route (TypeScript)
-
-
-
 
 ### FR-320: FastAPI Endpoint (Python)
 
-
-
-
 ### FR-321: Go HTTP Handler
-
-
-
 
 ### FR-322: Go SDK (9 files)
 
-
-
-
 ### FR-323: Python SDK (8 files)
-
-
-
 
 ### FR-324: TypeScript SDK (8 files)
 
-
-
-
 ### FR-325: Documentation (2 files)
-
-
-
 
 ### FR-326: Testing
 
 Add comprehensive test suites for each SDK
 
-
 ### FR-327: CI/CD
 
 Set up automated testing and publishing
-
 
 ### FR-328: Documentation
 
 Add more code examples and tutorials
 
-
 ### FR-329: Community
 
 Create SDK samples repository
-
 
 ### FR-330: Performance
 
 Add benchmarks and optimization
 
-
 ### FR-331: 75+ files
 
 of production code
-
 
 ### FR-332: 9,500+ lines
 
 of implementation
 
-
 ### FR-333: 100% type-hinted
 
 - **100% async-first**
-
 
 ### FR-334: 0 files > 250 lines
 
 ### Documentation
 
-
 ### FR-335: 9 comprehensive guides
 
 (4,500+ lines)
-
 
 ### FR-336: 13 complete SDKs
 
 - **Clean architecture** throughout
 
-
 ### FR-337: Universal APIs
 
 across providers
-
 
 ### FR-338: Production-tested
 
 patterns
 
-
 ### FR-339: Architecture
 
 10/10 ⭐
-
 
 ### FR-340: Code Quality
 
 10/10 ⭐
 
-
 ### FR-341: Documentation
 
 10/10 ⭐
-
 
 ### FR-342: Reusability
 
 10/10 ⭐
 
-
 ### FR-343: Production-Ready
 
 9/10 ⭐
 
-
 ### FR-344: Production-Ready SDKs (13)
-
-
-
 
 ### FR-345: Code Reduction
 
-
-
-
 ### FR-346: New Capabilities
-
-
-
 
 ### FR-347: Zen MCP Server
 
-
-
-
 ### FR-348: Atoms Project
-
-
-
 
 ### FR-349: Code
 
-
-
-
 ### FR-350: Documentation
-
-
-
 
 ### FR-351: Features
 
-
-
-
 ### FR-352: Integration Guides
-
-
-
 
 ### FR-353: SDK Documentation
 
-
-
-
 ### FR-354: Session Reports
-
-
-
 
 ### FR-355: 1. Universal Storage API
 
-
-
-
 ### FR-356: 2. Multi-Tenant Database
-
-
-
 
 ### FR-357: 3. Process Monitoring
 
-
-
-
 ### FR-358: 4. Event-Driven
-
-
-
 
 ### FR-359: 5. Database Migrations
 
-
-
-
 ### FR-360: Goals Achieved
-
-
-
 
 ### FR-361: Quality Scores
 
-
-
-
 ### FR-362: Immediate (Optional)
-
-
-
 
 ### FR-363: Integration (Recommended)
 
-
-
-
 ### FR-364: Long-term (Future)
-
-
-
 
 ### FR-365: Verified Working
 
-
-
-
 ### FR-366: Integration Files Created
-
-
-
 
 ### FR-367: Architecture Excellence
 
-
-
-
 ### FR-368: Developer Experience
-
-
-
 
 ### FR-369: Production Features
 
-
-
-
 ### FR-370: Quick Test
 
-
-
-
 ### FR-371: Integration Help
-
-
-
 
 ### FR-372: Storage-Kit
 
 - Supabase, S3, Local storage
 
-
 ### FR-373: DB-Kit
 
 - Supabase, PostgreSQL + Migrations
-
 
 ### FR-374: Process-Monitor-SDK
 
 - Process lifecycle + TUI
 
-
 ### FR-375: Stream-Kit
 
 - SSE, WebSocket, MQTT + Events
-
 
 ### FR-376: AuthKit-Client
 
 - WorkOS OAuth
 
-
 ### FR-377: PyDevKit
 
 - Core utilities
-
 
 ### FR-378: Vector-Kit
 
 - Embeddings & search
 
-
 ### FR-379: MCP-QA
 
 - Testing framework
-
 
 ### FR-380: TUI-Kit
 
 - Terminal UI
 
-
 ### FR-381: Observability-Kit
 
 - Logging, metrics
-
 
 ### FR-382: Orchestrator-Kit
 
 - Multi-agent
 
-
 ### FR-383: CLI-Builder-Kit
 
 - CLI framework
-
 
 ### FR-384: Build-Analyzer-Kit
 
 - Build parser
 
-
 ### FR-385: Multi-Provider Abstraction
 
 Same API for Supabase, S3, Local
-
 
 ### FR-386: Tenant Context Pattern
 
 Automatic multi-tenancy filtering
 
-
 ### FR-387: Event Wildcards
 
 Flexible pub/sub with pattern matching
-
 
 ### FR-388: Process Run Modes
 
 TUI, Headless, API in one SDK
 
-
 ### FR-389: Migration Engine
 
 Full schema management with rollback
-
 
 ### FR-390: Stream-Kit
 
 ✅ Complete (SSE, WebSocket, MQTT protocols)
 
-
 ### FR-391: Event-Kit
 
 ⏳ Empty structure only
-
 
 ### FR-392: Overlap
 
 Both deal with async communication but different concerns
 
-
 ### FR-393: Orchestrator-Kit
 
 ✅ Complete (multi-agent, swarms, patterns)
-
 
 ### FR-394: Workflow-Kit
 
 ⏳ Empty
 
-
 ### FR-395: Overlap
 
 Both handle task execution but different domains
-
 
 ### FR-396: Stream-Kit
 
 ✅ Complete with middleware
 
-
 ### FR-397: API-Gateway-Kit
 
 ⏳ Empty
-
 
 ### FR-398: Some overlap
 
 Middleware pattern
 
-
 ### FR-399: Protocols over ABC
 
 Use typing.Protocol for interfaces
-
 
 ### FR-400: Composition over Inheritance
 
 Favor composition
 
-
 ### FR-401: Async-First
 
 Use async/await throughout
-
 
 ### FR-402: Type Hints
 
 Full type coverage
 
-
 ### FR-403: Pythonic Naming
 
 snake_case, descriptive names
-
 
 ### FR-404: Dependency Injection
 
 Pass dependencies explicitly
 
-
 ### FR-405: Before
 
 20 separate SDKs with potential duplication
-
 
 ### FR-406: After
 
 18 integrated SDKs with shared patterns
 
-
 ### FR-407: Savings
 
 ~15-20% less code, better cohesion
-
 
 ### FR-408: Stream + Events
 
 Single import for all streaming/eventing
 
-
 ### FR-409: Orchestrator + Workflows
 
 Unified task execution
-
 
 ### FR-410: Less confusion
 
 Fewer SDKs to choose from
 
-
 ### FR-411: Domain boundaries
 
 Clear separation of concerns
-
 
 ### FR-412: Shared patterns
 
 Consistent middleware, factories
 
-
 ### FR-413: Hexagonal structure
 
 Clean dependencies
 
-
 ### FR-414: 1. Event-Kit vs Stream-Kit
-
-
-
 
 ### FR-415: 2. Workflow-Kit vs Orchestrator-Kit
 
-
-
-
 ### FR-416: 3. API-Gateway-Kit vs Stream-Kit
-
-
-
 
 ### FR-417: Consolidated SDKs
 
-
-
-
 ### FR-418: Standalone SDKs
-
-
-
 
 ### FR-419: 1. Layered Architecture
 
-
-
-
 ### FR-420: 2. Dependency Rule
-
-
-
 
 ### FR-421: 3. SDK Structure Pattern
 
-
-
-
 ### FR-422: 4. Pythonic Principles
-
-
-
 
 ### FR-423: Phase 1: Complete Current SDKs
 
-
-
-
 ### FR-424: Phase 2: Consolidate Overlapping SDKs
-
-
-
 
 ### FR-425: Phase 3: Critical New SDKs
 
-
-
-
 ### FR-426: Phase 4: Supporting SDKs
-
-
-
 
 ### FR-427: Code Reduction
 
-
-
-
 ### FR-428: Improved Usability
-
-
-
 
 ### FR-429: Better Architecture
 
-
-
-
 ### FR-430: Immediate (This Session)
 
-
-
-
 ### FR-431: Next Session
-
-
-
 
 ### FR-432: Stream-Kit
 
 (includes Event-Kit functionality)
 
-
 ### FR-433: Orchestrator-Kit
 
 (includes Workflow-Kit functionality)
-
 
 ### FR-434: Storage-Kit
 
 ✅ - Multi-provider storage
 
-
 ### FR-435: DB-Kit
 
 🔄 - Database abstraction
-
 
 ### FR-436: Process-Monitor-SDK
 
 🔄 - Process management
 
-
 ### FR-437: AuthKit-Client
 
 ⏳ - OAuth SDK
-
 
 ### FR-438: API-Gateway-Kit
 
 ⏳ - API gateway
 
-
 ### FR-439: PyDevKit
 
 ✅ - Core utilities
-
 
 ### FR-440: Vector-Kit
 
 ✅ - Embeddings & search
 
-
 ### FR-441: MCP-QA
 
 ✅ - Testing framework
-
 
 ### FR-442: TUI-Kit
 
 ✅ - Terminal UI
 
-
 ### FR-443: Observability-Kit
 
 ✅ - Logging, metrics, tracing
-
 
 ### FR-444: Adapter-Kit
 
 🔄 - Architecture patterns
 
-
 ### FR-445: CLI-Builder-Kit
 
 ✅ - CLI framework
-
 
 ### FR-446: Build-Analyzer-Kit
 
 ✅ - Build parser
 
-
 ### FR-447: Filewatch-Kit
 
 ✅ - File watching
-
 
 ### FR-448: Domain-Kit
 
 ✅ - Domain modeling
 
-
 ### FR-449: Multi-Cloud-Deploy-Kit
 
 ⏳ - Deployment
-
 
 ### FR-450: GitHub CLI
 
 Command structure, interactive flows, table formatting
 
-
 ### FR-451: Vercel CLI
 
 Project detection, environment management, deployment UX
-
 
 ### FR-452: Railway CLI
 
 Real-time logs, service linking, intuitive commands
 
-
 ### FR-453: AWS SDK
 
 Resource-oriented APIs, pagination, waiters
-
 
 ### FR-454: Stripe SDK
 
 Idempotency, webhooks, testing modes
 
-
 ### FR-455: Supabase SDK
 
 Realtime subscriptions, type generation, developer experience
 
-
 ### FR-456: Vision
-
-
-
 
 ### FR-457: Key Principles
 
-
-
-
 ### FR-458: Design Patterns Inspired By
-
-
-
 
 ### FR-459: High-Level Architecture
 
-
-
-
 ### FR-460: Technology Stack
-
-
-
 
 ### FR-461: REST API (OpenAPI 3.1)
 
-
-
-
 ### FR-462: gRPC API (Protocol Buffers)
-
-
-
 
 ### FR-463: GraphQL Schema
 
-
-
-
 ### FR-464: Command Structure
-
-
-
 
 ### FR-465: CLI Implementation (Go + Cobra)
 
-
-
-
 ### FR-466: Interactive TUI (Bubbletea + Lipgloss)
-
-
-
 
 ### FR-467: Go SDK
 
-
-
-
 ### FR-468: Python SDK
-
-
-
 
 ### FR-469: TypeScript SDK
 
-
-
-
 ### FR-470: React Hooks Integration
-
-
-
 
 ### FR-471: Next.js 15 Architecture
 
-
-
-
 ### FR-472: Key Components
-
-
-
 
 ### FR-473: Authentication (WorkOS)
 
-
-
-
 ### FR-474: Error Handling
-
-
-
 
 ### FR-475: Retry Logic
 
-
-
-
 ### FR-476: Pagination
-
-
-
 
 ### FR-477: WorkOS Integration
 
-
-
-
 ### FR-478: API Key Management
-
-
-
 
 ### FR-479: WebSocket Server
 
-
-
-
 ### FR-480: WebSocket Client
-
-
-
 
 ### FR-481: API Contract Testing
 
-
-
-
 ### FR-482: SDK Integration Tests
-
-
-
 
 ### FR-483: CLI Smoke Tests
 
-
-
-
 ### FR-484: OpenAPI Code Generation
-
-
-
 
 ### FR-485: gRPC Code Generation
 
-
-
-
 ### FR-486: Type Generation
-
-
-
 
 ### FR-487: Phase 1: Core API (Weeks 1-2)
 
-
-
-
 ### FR-488: Phase 2: CLI (Weeks 3-4)
-
-
-
 
 ### FR-489: Phase 3: SDKs (Weeks 5-7)
 
-
-
-
 ### FR-490: Phase 4: Web Interface (Weeks 8-10)
 
-
-
-
 ### FR-491: Phase 5: Testing & Documentation (Weeks 11-12)
-
-
-
 
 ### FR-492: API First
 
 OpenAPI/gRPC specifications are the source of truth
 
-
 ### FR-493: Type Safety
 
 Full type generation for all interfaces
-
 
 ### FR-494: Developer Experience
 
 Intuitive, well-documented, and discoverable
 
-
 ### FR-495: Performance
 
 Optimized for speed with streaming support
-
 
 ### FR-496: Consistency
 
 Same patterns and behaviors across all interfaces
 
-
 ### FR-497: Testing
 
 Comprehensive automated testing at all layers
-
 
 ### FR-498: Consistent API
 
 OpenAPI, gRPC, and GraphQL specs
 
-
 ### FR-499: Powerful CLI
 
 Cobra + Bubbletea with rich interactions
-
 
 ### FR-500: Type-Safe SDKs
 
 Go, Python, TypeScript with full types
 
-
 ### FR-501: Modern Web UI
 
 Next.js 15 with real-time updates
-
 
 ### FR-502: Shared Patterns
 
 Authentication, errors, retry logic
 
-
 ### FR-503: Real-time Communication
 
 WebSocket and SSE
-
 
 ### FR-504: Comprehensive Testing
 
 API, SDK, CLI, and E2E tests
 
-
 ### FR-505: Code Generation
 
 Automated type and client generation
-
 
 ### FR-506: Web Framework:
 
 Chi (lightweight, standard library compatible)
 
-
 ### FR-507: Database:
 
 PostgreSQL with sqlc + pgx
-
 
 ### FR-508: Authentication:
 
 Continue with PASETO (excellent choice)
 
-
 ### FR-509: Observability:
 
 OpenTelemetry + slog + Prometheus
-
 
 ### FR-510: Background Jobs:
 
 River (PostgreSQL-based, simpler than Temporal)
 
-
 ### FR-511: Configuration:
 
 Viper + environment variables
-
 
 ### FR-512: Dependency Injection:
 
 Uber Fx
 
-
 ### FR-513: Tight Coupling:
 
 Routes directly instantiate models and call database
-
 
 ### FR-514: No Business Logic Layer:
 
 Business rules scattered across route handlers
 
-
 ### FR-515: Hard Dependencies:
 
 Difficult to test without full database
-
 
 ### FR-516: Error Handling:
 
 Inconsistent error responses and logging
 
-
 ### FR-517: GORM Overhead:
 
 Reflection-based queries cause performance issues at scale
-
 
 ### FR-518: N+1 Query Risk:
 
 Easy to create inefficient queries accidentally
 
-
 ### FR-519: Migration Management:
 
 No clear versioning system visible
-
 
 ### FR-520: Connection Pooling:
 
 Not explicitly configured
 
-
 ### FR-521: Basic Logging:
 
 Printf-style debugging, no structured logs
-
 
 ### FR-522: No Metrics:
 
 Cannot measure performance or business KPIs
 
-
 ### FR-523: No Tracing:
 
 Difficult to debug distributed operations
-
 
 ### FR-524: No Correlation IDs:
 
 Cannot track requests across services
 
-
 ### FR-525: Limited Test Coverage:
 
 Only `example_test.go` found
-
 
 ### FR-526: Integration Testing:
 
 Difficult with current architecture
 
-
 ### FR-527: Mocking:
 
 Hard to mock dependencies due to tight coupling
-
 
 ### FR-528: Outer layers depend on inner layers
 
 (never the reverse)
 
-
 ### FR-529: Domain layer has no dependencies
 
 (pure business logic)
-
 
 ### FR-530: Use cases depend on domain and repository interfaces
 
 - **Delivery depends on use cases** (not repositories directly)
 
-
 ### FR-531: Go Standard Project Layout:
 
 https://github.com/golang-standards/project-layout
-
 
 ### FR-532: Clean Architecture:
 
 https://blog.cleancoder.com/uncle-bob/2012/08/13/the-clean-architecture.html
 
-
 ### FR-533: sqlc Documentation:
 
 https://docs.sqlc.dev/
-
 
 ### FR-534: Uber Fx Guide:
 
 https://uber-go.github.io/fx/
 
-
 ### FR-535: OpenTelemetry Go:
 
 https://opentelemetry.io/docs/instrumentation/go/
-
 
 ### FR-536: Author:
 
 Architecture Team
 
-
 ### FR-537: Reviewers:
 
 Engineering Team
-
 
 ### FR-538: Status:
 
 Draft for Review
 
-
 ### FR-539: Next Review:
 
 TBD
 
-
 ### FR-540: Key Recommendations
-
-
-
 
 ### FR-541: Strengths
 
-
-
-
 ### FR-542: Identified Gaps
-
-
-
 
 ### FR-543: Clean Architecture Layers
 
-
-
-
 ### FR-544: Dependency Flow
-
-
-
 
 ### FR-545: Complete Directory Layout
 
-
-
-
 ### FR-546: Key Principles
-
-
-
 
 ### FR-547: 1. Repository Pattern
 
-
-
-
 ### FR-548: 2. Use Case Pattern
-
-
-
 
 ### FR-549: 3. Dependency Injection with Uber Fx
 
-
-
-
 ### FR-550: 4. Factory Pattern for Cloud Providers
-
-
-
 
 ### FR-551: Domain Layer
 
-
-
-
 ### FR-552: Use Case Layer
-
-
-
 
 ### FR-553: Delivery Layer (HTTP)
 
-
-
-
 ### FR-554: PostgreSQL with sqlc + pgx
-
-
-
 
 ### FR-555: Database Schema
 
-
-
-
 ### FR-556: sqlc Configuration
-
-
-
 
 ### FR-557: Sample Queries
 
-
-
-
 ### FR-558: Connection Pool Configuration
-
-
-
 
 ### FR-559: Migration Management
 
-
-
-
 ### FR-560: Error Types and Codes
-
-
-
 
 ### FR-561: Domain Errors
 
-
-
-
 ### FR-562: Worker Pool Pattern
-
-
-
 
 ### FR-563: Fan-Out/Fan-In Pattern
 
-
-
-
 ### FR-564: Rate Limiting with Semaphore
-
-
-
 
 ### FR-565: Structured Logging with slog
 
-
-
-
 ### FR-566: OpenTelemetry Tracing
-
-
-
 
 ### FR-567: Prometheus Metrics
 
-
-
-
 ### FR-568: Authentication Middleware
-
-
-
 
 ### FR-569: Input Validation
 
-
-
-
 ### FR-570: Rate Limiting
-
-
-
 
 ### FR-571: Unit Testing Example
 
-
-
-
 ### FR-572: Integration Testing with Testcontainers
-
-
-
 
 ### FR-573: Table-Driven Tests
 
-
-
-
 ### FR-574: RESTful API Conventions
-
-
-
 
 ### FR-575: OpenAPI Specification
 
-
-
-
 ### FR-576: River Job Queue (PostgreSQL-based)
-
-
-
 
 ### FR-577: Deployment Worker
 
-
-
-
 ### FR-578: Phase 1: Foundation (Weeks 1-2)
-
-
-
 
 ### FR-579: Phase 2: Core Business Logic (Weeks 3-4)
 
-
-
-
 ### FR-580: Phase 3: Cloud Integration (Weeks 5-6)
-
-
-
 
 ### FR-581: Phase 4: Testing & Documentation (Week 7)
 
-
-
-
 ### FR-582: Phase 5: Production Readiness (Week 8)
-
-
-
 
 ### FR-583: Migration Strategy
 
-
-
-
 ### FR-584: Target Metrics
-
-
-
 
 ### FR-585: Benchmark Comparison
 
-
-
-
 ### FR-586: Docker Compose (Development)
-
-
-
 
 ### FR-587: Kubernetes Deployment
 
-
-
-
 ### FR-588: Makefile
-
-
-
 
 ### FR-589: Next Steps
 
-
-
-
 ### FR-590: Resources
-
-
-
 
 ### FR-591: PASETO Authentication:
 
 Modern, secure token system with proper key management
 
-
 ### FR-592: Cloud Provider Abstraction:
 
 Well-designed interface system in `lib/cloud/`
-
 
 ### FR-593: Modular Structure:
 
 Clear separation between routes, models, and lib
 
-
 ### FR-594: GitHub Integration:
 
 Functional OAuth flow and repository management
-
 
 ### FR-595: `cmd/`
 
 - Application entry points (thin, just wiring)
 
-
 ### FR-596: `internal/`
 
 - Private code (cannot be imported by other projects)
-
 
 ### FR-597: `pkg/`
 
 - Public libraries (can be imported externally)
 
-
 ### FR-598: `api/`
 
 - API contracts and specifications
-
 
 ### FR-599: Domain drives structure
 
 - Organized by business capabilities, not technical layers
 
-
 ### FR-600: Render
 
 https://render.com/docs
-
 
 ### FR-601: Supabase
 
 https://supabase.com/docs
 
-
 ### FR-602: Upstash
 
 https://docs.upstash.com
-
 
 ### FR-603: Vercel
 
 https://vercel.com/docs
 
-
 ### FR-604: 1. Render Setup
-
-
-
 
 ### FR-605: 2. Supabase Setup
 
-
-
-
 ### FR-606: 3. Upstash Setup
-
-
-
 
 ### FR-607: 4. Vercel Setup
 
-
-
-
 ### FR-608: Step 1: Prepare Application Code
-
-
-
 
 ### FR-609: Step 2: Deploy to New Infrastructure
 
-
-
-
 ### FR-610: Step 3: Test New Infrastructure
-
-
-
 
 ### FR-611: Step 4: Switch Traffic
 
-
-
-
 ### FR-612: Step 5: Monitor and Verify
-
-
-
 
 ### FR-613: Step 6: Decommission Old Infrastructure
 
-
-
-
 ### FR-614: Direct Replacements
-
-
-
 
 ### FR-615: Feature Comparison
 
-
-
-
 ### FR-616: Common Issues
-
-
-
 
 ### FR-617: Frontend Hosting: Vercel
 
-
-
-
 ### FR-618: Backend API: Render
-
-
-
 
 ### FR-619: Database: Supabase
 
-
-
-
 ### FR-620: Cache/Queue: Upstash
-
-
-
 
 ### FR-621: Old Architecture (EC2/ALB)
 
-
-
-
 ### FR-622: New Architecture (Free Tier)
-
-
-
 
 ### FR-623: Typical Small Application Usage
 
-
-
-
 ### FR-624: When to Upgrade
-
-
-
 
 ### FR-625: Scaling Strategy
 
-
-
-
 ### FR-626: Phase 1: Parallel Deployment
-
-
-
 
 ### FR-627: Phase 2: Traffic Migration
 
-
-
-
 ### FR-628: Phase 3: Decommission
-
-
-
 
 ### FR-629: Cost Benefits
 
-
-
-
 ### FR-630: Performance Benefits
-
-
-
 
 ### FR-631: Operational Benefits
 
-
-
-
 ### FR-632: Developer Benefits
-
-
-
 
 ### FR-633: Static Assets
 
 Served directly from Vercel's CDN
 
-
 ### FR-634: API Requests
 
 Vercel → Render backend via HTTPS
-
 
 ### FR-635: Database Queries
 
 Render → Supabase via connection pooling
 
-
 ### FR-636: Cache Operations
 
 Render → Upstash via REST/Redis protocol
-
 
 ### FR-637: Background Jobs
 
 Render → Upstash QStash → Render webhooks
 
-
 ### FR-638: Optimize First
 
 Before upgrading, optimize usage
-
 
 ### FR-639: Upgrade Selectively
 
 Only upgrade bottleneck services
 
-
 ### FR-640: Use Multiple Free Tiers
 
 Create separate projects if needed
-
 
 ### FR-641: Monitor Closely
 
 Track usage to stay within limits
 
-
 ### FR-642: Cost Tracking
 
 Monitors free tier usage
-
 
 ### FR-643: AutoOps
 
 Automatic health monitoring
 
-
 ### FR-644: Alerts
 
 Warns at 80% of free tier limits
-
 
 ### FR-645: Optimization
 
 Suggests improvements automatically
 
-
 ### FR-646: 1. User Entity
-
-
-
 
 ### FR-647: 2. Value Objects
 
-
-
-
 ### FR-648: 3. Repository Interface
-
-
-
 
 ### FR-649: 4. Service Interface
 
-
-
-
 ### FR-650: 5. Domain Errors
-
-
-
 
 ### FR-651: User Registration Use Case
 
-
-
-
 ### FR-652: PostgreSQL User Repository
-
-
-
 
 ### FR-653: PASETO Authentication Service
 
-
-
-
 ### FR-654: HTTP Handler
-
-
-
 
 ### FR-655: DTOs
 
-
-
-
 ### FR-656: Presenter
-
-
-
 
 ### FR-657: Unit Test - Domain Entity
 
-
-
-
 ### FR-658: Unit Test - Use Case (with Mocks)
 
-
-
-
 ### FR-659: How Everything Connects
-
-
-
 
 ### FR-660: Language:
 
 Go 1.21+
 
-
 ### FR-661: Web Framework:
 
 Chi v5
-
 
 ### FR-662: Database:
 
 PostgreSQL 15
 
-
 ### FR-663: ORM Alternative:
 
 sqlc + pgx/v5
-
 
 ### FR-664: Dependency Injection:
 
 Uber Fx
 
-
 ### FR-665: Logging:
 
 slog (Go 1.21+)
-
 
 ### FR-666: Tracing:
 
 OpenTelemetry
 
-
 ### FR-667: Metrics:
 
 Prometheus
-
 
 ### FR-668: Queue:
 
 River (PostgreSQL-based)
 
-
 ### FR-669: Unit Tests:
 
 Go testing + testify
-
 
 ### FR-670: Mocking:
 
 gomock
 
-
 ### FR-671: Integration:
 
 testcontainers-go
-
 
 ### FR-672: Tokens:
 
 PASETO (continue current implementation)
 
-
 ### FR-673: Providers:
 
 AWS SDK v2, GCP, Azure
-
 
 ### FR-674: Abstraction:
 
 Custom provider interface
 
-
 ### FR-675: Lower case, single word:
 
 `package user`, `package project`
-
 
 ### FR-676: Avoid:
 
 `package userManager`, `package project_service`
 
-
 ### FR-677: Descriptive, lower case with underscores:
 
 - `project_repository.go`
 
-
-### FR-678: Same name with _test suffix:
+### FR-678: Same name with \_test suffix:
 
 - `project_repository.go` → `project_repository_test.go`
-
 
 ### FR-679: Suffix with interface concept:
 
 - `ProjectRepository` (not `IProjectRepository`)
 
-
 ### FR-680: Architecture Team:
 
 [Contact Info]
-
 
 ### FR-681: Engineering Lead:
 
 [Contact Info]
 
-
 ### FR-682: Documentation:
 
 [Wiki/Confluence Link]
 
-
 ### FR-683: 1. Main Architecture Document
-
-
-
 
 ### FR-684: 2. Implementation Guide
 
-
-
-
 ### FR-685: For Architects & Tech Leads
-
-
-
 
 ### FR-686: For Developers
 
-
-
-
 ### FR-687: For DevOps/SRE
-
-
-
 
 ### FR-688: Why Not GORM?
 
-
-
-
 ### FR-689: Why Chi Router?
-
-
-
 
 ### FR-690: Why Uber Fx?
 
-
-
-
 ### FR-691: Why Clean Architecture?
-
-
-
 
 ### FR-692: 1. Dependency Rule
 
-
-
-
 ### FR-693: 2. Single Responsibility
-
-
-
 
 ### FR-694: 3. Interface Segregation
 
-
-
-
 ### FR-695: 4. Explicit is Better Than Implicit
-
-
-
 
 ### FR-696: Core
 
-
-
-
 ### FR-697: Observability
-
-
-
 
 ### FR-698: Background Jobs
 
-
-
-
 ### FR-699: Testing
-
-
-
 
 ### FR-700: Authentication
 
-
-
-
 ### FR-701: Cloud
-
-
-
 
 ### FR-702: Incremental Migration Approach
 
-
-
-
 ### FR-703: Parallel Operation Strategy
-
-
-
 
 ### FR-704: API Performance
 
-
-
-
 ### FR-705: Database Performance
-
-
-
 
 ### FR-706: Deployment Performance
 
-
-
-
 ### FR-707: Test Coverage
-
-
-
 
 ### FR-708: Code Review Checklist
 
-
-
-
 ### FR-709: Linting Rules
-
-
-
 
 ### FR-710: Packages
 
-
-
-
 ### FR-711: Files
-
-
-
 
 ### FR-712: Tests
 
-
-
-
 ### FR-713: Interfaces
-
-
-
 
 ### FR-714: Pitfall 1: Circular Dependencies
 
-
-
-
 ### FR-715: Pitfall 2: Business Logic in Handlers
-
-
-
 
 ### FR-716: Pitfall 3: Leaky Abstractions
 
-
-
-
 ### FR-717: Go Best Practices
-
-
-
 
 ### FR-718: Architecture
 
-
-
-
 ### FR-719: Tools
-
-
-
 
 ### FR-720: Questions About Architecture
 
-
-
-
 ### FR-721: Questions About Implementation
-
-
-
 
 ### FR-722: Questions About Migration
 
-
-
-
 ### FR-723: Developer Experience
-
-
-
 
 ### FR-724: Production Metrics
 
-
-
-
 ### FR-725: Business Metrics
-
-
-
 
 ### FR-726: Version 1.0 (2025-01-07)
 
-
-
-
 ### FR-727: Test Coverage
 
->85% for core packages
-
+> 85% for core packages
 
 ### FR-728: Build Time
 
 <2 minutes for full build
 
-
 ### FR-729: Snapshot Creation
 
 <10s for 1GB database
 
-
 ### FR-730: API Compatibility
 
->95% match with cloud providers
-
+> 95% match with cloud providers
 
 ### FR-731: Uptime
 
->99.9% for local services
-
+> 99.9% for local services
 
 ### FR-732: GitHub Stars
 
 1,000+ in first 3 months
 
-
 ### FR-733: Weekly Active Users
 
 500+ by month 6
-
 
 ### FR-734: Community Contributions
 
 10+ external contributors
 
-
 ### FR-735: Documentation Pages Views
 
 10,000+ monthly
-
 
 ### FR-736: Cloud Cost Savings
 
 Average $500/month per user
 
-
 ### FR-737: Development Velocity
 
 2x faster iteration vs cloud-based development
 
-
 ### FR-738: User Satisfaction
 
->4.5/5 rating
-
+> 4.5/5 rating
 
 ### FR-739: Weekly standups
 
 Monday 9am
 
-
 ### FR-740: Sprint planning
 
 Every 2 weeks
-
 
 ### FR-741: Retrospectives
 
 End of each month
 
-
 ### FR-742: Public updates
 
 Blog posts at major milestones
 
-
 ### FR-743: Month 1: Core Infrastructure
-
-
-
 
 ### FR-744: Month 2: Infrastructure Services
 
-
-
-
 ### FR-745: Month 3: Vercel Emulation
-
-
-
 
 ### FR-746: Month 4: Render & Supabase Emulation
 
-
-
-
 ### FR-747: Month 5: Neon & Advanced Database Features
-
-
-
 
 ### FR-748: Month 6: Fly.io & Observability
 
-
-
-
 ### FR-749: Month 7: Dashboard & Developer Experience
-
-
-
 
 ### FR-750: Month 8: Testing, Documentation & Release
 
-
-
-
 ### FR-751: Post-Launch Priorities
-
-
-
 
 ### FR-752: Team Composition
 
-
-
-
 ### FR-753: Budget Estimates
-
-
-
 
 ### FR-754: Technical Risks
 
-
-
-
 ### FR-755: Timeline Risks
-
-
-
 
 ### FR-756: Technical Metrics
 
-
-
-
 ### FR-757: User Metrics (Post-Launch)
-
-
-
 
 ### FR-758: Business Metrics
 
-
-
-
 ### FR-759: v1.1 (Month 10)
-
-
-
 
 ### FR-760: v1.2 (Month 11)
 
-
-
-
 ### FR-761: v1.3 (Month 12)
-
-
-
 
 ### FR-762: v2.0 (Month 18)
 
-
-
-
 ### FR-763: Development Setup
-
-
-
 
 ### FR-764: Contributing
 
-
-
-
 ### FR-765: Communication
-
-
-
 
 ### FR-766: Tech Lead / Backend Engineer
 
 - Go expertise
 
-
 ### FR-767: Backend Engineer
 
 - Go development
-
 
 ### FR-768: Frontend Engineer
 
 - React/TypeScript
 
-
 ### FR-769: DevOps Engineer (Part-time)
 
 - CI/CD
-
 
 ### FR-770: Technical Writer (Part-time)
 
 - Documentation
 
-
 ### FR-771: Total Words
 
 ~50,000
-
 
 ### FR-772: Total Lines of Code
 
 ~2,000
 
-
 ### FR-773: Code Examples
 
 100+
-
 
 ### FR-774: Migration Examples
 
 3
 
-
 ### FR-775: Edge Function Examples
 
 2
-
 
 ### FR-776: YAML Examples
 
 1 comprehensive
 
-
 ### FR-777: Python Classes
 
 8+
-
 
 ### FR-778: Data Models
 
 20+
 
-
 ### FR-779: 1. Core Specification Documents
-
-
-
 
 ### FR-780: 2. Implementation Examples
 
-
-
-
 ### FR-781: 3. Migration Examples
-
-
-
 
 ### FR-782: 4. Edge Function Examples
 
-
-
-
 ### FR-783: 1. Complete MCP Tool Coverage
-
-
-
 
 ### FR-784: 2. Feature Mapping
 
-
-
-
 ### FR-785: 3. Workflow Definitions
-
-
-
 
 ### FR-786: 4. Implementation Artifacts
 
-
-
-
 ### FR-787: 5. Documentation Quality
-
-
-
 
 ### FR-788: Documentation Metrics
 
-
-
-
 ### FR-789: Feature Coverage
-
-
-
 
 ### FR-790: Scenario 1: New Project Setup
 
-
-
-
 ### FR-791: Scenario 2: Feature Development
-
-
-
 
 ### FR-792: Scenario 3: Continuous Deployment
 
-
-
-
 ### FR-793: Built-in Security
-
-
-
 
 ### FR-794: Best Practices Documented
 
-
-
-
 ### FR-795: Unit Tests Needed
-
-
-
 
 ### FR-796: Integration Tests Needed
 
-
-
-
 ### FR-797: Example Test Structure
-
-
-
 
 ### FR-798: For Developers
 
-
-
-
 ### FR-799: For Architects
-
-
-
 
 ### FR-800: For DevOps
 
-
-
-
 ### FR-801: For Implementation Team
-
-
-
 
 ### FR-802: Implementation Quality
 
-
-
-
 ### FR-803: Developer Experience
 
-
-
-
 ### FR-804: Production Readiness
-
-
-
 
 ### FR-805: State Manager
 
 Git-like state versioning, snapshots, branching
 
-
 ### FR-806: Config Manager
 
 YAML-based configuration, environment variables, secrets
-
 
 ### FR-807: Router Controller
 
 Dynamic routing, domain simulation (.local TLD)
 
-
 ### FR-808: Metrics Aggregator
 
 Unified metrics collection and cost estimation
-
 
 ### FR-809: Traefik
 
 Reverse proxy with automatic service discovery
 
-
 ### FR-810: Docker/Podman
 
 Container runtime for service isolation
-
 
 ### FR-811: PostgreSQL
 
 Multi-instance database server with extensions
 
-
 ### FR-812: Redis
 
 Caching and pub/sub messaging
-
 
 ### FR-813: MinIO
 
 S3-compatible object storage
 
-
 ### FR-814: Modular
 
 Add new providers via plugins
-
 
 ### FR-815: Scalable
 
 Handle complex multi-service applications
 
-
 ### FR-816: Portable
 
 Run on Windows, Linux, macOS
-
 
 ### FR-817: Production-ready
 
 Export configurations for seamless deployment
 
-
 ### FR-818: 1.1 High-Level Architecture
-
-
-
 
 ### FR-819: 1.2 Core Components
 
-
-
-
 ### FR-820: 2.1 Vercel Emulation
-
-
-
 
 ### FR-821: 2.2 Render Emulation
 
-
-
-
 ### FR-822: 2.3 Supabase Emulation
-
-
-
 
 ### FR-823: 2.4 Neon Emulation
 
-
-
-
 ### FR-824: 2.5 Fly.io Emulation
-
-
-
 
 ### FR-825: 3.1 Docker Compose Configuration
 
-
-
-
 ### FR-826: 3.2 Network Architecture
-
-
-
 
 ### FR-827: 3.3 Storage Architecture
 
-
-
-
 ### FR-828: 4.1 Command Structure
-
-
-
 
 ### FR-829: 4.2 Core Commands
 
-
-
-
 ### FR-830: 4.3 Global Flags
-
-
-
 
 ### FR-831: 4.4 Configuration File (byteport.yml)
 
-
-
-
 ### FR-832: 5.1 Architecture
-
-
-
 
 ### FR-833: 5.2 State Components
 
-
-
-
 ### FR-834: 5.3 Snapshot Implementation
-
-
-
 
 ### FR-835: 5.4 Time-Travel Debugging
 
-
-
-
 ### FR-836: 5.5 State Export/Import
-
-
-
 
 ### FR-837: 6.1 Initial Setup
 
-
-
-
 ### FR-838: 6.2 Daily Development Flow
-
-
-
 
 ### FR-839: 6.3 Testing Workflow
 
-
-
-
 ### FR-840: 6.4 Team Collaboration
-
-
-
 
 ### FR-841: 6.5 Migration to Production
 
-
-
-
 ### FR-842: 7.1 Metrics Collection
-
-
-
 
 ### FR-843: 7.2 Logging
 
-
-
-
 ### FR-844: 7.3 Grafana Dashboards
-
-
-
 
 ### FR-845: 7.4 Distributed Tracing (Optional)
 
-
-
-
 ### FR-846: 8.1 Cost Calculation
-
-
-
 
 ### FR-847: 8.2 Cost Report Format
 
-
-
-
 ### FR-848: 8.3 Cost Dashboard
-
-
-
 
 ### FR-849: 9.1 Unit Testing
 
-
-
-
 ### FR-850: 9.2 Integration Testing
-
-
-
 
 ### FR-851: 9.3 Compatibility Testing
 
-
-
-
 ### FR-852: 9.4 Performance Testing
-
-
-
 
 ### FR-853: 9.5 End-to-End Testing
 
-
-
-
 ### FR-854: 10.1 Secrets Management
-
-
-
 
 ### FR-855: 10.2 Network Isolation
 
-
-
-
 ### FR-856: 10.3 Database Security
-
-
-
 
 ### FR-857: 10.4 Container Security
 
-
-
-
 ### FR-858: 11.1 Configuration Export
-
-
-
 
 ### FR-859: 11.2 Data Migration
 
-
-
-
 ### FR-860: 11.3 Deployment Checklist
-
-
-
 
 ### FR-861: 11.4 Parity Validation
 
-
-
-
 ### FR-862: 12.1 Multi-Project Management
-
-
-
 
 ### FR-863: 12.2 Plugin System
 
-
-
-
 ### FR-864: 12.3 CI/CD Integration
-
-
-
 
 ### FR-865: 12.4 Remote Collaboration
 
-
-
-
 ### FR-866: 12.5 Infrastructure as Code
-
-
-
 
 ### FR-867: Phase 1: Foundation (Months 1-2)
 
-
-
-
 ### FR-868: Phase 2: Provider Emulation (Months 3-4)
-
-
-
 
 ### FR-869: Phase 3: Advanced Features (Months 5-6)
 
-
-
-
 ### FR-870: Phase 4: Polish & Release (Months 7-8)
 
-
-
-
 ### FR-871: Phase 5: Ecosystem (Months 9+)
-
-
-
 
 ### FR-872: Eliminates cloud costs
 
 during development
 
-
 ### FR-873: Accelerates development
 
 with instant provisioning
-
 
 ### FR-874: Ensures production parity
 
 through accurate emulation
 
-
 ### FR-875: Enables advanced workflows
 
 (branching, snapshots, time-travel)
-
 
 ### FR-876: Simplifies testing
 
 with isolated environments
 
-
 ### FR-877: Facilitates team collaboration
 
 through state sharing
-
 
 ### FR-878: Provides cost transparency
 
 before deployment
 
-
 ### FR-879: Size
 
 16KB (~7,000 words)
-
 
 ### FR-880: Purpose
 
 Executive summary and project overview
 
-
 ### FR-881: Audience
 
 All stakeholders
-
 
 ### FR-882: Contains
 
 - Complete deliverables list
 
-
 ### FR-883: Size
 
 59KB (~30,000 words)
-
 
 ### FR-884: Purpose
 
 Complete technical specification
 
-
 ### FR-885: Audience
 
 Architects, senior developers
-
 
 ### FR-886: Contains
 
 - 40+ MCP tools analyzed
 
-
 ### FR-887: Size
 
 13KB (~8,000 words)
-
 
 ### FR-888: Purpose
 
 Developer quick reference
 
-
 ### FR-889: Audience
 
 Developers
-
 
 ### FR-890: Contains
 
 - All MCP tools documented
 
-
 ### FR-891: Size
 
 12KB (~5,000 words)
-
 
 ### FR-892: Purpose
 
 Implementation guide
 
-
 ### FR-893: Audience
 
 Development team
-
 
 ### FR-894: Contains
 
 - Quick start guide
 
-
 ### FR-895: Size
 
 11KB
-
 
 ### FR-896: Purpose
 
 Navigation and quick lookups
 
-
 ### FR-897: Audience
 
 All users
-
 
 ### FR-898: Contains
 
 - File structure
 
-
 ### FR-899: Size
 
 24KB (~700 lines)
-
 
 ### FR-900: Purpose
 
 Reference Python implementation
 
-
 ### FR-901: Contains
 
 - Complete data models
-
 
 ### FR-902: Size
 
 11KB (~400 lines)
 
-
 ### FR-903: Purpose
 
 Complete configuration template
-
 
 ### FR-904: Contains
 
 - All configuration options
 
-
 ### FR-905: Size
 
 7.4KB (~250 lines)
-
 
 ### FR-906: Purpose
 
 Complete initial schema with RLS
 
-
 ### FR-907: Contains
 
 - Extension enablement
-
 
 ### FR-908: Size
 
 5.6KB (~180 lines)
 
-
 ### FR-909: Purpose
 
 Storage configuration via SQL
-
 
 ### FR-910: Contains
 
 - 3 storage buckets (avatars, documents, team-files)
 
-
 ### FR-911: Size
 
 7.8KB (~280 lines)
-
 
 ### FR-912: Purpose
 
 Vector embeddings and semantic search
 
-
 ### FR-913: Contains
 
 - pgvector extension
-
 
 ### FR-914: Size
 
 1.6KB (~60 lines)
 
-
 ### FR-915: Purpose
 
 Simple edge function example
-
 
 ### FR-916: Contains
 
 - Basic Deno structure
 
-
 ### FR-917: Size
 
 5.5KB (~220 lines)
-
 
 ### FR-918: Purpose
 
 Advanced webhook processing
 
-
 ### FR-919: Contains
 
 - Supabase client integration
-
 
 ### FR-920: Total Words
 
 ~50,000
 
-
 ### FR-921: Total Pages
 
 ~100 (at 500 words/page)
-
 
 ### FR-922: Total Lines of Code
 
 ~2,000
 
-
 ### FR-923: Code Examples
 
 100+
-
 
 ### FR-924: Data Models
 
 20+
 
-
 ### FR-925: Python Classes
 
 8+
-
 
 ### FR-926: Total Tools Analyzed
 
 40+
 
-
 ### FR-927: Tools Documented
 
 100%
-
 
 ### FR-928: Usage Patterns
 
 100%
 
-
 ### FR-929: Examples Provided
 
 100%
-
 
 ### FR-930: Phase 1-2 (Core)
 
 4 weeks
 
-
 ### FR-931: Phase 3-4 (Features)
 
 6 weeks
-
 
 ### FR-932: Phase 5-6 (Advanced)
 
 6 weeks
 
-
 ### FR-933: Phase 7 (Polish)
 
 2 weeks
-
 
 ### FR-934: Total
 
 ~18 weeks for complete implementation
 
-
 ### FR-935: 10 files
 
 - **~150KB of documentation**
-
 
 ### FR-936: ~50,000 words
 
 - **~100 pages**
 
-
 ### FR-937: 100+ code examples
 
 - **40+ MCP tools documented**
-
 
 ### FR-938: 7-phase implementation roadmap
 
 ---
 
-
 ### FR-939: 1. Core Documentation (5 files)
-
-
-
 
 ### FR-940: 2. Implementation Examples (2 files)
 
-
-
-
 ### FR-941: 3. Migration Examples (3 files)
-
-
-
 
 ### FR-942: 4. Edge Function Examples (2 files)
 
-
-
-
 ### FR-943: Documentation Metrics
-
-
-
 
 ### FR-944: Feature Coverage
 
-
-
-
 ### FR-945: MCP Tools Coverage
-
-
-
 
 ### FR-946: Immediate Use Cases
 
-
-
-
 ### FR-947: Ready to Implement
-
-
-
 
 ### FR-948: What's Needed
 
-
-
-
 ### FR-949: Time Estimate
-
-
-
 
 ### FR-950: Comprehensive Coverage
 
-
-
-
 ### FR-951: Easy Navigation
-
-
-
 
 ### FR-952: Production Ready
 
-
-
-
 ### FR-953: 1. Complete MCP Analysis
-
-
-
 
 ### FR-954: 2. Feature Mapping
 
-
-
-
 ### FR-955: 3. Workflow Definitions
-
-
-
 
 ### FR-956: 4. Implementation Artifacts
 
-
-
-
 ### FR-957: 5. Example Library
-
-
-
 
 ### FR-958: Built-in Security
 
-
-
-
 ### FR-959: Best Practices
-
-
-
 
 ### FR-960: Documentation Complete
 
-
-
-
 ### FR-961: Implementation Ready
-
-
-
 
 ### FR-962: Production Ready
 
-
-
-
 ### FR-963: For Developers
-
-
-
 
 ### FR-964: For Architects
 
-
-
-
 ### FR-965: For DevOps
-
-
-
 
 ### FR-966: Immediate (This Week)
 
-
-
-
 ### FR-967: Short-term (Month 1)
-
-
-
 
 ### FR-968: Medium-term (Months 2-4)
 
-
-
-
 ### FR-969: Long-term (Months 5-6)
-
-
-
 
 ### FR-970: Documentation Complete
 
-
-
-
 ### FR-971: Code Complete
-
-
-
 
 ### FR-972: Quality Assurance
 
-
-
-
 ### FR-973: Total Package
-
-
-
 
 ### FR-974: Provision New Supabase Projects
 
 - Complete automation
 
-
 ### FR-975: Database Development Workflow
 
 - Git-like branching
-
 
 ### FR-976: Edge Function Deployment
 
 - Multi-file functions
 
-
 ### FR-977: Infrastructure as Code
 
 - YAML configuration
-
 
 ### FR-978: One-Click Deploy
 
 Deploy apps with a single button click
 
-
 ### FR-979: Real-Time Status
 
 Live deployment status updates
-
 
 ### FR-980: Log Streaming
 
 View deployment logs in real-time
 
-
 ### FR-981: Cost Dashboard
 
 Track costs across all deployments
-
 
 ### FR-982: Multi-Provider
 
 Support for 6+ cloud providers
 
-
 ### FR-983: Zero Config
 
 Auto-detection and configuration
-
 
 ### FR-984: Framework:
 
 Next.js 15 (App Router)
 
-
 ### FR-985: Language:
 
 TypeScript
-
 
 ### FR-986: Styling:
 
 Tailwind CSS
 
-
 ### FR-987: API:
 
 REST API integration
-
 
 ### FR-988: State:
 
 React Hooks
 
-
 ### FR-989: Overview:
 
 Deployment metadata, status, URLs
-
 
 ### FR-990: Logs:
 
 Real-time log streaming with level filtering
 
-
 ### FR-991: First Contentful Paint:
 
 < 1.5s
-
 
 ### FR-992: Time to Interactive:
 
 < 3.5s
 
-
 ### FR-993: Lighthouse Score:
 
 90+
-
 
 ### FR-994: Documentation:
 
 This guide
 
-
 ### FR-995: Examples:
 
 `/examples` directory
-
 
 ### FR-996: Issues:
 
 GitHub Issues
 
-
 ### FR-997: Key Features
-
-
-
 
 ### FR-998: Tech Stack
 
-
-
-
 ### FR-999: Prerequisites
-
-
-
 
 ### FR-1000: Installation
 
-
-
-
 ### FR-1001: Environment Variables
-
-
-
 
 ### FR-1002: 1. Deploy Page
 
-
-
-
 ### FR-1003: 2. Deployments List
-
-
-
 
 ### FR-1004: 3. Deployment Details
 
-
-
-
 ### FR-1005: 4. Cost Dashboard
-
-
-
 
 ### FR-1006: Deploy Page (`/deploy/page.tsx`)
 
-
-
-
 ### FR-1007: Deployments List (`/deployments/page.tsx`)
-
-
-
 
 ### FR-1008: Deployment Details (`/deployments/[id]/page.tsx`)
 
-
-
-
 ### FR-1009: DeploymentCard
-
-
-
 
 ### FR-1010: StatusBadge
 
-
-
-
 ### FR-1011: LogViewer
-
-
-
 
 ### FR-1012: ProgressBar
 
-
-
-
 ### FR-1013: API Client (`lib/api.ts`)
-
-
-
 
 ### FR-1014: Usage Example
 
-
-
-
 ### FR-1015: Build for Production
-
-
-
 
 ### FR-1016: Deploy to Vercel
 
-
-
-
 ### FR-1017: Environment Variables (Production)
-
-
-
 
 ### FR-1018: 1. Error Handling
 
-
-
-
 ### FR-1019: 2. Loading States
-
-
-
 
 ### FR-1020: 3. Real-Time Updates
 
-
-
-
 ### FR-1021: 4. Type Safety
-
-
-
 
 ### FR-1022: Issue: API connection failed
 
-
-
-
 ### FR-1023: Issue: Build errors
-
-
-
 
 ### FR-1024: Issue: TypeScript errors
 
-
-
-
 ### FR-1025: Theme
-
-
-
 
 ### FR-1026: Layout
 
-
-
-
 ### FR-1027: Optimizations
 
-
-
-
 ### FR-1028: Metrics
-
-
-
 
 ### FR-1029: Code Splitting:
 
 Automatic with Next.js App Router
 
-
 ### FR-1030: Image Optimization:
 
 Use `next/image`
-
 
 ### FR-1031: Font Optimization:
 
 Use `next/font`
 
-
 ### FR-1032: API Caching:
 
 Implement SWR or React Query
-
 
 ### FR-1033: Lazy Loading:
 
 Dynamic imports for heavy components
 
-
 ### FR-1034: What Exists
-
-
-
 
 ### FR-1035: What's Needed
 
-
-
-
 ### FR-1036: 1. PyDevKit (Foundation) - WEEK 1
-
-
-
 
 ### FR-1037: 2. Workflow-Kit (Critical) - WEEK 1-2
 
-
-
-
 ### FR-1038: 3. Orchestrator-Kit Agents - WEEK 2
-
-
-
 
 ### FR-1039: 4. DB-Kit (Modern Platforms) - WEEK 3
 
-
-
-
 ### FR-1040: 5. Deploy-Kit (NVMS + Modern Platforms) - WEEK 3-4
-
-
-
 
 ### FR-1041: Days 1-2: PyDevKit Foundation
 
-
-
-
 ### FR-1042: Days 3-4: Workflow-Kit Complete
-
-
-
 
 ### FR-1043: Days 5-7: Orchestrator Agents
 
-
-
-
 ### FR-1044: Days 8-10: DB-Kit Platforms
-
-
-
 
 ### FR-1045: Days 11-14: Deploy-Kit + Integration
 
-
-
-
 ### FR-1046: Week 1
-
-
-
 
 ### FR-1047: Week 2
 
-
-
-
 ### FR-1048: Week 3
-
-
-
 
 ### FR-1049: Week 4
 
-
-
-
 ### FR-1050: Extract File from Zen
-
-
-
 
 ### FR-1051: Create Kit Structure
 
-
-
-
 ### FR-1052: Run Tests
-
-
-
 
 ### FR-1053: Parallel-first execution
 
 All related tasks batched in single messages
 
-
 ### FR-1054: Agent specialization
 
 Domain experts for each cloud provider
-
 
 ### FR-1055: Coordinated memory
 
 Shared context via Claude Flow hooks
 
-
 ### FR-1056: Continuous integration
 
 Testing at every phase boundary
-
 
 ### FR-1057: Velocity
 
 Tasks completed per week
 
-
 ### FR-1058: Quality
 
 Test coverage percentage
-
 
 ### FR-1059: Coordination
 
 Cross-agent memory usage
 
-
 ### FR-1060: Performance
 
 Deployment time benchmarks
-
 
 ### FR-1061: Blockers
 
 Identified and resolved issues
 
-
 ### FR-1062: Topology: Hierarchical
-
-
-
 
 ### FR-1063: Agent Roles & Responsibilities
 
-
-
-
 ### FR-1064: PHASE 1: FOUNDATION (Weeks 1-2)
-
-
-
 
 ### FR-1065: PHASE 2: PROVIDER IMPLEMENTATION (Weeks 3-8)
 
-
-
-
 ### FR-1066: PHASE 3: INTEGRATION & TESTING (Weeks 9-12)
-
-
-
 
 ### FR-1067: PHASE 4: PRODUCTION HARDENING (Weeks 13-14)
 
-
-
-
 ### FR-1068: Daily Coordination (Every Agent)
-
-
-
 
 ### FR-1069: Weekly Checkpoints
 
-
-
-
 ### FR-1070: Real-Time Tracking
-
-
-
 
 ### FR-1071: Key Metrics
 
-
-
-
 ### FR-1072: Daily Risk Assessment
-
-
-
 
 ### FR-1073: Mitigation Strategies
 
-
-
-
 ### FR-1074: Week 14: Final Verification
 
-
-
-
 ### FR-1075: Immediate Actions (Day 1)
-
-
-
 
 ### FR-1076: Technical Blockers
 
 Pair agents for knowledge transfer
 
-
 ### FR-1077: API Changes
 
 Version pinning and compatibility tests
-
 
 ### FR-1078: Performance Issues
 
 Profiling and optimization sprints
 
-
 ### FR-1079: Integration Failures
 
 Incremental integration with rollback
 
-
 ### FR-1080: Initialize Repository
 
-```bash
+````bash
 
 
 ### FR-1081: Spawn Foundation Swarm
@@ -14376,24 +11951,24 @@ vector-kit (semantic, keyword, hybrid)
 
 ### System Design
 
-```
-┌─────────────────────────────────────────────────────────────────┐
-│                         BytePort CLI                             │
-│  (Go) - NVMS Parser, Config Validator, Deployment Orchestrator   │
-└────────────────┬────────────────────────────────────────────────┘
-                 │
-                 ▼
-┌─────────────────────────────────────────────────────────────────┐
-│                    CloudProvider Interface                       │
-│           (Go Interface - provider abstraction layer)            │
-└────────┬───────────────────────────────────────────────┬────────┘
-         │                                                │
-         ▼                                                ▼
-┌────────────────────────────┐          ┌────────────────────────────────┐
-│   Go Providers             │          │   Python Providers             │
-│                            │          │                                │
-│  ┌──────────────┐         │          │  ┌───
+````
 
+┌─────────────────────────────────────────────────────────────────┐
+│ BytePort CLI │
+│ (Go) - NVMS Parser, Config Validator, Deployment Orchestrator │
+└────────────────┬────────────────────────────────────────────────┘
+│
+▼
+┌─────────────────────────────────────────────────────────────────┐
+│ CloudProvider Interface │
+│ (Go Interface - provider abstraction layer) │
+└────────┬───────────────────────────────────────────────┬────────┘
+│ │
+▼ ▼
+┌────────────────────────────┐ ┌────────────────────────────────┐
+│ Go Providers │ │ Python Providers │
+│ │ │ │
+│ ┌──────────────┐ │ │ ┌───
 
 ## 10. Technical Requirements
 
@@ -14458,7 +12033,7 @@ vector-kit (semantic, keyword, hybrid)
 - **Integration with metadata**: Integration point with metadata project
 - **Integration with WHERE**: Integration point with WHERE project
 - **Integration with compute_hours**: Integration point with compute_hours project
-- **Integration with mcp__supabase__pause_project**: Integration point with mcp__supabase__pause_project project
+- **Integration with mcp**supabase**pause_project**: Integration point with mcp**supabase**pause_project project
 - **Integration with Phases**: Integration point with Phases project
 - **Integration with -**: Integration point with - project
 - **Integration with createProject**: Integration point with createProject project
@@ -14586,7 +12161,7 @@ vector-kit (semantic, keyword, hybrid)
 - **Integration with projectResult**: Integration point with projectResult project
 - **Integration with cannot**: Integration point with cannot project
 - **Integration with detection**: Integration point with detection project
-- **Integration with mcp__supabase__get_project**: Integration point with mcp__supabase__get_project project
+- **Integration with mcp**supabase**get_project**: Integration point with mcp**supabase**get_project project
 - **Integration with byteport**: Integration point with byteport project
 - **Integration with identification**: Integration point with identification project
 - **Integration with Use**: Integration point with Use project
@@ -14619,12 +12194,9 @@ vector-kit (semantic, keyword, hybrid)
 
 ## 12. Timeline & Phases
 
-
 ## 13. Milestones
 
-
 ## 14. Dependencies
-
 
 ## 16. Related Projects
 
@@ -14676,7 +12248,7 @@ vector-kit (semantic, keyword, hybrid)
 - metadata
 - WHERE
 - compute_hours
-- mcp__supabase__pause_project
+- mcp**supabase**pause_project
 - Phases
 - -
 - createProject
@@ -14702,7 +12274,9 @@ vector-kit (semantic, keyword, hybrid)
 - service
 - plan
 - FOR
-- ---
+
+---
+
 - PHASES
 - dependencies
 - Overview
@@ -14804,7 +12378,7 @@ vector-kit (semantic, keyword, hybrid)
 - projectResult
 - cannot
 - detection
-- mcp__supabase__get_project
+- mcp**supabase**get_project
 - byteport
 - identification
 - Use

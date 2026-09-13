@@ -6,6 +6,7 @@ This stub exists for backwards compatibility with existing tests.
 """
 
 from __future__ import annotations
+
 from dataclasses import dataclass
 from typing import Any
 
@@ -13,6 +14,7 @@ from typing import Any
 @dataclass
 class RemoteTask:
     """Remote task representation."""
+
     task_id: str
     command: str
     node: str = ""
@@ -21,6 +23,7 @@ class RemoteTask:
 @dataclass
 class TailscaleConfig:
     """Tailscale configuration."""
+
     auth_key: str = ""
     hostname: str = ""
 
@@ -46,6 +49,7 @@ class TailscaleManager:
 @dataclass
 class TailscaleNode:
     """Tailscale node information."""
+
     node_id: str = ""
     hostname: str = ""
     ip_address: str = ""
@@ -85,6 +89,7 @@ class RemoteExecutor:
 @dataclass
 class RemoteResult:
     """Result of a remote operation."""
+
     success: bool
     output: str = ""
     error: str = ""
@@ -93,6 +98,7 @@ class RemoteResult:
 @dataclass
 class RemoteProcess:
     """Remote process representation."""
+
     pid: int
     node: str
     command: str

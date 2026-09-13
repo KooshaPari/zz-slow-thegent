@@ -11,6 +11,7 @@
 ## Migration Overview
 
 This guide helps you migrate from:
+
 - Manual UI interaction → Automated desktop automation
 - Platform-specific code → Cross-platform abstraction
 - Single-agent → Multi-tenant coordination
@@ -23,11 +24,13 @@ This guide helps you migrate from:
 ### Path 1: Adding Desktop Automation to New Code
 
 **Step 1: Install Dependencies**
+
 ```bash
 pip install py-applescript pywinauto pyatspi
 ```
 
 **Step 2: Import Provider**
+
 ```python
 from thegent.infra.desktop_automation import get_provider
 
@@ -35,6 +38,7 @@ provider = get_provider()
 ```
 
 **Step 3: Use Provider**
+
 ```python
 element = provider.find_element("button[name='Save']")
 if element:
@@ -44,8 +48,10 @@ if element:
 ### Path 2: Migrating Existing Platform-Specific Code
 
 **Before (macOS-specific):**
+
 ```python
 import subprocess
+
 
 def click_button_macos(button_name: str):
     script = f'''
@@ -57,8 +63,10 @@ def click_button_macos(button_name: str):
 ```
 
 **After (Cross-platform):**
+
 ```python
 from thegent.infra.desktop_automation import get_provider
+
 
 def click_button(button_name: str):
     provider = get_provider()
@@ -71,6 +79,7 @@ def click_button(button_name: str):
 ### Path 3: Adding Multi-Tenant Coordination
 
 **Before (No Coordination):**
+
 ```python
 def automate_task():
     provider = get_provider()
@@ -79,9 +88,11 @@ def automate_task():
 ```
 
 **After (With Coordination):**
+
 ```python
 from thegent.infra.desktop_automation.coordinator import DesktopAutomationCoordinator, AutomationScope
 from thegent.infra.desktop_automation.base import AutomationAction
+
 
 def automate_task():
     provider = get_provider()
@@ -90,11 +101,7 @@ def automate_task():
     scope = AutomationScope(app_name="TextEdit")
     action = AutomationAction(type="click", selector="button")
 
-    result = coordinator.execute_with_coordination(
-        scope=scope,
-        agent_id="my-agent",
-        action=action
-    )
+    result = coordinator.execute_with_coordination(scope=scope, agent_id="my-agent", action=action)
     return result
 ```
 
@@ -141,9 +148,10 @@ def automate_task():
 ### Pattern 1: Replace Platform-Specific Scripts
 
 **Before:**
+
 ```python
 # macOS
-subprocess.run(["osascript", "-e", "tell application \"System Events\" to click button \"Save\""])
+subprocess.run(["osascript", "-e", 'tell application "System Events" to click button "Save"'])
 
 # Windows
 subprocess.run(["powershell", "-Command", "Click-Button -Name Save"])
@@ -153,6 +161,7 @@ subprocess.run(["xdotool", "click", "button", "Save"])
 ```
 
 **After:**
+
 ```python
 provider = get_provider()
 element = provider.find_element("button[name='Save']")
@@ -162,6 +171,7 @@ provider.click(element)
 ### Pattern 2: Add Coordination
 
 **Before:**
+
 ```python
 def automate():
     provider = get_provider()
@@ -169,6 +179,7 @@ def automate():
 ```
 
 **After:**
+
 ```python
 def automate():
     coordinator = DesktopAutomationCoordinator(state_dir, provider)
@@ -180,6 +191,7 @@ def automate():
 ### Pattern 3: Add Error Handling
 
 **Before:**
+
 ```python
 def automate():
     provider = get_provider()
@@ -188,6 +200,7 @@ def automate():
 ```
 
 **After:**
+
 ```python
 def automate():
     provider = get_provider()
@@ -205,6 +218,7 @@ def automate():
 ### Pattern 4: Add Observability
 
 **Before:**
+
 ```python
 def automate():
     provider = get_provider()
@@ -212,10 +226,12 @@ def automate():
 ```
 
 **After:**
+
 ```python
 from opentelemetry import trace
 
 tracer = trace.get_tracer("automation")
+
 
 def automate():
     with tracer.start_as_current_span("automation.click") as span:
@@ -235,8 +251,10 @@ def automate():
 ### Example 1: Simple Button Click
 
 **Before:**
+
 ```python
 import subprocess
+
 
 def click_save_button():
     script = 'tell application "System Events" to click button "Save"'
@@ -244,8 +262,10 @@ def click_save_button():
 ```
 
 **After:**
+
 ```python
 from thegent.infra.desktop_automation import get_provider
+
 
 def click_save_button():
     provider = get_provider()
@@ -259,6 +279,7 @@ def click_save_button():
 ### Example 2: Form Filling
 
 **Before:**
+
 ```python
 def fill_form_macos(data: dict):
     for field, value in data.items():
@@ -267,8 +288,10 @@ def fill_form_macos(data: dict):
 ```
 
 **After:**
+
 ```python
 from thegent.infra.desktop_automation import get_provider
+
 
 def fill_form(data: dict):
     provider = get_provider()
@@ -283,22 +306,25 @@ def fill_form(data: dict):
 ### Example 3: Multi-Step Workflow
 
 **Before:**
+
 ```python
 def workflow_macos():
     # Step 1
-    subprocess.run(["osascript", "-e", "click button \"New\""])
+    subprocess.run(["osascript", "-e", 'click button "New"'])
     time.sleep(1)
     # Step 2
-    subprocess.run(["osascript", "-e", "set value of text field to \"Hello\""])
+    subprocess.run(["osascript", "-e", 'set value of text field to "Hello"'])
     time.sleep(1)
     # Step 3
-    subprocess.run(["osascript", "-e", "click button \"Save\""])
+    subprocess.run(["osascript", "-e", 'click button "Save"'])
 ```
 
 **After:**
+
 ```python
 from thegent.infra.desktop_automation.coordinator import DesktopAutomationCoordinator
 from thegent.infra.desktop_automation.base import AutomationAction, AutomationScope
+
 
 def workflow():
     provider = get_provider()
@@ -308,7 +334,7 @@ def workflow():
     steps = [
         AutomationAction(type="click", selector="button[name='New']"),
         AutomationAction(type="type_text", selector="text_field", text="Hello"),
-        AutomationAction(type="click", selector="button[name='Save']")
+        AutomationAction(type="click", selector="button[name='Save']"),
     ]
 
     for step in steps:
@@ -364,6 +390,7 @@ If migration fails:
    - Keep as fallback
 
 2. **Feature Flag:**
+
    ```python
    if settings.desktop_automation_enabled:
        # New code
@@ -402,7 +429,6 @@ If migration fails:
 
 **Status:** Migration guide complete. Ready for migration execution.
 
-
 ---
 
 ## EXTENSION_SUMMARY
@@ -411,15 +437,18 @@ If migration fails:
 **Extended by:** Claude Code
 
 ### Changes Made
+
 1. Added practical implementation patterns
 2. Added configuration examples
 3. Enhanced cross-references to related documentation
 
 ### Cross-References Added
+
 - Related research and implementation guides
 - WORK_STREAM.md for tracking
 
 ### Practical Additions
+
 - Implementation templates
 - Configuration examples
 - Best practices

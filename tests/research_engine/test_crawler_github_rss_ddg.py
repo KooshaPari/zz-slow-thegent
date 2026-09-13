@@ -4,8 +4,6 @@ from __future__ import annotations
 
 from unittest.mock import MagicMock, patch
 
-import pytest
-
 
 class TestGitHubCrawler:
     """GitHub crawler tests."""
@@ -200,7 +198,12 @@ class TestDDGCrawler:
         mock_resp = MagicMock()
         mock_resp.raise_for_status = MagicMock()
         mock_resp.json.return_value = {
-            "RelatedTopics": [{"FirstURL": "https://ddg.gg/result1", "Text": "Python MCP agent framework"}]
+            "RelatedTopics": [
+                {
+                    "FirstURL": "https://ddg.gg/result1",
+                    "Text": "Python MCP agent framework",
+                }
+            ]
         }
         with patch("httpx.get", return_value=mock_resp):
             crawler = DDGCrawler()

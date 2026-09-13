@@ -6,10 +6,12 @@ Fast file watcher with optimized backends.
 
 This module provides a high-performance abstraction layer for file watching
 that automatically selects the fastest available backend:
+
 - watchfiles (Rust-based): 5-10x faster than watchdog
 - watchdog: Cross-platform fallback
 
 Performance improvements:
+
 - watchfiles uses Rust implementation (5-10x faster)
 - Better performance for high-frequency file changes
 - Automatic backend selection based on availability
@@ -21,12 +23,13 @@ Performance improvements:
 High-performance file watcher with automatic backend selection.
 
 Backend priority (fastest first):
+
 1. watchfiles (if installed) - 5-10x faster, Rust-based
 2. watchdog (cross-platform fallback) - baseline performance
 
 ### Methods
 
-#### FastFileWatcher.__init__
+#### FastFileWatcher.**init**
 
 ```python
 __init__(self: Any, path: Any, recursive: bool)

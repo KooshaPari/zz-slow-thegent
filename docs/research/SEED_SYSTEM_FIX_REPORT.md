@@ -10,6 +10,7 @@
 Fixed critical issues in the seed detection system and verified MCP integration. All 11 previously failing tests now pass, bringing total test count to 82 passing tests.
 
 ### Key Achievements
+
 - ✓ Fixed enum serialization issue in Seed.to_dict()
 - ✓ Fixed test fixture issues
 - ✓ Corrected confidence classification thresholds
@@ -28,20 +29,23 @@ Fixed critical issues in the seed detection system and verified MCP integration.
 **Location**: `/Users/kooshapari/temp-PRODVERCEL/485/kush/thegent/src/thegent/memory/seed_detector.py:59`
 
 **Root Cause**:
+
 - `SeedStorage._dict_to_seed()` loaded source as a string from JSON
 - `Seed.to_dict()` assumed source was always an enum
 - When updating seeds, the string source would fail when serializing
 
 **Fix Applied**:
+
 1. Added `__post_init__` method to Seed dataclass that normalizes source to always be a SeedSource enum
 2. Updated `to_dict()` to handle both enum and string types (defensive programming)
-3. Updated `SeedStorage._dict_to_seed()` to pass string source values, which __post_init__ converts to enum
+3. Updated `SeedStorage._dict_to_seed()` to pass string source values, which **post_init** converts to enum
 
 ```python
 def __post_init__(self):
     """Normalize source to always be a SeedSource enum."""
     if isinstance(self.source, str):
         self.source = SeedSource(self.source)
+
 
 def to_dict(self) -> dict:
     """Convert to dictionary for JSON serialization."""
@@ -55,6 +59,7 @@ def to_dict(self) -> dict:
 ```
 
 **Tests Fixed**:
+
 - test_seed_storage.py::TestSeedStorageRead::test_load_preserves_metadata
 - test_seed_storage.py::TestSeedStorageUpdate::test_update_status
 - test_seed_storage.py::TestSeedStorageUpdate::test_update_tags
@@ -74,6 +79,7 @@ def to_dict(self) -> dict:
 **Root Cause**: Threshold boundary was inclusive (`>=`) when it should be exclusive (`>`) to match test expectations with seeds of confidence 0.9, 0.8, 0.7, 0.4
 
 **Fix Applied**:
+
 ```python
 # Changed from >= to >
 if seed.confidence > 0.8:
@@ -85,6 +91,7 @@ else:
 ```
 
 **Tests Fixed**:
+
 - test_seed_storage.py::TestSeedStorageStats::test_stats_by_confidence
 
 ---
@@ -98,6 +105,7 @@ else:
 **Root Cause**: Test was clearing cache and resetting counts to 0, then immediately calling `get()` which incremented miss_count, then asserting it was still 0
 
 **Fix Applied**:
+
 ```python
 def test_clear(self):
     """Test clearing cache."""
@@ -123,6 +131,7 @@ def test_clear(self):
 ```
 
 **Tests Fixed**:
+
 - test_cache.py::TestL1Cache::test_clear
 
 ---
@@ -136,6 +145,7 @@ def test_clear(self):
 **Root Cause**: LayeredCache.get() calls `l1.set(key, value)` on L2 fallback, which doesn't count as a hit. Hit only occurs on next `get()`
 
 **Fix Applied**:
+
 ```python
 def test_l2_fallback(self):
     """Test L2 fallback when L1 misses."""
@@ -155,6 +165,7 @@ def test_l2_fallback(self):
 ```
 
 **Tests Fixed**:
+
 - test_cache.py::TestLayeredCache::test_l2_fallback
 
 ---
@@ -168,6 +179,7 @@ def test_l2_fallback(self):
 **Root Cause**: Pattern matching is hierarchical - explicit patterns are checked first and return immediately. Text "We need to rethink it" matched the explicit pattern "we need" before design pattern check
 
 **Fix Applied**:
+
 ```python
 def test_design_pattern_architecture(self):
     """Test detection of architecture keyword."""
@@ -181,6 +193,7 @@ def test_design_pattern_architecture(self):
 ```
 
 **Tests Fixed**:
+
 - test_seed_detector.py::TestSeedDetectorPatternMatching::test_design_pattern_architecture
 
 ---
@@ -188,6 +201,7 @@ def test_design_pattern_architecture(self):
 ## Test Results
 
 ### Before Fixes
+
 ```
 FAILED src/thegent/memory/test_cache.py::TestL1Cache::test_clear
 FAILED src/thegent/memory/test_cache.py::TestLayeredCache::test_l2_fallback
@@ -205,6 +219,7 @@ FAILED src/thegent/memory/test_seed_storage.py::TestSeedStorageStats::test_stats
 ```
 
 ### After Fixes
+
 ```
 82 passed in 2.79s
 ```
@@ -214,6 +229,7 @@ FAILED src/thegent/memory/test_seed_storage.py::TestSeedStorageStats::test_stats
 ## MCP Integration Verification
 
 ### Tools Registered
+
 ✓ `thegent_seed_detect` - Pattern-based seed detection in text
 ✓ `thegent_seed_store` - Store seeds in persistent JSONL
 ✓ `thegent_seed_list` - Query seeds with filtering
@@ -222,11 +238,13 @@ FAILED src/thegent/memory/test_seed_storage.py::TestSeedStorageStats::test_stats
 ✓ `thegent_seed_stats` - Get seed storage statistics
 
 ### Module Registration
+
 - ✓ `thegent.mcp_tools_seeds` imports successfully
 - ✓ `register_seed_tools()` function available
 - ✓ MCP server integration in `/src/thegent/mcp_server.py` (line 324-325)
 
 ### Python API
+
 ```python
 from thegent.memory.seed_detector import Seed, SeedSource, SeedDetector
 from thegent.memory.seed_storage import SeedStorage
@@ -281,6 +299,7 @@ The fix uses a two-layer approach:
 2. **Defensive Layer** (`to_dict()`): Handles both enum and string gracefully if normalization is bypassed
 
 This provides robustness against:
+
 - Deserialization from JSON (strings)
 - Direct Seed construction with strings
 - Future code that might pass strings
@@ -288,6 +307,7 @@ This provides robustness against:
 ### Confidence Thresholds
 
 The classification maintains meaningful separation:
+
 - **HIGH**: confidence > 0.8 (only explicit pattern matches)
 - **MEDIUM**: 0.5 <= confidence <= 0.8 (code quality + design patterns)
 - **LOW**: confidence < 0.5 (weak indicators + LLM detection)

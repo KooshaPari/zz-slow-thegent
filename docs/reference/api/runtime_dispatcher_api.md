@@ -5,6 +5,7 @@
 Performance-optimized dispatcher for multi-runtime support.
 
 This module handles the 'splitting' of code into optimal paths for:
+
 1. PyPy (JIT-optimized pure Python)
 2. CPython 3.13/3.14 (Native extensions and freethreading support)
 3. Compiled backends (Rust, Go, Zig via FFI/Wasm)
@@ -23,7 +24,7 @@ Base class for performance-critical modules with multiple implementations.
 
 ### Methods
 
-#### PerformanceModule.__init__
+#### PerformanceModule.**init**
 
 ```python
 __init__(self: Any, name: str)

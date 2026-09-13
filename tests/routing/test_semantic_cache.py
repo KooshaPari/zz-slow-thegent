@@ -23,7 +23,6 @@ from thegent.utils.routing_impl.semantic_cache import (
     semantic_cache_set,
 )
 
-
 # ---------------------------------------------------------------------------
 # Mock embedding provider
 # ---------------------------------------------------------------------------
@@ -286,7 +285,7 @@ def test_semantic_cache_max_entries_eviction() -> None:
     responses = [{"id": i} for i in range(max_entries + 1)]
     texts = [f"question {i}" for i in range(max_entries + 1)]
 
-    for _, (text, resp) in enumerate(zip(texts, responses)):
+    for _, (text, resp) in enumerate(zip(texts, responses, strict=False)):
         sc.set(text, resp, namespace="ns")
 
     with sc._lock:

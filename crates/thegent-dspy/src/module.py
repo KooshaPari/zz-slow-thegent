@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod
-from typing import Any, Dict
+from typing import Any
 
 
 class DSPyModule(ABC):
@@ -7,7 +7,7 @@ class DSPyModule(ABC):
 
     def __init__(self, name: str = "module") -> None:
         self.name = name
-        self.config: Dict[str, Any] = {}
+        self.config: dict[str, Any] = {}
 
     @abstractmethod
     def forward(self, *args: Any, **kwargs: Any) -> Any:

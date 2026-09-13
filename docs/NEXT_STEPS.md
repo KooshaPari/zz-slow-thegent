@@ -3,6 +3,7 @@
 ## 🎯 Recommended Next Steps
 
 ### 1. Testing & Validation (Priority: High)
+
 ```bash
 # Test Homebrew installation
 thegent install --system-deps --dry-run
@@ -20,28 +21,34 @@ echo $MISE_ENV
 ```
 
 ### 2. Add Uninstall Option (Priority: Medium)
+
 Create `thegent uninstall --system-deps` to:
+
 - Remove mise hooks from shell configs
 - Optionally uninstall mise itself
 - Restore original shell configs if backed up
 
 ### 3. Enhanced Error Handling (Priority: Medium)
+
 - Retry logic for network failures
 - Better permission error messages
 - Graceful handling of partial installations
 - Rollback on failure
 
 ### 4. Configuration Backup (Priority: Low)
+
 - Backup shell configs before modification
 - Store backup location in manifest
 - Allow restoration via `--undo`
 
 ### 5. Additional Shell Support (Priority: Low)
+
 - fish shell (`~/.config/fish/config.fish`)
 - tcsh shell (`~/.tcshrc`)
 - PowerShell (Windows)
 
 ### 6. Documentation Updates (Priority: Low)
+
 - Update main README with mise setup instructions
 - Add troubleshooting guide
 - Create migration guide from direnv to mise

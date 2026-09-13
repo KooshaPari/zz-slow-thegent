@@ -92,12 +92,12 @@ Each journey step annotation must include:
 
 ### Annotation Requirements
 
-| Evidence Type | Required Fields | Format |
-|---------------|-----------------|--------|
-| screenshot | timestamp, actor, step_id, path | PNG/WebP |
-| video | timestamp, actor, flow_id, duration | MP4/WebM |
-| log | timestamp, actor, step_id, level | JSONL |
-| artifact | timestamp, actor, step_id, type | varies |
+| Evidence Type | Required Fields                     | Format   |
+| ------------- | ----------------------------------- | -------- |
+| screenshot    | timestamp, actor, step_id, path     | PNG/WebP |
+| video         | timestamp, actor, flow_id, duration | MP4/WebM |
+| log           | timestamp, actor, step_id, level    | JSONL    |
+| artifact      | timestamp, actor, step_id, type     | varies   |
 
 ## Assertions
 
@@ -121,14 +121,14 @@ assertions:
 
 ### Assertion Types
 
-| Type | Description | Mode |
-|------|-------------|------|
-| `screenshot_present` | SS exists for step | strict |
-| `no_error_logs` | Zero ERROR entries in logs | strict |
-| `keyframe_sequence` | Ordered keyframe chain | strict |
-| `ci_passed` | Journey gate workflow succeeds | strict |
-| `video_duration` | Recording meets minimum length | lenient |
-| `artifact_complete` | All artifacts linked | lenient |
+| Type                 | Description                    | Mode    |
+| -------------------- | ------------------------------ | ------- |
+| `screenshot_present` | SS exists for step             | strict  |
+| `no_error_logs`      | Zero ERROR entries in logs     | strict  |
+| `keyframe_sequence`  | Ordered keyframe chain         | strict  |
+| `ci_passed`          | Journey gate workflow succeeds | strict  |
+| `video_duration`     | Recording meets minimum length | lenient |
+| `artifact_complete`  | All artifacts linked           | lenient |
 
 ## Agreement
 
@@ -148,11 +148,11 @@ agreement:
 
 ## Verification Modes
 
-| Mode | Behavior |
-|------|----------|
-| `strict` | All required assertions must pass; blocking failure |
-| `lenient` | Failures logged but don't block; advisory only |
-| `gate` | Full CI gate; blocks merge until all pass |
+| Mode      | Behavior                                            |
+| --------- | --------------------------------------------------- |
+| `strict`  | All required assertions must pass; blocking failure |
+| `lenient` | Failures logged but don't block; advisory only      |
+| `gate`    | Full CI gate; blocks merge until all pass           |
 
 ## Asset Layout
 
@@ -214,30 +214,31 @@ jobs:
 
 ## Screenshot & Video Placeholder Policy
 
-| Asset | Status | Location | Notes |
-|-------|--------|----------|-------|
-| Bootstrap Flow SS | PLACEHOLDER | `docs/assets/journeys/placeholder.png` | TODO: Record |
-| Bootstrap Flow Video | PLACEHOLDER | `cli-journeys/recordings/bootstrap-placeholder.mp4` | TODO: Record |
-| Plugin Onboarding SS | PLACEHOLDER | `docs/assets/journeys/placeholder.png` | TODO: Record |
-| Plugin Onboarding Video | PLACEHOLDER | `cli-journeys/recordings/plugin-placeholder.mp4` | TODO: Record |
-| Agent Dispatch SS | PLACEHOLDER | `docs/assets/journeys/placeholder.png` | TODO: Record |
-| Agent Dispatch Video | PLACEHOLDER | `cli-journeys/recordings/dispatch-placeholder.mp4` | TODO: Record |
-| Governance Gate SS | PLACEHOLDER | `docs/assets/journeys/placeholder.png` | TODO: Record |
-| Governance Gate Video | PLACEHOLDER | `cli-journeys/recordings/gate-placeholder.mp4` | TODO: Record |
-| Template Generation SS | PLACEHOLDER | `docs/assets/journeys/placeholder.png` | TODO: Record |
-| Template Generation Video | PLACEHOLDER | `cli-journeys/recordings/template-placeholder.mp4` | TODO: Record |
+| Asset                     | Status      | Location                                            | Notes        |
+| ------------------------- | ----------- | --------------------------------------------------- | ------------ |
+| Bootstrap Flow SS         | PLACEHOLDER | `docs/assets/journeys/placeholder.png`              | TODO: Record |
+| Bootstrap Flow Video      | PLACEHOLDER | `cli-journeys/recordings/bootstrap-placeholder.mp4` | TODO: Record |
+| Plugin Onboarding SS      | PLACEHOLDER | `docs/assets/journeys/placeholder.png`              | TODO: Record |
+| Plugin Onboarding Video   | PLACEHOLDER | `cli-journeys/recordings/plugin-placeholder.mp4`    | TODO: Record |
+| Agent Dispatch SS         | PLACEHOLDER | `docs/assets/journeys/placeholder.png`              | TODO: Record |
+| Agent Dispatch Video      | PLACEHOLDER | `cli-journeys/recordings/dispatch-placeholder.mp4`  | TODO: Record |
+| Governance Gate SS        | PLACEHOLDER | `docs/assets/journeys/placeholder.png`              | TODO: Record |
+| Governance Gate Video     | PLACEHOLDER | `cli-journeys/recordings/gate-placeholder.mp4`      | TODO: Record |
+| Template Generation SS    | PLACEHOLDER | `docs/assets/journeys/placeholder.png`              | TODO: Record |
+| Template Generation Video | PLACEHOLDER | `cli-journeys/recordings/template-placeholder.mp4`  | TODO: Record |
 
 ## Video Requirements
 
-| Journey | Min Duration | Max Duration | Format | Codec |
-|---------|--------------|--------------|--------|-------|
-| bootstrap-flow | 30s | 120s | MP4 | h264 |
-| plugin-onboarding | 60s | 180s | MP4 | h264 |
-| agent-dispatch | 30s | 120s | MP4 | h264 |
-| governance-gate | 30s | 90s | MP4 | h264 |
-| template-generation | 30s | 120s | MP4 | h264 |
+| Journey             | Min Duration | Max Duration | Format | Codec |
+| ------------------- | ------------ | ------------ | ------ | ----- |
+| bootstrap-flow      | 30s          | 120s         | MP4    | h264  |
+| plugin-onboarding   | 60s          | 180s         | MP4    | h264  |
+| agent-dispatch      | 30s          | 120s         | MP4    | h264  |
+| governance-gate     | 30s          | 90s          | MP4    | h264  |
+| template-generation | 30s          | 120s         | MP4    | h264  |
 
 Videos must:
+
 - Include timestamp overlay (bottom-right)
 - Show full step sequence without cuts
 - Have clear audio narration (optional)

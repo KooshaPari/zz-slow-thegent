@@ -5,7 +5,6 @@ from __future__ import annotations
 import json
 from typing import Any
 
-
 # Diagnostics state
 _native_parse_diagnostics: dict[str, Any] = {
     "total_failures": 0,

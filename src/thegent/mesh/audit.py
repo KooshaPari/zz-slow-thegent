@@ -23,7 +23,13 @@ class AuditManager:
             # Initialize as a git repo or clone current
             try:
                 shim_run(
-                    ["git", "clone", "--shared", str(self.project_root), str(self.shadow_root)],
+                    [
+                        "git",
+                        "clone",
+                        "--shared",
+                        str(self.project_root),
+                        str(self.shadow_root),
+                    ],
                     check=True,
                     capture_output=True,
                 )
@@ -50,7 +56,11 @@ class AuditManager:
             # Commit to shadow repo for version history
             try:
                 shim_run(["git", "add", str(rel_path)], cwd=self.shadow_root, check=True)
-                shim_run(["git", "commit", "-m", f"Audit backup of {rel_path}"], cwd=self.shadow_root, check=True)
+                shim_run(
+                    ["git", "commit", "-m", f"Audit backup of {rel_path}"],
+                    cwd=self.shadow_root,
+                    check=True,
+                )
             except subprocess.CalledProcessError:
                 pass
 

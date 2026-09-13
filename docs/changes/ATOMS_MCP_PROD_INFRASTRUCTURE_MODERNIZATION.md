@@ -11,6 +11,7 @@
 ## Current State Analysis
 
 ### Strengths
+
 ✅ Already has comprehensive pyproject.toml  
 ✅ Uses uv (has uv.lock)  
 ✅ Uses ruff for linting/formatting  
@@ -18,6 +19,7 @@
 ✅ Modern dependencies (pydantic 2.x, fastmcp, etc.)
 
 ### Issues
+
 ❌ Still has .env file (needed for Vercel but not ideal for local)  
 ❌ No structured YAML configuration  
 ❌ Settings scattered across multiple files  
@@ -32,7 +34,9 @@
 ### Phase 1: Configuration Modernization (12 hours)
 
 #### 1.1 Create Pydantic Settings Structure
+
 **File:** `settings/config.py`
+
 ```python
 from pydantic_settings import BaseSettings, SettingsConfigDict
 from pydantic import Field, SecretStr
@@ -40,70 +44,72 @@ from typing import Optional
 import os
 import yaml
 
+
 class DatabaseSettings(BaseSettings):
     url: SecretStr
     pool_size: int = 10
     max_overflow: int = 20
+
 
 class SupabaseSettings(BaseSettings):
     url: str
     anon_key: SecretStr
     service_role_key: SecretStr
 
+
 class AtomsSettings(BaseSettings):
     model_config = SettingsConfigDict(
-        env_prefix='ATOMS_',
-        env_nested_delimiter='__',
-        case_sensitive=False,
-        env_ignore_empty=True
+        env_prefix="ATOMS_", env_nested_delimiter="__", case_sensitive=False, env_ignore_empty=True
     )
-    
+
     # App settings
     app_name: str = "atoms-mcp"
     debug: bool = False
     log_level: str = "INFO"
-    
+
     # Database
     database: DatabaseSettings
-    
+
     # Supabase
     supabase: SupabaseSettings
-    
+
     # API Keys
     openai_api_key: Optional[SecretStr] = None
     anthropic_api_key: Optional[SecretStr] = None
-    
+
     @classmethod
     def load(cls):
         """Load settings based on environment"""
-        if os.getenv('VERCEL') or os.getenv('VERCEL_ENV'):
+        if os.getenv("VERCEL") or os.getenv("VERCEL_ENV"):
             # Production: use environment variables
             return cls()
         else:
             # Local: use YAML files
             return cls.from_yaml()
-    
+
     @classmethod
     def from_yaml(cls):
         """Load from YAML files (local development)"""
         # Load non-sensitive config
-        with open('config.yml', 'r') as f:
+        with open("config.yml", "r") as f:
             config = yaml.safe_load(f)
-        
+
         # Load secrets
         try:
-            with open('secrets.yml', 'r') as f:
+            with open("secrets.yml", "r") as f:
                 secrets = yaml.safe_load(f)
         except FileNotFoundError:
             secrets = {}
-        
+
         # Merge and create settings
         merged = {**config, **secrets}
         return cls(**merged)
 ```
 
 #### 1.2 Create config.yml Template
+
 **File:** `config.yml`
+
 ```yaml
 # Atoms MCP Configuration (Non-sensitive)
 # This file is tracked in git
@@ -128,7 +134,9 @@ features:
 ```
 
 #### 1.3 Create secrets.yml.example
+
 **File:** `secrets.yml.example`
+
 ```yaml
 # Atoms MCP Secrets (Sensitive)
 # Copy to secrets.yml and fill in your values
@@ -148,6 +156,7 @@ workos_api_key: "sk-..."
 ```
 
 #### 1.4 Update .gitignore
+
 ```
 # Secrets
 secrets.yml
@@ -158,12 +167,15 @@ secrets.yml
 ```
 
 #### 1.5 Update Code to Use New Settings
+
 **File:** `server/core.py` (example)
+
 ```python
 from settings.config import AtomsSettings
 
 # Load settings once at startup
 settings = AtomsSettings.load()
+
 
 # Use throughout application
 def get_database_url():
@@ -175,6 +187,7 @@ def get_database_url():
 ### Phase 2: Enhanced Code Quality Tools (10 hours)
 
 #### 2.1 Add Missing Tools to pyproject.toml
+
 ```toml
 [project.optional-dependencies]
 dev = [
@@ -186,6 +199,7 @@ dev = [
 ```
 
 #### 2.2 Configure Vulture
+
 ```toml
 [tool.vulture]
 paths = ["lib", "tools", "config", "server", "scripts", "src", "utils"]
@@ -195,7 +209,9 @@ ignore_names = ["main", "cli", "settings", "app"]
 ```
 
 #### 2.3 Add Pre-commit Hooks
+
 **File:** `.pre-commit-config.yaml`
+
 ```yaml
 repos:
   - repo: https://github.com/astral-sh/ruff-pre-commit
@@ -226,12 +242,16 @@ repos:
 ### Phase 3: Vercel Integration (8 hours)
 
 #### 3.1 Keep .env for Vercel
+
 The `.env` file remains for Vercel deployments. The hybrid approach allows:
+
 - **Local development:** Uses `config.yml` + `secrets.yml`
 - **Vercel deployment:** Uses `.env` file (environment variables)
 
 #### 3.2 Update Vercel Configuration
+
 **File:** `vercel.json`
+
 ```json
 {
   "buildCommand": "uv pip install -e .",
@@ -244,7 +264,9 @@ The `.env` file remains for Vercel deployments. The hybrid approach allows:
 ```
 
 #### 3.3 Create Deployment Script
+
 **File:** `scripts/deploy.sh`
+
 ```bash
 #!/bin/bash
 # Deployment script for Vercel
@@ -267,10 +289,13 @@ vercel deploy --prod
 ### Phase 4: Testing & Validation (10 hours)
 
 #### 4.1 Update Tests for New Settings
+
 **File:** `tests/conftest.py`
+
 ```python
 import pytest
 from settings.config import AtomsSettings
+
 
 @pytest.fixture
 def test_settings():
@@ -279,16 +304,14 @@ def test_settings():
         app_name="atoms-mcp-test",
         debug=True,
         database={"url": "postgresql://localhost/test"},
-        supabase={
-            "url": "http://localhost:54321",
-            "anon_key": "test-key",
-            "service_role_key": "test-key"
-        }
+        supabase={"url": "http://localhost:54321", "anon_key": "test-key", "service_role_key": "test-key"},
     )
 ```
 
 #### 4.2 Test Configuration Loading
+
 **File:** `tests/test_settings.py`
+
 ```python
 def test_settings_from_yaml(tmp_path):
     """Test loading settings from YAML"""
@@ -298,17 +321,18 @@ app:
   name: "test-app"
   debug: true
 """)
-    
+
     # Test loading
     settings = AtomsSettings.from_yaml()
     assert settings.app_name == "test-app"
     assert settings.debug is True
 
+
 def test_settings_from_env(monkeypatch):
     """Test loading settings from environment"""
     monkeypatch.setenv("VERCEL", "1")
     monkeypatch.setenv("ATOMS_APP_NAME", "prod-app")
-    
+
     settings = AtomsSettings.load()
     assert settings.app_name == "prod-app"
 ```
@@ -318,6 +342,7 @@ def test_settings_from_env(monkeypatch):
 ## Migration Steps
 
 ### Step 1: Backup
+
 ```bash
 # Create backup
 git checkout -b backup/pre-modernization
@@ -326,6 +351,7 @@ git checkout main
 ```
 
 ### Step 2: Create Configuration Files
+
 ```bash
 # Create settings directory
 mkdir -p settings
@@ -340,6 +366,7 @@ echo "secrets.yml" >> .gitignore
 ```
 
 ### Step 3: Install New Dependencies
+
 ```bash
 # Add new dev dependencies
 uv pip install vulture cloc zuban
@@ -349,6 +376,7 @@ uv lock
 ```
 
 ### Step 4: Implement Settings
+
 ```bash
 # Create settings module
 # Implement AtomsSettings class
@@ -356,6 +384,7 @@ uv lock
 ```
 
 ### Step 5: Test Locally
+
 ```bash
 # Run tests
 uv run pytest
@@ -368,6 +397,7 @@ uv run python server/core.py
 ```
 
 ### Step 6: Test Vercel Deployment
+
 ```bash
 # Deploy to preview
 vercel deploy
@@ -386,6 +416,7 @@ vercel deploy --prod
 If issues arise:
 
 1. **Immediate Rollback:**
+
    ```bash
    git checkout backup/pre-modernization
    vercel deploy --prod
@@ -420,12 +451,15 @@ If issues arise:
 ## Risks & Mitigations
 
 ### Risk 1: Vercel Deployment Breaks
+
 **Mitigation:** Test on preview deployment first, keep .env approach as fallback
 
 ### Risk 2: Settings Migration Incomplete
+
 **Mitigation:** Gradual migration, keep old approach working alongside new
 
 ### Risk 3: Test Failures
+
 **Mitigation:** Comprehensive test coverage for settings loading
 
 ---
@@ -442,4 +476,3 @@ If issues arise:
 2. Gather team feedback on new configuration approach
 3. Document best practices for adding new settings
 4. Create migration guide for other projects
-

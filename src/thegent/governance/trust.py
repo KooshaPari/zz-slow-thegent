@@ -92,7 +92,14 @@ class TrustBoundaryChecker:
         }
 
         # Sensitive keywords that require INTERNAL+ trust
-        sensitive_keywords = ["password", "secret", "private_key", "token", "credential", "api_key"]
+        sensitive_keywords = [
+            "password",
+            "secret",
+            "private_key",
+            "token",
+            "credential",
+            "api_key",
+        ]
 
         agent_level = self.get_agent_trust(target_agent)
 

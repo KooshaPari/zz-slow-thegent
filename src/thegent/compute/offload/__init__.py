@@ -1,19 +1,19 @@
 """Stub module."""
+
 from dataclasses import dataclass
 
 
 @dataclass
 class ComputeNode:
     """A compute node for offloading tasks."""
+
     id: str = ""
     capacity: float = 1.0
     available: bool = True
 
     def offload(self, task: dict) -> bool:
         """Offload a task to this node."""
-        if self.available:
-            return True
-        return False
+        return bool(self.available)
 
 
 from typing import Any
@@ -68,7 +68,12 @@ class FederatedLoadBalancer:
         return False
 
 
-__all__ = ["ComputeNode", "ComputePoolManager", "FederatedLoadBalancer", "RemoteNodeClient"]
+__all__ = [
+    "ComputeNode",
+    "ComputePoolManager",
+    "FederatedLoadBalancer",
+    "RemoteNodeClient",
+]
 
 
 class RemoteNodeClient:
@@ -110,7 +115,14 @@ class RemoteNodeError(Exception):
         self.cause = cause
 
 
-__all__ = ["ComputeNode", "ComputePoolManager", "FederatedLoadBalancer", "RemoteNodeClient", "RemoteNodeError", "TailscaleComputePool"]
+__all__ = [
+    "ComputeNode",
+    "ComputePoolManager",
+    "FederatedLoadBalancer",
+    "RemoteNodeClient",
+    "RemoteNodeError",
+    "TailscaleComputePool",
+]
 
 
 class TailscaleComputePool:

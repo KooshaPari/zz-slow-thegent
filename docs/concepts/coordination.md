@@ -17,6 +17,7 @@ This document defines 5 core communication patterns that enable agents across pr
 **Scenario**: L1 agent wants to assign work to an L2 agent.
 
 **Characteristics**:
+
 - Synchronous or asynchronous (sender's choice)
 - Parent-child relationship (L1 supervises L2)
 - Clearly defined task boundary
@@ -25,6 +26,7 @@ This document defines 5 core communication patterns that enable agents across pr
 ### Synchronous Dispatch (Real-Time)
 
 **Flow**:
+
 ```
 L1 (kush:claude-code)
   ├─ Resolves L2 endpoint: kush:runner-1
@@ -44,6 +46,7 @@ L1 (kush:claude-code)
 ```
 
 **Message Schema**:
+
 ```json
 {
   "message_type": "task_dispatch",
@@ -69,12 +72,8 @@ L1 (kush:claude-code)
     "blocking_tasks": [],
     "blocked_by_tasks": [],
     "dependencies": {
-      "code_files": [
-        "/kush/src/http_client.py"
-      ],
-      "prior_research": [
-        "docs/research/async_patterns.md"
-      ]
+      "code_files": ["/kush/src/http_client.py"],
+      "prior_research": ["docs/research/async_patterns.md"]
     }
   },
   "resource_request": {
@@ -92,6 +91,7 @@ L1 (kush:claude-code)
 ```
 
 **Response (ACK)**:
+
 ```json
 {
   "message_type": "task_dispatch_ack",
@@ -114,6 +114,7 @@ L1 (kush:claude-code)
 ```
 
 **Negative Response (Overloaded)**:
+
 ```json
 {
   "message_type": "task_dispatch_nack",
@@ -145,6 +146,7 @@ L1 (kush:claude-code)
 ### Asynchronous Dispatch (Queue-Based)
 
 **Flow**:
+
 ```
 L1 (kush:claude-code)
   ├─ Writes task to WORK_STREAM.md
@@ -165,6 +167,7 @@ L1 (kush:claude-code)
 ```
 
 **Message Format (Queue Entry)**:
+
 ```json
 {
   "message_id": "msg-8f7e6d5c4b3a-001",
@@ -178,6 +181,7 @@ L1 (kush:claude-code)
 ```
 
 **Queue File Location**:
+
 ```
 ~/.claude/civilization/queues/
 ├── kush:runner-1.mq          (queue for runner-1)
@@ -187,13 +191,13 @@ L1 (kush:claude-code)
 
 ### Comparison: Sync vs Async
 
-| Aspect | Synchronous | Asynchronous |
-|--------|-------------|-------------|
-| **Latency** | <1s (real-time) | 1-5s (poll-based) |
-| **Reliability** | High (knows immediately if failed) | High (queue persists) |
-| **Load** | Can reject if overloaded (backpressure) | Can be queued (fairness) |
-| **Use Case** | Urgent tasks, real-time response | Bulk dispatch, low latency acceptable |
-| **Fallback** | Switch to async if sync fails | N/A |
+| Aspect          | Synchronous                             | Asynchronous                          |
+| --------------- | --------------------------------------- | ------------------------------------- |
+| **Latency**     | <1s (real-time)                         | 1-5s (poll-based)                     |
+| **Reliability** | High (knows immediately if failed)      | High (queue persists)                 |
+| **Load**        | Can reject if overloaded (backpressure) | Can be queued (fairness)              |
+| **Use Case**    | Urgent tasks, real-time response        | Bulk dispatch, low latency acceptable |
+| **Fallback**    | Switch to async if sync fails           | N/A                                   |
 
 ---
 
@@ -202,6 +206,7 @@ L1 (kush:claude-code)
 **Scenario**: L2 in Project A needs work done in Project B, but doesn't want to escalate to L1.
 
 **Characteristics**:
+
 - Peer-to-peer (not hierarchical)
 - Cross-project (different git homes)
 - Negotiation-based (responder can accept/defer)
@@ -267,6 +272,7 @@ L2-A (kush:runner-1) needs research from atoms project
 ```
 
 **Message Schema (Request)**:
+
 ```json
 {
   "message_type": "cross_project_request",
@@ -298,6 +304,7 @@ L2-A (kush:runner-1) needs research from atoms project
 ```
 
 **Response (Accepted)**:
+
 ```json
 {
   "message_type": "cross_project_response",
@@ -322,6 +329,7 @@ L2-A (kush:runner-1) needs research from atoms project
 ```
 
 **Response (Deferred)**:
+
 ```json
 {
   "message_type": "cross_project_response",
@@ -341,9 +349,7 @@ L2-A (kush:runner-1) needs research from atoms project
       "tasks_queued": 3
     },
     "estimated_available_time": "2026-02-19T16:00:00Z",
-    "suggested_alternatives": [
-      "atoms:research-agent-2:L2:researcher"
-    ]
+    "suggested_alternatives": ["atoms:research-agent-2:L2:researcher"]
   }
 }
 ```
@@ -355,6 +361,7 @@ L2-A (kush:runner-1) needs research from atoms project
 **Scenario**: Two L2 agents in same project need to coordinate access to shared resource (API key, database connection).
 
 **Characteristics**:
+
 - P2P (no central authority)
 - Shared resource (scarce)
 - Fair scheduling (queue-based)
@@ -363,6 +370,7 @@ L2-A (kush:runner-1) needs research from atoms project
 ### Semaphore-Based Coordination
 
 **Flow**:
+
 ```
 Runner-1 and Researcher-1 both need GitHub API
   ├─ They compete for single API key (rate-limited)
@@ -395,6 +403,7 @@ Runner-1 and Researcher-1 both need GitHub API
 ```
 
 **Semaphore File Format**:
+
 ```json
 {
   "resource_id": "github-api-key",
@@ -420,6 +429,7 @@ Runner-1 and Researcher-1 both need GitHub API
 ```
 
 **Lock Acquisition Algorithm**:
+
 ```python
 def acquire_semaphore(resource_id: str, agent_id: str, timeout_seconds: int = 300):
     """
@@ -434,33 +444,31 @@ def acquire_semaphore(resource_id: str, agent_id: str, timeout_seconds: int = 30
         semaphore = read_json(semaphore_path)
 
         # Check if available
-        if semaphore['current_lease']['holder_id'] is None:
+        if semaphore["current_lease"]["holder_id"] is None:
             # Try to acquire
-            semaphore['current_lease']['holder_id'] = agent_id
-            semaphore['current_lease']['acquired_at'] = now()
-            semaphore['current_lease']['lease_until'] = now() + 60
+            semaphore["current_lease"]["holder_id"] = agent_id
+            semaphore["current_lease"]["acquired_at"] = now()
+            semaphore["current_lease"]["lease_until"] = now() + 60
             write_json(semaphore_path, semaphore)
             git_push()  # Make it official
             return True  # Acquired!
 
         # Check if lease expired
-        lease_until = datetime.fromisoformat(semaphore['current_lease']['lease_until'])
+        lease_until = datetime.fromisoformat(semaphore["current_lease"]["lease_until"])
         if lease_until < datetime.now():
             # Lease expired, forcibly acquire
-            semaphore['current_lease']['holder_id'] = agent_id
-            semaphore['current_lease']['acquired_at'] = now()
-            semaphore['current_lease']['lease_until'] = now() + 60
+            semaphore["current_lease"]["holder_id"] = agent_id
+            semaphore["current_lease"]["acquired_at"] = now()
+            semaphore["current_lease"]["lease_until"] = now() + 60
             write_json(semaphore_path, semaphore)
             git_push()
             return True  # Acquired after expiry
 
         # Add self to queue if not already there
-        if agent_id not in [q['requester_id'] for q in semaphore['queue']]:
-            semaphore['queue'].append({
-                'requester_id': agent_id,
-                'priority': calculate_priority(agent_id),
-                'requested_at': now()
-            })
+        if agent_id not in [q["requester_id"] for q in semaphore["queue"]]:
+            semaphore["queue"].append(
+                {"requester_id": agent_id, "priority": calculate_priority(agent_id), "requested_at": now()}
+            )
             write_json(semaphore_path, semaphore)
             git_push()
 
@@ -473,6 +481,7 @@ def acquire_semaphore(resource_id: str, agent_id: str, timeout_seconds: int = 30
 ```
 
 **Release Algorithm**:
+
 ```python
 def release_semaphore(resource_id: str, agent_id: str):
     """Release semaphore lock."""
@@ -480,20 +489,17 @@ def release_semaphore(resource_id: str, agent_id: str):
     semaphore = read_json(semaphore_path)
 
     # Verify this agent holds the lock
-    if semaphore['current_lease']['holder_id'] != agent_id:
+    if semaphore["current_lease"]["holder_id"] != agent_id:
         raise SemaphoreNotHeld(resource_id, agent_id)
 
     # Clear holder
-    semaphore['current_lease']['holder_id'] = None
-    semaphore['current_lease']['released_at'] = now()
+    semaphore["current_lease"]["holder_id"] = None
+    semaphore["current_lease"]["released_at"] = now()
 
     # Pop next from queue
-    if semaphore['queue']:
-        next_requester = semaphore['queue'].pop(0)
-        semaphore['next_lease'] = {
-            'intended_holder': next_requester['requester_id'],
-            'ready_at': now()
-        }
+    if semaphore["queue"]:
+        next_requester = semaphore["queue"].pop(0)
+        semaphore["next_lease"] = {"intended_holder": next_requester["requester_id"], "ready_at": now()}
 
     write_json(semaphore_path, semaphore)
     git_push()
@@ -506,6 +512,7 @@ def release_semaphore(resource_id: str, agent_id: str):
 **Scenario**: L2 agent sends periodic status updates to L1 parent and escalates if blocked.
 
 **Characteristics**:
+
 - Hierarchical (parent-child)
 - Periodic heartbeat (unidirectional)
 - On-demand escalation (problem detected)
@@ -514,6 +521,7 @@ def release_semaphore(resource_id: str, agent_id: str):
 ### Periodic Status Update
 
 **Flow**:
+
 ```
 L2 every 5 minutes sends StatusUpdateMessage to L1
   ├─ Message contains:
@@ -528,6 +536,7 @@ L2 every 5 minutes sends StatusUpdateMessage to L1
 ```
 
 **Message Schema (Status Update)**:
+
 ```json
 {
   "message_type": "status_update",
@@ -558,6 +567,7 @@ L2 every 5 minutes sends StatusUpdateMessage to L1
 ### Escalation on Blocking
 
 **Flow**:
+
 ```
 L2 is working on task-1 but blocked on atoms:task-2 (cross-project)
   ├─ T=0min: Task-1 becomes blocked, records start_time
@@ -582,6 +592,7 @@ L2 is working on task-1 but blocked on atoms:task-2 (cross-project)
 ```
 
 **Message Schema (Escalation)**:
+
 ```json
 {
   "message_type": "escalation",
@@ -615,6 +626,7 @@ L2 is working on task-1 but blocked on atoms:task-2 (cross-project)
 **Scenario**: Critical event affects all agents (resource threshold breach, deadlock detected, cascading failure).
 
 **Characteristics**:
+
 - Broadcast (all agents receive)
 - Event-driven (not periodic)
 - Time-sensitive (immediate action needed)
@@ -623,11 +635,13 @@ L2 is working on task-1 but blocked on atoms:task-2 (cross-project)
 ### Event Bus Implementation
 
 **Primary**: Git-based event log
+
 ```
 ~/.claude/civilization/event_log.ndjson
 ```
 
 **Example Events**:
+
 ```ndjson
 {"type":"civilization.resource_threshold_breach","timestamp":"2026-02-19T14:46:00Z","resource":"cpu","threshold":90,"current":92,"affected_projects":["kush","atoms"]}
 {"type":"civilization.deadlock_detected","timestamp":"2026-02-19T14:46:15Z","cycle":["kush:task-1","atoms:task-2","kush:task-3"],"recommended_resolution":"kill_kush_task_1"}
@@ -636,6 +650,7 @@ L2 is working on task-1 but blocked on atoms:task-2 (cross-project)
 ```
 
 **Secondary**: MCP Pub-Sub (for real-time delivery)
+
 ```python
 @mcp.subscription()
 async def subscribe_events(topic: str = "all"):
@@ -649,6 +664,7 @@ async def subscribe_events(topic: str = "all"):
 ### Specific Event Schemas
 
 **Resource Threshold Breach**:
+
 ```json
 {
   "type": "civilization.resource_threshold_breach",
@@ -676,6 +692,7 @@ async def subscribe_events(topic: str = "all"):
 ```
 
 **Deadlock Detected**:
+
 ```json
 {
   "type": "civilization.deadlock_detected",
@@ -708,6 +725,7 @@ async def subscribe_events(topic: str = "all"):
 ```
 
 **Agent Failure**:
+
 ```json
 {
   "type": "agent.failed",
@@ -746,23 +764,21 @@ async def subscribe_events(topic: str = "all"):
 
 ### Timeout Hierarchy
 
-| Scenario | Timeout | Action |
-|----------|---------|--------|
-| Task dispatch ACK (sync) | 5 seconds | Retry with backoff, switch to async |
-| Task execution | 30 minutes (L2) | Escalate, check if blocked |
-| Cross-project dependency | deadline - 30 min | Escalate, find alternative |
-| Semaphore acquisition | 5 minutes | Fail task, release resources |
-| Message delivery (async) | N/A (persisted) | Retry on next poll |
+| Scenario                 | Timeout           | Action                              |
+| ------------------------ | ----------------- | ----------------------------------- |
+| Task dispatch ACK (sync) | 5 seconds         | Retry with backoff, switch to async |
+| Task execution           | 30 minutes (L2)   | Escalate, check if blocked          |
+| Cross-project dependency | deadline - 30 min | Escalate, find alternative          |
+| Semaphore acquisition    | 5 minutes         | Fail task, release resources        |
+| Message delivery (async) | N/A (persisted)   | Retry on next poll                  |
 
 ### Retry Logic
 
 **Exponential Backoff with Jitter**:
+
 ```python
 def retry_with_backoff(
-    operation,
-    max_retries: int = 5,
-    initial_backoff_seconds: float = 1.0,
-    jitter_percent: float = 10
+    operation, max_retries: int = 5, initial_backoff_seconds: float = 1.0, jitter_percent: float = 10
 ):
     """
     Retry with exponential backoff and jitter.
@@ -775,7 +791,7 @@ def retry_with_backoff(
                 raise
 
             # Exponential backoff: 1s, 2s, 4s, 8s, 16s
-            backoff = initial_backoff_seconds * (2 ** attempt)
+            backoff = initial_backoff_seconds * (2**attempt)
 
             # Add jitter: ±10%
             jitter = backoff * random.uniform(-jitter_percent / 100, jitter_percent / 100)
@@ -787,6 +803,7 @@ def retry_with_backoff(
 ### Deadlock Detection & Prevention
 
 **Detection Algorithm** (runs every 60s):
+
 ```python
 def detect_deadlock():
     """
@@ -801,14 +818,17 @@ def detect_deadlock():
     cycles = find_cycles(graph)
     if cycles:
         for cycle in cycles:
-            publish_event({
-                "type": "civilization.deadlock_detected",
-                "cycle": cycle,
-                "recommended_resolution": compute_resolution(cycle)
-            })
+            publish_event(
+                {
+                    "type": "civilization.deadlock_detected",
+                    "cycle": cycle,
+                    "recommended_resolution": compute_resolution(cycle),
+                }
+            )
 ```
 
 **Prevention** (configured in WORK_STREAM.md):
+
 ```json
 {
   "task_id": "task-1",
@@ -882,14 +902,13 @@ async def route_message(message: Message) -> Result:
 
 ## Glossary
 
-| Term | Definition |
-|------|-----------|
-| **Task Dispatch** | L1 assigns work to L2/L3 (sync or async) |
-| **Cross-Project Request** | L2 asks L2 in different project for help (negotiated) |
-| **Semaphore** | Shared lock for resource access (lease-based) |
-| **Status Update** | Periodic heartbeat from L2/L3 to L1 (5-60s interval) |
-| **Escalation** | L2 alerts L1 to problem (blocked, overloaded, failed) |
-| **Event Broadcast** | Civilization-wide notification (deadlock, resource breach) |
-| **Backpressure** | Rejecting task dispatch when overloaded |
-| **Eventual Consistency** | Agents converge to consistent state over time (not immediately) |
-
+| Term                      | Definition                                                      |
+| ------------------------- | --------------------------------------------------------------- |
+| **Task Dispatch**         | L1 assigns work to L2/L3 (sync or async)                        |
+| **Cross-Project Request** | L2 asks L2 in different project for help (negotiated)           |
+| **Semaphore**             | Shared lock for resource access (lease-based)                   |
+| **Status Update**         | Periodic heartbeat from L2/L3 to L1 (5-60s interval)            |
+| **Escalation**            | L2 alerts L1 to problem (blocked, overloaded, failed)           |
+| **Event Broadcast**       | Civilization-wide notification (deadlock, resource breach)      |
+| **Backpressure**          | Rejecting task dispatch when overloaded                         |
+| **Eventual Consistency**  | Agents converge to consistent state over time (not immediately) |

@@ -1,6 +1,7 @@
 # Agent-D Batch Status
 
 ## WL-122
+
 - status: in-progress
 - done: wired canonical max-lines gate through task defaults, pre-commit, and CI quality lane env
 - files changed:
@@ -14,6 +15,7 @@
   - `THEGENT_MAX_LINES_IMPL=zig MAX_LINES_SCOPE=changed sh scripts/max-lines-gate.sh` (pass; `checked=3 warn=0 fail=0`)
 
 ## WL-104
+
 - status: blocked
 - done: authored implementation-ready plan artifact for JSON-RPC stdio daemon mode
 - files changed:
@@ -23,6 +25,7 @@
   - `thegent plan next --format json` (timed out in this sandbox while fetching remote model cost map)
 
 ## WL-106
+
 - status: blocked
 - done: authored implementation-ready plan artifact for fork/rollback semantics and CLI surface
 - files changed:
@@ -32,6 +35,7 @@
   - `thegent plan next --format json` (timed out in this sandbox while fetching remote model cost map)
 
 ## WL-111
+
 - status: blocked
 - done: authored implementation-ready plan artifact for MCP skill list/activate tools
 - files changed:
@@ -41,6 +45,7 @@
   - `thegent plan next --format json` (timed out in this sandbox while fetching remote model cost map)
 
 ## WL-117
+
 - status: blocked
 - done: authored implementation-ready plan artifact for VS Code extension execution phases
 - files changed:

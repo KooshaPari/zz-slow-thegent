@@ -5,6 +5,7 @@
 Track 1 migrates ~30K LOC of thegent's LLM routing, provider adapters, and auth integrations from Python to Go (CLIProxy). This plan uses strict TDD with bite-sized tasks, failing tests first, and parity verification.
 
 **Scope:**
+
 - **thegent.routing** (~11.5K LOC): Pareto frontier routing, TaskRouter, cost/quality constraints
 - **thegent.adapters** (~1.4K LOC): Provider adapters (ACP client, MCP bridge, server)
 - **thegent.integrations.connector_quota** (~150 LOC): Quota tracking
@@ -61,18 +62,21 @@ func TestParetoRoutingSelectsOptimalModelGivenConstraints(t *testing.T) {
 ```
 
 **Acceptance Criteria:**
+
 - Test compiles and runs
 - Test fails because `paretoRouter` doesn't exist
 - `RoutingRequest` struct has all required fields
 - Response includes model ID, cost, latency, quality score
 
 **Verification Command:**
+
 ```bash
 cd /Users/kooshapari/temp-PRODVERCEL/485/kush/CLIProxyAPI-plusplus
 go test -run TestParetoRoutingSelectsOptimalModelGivenConstraints ./pkg/llmproxy/registry -v
 ```
 
 **Commit:**
+
 ```
 test: add failing test for Pareto frontier routing selection
 
@@ -88,12 +92,14 @@ Adds integration test for optimal model selection under hard constraints
 #### T1.2: Implement Basic Pareto Router Type & Route Selection Algorithm
 
 **Files:**
+
 - `/Users/kooshapari/temp-PRODVERCEL/485/kush/CLIProxyAPI-plusplus/pkg/llmproxy/registry/pareto_router.go`
 - `/Users/kooshapari/temp-PRODVERCEL/485/kush/CLIProxyAPI-plusplus/pkg/llmproxy/registry/pareto_types.go`
 
 **Implementation:** Port the Pareto frontier algorithm from thegent Python (reference: `/Users/kooshapari/temp-PRODVERCEL/485/kush/thegent/src/thegent/routing/pareto_router.py`, ~600 LOC).
 
 Key steps:
+
 1. Parse Terminal Bench 2.0 metrics from model registry
 2. Filter models that violate hard constraints
 3. Build Pareto frontier (remove dominated models)
@@ -162,12 +168,14 @@ func lexicographicSelect(frontier []*RoutingCandidate) *RoutingCandidate {
 ```
 
 **Acceptance Criteria:**
+
 - T1.1 test passes
 - All constraint violations are rejected
 - Pareto frontier correctly removes dominated models
 - Lexicographic ordering is deterministic
 
 **Verification Command:**
+
 ```bash
 cd /Users/kooshapari/temp-PRODVERCEL/485/kush/CLIProxyAPI-plusplus
 go test -run TestPareto ./pkg/llmproxy/registry -v
@@ -175,6 +183,7 @@ go vet ./pkg/llmproxy/registry
 ```
 
 **Commit:**
+
 ```
 feat(routing): implement Pareto frontier algorithm in Go
 
@@ -198,6 +207,7 @@ Tested against hard constraints (cost, latency, quality thresholds).
 **Reference:** `/Users/kooshapari/temp-PRODVERCEL/485/kush/thegent/src/thegent/routing/task_router.py` (TaskClassifier class, ~150 LOC)
 
 Task classification determines which Pareto frontier to use:
+
 - FAST: Token count < 500, latency < 1s
 - NORMAL: Token count 500–5000, latency < 5s
 - COMPLEX: Token count 5000–50K, latency < 30s
@@ -279,17 +289,20 @@ func (tc *TaskClassifier) Classify(ctx context.Context, req *TaskClassificationR
 ```
 
 **Acceptance Criteria:**
+
 - All classification test cases pass
 - Classification is deterministic
 - Boundary cases are covered (499, 500, 4999, 5000, etc.)
 
 **Verification Command:**
+
 ```bash
 cd /Users/kooshapari/temp-PRODVERCEL/485/kush/CLIProxyAPI-plusplus
 go test -run TestTaskClassifier ./pkg/llmproxy/registry -v
 ```
 
 **Commit:**
+
 ```
 feat(routing): add task classifier for complexity categorization
 
@@ -388,6 +401,7 @@ func (h *RoutingHandler) POSTRoutingSelect(w http.ResponseWriter, r *http.Reques
 ```
 
 **Acceptance Criteria:**
+
 - Endpoint responds on `POST /v1/routing/select`
 - Request JSON is correctly parsed
 - Response includes all required fields (model_id, provider, costs, latency, quality)
@@ -395,6 +409,7 @@ func (h *RoutingHandler) POSTRoutingSelect(w http.ResponseWriter, r *http.Reques
 - HTTP 200 on success
 
 **Verification Command:**
+
 ```bash
 cd /Users/kooshapari/temp-PRODVERCEL/485/kush/CLIProxyAPI-plusplus
 go test -run TestPOSTRoutingSelect ./pkg/llmproxy/api -v
@@ -404,6 +419,7 @@ curl -X POST http://localhost:8317/v1/routing/select \
 ```
 
 **Commit:**
+
 ```
 feat(api): expose /v1/routing/select endpoint for Pareto model selection
 
@@ -458,32 +474,31 @@ def test_pareto_router_parity_thegent_vs_cliproxy():
         thegent_result = thegent_router.select_model(case)
 
         # Call CLIProxy endpoint
-        cliproxy_result = cliproxy_client.post(
-            "/v1/routing/select",
-            json=case
-        ).json()
+        cliproxy_result = cliproxy_client.post("/v1/routing/select", json=case).json()
 
         # Assert identical model selected
-        assert thegent_result["model_id"] == cliproxy_result["model_id"], \
-            f"Model mismatch for {case}: thegent={thegent_result['model_id']}, " \
-            f"cliproxy={cliproxy_result['model_id']}"
+        assert thegent_result["model_id"] == cliproxy_result["model_id"], (
+            f"Model mismatch for {case}: thegent={thegent_result['model_id']}, cliproxy={cliproxy_result['model_id']}"
+        )
 
         # Assert costs within 0.1% (floating-point tolerance)
-        assert abs(thegent_result["cost"] - cliproxy_result["estimated_cost"]) < 0.0001, \
-            f"Cost mismatch for {case}"
+        assert abs(thegent_result["cost"] - cliproxy_result["estimated_cost"]) < 0.0001, f"Cost mismatch for {case}"
 
         # Assert latency within 10ms (network latency tolerance)
-        assert abs(thegent_result["latency_ms"] - cliproxy_result["estimated_latency_ms"]) <= 10, \
+        assert abs(thegent_result["latency_ms"] - cliproxy_result["estimated_latency_ms"]) <= 10, (
             f"Latency mismatch for {case}"
+        )
 ```
 
 **Acceptance Criteria:**
+
 - Parity test runs and passes for all test cases
 - Same model selected by both implementations
 - Costs and latencies match (within tolerance)
 - No constraints violated in either implementation
 
 **Verification Command:**
+
 ```bash
 cd /Users/kooshapari/temp-PRODVERCEL/485/kush/thegent
 
@@ -498,6 +513,7 @@ pytest tests/routing/test_parity_pareto_router_vs_cliproxy.py::test_pareto_route
 ```
 
 **Commit:**
+
 ```
 test(routing): add parity test for Pareto router (thegent vs CLIProxy)
 
@@ -554,17 +570,20 @@ func TestACPAdapterTransformsClaudeToACP(t *testing.T) {
 ```
 
 **Acceptance Criteria:**
+
 - Test compiles and runs
 - Test fails (adapter not registered)
 - Error message is clear
 
 **Verification Command:**
+
 ```bash
 cd /Users/kooshapari/temp-PRODVERCEL/485/kush/CLIProxyAPI-plusplus
 go test -run TestACPAdapterIsRegistered ./pkg/llmproxy/translator -v
 ```
 
 **Commit:**
+
 ```
 test: add failing test for ACP adapter registration in CLIProxy
 
@@ -579,6 +598,7 @@ Claude API requests to ACP format.
 #### T2.2: Implement ACP Adapter in CLIProxy Translator Registry
 
 **Files:**
+
 - `/Users/kooshapari/temp-PRODVERCEL/485/kush/CLIProxyAPI-plusplus/pkg/llmproxy/translator/acp/acp_adapter.go`
 - `/Users/kooshapari/temp-PRODVERCEL/485/kush/CLIProxyAPI-plusplus/pkg/llmproxy/translator/acp/acp_request.go`
 - `/Users/kooshapari/temp-PRODVERCEL/485/kush/CLIProxyAPI-plusplus/pkg/llmproxy/translator/acp/acp_response.go`
@@ -623,18 +643,21 @@ func init() {
 ```
 
 **Acceptance Criteria:**
+
 - T2.1 test passes
 - ACP adapter is registered and retrievable
 - Claude API requests are translated to ACP format
 - Response is translated back to Claude API format
 
 **Verification Command:**
+
 ```bash
 cd /Users/kooshapari/temp-PRODVERCEL/485/kush/CLIProxyAPI-plusplus
 go test -run TestACPAdapter ./pkg/llmproxy/translator -v
 ```
 
 **Commit:**
+
 ```
 feat(adapters): add ACP translator to CLIProxy
 
@@ -669,10 +692,7 @@ def test_acp_adapter_parity_thegent_vs_cliproxy():
     thegent_acp_req = thegent_adapter.translate_to_acp(claude_req)
 
     # CLIProxy translator
-    cliproxy_resp = httpx.post(
-        "http://localhost:8317/v1/translate/acp",
-        json=claude_req
-    ).json()
+    cliproxy_resp = httpx.post("http://localhost:8317/v1/translate/acp", json=claude_req).json()
 
     # Assert identical transformations
     assert thegent_acp_req["model"] == cliproxy_resp["model"]
@@ -680,16 +700,19 @@ def test_acp_adapter_parity_thegent_vs_cliproxy():
 ```
 
 **Acceptance Criteria:**
+
 - Parity test runs and passes
 - thegent and CLIProxy produce identical request/response transformations
 - No data loss or corruption in translation
 
 **Verification Command:**
+
 ```bash
 pytest tests/adapters/test_parity_adapters_vs_cliproxy.py -v -s
 ```
 
 **Commit:**
+
 ```
 test(adapters): add parity test for ACP adapter (thegent vs CLIProxy)
 
@@ -760,16 +783,19 @@ func TestOAuthTokenManagerStoresAndRetrievesToken(t *testing.T) {
 ```
 
 **Acceptance Criteria:**
+
 - Tests compile and run
 - Tests fail (OAuth manager not implemented)
 - Error messages are clear
 
 **Verification Command:**
+
 ```bash
 go test -run TestOAuthTokenManager ./pkg/llmproxy/auth -v
 ```
 
 **Commit:**
+
 ```
 test: add failing tests for OAuth token manager in CLIProxy auth
 
@@ -783,6 +809,7 @@ Tests token storage, retrieval, and automatic refresh of expired tokens.
 #### T3.2: Implement OAuth Token Manager in CLIProxy
 
 **Files:**
+
 - `/Users/kooshapari/temp-PRODVERCEL/485/kush/CLIProxyAPI-plusplus/pkg/llmproxy/auth/oauth_token_manager.go`
 - `/Users/kooshapari/temp-PRODVERCEL/485/kush/CLIProxyAPI-plusplus/pkg/llmproxy/auth/oauth_types.go`
 
@@ -857,17 +884,20 @@ func (m *OAuthTokenManager) GetToken(ctx context.Context, provider string) (*Tok
 ```
 
 **Acceptance Criteria:**
+
 - T3.1 tests pass
 - Tokens are stored and retrieved correctly
 - Expired tokens are automatically refreshed
 - Concurrent access is thread-safe (RWMutex)
 
 **Verification Command:**
+
 ```bash
 go test -run TestOAuthTokenManager ./pkg/llmproxy/auth -v -race
 ```
 
 **Commit:**
+
 ```
 feat(auth): add OAuth token manager to CLIProxy
 
@@ -898,8 +928,7 @@ def test_oauth_token_refresh_parity_thegent_vs_cliproxy():
 
     # CLIProxy: Token manager
     cliproxy_resp = httpx.post(
-        "http://localhost:8317/v1/auth/oauth/refresh",
-        json={"refresh_token": "refresh_token_abc"}
+        "http://localhost:8317/v1/auth/oauth/refresh", json={"refresh_token": "refresh_token_abc"}
     ).json()
 
     # Assert tokens match
@@ -908,16 +937,19 @@ def test_oauth_token_refresh_parity_thegent_vs_cliproxy():
 ```
 
 **Acceptance Criteria:**
+
 - Parity test runs and passes
 - Token refresh produces identical results in both systems
 - Expiration times match (within 1 second tolerance)
 
 **Verification Command:**
+
 ```bash
 pytest tests/auth/test_parity_oauth_vs_cliproxy.py -v
 ```
 
 **Commit:**
+
 ```
 test(auth): add parity test for OAuth token refresh (thegent vs CLIProxy)
 
@@ -990,15 +1022,18 @@ func TestQuotaEnforcerAllowsRequestWithinQuota(t *testing.T) {
 ```
 
 **Acceptance Criteria:**
+
 - Tests compile and run
 - Tests fail (quota enforcer not implemented)
 
 **Verification Command:**
+
 ```bash
 go test -run TestQuotaEnforcer ./pkg/llmproxy/usage -v
 ```
 
 **Commit:**
+
 ```
 test: add failing tests for quota enforcement in CLIProxy
 
@@ -1012,6 +1047,7 @@ Tests quota blocking and allowance based on daily token/cost limits.
 #### T4.2: Implement Quota Enforcer in CLIProxy
 
 **Files:**
+
 - `/Users/kooshapari/temp-PRODVERCEL/485/kush/CLIProxyAPI-plusplus/pkg/llmproxy/usage/quota_enforcer.go`
 - `/Users/kooshapari/temp-PRODVERCEL/485/kush/CLIProxyAPI-plusplus/pkg/llmproxy/usage/quota_types.go`
 
@@ -1085,17 +1121,20 @@ func (e *QuotaEnforcer) RecordUsage(ctx context.Context, usage *Usage) error {
 ```
 
 **Acceptance Criteria:**
+
 - T4.1 tests pass
 - Quota is enforced correctly
 - Daily reset works correctly
 - Concurrent access is thread-safe
 
 **Verification Command:**
+
 ```bash
 go test -run TestQuotaEnforcer ./pkg/llmproxy/usage -v -race
 ```
 
 **Commit:**
+
 ```
 feat(quota): add quota enforcer to CLIProxy
 
@@ -1124,25 +1163,25 @@ def test_quota_enforcement_parity_thegent_vs_cliproxy():
     thegent_allowed = thegent_quota.check_quota({"tokens": 50000})
 
     # CLIProxy: Quota enforcer
-    cliproxy_allowed = httpx.post(
-        "http://localhost:8317/v1/quota/check",
-        json={"tokens": 50000}
-    ).json()["allowed"]
+    cliproxy_allowed = httpx.post("http://localhost:8317/v1/quota/check", json={"tokens": 50000}).json()["allowed"]
 
     assert thegent_allowed == cliproxy_allowed
 ```
 
 **Acceptance Criteria:**
+
 - Parity test runs and passes
 - Both systems block at same quota thresholds
 - Both systems allow requests within quota
 
 **Verification Command:**
+
 ```bash
 pytest tests/quota/test_parity_quota_vs_cliproxy.py -v
 ```
 
 **Commit:**
+
 ```
 test(quota): add parity test for quota enforcement (thegent vs CLIProxy)
 
@@ -1197,15 +1236,18 @@ def test_thegent_routes_through_cliproxy_localhost():
 ```
 
 **Acceptance Criteria:**
+
 - Test compiles and runs
 - Test fails (thegent doesn't call CLIProxy yet)
 
 **Verification Command:**
+
 ```bash
 pytest tests/integration/test_cliproxy_integration_routing.py -v
 ```
 
 **Commit:**
+
 ```
 test: add failing test for thegent CLIProxy integration
 
@@ -1232,6 +1274,7 @@ localhost:8317 /v1/routing/select endpoint.
 
 import httpx
 from typing import Optional
+
 
 class CLIProxyRoutingClient:
     """Client for CLIProxy routing endpoint."""
@@ -1305,17 +1348,20 @@ class TaskRouter:
 ```
 
 **Acceptance Criteria:**
+
 - T5.1 test passes
 - TaskRouter calls CLIProxy, not LiteLLM
 - Response is correctly parsed
 - No local Pareto computation
 
 **Verification Command:**
+
 ```bash
 pytest tests/integration/test_cliproxy_integration_routing.py -v
 ```
 
 **Commit:**
+
 ```
 feat(routing): replace LiteLLM with CLIProxy for task routing
 
@@ -1330,6 +1376,7 @@ instead of LiteLLM for Pareto frontier routing. Adds CLIProxyRoutingClient.
 #### T5.3: Remove Migrated Routing Modules & Update tach.toml
 
 **Files to delete:**
+
 - `/Users/kooshapari/temp-PRODVERCEL/485/kush/thegent/src/thegent/routing/pareto_router.py`
 - `/Users/kooshapari/temp-PRODVERCEL/485/kush/thegent/src/thegent/routing/task_router.py` (keep stub)
 - `/Users/kooshapari/temp-PRODVERCEL/485/kush/thegent/src/thegent/routing/pareto_frontier_calculator.py` (if exists)
@@ -1351,12 +1398,14 @@ tach check
 ```
 
 **Acceptance Criteria:**
+
 - Old modules deleted
 - tach.toml updated
 - `tach check` passes (no boundary violations)
 - No import errors in remaining routing module
 
 **Verification Command:**
+
 ```bash
 cd /Users/kooshapari/temp-PRODVERCEL/485/kush/thegent
 tach check
@@ -1364,6 +1413,7 @@ pytest tests/ -k "not slow" -x
 ```
 
 **Commit:**
+
 ```
 refactor(routing): remove migrated Pareto router, update boundaries
 
@@ -1405,9 +1455,7 @@ def test_e2e_thegent_routes_and_calls_provider():
                 "tokens_in": 2500,
                 "category": "code_analysis",
             },
-            messages=[
-                {"role": "user", "content": "Explain Python async/await"}
-            ],
+            messages=[{"role": "user", "content": "Explain Python async/await"}],
             max_tokens=500,
             max_cost_per_call=0.05,
             max_latency_ms=30000,
@@ -1421,18 +1469,21 @@ def test_e2e_thegent_routes_and_calls_provider():
 ```
 
 **Acceptance Criteria:**
+
 - Full request flow succeeds: thegent → CLIProxy → provider
 - Response is properly formatted
 - Token counts are tracked
 - Cost is recorded
 
 **Verification Command:**
+
 ```bash
 cd /Users/kooshapari/temp-PRODVERCEL/485/kush/thegent
 pytest tests/integration/test_e2e_thegent_cliproxy_provider.py -v -s
 ```
 
 **Commit:**
+
 ```
 test(e2e): add end-to-end test for thegent → CLIProxy → provider flow
 
@@ -1471,25 +1522,27 @@ def test_parity_routing_legacy_vs_cliproxy():
         cliproxy_result = thegent_client.route_task(**case)
 
         # Assert identical model selection
-        assert legacy_result["model_id"] == cliproxy_result["model_id"], \
-            f"Model mismatch for {case}"
+        assert legacy_result["model_id"] == cliproxy_result["model_id"], f"Model mismatch for {case}"
 
         # Assert costs within tolerance
         assert abs(legacy_result["cost"] - cliproxy_result["cost"]) < 0.0001
 ```
 
 **Acceptance Criteria:**
+
 - All parity tests pass
 - Models match across all test cases
 - Costs/latencies match (within tolerance)
 - Quota enforcement is identical
 
 **Verification Command:**
+
 ```bash
 pytest tests/integration/test_parity_legacy_vs_cliproxy_migration.py -v
 ```
 
 **Commit:**
+
 ```
 test(migration): add comprehensive parity test suite for CLIProxy migration
 
@@ -1531,12 +1584,14 @@ func TestAllRoutingEndpointsRespond(t *testing.T) {
 ```
 
 **Verification Command:**
+
 ```bash
 cd /Users/kooshapari/temp-PRODVERCEL/485/kush/CLIProxyAPI-plusplus
 go test -run TestAllRoutingEndpointsRespond ./pkg/llmproxy/api -v
 ```
 
 **Commit:**
+
 ```
 test(integration): verify all CLIProxy Track 1 endpoints are accessible
 
@@ -1550,28 +1605,28 @@ Smoke test confirming /v1/routing/select, /v1/auth/oauth/refresh,
 
 ## Summary Table: Tasks, Dependencies, Files
 
-| Task ID | Title | Duration | Depends On | Files | Test | Verification |
-|---------|-------|----------|-----------|-------|------|--------------|
-| **T1.1** | Pareto test (failing) | 30m | None | `routing_pareto_integration_test.go` | ✓ (fails) | `go test TestPareto...` |
-| **T1.2** | Pareto router impl | 2h | T1.1 | `pareto_router.go`, `pareto_types.go` | ✓ (passes) | `go test TestPareto...` |
-| **T1.3** | TaskClassifier | 1.5h | T1.2 | `task_classifier.go`, `task_classifier_test.go` | ✓ (passes) | `go test TestTaskClassifier...` |
-| **T1.4** | /v1/routing/select endpoint | 1.5h | T1.3 | `routing_handler.go`, `routing_handler_test.go` | ✓ (passes) | `go test TestPOSTRoutingSelect...` |
-| **T1.5** | Parity test (routing) | 1h | T1.4 | `test_parity_pareto_router_vs_cliproxy.py` | ✓ (passes) | `pytest test_parity_pareto...` |
-| **T2.1** | ACP adapter test (failing) | 30m | T1.4 | `acp_adapter_registry_test.go` | ✓ (fails) | `go test TestACPAdapter...` |
-| **T2.2** | ACP adapter impl | 1.5h | T2.1 | `acp_adapter.go`, `acp_request.go`, `acp_response.go` | ✓ (passes) | `go test TestACPAdapter...` |
-| **T2.3** | Parity test (adapters) | 1h | T2.2 | `test_parity_adapters_vs_cliproxy.py` | ✓ (passes) | `pytest test_parity_adapters...` |
-| **T3.1** | OAuth test (failing) | 30m | T1.4 | `oauth_token_manager_test.go` | ✓ (fails) | `go test TestOAuthTokenManager...` |
-| **T3.2** | OAuth manager impl | 1.5h | T3.1 | `oauth_token_manager.go`, `oauth_types.go` | ✓ (passes) | `go test TestOAuthTokenManager... -race` |
-| **T3.3** | Parity test (auth) | 1h | T3.2 | `test_parity_oauth_vs_cliproxy.py` | ✓ (passes) | `pytest test_parity_oauth...` |
-| **T4.1** | Quota test (failing) | 30m | T1.4 | `quota_enforcer_test.go` | ✓ (fails) | `go test TestQuotaEnforcer...` |
-| **T4.2** | Quota enforcer impl | 1.5h | T4.1 | `quota_enforcer.go`, `quota_types.go` | ✓ (passes) | `go test TestQuotaEnforcer... -race` |
-| **T4.3** | Parity test (quota) | 1h | T4.2 | `test_parity_quota_vs_cliproxy.py` | ✓ (passes) | `pytest test_parity_quota...` |
-| **T5.1** | CLIProxy integration test (failing) | 30m | T1.5+T2.3+T3.3+T4.3 | `test_cliproxy_integration_routing.py` | ✓ (fails) | `pytest test_cliproxy_integration...` |
-| **T5.2** | TaskRouter → CLIProxy | 2h | T5.1 | `cliproxy_client.py`, updated `task_router.py` | ✓ (passes) | `pytest test_cliproxy_integration...` |
-| **T5.3** | Remove old modules & update tach.toml | 1h | T5.2 | Delete files, update `tach.toml` | ✓ (passes) | `tach check` |
-| **T5.4** | E2E test (thegent → CLIProxy → provider) | 1.5h | T5.3 | `test_e2e_thegent_cliproxy_provider.py` | ✓ (passes) | `pytest test_e2e_...` |
-| **T5.5** | Full parity suite (legacy vs CLIProxy) | 2h | T5.4 | `test_parity_legacy_vs_cliproxy_migration.py` | ✓ (passes) | `pytest test_parity_legacy...` |
-| **T0.0** | Endpoint smoke test | 30m | All (verify) | `endpoints_integration_test.go` | ✓ (passes) | `go test TestAllRouting...` |
+| Task ID  | Title                                    | Duration | Depends On          | Files                                                 | Test       | Verification                             |
+| -------- | ---------------------------------------- | -------- | ------------------- | ----------------------------------------------------- | ---------- | ---------------------------------------- |
+| **T1.1** | Pareto test (failing)                    | 30m      | None                | `routing_pareto_integration_test.go`                  | ✓ (fails)  | `go test TestPareto...`                  |
+| **T1.2** | Pareto router impl                       | 2h       | T1.1                | `pareto_router.go`, `pareto_types.go`                 | ✓ (passes) | `go test TestPareto...`                  |
+| **T1.3** | TaskClassifier                           | 1.5h     | T1.2                | `task_classifier.go`, `task_classifier_test.go`       | ✓ (passes) | `go test TestTaskClassifier...`          |
+| **T1.4** | /v1/routing/select endpoint              | 1.5h     | T1.3                | `routing_handler.go`, `routing_handler_test.go`       | ✓ (passes) | `go test TestPOSTRoutingSelect...`       |
+| **T1.5** | Parity test (routing)                    | 1h       | T1.4                | `test_parity_pareto_router_vs_cliproxy.py`            | ✓ (passes) | `pytest test_parity_pareto...`           |
+| **T2.1** | ACP adapter test (failing)               | 30m      | T1.4                | `acp_adapter_registry_test.go`                        | ✓ (fails)  | `go test TestACPAdapter...`              |
+| **T2.2** | ACP adapter impl                         | 1.5h     | T2.1                | `acp_adapter.go`, `acp_request.go`, `acp_response.go` | ✓ (passes) | `go test TestACPAdapter...`              |
+| **T2.3** | Parity test (adapters)                   | 1h       | T2.2                | `test_parity_adapters_vs_cliproxy.py`                 | ✓ (passes) | `pytest test_parity_adapters...`         |
+| **T3.1** | OAuth test (failing)                     | 30m      | T1.4                | `oauth_token_manager_test.go`                         | ✓ (fails)  | `go test TestOAuthTokenManager...`       |
+| **T3.2** | OAuth manager impl                       | 1.5h     | T3.1                | `oauth_token_manager.go`, `oauth_types.go`            | ✓ (passes) | `go test TestOAuthTokenManager... -race` |
+| **T3.3** | Parity test (auth)                       | 1h       | T3.2                | `test_parity_oauth_vs_cliproxy.py`                    | ✓ (passes) | `pytest test_parity_oauth...`            |
+| **T4.1** | Quota test (failing)                     | 30m      | T1.4                | `quota_enforcer_test.go`                              | ✓ (fails)  | `go test TestQuotaEnforcer...`           |
+| **T4.2** | Quota enforcer impl                      | 1.5h     | T4.1                | `quota_enforcer.go`, `quota_types.go`                 | ✓ (passes) | `go test TestQuotaEnforcer... -race`     |
+| **T4.3** | Parity test (quota)                      | 1h       | T4.2                | `test_parity_quota_vs_cliproxy.py`                    | ✓ (passes) | `pytest test_parity_quota...`            |
+| **T5.1** | CLIProxy integration test (failing)      | 30m      | T1.5+T2.3+T3.3+T4.3 | `test_cliproxy_integration_routing.py`                | ✓ (fails)  | `pytest test_cliproxy_integration...`    |
+| **T5.2** | TaskRouter → CLIProxy                    | 2h       | T5.1                | `cliproxy_client.py`, updated `task_router.py`        | ✓ (passes) | `pytest test_cliproxy_integration...`    |
+| **T5.3** | Remove old modules & update tach.toml    | 1h       | T5.2                | Delete files, update `tach.toml`                      | ✓ (passes) | `tach check`                             |
+| **T5.4** | E2E test (thegent → CLIProxy → provider) | 1.5h     | T5.3                | `test_e2e_thegent_cliproxy_provider.py`               | ✓ (passes) | `pytest test_e2e_...`                    |
+| **T5.5** | Full parity suite (legacy vs CLIProxy)   | 2h       | T5.4                | `test_parity_legacy_vs_cliproxy_migration.py`         | ✓ (passes) | `pytest test_parity_legacy...`           |
+| **T0.0** | Endpoint smoke test                      | 30m      | All (verify)        | `endpoints_integration_test.go`                       | ✓ (passes) | `go test TestAllRouting...`              |
 
 ---
 
@@ -1601,6 +1656,7 @@ Day 2 (6h wall clock):
 ## Quality Gates & Acceptance Criteria
 
 All tasks must pass:
+
 1. **Failing test runs and fails** (TDD requirement)
 2. **Implementation makes test pass** (minimal viable change)
 3. **Parity test verifies identical behavior** (thegent vs CLIProxy)
@@ -1613,6 +1669,7 @@ All tasks must pass:
 ## Commits & PR Strategy
 
 **Per-task commits (small, reviewable diffs):**
+
 - Test commits: Failing test + minimal scaffolding
 - Implementation commits: Core logic + passing test
 - Parity commits: Parity test + verification
@@ -1622,6 +1679,7 @@ All tasks must pass:
 **PR: Single Track 1 PR** collecting all commits in DAG order.
 
 **Pre-merge checks:**
+
 - All tests pass (Go + Python)
 - Parity suite 100% pass rate
 - `tach check` succeeds
@@ -1631,13 +1689,13 @@ All tasks must pass:
 
 ## Risk Mitigation
 
-| Risk | Mitigation |
-|------|-----------|
-| CLIProxy endpoint timeout | Add 10s client timeout; implement retry with backoff (T1.2) |
-| Floating-point cost mismatch | Use parity tolerance (0.1% for cost, 10ms for latency) in tests |
-| Concurrent quota access | Use RWMutex with `go test -race` validation (T4.2) |
-| Old Pareto code still imported | Run `grep -r "pareto_router"` after deletion (T5.3) |
-| LiteLLM still in use | Update all imports to CLIProxyRoutingClient (T5.2) |
+| Risk                           | Mitigation                                                      |
+| ------------------------------ | --------------------------------------------------------------- |
+| CLIProxy endpoint timeout      | Add 10s client timeout; implement retry with backoff (T1.2)     |
+| Floating-point cost mismatch   | Use parity tolerance (0.1% for cost, 10ms for latency) in tests |
+| Concurrent quota access        | Use RWMutex with `go test -race` validation (T4.2)              |
+| Old Pareto code still imported | Run `grep -r "pareto_router"` after deletion (T5.3)             |
+| LiteLLM still in use           | Update all imports to CLIProxyRoutingClient (T5.2)              |
 
 ---
 

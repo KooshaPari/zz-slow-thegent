@@ -1,7 +1,9 @@
 from __future__ import annotations
 
-import orjson as json
+import contextlib
 from pathlib import Path
+
+import orjson as json
 
 from thegent.orchestration.state.session_scraper import SessionScraper
 
@@ -37,7 +39,9 @@ def _write_snapshot(path: Path, payload: dict, mtime: int) -> None:
     os.utime(path, (mtime, mtime))
 
 
-def test_summarize_snapshots_by_day_aggregates_counts_across_two_dates(tmp_path: Path) -> None:
+def test_summarize_snapshots_by_day_aggregates_counts_across_two_dates(
+    tmp_path: Path,
+) -> None:
     scraper = SessionScraper(project_root=tmp_path)
     root = tmp_path / "snapshots"
 
@@ -112,7 +116,9 @@ def test_daily_summary_skips_malformed_snapshot_json(tmp_path: Path) -> None:
     }
 
 
-def test_persist_snapshot_daily_index_writes_expected_json_structure(tmp_path: Path) -> None:
+def test_persist_snapshot_daily_index_writes_expected_json_structure(
+    tmp_path: Path,
+) -> None:
     scraper = SessionScraper(project_root=tmp_path)
     root = tmp_path / "snapshots"
     out_path = tmp_path / "snapshot-daily-index.json"
@@ -140,7 +146,9 @@ def test_persist_snapshot_daily_index_writes_expected_json_structure(tmp_path: P
     }
 
 
-def test_export_snapshot_daily_index_markdown_writes_file_with_daily_headers_and_metrics(tmp_path: Path) -> None:
+def test_export_snapshot_daily_index_markdown_writes_file_with_daily_headers_and_metrics(
+    tmp_path: Path,
+) -> None:
     scraper = SessionScraper(project_root=tmp_path)
     root = tmp_path / "snapshots"
     out_path = tmp_path / "snapshot-daily-index.md"
@@ -179,7 +187,9 @@ def test_export_snapshot_daily_index_markdown_writes_file_with_daily_headers_and
     assert "- `2026-02-24 | 1 | 1 | 2 | 1`" in content
 
 
-def test_empty_directory_returns_empty_daily_summary_and_exports_valid_markdown(tmp_path: Path) -> None:
+def test_empty_directory_returns_empty_daily_summary_and_exports_valid_markdown(
+    tmp_path: Path,
+) -> None:
     scraper = SessionScraper(project_root=tmp_path)
     root = tmp_path / "empty-snapshots"
     root.mkdir()
@@ -207,10 +217,12 @@ def test_request_event_id_propagation_from_request_to_created_and_failed_events(
     # Test 1: request_event_id propagation on SUCCESS
     monkeypatch.setattr("thegent.orchestration.state.session_scraper.list_tmux_panes", list)
     monkeypatch.setattr(
-        "thegent.orchestration.state.session_scraper.SessionScraper.scrape_claude_history", lambda self: ["p1"]
+        "thegent.orchestration.state.session_scraper.SessionScraper.scrape_claude_history",
+        lambda self: ["p1"],
     )
     monkeypatch.setattr(
-        "thegent.orchestration.state.session_scraper.SessionScraper.scrape_ante_history", lambda self: []
+        "thegent.orchestration.state.session_scraper.SessionScraper.scrape_ante_history",
+        lambda self: [],
     )
 
     request_id_success = "req-propagation-success-001"
@@ -234,19 +246,18 @@ def test_request_event_id_propagation_from_request_to_created_and_failed_events(
         raise OSError("simulated IO error")
 
     monkeypatch.setattr(
-        "thegent.orchestration.state.session_scraper.SessionScraper.collect_snapshot", _raise_on_collect
+        "thegent.orchestration.state.session_scraper.SessionScraper.collect_snapshot",
+        _raise_on_collect,
     )
 
     request_id_fail = "req-propagation-fail-001"
-    try:
+    with contextlib.suppress(OSError):
         scraper.persist_snapshot(
             trigger="hook:pre-commit",
             out_dir=tmp_path / "snapshots-failed",
             request_event_id=request_id_fail,
             event_log=event_log_failed,
         )
-    except OSError:
-        pass
 
     events_failed = [
         json.loads(line) for line in event_log_failed.read_text(encoding="utf-8").splitlines() if line.strip()

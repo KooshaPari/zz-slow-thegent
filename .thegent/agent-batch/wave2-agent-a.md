@@ -1,6 +1,7 @@
 # Wave 2 Agent A (2026-02-21)
 
 ## Completed slices
+
 - WL-078
   - Hardened benchmark regression parser to fail fast on malformed payloads (`benchmarks` must be list, rows must be objects) and duplicate labels.
   - Added regression tests for malformed/duplicate-input behavior.
@@ -27,6 +28,7 @@
   - Added tests for session-scoped pending calls, ownership checks, and cleanup behavior.
 
 ## Validation
+
 - `uv run pytest -q tests/performance/test_python_benchmark_regression.py`
   - Passed: `4 passed`
 - `uv run pytest -q tests/test_unit_skills.py -k "skill_md_only or missing_json or invalid_json or sorts_results or empty_manifest_name or rejects_empty_name"`
@@ -41,6 +43,7 @@
   - Passed (exit 0)
 
 ## Blockers
+
 - WL-102 dependency note:
   - SDK currently assumes `/v1/run` and `/v1/sessions` HTTP routes. Final endpoint contract confirmation with MCP/server HTTP surface is still required before productionizing.
 - WL-103 dependency note:
@@ -49,6 +52,7 @@
   - Registry primitives are complete for session-local lifecycle; wiring into full MCP session-init/dispatch path remains a follow-up integration step.
 
 ## Exact files touched
+
 - `scripts/check_python_benchmark_regression.py`
 - `tests/performance/test_python_benchmark_regression.py`
 - `src/thegent/skills/discovery.py`

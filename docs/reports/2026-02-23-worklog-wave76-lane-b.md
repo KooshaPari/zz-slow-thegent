@@ -25,10 +25,12 @@ Repo touched: `/Users/kooshapari/temp-PRODVERCEL/485/kush/cliproxyapi-plusplus`
 ## Per-Item Evidence
 
 ### CPB-B1 (`#1521`) - 429/503 behavior with available credit
+
 - Status: `triaged/no safe narrow patch in this lane`
 - Evidence: no targeted low-risk repro fixture found in current test corpus for this specific upstream state transition.
 
 ### CPB-B2 (`#206`) - nullable type arrays in tool schema -> 400
+
 - Status: `validated in reconciled baseline`
 - Change:
   - `pkg/llmproxy/translator/gemini/common/sanitize.go`
@@ -38,28 +40,34 @@ Repo touched: `/Users/kooshapari/temp-PRODVERCEL/485/kush/cliproxyapi-plusplus`
   - Command: `go test ./pkg/llmproxy/translator/gemini/common -run TestNormalizeOpenAIFunctionSchemaForGemini -count=1` -> `ok`
 
 ### CPB-B3 (`#1514`) - token refresh 500/server busy path
+
 - Status: `triaged/no safe narrow patch in this lane`
 - Evidence: no isolated iflow refresh contract test target in touched packages; requires provider-specific behavior contract expansion.
 
 ### CPB-B4 (`#1513`) - nullable type arrays in tool schema -> 400
+
 - Status: `validated in reconciled baseline (same fix-path as CPB-B2)`
 - Evidence:
   - Same sanitizer hardening and new regression test as CPB-B2.
   - Command: `go test ./pkg/llmproxy/translator/gemini/common -run TestNormalizeOpenAIFunctionSchemaForGemini -count=1` -> `ok`
 
 ### CPB-B5 (`#1508`) - per OAuth account outbound proxy enforcement
+
 - Status: `triaged/no safe narrow patch in this lane`
 - Evidence: cross-cutting auth/proxy policy feature; not suitable for speculative partial implementation.
 
 ### CPB-B6 (`#1507`) - antigravity opus + DCP plugin error
+
 - Status: `triaged/no safe narrow patch in this lane`
 - Evidence: no deterministic local fixture linked to DCP plugin path in current lane scope.
 
 ### CPB-B7 (`#1477`) - request-level metadata injected into `contents[]`
+
 - Status: `partially covered by schema normalization hardening`
 - Evidence: Gemini-side schema normalization now enforces stricter cleanup before provider payload build (`sanitize.go` change).
 
 ### CPB-B8 (`#201`) - read-only config save path
+
 - Status: `validated in reconciled baseline`
 - Change:
   - `pkg/llmproxy/api/handlers/management/handler.go`
@@ -72,10 +80,12 @@ Repo touched: `/Users/kooshapari/temp-PRODVERCEL/485/kush/cliproxyapi-plusplus`
   - Command: `go test ./pkg/llmproxy/api/handlers/management -run TestIsReadOnlyConfigWriteError -count=1` -> `ok`
 
 ### CPB-B9 (`#1455`) - missing auth should not collapse into opaque 500
+
 - Status: `partially improved`
 - Evidence: management write-path classification now returns explicit persisted=false warning for read-only config variants rather than generic opaque internal failure when message text variant differs.
 
 ### CPB-B10 (`#1445`) - generic API error quality
+
 - Status: `partially improved`
 - Evidence: broader read-only error variant handling reduces generic failure surfacing for common filesystem wording variants.
 

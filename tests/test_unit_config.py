@@ -133,7 +133,11 @@ class TestRetentionByDomain:
     def test_retention_by_domain_from_json_string(self) -> None:
         # @trace FR-CFG-004
         """retention_by_domain parses JSON string from env."""
-        with patch.dict(os.environ, {"THGENT_RETENTION_BY_DOMAIN": '{"gdpr": 365, "soc2": 2555}'}, clear=False):
+        with patch.dict(
+            os.environ,
+            {"THGENT_RETENTION_BY_DOMAIN": '{"gdpr": 365, "soc2": 2555}'},
+            clear=False,
+        ):
             s = ThegentSettings()
             assert s.retention_by_domain == {"gdpr": 365, "soc2": 2555}
 
@@ -268,7 +272,11 @@ class TestSandboxEnvAllowlistValidator:
     def test_env_allowlist_from_json_array(self) -> None:
         # @trace FR-CFG-001
         """JSON array env var parses to list (line 283-284)."""
-        with patch.dict(os.environ, {"THGENT_SANDBOX_ENV_ALLOWLIST": '["PATH","HOME","CUSTOM"]'}, clear=False):
+        with patch.dict(
+            os.environ,
+            {"THGENT_SANDBOX_ENV_ALLOWLIST": '["PATH","HOME","CUSTOM"]'},
+            clear=False,
+        ):
             s = ThegentSettings()
             assert "PATH" in s.sandbox_env_allowlist
             assert "CUSTOM" in s.sandbox_env_allowlist

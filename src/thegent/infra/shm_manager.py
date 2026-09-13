@@ -59,7 +59,11 @@ class SHMManager:
         return thegent_shm.get_health_score()
 
     def update_router_metrics(
-        self, lifecycle_inc: int = 0, thegent_inc: int = 0, changes_inc: int = 0, hysteresis_inc: int = 0
+        self,
+        lifecycle_inc: int = 0,
+        thegent_inc: int = 0,
+        changes_inc: int = 0,
+        hysteresis_inc: int = 0,
     ) -> None:
         self._ensure_init()
         with contextlib.suppress(Exception):

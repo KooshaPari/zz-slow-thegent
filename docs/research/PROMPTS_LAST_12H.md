@@ -2,6 +2,7 @@
 # User Prompts — Last 12 hours
 
 # Generated: placeholder — run `thegent prompts last --hours 12` to populate
+
 # Count: 0 (run command to refresh)
 
 ---
@@ -20,4 +21,4 @@ Sources: Claude (`~/.claude/history.jsonl`), Codex (`~/.codex/history.jsonl`), C
 
 ## Prompts
 
-*(Run `thegent prompts last --hours 12` to populate from Claude/Codex/Cursor history.)*
+_(Run `thegent prompts last --hours 12` to populate from Claude/Codex/Cursor history.)_

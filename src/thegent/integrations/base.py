@@ -134,8 +134,8 @@ class SerializableMixin:  # noqa: PLW1641
 
     def to_dict(self) -> dict[str, Any]:
         """Convert to dictionary with automatic type serialization."""
-        from enum import Enum
         from datetime import datetime
+        from enum import Enum
         from pathlib import Path
 
         def _serialize(val: Any) -> Any:
@@ -168,7 +168,7 @@ class SerializableMixin:  # noqa: PLW1641
         return result
 
     @classmethod
-    def from_dict(cls, data: dict[str, Any]) -> "SerializableMixin":
+    def from_dict(cls, data: dict[str, Any]) -> SerializableMixin:
         """Create instance from dictionary with type-aware deserialization.
 
         Automatically converts:
@@ -222,7 +222,7 @@ class SerializableMixin:  # noqa: PLW1641
         from enum import Enum
         from pathlib import Path
         from types import UnionType
-        from typing import get_origin, get_args, Union
+        from typing import Union, get_args, get_origin
 
         if val is None:
             return None
@@ -372,7 +372,7 @@ class SerializableMixin:  # noqa: PLW1641
             parts.append("...")
         return f"{cls_name}({', '.join(parts)})"
 
-    def diff(self, other: "SerializableMixin") -> dict[str, tuple[Any, Any]]:
+    def diff(self, other: SerializableMixin) -> dict[str, tuple[Any, Any]]:
         """Compare this instance with another and return field differences.
 
         Args:
@@ -408,7 +408,7 @@ class SerializableMixin:  # noqa: PLW1641
 
         return differences
 
-    def copy(self, **overrides: Any) -> "SerializableMixin":
+    def copy(self, **overrides: Any) -> SerializableMixin:
         """Create a shallow copy with optional field overrides.
 
         Args:
@@ -425,7 +425,7 @@ class SerializableMixin:  # noqa: PLW1641
         data.update(overrides)
         return type(self).from_dict(data)
 
-    def merge(self, other: "SerializableMixin", *, overwrite: bool = True) -> "SerializableMixin":
+    def merge(self, other: SerializableMixin, *, overwrite: bool = True) -> SerializableMixin:
         """Merge fields from another instance into a new instance.
 
         Args:
@@ -458,7 +458,7 @@ class SerializableMixin:  # noqa: PLW1641
 
         return type(self).from_dict(merged)
 
-    def patch(self, **updates: Any) -> "SerializableMixin":
+    def patch(self, **updates: Any) -> SerializableMixin:
         """Apply updates to create a new instance (alias for copy).
 
         More explicit name for the copy operation when making targeted changes.
@@ -490,7 +490,7 @@ class SerializableMixin:  # noqa: PLW1641
         return json.dumps(self.to_dict(), indent=indent, sort_keys=sort_keys, default=str)
 
     @classmethod
-    def from_json(cls, json_str: str) -> "SerializableMixin":
+    def from_json(cls, json_str: str) -> SerializableMixin:
         """Create instance from JSON string.
 
         Args:
@@ -520,7 +520,7 @@ class SerializableMixin:  # noqa: PLW1641
         path.write_text(self.to_json(indent=indent))
 
     @classmethod
-    def from_json_file(cls, path: str | Path) -> "SerializableMixin":
+    def from_json_file(cls, path: str | Path) -> SerializableMixin:
         """Create instance from JSON file.
 
         Args:
@@ -625,7 +625,7 @@ class SingletonMixin:
             return SingletonMixin._locks[cls]
 
     @classmethod
-    def get_instance(cls, *args, **kwargs) -> "SingletonMixin":
+    def get_instance(cls, *args, **kwargs) -> SingletonMixin:
         """Get the singleton instance, creating it if necessary.
 
         Args:
@@ -758,7 +758,7 @@ class DataclassConfig:
     enabled: bool = False
 
     @classmethod
-    def from_env(cls, prefix: str = "") -> "DataclassConfig":
+    def from_env(cls, prefix: str = "") -> DataclassConfig:
         """Load config from environment variables."""
         env_values: dict[str, Any] = {}
 

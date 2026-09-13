@@ -134,7 +134,16 @@ def test_helper_names_are_not_shadowed_by_local_bindings() -> None:
             if isinstance(node, ast.Assign):
                 for target in node.targets:
                     bound_names.update(_iter_target_names(target))
-            elif isinstance(node, (ast.AnnAssign, ast.AugAssign, ast.For, ast.AsyncFor, ast.comprehension)):
+            elif isinstance(
+                node,
+                (
+                    ast.AnnAssign,
+                    ast.AugAssign,
+                    ast.For,
+                    ast.AsyncFor,
+                    ast.comprehension,
+                ),
+            ):
                 bound_names.update(_iter_target_names(node.target))
             elif isinstance(node, (ast.With, ast.AsyncWith)):
                 for item in node.items:

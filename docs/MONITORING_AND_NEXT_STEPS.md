@@ -26,6 +26,7 @@
 ## 🔍 Monitoring Commands
 
 ### Test Installation
+
 ```bash
 # Dry run test
 thegent install --system-deps --dry-run
@@ -35,6 +36,7 @@ thegent install --system-deps --verbose
 ```
 
 ### Test Uninstall
+
 ```bash
 # Preview uninstall
 thegent uninstall-system-deps --dry-run
@@ -44,6 +46,7 @@ thegent uninstall-system-deps
 ```
 
 ### Verify Functions
+
 ```bash
 # Check imports
 python3 -c "from thegent.install import install_mise, uninstall_system_dependencies; print('OK')"
@@ -55,6 +58,7 @@ thegent --help | grep -E "(install|uninstall|system-deps)"
 ## 📊 Next Steps
 
 ### Immediate (Ready Now)
+
 1. **User Testing**
    - Test on clean system
    - Test with existing mise installation
@@ -66,6 +70,7 @@ thegent --help | grep -E "(install|uninstall|system-deps)"
    - Create user guide
 
 ### Short Term (This Week)
+
 1. **Edge Case Testing**
    - Test with missing permissions
    - Test with corrupted shell configs
@@ -77,6 +82,7 @@ thegent --help | grep -E "(install|uninstall|system-deps)"
    - Track backup sizes
 
 ### Medium Term (This Month)
+
 1. **Enhancements**
    - Add restore command (`thegent restore-backup`)
    - Add backup cleanup (old backups)
@@ -98,6 +104,7 @@ thegent --help | grep -E "(install|uninstall|system-deps)"
 ## 🚀 Ready for Production
 
 All core features are complete and tested. The system is ready for:
+
 - Beta testing with users
 - Production deployment
 - Documentation finalization

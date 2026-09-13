@@ -12,7 +12,7 @@ Zeroconf-style discovery for agents on the local network.
 
 ### Methods
 
-#### P2PDiscovery.__init__
+#### P2PDiscovery.**init**
 
 ```python
 __init__(self: Any, agent_id: str, port: int, capabilities: list[str])

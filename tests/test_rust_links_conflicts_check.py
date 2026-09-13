@@ -23,7 +23,12 @@ def test_build_report_from_metadata_passes_when_links_are_unique() -> None:
     metadata = {
         "packages": [
             {"id": "a 0.1.0", "name": "crate-a", "version": "0.1.0", "links": "python"},
-            {"id": "b 0.2.0", "name": "crate-b", "version": "0.2.0", "links": "sqlite3"},
+            {
+                "id": "b 0.2.0",
+                "name": "crate-b",
+                "version": "0.2.0",
+                "links": "sqlite3",
+            },
             {"id": "c 0.3.0", "name": "crate-c", "version": "0.3.0"},
         ]
     }

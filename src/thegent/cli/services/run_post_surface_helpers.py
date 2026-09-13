@@ -3,13 +3,13 @@
 from __future__ import annotations
 
 import logging
-import orjson as json
 import time
 from collections.abc import Callable
 from datetime import UTC, datetime
 from pathlib import Path
 from typing import Any
 
+import orjson as json
 import typer
 
 from thegent.agents import get_fallback_agents, list_agent_names
@@ -138,7 +138,8 @@ def resume_impl(
     state_payload["status"] = "running"
     state_payload["updated_at_utc"] = datetime.now(UTC).isoformat()
     state_path.write_text(
-        json.dumps(state_payload, option=json.OPT_INDENT_2 | json.OPT_SORT_KEYS).decode() + "\n", encoding="utf-8"
+        json.dumps(state_payload, option=json.OPT_INDENT_2 | json.OPT_SORT_KEYS).decode() + "\n",
+        encoding="utf-8",
     )
 
     return {
@@ -593,7 +594,11 @@ def harness_interact_impl(
     session_id: str | None = None,
 ) -> dict[str, Any]:
     """Execute a harness action via HarnessTUIMapper."""
-    from thegent.agents.unified_session_index import HarnessActionError, HarnessTUIMapper, HarnessType
+    from thegent.agents.unified_session_index import (
+        HarnessActionError,
+        HarnessTUIMapper,
+        HarnessType,
+    )
 
     try:
         harness_type = HarnessType(harness.lower())

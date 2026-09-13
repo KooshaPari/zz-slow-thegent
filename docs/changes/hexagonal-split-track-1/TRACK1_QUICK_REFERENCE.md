@@ -37,28 +37,28 @@
 
 ## 1-Page Task Checklist
 
-| Task | Work Stream | Duration | Status | Verification |
-|------|-------------|----------|--------|--------------|
-| **T1.1** | Pareto frontier routing | 30m | ⏳ | `go test -run TestPareto...` |
-| **T1.2** | Pareto router impl | 2h | ⏳ | `go test -run TestPareto...` |
-| **T1.3** | Task classifier | 1.5h | ⏳ | `go test -run TestTaskClassifier...` |
-| **T1.4** | /v1/routing/select endpoint | 1.5h | ⏳ | `curl -X POST http://localhost:8317/v1/routing/select` |
-| **T1.5** | Parity test (routing) | 1h | ⏳ | `pytest test_parity_pareto_router_vs_cliproxy.py` |
-| **T2.1** | ACP adapter test | 30m | ⏳ | `go test -run TestACPAdapter...` |
-| **T2.2** | ACP adapter impl | 1.5h | ⏳ | `go test -run TestACPAdapter...` |
-| **T2.3** | Parity test (adapters) | 1h | ⏳ | `pytest test_parity_adapters_vs_cliproxy.py` |
-| **T3.1** | OAuth token test | 30m | ⏳ | `go test -run TestOAuthTokenManager...` |
-| **T3.2** | OAuth manager impl | 1.5h | ⏳ | `go test -run TestOAuthTokenManager... -race` |
-| **T3.3** | Parity test (auth) | 1h | ⏳ | `pytest test_parity_oauth_vs_cliproxy.py` |
-| **T4.1** | Quota enforcer test | 30m | ⏳ | `go test -run TestQuotaEnforcer...` |
-| **T4.2** | Quota enforcer impl | 1.5h | ⏳ | `go test -run TestQuotaEnforcer... -race` |
-| **T4.3** | Parity test (quota) | 1h | ⏳ | `pytest test_parity_quota_vs_cliproxy.py` |
-| **T5.1** | CLIProxy integration test | 30m | ⏳ | `pytest test_cliproxy_integration_routing.py` |
-| **T5.2** | TaskRouter → CLIProxy | 2h | ⏳ | `pytest test_cliproxy_integration_routing.py` |
-| **T5.3** | Remove old modules, update tach.toml | 1h | ⏳ | `tach check` |
-| **T5.4** | E2E test | 1.5h | ⏳ | `pytest test_e2e_thegent_cliproxy_provider.py` |
-| **T5.5** | Full parity suite | 2h | ⏳ | `pytest test_parity_legacy_vs_cliproxy_migration.py` |
-| **T0.0** | Endpoint smoke test | 30m | ⏳ | `go test -run TestAllRouting...` |
+| Task     | Work Stream                          | Duration | Status | Verification                                           |
+| -------- | ------------------------------------ | -------- | ------ | ------------------------------------------------------ |
+| **T1.1** | Pareto frontier routing              | 30m      | ⏳     | `go test -run TestPareto...`                           |
+| **T1.2** | Pareto router impl                   | 2h       | ⏳     | `go test -run TestPareto...`                           |
+| **T1.3** | Task classifier                      | 1.5h     | ⏳     | `go test -run TestTaskClassifier...`                   |
+| **T1.4** | /v1/routing/select endpoint          | 1.5h     | ⏳     | `curl -X POST http://localhost:8317/v1/routing/select` |
+| **T1.5** | Parity test (routing)                | 1h       | ⏳     | `pytest test_parity_pareto_router_vs_cliproxy.py`      |
+| **T2.1** | ACP adapter test                     | 30m      | ⏳     | `go test -run TestACPAdapter...`                       |
+| **T2.2** | ACP adapter impl                     | 1.5h     | ⏳     | `go test -run TestACPAdapter...`                       |
+| **T2.3** | Parity test (adapters)               | 1h       | ⏳     | `pytest test_parity_adapters_vs_cliproxy.py`           |
+| **T3.1** | OAuth token test                     | 30m      | ⏳     | `go test -run TestOAuthTokenManager...`                |
+| **T3.2** | OAuth manager impl                   | 1.5h     | ⏳     | `go test -run TestOAuthTokenManager... -race`          |
+| **T3.3** | Parity test (auth)                   | 1h       | ⏳     | `pytest test_parity_oauth_vs_cliproxy.py`              |
+| **T4.1** | Quota enforcer test                  | 30m      | ⏳     | `go test -run TestQuotaEnforcer...`                    |
+| **T4.2** | Quota enforcer impl                  | 1.5h     | ⏳     | `go test -run TestQuotaEnforcer... -race`              |
+| **T4.3** | Parity test (quota)                  | 1h       | ⏳     | `pytest test_parity_quota_vs_cliproxy.py`              |
+| **T5.1** | CLIProxy integration test            | 30m      | ⏳     | `pytest test_cliproxy_integration_routing.py`          |
+| **T5.2** | TaskRouter → CLIProxy                | 2h       | ⏳     | `pytest test_cliproxy_integration_routing.py`          |
+| **T5.3** | Remove old modules, update tach.toml | 1h       | ⏳     | `tach check`                                           |
+| **T5.4** | E2E test                             | 1.5h     | ⏳     | `pytest test_e2e_thegent_cliproxy_provider.py`         |
+| **T5.5** | Full parity suite                    | 2h       | ⏳     | `pytest test_parity_legacy_vs_cliproxy_migration.py`   |
+| **T0.0** | Endpoint smoke test                  | 30m      | ⏳     | `go test -run TestAllRouting...`                       |
 
 ---
 
@@ -67,6 +67,7 @@
 ### CLIProxy (Go)
 
 **Routing (T1.x):**
+
 ```
 /Users/kooshapari/temp-PRODVERCEL/485/kush/CLIProxyAPI-plusplus/
 ├─ pkg/llmproxy/registry/
@@ -83,6 +84,7 @@
 ```
 
 **Adapters (T2.x):**
+
 ```
 ├─ pkg/llmproxy/translator/acp/
 │  ├─ acp_adapter.go (NEW - T2.2)
@@ -92,6 +94,7 @@
 ```
 
 **Auth (T3.x):**
+
 ```
 └─ pkg/llmproxy/auth/
    ├─ oauth_token_manager.go (NEW - T3.2)
@@ -100,6 +103,7 @@
 ```
 
 **Quota (T4.x):**
+
 ```
 └─ pkg/llmproxy/usage/
    ├─ quota_enforcer.go (NEW - T4.2)
@@ -110,6 +114,7 @@
 ### thegent (Python)
 
 **Routing (T5.x):**
+
 ```
 /Users/kooshapari/temp-PRODVERCEL/485/kush/thegent/
 ├─ src/thegent/routing/
@@ -289,6 +294,7 @@ After all tasks complete:
 ## Gotchas & Tips
 
 1. **CLIProxy must be running** for thegent parity tests:
+
    ```bash
    /Users/kooshapari/temp-PRODVERCEL/485/kush/CLIProxyAPI-plusplus/bin/cliproxy server &
    ```
@@ -301,6 +307,7 @@ After all tasks complete:
 3. **Don't delete task_router.py**, just make it a thin wrapper calling CLIProxy.
 
 4. **Update all imports** when moving to CLIProxyRoutingClient:
+
    ```bash
    grep -r "from thegent.routing.pareto_router import" src/
    grep -r "from thegent.routing.task_router import" src/

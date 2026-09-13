@@ -6,12 +6,14 @@
 **Recommendation: Ghostty** for agentic development workflows.
 
 Ghostty excels in:
+
 - **Performance**: GPU-accelerated rendering, fastest terminal for large outputs
 - **Native feel**: Platform-native UI components (macOS/Linux)
 - **Agentic workflows**: Terminal-first design perfect for CLI agents (Claude Code, Codex, etc.)
 - **Minimalism**: No AI baked in (keeps AI separate, as preferred)
 
 CommanderAI offers:
+
 - Built-in AI features
 - Modern UI
 - But: Slower performance, less suitable for agentic workflows
@@ -23,6 +25,7 @@ CommanderAI offers:
 ### Ghostty
 
 **Strengths:**
+
 - ⚡ **Blazing fast**: GPU-accelerated (Metal on macOS, OpenGL on Linux)
 - 🎨 **Native UI**: Uses platform-native components (tabs, splits, windows)
 - 🔧 **Terminal-first**: Perfect for CLI agents (Claude Code, Codex, OpenCode)
@@ -32,21 +35,25 @@ CommanderAI offers:
 - 🔒 **Security**: Secure Keyboard Entry (macOS), password prompt detection
 
 **Weaknesses:**
+
 - No built-in AI features (but this is a strength for agentic workflows)
 - Windows support not yet available
 
 **Best For:**
+
 - Agentic development (Claude Code, Codex, OpenCode CLI)
 - High-performance terminal work
 - Multi-agent workflows with git worktree
 - Developers who want terminal speed without AI clutter
 
 **Community Feedback:**
+
 - "Switched from iTerm2, speed difference is noticeable, especially with large outputs"
 - "Ghostty + Zellij + agent(s) + Neovim/Helix is the way"
 - "Nothing comes close to Ghostty in terms of performance and user experience"
 
 **Configuration:**
+
 - Config file: `~/.config/ghostty/config`
 - MCP server support: Available via `lobehub.com/mcp/yourusername-ghostty-mcp`
 - Shell integration: Full support for zsh/bash/fish
@@ -57,21 +64,25 @@ CommanderAI offers:
 ### CommanderAI
 
 **Strengths:**
+
 - 🤖 **Built-in AI**: AI features baked into terminal
 - 🎨 **Modern UI**: Polished interface
 - 🔄 **AI integration**: Command suggestions, explanations
 
 **Weaknesses:**
+
 - ⚠️ **Performance**: Slower than Ghostty (no GPU acceleration mentioned)
 - 🔒 **Vendor lock-in**: AI features tied to specific provider
 - 🎯 **Less suitable for agentic workflows**: AI baked in conflicts with separate agent tools
 
 **Best For:**
+
 - Users who want AI directly in terminal
 - Casual terminal users
 - Not ideal for agentic development (conflicts with Claude Code/Codex)
 
 **Community Feedback:**
+
 - "CommanderAI looks cool but I don't really need the AI stuff baked into my terminal, I'd rather keep that separate"
 
 ---
@@ -79,24 +90,28 @@ CommanderAI offers:
 ### Other Notable Terminals
 
 #### Alacritty
+
 - **Performance**: Very fast, GPU-accelerated
 - **Design**: Minimal, configurable via YAML
 - **Best for**: Users who want speed + customization
 - **Weakness**: Less feature-rich than Ghostty
 
 #### Kitty
+
 - **Performance**: Fast, GPU-accelerated
 - **Features**: Rich feature set, extensible
 - **Best for**: Power users who want customization
 - **Weakness**: More complex configuration
 
 #### Warp
+
 - **Performance**: Fast, GPU-accelerated
 - **AI**: Built-in AI features (subscription required)
 - **Best for**: Users who want AI + performance
 - **Weakness**: Subscription model, less suitable for agentic workflows
 
 #### Windows Terminal
+
 - **Performance**: Good (GPU-accelerated on Windows)
 - **Features**: Multiplexing, themes, image protocol
 - **Best for**: Windows users
@@ -117,6 +132,7 @@ CommanderAI offers:
 5. **Terminal-First**: Claude Code/Codex run directly in terminal, scriptable and automatable
 
 **Workflow Pattern:**
+
 ```
 Ghostty (terminal)
   ├── Worktree 1 (feature branch)
@@ -128,6 +144,7 @@ Ghostty (terminal)
 ```
 
 **Benefits:**
+
 - True parallelism: Multiple agents work simultaneously
 - Isolation: Each worktree has its own filesystem state
 - No context switching: Monitor all agents in one terminal
@@ -137,14 +154,14 @@ Ghostty (terminal)
 
 ## Performance Benchmarks (Community Reports)
 
-| Terminal | Large Output Performance | GPU Acceleration | Startup Time |
-|----------|-------------------------|------------------|--------------|
-| Ghostty  | ⭐⭐⭐⭐⭐ Excellent | ✅ Metal/OpenGL | Fast |
-| CommanderAI | ⭐⭐⭐ Good | ❓ Unknown | Moderate |
-| Alacritty | ⭐⭐⭐⭐ Very Good | ✅ OpenGL | Fast |
-| Kitty | ⭐⭐⭐⭐ Very Good | ✅ OpenGL | Fast |
-| Warp | ⭐⭐⭐⭐ Very Good | ✅ Metal | Fast |
-| iTerm2 | ⭐⭐⭐ Moderate | ❌ No | Moderate |
+| Terminal    | Large Output Performance | GPU Acceleration | Startup Time |
+| ----------- | ------------------------ | ---------------- | ------------ |
+| Ghostty     | ⭐⭐⭐⭐⭐ Excellent     | ✅ Metal/OpenGL  | Fast         |
+| CommanderAI | ⭐⭐⭐ Good              | ❓ Unknown       | Moderate     |
+| Alacritty   | ⭐⭐⭐⭐ Very Good       | ✅ OpenGL        | Fast         |
+| Kitty       | ⭐⭐⭐⭐ Very Good       | ✅ OpenGL        | Fast         |
+| Warp        | ⭐⭐⭐⭐ Very Good       | ✅ Metal         | Fast         |
+| iTerm2      | ⭐⭐⭐ Moderate          | ❌ No            | Moderate     |
 
 ---
 
@@ -153,6 +170,7 @@ Ghostty (terminal)
 ### Ghostty Configuration
 
 **Basic Setup:**
+
 ```bash
 # Install Ghostty
 # macOS: brew install ghostty
@@ -162,6 +180,7 @@ Ghostty (terminal)
 ```
 
 **Recommended Settings for Agentic Development:**
+
 ```ini
 # Performance
 font-size = 14
@@ -188,11 +207,13 @@ tab-bar = true
 ```
 
 **MCP Integration:**
+
 - Ghostty MCP server available via LobeHub
 - Enables programmatic terminal control
 - Useful for agent orchestration
 
 **Shell Integration:**
+
 ```bash
 # Add to ~/.zshrc or ~/.bashrc
 eval "$(ghostty --shell-integration)"
@@ -202,33 +223,36 @@ eval "$(ghostty --shell-integration)"
 
 ## Use Case Matrix
 
-| Use Case | Ghostty | CommanderAI | Alacritty | Kitty | Warp |
-|----------|---------|-------------|-----------|-------|------|
-| Agentic development | ✅✅✅ Best | ❌ Conflicts | ✅ Good | ✅ Good | ⚠️ Subscription |
-| High-performance output | ✅✅✅ Best | ⚠️ Moderate | ✅✅ Good | ✅✅ Good | ✅✅ Good |
-| Multi-agent workflows | ✅✅✅ Best | ❌ Not ideal | ✅ Good | ✅ Good | ⚠️ Subscription |
-| AI features needed | ❌ Separate tools | ✅✅ Built-in | ❌ Separate | ❌ Separate | ✅✅ Built-in |
-| Cross-platform | ✅ macOS/Linux | ❓ Unknown | ✅ All | ✅ All | ❌ macOS only |
-| Native feel | ✅✅✅ Best | ⚠️ Unknown | ⚠️ Custom | ⚠️ Custom | ✅✅ Good |
-| Configuration | ✅ Simple | ❓ Unknown | ⚠️ YAML | ⚠️ Complex | ✅ Simple |
+| Use Case                | Ghostty           | CommanderAI   | Alacritty   | Kitty       | Warp            |
+| ----------------------- | ----------------- | ------------- | ----------- | ----------- | --------------- |
+| Agentic development     | ✅✅✅ Best       | ❌ Conflicts  | ✅ Good     | ✅ Good     | ⚠️ Subscription |
+| High-performance output | ✅✅✅ Best       | ⚠️ Moderate   | ✅✅ Good   | ✅✅ Good   | ✅✅ Good       |
+| Multi-agent workflows   | ✅✅✅ Best       | ❌ Not ideal  | ✅ Good     | ✅ Good     | ⚠️ Subscription |
+| AI features needed      | ❌ Separate tools | ✅✅ Built-in | ❌ Separate | ❌ Separate | ✅✅ Built-in   |
+| Cross-platform          | ✅ macOS/Linux    | ❓ Unknown    | ✅ All      | ✅ All      | ❌ macOS only   |
+| Native feel             | ✅✅✅ Best       | ⚠️ Unknown    | ⚠️ Custom   | ⚠️ Custom   | ✅✅ Good       |
+| Configuration           | ✅ Simple         | ❓ Unknown    | ⚠️ YAML     | ⚠️ Complex  | ✅ Simple       |
 
 ---
 
 ## Migration Guide: Switching to Ghostty
 
 ### From iTerm2
+
 1. Install Ghostty: `brew install ghostty`
 2. Export iTerm2 profiles/configs if needed
 3. Configure Ghostty: `~/.config/ghostty/config`
 4. Test with agent workflows
 
 ### From Terminal.app (macOS)
+
 1. Install Ghostty: `brew install ghostty`
 2. Set as default terminal (optional)
 3. Configure shell integration
 4. Test performance improvements
 
 ### From Alacritty/Kitty
+
 1. Install Ghostty
 2. Compare performance (Ghostty should be faster)
 3. Migrate configs (Ghostty config is simpler)
@@ -284,5 +308,5 @@ eval "$(ghostty --shell-integration)"
 
 ---
 
-*Research Date: 2026-02-18*
-*Sources: Medium, Reddit, Ghostty docs, Mitchell Hashimoto blog*
+_Research Date: 2026-02-18_
+_Sources: Medium, Reddit, Ghostty docs, Mitchell Hashimoto blog_

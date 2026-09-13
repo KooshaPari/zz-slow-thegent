@@ -41,56 +41,60 @@ The Distributed Compute Offload architecture is designed as a **Remote Shadow Wo
 
 ### 1.2 Core Logic: Remote Worktree vs. Shared State
 
-*   **Option: Shared OS/States (NO)**: We avoid a simple shared filesystem because it leads to "Index Contention" and state-smashing when both your laptop and desktop try to write to the same `.git` index.
-*   **Effectively Remote Worktree (YES)**: The `State Synchronization Engine (SSE)` ensures your desktop has the exact delta of your code. The `Remote Executor` then spawns a **True Concurrent Workspace** using `git worktree`.
-*   **Result**: You can be coding on your laptop while 3 different agents are running heavy tests or builds on your Desktop PC, each in their own isolated filesystem slice.
+- **Option: Shared OS/States (NO)**: We avoid a simple shared filesystem because it leads to "Index Contention" and state-smashing when both your laptop and desktop try to write to the same `.git` index.
+- **Effectively Remote Worktree (YES)**: The `State Synchronization Engine (SSE)` ensures your desktop has the exact delta of your code. The `Remote Executor` then spawns a **True Concurrent Workspace** using `git worktree`.
+- **Result**: You can be coding on your laptop while 3 different agents are running heavy tests or builds on your Desktop PC, each in their own isolated filesystem slice.
 
 ## 2. Expanded Feature Set (Breadth & Depth)
 
 To "maximally engineer" this system, we are adding the following dimensions:
 
 ### 2.1 State Synchronization Engine (SSE) [BREADTH]
-*   **Git-Delta Sync**: Instead of sending full files, we send uncommitted diffs + current HEAD. Fast, even on high-latency links.
-*   **Virtual Filesystem Fallback**: If the repo is not Git-managed, we use an `rsync`-like rolling hash sync.
-*   **Artifact-Aware Sync**: Excludes `node_modules`, `.venv`, and `target/` to minimize network transit.
+
+- **Git-Delta Sync**: Instead of sending full files, we send uncommitted diffs + current HEAD. Fast, even on high-latency links.
+- **Virtual Filesystem Fallback**: If the repo is not Git-managed, we use an `rsync`-like rolling hash sync.
+- **Artifact-Aware Sync**: Excludes `node_modules`, `.venv`, and `target/` to minimize network transit.
 
 ### 2.2 Remote Shadow Workspace Manager (RSWM) [DEPTH]
-*   **Isolation Levels**:
-    *   *Level 1 (Process)*: High speed, uses standard worktree isolation.
-    *   *Level 2 (Containerized)*: Spawns a Docker container mapped to the worktree for OS-level parity (e.g., running Linux tests from a Mac client).
-*   **Lifespan Management**: Auto-prunes worktrees after task completion or heartbeat loss.
+
+- **Isolation Levels**:
+  - _Level 1 (Process)_: High speed, uses standard worktree isolation.
+  - _Level 2 (Containerized)_: Spawns a Docker container mapped to the worktree for OS-level parity (e.g., running Linux tests from a Mac client).
+- **Lifespan Management**: Auto-prunes worktrees after task completion or heartbeat loss.
 
 ### 2.3 Cross-Platform Context Bridging (XPCB) [POLISH]
-*   **Path Translation**: Automatically maps `/Users/koosha/...` (Mac) to `C:\Users\koosha\...` (Windows) during context handoff.
-*   **Tool Parity**: Leverages `mise` on the remote node to ensure the *exact* same version of Python/Rust/Node is used as on the client.
+
+- **Path Translation**: Automatically maps `/Users/koosha/...` (Mac) to `C:\Users\koosha\...` (Windows) during context handoff.
+- **Tool Parity**: Leverages `mise` on the remote node to ensure the _exact_ same version of Python/Rust/Node is used as on the client.
 
 ### 2.4 Distributed TUI Cockpit (QOL) [POLISH]
-*   **Unified View**: A laptop dashboard showing:
-    *   CPU/RAM load on Desktop PC.
-    *   Active remote tasks and their "time-to-complete" estimates.
-    *   One-click "Remote Attach" to view live logs.
+
+- **Unified View**: A laptop dashboard showing:
+  - CPU/RAM load on Desktop PC.
+  - Active remote tasks and their "time-to-complete" estimates.
+  - One-click "Remote Attach" to view live logs.
 
 ## 3. Implementation Status (Updated)
 
-| Feature | Engineering Depth | Status |
-| :--- | :--- | :--- |
-| **Bridge Protocol** | Pydantic V2 + JSON | Finalized |
-| **SSE (Sync)** | Git Worktree Over SSH | **IN DEVELOPMENT** |
-| **Remote Executor** | FastAPI + Streaming | **IN DEVELOPMENT** |
-| **Workload Classifier** | Heuristic AST Analysis | Finalized |
-| **TUI Cockpit** | Textual (Python) | Planned |
+| Feature                 | Engineering Depth      | Status             |
+| :---------------------- | :--------------------- | :----------------- |
+| **Bridge Protocol**     | Pydantic V2 + JSON     | Finalized          |
+| **SSE (Sync)**          | Git Worktree Over SSH  | **IN DEVELOPMENT** |
+| **Remote Executor**     | FastAPI + Streaming    | **IN DEVELOPMENT** |
+| **Workload Classifier** | Heuristic AST Analysis | Finalized          |
+| **TUI Cockpit**         | Textual (Python)       | Planned            |
 
 ### 1.2 Component Responsibilities
 
-| Component | Responsibility | Location |
-|-----------|---|---|
-| **Compute Catalog** | Registry of available environments + capabilities | `thegent/offload/compute_catalog.py` |
-| **Capability Resolver** | Probe local env; publish fingerprint | `thegent/offload/capability_resolver.py` |
-| **Workload Classifier** | Analyze task; infer platform requirements | `thegent/offload/workload_classifier.py` |
-| **Offload Router** | Route to best target based on policy | `thegent/offload/offload_router.py` |
-| **Bridge Protocol** | Serialize/deserialize execution context | `thegent/offload/bridge_protocol.py` |
-| **Remote Executor** | Listen for offload requests; execute tasks | `thegent/offload/remote_executor.py` |
-| **Offload Client** | Initiate remote execution; stream results | `thegent/offload/offload_client.py` |
+| Component               | Responsibility                                    | Location                                 |
+| ----------------------- | ------------------------------------------------- | ---------------------------------------- |
+| **Compute Catalog**     | Registry of available environments + capabilities | `thegent/offload/compute_catalog.py`     |
+| **Capability Resolver** | Probe local env; publish fingerprint              | `thegent/offload/capability_resolver.py` |
+| **Workload Classifier** | Analyze task; infer platform requirements         | `thegent/offload/workload_classifier.py` |
+| **Offload Router**      | Route to best target based on policy              | `thegent/offload/offload_router.py`      |
+| **Bridge Protocol**     | Serialize/deserialize execution context           | `thegent/offload/bridge_protocol.py`     |
+| **Remote Executor**     | Listen for offload requests; execute tasks        | `thegent/offload/remote_executor.py`     |
+| **Offload Client**      | Initiate remote execution; stream results         | `thegent/offload/offload_client.py`      |
 
 ---
 
@@ -101,9 +105,11 @@ To "maximally engineer" this system, we are adding the following dimensions:
 **Purpose**: Registry of available compute environments and their capabilities.
 
 **Data Structure**:
+
 ```python
 class Environment(BaseModel):
     """Represents a compute environment (Mac, Linux, Windows)"""
+
     env_id: str  # "mac-m1-mini", "linux-ubuntu-22.04", "windows-11"
     os: str  # "macos", "linux", "windows"
     arch: str  # "arm64", "x86_64"
@@ -135,8 +141,10 @@ class Environment(BaseModel):
     created_at: datetime
     expires_at: Optional[datetime]  # For temporary nodes
 
+
 class CapabilityProfile(BaseModel):
     """Capabilities of an environment"""
+
     languages: Set[str]  # {"python", "node", "rust", "go", "swift"}
     package_managers: Set[str]  # {"pip", "npm", "cargo", "go"}
     runtimes: Set[str]  # {"python-3.12", "node-20", "jvm-21"}
@@ -148,8 +156,10 @@ class CapabilityProfile(BaseModel):
     cloud_tools: Set[str]  # {"aws-cli", "gcloud", "az"}
     dev_frameworks: Set[str]  # {"xcode", "visual-studio", "vscode"}
 
+
 class ComputeCatalog(BaseModel):
     """Registry of all available environments"""
+
     environments: Dict[str, Environment]  # env_id -> Environment
 
     @classmethod
@@ -175,6 +185,7 @@ class ComputeCatalog(BaseModel):
 ```
 
 **File Format** (JSON):
+
 ```json
 {
   "environments": {
@@ -223,6 +234,7 @@ class ComputeCatalog(BaseModel):
 ```
 
 **Persistence**:
+
 - Location: `~/.thegent/compute_catalog.json` (or `${THGENT_COMPUTE_CATALOG_PATH}`)
 - Refresh: TTL 5 minutes (or on-demand via `health_check()`)
 - Sync: Each environment's remote executor publishes its catalog entry; control plane aggregates
@@ -234,6 +246,7 @@ class ComputeCatalog(BaseModel):
 **Purpose**: Probe local environment; publish capabilities.
 
 **Interface**:
+
 ```python
 class CapabilityResolver:
     """Probe local machine for capabilities"""
@@ -268,8 +281,10 @@ class CapabilityResolver:
         result = subprocess.run(["python3", "--version"], capture_output=True, text=True)
         return result.stdout.strip().split()[-1]  # "3.12.0"
 
+
 class CapabilityCache:
     """Cache resolved capabilities with TTL"""
+
     def __init__(self, ttl_seconds: int = 600):  # 10 min default
         self.ttl = ttl_seconds
         self.profile: Optional[CapabilityProfile] = None
@@ -287,6 +302,7 @@ class CapabilityCache:
 ```
 
 **Usage**:
+
 ```python
 # During remote executor startup
 cache = CapabilityCache(ttl_seconds=600)
@@ -308,6 +324,7 @@ catalog.register_environment(env_entry)
 **Purpose**: Analyze task/prompt; infer platform requirements.
 
 **Heuristics**:
+
 ```python
 class WorkloadClassifier:
     """Classify workload by platform suitability"""
@@ -394,6 +411,7 @@ class WorkloadClassifier:
 
         return min(1.0, base_score)
 
+
 class Classification(BaseModel):
     required_capabilities: Set[str]
     preferred_os: Optional[str]  # "macos", "linux", "windows", or None
@@ -408,8 +426,10 @@ class Classification(BaseModel):
 **Purpose**: Select best target environment; apply routing policies.
 
 **Routing Policies**:
+
 ```python
 from enum import Enum
+
 
 class RoutingPolicy(Enum):
     COST_OPTIMAL = "cost_optimal"  # Cheapest
@@ -417,6 +437,7 @@ class RoutingPolicy(Enum):
     CAPABILITY_OPTIMAL = "capability_optimal"  # Most capable
     AVAILABILITY_OPTIMAL = "availability_optimal"  # Highest SLA
     PARETO = "pareto"  # Pareto frontier (cost vs latency)
+
 
 class OffloadRouter:
     """Route workload to best target environment"""
@@ -484,6 +505,7 @@ class OffloadRouter:
         env = self.catalog.environments[env_id]
         return env.network_latency_ms
 
+
 class Route(BaseModel):
     env_id: str
     hostname: str
@@ -498,9 +520,11 @@ class Route(BaseModel):
 **Purpose**: Serialize/deserialize execution context for cross-platform communication.
 
 **Message Format**:
+
 ```python
 class ExecutionRequest(BaseModel):
     """Request to offload task execution"""
+
     request_id: str  # UUID
     timestamp: datetime
 
@@ -536,8 +560,10 @@ class ExecutionRequest(BaseModel):
             }
         }
 
+
 class ExecutionResponse(BaseModel):
     """Response from remote executor"""
+
     request_id: str  # Echo request_id
     timestamp: datetime
 
@@ -571,6 +597,7 @@ class ExecutionResponse(BaseModel):
 ```
 
 **HTTP API**:
+
 ```
 POST /v1/offload/execute
 Content-Type: application/json
@@ -599,6 +626,7 @@ Content-Type: application/json
 **Purpose**: Listen for offload requests; execute tasks in sandbox; return results.
 
 **Server Interface**:
+
 ```python
 class RemoteExecutor:
     """HTTP server for executing offloaded tasks"""
@@ -733,7 +761,9 @@ class RemoteExecutor:
     def run(self):
         """Start the server"""
         import uvicorn
+
         uvicorn.run(self.app, host=self.host, port=self.port)
+
 
 class ExecutionResult(BaseModel):
     exit_code: int
@@ -751,6 +781,7 @@ class ExecutionResult(BaseModel):
 **Purpose**: Initiate remote execution from control plane.
 
 **Interface**:
+
 ```python
 class OffloadClient:
     """Client for invoking remote executor"""
@@ -855,6 +886,7 @@ def register_offload_decision(self, run_id: str, offload_decision: OffloadDecisi
         "reason": offload_decision.reason,
     }
     self._append_to_registry(event)
+
 
 def register_offload_completion(self, run_id: str, response: ExecutionResponse):
     """Record offload execution result"""
@@ -976,13 +1008,13 @@ curl -H "Authorization: Bearer secret-token" \
 
 ### 7.1 Failure Modes
 
-| Scenario | Handling |
-|----------|----------|
-| Remote executor offline | Fall back to local execution |
-| Network timeout | Retry with backoff; fall back to local |
-| Cost cap exceeded | Reject offload; run locally |
-| Workload unsuitable for all envs | Run locally with warning |
-| Executor policy rejects request | Fall back to local |
+| Scenario                         | Handling                               |
+| -------------------------------- | -------------------------------------- |
+| Remote executor offline          | Fall back to local execution           |
+| Network timeout                  | Retry with backoff; fall back to local |
+| Cost cap exceeded                | Reject offload; run locally            |
+| Workload unsuitable for all envs | Run locally with warning               |
+| Executor policy rejects request  | Fall back to local                     |
 
 ### 7.2 Fallback Flow
 
@@ -1014,6 +1046,7 @@ def run_with_offload_fallback(self, prompt: str) -> RunResult:
 **Chosen**: HTTP (prototype only)
 
 **Rationale**:
+
 - Simpler to implement and debug
 - Built-in tooling (curl, Postman)
 - Stateless; easier to load balance
@@ -1028,6 +1061,7 @@ def run_with_offload_fallback(self, prompt: str) -> RunResult:
 **Chosen**: JSON + Pydantic
 
 **Rationale**:
+
 - Self-documenting
 - Pydantic provides validation + serialization
 - Human-readable logs
@@ -1039,6 +1073,7 @@ def run_with_offload_fallback(self, prompt: str) -> RunResult:
 **Chosen**: File-based catalog with periodic sync (hybrid)
 
 **Rationale**:
+
 - Simple for prototype (single JSON file)
 - Avoid external service dependency
 - Future: Gossip protocol or git-based sync
@@ -1050,6 +1085,7 @@ def run_with_offload_fallback(self, prompt: str) -> RunResult:
 **Chosen**: OS-level process isolation (local execution)
 
 **Rationale**:
+
 - Simpler to prototype
 - Sufficient for LAN environments
 - Future: Docker containers for stronger isolation

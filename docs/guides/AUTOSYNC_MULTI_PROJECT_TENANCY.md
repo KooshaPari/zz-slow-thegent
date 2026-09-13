@@ -1,9 +1,11 @@
 # Multi-Project Tenancy Autosync (WL-199)
 
 ## Purpose
+
 Run board/autosync workflows across multiple project roots with one explicit sync-policy contract at `.thegent/sync-policy.yaml`.
 
 ## Contract File
+
 Create `.thegent/sync-policy.yaml` in each project root:
 
 ```yaml
@@ -35,6 +37,7 @@ tenancy:
 ```
 
 ## Validate Policy
+
 Run:
 
 ```bash
@@ -42,12 +45,15 @@ thegent sync audit --format table --project /abs/path/project-a
 ```
 
 Expected:
+
 - `Schema Version: sync-policy/v1`
 - connector modes and quotas loaded from file
 - tenancy mode/project count visible in output
 
 ## Dead-Letter Recovery
+
 Failed remote writes are persisted at:
+
 - default: `docs/reference/workstream_remote_writes_dead_letter.jsonl`
 - override: `THGENT_SYNC_DEAD_LETTER_PATH=/custom/path.jsonl`
 
@@ -64,6 +70,7 @@ thegent sync dead-letter-replay --dry-run
 ```
 
 ## Operational Notes
+
 - Keep connector `mode=disabled` for projects not ready to write remote state.
 - Use connector-level `board_id` in policy to avoid per-command board flags.
 - Keep tenancy `projects[].root` unique; duplicate roots are rejected by contract validation.

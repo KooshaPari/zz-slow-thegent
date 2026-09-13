@@ -7,11 +7,11 @@ FR traceability:
 
 from __future__ import annotations
 
-import orjson as json
 import subprocess
 from typing import TYPE_CHECKING
 from unittest import mock
 
+import orjson as json
 import pytest
 
 from thegent.mesh.merge import SmartMerge

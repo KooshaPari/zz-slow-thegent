@@ -9,12 +9,14 @@
 ### ✅ 2. Removed Duplicate Tools from agentapi/atomsagent
 
 **Removed duplicate tools:**
+
 - ❌ `search_requirements` - Now use `entity_operation(operation='search', entity_type='requirement')` from atoms-mcp-prod
 - ❌ `create_requirement` - Now use `entity_operation(operation='create', entity_type='requirement')` from atoms-mcp-prod
 - ❌ `analyze_document` - Now use `data_query(query_type='rag_search', entities=['document'])` from atoms-mcp-prod
 - ⚠️ `search_codebase` - Removed (Claude Agent SDK provides this natively)
 
 **Kept unique tools:**
+
 - ✅ `execute_in_sandbox` - Vercel Sandbox execution (unique)
 - ✅ `get_execution_metrics` - Sandbox metrics (unique)
 - ✅ `get_execution_trace` - Distributed tracing (unique)
@@ -36,7 +38,7 @@ Update `agentapi/atomsagent/src/atomsAgent/mcp/integration.py` to automatically 
 ```python
 async def compose_mcp_servers(...):
     servers = {}
-    
+
     # Always include atoms-mcp-prod (official server with all platform tools)
     atoms_mcp_url = os.getenv("ATOMS_MCP_PROD_URL", "https://mcp.atoms.tech/api/mcp")
     servers["atoms-mcp"] = {
@@ -44,10 +46,10 @@ async def compose_mcp_servers(...):
         "auth": "bearer",
         "token": user_token,  # AuthKit JWT
     }
-    
+
     # Include local sandbox tools (unique to agentapi)
     servers.update(get_atoms_sandbox_tools_config())
-    
+
     # ... rest of composition logic
 ```
 
@@ -55,11 +57,13 @@ async def compose_mcp_servers(...):
 
 **Decision Needed:**
 The sandbox tools (`execute_in_sandbox`, etc.) depend on:
+
 - `claude-agent-sdk>=0.1.5,<0.2.0`
 - `SandboxAgent` service
 - `monitoring_service` and `tracing_service`
 
 **Options:**
+
 1. **Keep in agentapi/atomsagent** (current approach) - Sandbox tools stay in agentapi since they're tightly coupled to its infrastructure
 2. **Move to atoms-mcp-prod** - Would require adding claude-agent-sdk dependency and porting services
 
@@ -70,6 +74,7 @@ The sandbox tools (`execute_in_sandbox`, etc.) depend on:
 ### For Users of agentapi/atomsagent MCP Tools
 
 **Before:**
+
 ```python
 # Old way (duplicate tools)
 search_requirements(query="...")
@@ -79,27 +84,15 @@ search_codebase(query="...")
 ```
 
 **After:**
+
 ```python
 # New way (use atoms-mcp-prod)
 # Requirements operations
-entity_operation(
-    operation="search",
-    entity_type="requirement",
-    filters={"title": {"ilike": "%...%"}}
-)
-entity_operation(
-    operation="create",
-    entity_type="requirement",
-    properties={"project_id": "...", "title": "..."}
-)
+entity_operation(operation="search", entity_type="requirement", filters={"title": {"ilike": "%...%"}})
+entity_operation(operation="create", entity_type="requirement", properties={"project_id": "...", "title": "..."})
 
 # Document analysis
-data_query(
-    query_type="rag_search",
-    entities=["document"],
-    query="...",
-    document_id="..."
-)
+data_query(query_type="rag_search", entities=["document"], query="...", document_id="...")
 
 # Codebase search
 codebase_search_tool(query="...", file_pattern="*.py")
@@ -113,20 +106,20 @@ codebase_search_tool(query="...", file_pattern="*.py")
 # In atomsAgent/mcp/integration.py
 async def compose_mcp_servers(...):
     servers = {}
-    
+
     # 1. Add atoms-mcp-prod (official server)
     servers["atoms-mcp"] = {
         "url": os.getenv("ATOMS_MCP_PROD_URL", "https://mcp.atoms.tech/api/mcp"),
         "auth": "bearer",
         "token": user_token,
     }
-    
+
     # 2. Add local sandbox tools
     servers.update(get_atoms_sandbox_tools_config())
-    
+
     # 3. Add user/org/project servers
     # ... existing logic
-    
+
     return servers
 ```
 

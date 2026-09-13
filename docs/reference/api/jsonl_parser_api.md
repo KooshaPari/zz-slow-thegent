@@ -5,16 +5,16 @@
 BKM-10: Thin Python wrapper for thegent-jsonl native binary.
 
 Streams JSON objects from JSONL (newline-delimited JSON) files without loading
-entire files into memory.  Two execution strategies (tried in order):
+entire files into memory. Two execution strategies (tried in order):
 
-1. ``thegent-jsonl`` binary (Rust, streaming BufReader backend) — zero heap for
+1. `thegent-jsonl` binary (Rust, streaming BufReader backend) — zero heap for
    entire-file load.
-2. Pure Python fallback — ``json.loads`` line-by-line — always available.
+2. Pure Python fallback — `json.loads` line-by-line — always available.
 
 The fallback is intentionally kept as a standalone, fully functional path so
 the module works even when the Rust binary has not been compiled.
 
-FR-JSONL-001  @trace FR-JSONL-001
+FR-JSONL-001 @trace FR-JSONL-001
 
 ---
 
@@ -22,7 +22,7 @@ FR-JSONL-001  @trace FR-JSONL-001
 
 Streaming JSONL parser.
 
-Tries the ``thegent-jsonl`` Rust binary first; falls back to pure Python.
+Tries the `thegent-jsonl` Rust binary first; falls back to pure Python.
 
 All methods operate lazily (generators) except :meth:`count` and
 
@@ -34,7 +34,7 @@ All methods operate lazily (generators) except :meth:`count` and
 count(self: Any, path: Path)
 ```
 
-Return the number of non-blank lines in *path*.
+Return the number of non-blank lines in _path_.
 
 **Parameters**:
 
@@ -50,13 +50,13 @@ Return the number of non-blank lines in *path*.
 filter(self: Any, path: Path, key: str, value: str)
 ```
 
-Yield records from *path* where ``record[key] == value``.
+Yield records from _path_ where `record[key] == value`.
 
 **Parameters**:
 
-- `path`:  Path to a JSONL file.
-- `key`:   Top-level JSON field name.
-- `value`: String value to match (coerced via ``str()``).
+- `path`: Path to a JSONL file.
+- `key`: Top-level JSON field name.
+- `value`: String value to match (coerced via `str()`).
 
 **Returns**: Matching JSON objects.
 
@@ -68,14 +68,14 @@ Yield records from *path* where ``record[key] == value``.
 sample(self: Any, path: Path, n: int)
 ```
 
-Return up to *n* records from the start of *path*.
+Return up to _n_ records from the start of _path_.
 
 **Parameters**:
 
 - `path`: Path to a JSONL file.
-- `n`:    Maximum number of records to return.
+- `n`: Maximum number of records to return.
 
-**Returns**: List of up to *n* parsed JSON dicts.
+**Returns**: List of up to _n_ parsed JSON dicts.
 
 ---
 
@@ -85,13 +85,13 @@ Return up to *n* records from the start of *path*.
 stream(self: Any, path: Path)
 ```
 
-Yield every JSON object in *path* without loading the file fully.
+Yield every JSON object in _path_ without loading the file fully.
 
 **Parameters**:
 
 - `path`: Path to a JSONL file.
 
-**Returns**: Parsed JSON objects as Python dicts.  Non-dict values and
+**Returns**: Parsed JSON objects as Python dicts. Non-dict values and
 malformed lines are silently skipped.
 
 ---
@@ -104,7 +104,7 @@ malformed lines are silently skipped.
 count(self: Any, path: Path)
 ```
 
-Return the number of non-blank lines in *path*.
+Return the number of non-blank lines in _path_.
 
 **Parameters**:
 
@@ -120,13 +120,13 @@ Return the number of non-blank lines in *path*.
 filter(self: Any, path: Path, key: str, value: str)
 ```
 
-Yield records from *path* where ``record[key] == value``.
+Yield records from _path_ where `record[key] == value`.
 
 **Parameters**:
 
-- `path`:  Path to a JSONL file.
-- `key`:   Top-level JSON field name.
-- `value`: String value to match (coerced via ``str()``).
+- `path`: Path to a JSONL file.
+- `key`: Top-level JSON field name.
+- `value`: String value to match (coerced via `str()`).
 
 **Returns**: Matching JSON objects.
 
@@ -138,14 +138,14 @@ Yield records from *path* where ``record[key] == value``.
 sample(self: Any, path: Path, n: int)
 ```
 
-Return up to *n* records from the start of *path*.
+Return up to _n_ records from the start of _path_.
 
 **Parameters**:
 
 - `path`: Path to a JSONL file.
-- `n`:    Maximum number of records to return.
+- `n`: Maximum number of records to return.
 
-**Returns**: List of up to *n* parsed JSON dicts.
+**Returns**: List of up to _n_ parsed JSON dicts.
 
 ---
 
@@ -155,13 +155,13 @@ Return up to *n* records from the start of *path*.
 stream(self: Any, path: Path)
 ```
 
-Yield every JSON object in *path* without loading the file fully.
+Yield every JSON object in _path_ without loading the file fully.
 
 **Parameters**:
 
 - `path`: Path to a JSONL file.
 
-**Returns**: Parsed JSON objects as Python dicts.  Non-dict values and
+**Returns**: Parsed JSON objects as Python dicts. Non-dict values and
 malformed lines are silently skipped.
 
 ---

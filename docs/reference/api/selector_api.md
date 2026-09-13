@@ -12,7 +12,7 @@ Optimizes model selection across multiple objectives (WP-14001).
 
 ### Methods
 
-#### ObjectiveSelector.__init__
+#### ObjectiveSelector.**init**
 
 ```python
 __init__(self: Any, weights: Any)

@@ -78,7 +78,6 @@ class TestCompositorIntegration:
 
         # Create a 2x2 grid-like structure through splits
         pm.split_pane("V")  # Root: [pane1, pane2]
-        pane2_id = pm.focus_pane_id
 
         pm.split_pane("H")  # pane2: [pane2a, pane2b]
         pane2b_id = pm.focus_pane_id
@@ -114,7 +113,7 @@ class TestCompositorIntegration:
         pm2.restore_layout(layout1)
 
         # Save layout again
-        layout2 = pm2.save_layout()
+        pm2.save_layout()
 
         # Layouts should have same structure
         assert pm.get_pane_count() == pm2.get_pane_count()

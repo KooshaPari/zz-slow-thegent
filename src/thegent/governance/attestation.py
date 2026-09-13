@@ -37,7 +37,11 @@ class AttestationGenerator:
             "run_id": run_id,
             "timestamp": datetime.now(UTC).isoformat(),
             "verdict": "COMPLIANT",
-            "evidence": {"ledger_integrity": True, "drift_check": "passed", "cost_within_budget": True},
+            "evidence": {
+                "ledger_integrity": True,
+                "drift_check": "passed",
+                "cost_within_budget": True,
+            },
             "issuer": "thegent-governance-engine-v1",
         }
 

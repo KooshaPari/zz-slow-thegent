@@ -12,7 +12,7 @@ Circuit breaker subcommands.
 
 ### Methods
 
-#### BreakerSubcommands.__init__
+#### BreakerSubcommands.**init**
 
 ```python
 __init__(self: Any)

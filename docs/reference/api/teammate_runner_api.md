@@ -14,7 +14,7 @@ Runner that executes a teammate persona by delegating to its underlying model/pr
 
 ### Methods
 
-#### TeammateRunner.__init__
+#### TeammateRunner.**init**
 
 ```python
 __init__(self: Any, teammate_id: str, settings: Any)

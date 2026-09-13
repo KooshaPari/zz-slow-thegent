@@ -111,6 +111,7 @@ python3 scripts/migrate_memory_jsonl_to_sqlite.py
 ```
 
 The tool will:
+
 1. Scan `~/.claude/civilization/agents/*/memory.jsonl` for JSONL files
 2. Create the SQLite database at `~/.claude/civilization/memories.db`
 3. Initialize the schema (memories table, indexes, relationships table)
@@ -255,10 +256,7 @@ for agent_dir in sorted(agents_dir.iterdir()):
     jsonl_count = sum(1 for line in open(jsonl_file) if line.strip())
 
     # Count SQLite records
-    sqlite_count = db.execute(
-        "SELECT COUNT(*) FROM memories WHERE agent_id = ?",
-        (agent_dir.name,)
-    ).fetchone()[0]
+    sqlite_count = db.execute("SELECT COUNT(*) FROM memories WHERE agent_id = ?", (agent_dir.name,)).fetchone()[0]
 
     status = "OK" if jsonl_count == sqlite_count else "MISMATCH"
     print(f"{agent_dir.name}: JSONL={jsonl_count} SQLite={sqlite_count} [{status}]")
@@ -408,15 +406,15 @@ python3 scripts/migrate_memory_jsonl_to_sqlite.py --source-dir /actual/path/to/a
 
 Expected improvements after migrating to SQLite:
 
-| Operation | Before (JSONL) | After (SQLite) | Notes |
-|-----------|----------------|----------------|-------|
-| Query agent memories | File scan O(n) | Index lookup O(log n) | 2.4x faster |
-| Filter by type + time | Full scan + filter | Compound index | ~3x faster |
-| Full-text search | Substring scan | Keyword index | ~5x faster |
-| Aggregate statistics | Load all + compute | SQL COUNT/AVG/GROUP BY | ~2x faster |
-| Dashboard rendering | Multiple file reads | Single SQL query | Reduced I/O |
-| Memory purge | Rewrite entire file | DELETE by index | ~2x faster |
-| Single store | File append | INSERT + index | ~0.8x (slightly slower) |
+| Operation             | Before (JSONL)      | After (SQLite)         | Notes                   |
+| --------------------- | ------------------- | ---------------------- | ----------------------- |
+| Query agent memories  | File scan O(n)      | Index lookup O(log n)  | 2.4x faster             |
+| Filter by type + time | Full scan + filter  | Compound index         | ~3x faster              |
+| Full-text search      | Substring scan      | Keyword index          | ~5x faster              |
+| Aggregate statistics  | Load all + compute  | SQL COUNT/AVG/GROUP BY | ~2x faster              |
+| Dashboard rendering   | Multiple file reads | Single SQL query       | Reduced I/O             |
+| Memory purge          | Rewrite entire file | DELETE by index        | ~2x faster              |
+| Single store          | File append         | INSERT + index         | ~0.8x (slightly slower) |
 
 The single-store overhead is minimal (~20% slower per write) and is offset by the read-heavy nature of memory workloads. Dashboards, analytics, search, and query operations all benefit significantly from indexed storage.
 

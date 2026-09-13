@@ -122,7 +122,12 @@ class TestParetoParitySingleCandidate:
     def test_single_candidate_both_select(self) -> None:
         py_router = ParetoRouter()
         candidates = [
-            RouteCandidate(model="claude-sonnet-4.6", provider="claude", cost_per_1k=0.015, quality_score=0.88)
+            RouteCandidate(
+                model="claude-sonnet-4.6",
+                provider="claude",
+                cost_per_1k=0.015,
+                quality_score=0.88,
+            )
         ]
 
         py_result = py_router.select(candidates)
@@ -144,7 +149,12 @@ class TestParetoParityDominance:
         """cheap-good (cost=0.01, quality=0.9) dominates expensive-bad (cost=1.0, quality=0.6)."""
         py_router = ParetoRouter()
         candidates = [
-            RouteCandidate(model="expensive-bad", provider="test", cost_per_1k=1.0, quality_score=0.6),
+            RouteCandidate(
+                model="expensive-bad",
+                provider="test",
+                cost_per_1k=1.0,
+                quality_score=0.6,
+            ),
             RouteCandidate(model="cheap-good", provider="test", cost_per_1k=0.01, quality_score=0.9),
         ]
 
@@ -168,7 +178,12 @@ class TestParetoParityTieCost:
         py_router = ParetoRouter()
         candidates = [
             RouteCandidate(model="low-quality", provider="test", cost_per_1k=0.5, quality_score=0.6),
-            RouteCandidate(model="high-quality", provider="test", cost_per_1k=0.5, quality_score=0.9),
+            RouteCandidate(
+                model="high-quality",
+                provider="test",
+                cost_per_1k=0.5,
+                quality_score=0.9,
+            ),
         ]
 
         py_result = py_router.select(candidates)
@@ -251,8 +266,18 @@ class TestParetoParityZeroCostFallback:
         py_router = ParetoRouter()
         candidates = [
             RouteCandidate(model="free-tier", provider="gemini", cost_per_1k=0.0, quality_score=0.6),
-            RouteCandidate(model="paid-good", provider="claude", cost_per_1k=0.01, quality_score=0.9),
-            RouteCandidate(model="paid-premium", provider="openai", cost_per_1k=0.1, quality_score=0.95),
+            RouteCandidate(
+                model="paid-good",
+                provider="claude",
+                cost_per_1k=0.01,
+                quality_score=0.9,
+            ),
+            RouteCandidate(
+                model="paid-premium",
+                provider="openai",
+                cost_per_1k=0.1,
+                quality_score=0.95,
+            ),
         ]
 
         py_result = py_router.select(candidates)
@@ -274,11 +299,36 @@ class TestParetoParityRealisticCatalog:
         """Real-world candidates from multiple providers."""
         py_router = ParetoRouter()
         candidates = [
-            RouteCandidate(model="gpt-5.3-codex", provider="openai", cost_per_1k=0.30, quality_score=0.82),
-            RouteCandidate(model="claude-haiku-4.5", provider="claude", cost_per_1k=0.025, quality_score=0.75),
-            RouteCandidate(model="claude-sonnet-4.6", provider="claude", cost_per_1k=0.30, quality_score=0.88),
-            RouteCandidate(model="gemini-3-flash", provider="gemini", cost_per_1k=0.0, quality_score=0.78),
-            RouteCandidate(model="claude-opus-4.6", provider="claude", cost_per_1k=2.50, quality_score=0.95),
+            RouteCandidate(
+                model="gpt-5.3-codex",
+                provider="openai",
+                cost_per_1k=0.30,
+                quality_score=0.82,
+            ),
+            RouteCandidate(
+                model="claude-haiku-4.5",
+                provider="claude",
+                cost_per_1k=0.025,
+                quality_score=0.75,
+            ),
+            RouteCandidate(
+                model="claude-sonnet-4.6",
+                provider="claude",
+                cost_per_1k=0.30,
+                quality_score=0.88,
+            ),
+            RouteCandidate(
+                model="gemini-3-flash",
+                provider="gemini",
+                cost_per_1k=0.0,
+                quality_score=0.78,
+            ),
+            RouteCandidate(
+                model="claude-opus-4.6",
+                provider="claude",
+                cost_per_1k=2.50,
+                quality_score=0.95,
+            ),
         ]
 
         py_result = py_router.select(candidates)

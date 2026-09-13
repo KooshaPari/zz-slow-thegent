@@ -8,10 +8,7 @@ from __future__ import annotations
 
 import asyncio
 import json
-import tempfile
-import time
 from pathlib import Path
-from unittest.mock import patch
 
 import pytest
 
@@ -88,7 +85,6 @@ class TestTaskWorkerPoolRaceConditions:
     async def test_multiple_workers_no_duplicate_processing(self, pool_dir: Path) -> None:
         """Multiple workers should not process the same task twice."""
         pool = TaskWorkerPool(max_workers=4, queue_dir=pool_dir)
-        processed_ids: list[str] = []
 
         # Submit 10 tasks
         for i in range(10):
@@ -100,7 +96,6 @@ class TestTaskWorkerPoolRaceConditions:
             )
 
         # Track which tasks get claimed (via file rename)
-        original_worker_loop = pool._worker_loop
 
         claimed: list[str] = []
 

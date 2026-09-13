@@ -16,9 +16,9 @@ from thegent.agents.crew import (
     WorkflowEngine,
 )
 from thegent.agents.crew.executor import (
+    AgentAssigner,
     ExecutionResult,
     HierarchicalAssigner,
-    AgentAssigner,
     RoundRobinAssigner,
     SkillBasedAssigner,
     TaskExecutor,
@@ -320,7 +320,11 @@ class TestWorkflowEngine:
         engine.add_stage(s3)
         engine.add_stage(s1)
         engine.add_stage(s2)
-        assert [stage.id for stage in engine.resolve_stage_dependencies()] == ["s1", "s2", "s3"]
+        assert [stage.id for stage in engine.resolve_stage_dependencies()] == [
+            "s1",
+            "s2",
+            "s3",
+        ]
 
     def test_wl9471_unknown_dependency_fails_fast(self):
         # @trace WL-9471

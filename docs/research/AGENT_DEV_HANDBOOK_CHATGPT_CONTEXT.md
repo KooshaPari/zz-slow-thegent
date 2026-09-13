@@ -17,6 +17,7 @@ You are being asked to research, synthesize, and produce an **Agent-Driven Softw
 5. **Process streamlining** — eliminating repeated manual decisions via documented, enforceable standards
 
 This handbook is for **zero-human-feedback loops**: the agents are the only actors. There are no daily standups with humans, no PR reviewers who are humans, no QA engineers who are humans. All human input arrives via:
+
 - Seed idea/MVP prompt at project start
 - Post-release feedback (Discord tickets, report buttons, usage analytics)
 - Occasional corrections to agent behavior via governance updates
@@ -28,12 +29,14 @@ The handbook must be operable by agents without any human mediation.
 ## PART 1: WHO WE ARE — TEAM PROFILE
 
 ### What We Build
+
 - **Program types:** All types — CLIs, MCP servers, APIs, TUIs, desktop apps, mobile apps, games, embedded systems, libraries, SDKs, data pipelines, AI agent frameworks, orchestration platforms, web apps, infrastructure tooling
 - **Languages:** Python, Go, Rust, C++, C, Zig, C#, Mojo — chosen by performance/safety optimality for each use case, NOT by developer experience preference
 - **Scale of projects:** Start with a seed MVP idea prompt → fully fleshed feature scope within the same day. Projects range from 500-LOC scripts to 340,000+ LOC polyglot monorepos
 - **DX philosophy:** DX is not a factor for aesthetic comfort (no "nice to haves"). DX counts for raw engineering virtues only: extensibility, maintainability, debuggability, intrinsic comprehensibility. Performance and safety always beat DX comfort.
 
 ### What We Don't Do
+
 - No human-in-the-loop code reviews
 - No user testing sessions
 - No sprint planning meetings
@@ -42,6 +45,7 @@ The handbook must be operable by agents without any human mediation.
 - No manual retry loops, no custom implementations where a library exists
 
 ### Execution Environment
+
 - **Agent orchestrator:** thegent (custom MCP server + CLI for agent lifecycle management)
 - **Agent harnesses used:** Claude Code CLI, Codex CLI, Cursor, Factory Droid, OpenCode, others
 - **Governance:** All quality gates, compliance checks, and architectural enforcement are automated hooks
@@ -55,6 +59,7 @@ The handbook must be operable by agents without any human mediation.
 ### 2.1 Workflow: From Idea to Deployed Software
 
 **Phase 1 — Discovery & Ideation**
+
 - User (or agent) writes seed prompt describing the idea
 - Agent creates entry in `docs/reference/WORK_STREAM.md` (CLAIMED section)
 - Agent logs discoveries in `docs/research/CONVERSATION_DUMP_YYYY-MM-DD.md`
@@ -63,6 +68,7 @@ The handbook must be operable by agents without any human mediation.
 - Agent searches PyPI/GitHub/npm for 80%+ pre-built solutions (library-first mandate)
 
 **Phase 2 — Specification & Design**
+
 - Produce spec documents BEFORE any code:
   - `PRD.md` — epics, user stories, acceptance criteria (ID scheme: E{n}.{m}.{k})
   - `FUNCTIONAL_REQUIREMENTS.md` — FR SHALL statements (ID scheme: FR-{CATEGORY}-{NNN})
@@ -74,6 +80,7 @@ The handbook must be operable by agents without any human mediation.
 - Context docs created per technology at `docs/context/{technology}.md` (8 required sections: Header, What is X, Key Concepts, API/Interfaces, Auth, Code Examples, Sources, Quick Reference)
 
 **Phase 3 — Test-First Implementation (TDD Mandate)**
+
 - Test file MUST exist before source file
 - Bug fix: failing test MUST be written before fix
 - Refactor: existing tests must pass before AND after
@@ -84,23 +91,25 @@ The handbook must be operable by agents without any human mediation.
 
 **Phase 4 — Quality Validation (Automated, Stop-Event Hooks)**
 
-| Gate | Timeout | What It Checks |
-|------|---------|----------------|
-| governance-gates.sh | Master | All policies from contracts/ |
-| quality-gate | 15s | ruff, semgrep, bandit, pytest, coverage |
-| spec-verifier | 60s | All FRs have ≥1 test; all tests reference ≥1 FR |
-| complexity-ratchet | 120s | CC ≤10, cognitive ≤15, dead code, max 40 LOC/fn |
-| security-pipeline | 15s | 5-layer: secrets (gitleaks), SAST (semgrep/bandit), deps (pip-audit), infra (hadolint), supply chain (syft/osv) |
-| test-maturity | 300s | Must reach Level 5 for agent-only projects |
-| regression-spiral-guard | 30s | 8 thresholds; GREEN/YELLOW/RED directives |
+| Gate                    | Timeout | What It Checks                                                                                                  |
+| ----------------------- | ------- | --------------------------------------------------------------------------------------------------------------- |
+| governance-gates.sh     | Master  | All policies from contracts/                                                                                    |
+| quality-gate            | 15s     | ruff, semgrep, bandit, pytest, coverage                                                                         |
+| spec-verifier           | 60s     | All FRs have ≥1 test; all tests reference ≥1 FR                                                                 |
+| complexity-ratchet      | 120s    | CC ≤10, cognitive ≤15, dead code, max 40 LOC/fn                                                                 |
+| security-pipeline       | 15s     | 5-layer: secrets (gitleaks), SAST (semgrep/bandit), deps (pip-audit), infra (hadolint), supply chain (syft/osv) |
+| test-maturity           | 300s    | Must reach Level 5 for agent-only projects                                                                      |
+| regression-spiral-guard | 30s     | 8 thresholds; GREEN/YELLOW/RED directives                                                                       |
 
 **Phase 5 — Commit & Work Stream Update**
+
 - Commit with format: brief description + detailed why + `Co-Authored-By: <agent>` trailer
 - Never `--no-verify`; never amend prior commits; always new commits
 - Update WORK_STREAM.md: move from CLAIMED → COMPLETED with commit reference
 - Write CONVERSATION_DUMP immediately (never defer)
 
 **Phase 6 — Deployment & Monitoring**
+
 - Build via `task build`
 - Test distribution: `task test:dist`
 - Monitor logs via CLI only; never attach to user's TUI
@@ -108,45 +117,45 @@ The handbook must be operable by agents without any human mediation.
 
 ### 2.2 Test Maturity Model (5 Levels)
 
-| Level | Coverage | FR Traceability | Key Capabilities |
-|-------|----------|-----------------|-----------------|
-| 1 | Baseline | Low | Smoke tests runnable |
-| 2 | ≥60% | Low | Integration tests, no bare suppressions |
-| 3 | ≥80% | ≥50% | Full E2E suite, security scanning, strict linters |
-| 4 | ≥85% | ≥80% | Contract tests, snapshot tests, architecture enforcement |
-| 5 | **100%** | **100%** | Mutation tests (≥80% score), BDD, chaos, fuzz, SDD alignment |
+| Level | Coverage | FR Traceability | Key Capabilities                                             |
+| ----- | -------- | --------------- | ------------------------------------------------------------ |
+| 1     | Baseline | Low             | Smoke tests runnable                                         |
+| 2     | ≥60%     | Low             | Integration tests, no bare suppressions                      |
+| 3     | ≥80%     | ≥50%            | Full E2E suite, security scanning, strict linters            |
+| 4     | ≥85%     | ≥80%            | Contract tests, snapshot tests, architecture enforcement     |
+| 5     | **100%** | **100%**        | Mutation tests (≥80% score), BDD, chaos, fuzz, SDD alignment |
 
 **Agent-Only Projects REQUIRE Level 5.** No exceptions. Rationale: no humans test the system; automated tests are the only safety net.
 
 ### 2.3 Hook Pipeline (Agent Lifecycle Governance)
 
-| Event | Hooks |
-|-------|-------|
-| SessionStart | spec-preflight, qa-preflight |
-| PreToolUse:Write | doc-location-guard, pre-write-validator, suppression-blocker |
-| PreToolUse:Edit | pre-write-validator, suppression-blocker |
-| PostToolUse:Edit/Write | change-doc-tracker, post-edit-checker, async-test-runner |
-| SubagentStart/Stop | subagent-quality-gate |
-| Stop | quality-gate, stop-reconcile, spec-verifier, complexity-ratchet, security-pipeline, test-maturity, regression-spiral-guard, session-cleanup |
+| Event                  | Hooks                                                                                                                                       |
+| ---------------------- | ------------------------------------------------------------------------------------------------------------------------------------------- |
+| SessionStart           | spec-preflight, qa-preflight                                                                                                                |
+| PreToolUse:Write       | doc-location-guard, pre-write-validator, suppression-blocker                                                                                |
+| PreToolUse:Edit        | pre-write-validator, suppression-blocker                                                                                                    |
+| PostToolUse:Edit/Write | change-doc-tracker, post-edit-checker, async-test-runner                                                                                    |
+| SubagentStart/Stop     | subagent-quality-gate                                                                                                                       |
+| Stop                   | quality-gate, stop-reconcile, spec-verifier, complexity-ratchet, security-pipeline, test-maturity, regression-spiral-guard, session-cleanup |
 
 **Smart skip:** hooks cache results (600s TTL); only re-run if relevant files changed.
 
 ### 2.4 Library-First Policy (Mandatory, Enforced)
 
-| Need | Required Library | Forbidden Alternative |
-|------|-----------------|----------------------|
-| Retry/resilience | tenacity | Custom retry loops |
-| HTTP client | httpx | requests, urllib |
-| Logging | structlog | logging.getLogger(), print() |
-| Config management | pydantic-settings | Manual env parsing |
-| CLI | typer | argparse |
-| Validation | pydantic | Manual if/else |
-| Rate limiting | tenacity + asyncio.Semaphore | Custom rate limiter |
-| File watching | watchdog | os.walk polling |
-| Caching | cachetools / diskcache | Custom TTL logic |
-| Circuit breaker | pybreaker | Custom state |
-| JSON (CPython) | orjson | json stdlib |
-| Task runner | Taskfile (Go-based) | Make (for new work) |
+| Need              | Required Library             | Forbidden Alternative        |
+| ----------------- | ---------------------------- | ---------------------------- |
+| Retry/resilience  | tenacity                     | Custom retry loops           |
+| HTTP client       | httpx                        | requests, urllib             |
+| Logging           | structlog                    | logging.getLogger(), print() |
+| Config management | pydantic-settings            | Manual env parsing           |
+| CLI               | typer                        | argparse                     |
+| Validation        | pydantic                     | Manual if/else               |
+| Rate limiting     | tenacity + asyncio.Semaphore | Custom rate limiter          |
+| File watching     | watchdog                     | os.walk polling              |
+| Caching           | cachetools / diskcache       | Custom TTL logic             |
+| Circuit breaker   | pybreaker                    | Custom state                 |
+| JSON (CPython)    | orjson                       | json stdlib                  |
+| Task runner       | Taskfile (Go-based)          | Make (for new work)          |
 
 First question before any implementation: "Is there a library that solves this?" Custom code only for domain-specific logic. ADR required if choosing custom over library.
 
@@ -178,6 +187,7 @@ First question before any implementation: "Is there a library that solves this?"
 Root-level files (ONLY allowed): `README.md`, `CHANGELOG.md`, `AGENTS.md`, `CLAUDE.md`, `00_START_HERE.md`, `PRD.md`, `ADR.md`, `FUNCTIONAL_REQUIREMENTS.md`, `PLAN.md`, `USER_JOURNEYS.md`
 
 All other `.md` files go in `docs/`:
+
 - `docs/guides/` — Implementation guides, quick-start
 - `docs/reports/` — Completion reports, status, summaries
 - `docs/research/` — Research summaries, CONVERSATION_DUMP files, analysis
@@ -205,57 +215,59 @@ Specs (PRD/FR)
 
 **Required Baseline Per Language:**
 
-| Language | Runtime | Quality Commands |
-|----------|---------|-----------------|
-| Python | uv + CPython 3.14 (primary), PyPy 3.11 (secondary), CPython 3.13 (fallback) | ruff, basedpyright, mypy, pytest, tach, vulture, radon, bandit, semgrep |
-| Rust | stable | fmt, clippy -D warnings, test |
-| Go | supported stable | go build, go vet, go test ./..., golangci-lint (41+ linters) |
-| TypeScript | Bun (preferred), Node LTS | tsc --strict, oxlint (13 plugins), vitest, playwright |
-| Zig | pinned stable | zig fmt, zig test |
-| Mojo | pinned stable | parity checks against reference implementations |
-| C/C++ | platform toolchain | clang-tidy, asan/ubsan/lsan, valgrind |
-| C# | .NET LTS | dotnet format, dotnet test, dotnet analyzers |
+| Language   | Runtime                                                                     | Quality Commands                                                        |
+| ---------- | --------------------------------------------------------------------------- | ----------------------------------------------------------------------- |
+| Python     | uv + CPython 3.14 (primary), PyPy 3.11 (secondary), CPython 3.13 (fallback) | ruff, basedpyright, mypy, pytest, tach, vulture, radon, bandit, semgrep |
+| Rust       | stable                                                                      | fmt, clippy -D warnings, test                                           |
+| Go         | supported stable                                                            | go build, go vet, go test ./..., golangci-lint (41+ linters)            |
+| TypeScript | Bun (preferred), Node LTS                                                   | tsc --strict, oxlint (13 plugins), vitest, playwright                   |
+| Zig        | pinned stable                                                               | zig fmt, zig test                                                       |
+| Mojo       | pinned stable                                                               | parity checks against reference implementations                         |
+| C/C++      | platform toolchain                                                          | clang-tidy, asan/ubsan/lsan, valgrind                                   |
+| C#         | .NET LTS                                                                    | dotnet format, dotnet test, dotnet analyzers                            |
 
 **Conversion rules:**
+
 1. Refactor-in-place before full language conversion
 2. Convert only when measured SLO/tooling triggers are met and documented
 3. Every conversion requires: baseline metrics + parity harness + phased cutover plan
 
 ### 2.10 Agent Execution Workflow Patterns
 
-| Pattern | Command | Use Case |
-|---------|---------|----------|
-| Default single task | `thegent free "Task"` | Standard work item |
-| Next backlog item | `thegent free --do-next` | Continuous work stream |
-| N items sequentially | `thegent free --do-next --repeat N` | Batch execution |
-| Background + session | `thegent bg "Task" free` | Long-running, non-blocking |
-| Continuous loop | `thegent plan loop` | Autonomous backlog processing |
-| Wait for work | `thegent plan wait-next` | Idle state (NEVER busy-loop) |
-| Continue session | `thegent bg "Task" -C <session_id>` | Resume prior work |
-| Model-specific | `thegent run "Task" -M claude-sonnet-4.5` | Capability routing |
-| Cost-optimized | `thegent run "Task" -M gemini-3-flash -R cheapest` | Budget routing |
-| Role-based | `thegent research/review/fix/code/explain/summarize "..."` | Semantic dispatch |
+| Pattern              | Command                                                    | Use Case                      |
+| -------------------- | ---------------------------------------------------------- | ----------------------------- |
+| Default single task  | `thegent free "Task"`                                      | Standard work item            |
+| Next backlog item    | `thegent free --do-next`                                   | Continuous work stream        |
+| N items sequentially | `thegent free --do-next --repeat N`                        | Batch execution               |
+| Background + session | `thegent bg "Task" free`                                   | Long-running, non-blocking    |
+| Continuous loop      | `thegent plan loop`                                        | Autonomous backlog processing |
+| Wait for work        | `thegent plan wait-next`                                   | Idle state (NEVER busy-loop)  |
+| Continue session     | `thegent bg "Task" -C <session_id>`                        | Resume prior work             |
+| Model-specific       | `thegent run "Task" -M claude-sonnet-4.5`                  | Capability routing            |
+| Cost-optimized       | `thegent run "Task" -M gemini-3-flash -R cheapest`         | Budget routing                |
+| Role-based           | `thegent research/review/fix/code/explain/summarize "..."` | Semantic dispatch             |
 
 ### 2.11 BMAD Workflow System (Strategic SDLC Layer)
 
 The BMad Method (BMAD) provides structured workflows for strategic software development phases:
 
-| Workflow | Purpose | Output |
-|----------|---------|--------|
-| `prd` | Create Product Requirements Document | PRD.md + epic breakdown |
-| `tech-spec` | Quick-flow technical specification | Tech spec + stories |
-| `create-epics-and-stories` | Decompose PRD into executable stories | Story.md + Kanban |
-| `create-ux-design` | Collaborative UX design | UX doc + wireframes |
-| `architecture` | Architectural decision facilitation | ADR + architecture doc |
-| `domain-research` | Deep domain requirements research | Domain doc + patterns |
-| `document-project` | Auto-document brownfield project | Full doc set |
-| `dev-story` | Execute story (implement + test + validate) | Working code + tests |
-| `code-review` | Senior dev code review | Review report |
-| `sprint-planning` | Generate sprint tracking | Sprint status file |
-| `story-done` | DoD validation + status update | Status: DONE |
-| `retrospective` | Epic-level retrospective | Lessons + next steps |
+| Workflow                   | Purpose                                     | Output                  |
+| -------------------------- | ------------------------------------------- | ----------------------- |
+| `prd`                      | Create Product Requirements Document        | PRD.md + epic breakdown |
+| `tech-spec`                | Quick-flow technical specification          | Tech spec + stories     |
+| `create-epics-and-stories` | Decompose PRD into executable stories       | Story.md + Kanban       |
+| `create-ux-design`         | Collaborative UX design                     | UX doc + wireframes     |
+| `architecture`             | Architectural decision facilitation         | ADR + architecture doc  |
+| `domain-research`          | Deep domain requirements research           | Domain doc + patterns   |
+| `document-project`         | Auto-document brownfield project            | Full doc set            |
+| `dev-story`                | Execute story (implement + test + validate) | Working code + tests    |
+| `code-review`              | Senior dev code review                      | Review report           |
+| `sprint-planning`          | Generate sprint tracking                    | Sprint status file      |
+| `story-done`               | DoD validation + status update              | Status: DONE            |
+| `retrospective`            | Epic-level retrospective                    | Lessons + next steps    |
 
 Each workflow has:
+
 - `workflow.yaml` — Config, variables, component refs
 - `instructions.md` — Executable workflow steps (XML-tagged actions)
 - `template.md` — Output document template (when applicable)
@@ -284,28 +296,29 @@ Memory persists across sessions in audit log. Accessed via `docs/research/CONVER
 
 Agents operate as **strategic managers, not workers.** Delegation rules:
 
-| Delegate when | Handle directly when |
-|--------------|---------------------|
-| >3 files to explore | Single file change |
-| Codebase-wide search | Quick targeted lookup |
-| >2000 tokens of expected output | Short config tweak |
-| Multi-step sequential logic | Single atomic action |
-| Independent parallel work streams | Quick answer needed |
+| Delegate when                     | Handle directly when  |
+| --------------------------------- | --------------------- |
+| >3 files to explore               | Single file change    |
+| Codebase-wide search              | Quick targeted lookup |
+| >2000 tokens of expected output   | Short config tweak    |
+| Multi-step sequential logic       | Single atomic action  |
+| Independent parallel work streams | Quick answer needed   |
 
 **Anti-patterns to avoid:**
 
-| Bad | Good |
-|-----|------|
-| Read 10 files to "understand" | Delegate exploration; get summary |
-| `ls -l` in project root (node_modules!) | `fd -t f -d 1` or `ls -l src/` |
-| Multi-file edits inline | Delegate to general-purpose agent |
-| Sequential explorations one-by-one | Batch parallel explores |
-| `git restore .` to "reset" | Leave modified files (active agent work) |
-| Custom retry/cache/watch code | tenacity, cachetools, watchdog |
+| Bad                                     | Good                                     |
+| --------------------------------------- | ---------------------------------------- |
+| Read 10 files to "understand"           | Delegate exploration; get summary        |
+| `ls -l` in project root (node_modules!) | `fd -t f -d 1` or `ls -l src/`           |
+| Multi-file edits inline                 | Delegate to general-purpose agent        |
+| Sequential explorations one-by-one      | Batch parallel explores                  |
+| `git restore .` to "reset"              | Leave modified files (active agent work) |
+| Custom retry/cache/watch code           | tenacity, cachetools, watchdog           |
 
 ### 2.14 Current Technology Snapshot (thegent + trace)
 
 **thegent (Agent Orchestration Platform):**
+
 - Python (primary, CPython 3.10+) + Rust extensions (23 crates)
 - FastMCP (MCP server), Typer (CLI), Pydantic (validation), Rich (TUI)
 - LiteLLM (multi-provider routing), tenacity (resilience), httpx (HTTP)
@@ -314,6 +327,7 @@ Agents operate as **strategic managers, not workers.** Delegation rules:
 - ~208k LOC Python source
 
 **trace (TracerTM — Requirements Traceability):**
+
 - Go 1.25+ (backend) + Python 3.12 (services) + TypeScript/React 19 (frontend)
 - Echo v4 (Go HTTP), FastAPI (Python), TanStack Router v1 (React)
 - PostgreSQL 17, Neo4j 5, Redis 7, NATS 2.9, Temporal, MinIO
@@ -362,6 +376,7 @@ These are decisions that keep coming up and require human involvement because th
 ### 3.3 Tooling Gaps (Currently Being Fixed)
 
 From the deep audit:
+
 - `structlog` NOT in `pyproject.toml` (490 files need it)
 - 983 empty test stubs (29.2% of test suite)
 - `governance-gates.sh` has 62 `|| true` fallbacks — moving to Rust binary
@@ -534,8 +549,8 @@ thegent/contracts/                                   # Policy contracts
 
 ## PART 6: COMPLETE OPINIONATED DECISIONS CATALOG
 
-*Source: Exhaustive extraction from global CLAUDE.md, trace CLAUDE.md, thegent pyproject.toml, hook-config.yaml, constitution.yaml, WORK_STREAM.md*
-*Total: 118 rules — 85 HARD (enforced by hooks/tooling) | 33 SOFT (convention/preference)*
+_Source: Exhaustive extraction from global CLAUDE.md, trace CLAUDE.md, thegent pyproject.toml, hook-config.yaml, constitution.yaml, WORK_STREAM.md_
+_Total: 118 rules — 85 HARD (enforced by hooks/tooling) | 33 SOFT (convention/preference)_
 
 ---
 
@@ -631,7 +646,7 @@ thegent/contracts/                                   # Policy contracts
 
 **RULE-037 [HARD]** Root-level files ONLY: `README.md`, `CHANGELOG.md`, `AGENTS.md`, `CLAUDE.md`, `00_START_HERE.md`, `PRD.md`, `ADR.md`, `FUNCTIONAL_REQUIREMENTS.md`, `PLAN.md`, `USER_JOURNEYS.md`. No other `.md` files in root. `doc-location-guard` hook blocks violations.
 
-**RULE-038 [HARD]** `docs/` structure: `guides/` (implementation, quick-start/), `reports/` (completion, status), `research/` (CONVERSATION_DUMP_*.md, analysis), `reference/` (quick refs, trackers, maps), `checklists/` (verification).
+**RULE-038 [HARD]** `docs/` structure: `guides/` (implementation, quick-start/), `reports/` (completion, status), `research/` (CONVERSATION*DUMP*\*.md, analysis), `reference/` (quick refs, trackers, maps), `checklists/` (verification).
 
 **RULE-039 [HARD]** Mandatory conversation dumps: after any conversation producing research/plans/decisions/implementation details, write to `docs/research/CONVERSATION_DUMP_YYYY-MM-DD.md`. Do NOT defer. Write as part of the same response/task.
 
@@ -753,29 +768,29 @@ thegent/contracts/                                   # Policy contracts
 
 ### Enforcement Summary
 
-| Enforcement Level | Count | Mechanism |
-|-------------------|-------|-----------|
-| CRITICAL (hook blocks) | 4 | constitution.yaml, security hooks |
-| HARD (hook fails build) | ~64 | pre-write-validator, suppression-blocker, complexity-ratchet, quality-gate, doc-location-guard |
-| HARD (gate fails) | ~21 | spec-verifier, test-maturity, security-pipeline, tach boundary check |
-| SOFT (convention) | ~33 | Guidelines in CLAUDE.md, style guides, pattern docs |
+| Enforcement Level       | Count | Mechanism                                                                                      |
+| ----------------------- | ----- | ---------------------------------------------------------------------------------------------- |
+| CRITICAL (hook blocks)  | 4     | constitution.yaml, security hooks                                                              |
+| HARD (hook fails build) | ~64   | pre-write-validator, suppression-blocker, complexity-ratchet, quality-gate, doc-location-guard |
+| HARD (gate fails)       | ~21   | spec-verifier, test-maturity, security-pipeline, tach boundary check                           |
+| SOFT (convention)       | ~33   | Guidelines in CLAUDE.md, style guides, pattern docs                                            |
 
 ---
 
 ## PART 7: BDD + SDD + TDD + DDD UNIFIED METHODOLOGY
 
-*Source: Comprehensive synthesis of how agent-driven teams execute all four methodologies together, with canonical tooling per language, agent-specific adaptations, failure modes, and concrete examples*
+_Source: Comprehensive synthesis of how agent-driven teams execute all four methodologies together, with canonical tooling per language, agent-specific adaptations, failure modes, and concrete examples_
 
 ---
 
 ### 7.1 The Four Methodologies — What Each Contributes
 
-| Methodology | Primary Purpose | When Applied | Core Artifacts | Quality Verification |
-|-------------|-----------------|--------------|----------------|----------------------|
-| **DDD** | Domain model richness + isolation | Phase 1: Before any code | Ubiquitous language, aggregates, bounded contexts, context maps, value objects | No anemic entities, ubiquitous language enforced, context boundaries isolated |
-| **SDD** | Formal requirements + traceability | Phase 2: Before implementation | FUNCTIONAL_REQUIREMENTS.md, smart contracts, ADR, FR SHALL statements | ≥85% FR traceability, all smart contracts satisfied |
-| **BDD** | User-visible behavior specification | Phase 3: After SDD spec | `.feature` files (Gherkin), step definitions, scenario outlines | All scenarios pass 100% |
-| **TDD** | Code correctness + maintainability | Phase 4: During implementation | Unit/integration/E2E/property/mutation tests | ≥100% coverage (agent-only), ≥85% mutation score |
+| Methodology | Primary Purpose                     | When Applied                   | Core Artifacts                                                                 | Quality Verification                                                          |
+| ----------- | ----------------------------------- | ------------------------------ | ------------------------------------------------------------------------------ | ----------------------------------------------------------------------------- |
+| **DDD**     | Domain model richness + isolation   | Phase 1: Before any code       | Ubiquitous language, aggregates, bounded contexts, context maps, value objects | No anemic entities, ubiquitous language enforced, context boundaries isolated |
+| **SDD**     | Formal requirements + traceability  | Phase 2: Before implementation | FUNCTIONAL_REQUIREMENTS.md, smart contracts, ADR, FR SHALL statements          | ≥85% FR traceability, all smart contracts satisfied                           |
+| **BDD**     | User-visible behavior specification | Phase 3: After SDD spec        | `.feature` files (Gherkin), step definitions, scenario outlines                | All scenarios pass 100%                                                       |
+| **TDD**     | Code correctness + maintainability  | Phase 4: During implementation | Unit/integration/E2E/property/mutation tests                                   | ≥100% coverage (agent-only), ≥85% mutation score                              |
 
 ---
 
@@ -931,26 +946,31 @@ Quality gates:
 When no humans are involved, these adaptations replace human-dependent steps:
 
 #### Ubiquitous Language (No Team Discussions)
+
 - **Problem:** Ubiquitous language normally requires team consensus sessions
 - **Agent solution:** UBIQUITOUS_LANGUAGE.md is the canonical source; automated lint enforces it; any new term requires ADR entry before use
 - **Gate:** `ubiquitous-language-lint` fails build if domain identifiers don't match glossary
 
 #### BDD Scenario Authoring (No Product Owner Interviews)
+
 - **Problem:** Scenarios normally come from product owner/BA workshops
 - **Agent solution:** Scenarios are synthesized algorithmically from FR statements + domain rules; each FR maps to ≥1 scenario via automated synthesis script
 - **Gate:** All FRs must have ≥1 tagged BDD scenario before implementation starts
 
 #### TDD Red-Green (No Pairing)
+
 - **Problem:** Red-Green-Refactor normally benefits from pair programming discipline
 - **Agent solution:** Pre-commit hook validates that every new implementation function has a corresponding failing test first; `test-first-enforcer.sh` blocks commits with implementation before test
 - **Gate:** Test must exist (and fail) before implementation is written
 
 #### Spec Change Propagation (No Change Management Meetings)
+
 - **Problem:** Spec changes normally require stakeholder communication
 - **Agent solution:** When FR changes, automated impact analysis identifies all @trace markers, tagged tests, and BDD scenarios affected; generates cascading update checklist
 - **Gate:** All downstream items must be updated before spec change is merged
 
 #### Code Review (No Human Reviewers)
+
 - **Problem:** Code review normally catches DDD violations, test quality, spec drift
 - **Agent solution:** All review criteria are encoded as automated gates; `code-review-agent` runs via `bmad:bmm:workflows:code-review` on every story completion; findings block merge
 - **Gate:** `bmad dev-story` workflow must complete all checkboxes including code-review gate
@@ -960,41 +980,49 @@ When no humans are involved, these adaptations replace human-dependent steps:
 ### 7.5 Failure Mode Guards
 
 #### FM-1: Spec-Code Drift (SDD)
+
 - **Symptom:** FR says "must complete in <100ms" but code has no timeout; tests don't verify this
 - **Guard:** Nightly gate checks: for each FR, ≥1 @trace reference in code, ≥1 test tagged, non-functional FRs have benchmark test
 - **Response:** RED spiral → `hard_interrupt_remediate_now` until all FRs traced
 
 #### FM-2: BDD Scenario Decay (BDD)
+
 - **Symptom:** Feature file says "Given valid card" but step definition creates mock dict, not real domain aggregate
 - **Guard:** Step definition linter flags any step using `mock.Mock()` — must use real domain objects
 - **Response:** Failing BDD test blocks merge
 
 #### FM-3: TDD Coverage Blind Spots (TDD)
+
 - **Symptom:** 95% line coverage but mutation score 40% — tests don't actually catch bugs
 - **Guard:** Mutation gate (≥85% score) runs BEFORE coverage check; property-based test required per public function
 - **Response:** Gate failure blocks merge; agent must improve tests
 
 #### FM-4: DDD Boundary Leakage (DDD)
+
 - **Symptom:** MerchantContext imports PaymentContext schema; domain model queries ORM directly
 - **Guard:** `tach check` on every commit; domain files scanned for infrastructure imports (sqlalchemy, requests, django)
 - **Response:** tach failure blocks merge; import removed, repository pattern added
 
 #### FM-5: Agent Hallucination (All)
+
 - **Symptom:** Test claims to test FR-PAY-101 but tests different behavior; @trace marker on wrong function
 - **Guard:** Semantic verification: parse test docstring + FR statement, verify alignment; round-trip validation on all @trace claims
 - **Response:** Misaligned markers flagged; agent must fix before gate passes
 
 #### FM-6: Inconsistent Terminology (DDD)
+
 - **Symptom:** Feature says "payment", code says "transaction", Gherkin says "order"
 - **Guard:** `ubiquitous-language-lint` scans all domain class/variable names against glossary
 - **Response:** Non-glossary term fails lint; agent must rename using canonical glossary term
 
 #### FM-7: Test Interdependencies (TDD)
+
 - **Symptom:** Tests pass together but fail in isolation (shared database state)
 - **Guard:** `pytest --random-order --forked` — randomized order + process isolation
 - **Response:** Flaky test detected → YELLOW spiral → stabilize before new changes
 
 #### FM-8: Performance Regression (TDD)
+
 - **Symptom:** FR says <100ms but benchmark uses mock data that skips real I/O
 - **Guard:** Performance tests must use realistic dataset sizes; FR non-functional requirements enforced by dedicated benchmark gate
 - **Response:** Benchmark failure fails gate; agent adds load test with realistic data
@@ -1008,6 +1036,7 @@ This example walks through all four methodologies applied to a single feature. I
 #### Step 1: DDD Domain Discovery
 
 **UBIQUITOUS_LANGUAGE.md entry:**
+
 ```
 | Card         | Payment instrument         | ValueObject: Card { last_four, brand, validity } |
 | CardValidity | State of card validation   | Enum: VALID | INVALID | UNKNOWN              |
@@ -1020,6 +1049,7 @@ This example walks through all four methodologies applied to a single feature. I
 #### Step 2: SDD Specification
 
 **FUNCTIONAL_REQUIREMENTS.md:**
+
 ```
 FR-PAY-101: System SHALL accept credit card numbers satisfying Luhn checksum.
             System SHALL reject card numbers that do not satisfy Luhn checksum.
@@ -1078,10 +1108,12 @@ def test_valid_visa_accepted(validator):
     result = validator.validate("4532015112830366")
     assert result.validity == CardValidity.VALID
 
+
 @pytest.mark.requirement("FR-PAY-101")
 def test_invalid_checksum_rejected(validator):
     result = validator.validate("4532015112830367")
     assert result.validity == CardValidity.INVALID
+
 
 @given(card_number=st.integers(min_value=int(1e15), max_value=int(1e16)).map(str))
 @pytest.mark.requirement("FR-PAY-101")
@@ -1096,13 +1128,15 @@ def test_validator_never_crashes(validator, card_number):
 """
 @trace FR-PAY-101, FR-PAY-102, FR-PAY-103
 """
+
+
 class CardValidator:
     def validate(self, card_number: str) -> CardValidationResult:
-        if not self._is_valid_format(card_number):   # FR-PAY-102
+        if not self._is_valid_format(card_number):  # FR-PAY-102
             return CardValidationResult(CardValidity.INVALID, ...)
-        if not self._luhn_valid(card_number):         # FR-PAY-101
+        if not self._luhn_valid(card_number):  # FR-PAY-101
             return CardValidationResult(CardValidity.INVALID, ...)
-        brand = self._detect_brand(card_number)       # FR-PAY-101
+        brand = self._detect_brand(card_number)  # FR-PAY-101
         return CardValidationResult(CardValidity.VALID, Card(card_number[-4:], brand))
 ```
 
@@ -1122,19 +1156,19 @@ task quality                                           # ✓ All gates passed �
 
 ### 7.7 Agent Role Responsibilities in the Unified Workflow
 
-| Agent Role | DDD | SDD | BDD | TDD |
-|------------|-----|-----|-----|-----|
-| **PM/Analyst** | Defines ubiquitous language with user stories | Authors FR SHALL statements | Reviews scenario coverage | Reviews acceptance criteria |
-| **Architect** | Defines bounded contexts, context maps, aggregates | Authors ADR decisions | Reviews BDD scenario structure | Reviews test architecture |
-| **Dev** | Implements domain model (value objects, aggregates) | Adds @trace markers | Implements step definitions | Writes unit/integration tests |
-| **QA/Test** | Enforces DDD boundary gates | Runs spec compliance gates | Maintains feature file quality | Owns mutation/property test gates |
-| **Tech Writer** | Documents ubiquitous language in glossary | Maintains FR traceability report | — | Documents test coverage report |
+| Agent Role      | DDD                                                 | SDD                              | BDD                            | TDD                               |
+| --------------- | --------------------------------------------------- | -------------------------------- | ------------------------------ | --------------------------------- |
+| **PM/Analyst**  | Defines ubiquitous language with user stories       | Authors FR SHALL statements      | Reviews scenario coverage      | Reviews acceptance criteria       |
+| **Architect**   | Defines bounded contexts, context maps, aggregates  | Authors ADR decisions            | Reviews BDD scenario structure | Reviews test architecture         |
+| **Dev**         | Implements domain model (value objects, aggregates) | Adds @trace markers              | Implements step definitions    | Writes unit/integration tests     |
+| **QA/Test**     | Enforces DDD boundary gates                         | Runs spec compliance gates       | Maintains feature file quality | Owns mutation/property test gates |
+| **Tech Writer** | Documents ubiquitous language in glossary           | Maintains FR traceability report | —                              | Documents test coverage report    |
 
 All roles are agent personas. All handoffs are via artifact files (FUNCTIONAL_REQUIREMENTS.md, feature files, ADR). No synchronous human coordination.
 
 ---
 
-*Document generated: 2026-02-22*
-*Source: 6 parallel Haiku explore agents scanning thegent, trace, kush workspace, quality gates, CLAUDE.md, and BDD/SDD/TDD/DDD synthesis*
-*Total tokens synthesized: ~650,000 across 6 agents*
-*Parts 6 and 7 added 2026-02-22 from second-pass expansion agents*
+_Document generated: 2026-02-22_
+_Source: 6 parallel Haiku explore agents scanning thegent, trace, kush workspace, quality gates, CLAUDE.md, and BDD/SDD/TDD/DDD synthesis_
+_Total tokens synthesized: ~650,000 across 6 agents_
+_Parts 6 and 7 added 2026-02-22 from second-pass expansion agents_

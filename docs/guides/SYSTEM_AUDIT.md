@@ -6,12 +6,12 @@
 
 The audit framework inspects four categories:
 
-| Category | What it checks |
-|---|---|
-| **hooks** | Hooks registered in `hooks/hook-config.yaml` versus `.sh` files on disk |
-| **agents** | Agent `.md` persona files in `agents/` versus optional `bounded-contexts.yaml` registry |
-| **config** | `ThegentSettings` field defaults versus actual `THGENT_*` environment variables |
-| **dependencies** | `pyproject.toml` declared dependencies versus installed packages |
+| Category         | What it checks                                                                          |
+| ---------------- | --------------------------------------------------------------------------------------- |
+| **hooks**        | Hooks registered in `hooks/hook-config.yaml` versus `.sh` files on disk                 |
+| **agents**       | Agent `.md` persona files in `agents/` versus optional `bounded-contexts.yaml` registry |
+| **config**       | `ThegentSettings` field defaults versus actual `THGENT_*` environment variables         |
+| **dependencies** | `pyproject.toml` declared dependencies versus installed packages                        |
 
 ## Quick Start
 
@@ -39,14 +39,14 @@ Exit code is `0` when no drift is detected, `1` when any issues are found.
 
 ## Status Values
 
-| Status | Meaning |
-|---|---|
-| `ok` | Check passed; declared state matches actual state |
-| `missing` | Declared entry has no corresponding file or resource |
-| `unexpected` | Resource exists on disk but is not declared |
-| `drift` | Declared specifier does not match actual value (e.g., wrong version) |
-| `warn` | Non-critical issue; attention recommended |
-| `error` | Audit could not complete the check (e.g., parse failure) |
+| Status       | Meaning                                                              |
+| ------------ | -------------------------------------------------------------------- |
+| `ok`         | Check passed; declared state matches actual state                    |
+| `missing`    | Declared entry has no corresponding file or resource                 |
+| `unexpected` | Resource exists on disk but is not declared                          |
+| `drift`      | Declared specifier does not match actual value (e.g., wrong version) |
+| `warn`       | Non-critical issue; attention recommended                            |
+| `error`      | Audit could not complete the check (e.g., parse failure)             |
 
 ## Category Details
 
@@ -94,14 +94,14 @@ Version specifier checking uses the `packaging` library when available, with gra
 from pathlib import Path
 from thegent.audit.system_audit import SystemAuditor
 
-auditor = SystemAuditor()            # auto-detects project root
+auditor = SystemAuditor()  # auto-detects project root
 # or: SystemAuditor(project_root=Path("/path/to/project"))
 
 # Run individual categories
-hooks_results   = auditor.audit_hooks()
-agents_results  = auditor.audit_agents()
-config_results  = auditor.audit_config()
-deps_results    = auditor.audit_dependencies()
+hooks_results = auditor.audit_hooks()
+agents_results = auditor.audit_agents()
+config_results = auditor.audit_config()
+deps_results = auditor.audit_dependencies()
 
 # Full audit
 report = auditor.run_full_audit()
@@ -123,11 +123,11 @@ if report.has_drift:
 ```python
 @dataclass
 class AuditResult:
-    category: str        # "hooks" | "agents" | "config" | "dependencies"
-    item: str            # name of the hook, agent, field, or package
+    category: str  # "hooks" | "agents" | "config" | "dependencies"
+    item: str  # name of the hook, agent, field, or package
     status: AuditStatus  # AuditStatus enum value
-    expected: str        # what was expected
-    actual: str          # what was found
+    expected: str  # what was expected
+    actual: str  # what was found
     fix_suggestion: str  # actionable fix (empty for OK results)
 ```
 
@@ -136,9 +136,9 @@ class AuditResult:
 ```python
 @dataclass
 class AuditReport:
-    timestamp: str             # ISO 8601 timestamp
-    results: list[AuditResult] # all results
-    summary: dict[str, int]    # per-status counts plus "total"
+    timestamp: str  # ISO 8601 timestamp
+    results: list[AuditResult]  # all results
+    summary: dict[str, int]  # per-status counts plus "total"
 ```
 
 `AuditReport.has_drift` returns `True` when any non-OK result is present.
@@ -195,9 +195,9 @@ The command exits with code `1` when any drift is detected, causing the CI step 
 
 ## Source Locations
 
-| File | Purpose |
-|---|---|
-| `src/thegent/audit/__init__.py` | Module public API |
-| `src/thegent/audit/system_audit.py` | `AuditResult`, `AuditReport`, `SystemAuditor` |
-| `src/thegent/commands/audit.py` | `thegent audit` CLI command (typer app) |
-| `tests/test_system_audit.py` | 34 unit tests (FR-AUDIT-001 through FR-AUDIT-020) |
+| File                                | Purpose                                           |
+| ----------------------------------- | ------------------------------------------------- |
+| `src/thegent/audit/__init__.py`     | Module public API                                 |
+| `src/thegent/audit/system_audit.py` | `AuditResult`, `AuditReport`, `SystemAuditor`     |
+| `src/thegent/commands/audit.py`     | `thegent audit` CLI command (typer app)           |
+| `tests/test_system_audit.py`        | 34 unit tests (FR-AUDIT-001 through FR-AUDIT-020) |

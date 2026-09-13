@@ -3,11 +3,13 @@
 from __future__ import annotations
 
 import orjson as json
-
 import pytest
 
 from thegent.protocols import jsonrpc_agent_server as server
-from thegent.protocols.jsonrpc_agent_server import SERVER_STATE, process_jsonrpc_line_full
+from thegent.protocols.jsonrpc_agent_server import (
+    SERVER_STATE,
+    process_jsonrpc_line_full,
+)
 
 
 def _reset_state() -> None:
@@ -73,7 +75,13 @@ def test_wl9814_execution_target_resolution_fails_for_unresolved_state() -> None
     # @trace WL-9814
     with pytest.raises(ValueError, match="Turn submit execution target unresolved"):
         server._resolve_turn_submit_execution_target(
-            {"session_id": None, "session": None, "user_input": None, "requires_approval": None, "approval_diff": None}
+            {
+                "session_id": None,
+                "session": None,
+                "user_input": None,
+                "requires_approval": None,
+                "approval_diff": None,
+            }
         )
 
 
@@ -83,7 +91,11 @@ def test_wl9815_notification_submit_applies_side_effects_without_response() -> N
     session_id = _start_session()
     response, notifications = process_jsonrpc_line_full(
         json.dumps(
-            {"jsonrpc": "2.0", "method": "turn/submit", "params": {"session_id": session_id, "input": "ac"}}
+            {
+                "jsonrpc": "2.0",
+                "method": "turn/submit",
+                "params": {"session_id": session_id, "input": "ac"},
+            }
         )
     )
     assert response is None

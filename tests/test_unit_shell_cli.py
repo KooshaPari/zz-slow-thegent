@@ -1,8 +1,8 @@
 """Unit tests for thegent.shell_cli error handling."""
 
+import platform as py_platform
 import subprocess
 from pathlib import Path
-import platform as py_platform
 
 import pytest
 from typer.testing import CliRunner
@@ -118,7 +118,10 @@ def test_shell_platform_probe_success(monkeypatch: pytest.MonkeyPatch, runner: C
 
     def _version_run(*args, **kwargs):  # noqa: ANN002, ANN003
         return subprocess.CompletedProcess(
-            args=args[0], returncode=0, stdout="zsh 5.9 (x86_64-apple-darwin)\n", stderr=""
+            args=args[0],
+            returncode=0,
+            stdout="zsh 5.9 (x86_64-apple-darwin)\n",
+            stderr="",
         )
 
     monkeypatch.setattr(shell_cli_module.subprocess, "run", _version_run)

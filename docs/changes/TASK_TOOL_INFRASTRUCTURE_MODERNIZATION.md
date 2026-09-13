@@ -17,11 +17,13 @@ MCP server for task management.
 ## Proposed Changes
 
 ### Phase 1: Foundation (6 hours)
+
 - Modern pyproject.toml with FastMCP
 - Install uv
 - Configure ruff
 
 ### Phase 2: Configuration (6 hours)
+
 ```python
 class TaskToolSettings(BaseSettings):
     app_name: str = "task-tool"
@@ -30,6 +32,7 @@ class TaskToolSettings(BaseSettings):
 ```
 
 **config.yml:**
+
 ```yaml
 app:
   name: "task-tool"
@@ -38,6 +41,7 @@ storage:
 ```
 
 ### Phase 3: MCP Standardization (3 hours)
+
 - Align with atoms-mcp-prod and zen-mcp-server patterns
 - Add quality tools
 - Setup pre-commit
@@ -60,4 +64,3 @@ storage:
 - [ ] YAML config
 - [ ] MCP patterns standardized
 - [ ] Quality tools passing
-

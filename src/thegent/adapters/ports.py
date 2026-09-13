@@ -6,12 +6,13 @@ driven (outbound) and driving (inbound) adapters.
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, Callable, Protocol, TypeVar, runtime_checkable
 from dataclasses import dataclass, field
+from typing import TYPE_CHECKING, Any, Protocol, TypeVar, runtime_checkable
+
 from typing_extensions import TypedDict
 
 if TYPE_CHECKING:
-    from typing import TypeAlias
+    pass
 
 
 T = TypeVar("T")

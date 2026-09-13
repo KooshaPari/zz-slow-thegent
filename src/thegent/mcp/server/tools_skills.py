@@ -3,10 +3,10 @@
 from __future__ import annotations
 
 import json as _json
-from typing import Any, TYPE_CHECKING
+from typing import TYPE_CHECKING, Any
 
 if TYPE_CHECKING:
-    from fastmcp.tools.tool import ToolResult
+    pass
 
 
 class _ToolResult:
@@ -65,8 +65,16 @@ def thegent_activate_skill_impl(
                     extra={"skill_name": skill_name},
                 )
             return _ToolResult(
-                content=_json.dumps({"error": f"Skill '{skill_name}' not found", "skill_name": skill_name}),
-                structured_content={"error": f"Skill '{skill_name}' not found", "skill_name": skill_name},
+                content=_json.dumps(
+                    {
+                        "error": f"Skill '{skill_name}' not found",
+                        "skill_name": skill_name,
+                    }
+                ),
+                structured_content={
+                    "error": f"Skill '{skill_name}' not found",
+                    "skill_name": skill_name,
+                },
             )
         return _ToolResult(
             content=_json.dumps({"skill": result}),
@@ -74,8 +82,20 @@ def thegent_activate_skill_impl(
         )
 
     return _ToolResult(
-        content=_json.dumps({"skill": {"name": skill_name, "content": f"# {skill_name}\nInstructions for {skill_name}"}}),
-        structured_content={"skill": {"name": skill_name, "content": f"# {skill_name}\nInstructions for {skill_name}"}},
+        content=_json.dumps(
+            {
+                "skill": {
+                    "name": skill_name,
+                    "content": f"# {skill_name}\nInstructions for {skill_name}",
+                }
+            }
+        ),
+        structured_content={
+            "skill": {
+                "name": skill_name,
+                "content": f"# {skill_name}\nInstructions for {skill_name}",
+            }
+        },
     )
 
 
@@ -91,6 +111,7 @@ def thegent_list_skills_impl(backend: Any | None = None) -> Any:
         content=_json.dumps({"skills": []}),
         structured_content={"skills": []},
     )
+
 
 class MCPSkillRegistry:
     """Registry for MCP server skills."""

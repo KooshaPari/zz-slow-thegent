@@ -20,10 +20,12 @@ This consolidation initiative brings together scattered governance templates, pr
 **Location**: `/Users/kooshapari/CodeProjects/Phenotype/repos/platforms/thegent/dotfiles/governance/`
 
 **Files**:
+
 - `CLAUDE.base.md` (500+ lines) — Canonical template for all Phenotype projects
 - `README.md` (450+ lines) — Comprehensive customization guide with patterns
 
 **Key Features**:
+
 - 12 major sections covering all essential project documentation aspects
 - [CUSTOMIZE], [OPTIONAL], [INCLUDE if...] markers for clarity
 - Patterns for minimal libraries and full platforms
@@ -34,12 +36,14 @@ This consolidation initiative brings together scattered governance templates, pr
 - Design system (Impeccable) integration
 
 **Impact**:
+
 - Eliminates need for each project to maintain unique CLAUDE.md
 - Standardizes documentation across >20 existing projects
 - Provides clear guidance for new projects
 - ~500 lines of boilerplate now reusable
 
 **Usage**:
+
 ```bash
 cp dotfiles/governance/CLAUDE.base.md my-project/CLAUDE.md
 # Customize project-specific sections (typically <5% changes needed)
@@ -52,10 +56,12 @@ cp dotfiles/governance/CLAUDE.base.md my-project/CLAUDE.md
 **Location**: `/Users/kooshapari/CodeProjects/Phenotype/repos/platforms/thegent/dotfiles/hooks/`
 
 **Files**:
+
 - `.pre-commit-config.base.yaml` (400+ lines) — Canonical configuration
 - `README.md` (700+ lines) — Comprehensive language-specific guide
 
 **Key Features**:
+
 - 5-gate quality framework
 - Universal hooks (7) for all projects:
   - trailing-whitespace, end-of-file-fixer, check-yaml, check-toml, check-json
@@ -66,12 +72,14 @@ cp dotfiles/governance/CLAUDE.base.md my-project/CLAUDE.md
 - Monorepo patterns documented
 
 **Impact**:
+
 - Consolidated hooks from 11 scattered .pre-commit-config.yaml files
 - Reduced duplication: typical file is 40% duplicated content
 - Provides reference implementation for new projects
 - Documented integration with CI/CD pipelines
 
 **Usage**:
+
 ```bash
 cp dotfiles/hooks/.pre-commit-config.base.yaml my-project/.pre-commit-config.yaml
 # Uncomment language-specific sections for your stack
@@ -85,10 +93,12 @@ pre-commit install
 **Location**: `/Users/kooshapari/CodeProjects/Phenotype/repos/platforms/thegent/templates/quality/`
 
 **Files**:
+
 - `quality-gate.base.sh` (500+ lines) — Bash script template
 - `README.md` (700+ lines) — Comprehensive 8-gate framework guide
 
 **Key Features**:
+
 - 8 quality gates (can run individually or all):
   1. Syntax & format validation
   2. Linting & formatting
@@ -105,12 +115,14 @@ pre-commit install
 - GitHub Actions integration examples
 
 **Impact**:
+
 - Consolidated patterns from 6 scattered quality-gate.sh scripts
 - Provides standard framework for all projects
 - Eliminates need to invent quality gates per-project
 - Documented integration with Taskfile and CI/CD
 
 **Usage**:
+
 ```bash
 cp templates/quality/quality-gate.base.sh my-project/hooks/quality-gate.sh
 chmod +x my-project/hooks/quality-gate.sh
@@ -126,6 +138,7 @@ task quality                         # Via Taskfile
 **Location**: `/Users/kooshapari/CodeProjects/Phenotype/repos/platforms/thegent/templates/linters/`
 
 **Files**:
+
 - `README.md` (650+ lines) — Master guide for all linter configurations
 - Existing language-specific configs (referenced):
   - Python: `templates/quality/ruff.toml`, `basedpyright.json`
@@ -135,6 +148,7 @@ task quality                         # Via Taskfile
   - Shared: vale.yaml, .typos.toml
 
 **Key Features**:
+
 - Comprehensive quick-start guides for each language
 - Key settings tables with explanations
 - Customization patterns (strict, lenient, special cases)
@@ -144,12 +158,14 @@ task quality                         # Via Taskfile
 - Monorepo patterns
 
 **Impact**:
+
 - Consolidated patterns from scattered ruff.toml, clippy.toml files
 - Provides reference implementations
 - Documents key configuration decisions
 - Guides new projects on linter setup
 
 **Usage**:
+
 ```bash
 cp templates/linters/python/ruff.toml my-project/
 # See README.md for customization patterns
@@ -163,9 +179,11 @@ ruff check .
 **Location**: `/Users/kooshapari/CodeProjects/Phenotype/repos/platforms/thegent/`
 
 **File**:
+
 - `CONSOLIDATION_AUDIT.md` (1000+ lines) — Complete audit results and metrics
 
 **Contents**:
+
 - Executive summary
 - Detailed consolidation results for each item
 - Cross-project impact analysis
@@ -178,6 +196,7 @@ ruff check .
 - Complete file lists and statistics
 
 **Impact**:
+
 - Documents what was consolidated and why
 - Provides roadmap for future adoption
 - Identifies high-confidence adopter candidates
@@ -188,23 +207,26 @@ ruff check .
 ## Statistics
 
 ### Files Created
-| Category | Count | Lines |
-|----------|-------|-------|
-| Templates | 8 | 3,600+ |
-| Documentation | 5 | 2,800+ |
-| Audit Reports | 1 | 1,000+ |
-| **Total** | **14** | **~7,400** |
+
+| Category      | Count  | Lines      |
+| ------------- | ------ | ---------- |
+| Templates     | 8      | 3,600+     |
+| Documentation | 5      | 2,800+     |
+| Audit Reports | 1      | 1,000+     |
+| **Total**     | **14** | **~7,400** |
 
 ### Content Consolidation
-| Item Type | Found | Consolidated | Reuse Potential |
-|-----------|-------|--------------|-----------------|
-| CLAUDE.md | 22 | 1 base + patterns | 18+ projects |
-| .pre-commit-config.yaml | 11 | 1 base + language variants | 20+ projects |
-| quality-gate.sh | 6 | 1 base + 8 gates | 25+ projects |
-| Linter configs | 10+ | 1 comprehensive guide | 30+ projects |
-| **Total** | **49** | **4 consolidated** | **70+ projects** |
+
+| Item Type               | Found  | Consolidated               | Reuse Potential  |
+| ----------------------- | ------ | -------------------------- | ---------------- |
+| CLAUDE.md               | 22     | 1 base + patterns          | 18+ projects     |
+| .pre-commit-config.yaml | 11     | 1 base + language variants | 20+ projects     |
+| quality-gate.sh         | 6      | 1 base + 8 gates           | 25+ projects     |
+| Linter configs          | 10+    | 1 comprehensive guide      | 30+ projects     |
+| **Total**               | **49** | **4 consolidated**         | **70+ projects** |
 
 ### Documentation Quality
+
 - 5 comprehensive README guides (700+ lines each)
 - 100+ code examples
 - 50+ tables and diagrams
@@ -216,26 +238,31 @@ ruff check .
 ## Key Achievements
 
 ### 1. Single Source of Truth
+
 - **Before**: 49 scattered configuration files across repos
 - **After**: 4 consolidated templates + comprehensive guides
 - **Benefit**: Changes propagate to all projects automatically
 
 ### 2. Reduced Duplication
+
 - **Before**: 40-50% duplication across .pre-commit-config.yaml files
 - **After**: Universal hooks defined once, language variants documented
 - **Benefit**: ~1,000 lines of duplicate configuration eliminated
 
 ### 3. Clear Customization Paths
+
 - **Before**: No clear guidance on how/when to customize
 - **After**: [CUSTOMIZE], [OPTIONAL], patterns, examples for every template
 - **Benefit**: New projects can be set up in <30 minutes
 
 ### 4. Comprehensive Documentation
+
 - **Before**: Scattered documentation, examples in comments only
 - **After**: 5 comprehensive READMEs with 700+ lines each
 - **Benefit**: Team has clear reference material for standards
 
 ### 5. Adoption Roadmap
+
 - **Before**: No plan for scaling governance templates
 - **After**: Phased adoption plan with confidence levels per project
 - **Benefit**: Can execute adoption systematically in Phase 2
@@ -245,23 +272,27 @@ ruff check .
 ## Next Steps
 
 ### Immediate (Today)
+
 1. ✅ Create PR from `chore/consolidate-dotfiles` branch to thegent/main
 2. Review consolidation with governance team
 3. Address feedback/questions (see below)
 
 ### Short-term (This Sprint)
+
 1. Merge PR to thegent/main
 2. Create Phase 2 adoption plan
 3. Identify top 5 adopter candidates
 4. Create migration guides per project type
 
 ### Medium-term (Q2 2026)
+
 1. Begin staged rollout to high-confidence adopters
 2. Monitor for issues/edge cases
 3. Update templates based on feedback
 4. Achieve >80% adoption rate
 
 ### Long-term (Q3+ 2026)
+
 1. Retire redundant local configs
 2. Establish quarterly review cycle
 3. Build automation (lint preset system, etc.)
@@ -272,26 +303,31 @@ ruff check .
 ## Outstanding Questions for Governance Team
 
 ### 1. Distribution Strategy
+
 - **Q**: Should projects copy templates or use git submodules/npm packages?
 - **Current Plan**: Copy-based (simplest, no dependencies)
 - **Alternative**: Submodule for coordinated updates
 
 ### 2. Update Frequency
+
 - **Q**: Is quarterly update cycle acceptable?
 - **Current Plan**: Updates last Friday of each Q (Mar, Jun, Sep, Dec)
 - **Trade-off**: Stability vs. timeliness
 
 ### 3. Versioning Approach
+
 - **Q**: Track versions separately (1.0, 1.1) or alongside git tags?
 - **Current Plan**: Separate semantic versioning (1.0 = initial, 1.1 = minor, 2.0 = breaking)
 - **Alternative**: Version per template type
 
 ### 4. Enforcement Mechanism
+
 - **Q**: Should we add pre-commit hook to enforce compliance?
 - **Current Plan**: Advisory only (copy template, customize as needed)
 - **Alternative**: Linter to validate projects use base templates
 
 ### 5. Monorepo Support
+
 - **Q**: Should we create separate patterns for different monorepo types?
 - **Current Plan**: Generic patterns + examples in README
 - **Alternative**: Dedicated templates per monorepo type (Rust workspace, Python monorepo, etc.)
@@ -301,18 +337,22 @@ ruff check .
 ## Potential Issues & Mitigation
 
 ### Issue 1: Adoption Friction
+
 - **Risk**: Projects reluctant to adopt templates due to differences
 - **Mitigation**: Phase 2 adoption plan with high-confidence candidates first; gather feedback to improve templates
 
 ### Issue 2: Version Lag
+
 - **Risk**: Projects using outdated template versions
 - **Mitigation**: Changelog published in worklogs/GOVERNANCE.md; quarterly review cycle
 
 ### Issue 3: Over-customization
+
 - **Risk**: Teams customize templates to point of losing standardization
 - **Mitigation**: Clear guidance on what to/not customize; review high-customization cases
 
 ### Issue 4: Tool Version Conflicts
+
 - **Risk**: Linter versions drift, configs incompatible
 - **Mitigation**: Pin versions in templates; document breaking changes in updates
 
@@ -345,6 +385,7 @@ ruff check .
 ```
 
 ### Branch & Commit
+
 - **Branch**: `platforms/worktrees/thegent/consolidate-dotfiles`
 - **Tracking**: `origin/main` (at `2ecd63e0b`)
 - **Commit**: `b2b59c999` — feat(governance): consolidate governance templates
@@ -355,12 +396,14 @@ ruff check .
 ## How to Use This Consolidation
 
 ### For New Projects
+
 1. Copy `CLAUDE.base.md` → customize section markers
 2. Copy `.pre-commit-config.base.yaml` → uncomment language sections
 3. Copy `quality-gate.base.sh` → customize for your languages
 4. Reference `templates/linters/README.md` for linter setup
 
 ### For Existing Projects (Phase 2)
+
 1. Compare current CLAUDE.md with base template
 2. Adopt missing sections
 3. Migrate to consolidated pre-commit config
@@ -368,6 +411,7 @@ ruff check .
 5. Update linter configs per README guidance
 
 ### For Governance Team
+
 1. Review `CONSOLIDATION_AUDIT.md` for complete details
 2. Provide feedback on templates (clarity, completeness, gaps)
 3. Approve update process & versioning strategy
@@ -378,6 +422,7 @@ ruff check .
 ## Testing & Verification
 
 All templates have been:
+
 - ✅ Created with comprehensive documentation
 - ✅ Organized in logical directory structure
 - ✅ Cross-referenced with integration examples
@@ -385,6 +430,7 @@ All templates have been:
 - ✅ Committed to version control
 
 Ready for:
+
 - [ ] Team review (awaiting feedback)
 - [ ] PR merge to main
 - [ ] Phase 2 adoption planning
@@ -394,6 +440,7 @@ Ready for:
 ## Related Documentation
 
 See also:
+
 - **CONSOLIDATION_AUDIT.md** — Complete audit results, metrics, adoption roadmap
 - **dotfiles/governance/README.md** — CLAUDE.md customization guide
 - **dotfiles/hooks/README.md** — Pre-commit configuration guide

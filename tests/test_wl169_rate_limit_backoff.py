@@ -12,7 +12,6 @@ from thegent.integrations.rate_limit_backoff import (
     RateLimitConfig,
 )
 
-
 # ---------------------------------------------------------------------------
 # Test: RateLimitConfig
 # ---------------------------------------------------------------------------

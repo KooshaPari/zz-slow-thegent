@@ -16,6 +16,7 @@ Phase 1 of the Rust Hooks migration is substantially complete. The governance li
 ## Completed Tasks
 
 ### ✅ 1.0.1 — Research Kickoff & Context Sharing (2h)
+
 - Reviewed existing Bash hook implementations (qa-policy-engine.sh, security-pipeline.sh)
 - Identified 5 core pain points addressed by Rust rewrite:
   1. Bash shell complexity and error handling overhead
@@ -26,6 +27,7 @@ Phase 1 of the Rust Hooks migration is substantially complete. The governance li
 - Stakeholder alignment obtained: Governance expert reviewed rationale
 
 ### ✅ 1.0.2 — Set Up Development Environment (2h)
+
 - **Status**: ✅ Complete and verified
 - Rust Cargo workspace: `crates/thegent-hooks/` ready
 - **Build Status**:
@@ -36,6 +38,7 @@ Phase 1 of the Rust Hooks migration is substantially complete. The governance li
 - **CI**: GitHub Actions skeleton ready in `.github/workflows/`
 
 ### ✅ 1.1.1 — Extract & Design Common Types (3h)
+
 - **File**: `src/types.rs`
 - **Delivered**:
   - `PolicyRule`, `RuleType` (Cost, Quality, Security, Spec)
@@ -51,6 +54,7 @@ Phase 1 of the Rust Hooks migration is substantially complete. The governance li
 - **Test Coverage**: 100% (serialization tested for all types)
 
 ### ✅ 1.1.2 — Implement PolicyEngine (4h)
+
 - **File**: `src/policy.rs` (~150 LOC)
 - **Delivered**:
   - Rule evaluation engine with DashMap-based caching
@@ -63,6 +67,7 @@ Phase 1 of the Rust Hooks migration is substantially complete. The governance li
 - **Performance**: ~1ms per rule evaluation (vs ~50ms in OPA Bash version)
 
 ### ✅ 1.1.3 — Implement CostCalculator (2h)
+
 - **File**: `src/cost.rs` (~100 LOC)
 - **Delivered**:
   - 6 known models hardcoded: Claude (Opus, Sonnet, Haiku), GPT-5, GPT-5-mini, Gemini-3-Flash
@@ -75,6 +80,7 @@ Phase 1 of the Rust Hooks migration is substantially complete. The governance li
 - **Test Coverage**: 100% (calculation accuracy, unknown model handling, custom models)
 
 ### ✅ 1.1.4 — Implement QualityEvaluator (3h)
+
 - **File**: `src/quality.rs` (~120 LOC)
 - **Delivered**:
   - `parse_ruff_json()`: parses 100+ ruff issues correctly
@@ -86,6 +92,7 @@ Phase 1 of the Rust Hooks migration is substantially complete. The governance li
 - **Performance**: <10ms to parse 100+ issues
 
 ### ✅ 1.3.1 — Implement SecurityScanner (4h)
+
 - **File**: `src/security.rs` (~150 LOC)
 - **Delivered**:
   - 8 secret patterns: OpenAI, GitHub (2 types), AWS, Slack, Private Keys, JWT, DB passwords
@@ -97,6 +104,7 @@ Phase 1 of the Rust Hooks migration is substantially complete. The governance li
 - **Test Coverage**: 85%+ (pattern detection, semgrep parsing, clean code rejection)
 
 ### ✅ 1.2.1 — Create quality-gate Binary Skeleton (2h)
+
 - **File**: `src/main.rs` (~400 LOC)
 - **Delivered**:
   - Subcommands: init, cache-key, cache-check, cache-read, cache-write, git, changed-files, config-get
@@ -110,6 +118,7 @@ Phase 1 of the Rust Hooks migration is substantially complete. The governance li
 ## In-Progress Tasks
 
 ### 🔄 1.2.2 — Implement quality-gate Logic (READY FOR IMPLEMENTATION)
+
 - **Prerequisite**: All library components ready ✅
 - **Scope**: Rewrite Bash quality-gate.sh (~300 LOC) as Rust using library
 - **Expected Deliverables**:
@@ -120,6 +129,7 @@ Phase 1 of the Rust Hooks migration is substantially complete. The governance li
 - **Performance Target**: 3-5× faster than Bash (currently ~250ms Bash → target <50ms Rust)
 
 ### 🔄 1.3.2 — Create security-pipeline Binary (READY FOR IMPLEMENTATION)
+
 - **Prerequisite**: SecurityScanner ✅
 - **Scope**: PoC security-pipeline hook in Rust
 - **Expected Deliverables**:
@@ -133,23 +143,27 @@ Phase 1 of the Rust Hooks migration is substantially complete. The governance li
 ## Pending Tasks (Next Phase)
 
 ### ⏭️ 1.2.3 — Write Integration Tests (3h)
+
 - Create test fixtures: temp projects with known coverage/lint scenarios
 - 10+ test cases: pass/fail scenarios, edge cases, error handling
 - All tests run in <100ms each
 - Cross-platform verification: macOS, Ubuntu, WSL
 
 ### ⏭️ 1.2.4 — Benchmark & Compare (3h)
+
 - Baseline Bash quality-gate.sh timing
 - Rust binary latency, memory, CPU
 - Statistical analysis: mean, stddev, confidence intervals
 - Target: Rust ≥50% faster (95% confidence)
 
 ### ⏭️ 1.3.3 — Cross-Platform Testing (Security) (2h)
+
 - Test security-pipeline on macOS, Linux, WSL
 - Verify all 8 secret patterns detected correctly
 - Platform compatibility report
 
 ### ⏭️ 1.4.1 — Write Technical Specification (3h)
+
 - Architecture decisions explained
 - Performance targets and results
 - Integration paths with existing Bash hooks
@@ -157,24 +171,28 @@ Phase 1 of the Rust Hooks migration is substantially complete. The governance li
 - Risk mitigation strategies
 
 ### ⏭️ 1.4.2 — Create Implementation Guide (2h)
+
 - Step-by-step guide for writing new Rust hooks
 - Code patterns and templates
 - Testing framework documentation
 - CI/CD setup instructions
 
 ### ⏭️ 1.4.3 — Phase 2 Roadmap & Review (1h)
+
 - Prioritize 9 remaining hooks for Phase 2
 - 4-week timeline estimate
 - Resource requirements
 - Governance team approval
 
 ### ⏭️ 1.5.1 — Code Review & QA (1h)
+
 - Final quality gate verification
 - All tests passing on CI
 - Code coverage ≥85%
 - Documentation complete
 
 ### ⏭️ 1.5.2 — Deliver & Handoff (1h)
+
 - Phase 1 delivery package
 - Presentation to governance team
 - Phase 2 approval decision
@@ -184,6 +202,7 @@ Phase 1 of the Rust Hooks migration is substantially complete. The governance li
 ## Build Status & Dependencies
 
 ### Cargo Workspace
+
 ```
 crates/Cargo.toml (workspace root)
 ├── thegent-hooks/          (governance library core)
@@ -202,6 +221,7 @@ crates/Cargo.toml (workspace root)
 ```
 
 ### Dependencies
+
 - **serde**: JSON/YAML serialization (Serialize + Deserialize)
 - **serde_json**: JSON parsing
 - **serde_yaml**: YAML parsing
@@ -212,6 +232,7 @@ crates/Cargo.toml (workspace root)
 - **hex**: Cache key encoding
 
 ### Build Commands
+
 ```bash
 # Build
 cd crates && cargo build --release
@@ -229,26 +250,29 @@ cargo fmt
 ## Performance Profile
 
 ### Library Evaluation Performance
-| Component | Operation | Latency | Notes |
-|-----------|-----------|---------|-------|
-| PolicyEngine | Evaluate 20 rules | ~20ms | 50% cache hit rate |
-| QualityEvaluator | Parse 100 lint issues | ~5ms | Streaming JSON parse |
-| CostCalculator | Calculate cost | <1ms | Simple arithmetic |
-| SecurityScanner | Scan 1000 lines | ~50ms | Regex matching |
+
+| Component        | Operation             | Latency | Notes                |
+| ---------------- | --------------------- | ------- | -------------------- |
+| PolicyEngine     | Evaluate 20 rules     | ~20ms   | 50% cache hit rate   |
+| QualityEvaluator | Parse 100 lint issues | ~5ms    | Streaming JSON parse |
+| CostCalculator   | Calculate cost        | <1ms    | Simple arithmetic    |
+| SecurityScanner  | Scan 1000 lines       | ~50ms   | Regex matching       |
 
 ### Binary Performance (vs Bash)
-| Operation | Rust | Bash | Speedup |
-|-----------|------|------|---------|
-| Cache lookup + read | <1ms | ~10ms | 10× |
-| Config parsing | <5ms | ~50ms | 10× |
-| Binary startup | ~2ms | ~20ms | 10× |
-| Full quality-gate flow (est) | ~30ms | ~200ms | 6.7× |
+
+| Operation                    | Rust  | Bash   | Speedup |
+| ---------------------------- | ----- | ------ | ------- |
+| Cache lookup + read          | <1ms  | ~10ms  | 10×     |
+| Config parsing               | <5ms  | ~50ms  | 10×     |
+| Binary startup               | ~2ms  | ~20ms  | 10×     |
+| Full quality-gate flow (est) | ~30ms | ~200ms | 6.7×    |
 
 ---
 
 ## Known Issues & Warnings
 
 ### Compiler Warnings (Non-blocking)
+
 1. **Unreachable pattern** in security.rs:136 ("ERROR" | "ERROR")
    - Fix: Remove duplicate pattern
 2. **Dead code** in main.rs: `HookInput` struct, Error variants
@@ -256,6 +280,7 @@ cargo fmt
 3. **Profiles warning**: Using workspace Cargo.toml correctly; warning is informational
 
 ### Test Coverage
+
 - Unit tests: 85%+ coverage across all modules
 - Integration tests: Phase 1 CLI tests in place; full quality-gate/security-pipeline tests pending
 
@@ -263,12 +288,12 @@ cargo fmt
 
 ## Risk Assessment
 
-| Risk | Severity | Likelihood | Mitigation |
-|------|----------|------------|-----------|
-| Bash interface incompatibility | High | Low | Verified main.rs CLI matches Bash signature |
-| Performance not meeting 3-5× target | Medium | Low | Early benchmark shows 6-10× on cache operations |
-| Cross-platform compatibility (WSL) | Medium | Medium | Integration tests in 1.2.3 will verify |
-| Dependency version conflicts | Low | Low | All deps pinned; pre-audit complete |
+| Risk                                | Severity | Likelihood | Mitigation                                      |
+| ----------------------------------- | -------- | ---------- | ----------------------------------------------- |
+| Bash interface incompatibility      | High     | Low        | Verified main.rs CLI matches Bash signature     |
+| Performance not meeting 3-5× target | Medium   | Low        | Early benchmark shows 6-10× on cache operations |
+| Cross-platform compatibility (WSL)  | Medium   | Medium     | Integration tests in 1.2.3 will verify          |
+| Dependency version conflicts        | Low      | Low        | All deps pinned; pre-audit complete             |
 
 ---
 

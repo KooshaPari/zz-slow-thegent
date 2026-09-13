@@ -30,12 +30,12 @@ Covers uncovered branches and edge cases in:
 - dag_raw_impl ambiguous cwd (line 3462)
 """
 
-import orjson as json
 import os
 from datetime import UTC, datetime, timedelta
 from pathlib import Path
 from unittest.mock import MagicMock, patch
 
+import orjson as json
 import pytest
 
 
@@ -186,7 +186,15 @@ class TestValidateDagTaskIdAndDepId:
         doc = DagDocument(
             frontmatter={},
             table_headers=["id", "agent", "prompt", "depends_on", "status"],
-            tasks=[{"id": "!!!bad", "agent": "claude", "prompt": "x", "depends_on": "", "status": "pending"}],
+            tasks=[
+                {
+                    "id": "!!!bad",
+                    "agent": "claude",
+                    "prompt": "x",
+                    "depends_on": "",
+                    "status": "pending",
+                }
+            ],
             before_table="",
             after_table="",
         )
@@ -203,7 +211,13 @@ class TestValidateDagTaskIdAndDepId:
             frontmatter={},
             table_headers=["id", "agent", "prompt", "depends_on", "status"],
             tasks=[
-                {"id": "T1", "agent": "claude", "prompt": "x", "depends_on": "!!!bad-dep", "status": "pending"},
+                {
+                    "id": "T1",
+                    "agent": "claude",
+                    "prompt": "x",
+                    "depends_on": "!!!bad-dep",
+                    "status": "pending",
+                },
             ],
             before_table="",
             after_table="",
@@ -427,7 +441,10 @@ class TestSweepImpl:
         mock_registry.registry_path = tmp_path / "registry.jsonl"
 
         mock_auditor = MagicMock()
-        mock_auditor.verify_registry.return_value = {"status": "failed", "errors": ["bad"]}
+        mock_auditor.verify_registry.return_value = {
+            "status": "failed",
+            "errors": ["bad"],
+        }
 
         with (
             patch("thegent.contracts.telemetry.ContractTelemetry", return_value=mock_ct),
@@ -650,7 +667,11 @@ class TestListSessionContractsImpl:
                 "pid": 1,
                 "status": "running",
                 "started_at_utc": "2025-01-01T00:00:00+00:00",
-                "route_request": {"requested_model": "m1", "policy": "prefer_direct", "resolved_model_alias": "opus"},
+                "route_request": {
+                    "requested_model": "m1",
+                    "policy": "prefer_direct",
+                    "resolved_model_alias": "opus",
+                },
                 "route_contract": {
                     "provider": "claude",
                     "model_alias": "haiku",
@@ -676,7 +697,11 @@ class TestListSessionContractsImpl:
                 "pid": 1,
                 "status": "running",
                 "started_at_utc": "2025-01-01T00:00:00+00:00",
-                "route_request": {"requested_model": "m1", "policy": "prefer_direct", "resolved_agent": "gemini"},
+                "route_request": {
+                    "requested_model": "m1",
+                    "policy": "prefer_direct",
+                    "resolved_agent": "gemini",
+                },
                 "route_contract": {
                     "provider": "claude",
                     "model_alias": "haiku",
@@ -1317,7 +1342,10 @@ class TestInspectImplLogError:
 class TestListDroidsImpl:
     # @trace FR-CLI-549
     @patch("thegent.cli.commands.impl.list_droid_names", return_value=["droid1", "droid2"])
-    @patch("thegent.cli.commands.impl._resolve_droids_dir", return_value=Path("/fake/droids"))
+    @patch(
+        "thegent.cli.commands.impl._resolve_droids_dir",
+        return_value=Path("/fake/droids"),
+    )
     @patch("thegent.cli.commands.impl._resolve_cwd", return_value=Path("/fake/cwd"))
     @patch("thegent.cli.commands.impl.ThegentSettings")
     def test_lists_droids_sorted(self, mock_settings_cls, mock_cwd, mock_droids_dir, mock_list) -> None:
@@ -1648,7 +1676,10 @@ class TestObserveSummaryImplInternals:
         with (
             patch("thegent.contracts.telemetry.ContractTelemetry", return_value=mock_ct),
             patch("thegent.execution.EscalationQueue", return_value=mock_queue),
-            patch("thegent.cli.commands.impl._load_observe_summary_snapshots", return_value=trend_records),
+            patch(
+                "thegent.cli.commands.impl._load_observe_summary_snapshots",
+                return_value=trend_records,
+            ),
         ):
             result = observe_summary_impl(trend_samples=5)
 
@@ -1701,7 +1732,10 @@ class TestObserveSummaryImplInternals:
         with (
             patch("thegent.contracts.telemetry.ContractTelemetry", return_value=mock_ct),
             patch("thegent.execution.EscalationQueue", return_value=mock_queue),
-            patch("thegent.cli.commands.impl._load_observe_summary_snapshots", return_value=trend_records),
+            patch(
+                "thegent.cli.commands.impl._load_observe_summary_snapshots",
+                return_value=trend_records,
+            ),
         ):
             result = observe_summary_impl(trend_samples=5)
 
@@ -1742,7 +1776,10 @@ class TestObserveSummaryImplInternals:
         with (
             patch("thegent.contracts.telemetry.ContractTelemetry", return_value=mock_ct),
             patch("thegent.execution.EscalationQueue", return_value=mock_queue),
-            patch("thegent.cli.commands.impl._load_observe_summary_snapshots", return_value=[]),
+            patch(
+                "thegent.cli.commands.impl._load_observe_summary_snapshots",
+                return_value=[],
+            ),
         ):
             result = observe_summary_impl(trend_samples=0)
 
@@ -1787,7 +1824,10 @@ class TestObserveSummaryImplInternals:
         with (
             patch("thegent.contracts.telemetry.ContractTelemetry", return_value=mock_ct),
             patch("thegent.execution.EscalationQueue", return_value=mock_queue),
-            patch("thegent.cli.commands.impl._load_observe_summary_snapshots", return_value=[]),
+            patch(
+                "thegent.cli.commands.impl._load_observe_summary_snapshots",
+                return_value=[],
+            ),
         ):
             result = observe_summary_impl(trend_samples=0)
 
@@ -1831,7 +1871,10 @@ class TestObserveSummaryImplInternals:
         with (
             patch("thegent.contracts.telemetry.ContractTelemetry", return_value=mock_ct),
             patch("thegent.execution.EscalationQueue", return_value=mock_queue),
-            patch("thegent.cli.commands.impl._load_observe_summary_snapshots", return_value=[]),
+            patch(
+                "thegent.cli.commands.impl._load_observe_summary_snapshots",
+                return_value=[],
+            ),
         ):
             result = observe_summary_impl(trend_samples=0)
 
@@ -1872,7 +1915,10 @@ class TestObserveSummaryTrendTimestamps:
         with (
             patch("thegent.contracts.telemetry.ContractTelemetry", return_value=mock_ct),
             patch("thegent.execution.EscalationQueue", return_value=mock_queue),
-            patch("thegent.cli.commands.impl._load_observe_summary_snapshots", return_value=trend_records),
+            patch(
+                "thegent.cli.commands.impl._load_observe_summary_snapshots",
+                return_value=trend_records,
+            ),
         ):
             result = observe_summary_impl(trend_samples=5)
 
@@ -1908,7 +1954,10 @@ class TestObserveSummaryTrendTimestamps:
         with (
             patch("thegent.contracts.telemetry.ContractTelemetry", return_value=mock_ct),
             patch("thegent.execution.EscalationQueue", return_value=mock_queue),
-            patch("thegent.cli.commands.impl._load_observe_summary_snapshots", return_value=trend_records),
+            patch(
+                "thegent.cli.commands.impl._load_observe_summary_snapshots",
+                return_value=trend_records,
+            ),
         ):
             result = observe_summary_impl(trend_samples=5)
 
@@ -1960,7 +2009,10 @@ class TestObserveSummaryTrendTimestamps:
         with (
             patch("thegent.contracts.telemetry.ContractTelemetry", return_value=mock_ct),
             patch("thegent.execution.EscalationQueue", return_value=mock_queue),
-            patch("thegent.cli.commands.impl._load_observe_summary_snapshots", return_value=[baseline]),
+            patch(
+                "thegent.cli.commands.impl._load_observe_summary_snapshots",
+                return_value=[baseline],
+            ),
         ):
             result = observe_summary_impl(trend_samples=5)
 
@@ -1999,7 +2051,10 @@ class TestObserveSummaryTrendTimestamps:
         with (
             patch("thegent.contracts.telemetry.ContractTelemetry", return_value=mock_ct),
             patch("thegent.execution.EscalationQueue", return_value=mock_queue),
-            patch("thegent.cli.commands.impl._load_observe_summary_snapshots", return_value=[baseline]),
+            patch(
+                "thegent.cli.commands.impl._load_observe_summary_snapshots",
+                return_value=[baseline],
+            ),
         ):
             observe_summary_impl(trend_samples=5)
 
@@ -2028,8 +2083,14 @@ class TestPsImplMetaReadException:
         bad_meta.write_text("NOT JSON", encoding="utf-8")
 
         with (
-            patch("thegent.cli.commands.impl._default_owner_tag", return_value="test_owner"),
-            patch("thegent.cli.commands.impl._session_scope_dirs", return_value=[owner_dir]),
+            patch(
+                "thegent.cli.commands.impl._default_owner_tag",
+                return_value="test_owner",
+            ),
+            patch(
+                "thegent.cli.commands.impl._session_scope_dirs",
+                return_value=[owner_dir],
+            ),
         ):
             result = ps_impl(all=True)
         # Should not crash, bad meta is skipped
@@ -2085,14 +2146,21 @@ class TestBgImplEdges:
         }
 
         mock_migrator = MagicMock()
-        mock_migrator.evaluate_version.return_value = {"allowed": True, "status": "current", "reason": "ok"}
+        mock_migrator.evaluate_version.return_value = {
+            "allowed": True,
+            "status": "current",
+            "reason": "ok",
+        }
 
         mock_proc = MagicMock()
         mock_proc.pid = 42
 
         env = {"THGENT_SANDBOX_ENV_FILTER": "true"}
         with (
-            patch("thegent.contracts.migration.MigrationController", return_value=mock_migrator),
+            patch(
+                "thegent.contracts.migration.MigrationController",
+                return_value=mock_migrator,
+            ),
             patch.dict(os.environ, env),
             patch("subprocess.Popen", return_value=mock_proc),
             patch("thegent.cli.commands.impl._save_session_meta"),
@@ -2157,15 +2225,29 @@ class TestBgImplEdges:
         }
 
         mock_migrator = MagicMock()
-        mock_migrator.evaluate_version.return_value = {"allowed": True, "status": "current", "reason": "ok"}
+        mock_migrator.evaluate_version.return_value = {
+            "allowed": True,
+            "status": "current",
+            "reason": "ok",
+        }
 
         with (
-            patch("thegent.contracts.migration.MigrationController", return_value=mock_migrator),
+            patch(
+                "thegent.contracts.migration.MigrationController",
+                return_value=mock_migrator,
+            ),
             patch("subprocess.Popen", side_effect=OSError("spawn failed")),
             patch("thegent.cli.commands.impl._save_session_meta"),
             pytest.raises(OSError, match="spawn failed"),
         ):
-            bg_impl(prompt="test", agent="claude", cd=Path("/tmp/cwd"), mode="write", timeout=30, full=True)
+            bg_impl(
+                prompt="test",
+                agent="claude",
+                cd=Path("/tmp/cwd"),
+                mode="write",
+                timeout=30,
+                full=True,
+            )
 
 
 # ---------------------------------------------------------------------------
@@ -2346,7 +2428,10 @@ class TestObserveSummaryDeltaEdgeCases:
         with (
             patch("thegent.contracts.telemetry.ContractTelemetry", return_value=mock_ct),
             patch("thegent.execution.EscalationQueue", return_value=mock_queue),
-            patch("thegent.cli.commands.impl._load_observe_summary_snapshots", return_value=[baseline]),
+            patch(
+                "thegent.cli.commands.impl._load_observe_summary_snapshots",
+                return_value=[baseline],
+            ),
         ):
             observe_summary_impl(trend_samples=5)
 

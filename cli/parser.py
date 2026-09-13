@@ -1,4 +1,5 @@
 """Stub parser module for CLI argument parsing."""
+
 from __future__ import annotations
 
 import sys

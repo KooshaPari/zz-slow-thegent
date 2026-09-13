@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 import orjson as json
-
 import pytest
 
 import thegent.mcp.server as mcp_server
@@ -22,7 +21,10 @@ def test_dynamic_tool_register_list_and_invoke_flow() -> None:
             {
                 "name": "lookup_weather",
                 "description": "Weather lookup",
-                "input_schema": {"type": "object", "properties": {"city": {"type": "string"}}},
+                "input_schema": {
+                    "type": "object",
+                    "properties": {"city": {"type": "string"}},
+                },
             }
         ),
         msg_type="dynamic_tool_register",
@@ -60,7 +62,11 @@ def test_dynamic_tool_register_list_and_invoke_flow() -> None:
     completed = tools_sessions.session_send_impl(
         session_id="sess-1",
         message=json.dumps(
-            {"callId": invoke_data["event"]["callId"], "output": {"temperature_c": 22}, "success": True}
+            {
+                "callId": invoke_data["event"]["callId"],
+                "output": {"temperature_c": 22},
+                "success": True,
+            }
         ),
         msg_type="dynamic_tool_complete",
         send_impl=_noop_send_impl,
@@ -77,7 +83,13 @@ def test_dynamic_tool_invoke_requires_json_object_arguments() -> None:
     tools_sessions.reset_dynamic_registry_for_tests()
     tools_sessions.session_send_impl(
         session_id="sess-2",
-        message=json.dumps({"name": "alpha", "description": "alpha tool", "input_schema": {"type": "object"}}).decode(),
+        message=json.dumps(
+            {
+                "name": "alpha",
+                "description": "alpha tool",
+                "input_schema": {"type": "object"},
+            }
+        ).decode(),
         msg_type="dynamic_tool_register",
         send_impl=_noop_send_impl,
     )
@@ -94,7 +106,13 @@ def test_dynamic_tool_invoke_rejects_non_numeric_timeout() -> None:
     tools_sessions.reset_dynamic_registry_for_tests()
     tools_sessions.session_send_impl(
         session_id="sess-2b",
-        message=json.dumps({"name": "alpha", "description": "alpha tool", "input_schema": {"type": "object"}}).decode(),
+        message=json.dumps(
+            {
+                "name": "alpha",
+                "description": "alpha tool",
+                "input_schema": {"type": "object"},
+            }
+        ).decode(),
         msg_type="dynamic_tool_register",
         send_impl=_noop_send_impl,
     )
@@ -123,7 +141,11 @@ def test_dynamic_tool_complete_failure_roundtrip_includes_error_payload() -> Non
     tools_sessions.session_send_impl(
         session_id="sess-4",
         message=json.dumps(
-            {"name": "lookup_weather", "description": "weather tool", "input_schema": {"type": "object"}}
+            {
+                "name": "lookup_weather",
+                "description": "weather tool",
+                "input_schema": {"type": "object"},
+            }
         ),
         msg_type="dynamic_tool_register",
         send_impl=_noop_send_impl,
@@ -138,7 +160,11 @@ def test_dynamic_tool_complete_failure_roundtrip_includes_error_payload() -> Non
     completed = tools_sessions.session_send_impl(
         session_id="sess-4",
         message=json.dumps(
-            {"callId": call_id, "success": False, "error": {"code": "tool_error", "message": "upstream timeout"}}
+            {
+                "callId": call_id,
+                "success": False,
+                "error": {"code": "tool_error", "message": "upstream timeout"},
+            }
         ),
         msg_type="dynamic_tool_complete",
         send_impl=_noop_send_impl,
@@ -149,7 +175,10 @@ def test_dynamic_tool_complete_failure_roundtrip_includes_error_payload() -> Non
     assert data["event"]["callId"] == call_id
     assert data["event"]["success"] is False
     assert data["event"]["output"] is None
-    assert data["event"]["error"] == {"code": "tool_error", "message": "upstream timeout"}
+    assert data["event"]["error"] == {
+        "code": "tool_error",
+        "message": "upstream timeout",
+    }
 
 
 def test_dynamic_tool_complete_failure_requires_error_or_output() -> None:
@@ -157,7 +186,11 @@ def test_dynamic_tool_complete_failure_requires_error_or_output() -> None:
     tools_sessions.session_send_impl(
         session_id="sess-5",
         message=json.dumps(
-            {"name": "lookup_weather", "description": "weather tool", "input_schema": {"type": "object"}}
+            {
+                "name": "lookup_weather",
+                "description": "weather tool",
+                "input_schema": {"type": "object"},
+            }
         ),
         msg_type="dynamic_tool_register",
         send_impl=_noop_send_impl,
@@ -178,12 +211,18 @@ def test_dynamic_tool_complete_failure_requires_error_or_output() -> None:
         )
 
 
-def test_dynamic_tool_complete_rejects_expired_call(monkeypatch: pytest.MonkeyPatch) -> None:
+def test_dynamic_tool_complete_rejects_expired_call(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
     tools_sessions.reset_dynamic_registry_for_tests()
     tools_sessions.session_send_impl(
         session_id="sess-6",
         message=json.dumps(
-            {"name": "lookup_weather", "description": "weather tool", "input_schema": {"type": "object"}}
+            {
+                "name": "lookup_weather",
+                "description": "weather tool",
+                "input_schema": {"type": "object"},
+            }
         ),
         msg_type="dynamic_tool_register",
         send_impl=_noop_send_impl,
@@ -193,7 +232,13 @@ def test_dynamic_tool_complete_rejects_expired_call(monkeypatch: pytest.MonkeyPa
     monkeypatch.setattr("thegent.mcp.dynamic_tools.time.monotonic", lambda: next(monotonic_values))
     invoked = tools_sessions.session_send_impl(
         session_id="sess-6",
-        message=json.dumps({"name": "lookup_weather", "arguments": {"city": "SF"}, "timeout_seconds": 0.1}).decode(),
+        message=json.dumps(
+            {
+                "name": "lookup_weather",
+                "arguments": {"city": "SF"},
+                "timeout_seconds": 0.1,
+            }
+        ).decode(),
         msg_type="dynamic_tool_invoke",
         send_impl=_noop_send_impl,
     )

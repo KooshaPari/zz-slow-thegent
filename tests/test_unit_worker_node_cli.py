@@ -22,7 +22,10 @@ def test_required_options_enforced() -> None:
 
 def test_runs_worker_loop_with_options(tmp_path: Path) -> None:
     with (
-        patch("thegent.infra.worker_node.worker_loop", new=MagicMock(return_value="sentinel")) as mock_loop,
+        patch(
+            "thegent.infra.worker_node.worker_loop",
+            new=MagicMock(return_value="sentinel"),
+        ) as mock_loop,
         patch("thegent.infra.worker_node.asyncio.run") as mock_asyncio_run,
     ):
         result = runner.invoke(

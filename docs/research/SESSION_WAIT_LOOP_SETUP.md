@@ -21,6 +21,7 @@
 **Location:** `src/thegent/cli_impl.py`
 
 **Functionality:**
+
 - Blocks until work is available
 - Polls at specified interval (default: 2s)
 - Supports timeout (0 = unbounded)
@@ -32,6 +33,7 @@
 **Command:** `thegent plan wait-next --timeout 0 --poll 10`
 
 **Behavior:**
+
 - Blocks indefinitely (timeout 0)
 - Polls every 10 seconds
 - Keeps session active
@@ -42,6 +44,7 @@
 **Command:** `thegent free --do-next --repeat 5`
 
 **Behavior:**
+
 - Processes next 5 work items
 - Runs in background
 - Auto-delegates to agents
@@ -51,16 +54,19 @@
 ## Proper Wait Patterns
 
 ### Pattern 1: Block Until Work Available
+
 ```bash
 thegent plan wait-next --timeout 0 --poll 10
 ```
 
 ### Pattern 2: Continuous Work Loop
+
 ```bash
 thegent plan loop --max 1000 --sleep 30
 ```
 
 ### Pattern 3: Wait for Specific Session
+
 ```bash
 thegent wait <session_id> --timeout 300
 ```

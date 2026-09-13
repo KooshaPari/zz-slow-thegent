@@ -1,10 +1,10 @@
 from __future__ import annotations
 
-import orjson as json
 from pathlib import Path
 from typing import Any
 from unittest.mock import AsyncMock, MagicMock
 
+import orjson as json
 import pytest
 
 from thegent.govern.vetter.checks import (
@@ -127,7 +127,9 @@ async def test_orchestrator_uses_federated_manager_resolve_policy_when_namespace
 
 
 @pytest.mark.asyncio
-async def test_eu_ai_act_overlay_forces_escalation_for_critical_failures(tmp_path: Path) -> None:
+async def test_eu_ai_act_overlay_forces_escalation_for_critical_failures(
+    tmp_path: Path,
+) -> None:
     hitl = MagicMock()
     orch = VetterOrchestrator(
         session_dir=tmp_path,

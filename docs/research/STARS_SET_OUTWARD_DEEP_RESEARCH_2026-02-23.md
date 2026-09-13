@@ -4,17 +4,21 @@
 Date: February 23, 2026
 
 ## Scope
+
 This dossier repeats and extends the prior methodology for your newly provided starred-item set.
 
 Goals:
+
 1. Triage the full set into practical adoption buckets.
 2. Separate hype/public-signal from engineering evidence.
 3. Identify pilot candidates with strongest ROI and lowest integration risk.
 4. Flag high-risk/high-noise projects for sandbox-only exploration.
 
 ## Executive Summary
+
 1. The highest-value immediate adoptions in this set are governance and infra fundamentals, not agent hype repos.
 2. Top practical picks for your stack:
+
 - `errata-ai/vale`
 - `doorstop-dev/doorstop`
 - `ory/kratos`
@@ -22,11 +26,13 @@ Goals:
 - `pocketbase/pocketbase`
 - `searxng/searxng`
 - `gitleaks`/`CodeQL`/`Semgrep` class tools from adjacent ecosystem (recommended via outward expansion)
+
 3. Most fast-rising agent orchestration repos should be treated as pilot-only until reproducibility, security, and maintenance thresholds are met.
 
 ## Bucketed Triage of Provided Set
 
 ### A. Strong Immediate Utility (production-friendly)
+
 - `errata-ai/vale` (docs linting baseline)
 - `doorstop-dev/doorstop` (requirements management in VCS)
 - `ory/kratos` (identity/auth)
@@ -36,11 +42,13 @@ Goals:
 - `boyter/scc` (codebase metrics)
 
 Why:
+
 - Clear problem/solution fit.
 - Mature OSS signals and broad external usage.
 - Lower governance risk compared to fast-hype agent frameworks.
 
 ### B. High Potential, Needs Strict Pilot Gate
+
 - `anomalyco/opencode`
 - `stravu/crystal`
 - `BloopAI/vibe-kanban`
@@ -54,11 +62,13 @@ Why:
 - `router-for-me/CLIProxyAPI`
 
 Why:
+
 - Valuable direction (parallel sessions, memory, orchestration, agent ops).
 - Often high star velocity and strong social momentum.
 - Engineering stability and security posture vary significantly; require internal validation.
 
 ### C. Curated Lists / Discovery Inputs (not dependencies)
+
 - `testthedocs/awesome-docs`
 - `golangci/awesome-go-linters`
 - `avelino/awesome-go`
@@ -71,6 +81,7 @@ Why:
 Use these as sourcing catalogs, not direct adoption targets.
 
 ### D. Research/Spec/Signal Heavy (prototype-only until proven)
+
 - `lorelang/lore`
 - `stef-k/spec`
 - `andrei-shtanakov/open-prose`
@@ -83,6 +94,7 @@ Use these as sourcing catalogs, not direct adoption targets.
 Useful for ideas and experimentation; evidence quality and governance maturity vary widely.
 
 ### E. Niche/Domain-Specific (evaluate only with direct need)
+
 - `agentic-ops/real-estate-mcp`
 - `IgorWarzocha/Opencode-Google-AI-Search-Plugin`
 - `kunal123thakur/LangGraph_Task_multiagent`
@@ -94,28 +106,33 @@ Useful for ideas and experimentation; evidence quality and governance maturity v
 ## Public-Signal vs Engineering-Signal Model
 
 ### Public-Signal (good for discovery, weak for trust)
+
 - LinkedIn amplification.
 - Star growth bursts.
 - Marketplace listings and reposts.
 
 ### Engineering-Signal (required for trust)
+
 - Reproducible test/benchmark evidence.
 - CI quality and release hygiene.
 - Security posture and dependency risk.
 - Issue closure quality and governance docs.
 
 Rule:
+
 - Do not treat public-signal as production readiness.
 
 ## Priority Shortlist (Next 30 Days)
 
 ### Tier 1: Adopt Immediately
+
 1. `errata-ai/vale`
 2. `doorstop-dev/doorstop`
 3. `ory/kratos` (if identity stack alignment needed)
 4. `nats-io/nats-server` (if eventing fits architecture)
 
 ### Tier 2: Sandbox Pilots
+
 1. `anomalyco/opencode`
 2. `steveyegge/beads`
 3. `obra/superpowers`
@@ -123,12 +140,14 @@ Rule:
 5. `BloopAI/vibe-kanban`
 
 ### Tier 3: Watchlist
+
 1. `lorelang/lore`
 2. `open-prose`
 3. `AGENTS.lock`
 4. selected MCP niche repos
 
 ## Suggested Evaluation Rubric (for all Tier 2+)
+
 - `Reproducibility` (0-5)
 - `Security posture` (0-5)
 - `Maintenance cadence` (0-5)
@@ -137,19 +156,23 @@ Rule:
 - `Net score` (weighted)
 
 Hard gates before production:
+
 1. deterministic install/build/tests on your hardware.
 2. no critical security findings.
 3. acceptable maintenance signal over 30+ days.
 4. rollback path proven.
 
 ## Repo-Specific Notes from this batch
+
 - `remotion-dev/remotion`: mature and high-signal for programmatic media workflows.
 - `VectifyAI/PageIndex`: interesting vectorless-RAG direction; strong claims require independent benchmark replication before trust.
 - `steveyegge/beads`: high momentum; verify architecture/runtime constraints and operational burden in your own workflow.
 - `anomalyco/opencode`: very high momentum; prioritize governance/security/testing checks before deep integration.
 
 ## Expanded Reference Links
+
 (Seed + outward references used in this pass)
+
 - https://github.com/errata-ai/vale
 - https://github.com/testthedocs/awesome-docs
 - https://github.com/Piebald-AI/claude-code-system-prompts
@@ -182,6 +205,7 @@ Hard gates before production:
 - https://github.com/ggwicz/skills
 
 ## Operational Recommendation
+
 - Start with a conservative core stack and strict gates.
 - Use hype-heavy agent frameworks only behind sandbox boundaries and scorecards.
 - Keep adoption decisions evidence-first, not feed-first.

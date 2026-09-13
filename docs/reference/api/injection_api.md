@@ -12,7 +12,7 @@ Dynamic context injection (SCLI-P9.4–P9.5).
 
 ### Methods
 
-#### ContextInjection.__init__
+#### ContextInjection.**init**
 
 ```python
 __init__(self: Any, project_root: Path, mesh_root: Path)
@@ -48,7 +48,7 @@ Tmux-based shell injection (SCLI-P9.1–P9.3).
 
 ### Methods
 
-#### ShellInjection.__init__
+#### ShellInjection.**init**
 
 ```python
 __init__(self: Any, agent_id: str)

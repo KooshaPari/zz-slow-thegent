@@ -1,11 +1,11 @@
 """Unit tests for execution registry and state-aware orchestration (G-KD-03)."""
 
-import orjson as json
 import tempfile
 from datetime import UTC, datetime
 from pathlib import Path
 from unittest.mock import MagicMock, patch
 
+import orjson as json
 import pytest
 
 from thegent.execution import (
@@ -575,7 +575,12 @@ class TestAuditorVerifyRegistry:
         """sign_run produces deterministic signature for same input."""
         auditor = Auditor(tmp_path / "registry.jsonl")
         m = RunMeta(
-            run_id="run_1", agent="gemini", prompt="x", cwd="/tmp", owner="u", started_at_utc="2026-01-01T00:00:00Z"
+            run_id="run_1",
+            agent="gemini",
+            prompt="x",
+            cwd="/tmp",
+            owner="u",
+            started_at_utc="2026-01-01T00:00:00Z",
         )
         sig1 = auditor.sign_run(m)
         sig2 = auditor.sign_run(m)
@@ -594,12 +599,26 @@ class TestRunRegistryRetention:
 
         # Old record (expired)
         old_ts = "2020-01-01T00:00:00Z"
-        m_old = RunMeta(run_id="run_old", agent="gemini", prompt="old", cwd="/tmp", owner="u", started_at_utc=old_ts)
+        m_old = RunMeta(
+            run_id="run_old",
+            agent="gemini",
+            prompt="old",
+            cwd="/tmp",
+            owner="u",
+            started_at_utc=old_ts,
+        )
         reg.register_start(m_old)
 
         # New record (not expired)
         now_ts = datetime.now(UTC).isoformat()
-        m_new = RunMeta(run_id="run_new", agent="gemini", prompt="new", cwd="/tmp", owner="u", started_at_utc=now_ts)
+        m_new = RunMeta(
+            run_id="run_new",
+            agent="gemini",
+            prompt="new",
+            cwd="/tmp",
+            owner="u",
+            started_at_utc=now_ts,
+        )
         reg.register_start(m_new)
 
         result = reg.purge_expired(default_days=30, by_domain={}, dry_run=True)
@@ -623,13 +642,25 @@ class TestRunRegistryRetention:
 
         # Domain 'short' with 5 day retention (should be purged)
         m1 = RunMeta(
-            run_id="r1", agent="a", prompt="p", cwd="/tmp", owner="u", started_at_utc=ts_10d, domain_tag="short"
+            run_id="r1",
+            agent="a",
+            prompt="p",
+            cwd="/tmp",
+            owner="u",
+            started_at_utc=ts_10d,
+            domain_tag="short",
         )
         reg.register_start(m1)
 
         # Domain 'long' with 20 day retention (should be kept)
         m2 = RunMeta(
-            run_id="r2", agent="a", prompt="p", cwd="/tmp", owner="u", started_at_utc=ts_10d, domain_tag="long"
+            run_id="r2",
+            agent="a",
+            prompt="p",
+            cwd="/tmp",
+            owner="u",
+            started_at_utc=ts_10d,
+            domain_tag="long",
         )
         reg.register_start(m2)
 
@@ -666,10 +697,20 @@ class TestRunRegistryListRuns:
         """list_runs returns runs that have been started."""
         reg = RunRegistry(tmp_path)
         m1 = RunMeta(
-            run_id="run_a", agent="gemini", prompt="p1", cwd="/tmp", owner="u", started_at_utc="2026-02-14T10:00:00Z"
+            run_id="run_a",
+            agent="gemini",
+            prompt="p1",
+            cwd="/tmp",
+            owner="u",
+            started_at_utc="2026-02-14T10:00:00Z",
         )
         m2 = RunMeta(
-            run_id="run_b", agent="claude", prompt="p2", cwd="/tmp", owner="u", started_at_utc="2026-02-14T11:00:00Z"
+            run_id="run_b",
+            agent="claude",
+            prompt="p2",
+            cwd="/tmp",
+            owner="u",
+            started_at_utc="2026-02-14T11:00:00Z",
         )
         reg.register_start(m1)
         reg.register_start(m2)
@@ -736,7 +777,14 @@ class TestRunRegistryFindByToken:
         # @trace FR-EXE-009
         """find_by_token returns None when no run has the token."""
         reg = RunRegistry(tmp_path)
-        m = RunMeta(run_id="run_1", agent="gemini", prompt="p", cwd="/tmp", owner="u", idempotency_token="tok-other")
+        m = RunMeta(
+            run_id="run_1",
+            agent="gemini",
+            prompt="p",
+            cwd="/tmp",
+            owner="u",
+            idempotency_token="tok-other",
+        )
         reg.register_start(m)
         assert reg.find_by_token("tok-abc") is None
 
@@ -744,7 +792,14 @@ class TestRunRegistryFindByToken:
         # @trace FR-EXE-009
         """find_by_token returns the run matching the token."""
         reg = RunRegistry(tmp_path)
-        m = RunMeta(run_id="run_1", agent="gemini", prompt="p", cwd="/tmp", owner="u", idempotency_token="tok-abc")
+        m = RunMeta(
+            run_id="run_1",
+            agent="gemini",
+            prompt="p",
+            cwd="/tmp",
+            owner="u",
+            idempotency_token="tok-abc",
+        )
         reg.register_start(m)
         result = reg.find_by_token("tok-abc")
         assert result is not None
@@ -783,7 +838,14 @@ class TestRunRegistryFindByToken:
         # @trace FR-EXE-009
         """find_by_token merges finish event data when same run_id."""
         reg = RunRegistry(tmp_path)
-        m = RunMeta(run_id="run_tok", agent="gemini", prompt="p", cwd="/tmp", owner="u", idempotency_token="tok-fin")
+        m = RunMeta(
+            run_id="run_tok",
+            agent="gemini",
+            prompt="p",
+            cwd="/tmp",
+            owner="u",
+            idempotency_token="tok-fin",
+        )
         reg.register_start(m)
         # Write finish event with matching token
         finish_event = {
@@ -803,7 +865,14 @@ class TestRunRegistryFindByToken:
         # @trace FR-EXE-009
         """find_by_token merges feedback_score from feedback events."""
         reg = RunRegistry(tmp_path)
-        m = RunMeta(run_id="run_fb", agent="gemini", prompt="p", cwd="/tmp", owner="u", idempotency_token="tok-fb")
+        m = RunMeta(
+            run_id="run_fb",
+            agent="gemini",
+            prompt="p",
+            cwd="/tmp",
+            owner="u",
+            idempotency_token="tok-fb",
+        )
         reg.register_start(m)
         feedback_event = {
             "run_id": "run_fb",
@@ -833,7 +902,14 @@ class TestCalibrationFactor:
         # @trace FR-EXE-006
         """Returns 1.0 when no feedback scores exist for agent."""
         reg = RunRegistry(tmp_path)
-        m = RunMeta(run_id="run_1", agent="gemini", prompt="p", cwd="/tmp", owner="u", confidence=0.9)
+        m = RunMeta(
+            run_id="run_1",
+            agent="gemini",
+            prompt="p",
+            cwd="/tmp",
+            owner="u",
+            confidence=0.9,
+        )
         reg.register_start(m)
         assert reg.get_calibration_factor("gemini") == 1.0
 
@@ -841,7 +917,14 @@ class TestCalibrationFactor:
         # @trace FR-EXE-006
         """Returns factor < 1.0 when agent is overconfident (high confidence, low feedback)."""
         reg = RunRegistry(tmp_path)
-        m = RunMeta(run_id="run_1", agent="gemini", prompt="p", cwd="/tmp", owner="u", confidence=0.9)
+        m = RunMeta(
+            run_id="run_1",
+            agent="gemini",
+            prompt="p",
+            cwd="/tmp",
+            owner="u",
+            confidence=0.9,
+        )
         reg.register_start(m)
         reg.register_feedback("run_1", score=0.5)
         factor = reg.get_calibration_factor("gemini")
@@ -852,7 +935,14 @@ class TestCalibrationFactor:
         # @trace FR-EXE-006
         """Returns factor > 1.0 when agent is underconfident (low confidence, high feedback)."""
         reg = RunRegistry(tmp_path)
-        m = RunMeta(run_id="run_1", agent="gemini", prompt="p", cwd="/tmp", owner="u", confidence=0.3)
+        m = RunMeta(
+            run_id="run_1",
+            agent="gemini",
+            prompt="p",
+            cwd="/tmp",
+            owner="u",
+            confidence=0.3,
+        )
         reg.register_start(m)
         reg.register_feedback("run_1", score=0.9)
         factor = reg.get_calibration_factor("gemini")
@@ -863,7 +953,14 @@ class TestCalibrationFactor:
         # @trace FR-EXE-006
         """Feedback for a different agent is not included in calibration."""
         reg = RunRegistry(tmp_path)
-        m = RunMeta(run_id="run_1", agent="claude", prompt="p", cwd="/tmp", owner="u", confidence=0.9)
+        m = RunMeta(
+            run_id="run_1",
+            agent="claude",
+            prompt="p",
+            cwd="/tmp",
+            owner="u",
+            confidence=0.9,
+        )
         reg.register_start(m)
         reg.register_feedback("run_1", score=0.1)
         assert reg.get_calibration_factor("gemini") == 1.0
@@ -872,7 +969,14 @@ class TestCalibrationFactor:
         # @trace FR-EXE-006
         """Calibration factor is clamped to max 2.0."""
         reg = RunRegistry(tmp_path)
-        m = RunMeta(run_id="run_1", agent="gemini", prompt="p", cwd="/tmp", owner="u", confidence=0.1)
+        m = RunMeta(
+            run_id="run_1",
+            agent="gemini",
+            prompt="p",
+            cwd="/tmp",
+            owner="u",
+            confidence=0.1,
+        )
         reg.register_start(m)
         reg.register_feedback("run_1", score=1.0)
         factor = reg.get_calibration_factor("gemini")
@@ -882,7 +986,14 @@ class TestCalibrationFactor:
         # @trace FR-EXE-006
         """Calibration factor is clamped to min 0.5."""
         reg = RunRegistry(tmp_path)
-        m = RunMeta(run_id="run_1", agent="gemini", prompt="p", cwd="/tmp", owner="u", confidence=1.0)
+        m = RunMeta(
+            run_id="run_1",
+            agent="gemini",
+            prompt="p",
+            cwd="/tmp",
+            owner="u",
+            confidence=1.0,
+        )
         reg.register_start(m)
         reg.register_feedback("run_1", score=0.1)
         factor = reg.get_calibration_factor("gemini")
@@ -1145,7 +1256,14 @@ class TestFindByTokenExceptionPath:
         # @trace FR-EXE-009
         """find_by_token skips corrupt JSON lines."""
         reg = RunRegistry(tmp_path)
-        m = RunMeta(run_id="run_1", agent="gemini", prompt="p", cwd="/tmp", owner="u", idempotency_token="tok-1")
+        m = RunMeta(
+            run_id="run_1",
+            agent="gemini",
+            prompt="p",
+            cwd="/tmp",
+            owner="u",
+            idempotency_token="tok-1",
+        )
         reg.register_start(m)
         with reg.registry_path.open("a", encoding="utf-8") as f:
             f.write("{{corrupt}}\n")
@@ -1162,7 +1280,14 @@ class TestCalibrationFactorExceptionPath:
         # @trace FR-EXE-006
         """get_calibration_factor skips corrupt lines and still returns valid result."""
         reg = RunRegistry(tmp_path)
-        m = RunMeta(run_id="run_1", agent="gemini", prompt="p", cwd="/tmp", owner="u", confidence=0.5)
+        m = RunMeta(
+            run_id="run_1",
+            agent="gemini",
+            prompt="p",
+            cwd="/tmp",
+            owner="u",
+            confidence=0.5,
+        )
         reg.register_start(m)
         reg.register_feedback("run_1", score=0.5)
         with reg.registry_path.open("a", encoding="utf-8") as f:
@@ -1174,7 +1299,14 @@ class TestCalibrationFactorExceptionPath:
         # @trace FR-EXE-006
         """get_calibration_factor returns 1.0 when avg_confidence is 0."""
         reg = RunRegistry(tmp_path)
-        m = RunMeta(run_id="run_1", agent="gemini", prompt="p", cwd="/tmp", owner="u", confidence=0)
+        m = RunMeta(
+            run_id="run_1",
+            agent="gemini",
+            prompt="p",
+            cwd="/tmp",
+            owner="u",
+            confidence=0,
+        )
         reg.register_start(m)
         reg.register_feedback("run_1", score=0.5)
         factor = reg.get_calibration_factor("gemini")
@@ -1221,7 +1353,10 @@ class TestPurgeExpiredExceptionPaths:
         """purge_expired handles naive timestamps by adding UTC (line 385)."""
         reg = RunRegistry(tmp_path)
         # Write a record with a naive timestamp (no timezone info)
-        naive_ts_record = {"run_id": "run_naive", "started_at_utc": "2020-01-01T00:00:00"}
+        naive_ts_record = {
+            "run_id": "run_naive",
+            "started_at_utc": "2020-01-01T00:00:00",
+        }
         with reg.registry_path.open("a", encoding="utf-8") as f:
             f.write(json.dumps(naive_ts_record).decode() + "\n")
         result = reg.purge_expired(default_days=30, by_domain={}, dry_run=False)
@@ -1423,7 +1558,11 @@ class TestOverrideRegistryExceptionPaths:
         # @trace FR-EXE-005
         """has_unexpired skips records without expires_at_utc (line 803)."""
         oreg = OverrideRegistry(tmp_path)
-        no_expiry = {"owner": "user1", "reason": "test", "timestamp": "2026-01-01T00:00:00+00:00"}
+        no_expiry = {
+            "owner": "user1",
+            "reason": "test",
+            "timestamp": "2026-01-01T00:00:00+00:00",
+        }
         oreg.session_dir.mkdir(parents=True, exist_ok=True)
         with oreg.registry_path.open("a", encoding="utf-8") as f:
             f.write(json.dumps(no_expiry).decode() + "\n")
@@ -1457,7 +1596,12 @@ class TestEscalationQueueExceptionPaths:
         # @trace FR-EXE-005
         """list_pending skips items without escalate_by_utc (line 865)."""
         eq = EscalationQueue(tmp_path)
-        no_sla = {"run_id": "run_nosla", "status": "pending", "reason": "test", "priority": 0}
+        no_sla = {
+            "run_id": "run_nosla",
+            "status": "pending",
+            "reason": "test",
+            "priority": 0,
+        }
         eq.session_dir.mkdir(parents=True, exist_ok=True)
         with eq.queue_path.open("a", encoding="utf-8") as f:
             f.write(json.dumps(no_sla).decode() + "\n")

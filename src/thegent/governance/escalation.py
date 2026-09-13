@@ -7,11 +7,11 @@ import json
 import logging
 import time
 from dataclasses import dataclass, field
-
-from thegent.integrations.base import SerializableMixin
 from enum import StrEnum
 from pathlib import Path
 from typing import Any, cast
+
+from thegent.integrations.base import SerializableMixin
 
 _log = logging.getLogger(__name__)
 

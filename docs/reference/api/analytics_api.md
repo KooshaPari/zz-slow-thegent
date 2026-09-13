@@ -12,7 +12,7 @@ Generate analytics integration for documentation.
 
 ### Methods
 
-#### AnalyticsGenerator.__init__
+#### AnalyticsGenerator.**init**
 
 ```python
 __init__(self: Any, google_analytics_id: Any, plausible_domain: Any)

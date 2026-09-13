@@ -1,17 +1,15 @@
 from __future__ import annotations
 
-import orjson as json
 from pathlib import Path
+
+import orjson as json
 
 # scripts.benchmark_python_suite module was removed.
 import pytest
 
 pytest.importorskip(
     "scripts.benchmark_python_suite",
-    reason=(
-        "scripts.benchmark_python_suite module removed; "
-        "benchmark suite tests skipped"
-    ),
+    reason=("scripts.benchmark_python_suite module removed; benchmark suite tests skipped"),
 )
 from scripts.benchmark_python_suite import run_suite  # noqa: E402
 

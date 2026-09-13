@@ -13,6 +13,7 @@ Successfully migrated 5 custom caching implementations to `cachetools` library p
 ## Files Migrated (5)
 
 ### 1. cli_impl.py ✅
+
 - **Type**: Global dict cache with TTL
 - **Migration**: `_CWD_CACHE: dict[str, tuple[Path | None, float, float]]` → `TTLCache[str, Path | None]` (maxsize=100, ttl=10.0)
 - **Changes**:
@@ -22,12 +23,14 @@ Successfully migrated 5 custom caching implementations to `cachetools` library p
   - Cachetools handles TTL automatically
 
 ### 2. infra/fast_json_schema.py ✅
+
 - **Type**: Global dict cache (no TTL)
 - **Migration**: `_schema_cache: dict[str, FastJSONSchemaValidator]` → `LRUCache[str, FastJSONSchemaValidator]` (maxsize=50)
 - **Changes**:
   - Added automatic LRU eviction via cachetools
 
 ### 3. infra/fast_process_monitor.py ✅
+
 - **Type**: Instance attribute cache with 1s TTL
 - **Migration**: `self._cache: dict[int, ProcessInfo]` → `TTLCache[int, ProcessInfo]` (maxsize=100, ttl=1.0)
 - **Changes**:
@@ -37,6 +40,7 @@ Successfully migrated 5 custom caching implementations to `cachetools` library p
   - Cachetools handles TTL and eviction automatically
 
 ### 4. tools/cache.py ✅
+
 - **Type**: ResourceCache with file persistence + TTL
 - **Migration**: Added `TTLCache[str, Any]` (maxsize=50, ttl=60) for in-memory layer, kept file persistence
 - **Changes**:
@@ -48,6 +52,7 @@ Successfully migrated 5 custom caching implementations to `cachetools` library p
   - Cachetools handles in-memory TTL and eviction
 
 ### 5. infra/fast_cache.py ✅
+
 - **Type**: Multi-tier cache (L1+L2+L3)
 - **Migration**: L1 `dict[str, tuple[Any, Optional[float]]]` → `TTLCache[str, Any]` (maxsize=100, ttl=default_ttl or 60)
 - **Changes**:
@@ -85,6 +90,7 @@ uv add cachetools
 **RG/Grep Config Error**: `rg: error parsing flag -E: grep config error: unknown encoding`
 
 Created workarounds:
+
 - `scripts/diagnose-rg-error.sh` - Diagnosis script to identify source
 - `scripts/safe-grep.sh` - Safe wrapper using `command -v` to bypass aliases
 

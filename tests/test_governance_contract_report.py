@@ -2,11 +2,11 @@
 
 from __future__ import annotations
 
-import orjson as json
 import subprocess
 import sys
 from pathlib import Path
 
+import orjson as json
 import pytest
 
 
@@ -25,7 +25,14 @@ def test_governance_contract_report_generates_outputs(tmp_path: Path) -> None:
     script = _repo_root() / "scripts" / "governance_contract_report.py"
 
     proc = subprocess.run(
-        [sys.executable, str(script), "--json-out", str(json_out), "--md-out", str(md_out)],
+        [
+            sys.executable,
+            str(script),
+            "--json-out",
+            str(json_out),
+            "--md-out",
+            str(md_out),
+        ],
         cwd=_repo_root(),
         capture_output=True,
         text=True,

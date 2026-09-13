@@ -5,9 +5,9 @@
 
 from __future__ import annotations
 
-import orjson as json
 from typing import TYPE_CHECKING
 
+import orjson as json
 import pytest
 from typer.testing import CliRunner
 
@@ -587,7 +587,10 @@ class TestSetupProjectInitCli:
         self, cli_runner: CliRunner, project_cli, tmp_path: Path, monkeypatch
     ) -> None:
         _patch_tenancy(monkeypatch, tmp_path / "reg.json")
-        result = cli_runner.invoke(project_cli, ["init", "--name", "myproject", "--path", "/no/such/path/xyzzy"])
+        result = cli_runner.invoke(
+            project_cli,
+            ["init", "--name", "myproject", "--path", "/no/such/path/xyzzy"],
+        )
         assert result.exit_code != 0
 
     def test_init_creates_project(self, cli_runner: CliRunner, project_cli, tmp_path: Path, monkeypatch) -> None:
@@ -597,7 +600,15 @@ class TestSetupProjectInitCli:
 
         result = cli_runner.invoke(
             project_cli,
-            ["init", "--name", "test-proj", "--path", str(proj), "--tenant", "test-proj"],
+            [
+                "init",
+                "--name",
+                "test-proj",
+                "--path",
+                str(proj),
+                "--tenant",
+                "test-proj",
+            ],
         )
         assert result.exit_code == 0, result.output
         assert "test-proj" in result.output
@@ -678,7 +689,8 @@ class TestSetupProjectScaffoldCli:
 
         dest = tmp_path / "scaffold-dry-run"
         result = cli_runner.invoke(
-            project_cli, ["scaffold", str(dest), "--profile", "service_api", "--dry-run", "--json"]
+            project_cli,
+            ["scaffold", str(dest), "--profile", "service_api", "--dry-run", "--json"],
         )
         assert result.exit_code == 0, result.output
         payload = json.loads(result.output)
@@ -737,7 +749,16 @@ class TestSetupProjectScaffoldCli:
         dest = tmp_path / "scaffold-register"
         result = cli_runner.invoke(
             project_cli,
-            ["scaffold", str(dest), "--profile", "service_api", "--name", "svc", "--register", "--json"],
+            [
+                "scaffold",
+                str(dest),
+                "--profile",
+                "service_api",
+                "--name",
+                "svc",
+                "--register",
+                "--json",
+            ],
         )
         assert result.exit_code == 0, result.output
         payload = json.loads(result.output)
@@ -909,7 +930,15 @@ class TestSetupProjectListCli:
 
         cli_runner.invoke(
             project_cli,
-            ["init", "--name", "listed-proj", "--path", str(proj), "--tenant", "listed-proj"],
+            [
+                "init",
+                "--name",
+                "listed-proj",
+                "--path",
+                str(proj),
+                "--tenant",
+                "listed-proj",
+            ],
         )
         result = cli_runner.invoke(project_cli, ["list"])
         assert result.exit_code == 0
@@ -949,7 +978,15 @@ class TestSetupProjectShowCli:
 
         cli_runner.invoke(
             project_cli,
-            ["init", "--name", "show-proj", "--path", str(proj), "--tenant", "show-proj"],
+            [
+                "init",
+                "--name",
+                "show-proj",
+                "--path",
+                str(proj),
+                "--tenant",
+                "show-proj",
+            ],
         )
         result = cli_runner.invoke(project_cli, ["show", "show-proj"])
         assert result.exit_code == 0
@@ -984,7 +1021,7 @@ class TestSetupProjectDoctorCli:
             project_cli,
             ["init", "--name", "dr-proj", "--path", str(proj), "--tenant", "dr-proj"],
         )
-        result = cli_runner.invoke(project_cli, ["doctor", "dr-proj", "--fix"])
+        cli_runner.invoke(project_cli, ["doctor", "dr-proj", "--fix"])
         # After fix, all fixable checks should pass
         assert (proj / ".thegent" / "config.yaml").exists()
         assert (proj / ".thegent" / "ownership.json").exists()
@@ -1073,7 +1110,12 @@ class TestSetupProjectMigrateCli:
         proj = tmp_path / "existing-project"
         proj.mkdir()
         fresh = _patch_tenancy(monkeypatch, tmp_path / "reg.json")
-        record = fresh.init_project(name="existing-project", tenant_id="existing-project", path=proj, template="ag-dd")
+        record = fresh.init_project(
+            name="existing-project",
+            tenant_id="existing-project",
+            path=proj,
+            template="ag-dd",
+        )
         (proj / ".thegent").mkdir(exist_ok=True)
         (proj / ".thegent" / "templates.lock").write_text("{", encoding="utf-8")
 
@@ -1125,7 +1167,8 @@ class TestSetupProjectMigrateCli:
         thegent_dir = proj / ".thegent"
         thegent_dir.mkdir()
         (thegent_dir / "templates.lock").write_text(
-            json.dumps({"template": "ag-dd", "version": "1.1.0"}).decode(), encoding="utf-8"
+            json.dumps({"template": "ag-dd", "version": "1.1.0"}).decode(),
+            encoding="utf-8",
         )
 
         calls: dict[str, object] = {}
@@ -1179,7 +1222,8 @@ class TestSetupProjectMigrateCli:
         thegent_dir = proj / ".thegent"
         thegent_dir.mkdir()
         (thegent_dir / "templates.lock").write_text(
-            json.dumps({"template": "ag-dd", "version": "1.2.0"}).decode(), encoding="utf-8"
+            json.dumps({"template": "ag-dd", "version": "1.2.0"}).decode(),
+            encoding="utf-8",
         )
 
         result = cli_runner.invoke(project_cli, ["migrate", str(proj), "--dry-run", "--json"])

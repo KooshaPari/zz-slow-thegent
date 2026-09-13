@@ -11,8 +11,6 @@ Source: src/thegent/governance/forensics.py
 
 from __future__ import annotations
 
-import pytest
-
 from thegent.governance.forensics import IncidentReplayer
 from thegent.governance.ledger import IncidentLedger
 

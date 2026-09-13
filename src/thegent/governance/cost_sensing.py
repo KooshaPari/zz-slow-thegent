@@ -3,7 +3,6 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import Any
 
 
 @dataclass
@@ -76,11 +75,7 @@ class ObjectiveSelector:
         latency_score = 1.0 - candidate.get("latency", 0.0)
         # Cost is lower-is-better
         cost_score = 1.0 - candidate.get("cost", 0.0)
-        return (
-            profile.latency * latency_score
-            + profile.quality * quality_score
-            + profile.cost * cost_score
-        )
+        return profile.latency * latency_score + profile.quality * quality_score + profile.cost * cost_score
 
 
 class CostPredictor:

@@ -1,8 +1,8 @@
 """Tests for SingletonMixin."""
 
-import pytest
 import threading
-from typing import Any
+
+import pytest
 
 from thegent.integrations.base import SingletonMixin
 

@@ -11,9 +11,10 @@ Verifies:
 
 from __future__ import annotations
 
-import orjson as json
 import subprocess
 from pathlib import Path
+
+import orjson as json
 
 _ROOT = Path(__file__).parent.parent
 _GATE_SCRIPT = _ROOT / "scripts" / "check_slo_gate.py"

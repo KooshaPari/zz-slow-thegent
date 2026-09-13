@@ -32,6 +32,7 @@ status: in_progress
 **Task**: Implement `thegent/crates/thegent-memory/src/client.rs`
 
 **Acceptance Criteria**:
+
 - [ ] `SupermemoryClient` struct compiles without warnings
 - [ ] MCP protocol wrapper supports GET/POST/PUT
 - [ ] Multi-tenant project scoping via `x-sm-project` header
@@ -40,6 +41,7 @@ status: in_progress
 - [ ] Documentation strings for all public methods
 
 **File Structure**:
+
 ```
 thegent/crates/thegent-memory/
 ├── Cargo.toml
@@ -53,6 +55,7 @@ thegent/crates/thegent-memory/
 ```
 
 **Deliverables**:
+
 - Working Supermemory client
 - Error handling and retry logic
 - Circuit breaker implementation
@@ -68,6 +71,7 @@ thegent/crates/thegent-memory/
 **Task**: Implement `thegent/src/thegent/memory/cache.py`
 
 **Acceptance Criteria**:
+
 - [ ] LRU cache (L1) with TTL expiration
 - [ ] File-based cache (L2) with persistence
 - [ ] Layered fallback logic (L1 → L2)
@@ -76,6 +80,7 @@ thegent/crates/thegent-memory/
 - [ ] Benchmarks: L1 <1ms, L2 <10ms
 
 **File Structure**:
+
 ```
 thegent/src/thegent/memory/
 ├── __init__.py
@@ -86,6 +91,7 @@ thegent/src/thegent/memory/
 ```
 
 **Deliverables**:
+
 - LRU cache with TTL
 - File-based cache backend
 - Layered fallback mechanism
@@ -101,6 +107,7 @@ thegent/src/thegent/memory/
 **Task**: Add configuration, environment handling, and project initialization.
 
 **Acceptance Criteria**:
+
 - [ ] Configuration file (pyproject.toml / setup.cfg)
 - [ ] Environment variables documented (.env.example)
 - [ ] Initialization script (thegent memory init)
@@ -108,6 +115,7 @@ thegent/src/thegent/memory/
 - [ ] CI/CD configuration for Rust crate
 
 **Files to Create/Update**:
+
 ```
 ├── .env.example                       ← Update
 ├── thegent/config/memory.toml        ← New
@@ -116,6 +124,7 @@ thegent/src/thegent/memory/
 ```
 
 **Deliverables**:
+
 - Configuration infrastructure
 - Environment setup
 - CI/CD pipeline support
@@ -134,6 +143,7 @@ thegent/src/thegent/memory/
 **Task**: Implement `SupermemoryClient::query_knowledge()` and `store_knowledge()`
 
 **Acceptance Criteria**:
+
 - [ ] Query method returns `Vec<KnowledgeNode>`
 - [ ] Store method accepts relationships and returns doc_id
 - [ ] Project scoping enforced
@@ -142,6 +152,7 @@ thegent/src/thegent/memory/
 - [ ] Integration tests with mock Supermemory endpoint
 
 **Rust Implementation**:
+
 ```rust
 impl SupermemoryClient {
     pub async fn query_knowledge(
@@ -159,6 +170,7 @@ impl SupermemoryClient {
 ```
 
 **Deliverables**:
+
 - L3 query implementation
 - L3 store implementation
 - Pagination logic
@@ -174,6 +186,7 @@ impl SupermemoryClient {
 **Task**: Implement `thegent/src/thegent/memory/manager.py` with L1-L3 layering.
 
 **Acceptance Criteria**:
+
 - [ ] `MemoryManager` class fully functional
 - [ ] `get_knowledge()` implements L1 → L2 → L3 fallback
 - [ ] `store_knowledge()` stores to L3 with L2 backup
@@ -182,6 +195,7 @@ impl SupermemoryClient {
 - [ ] Integration tests: all layers tested
 
 **Python Implementation**:
+
 ```python
 class MemoryManager:
     async def get_knowledge(self, query: str) -> List[KnowledgeNode]:
@@ -194,6 +208,7 @@ class MemoryManager:
 ```
 
 **Deliverables**:
+
 - MemoryManager class
 - Layer fallback logic
 - Error handling
@@ -209,6 +224,7 @@ class MemoryManager:
 **Task**: Implement project scoping and access control.
 
 **Acceptance Criteria**:
+
 - [ ] Project ID enforced in all L3 queries
 - [ ] `x-sm-project` header added automatically
 - [ ] Cross-project queries prevented
@@ -216,11 +232,13 @@ class MemoryManager:
 - [ ] Unit tests: 90%+ coverage
 
 **Implementation**:
+
 - Automatic header injection
 - Query scope validation
 - Test fixtures for multi-project scenarios
 
 **Deliverables**:
+
 - Project scoping implementation
 - Access control validation
 - Isolation tests
@@ -239,6 +257,7 @@ class MemoryManager:
 **Task**: Implement `thegent/crates/thegent-maif/src/lib.rs` with signature support.
 
 **Acceptance Criteria**:
+
 - [ ] `MAIFArtifact` struct fully functional
 - [ ] SHA-256 hashing for input/output/chain
 - [ ] Cryptographic signatures (RSA or Ed25519)
@@ -247,6 +266,7 @@ class MemoryManager:
 - [ ] No compiler warnings
 
 **Rust Implementation**:
+
 ```rust
 pub struct MAIFArtifact {
     pub id: String,
@@ -269,6 +289,7 @@ impl MAIFArtifact {
 ```
 
 **Deliverables**:
+
 - MAIFArtifact struct
 - Hash chain logic
 - Signature generation/verification
@@ -284,6 +305,7 @@ impl MAIFArtifact {
 **Task**: Implement L4 storage in `SupermemoryClient::store_document()`.
 
 **Acceptance Criteria**:
+
 - [ ] `store_document()` sends artifacts to L4 API
 - [ ] Returns document ID
 - [ ] L2 fallback on failure
@@ -292,12 +314,14 @@ impl MAIFArtifact {
 - [ ] Integration tests with mock API
 
 **Implementation**:
+
 - Document API integration
 - Batch upload optimization
 - Fallback to L2 on failure
 - Error recovery
 
 **Deliverables**:
+
 - L4 store implementation
 - Batch optimization
 - Fallback logic
@@ -312,6 +336,7 @@ impl MAIFArtifact {
 **Task**: Implement chain verification in `MAIFStorage` class.
 
 **Acceptance Criteria**:
+
 - [ ] Hash chain verification prevents tampering
 - [ ] Broken chains detected and reported
 - [ ] Chain repair process documented
@@ -319,6 +344,7 @@ impl MAIFArtifact {
 - [ ] Integration tests: full workflow
 
 **Python Implementation**:
+
 ```python
 class MAIFStorage:
     async def verify_chain(self, artifacts: List[MAIFArtifact]) -> bool:
@@ -327,6 +353,7 @@ class MAIFStorage:
 ```
 
 **Deliverables**:
+
 - Chain verification logic
 - Tampering detection
 - Recovery procedures
@@ -346,6 +373,7 @@ class MAIFStorage:
 **Task**: Expand unit tests for all components.
 
 **Acceptance Criteria**:
+
 - [ ] Coverage >85% for all modules
 - [ ] All code paths tested
 - [ ] Edge cases covered
@@ -353,6 +381,7 @@ class MAIFStorage:
 - [ ] Performance benchmarks included
 
 **Test Files**:
+
 ```
 thegent/crates/thegent-memory/tests/
 ├── client_tests.rs
@@ -367,6 +396,7 @@ thegent/tests/
 ```
 
 **Deliverables**:
+
 - Unit tests for all modules
 - Coverage reports
 - Benchmark suite
@@ -381,6 +411,7 @@ thegent/tests/
 **Task**: End-to-end integration testing with mock Supermemory.
 
 **Acceptance Criteria**:
+
 - [ ] Mock Supermemory endpoint (using httpbin or wiremock)
 - [ ] All happy paths tested
 - [ ] Error scenarios tested (timeouts, failures)
@@ -388,6 +419,7 @@ thegent/tests/
 - [ ] Multi-tenant isolation tested
 
 **Test Scenarios**:
+
 1. Create → Store → Retrieve artifact
 2. L3 failure → Fallback to L2
 3. Hash chain verification → Tampering detection
@@ -395,6 +427,7 @@ thegent/tests/
 5. Project isolation
 
 **Deliverables**:
+
 - Integration test suite
 - Mock Supermemory server
 - Test fixtures
@@ -409,6 +442,7 @@ thegent/tests/
 **Task**: Benchmark against performance targets.
 
 **Acceptance Criteria**:
+
 - [ ] L1 hits: P95 <1ms
 - [ ] L2 hits: P95 <10ms
 - [ ] L3 queries: P95 <50ms
@@ -417,6 +451,7 @@ thegent/tests/
 - [ ] Load test report generated
 
 **Performance Test Suite**:
+
 ```python
 # tests/performance/
 ├── test_l1_latency.py
@@ -427,6 +462,7 @@ thegent/tests/
 ```
 
 **Deliverables**:
+
 - Performance benchmarks
 - Load test results
 - Capacity analysis report
@@ -441,6 +477,7 @@ thegent/tests/
 **Task**: Test resilience under failure conditions.
 
 **Acceptance Criteria**:
+
 - [ ] Circuit breaker behavior verified
 - [ ] Retry logic works (exponential backoff)
 - [ ] L2 fallback on L3 timeout
@@ -448,6 +485,7 @@ thegent/tests/
 - [ ] Chaos test suite automated
 
 **Chaos Scenarios**:
+
 1. Supermemory API returns 500
 2. Supermemory API returns 429 (rate limited)
 3. Supermemory API timeout (no response)
@@ -455,6 +493,7 @@ thegent/tests/
 5. Network partition
 
 **Deliverables**:
+
 - Chaos test suite
 - Failure scenario coverage
 - Recovery procedures
@@ -473,12 +512,14 @@ thegent/tests/
 **Task**: Generate API docs for all public interfaces.
 
 **Deliverables**:
+
 - Rust crate documentation (cargo doc)
 - Python API reference (Sphinx/pdoc)
 - Architecture diagrams
 - Examples and quickstart guide
 
 **Documentation Files**:
+
 ```
 docs/reference/
 ├── memory_api.md
@@ -500,6 +541,7 @@ docs/reference/
 **Task**: Create operational runbooks for common scenarios.
 
 **Deliverables**:
+
 - Runbook: Circuit breaker stuck open
 - Runbook: L2 cache corruption
 - Runbook: Hash chain verification failure
@@ -508,6 +550,7 @@ docs/reference/
 - Troubleshooting guide
 
 **Documentation Files**:
+
 ```
 docs/runbooks/
 ├── memory_operations.md
@@ -525,6 +568,7 @@ docs/runbooks/
 **Task**: Deployment guide and staged rollout plan.
 
 **Deliverables**:
+
 - Deployment checklist
 - Configuration guide
 - Migration guide (if applicable)
@@ -532,6 +576,7 @@ docs/runbooks/
 - Monitoring dashboard setup
 
 **Documentation Files**:
+
 ```
 docs/deployment/
 ├── memory_deployment.md
@@ -540,6 +585,7 @@ docs/deployment/
 ```
 
 **Deployment Stages**:
+
 1. **Stage 0**: Internal testing (1 week)
 2. **Stage 1**: Limited rollout (10% of projects, 1 week)
 3. **Stage 2**: Wide rollout (50% of projects, 1 week)
@@ -555,6 +601,7 @@ docs/deployment/
 ### Parallel Execution Strategy
 
 **Weeks 1-2 (Phase 1)**:
+
 - **Track 1**: P1.1 Supermemory Client (Rust) — 4-5 days
 - **Track 2**: P1.2 L1/L2 Cache (Python) — 3-4 days (start Day 2)
 - **Track 3**: P1.3 Configuration — 2-3 days (start Day 3)
@@ -562,6 +609,7 @@ docs/deployment/
 → **Converge**: Day 10-11 for integration
 
 **Weeks 3-4 (Phase 2)**:
+
 - **Track 1**: P2.1 L3 Knowledge Graph (Rust) — 3-4 days
 - **Track 2**: P2.2 MemoryManager (Python) — 3-4 days
 - **Track 3**: P2.3 Multi-Tenant Isolation — 2-3 days (after P2.1/P2.2)
@@ -569,6 +617,7 @@ docs/deployment/
 → **Converge**: Day 20-21
 
 **Weeks 5-6 (Phase 3)**:
+
 - **Track 1**: P3.1 MAIF Artifacts (Rust) — 4-5 days
 - **Track 2**: P3.2 L4 Storage (Rust) — 3-4 days (after P3.1)
 - **Track 3**: P3.3 Hash Chain (Python) — 3-4 days (after P3.1/P3.2)
@@ -576,6 +625,7 @@ docs/deployment/
 → **Converge**: Day 31-32
 
 **Weeks 7-8 (Phase 4)**:
+
 - **Track 1**: P4.1 Unit Tests — 3-4 days
 - **Track 2**: P4.2 Integration Tests — 4-5 days
 - **Track 3**: P4.3/P4.4 Performance & Chaos — 3-4 days (after P4.1)
@@ -583,6 +633,7 @@ docs/deployment/
 → **Converge**: Day 42-43
 
 **Weeks 9-10 (Phase 5)**:
+
 - P5.1 API Documentation — 2-3 days
 - P5.2 Runbooks — 2 days
 - P5.3 Deployment — 2-3 days
@@ -604,6 +655,7 @@ Add to `WORK_STREAM.md`:
 ### Definition of Done
 
 **Per Phase**:
+
 - [ ] All acceptance criteria met
 - [ ] Unit tests: >85% coverage
 - [ ] Integration tests: all scenarios
@@ -612,6 +664,7 @@ Add to `WORK_STREAM.md`:
 - [ ] No compiler warnings/errors
 
 **Per Task**:
+
 - [ ] Code compiles
 - [ ] Tests pass (unit + integration)
 - [ ] Performance targets met
@@ -619,6 +672,7 @@ Add to `WORK_STREAM.md`:
 - [ ] Merged to main
 
 **Final (Phase 5)**:
+
 - [ ] All phases complete
 - [ ] API documentation published
 - [ ] Runbooks tested
@@ -665,6 +719,7 @@ P1.1 (Rust client)
 ## Checklist
 
 ### Before Starting
+
 - [ ] Development environment set up
 - [ ] Rust toolchain installed (`cargo 1.70+`)
 - [ ] Python 3.9+ with venv configured
@@ -672,12 +727,14 @@ P1.1 (Rust client)
 - [ ] Git branch created (`git checkout -b research-supermemory-integration`)
 
 ### Weekly Checkpoints
+
 - [ ] Phase complete & merged to main
 - [ ] Performance benchmarks run
 - [ ] Monitoring alerts configured
 - [ ] Incident response plan reviewed
 
 ### Final Checklist
+
 - [ ] All phases complete
 - [ ] All tests passing (unit + integration + perf)
 - [ ] Code coverage >85%

@@ -2,8 +2,8 @@
 
 from __future__ import annotations
 
-from importlib import import_module
 import sys  # noqa: F401
+from importlib import import_module
 from pathlib import Path
 from typing import Any
 
@@ -258,11 +258,19 @@ register_projects_run(
 )
 
 
-@app.command("scan-shared-repos", help="Audit shared modules across repos in a phenotype workspace.")
+@app.command(
+    "scan-shared-repos",
+    help="Audit shared modules across repos in a phenotype workspace.",
+)
 def scan_shared_repos_cmd(
     repos_root: str | None = typer.Option(None, "--repos-root", help="Root directory to scan."),
     exclude: list[str] = typer.Option([], "--exclude", help="Repo IDs to exclude; may be repeated."),
-    min_repo_count: int = typer.Option(2, "--min-repo-count", "--min-repos", help="Minimum repo count for a shared module."),
+    min_repo_count: int = typer.Option(
+        2,
+        "--min-repo-count",
+        "--min-repos",
+        help="Minimum repo count for a shared module.",
+    ),
     repos_root_mode: str = typer.Option("auto", "--repos-root-mode", help="Root discovery: auto|projects|phenotype."),
     candidate_name_regex: str | None = typer.Option(None, "--candidate-regex", help="Regex to filter candidate names."),
     candidates: bool = typer.Option(
@@ -306,7 +314,12 @@ def materialize_module_manifest_cmd(
     min_repo_count: int = typer.Option(2, "--min-repo-count", help="Minimum repo count."),
     output_dir: str | None = typer.Option(None, "--output-dir", help="Output directory for manifest."),
     dry_run: bool = typer.Option(False, "--dry-run", help="Print changes without writing."),
-    print_snippets: bool = typer.Option(False, "--print-snippets", "--print-target-snippets", help="Print shell snippets."),
+    print_snippets: bool = typer.Option(
+        False,
+        "--print-snippets",
+        "--print-target-snippets",
+        help="Print shell snippets.",
+    ),
 ) -> None:
     try:
         payload = materialize_module_candidate_manifest(

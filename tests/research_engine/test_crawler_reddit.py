@@ -69,7 +69,12 @@ def test_reddit_crawler_with_selftext() -> None:
     """Fetch includes selftext in summary."""
     from research_engine.crawlers.reddit import RedditCrawler
 
-    sub = _make_submission("Python agents", "https://reddit.com/r/python/123", 50, "Detailed self post content")
+    sub = _make_submission(
+        "Python agents",
+        "https://reddit.com/r/python/123",
+        50,
+        "Detailed self post content",
+    )
 
     mock_reddit = MagicMock()
     mock_reddit.subreddit.return_value.search.return_value = [sub]

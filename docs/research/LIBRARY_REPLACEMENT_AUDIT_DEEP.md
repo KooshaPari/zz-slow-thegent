@@ -6,6 +6,7 @@
 > **P3 Polish**: Summary table, cross-links, next actions added
 > **Note**: This document has been consolidated into [LIBRARY_REPLACEMENT_CONSOLIDATED.md](./LIBRARY_REPLACEMENT_CONSOLIDATED.md) - see consolidated version for implementation plan
 > **Related**:
+
 - [LIBRARY_REPLACEMENT_CONSOLIDATED.md](./LIBRARY_REPLACEMENT_CONSOLIDATED.md) - Consolidated migration plan (recommended)
 - [WORK_STREAM.md](../reference/WORK_STREAM.md) - Unified work stream
 
@@ -13,21 +14,22 @@
 
 ## Document Summary
 
-| Aspect | Details |
-|--------|---------|
-| **Document Type** | Deep file-level audit |
-| **Lines** | ~825 lines |
-| **Sections** | 47 sections covering all library replacement opportunities |
-| **Status** | Audit complete, consolidated into LIBRARY_REPLACEMENT_CONSOLIDATED.md |
-| **Key Findings** | 47 replacement opportunities across HTTP, retry, caching, XML, monitoring, etc. |
+| Aspect                   | Details                                                                          |
+| ------------------------ | -------------------------------------------------------------------------------- |
+| **Document Type**        | Deep file-level audit                                                            |
+| **Lines**                | ~825 lines                                                                       |
+| **Sections**             | 47 sections covering all library replacement opportunities                       |
+| **Status**               | Audit complete, consolidated into LIBRARY_REPLACEMENT_CONSOLIDATED.md            |
+| **Key Findings**         | 47 replacement opportunities across HTTP, retry, caching, XML, monitoring, etc.  |
 | **Consolidated Version** | See [LIBRARY_REPLACEMENT_CONSOLIDATED.md](./LIBRARY_REPLACEMENT_CONSOLIDATED.md) |
-| **BACKLOG Items** | 9 items extracted (see consolidated doc) |
+| **BACKLOG Items**        | 9 items extracted (see consolidated doc)                                         |
 
 ---
 
 ## Next Actions (WORK_STREAM IDs)
 
 **Note**: All BACKLOG items are tracked in [LIBRARY_REPLACEMENT_CONSOLIDATED.md](./LIBRARY_REPLACEMENT_CONSOLIDATED.md). See that document for:
+
 - 9 BACKLOG items (P1: HTTP/Retry/File Watching, P2: Caching/Circuit Breaker/YAML, P3: Logging/JSON)
 - Migration phases and implementation details
 - Performance targets and risk mitigation
@@ -40,82 +42,83 @@
 
 ### Replacements (custom / stdlib → library)
 
-| Category | Files | Custom Pattern | Library Recommendation | Priority |
-|----------|-------|----------------|------------------------|----------|
-| **HTTP** | 7+ | urllib.request | httpx | P1 |
-| **Retry** | 4 | Manual loops | tenacity | P1 |
-| **File watching** | 1 | os.walk + mtime polling | watchdog | P1 |
-| **ANSI stripping** | 5 | Duplicated `re.sub(r"\x1b\[...")` | rich.strip_control_codes | P2 |
-| **Caching** | 5+ | Custom TTL, file cache | cachetools, diskcache | P2 |
-| **XML parsing** | 2 | Custom regex + state machine | defusedxml, lxml | P2 |
-| **Resource monitoring** | 1 | Custom FD/mem/load via subprocess | psutil | P2 |
-| **Circuit breaker** | 1 | Custom ToolCircuitBreaker | pybreaker | P2 |
-| **Process discovery** | 1 | ps, /proc parsing | psutil | P2 |
-| **Debounce** | 1 | threading.Timer + manual | custom minimal | P3 |
-| **Stream parsing** | 2 | Custom JSONL + regex | ijson, json-stream | P3 |
-| **Hashing** | 15+ | hashlib (OK) | Keep; unify md5→sha256 | P3 |
-| **Logging** | 60+ | stdlib logging | structlog | P3 |
+| Category                | Files | Custom Pattern                    | Library Recommendation   | Priority |
+| ----------------------- | ----- | --------------------------------- | ------------------------ | -------- |
+| **HTTP**                | 7+    | urllib.request                    | httpx                    | P1       |
+| **Retry**               | 4     | Manual loops                      | tenacity                 | P1       |
+| **File watching**       | 1     | os.walk + mtime polling           | watchdog                 | P1       |
+| **ANSI stripping**      | 5     | Duplicated `re.sub(r"\x1b\[...")` | rich.strip_control_codes | P2       |
+| **Caching**             | 5+    | Custom TTL, file cache            | cachetools, diskcache    | P2       |
+| **XML parsing**         | 2     | Custom regex + state machine      | defusedxml, lxml         | P2       |
+| **Resource monitoring** | 1     | Custom FD/mem/load via subprocess | psutil                   | P2       |
+| **Circuit breaker**     | 1     | Custom ToolCircuitBreaker         | pybreaker                | P2       |
+| **Process discovery**   | 1     | ps, /proc parsing                 | psutil                   | P2       |
+| **Debounce**            | 1     | threading.Timer + manual          | custom minimal           | P3       |
+| **Stream parsing**      | 2     | Custom JSONL + regex              | ijson, json-stream       | P3       |
+| **Hashing**             | 15+   | hashlib (OK)                      | Keep; unify md5→sha256   | P3       |
+| **Logging**             | 60+   | stdlib logging                    | structlog                | P3       |
 
 ### Proposed new libraries (greenfield / enhancement)
 
-| Category | Files | Current | Proposed Library | Priority |
-|----------|-------|--------|------------------|----------|
-| **Config/env** | 15+ | os.environ.get scattered | pydantic-settings (already used) — consolidate | P2 |
-| **Slugify** | 1 | Custom `_slugify` regex | python-slugify | P3 |
-| **Format parsing** | 6+ | regex for CLI output | parse (format strings) | P3 |
-| **ID generation** | 10+ | `uuid.uuid4().hex[:8]` | shortuuid or nanoid | P3 |
-| **Date/time** | 20+ | datetime + time.perf_counter | pendulum (optional) | P3 |
-| **Subprocess** | 20+ | subprocess.run/Popen | plumbum (optional) for shell-like | P3 |
-| **JSONL** | 2 | Manual json.dumps per line | jsonlines | P3 |
-| **YAML round-trip** | 5+ | PyYAML | ruamel.yaml (preserve comments) | P3 |
-| **Rate limiting** | 3 | Custom throttle logic | limits or ratelimit | P3 |
-| **Testing** | 50+ | pytest, unittest.mock | hypothesis, pytest-mock | P3 |
-| **Data structures** | many | itertools, manual | more-itertools, boltons | P3 |
-| **Shell safety** | 0 | No shlex.quote | shlex.quote for user input | P2 |
-| **CWD cache** | 1 | Custom _CWD_CACHE dict + TTL | cachetools.TTLCache | P2 |
-| **Queue storage** | 4 | PromptQueue, DeferralQueue, EscalationQueue — manual JSONL | jsonlines | P2 |
-| **Version parsing** | 5+ | Manual version/schema_version strings | packaging.Version | P3 |
-| **Exclude patterns** | 2 | Hardcoded exclude_dirs set | pathspec (.gitignore-style) | P3 |
-| **Platform dirs** | 3+ | ~/.cache, ~/.factory, Path expand | platformdirs | P3 |
-| **Human-readable** | 0 | — | humanize (bytes, durations) | P3 |
+| Category             | Files | Current                                                    | Proposed Library                               | Priority |
+| -------------------- | ----- | ---------------------------------------------------------- | ---------------------------------------------- | -------- |
+| **Config/env**       | 15+   | os.environ.get scattered                                   | pydantic-settings (already used) — consolidate | P2       |
+| **Slugify**          | 1     | Custom `_slugify` regex                                    | python-slugify                                 | P3       |
+| **Format parsing**   | 6+    | regex for CLI output                                       | parse (format strings)                         | P3       |
+| **ID generation**    | 10+   | `uuid.uuid4().hex[:8]`                                     | shortuuid or nanoid                            | P3       |
+| **Date/time**        | 20+   | datetime + time.perf_counter                               | pendulum (optional)                            | P3       |
+| **Subprocess**       | 20+   | subprocess.run/Popen                                       | plumbum (optional) for shell-like              | P3       |
+| **JSONL**            | 2     | Manual json.dumps per line                                 | jsonlines                                      | P3       |
+| **YAML round-trip**  | 5+    | PyYAML                                                     | ruamel.yaml (preserve comments)                | P3       |
+| **Rate limiting**    | 3     | Custom throttle logic                                      | limits or ratelimit                            | P3       |
+| **Testing**          | 50+   | pytest, unittest.mock                                      | hypothesis, pytest-mock                        | P3       |
+| **Data structures**  | many  | itertools, manual                                          | more-itertools, boltons                        | P3       |
+| **Shell safety**     | 0     | No shlex.quote                                             | shlex.quote for user input                     | P2       |
+| **CWD cache**        | 1     | Custom \_CWD_CACHE dict + TTL                              | cachetools.TTLCache                            | P2       |
+| **Queue storage**    | 4     | PromptQueue, DeferralQueue, EscalationQueue — manual JSONL | jsonlines                                      | P2       |
+| **Version parsing**  | 5+    | Manual version/schema_version strings                      | packaging.Version                              | P3       |
+| **Exclude patterns** | 2     | Hardcoded exclude_dirs set                                 | pathspec (.gitignore-style)                    | P3       |
+| **Platform dirs**    | 3+    | ~/.cache, ~/.factory, Path expand                          | platformdirs                                   | P3       |
+| **Human-readable**   | 0     | —                                                          | humanize (bytes, durations)                    | P3       |
 
 ### Replacements of existing libraries (lib → better lib)
 
-| Current Library | Files | Replacement | Rationale | Priority |
-|-----------------|-------|-------------|------------|----------|
-| **PyYAML** | 15+ | ruamel.yaml | Preserves comments, key order; round-trip safe for config edits | P2 |
-| **stdlib json** | 50+ | orjson | 5–50× faster; native datetime; drop-in for loads/dumps | P3 |
-| **argparse** | 4 | typer | Unify with main CLI; better help, validation | P3 |
-| **tomlkit** | 1 | — | Add to pyproject deps (mcp_manage uses it; may be transitive) | P2 |
+| Current Library | Files | Replacement | Rationale                                                       | Priority |
+| --------------- | ----- | ----------- | --------------------------------------------------------------- | -------- |
+| **PyYAML**      | 15+   | ruamel.yaml | Preserves comments, key order; round-trip safe for config edits | P2       |
+| **stdlib json** | 50+   | orjson      | 5–50× faster; native datetime; drop-in for loads/dumps          | P3       |
+| **argparse**    | 4     | typer       | Unify with main CLI; better help, validation                    | P3       |
+| **tomlkit**     | 1     | —           | Add to pyproject deps (mcp_manage uses it; may be transitive)   | P2       |
 
 **Keep as-is**: typer, rich, pydantic, httpx, tenacity, litellm, fastmcp, starlette, uvicorn, opentelemetry — no better replacement warranted.
 
 ### Scope (wider / deeper)
 
-| Area | File count | Notes |
-|------|------------|-------|
-| JSON (stdlib) | 50+ | execution (55), mcp_server (68), cli (95), mcp_manage (14), mcp_tools_modes (39) |
-| YAML (PyYAML) | 15+ | cliproxy_manager, cli, constitution, teammates, scripts, templates |
-| Subprocess | 20+ | cliproxy_manager (11), mcp_manage (17), scrapers (4), discovery (4), shadow (5) |
-| Logging | 70+ | Every module |
-| Path/Pathlib | 200+ | Widespread pathlib usage; keep |
-| CSV | 10+ | cli (csv.writer), tests; stdlib fine |
-| Platform checks | 15+ | mcp_manage, cliproxy_manager; stdlib platform fine |
-| Queue/JSONL | 4 | PromptQueue, DeferralQueue, EscalationQueue, human_requests |
-| Custom TTL cache | 2 | _CWD_CACHE (cli_impl), tools/cache |
-| File I/O (open) | 60+ | Widespread; stdlib fine |
+| Area             | File count | Notes                                                                            |
+| ---------------- | ---------- | -------------------------------------------------------------------------------- |
+| JSON (stdlib)    | 50+        | execution (55), mcp_server (68), cli (95), mcp_manage (14), mcp_tools_modes (39) |
+| YAML (PyYAML)    | 15+        | cliproxy_manager, cli, constitution, teammates, scripts, templates               |
+| Subprocess       | 20+        | cliproxy_manager (11), mcp_manage (17), scrapers (4), discovery (4), shadow (5)  |
+| Logging          | 70+        | Every module                                                                     |
+| Path/Pathlib     | 200+       | Widespread pathlib usage; keep                                                   |
+| CSV              | 10+        | cli (csv.writer), tests; stdlib fine                                             |
+| Platform checks  | 15+        | mcp_manage, cliproxy_manager; stdlib platform fine                               |
+| Queue/JSONL      | 4          | PromptQueue, DeferralQueue, EscalationQueue, human_requests                      |
+| Custom TTL cache | 2          | \_CWD_CACHE (cli_impl), tools/cache                                              |
+| File I/O (open)  | 60+        | Widespread; stdlib fine                                                          |
 
 ### Polish, Intuitiveness, Robustness, Extensibility & Enhancements
 
-| Dimension | Current | Proposed Libraries / Patterns | Priority |
-|-----------|---------|------------------------------|----------|
-| **Polish** | Rich tables; some bare `print` | rich.Progress, rich.Spinner, rich.Live for long ops | P2 |
-| **Intuitiveness** | typer; manual validation messages | typer callbacks, shell completion (--install-completion), rich.prompt | P2 |
-| **Robustness** | try/except; tenacity; manual validation | exceptiongroup, pydantic ValidationError handling, retry decorators | P2 |
-| **Extensibility** | Custom SitbackPluginRegistry; file-based discovery | pluggy or importlib.metadata entry_points | P3 |
-| **Enhancements** | — | typer-rich (richer typer help), questionary (interactive prompts), textual (TUI) | P3 |
+| Dimension         | Current                                            | Proposed Libraries / Patterns                                                    | Priority |
+| ----------------- | -------------------------------------------------- | -------------------------------------------------------------------------------- | -------- |
+| **Polish**        | Rich tables; some bare `print`                     | rich.Progress, rich.Spinner, rich.Live for long ops                              | P2       |
+| **Intuitiveness** | typer; manual validation messages                  | typer callbacks, shell completion (--install-completion), rich.prompt            | P2       |
+| **Robustness**    | try/except; tenacity; manual validation            | exceptiongroup, pydantic ValidationError handling, retry decorators              | P2       |
+| **Extensibility** | Custom SitbackPluginRegistry; file-based discovery | pluggy or importlib.metadata entry_points                                        | P3       |
+| **Enhancements**  | —                                                  | typer-rich (richer typer help), questionary (interactive prompts), textual (TUI) | P3       |
 
 **Design principles** (for all changes):
+
 - **Polish**: Reduce cognitive load; consistent progress feedback; clear status.
 - **Intuitiveness**: Self-documenting CLI; helpful errors; discoverable features.
 - **Robustness**: Fail gracefully; retry where appropriate; validate early.
@@ -129,6 +132,7 @@
 **Anti-pattern**: Project standard is httpx. urllib is low-level, sync-only, no connection pooling.
 
 **Files using urllib.request**:
+
 - `models/scrapers.py` — proxy model discovery (3 calls)
 - `agents/cliproxy_manager.py` — health check, model fetch (3 calls)
 - `agents/cursor_api_runner.py` — health check (1 call)
@@ -146,6 +150,7 @@
 ## 3. Retry (P1)
 
 **Already covered** in TENACITY_RETRY_AUDIT_PLAN. Remaining custom loops:
+
 - `cli_impl.py` — EAGAIN retry, DAG retry backoff
 - `loop_controller.py` — `while attempt <= budget.max_retries` + sleep
 - `state_machine.py` — uses tenacity ✓
@@ -169,6 +174,7 @@
 ## 5. ANSI Stripping (P2)
 
 **Duplicated in 5+ files**:
+
 - `agents/codex_proxy.py`
 - `agents/direct_agents.py`
 - `agents/droid.py`
@@ -178,6 +184,7 @@
 **Pattern**: `re.sub(r"\x1b\[[0-9;]*m", "", text)` — strips basic ANSI CSI sequences only.
 
 **Libraries**:
+
 - `ansi2text` (PyPI) — strips ANSI to plain text
 - `strip-ansi` (npm, but Python equivalents exist)
 - `rich` — has `strip_control_codes()` — **rich is already in deps**
@@ -191,6 +198,7 @@
 ## 6. Caching (P2)
 
 **Files**:
+
 - `tools/cache.py` — ResourceCache (ETag + TTL file-based)
 - `models/speed_values.py` — `_CACHE` tuple (timestamp, data)
 - `models/quality_values.py` — same pattern
@@ -198,6 +206,7 @@
 - `models/scrapers.py` — `_load_cached`, `_save_cache` (JSON file + mtime)
 
 **Recommendation**:
+
 - In-memory TTL: `cachetools.TTLCache`
 - File-based: `diskcache.Cache` or `cachetools` + disk backend
 - Scrapers: Replace `_load_cached`/`_save_cache` with diskcache
@@ -209,16 +218,19 @@
 ## 7. XML Parsing & Repair (P2)
 
 **Files**:
+
 - `contracts/parser.py` — `IncrementalXMLParser`, `StreamingXMLParser` — regex-based `<TAG>value</TAG>` extraction
 - `tools/xml_repair.py` — `SloppyXMLRepair` — regex repair for unclosed/naked tags
 
 **Current**: Custom regex; no full XML parser. Handles simple agent output only.
 
 **Libraries**:
+
 - **Parsing**: `defusedxml` (secure), `xml.etree.ElementTree` (stdlib) — for full XML; current use case is intentionally permissive
 - **Repair**: No standard lib for "repair malformed XML from LLM". Options: `lxml` with `recover=True`, or keep custom for domain-specific repair
 
 **Recommendation**:
+
 - For parsing: If we need stricter validation, use `defusedxml`. Current regex extractor is domain-specific (agent outputs); keep or wrap in a small module.
 - For repair: Evaluate `lxml.etree.fromstring(text, parser=etree.XMLParser(recover=True))` — may be overkill. Document as "intentionally custom for LLM output repair."
 
@@ -231,6 +243,7 @@
 **File**: `orchestration/load_based_limits.py`
 
 **Current**:
+
 - `_get_fd_usage()` — `/proc/self/fd` or `lsof -p PID`
 - `_get_memory_mb()` — `resource.getrusage`, `/proc/meminfo`, or `vm_stat`
 - `_get_load_avg()` — `os.getloadavg()`
@@ -282,10 +295,12 @@
 ## 12. Stream / JSONL Parsing (P3)
 
 **Files**:
+
 - `output_parser.py` — JSONL line-by-line, regex for noise stripping
 - `parser.py` — CLI output regex (RESUME_RE, TOKEN_USAGE_RE, MCP_ERROR_RE)
 
 **Libraries**:
+
 - **Streaming JSON**: `ijson`, `json-stream` — for large JSON streams
 - **JSONL**: stdlib `json.loads` per line is fine
 - **CLI parsing**: Domain-specific; regex is appropriate. Could use `parse` (PyPI) for format strings if patterns grow.
@@ -299,6 +314,7 @@
 **Current**: `hashlib.sha256`, `hashlib.md5` (cache.py ETag) throughout.
 
 **Recommendation**:
+
 - stdlib hashlib is fine.
 - Unify: Replace `hashlib.md5` in `tools/cache.py` with `sha256` for consistency (md5 is cryptographically weak; for ETag it's acceptable but sha256 is preferred).
 
@@ -372,7 +388,7 @@
 
 ## 20. Format String Parsing (P3 — Proposed)
 
-**Files**: `discovery.py` (_RESUME_RE), `parser.py` (RESUME_RE, TOKEN_USAGE_RE, MCP_ERROR_RE), `output_parser.py`, `governance/scanner.py`, `models/scrapers.py`, `contracts/parser.py`
+**Files**: `discovery.py` (\_RESUME_RE), `parser.py` (RESUME_RE, TOKEN_USAGE_RE, MCP_ERROR_RE), `output_parser.py`, `governance/scanner.py`, `models/scrapers.py`, `contracts/parser.py`
 
 **Current**: Many `re.compile(...)` for CLI output, model names, token usage. Domain-specific; regex is appropriate.
 
@@ -603,6 +619,7 @@
 **Current**: Rich tables, console.print; some long ops (scrape, install, mcp prune) have no progress feedback.
 
 **Recommendation**: Use `rich.progress.Progress` with `SpinnerColumn`, `TextColumn`, `BarColumn` for:
+
 - Model scraping, catalog refresh
 - Install/sync operations
 - MCP prune, discovery scan
@@ -621,6 +638,7 @@
 **Current**: typer with good help; no shell completion by default; some validation errors are generic.
 
 **Recommendations**:
+
 1. **Shell completion**: Document `thegent --install-completion` (typer built-in); add to README.
 2. **typer callbacks**: Use `@app.callback()` for global validation (e.g. check settings, cwd) before subcommands.
 3. **Rich help**: Consider `typer-rich` for Markdown help, panels in `--help`.
@@ -637,6 +655,7 @@
 **Current**: Broad `except Exception` in places; pydantic ValidationError sometimes surfaced raw; retry logic scattered.
 
 **Recommendations**:
+
 1. **Exception groups** (Python 3.11+): Use `except*` for concurrent failure aggregation where applicable.
 2. **Structured errors**: Create `thegent.errors` module with `ThegentError`, `ValidationError`, `RetryableError`; map pydantic errors to user-friendly messages.
 3. **Retry consistency**: Ensure all retry paths use tenacity; remove custom `_backoff_delay` where tenacity suffices.
@@ -653,6 +672,7 @@
 **Current**: Custom `SitbackPluginRegistry`; file-based discovery from `~/.claude/sitback-plugins/`; manual `register_widget`, `register_startup_step`.
 
 **Recommendations**:
+
 1. **entry_points**: Add `[project.entry-points."thegent.plugins"]` in pyproject.toml; use `importlib.metadata.entry_points(group="thegent.plugins")` for discovery. Third-party packages can register without file drops.
 2. **pluggy**: If plugin lifecycle (init, teardown, hooks) grows, consider `pluggy` for a formal hook spec.
 3. **Keep file-based**: For ad-hoc/user plugins (no package install), keep `~/.claude/sitback-plugins/` as fallback.
@@ -663,135 +683,135 @@
 
 ## 43. Enhancements — New Features (P3)
 
-| Feature | Library | Purpose |
-|---------|---------|---------|
-| **Interactive TUI** | textual | Full TUI for dashboard, queue, runs (alternative to rich panels) |
-| **Interactive prompts** | questionary | Autocomplete, multi-select, fuzzy for CLI prompts |
-| **Richer typer help** | typer-rich | Markdown help, panels, examples in `--help` |
-| **Config validation** | pydantic (already used) | Extend `validate_setup()`; add `--validate-config` command |
-| **Health check endpoint** | — | Already have; add `/ready`, `/live` for k8s |
-| **Metrics export** | prometheus-client | Optional `/metrics` for cost, latency, queue depth |
-| **Audit log** | structlog + JSON | Structured audit trail for compliance |
+| Feature                   | Library                 | Purpose                                                          |
+| ------------------------- | ----------------------- | ---------------------------------------------------------------- |
+| **Interactive TUI**       | textual                 | Full TUI for dashboard, queue, runs (alternative to rich panels) |
+| **Interactive prompts**   | questionary             | Autocomplete, multi-select, fuzzy for CLI prompts                |
+| **Richer typer help**     | typer-rich              | Markdown help, panels, examples in `--help`                      |
+| **Config validation**     | pydantic (already used) | Extend `validate_setup()`; add `--validate-config` command       |
+| **Health check endpoint** | —                       | Already have; add `/ready`, `/live` for k8s                      |
+| **Metrics export**        | prometheus-client       | Optional `/metrics` for cost, latency, queue depth               |
+| **Audit log**             | structlog + JSON        | Structured audit trail for compliance                            |
 
 ---
 
 ## 44. Summary Table — File-Level (Expanded)
 
-| File | Custom Implementation | Library | Priority |
-|------|----------------------|---------|----------|
-| cli_impl.py | _CWD_CACHE, EAGAIN retry, DAG backoff | cachetools.TTLCache, tenacity, settings | P1, P2 |
-| queue/storage.py | Manual JSONL (PromptQueue) | jsonlines | P2 |
-| execution.py | DeferralQueue, EscalationQueue, urllib | jsonlines, httpx, orjson | P1, P2, P3 |
-|------|----------------------|---------|----------|
-| models/scrapers.py | urllib, custom cache | httpx, diskcache | P1, P2 |
-| agents/cliproxy_manager.py | urllib, os.environ | httpx, settings | P1, P2 |
-| agents/cursor_api_runner.py | urllib, ANSI strip | httpx, rich | P1, P2 |
-| execution.py | urllib | httpx | P1 |
-| mcp_manage.py | urllib | httpx | P1 |
-| clode_main.py | urllib | httpx | P1 |
-| routing/alerting.py | urllib | httpx | P1 |
-| governance/triggers.py | os.walk polling, debounce, exclude_dirs | watchdog, pathspec | P1, P3 |
-| agents/loop_controller.py | Manual retry loop | tenacity | P1 |
-| agents/codex_proxy.py | ANSI strip, os.environ | rich, settings | P2 |
-| agents/direct_agents.py | ANSI strip | rich | P2 |
-| agents/droid.py | ANSI strip | rich | P2 |
-| parser.py | ANSI strip | rich | P2 |
-| tools/cache.py | ETag cache, md5 | cachetools/diskcache, sha256 | P2 |
-| models/speed_values.py | TTL cache | cachetools | P2 |
-| models/quality_values.py | TTL cache | cachetools | P2 |
-| models/catalog.py | Route cache | cachetools | P2 |
-| orchestration/load_based_limits.py | FD/mem/load sampling | psutil | P2 |
-| agents/resilience.py | ToolCircuitBreaker | pybreaker | P2 |
-| discovery.py | ps, /proc | psutil | P2 |
-| contracts/parser.py | XML regex extractor | defusedxml (optional) | P2 |
-| tools/xml_repair.py | XML repair | lxml recover (optional) | P2 |
-| mcp_tools_modes.py | Custom _slugify | python-slugify | P3 |
-| tools/human.py | Manual JSONL append | jsonlines | P3 |
-| output_parser.py | Manual JSONL, regex | jsonlines, parse (optional) | P3 |
-| cli.py | os.environ, uuid hex | settings, shortuuid (optional) | P2, P3 |
-| dex_main.py | os.environ | settings | P2 |
-| mcp_server.py | os.environ | settings | P2 |
-| governance/constitution.py | PyYAML | ruamel.yaml | P2 |
-| execution.py | stdlib json (55 uses) | orjson (hot path) | P3 |
-| mcp_server.py | stdlib json (68 uses) | orjson (hot path) | P3 |
-| governance/triggers.py | argparse | typer | P3 |
-| mcp_manage.py | tomlkit (no dep) | add tomlkit to deps | P2 |
-| governance/teammates.py | PyYAML | ruamel.yaml | P2 |
-| scripts/start_proxy_with_adapter.py | PyYAML | ruamel.yaml | P2 |
-| install.py | should_exclude, Path expand | pathspec, platformdirs | P3 |
-| config.py | ~/.cache, ~/.factory paths | platformdirs | P3 |
-| sitback_plugins.py | Custom plugin registry | entry_points, pluggy | P3 |
-| main.py | typer app | typer callbacks, shell completion | P2 |
-| contracts/validation.py | Validation errors | thegent.errors, user-friendly messages | P2 |
+| File                                | Custom Implementation                   | Library                                 | Priority   |
+| ----------------------------------- | --------------------------------------- | --------------------------------------- | ---------- |
+| cli_impl.py                         | \_CWD_CACHE, EAGAIN retry, DAG backoff  | cachetools.TTLCache, tenacity, settings | P1, P2     |
+| queue/storage.py                    | Manual JSONL (PromptQueue)              | jsonlines                               | P2         |
+| execution.py                        | DeferralQueue, EscalationQueue, urllib  | jsonlines, httpx, orjson                | P1, P2, P3 |
+| ------                              | ----------------------                  | ---------                               | ---------- |
+| models/scrapers.py                  | urllib, custom cache                    | httpx, diskcache                        | P1, P2     |
+| agents/cliproxy_manager.py          | urllib, os.environ                      | httpx, settings                         | P1, P2     |
+| agents/cursor_api_runner.py         | urllib, ANSI strip                      | httpx, rich                             | P1, P2     |
+| execution.py                        | urllib                                  | httpx                                   | P1         |
+| mcp_manage.py                       | urllib                                  | httpx                                   | P1         |
+| clode_main.py                       | urllib                                  | httpx                                   | P1         |
+| routing/alerting.py                 | urllib                                  | httpx                                   | P1         |
+| governance/triggers.py              | os.walk polling, debounce, exclude_dirs | watchdog, pathspec                      | P1, P3     |
+| agents/loop_controller.py           | Manual retry loop                       | tenacity                                | P1         |
+| agents/codex_proxy.py               | ANSI strip, os.environ                  | rich, settings                          | P2         |
+| agents/direct_agents.py             | ANSI strip                              | rich                                    | P2         |
+| agents/droid.py                     | ANSI strip                              | rich                                    | P2         |
+| parser.py                           | ANSI strip                              | rich                                    | P2         |
+| tools/cache.py                      | ETag cache, md5                         | cachetools/diskcache, sha256            | P2         |
+| models/speed_values.py              | TTL cache                               | cachetools                              | P2         |
+| models/quality_values.py            | TTL cache                               | cachetools                              | P2         |
+| models/catalog.py                   | Route cache                             | cachetools                              | P2         |
+| orchestration/load_based_limits.py  | FD/mem/load sampling                    | psutil                                  | P2         |
+| agents/resilience.py                | ToolCircuitBreaker                      | pybreaker                               | P2         |
+| discovery.py                        | ps, /proc                               | psutil                                  | P2         |
+| contracts/parser.py                 | XML regex extractor                     | defusedxml (optional)                   | P2         |
+| tools/xml_repair.py                 | XML repair                              | lxml recover (optional)                 | P2         |
+| mcp_tools_modes.py                  | Custom \_slugify                        | python-slugify                          | P3         |
+| tools/human.py                      | Manual JSONL append                     | jsonlines                               | P3         |
+| output_parser.py                    | Manual JSONL, regex                     | jsonlines, parse (optional)             | P3         |
+| cli.py                              | os.environ, uuid hex                    | settings, shortuuid (optional)          | P2, P3     |
+| dex_main.py                         | os.environ                              | settings                                | P2         |
+| mcp_server.py                       | os.environ                              | settings                                | P2         |
+| governance/constitution.py          | PyYAML                                  | ruamel.yaml                             | P2         |
+| execution.py                        | stdlib json (55 uses)                   | orjson (hot path)                       | P3         |
+| mcp_server.py                       | stdlib json (68 uses)                   | orjson (hot path)                       | P3         |
+| governance/triggers.py              | argparse                                | typer                                   | P3         |
+| mcp_manage.py                       | tomlkit (no dep)                        | add tomlkit to deps                     | P2         |
+| governance/teammates.py             | PyYAML                                  | ruamel.yaml                             | P2         |
+| scripts/start_proxy_with_adapter.py | PyYAML                                  | ruamel.yaml                             | P2         |
+| install.py                          | should_exclude, Path expand             | pathspec, platformdirs                  | P3         |
+| config.py                           | ~/.cache, ~/.factory paths              | platformdirs                            | P3         |
+| sitback_plugins.py                  | Custom plugin registry                  | entry_points, pluggy                    | P3         |
+| main.py                             | typer app                               | typer callbacks, shell completion       | P2         |
+| contracts/validation.py             | Validation errors                       | thegent.errors, user-friendly messages  | P2         |
 
 ---
 
 ## 45. Implementation Roadmap (Expanded)
 
-| Phase | Task | Effort |
-|-------|------|--------|
-| 1 | Replace urllib with httpx (7 files) | 2–3 hrs |
-| 2 | Migrate retry loops to tenacity | 4–6 hrs |
-| 3 | Replace WatchdogTrigger with watchdog | 2–4 hrs |
-| 4 | Consolidate ANSI strip → rich.strip_control_codes | 1 hr |
-| 5 | Introduce cachetools for speed/quality/catalog | 2–3 hrs |
-| 6 | Replace scrapers cache with diskcache | 1 hr |
-| 7 | Add psutil for load_based_limits, discovery | 2–3 hrs |
-| 8 | Evaluate pybreaker for circuit breaker | 1–2 hrs |
-| 9 | Unify md5→sha256 in cache.py | 0.5 hr |
-| 10 | Consolidate os.environ → ThegentSettings | 2–3 hrs |
-| 11 | Audit subprocess + add shlex.quote where needed | 1–2 hrs |
-| 12 | Replace _slugify with python-slugify | 0.5 hr |
-| 13 | Add jsonlines for JSONL I/O | 1 hr |
-| 14 | (Optional) structlog migration | 4–8 hrs |
-| 15 | (Optional) hypothesis for parser tests | 2–4 hrs |
-| 16 | (Optional) more-itertools for repeated patterns | 1–2 hrs |
-| 17 | Replace PyYAML with ruamel.yaml (15+ files) | 2–3 hrs |
-| 18 | Add orjson; migrate execution, mcp_server hot paths | 4–6 hrs |
-| 19 | Add tomlkit to pyproject.toml | 0.5 hr |
-| 20 | (Optional) Migrate argparse scripts to typer | 2–4 hrs |
-| 21 | Replace _CWD_CACHE with cachetools.TTLCache | 0.5 hr |
-| 22 | Replace queue JSONL (PromptQueue, DeferralQueue, EscalationQueue) with jsonlines | 2–3 hrs |
-| 23 | (Optional) Add packaging for version parsing | 1–2 hrs |
-| 24 | (Optional) Add pathspec for exclude patterns | 1–2 hrs |
-| 25 | (Optional) Add platformdirs for cache/config dirs | 1–2 hrs |
-| 26 | (Optional) Add humanize for CLI output | 1 hr |
-| 27 | Add rich.Progress/Spinner for long-running ops | 2–4 hrs |
-| 28 | Document shell completion; add typer callbacks | 1–2 hrs |
-| 29 | Create thegent.errors; improve ValidationError handling | 2–3 hrs |
-| 30 | Add entry_points for plugin discovery | 2–3 hrs |
-| 31 | (Optional) typer-rich, questionary for CLI polish | 2–4 hrs |
+| Phase | Task                                                                             | Effort  |
+| ----- | -------------------------------------------------------------------------------- | ------- |
+| 1     | Replace urllib with httpx (7 files)                                              | 2–3 hrs |
+| 2     | Migrate retry loops to tenacity                                                  | 4–6 hrs |
+| 3     | Replace WatchdogTrigger with watchdog                                            | 2–4 hrs |
+| 4     | Consolidate ANSI strip → rich.strip_control_codes                                | 1 hr    |
+| 5     | Introduce cachetools for speed/quality/catalog                                   | 2–3 hrs |
+| 6     | Replace scrapers cache with diskcache                                            | 1 hr    |
+| 7     | Add psutil for load_based_limits, discovery                                      | 2–3 hrs |
+| 8     | Evaluate pybreaker for circuit breaker                                           | 1–2 hrs |
+| 9     | Unify md5→sha256 in cache.py                                                     | 0.5 hr  |
+| 10    | Consolidate os.environ → ThegentSettings                                         | 2–3 hrs |
+| 11    | Audit subprocess + add shlex.quote where needed                                  | 1–2 hrs |
+| 12    | Replace \_slugify with python-slugify                                            | 0.5 hr  |
+| 13    | Add jsonlines for JSONL I/O                                                      | 1 hr    |
+| 14    | (Optional) structlog migration                                                   | 4–8 hrs |
+| 15    | (Optional) hypothesis for parser tests                                           | 2–4 hrs |
+| 16    | (Optional) more-itertools for repeated patterns                                  | 1–2 hrs |
+| 17    | Replace PyYAML with ruamel.yaml (15+ files)                                      | 2–3 hrs |
+| 18    | Add orjson; migrate execution, mcp_server hot paths                              | 4–6 hrs |
+| 19    | Add tomlkit to pyproject.toml                                                    | 0.5 hr  |
+| 20    | (Optional) Migrate argparse scripts to typer                                     | 2–4 hrs |
+| 21    | Replace \_CWD_CACHE with cachetools.TTLCache                                     | 0.5 hr  |
+| 22    | Replace queue JSONL (PromptQueue, DeferralQueue, EscalationQueue) with jsonlines | 2–3 hrs |
+| 23    | (Optional) Add packaging for version parsing                                     | 1–2 hrs |
+| 24    | (Optional) Add pathspec for exclude patterns                                     | 1–2 hrs |
+| 25    | (Optional) Add platformdirs for cache/config dirs                                | 1–2 hrs |
+| 26    | (Optional) Add humanize for CLI output                                           | 1 hr    |
+| 27    | Add rich.Progress/Spinner for long-running ops                                   | 2–4 hrs |
+| 28    | Document shell completion; add typer callbacks                                   | 1–2 hrs |
+| 29    | Create thegent.errors; improve ValidationError handling                          | 2–3 hrs |
+| 30    | Add entry_points for plugin discovery                                            | 2–3 hrs |
+| 31    | (Optional) typer-rich, questionary for CLI polish                                | 2–4 hrs |
 
 ---
 
 ## 46. Proposed New Dependencies (Summary)
 
-| Library | Purpose | Add? |
-|---------|---------|------|
-| cachetools | TTL in-memory cache | Yes |
-| diskcache | File-based cache | Yes |
-| watchdog | File system events | Yes |
-| psutil | Process/resource monitoring | Yes |
-| pybreaker | Circuit breaker | Yes |
-| tomlkit | TOML round-trip (mcp_manage) | Yes (add to deps) |
-| ruamel.yaml | Replace PyYAML; preserve comments | Yes |
-| orjson | Fast JSON (replace stdlib in hot paths) | Optional |
-| python-slugify | Slug generation | Optional |
-| jsonlines | JSONL read/write | Optional |
-| parse | Format string parsing | Optional |
-| shortuuid | Short URL-safe IDs | Optional |
-| hypothesis | Property-based testing | Dev optional |
-| more-itertools | Iteration utilities | Optional |
-| structlog | Structured logging | Optional |
-| packaging | Version parsing (semver) | Optional |
-| pathspec | .gitignore-style exclude patterns | Optional |
-| platformdirs | XDG / platform cache/config dirs | Optional |
-| humanize | Human-readable bytes, durations | Optional |
-| typer-rich | Richer typer --help (Markdown, panels) | Optional |
-| questionary | Interactive CLI prompts (autocomplete, multi-select) | Optional |
-| pluggy | Plugin hook system (extensibility) | Optional |
-| textual | Full TUI (dashboard, queue) | Optional |
-| prometheus-client | Metrics export (/metrics) | Optional |
+| Library           | Purpose                                              | Add?              |
+| ----------------- | ---------------------------------------------------- | ----------------- |
+| cachetools        | TTL in-memory cache                                  | Yes               |
+| diskcache         | File-based cache                                     | Yes               |
+| watchdog          | File system events                                   | Yes               |
+| psutil            | Process/resource monitoring                          | Yes               |
+| pybreaker         | Circuit breaker                                      | Yes               |
+| tomlkit           | TOML round-trip (mcp_manage)                         | Yes (add to deps) |
+| ruamel.yaml       | Replace PyYAML; preserve comments                    | Yes               |
+| orjson            | Fast JSON (replace stdlib in hot paths)              | Optional          |
+| python-slugify    | Slug generation                                      | Optional          |
+| jsonlines         | JSONL read/write                                     | Optional          |
+| parse             | Format string parsing                                | Optional          |
+| shortuuid         | Short URL-safe IDs                                   | Optional          |
+| hypothesis        | Property-based testing                               | Dev optional      |
+| more-itertools    | Iteration utilities                                  | Optional          |
+| structlog         | Structured logging                                   | Optional          |
+| packaging         | Version parsing (semver)                             | Optional          |
+| pathspec          | .gitignore-style exclude patterns                    | Optional          |
+| platformdirs      | XDG / platform cache/config dirs                     | Optional          |
+| humanize          | Human-readable bytes, durations                      | Optional          |
+| typer-rich        | Richer typer --help (Markdown, panels)               | Optional          |
+| questionary       | Interactive CLI prompts (autocomplete, multi-select) | Optional          |
+| pluggy            | Plugin hook system (extensibility)                   | Optional          |
+| textual           | Full TUI (dashboard, queue)                          | Optional          |
+| prometheus-client | Metrics export (/metrics)                            | Optional          |
 
 ---
 
@@ -799,17 +819,18 @@
 
 ### 47.1 Failure Modes
 
-| Failure Mode | Impact | Mitigation |
-|--------------|--------|------------|
-| **Library incompatibility** | Breaking changes | Version pinning, compatibility testing, gradual migration |
-| **Library unmaintained** | Security vulnerabilities | Monitor maintenance status, have fallback plan |
-| **Performance regression** | Slower than custom | Benchmark before/after, feature flags for rollback |
-| **API differences** | Integration issues | Thin wrapper layer, adapter pattern, comprehensive tests |
-| **Dependency conflicts** | Build failures | Dependency resolution, virtual environments, lock files |
+| Failure Mode                | Impact                   | Mitigation                                                |
+| --------------------------- | ------------------------ | --------------------------------------------------------- |
+| **Library incompatibility** | Breaking changes         | Version pinning, compatibility testing, gradual migration |
+| **Library unmaintained**    | Security vulnerabilities | Monitor maintenance status, have fallback plan            |
+| **Performance regression**  | Slower than custom       | Benchmark before/after, feature flags for rollback        |
+| **API differences**         | Integration issues       | Thin wrapper layer, adapter pattern, comprehensive tests  |
+| **Dependency conflicts**    | Build failures           | Dependency resolution, virtual environments, lock files   |
 
 ### 47.2 Error Handling Strategy
 
 **Migration Pattern:**
+
 ```python
 # Feature flag for gradual migration
 USE_NEW_LIBRARY = os.getenv("THGENT_USE_HTTPX", "0") == "1"
@@ -817,6 +838,7 @@ USE_NEW_LIBRARY = os.getenv("THGENT_USE_HTTPX", "0") == "1"
 if USE_NEW_LIBRARY:
     try:
         import httpx
+
         client = httpx.Client()
     except ImportError:
         logger.warning("httpx not available, falling back to urllib")
@@ -829,6 +851,7 @@ if not USE_NEW_LIBRARY:
 ```
 
 **Validation:**
+
 - Pre-migration: Compatibility testing, performance benchmarking
 - Post-migration: Integration tests, monitoring, rollback plan
 - Performance: Monitor latency, error rates, resource usage
@@ -857,7 +880,7 @@ if not USE_NEW_LIBRARY:
 
 ## 48. Anti-Sprawl Extension (Port & Consolidation)
 
-**Purpose:** Avoid custom impl sprawl by checking native thegent crates, stdlib, existing deps, and libraries *before* adding new custom code. Aligns with [FULL_SHELL_TO_RUST_WHERE_BENEFICIAL.md](../plans/FULL_SHELL_TO_RUST_WHERE_BENEFICIAL.md) §10.
+**Purpose:** Avoid custom impl sprawl by checking native thegent crates, stdlib, existing deps, and libraries _before_ adding new custom code. Aligns with [FULL_SHELL_TO_RUST_WHERE_BENEFICIAL.md](../plans/FULL_SHELL_TO_RUST_WHERE_BENEFICIAL.md) §10.
 
 ### 48.1 Before Adding Custom Impl — Checklist
 
@@ -881,23 +904,23 @@ if not USE_NEW_LIBRARY:
 
 ### 48.2 Consolidation Matrix (Capability → Preferred Source)
 
-| Capability | Prefer | Avoid |
-|------------|--------|-------|
-| Retry/backoff | tenacity | Manual for/while + sleep |
-| Cache (TTL, file) | cachetools, diskcache, or thegent-hooks cache | Custom dict + mtime |
-| HTTP client | httpx | urllib.request |
-| Git metadata | thegent-git, thegent-hooks git | subprocess.run(["git", ...]) |
-| XML/JSONL parse (hot path) | thegent-parser (BKM-02) | Many re.compile + hand-written loops |
-| Crypto (sign/verify/hash) | thegent-crypto (BKM-03) | hashlib + custom HMAC in hot path |
-| Resource sampling | thegent-resources (BKM-01) | lsof, vm_stat subprocess |
-| File watching | watchdog or thegent-watcher | os.walk polling |
-| Circuit breaker | pybreaker or BKM-05 State-SHM | Custom failure list + timer |
-| Hook init/cache/changed-files | thegent-hooks | common.sh sourcing |
-| PATH / tool resolution | thegent-tool-detect, thegent-discovery | command -v in shell |
-| Install shims (git, grep, find, agent) | thegent-shims (Rust) | Bash scripts in install.py |
-| ANSI strip | rich.strip_control_codes | re.sub(r"\x1b\[...") duplicated |
-| YAML round-trip | ruamel.yaml | PyYAML where comments matter |
-| ID generation | shortuuid/nanoid or stdlib uuid | uuid4().hex[:8] scattered |
+| Capability                             | Prefer                                        | Avoid                                |
+| -------------------------------------- | --------------------------------------------- | ------------------------------------ |
+| Retry/backoff                          | tenacity                                      | Manual for/while + sleep             |
+| Cache (TTL, file)                      | cachetools, diskcache, or thegent-hooks cache | Custom dict + mtime                  |
+| HTTP client                            | httpx                                         | urllib.request                       |
+| Git metadata                           | thegent-git, thegent-hooks git                | subprocess.run(["git", ...])         |
+| XML/JSONL parse (hot path)             | thegent-parser (BKM-02)                       | Many re.compile + hand-written loops |
+| Crypto (sign/verify/hash)              | thegent-crypto (BKM-03)                       | hashlib + custom HMAC in hot path    |
+| Resource sampling                      | thegent-resources (BKM-01)                    | lsof, vm_stat subprocess             |
+| File watching                          | watchdog or thegent-watcher                   | os.walk polling                      |
+| Circuit breaker                        | pybreaker or BKM-05 State-SHM                 | Custom failure list + timer          |
+| Hook init/cache/changed-files          | thegent-hooks                                 | common.sh sourcing                   |
+| PATH / tool resolution                 | thegent-tool-detect, thegent-discovery        | command -v in shell                  |
+| Install shims (git, grep, find, agent) | thegent-shims (Rust)                          | Bash scripts in install.py           |
+| ANSI strip                             | rich.strip_control_codes                      | re.sub(r"\x1b\[...") duplicated      |
+| YAML round-trip                        | ruamel.yaml                                   | PyYAML where comments matter         |
+| ID generation                          | shortuuid/nanoid or stdlib uuid               | uuid4().hex[:8] scattered            |
 
 ### 48.3 Governance
 

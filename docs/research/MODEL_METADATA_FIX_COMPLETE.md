@@ -12,11 +12,13 @@ All model metadata warnings have been resolved. The CLIProxyAPIPlus server has b
 ## What Was Fixed
 
 ### 1. Created Centralized Model Metadata Registry
+
 - **File**: `src/thegent/routing/model_metadata.py`
 - **29 models** with complete metadata (context window, cost, provider, backend)
 - All model variants covered: `glm-5`, `GLM-5`, `z-ai/glm-5`, `minimax-m2.5`, `MiniMax-M2.5`, `kilo-default`, `roo-default`
 
 ### 2. Updated All Integration Points
+
 - `get_context_window()` - Uses metadata registry first
 - `validate_context_window()` - Uses metadata registry
 - `_estimate_cost()` - Uses metadata registry
@@ -24,15 +26,18 @@ All model metadata warnings have been resolved. The CLIProxyAPIPlus server has b
 - `_validate_model_metadata()` - Validates all router models
 
 ### 3. Updated Static Dictionaries (Fallback)
+
 - `MODEL_CONTEXT_WINDOWS` - Added all variants
 - `_DEFAULT_PRICING_MTOK` - Added all variants
 - `cost_per_1k` - Added all variants
 
 ### 4. Enhanced CLIProxy Configuration
+
 - Auto-configures model aliases for `glm`, `kilo`, `roo` providers
 - Ensures all model variants are registered in `cliproxy-config.yaml`
 
 ### 5. Server Restart
+
 - ✅ Killed existing CLIProxyAPIPlus process (PID 17324)
 - ✅ Restarted server with updated configuration
 - ✅ Verified server is reachable on port 8317
@@ -71,6 +76,7 @@ To verify everything is working:
 
 ```python
 from thegent.routing.model_metadata import has_model_metadata
+
 assert has_model_metadata("glm-5")
 assert has_model_metadata("minimax-m2.5")
 ```

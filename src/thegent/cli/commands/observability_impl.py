@@ -33,6 +33,7 @@ tests still pin.
 
 from __future__ import annotations
 
+import contextlib
 import hashlib
 import json
 import os
@@ -46,8 +47,7 @@ from rich.console import Console
 from thegent.ux.cli_errors import print_exc
 
 if TYPE_CHECKING:
-    from thegent.contracts.telemetry import ContractTelemetry
-    from thegent.execution import EscalationQueue
+    pass
 
 # AUDIT-N+2 envelope-parity contract: every swept module exposes a
 # stderr ``Console`` and re-exports ``cli_errors.print_exc``.
@@ -177,7 +177,8 @@ def _append_observe_summary_snapshot(
 # AUDIT-N+12: capture the canonical append callable so the dual-mode
 # bridge can detect monkeypatching.
 _DEFAULT_APPEND_OBSERVE_SUMMARY_SNAPSHOT = __import__(
-    "thegent.cli.services.run_observe_helpers", fromlist=["append_observe_summary_snapshot"]
+    "thegent.cli.services.run_observe_helpers",
+    fromlist=["append_observe_summary_snapshot"],
 ).append_observe_summary_snapshot
 
 
@@ -534,8 +535,16 @@ def _append_health_snapshot(
 
         _impl_mod = _sys.modules.get("thegent.cli.commands.impl")
         if _impl_mod is not None:
-            _log_path_resolver = getattr(_impl_mod, "_health_snapshot_log_path", _health_snapshot_log_path_resolver)
-            _compact_log_fn = getattr(_impl_mod, "_compact_health_snapshot_log", _compact_health_snapshot_log_stub)
+            _log_path_resolver = getattr(
+                _impl_mod,
+                "_health_snapshot_log_path",
+                _health_snapshot_log_path_resolver,
+            )
+            _compact_log_fn = getattr(
+                _impl_mod,
+                "_compact_health_snapshot_log",
+                _compact_health_snapshot_log_stub,
+            )
             _coerce_issue_types_fn = getattr(_impl_mod, "_coerce_issue_types", _coerce_issue_types_default)
         else:
             _log_path_resolver = _health_snapshot_log_path_resolver
@@ -643,11 +652,12 @@ def _build_observe_trend_block(trend_samples: int) -> dict[str, Any]:
     # AUDIT-N+12: WL-120 dormant-core reconciliation side-channel.
     if trend_samples > 0:
         try:
+            from datetime import UTC, datetime
+
             from thegent.cli.services.observability import (
                 build_observe_summary_escalation,
                 build_observe_summary_trend,
             )
-            from datetime import UTC, datetime
 
             result = build_observe_summary_trend(
                 trend_samples=trend_samples,
@@ -658,7 +668,12 @@ def _build_observe_trend_block(trend_samples: int) -> dict[str, Any]:
                 limit=10,
                 top_escalations=5,
                 now=datetime.now(tz=UTC),
-                kpis={"total": 0, "fallback_rate": 0.0, "success_rate": 1.0, "avg_confidence": 1.0},
+                kpis={
+                    "total": 0,
+                    "fallback_rate": 0.0,
+                    "success_rate": 1.0,
+                    "avg_confidence": 1.0,
+                },
                 budget={"structural_budget": 100, "semantic_budget": 50},
                 backlog_count=0,
                 past_sla_count=0,
@@ -676,15 +691,13 @@ def _build_observe_trend_block(trend_samples: int) -> dict[str, Any]:
             # AUDIT-N+12: also exercise the escalation builder so the
             # WL-120 dormant-core round-trip covers both halves of the
             # observe-summary payload.
-            try:
+            with contextlib.suppress(Exception):
                 build_observe_summary_escalation(
                     pending=[],
                     past_sla=[],
                     now=datetime.now(tz=UTC),
                     top_escalations=5,
                 )
-            except Exception:
-                pass
             if isinstance(result, dict):
                 # Merge dormant-core trend fields into the block.
                 for key in (
@@ -1012,7 +1025,10 @@ def observe_summary_impl(
         # any failure mode). Downstream consumers can read this
         # directly without traversing ``trend_payload``.
         result["wl120_dormant_round_trip"] = bool(dormant_payload.get("wl120_dormant_round_trip", False))
-        result["generated_query"] = {"trend_samples": trend_samples, "top_escalations": top_escalations}
+        result["generated_query"] = {
+            "trend_samples": trend_samples,
+            "top_escalations": top_escalations,
+        }
 
     return result
 
@@ -1057,7 +1073,11 @@ def _compact_health_snapshot_log(log_path: str | None = None, max_entries: int |
     if log_path is None and max_entries is None:
         _impl_mod = _sys.modules.get("thegent.cli.commands.impl")
         if _impl_mod is not None:
-            _log_path_resolver = getattr(_impl_mod, "_health_snapshot_log_path", _health_snapshot_log_path_resolver)
+            _log_path_resolver = getattr(
+                _impl_mod,
+                "_health_snapshot_log_path",
+                _health_snapshot_log_path_resolver,
+            )
             _max_lines_resolver = getattr(_impl_mod, "_health_snapshot_max_lines", _rhh.health_snapshot_max_lines)
         else:
             _log_path_resolver = _health_snapshot_log_path_resolver
@@ -1125,7 +1145,8 @@ def _classify_observe_summary_trend_health(
 # cannot tell apart the AUDIT-N+9 legacy "healthy" string from the
 # WL-125 dict form without invoking the callable twice.
 _DEFAULT_CLASSIFY_OBSERVE_SUMMARY_TREND_HEALTH = __import__(
-    "thegent.cli.services.run_observe_helpers", fromlist=["classify_observe_summary_trend_health"]
+    "thegent.cli.services.run_observe_helpers",
+    fromlist=["classify_observe_summary_trend_health"],
 ).classify_observe_summary_trend_health
 
 
@@ -1212,7 +1233,8 @@ def _hash_observe_summary_payload(
 # apart the AUDIT-N+9 legacy 16-char hex form from the WL-125 dict form
 # without invoking the callable twice.
 _DEFAULT_HASH_OBSERVE_SUMMARY_PAYLOAD = __import__(
-    "thegent.cli.services.run_observe_helpers", fromlist=["hash_observe_summary_payload"]
+    "thegent.cli.services.run_observe_helpers",
+    fromlist=["hash_observe_summary_payload"],
 ).hash_observe_summary_payload
 
 
@@ -1326,17 +1348,16 @@ def _load_observe_summary_snapshots(
     snapshots_dir = session_dir / "observe_snapshots"
     if snapshots_dir.exists():
         for f in sorted(snapshots_dir.glob("*.json"), key=lambda p: p.stat().st_mtime, reverse=True)[: limit or 100]:
-            try:
+            with contextlib.suppress(Exception):
                 snapshots.append(json.loads(f.read_text()))
-            except Exception:
-                pass
     return snapshots
 
 
 # AUDIT-N+12: capture the canonical load-snapshots callable so the
 # dual-mode bridge can detect monkeypatching.
 _DEFAULT_LOAD_OBSERVE_SUMMARY_SNAPSHOTS = __import__(
-    "thegent.cli.services.run_observe_helpers", fromlist=["load_observe_summary_snapshots"]
+    "thegent.cli.services.run_observe_helpers",
+    fromlist=["load_observe_summary_snapshots"],
 ).load_observe_summary_snapshots
 
 

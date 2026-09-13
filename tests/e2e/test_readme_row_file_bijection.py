@@ -2,9 +2,9 @@
 
 from __future__ import annotations
 
-from pathlib import Path
 import re
 import shlex
+from pathlib import Path
 
 from tests.e2e.test_readme_row_order_contract import EXPECTED_GOVERNANCE_ROW_ORDER
 
@@ -165,8 +165,17 @@ def test_alias_trio_labels_match_alias_path_family_tokens() -> None:
 
     required_tokens_by_label = {
         "Alias rewrite contract unit (direct)": {"alias", "rewrite", "contract"},
-        "Alias rewrite real-app contract unit (direct)": {"alias", "rewrite", "real", "app"},
-        "Alias unsupported rationale contract (direct)": {"alias", "unsupported", "rationale"},
+        "Alias rewrite real-app contract unit (direct)": {
+            "alias",
+            "rewrite",
+            "real",
+            "app",
+        },
+        "Alias unsupported rationale contract (direct)": {
+            "alias",
+            "unsupported",
+            "rationale",
+        },
     }
 
     for label, path in alias_rows:

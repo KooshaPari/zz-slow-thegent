@@ -41,6 +41,7 @@ We have decided to adopt a **polyglot persistence** strategy with the following 
 ### Primary Data Store
 
 **Relational Database** for primary persistence:
+
 - ACID transactions for consistency
 - Rich query capabilities
 - Mature operational tooling
@@ -51,6 +52,7 @@ We have decided to adopt a **polyglot persistence** strategy with the following 
 ### Caching Layer
 
 **In-Memory Cache** for hot data:
+
 - Sub-millisecond read access
 - Reduced load on primary store
 - Configurable TTL and eviction policies
@@ -60,6 +62,7 @@ We have decided to adopt a **polyglot persistence** strategy with the following 
 ### Event Store (Optional)
 
 **Append-Only Event Log** for critical events:
+
 - Immutable audit trail
 - Event sourcing capability
 - Replay and reconstruction support
@@ -172,7 +175,7 @@ We have decided to adopt a **polyglot persistence** strategy with the following 
 
 ## References
 
-1. Kleppmann, Martin. *Designing Data-Intensive Applications*. O'Reilly, 2017.
+1. Kleppmann, Martin. _Designing Data-Intensive Applications_. O'Reilly, 2017.
 2. [Database of Databases](https://dbdb.io/)
 3. [CAP Theorem](https://en.wikipedia.org/wiki/CAP_theorem)
 4. Project SPEC.md — Section 4: Data Model
@@ -181,12 +184,11 @@ We have decided to adopt a **polyglot persistence** strategy with the following 
 
 ## Changelog
 
-| Date | Change | Author |
-|------|--------|--------|
-| $(date +%Y-%m-%d) | Initial decision | Data Architecture Team |
-| $(date +%Y-%m-%d) | Validated with load testing | DBA Team |
-| $(date +%Y-%m-%d) | Accepted | Tech Lead |
-
+| Date              | Change                      | Author                 |
+| ----------------- | --------------------------- | ---------------------- |
+| $(date +%Y-%m-%d) | Initial decision            | Data Architecture Team |
+| $(date +%Y-%m-%d) | Validated with load testing | DBA Team               |
+| $(date +%Y-%m-%d) | Accepted                    | Tech Lead              |
 
 ## Additional Implementation Considerations
 
@@ -235,13 +237,13 @@ Clear documentation ensures the architecture is maintainable:
 
 The success of this architectural decision will be measured against the following criteria:
 
-| Criterion | Target | Measurement Method |
-|-----------|--------|-------------------|
-| Performance | Meet defined SLAs | Continuous benchmarking |
-| Reliability | 99.9% availability | Uptime monitoring |
-| Maintainability | < 4 hours MTTR | Incident analysis |
-| Developer Velocity | Onboard in < 2 days | Developer feedback |
-| Cost Efficiency | Within budget | Resource utilization metrics |
+| Criterion          | Target              | Measurement Method           |
+| ------------------ | ------------------- | ---------------------------- |
+| Performance        | Meet defined SLAs   | Continuous benchmarking      |
+| Reliability        | 99.9% availability  | Uptime monitoring            |
+| Maintainability    | < 4 hours MTTR      | Incident analysis            |
+| Developer Velocity | Onboard in < 2 days | Developer feedback           |
+| Cost Efficiency    | Within budget       | Resource utilization metrics |
 
 ## Future Considerations
 

@@ -12,7 +12,6 @@ from tests.e2e.cli_runner_compat import CompatCliRunner
 sys.modules.setdefault("thegent_git", MagicMock())
 from thegent.main import app
 
-
 runner = CompatCliRunner()
 
 

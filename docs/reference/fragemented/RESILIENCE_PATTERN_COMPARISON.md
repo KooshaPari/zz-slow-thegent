@@ -35,42 +35,42 @@
 
 ### Complete Feature Matrix
 
-| Feature | Retry | Circuit Breaker | Bulkhead | Timeout | Throttle | Load Shed | Adaptive |
-|---------|-------|-----------------|----------|---------|----------|-----------|----------|
-| **Transient Failures** | ✅ | - | - | - | - | - | - |
-| **Cascading Failure** | - | ✅ | ✅ | - | - | ✅ | - |
-| **Slow Responses** | - | - | ✅ | ✅ | - | - | ✅ |
-| **Resource Exhaustion** | - | - | ✅ | - | ✅ | ✅ | - |
-| **Overload Protection** | - | - | - | - | ✅ | ✅ | ✅ |
-| **Auto Recovery** | - | ✅ | - | ✅ | - | - | ✅ |
-| **Fair Share** | - | - | ✅ | ✅ | ✅ | - | ✅ |
-| **Fast Failure** | - | ✅ | - | ✅ | - | - | - |
-| **Config Complexity** | Low | Medium | Low | Low | Medium | Medium | High |
-| **Operational Overhead** | Low | Medium | Low | Low | Medium | Medium | High |
+| Feature                  | Retry | Circuit Breaker | Bulkhead | Timeout | Throttle | Load Shed | Adaptive |
+| ------------------------ | ----- | --------------- | -------- | ------- | -------- | --------- | -------- |
+| **Transient Failures**   | ✅    | -               | -        | -       | -        | -         | -        |
+| **Cascading Failure**    | -     | ✅              | ✅       | -       | -        | ✅        | -        |
+| **Slow Responses**       | -     | -               | ✅       | ✅      | -        | -         | ✅       |
+| **Resource Exhaustion**  | -     | -               | ✅       | -       | ✅       | ✅        | -        |
+| **Overload Protection**  | -     | -               | -        | -       | ✅       | ✅        | ✅       |
+| **Auto Recovery**        | -     | ✅              | -        | ✅      | -        | -         | ✅       |
+| **Fair Share**           | -     | -               | ✅       | ✅      | ✅       | -         | ✅       |
+| **Fast Failure**         | -     | ✅              | -        | ✅      | -        | -         | -        |
+| **Config Complexity**    | Low   | Medium          | Low      | Low     | Medium   | Medium    | High     |
+| **Operational Overhead** | Low   | Medium          | Low      | Low     | Medium   | Medium    | High     |
 
 ### Implementation Complexity
 
-| Pattern | Lines of Code | Maintenance | Learning Curve |
-|---------|---------------|-------------|-----------------|
-| Retry | < 10 | Minimal | Beginner |
-| Circuit Breaker | 50-100 | Medium | Intermediate |
-| Bulkhead | 20-50 | Low | Beginner |
-| Timeout | < 5 | Minimal | Beginner |
-| Throttle | 30-80 | Low-Medium | Intermediate |
-| Load Shed | 40-100 | Medium | Intermediate |
-| Adaptive Concurrency | 100-200 | High | Advanced |
+| Pattern              | Lines of Code | Maintenance | Learning Curve |
+| -------------------- | ------------- | ----------- | -------------- |
+| Retry                | < 10          | Minimal     | Beginner       |
+| Circuit Breaker      | 50-100        | Medium      | Intermediate   |
+| Bulkhead             | 20-50         | Low         | Beginner       |
+| Timeout              | < 5           | Minimal     | Beginner       |
+| Throttle             | 30-80         | Low-Medium  | Intermediate   |
+| Load Shed            | 40-100        | Medium      | Intermediate   |
+| Adaptive Concurrency | 100-200       | High        | Advanced       |
 
 ### Performance Impact
 
-| Pattern | CPU Overhead | Memory Overhead | Latency | Throughput |
-|---------|--------------|-----------------|---------|------------|
-| Retry | Low | Low | +100-1000ms | -10-30% |
-| Circuit Breaker | Very Low | Low | 0-5ms | +5-20% |
-| Bulkhead | Low | Medium | 0-10ms | +10-30% |
-| Timeout | Very Low | Low | 0ms | 0% |
-| Throttle | Very Low | Medium | +50-500ms | -5-50% |
-| Load Shed | Low | Low | 0-5ms | +5-20% |
-| Adaptive Conc | Medium | High | -5-20% | +20-40% |
+| Pattern         | CPU Overhead | Memory Overhead | Latency     | Throughput |
+| --------------- | ------------ | --------------- | ----------- | ---------- |
+| Retry           | Low          | Low             | +100-1000ms | -10-30%    |
+| Circuit Breaker | Very Low     | Low             | 0-5ms       | +5-20%     |
+| Bulkhead        | Low          | Medium          | 0-10ms      | +10-30%    |
+| Timeout         | Very Low     | Low             | 0ms         | 0%         |
+| Throttle        | Very Low     | Medium          | +50-500ms   | -5-50%     |
+| Load Shed       | Low          | Low             | 0-5ms       | +5-20%     |
+| Adaptive Conc   | Medium       | High            | -5-20%      | +20-40%    |
 
 ---
 
@@ -80,62 +80,62 @@
 
 #### SCENARIO: External API Integration
 
-| Aspect | Pattern | Recommendation |
-|--------|---------|-----------------|
-| **Primary** | Circuit Breaker | Prevent cascading failures when API is down |
-| **Secondary** | Retry + Backoff | Handle transient network errors |
-| **Tertiary** | Timeout | Prevent hanging requests |
-| **Fallback** | Cached Response | Use stale data if API down |
-| **Config** | CB: fail_max=5, timeout=60s | |
-| | Retry: max_attempts=3, exp_backoff | |
-| | Timeout: 30s HTTP, 5s DB | |
+| Aspect        | Pattern                            | Recommendation                              |
+| ------------- | ---------------------------------- | ------------------------------------------- |
+| **Primary**   | Circuit Breaker                    | Prevent cascading failures when API is down |
+| **Secondary** | Retry + Backoff                    | Handle transient network errors             |
+| **Tertiary**  | Timeout                            | Prevent hanging requests                    |
+| **Fallback**  | Cached Response                    | Use stale data if API down                  |
+| **Config**    | CB: fail_max=5, timeout=60s        |                                             |
+|               | Retry: max_attempts=3, exp_backoff |                                             |
+|               | Timeout: 30s HTTP, 5s DB           |                                             |
 
 #### SCENARIO: Database Connection Management
 
-| Aspect | Pattern | Recommendation |
-|--------|---------|-----------------|
-| **Primary** | Connection Pool | Reuse connections; prevent exhaustion |
-| **Secondary** | Bulkhead | Separate pools for OLTP vs OLAP |
-| **Tertiary** | Timeout | Kill slow queries |
-| **Quaternary** | Circuit Breaker | Detect DB unavailability |
-| **Config** | Pool size: 20-50 | |
-| | Max wait: 5-30s | |
-| | Query timeout: 5-10s | |
+| Aspect         | Pattern              | Recommendation                        |
+| -------------- | -------------------- | ------------------------------------- |
+| **Primary**    | Connection Pool      | Reuse connections; prevent exhaustion |
+| **Secondary**  | Bulkhead             | Separate pools for OLTP vs OLAP       |
+| **Tertiary**   | Timeout              | Kill slow queries                     |
+| **Quaternary** | Circuit Breaker      | Detect DB unavailability              |
+| **Config**     | Pool size: 20-50     |                                       |
+|                | Max wait: 5-30s      |                                       |
+|                | Query timeout: 5-10s |                                       |
 
 #### SCENARIO: Microservice Mesh
 
-| Aspect | Pattern | Recommendation |
-|--------|---------|-----------------|
-| **Primary** | Circuit Breaker | Service-to-service failure isolation |
-| **Secondary** | Retry + Backoff | Transient service restarts |
-| **Tertiary** | Timeout | Prevent resource exhaustion |
-| **Quaternary** | Bulkhead | Isolate critical paths |
-| **Quinary** | Load Shed | Graceful degradation under spike |
-| **Config** | Per-service circuit breaker | |
-| | Deadline propagation (timeouts) | |
+| Aspect         | Pattern                         | Recommendation                       |
+| -------------- | ------------------------------- | ------------------------------------ |
+| **Primary**    | Circuit Breaker                 | Service-to-service failure isolation |
+| **Secondary**  | Retry + Backoff                 | Transient service restarts           |
+| **Tertiary**   | Timeout                         | Prevent resource exhaustion          |
+| **Quaternary** | Bulkhead                        | Isolate critical paths               |
+| **Quinary**    | Load Shed                       | Graceful degradation under spike     |
+| **Config**     | Per-service circuit breaker     |                                      |
+|                | Deadline propagation (timeouts) |                                      |
 
 #### SCENARIO: Background Task Queue
 
-| Aspect | Pattern | Recommendation |
-|--------|---------|-----------------|
-| **Primary** | Retry + Backoff | Eventually consistent execution |
-| **Secondary** | Circuit Breaker | Prevent queue saturation |
-| **Tertiary** | Load Shed | Drop low-priority tasks when full |
-| **Quaternary** | Timeout | Prevent runaway tasks |
-| **Config** | Max retries: 3-10 | |
-| | Backoff: exponential 2^n | |
-| | Max queue size: 1000-10000 | |
+| Aspect         | Pattern                    | Recommendation                    |
+| -------------- | -------------------------- | --------------------------------- |
+| **Primary**    | Retry + Backoff            | Eventually consistent execution   |
+| **Secondary**  | Circuit Breaker            | Prevent queue saturation          |
+| **Tertiary**   | Load Shed                  | Drop low-priority tasks when full |
+| **Quaternary** | Timeout                    | Prevent runaway tasks             |
+| **Config**     | Max retries: 3-10          |                                   |
+|                | Backoff: exponential 2^n   |                                   |
+|                | Max queue size: 1000-10000 |                                   |
 
 #### SCENARIO: Real-Time Analytics
 
-| Aspect | Pattern | Recommendation |
-|--------|---------|-----------------|
-| **Primary** | Timeout | Must complete within deadline |
-| **Secondary** | Adaptive Concurrency | Scale with load |
-| **Tertiary** | Bulkhead | Prevent OLAP blocking OLTP |
-| **Quaternary** | Load Shed | Drop low-priority queries |
-| **Config** | Query timeout: 10-30s | |
-| | Concurrency: adaptive 10-100 | |
+| Aspect         | Pattern                      | Recommendation                |
+| -------------- | ---------------------------- | ----------------------------- |
+| **Primary**    | Timeout                      | Must complete within deadline |
+| **Secondary**  | Adaptive Concurrency         | Scale with load               |
+| **Tertiary**   | Bulkhead                     | Prevent OLAP blocking OLTP    |
+| **Quaternary** | Load Shed                    | Drop low-priority queries     |
+| **Config**     | Query timeout: 10-30s        |                               |
+|                | Concurrency: adaptive 10-100 |                               |
 
 ---
 
@@ -150,10 +150,12 @@
 from tenacity import retry, stop_after_attempt, wait_exponential
 from pybreaker import CircuitBreaker
 
+
 # Retry
 @retry(stop=stop_after_attempt(3), wait=wait_exponential(multiplier=1, min=2, max=60))
 async def api_call():
     pass
+
 
 # Circuit Breaker
 breaker = CircuitBreaker(fail_max=5, timeout_seconds=60)
@@ -204,18 +206,24 @@ public String fallback(Exception e) {
 
 ```javascript
 // Quick setup: node-retry + circuit-breaker-js
-const retry = require('async-retry');
-const CircuitBreaker = require('opossum');
+const retry = require("async-retry");
+const CircuitBreaker = require("opossum");
 
 // Retry
-const data = await retry(async bail => {
+const data = await retry(
+  async (bail) => {
     return await fetchApi();
-}, { retries: 3, minTimeout: 2000, maxTimeout: 60000 });
+  },
+  { retries: 3, minTimeout: 2000, maxTimeout: 60000 },
+);
 
 // Circuit Breaker
-const breaker = new CircuitBreaker(async () => {
+const breaker = new CircuitBreaker(
+  async () => {
     return await fetchApi();
-}, { timeout: 3000, errorThresholdPercentage: 50, resetTimeout: 60000 });
+  },
+  { timeout: 3000, errorThresholdPercentage: 50, resetTimeout: 60000 },
+);
 ```
 
 ---
@@ -226,26 +234,26 @@ const breaker = new CircuitBreaker(async () => {
 
 #### Transient Network Errors (Should Retry)
 
-| Error | Pattern | Max Retries | Backoff |
-|-------|---------|-------------|---------|
-| Connection Refused | Retry + CB | 3 | Exponential |
-| Timeout | Retry + CB | 3 | Exponential |
-| DNS Failure | Retry + CB | 2 | Linear |
-| SSL Error (self-signed) | Fallback | 0 | N/A |
-| Socket Reset | Retry + CB | 3 | Exponential |
-| Rate Limit (429) | Retry + Backoff | 3-5 | Exponential |
+| Error                   | Pattern         | Max Retries | Backoff     |
+| ----------------------- | --------------- | ----------- | ----------- |
+| Connection Refused      | Retry + CB      | 3           | Exponential |
+| Timeout                 | Retry + CB      | 3           | Exponential |
+| DNS Failure             | Retry + CB      | 2           | Linear      |
+| SSL Error (self-signed) | Fallback        | 0           | N/A         |
+| Socket Reset            | Retry + CB      | 3           | Exponential |
+| Rate Limit (429)        | Retry + Backoff | 3-5         | Exponential |
 
 #### Permanent Failures (Should Not Retry)
 
-| Error | Pattern | Action |
-|-------|---------|--------|
-| 400 Bad Request | Fail Fast | Log error, don't retry |
-| 401 Unauthorized | Fail Fast | Refresh token, retry once |
-| 403 Forbidden | Fail Fast | Log error, don't retry |
-| 404 Not Found | Fail Fast | Log error, don't retry |
-| 500 Server Error | Retry + CB | Retry if transient |
-| 502 Bad Gateway | Retry + CB | Likely transient |
-| 503 Unavailable | Retry + CB | Service down, wait |
+| Error            | Pattern    | Action                    |
+| ---------------- | ---------- | ------------------------- |
+| 400 Bad Request  | Fail Fast  | Log error, don't retry    |
+| 401 Unauthorized | Fail Fast  | Refresh token, retry once |
+| 403 Forbidden    | Fail Fast  | Log error, don't retry    |
+| 404 Not Found    | Fail Fast  | Log error, don't retry    |
+| 500 Server Error | Retry + CB | Retry if transient        |
+| 502 Bad Gateway  | Retry + CB | Likely transient          |
+| 503 Unavailable  | Retry + CB | Service down, wait        |
 
 ---
 
@@ -520,16 +528,16 @@ CircuitBreaker(fail_max=10, timeout_seconds=120)
 
 ```python
 # API calls
-timeout_sec=30  # 30s for external APIs
+timeout_sec = 30  # 30s for external APIs
 
 # Database queries
-timeout_sec=5   # 5s for queries
+timeout_sec = 5  # 5s for queries
 
 # Background tasks
-timeout_sec=300 # 5 min for long tasks
+timeout_sec = 300  # 5 min for long tasks
 
 # Microservices
-timeout_sec=10  # 10s inter-service
+timeout_sec = 10  # 10s inter-service
 ```
 
 ### Bulkhead Configuration Quick Copy
@@ -551,6 +559,7 @@ pool_size = 50  # Aggressive
 ## Conclusion
 
 Use this reference to:
+
 1. **Find your scenario** in the scenario matrix
 2. **Choose patterns** from the recommendation
 3. **Configure quickly** using the provided settings

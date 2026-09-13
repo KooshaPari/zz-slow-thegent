@@ -1,10 +1,11 @@
 """Stub module."""
 
 from __future__ import annotations
-from enum import Enum
+
+from enum import StrEnum
 
 
-class FailureMode(str, Enum):
+class FailureMode(StrEnum):
     """Failure modes for orchestration."""
 
     TIMEOUT = "timeout"

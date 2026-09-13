@@ -3,6 +3,7 @@
 ## Executive Summary
 
 The previous model ranking was **incorrect**. MiniMax M2.5 **dominates** Claude Haiku on both quality AND cost:
+
 - MiniMax M2.5: 80.2% quality, $0.79/M (very fast)
 - Claude Haiku: 73.3% quality, $3.50/M (fast)
 
@@ -17,6 +18,7 @@ This document defines an automated Pareto frontier algorithm to identify truly o
 A **Pareto frontier** is the set of models where **no other model is strictly better on all metrics**.
 
 **Dominance Relation:** Model A dominates Model B if:
+
 ```
 A.quality >= B.quality AND
 A.speed >= B.speed AND
@@ -30,13 +32,13 @@ WITH at least one strict inequality (>= where at least one is >)
 
 Natural language speed descriptions are mapped to numerical scores:
 
-| Level | Score | Examples | Tokens/sec |
-|-------|-------|----------|-----------|
-| ultra-fast | 100 | Gemini 3 Flash, GPT-4o mini | 180-220 tok/s |
-| very-fast | 85 | MiniMax M2.5, MiniMax M2 | ~150 tok/s |
-| fast | 70 | Claude Haiku, GPT-4o mini TTFT | 300-1200ms |
-| moderate | 50 | Gemini 2.5 Pro, Claude Sonnet TTFT | 400-1500ms |
-| slow | 30 | Claude Opus, GLM-5 | 1500-2000ms |
+| Level      | Score | Examples                           | Tokens/sec    |
+| ---------- | ----- | ---------------------------------- | ------------- |
+| ultra-fast | 100   | Gemini 3 Flash, GPT-4o mini        | 180-220 tok/s |
+| very-fast  | 85    | MiniMax M2.5, MiniMax M2           | ~150 tok/s    |
+| fast       | 70    | Claude Haiku, GPT-4o mini TTFT     | 300-1200ms    |
+| moderate   | 50    | Gemini 2.5 Pro, Claude Sonnet TTFT | 400-1500ms    |
+| slow       | 30    | Claude Opus, GLM-5                 | 1500-2000ms   |
 
 ### 1.3 Algorithm Pseudocode
 
@@ -110,21 +112,21 @@ algorithm RankByDominance(frontier: List[Model]) -> List[RankedModel]:
 
 ### 2.1 Model Specifications
 
-| Model | Provider | Quality (SWE-Bench %) | Speed Level | Speed Score | Cost ($/M tokens) | Cost Rank |
-|-------|----------|---------------------|-------------|-------------|------------------|-----------|
-| Claude Haiku 4.5 | Anthropic | 73.3 | fast | 70 | 3.50 | 8 |
-| Claude Sonnet 4.5 | Anthropic | 77.2 | moderate | 50 | 10.50 | 11 |
-| Claude Opus 4.6 | Anthropic | 80.8 | slow | 30 | 17.50 | 12 |
-| Gemini 3 Flash | Google | 78.0 | ultra-fast | 100 | 1.50 | 2 |
-| Gemini 2.5 Pro | Google | ~75.0 | moderate | 50 | 4.07 | 9 |
-| Gemini 3 Pro | Google | 76.2 | moderate | 50 | 10.00 | 10 |
-| GPT-5.3-Codex | OpenAI | 56.8 | fast | 70 | 1.25 | 1 |
-| GPT-5.2-Codex | OpenAI | 56.4 | fast | 70 | 1.25 | 1 |
-| GPT-4o mini | OpenAI | 70.0 | ultra-fast | 100 | 0.375 | 1 (cheapest) |
-| MiniMax M2.5 | MiniMax | 80.2 | very-fast | 85 | 0.79 | 3 |
-| MiniMax M2 | MiniMax | 77.0 | very-fast | 85 | 0.79 | 3 |
-| GLM-5 | Alibaba | 92.7 | slow | 30 | 2.60 | 5 |
-| GLM 4.7 | Alibaba | 74.0 | fast | 70 | 1.17 | 1 |
+| Model             | Provider  | Quality (SWE-Bench %) | Speed Level | Speed Score | Cost ($/M tokens) | Cost Rank    |
+| ----------------- | --------- | --------------------- | ----------- | ----------- | ----------------- | ------------ |
+| Claude Haiku 4.5  | Anthropic | 73.3                  | fast        | 70          | 3.50              | 8            |
+| Claude Sonnet 4.5 | Anthropic | 77.2                  | moderate    | 50          | 10.50             | 11           |
+| Claude Opus 4.6   | Anthropic | 80.8                  | slow        | 30          | 17.50             | 12           |
+| Gemini 3 Flash    | Google    | 78.0                  | ultra-fast  | 100         | 1.50              | 2            |
+| Gemini 2.5 Pro    | Google    | ~75.0                 | moderate    | 50          | 4.07              | 9            |
+| Gemini 3 Pro      | Google    | 76.2                  | moderate    | 50          | 10.00             | 10           |
+| GPT-5.3-Codex     | OpenAI    | 56.8                  | fast        | 70          | 1.25              | 1            |
+| GPT-5.2-Codex     | OpenAI    | 56.4                  | fast        | 70          | 1.25              | 1            |
+| GPT-4o mini       | OpenAI    | 70.0                  | ultra-fast  | 100         | 0.375             | 1 (cheapest) |
+| MiniMax M2.5      | MiniMax   | 80.2                  | very-fast   | 85          | 0.79              | 3            |
+| MiniMax M2        | MiniMax   | 77.0                  | very-fast   | 85          | 0.79              | 3            |
+| GLM-5             | Alibaba   | 92.7                  | slow        | 30          | 2.60              | 5            |
+| GLM 4.7           | Alibaba   | 74.0                  | fast        | 70          | 1.17              | 1            |
 
 **Note:** GLM-5's 92.7% is on AIME (reasoning), not SWE-Bench, so it's not directly comparable for code tasks. Used as reference only.
 
@@ -222,11 +224,11 @@ Models ranked by evaluation:
 
 **Models on the Frontier (sorted by cost):**
 
-| Rank | Model | Quality (%) | Speed | Cost ($/M) | Dominates | Dominated By |
-|------|-------|------------|-------|-----------|-----------|-------------|
-| 1 | GPT-4o mini | 70.0 | ultra-fast (100) | $0.375 | (cheapest) | None |
-| 2 | MiniMax M2.5 | 80.2 | very-fast (85) | $0.79 | Haiku, Codex, GLM4.7, GPT-4o mini (narrowly) | None |
-| 3 | Claude Opus 4.6 | 80.8 | slow (30) | $17.50 | Haiku, Sonnet, others | None |
+| Rank | Model           | Quality (%) | Speed            | Cost ($/M) | Dominates                                    | Dominated By |
+| ---- | --------------- | ----------- | ---------------- | ---------- | -------------------------------------------- | ------------ |
+| 1    | GPT-4o mini     | 70.0        | ultra-fast (100) | $0.375     | (cheapest)                                   | None         |
+| 2    | MiniMax M2.5    | 80.2        | very-fast (85)   | $0.79      | Haiku, Codex, GLM4.7, GPT-4o mini (narrowly) | None         |
+| 3    | Claude Opus 4.6 | 80.8        | slow (30)        | $17.50     | Haiku, Sonnet, others                        | None         |
 
 **All other models are DOMINATED and off the frontier.**
 
@@ -239,6 +241,7 @@ Models ranked by evaluation:
 **Claim:** "Claude Haiku should be #1 for NORMAL tasks"
 
 **Reality:** MiniMax M2.5 dominates Haiku across ALL dimensions:
+
 - Quality: 80.2% (MiniMax) vs 73.3% (Haiku) → MiniMax wins by 6.9 percentage points
 - Speed: 85 (MiniMax) vs 70 (Haiku) → MiniMax is faster
 - Cost: $0.79 (MiniMax) vs $3.50 (Haiku) → MiniMax is 4.4x cheaper
@@ -263,72 +266,84 @@ Using the Pareto frontier, assign models to task budgets:
 
 ### 5.1 Task Categories & Budget
 
-| Category | Budget | Objective | Frontier Models Eligible |
-|----------|--------|-----------|------------------------|
-| FAST | $50 | Rapid response (ultra-cheap) | GPT-4o mini, MiniMax M2.5 |
-| NORMAL | $200 | Best value for typical code tasks | MiniMax M2.5, Claude Opus |
-| COMPLEX | $150 | High-quality solutions for difficult tasks | MiniMax M2.5, Claude Opus |
-| HIGH_COMPLEX | $50 | Ultra-difficult tasks with strict budget | GPT-4o mini, MiniMax M2.5 (with quality tradeoff) |
+| Category     | Budget | Objective                                  | Frontier Models Eligible                          |
+| ------------ | ------ | ------------------------------------------ | ------------------------------------------------- |
+| FAST         | $50    | Rapid response (ultra-cheap)               | GPT-4o mini, MiniMax M2.5                         |
+| NORMAL       | $200   | Best value for typical code tasks          | MiniMax M2.5, Claude Opus                         |
+| COMPLEX      | $150   | High-quality solutions for difficult tasks | MiniMax M2.5, Claude Opus                         |
+| HIGH_COMPLEX | $50    | Ultra-difficult tasks with strict budget   | GPT-4o mini, MiniMax M2.5 (with quality tradeoff) |
 
 ### 5.2 Model Assignment Logic
 
 **Fitness Score** = (quality% - 60%) / cost_per_m_tokens
+
 - Normalized quality (above 60% baseline)
 - Divided by cost (cost-adjusted quality)
 
-| Model | Quality Norm | Cost | Fitness Score |
-|-------|------------|------|--------------|
-| GPT-4o mini | 10 | $0.375 | 26.7 (ultra-cheap but low quality) |
-| MiniMax M2.5 | 20.2 | $0.79 | 25.6 (best value) |
-| Claude Opus 4.6 | 20.8 | $17.50 | 1.2 (premium quality, expensive) |
+| Model           | Quality Norm | Cost   | Fitness Score                      |
+| --------------- | ------------ | ------ | ---------------------------------- |
+| GPT-4o mini     | 10           | $0.375 | 26.7 (ultra-cheap but low quality) |
+| MiniMax M2.5    | 20.2         | $0.79  | 25.6 (best value)                  |
+| Claude Opus 4.6 | 20.8         | $17.50 | 1.2 (premium quality, expensive)   |
 
 ### 5.3 Task Category Recommendations
 
 #### FAST ($50 budget)
+
 **Goal:** Ultra-rapid response, cost is primary concern
 
 **Primary:** MiniMax M2.5
+
 - Quality: 80.2% (solid)
 - Speed: 85 (very fast)
 - Cost: $0.79/M (excellent value)
 - Tokens available: ~63,000 tokens for $50
 
 **Fallback:** GPT-4o mini
+
 - Quality: 70% (acceptable for simple tasks)
 - Speed: 100 (ultra-fast)
 - Cost: $0.375/M (ultra-cheap)
 - Tokens available: ~133,000 tokens for $50
 
 #### NORMAL ($200 budget)
+
 **Goal:** Best value for typical code tasks, balance quality + cost
 
 **Primary:** MiniMax M2.5
+
 - Reason: Dominates all other non-premium models
 - Cost: $0.79/M
 - Tokens available: ~253,000 tokens
 - Quality: 80.2% sufficient for most tasks
 
 **Secondary:** Claude Opus 4.6 (if MiniMax unavailable)
+
 - Quality: 80.8% (marginally better, but 22x more expensive)
 - Not recommended unless specific requirement for Anthropic
 
 #### COMPLEX ($150 budget)
+
 **Goal:** High-quality solutions, trade some cost for reliability
 
 **Primary:** MiniMax M2.5 (if $150 is actually per-task limit)
+
 - Quality: 80.2% strong for complex code
 - Cost: $0.79/M
 - Tokens available: ~190,000 tokens
 
 **Alternative:** Claude Opus 4.6 (if higher reliability needed)
+
 - Quality: 80.8% marginally higher
 - Cost: $17.50/M (requires 10 tasks × $17.50 = $175 per $150 budget)
 - NOT recommended unless budget is $175+
 
 #### HIGH_COMPLEX ($50 budget)
+
 **Goal:** Strict budget + maximum quality
 
 **Primary:** MiniMax M2.5 (best compromise)
+
 - Quality: 80.2% (sufficient for hard tasks)
 - Cost: $0.79/M
 - Tokens available: ~63,000 tokens
@@ -345,12 +360,14 @@ Using the Pareto frontier, assign models to task budgets:
 from dataclasses import dataclass
 from typing import List
 
+
 @dataclass
 class Model:
     name: str
     quality_pct: float
     speed_score: int  # 0-100
     cost_per_m_tokens: float
+
 
 def dominates(a: Model, b: Model) -> bool:
     """Check if model A dominates model B."""
@@ -362,12 +379,11 @@ def dominates(a: Model, b: Model) -> bool:
     cost_ok = a.cost_per_m_tokens <= b.cost_per_m_tokens
 
     has_improvement = (
-        a.quality_pct > b.quality_pct or
-        a.speed_score > b.speed_score or
-        a.cost_per_m_tokens < b.cost_per_m_tokens
+        a.quality_pct > b.quality_pct or a.speed_score > b.speed_score or a.cost_per_m_tokens < b.cost_per_m_tokens
     )
 
     return quality_ok and speed_ok and cost_ok and has_improvement
+
 
 def pareto_frontier(models: List[Model]) -> List[Model]:
     """Compute Pareto frontier."""
@@ -376,6 +392,7 @@ def pareto_frontier(models: List[Model]) -> List[Model]:
         if not any(dominates(other, candidate) for other in models):
             frontier.append(candidate)
     return sorted(frontier, key=lambda m: m.cost_per_m_tokens)
+
 
 # Example usage:
 models = [
@@ -392,6 +409,7 @@ for m in frontier:
 ```
 
 **Output:**
+
 ```
 GPT-4o mini: 70.0% quality, $0.375/M
 MiniMax M2.5: 80.2% quality, $0.79/M
@@ -443,14 +461,12 @@ Claude Opus 4.6: 80.8% quality, $17.5/M
 **Date:** 2026-02-15
 **Status:** Ready for implementation
 
-
 ---
+
 ## See also
 
 - [WORK_STREAM.md](../reference/WORK_STREAM.md) — canonical backlog
 - [00-MASTER-INDEX.md](../plans/00-MASTER-INDEX.md) — plan index
-
-
 
 ---
 
@@ -460,15 +476,18 @@ Claude Opus 4.6: 80.8% quality, $17.5/M
 **Extended by:** Claude Code
 
 ### Changes Made
+
 1. Added practical implementation patterns
 2. Added configuration examples
 3. Enhanced cross-references to related documentation
 
 ### Cross-References Added
+
 - Related research and implementation guides
 - WORK_STREAM.md for tracking
 
 ### Practical Additions
+
 - Implementation templates
 - Configuration examples
 - Best practices

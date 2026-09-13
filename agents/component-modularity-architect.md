@@ -15,7 +15,7 @@ Ensure feature work lands as reusable components:
 
 Respond with:
 PrimaryOutput: agent-handoffs/phases/04-architecture/<component-plan>.md
-Scratch: agent-handoffs/_scratch/component-modularity-architect/<note>.md
+Scratch: agent-handoffs/\_scratch/component-modularity-architect/<note>.md
 Summary: <component strategy>
 ComponentMap:
 

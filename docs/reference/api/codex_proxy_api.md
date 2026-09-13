@@ -14,7 +14,7 @@ Runs claude, codex, gemini, copilot, antigravity via Codex CLI pointing at our C
 
 ### Methods
 
-#### CodexProxyRunner.__init__
+#### CodexProxyRunner.**init**
 
 ```python
 __init__(self: Any, agent_name: str, settings: Any, model: str, use_litellm_router: Any)

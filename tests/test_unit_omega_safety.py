@@ -28,7 +28,10 @@ class TestOmegaSafety:
         # @trace FR-SAF-001
         """Deleting critical ledger files violates OMEGA-001."""
         guard = OmegaSafetyGuard()
-        action_data = {"type": "DELETE", "target_file": "docs/reference/evidence_ledger.jsonl"}
+        action_data = {
+            "type": "DELETE",
+            "target_file": "docs/reference/evidence_ledger.jsonl",
+        }
 
         violations = guard.verify_action("action-del", action_data)
         assert len(violations) == 1
@@ -39,7 +42,11 @@ class TestOmegaSafety:
         # @trace FR-SAF-001
         """Moral dilemma without HITL verification violates OMEGA-002."""
         guard = OmegaSafetyGuard()
-        action_data = {"type": "EXECUTE", "is_moral_dilemma": True, "hitl_verified": False}
+        action_data = {
+            "type": "EXECUTE",
+            "is_moral_dilemma": True,
+            "hitl_verified": False,
+        }
 
         violations = guard.verify_action("action-moral", action_data)
         assert len(violations) == 1
@@ -49,7 +56,11 @@ class TestOmegaSafety:
         # @trace FR-SAF-001
         """Missing formal proof when required violates OMEGA-003."""
         guard = OmegaSafetyGuard()
-        action_data = {"type": "EXECUTE", "require_formal_proof": True, "proof_verified": False}
+        action_data = {
+            "type": "EXECUTE",
+            "require_formal_proof": True,
+            "proof_verified": False,
+        }
 
         violations = guard.verify_action("action-proof", action_data)
         assert len(violations) == 1

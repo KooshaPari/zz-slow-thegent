@@ -12,7 +12,7 @@ Exposes thegent agents via ACP protocol (JSON-RPC over stdio).
 
 ### Methods
 
-#### ACPServerAdapter.__init__
+#### ACPServerAdapter.**init**
 
 ```python
 __init__(self: Any)
@@ -30,7 +30,7 @@ Represents an active agent session.
 
 ### Methods
 
-#### AgentSession.__init__
+#### AgentSession.**init**
 
 ```python
 __init__(self: Any, agent_id: str, runner: AgentRunner, cwd: Any)

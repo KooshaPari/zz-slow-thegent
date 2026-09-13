@@ -15,7 +15,6 @@ from thegent.observability.prometheus import (
     reset_metrics_collector,
 )
 
-
 # ---------------------------------------------------------------------------
 # Fixtures
 # ---------------------------------------------------------------------------
@@ -43,8 +42,14 @@ def collector() -> MetricsCollector:
 @pytest.mark.requirement("FR-OBS-034")
 def test_metrics_collector_increment_counter(collector: MetricsCollector) -> None:
     """inc() increments counter by 1 by default and accumulates on repeated calls."""
-    collector.inc("thegent_requests_total", {"model": "gpt-4o", "provider": "openai", "status": "success"})
-    collector.inc("thegent_requests_total", {"model": "gpt-4o", "provider": "openai", "status": "success"})
+    collector.inc(
+        "thegent_requests_total",
+        {"model": "gpt-4o", "provider": "openai", "status": "success"},
+    )
+    collector.inc(
+        "thegent_requests_total",
+        {"model": "gpt-4o", "provider": "openai", "status": "success"},
+    )
 
     text = collector.render_text()
     assert 'thegent_requests_total{model="gpt-4o",provider="openai",status="success"} 2' in text
@@ -73,8 +78,16 @@ def test_metrics_collector_set_gauge(collector: MetricsCollector) -> None:
 @pytest.mark.requirement("FR-OBS-034")
 def test_metrics_collector_observe_histogram(collector: MetricsCollector) -> None:
     """observe() stores observations; render produces _bucket, _count, _sum."""
-    collector.observe("thegent_request_duration_seconds", {"model": "gpt-4o", "provider": "openai"}, 0.3)
-    collector.observe("thegent_request_duration_seconds", {"model": "gpt-4o", "provider": "openai"}, 0.7)
+    collector.observe(
+        "thegent_request_duration_seconds",
+        {"model": "gpt-4o", "provider": "openai"},
+        0.3,
+    )
+    collector.observe(
+        "thegent_request_duration_seconds",
+        {"model": "gpt-4o", "provider": "openai"},
+        0.7,
+    )
 
     text = collector.render_text()
     assert "thegent_request_duration_seconds_count" in text

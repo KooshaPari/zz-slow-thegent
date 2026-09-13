@@ -9,8 +9,12 @@ from typing import Any
 import pytest
 
 from thegent.integrations.connector_mapping_cache import ConnectorMappingCache
-from thegent.integrations.linear_graphql import LinearGraphQLConfig, sync_from_linear, sync_to_linear
-from thegent.integrations.linear_graphql import LinearGraphQLError
+from thegent.integrations.linear_graphql import (
+    LinearGraphQLConfig,
+    LinearGraphQLError,
+    sync_from_linear,
+    sync_to_linear,
+)
 
 
 @dataclass
@@ -36,8 +40,16 @@ def test_wl179_sync_to_linear_upsert(monkeypatch: pytest.MonkeyPatch, tmp_path: 
                         "key": "OPS",
                         "states": {
                             "nodes": [
-                                {"id": "S_UNSTARTED", "name": "Todo", "type": "unstarted"},
-                                {"id": "S_STARTED", "name": "In Progress", "type": "started"},
+                                {
+                                    "id": "S_UNSTARTED",
+                                    "name": "Todo",
+                                    "type": "unstarted",
+                                },
+                                {
+                                    "id": "S_STARTED",
+                                    "name": "In Progress",
+                                    "type": "started",
+                                },
                                 {"id": "S_DONE", "name": "Done", "type": "completed"},
                             ]
                         },
@@ -47,7 +59,11 @@ def test_wl179_sync_to_linear_upsert(monkeypatch: pytest.MonkeyPatch, tmp_path: 
                                     "id": "ISSUE_1",
                                     "identifier": "OPS-1",
                                     "title": "[WL-1790] Existing item",
-                                    "state": {"id": "S_UNSTARTED", "name": "Todo", "type": "unstarted"},
+                                    "state": {
+                                        "id": "S_UNSTARTED",
+                                        "name": "Todo",
+                                        "type": "unstarted",
+                                    },
                                 }
                             ]
                         },
@@ -118,8 +134,16 @@ def test_wl179_linear_schema_drift_detected_via_cached_state_ids(
                         "key": "OPS",
                         "states": {
                             "nodes": [
-                                {"id": "S_UNSTARTED_V2", "name": "Todo", "type": "unstarted"},
-                                {"id": "S_STARTED", "name": "In Progress", "type": "started"},
+                                {
+                                    "id": "S_UNSTARTED_V2",
+                                    "name": "Todo",
+                                    "type": "unstarted",
+                                },
+                                {
+                                    "id": "S_STARTED",
+                                    "name": "In Progress",
+                                    "type": "started",
+                                },
                                 {"id": "S_DONE", "name": "Done", "type": "completed"},
                             ]
                         },

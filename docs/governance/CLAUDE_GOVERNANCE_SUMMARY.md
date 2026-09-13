@@ -19,6 +19,7 @@ Created project-level `CLAUDE.md` governance files for two previously ungoverned
 **Size**: 226 lines (6.1 KB)
 
 **Content**:
+
 - Stack and Defaults table (Python 3.12+, uv, pytest, mypy, ruff)
 - Dev environment setup (one-time, build, tests, quality gates)
 - Project structure overview
@@ -30,6 +31,7 @@ Created project-level `CLAUDE.md` governance files for two previously ungoverned
 - Opinionated quality rules
 
 **Key Details**:
+
 - FastMCP server project for Task Tool platform
 - Uses `uv` as package manager
 - Requires Python 3.12+ (CPython only)
@@ -44,6 +46,7 @@ Created project-level `CLAUDE.md` governance files for two previously ungoverned
 **Size**: 278 lines (7.4 KB)
 
 **Content**:
+
 - Stack and Defaults table (Python 3.11–3.13, uv, pytest, zuban, ruff)
 - Dev environment setup
 - Project structure overview (hexagonal architecture)
@@ -58,6 +61,7 @@ Created project-level `CLAUDE.md` governance files for two previously ungoverned
 - MCP and integration notes
 
 **Key Details**:
+
 - MCP server with hexagonal architecture
 - Uses `uv` as package manager
 - Supports Python 3.11–3.13 (not 3.14 yet)
@@ -100,15 +104,15 @@ Both CLAUDE.md files:
 
 ## Key Differences Between Projects
 
-| Aspect | task-tool | morph |
-|--------|-----------|-------|
-| **Python** | 3.12+ (fixed) | 3.11–3.13 (range) |
-| **Type Checker** | mypy (strict) | zuban (high-perf) |
-| **Build System** | Hatchling | Hatchling + hatch-vcs |
-| **Architecture** | FastMCP server | Hexagonal + FastMCP |
-| **Database** | None noted | Supabase |
-| **Async** | AsyncIO (httpx) | Full async-first |
-| **Test Markers** | 6 markers (cli, server, telemetry, integration, client_process, asyncio) | Standard pytest |
+| Aspect           | task-tool                                                                | morph                 |
+| ---------------- | ------------------------------------------------------------------------ | --------------------- |
+| **Python**       | 3.12+ (fixed)                                                            | 3.11–3.13 (range)     |
+| **Type Checker** | mypy (strict)                                                            | zuban (high-perf)     |
+| **Build System** | Hatchling                                                                | Hatchling + hatch-vcs |
+| **Architecture** | FastMCP server                                                           | Hexagonal + FastMCP   |
+| **Database**     | None noted                                                               | Supabase              |
+| **Async**        | AsyncIO (httpx)                                                          | Full async-first      |
+| **Test Markers** | 6 markers (cli, server, telemetry, integration, client_process, asyncio) | Standard pytest       |
 
 ---
 
@@ -213,6 +217,7 @@ Both files define identical quality gate patterns:
 ## Governance Gap Closure
 
 **Before**: task-tool and morph had NO project-level governance. Developers/agents lacked:
+
 - Clear library preferences
 - Type checking standards
 - Test coverage targets
@@ -220,6 +225,7 @@ Both files define identical quality gate patterns:
 - Quality gate procedures
 
 **After**: Both projects now have comprehensive, actionable governance that:
+
 - Aligns with global policy
 - Specifies project-specific tool choices
 - Enforces code quality standards
@@ -229,6 +235,7 @@ Both files define identical quality gate patterns:
 **Status**: ✓ CRITICAL GOVERNANCE GAP CLOSED
 
 <!-- PHENOTYPE_GOVERNANCE_OVERLAY_V1 -->
+
 ## Phenotype Governance Overlay v1
 
 - Enforce `TDD + BDD + SDD` for all feature and workflow changes.
@@ -237,4 +244,3 @@ Both files define identical quality gate patterns:
 - Keep local hot paths deterministic and low-latency; place distributed workflow logic behind durable orchestration boundaries.
 - Require policy gating, auditability, and traceable correlation IDs for agent and workflow actions.
 - Document architectural and protocol decisions before broad rollout changes.
-

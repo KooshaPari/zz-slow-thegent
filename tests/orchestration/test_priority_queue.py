@@ -417,7 +417,9 @@ class TestNowait:
         with pytest.raises(Empty):
             q.get_nowait()
 
-    def test_get_nowait_returns_item_when_available(self) -> None:  # @trace FR-ORC-PQ-010
+    def test_get_nowait_returns_item_when_available(
+        self,
+    ) -> None:  # @trace FR-ORC-PQ-010
         q: RunPriorityQueue = RunPriorityQueue()
         q.put(QueuedRun(run_id="r", lane="standard", priority_score=0))
         run = q.get_nowait()
@@ -538,7 +540,9 @@ class TestTimeout:
         t.join()
         assert result == ["late"]
 
-    def test_get_blocking_no_timeout_unblocks_on_put(self) -> None:  # @trace FR-ORC-PQ-012
+    def test_get_blocking_no_timeout_unblocks_on_put(
+        self,
+    ) -> None:  # @trace FR-ORC-PQ-012
         """A blocking get with timeout=None unblocks when an item is added."""
         q: RunPriorityQueue = RunPriorityQueue()
         received: list[str] = []

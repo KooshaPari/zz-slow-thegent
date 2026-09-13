@@ -16,9 +16,6 @@ Covers:
 
 from __future__ import annotations
 
-from typing import Any
-from unittest.mock import MagicMock, patch
-
 import pytest
 from pydantic import ValidationError
 
@@ -30,7 +27,6 @@ from thegent.agents.run_options import (
     translate_reasoning_to_codex_config,
     translate_reasoning_to_openai_effort,
 )
-
 
 # ---------------------------------------------------------------------------
 # RunOptions model tests

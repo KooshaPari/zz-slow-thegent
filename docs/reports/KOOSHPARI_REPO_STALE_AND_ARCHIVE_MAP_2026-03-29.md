@@ -6,12 +6,12 @@ Derived buckets: `docs/reports/data/KOOSHPARI_REPOS_STALE_BUCKETS.tsv`
 
 ## Summary counts (non-archived repos only)
 
-| Bucket | Meaning | Count |
-|--------|---------|------:|
-| `active_90d` | Pushed within ~90 days of export | 180 |
-| `stale_90d_1y` | Between ~90 days and 1 year | 12 |
-| `stale_1y_2y` | Between 1 and 2 years | 1 |
-| `stale_over_2y` | Older than ~2 years | 0 |
+| Bucket          | Meaning                          | Count |
+| --------------- | -------------------------------- | ----: |
+| `active_90d`    | Pushed within ~90 days of export |   180 |
+| `stale_90d_1y`  | Between ~90 days and 1 year      |    12 |
+| `stale_1y_2y`   | Between 1 and 2 years            |     1 |
+| `stale_over_2y` | Older than ~2 years              |     0 |
 
 **GitHub-archived** repos in export: **56** (listed under `archived_github` in the buckets TSV).
 

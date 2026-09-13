@@ -3,7 +3,6 @@
 from __future__ import annotations
 
 import errno
-import orjson as json
 import subprocess
 from datetime import UTC, datetime, timedelta
 from pathlib import Path
@@ -11,6 +10,7 @@ from types import SimpleNamespace
 from unittest.mock import patch
 
 import httpx
+import orjson as json
 import pytest
 
 # discover_models was removed from provider_model_manager; skip the file.
@@ -130,9 +130,15 @@ def test_wl6751_shell_platform_reports_actionable_statuses(
     ],
 )
 def test_wl6752_check_nix_typed_failure_branches(
-    monkeypatch: pytest.MonkeyPatch, tmp_path: Path, probe_outcome: BaseException | subprocess.CompletedProcess[str]
+    monkeypatch: pytest.MonkeyPatch,
+    tmp_path: Path,
+    probe_outcome: BaseException | subprocess.CompletedProcess[str],
 ) -> None:
-    monkeypatch.setattr(doctor_shell_nix.shutil, "which", lambda name: "/usr/bin/nix" if name == "nix" else None)
+    monkeypatch.setattr(
+        doctor_shell_nix.shutil,
+        "which",
+        lambda name: "/usr/bin/nix" if name == "nix" else None,
+    )
     monkeypatch.setattr(doctor_shell_nix, "check_nix_daemon_status", lambda: (False, "Not running"))
 
     def _probe(*_args: object, **_kwargs: object) -> subprocess.CompletedProcess[str]:
@@ -149,8 +155,14 @@ def test_wl6752_check_nix_typed_failure_branches(
 @pytest.mark.parametrize(
     ("exc", "expected"),
     [
-        (httpx.ConnectError("refused", request=httpx.Request("GET", "http://127.0.0.1:3847/health")), "connection"),
-        (httpx.ReadTimeout("timeout", request=httpx.Request("GET", "http://127.0.0.1:3847/health")), "timed out"),
+        (
+            httpx.ConnectError("refused", request=httpx.Request("GET", "http://127.0.0.1:3847/health")),
+            "connection",
+        ),
+        (
+            httpx.ReadTimeout("timeout", request=httpx.Request("GET", "http://127.0.0.1:3847/health")),
+            "timed out",
+        ),
     ],
 )
 def test_wl6753_mcp_health_warnings_include_failure_cause(exc: Exception, expected: str) -> None:
@@ -169,7 +181,9 @@ def test_wl6754_git_commit_query_failure_is_distinct_from_empty_window(
     end = datetime.now(UTC)
 
     monkeypatch.setattr(
-        summary.subprocess, "run", lambda *args, **kwargs: subprocess.CompletedProcess(args[0], 0, stdout="", stderr="")
+        summary.subprocess,
+        "run",
+        lambda *args, **kwargs: subprocess.CompletedProcess(args[0], 0, stdout="", stderr=""),
     )
     empty_result = summary.get_git_commits(tmp_path, start, end)
     assert empty_result.status == "empty"
@@ -186,13 +200,26 @@ def test_wl6754_git_commit_query_failure_is_distinct_from_empty_window(
     assert error_result.error["returncode"] == 128
 
 
-def test_wl6755_read_log_file_tracks_malformed_json_and_timestamp_errors(tmp_path: Path) -> None:
+def test_wl6755_read_log_file_tracks_malformed_json_and_timestamp_errors(
+    tmp_path: Path,
+) -> None:
     start = datetime(2026, 1, 1, tzinfo=UTC)
     end = datetime(2026, 1, 31, tzinfo=UTC)
     path = tmp_path / "chat.jsonl"
-    valid = {"type": "user", "timestamp": "2026-01-10T12:00:00+00:00", "message": {"content": "ok"}}
-    bad_ts = {"type": "assistant", "timestamp": "not-a-date", "message": {"content": "bad"}}
-    path.write_text(json.dumps(valid).decode() + "\nnot-json\n" + json.dumps(bad_ts).decode() + "\n", encoding="utf-8")
+    valid = {
+        "type": "user",
+        "timestamp": "2026-01-10T12:00:00+00:00",
+        "message": {"content": "ok"},
+    }
+    bad_ts = {
+        "type": "assistant",
+        "timestamp": "not-a-date",
+        "message": {"content": "bad"},
+    }
+    path.write_text(
+        json.dumps(valid).decode() + "\nnot-json\n" + json.dumps(bad_ts).decode() + "\n",
+        encoding="utf-8",
+    )
 
     payload = summary._read_log_file(path, start, end, include_diagnostics=True)
     assert payload["entries"] == 1
@@ -235,7 +262,10 @@ def test_wl6757_discover_models_transport_failure_and_provider_context(
         patch("thegent.provider_model_manager._ensure_config", return_value=config_path),
         patch("thegent.provider_model_manager._load_yaml", return_value={}),
         patch("thegent.provider_model_manager._load_json", return_value={}),
-        patch("thegent.provider_model_manager.httpx.get", side_effect=httpx.TimeoutException("timed out")),
+        patch(
+            "thegent.provider_model_manager.httpx.get",
+            side_effect=httpx.TimeoutException("timed out"),
+        ),
     ):
         payload = discover_models(provider="roo", include_status=True)
 
@@ -272,10 +302,19 @@ def test_wl6757_discover_models_invalid_payload_status(tmp_path: Path) -> None:
 def test_wl6758_session_tui_surfaces_subagent_enumeration_failures() -> None:
     tui = SessionTUI()
     with (
-        patch("thegent.ux.session_tui.session_meta_impl", return_value={"pid": 123, "status": "running"}),
+        patch(
+            "thegent.ux.session_tui.session_meta_impl",
+            return_value={"pid": 123, "status": "running"},
+        ),
         patch("thegent.ux.session_tui._is_pid_running", return_value=True),
-        patch("thegent.ux.session_tui.psutil.Process", side_effect=RuntimeError("process tree unavailable")),
-        patch("thegent.ux.session_tui._find_session_meta", return_value=Path("/tmp/sess.json")),
+        patch(
+            "thegent.ux.session_tui.psutil.Process",
+            side_effect=RuntimeError("process tree unavailable"),
+        ),
+        patch(
+            "thegent.ux.session_tui._find_session_meta",
+            return_value=Path("/tmp/sess.json"),
+        ),
     ):
         details = tui._get_session_details("sess-1")
 
@@ -283,7 +322,9 @@ def test_wl6758_session_tui_surfaces_subagent_enumeration_failures() -> None:
     assert details.get("diagnostics", {}).get("subagents", {}).get("component") == "subagents"
 
 
-def test_wl6759_network_interfaces_distinguish_empty_from_error(monkeypatch: pytest.MonkeyPatch) -> None:
+def test_wl6759_network_interfaces_distinguish_empty_from_error(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
     monitor = NetworkMonitor()
     with (
         patch("thegent.resources.network._PSUTIL_AVAILABLE", True),

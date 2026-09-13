@@ -3,6 +3,7 @@
 ## Scope
 
 Diagnosed active codebases and language surfaces currently used in this workspace:
+
 1. `thegent` (polyglot primary platform)
 2. `trace` (secondary shell/js governance repo)
 
@@ -18,6 +19,7 @@ All counts below are from fresh `tokei` runs with generated/build/cache dirs exc
 ## Codebase A: thegent
 
 ### Language footprint (code lines)
+
 - Python: `272,709`
 - Rust: `29,494`
 - TypeScript: `15,560`
@@ -30,6 +32,7 @@ All counts below are from fresh `tokei` runs with generated/build/cache dirs exc
 ### Refactor pressure by language
 
 #### Python (Critical)
+
 - Files: `1,535`
 - Files >500 lines: `158`
 - Files >1000 lines: `30`
@@ -40,16 +43,19 @@ All counts below are from fresh `tokei` runs with generated/build/cache dirs exc
   - `src/thegent/mcp/server.py` (`4247` code)
 
 Diagnosis:
+
 - Python remains a “catch-all runtime.”
 - Core command/router/server surfaces are monolithic.
 - Test LOC is large and co-located with runtime concerns.
 
 Refactor direction:
+
 1. Split `cli.py`, `impl.py`, `mcp/server.py` by bounded domains.
 2. Move hot-path scanners/parsers/policy checks to Rust backmatter.
 3. Separate core runtime test lanes from long-tail integration suites.
 
 #### Rust (High but controlled)
+
 - Files: `137`
 - Files >500 lines: `12`
 - Files >1000 lines: `3`
@@ -59,52 +65,64 @@ Refactor direction:
   - `crates/thegent-shm/src/lib.rs` (`1025` code)
 
 Diagnosis:
+
 - Rust is sized closer to expected backmatter envelope.
 - A few entrypoint files are too large and should be module-split.
 
 Refactor direction:
+
 1. Decompose hook mains into scanner/evaluator/policy/report modules.
 2. Remove remaining legacy deps (`lazy_static`) where still present.
 3. Keep Rust as primary destination for Python hot-path migration.
 
 #### TypeScript (Low runtime risk)
+
 - Files: `1,366`
 - Dominated by docs/api stubs; no >500-line TS hotspots.
 
 Diagnosis:
+
 - TS surface is mostly generated/documentation artifacts, not runtime core.
 
 Refactor direction:
+
 1. Keep generated TS outside core runtime KPIs.
 2. Enforce generation-only ownership and avoid manual drift edits.
 
 #### Shell (Moderate risk)
+
 - Files: `93`
 - Files >500 lines: `2`
 - Top hotspot:
   - `hooks/governance-gates.sh` (`1983` code)
 
 Diagnosis:
+
 - Core governance shell script is too large and operationally fragile.
 
 Refactor direction:
+
 1. Continue migration of shell governance logic to Rust binaries.
 2. Keep shell as thin orchestration wrappers only.
 
 #### Zig / Mojo (Early-stage, low LOC)
+
 - Zig: `161` code lines (4 files)
 - Mojo: `6` code lines (1 file)
 
 Diagnosis:
+
 - Not a LOC problem; this is a maturity/integration problem.
 
 Refactor direction:
+
 1. Promote Zig via ABI-contract tests before broad use.
 2. Promote Mojo only for measured deterministic kernels.
 
 ## Codebase B: trace
 
 ### Language footprint (code lines)
+
 - YAML: `1,385`
 - Shell: `1,236`
 - HTML: `1,042`
@@ -112,14 +130,17 @@ Refactor direction:
 - (small overall footprint; no Python concentration)
 
 ### Refactor pressure
+
 - Shell hotspot:
   - `scripts/quality/quality-gate.sh` (`523` code)
   - `scripts/agent-orchestrator.sh` (`350` code)
 
 Diagnosis:
+
 - trace is compact; risk is mostly single-script concentration.
 
 Refactor direction:
+
 1. Split `quality-gate.sh` into composable checks.
 2. Keep governance checks declarative/config-driven where possible.
 

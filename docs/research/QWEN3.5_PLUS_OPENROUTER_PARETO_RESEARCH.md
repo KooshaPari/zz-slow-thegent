@@ -11,12 +11,12 @@
 
 ## 1. Model Overview
 
-| Attribute | Value |
-|-----------|-------|
-| **OpenRouter ID** | `qwen/qwen3.5-plus-02-15` |
-| **Provider** | Qwen (Alibaba) |
-| **Variant** | Plus (larger, more capable than base) |
-| **Release** | 2026-02-15 |
+| Attribute         | Value                                 |
+| ----------------- | ------------------------------------- |
+| **OpenRouter ID** | `qwen/qwen3.5-plus-02-15`             |
+| **Provider**      | Qwen (Alibaba)                        |
+| **Variant**       | Plus (larger, more capable than base) |
+| **Release**       | 2026-02-15                            |
 
 ---
 
@@ -44,10 +44,10 @@
 
 OpenRouter aggregates provider pricing. Typical Qwen Plus tier:
 
-| Source | Input ($/1M) | Output ($/1M) | Notes |
-|--------|--------------|---------------|------|
-| OpenRouter (est) | $0.40–0.80 | $0.80–1.60 | Plus tier; verify at openrouter.ai |
-| QwenCode free | $0 | $0 | Within free tier limits |
+| Source           | Input ($/1M) | Output ($/1M) | Notes                              |
+| ---------------- | ------------ | ------------- | ---------------------------------- |
+| OpenRouter (est) | $0.40–0.80   | $0.80–1.60    | Plus tier; verify at openrouter.ai |
+| QwenCode free    | $0           | $0            | Within free tier limits            |
 
 **Action:** Verify exact pricing at https://openrouter.ai/qwen/qwen3.5-plus-02-15
 
@@ -62,10 +62,10 @@ OpenRouter aggregates provider pricing. Typical Qwen Plus tier:
 
 **No published TB2.0 score** for Qwen3.5 Plus 02-15. Estimation:
 
-| Model | TB2.0 (known) | Est. Qwen3.5 Plus |
-|-------|----------------|-------------------|
-| qwen3-coder | ~45–55% (coding-focused) | — |
-| Qwen3.5 Plus | — | **50–58%** (generalist, stronger than Coder) |
+| Model        | TB2.0 (known)            | Est. Qwen3.5 Plus                            |
+| ------------ | ------------------------ | -------------------------------------------- |
+| qwen3-coder  | ~45–55% (coding-focused) | —                                            |
+| Qwen3.5 Plus | —                        | **50–58%** (generalist, stronger than Coder) |
 
 **Rationale:** Qwen3.5 Plus is a general-purpose model; typically stronger than coding-specialized qwen3-coder on mixed tasks. Conservative estimate: **52%** for Pareto until benchmarked.
 
@@ -82,10 +82,10 @@ OpenRouter aggregates provider pricing. Typical Qwen Plus tier:
 
 ### 5.2 Qwen3.5 Plus Placement
 
-| Scenario | Cost | Quality (est) | Placement |
-|----------|------|---------------|-----------|
-| **OpenRouter paid** | $0.50–0.80/M | 52% | Between MiniMax and Codex-Spark; **free-tier alternative** when QwenCode available |
-| **QwenCode free** | $0 | 52% | **Dominates** MiniMax on cost; competes with Codex-Spark for budget slot |
+| Scenario            | Cost         | Quality (est) | Placement                                                                          |
+| ------------------- | ------------ | ------------- | ---------------------------------------------------------------------------------- |
+| **OpenRouter paid** | $0.50–0.80/M | 52%           | Between MiniMax and Codex-Spark; **free-tier alternative** when QwenCode available |
+| **QwenCode free**   | $0           | 52%           | **Dominates** MiniMax on cost; competes with Codex-Spark for budget slot           |
 
 **Recommendation:** Add as **openrouter** provider route with `cost_weight` reflecting paid pricing; add **qwen** provider route with `cost_weight ≈ 0** when free tier detected (or separate `qwen-free` route).
 
@@ -93,16 +93,16 @@ OpenRouter aggregates provider pricing. Typical Qwen Plus tier:
 
 ## 6. Implementation Checklist
 
-| Task | File | Status |
-|------|------|--------|
-| 1 | `catalog.py` | Done — openrouter route |
-| 2 | `catalog.py` | Add `("qwen", "proxy", "qwen3.5-plus-02-15", 10, 0.0, 900, 0.52)` for QwenCode free route |
-| 3 | `litellm_router.py` | Add `"qwen3.5-plus-02-15": 128000` to MODEL_CONTEXT_WINDOWS |
-| 4 | `litellm_router.py` | Add to fallback chains: `"qwen3.5-plus-02-15": ["qwen3-coder", "deepseek-v3.2"]` |
-| 5 | `litellm_router.py` | Add `"qwen3.5-plus-02-15"` to cost map (verify OpenRouter pricing) |
-| 6 | `quality_values.py` | Add TB2.0 placeholder 0.52 for qwen3.5-plus-02-15 (update when benchmarked) |
-| 7 | `PARETO_FRONTIER_TERMINAL_BENCH_2_0.md` | Document Qwen3.5 Plus in frontier analysis |
-| 8 | `MODEL_ROUTING_TERMINAL_BENCH_2_0_QUICK_REF.md` | Add Qwen3.5 Plus to quick ref |
+| Task | File                                            | Status                                                                                    |
+| ---- | ----------------------------------------------- | ----------------------------------------------------------------------------------------- |
+| 1    | `catalog.py`                                    | Done — openrouter route                                                                   |
+| 2    | `catalog.py`                                    | Add `("qwen", "proxy", "qwen3.5-plus-02-15", 10, 0.0, 900, 0.52)` for QwenCode free route |
+| 3    | `litellm_router.py`                             | Add `"qwen3.5-plus-02-15": 128000` to MODEL_CONTEXT_WINDOWS                               |
+| 4    | `litellm_router.py`                             | Add to fallback chains: `"qwen3.5-plus-02-15": ["qwen3-coder", "deepseek-v3.2"]`          |
+| 5    | `litellm_router.py`                             | Add `"qwen3.5-plus-02-15"` to cost map (verify OpenRouter pricing)                        |
+| 6    | `quality_values.py`                             | Add TB2.0 placeholder 0.52 for qwen3.5-plus-02-15 (update when benchmarked)               |
+| 7    | `PARETO_FRONTIER_TERMINAL_BENCH_2_0.md`         | Document Qwen3.5 Plus in frontier analysis                                                |
+| 8    | `MODEL_ROUTING_TERMINAL_BENCH_2_0_QUICK_REF.md` | Add Qwen3.5 Plus to quick ref                                                             |
 
 ---
 
@@ -132,15 +132,18 @@ OpenRouter aggregates provider pricing. Typical Qwen Plus tier:
 **Extended by:** Claude Code
 
 ### Changes Made
+
 1. Added research findings summary
 2. Added practical implementations
 3. Enhanced cross-references
 
 ### Cross-References Added
+
 - Related research docs
 - Implementation guides
 
 ### Practical Additions
+
 - Research templates
 - Implementation examples
 

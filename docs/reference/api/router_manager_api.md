@@ -12,7 +12,7 @@ Manage routing of tasks to agents.
 
 ### Methods
 
-#### RouterManager.__init__
+#### RouterManager.**init**
 
 ```python
 __init__(self: Any)

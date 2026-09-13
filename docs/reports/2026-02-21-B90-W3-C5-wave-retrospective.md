@@ -29,6 +29,7 @@ a foundation-then-implementation-then-hardening progression.
 Wave-1 established the invariant contracts and schemas that Waves 2 and 3 build against.
 
 Key deliverables:
+
 - Governance contracts (`contracts/metric-contracts.json`, `contracts/max_lines.json`)
 - Quality DAG schema and strategy definitions
 - Test pyramid validator scaffolding
@@ -45,6 +46,7 @@ Wave-2 implemented the items defined by Wave-1 contracts, producing approximatel
 passing tests across the six parallel agents.
 
 Key artifacts:
+
 - `src/thegent/cli/commands/cli_dag.py` — CLI task DAG execution engine
 - `src/thegent/governance/slo_metrics.py` — SLO metric definitions and evaluation
 - `crates/thegent-router/` — Rust PyO3 router crate with Python bindings
@@ -64,6 +66,7 @@ Wave-3 hardened the Wave-2 implementation with dedup cleanup, documentation, bou
 audits, and retrospective notes.
 
 Key deliverables (this wave):
+
 - `tests/test_wl128_final_dedup.py` — Taskfile/pyproject dedup validation
 - `docs/guides/FAST_DEEP_LANE.md` — Fast/Deep/Gate lane documentation
 - `tests/test_wl134_lane_docs.py` — Lane documentation validation
@@ -87,8 +90,8 @@ avoided in future work:
 2. **Unused `field` from dataclasses**: `from dataclasses import dataclass, field`
    followed by using only `dataclass`, leaving `field` unused.
 
-3. **`**overrides: float` type mismatch**: Using `**overrides: float` in function
-   signatures when the actual values passed were `str` or mixed types, causing mypy
+3. **`**overrides: float`type mismatch**: Using`\*\*overrides: float`in function
+signatures when the actual values passed were`str` or mixed types, causing mypy
    and basedpyright errors.
 
 4. **`assert` not narrowing compound types**: Using `assert isinstance(x, (A, B))`

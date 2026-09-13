@@ -1,7 +1,8 @@
 from __future__ import annotations
 
-import orjson as json
 from pathlib import Path
+
+import orjson as json
 
 from thegent.orchestration.state.session_scraper import SessionScraper
 from thegent.orchestration.state.session_snapshot_cli_helpers import (
@@ -88,7 +89,9 @@ def test_daily_totals_payload_exposes_applied_filters_alias(tmp_path: Path) -> N
     assert totals["applied_filters"] == totals["filters"]
 
 
-def test_daily_export_payload_includes_applied_filters_when_filtered(tmp_path: Path) -> None:
+def test_daily_export_payload_includes_applied_filters_when_filtered(
+    tmp_path: Path,
+) -> None:
     scraper = SessionScraper(project_root=tmp_path)
     _write_snapshot(
         scraper,
@@ -104,7 +107,9 @@ def test_daily_export_payload_includes_applied_filters_when_filtered(tmp_path: P
     assert exported["applied_filters"]["trigger"] == "tool_use"
 
 
-def test_daily_export_payload_omits_applied_filters_without_filter_args(tmp_path: Path) -> None:
+def test_daily_export_payload_omits_applied_filters_without_filter_args(
+    tmp_path: Path,
+) -> None:
     scraper = SessionScraper(project_root=tmp_path)
     _write_snapshot(
         scraper,

@@ -14,7 +14,7 @@ Verifies multi-step agent reasoning chains before final execution.
 
 ### Methods
 
-#### CoTVerifier.__init__
+#### CoTVerifier.**init**
 
 ```python
 __init__(self: Any, run_id: str)

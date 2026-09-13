@@ -6,8 +6,6 @@
 from __future__ import annotations
 
 import logging
-import os
-import platform
 from pathlib import Path
 from unittest.mock import patch
 
@@ -34,7 +32,11 @@ def sandbox() -> MacOSSandbox:
 @pytest.fixture
 def sandbox_with_custom_profiles(tmp_path: Path) -> MacOSSandbox:
     """Return a MacOSSandbox backed by minimal stub profiles in tmp_path."""
-    for level in (SandboxLevel.READONLY, SandboxLevel.RESTRICTED, SandboxLevel.NETWORKED):
+    for level in (
+        SandboxLevel.READONLY,
+        SandboxLevel.RESTRICTED,
+        SandboxLevel.NETWORKED,
+    ):
         stub = tmp_path / f"{level.value}.sb"
         stub.write_text(
             f"(version 1)\n(deny default)\n; {level.value} stub\n"
@@ -97,7 +99,10 @@ def test_is_sandbox_available_true_when_exec_present(sandbox: MacOSSandbox) -> N
     sandbox._sandbox_exec = None
     with (
         patch("thegent.security.macos_sandbox.platform.system", return_value="Darwin"),
-        patch("thegent.security.macos_sandbox.shutil.which", return_value="/usr/bin/sandbox-exec"),
+        patch(
+            "thegent.security.macos_sandbox.shutil.which",
+            return_value="/usr/bin/sandbox-exec",
+        ),
     ):
         assert sandbox.is_sandbox_available() is True
 
@@ -320,7 +325,9 @@ def test_apply_to_command_restricted_uses_cwd_as_default_root(
 # ---------------------------------------------------------------------------
 
 
-def test_level_from_env_returns_none_when_unset(monkeypatch: pytest.MonkeyPatch) -> None:
+def test_level_from_env_returns_none_when_unset(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
     """@trace FR-SEC-001  level_from_env returns NONE when env var absent."""
     monkeypatch.delenv(SANDBOX_LEVEL_ENV_VAR, raising=False)
     assert MacOSSandbox.level_from_env() is SandboxLevel.NONE
@@ -349,7 +356,9 @@ def test_level_from_env_invalid_defaults_to_none(
     assert "superstrict" in caplog.text
 
 
-def test_level_from_env_empty_string_returns_none(monkeypatch: pytest.MonkeyPatch) -> None:
+def test_level_from_env_empty_string_returns_none(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
     """@trace FR-SEC-001  Empty string env var returns NONE."""
     monkeypatch.setenv(SANDBOX_LEVEL_ENV_VAR, "")
     assert MacOSSandbox.level_from_env() is SandboxLevel.NONE

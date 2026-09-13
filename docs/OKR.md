@@ -5,16 +5,19 @@
 **Review cadence**: Quarterly
 
 ## Quarterly Objectives (current cycle)
-  - Reduce agent cold-start time by 50% by Q4
-  - Reach 95% FR<->Test<->Code trace coverage
-  - Ship 2 new provider integrations per quarter
+
+- Reduce agent cold-start time by 50% by Q4
+- Reach 95% FR<->Test<->Code trace coverage
+- Ship 2 new provider integrations per quarter
 
 ## Outcome KPIs
-  - agent_cold_start_p95 (target: -50%)
-  - fr_trace_coverage (target: 95%)
-  - providers_added_per_quarter (target: 2)
+
+- agent_cold_start_p95 (target: -50%)
+- fr_trace_coverage (target: 95%)
+- providers_added_per_quarter (target: 2)
 
 ## Process Notes
+
 - Reviewed at start of each sprint; updated at end of each quarter.
 - Targets are measurable and time-bound.
 - Owner: TBD (assign via CODEOWNERS).

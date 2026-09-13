@@ -42,7 +42,7 @@ Optional external manifest describing installable third-party bundles.
 
 ### Methods
 
-#### InstallManager.__init__
+#### InstallManager.**init**
 
 ```python
 __init__(self: Any, dry_run: bool, verbose: bool)
@@ -263,15 +263,15 @@ load_bundle_manifest(path: Any)
 Load third-party bundle definitions from an external JSON manifest.
 
 Expected schema:
-  {
-    "bundles": {
-      "name": {
-        "items": [
-          {"source": "...", "target": "...", "mode": "smart|force|editable"}
-        ]
-      }
-    }
-  }
+{
+"bundles": {
+"name": {
+"items": [
+{"source": "...", "target": "...", "mode": "smart|force|editable"}
+]
+}
+}
+}
 
 ---
 

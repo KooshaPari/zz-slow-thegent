@@ -24,7 +24,11 @@ def test_wl11072_extract_turn_submit_response_approval_diff_returns_none_for_abs
 
 def test_wl11073_resolve_turn_submit_response_approval_fields_returns_none_tuple_for_absent_payload() -> None:
     # @trace WL-11073
-    assert server._resolve_turn_submit_response_approval_fields(None) == (None, None, None)
+    assert server._resolve_turn_submit_response_approval_fields(None) == (
+        None,
+        None,
+        None,
+    )
 
 
 def test_wl11074_extract_turn_submit_response_request_id_accepts_string_when_required() -> None:
@@ -67,7 +71,11 @@ def test_wl11078_build_turn_submit_response_resolution_phase_rejects_missing_tur
     # @trace WL-11078
     with pytest.raises(ValueError, match="Turn submit response target unresolved"):
         server._build_turn_submit_response_resolution_phase(
-            {"request_has_id": True, "request_id": "req-11078", "approval_payload": None}
+            {
+                "request_has_id": True,
+                "request_id": "req-11078",
+                "approval_payload": None,
+            }
         )
 
 

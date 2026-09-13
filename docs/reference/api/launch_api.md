@@ -12,7 +12,7 @@ Observes system health post-launch and manages rollback triggers.
 
 ### Methods
 
-#### LaunchObserver.__init__
+#### LaunchObserver.**init**
 
 ```python
 __init__(self: Any, settings: ThegentSettings)

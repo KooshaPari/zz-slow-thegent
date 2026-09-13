@@ -2,7 +2,7 @@
 
 import sys
 from pathlib import Path
-from unittest.mock import AsyncMock, MagicMock, patch
+from unittest.mock import patch
 
 import pytest
 
@@ -122,7 +122,11 @@ class TestMojoKernelContract:
 
     def test_provider_score_contract_registered(self):
         contract = MOJO_KERNEL_CONTRACTS[("math", "calculate_provider_score")]
-        assert contract.required_args == ("cost_score", "quality_score", "latency_score")
+        assert contract.required_args == (
+            "cost_score",
+            "quality_score",
+            "latency_score",
+        )
 
     def test_validate_kernel_contract_raises_on_missing_args(self):
         with pytest.raises(ValueError):

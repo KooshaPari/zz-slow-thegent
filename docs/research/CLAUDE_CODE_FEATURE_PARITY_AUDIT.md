@@ -13,94 +13,94 @@
 
 ### 1.1 Hooks (15 events)
 
-| Hook | When | Blocking? | Claude Code | Codex | thegent Strategy |
-|------|------|-----------|-------------|-------|------------------|
-| **SessionStart** | New session / resume | No | ✓ Native | ✗ None | Wrapper: inject handoff before spawn |
-| **UserPromptSubmit** | Before prompt sent | Yes | ✓ Native | ✗ None | Exec: run_impl preprocessor; Interactive: SDK or custom TUI |
-| **PreToolUse** | Before tool call | Yes | ✓ Native | ✗ None | Wrapper/SDK only; exec has no tool loop |
-| **PermissionRequest** | Permission dialog | Yes | ✓ Native | ✗ None | Codex has different permission model |
-| **PostToolUse** | After tool call | No | ✓ Native | AfterToolUse (not configurable) | codex-notify if AfterToolUse enabled |
-| **PostToolUseFailure** | After tool fails | No | ✓ Native | ✗ None | — |
-| **Notification** | Various | No | ✓ Native | ✗ None | — |
-| **SubagentStart** | Subagent spawned | No | ✓ Native | ✗ No subagents | thegent: spawn codex exec as "subagent" |
-| **SubagentStop** | Subagent done | Yes | ✓ Native | ✗ None | Wrapper: on codex exec exit |
-| **Stop** | Session ends | Yes | ✓ Native | ✗ None | Wrapper exit hook |
-| **TeammateIdle** | Teammate about idle | Yes | ✓ Native | ✗ No teammates | thegent team: wrapper monitors |
-| **TaskCompleted** | Task marked done | Yes | ✓ Native | ✗ None | thegent task list: MCP tools |
-| **PreCompact** | Before compaction | No | ✓ Native | ✗ None | — |
-| **SessionEnd** | Session terminates | No | ✓ Native | ✗ None | Wrapper exit hook |
+| Hook                   | When                 | Blocking? | Claude Code | Codex                           | thegent Strategy                                            |
+| ---------------------- | -------------------- | --------- | ----------- | ------------------------------- | ----------------------------------------------------------- |
+| **SessionStart**       | New session / resume | No        | ✓ Native    | ✗ None                          | Wrapper: inject handoff before spawn                        |
+| **UserPromptSubmit**   | Before prompt sent   | Yes       | ✓ Native    | ✗ None                          | Exec: run_impl preprocessor; Interactive: SDK or custom TUI |
+| **PreToolUse**         | Before tool call     | Yes       | ✓ Native    | ✗ None                          | Wrapper/SDK only; exec has no tool loop                     |
+| **PermissionRequest**  | Permission dialog    | Yes       | ✓ Native    | ✗ None                          | Codex has different permission model                        |
+| **PostToolUse**        | After tool call      | No        | ✓ Native    | AfterToolUse (not configurable) | codex-notify if AfterToolUse enabled                        |
+| **PostToolUseFailure** | After tool fails     | No        | ✓ Native    | ✗ None                          | —                                                           |
+| **Notification**       | Various              | No        | ✓ Native    | ✗ None                          | —                                                           |
+| **SubagentStart**      | Subagent spawned     | No        | ✓ Native    | ✗ No subagents                  | thegent: spawn codex exec as "subagent"                     |
+| **SubagentStop**       | Subagent done        | Yes       | ✓ Native    | ✗ None                          | Wrapper: on codex exec exit                                 |
+| **Stop**               | Session ends         | Yes       | ✓ Native    | ✗ None                          | Wrapper exit hook                                           |
+| **TeammateIdle**       | Teammate about idle  | Yes       | ✓ Native    | ✗ No teammates                  | thegent team: wrapper monitors                              |
+| **TaskCompleted**      | Task marked done     | Yes       | ✓ Native    | ✗ None                          | thegent task list: MCP tools                                |
+| **PreCompact**         | Before compaction    | No        | ✓ Native    | ✗ None                          | —                                                           |
+| **SessionEnd**         | Session terminates   | No        | ✓ Native    | ✗ None                          | Wrapper exit hook                                           |
 
 ### 1.2 Execution Modes
 
-| Mode | Claude Code | Codex | Parity |
-|------|-------------|-------|--------|
-| **Interactive TUI** | `claude` | `codex` | Both have; Codex lacks hook interception |
-| **Headless** | `claude -p "prompt"` (Agent SDK CLI) | `codex exec -` (stdin) | Both have; thegent run wraps both |
-| **Continue** | `claude -p "..." --continue` | — | Codex exec is single-turn |
-| **Resume** | `claude -p "..." --resume SESSION_ID` | — | Codex exec is stateless |
-| **Structured output** | `--output-format json`, `--json-schema` | `--json` (exec) | Both support JSON |
-| **Stream** | `--output-format stream-json` | — | Codex exec streams to stdout |
-| **Allowed tools** | `--allowedTools "Bash,Read,Edit"` | Sandbox mode | Different models |
+| Mode                  | Claude Code                             | Codex                  | Parity                                   |
+| --------------------- | --------------------------------------- | ---------------------- | ---------------------------------------- |
+| **Interactive TUI**   | `claude`                                | `codex`                | Both have; Codex lacks hook interception |
+| **Headless**          | `claude -p "prompt"` (Agent SDK CLI)    | `codex exec -` (stdin) | Both have; thegent run wraps both        |
+| **Continue**          | `claude -p "..." --continue`            | —                      | Codex exec is single-turn                |
+| **Resume**            | `claude -p "..." --resume SESSION_ID`   | —                      | Codex exec is stateless                  |
+| **Structured output** | `--output-format json`, `--json-schema` | `--json` (exec)        | Both support JSON                        |
+| **Stream**            | `--output-format stream-json`           | —                      | Codex exec streams to stdout             |
+| **Allowed tools**     | `--allowedTools "Bash,Read,Edit"`       | Sandbox mode           | Different models                         |
 
 ### 1.3 Agents & Teammates
 
-| Feature | Claude Code | Codex | thegent Strategy |
-|---------|-------------|-------|------------------|
-| **Subagents** | Task tool spawns helper; reports back | ✗ None | thegent_run/thegent_bg as "subagent" — Codex calls MCP |
-| **Agent teams** | Lead + teammates; shared task list; inter-agent messaging | ✗ None | **thegent team** wrapper: spawn N codex execs, shared task list via MCP |
-| **Teammate display** | In-process or split panes (tmux/iTerm2) | — | thegent: tmux splits or in-process list |
-| **TeammateIdle** | Exit 2 → feedback, keep working | — | Wrapper: poll teammate stdout; inject prompt |
-| **TaskCompleted** | Exit 2 → block completion, send feedback | — | thegent_queue + MCP: task lifecycle |
-| **Delegate mode** | Lead coordination-only | — | thegent team lead: skills restrict to spawn/message |
+| Feature              | Claude Code                                               | Codex  | thegent Strategy                                                        |
+| -------------------- | --------------------------------------------------------- | ------ | ----------------------------------------------------------------------- |
+| **Subagents**        | Task tool spawns helper; reports back                     | ✗ None | thegent_run/thegent_bg as "subagent" — Codex calls MCP                  |
+| **Agent teams**      | Lead + teammates; shared task list; inter-agent messaging | ✗ None | **thegent team** wrapper: spawn N codex execs, shared task list via MCP |
+| **Teammate display** | In-process or split panes (tmux/iTerm2)                   | —      | thegent: tmux splits or in-process list                                 |
+| **TeammateIdle**     | Exit 2 → feedback, keep working                           | —      | Wrapper: poll teammate stdout; inject prompt                            |
+| **TaskCompleted**    | Exit 2 → block completion, send feedback                  | —      | thegent_queue + MCP: task lifecycle                                     |
+| **Delegate mode**    | Lead coordination-only                                    | —      | thegent team lead: skills restrict to spawn/message                     |
 
 ### 1.4 Skills & Customization
 
-| Feature | Claude Code | Codex | Parity |
-|---------|-------------|-------|--------|
-| **Skills** | `.claude/skills/`, slash commands | `.codex/skills/` | Both have |
-| **CLAUDE.md** | Project context | — | Codex uses different project context |
-| **Agents** | Custom agent types (subagents) | — | Codex skills can define personas |
-| **Plugins** | Marketplaces, hooks, MCP | — | Codex: MCP only |
-| **Memory** | user, project, local | — | Codex: session-scoped |
+| Feature       | Claude Code                       | Codex            | Parity                               |
+| ------------- | --------------------------------- | ---------------- | ------------------------------------ |
+| **Skills**    | `.claude/skills/`, slash commands | `.codex/skills/` | Both have                            |
+| **CLAUDE.md** | Project context                   | —                | Codex uses different project context |
+| **Agents**    | Custom agent types (subagents)    | —                | Codex skills can define personas     |
+| **Plugins**   | Marketplaces, hooks, MCP          | —                | Codex: MCP only                      |
+| **Memory**    | user, project, local              | —                | Codex: session-scoped                |
 
 ### 1.5 MCP & Tools
 
-| Feature | Claude Code | Codex | Parity |
-|---------|-------------|-------|--------|
-| **MCP** | Full support | Full support | ✓ Both |
-| **Tool matchers** | PreToolUse matcher: `Bash`, `Edit\|Write`, `mcp__.*` | — | N/A for Codex |
-| **MCP tool hooks** | PreToolUse on `mcp__memory__.*` etc. | — | — |
+| Feature            | Claude Code                                          | Codex        | Parity        |
+| ------------------ | ---------------------------------------------------- | ------------ | ------------- |
+| **MCP**            | Full support                                         | Full support | ✓ Both        |
+| **Tool matchers**  | PreToolUse matcher: `Bash`, `Edit\|Write`, `mcp__.*` | —            | N/A for Codex |
+| **MCP tool hooks** | PreToolUse on `mcp__memory__.*` etc.                 | —            | —             |
 
 ### 1.6 Permissions & Sandbox
 
-| Feature | Claude Code | Codex | Parity |
-|---------|-------------|-------|--------|
-| **Permission modes** | default, plan, acceptEdits, dontAsk, bypass | Sandbox modes | Different |
-| **Plan approval** | Teammates: require plan before impl | — | thegent: skill + MCP |
-| **Sandbox** | Bash tool sandbox | codex exec sandbox | Both |
+| Feature              | Claude Code                                 | Codex              | Parity               |
+| -------------------- | ------------------------------------------- | ------------------ | -------------------- |
+| **Permission modes** | default, plan, acceptEdits, dontAsk, bypass | Sandbox modes      | Different            |
+| **Plan approval**    | Teammates: require plan before impl         | —                  | thegent: skill + MCP |
+| **Sandbox**          | Bash tool sandbox                           | codex exec sandbox | Both                 |
 
 ### 1.7 Session & Continuity
 
-| Feature | Claude Code | Codex | Parity |
-|---------|-------------|-------|--------|
-| **Checkpointing** | Rewind, summarize | — | thegent: run registry |
-| **Resume** | `--resume SESSION_ID` | — | Codex: new session each exec |
-| **Handoff** | pending-handoff.md, next-session | — | Shared: .thegent/next-session-prompts.md |
+| Feature           | Claude Code                      | Codex | Parity                                   |
+| ----------------- | -------------------------------- | ----- | ---------------------------------------- |
+| **Checkpointing** | Rewind, summarize                | —     | thegent: run registry                    |
+| **Resume**        | `--resume SESSION_ID`            | —     | Codex: new session each exec             |
+| **Handoff**       | pending-handoff.md, next-session | —     | Shared: .thegent/next-session-prompts.md |
 
 ---
 
 ## 2. Parity Summary
 
-| Category | Claude Code | Codex Native | Codex + thegent Harness |
-|----------|-------------|--------------|-------------------------|
-| **Hooks** | 15 events | 1 (AfterAgent) | SessionStart/Stop/UserPromptSubmit via wrapper; PreToolUse/PostToolUse need SDK |
-| **Interactive** | Full | Full | Wrapper adds exit hook |
-| **Headless** | `claude -p` | `codex exec -` | Both; thegent run unifies |
-| **Subagents** | Native | — | Via thegent_run MCP (Codex calls it) |
-| **Agent teams** | Native | — | **thegent team** wrapper: N codex execs + shared task list |
-| **Queue** | UserPromptSubmit + Stop | — | run_impl preprocessor + wrapper exit |
-| **Skills** | Yes | Yes | Both |
-| **MCP** | Yes | Yes | Both |
+| Category        | Claude Code             | Codex Native   | Codex + thegent Harness                                                         |
+| --------------- | ----------------------- | -------------- | ------------------------------------------------------------------------------- |
+| **Hooks**       | 15 events               | 1 (AfterAgent) | SessionStart/Stop/UserPromptSubmit via wrapper; PreToolUse/PostToolUse need SDK |
+| **Interactive** | Full                    | Full           | Wrapper adds exit hook                                                          |
+| **Headless**    | `claude -p`             | `codex exec -` | Both; thegent run unifies                                                       |
+| **Subagents**   | Native                  | —              | Via thegent_run MCP (Codex calls it)                                            |
+| **Agent teams** | Native                  | —              | **thegent team** wrapper: N codex execs + shared task list                      |
+| **Queue**       | UserPromptSubmit + Stop | —              | run_impl preprocessor + wrapper exit                                            |
+| **Skills**      | Yes                     | Yes            | Both                                                                            |
+| **MCP**         | Yes                     | Yes            | Both                                                                            |
 
 ---
 
@@ -109,6 +109,7 @@
 **Goal:** Provide agent teams for Codex equivalent to Claude Code's teammates.
 
 **Architecture:**
+
 ```
 User: "Create a team: UX, architecture, devil's advocate"
   → thegent team create --prompt "..." --teammates 3
@@ -119,6 +120,7 @@ User: "Create a team: UX, architecture, devil's advocate"
 ```
 
 **Components:**
+
 - `thegent team create` — spawn lead + N teammates
 - `thegent team list` — show active teammates
 - `thegent team message <id> "..."` — send message to teammate
@@ -132,13 +134,14 @@ User: "Create a team: UX, architecture, devil's advocate"
 
 ## 4. Interactive + Headless Parity
 
-| Surface | Claude Code | Codex | thegent |
-|---------|-------------|-------|---------|
-| **Interactive** | `claude` | `codex` | `thegent codex` (wrapper) or `thegent dex` |
-| **Headless** | `claude -p "..."` | `codex exec -` | `thegent run -M codex "..."` |
-| **Both** | Same binary, flags | Different: `codex` vs `codex exec` | `thegent run` unifies headless; `thegent codex` wraps interactive |
+| Surface         | Claude Code        | Codex                              | thegent                                                           |
+| --------------- | ------------------ | ---------------------------------- | ----------------------------------------------------------------- |
+| **Interactive** | `claude`           | `codex`                            | `thegent codex` (wrapper) or `thegent dex`                        |
+| **Headless**    | `claude -p "..."`  | `codex exec -`                     | `thegent run -M codex "..."`                                      |
+| **Both**        | Same binary, flags | Different: `codex` vs `codex exec` | `thegent run` unifies headless; `thegent codex` wraps interactive |
 
 **Unified CLI:**
+
 - `thegent run -M codex "prompt"` — headless (already exists)
 - `thegent codex` or `thegent dex max` — interactive
 - `thegent run -M claude "prompt"` — headless Claude (if claude -p available)
@@ -148,17 +151,17 @@ User: "Create a team: UX, architecture, devil's advocate"
 
 ## 5. Hook Parity Strategy (Codex)
 
-| Hook | Strategy |
-|------|----------|
-| **SessionStart** | Wrapper: before spawn, load handoff, inject as first prompt |
-| **UserPromptSubmit** | Exec: run_impl preprocessor. Interactive: SDK or custom TUI |
-| **PreToolUse** | SDK only (we own tool loop). Exec: N/A (single turn) |
-| **PostToolUse** | codex-notify if AfterToolUse configurable; else — |
-| **Stop** | Wrapper exit hook |
+| Hook                   | Strategy                                                    |
+| ---------------------- | ----------------------------------------------------------- |
+| **SessionStart**       | Wrapper: before spawn, load handoff, inject as first prompt |
+| **UserPromptSubmit**   | Exec: run_impl preprocessor. Interactive: SDK or custom TUI |
+| **PreToolUse**         | SDK only (we own tool loop). Exec: N/A (single turn)        |
+| **PostToolUse**        | codex-notify if AfterToolUse configurable; else —           |
+| **Stop**               | Wrapper exit hook                                           |
 | **SubagentStart/Stop** | thegent_run as subagent; on thegent run exit = SubagentStop |
-| **TeammateIdle** | Wrapper: poll teammate, run hook script |
-| **TaskCompleted** | thegent_queue + MCP task lifecycle |
-| **SessionEnd** | Wrapper exit hook (same as Stop) |
+| **TeammateIdle**       | Wrapper: poll teammate, run hook script                     |
+| **TaskCompleted**      | thegent_queue + MCP task lifecycle                          |
+| **SessionEnd**         | Wrapper exit hook (same as Stop)                            |
 
 ---
 
@@ -166,21 +169,22 @@ User: "Create a team: UX, architecture, devil's advocate"
 
 ### 6.1 Features
 
-| Feature | Cursor | Description | thegent Parity |
-|---------|--------|-------------|----------------|
-| **Rules** | `.cursor/rules/*.mdc` | YAML frontmatter: description, globs, alwaysApply | Map to CLAUDE.md/.codex/skills; rule sync |
-| **.cursorrules** | Project root | Legacy rules file | Merge into rules or CLAUDE.md |
-| **AGENTS.md** | Project root | Agent instructions | Cross-reference |
-| **Skills** | `.cursor/skills-cursor/*` | Slash commands, SKILL.md | Sync from unified rules |
-| **Modes** | `/plan`, agent, background agent | Plan mode, interactive, background | thegent run: mode; bg for background |
-| **Hooks** | Auto-format, gating, commit checkpoints | Similar to Claude Code | Harvest from Cursor transcripts |
-| **Composer** | Multi-agent orchestration | Cursor's agent UI | thegent run via cursor-api |
+| Feature          | Cursor                                  | Description                                       | thegent Parity                            |
+| ---------------- | --------------------------------------- | ------------------------------------------------- | ----------------------------------------- |
+| **Rules**        | `.cursor/rules/*.mdc`                   | YAML frontmatter: description, globs, alwaysApply | Map to CLAUDE.md/.codex/skills; rule sync |
+| **.cursorrules** | Project root                            | Legacy rules file                                 | Merge into rules or CLAUDE.md             |
+| **AGENTS.md**    | Project root                            | Agent instructions                                | Cross-reference                           |
+| **Skills**       | `.cursor/skills-cursor/*`               | Slash commands, SKILL.md                          | Sync from unified rules                   |
+| **Modes**        | `/plan`, agent, background agent        | Plan mode, interactive, background                | thegent run: mode; bg for background      |
+| **Hooks**        | Auto-format, gating, commit checkpoints | Similar to Claude Code                            | Harvest from Cursor transcripts           |
+| **Composer**     | Multi-agent orchestration               | Cursor's agent UI                                 | thegent run via cursor-api                |
 
 ### 6.2 Rule System Parity
 
 **Cursor rules:** `.cursor/rules/*.mdc` — description, globs, alwaysApply. File-specific or global.
 
 **Unified rule mapping:**
+
 - **Claude Code:** CLAUDE.md, skills
 - **Codex:** .codex/skills/, config
 - **Cursor:** .cursor/rules/, .cursorrules
@@ -196,18 +200,19 @@ harvest-idea-seeds.sh already pulls from `~/.cursor/projects/*/agent-transcripts
 
 ### 7.1 Features
 
-| Feature | Factory Droid | Description | thegent Parity |
-|---------|---------------|-------------|----------------|
-| **Droids** | `.factory/droids/*.md` | Markdown + frontmatter (name, description, tools, model) | DroidRunner already exists |
-| **droid exec** | `droid exec -f path.md` | Runs droid via CLI | thegent run -M droid:<name> |
-| **Tools** | tools: [Read, Grep, Glob, ...] | Per-droid tool access | Frontmatter parsed |
-| **Model** | model: inherit | Inherit or override | DroidRunner supports |
+| Feature        | Factory Droid                  | Description                                              | thegent Parity              |
+| -------------- | ------------------------------ | -------------------------------------------------------- | --------------------------- |
+| **Droids**     | `.factory/droids/*.md`         | Markdown + frontmatter (name, description, tools, model) | DroidRunner already exists  |
+| **droid exec** | `droid exec -f path.md`        | Runs droid via CLI                                       | thegent run -M droid:<name> |
+| **Tools**      | tools: [Read, Grep, Glob, ...] | Per-droid tool access                                    | Frontmatter parsed          |
+| **Model**      | model: inherit                 | Inherit or override                                      | DroidRunner supports        |
 
 ### 7.2 Droid Integration
 
 **Current:** `DroidRunner` in `src/thegent/agents/droid.py` — runs `droid exec -f path.md` with prompt injection.
 
 **Parity:** Droids are headless by design. Add:
+
 - Queue: $defer/$block in prompt before droid exec
 - Harvest: on droid exit, run harvest
 - MCP: thegent_run can spawn droids via `thegent run -M droid:worker "prompt"`
@@ -215,11 +220,11 @@ harvest-idea-seeds.sh already pulls from `~/.cursor/projects/*/agent-transcripts
 
 ### 7.3 Droid ↔ Agent Mapping
 
-| Droid | Equivalent Agent |
-|-------|------------------|
-| worker | thegent run codex/claude |
-| orchestrator-core | Lead in agent team |
-| agileplus-orchestrator | Specialized workflow |
+| Droid                  | Equivalent Agent         |
+| ---------------------- | ------------------------ |
+| worker                 | thegent run codex/claude |
+| orchestrator-core      | Lead in agent team       |
+| agileplus-orchestrator | Specialized workflow     |
 
 ---
 
@@ -227,15 +232,15 @@ harvest-idea-seeds.sh already pulls from `~/.cursor/projects/*/agent-transcripts
 
 ### 8.1 Features
 
-| Feature | Augment | Description | thegent Parity |
-|---------|---------|-------------|----------------|
-| **auggie CLI** | `auggie` | Terminal agent | thegent run -M augment |
-| **Headless** | `auggie --print "task"` | Same as claude -p | thegent run -M augment "prompt" |
-| **Context Engine** | Live codebase understanding | Architecture, deps, history | MCP: Context Engine MCP |
-| **Context Engine MCP** | MCP server | Expose context to tools | thegent: add augment MCP to config |
-| **Intent** | Orchestration workspace | Specs, worktrees, multi-agent | thegent team + Intent integration |
-| **IDE agents** | VS Code, JetBrains | Native IDE integration | N/A (IDE-only) |
-| **Code Review** | PR review agent | — | — |
+| Feature                | Augment                     | Description                   | thegent Parity                     |
+| ---------------------- | --------------------------- | ----------------------------- | ---------------------------------- |
+| **auggie CLI**         | `auggie`                    | Terminal agent                | thegent run -M augment             |
+| **Headless**           | `auggie --print "task"`     | Same as claude -p             | thegent run -M augment "prompt"    |
+| **Context Engine**     | Live codebase understanding | Architecture, deps, history   | MCP: Context Engine MCP            |
+| **Context Engine MCP** | MCP server                  | Expose context to tools       | thegent: add augment MCP to config |
+| **Intent**             | Orchestration workspace     | Specs, worktrees, multi-agent | thegent team + Intent integration  |
+| **IDE agents**         | VS Code, JetBrains          | Native IDE integration        | N/A (IDE-only)                     |
+| **Code Review**        | PR review agent             | —                             | —                                  |
 
 ### 8.2 Augment Integration
 
@@ -249,14 +254,14 @@ harvest-idea-seeds.sh already pulls from `~/.cursor/projects/*/agent-transcripts
 
 ## 9. Unified Agent Matrix
 
-| Platform | Interactive | Headless | Rules | Skills | Hooks | Teams | thegent Entry |
-|----------|-------------|----------|-------|--------|-------|-------|---------------|
-| **Claude Code** | claude | claude -p | CLAUDE.md | .claude/skills | 15 events | Native | thegent clode, run -M claude |
-| **Codex** | codex | codex exec - | .codex/skills | .codex/skills | notify | thegent team | thegent codex, run -M codex |
-| **Cursor** | Composer | cursor-agent CLI | .cursor/rules | .cursor/skills-cursor | — | — | run -M cursor-agent |
-| **Factory droid** | — | droid exec | — | .factory/droids | — | droid as teammate | run -M droid:name |
-| **Augment** | auggie | auggie --print | — | — | — | Intent | run -M augment |
-| **OpenCode** | oc | oc | .codex/skills | Zen (optional) | — | — | run -M opencode |
+| Platform          | Interactive | Headless         | Rules         | Skills                | Hooks     | Teams             | thegent Entry                |
+| ----------------- | ----------- | ---------------- | ------------- | --------------------- | --------- | ----------------- | ---------------------------- |
+| **Claude Code**   | claude      | claude -p        | CLAUDE.md     | .claude/skills        | 15 events | Native            | thegent clode, run -M claude |
+| **Codex**         | codex       | codex exec -     | .codex/skills | .codex/skills         | notify    | thegent team      | thegent codex, run -M codex  |
+| **Cursor**        | Composer    | cursor-agent CLI | .cursor/rules | .cursor/skills-cursor | —         | —                 | run -M cursor-agent          |
+| **Factory droid** | —           | droid exec       | —             | .factory/droids       | —         | droid as teammate | run -M droid:name            |
+| **Augment**       | auggie      | auggie --print   | —             | —                     | —         | Intent            | run -M augment               |
+| **OpenCode**      | oc          | oc               | .codex/skills | Zen (optional)        | —         | —                 | run -M opencode              |
 
 ---
 
@@ -264,24 +269,24 @@ harvest-idea-seeds.sh already pulls from `~/.cursor/projects/*/agent-transcripts
 
 ### 10.1 Prompt Flag Parsing
 
-| Flag | Action | Exit |
-|------|--------|------|
-| `$defer` | Strip, append to queue, return "Queued. N pending." | 0 |
-| `$pending` | Same as $defer | 0 |
-| `$block` | Escalation add, return block message | 1 |
-| `$idea` | Save to idea-seeds (Claude) or harvest buffer (Codex) | 0 (continue) |
+| Flag       | Action                                                | Exit         |
+| ---------- | ----------------------------------------------------- | ------------ |
+| `$defer`   | Strip, append to queue, return "Queued. N pending."   | 0            |
+| `$pending` | Same as $defer                                        | 0            |
+| `$block`   | Escalation add, return block message                  | 1            |
+| `$idea`    | Save to idea-seeds (Claude) or harvest buffer (Codex) | 0 (continue) |
 
 **Regex:** `\$defer|\$pending|\$block|\$idea` — case-sensitive or configurable.
 
 ### 10.2 Droid Tool Sets (Full)
 
-| Value | Tools |
-|-------|-------|
-| `all` | Read, Grep, Glob, Create, Edit, Execute, Todo, WebSearch, FetchUrl |
-| `read-only` | Read, Grep, Glob |
-| `write` | Create, Edit |
-| `execute` | Execute |
-| List | Explicit subset |
+| Value       | Tools                                                              |
+| ----------- | ------------------------------------------------------------------ |
+| `all`       | Read, Grep, Glob, Create, Edit, Execute, Todo, WebSearch, FetchUrl |
+| `read-only` | Read, Grep, Glob                                                   |
+| `write`     | Create, Edit                                                       |
+| `execute`   | Execute                                                            |
+| List        | Explicit subset                                                    |
 
 ### 10.3 Cursor Rules .mdc Frontmatter
 
@@ -324,15 +329,18 @@ codex exec - --cd /path --model X --json --skip-git-repo-check
 **Extended by:** Claude Code
 
 ### Changes Made
+
 1. Added feature comparison matrix
 2. Added implementation priorities
 3. Enhanced cross-references
 
 ### Cross-References Added
+
 - MCP_FULL_PARITY_AND_FASTMCP_AUDIT.md
 - CLAUDE_CODE_QUEUE_PENDING_BLOCKING.md
 
 ### Practical Additions
+
 - Feature gap analysis
 - Implementation roadmap
 

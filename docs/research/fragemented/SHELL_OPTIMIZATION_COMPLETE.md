@@ -33,8 +33,8 @@ from thegent.utils.shell import run_shell_command, get_fastest_shell
 shell = get_fastest_shell()  # Returns '/bin/zsh' (or fastest available)
 
 # Run command with optimized shell
-result = run_shell_command('chmod +x script.sh')
-result = run_shell_command(['ls', '-la'], optimize_startup=True)
+result = run_shell_command("chmod +x script.sh")
+result = run_shell_command(["ls", "-la"], optimize_startup=True)
 ```
 
 ### Migration Pattern
@@ -42,10 +42,12 @@ result = run_shell_command(['ls', '-la'], optimize_startup=True)
 ```python
 # Before:
 import subprocess
+
 subprocess.run(cmd, shell=True)
 
 # After:
 from thegent.utils.shell import run_shell_command
+
 run_shell_command(cmd)
 ```
 
@@ -74,6 +76,7 @@ run_shell_command(cmd)
 ## Configuration
 
 Can be configured via environment variable:
+
 ```bash
 THGENT_SHELL=/bin/zsh  # Override shell preference
 ```

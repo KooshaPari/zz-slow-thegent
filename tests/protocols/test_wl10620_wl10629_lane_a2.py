@@ -29,7 +29,11 @@ def test_wl10620_provider_selection_build_keeps_rule_evaluation_separate() -> No
 def test_wl10621_workflow_guard_resolver_preserves_progression_contract() -> None:
     # @trace WL-10621
     phase = build_provider_selection_phase(["openai"], "openai", "single-provider")
-    assert resolve_workflow_guard_target(phase) == (["openai"], "openai", "single-provider")
+    assert resolve_workflow_guard_target(phase) == (
+        ["openai"],
+        "openai",
+        "single-provider",
+    )
 
 
 def test_wl10622_hook_invocation_build_separates_registration_from_call_payload() -> None:
@@ -88,4 +92,10 @@ def test_wl10628_cli_dispatch_build_separates_parse_from_handler_selection() -> 
 def test_wl10629_retry_outcome_resolver_fails_loudly_on_invalid_handler() -> None:
     # @trace WL-10629
     with pytest.raises(ValueError, match="Retry outcome target unresolved"):
-        resolve_retry_outcome_target({"parsed_command": "session.resume", "command_args": {}, "selected_handler": ""})
+        resolve_retry_outcome_target(
+            {
+                "parsed_command": "session.resume",
+                "command_args": {},
+                "selected_handler": "",
+            }
+        )

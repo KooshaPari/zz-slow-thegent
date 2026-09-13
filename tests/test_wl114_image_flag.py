@@ -6,10 +6,9 @@
 from __future__ import annotations
 
 import base64
-import orjson as json
 from pathlib import Path
-from unittest.mock import MagicMock, patch
 
+import orjson as json
 import pytest
 
 from thegent.agents.image_inputs import (
@@ -21,7 +20,6 @@ from thegent.agents.image_inputs import (
 )
 from thegent.agents.run_options import CODEX_AGENTS, IMAGE_CAPABLE_AGENTS
 from thegent.cli.commands.impl import _normalize_image_paths, _validate_image_capability
-
 
 # ---------------------------------------------------------------------------
 # image_inputs module — encode_image_to_base64
@@ -239,7 +237,9 @@ def test_validate_image_capability_rejects_non_image_agent() -> None:
         _validate_image_capability("not-a-real-agent", "gpt-5-codex")
 
 
-def test_validate_image_capability_accepts_claude_agent(monkeypatch: pytest.MonkeyPatch) -> None:
+def test_validate_image_capability_accepts_claude_agent(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
     """claude is now accepted by validate_image_capability.
 
     # @trace WL-114

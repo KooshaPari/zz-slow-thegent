@@ -18,26 +18,31 @@ Best when tasks have strict dependencies (reasoning chains where each step needs
 from langgraph.graph import StateGraph, START
 from typing_extensions import TypedDict
 
+
 class State(TypedDict):
     query: str
     analysis: str
     decision: str
     result: str
 
+
 def analyze_input(state: State) -> State:
     """First step: analyze the query"""
     state["analysis"] = f"Analysis of: {state['query']}"
     return state
+
 
 def make_decision(state: State) -> State:
     """Second step: make decision based on analysis"""
     state["decision"] = f"Decision from: {state['analysis']}"
     return state
 
+
 def execute_result(state: State) -> State:
     """Third step: execute based on decision"""
     state["result"] = f"Result from: {state['decision']}"
     return state
+
 
 # Build sequential graph
 graph = StateGraph(State)
@@ -54,6 +59,7 @@ result = compiled.invoke({"query": "What is 2+2?"})
 ```
 
 **Tradeoffs:**
+
 - ✅ Deterministic, composable, easy to debug
 - ✅ Natural for reasoning chains (chain-of-thought)
 - ❌ Slower for independent tasks
@@ -70,6 +76,7 @@ Use when multiple subagents can work independently on the same problem.
 import asyncio
 from typing import List
 
+
 class Agent:
     def __init__(self, name: str, specialty: str):
         self.name = name
@@ -80,19 +87,17 @@ class Agent:
         await asyncio.sleep(0.1)  # Simulated work
         return f"{self.name} ({self.specialty}): Analysis of '{query}'"
 
+
 async def parallel_analysis(query: str) -> List[str]:
     """Launch multiple agents in parallel"""
-    agents = [
-        Agent("Alice", "Code"),
-        Agent("Bob", "Testing"),
-        Agent("Charlie", "Architecture")
-    ]
+    agents = [Agent("Alice", "Code"), Agent("Bob", "Testing"), Agent("Charlie", "Architecture")]
 
     # Fan-out: launch all in parallel
     tasks = [agent.analyze(query) for agent in agents]
     results = await asyncio.gather(*tasks)  # Wait for all
 
     return results
+
 
 # Usage
 results = asyncio.run(parallel_analysis("Design a new API"))
@@ -101,6 +106,7 @@ for result in results:
 ```
 
 **Tradeoffs:**
+
 - ✅ Exploits independent parallelism
 - ✅ Fast for embarrassingly parallel problems
 - ❌ Harder to coordinate results
@@ -117,6 +123,7 @@ Modern approach combining sequential + parallel execution based on dependencies.
 from dataclasses import dataclass
 from typing import Dict, Set, Callable, Any
 
+
 @dataclass
 class Task:
     name: str
@@ -126,6 +133,7 @@ class Task:
     def __post_init__(self):
         if self.depends_on is None:
             self.depends_on = set()
+
 
 class DAGOrchestrator:
     def __init__(self):
@@ -142,18 +150,14 @@ class DAGOrchestrator:
         while len(completed) < len(self.tasks):
             # Find tasks ready to run (all deps completed)
             ready = [
-                name for name, task in self.tasks.items()
-                if name not in completed and task.depends_on <= completed
+                name for name, task in self.tasks.items() if name not in completed and task.depends_on <= completed
             ]
 
             if not ready:
                 raise ValueError("Circular dependency detected")
 
             # Run ready tasks in parallel
-            tasks = [
-                asyncio.create_task(self._run_task(name))
-                for name in ready
-            ]
+            tasks = [asyncio.create_task(self._run_task(name)) for name in ready]
             await asyncio.gather(*tasks)
             completed.update(ready)
 
@@ -161,6 +165,7 @@ class DAGOrchestrator:
         task = self.tasks[name]
         print(f"Executing {name}...")
         self.results[name] = await task.func(self.results)
+
 
 # Usage
 async def example():
@@ -176,14 +181,20 @@ async def example():
     dag.add_task(Task("fetch_data", lambda results: "raw_data"))
     dag.add_task(Task("analyze", lambda results: f"analysis of {results.get('fetch_data')}"))
     dag.add_task(Task("validate", lambda results: f"validation of {results.get('fetch_data')}"))
-    dag.add_task(Task("combine", lambda results: f"combined: {results.get('analyze')} + {results.get('validate')}",
-                      depends_on={"analyze", "validate"}))
+    dag.add_task(
+        Task(
+            "combine",
+            lambda results: f"combined: {results.get('analyze')} + {results.get('validate')}",
+            depends_on={"analyze", "validate"},
+        )
+    )
 
     await dag.execute()
     print(dag.results)
 ```
 
 **Tradeoffs:**
+
 - ✅ Optimal: runs only necessary parallelism
 - ✅ Works for complex workflows
 - ❌ Requires explicit dependency specification
@@ -202,6 +213,7 @@ import asyncio
 from collections import deque
 from typing import Optional, Callable, Any
 
+
 class WorkStealingScheduler:
     def __init__(self, num_workers: int = 4):
         self.workers = [deque() for _ in range(num_workers)]
@@ -213,8 +225,7 @@ class WorkStealingScheduler:
         """
         if worker_id is None:
             # Use load balancing: assign to least-loaded queue
-            worker_id = min(range(self.num_workers),
-                          key=lambda i: len(self.workers[i]))
+            worker_id = min(range(self.num_workers), key=lambda i: len(self.workers[i]))
 
         self.workers[worker_id].append(task)
 
@@ -247,15 +258,16 @@ class WorkStealingScheduler:
                     # No work available
                     await asyncio.sleep(0.01)
 
+
 class LoadBalancer:
     """Alternative: centralized load balancing with cost awareness"""
+
     def __init__(self, num_workers: int = 4):
         self.workers = [{"queue": [], "cost": 0} for _ in range(num_workers)]
 
     def enqueue_with_cost(self, task: Callable, estimated_cost: float):
         """Assign to worker with lowest total cost"""
-        cheapest = min(range(len(self.workers)),
-                      key=lambda i: self.workers[i]["cost"])
+        cheapest = min(range(len(self.workers)), key=lambda i: self.workers[i]["cost"])
         self.workers[cheapest]["queue"].append(task)
         self.workers[cheapest]["cost"] += estimated_cost
 
@@ -271,6 +283,7 @@ class LoadBalancer:
 ```
 
 **Tradeoffs:**
+
 - ✅ Prevents worker starvation
 - ✅ Better throughput than static assignment
 - ❌ Adds coordination overhead
@@ -291,11 +304,13 @@ from dataclasses import dataclass
 from typing import Callable, List
 import asyncio
 
+
 @dataclass
 class Event:
     event_type: str
     data: dict
     source: str
+
 
 class EventBus:
     def __init__(self):
@@ -311,10 +326,9 @@ class EventBus:
         """Publish event to all subscribers"""
         if event.event_type in self.subscribers:
             # Fire and forget (or gather for sync)
-            tasks = [
-                handler(event) for handler in self.subscribers[event.event_type]
-            ]
+            tasks = [handler(event) for handler in self.subscribers[event.event_type]]
             await asyncio.gather(*tasks, return_exceptions=True)
+
 
 class Agent:
     def __init__(self, name: str, bus: EventBus):
@@ -339,15 +353,12 @@ class Agent:
         if event.source != self.name:
             print(f"{self.name} sees result from {event.source}")
 
+
 # Usage
 async def example():
     bus = EventBus()
 
-    agents = [
-        Agent("DataProcessor", bus),
-        Agent("Analyzer", bus),
-        Agent("Aggregator", bus)
-    ]
+    agents = [Agent("DataProcessor", bus), Agent("Analyzer", bus), Agent("Aggregator", bus)]
 
     # Trigger workflow
     await bus.publish(Event("data_ready", {"content": "raw_input"}, "Source"))
@@ -365,7 +376,7 @@ class SharedStateCoordinator:
             "data": None,
             "analysis": None,
             "decision": None,
-            "locks": {}  # For coordination
+            "locks": {},  # For coordination
         }
 
     def agent1_process(self):
@@ -407,8 +418,10 @@ class SharedStateCoordinator:
 from typing import Optional
 import asyncio
 
+
 class AgentPool:
     """Manage pool of reusable agent instances"""
+
     def __init__(self, agent_factory, pool_size: int = 4):
         self.factory = agent_factory
         self.pool_size = pool_size
@@ -440,6 +453,7 @@ class AgentPool:
         finally:
             await self.release(agent)
 
+
 # Usage
 class LLMAgent:
     def __init__(self, model: str):
@@ -452,6 +466,7 @@ class LLMAgent:
 
     async def process(self, task: str) -> str:
         return f"Result from {self.model}: {task}"
+
 
 async def example():
     pool = AgentPool(lambda: LLMAgent("gpt-4"), pool_size=4)
@@ -513,6 +528,7 @@ class DynamicAgentOrchestrator:
 ```
 
 **Tradeoffs:**
+
 - ✅ Reduces agent creation overhead
 - ✅ Amortizes LLM API calls
 - ❌ Requires careful state reset to avoid context leakage
@@ -584,6 +600,7 @@ Process long sequences by maintaining only relevant recent context.
 from collections import deque
 from typing import List
 
+
 class SlidingWindowContextManager:
     def __init__(self, max_tokens: int = 4096, overlap: int = 256):
         """
@@ -633,6 +650,7 @@ class SlidingWindowContextManager:
         # Real implementation would use vector DB
         return list(self.context_history)[-1] if self.context_history else ""
 
+
 # Usage
 manager = SlidingWindowContextManager(max_tokens=2048, overlap=256)
 for chunk in long_document.split("\n\n"):
@@ -646,8 +664,9 @@ context = manager.get_context()
 
 **Multi-level context: Summary → Detail**
 
-```python
+````python
 from typing import Optional
+
 
 class HierarchicalContextManager:
     def __init__(self):
@@ -676,10 +695,7 @@ class HierarchicalContextManager:
         """Remove verbose examples, keep structure"""
         lines = content.split("\n")
         # Filter out code blocks, examples
-        filtered = [
-            line for line in lines
-            if not line.startswith("```") and not line.startswith("Example:")
-        ]
+        filtered = [line for line in lines if not line.startswith("```") and not line.startswith("Example:")]
         return "\n".join(filtered)
 
     async def _summarize(self, content: str) -> str:
@@ -694,7 +710,7 @@ class HierarchicalContextManager:
         if len(self.get_context(new_level).split()) > self.max_tokens:
             return self.switch_level(new_level - 1)
         return self.get_context(new_level)
-```
+````
 
 ---
 
@@ -705,6 +721,7 @@ class HierarchicalContextManager:
 ```python
 from typing import List
 import json
+
 
 class ContextCompressor:
     """Reduce context size while preserving critical information"""
@@ -733,10 +750,7 @@ class ContextCompressor:
         threshold = 0.85  # Similarity threshold
 
         for token in tokens:
-            is_redundant = any(
-                similarity(token, existing) > threshold
-                for existing in kept
-            )
+            is_redundant = any(similarity(token, existing) > threshold for existing in kept)
             if not is_redundant:
                 kept.append(token)
 
@@ -746,11 +760,9 @@ class ContextCompressor:
     def json_compression(data: dict) -> dict:
         """Compress structured data by removing low-signal fields"""
         # Remove: null values, empty arrays, default values
-        compressed = {
-            k: v for k, v in data.items()
-            if v not in (None, [], {}, "", 0, False)
-        }
+        compressed = {k: v for k, v in data.items() if v not in (None, [], {}, "", 0, False)}
         return compressed
+
 
 # Usage
 original = "Long document text... " * 1000
@@ -780,12 +792,12 @@ class StreamingContextProcessor:
 
             # When buffer is large enough, process and slide
             while len(self.buffer) >= self.chunk_size:
-                window = self.buffer[:self.chunk_size]
+                window = self.buffer[: self.chunk_size]
                 result = await self.process_window(window)
                 self.results.append(result)
 
                 # Slide with overlap
-                self.buffer = self.buffer[self.chunk_size - self.overlap:]
+                self.buffer = self.buffer[self.chunk_size - self.overlap :]
 
     async def process_window(self, window: str):
         """Process single window without keeping full context"""
@@ -804,12 +816,14 @@ from dataclasses import dataclass
 from typing import List
 from datetime import datetime
 
+
 @dataclass
 class Message:
     role: str  # "user" or "assistant"
     content: str
     timestamp: datetime = None
     tokens: int = 0
+
 
 class ConversationManager:
     def __init__(self, max_window_tokens: int = 4096, keep_system: bool = True):
@@ -870,7 +884,7 @@ class ConversationManager:
         # Replace old messages with summary
         self.messages = [
             Message("system", summary, old[0].timestamp, len(summary.split())),
-            *self.messages[-keep_recent:]
+            *self.messages[-keep_recent:],
         ]
 ```
 
@@ -893,6 +907,7 @@ class ConversationManager:
 ```python
 import asyncio
 from typing import AsyncGenerator
+
 
 class TokenStreamer:
     def __init__(self, backpressure_threshold: int = 10):
@@ -928,6 +943,7 @@ class TokenStreamer:
             await asyncio.sleep(0.05)  # Simulate network delay
         self.is_complete = True
 
+
 # Usage
 async def example():
     streamer = TokenStreamer()
@@ -953,10 +969,12 @@ async def example():
 from enum import Enum
 from dataclasses import dataclass
 
+
 class ResultStatus(Enum):
     PARTIAL = "partial"
     COMPLETE = "complete"
     ERROR = "error"
+
 
 @dataclass
 class PartialResult:
@@ -964,6 +982,7 @@ class PartialResult:
     content: str
     confidence: float = 1.0
     error: str = None
+
 
 class PartialResultHandler:
     """Handle streaming results as they arrive"""
@@ -984,7 +1003,7 @@ class PartialResultHandler:
             result = PartialResult(
                 status=ResultStatus.PARTIAL,
                 content=line,
-                confidence=0.8  # Partial confidence lower
+                confidence=0.8,  # Partial confidence lower
             )
 
             if self.on_partial:
@@ -992,20 +1011,19 @@ class PartialResultHandler:
 
         # Emit final result
         if self.is_stream_done:
-            result = PartialResult(
-                status=ResultStatus.COMPLETE,
-                content=self.accumulated,
-                confidence=1.0
-            )
+            result = PartialResult(status=ResultStatus.COMPLETE, content=self.accumulated, confidence=1.0)
             if self.on_complete:
                 await self.on_complete(result)
+
 
 # Usage: UI can render partial results immediately
 async def on_partial(result):
     print(f"[Partial] {result.content} (confidence: {result.confidence})")
 
+
 async def on_complete(result):
     print(f"[Complete] {result.content}")
+
 
 handler = PartialResultHandler(on_partial, on_complete)
 ```
@@ -1044,15 +1062,14 @@ class BackpressureManager:
             yield item
             self.buffer.task_done()
 
+
 # HTTP streaming with backpressure
 async def stream_response(request, handler):
     """HTTP response streaming with backpressure"""
     backpressure = BackpressureManager(max_buffer=50)
 
     # Start producer in background
-    producer_task = asyncio.create_task(
-        handler.produce_stream(backpressure.produce)
-    )
+    producer_task = asyncio.create_task(handler.produce_stream(backpressure.produce))
 
     async def response_generator():
         async for item in backpressure.consume():
@@ -1091,12 +1108,11 @@ class IncrementalRenderer:
         if self.buffer:
             self.render_fn(f"{self.line_num}: {self.buffer}")
 
+
 # Web streaming example
 @app.post("/stream")
 async def stream_endpoint():
-    renderer = IncrementalRenderer(
-        render_fn=lambda x: send_to_client(x)
-    )
+    renderer = IncrementalRenderer(render_fn=lambda x: send_to_client(x))
 
     async for chunk in llm.stream_response(user_query):
         await renderer.append(chunk)
@@ -1116,6 +1132,7 @@ import time
 from typing import Callable, Optional
 from dataclasses import dataclass
 
+
 @dataclass
 class Progress:
     current: int
@@ -1130,6 +1147,7 @@ class Progress:
         if self.rate > 0:
             remaining = self.total - self.current
             self.eta_seconds = int(remaining / self.rate)
+
 
 class ProgressTracker:
     def __init__(self, total: int, update_callback: Callable[[Progress], None]):
@@ -1149,22 +1167,20 @@ class ProgressTracker:
             elapsed = now - self.start_time
             rate = self.current / elapsed if elapsed > 0 else 0
 
-            progress = Progress(
-                current=self.current,
-                total=self.total,
-                rate=rate,
-                message=message
-            )
+            progress = Progress(current=self.current, total=self.total, rate=rate, message=message)
 
             await self.update_callback(progress)
             self.last_update = now
 
+
 # Usage
 async def process_items(items):
     async def on_progress(p: Progress):
-        print(f"\r[{p.percent:3.0f}%] {p.current}/{p.total} "
-              f"({p.rate:.1f}/s, ETA: {p.eta_seconds}s) - {p.message}",
-              end="", flush=True)
+        print(
+            f"\r[{p.percent:3.0f}%] {p.current}/{p.total} ({p.rate:.1f}/s, ETA: {p.eta_seconds}s) - {p.message}",
+            end="",
+            flush=True,
+        )
 
     tracker = ProgressTracker(len(items), on_progress)
 
@@ -1188,6 +1204,7 @@ async def process_items(items):
 from functools import lru_cache
 import hashlib
 import json
+
 
 class ExactMatchCache:
     """Cache responses for identical prompts"""
@@ -1234,6 +1251,7 @@ class ExactMatchCache:
 import numpy as np
 from sklearn.metrics.pairwise import cosine_similarity
 
+
 class SemanticCache:
     """Cache based on semantic similarity, not exact match"""
 
@@ -1252,10 +1270,7 @@ class SemanticCache:
         for cached_prompt, cached_response in self.cache.items():
             cached_embedding = self.embeddings[cached_prompt]
 
-            similarity = cosine_similarity(
-                [query_embedding],
-                [cached_embedding]
-            )[0][0]
+            similarity = cosine_similarity([query_embedding], [cached_embedding])[0][0]
 
             if similarity > self.threshold:
                 print(f"✓ Semantic cache hit (sim={similarity:.3f})")
@@ -1268,6 +1283,7 @@ class SemanticCache:
         embedding = await self.embedding_model.embed(prompt)
         self.cache[prompt] = response
         self.embeddings[prompt] = embedding
+
 
 # Usage
 semantic_cache = SemanticCache(embedding_model=your_embedder)
@@ -1369,14 +1385,12 @@ class SpeculativeDecoder:
                 context += token
 
             # Step 2: Main model validates all tokens in ONE pass
-            main_probs = await self.main.validate_sequence(
-                prompt,
-                draft_tokens
-            )
+            main_probs = await self.main.validate_sequence(prompt, draft_tokens)
 
             # Step 3: Check if tokens match (high probability in main model)
             matches = sum(
-                1 for draft_p, main_p in zip(draft_probs, main_probs)
+                1
+                for draft_p, main_p in zip(draft_probs, main_probs)
                 if abs(draft_p - main_p) < 0.1  # Similar probability
             )
 
@@ -1387,7 +1401,7 @@ class SpeculativeDecoder:
             else:
                 # Reject divergent token, backtrack
                 context = prompt + "".join(draft_tokens[:matches])
-                yield "".join(draft_tokens[:matches + 1])
+                yield "".join(draft_tokens[: matches + 1])
 ```
 
 **Prefetch for Batch Queries:**
@@ -1431,11 +1445,7 @@ class BatchPrefetcher:
     def _predict_follow_ups(self, query: str, result: str) -> list:
         """Heuristic: predict likely follow-up queries"""
         # Could use: user history, question type, etc.
-        follow_ups = [
-            f"{query} (continued)",
-            f"Explain {query}",
-            f"Example of {query}"
-        ]
+        follow_ups = [f"{query} (continued)", f"Explain {query}", f"Example of {query}"]
         return follow_ups
 ```
 
@@ -1449,6 +1459,7 @@ class BatchPrefetcher:
 import time
 from typing import List, Coroutine
 
+
 class DynamicBatcher:
     """Batch requests to reduce LLM API calls"""
 
@@ -1461,10 +1472,7 @@ class DynamicBatcher:
     async def add_request(self, request: dict) -> str:
         """Add request to batch"""
         future = asyncio.Future()
-        self.pending.append({
-            "request": request,
-            "future": future
-        })
+        self.pending.append({"request": request, "future": future})
 
         # Trigger batch if full
         if len(self.pending) >= self.max_batch_size:
@@ -1499,6 +1507,7 @@ class DynamicBatcher:
             for item, result in zip(batch, results):
                 item["future"].set_result(result)
 
+
 # Usage
 batcher = DynamicBatcher(batch_timeout=0.1)
 asyncio.create_task(batcher.process_batches())
@@ -1514,6 +1523,7 @@ result2 = await batcher.add_request({"query": "What is 3+3?"})
 ### 4.4 Resource Pooling
 
 Already covered in **Agent Pooling** section. Key patterns:
+
 - Connection pools (reuse HTTP connections)
 - Object pools (avoid allocation overhead)
 - Thread pools (for I/O operations)
@@ -1528,6 +1538,7 @@ Already covered in **Agent Pooling** section. Key patterns:
 ```python
 import gc
 import psutil
+
 
 class AgentMemoryManager:
     """Optimize garbage collection for long-running agents"""
@@ -1606,11 +1617,13 @@ from dataclasses import dataclass
 from enum import Enum
 from typing import Optional
 
+
 class TaskDifficulty(Enum):
     EASY = 1
     MEDIUM = 2
     HARD = 3
     COMPETITION = 4  # State-of-art level
+
 
 @dataclass
 class AgentEvalResult:
@@ -1633,6 +1646,7 @@ class AgentEvalResult:
         efficiency_penalty = min(0.1, (self.reasoning_steps - 3) / 10)
 
         return base * (1 - latency_penalty - efficiency_penalty)
+
 
 class AgentBenchmark:
     """Evaluate agent quality across dimensions"""
@@ -1697,6 +1711,7 @@ class AgentBenchmark:
 import matplotlib.pyplot as plt
 from typing import List, Tuple
 
+
 class LatencyAccuracyAnalysis:
     """Find optimal tradeoff between speed and quality"""
 
@@ -1730,16 +1745,17 @@ class LatencyAccuracyAnalysis:
         frontier = LatencyAccuracyAnalysis.pareto_frontier(agents)
         frontier_names, frontier_lats, frontier_accs = zip(*frontier)
 
-        plt.plot(frontier_lats, frontier_accs, 'r--', label='Pareto Frontier')
+        plt.plot(frontier_lats, frontier_accs, "r--", label="Pareto Frontier")
 
         for name, lat, acc in agents:
             plt.annotate(name, (lat, acc))
 
-        plt.xlabel('Latency (ms)')
-        plt.ylabel('Accuracy')
-        plt.title('Agent Tradeoff Analysis')
+        plt.xlabel("Latency (ms)")
+        plt.ylabel("Accuracy")
+        plt.title("Agent Tradeoff Analysis")
         plt.legend()
         plt.show()
+
 
 # Usage
 agents = [
@@ -1778,6 +1794,7 @@ class CostMetrics:
     def cost_per_success(self, success_rate: float) -> float:
         """Cost to get one successful answer"""
         return self.cost_per_query / success_rate
+
 
 class CostAnalyzer:
     """Compare cost across different strategies"""
@@ -1821,14 +1838,11 @@ class CostAnalyzer:
     def recommend_agent(cost_metrics: dict, priority: str = "cost"):
         """Recommend agent based on optimization priority"""
         if priority == "cost":
-            return min(cost_metrics.items(),
-                      key=lambda x: x[1].cost_efficiency_score())[0]
+            return min(cost_metrics.items(), key=lambda x: x[1].cost_efficiency_score())[0]
         elif priority == "accuracy":
-            return max(cost_metrics.items(),
-                      key=lambda x: x[1].accuracy)[0]
+            return max(cost_metrics.items(), key=lambda x: x[1].accuracy)[0]
         elif priority == "speed":
-            return max(cost_metrics.items(),
-                      key=lambda x: x[1].throughput())[0]
+            return max(cost_metrics.items(), key=lambda x: x[1].throughput())[0]
 ```
 
 ---
@@ -1842,13 +1856,11 @@ import asyncio
 import time
 from typing import Callable
 
+
 class ThroughputBenchmark:
     """Measure sustained throughput under load"""
 
-    async def benchmark(self,
-                       query_generator: Callable,
-                       duration_seconds: int = 60,
-                       max_concurrent: int = 32):
+    async def benchmark(self, query_generator: Callable, duration_seconds: int = 60, max_concurrent: int = 32):
         """
         Benchmark agent throughput
 
@@ -1910,17 +1922,18 @@ class ThroughputBenchmark:
 from enum import Enum
 from scipy import stats
 
+
 class ABTestResult(Enum):
     VARIANT_A_BETTER = "A"
     VARIANT_B_BETTER = "B"
     NO_SIGNIFICANT_DIFFERENCE = "none"
 
+
 class ABTester:
     """Compare two agent implementations"""
 
     @staticmethod
-    async def ab_test(agent_a, agent_b, test_cases: list,
-                     significance_level: float = 0.05):
+    async def ab_test(agent_a, agent_b, test_cases: list, significance_level: float = 0.05):
         """
         Run A/B test with statistical significance
         """
@@ -1928,10 +1941,7 @@ class ABTester:
         metrics_b = await ABTester._evaluate_agent(agent_b, test_cases)
 
         # Accuracy comparison
-        t_stat, p_value = stats.ttest_ind(
-            metrics_a["accuracies"],
-            metrics_b["accuracies"]
-        )
+        t_stat, p_value = stats.ttest_ind(metrics_a["accuracies"], metrics_b["accuracies"])
 
         if p_value < significance_level:
             if metrics_a["mean_accuracy"] > metrics_b["mean_accuracy"]:
@@ -1990,6 +2000,7 @@ class ABTester:
 from dataclasses import dataclass
 from typing import List
 
+
 @dataclass
 class AgentProfile:
     name: str
@@ -1999,33 +2010,28 @@ class AgentProfile:
     accuracy: float
     specialties: List[str]  # e.g., ["coding", "math"]
 
+
 class CostBasedRouter:
     def __init__(self, agents: List[AgentProfile]):
         self.agents = agents
 
-    def route(self, query: str, estimated_tokens: int = 100,
-              required_accuracy: float = 0.9) -> AgentProfile:
+    def route(self, query: str, estimated_tokens: int = 100, required_accuracy: float = 0.9) -> AgentProfile:
         """
         Find cheapest agent that:
         1. Meets accuracy requirement
         2. Handles query specialty (if relevant)
         """
-        candidates = [
-            agent for agent in self.agents
-            if agent.accuracy >= required_accuracy
-        ]
+        candidates = [agent for agent in self.agents if agent.accuracy >= required_accuracy]
 
         if not candidates:
             # Fallback: most accurate agent
             return max(self.agents, key=lambda x: x.accuracy)
 
         # Among qualified agents, pick cheapest
-        cheapest = min(
-            candidates,
-            key=lambda x: x.cost_per_token * estimated_tokens
-        )
+        cheapest = min(candidates, key=lambda x: x.cost_per_token * estimated_tokens)
 
         return cheapest
+
 
 # Usage
 agents = [
@@ -2048,6 +2054,7 @@ print(f"Selected: {best_agent.name}")  # Likely gpt-4 for coding
 ```python
 from typing import Dict, Set
 
+
 class CapabilityMatcher:
     def __init__(self, agents: Dict[str, Set[str]]):
         """
@@ -2058,7 +2065,8 @@ class CapabilityMatcher:
     def find_specialists(self, required_capabilities: Set[str]) -> List[str]:
         """Find agents with all required capabilities"""
         specialists = [
-            name for name, capabilities in self.agents.items()
+            name
+            for name, capabilities in self.agents.items()
             if required_capabilities <= capabilities  # Subset check
         ]
         return specialists
@@ -2073,6 +2081,7 @@ class CapabilityMatcher:
             match_scores[name] = match
 
         return max(match_scores, key=match_scores.get)
+
 
 # Usage
 agents = {
@@ -2102,6 +2111,7 @@ print(f"Best match: {best}")  # Could be code_bot or math_bot
 ```python
 import time
 from collections import deque
+
 
 class LoadBalancer:
     def __init__(self, agents: List[str]):
@@ -2252,38 +2262,41 @@ class FallbackRouter:
 
 ## Summary: Pattern Selection Guide
 
-| Problem | Best Pattern | Why |
-|---------|-------------|-----|
-| Task dependencies | DAG Orchestration | Optimal parallelism |
-| Many independent tasks | Work Stealing | Prevents starvation |
-| Tight agent coupling | Shared State | Low latency |
-| Loose agent coupling | Event Bus | Decoupled, scalable |
-| Long documents | Sliding Window | Memory efficient |
-| Chat applications | Multi-turn Manager | Conversation history |
-| High cost sensitivity | Semantic Cache | 80%+ hit rate possible |
-| Latency critical | Prompt Cache | Instant hits |
-| Fast inference | Speculative Decoding | 2-3x speedup |
-| Variable load | Dynamic Spawning | Cost effective |
-| Quality-cost tradeoff | Cost-based Routing | Optimal choices |
-| Complex queries | Specialist Routing | Expert answers |
-| Reliability critical | Fallback Chain | Graceful degradation |
+| Problem                | Best Pattern         | Why                    |
+| ---------------------- | -------------------- | ---------------------- |
+| Task dependencies      | DAG Orchestration    | Optimal parallelism    |
+| Many independent tasks | Work Stealing        | Prevents starvation    |
+| Tight agent coupling   | Shared State         | Low latency            |
+| Loose agent coupling   | Event Bus            | Decoupled, scalable    |
+| Long documents         | Sliding Window       | Memory efficient       |
+| Chat applications      | Multi-turn Manager   | Conversation history   |
+| High cost sensitivity  | Semantic Cache       | 80%+ hit rate possible |
+| Latency critical       | Prompt Cache         | Instant hits           |
+| Fast inference         | Speculative Decoding | 2-3x speedup           |
+| Variable load          | Dynamic Spawning     | Cost effective         |
+| Quality-cost tradeoff  | Cost-based Routing   | Optimal choices        |
+| Complex queries        | Specialist Routing   | Expert answers         |
+| Reliability critical   | Fallback Chain       | Graceful degradation   |
 
 ---
 
 ## Key Research References
 
 **Academic Papers:**
+
 - **AgentConductor** (arXiv:2602.17100) - RL-optimized topology selection
 - **AdaptOrch** (arXiv:2602.16873) - Dynamic canonical topologies
 - **ThunderAgent** (arXiv:2602.13692) - 1.5-3.6x throughput improvements
 - **Agent Communication Protocol** (arXiv:2602.15055) - Federated agent coordination
 
 **Frameworks:**
+
 - LangGraph - Graph-based orchestration with stateful execution
 - AutoGen - Message-passing multi-agent architecture
 - LangChain - Streaming and component architecture
 
 **Optimization Techniques:**
+
 - Prompt Caching (Claude, OpenAI) - 85%+ cache hit rates
 - Semantic Caching - 60-80% hit rates with similarity matching
 - Speculative Decoding - 2-3x latency reduction

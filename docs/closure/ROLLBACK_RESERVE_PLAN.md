@@ -17,12 +17,12 @@ Define controlled rollback behavior and decision logic for launch-phase anomalie
 
 ## 3) Trigger severity mapping
 
-| Trigger severity | Response target | Max time to action | Owner |
-|---|---|---|---|
-| SEV-1 | Immediate rollback decision | 5 minutes | Platform On-call + Gov Lead |
-| SEV-2 | Control-plane mitigation + evaluate rollback window | 15 minutes | Release + Reliability |
-| SEV-3 | Investigate + mitigation first | 30 minutes | Product + Governance |
-| SEV-4 | Review in daily cadence | 24 hours | Program |
+| Trigger severity | Response target                                     | Max time to action | Owner                       |
+| ---------------- | --------------------------------------------------- | ------------------ | --------------------------- |
+| SEV-1            | Immediate rollback decision                         | 5 minutes          | Platform On-call + Gov Lead |
+| SEV-2            | Control-plane mitigation + evaluate rollback window | 15 minutes         | Release + Reliability       |
+| SEV-3            | Investigate + mitigation first                      | 30 minutes         | Product + Governance        |
+| SEV-4            | Review in daily cadence                             | 24 hours           | Program                     |
 
 ## 4) Rollback steps
 
@@ -56,12 +56,12 @@ Define controlled rollback behavior and decision logic for launch-phase anomalie
 
 ## 8) Signoff
 
-| Role | Name | Decision | Date |
-|---|---|---|---|
+| Role             | Name               | Decision   | Date         |
+| ---------------- | ------------------ | ---------- | ------------ |
 | Reliability Lead | `reliability-lead` | `Approved` | `2026-02-15` |
-| Governance Lead | `governance-lead` | `Approved` | `2026-02-15` |
-| Security Lead | `security-lead` | `Approved` | `2026-02-15` |
-| Product Lead | `product-lead` | `Approved` | `2026-02-15` |
+| Governance Lead  | `governance-lead`  | `Approved` | `2026-02-15` |
+| Security Lead    | `security-lead`    | `Approved` | `2026-02-15` |
+| Product Lead     | `product-lead`     | `Approved` | `2026-02-15` |
 
 ---
 

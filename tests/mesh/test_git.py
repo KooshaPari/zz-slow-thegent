@@ -2,20 +2,31 @@
 
 from __future__ import annotations
 
-import orjson as json
 import os
 import subprocess
 import time
 from pathlib import Path
 
+import orjson as json
 import pytest
+
 from thegent.mesh.git import GitParallelismManager
 
 
 def _init_git_repo(path: Path) -> None:
     subprocess.run(["git", "init"], cwd=str(path), check=True, capture_output=True)
-    subprocess.run(["git", "config", "user.email", "test@test.com"], cwd=str(path), check=True, capture_output=True)
-    subprocess.run(["git", "config", "user.name", "Test"], cwd=str(path), check=True, capture_output=True)
+    subprocess.run(
+        ["git", "config", "user.email", "test@test.com"],
+        cwd=str(path),
+        check=True,
+        capture_output=True,
+    )
+    subprocess.run(
+        ["git", "config", "user.name", "Test"],
+        cwd=str(path),
+        check=True,
+        capture_output=True,
+    )
     (path / "README.md").write_text("init\n")
     subprocess.run(["git", "add", "."], cwd=str(path), check=True, capture_output=True)
     subprocess.run(["git", "commit", "-m", "init"], cwd=str(path), check=True, capture_output=True)
@@ -157,15 +168,30 @@ def test_try_auto_merge_commit_success_for_disjoint_changes(tmp_path: Path) -> N
     ).strip()
 
     # Branch A commit
-    subprocess.run(["git", "checkout", "-b", "a"], cwd=str(tmp_path), check=True, capture_output=True)
+    subprocess.run(
+        ["git", "checkout", "-b", "a"],
+        cwd=str(tmp_path),
+        check=True,
+        capture_output=True,
+    )
     (tmp_path / "a.txt").write_text("from-a\n")
     subprocess.run(["git", "add", "a.txt"], cwd=str(tmp_path), check=True, capture_output=True)
     subprocess.run(["git", "commit", "-m", "a"], cwd=str(tmp_path), check=True, capture_output=True)
     a_hash = subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=str(tmp_path), text=True).strip()
 
     # Branch B commit from main
-    subprocess.run(["git", "checkout", default_branch], cwd=str(tmp_path), check=True, capture_output=True)
-    subprocess.run(["git", "checkout", "-b", "b"], cwd=str(tmp_path), check=True, capture_output=True)
+    subprocess.run(
+        ["git", "checkout", default_branch],
+        cwd=str(tmp_path),
+        check=True,
+        capture_output=True,
+    )
+    subprocess.run(
+        ["git", "checkout", "-b", "b"],
+        cwd=str(tmp_path),
+        check=True,
+        capture_output=True,
+    )
     (tmp_path / "b.txt").write_text("from-b\n")
     subprocess.run(["git", "add", "b.txt"], cwd=str(tmp_path), check=True, capture_output=True)
     subprocess.run(["git", "commit", "-m", "b"], cwd=str(tmp_path), check=True, capture_output=True)
@@ -183,15 +209,30 @@ def test_try_auto_merge_commit_returns_none_on_conflict(tmp_path: Path) -> None:
     ).strip()
 
     # Branch A modifies same file
-    subprocess.run(["git", "checkout", "-b", "a"], cwd=str(tmp_path), check=True, capture_output=True)
+    subprocess.run(
+        ["git", "checkout", "-b", "a"],
+        cwd=str(tmp_path),
+        check=True,
+        capture_output=True,
+    )
     (tmp_path / "README.md").write_text("a\n")
     subprocess.run(["git", "add", "README.md"], cwd=str(tmp_path), check=True, capture_output=True)
     subprocess.run(["git", "commit", "-m", "a"], cwd=str(tmp_path), check=True, capture_output=True)
     a_hash = subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=str(tmp_path), text=True).strip()
 
     # Branch B modifies same file differently
-    subprocess.run(["git", "checkout", default_branch], cwd=str(tmp_path), check=True, capture_output=True)
-    subprocess.run(["git", "checkout", "-b", "b"], cwd=str(tmp_path), check=True, capture_output=True)
+    subprocess.run(
+        ["git", "checkout", default_branch],
+        cwd=str(tmp_path),
+        check=True,
+        capture_output=True,
+    )
+    subprocess.run(
+        ["git", "checkout", "-b", "b"],
+        cwd=str(tmp_path),
+        check=True,
+        capture_output=True,
+    )
     (tmp_path / "README.md").write_text("b\n")
     subprocess.run(["git", "add", "README.md"], cwd=str(tmp_path), check=True, capture_output=True)
     subprocess.run(["git", "commit", "-m", "b"], cwd=str(tmp_path), check=True, capture_output=True)

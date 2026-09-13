@@ -160,7 +160,6 @@ from thegent.orchestration.strategies.playbooks import (
     get_playbook_for_failure,
 )
 
-
 # ---------------------------------------------------------------------------
 # Helpers — canonical step lists mirrored from the dormant
 # ``test_strategies_playbooks.py`` so the spec is hermetic and never
@@ -169,15 +168,31 @@ from thegent.orchestration.strategies.playbooks import (
 
 
 _TIMEOUT_STEPS: tuple[str, ...] = ("retry_with_backoff", "increase_timeout", "escalate")
-_RATE_LIMIT_STEPS: tuple[str, ...] = ("wait_and_retry", "reduce_concurrency", "escalate")
+_RATE_LIMIT_STEPS: tuple[str, ...] = (
+    "wait_and_retry",
+    "reduce_concurrency",
+    "escalate",
+)
 _AUTH_FAILURE_STEPS: tuple[str, ...] = ("refresh_credentials", "escalate")
 _NETWORK_PARTITION_STEPS: tuple[str, ...] = ("retry", "failover_provider", "escalate")
-_MALFORMED_RESPONSE_STEPS: tuple[str, ...] = ("log_drift", "fallback_parser", "escalate")
+_MALFORMED_RESPONSE_STEPS: tuple[str, ...] = (
+    "log_drift",
+    "fallback_parser",
+    "escalate",
+)
 _STATE_CORRUPTION_STEPS: tuple[str, ...] = ("rollback_checkpoint", "escalate")
 _BUDGET_EXCEEDED_STEPS: tuple[str, ...] = ("pause_non_critical", "escalate")
-_CIRCUIT_OPEN_STEPS: tuple[str, ...] = ("wait_recovery_window", "half_open_trial", "escalate")
+_CIRCUIT_OPEN_STEPS: tuple[str, ...] = (
+    "wait_recovery_window",
+    "half_open_trial",
+    "escalate",
+)
 _POLICY_DENY_STEPS: tuple[str, ...] = ("request_override", "escalate")
-_CONTRACT_DRIFT_STEPS: tuple[str, ...] = ("emit_drift_event", "fallback_contract", "escalate")
+_CONTRACT_DRIFT_STEPS: tuple[str, ...] = (
+    "emit_drift_event",
+    "fallback_contract",
+    "escalate",
+)
 _RETRY_EXHAUSTED_STEPS: tuple[str, ...] = ("dlq_enqueue", "escalate")
 _CHECKPOINT_FAILED_STEPS: tuple[str, ...] = ("retry_checkpoint", "rollback", "escalate")
 _ROLLBACK_TRIGGERED_STEPS: tuple[str, ...] = ("verify_rollback", "resume_or_escalate")

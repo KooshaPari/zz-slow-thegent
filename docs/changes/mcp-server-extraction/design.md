@@ -58,22 +58,22 @@ src/thegent/mcp/
 
 ## Tool Groups Extracted
 
-| Module | Domain | Load pattern |
-|--------|--------|--------------|
-| `server/tools_sessions.py` | Session lifecycle tools | `_load_server_tools_sessions_module()` |
-| `server/tools_queue.py` | Queue read tools | `_load_server_tools_queue_module()` |
-| `server/tools_terminal.py` | Terminal/PTY tools | `_load_server_tools_terminal_module()` |
-| `server/tools_escalation.py` | Escalation/alert tools | `_load_server_tools_escalation_module()` |
-| `server/tools_governance.py` | Governance rule tools | `_load_server_tools_governance_module()` |
-| `server/tools_research.py` | Research/search tools | `_load_server_tools_research_module()` |
-| `server/tools_planning.py` | Planning/workstream tools | `_load_server_tools_planning_module()` |
-| `server/tools_contract_observe.py` | Contract observation tools | `_load_server_tools_contract_observe_module()` |
+| Module                             | Domain                      | Load pattern                                   |
+| ---------------------------------- | --------------------------- | ---------------------------------------------- |
+| `server/tools_sessions.py`         | Session lifecycle tools     | `_load_server_tools_sessions_module()`         |
+| `server/tools_queue.py`            | Queue read tools            | `_load_server_tools_queue_module()`            |
+| `server/tools_terminal.py`         | Terminal/PTY tools          | `_load_server_tools_terminal_module()`         |
+| `server/tools_escalation.py`       | Escalation/alert tools      | `_load_server_tools_escalation_module()`       |
+| `server/tools_governance.py`       | Governance rule tools       | `_load_server_tools_governance_module()`       |
+| `server/tools_research.py`         | Research/search tools       | `_load_server_tools_research_module()`         |
+| `server/tools_planning.py`         | Planning/workstream tools   | `_load_server_tools_planning_module()`         |
+| `server/tools_contract_observe.py` | Contract observation tools  | `_load_server_tools_contract_observe_module()` |
 | `server/tools_locking_planning.py` | Locking + planning combined | `_load_server_tools_locking_planning_module()` |
-| `server/tools_skills.py` | Skill catalog tools | `_load_server_tools_skills_module()` |
-| `server/tools_coordination.py` | Multi-agent coordination | `_load_server_tools_coordination_module()` |
-| `server/tools_runtime.py` | Runtime diagnostics tools | `_load_server_tools_runtime_module()` |
-| `server/tools_batch4.py` | Batch-4 additional tools | `_load_server_tools_batch4_module()` |
-| `server_catalog_tools.py` | Model catalog tools | direct import (not lazy-loaded) |
+| `server/tools_skills.py`           | Skill catalog tools         | `_load_server_tools_skills_module()`           |
+| `server/tools_coordination.py`     | Multi-agent coordination    | `_load_server_tools_coordination_module()`     |
+| `server/tools_runtime.py`          | Runtime diagnostics tools   | `_load_server_tools_runtime_module()`          |
+| `server/tools_batch4.py`           | Batch-4 additional tools    | `_load_server_tools_batch4_module()`           |
+| `server_catalog_tools.py`          | Model catalog tools         | direct import (not lazy-loaded)                |
 
 ## Loading Pattern
 
@@ -95,13 +95,14 @@ _server_tools_<group> = _load_server_tools_<group>_module()
 ```
 
 This pattern:
+
 - Fails loudly at startup if a tool group module is missing (no silent degradation).
 - Allows each tool group to be modified independently without touching `server.py`.
 - Preserves the FastMCP tool registration protocol in each extracted module.
 
 ## Re-Export Strategy
 
-`server.py` does not re-export tool group symbols.  Tool groups are loaded as
+`server.py` does not re-export tool group symbols. Tool groups are loaded as
 opaque modules; their `register_tools(mcp)` or equivalent entry point is called
 during lifespan initialization.
 

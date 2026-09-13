@@ -22,12 +22,12 @@
 
 ### Package Landscape
 
-| Package | Status | Size | Purpose |
-|---------|--------|------|---------|
-| `ux/compositor.py` | MVP | 120 lines | Rich + tmux simple MVP |
-| `ui/compositor/` | Partial | 800 lines | Textual app (primary) |
-| `tui/compositor.py` | Variant | 330 lines | Alternative Textual |
-| `compositor/` | Alternative | Similar | Modular variant |
+| Package             | Status      | Size      | Purpose                |
+| ------------------- | ----------- | --------- | ---------------------- |
+| `ux/compositor.py`  | MVP         | 120 lines | Rich + tmux simple MVP |
+| `ui/compositor/`    | Partial     | 800 lines | Textual app (primary)  |
+| `tui/compositor.py` | Variant     | 330 lines | Alternative Textual    |
+| `compositor/`       | Alternative | Similar   | Modular variant        |
 
 **Primary Implementation**: `src/thegent/ui/compositor/` (Textual-based, most complete)
 
@@ -64,6 +64,7 @@
 ### Test Gap Analysis
 
 **Current Coverage**: ~40%
+
 - ✅ Component initialization (smoke tests)
 - ✅ Basic pane operations (split/close/focus)
 - ✅ Session persistence
@@ -178,11 +179,13 @@ PaneNode {
 ```
 
 **Strengths**:
+
 - Supports arbitrary nesting
 - Serializable (save/load)
 - Can traverse depth-first
 
 **Weakness**:
+
 - No parent pointers (requires recursive search)
 - No cache of leaf nodes (recalculated each time)
 
@@ -191,17 +194,20 @@ PaneNode {
 ### Render Pipeline
 
 Current (naive):
+
 ```
 App.on_update() → render() → PaneManager.get_all_leaves()
   → TerminalPane.render() × N → Display
 ```
 
 **Issues**:
+
 - No caching
 - Pane.render() might fail (no error boundary)
 - No frame time tracking
 
 **Improved**:
+
 ```
 App.on_update() → Frame.start()
   → cache.try_get(pane_id) ⊕ render()
@@ -241,6 +247,7 @@ App.on_update() → Frame.start()
 ## Test Strategy Summary
 
 ### Unit Tests (90% coverage)
+
 - Panel lifecycle (mount/unmount)
 - Error boundaries (crash handling)
 - Pane operations (split/close/focus)
@@ -248,12 +255,14 @@ App.on_update() → Frame.start()
 - Profile frame times
 
 ### Integration Tests (100% coverage)
+
 - Multi-pane workflows
 - Session persistence + restore
 - CLI ↔ TUI progress updates
 - Error recovery workflows
 
 ### E2E Tests (critical paths)
+
 - plan_loop_cmd with progress display
 - Complex layout (4+ panes)
 - Error recovery (crash + restart)
@@ -262,12 +271,12 @@ App.on_update() → Frame.start()
 
 ## Risks and Mitigations
 
-| Risk | Mitigation |
-|------|-----------|
-| Shell not starting | Keep existing fallback to pipe mode |
-| PTY on Windows | Document Unix-only; use fallback |
-| Textual API changes | Pin version, add integration tests |
-| Perf with 10+ panes | Caching + profiling shows impact |
+| Risk                | Mitigation                          |
+| ------------------- | ----------------------------------- |
+| Shell not starting  | Keep existing fallback to pipe mode |
+| PTY on Windows      | Document Unix-only; use fallback    |
+| Textual API changes | Pin version, add integration tests  |
+| Perf with 10+ panes | Caching + profiling shows impact    |
 
 ---
 

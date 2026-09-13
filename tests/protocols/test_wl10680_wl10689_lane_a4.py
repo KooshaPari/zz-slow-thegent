@@ -33,14 +33,22 @@ def test_wl10681_policy_gating_separates_matching_and_enforcement_paths() -> Non
     # @trace WL-10681
     rules = ["allow:default", "require:approval"]
     phase = build_policy_match_phase("policy-10681", rules, "allow")
-    assert resolve_policy_enforcement_plan_target(phase) == ("policy-10681", rules, "allow")
+    assert resolve_policy_enforcement_plan_target(phase) == (
+        "policy-10681",
+        rules,
+        "allow",
+    )
 
 
 def test_wl10682_session_consistency_separates_state_updates_and_persistence() -> None:
     # @trace WL-10682
     state_changes = {"last_action": "dispatch", "status": "active"}
     phase = build_session_state_update_phase("session-10682", state_changes, 9)
-    assert resolve_session_persistence_plan_target(phase) == ("session-10682", state_changes, 9)
+    assert resolve_session_persistence_plan_target(phase) == (
+        "session-10682",
+        state_changes,
+        9,
+    )
 
 
 def test_wl10683_observability_separates_events_from_serialization() -> None:

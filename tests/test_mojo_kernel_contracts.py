@@ -1,8 +1,8 @@
 from __future__ import annotations
 
-import orjson as json
 from pathlib import Path
 
+import orjson as json
 
 CONTRACT_PATH = Path("contracts/runtime/mojo_kernel_contract_v1.json")
 HARNESS_DEF_PATH = Path("benchmarks/mojo_score_rank_v1_harness.json")
@@ -31,9 +31,22 @@ def test_contract_schemas_include_required_fields() -> None:
 
     assert set(input_schema["required"]) == {"request_id", "candidates", "weights"}
     assert set(output_schema["required"]) == {"request_id", "ranked"}
-    assert set(input_schema["properties"]["weights"]["required"]) == {"cost", "latency", "quality"}
-    assert set(input_schema["properties"]["candidates"]["items"]["required"]) == {"id", "cost", "latency", "quality"}
-    assert set(output_schema["properties"]["ranked"]["items"]["required"]) == {"id", "score", "rank"}
+    assert set(input_schema["properties"]["weights"]["required"]) == {
+        "cost",
+        "latency",
+        "quality",
+    }
+    assert set(input_schema["properties"]["candidates"]["items"]["required"]) == {
+        "id",
+        "cost",
+        "latency",
+        "quality",
+    }
+    assert set(output_schema["properties"]["ranked"]["items"]["required"]) == {
+        "id",
+        "score",
+        "rank",
+    }
 
 
 def test_harness_definition_matches_fixture_spec_and_contract() -> None:

@@ -25,7 +25,7 @@
 11. Ensure `tempdir.ts` / `.tmp/runtime-secrets-tests` in `.gitignore` if not already in heliosApp runtime.
 12. Re-run secrets + PTY test subsets after any merge from decomp lane.
 
-## Slice 4 — AgilePlus / phenotype* (mixed layout)
+## Slice 4 — AgilePlus / phenotype\* (mixed layout)
 
 13. `AgilePlus` + `AgilePlus-wtrees` — pick one canonical layout note in repo docs (no mass moves without decision).
 14. `phenotype-shared-wtrees` — enumerate dirty descendants; one repair PR.

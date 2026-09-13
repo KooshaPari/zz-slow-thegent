@@ -125,10 +125,11 @@ def repository_root_candidates() -> list[Path]:
 def _load_json_file(path: Path) -> dict:
     """Load a JSON file, handling orjson/json differences."""
     import json as _json
-    from pathlib import Path as _Path
+
     text = path.read_text(encoding="utf-8")
     try:
         import orjson
+
         return orjson.loads(text)
     except Exception:
         return _json.loads(text)

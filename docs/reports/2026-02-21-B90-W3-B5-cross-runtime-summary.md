@@ -3,19 +3,29 @@ title: "B90-W3-B5: Cross-Runtime Promotion Summary — Wave-3"
 date: "2026-02-21"
 status: "in_progress"
 owner: "Runtime Core"
-tags: ["WL-138", "B90-W3", "python", "rust", "zig", "mojo", "promotion", "cross-runtime"]
+tags:
+  [
+    "WL-138",
+    "B90-W3",
+    "python",
+    "rust",
+    "zig",
+    "mojo",
+    "promotion",
+    "cross-runtime",
+  ]
 ---
 
 # B90-W3-B5: Cross-Runtime Promotion Summary — Wave-3
 
 ## Summary Table
 
-| Runtime | Function / Workload | Wave-2 Status | Wave-3 Status | Gap | Next Action |
-|---------|--------------------|--------------------|---------------|-----|-------------|
-| **Python** | `parse_model_suffix` (baseline) | Baseline recorded; 11 parity cases passing | DONE — Python parity green | None | Maintain as authoritative baseline |
-| **Rust** | `parse_model_suffixes` PyO3 wrapper | PyO3 wrapper written in `crates/thegent-parser/src/lib.rs` | IN PROGRESS — parity gap report produced (B90-W3-B2) | `maturin develop --release` not run; cross-language parity tests skip | Run `maturin develop --release` in Wave-4 CI job |
-| **Zig** | ABI contract v1 | Contract JSON + 9 contract tests | IN PROGRESS — promotion report produced (B90-W3-B3) | CI zig-readiness job not triggered; FFI roundtrip + wasm target pending | Wire `tests/test_wl132_zig_abi_contract.py` into CI zig job |
-| **Mojo** | Kernel smoke (`score.rank.v1`) | Fixture JSON (3 cases) + smoke test (21 passing) | IN PROGRESS — promotion report produced (B90-W3-B4) | Mojo binary not installed; full deterministic replay (N >= 10) pending | Install Mojo in CI; expand fixture to 7 cases; run full deterministic replay |
+| Runtime    | Function / Workload                 | Wave-2 Status                                              | Wave-3 Status                                        | Gap                                                                     | Next Action                                                                  |
+| ---------- | ----------------------------------- | ---------------------------------------------------------- | ---------------------------------------------------- | ----------------------------------------------------------------------- | ---------------------------------------------------------------------------- |
+| **Python** | `parse_model_suffix` (baseline)     | Baseline recorded; 11 parity cases passing                 | DONE — Python parity green                           | None                                                                    | Maintain as authoritative baseline                                           |
+| **Rust**   | `parse_model_suffixes` PyO3 wrapper | PyO3 wrapper written in `crates/thegent-parser/src/lib.rs` | IN PROGRESS — parity gap report produced (B90-W3-B2) | `maturin develop --release` not run; cross-language parity tests skip   | Run `maturin develop --release` in Wave-4 CI job                             |
+| **Zig**    | ABI contract v1                     | Contract JSON + 9 contract tests                           | IN PROGRESS — promotion report produced (B90-W3-B3)  | CI zig-readiness job not triggered; FFI roundtrip + wasm target pending | Wire `tests/test_wl132_zig_abi_contract.py` into CI zig job                  |
+| **Mojo**   | Kernel smoke (`score.rank.v1`)      | Fixture JSON (3 cases) + smoke test (21 passing)           | IN PROGRESS — promotion report produced (B90-W3-B4)  | Mojo binary not installed; full deterministic replay (N >= 10) pending  | Install Mojo in CI; expand fixture to 7 cases; run full deterministic replay |
 
 ---
 
@@ -74,35 +84,39 @@ tags: ["WL-138", "B90-W3", "python", "rust", "zig", "mojo", "promotion", "cross-
 
 **Decision**: **BLOCKED on multiple prerequisites**
 
-| Blocker | Runtime | Resolution |
-|---------|---------|------------|
-| `maturin develop --release` not run | Rust | Wave-4: Add to CI rust-pyo3 job |
-| CI zig-readiness job not triggered | Zig | Wave-4: Add CI stage + `zig build` |
-| FFI roundtrip not wired | Zig | Wave-4: After CI job is live |
-| Mojo binary not available in CI | Mojo | Wave-4: Install Magic CLI |
-| Full deterministic replay pending | Mojo | Wave-4: After Mojo installed |
+| Blocker                             | Runtime | Resolution                         |
+| ----------------------------------- | ------- | ---------------------------------- |
+| `maturin develop --release` not run | Rust    | Wave-4: Add to CI rust-pyo3 job    |
+| CI zig-readiness job not triggered  | Zig     | Wave-4: Add CI stage + `zig build` |
+| FFI roundtrip not wired             | Zig     | Wave-4: After CI job is live       |
+| Mojo binary not available in CI     | Mojo    | Wave-4: Install Magic CLI          |
+| Full deterministic replay pending   | Mojo    | Wave-4: After Mojo installed       |
 
 ---
 
 ## Wave-4 Recommended Action Plan
 
 ### Priority 1 (Unblock Rust Parity)
+
 1. Add `maturin` to the CI environment and run `cd crates/thegent-parser && maturin develop --release`
 2. Re-run `tests/routing/test_wl131_parser_parity.py` with `THEGENT_USE_RUST_PARSER=1`
 3. Verify all 11 parity cases pass cross-language
 
 ### Priority 2 (Trigger CI Zig Readiness)
+
 4. Add `.github/workflows/ci.yml` job `zig-readiness` that runs `tests/test_wl132_zig_abi_contract.py`
 5. Add `zig build` step to compile the interop shared library
 6. Run FFI roundtrip smoke in CI
 
 ### Priority 3 (Mojo Full Replay)
+
 7. Install Mojo SDK in CI (`magic run mojo`)
 8. Create `tests/mojo/fixtures/score_deterministic_v1.json` with 7 cases
 9. Run `test_wl133_mojo_kernel_smoke.py` with Mojo installed; confirm no skips
 10. Run benchmark harness from `benchmarks/mojo_score_rank_v1_harness.json`
 
 ### Priority 4 (Promote to Stable)
+
 11. Promote Rust PyO3 extension as co-default for model suffix parsing
 12. Promote Zig ABI contract from `draft` to `stable`
 13. Promote Mojo kernel contract from `draft` to `stable`
@@ -110,4 +124,4 @@ tags: ["WL-138", "B90-W3", "python", "rust", "zig", "mojo", "promotion", "cross-
 
 ---
 
-*Generated by B90-W3-B5 agent. Follow-up review date: 2026-03-07.*
+_Generated by B90-W3-B5 agent. Follow-up review date: 2026-03-07._

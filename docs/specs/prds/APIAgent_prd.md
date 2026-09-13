@@ -9,12 +9,9 @@
 
 ## 2. Objectives
 
-
 ## 3. Success Metrics
 
-
 ## 4. Stakeholders
-
 
 ## 5. Target Users
 
@@ -26,335 +23,187 @@
 
 Vitest
 
-
 ### FR-2: Rendering
 
 React Testing Library
-
 
 ### FR-3: User Interactions
 
 @testing-library/user-event
 
-
 ### FR-4: API Mocking
 
 [Mock Service Worker (MSW)](https://mswjs.io/)
-
 
 ### FR-5: Code Coverage
 
 Vitest with V8 coverage
 
-
 ### FR-6: Prerequisites
-
-
-
 
 ### FR-7: Installation
 
-
-
-
 ### FR-8: Running the Application in Development Mode
-
-
-
 
 ### FR-9: Running the Application with the Actual Backend (Production Mode)
 
-
-
-
 ### FR-10: Environment Variables
-
-
-
 
 ### FR-11: Project Structure
 
-
-
-
 ### FR-12: Features
-
-
-
 
 ### FR-13: Testing Framework and Tools
 
-
-
-
 ### FR-14: Running Tests
-
-
-
 
 ### FR-15: Testing Best Practices
 
-
-
-
 ### FR-16: Example Tests in the Codebase
-
-
-
 
 ### FR-17: Test Coverage
 
-
-
-
 ### FR-18: Continuous Integration
-
-
-
 
 ### FR-19: Component Testing
 
 - Test components in isolation
 
-
 ### FR-20: User Event Simulation
 
 - Use `userEvent` for simulating realistic user interactions
-
 
 ### FR-21: Mocking
 
 - We test components that make network requests by mocking those requests with Mock Service Worker (MSW)
 
-
 ### FR-22: Accessibility Testing
 
 - Use `toBeInTheDocument()` to check element presence
-
 
 ### FR-23: State and Prop Testing
 
 - Test component behavior with different prop combinations
 
-
 ### FR-24: Internationalization (i18n) Testing
 
 - Test translation keys and placeholders
-
 
 ### FR-25: Chat Input Component Test
 
 [`__tests__/components/chat/chat-input.test.tsx`](https://github.com/All-Hands-AI/OpenHands/blob/main/frontend/__tests__/components/chat/chat-input.test.tsx)
 
-
 ### FR-26: File Explorer Component Test
 
 [`__tests__/components/file-explorer/file-explorer.test.tsx`](https://github.com/All-Hands-AI/OpenHands/blob/main/frontend/__tests__/components/file-explorer/file-explorer.test.tsx)
-
 
 ### FR-27: Real-time Memory Monitoring
 
 Displays current memory usage in the status bar
 
-
 ### FR-28: Detailed Memory Information
 
 View detailed memory statistics in a graphical interface
-
 
 ### FR-29: Process Monitoring
 
 See top processes by memory usage
 
-
 ### FR-30: Memory Usage History
 
 Track memory usage over time with interactive charts
-
 
 ### FR-31: Cross-Platform Support
 
 Works on Windows, macOS, and Linux
 
-
 ### FR-32: Start Memory Monitor
 
 Start monitoring memory usage
-
 
 ### FR-33: Stop Memory Monitor
 
 Stop monitoring memory usage
 
-
 ### FR-34: Show Memory Details
 
 Open the detailed memory view
 
-
 ### FR-35: Status Bar Indicator
 
-
-
-
 ### FR-36: Commands
-
-
-
 
 ### FR-37: System Memory
 
 Total, used, and free memory
 
-
 ### FR-38: Process Memory
 
 Memory usage of the VSCode extension host process
-
 
 ### FR-39: Memory History
 
 Chart showing memory usage over time
 
-
 ### FR-40: Top Processes
 
 List of processes using the most memory
 
-
 ### FR-41: [Read the docs →](https://zod.dev/api)
-
-
-
 
 ### FR-42: Parsing data
 
-
-
-
 ### FR-43: Handling errors
 
-
-
-
 ### FR-44: Inferring types
-
-
-
 
 ### FR-45: constructor
 
 - Initializes the client
 
-
 ### FR-46: Standalone
-
-
-
 
 ### FR-47: With browserify
 
-
-
-
 ### FR-48: Sending and receiving binary
-
-
-
 
 ### FR-49: Node.JS
 
-
-
-
 ### FR-50: Node.js with certificates
-
-
-
 
 ### FR-51: Node.js with extraHeaders
 
-
-
-
 ### FR-52: Socket
-
-
-
 
 ### FR-53: Transport
 
-
-
-
 ### FR-54: Namespaces
-
-
-
 
 ### FR-55: Custom Serializers
 
-
-
-
 ### FR-56: Want to build your own?
-
-
-
 
 ### FR-57: new Keyv([uri], [options])
 
-
-
-
 ### FR-58: uri
-
-
-
 
 ### FR-59: options
 
-
-
-
 ### FR-60: Instance
-
-
-
 
 ### FR-61: `yarn`
 
-
-
-
 ### FR-62: `yarn bootstrap`
-
-
-
 
 ### FR-63: `yarn test:services:start`
 
-
-
-
 ### FR-64: `yarn test:services:stop`
-
-
-
 
 ### FR-65: `yarn test`
 
-
-
-
 ### FR-66: `yarn clean`
 
-
-
-
-
 ## 7. Non-Functional Requirements
-
 
 ## 8. Features
 
@@ -362,337 +211,189 @@ List of processes using the most memory
 
 Vitest
 
-
 ### 🟡 Rendering
 
 React Testing Library
-
 
 ### 🟡 User Interactions
 
 @testing-library/user-event
 
-
 ### 🟡 API Mocking
 
 [Mock Service Worker (MSW)](https://mswjs.io/)
-
 
 ### 🟡 Code Coverage
 
 Vitest with V8 coverage
 
-
 ### 🟡 Prerequisites
-
-
-
 
 ### 🟡 Installation
 
-
-
-
 ### 🟡 Running the Application in Development Mode
-
-
-
 
 ### 🟡 Running the Application with the Actual Backend (Production Mode)
 
-
-
-
 ### 🟡 Environment Variables
-
-
-
 
 ### 🟡 Project Structure
 
-
-
-
 ### 🟡 Features
-
-
-
 
 ### 🟡 Testing Framework and Tools
 
-
-
-
 ### 🟡 Running Tests
-
-
-
 
 ### 🟡 Testing Best Practices
 
-
-
-
 ### 🟡 Example Tests in the Codebase
-
-
-
 
 ### 🟡 Test Coverage
 
-
-
-
 ### 🟡 Continuous Integration
-
-
-
 
 ### 🟡 Component Testing
 
 - Test components in isolation
 
-
 ### 🟡 User Event Simulation
 
 - Use `userEvent` for simulating realistic user interactions
-
 
 ### 🟡 Mocking
 
 - We test components that make network requests by mocking those requests with Mock Service Worker (MSW)
 
-
 ### 🟡 Accessibility Testing
 
 - Use `toBeInTheDocument()` to check element presence
-
 
 ### 🟡 State and Prop Testing
 
 - Test component behavior with different prop combinations
 
-
 ### 🟡 Internationalization (i18n) Testing
 
 - Test translation keys and placeholders
-
 
 ### 🟡 Chat Input Component Test
 
 [`__tests__/components/chat/chat-input.test.tsx`](https://github.com/All-Hands-AI/OpenHands/blob/main/frontend/__tests__/components/chat/chat-input.test.tsx)
 
-
 ### 🟡 File Explorer Component Test
 
 [`__tests__/components/file-explorer/file-explorer.test.tsx`](https://github.com/All-Hands-AI/OpenHands/blob/main/frontend/__tests__/components/file-explorer/file-explorer.test.tsx)
-
 
 ### 🟡 Real-time Memory Monitoring
 
 Displays current memory usage in the status bar
 
-
 ### 🟡 Detailed Memory Information
 
 View detailed memory statistics in a graphical interface
-
 
 ### 🟡 Process Monitoring
 
 See top processes by memory usage
 
-
 ### 🟡 Memory Usage History
 
 Track memory usage over time with interactive charts
-
 
 ### 🟡 Cross-Platform Support
 
 Works on Windows, macOS, and Linux
 
-
 ### 🟡 Start Memory Monitor
 
 Start monitoring memory usage
-
 
 ### 🟡 Stop Memory Monitor
 
 Stop monitoring memory usage
 
-
 ### 🟡 Show Memory Details
 
 Open the detailed memory view
 
-
 ### 🟡 Status Bar Indicator
 
-
-
-
 ### 🟡 Commands
-
-
-
 
 ### 🟡 System Memory
 
 Total, used, and free memory
 
-
 ### 🟡 Process Memory
 
 Memory usage of the VSCode extension host process
-
 
 ### 🟡 Memory History
 
 Chart showing memory usage over time
 
-
 ### 🟡 Top Processes
 
 List of processes using the most memory
 
-
 ### 🟡 [Read the docs →](https://zod.dev/api)
-
-
-
 
 ### 🟡 Parsing data
 
-
-
-
 ### 🟡 Handling errors
 
-
-
-
 ### 🟡 Inferring types
-
-
-
 
 ### 🟡 constructor
 
 - Initializes the client
 
-
 ### 🟡 Standalone
-
-
-
 
 ### 🟡 With browserify
 
-
-
-
 ### 🟡 Sending and receiving binary
-
-
-
 
 ### 🟡 Node.JS
 
-
-
-
 ### 🟡 Node.js with certificates
-
-
-
 
 ### 🟡 Node.js with extraHeaders
 
-
-
-
 ### 🟡 Socket
-
-
-
 
 ### 🟡 Transport
 
-
-
-
 ### 🟡 Namespaces
-
-
-
 
 ### 🟡 Custom Serializers
 
-
-
-
 ### 🟡 Want to build your own?
-
-
-
 
 ### 🟡 new Keyv([uri], [options])
 
-
-
-
 ### 🟡 uri
-
-
-
 
 ### 🟡 options
 
-
-
-
 ### 🟡 Instance
-
-
-
 
 ### 🟡 `yarn`
 
-
-
-
 ### 🟡 `yarn bootstrap`
-
-
-
 
 ### 🟡 `yarn test:services:start`
 
-
-
-
 ### 🟡 `yarn test:services:stop`
-
-
-
 
 ### 🟡 `yarn test`
 
-
-
-
 ### 🟡 `yarn clean`
-
-
-
-
 
 ## 9. Architecture Overview
 
 Architecture details to be documented.
-
 
 ## 10. Technical Requirements
 
@@ -751,12 +452,9 @@ Architecture details to be documented.
 
 ## 12. Timeline & Phases
 
-
 ## 13. Milestones
 
-
 ## 14. Dependencies
-
 
 ## 16. Related Projects
 

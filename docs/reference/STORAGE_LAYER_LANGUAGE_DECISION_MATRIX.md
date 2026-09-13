@@ -32,55 +32,55 @@ Start: Need storage layer replacement in 2026
 
 ## Language Scorecard (2026)
 
-| Language | Production Ready | Native DB Drivers | Performance | Dev Velocity | Ecosystem | Risk | Recommendation |
-|----------|:----------------:|:-----------------:|:-----------:|:------------:|:---------:|:---:|:-----------:|
-| **Rust** | ✅ Yes (stable) | ✅ pgx (best) | 🥇 #1 | ⚠️ 2-3 weeks setup | ✅ Excellent | 🟢 Low | **PRIMARY** |
-| **Go** | ✅ Yes (stable) | ✅ pgx/sqlc | 🥈 #2 | ✅ 1-2 weeks setup | ✅ Excellent | 🟢 Low | **SECONDARY** |
-| **Zig** | ⚠️ 1.0 Q2 2026 | ⚠️ pg.zig | 🥇 #1 (tied) | ⚠️ Emerging | ⚠️ Growing | 🟡 Medium | *Wait for 1.0* |
-| **Mojo** | ❌ Pre-1.0 (H1 2026) | ❌ FFI only | ⚠️ FFI overhead | ✅ Python-like | ❌ Minimal | 🔴 High | **NOT READY** |
-| **Carbon** | ❌ MVP 0.1 Q4 2026 | ❌ None | 🟢 Unknown | ❌ N/A | ❌ None | 🔴 Critical | **ELIMINATED** |
+| Language   |   Production Ready   | Native DB Drivers |   Performance   |    Dev Velocity    |  Ecosystem   |    Risk     | Recommendation |
+| ---------- | :------------------: | :---------------: | :-------------: | :----------------: | :----------: | :---------: | :------------: |
+| **Rust**   |   ✅ Yes (stable)    |   ✅ pgx (best)   |      🥇 #1      | ⚠️ 2-3 weeks setup | ✅ Excellent |   🟢 Low    |  **PRIMARY**   |
+| **Go**     |   ✅ Yes (stable)    |    ✅ pgx/sqlc    |      🥈 #2      | ✅ 1-2 weeks setup | ✅ Excellent |   🟢 Low    | **SECONDARY**  |
+| **Zig**    |    ⚠️ 1.0 Q2 2026    |     ⚠️ pg.zig     |  🥇 #1 (tied)   |    ⚠️ Emerging     |  ⚠️ Growing  |  🟡 Medium  | _Wait for 1.0_ |
+| **Mojo**   | ❌ Pre-1.0 (H1 2026) |    ❌ FFI only    | ⚠️ FFI overhead |   ✅ Python-like   |  ❌ Minimal  |   🔴 High   | **NOT READY**  |
+| **Carbon** |  ❌ MVP 0.1 Q4 2026  |      ❌ None      |   🟢 Unknown    |       ❌ N/A       |   ❌ None    | 🔴 Critical | **ELIMINATED** |
 
 ## Comparison Matrix (Storage Layer Use Case)
 
 ### PostgreSQL ORM
 
-| Language | Driver | Async | Type-Safe | Compile-Check | Maturity |
-|----------|--------|:-----:|:---------:|:-------------:|:--------:|
-| Rust | sqlx/Diesel | ✅ | ✅ | ✅ | ✅ Excellent |
-| Go | sqlc/GORM | ✅ | ⚠️ | ⚠️ GORM only | ✅ Excellent |
-| Zig | pg.zig | ⚠️ | ⚠️ | ❌ | ⚠️ Community |
-| Mojo | psycopg3 (FFI) | ❌ | ❌ | ❌ | ❌ N/A |
-| Carbon | None | ❌ | ❌ | ❌ | ❌ None |
+| Language | Driver         | Async | Type-Safe | Compile-Check |   Maturity   |
+| -------- | -------------- | :---: | :-------: | :-----------: | :----------: |
+| Rust     | sqlx/Diesel    |  ✅   |    ✅     |      ✅       | ✅ Excellent |
+| Go       | sqlc/GORM      |  ✅   |    ⚠️     | ⚠️ GORM only  | ✅ Excellent |
+| Zig      | pg.zig         |  ⚠️   |    ⚠️     |      ❌       | ⚠️ Community |
+| Mojo     | psycopg3 (FFI) |  ❌   |    ❌     |      ❌       |    ❌ N/A    |
+| Carbon   | None           |  ❌   |    ❌     |      ❌       |   ❌ None    |
 
 ### Redis Cache Layer
 
-| Language | Driver | Performance | API Quality | Maturity |
-|----------|--------|:-----------:|:----------:|:--------:|
-| Rust | redis-rs | 🥇 Best | ✅ Excellent | ✅ Excellent |
-| Go | redis | 🥈 Good | ✅ Excellent | ✅ Excellent |
-| Zig | Community | ⚠️ Limited | ⚠️ Emerging | ⚠️ Emerging |
-| Mojo | redis-py (FFI) | ❌ Slow | ✅ Python-like | ❌ FFI cost |
-| Carbon | None | ❌ N/A | ❌ N/A | ❌ None |
+| Language | Driver         | Performance |  API Quality   |   Maturity   |
+| -------- | -------------- | :---------: | :------------: | :----------: |
+| Rust     | redis-rs       |   🥇 Best   |  ✅ Excellent  | ✅ Excellent |
+| Go       | redis          |   🥈 Good   |  ✅ Excellent  | ✅ Excellent |
+| Zig      | Community      | ⚠️ Limited  |  ⚠️ Emerging   | ⚠️ Emerging  |
+| Mojo     | redis-py (FFI) |   ❌ Slow   | ✅ Python-like | ❌ FFI cost  |
+| Carbon   | None           |   ❌ N/A    |     ❌ N/A     |   ❌ None    |
 
 ### Neo4j Graph Queries
 
-| Language | Driver | Type Support | Query Builder | Maturity |
-|----------|--------|:------------:|:-------------:|:--------:|
-| Rust | neo4rs | ⚠️ Basic | ⚠️ Manual | ⚠️ Growing |
-| Go | neo4j-driver | ✅ Full | ✅ Good | ✅ Excellent |
-| Zig | None | ❌ N/A | ❌ N/A | ❌ None |
-| Mojo | neo4j-driver (FFI) | ✅ Via FFI | ✅ Via FFI | ❌ FFI cost |
-| Carbon | None | ❌ N/A | ❌ N/A | ❌ None |
+| Language | Driver             | Type Support | Query Builder |   Maturity   |
+| -------- | ------------------ | :----------: | :-----------: | :----------: |
+| Rust     | neo4rs             |   ⚠️ Basic   |   ⚠️ Manual   |  ⚠️ Growing  |
+| Go       | neo4j-driver       |   ✅ Full    |    ✅ Good    | ✅ Excellent |
+| Zig      | None               |    ❌ N/A    |    ❌ N/A     |   ❌ None    |
+| Mojo     | neo4j-driver (FFI) |  ✅ Via FFI  |  ✅ Via FFI   | ❌ FFI cost  |
+| Carbon   | None               |    ❌ N/A    |    ❌ N/A     |   ❌ None    |
 
 ### HTTP Request Handlers
 
-| Language | Framework | Async | Routing | Middleware | Maturity |
-|----------|-----------|:-----:|:-------:|:----------:|:--------:|
-| Rust | Axum | ✅ | ✅ | ✅ | ✅ Excellent |
-| Go | Gin/Chi | ✅ | ✅ | ✅ | ✅ Excellent |
-| Zig | None | ⚠️ None | ⚠️ None | ⚠️ None | ❌ None |
-| Mojo | Python FFI | ❌ Via FFI | ❌ Via FFI | ❌ Via FFI | ❌ None |
-| Carbon | None | ❌ N/A | ❌ N/A | ❌ N/A | ❌ None |
+| Language | Framework  |   Async    |  Routing   | Middleware |   Maturity   |
+| -------- | ---------- | :--------: | :--------: | :--------: | :----------: |
+| Rust     | Axum       |     ✅     |     ✅     |     ✅     | ✅ Excellent |
+| Go       | Gin/Chi    |     ✅     |     ✅     |     ✅     | ✅ Excellent |
+| Zig      | None       |  ⚠️ None   |  ⚠️ None   |  ⚠️ None   |   ❌ None    |
+| Mojo     | Python FFI | ❌ Via FFI | ❌ Via FFI | ❌ Via FFI |   ❌ None    |
+| Carbon   | None       |   ❌ N/A   |   ❌ N/A   |   ❌ N/A   |   ❌ None    |
 
 ## Performance Expectations (Storage Layer Ops)
 
@@ -105,6 +105,7 @@ Neo4j traversal (depth 5):
 ```
 
 **GC Pause Risk:**
+
 - Rust: None (no GC)
 - Go: 1-10ms pause, ~1-5 per second under load
 - Zig: None (no GC)
@@ -114,6 +115,7 @@ Neo4j traversal (depth 5):
 ## Implementation Timeline
 
 ### Rust + Axum/SQLx (Recommended)
+
 ```
 Week 1-2: Team Rust ramp-up
   - Async/await fundamentals
@@ -146,6 +148,7 @@ Week 9-10: Perf + Hardening
 ```
 
 ### Go + GORM/sqlc (If Prioritizing Speed)
+
 ```
 Week 1: Setup + sqlc codegen
   - Basic Go project structure
@@ -176,34 +179,38 @@ Week 6: Testing + Deployment
 ## Risk Assessment
 
 ### Rust Risks
-| Risk | Probability | Impact | Mitigation |
-|------|:-----------:|:------:|-----------|
-| Steep learning curve | Medium | Medium | 1-week intensive training + pair programming |
-| Slower initial dev | Low | Medium | Accept longer week 1-3; faster later |
-| Dependency bloat | Low | Low | Use curated ecosystem (tokio.rs recommended) |
-| Compile time | Low | Low | Incremental builds in watch mode |
+
+| Risk                 | Probability | Impact | Mitigation                                   |
+| -------------------- | :---------: | :----: | -------------------------------------------- |
+| Steep learning curve |   Medium    | Medium | 1-week intensive training + pair programming |
+| Slower initial dev   |     Low     | Medium | Accept longer week 1-3; faster later         |
+| Dependency bloat     |     Low     |  Low   | Use curated ecosystem (tokio.rs recommended) |
+| Compile time         |     Low     |  Low   | Incremental builds in watch mode             |
 
 ### Go Risks
-| Risk | Probability | Impact | Mitigation |
-|------|:-----------:|:------:|-----------|
-| GC pauses under load | Low | Medium | Monitor P99 latency; tune GOGC if needed |
-| No memory safety | Medium | Low | Code review rigor + testing |
-| Larger binaries | Low | Low | Accept ~10-20MB binary size |
+
+| Risk                 | Probability | Impact | Mitigation                               |
+| -------------------- | :---------: | :----: | ---------------------------------------- |
+| GC pauses under load |     Low     | Medium | Monitor P99 latency; tune GOGC if needed |
+| No memory safety     |   Medium    |  Low   | Code review rigor + testing              |
+| Larger binaries      |     Low     |  Low   | Accept ~10-20MB binary size              |
 
 ### Zig Risks (if 1.0 released)
-| Risk | Probability | Impact | Mitigation |
-|------|:-----------:|:------:|-----------|
-| Ecosystem immaturity | High | High | Commit to writing some custom drivers |
-| 1.0 API changes | Medium | Medium | Wait 1-2 months post-1.0 for stabilization |
-| Smaller community | Medium | Low | Fallback to Rust/Go if blocked |
+
+| Risk                 | Probability | Impact | Mitigation                                 |
+| -------------------- | :---------: | :----: | ------------------------------------------ |
+| Ecosystem immaturity |    High     |  High  | Commit to writing some custom drivers      |
+| 1.0 API changes      |   Medium    | Medium | Wait 1-2 months post-1.0 for stabilization |
+| Smaller community    |   Medium    |  Low   | Fallback to Rust/Go if blocked             |
 
 ### Mojo Risks
-| Risk | Probability | Impact | Mitigation |
-|------|:-----------:|:------:|-----------|
-| Pre-1.0 breaking changes | Critical | Critical | Wait until 1.0 + ecosystem |
-| FFI overhead | Critical | High | Negates Mojo advantages |
-| No native DB drivers | Critical | High | Forced Python interop |
-| **VERDICT** | **High** | **Critical** | **Do not use in 2026** |
+
+| Risk                     | Probability |    Impact    | Mitigation                 |
+| ------------------------ | :---------: | :----------: | -------------------------- |
+| Pre-1.0 breaking changes |  Critical   |   Critical   | Wait until 1.0 + ecosystem |
+| FFI overhead             |  Critical   |     High     | Negates Mojo advantages    |
+| No native DB drivers     |  Critical   |     High     | Forced Python interop      |
+| **VERDICT**              |  **High**   | **Critical** | **Do not use in 2026**     |
 
 ## Decision Checklist
 
@@ -235,7 +242,9 @@ Week 6: Testing + Deployment
 ## Final Recommendation
 
 ### PRIMARY: Rust + Axum/SQLx
+
 **When to choose:** If safety, performance, and long-term maintainability outweigh time-to-market
+
 - 6-10 week timeline
 - Best DB driver ecosystem
 - Zero-cost abstractions (no GC pauses)
@@ -243,7 +252,9 @@ Week 6: Testing + Deployment
 - Team training required (3-6 weeks)
 
 ### SECONDARY: Go + GORM/sqlc
+
 **When to choose:** If time-to-market is critical and GC overhead is acceptable
+
 - 4-6 week timeline
 - Proven at production scale
 - Faster team onboarding
@@ -251,7 +262,9 @@ Week 6: Testing + Deployment
 - Trade safety for speed
 
 ### TERTIARY: Zig (Only if 1.0 lands Q1-Q2 2026)
+
 **When to choose:** If 1.0 releases with stable APIs and you want memory safety without GC
+
 - 8-12 week timeline
 - 1.0 ecosystem still emerging
 - Community-driven DB drivers
@@ -259,14 +272,18 @@ Week 6: Testing + Deployment
 - Risk: ecosystem immaturity
 
 ### NOT RECOMMENDED: Mojo
+
 **Wait until:** 1.0 release + 6-12 month ecosystem stabilization (late 2026 → 2027)
+
 - Pre-1.0 instability
 - FFI overhead kills performance advantages
 - No native DB drivers
 - Ecosystem minimal
 
 ### ELIMINATED: Carbon
+
 **Not viable for any 2026 timeline**
+
 - MVP 0.1 end of 2026 at earliest
 - 1.0 after 2028
 - Zero ecosystem

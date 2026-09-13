@@ -604,6 +604,7 @@ Rollback Plan (any week):
 **End of Diagrams**
 
 These diagrams are meant to be printed or viewed alongside the detailed design documents:
+
 - `research-cross-platform-shell.md` — Full technical design
 - `SHELL_IMPLEMENTATION_CHECKLIST_PHASE2.md` — Task-level breakdown
 - `POSIX_PWSH_SHELL_STRATEGY.md` — Configuration guide

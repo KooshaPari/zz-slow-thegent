@@ -12,7 +12,7 @@ WP-5001: Manages L1-L4 memory tiers and triggers semantic compression.
 
 ### Methods
 
-#### ContextCompressor.__init__
+#### ContextCompressor.**init**
 
 ```python
 __init__(self: Any, session_dir: Path, threshold_pct: float)

@@ -20,7 +20,7 @@ Symbolically explores task dependency graphs to identify potential failures.
 
 ### Methods
 
-#### SymbolicRiskExplorer.__init__
+#### SymbolicRiskExplorer.**init**
 
 ```python
 __init__(self: Any, dag: dict[(str, Any)])

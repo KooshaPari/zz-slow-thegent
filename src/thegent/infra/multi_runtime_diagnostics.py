@@ -60,7 +60,17 @@ def check_pypy() -> RuntimeStatus:
     if status.available:
         try:
             result = run_subprocess_optimized(
-                ["uv", "run", "--python", "pypy-3.11", "--with", "ujson", "python", "-c", "import ujson; print('ok')"],
+                [
+                    "uv",
+                    "run",
+                    "--python",
+                    "pypy-3.11",
+                    "--with",
+                    "ujson",
+                    "python",
+                    "-c",
+                    "import ujson; print('ok')",
+                ],
                 capture_output=True,
                 timeout=10,
             )
@@ -102,7 +112,17 @@ def check_cpython_313() -> RuntimeStatus:
     if status.available:
         try:
             result = run_subprocess_optimized(
-                ["uv", "run", "--python", "3.13", "--with", "orjson", "python", "-c", "import orjson; print('ok')"],
+                [
+                    "uv",
+                    "run",
+                    "--python",
+                    "3.13",
+                    "--with",
+                    "orjson",
+                    "python",
+                    "-c",
+                    "import orjson; print('ok')",
+                ],
                 capture_output=True,
                 timeout=10,
             )
@@ -144,7 +164,17 @@ def check_cpython_314() -> RuntimeStatus:
     if status.available:
         try:
             result = run_subprocess_optimized(
-                ["uv", "run", "--python", "3.14", "--with", "orjson", "python", "-c", "import orjson; print('ok')"],
+                [
+                    "uv",
+                    "run",
+                    "--python",
+                    "3.14",
+                    "--with",
+                    "orjson",
+                    "python",
+                    "-c",
+                    "import orjson; print('ok')",
+                ],
                 capture_output=True,
                 timeout=10,
             )
@@ -315,7 +345,9 @@ def check_hardware() -> dict[str, Any]:
     return hw_info
 
 
-def check_network_latency(target_host: str = "127.0.0.1") -> dict[str, float | list[str]]:
+def check_network_latency(
+    target_host: str = "127.0.0.1",
+) -> dict[str, float | list[str]]:
     """Check network latency to a target host."""
     import time
 

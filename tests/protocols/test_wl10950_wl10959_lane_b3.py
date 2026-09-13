@@ -64,7 +64,11 @@ def test_wl10955_build_turn_submit_result_payload_flat_omits_approval_when_not_p
 
 def test_wl10956_build_turn_submit_result_payload_flat_includes_approval_when_present() -> None:
     # @trace WL-10956
-    approval_payload = {"id": "approval-1", "status": "requested", "diff": "--- a\n+++ b\n"}
+    approval_payload = {
+        "id": "approval-1",
+        "status": "requested",
+        "diff": "--- a\n+++ b\n",
+    }
     payload = server._build_turn_submit_result_payload_flat(_turn_payload(), approval_payload)
     assert payload["approval"] == approval_payload
 

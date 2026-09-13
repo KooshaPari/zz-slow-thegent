@@ -10,14 +10,14 @@
 
 Provider adapters normalize raw agent output into `CanonicalStructuredMessage` (CSM). All four primary providers (copilot, gemini, codex, claude) use the same XML-based contract. Adapters are implemented in `src/thegent/contracts/adapters.py`.
 
-| Provider | Adapter | Source Contract | Notes |
-|----------|---------|-----------------|-------|
-| copilot | XMLOutputAdapter | task-tool-18 / xml-tags | GitHub Copilot CLI |
-| gemini | XMLOutputAdapter | task-tool-18 / xml-tags | Google Gemini CLI |
-| codex | XMLOutputAdapter | task-tool-18 / xml-tags | Codex proxy / cursor |
-| claude | XMLOutputAdapter | task-tool-18 / xml-tags | Anthropic Claude CLI |
-| cursor-agent | XMLOutputAdapter | task-tool-18 / xml-tags | Cursor agent |
-| antigravity | XMLOutputAdapter | task-tool-18 / xml-tags | Proxy backend |
+| Provider     | Adapter          | Source Contract         | Notes                |
+| ------------ | ---------------- | ----------------------- | -------------------- |
+| copilot      | XMLOutputAdapter | task-tool-18 / xml-tags | GitHub Copilot CLI   |
+| gemini       | XMLOutputAdapter | task-tool-18 / xml-tags | Google Gemini CLI    |
+| codex        | XMLOutputAdapter | task-tool-18 / xml-tags | Codex proxy / cursor |
+| claude       | XMLOutputAdapter | task-tool-18 / xml-tags | Anthropic Claude CLI |
+| cursor-agent | XMLOutputAdapter | task-tool-18 / xml-tags | Cursor agent         |
+| antigravity  | XMLOutputAdapter | task-tool-18 / xml-tags | Proxy backend        |
 
 ---
 
@@ -27,16 +27,16 @@ All providers emit XML tags in stdout. The parser extracts balanced tags `<TAG>c
 
 ### 2.1 Supported Tags → CSM Mapping
 
-| XML Tag | CSM Field | Notes |
-|---------|-----------|-------|
-| STATUS, TASK_STATUS | status | pending, in_progress, completed, failed, blocked, cancelled, done→completed, skipped→cancelled |
-| PROGRESS, TASK_PROGRESS, PERCENT_COMPLETE | progress | 0–100 or 0.0–1.0; normalized to 0.0–1.0 |
-| TASK_ID, TASKID | task_id | |
-| OBJECTIVE, TASK_OBJECTIVE | objective | |
-| SUMMARY, TASK_SUMMARY, TASK_UPDATE, TASKUPDATE | summary | |
-| ACTIONS_COMPLETED | actions_completed | Newline-separated list |
-| ISSUES, TASK_ISSUES | issues | Newline-separated list |
-| NEXT_STEPS, TASK_NEXT_STEPS | next_steps | Newline-separated list |
+| XML Tag                                        | CSM Field         | Notes                                                                                          |
+| ---------------------------------------------- | ----------------- | ---------------------------------------------------------------------------------------------- |
+| STATUS, TASK_STATUS                            | status            | pending, in_progress, completed, failed, blocked, cancelled, done→completed, skipped→cancelled |
+| PROGRESS, TASK_PROGRESS, PERCENT_COMPLETE      | progress          | 0–100 or 0.0–1.0; normalized to 0.0–1.0                                                        |
+| TASK_ID, TASKID                                | task_id           |                                                                                                |
+| OBJECTIVE, TASK_OBJECTIVE                      | objective         |                                                                                                |
+| SUMMARY, TASK_SUMMARY, TASK_UPDATE, TASKUPDATE | summary           |                                                                                                |
+| ACTIONS_COMPLETED                              | actions_completed | Newline-separated list                                                                         |
+| ISSUES, TASK_ISSUES                            | issues            | Newline-separated list                                                                         |
+| NEXT_STEPS, TASK_NEXT_STEPS                    | next_steps        | Newline-separated list                                                                         |
 
 ### 2.2 Status Normalization
 
@@ -80,12 +80,12 @@ skipped → cancelled
 
 Every adapter returns `AdapterResult`:
 
-| Field | Type | Description |
-|-------|------|--------------|
-| csm | CanonicalStructuredMessage | Normalized output |
-| confidence | float | 0.0–1.0; 1.0 = full parse, 0.7 = validation issues, 0.3–0.5 = fallback |
-| parse_errors | list[str] | parse_truncated, no_xml_tags_detected, or validation issues |
-| source_provider | str | Provider identifier |
+| Field           | Type                       | Description                                                            |
+| --------------- | -------------------------- | ---------------------------------------------------------------------- |
+| csm             | CanonicalStructuredMessage | Normalized output                                                      |
+| confidence      | float                      | 0.0–1.0; 1.0 = full parse, 0.7 = validation issues, 0.3–0.5 = fallback |
+| parse_errors    | list[str]                  | parse_truncated, no_xml_tags_detected, or validation issues            |
+| source_provider | str                        | Provider identifier                                                    |
 
 ---
 

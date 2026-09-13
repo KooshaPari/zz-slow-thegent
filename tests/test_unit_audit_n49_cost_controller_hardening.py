@@ -8,11 +8,7 @@ and _persist.
 from __future__ import annotations
 
 import json
-import tempfile
-from datetime import UTC, datetime
 from pathlib import Path
-from typing import Any
-from unittest.mock import patch
 
 import pytest
 
@@ -97,8 +93,7 @@ class TestInitConfig:
         assert ctrl._daily_limit == 50
 
     def test_tiers_sorted_ascending(self, tmp_path: Path) -> None:
-        from thegent.governance.cost_controller import CostController
-        from thegent.governance.cost_controller import BudgetTier
+        from thegent.governance.cost_controller import BudgetTier, CostController
 
         ht = _make_health_targets(tmp_path)
         ctrl = CostController(session_dir=tmp_path, health_targets_path=ht)
@@ -194,7 +189,7 @@ class TestGetTier:
     """FR-GOV-CC-006: get_tier returns correct BudgetTier."""
 
     def test_normal_at_low_utilization(self, tmp_path: Path) -> None:
-        from thegent.governance.cost_controller import CostController, BudgetTier
+        from thegent.governance.cost_controller import BudgetTier, CostController
 
         ht = _make_health_targets(tmp_path)
         ctrl = CostController(session_dir=tmp_path, health_targets_path=ht)
@@ -203,7 +198,7 @@ class TestGetTier:
         assert ctrl.get_tier() == BudgetTier.NORMAL
 
     def test_halted_at_zero_limit(self, tmp_path: Path) -> None:
-        from thegent.governance.cost_controller import CostController, BudgetTier
+        from thegent.governance.cost_controller import BudgetTier, CostController
 
         ht = _make_health_targets(tmp_path, daily=0)
         ctrl = CostController(session_dir=tmp_path, health_targets_path=ht)
@@ -337,7 +332,12 @@ class TestBudgetTierEnum:
     def test_all_tiers_exist(self) -> None:
         from thegent.governance.cost_controller import BudgetTier
 
-        assert set(BudgetTier) == {BudgetTier.NORMAL, BudgetTier.CAUTIOUS, BudgetTier.RESTRICTED, BudgetTier.HALTED}
+        assert set(BudgetTier) == {
+            BudgetTier.NORMAL,
+            BudgetTier.CAUTIOUS,
+            BudgetTier.RESTRICTED,
+            BudgetTier.HALTED,
+        }
 
     def test_tier_values_are_strings(self) -> None:
         from thegent.governance.cost_controller import BudgetTier

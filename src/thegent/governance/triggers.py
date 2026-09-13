@@ -109,7 +109,7 @@ class WatchdogTrigger:
         self._use_watchfiles = WATCHFILES_AVAILABLE
         # Fallback to watchdog if watchfiles not available
         if not self._use_watchfiles and WATCHDOG_AVAILABLE:
-            self._observer: "Observer | None" = None  # type: ignore[valid-type]
+            self._observer: Observer | None = None  # type: ignore[valid-type]
             self._handler: FileSystemEventHandler | None = None  # type: ignore[valid-type]
         else:
             self._observer = None
@@ -217,10 +217,7 @@ class WatchdogTrigger:
 
         # Check if any parent directory is excluded
         parts = path.parts
-        if any(part in self.EXCLUDE_DIRS for part in parts):
-            return False
-
-        return True
+        return not any(part in self.EXCLUDE_DIRS for part in parts)
 
     def _on_file_change(self) -> None:
         """Called when a watched file changes."""
@@ -299,10 +296,7 @@ if not WATCHFILES_AVAILABLE:
 
             # Check if any parent directory is excluded
             parts = Path(path).parts
-            if any(part in self._exclude_dirs for part in parts):
-                return False
-
-            return True
+            return not any(part in self._exclude_dirs for part in parts)
 
         def on_modified(self, event: Any) -> None:
             """Called when a file is modified."""
@@ -609,7 +603,11 @@ def main(
 def cli(
     mode: str = typer.Option("manual", "--mode", help="Trigger mode"),
     interval: int = typer.Option(300, "--interval", help="Interval in seconds for timer mode"),
-    debounce: int = typer.Option(DEFAULT_DEBOUNCE_SECONDS, "--debounce", help="Debounce seconds for watchdog mode"),
+    debounce: int = typer.Option(
+        DEFAULT_DEBOUNCE_SECONDS,
+        "--debounce",
+        help="Debounce seconds for watchdog mode",
+    ),
     max_cycles: int | None = typer.Option(None, "--max-cycles", help="Maximum cycles to run (timer/watchdog only)"),
     force: bool = typer.Option(False, "--force", help="Run even if health >= threshold"),
     watch: list[str] | None = typer.Option(None, "--watch", help="Paths to watch (repeat --watch for multiple paths)"),
@@ -618,7 +616,9 @@ def cli(
     threshold: float = typer.Option(90.0, "--threshold", help="Health threshold"),
     lifecycle_mode: str = typer.Option("soft", "--lifecycle-mode", help="Lifecycle execution mode: soft or hard"),
     watch_health: float = typer.Option(
-        90.0, "--watch-health", help="Trigger cycle when health drops below this threshold"
+        90.0,
+        "--watch-health",
+        help="Trigger cycle when health drops below this threshold",
     ),
     watch_health_interval: int = typer.Option(60, "--watch-health-interval", help="Health check interval in seconds"),
 ) -> None:

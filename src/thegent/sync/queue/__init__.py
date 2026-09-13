@@ -1,4 +1,5 @@
 """Stub module."""
+
 from dataclasses import dataclass
 from typing import Any
 
@@ -6,6 +7,7 @@ from typing import Any
 @dataclass
 class ConflictQueueStore:
     """Store for conflict queue entries."""
+
     name: str = ""
 
     def enqueue(self, entry: dict[str, Any]) -> None:

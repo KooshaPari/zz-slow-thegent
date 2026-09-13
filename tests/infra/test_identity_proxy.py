@@ -203,7 +203,10 @@ class TestSSHIdentityProxyMockedSocket:
 
     @patch("thegent.infra.identity_proxy.socket.socket")
     def test_start_creates_unix_socket(
-        self, mock_socket_class: MagicMock, proxy_with_env: SSHIdentityProxy, proxy_socket_path: Path
+        self,
+        mock_socket_class: MagicMock,
+        proxy_with_env: SSHIdentityProxy,
+        proxy_socket_path: Path,
     ) -> None:
         """Verify start creates a Unix domain socket."""
         mock_socket = MagicMock()
@@ -225,7 +228,10 @@ class TestSSHIdentityProxyMockedSocket:
 
     @patch("thegent.infra.identity_proxy.socket.socket")
     def test_socket_operations_sequence(
-        self, mock_socket_class: MagicMock, proxy_with_env: SSHIdentityProxy, proxy_socket_path: Path
+        self,
+        mock_socket_class: MagicMock,
+        proxy_with_env: SSHIdentityProxy,
+        proxy_socket_path: Path,
     ) -> None:
         """Verify socket bind, listen, settimeout are called in sequence."""
         mock_socket = MagicMock()
@@ -264,7 +270,10 @@ class TestSSHIdentityProxyClientHandling:
 
     @patch("socket.socket")
     def test_handle_client_creates_host_connection(
-        self, mock_socket_class: MagicMock, proxy_with_env: SSHIdentityProxy, mock_host_socket: Path
+        self,
+        mock_socket_class: MagicMock,
+        proxy_with_env: SSHIdentityProxy,
+        mock_host_socket: Path,
     ) -> None:
         """Verify handler connects to host SSH agent."""
         mock_client = MagicMock()
@@ -274,7 +283,6 @@ class TestSSHIdentityProxyClientHandling:
         mock_host.recv.return_value = b""
 
         # Setup socket mock to return different sockets
-        sockets = [mock_host, mock_host]  # For both client and host connections
         mock_socket_class.return_value.__enter__.return_value = mock_host
 
         proxy_with_env.start()
@@ -372,7 +380,10 @@ class TestSSHIdentityProxyIntegration:
     """Integration-style tests with real socket operations."""
 
     def test_full_lifecycle_with_real_sockets(
-        self, proxy_socket_path: Path, mock_host_socket: Path, monkeypatch: pytest.MonkeyPatch
+        self,
+        proxy_socket_path: Path,
+        mock_host_socket: Path,
+        monkeypatch: pytest.MonkeyPatch,
     ) -> None:
         """Verify full start/stop lifecycle with real sockets."""
         # Create a mock SSH agent server
@@ -503,7 +514,7 @@ class TestSSHIdentityProxyForwardRecv:
 
         mock_client = MagicMock()
         mock_client.recv.side_effect = BlockingIOError()
-        mock_dst = MagicMock()
+        MagicMock()
 
         # Call _handle_client which uses _forward_recv internally
         proxy_with_env._handle_client(mock_client)
@@ -516,7 +527,7 @@ class TestSSHIdentityProxyForwardRecv:
 
         mock_client = MagicMock()
         mock_client.recv.return_value = b""  # Empty data
-        mock_dst = MagicMock()
+        MagicMock()
 
         proxy_with_env._handle_client(mock_client)
 
@@ -528,7 +539,10 @@ class TestSSHIdentityProxyHandleClientIntegration:
     """Integration tests for _handle_client with real socket operations."""
 
     def test_handle_client_forwards_data_to_host(
-        self, proxy_socket_path: Path, mock_host_socket: Path, monkeypatch: pytest.MonkeyPatch
+        self,
+        proxy_socket_path: Path,
+        mock_host_socket: Path,
+        monkeypatch: pytest.MonkeyPatch,
     ) -> None:
         """Test _handle_client forwards data between client and host."""
         import time
@@ -569,7 +583,7 @@ class TestSSHIdentityProxyHandleClientIntegration:
                         conn.close()
                     except TimeoutError:
                         pass
-            except Exception as e:
+            except Exception:
                 pass
 
         agent_thread = threading.Thread(target=mock_ssh_agent, daemon=True)
@@ -593,13 +607,13 @@ class TestSSHIdentityProxyHandleClientIntegration:
             # Wait for response
             time.sleep(0.3)
             try:
-                response = client.recv(4096)
+                client.recv(4096)
                 # Should have received response through proxy
             except TimeoutError:
                 pass
 
             client.close()
-        except Exception as e:
+        except Exception:
             pass
         finally:
             client_done.set()
@@ -607,7 +621,10 @@ class TestSSHIdentityProxyHandleClientIntegration:
             proxy.stop()
 
     def test_handle_client_handles_connection_close(
-        self, proxy_socket_path: Path, mock_host_socket: Path, monkeypatch: pytest.MonkeyPatch
+        self,
+        proxy_socket_path: Path,
+        mock_host_socket: Path,
+        monkeypatch: pytest.MonkeyPatch,
     ) -> None:
         """Test _handle_client handles client connection close."""
         import time

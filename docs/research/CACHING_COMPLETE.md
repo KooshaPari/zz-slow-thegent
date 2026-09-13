@@ -3,6 +3,7 @@
 
 > **Status**: Complete | **Version**: 1.0 | **Date**: 2026-02-16
 > **Related**:
+>
 > - [Caching Indexing Prewarming Deep Research](./CACHING_INDEXING_PREWARMING_DEEP_RESEARCH.md)
 > - [Library Replacement Complete](./LIBRARY_REPLACEMENT_COMPLETE.md)
 > - [Process Optimization Plan](../plans/PROCESS_OPTIMIZATION_PLAN.md)
@@ -42,14 +43,14 @@
 
 ### 1.3 Current State
 
-| Component | Status | Location |
-|-----------|--------|----------|
-| **TTLCache** | ✅ Implemented | `cli_impl.py` (CWD cache) |
-| **Pre-warm command** | ✅ Implemented | `cli.py` |
-| **File-based cache** | ✅ Implemented | `ultra-shim.go` |
-| **Multi-level cache** | ❌ Not implemented | — |
-| **File indexing** | ❌ Not implemented | — |
-| **Frecency** | ❌ Not implemented | — |
+| Component             | Status             | Location                  |
+| --------------------- | ------------------ | ------------------------- |
+| **TTLCache**          | ✅ Implemented     | `cli_impl.py` (CWD cache) |
+| **Pre-warm command**  | ✅ Implemented     | `cli.py`                  |
+| **File-based cache**  | ✅ Implemented     | `ultra-shim.go`           |
+| **Multi-level cache** | ❌ Not implemented | —                         |
+| **File indexing**     | ❌ Not implemented | —                         |
+| **Frecency**          | ❌ Not implemented | —                         |
 
 ---
 
@@ -98,6 +99,7 @@ from typing import Optional, Any
 import hashlib
 import json
 
+
 class MultiLevelCache:
     """Multi-level cache with memory → disk → network fallback."""
 
@@ -120,6 +122,7 @@ class MultiLevelCache:
         self.redis_client = None
         if redis_url:
             import redis
+
             self.redis_client = redis.from_url(redis_url)
 
     def _make_key(self, namespace: str, *args, **kwargs) -> str:
@@ -185,10 +188,7 @@ class MultiLevelCache:
         """Clear cache, optionally for a specific namespace."""
         if namespace:
             # Clear memory cache entries for namespace
-            keys_to_remove = [
-                k for k in self.memory_cache.keys()
-                if k.startswith(f"{namespace}:")
-            ]
+            keys_to_remove = [k for k in self.memory_cache.keys() if k.startswith(f"{namespace}:")]
             for k in keys_to_remove:
                 del self.memory_cache[k]
 
@@ -221,6 +221,7 @@ cache = MultiLevelCache(
     disk_ttl=300,
 )
 
+
 # Cache git status
 def get_git_status(cwd: str) -> dict:
     cache_key = ("git_status", cwd)
@@ -244,12 +245,12 @@ def get_git_status(cwd: str) -> dict:
 
 ### 2.4 Eviction Policies
 
-| Policy | Use Case | Implementation |
-|--------|----------|----------------|
-| **LRU (Least Recently Used)** | General caching | `cachetools.LRUCache` |
-| **LFU (Least Frequently Used)** | Long-term caching | `diskcache` supports LFU |
-| **TTL (Time To Live)** | Time-sensitive data | `cachetools.TTLCache` |
-| **Frecency** | Navigation, history | Custom implementation (see §5) |
+| Policy                          | Use Case            | Implementation                 |
+| ------------------------------- | ------------------- | ------------------------------ |
+| **LRU (Least Recently Used)**   | General caching     | `cachetools.LRUCache`          |
+| **LFU (Least Frequently Used)** | Long-term caching   | `diskcache` supports LFU       |
+| **TTL (Time To Live)**          | Time-sensitive data | `cachetools.TTLCache`          |
+| **Frecency**                    | Navigation, history | Custom implementation (see §5) |
 
 **Recommendation**: Use **LRU + TTL hybrid** for most cases. Use **Frecency** for directory navigation and command history.
 
@@ -265,6 +266,7 @@ import sqlite3
 import json
 from datetime import datetime, timedelta
 from typing import List, Optional
+
 
 class FileIndex:
     """File index with SQLite backend."""
@@ -307,9 +309,12 @@ class FileIndex:
 
         # Check if index is fresh
         conn = sqlite3.connect(self.index_path)
-        cursor = conn.execute("""
+        cursor = conn.execute(
+            """
             SELECT MAX(indexed_at) FROM file_index WHERE parent = ?
-        """, (str(root),))
+        """,
+            (str(root),),
+        )
         result = cursor.fetchone()
 
         if result and result[0]:
@@ -324,20 +329,23 @@ class FileIndex:
             if path.is_symlink():
                 continue
 
-            conn.execute("""
+            conn.execute(
+                """
                 INSERT OR REPLACE INTO file_index
                 (path, name, extension, size, mtime, is_dir, parent, indexed_at)
                 VALUES (?, ?, ?, ?, ?, ?, ?, ?)
-            """, (
-                str(path),
-                path.name,
-                path.suffix,
-                path.stat().st_size if path.is_file() else 0,
-                int(path.stat().st_mtime),
-                path.is_dir(),
-                str(path.parent),
-                now,
-            ))
+            """,
+                (
+                    str(path),
+                    path.name,
+                    path.suffix,
+                    path.stat().st_size if path.is_file() else 0,
+                    int(path.stat().st_mtime),
+                    path.is_dir(),
+                    str(path.parent),
+                    now,
+                ),
+            )
 
         conn.commit()
         conn.close()
@@ -378,6 +386,7 @@ class FileIndex:
 ```python
 from watchdog.observers import Observer
 from watchdog.events import FileSystemEventHandler
+
 
 class FileIndexWatcher(FileSystemEventHandler):
     """Watch for file system changes and invalidate index."""
@@ -443,6 +452,7 @@ from datetime import datetime, time
 from typing import List, Dict
 import json
 from pathlib import Path
+
 
 class PredictivePrewarmer:
     """Predictive pre-warming based on usage patterns."""
@@ -556,6 +566,7 @@ def prewarm_targets(cache: MultiLevelCache, cwd: Path) -> None:
 from datetime import datetime, timedelta
 from typing import Dict, Tuple
 
+
 class FrecencyScore:
     """Frecency scoring (frequency × recency)."""
 
@@ -597,10 +608,7 @@ class FrecencyScore:
 
     def get_top_paths(self, n: int = 10) -> List[Tuple[str, float]]:
         """Get top N paths by frecency."""
-        frecencies = [
-            (path, self.get_frecency(path))
-            for path in self.scores.keys()
-        ]
+        frecencies = [(path, self.get_frecency(path)) for path in self.scores.keys()]
         return sorted(frecencies, key=lambda x: x[1], reverse=True)[:n]
 ```
 
@@ -628,6 +636,7 @@ top_dirs = frecency.get_top_paths(n=5)
 import subprocess
 import hashlib
 
+
 def get_tool_version(tool: str) -> str:
     """Get version hash for tool."""
     try:
@@ -641,6 +650,7 @@ def get_tool_version(tool: str) -> str:
         # Add other tools...
     except Exception:
         return "unknown"
+
 
 def make_versioned_key(namespace: str, tool: str, *args, **kwargs) -> str:
     """Make cache key with version."""
@@ -685,6 +695,7 @@ class CacheInvalidator(FileSystemEventHandler):
 import mmap
 from pathlib import Path
 
+
 class MemoryMappedIndex:
     """Memory-mapped file index for zero-copy access."""
 
@@ -724,6 +735,7 @@ class MemoryMappedIndex:
 import asyncio
 from aiofiles import open as aio_open
 
+
 async def async_cache_get(cache_path: Path, key: str) -> Optional[bytes]:
     """Async cache get (non-blocking)."""
     key_path = cache_path / key
@@ -732,6 +744,7 @@ async def async_cache_get(cache_path: Path, key: str) -> Optional[bytes]:
 
     async with aio_open(key_path, "rb") as f:
         return await f.read()
+
 
 async def async_cache_set(cache_path: Path, key: str, value: bytes) -> None:
     """Async cache set (non-blocking)."""
@@ -752,9 +765,11 @@ from thegent.cache import MultiLevelCache
 
 cache = MultiLevelCache()
 
+
 # In git operations
 def get_git_status_cached(cwd: str) -> dict:
     return cache.get("git_status", cwd=cwd) or compute_git_status(cwd)
+
 
 # In file operations
 def find_files_cached(pattern: str, root: Path) -> List[Path]:
@@ -844,16 +859,19 @@ prewarm:
 ### 10.1 Common Issues
 
 **Issue**: Cache not working
+
 - **Check**: Cache directory exists and is writable
 - **Check**: TTL not expired
 - **Check**: Cache key generation consistent
 
 **Issue**: Index stale
+
 - **Check**: Index TTL settings
 - **Check**: File watcher running
 - **Check**: Index rebuild on changes
 
 **Issue**: Pre-warm not effective
+
 - **Check**: Pre-warm targets correct
 - **Check**: Predictive patterns learned
 - **Check**: Cache populated
@@ -863,6 +881,7 @@ prewarm:
 ```python
 # Enable debug logging
 import logging
+
 logging.basicConfig(level=logging.DEBUG)
 
 # Check cache stats
@@ -913,7 +932,7 @@ print(f"Indexed files: {cursor.fetchone()[0]}")
 
 ---
 
-*Generated: 2026-02-16 | Version: 1.0 | Status: Complete*
+_Generated: 2026-02-16 | Version: 1.0 | Status: Complete_
 
 ---
 
@@ -923,15 +942,18 @@ print(f"Indexed files: {cursor.fetchone()[0]}")
 **Extended by:** Claude Code
 
 ### Changes Made
+
 1. Added planning patterns
 2. Added implementation roadmap
 3. Enhanced cross-references
 
 ### Cross-References Added
+
 - WORK_STREAM.md
 - Implementation guides
 
 ### Practical Additions
+
 - Planning templates
 - Roadmap configurations
 

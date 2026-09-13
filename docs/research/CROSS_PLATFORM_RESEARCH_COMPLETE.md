@@ -3,6 +3,7 @@
 
 > **Status**: Complete | **Version**: 1.0 | **Date**: 2026-02-16
 > **Related**:
+>
 > - [Cross-Platform Multi-Tenant Implementation Plan](../plans/CROSS_PLATFORM_MULTI_TENANT_IMPLEMENTATION_PLAN.md)
 > - [Cross-Platform Master Index](../CROSS_PLATFORM_MASTER_INDEX.md)
 > - [Hybrid Environment Implementation Plan](../plans/HYBRID_ENV_IMPLEMENTATION_PLAN.md)
@@ -36,6 +37,7 @@ This document consolidates all cross-platform research into a single comprehensi
 ### 1.1 Research Scope
 
 **Platforms Covered**:
+
 - ✅ macOS (10.15+)
 - ✅ Linux (Ubuntu 20.04+, Debian 11+, RHEL 8+)
 - ✅ Windows (10/11)
@@ -44,6 +46,7 @@ This document consolidates all cross-platform research into a single comprehensi
 - ⚠️ Containers/Docker (headless mode)
 
 **Key Capabilities**:
+
 - Multi-tenant agent execution with user isolation
 - Cross-platform desktop automation
 - Remote compute offloading
@@ -61,6 +64,7 @@ This document consolidates all cross-platform research into a single comprehensi
 ### 1.3 Source Documents
 
 This consolidated guide synthesizes content from:
+
 - `CROSS_PLATFORM_MULTI_TENANT_DESKTOP_AUTOMATION_RESEARCH.md` (Main research, 3000+ lines)
 - `CROSS_PLATFORM_ADVANCED_PATTERNS.md` (Advanced patterns)
 - `CROSS_PLATFORM_PERFORMANCE_BENCHMARKS.md` (Performance SLAs)
@@ -77,34 +81,34 @@ This consolidated guide synthesizes content from:
 
 ### 2.1 Core Platform Support
 
-| Feature | macOS | Linux | Windows | WSL2 | Notes |
-|---------|-------|-------|---------|------|-------|
-| **Agent Execution** | ✅ | ✅ | ✅ | ✅ | All platforms supported |
-| **User Isolation** | ✅ | ✅ | ✅ | ⚠️ | WSL2 uses native Windows users |
-| **Desktop Automation** | ✅ | ✅ | ✅ | ❌ | WSL2 requires native Windows |
-| **File System** | ✅ | ✅ | ✅ | ⚠️ | WSL2 path translation needed |
-| **Network** | ✅ | ✅ | ✅ | ✅ | Full support |
-| **Process Management** | ✅ | ✅ | ✅ | ✅ | Full support |
-| **Remote Compute** | ✅ | ✅ | ✅ | ✅ | SSH-based |
+| Feature                | macOS | Linux | Windows | WSL2 | Notes                          |
+| ---------------------- | ----- | ----- | ------- | ---- | ------------------------------ |
+| **Agent Execution**    | ✅    | ✅    | ✅      | ✅   | All platforms supported        |
+| **User Isolation**     | ✅    | ✅    | ✅      | ⚠️   | WSL2 uses native Windows users |
+| **Desktop Automation** | ✅    | ✅    | ✅      | ❌   | WSL2 requires native Windows   |
+| **File System**        | ✅    | ✅    | ✅      | ⚠️   | WSL2 path translation needed   |
+| **Network**            | ✅    | ✅    | ✅      | ✅   | Full support                   |
+| **Process Management** | ✅    | ✅    | ✅      | ✅   | Full support                   |
+| **Remote Compute**     | ✅    | ✅    | ✅      | ✅   | SSH-based                      |
 
 ### 2.2 Desktop Automation APIs
 
-| Platform | Primary API | Fallback | Library |
-|----------|------------|----------|---------|
-| **macOS** | AppleScript/Apple Events | Accessibility API | `py-applescript` |
-| **Windows** | UI Automation (UIA) | MSAA | `pywinauto`, `uiautomation` |
-| **Linux** | AT-SPI | D-Bus | `pyatspi`, `dogtail` |
-| **WSL2** | N/A (use native Windows) | N/A | Via `wsl.exe` bridge |
+| Platform    | Primary API              | Fallback          | Library                     |
+| ----------- | ------------------------ | ----------------- | --------------------------- |
+| **macOS**   | AppleScript/Apple Events | Accessibility API | `py-applescript`            |
+| **Windows** | UI Automation (UIA)      | MSAA              | `pywinauto`, `uiautomation` |
+| **Linux**   | AT-SPI                   | D-Bus             | `pyatspi`, `dogtail`        |
+| **WSL2**    | N/A (use native Windows) | N/A               | Via `wsl.exe` bridge        |
 
 ### 2.3 Shell Support Matrix
 
-| Context | macOS | Linux | Windows (native) | Windows (WSL2) |
-|---------|-------|-------|------------------|----------------|
-| **Hooks** | Bash | Bash | WSL2 Bash or pwsh | Bash |
-| **Agent Subprocess** | Bash/zsh | Bash | pwsh or WSL2 Bash | Bash |
-| **OS User Creation** | `dscl`/`useradd` | `useradd` | `pwsh` (`New-LocalUser`) | N/A (use native) |
-| **Desktop Automation** | AppleScript | Python+AT-SPI | pwsh + UI Automation | N/A |
-| **thegent CLI** | Python (any) | Python (any) | Python (any) | Python (any) |
+| Context                | macOS            | Linux         | Windows (native)         | Windows (WSL2)   |
+| ---------------------- | ---------------- | ------------- | ------------------------ | ---------------- |
+| **Hooks**              | Bash             | Bash          | WSL2 Bash or pwsh        | Bash             |
+| **Agent Subprocess**   | Bash/zsh         | Bash          | pwsh or WSL2 Bash        | Bash             |
+| **OS User Creation**   | `dscl`/`useradd` | `useradd`     | `pwsh` (`New-LocalUser`) | N/A (use native) |
+| **Desktop Automation** | AppleScript      | Python+AT-SPI | pwsh + UI Automation     | N/A              |
+| **thegent CLI**        | Python (any)     | Python (any)  | Python (any)             | Python (any)     |
 
 ---
 
@@ -151,28 +155,34 @@ This consolidated guide synthesizes content from:
 ### 4.1 Isolation Options
 
 #### Option A: Sub-User Class (Default)
+
 **Implementation**: Model system user object without OS user creation
 
 **Pros**:
+
 - ✅ Fast (no OS calls)
 - ✅ No permissions required
 - ✅ Sufficient for development
 
 **Cons**:
+
 - ❌ No true OS-level isolation
 - ❌ Limited security boundaries
 
 **Use Case**: Development, low-risk agents
 
 #### Option B: OS Users (Opt-in)
+
 **Implementation**: Create actual OS users per agent
 
 **Pros**:
+
 - ✅ True OS-level isolation
 - ✅ Strong security boundaries
 - ✅ Suitable for production
 
 **Cons**:
+
 - ❌ Requires admin/root permissions
 - ❌ Slower (OS calls)
 - ❌ User management overhead
@@ -180,14 +190,17 @@ This consolidated guide synthesizes content from:
 **Use Case**: Production, high-risk agents
 
 #### Option C: Docker Containers (Future)
+
 **Implementation**: Container-based isolation
 
 **Pros**:
+
 - ✅ Strongest isolation
 - ✅ Resource limits
 - ✅ Easy cleanup
 
 **Cons**:
+
 - ❌ Complex setup
 - ❌ No desktop automation (headless)
 - ❌ Additional infrastructure
@@ -195,14 +208,16 @@ This consolidated guide synthesizes content from:
 **Use Case**: Headless agents, CI/CD
 
 #### Option D: Hybrid (Recommended) ✅
+
 **Implementation**: Sub-user default + OS user opt-in + Docker future
 
 **Configuration**:
+
 ```yaml
 isolation:
-  default_mode: "sub_user"  # sub_user | os_user | docker
+  default_mode: "sub_user" # sub_user | os_user | docker
   os_user_required_for: ["high_risk", "production"]
-  docker_enabled: false  # Future
+  docker_enabled: false # Future
 ```
 
 ### 4.2 Implementation
@@ -215,20 +230,24 @@ from dataclasses import dataclass
 from enum import Enum
 from typing import Optional
 
+
 class IsolationMode(Enum):
     SUB_USER = "sub_user"
     OS_USER = "os_user"
     DOCKER = "docker"
 
+
 @dataclass
 class AgentUser:
     """Represents an isolated agent user."""
+
     agent_id: str
     isolation_mode: IsolationMode
     os_user_id: Optional[str] = None
     home_dir: Optional[str] = None
     uid: Optional[int] = None
     gid: Optional[int] = None
+
 
 class SystemUser(ABC):
     """Abstract base for system user management."""
@@ -248,15 +267,12 @@ class SystemUser(ABC):
         """Get agent user info."""
         pass
 
+
 class SubUserManager(SystemUser):
     """Sub-user implementation (no OS user)."""
 
     async def create_user(self, agent_id: str) -> AgentUser:
-        return AgentUser(
-            agent_id=agent_id,
-            isolation_mode=IsolationMode.SUB_USER,
-            home_dir=f"/tmp/thegent/{agent_id}"
-        )
+        return AgentUser(agent_id=agent_id, isolation_mode=IsolationMode.SUB_USER, home_dir=f"/tmp/thegent/{agent_id}")
 
     async def delete_user(self, agent_id: str):
         # Cleanup temp directory
@@ -265,6 +281,7 @@ class SubUserManager(SystemUser):
     async def get_user(self, agent_id: str) -> Optional[AgentUser]:
         # Check if temp directory exists
         pass
+
 
 class OSUserManager(SystemUser):
     """OS user implementation."""
@@ -280,6 +297,7 @@ class OSUserManager(SystemUser):
 ### 4.3 Platform-Specific User Creation
 
 **macOS**:
+
 ```bash
 # Create user
 dscl . -create /Users/thegent_agent_123
@@ -290,12 +308,14 @@ dscl . -create /Users/thegent_agent_123 NFSHomeDirectory /Users/thegent_agent_12
 ```
 
 **Linux**:
+
 ```bash
 # Create user
 useradd -r -s /bin/bash -d /home/thegent_agent_123 -m thegent_agent_123
 ```
 
 **Windows** (PowerShell):
+
 ```powershell
 # Create user
 New-LocalUser -Name "thegent_agent_123" -Description "thegent agent user" -NoPassword
@@ -309,16 +329,19 @@ Add-LocalGroupMember -Group "Users" -Member "thegent_agent_123"
 ### 5.1 Coordination Mechanisms
 
 #### File-Level Coordination
+
 - **Edit Leases**: Extend existing `EditLeaseManager`
 - **Tenant-Aware**: Track which agent/user owns lease
 - **Conflict Resolution**: User priority + FIFO
 
 #### UI Automation Coordination
+
 - **Desktop Automation Coordinator**: Centralized coordination
 - **User Activity Detection**: Pause automation when user active
 - **Conflict Resolution**: User priority + queue
 
 #### Process Coordination
+
 - **Tenant-Aware Concurrency**: Extend `ConcurrencyController`
 - **Resource Limits**: Per-tenant limits
 - **Priority Queuing**: User > Agent priority
@@ -326,37 +349,37 @@ Add-LocalGroupMember -Group "Users" -Member "thegent_agent_123"
 ### 5.2 User Activity Detection
 
 **macOS**:
+
 ```python
 from Quartz import CGEventSourceSecondsSinceLastEventType, kCGEventKeyDown
 
+
 def get_user_idle_time() -> float:
     """Get seconds since last user activity."""
-    return CGEventSourceSecondsSinceLastEventType(
-        kCGEventKeyDown,
-        kCGEventSourceStateHIDSystemState
-    )
+    return CGEventSourceSecondsSinceLastEventType(kCGEventKeyDown, kCGEventSourceStateHIDSystemState)
 ```
 
 **Linux** (X11):
+
 ```python
 import subprocess
 
+
 def get_user_idle_time() -> float:
     """Get seconds since last user activity."""
-    result = subprocess.run(
-        ["xssstate", "-i"],
-        capture_output=True,
-        text=True
-    )
+    result = subprocess.run(["xssstate", "-i"], capture_output=True, text=True)
     return float(result.stdout.strip())
 ```
 
 **Windows**:
+
 ```python
 from ctypes import windll, Structure, c_uint32, byref
 
+
 class LASTINPUTINFO(Structure):
     _fields_ = [("cbSize", c_uint32), ("dwTime", c_uint32)]
+
 
 def get_user_idle_time() -> float:
     """Get seconds since last user activity."""
@@ -388,16 +411,17 @@ def get_user_idle_time() -> float:
 import subprocess
 from typing import Optional
 
+
 class MacOSAutomation:
     """macOS desktop automation via AppleScript."""
 
     def click(self, x: int, y: int) -> bool:
         """Click at coordinates."""
-        script = f'''
+        script = f"""
         tell application "System Events"
             click at {{{x}, {y}}}
         end tell
-        '''
+        """
         return self._run_applescript(script)
 
     def type_text(self, text: str) -> bool:
@@ -412,11 +436,7 @@ class MacOSAutomation:
     def screenshot(self, path: str, region: Optional[dict] = None) -> bool:
         """Take screenshot."""
         if region:
-            cmd = [
-                "screencapture",
-                "-R", f"{region['x']},{region['y']},{region['width']},{region['height']}",
-                path
-            ]
+            cmd = ["screencapture", "-R", f"{region['x']},{region['y']},{region['width']},{region['height']}", path]
         else:
             cmd = ["screencapture", path]
 
@@ -425,10 +445,7 @@ class MacOSAutomation:
 
     def _run_applescript(self, script: str) -> bool:
         """Run AppleScript."""
-        result = subprocess.run(
-            ["osascript", "-e", script],
-            capture_output=True
-        )
+        result = subprocess.run(["osascript", "-e", script], capture_output=True)
         return result.returncode == 0
 ```
 
@@ -440,6 +457,7 @@ class MacOSAutomation:
 from pywinauto import Application
 from pywinauto.findwindows import find_window
 import uiautomation as auto
+
 
 class WindowsAutomation:
     """Windows desktop automation via UIA."""
@@ -464,13 +482,7 @@ class WindowsAutomation:
         """Take screenshot."""
         try:
             if region:
-                auto.CaptureToImage(
-                    path,
-                    x=region['x'],
-                    y=region['y'],
-                    width=region['width'],
-                    height=region['height']
-                )
+                auto.CaptureToImage(path, x=region["x"], y=region["y"], width=region["width"], height=region["height"])
             else:
                 auto.CaptureToImage(path)
             return True
@@ -486,24 +498,19 @@ class WindowsAutomation:
 from pyatspi import Registry, STATE_FOCUSED
 import subprocess
 
+
 class LinuxAutomation:
     """Linux desktop automation via AT-SPI."""
 
     def click(self, x: int, y: int) -> bool:
         """Click at coordinates."""
         # Use xdotool as fallback
-        result = subprocess.run(
-            ["xdotool", "mousemove", str(x), str(y), "click", "1"],
-            capture_output=True
-        )
+        result = subprocess.run(["xdotool", "mousemove", str(x), str(y), "click", "1"], capture_output=True)
         return result.returncode == 0
 
     def type_text(self, text: str) -> bool:
         """Type text."""
-        result = subprocess.run(
-            ["xdotool", "type", text],
-            capture_output=True
-        )
+        result = subprocess.run(["xdotool", "type", text], capture_output=True)
         return result.returncode == 0
 
     def screenshot(self, path: str, region: Optional[dict] = None) -> bool:
@@ -511,9 +518,11 @@ class LinuxAutomation:
         if region:
             cmd = [
                 "import",
-                "-window", "root",
-                "-crop", f"{region['width']}x{region['height']}+{region['x']}+{region['y']}",
-                path
+                "-window",
+                "root",
+                "-crop",
+                f"{region['width']}x{region['height']}+{region['x']}+{region['y']}",
+                path,
             ]
         else:
             cmd = ["import", "-window", "root", path]
@@ -529,6 +538,7 @@ class LinuxAutomation:
 ```python
 from abc import ABC, abstractmethod
 from typing import Optional
+
 
 class DesktopAutomationProvider(ABC):
     """Abstract desktop automation provider."""
@@ -553,16 +563,20 @@ class DesktopAutomationProvider(ABC):
         """Get seconds since last user activity."""
         pass
 
+
 def get_automation_provider(platform: str) -> DesktopAutomationProvider:
     """Get platform-specific automation provider."""
     if platform == "macos":
         from thegent.automation.macos import MacOSAutomation
+
         return MacOSAutomation()
     elif platform == "windows":
         from thegent.automation.windows import WindowsAutomation
+
         return WindowsAutomation()
     elif platform == "linux":
         from thegent.automation.linux import LinuxAutomation
+
         return LinuxAutomation()
     else:
         raise ValueError(f"Unsupported platform: {platform}")
@@ -588,10 +602,8 @@ from typing import Literal
 import platform
 import subprocess
 
-def get_preferred_shell(
-    platform_name: str,
-    context: Literal["hooks", "agent", "os_admin", "desktop"]
-) -> str:
+
+def get_preferred_shell(platform_name: str, context: Literal["hooks", "agent", "os_admin", "desktop"]) -> str:
     """Return preferred shell for context."""
     if platform_name == "windows":
         if context == "os_admin":
@@ -604,14 +616,11 @@ def get_preferred_shell(
 
     return "bash"
 
+
 def _wsl_available() -> bool:
     """Check if WSL2 is available."""
     try:
-        result = subprocess.run(
-            ["wsl", "--list", "--quiet"],
-            capture_output=True,
-            timeout=2
-        )
+        result = subprocess.run(["wsl", "--list", "--quiet"], capture_output=True, timeout=2)
         return result.returncode == 0
     except Exception:
         return False
@@ -620,14 +629,17 @@ def _wsl_available() -> bool:
 ### 7.3 Cross-Platform Script Execution
 
 **Hook Execution**:
+
 - Always invoke via `bash -c` or `wsl bash -c` on Windows
 - Fallback to `pwsh -File` for Windows-specific hook logic
 
 **Agent Subprocess**:
+
 - Configurable `agent_shell`: `bash` | `pwsh` | `wsl-bash`
 - Default: Platform-appropriate
 
 **OS Admin**:
+
 - Platform-specific: `pwsh` on Windows, `bash+sudo` on Unix
 
 ---
@@ -660,6 +672,7 @@ import json
 from pathlib import Path
 from typing import Optional, Dict
 
+
 class RemoteExecutor:
     """Execute commands on remote hosts."""
 
@@ -667,12 +680,7 @@ class RemoteExecutor:
         self.host = host
         self.user = user or "thegent"
 
-    async def execute(
-        self,
-        command: str,
-        cwd: Optional[str] = None,
-        env: Optional[Dict[str, str]] = None
-    ) -> dict:
+    async def execute(self, command: str, cwd: Optional[str] = None, env: Optional[Dict[str, str]] = None) -> dict:
         """Execute command on remote host."""
         # Build SSH command
         ssh_cmd = ["ssh", f"{self.user}@{self.host}"]
@@ -687,17 +695,9 @@ class RemoteExecutor:
         remote_cmd.append(command)
 
         # Execute
-        result = subprocess.run(
-            ssh_cmd + remote_cmd,
-            capture_output=True,
-            text=True
-        )
+        result = subprocess.run(ssh_cmd + remote_cmd, capture_output=True, text=True)
 
-        return {
-            "returncode": result.returncode,
-            "stdout": result.stdout,
-            "stderr": result.stderr
-        }
+        return {"returncode": result.returncode, "stdout": result.stdout, "stderr": result.stderr}
 ```
 
 ---
@@ -707,6 +707,7 @@ class RemoteExecutor:
 ### 9.1 Threat Model
 
 **Attack Surfaces**:
+
 1. Agent-to-agent isolation
 2. Agent-to-user isolation
 3. Desktop automation permissions
@@ -714,6 +715,7 @@ class RemoteExecutor:
 5. File system access
 
 **Threat Actors**:
+
 - Malicious agents
 - Compromised agents
 - External attackers
@@ -739,12 +741,12 @@ class RemoteExecutor:
 
 ### 10.1 Performance SLAs
 
-| Metric | Target | Platform Notes |
-|--------|--------|----------------|
-| **Desktop Automation Latency** | < 100ms (p95) | Platform-dependent |
-| **User Activity Detection** | < 10ms | Fast polling |
-| **Remote Execution Overhead** | < 200ms | Network-dependent |
-| **Screenshot Capture** | < 500ms | Resolution-dependent |
+| Metric                         | Target        | Platform Notes       |
+| ------------------------------ | ------------- | -------------------- |
+| **Desktop Automation Latency** | < 100ms (p95) | Platform-dependent   |
+| **User Activity Detection**    | < 10ms        | Fast polling         |
+| **Remote Execution Overhead**  | < 200ms       | Network-dependent    |
+| **Screenshot Capture**         | < 500ms       | Resolution-dependent |
 
 ### 10.2 Optimization Strategies
 
@@ -768,6 +770,7 @@ class RemoteExecutor:
 ### 11.2 Failure Handling
 
 **Error Taxonomy**:
+
 - **Transient**: Retry with backoff
 - **Permission**: Fail fast, clear message
 - **State**: Re-find element, invalidate cache
@@ -775,6 +778,7 @@ class RemoteExecutor:
 - **Platform**: Version check, graceful degradation
 
 **Retry Strategy**:
+
 - Desktop automation: 3x with 0.5s backoff
 - Remote SSH: 2x with 2s backoff
 - Element find: 2x with 1s backoff
@@ -784,26 +788,31 @@ class RemoteExecutor:
 ## 12. Implementation Roadmap
 
 ### Phase 1: Foundation (Weeks 1-2)
+
 - User isolation abstraction
 - Shell detection utility
 - Platform detection
 
 ### Phase 2: Coordination (Weeks 3-4)
+
 - Multi-tenant coordination
 - User activity detection
 - Conflict resolution
 
 ### Phase 3: Desktop Automation (Weeks 5-7)
+
 - Platform-specific providers
 - Cross-platform abstraction
 - MCP integration
 
 ### Phase 4: Remote Compute (Week 8)
+
 - SSH execution
 - MCP bridge
 - Result synchronization
 
 ### Phase 5: Testing & Polish (Week 9)
+
 - Comprehensive testing
 - Performance optimization
 - Documentation
@@ -823,11 +832,11 @@ class RemoteExecutor:
 ### 13.2 Test Matrix
 
 | Platform | User Isolation | Desktop Automation | Remote Compute |
-|----------|---------------|-------------------|----------------|
-| macOS | ✅ | ✅ | ✅ |
-| Linux | ✅ | ✅ | ✅ |
-| Windows | ✅ | ✅ | ✅ |
-| WSL2 | ⚠️ | ❌ | ✅ |
+| -------- | -------------- | ------------------ | -------------- |
+| macOS    | ✅             | ✅                 | ✅             |
+| Linux    | ✅             | ✅                 | ✅             |
+| Windows  | ✅             | ✅                 | ✅             |
+| WSL2     | ⚠️             | ❌                 | ✅             |
 
 ---
 
@@ -836,16 +845,19 @@ class RemoteExecutor:
 ### 14.1 Common Issues
 
 **Issue**: Desktop automation fails
+
 - **Solution**: Check accessibility permissions
 - **Solution**: Verify platform-specific libraries installed
 - **Solution**: Check user activity detection
 
 **Issue**: Remote execution fails
+
 - **Solution**: Verify SSH connectivity
 - **Solution**: Check remote thegent installation
 - **Solution**: Verify network connectivity
 
 **Issue**: User isolation fails
+
 - **Solution**: Check permissions (admin/root)
 - **Solution**: Verify OS user creation
 - **Solution**: Check disk space
@@ -875,7 +887,7 @@ class RemoteExecutor:
 
 ---
 
-*Generated: 2026-02-16 | Version: 1.0 | Status: Complete*
+_Generated: 2026-02-16 | Version: 1.0 | Status: Complete_
 
 ---
 
@@ -885,27 +897,30 @@ class RemoteExecutor:
 **Extended by:** Claude Code
 
 ### Changes Made
+
 1. Added research findings summary
 2. Added practical implementations
 3. Enhanced cross-references
 
 ### Cross-References Added
+
 - Related research docs
 - Implementation guides
 
 ### Practical Additions
+
 - Research templates
 - Implementation examples
 
 ## Platform Decision Matrix
 
-| Execution Surface | macOS | Linux | Windows | WSL2 | Decision |
-|---|---|---|---|---|---|
-| Local shell + process control | Native (`zsh`/`bash`) | Native (`bash`) | Native (`pwsh`/`cmd`) | Linux shell on Windows host | Keep one command abstraction with per-OS adapters |
-| Desktop automation | Stable (AX API) | Stable (X11/Wayland-dependent) | Stable (UIA/Win32) | Not supported natively | Run desktop flows only on true host OS |
-| User/session isolation | Per-user accounts | Per-user + namespaces | Per-user sessions | Inherits Windows boundary | Use OS-native account/session model; avoid WSL2 for UI isolation |
-| Remote execution | SSH first-class | SSH first-class | SSH + WinRM fallback | SSH to Linux VM/context | Standardize on SSH transport with capability probes |
-| CI validation target | macOS runner | Linux runner | Windows runner | Optional compatibility lane | Gate release on tri-OS pass; WSL2 informational only |
+| Execution Surface             | macOS                 | Linux                          | Windows               | WSL2                        | Decision                                                         |
+| ----------------------------- | --------------------- | ------------------------------ | --------------------- | --------------------------- | ---------------------------------------------------------------- |
+| Local shell + process control | Native (`zsh`/`bash`) | Native (`bash`)                | Native (`pwsh`/`cmd`) | Linux shell on Windows host | Keep one command abstraction with per-OS adapters                |
+| Desktop automation            | Stable (AX API)       | Stable (X11/Wayland-dependent) | Stable (UIA/Win32)    | Not supported natively      | Run desktop flows only on true host OS                           |
+| User/session isolation        | Per-user accounts     | Per-user + namespaces          | Per-user sessions     | Inherits Windows boundary   | Use OS-native account/session model; avoid WSL2 for UI isolation |
+| Remote execution              | SSH first-class       | SSH first-class                | SSH + WinRM fallback  | SSH to Linux VM/context     | Standardize on SSH transport with capability probes              |
+| CI validation target          | macOS runner          | Linux runner                   | Windows runner        | Optional compatibility lane | Gate release on tri-OS pass; WSL2 informational only             |
 
 ## Rollout Constraints
 
@@ -947,12 +962,12 @@ class RemoteExecutor:
 
 ## Platform Test Matrix
 
-| Capability | macOS | Linux | Windows | WSL2 |
-|---|---|---|---|---|
-| Shell command execution | Required | Required | Required | Required (compute only) |
-| Desktop/UI automation | Required | Required | Required | Not supported |
-| Session/user isolation checks | Required | Required | Required | Required (host-derived) |
-| Remote transport validation | SSH | SSH | SSH + WinRM | SSH to Linux context |
+| Capability                    | macOS    | Linux    | Windows     | WSL2                    |
+| ----------------------------- | -------- | -------- | ----------- | ----------------------- |
+| Shell command execution       | Required | Required | Required    | Required (compute only) |
+| Desktop/UI automation         | Required | Required | Required    | Not supported           |
+| Session/user isolation checks | Required | Required | Required    | Required (host-derived) |
+| Remote transport validation   | SSH      | SSH      | SSH + WinRM | SSH to Linux context    |
 
 ## Degradation Boundary Rules
 
@@ -999,13 +1014,13 @@ class RemoteExecutor:
 
 ## Release Coordination Matrix
 
-| Coordination Area | macOS | Linux | Windows | WSL2 |
-|---|---|---|---|---|
-| Gate owner | Platform release lead | Platform release lead | Platform release lead | Compatibility lead |
-| Required pre-release checks | Shell + UI + isolation | Shell + UI + isolation | Shell + UI + isolation + WinRM | Shell + isolation only |
-| Launch decision rule | Must pass tri-OS parity window | Must pass tri-OS parity window | Must pass tri-OS parity window | Informational only |
-| Rollback trigger | SLO breach or capability drift | SLO breach or capability drift | SLO breach or capability drift | Host-impacting regression |
-| Post-release validation window | 24h stability watch | 24h stability watch | 24h stability watch | 24h compatibility watch |
+| Coordination Area              | macOS                          | Linux                          | Windows                        | WSL2                      |
+| ------------------------------ | ------------------------------ | ------------------------------ | ------------------------------ | ------------------------- |
+| Gate owner                     | Platform release lead          | Platform release lead          | Platform release lead          | Compatibility lead        |
+| Required pre-release checks    | Shell + UI + isolation         | Shell + UI + isolation         | Shell + UI + isolation + WinRM | Shell + isolation only    |
+| Launch decision rule           | Must pass tri-OS parity window | Must pass tri-OS parity window | Must pass tri-OS parity window | Informational only        |
+| Rollback trigger               | SLO breach or capability drift | SLO breach or capability drift | SLO breach or capability drift | Host-impacting regression |
+| Post-release validation window | 24h stability watch            | 24h stability watch            | 24h stability watch            | 24h compatibility watch   |
 
 ## Compatibility Debt Signals
 

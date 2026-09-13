@@ -89,11 +89,13 @@ Based on Reddit community discussions and real-world user experiences, **Ghostty
 ### Stack 1: Ghostty + Git Worktree + CLI Agents (Most Popular)
 
 **Components:**
+
 - Ghostty (terminal)
 - Git worktrees (isolation)
 - Claude Code / Codex / OpenCode (agents)
 
 **Pattern:**
+
 ```
 Ghostty Terminal
 ├── Worktree 1 (feature-branch)
@@ -105,12 +107,14 @@ Ghostty Terminal
 ```
 
 **Benefits:**
+
 - True parallelism: Multiple agents work simultaneously
 - Isolation: Each worktree has independent filesystem state
 - No context switching: Monitor all agents in one terminal
 - Fast rendering: GPU acceleration handles heavy output
 
 **Real-World Usage:**
+
 - Agentastic.Dev built around this pattern
 - "Noticeably improved our productivity"
 - Used to build Agentastic itself (.dev and .com)
@@ -118,16 +122,19 @@ Ghostty Terminal
 ### Stack 2: Ghostty + Zellij + Neovim/Helix
 
 **Components:**
+
 - Ghostty (terminal)
 - Zellij (multiplexer)
 - Neovim or Helix (editor)
 
 **Community Feedback:**
+
 - "ghostty + zellij + agent(s) + neovim | helix is the way"
 - "I'm a tmux convert… Zellij is amazing"
 - "I'm a Neovim convert… Helix is amazing"
 
 **Benefits:**
+
 - Zellij provides better UX than tmux
 - Neovim/Helix for editing
 - Ghostty for terminal performance
@@ -135,12 +142,14 @@ Ghostty Terminal
 ### Stack 3: Ghostty + tmux + OpenCode (Remote)
 
 **Components:**
+
 - Ghostty (terminal)
 - tmux (multiplexer)
 - OpenCode (agent)
 - Remote server
 
 **Real-World Usage:**
+
 - "neovim + ghostty + tmux + opencode stack running on a local server"
 - "so you can ssh in and set things running from anywhere"
 - Remote workflows with agent support
@@ -148,10 +157,12 @@ Ghostty Terminal
 ### Stack 4: Ghostty + Neovim (Simplified)
 
 **Components:**
+
 - Ghostty (terminal)
 - Neovim (editor)
 
 **Community Feedback:**
+
 - "Remove antigravity and grab Neovim in ghosty"
 - Simpler stack, still powerful
 
@@ -162,15 +173,18 @@ Ghostty Terminal
 ### Limited Adoption
 
 **Findings:**
+
 - Very few mentions in agentic development communities
 - No detailed performance comparisons shared
 - No workflow integration examples found
 
 **User Feedback:**
+
 - "CommanderAI looks cool but I don't really need the AI stuff baked into my terminal"
 - Preference for keeping AI separate
 
 **Assessment:**
+
 - CommanderAI appears to be less popular in agentic development circles
 - Baked-in AI features conflict with separate agent tools
 - Performance concerns (no GPU acceleration mentioned)
@@ -182,14 +196,17 @@ Ghostty Terminal
 ### Real-World Performance Reports
 
 **iTerm2 → Ghostty Migration:**
+
 - User report: "switched from iterm2 like 3 months ago and the speed difference is noticeable, especially with large outputs"
 - Consistent theme: Noticeable speed improvements
 
 **Large Output Handling:**
+
 - "GPU acceleration kills any lag during heavy OpenCode output or Claude queries"
 - "Smooth scrolling – No jitter or catch-up when flying through long logs, code blocks, or errors"
 
 **IDE Terminal Comparison:**
+
 - "Way Better Than IDE Terminals" (Antigravity/Cursor/VSCode built-in terminals)
 - xterm.js-based terminals (Code/Cursor/Conductor) are slower
 
@@ -200,11 +217,13 @@ Ghostty Terminal
 ### Windows Terminal Alternative
 
 **Community Feedback:**
+
 - User `tibn4`: "Windows Terminal does a great job and with a few custom settings you can really come close to the Ghostty UI"
 - Windows Terminal is a viable alternative for Windows users
 - Can approximate Ghostty UI with custom settings
 
 **Windows Terminal Features:**
+
 - GPU acceleration (DirectX)
 - Multiplexing
 - Themes
@@ -249,17 +268,20 @@ Ghostty Terminal
 ### For Agentic Development
 
 **Primary Choice: Ghostty**
+
 - Validated by community
 - Proven workflow patterns
 - Excellent performance
 - No AI conflicts
 
 **Windows Users: Windows Terminal**
+
 - Good alternative
 - Can approximate Ghostty UI
 - GPU acceleration available
 
 **Alternative: Alacritty**
+
 - Maximum performance
 - Needs tmux for tabs
 - Less popular for agentic workflows
@@ -273,5 +295,5 @@ Ghostty Terminal
 
 ---
 
-*Research Date: 2026-02-18*
-*Sources: Reddit (r/ClaudeAI, r/opencodeCLI), real-world user experiences, community discussions*
+_Research Date: 2026-02-18_
+_Sources: Reddit (r/ClaudeAI, r/opencodeCLI), real-world user experiences, community discussions_

@@ -12,8 +12,6 @@ import threading
 import time
 from pathlib import Path
 
-import pytest
-
 from thegent.db_helpers import apply_connection_pragmas
 from thegent.planning.workstream_entities import WorkstreamDB, entity_operation
 
@@ -156,9 +154,7 @@ def test_concurrent_writer_retries_within_busy_timeout(tmp_path: Path) -> None:
     assert "error" not in result, result
     assert result.get("elapsed", 0) >= 0.2, "second writer did not wait for the first"
 
-    final = entity_operation(
-        "list", "workstream_items", limit=10, db_path=db_path
-    )
+    final = entity_operation("list", "workstream_items", limit=10, db_path=db_path)
     titles = [item["title"] for item in final["items"]]
     assert "second-wins" in titles, titles
 
@@ -167,9 +163,7 @@ def test_existing_db_is_upgraded_in_place(tmp_path: Path) -> None:
     """A pre-existing rollback-journal DB must be upgraded on first open."""
     db_path = tmp_path / "workstream.db"
     legacy = sqlite3.connect(str(db_path))
-    legacy.execute(
-        "CREATE TABLE workstream_items (item_id TEXT PRIMARY KEY, title TEXT)"
-    )
+    legacy.execute("CREATE TABLE workstream_items (item_id TEXT PRIMARY KEY, title TEXT)")
     legacy.execute("INSERT INTO workstream_items(item_id, title) VALUES ('x', 'y')")
     legacy.commit()
     legacy.close()

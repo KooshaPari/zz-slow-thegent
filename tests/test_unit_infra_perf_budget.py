@@ -11,23 +11,20 @@ Covers:
 
 from __future__ import annotations
 
-import importlib
-import sys
 import threading
 from unittest.mock import MagicMock, patch
 
 import pytest
 
 from thegent.infra.perf_budget import (
-    PerformanceBudgetError,
     BudgetResult,
+    PerformanceBudgetError,
     _current_rss_bytes,
     budget_context,
     check_memory_budget,
     check_module_load_budget,
     get_perf_summary,
 )
-
 
 # ---------------------------------------------------------------------------
 # Fixtures — reset module-level state between tests

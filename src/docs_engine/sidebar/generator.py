@@ -1,7 +1,5 @@
 """Sidebar generator - STUB."""
 
-from typing import Any, Dict, List
-
 
 class SidebarGenerator:
     def __init__(self, *args, **kwargs):

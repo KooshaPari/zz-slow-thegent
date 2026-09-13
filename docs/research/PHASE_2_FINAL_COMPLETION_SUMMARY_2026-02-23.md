@@ -4,18 +4,21 @@
 Date: February 23, 2026
 
 ## Coverage
+
 - Wave 1 complete (50 repos).
 - Wave 2 complete (60 repos).
 - Wave 3 complete (25 repos).
 - Master CSV repo coverage complete (all repo rows mapped into lane execution).
 
 ## Aggregate Verdict Distribution (All Waves)
+
 - `adopt`: 16
 - `pilot`: 27
 - `watch`: 21
 - `avoid`: 21
 
 ## Highest Priority Composite Set
+
 - `https://github.com/errata-ai/vale` (score=4.00, votes=adopt)
 - `https://github.com/pocketbase/pocketbase` (score=4.00, votes=adopt)
 - `https://github.com/doorstop-dev/doorstop` (score=4.00, votes=adopt)
@@ -30,6 +33,7 @@ Date: February 23, 2026
 - `https://github.com/zed-industries/zed` (score=4.00, votes=adopt)
 
 ## Lowest Priority Composite Set
+
 - `https://github.com/moonshinelabs-ai/skipper-tool` (score=1.00, votes=avoid)
 - `https://github.com/opactorai/Claudable` (score=1.00, votes=avoid)
 - `https://github.com/SensAI-PT/RAGMeUp` (score=1.00, votes=avoid)
@@ -44,6 +48,7 @@ Date: February 23, 2026
 - `https://github.com/bar181/ai-toolkit` (score=1.00, votes=avoid)
 
 ## Recommended Execution Order (Post-Research)
+
 1. Adopt-now track: enforce governance gates and run integration pilots for top adopts.
 2. Pilot track: time-box technical proofs and production-readiness checks.
 3. Watch track: monitor release/security maturity, no hard dependency yet.

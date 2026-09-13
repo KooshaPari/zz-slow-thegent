@@ -15,7 +15,7 @@ Manages the creation and synchronization of digital identity twins.
 
 ### Methods
 
-#### DigitalTwinManager.__init__
+#### DigitalTwinManager.**init**
 
 ```python
 __init__(self: Any, storage_dir: str)

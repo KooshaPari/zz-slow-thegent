@@ -24,13 +24,11 @@ import subprocess
 import sys
 import time
 from pathlib import Path
-from typing import TYPE_CHECKING
 
 import httpx
 
 from thegent.config import ThegentSettings
 from thegent.infra.fast_subprocess import run_subprocess_optimized
-
 
 _LOG = logging.getLogger(__name__)
 
@@ -61,7 +59,7 @@ def _which(cmd: str) -> str | None:
     return shutil.which(cmd)
 
 
-def resolve_binary(settings: "ThegentSettings") -> str:
+def resolve_binary(settings: ThegentSettings) -> str:
     """Resolve the CLIProxyAPIPlus binary path.
 
     Honours ``settings.cliproxy_binary`` (THGENT_CLIPROXY_BINARY) and
@@ -153,7 +151,12 @@ def adapter_script_path() -> Path | None:
 
 def is_adapter_fallback_allowed() -> bool:
     """True unless the operator pinned strict-adapter mode."""
-    return os.environ.get("THGENT_CLIPROXY_STRICT_ADAPTER", "").lower() not in {"1", "true", "yes", "on"}
+    return os.environ.get("THGENT_CLIPROXY_STRICT_ADAPTER", "").lower() not in {
+        "1",
+        "true",
+        "yes",
+        "on",
+    }
 
 
 # ---------------------------------------------------------------------------
@@ -325,7 +328,9 @@ def ensure_proxy_running(settings: ThegentSettings) -> str:
     return base_url
 
 
-def start_proxy_managed(settings: ThegentSettings) -> tuple[subprocess.Popen[bytes] | None, str]:
+def start_proxy_managed(
+    settings: ThegentSettings,
+) -> tuple[subprocess.Popen[bytes] | None, str]:
     """Start proxy and return ``(proc, base_url)`` for lifecycle management.
 
     Caller must terminate ``proc`` on shutdown. Skips when the proxy is
@@ -347,7 +352,12 @@ def start_proxy_managed(settings: ThegentSettings) -> tuple[subprocess.Popen[byt
 
     config_path = _ensure_config(settings)
     use_adapter = settings.cliproxy_adapter
-    strict_adapter = os.environ.get("THGENT_CLIPROXY_STRICT_ADAPTER", "").lower() in {"1", "true", "yes", "on"}
+    strict_adapter = os.environ.get("THGENT_CLIPROXY_STRICT_ADAPTER", "").lower() in {
+        "1",
+        "true",
+        "yes",
+        "on",
+    }
     try:
         proc = _start_proxy_and_wait(binary, config_path, base_url, settings, use_adapter=use_adapter)
     except RuntimeError as exc:

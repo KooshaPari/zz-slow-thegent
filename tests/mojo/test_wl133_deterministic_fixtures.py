@@ -14,13 +14,12 @@ If Mojo is not available, the cross-runtime dispatch tests are skipped.
 
 from __future__ import annotations
 
-import orjson as json
 import math
 from pathlib import Path
 from typing import Any
 
+import orjson as json
 import pytest
-
 
 # ---------------------------------------------------------------------------
 # Fixture loading

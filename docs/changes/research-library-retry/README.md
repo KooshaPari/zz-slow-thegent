@@ -6,11 +6,11 @@
 
 ## Quick Links
 
-| Document | Purpose | Audience |
-|----------|---------|----------|
-| **[proposal.md](proposal.md)** | Business case, goals, scope, success criteria | PMs, Architects, Stakeholders |
-| **[design.md](design.md)** | Architecture, components, integration points, design decisions | Architects, Implementers |
-| **[tasks.md](tasks.md)** | Detailed task breakdown, acceptance criteria, phase sequencing | Implementers, QA |
+| Document                       | Purpose                                                        | Audience                      |
+| ------------------------------ | -------------------------------------------------------------- | ----------------------------- |
+| **[proposal.md](proposal.md)** | Business case, goals, scope, success criteria                  | PMs, Architects, Stakeholders |
+| **[design.md](design.md)**     | Architecture, components, integration points, design decisions | Architects, Implementers      |
+| **[tasks.md](tasks.md)**       | Detailed task breakdown, acceptance criteria, phase sequencing | Implementers, QA              |
 
 ## Initiative Overview
 
@@ -22,13 +22,13 @@
 
 ## Key Metrics
 
-| Metric | Target |
-|--------|--------|
-| Code coverage | ≥95% |
-| Services migrated | 3+ |
-| Retry success rate | >80% |
-| Nominal path overhead | <1ms |
-| Observability | 100% traced + metricated |
+| Metric                | Target                   |
+| --------------------- | ------------------------ |
+| Code coverage         | ≥95%                     |
+| Services migrated     | 3+                       |
+| Retry success rate    | >80%                     |
+| Nominal path overhead | <1ms                     |
+| Observability         | 100% traced + metricated |
 
 ## Phase Overview
 
@@ -60,12 +60,14 @@ Phase 4: Validation & Closure (T4.1–T4.4)
 ## Implementation Readiness
 
 ### ✅ Already Done
+
 - [x] Problem analysis
 - [x] Design documentation
 - [x] Task decomposition
 - [x] Risk mitigation planning
 
 ### 🔲 Next Steps
+
 - [ ] **Assign implementation agent** (Phase 1: Core library)
 - [ ] Execute T1.1–T1.4 in parallel
 - [ ] Validate Phase 1 with unit tests
@@ -109,7 +111,7 @@ Phase 4: Validation & Closure (T4.1–T4.4)
 3. **Strategy pattern**: Pre-built strategies (HTTP, DB, Agent) + easy custom extension
 4. **Exponential backoff + jitter**: Industry standard, prevents thundering herd
 5. **Full observability**: Every retry emitted as span event + metric
-6. **Pydantic config**: Environment variables (RETRY_*) + programmatic override
+6. **Pydantic config**: Environment variables (RETRY\_\*) + programmatic override
 
 ## Configuration Example
 
@@ -127,6 +129,7 @@ export RETRY_EMIT_TRACES=true
 # Programmatic usage
 from thegent.resilience import retry_async
 
+
 @retry_async(strategy="http", max_attempts=3)
 async def fetch_data(url: str) -> dict:
     async with httpx.AsyncClient() as client:
@@ -138,6 +141,7 @@ async def fetch_data(url: str) -> dict:
 ## Success Definition
 
 ✅ **Initiative is successful when**:
+
 1. Core library implemented (Phase 1)
 2. 100% test coverage achieved
 3. 3+ services migrated
@@ -160,4 +164,4 @@ async def fetch_data(url: str) -> dict:
 
 ---
 
-*Created: 2026-02-18 | Initiative Phase: Proposal | Status: Ready for Implementation Assignment*
+_Created: 2026-02-18 | Initiative Phase: Proposal | Status: Ready for Implementation Assignment_

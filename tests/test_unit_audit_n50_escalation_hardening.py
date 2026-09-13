@@ -7,10 +7,8 @@ _load_and_process_item, auto-expiry, and DLQ integration.
 
 from __future__ import annotations
 
-import json
 import time
 from pathlib import Path
-from typing import Any
 from unittest.mock import MagicMock, patch
 
 import pytest
@@ -77,7 +75,6 @@ class TestQueueInit:
         assert queue.queue_dir.exists()
 
     def test_init_with_none_settings(self) -> None:
-        from thegent.governance.escalation import EscalationQueue
 
         with patch("thegent.governance.escalation.EscalationQueue.__init__") as mock_init:
             mock_init.return_value = None
@@ -109,7 +106,7 @@ class TestQueueEscalate:
         assert item_path.exists()
 
     def test_item_has_correct_fields(self, mock_settings: MagicMock) -> None:
-        from thegent.governance.escalation import EscalationQueue, EscalationPriority
+        from thegent.governance.escalation import EscalationPriority, EscalationQueue
 
         queue = EscalationQueue(settings=mock_settings)
         esc_id = queue.escalate(
@@ -136,7 +133,7 @@ class TestQueueListItems:
         assert queue.list_items() == []
 
     def test_sorted_by_priority(self, mock_settings: MagicMock) -> None:
-        from thegent.governance.escalation import EscalationQueue, EscalationPriority
+        from thegent.governance.escalation import EscalationPriority, EscalationQueue
 
         queue = EscalationQueue(settings=mock_settings)
         queue.escalate("r1", "p", "r", "a", priority=EscalationPriority.NORMAL)
@@ -214,7 +211,7 @@ class TestQueueAdd:
     """FR-GOV-ES-007: add() simplified legacy interface."""
 
     def test_add_default_priority(self, mock_settings: MagicMock) -> None:
-        from thegent.governance.escalation import EscalationQueue, EscalationPriority
+        from thegent.governance.escalation import EscalationPriority, EscalationQueue
 
         queue = EscalationQueue(settings=mock_settings)
         esc_id = queue.add("run-1", "test reason")
@@ -223,7 +220,7 @@ class TestQueueAdd:
         assert item.priority == EscalationPriority.NORMAL
 
     def test_add_high_priority(self, mock_settings: MagicMock) -> None:
-        from thegent.governance.escalation import EscalationQueue, EscalationPriority
+        from thegent.governance.escalation import EscalationPriority, EscalationQueue
 
         queue = EscalationQueue(settings=mock_settings)
         esc_id = queue.add("run-2", "urgent reason", priority=4)
@@ -231,7 +228,7 @@ class TestQueueAdd:
         assert item.priority == EscalationPriority.URGENT
 
     def test_add_unknown_priority_falls_back(self, mock_settings: MagicMock) -> None:
-        from thegent.governance.escalation import EscalationQueue, EscalationPriority
+        from thegent.governance.escalation import EscalationPriority, EscalationQueue
 
         queue = EscalationQueue(settings=mock_settings)
         esc_id = queue.add("run-3", "reason", priority=99)
@@ -246,7 +243,7 @@ class TestAutoExpiry:
         from thegent.governance.escalation import EscalationQueue, EscalationStatus
 
         queue = EscalationQueue(settings=mock_settings)
-        esc_id = queue.escalate("r-exp", "p", "r", "a", sla_minutes=-1)
+        queue.escalate("r-exp", "p", "r", "a", sla_minutes=-1)
         items = queue.list_items()
         assert len(items) == 1
         assert items[0].status == EscalationStatus.EXPIRED
@@ -256,7 +253,10 @@ class TestSaveLoadRoundtrip:
     """FR-GOV-ES-009: _save_item and _load roundtrip."""
 
     def test_roundtrip(self, mock_settings: MagicMock) -> None:
-        from thegent.governance.escalation import EscalationQueue, EscalationItem, EscalationPriority
+        from thegent.governance.escalation import (
+            EscalationPriority,
+            EscalationQueue,
+        )
 
         queue = EscalationQueue(settings=mock_settings)
         esc_id = queue.escalate("r-rt", "prompt", "reason", "agent", priority=EscalationPriority.HIGH)

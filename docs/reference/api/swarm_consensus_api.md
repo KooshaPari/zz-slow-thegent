@@ -15,7 +15,7 @@ Orchestrates consensus across multiple swarm agents.
 
 ### Methods
 
-#### SwarmConsensus.__init__
+#### SwarmConsensus.**init**
 
 ```python
 __init__(self: Any, task_id: str, threshold: float)

@@ -4,13 +4,13 @@
 
 ## Supported Provider Labels
 
-| Provider | Typical default | Notes |
-|----------|------------------|-------|
-| `free` | `gpt-5-mini` | default convenience route |
-| `claude` | `claude-haiku-4.5` | Anthropic API |
-| `codex` | `gpt-5.3-codex` | OpenAI/Codex API |
-| `gemini` | `gemini-3-flash` | Google API |
-| `cursor` / `kiro` / custom | varies | proxy-dependent |
+| Provider                   | Typical default    | Notes                     |
+| -------------------------- | ------------------ | ------------------------- |
+| `free`                     | `gpt-5-mini`       | default convenience route |
+| `claude`                   | `claude-haiku-4.5` | Anthropic API             |
+| `codex`                    | `gpt-5.3-codex`    | OpenAI/Codex API          |
+| `gemini`                   | `gemini-3-flash`   | Google API                |
+| `cursor` / `kiro` / custom | varies             | proxy-dependent           |
 
 ## Credential Setup
 

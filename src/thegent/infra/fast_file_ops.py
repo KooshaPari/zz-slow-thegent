@@ -16,7 +16,7 @@ import os
 import shutil
 import sys
 from collections import defaultdict
-from errno import ENOSYS, EOPNOTSUPP, EPERM, ENOTSUP
+from errno import ENOSYS, ENOTSUP, EOPNOTSUPP, EPERM
 from logging import getLogger
 from pathlib import Path
 from typing import Any
@@ -189,7 +189,12 @@ class FastFileOps:
                 return ignored
             return []
 
-        shutil.copytree(src_path, dst_path, ignore=ignore_func if ignore else None, dirs_exist_ok=True)
+        shutil.copytree(
+            src_path,
+            dst_path,
+            ignore=ignore_func if ignore else None,
+            dirs_exist_ok=True,
+        )
 
     @staticmethod
     def move(src: Path | str, dst: Path | str) -> None:

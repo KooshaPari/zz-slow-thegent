@@ -14,18 +14,18 @@ This document defines the RACI matrix, ownership assignments, and escalation pat
 
 ## 2. RACI Matrix
 
-| Activity | Product Owner | Tech Lead | Operator | Security/Compliance | Stakeholder |
-|----------|---------------|-----------|----------|---------------------|-------------|
-| **Orchestration (run, bg, dag run)** | A | R | R | I | I |
-| **Policy definition & thresholds** | A | R | I | R | C |
-| **Override approval (--override)** | A | I | R | C | I |
-| **Escalation queue (govern escalate)** | A | I | R | C | I |
-| **Drift detection & sweep** | I | R | R | I | I |
-| **Audit trail & integrity** | I | R | I | R | C |
-| **Recovery (reconcile, rollback)** | I | R | R | I | I |
-| **Data protection & retention** | A | R | I | R | C |
-| **Contract migration & versioning** | A | R | I | I | C |
-| **Post-launch observation** | A | R | R | I | I |
+| Activity                               | Product Owner | Tech Lead | Operator | Security/Compliance | Stakeholder |
+| -------------------------------------- | ------------- | --------- | -------- | ------------------- | ----------- |
+| **Orchestration (run, bg, dag run)**   | A             | R         | R        | I                   | I           |
+| **Policy definition & thresholds**     | A             | R         | I        | R                   | C           |
+| **Override approval (--override)**     | A             | I         | R        | C                   | I           |
+| **Escalation queue (govern escalate)** | A             | I         | R        | C                   | I           |
+| **Drift detection & sweep**            | I             | R         | R        | I                   | I           |
+| **Audit trail & integrity**            | I             | R         | I        | R                   | C           |
+| **Recovery (reconcile, rollback)**     | I             | R         | R        | I                   | I           |
+| **Data protection & retention**        | A             | R         | I        | R                   | C           |
+| **Contract migration & versioning**    | A             | R         | I        | I                   | C           |
+| **Post-launch observation**            | A             | R         | R        | I                   | I           |
 
 **Legend:** R = Responsible, A = Accountable, C = Consulted, I = Informed
 
@@ -33,14 +33,14 @@ This document defines the RACI matrix, ownership assignments, and escalation pat
 
 ## 3. Ownership Assignments
 
-| Domain | Owner | Backup | Scope |
-|--------|-------|--------|-------|
-| **Orchestration** | Tech Lead | Operator | run, bg, dag, agents, routing |
-| **Governance** | Product Owner | Security | policy, override, escalation, data-protection |
-| **Recovery** | Tech Lead | Operator | reconcile, rollback, recover, stop |
-| **Observability** | Operator | Tech Lead | cockpit, benchmark, drift, KPIs |
-| **Contracts** | Tech Lead | Product Owner | conformance, migration, schema versioning |
-| **Compliance** | Security/Compliance | Product Owner | audit, retention, evidence |
+| Domain            | Owner               | Backup        | Scope                                         |
+| ----------------- | ------------------- | ------------- | --------------------------------------------- |
+| **Orchestration** | Tech Lead           | Operator      | run, bg, dag, agents, routing                 |
+| **Governance**    | Product Owner       | Security      | policy, override, escalation, data-protection |
+| **Recovery**      | Tech Lead           | Operator      | reconcile, rollback, recover, stop            |
+| **Observability** | Operator            | Tech Lead     | cockpit, benchmark, drift, KPIs               |
+| **Contracts**     | Tech Lead           | Product Owner | conformance, migration, schema versioning     |
+| **Compliance**    | Security/Compliance | Product Owner | audit, retention, evidence                    |
 
 ---
 
@@ -85,11 +85,11 @@ See `docs/POST_LAUNCH_OBSERVATION_PLAYBOOK.md` for severity→SLA mapping.
 
 The operating model is enforced via config. These settings map to the escalation paths above:
 
-| Config / Env | Default | Maps To |
-|--------------|---------|---------|
-| `escalation_sla_minutes` / `THGENT_ESCALATION_SLA_MINUTES` | 30 | §4.1 Policy Denial SLA |
-| `escalation_sla_breach_alert` | true | §4.1 Past-SLA alert in `govern sweep` |
-| `override_ttl_seconds` | 86400 (24h) | §4.1 Override validity |
+| Config / Env                                               | Default     | Maps To                               |
+| ---------------------------------------------------------- | ----------- | ------------------------------------- |
+| `escalation_sla_minutes` / `THGENT_ESCALATION_SLA_MINUTES` | 30          | §4.1 Policy Denial SLA                |
+| `escalation_sla_breach_alert`                              | true        | §4.1 Past-SLA alert in `govern sweep` |
+| `override_ttl_seconds`                                     | 86400 (24h) | §4.1 Override validity                |
 
 **Source:** `src/thegent/config.py` — `ThegentSettings`
 

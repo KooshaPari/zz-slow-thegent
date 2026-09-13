@@ -38,7 +38,6 @@ from unittest.mock import MagicMock, patch
 
 import pytest
 
-
 _WIRE_DONE = (
     "_phase_resolve_task_metadata",
     "_phase_dispatch_grounded_run",
@@ -120,12 +119,11 @@ def test_phase_release_idle_and_publish_uses_correct_bus_event_shape(
 ) -> None:
     """When publish_bus_event is reachable, it must publish ``run.end`` with the
     4-tuple payload ``(run_id, exit_code, duration_s, status)``."""
-    from pathlib import Path
-
     # Inject the lazy-import target modules into sys.modules so the
     # production ``from ... import`` succeeds.
     import sys
     import types
+    from pathlib import Path
 
     fake_eye_mod = types.ModuleType("thegent.cli.shared.eye_state")
     fake_eye_cls = MagicMock()
@@ -202,7 +200,9 @@ def test_phase_classify_run_result_maps_timeout_to_error_class(helpers_module) -
     mock_log.info.assert_not_called()  # DLQ only enqueues for critical lane
 
 
-def test_phase_classify_run_result_enqueues_dlq_for_critical_lane(helpers_module) -> None:
+def test_phase_classify_run_result_enqueues_dlq_for_critical_lane(
+    helpers_module,
+) -> None:
     """Critical-lane failures must hit the DLQ (WP-2008)."""
     result = SimpleNamespace(exit_code=1, timed_out=False, stdout="", stderr="boom")
     norm_res = SimpleNamespace(csm=SimpleNamespace(source_contract="csm-v1"))
@@ -229,7 +229,9 @@ def test_phase_classify_run_result_enqueues_dlq_for_critical_lane(helpers_module
     mock_dlq_cls.return_value.enqueue.assert_called_once()
 
 
-def test_phase_classify_run_result_reclassifies_unknown_contract(helpers_module) -> None:
+def test_phase_classify_run_result_reclassifies_unknown_contract(
+    helpers_module,
+) -> None:
     """Critical + unknown source_contract → status=failed, error_class=unknown_contract (G-CA-03 C3)."""
     result = SimpleNamespace(exit_code=0, timed_out=False, stdout="ok", stderr="")
     norm_res = SimpleNamespace(csm=SimpleNamespace(source_contract="mystery-fmt"))

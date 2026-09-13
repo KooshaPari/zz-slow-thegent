@@ -31,7 +31,7 @@ Service for managing the unified agent registry.
 
 ### Methods
 
-#### AgentRegistryService.__init__
+#### AgentRegistryService.**init**
 
 ```python
 __init__(self: Any, storage_path: Optional[str])

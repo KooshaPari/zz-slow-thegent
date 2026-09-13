@@ -4,7 +4,10 @@ from __future__ import annotations
 
 import orjson as json
 
-from thegent.protocols.jsonrpc_agent_server import SERVER_STATE, process_jsonrpc_line_full
+from thegent.protocols.jsonrpc_agent_server import (
+    SERVER_STATE,
+    process_jsonrpc_line_full,
+)
 
 
 def _reset_state() -> None:
@@ -31,7 +34,14 @@ def _submit_turn(session_id: str, *, requires_approval: bool = False) -> str:
         params["requires_approval"] = True
         params["unified_diff"] = "--- a/x\n+++ b/x\n@@ -1 +1 @@\n-old\n+new\n"
     response, _notifications = process_jsonrpc_line_full(
-        json.dumps({"jsonrpc": "2.0", "id": "submit", "method": "turn/submit", "params": params})
+        json.dumps(
+            {
+                "jsonrpc": "2.0",
+                "id": "submit",
+                "method": "turn/submit",
+                "params": params,
+            }
+        )
     )
     assert response is not None
     return response["result"]["turn"]["id"]
@@ -59,7 +69,14 @@ def test_wl9731_success_path_cancels_in_progress_turn() -> None:
     turn_id = _submit_turn(session_id, requires_approval=True)
 
     response, notifications = process_jsonrpc_line_full(
-        json.dumps({"jsonrpc": "2.0", "id": "c2", "method": "turn/cancel", "params": {"turn_id": turn_id}})
+        json.dumps(
+            {
+                "jsonrpc": "2.0",
+                "id": "c2",
+                "method": "turn/cancel",
+                "params": {"turn_id": turn_id},
+            }
+        )
     )
 
     assert response is not None
@@ -72,7 +89,14 @@ def test_wl9732_lookup_miss_branch_returns_turn_not_found() -> None:
     _reset_state()
 
     response, notifications = process_jsonrpc_line_full(
-        json.dumps({"jsonrpc": "2.0", "id": "c3", "method": "turn/cancel", "params": {"turn_id": "turn-9999"}})
+        json.dumps(
+            {
+                "jsonrpc": "2.0",
+                "id": "c3",
+                "method": "turn/cancel",
+                "params": {"turn_id": "turn-9999"},
+            }
+        )
     )
 
     assert response is not None
@@ -87,7 +111,14 @@ def test_wl9733_dispatch_produces_serialized_turn_projection() -> None:
     turn_id = _submit_turn(session_id, requires_approval=True)
 
     response, _notifications = process_jsonrpc_line_full(
-        json.dumps({"jsonrpc": "2.0", "id": "c4", "method": "turn/cancel", "params": {"turn_id": turn_id}})
+        json.dumps(
+            {
+                "jsonrpc": "2.0",
+                "id": "c4",
+                "method": "turn/cancel",
+                "params": {"turn_id": turn_id},
+            }
+        )
     )
 
     assert response is not None
@@ -104,12 +135,26 @@ def test_wl9734_terminal_turn_fails_before_state_mutation() -> None:
     turn_id = _submit_turn(session_id, requires_approval=True)
 
     first, _ = process_jsonrpc_line_full(
-        json.dumps({"jsonrpc": "2.0", "id": "c5a", "method": "turn/cancel", "params": {"turn_id": turn_id}})
+        json.dumps(
+            {
+                "jsonrpc": "2.0",
+                "id": "c5a",
+                "method": "turn/cancel",
+                "params": {"turn_id": turn_id},
+            }
+        )
     )
     assert first is not None
 
     second, notifications = process_jsonrpc_line_full(
-        json.dumps({"jsonrpc": "2.0", "id": "c5b", "method": "turn/cancel", "params": {"turn_id": turn_id}})
+        json.dumps(
+            {
+                "jsonrpc": "2.0",
+                "id": "c5b",
+                "method": "turn/cancel",
+                "params": {"turn_id": turn_id},
+            }
+        )
     )
 
     assert second is not None
@@ -145,7 +190,14 @@ def test_wl9736_recovery_branch_preserves_resolved_approval_state() -> None:
     SERVER_STATE.turns[turn_id]["status"] = "completed"
 
     response, _notifications = process_jsonrpc_line_full(
-        json.dumps({"jsonrpc": "2.0", "id": "c7", "method": "turn/cancel", "params": {"turn_id": turn_id}})
+        json.dumps(
+            {
+                "jsonrpc": "2.0",
+                "id": "c7",
+                "method": "turn/cancel",
+                "params": {"turn_id": turn_id},
+            }
+        )
     )
 
     assert response is not None
@@ -162,7 +214,14 @@ def test_wl9737_requested_approval_is_cancelled_on_turn_cancel() -> None:
     assert isinstance(approval_id, str)
 
     response, _notifications = process_jsonrpc_line_full(
-        json.dumps({"jsonrpc": "2.0", "id": "c8", "method": "turn/cancel", "params": {"turn_id": turn_id}})
+        json.dumps(
+            {
+                "jsonrpc": "2.0",
+                "id": "c8",
+                "method": "turn/cancel",
+                "params": {"turn_id": turn_id},
+            }
+        )
     )
 
     assert response is not None
@@ -180,7 +239,14 @@ def test_wl9738_non_requested_approval_status_is_preserved() -> None:
     SERVER_STATE.approvals[approval_id]["status"] = "rejected"
 
     response, _notifications = process_jsonrpc_line_full(
-        json.dumps({"jsonrpc": "2.0", "id": "c9", "method": "turn/cancel", "params": {"turn_id": turn_id}})
+        json.dumps(
+            {
+                "jsonrpc": "2.0",
+                "id": "c9",
+                "method": "turn/cancel",
+                "params": {"turn_id": turn_id},
+            }
+        )
     )
 
     assert response is not None

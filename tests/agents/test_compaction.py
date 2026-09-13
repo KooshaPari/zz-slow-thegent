@@ -15,7 +15,6 @@ from thegent.agents.compaction import (
     ContextWindow,
 )
 
-
 # ---------------------------------------------------------------------------
 # CompactionTrigger
 # ---------------------------------------------------------------------------
@@ -131,7 +130,7 @@ class TestContextCompactor:
             token_count=200,
             turn_count=3,
         )
-        result = compactor.compact(window, summary="Key points: greeting exchange.")
+        compactor.compact(window, summary="Key points: greeting exchange.")
         assert len(window.messages) == 1
         assert window.messages[0]["role"] == "system"
         assert window.messages[0]["content"] == "Key points: greeting exchange."

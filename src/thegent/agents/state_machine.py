@@ -15,7 +15,12 @@ from types import MappingProxyType
 from typing import Any, ClassVar
 
 from thegent.agents.base import RunResult
-from thegent.agents.resilience import FailureKind, TransientAgentError, classify_failure, with_retry
+from thegent.agents.resilience import (
+    FailureKind,
+    TransientAgentError,
+    classify_failure,
+    with_retry,
+)
 from thegent.contracts.adapters import AdapterResult, normalize_output
 from thegent.contracts.policy import FallbackPolicy, evaluate_fallback
 from thegent.contracts.telemetry import (
@@ -174,7 +179,12 @@ class FallbackStateMachine:
                 "agent_attempt",
                 attributes={"agent": current_agent, "attempt": self.state.attempt},
             )
-            _log.info("Attempting %s (attempt %d/%d)", current_agent, self.state.attempt, self.max_retries)
+            _log.info(
+                "Attempting %s (attempt %d/%d)",
+                current_agent,
+                self.state.attempt,
+                self.max_retries,
+            )
             result = runner.run(prompt=prompt, **run_kwargs)
             if result.exit_code != 0:
                 failure_kind = classify_failure(result)
@@ -224,7 +234,11 @@ class FallbackStateMachine:
                 # SLO Latency Check (WP-X6)
                 elapsed_ms = (time.time() - self.state.start_time) * 1000
                 if elapsed_ms > self.policy.max_latency_ms:
-                    _log.warning("SLO: max_latency_ms exceeded (%dms > %dms)", elapsed_ms, self.policy.max_latency_ms)
+                    _log.warning(
+                        "SLO: max_latency_ms exceeded (%dms > %dms)",
+                        elapsed_ms,
+                        self.policy.max_latency_ms,
+                    )
                     self.state.errors.append(f"SLO Timeout ({current_agent})")
                     break
 
@@ -251,7 +265,12 @@ class FallbackStateMachine:
                 except Exception as e:
                     import traceback
 
-                    _log.error("Execution error for %s: %s\n%s", current_agent, e, traceback.format_exc())
+                    _log.error(
+                        "Execution error for %s: %s\n%s",
+                        current_agent,
+                        e,
+                        traceback.format_exc(),
+                    )
                     self.state.errors.append(f"Execution error ({current_agent}): {e}")
                     break
 
@@ -272,7 +291,11 @@ class FallbackStateMachine:
                 # 4. Normalization and Semantic Validation
                 norm_res = normalize_output(
                     current_agent,
-                    {"stdout": result.stdout, "stderr": result.stderr, "exit_code": result.exit_code},
+                    {
+                        "stdout": result.stdout,
+                        "stderr": result.stderr,
+                        "exit_code": result.exit_code,
+                    },
                     context={"run_id": self.run_id},
                 )
                 self.state.last_normalization = norm_res
@@ -280,7 +303,11 @@ class FallbackStateMachine:
                 semantic_issues = validate_csm(norm_res.csm)
                 self.state.semantic_issues = semantic_issues
                 if semantic_issues:
-                    _log.warning("Semantic validation failed for %s: %s", current_agent, semantic_issues)
+                    _log.warning(
+                        "Semantic validation failed for %s: %s",
+                        current_agent,
+                        semantic_issues,
+                    )
 
                 # 5. Fallback Policy Evaluation
                 is_fallback = norm_res.csm.source_contract == "fallback-plain"
@@ -333,7 +360,11 @@ class FallbackStateMachine:
                         gate = PromotionGate(self.telemetry.session_dir)
                         gate_issues = gate.validate_promotion(norm_res.csm, self.policy)
                         if gate_issues:
-                            _log.warning("Promotion gate failed for %s: %s", current_agent, gate_issues)
+                            _log.warning(
+                                "Promotion gate failed for %s: %s",
+                                current_agent,
+                                gate_issues,
+                            )
                             self.state.errors.append(f"Promotion gate failure ({current_agent})")
                             break
 
@@ -366,5 +397,9 @@ class FallbackStateMachine:
         self.state.status = "failed"
         return (
             self.state.last_result
-            or RunResult(exit_code=1, stdout="", stderr="Orchestration failed: no results available")
+            or RunResult(
+                exit_code=1,
+                stdout="",
+                stderr="Orchestration failed: no results available",
+            )
         ), self.state.last_normalization

@@ -15,9 +15,9 @@ This lib is intentionally minimal by design. Landing pages have different concer
 ## Usage
 
 ```typescript
-import { BASE_PATH, sitePath } from '@/lib';
+import { BASE_PATH, sitePath } from "@/lib";
 
-const absolutePath = sitePath('/features');
+const absolutePath = sitePath("/features");
 // => '/features' or '/landing/features' depending on deployment
 ```
 

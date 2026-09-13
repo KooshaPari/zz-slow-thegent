@@ -31,7 +31,11 @@ from thegent.protocols.turn_submit_boundaries import (
 def test_wl10720_provider_selection_separates_fallback_and_normal_paths() -> None:
     # @trace WL-10720
     phase = build_provider_selection_phase(["fallback", "primary"], "primary", "weighted")
-    assert resolve_workflow_guard_target(phase) == (["fallback", "primary"], "primary", "weighted")
+    assert resolve_workflow_guard_target(phase) == (
+        ["fallback", "primary"],
+        "primary",
+        "weighted",
+    )
 
 
 def test_wl10721_policy_enforcement_separates_rule_discovery_and_action() -> None:
@@ -107,13 +111,21 @@ def test_wl10726_cli_dispatch_separates_parse_and_handler_execution() -> None:
 def test_wl10727_orchestration_plan_and_execution_boundaries_remain_distinct() -> None:
     # @trace WL-10727
     phase = build_queue_priority_phase("high", ["turn-10727-a", "turn-10727-b"], 7)
-    assert resolve_queue_execution_target(phase) == ("high", ["turn-10727-a", "turn-10727-b"], 7)
+    assert resolve_queue_execution_target(phase) == (
+        "high",
+        ["turn-10727-a", "turn-10727-b"],
+        7,
+    )
 
 
 def test_wl10728_queue_throughput_separates_intake_and_worker_fanout() -> None:
     # @trace WL-10728
     phase = build_queue_scheduling_phase(["turn-10728-a", "turn-10728-b"], 41, 4)
-    assert resolve_session_persistence_target(phase) == (["turn-10728-a", "turn-10728-b"], 41, 4)
+    assert resolve_session_persistence_target(phase) == (
+        ["turn-10728-a", "turn-10728-b"],
+        41,
+        4,
+    )
     with pytest.raises(ValueError, match="invalid prioritized_turn_ids"):
         resolve_session_persistence_target(build_queue_scheduling_phase([], 41, 4))
 

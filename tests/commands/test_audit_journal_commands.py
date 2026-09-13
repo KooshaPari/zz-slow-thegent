@@ -15,7 +15,7 @@ from typer.testing import CliRunner
 from thegent.cli.apps import audit
 
 if TYPE_CHECKING:
-    from pathlib import Path
+    pass
 
 runner = CliRunner()
 
@@ -31,18 +31,38 @@ def mock_git_journal():
     with patch("thegent.cli.apps.audit.GitJournalEnhanced") as mock:
         # Mock list_sessions
         mock.list_sessions.return_value = [
-            {"session_id": "test-session-1", "last_commit": "2024-01-15", "sha": "abc123def456"},
-            {"session_id": "test-session-2", "last_commit": "2024-01-16", "sha": "789xyz123abc"},
+            {
+                "session_id": "test-session-1",
+                "last_commit": "2024-01-15",
+                "sha": "abc123def456",
+            },
+            {
+                "session_id": "test-session-2",
+                "last_commit": "2024-01-16",
+                "sha": "789xyz123abc",
+            },
         ]
 
         # Mock instance for journal operations
         mock_instance = MagicMock()
         mock_instance.get_audit_log.return_value = [
-            {"sha": "abc123", "message": "Initial commit", "timestamp": "2024-01-15T10:00:00"},
-            {"sha": "def456", "message": "Second entry", "timestamp": "2024-01-15T11:00:00"},
+            {
+                "sha": "abc123",
+                "message": "Initial commit",
+                "timestamp": "2024-01-15T10:00:00",
+            },
+            {
+                "sha": "def456",
+                "message": "Second entry",
+                "timestamp": "2024-01-15T11:00:00",
+            },
         ]
         mock_instance.get_attestations.return_value = [
-            {"commit_sha": "abc123", "timestamp": "2024-01-15T10:00:00", "algorithm": "sha256"},
+            {
+                "commit_sha": "abc123",
+                "timestamp": "2024-01-15T10:00:00",
+                "algorithm": "sha256",
+            },
         ]
         mock_instance.get_performance_stats.return_value = {
             "native_scanner": True,
@@ -114,7 +134,10 @@ class TestJournalStatus:
 class TestJournalSnapshot:
     def test_snapshot_with_session(self, mock_git_journal) -> None:
         """Test creating snapshot with explicit session ID."""
-        result = runner.invoke(audit.app, ["journal", "snapshot", "--session", "test-session-1", "--batch", "5"])
+        result = runner.invoke(
+            audit.app,
+            ["journal", "snapshot", "--session", "test-session-1", "--batch", "5"],
+        )
         assert result.exit_code == 0
         assert "snapshot" in result.output.lower()
         assert "test-session-1" in result.output

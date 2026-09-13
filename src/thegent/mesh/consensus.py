@@ -170,7 +170,10 @@ class ConsensusProtocol:
         return next_round
 
     def get_consensus(
-        self, proposal_id: str, required_majority: float | None = None, vote_round: int | None = None
+        self,
+        proposal_id: str,
+        required_majority: float | None = None,
+        vote_round: int | None = None,
     ) -> tuple[ConsensusStatus, float]:
         """Phase 5 & 6: TALLY & DECIDE (ADR-013). Check if consensus is reached."""
         proposal = self._load_proposal(proposal_id)

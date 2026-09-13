@@ -8,11 +8,12 @@ Requires config/quality-fix-dag.yaml.
 
 from __future__ import annotations
 
-import orjson as json
 import subprocess
 import sys
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from pathlib import Path
+
+import orjson as json
 
 ROOT = Path.cwd()
 LOG_DIR = ROOT / ".quality" / "logs"

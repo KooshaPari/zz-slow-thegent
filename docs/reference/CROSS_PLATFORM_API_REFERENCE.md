@@ -28,11 +28,11 @@ Represents a UI element in the accessibility tree.
 ```python
 @dataclass
 class UIElement:
-    selector: str                    # Element selector
-    name: str                       # Accessibility name
-    role: str                       # Element role (button, text_field, etc.)
-    bounds: dict[str, int]          # {x, y, width, height}
-    attributes: dict[str, str]      # Platform-specific attributes
+    selector: str  # Element selector
+    name: str  # Accessibility name
+    role: str  # Element role (button, text_field, etc.)
+    bounds: dict[str, int]  # {x, y, width, height}
+    attributes: dict[str, str]  # Platform-specific attributes
     platform_specific: dict[str, any] = None
 
     def is_valid(self) -> bool:
@@ -40,13 +40,14 @@ class UIElement:
 ```
 
 **Example:**
+
 ```python
 element = UIElement(
     selector="button[name='Save']",
     name="Save",
     role="button",
     bounds={"x": 100, "y": 200, "width": 80, "height": 30},
-    attributes={"process_name": "TextEdit"}
+    attributes={"process_name": "TextEdit"},
 )
 ```
 
@@ -57,22 +58,18 @@ Represents an automation action to execute.
 ```python
 @dataclass
 class AutomationAction:
-    type: str                       # click, type_text, find_element, screenshot, wait_for_idle
-    selector: str | None = None     # Element selector
-    text: str | None = None         # Text to type
+    type: str  # click, type_text, find_element, screenshot, wait_for_idle
+    selector: str | None = None  # Element selector
+    text: str | None = None  # Text to type
     region: dict[str, int] | None = None  # Screenshot region {x, y, width, height}
-    timeout_ms: float = 5000.0     # Timeout in milliseconds
+    timeout_ms: float = 5000.0  # Timeout in milliseconds
     wait_for_idle_seconds: float = 5.0  # Wait for user idle before action
 ```
 
 **Example:**
+
 ```python
-action = AutomationAction(
-    type="click",
-    selector="button[name='Save']",
-    timeout_ms=5000.0,
-    wait_for_idle_seconds=5.0
-)
+action = AutomationAction(type="click", selector="button[name='Save']", timeout_ms=5000.0, wait_for_idle_seconds=5.0)
 ```
 
 ### `AutomationResult`
@@ -82,22 +79,19 @@ Result of an automation action.
 ```python
 @dataclass
 class AutomationResult:
-    success: bool                   # Whether action succeeded
+    success: bool  # Whether action succeeded
     element: UIElement | None = None  # Element (for find operations)
     screenshot: bytes | None = None  # Screenshot data (for screenshot operations)
-    error: str | None = None        # Error message if failed
-    duration_ms: float = 0.0        # Action duration in milliseconds
+    error: str | None = None  # Error message if failed
+    duration_ms: float = 0.0  # Action duration in milliseconds
     metadata: dict[str, any] = None  # Additional metadata
-    skipped: bool = False           # True if action was skipped
+    skipped: bool = False  # True if action was skipped
 ```
 
 **Example:**
+
 ```python
-result = AutomationResult(
-    success=True,
-    duration_ms=95.2,
-    metadata={"click_count": 1}
-)
+result = AutomationResult(success=True, duration_ms=95.2, metadata={"click_count": 1})
 ```
 
 ### `AutomationScope`
@@ -107,17 +101,16 @@ Defines scope for automation coordination.
 ```python
 @dataclass
 class AutomationScope:
-    app_name: str                   # Application name
+    app_name: str  # Application name
     window_title: str | None = None  # Window title filter
     region: dict[str, int] | None = None  # Region restriction {x, y, width, height}
 ```
 
 **Example:**
+
 ```python
 scope = AutomationScope(
-    app_name="TextEdit",
-    window_title="Untitled",
-    region={"x": 0, "y": 0, "width": 1920, "height": 1080}
+    app_name="TextEdit", window_title="Untitled", region={"x": 0, "y": 0, "width": 1920, "height": 1080}
 )
 ```
 
@@ -134,17 +127,21 @@ Abstract base class for platform-specific providers.
 Click a UI element.
 
 **Parameters:**
+
 - `element`: UI element to click
 - `timeout_ms`: Timeout in milliseconds (default: 5000.0)
 
 **Returns:**
+
 - `AutomationResult` with success status and duration
 
 **Raises:**
+
 - `TimeoutError` if timeout exceeded
 - `ElementNotFoundError` if element invalid
 
 **Example:**
+
 ```python
 element = provider.find_element("button[name='Save']")
 result = provider.click(element, timeout_ms=5000.0)
@@ -157,14 +154,17 @@ if result.success:
 Type text into an element.
 
 **Parameters:**
+
 - `element`: UI element to type into
 - `text`: Text to type
 - `timeout_ms`: Timeout in milliseconds
 
 **Returns:**
+
 - `AutomationResult` with success status
 
 **Example:**
+
 ```python
 element = provider.find_element("text_field[name='username']")
 result = provider.type_text(element, "myusername", timeout_ms=5000.0)
@@ -175,13 +175,16 @@ result = provider.type_text(element, "myusername", timeout_ms=5000.0)
 Find UI element by selector.
 
 **Parameters:**
+
 - `selector`: Element selector (XPath, accessibility name, etc.)
 - `timeout_ms`: Timeout in milliseconds
 
 **Returns:**
+
 - `UIElement` if found, `None` otherwise
 
 **Example:**
+
 ```python
 element = provider.find_element("button[name='Save']", timeout_ms=5000.0)
 if element:
@@ -193,13 +196,16 @@ if element:
 Find element with caching (faster for repeated finds).
 
 **Parameters:**
+
 - `selector`: Element selector
 - `timeout_ms`: Timeout in milliseconds
 
 **Returns:**
+
 - `UIElement` if found (from cache or fresh lookup)
 
 **Example:**
+
 ```python
 # First call: 500ms (uncached)
 element1 = provider.find_element_cached("button[name='Save']")
@@ -213,12 +219,15 @@ element2 = provider.find_element_cached("button[name='Save']")
 Take screenshot of desktop or region.
 
 **Parameters:**
+
 - `region`: Optional region `{x, y, width, height}` (default: full screen)
 
 **Returns:**
+
 - Screenshot as PNG bytes
 
 **Example:**
+
 ```python
 # Full screen
 screenshot = provider.screenshot()
@@ -233,13 +242,16 @@ screenshot = provider.screenshot(region=region)
 Wait until user is idle.
 
 **Parameters:**
+
 - `idle_seconds`: Required idle duration in seconds (default: 5.0)
 - `timeout_ms`: Maximum wait time in milliseconds (default: 30000.0)
 
 **Returns:**
+
 - `True` if user became idle, `False` on timeout
 
 **Example:**
+
 ```python
 if provider.wait_for_user_idle(idle_seconds=5.0, timeout_ms=30000.0):
     # User is idle, safe to automate
@@ -251,9 +263,11 @@ if provider.wait_for_user_idle(idle_seconds=5.0, timeout_ms=30000.0):
 Get currently active window.
 
 **Returns:**
+
 - `UIElement` representing active window, `None` if not found
 
 **Example:**
+
 ```python
 window = provider.get_active_window()
 if window:
@@ -265,12 +279,15 @@ if window:
 List all windows (optionally filtered by app).
 
 **Parameters:**
+
 - `app_name`: Optional app name filter
 
 **Returns:**
+
 - List of `UIElement` representing windows
 
 **Example:**
+
 ```python
 # All windows
 windows = provider.list_windows()
@@ -284,6 +301,7 @@ windows = provider.list_windows(app_name="TextEdit")
 Clear element cache.
 
 **Example:**
+
 ```python
 provider.clear_cache()
 ```
@@ -301,14 +319,17 @@ Coordinates desktop automation across multiple agents.
 Acquire automation lock.
 
 **Parameters:**
+
 - `scope`: Automation scope
 - `agent_id`: Agent identifier
 - `duration`: Lock duration in seconds (default: 300.0)
 
 **Returns:**
+
 - `True` if lock acquired, `False` otherwise
 
 **Example:**
+
 ```python
 scope = AutomationScope(app_name="TextEdit")
 if coordinator.acquire_lock(scope, agent_id="agent-1", duration=300.0):
@@ -321,10 +342,12 @@ if coordinator.acquire_lock(scope, agent_id="agent-1", duration=300.0):
 Release automation lock.
 
 **Parameters:**
+
 - `scope`: Automation scope
 - `agent_id`: Agent identifier
 
 **Example:**
+
 ```python
 coordinator.release_lock(scope, agent_id="agent-1")
 ```
@@ -334,14 +357,17 @@ coordinator.release_lock(scope, agent_id="agent-1")
 Execute automation action with coordination.
 
 **Parameters:**
+
 - `scope`: Automation scope
 - `agent_id`: Agent identifier
 - `action`: Automation action
 
 **Returns:**
+
 - `AutomationResult` with success status
 
 **Example:**
+
 ```python
 scope = AutomationScope(app_name="TextEdit")
 action = AutomationAction(type="click", selector="button[name='Save']")
@@ -357,6 +383,7 @@ result = coordinator.execute_with_coordination(scope, "agent-1", action)
 Click a UI element identified by selector.
 
 **Input Schema:**
+
 ```json
 {
   "type": "object",
@@ -380,18 +407,20 @@ Click a UI element identified by selector.
 ```
 
 **Response Schema:**
+
 ```json
 {
   "type": "object",
   "properties": {
-    "success": {"type": "boolean"},
-    "duration_ms": {"type": "number"},
-    "error": {"type": "string", "nullable": true}
+    "success": { "type": "boolean" },
+    "duration_ms": { "type": "number" },
+    "error": { "type": "string", "nullable": true }
   }
 }
 ```
 
 **Example:**
+
 ```json
 // Request
 {
@@ -413,14 +442,15 @@ Click a UI element identified by selector.
 Type text into a UI element.
 
 **Input Schema:**
+
 ```json
 {
   "type": "object",
   "properties": {
-    "selector": {"type": "string"},
-    "text": {"type": "string"},
-    "wait_timeout": {"type": "number", "default": 5.0},
-    "agent_id": {"type": "string"}
+    "selector": { "type": "string" },
+    "text": { "type": "string" },
+    "wait_timeout": { "type": "number", "default": 5.0 },
+    "agent_id": { "type": "string" }
   },
   "required": ["selector", "text"]
 }
@@ -431,36 +461,38 @@ Type text into a UI element.
 Find UI element by selector.
 
 **Input Schema:**
+
 ```json
 {
   "type": "object",
   "properties": {
-    "selector": {"type": "string"},
-    "timeout": {"type": "number", "default": 5.0}
+    "selector": { "type": "string" },
+    "timeout": { "type": "number", "default": 5.0 }
   },
   "required": ["selector"]
 }
 ```
 
 **Response Schema:**
+
 ```json
 {
   "type": "object",
   "properties": {
-    "found": {"type": "boolean"},
+    "found": { "type": "boolean" },
     "element": {
       "type": "object",
       "properties": {
-        "selector": {"type": "string"},
-        "name": {"type": "string"},
-        "role": {"type": "string"},
+        "selector": { "type": "string" },
+        "name": { "type": "string" },
+        "role": { "type": "string" },
         "bounds": {
           "type": "object",
           "properties": {
-            "x": {"type": "integer"},
-            "y": {"type": "integer"},
-            "width": {"type": "integer"},
-            "height": {"type": "integer"}
+            "x": { "type": "integer" },
+            "y": { "type": "integer" },
+            "width": { "type": "integer" },
+            "height": { "type": "integer" }
           }
         }
       }
@@ -474,6 +506,7 @@ Find UI element by selector.
 Take screenshot of desktop or region.
 
 **Input Schema:**
+
 ```json
 {
   "type": "object",
@@ -481,10 +514,10 @@ Take screenshot of desktop or region.
     "region": {
       "type": "object",
       "properties": {
-        "x": {"type": "integer"},
-        "y": {"type": "integer"},
-        "width": {"type": "integer"},
-        "height": {"type": "integer"}
+        "x": { "type": "integer" },
+        "y": { "type": "integer" },
+        "width": { "type": "integer" },
+        "height": { "type": "integer" }
       }
     }
   }
@@ -492,12 +525,13 @@ Take screenshot of desktop or region.
 ```
 
 **Response Schema:**
+
 ```json
 {
   "type": "object",
   "properties": {
-    "screenshot": {"type": "string", "description": "Base64-encoded PNG"},
-    "format": {"type": "string", "const": "png"}
+    "screenshot": { "type": "string", "description": "Base64-encoded PNG" },
+    "format": { "type": "string", "const": "png" }
   }
 }
 ```
@@ -507,24 +541,26 @@ Take screenshot of desktop or region.
 Wait until user is idle.
 
 **Input Schema:**
+
 ```json
 {
   "type": "object",
   "properties": {
-    "idle_seconds": {"type": "number", "default": 5.0},
-    "timeout": {"type": "number", "default": 30.0}
+    "idle_seconds": { "type": "number", "default": 5.0 },
+    "timeout": { "type": "number", "default": 30.0 }
   },
   "required": ["idle_seconds"]
 }
 ```
 
 **Response Schema:**
+
 ```json
 {
   "type": "object",
   "properties": {
-    "idle": {"type": "boolean"},
-    "idle_seconds": {"type": "number"}
+    "idle": { "type": "boolean" },
+    "idle_seconds": { "type": "number" }
   }
 }
 ```
@@ -550,6 +586,7 @@ class DesktopAutomationSettings(BaseSettings):
 ```
 
 **Environment Variables:**
+
 - `THGENT_DESKTOP_AUTOMATION_ENABLED`: Enable desktop automation
 - `THGENT_DESKTOP_AUTOMATION_PLATFORM`: Platform override (darwin, windows, linux)
 - `THGENT_DESKTOP_AUTOMATION_COORDINATION_ENABLED`: Enable coordination
@@ -568,12 +605,15 @@ class DesktopAutomationSettings(BaseSettings):
 Get platform-specific provider.
 
 **Parameters:**
+
 - `platform`: Platform override (darwin, windows, linux) or None for auto-detect
 
 **Returns:**
+
 - `DesktopAutomationProvider` instance
 
 **Example:**
+
 ```python
 from thegent.infra.desktop_automation import get_provider
 
@@ -589,9 +629,11 @@ provider = get_provider(platform="darwin")
 Check desktop automation permissions.
 
 **Returns:**
+
 - Dictionary mapping permission names to granted status
 
 **Example:**
+
 ```python
 from thegent.infra.desktop_automation import check_permissions
 
@@ -607,12 +649,15 @@ permissions = check_permissions()
 Validate element selector for security.
 
 **Parameters:**
+
 - `selector`: Element selector
 
 **Returns:**
+
 - Tuple of (is_valid, reason)
 
 **Example:**
+
 ```python
 from thegent.infra.desktop_automation.security import validate_selector
 
@@ -626,13 +671,16 @@ if not is_valid:
 Verify app identity for security.
 
 **Parameters:**
+
 - `app_name`: Application name
 - `window_title`: Optional window title
 
 **Returns:**
+
 - `True` if app is verified, `False` otherwise
 
 **Example:**
+
 ```python
 from thegent.infra.desktop_automation.security import verify_app
 
@@ -652,6 +700,7 @@ Base exception for automation errors.
 ```python
 class AutomationError(Exception):
     """Base exception for automation errors."""
+
     pass
 ```
 
@@ -662,6 +711,7 @@ Element not found error.
 ```python
 class ElementNotFoundError(AutomationError):
     """Element not found error."""
+
     pass
 ```
 
@@ -672,6 +722,7 @@ Permission denied error.
 ```python
 class PermissionDeniedError(AutomationError):
     """Permission denied error."""
+
     pass
 ```
 
@@ -682,6 +733,7 @@ Timeout error.
 ```python
 class AutomationTimeoutError(AutomationError):
     """Automation timeout error."""
+
     pass
 ```
 
@@ -692,6 +744,7 @@ Rate limit exceeded error.
 ```python
 class RateLimitExceededError(AutomationError):
     """Rate limit exceeded error."""
+
     pass
 ```
 
@@ -706,6 +759,7 @@ class RateLimitExceededError(AutomationError):
 **Permissions:** Accessibility, Screen Recording
 
 **Selector Formats:**
+
 - Accessibility name: `"Save"`
 - Role + name: `"button[name='Save']"`
 - XPath: `"//button[@name='Save']"`
@@ -717,6 +771,7 @@ class RateLimitExceededError(AutomationError):
 **Permissions:** UIA Access
 
 **Selector Formats:**
+
 - Automation ID: `"SaveButton"`
 - Name: `"Save"`
 - Control Type + Name: `"Button[Name='Save']"`
@@ -728,6 +783,7 @@ class RateLimitExceededError(AutomationError):
 **Permissions:** Usually granted by default
 
 **Selector Formats:**
+
 - Accessibility name: `"Save"`
 - Role + name: `"push button[name='Save']"`
 - D-Bus path: `"/org/a11y/atspi/accessible/..."`
@@ -735,7 +791,6 @@ class RateLimitExceededError(AutomationError):
 ---
 
 **Status:** API reference complete. Ready for implementation.
-
 
 ---
 
@@ -745,15 +800,18 @@ class RateLimitExceededError(AutomationError):
 **Extended by:** Claude Code
 
 ### Changes Made
+
 1. Added practical implementation patterns
 2. Added configuration examples
 3. Enhanced cross-references to related documentation
 
 ### Cross-References Added
+
 - Related research and implementation guides
 - WORK_STREAM.md for tracking
 
 ### Practical Additions
+
 - Implementation templates
 - Configuration examples
 - Best practices

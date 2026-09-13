@@ -10,12 +10,14 @@
 ## Executive Summary
 
 This document defines a comprehensive agent hierarchy system for `thegent` that enables:
+
 - **Hierarchical delegation**: Manager → Subagent relationships with clear ownership
 - **Team-based organization**: Agents grouped into teams with tighter coordination
 - **Cross-team interaction**: Agents can interact across teams while maintaining team boundaries
 - **Role-based capabilities**: Specialized roles with defined responsibilities and permissions
 
 **Research Validation**: This design has been validated through extensive research:
+
 - ✅ **Local Codebase**: 3 coordination strategies, multiple framework implementations, production patterns
 - ✅ **Web Frameworks**: CrewAI hierarchical process, MetaGPT role-based teams, LangGraph stateful workflows, AutoGen multi-agent orchestration
 - ✅ **Academic Research**: Cursor Planner-Worker-Judge hierarchy, MetaGPT global message pool
@@ -63,6 +65,7 @@ This document defines a comprehensive agent hierarchy system for `thegent` that 
 ### 1.2 Role Definitions
 
 #### Level 1: Executive / Orchestrator
+
 - **Purpose**: Primary agent that interfaces with the user
 - **Responsibilities**:
   - Understand user intent and requirements
@@ -78,6 +81,7 @@ This document defines a comprehensive agent hierarchy system for `thegent` that 
 - **Examples**: `sitback`, `manager`, `orchestrator`
 
 #### Level 2: Team Lead
+
 - **Purpose**: Manages a specialized team of agents
 - **Responsibilities**:
   - Coordinate team members
@@ -92,6 +96,7 @@ This document defines a comprehensive agent hierarchy system for `thegent` that 
 - **Examples**: `frontend-lead`, `backend-lead`, `devops-lead`, `qa-lead`
 
 #### Level 3: Specialist
+
 - **Purpose**: Execute specific tasks within domain expertise
 - **Responsibilities**:
   - Complete assigned tasks
@@ -118,7 +123,7 @@ class AgentRelationship:
     """Parent-child relationship between agents."""
 
     parent_id: str  # Parent agent run ID
-    child_id: str   # Child agent run ID
+    child_id: str  # Child agent run ID
     relationship_type: str  # "direct", "team", "cross-team"
     created_at: datetime
     status: str  # "active", "completed", "failed"
@@ -132,6 +137,7 @@ class AgentRelationship:
 ### 2.2 Relationship Types
 
 #### Direct Parent-Child
+
 - **Definition**: Explicit delegation from parent to child
 - **Characteristics**:
   - Parent directly spawns child
@@ -140,6 +146,7 @@ class AgentRelationship:
 - **Example**: Orchestrator → Team Lead → Specialist
 
 #### Team Membership
+
 - **Definition**: Agents working within same team
 - **Characteristics**:
   - Shared team context
@@ -148,6 +155,7 @@ class AgentRelationship:
 - **Example**: Frontend team (lead + 3 specialists)
 
 #### Cross-Team Collaboration
+
 - **Definition**: Agents from different teams working together
 - **Characteristics**:
   - Requires explicit coordination
@@ -213,6 +221,7 @@ class AgentTeam:
 ### 3.2 Team Types
 
 #### Functional Teams
+
 - **Purpose**: Long-lived teams organized by domain expertise
 - **Examples**:
   - Frontend Team (React, CSS, TypeScript specialists)
@@ -224,6 +233,7 @@ class AgentTeam:
   - Reusable across projects
 
 #### Project Teams
+
 - **Purpose**: Temporary teams for specific projects
 - **Examples**:
   - "E-commerce MVP Team" (Frontend + Backend + DevOps)
@@ -234,6 +244,7 @@ class AgentTeam:
   - Disband after project completion
 
 #### Ad-Hoc Teams
+
 - **Purpose**: Temporary teams for specific tasks
 - **Examples**:
   - "Security Audit Team" (Security specialists from multiple teams)
@@ -246,16 +257,19 @@ class AgentTeam:
 ### 3.3 Team Coordination Modes
 
 #### Hierarchical
+
 - **Structure**: Team Lead → Specialists
 - **Use Case**: Clear task breakdown, sequential dependencies
 - **Communication**: Top-down delegation, bottom-up reporting
 
 #### Collaborative
+
 - **Structure**: Peer-to-peer collaboration
 - **Use Case**: Complex problems requiring multiple perspectives
 - **Communication**: Shared context, consensus building
 
 #### Swarm
+
 - **Structure**: Many agents working in parallel
 - **Use Case**: Independent tasks, exploration, testing
 - **Communication**: Minimal coordination, result aggregation
@@ -267,18 +281,21 @@ class AgentTeam:
 ### 4.1 Interaction Patterns
 
 #### Direct Collaboration
+
 - **Pattern**: Specialist ↔ Specialist (cross-team)
 - **Mechanism**: Explicit handoff with context
 - **Example**: Frontend specialist needs API contract from Backend specialist
 - **Protocol**: XML-based handoff with structured context
 
 #### Mediated Collaboration
+
 - **Pattern**: Team Lead ↔ Team Lead
 - **Mechanism**: Coordination through team leads
 - **Example**: Frontend Lead coordinates with Backend Lead on API design
 - **Protocol**: Structured coordination messages
 
 #### Orchestrated Collaboration
+
 - **Pattern**: Orchestrator coordinates multiple teams
 - **Mechanism**: Top-down coordination
 - **Example**: Orchestrator coordinates Frontend + Backend + DevOps for deployment
@@ -289,16 +306,19 @@ class AgentTeam:
 While agents can interact across teams, team boundaries provide:
 
 #### Access Control
+
 - **Team Context**: Agents have full access to team context
 - **Cross-Team Context**: Requires explicit sharing
 - **External Context**: Orchestrator approval required
 
 #### Resource Limits
+
 - **Team Budget**: Each team has resource budget
 - **Cross-Team Requests**: Require approval
 - **Resource Sharing**: Orchestrator manages allocation
 
 #### Quality Gates
+
 - **Team Standards**: Each team enforces own quality standards
 - **Cross-Team Integration**: Requires integration tests
 - **Escalation**: Team leads can escalate to orchestrator
@@ -317,29 +337,38 @@ from datetime import datetime
 from typing import Optional, Dict, List, Any
 from enum import Enum
 
+
 class AgentRole(Enum):
     """Agent role levels."""
-    EXECUTIVE = "executive"      # Level 1
-    TEAM_LEAD = "team_lead"      # Level 2
-    SPECIALIST = "specialist"   # Level 3
+
+    EXECUTIVE = "executive"  # Level 1
+    TEAM_LEAD = "team_lead"  # Level 2
+    SPECIALIST = "specialist"  # Level 3
+
 
 class RelationshipType(Enum):
     """Types of agent relationships."""
+
     DIRECT_PARENT_CHILD = "direct_parent_child"
     TEAM_MEMBERSHIP = "team_membership"
     CROSS_TEAM_COLLABORATION = "cross_team_collaboration"
 
+
 class TeamType(Enum):
     """Types of teams."""
+
     FUNCTIONAL = "functional"
     PROJECT = "project"
     AD_HOC = "ad_hoc"
 
+
 class CoordinationMode(Enum):
     """Team coordination modes."""
+
     HIERARCHICAL = "hierarchical"
     COLLABORATIVE = "collaborative"
     SWARM = "swarm"
+
 
 @dataclass
 class AgentNode:
@@ -359,6 +388,7 @@ class AgentNode:
     created_at: datetime = field(default_factory=datetime.now)
     status: str = "active"
 
+
 @dataclass
 class AgentRelationship:
     """Parent-child relationship between agents."""
@@ -374,6 +404,7 @@ class AgentRelationship:
     task_id: Optional[str] = None
     delegation_prompt: Optional[str] = None
     handoff_context: Optional[Dict[str, Any]] = None
+
 
 @dataclass
 class AgentTeam:
@@ -417,16 +448,10 @@ class AgentHierarchyManager:
         run_id: str,
         role: AgentRole,
         parent_id: Optional[str] = None,
-        team_id: Optional[str] = None
+        team_id: Optional[str] = None,
     ) -> AgentNode:
         """Register a new agent in the hierarchy."""
-        node = AgentNode(
-            agent_id=agent_id,
-            run_id=run_id,
-            role=role,
-            parent_id=parent_id,
-            team_id=team_id
-        )
+        node = AgentNode(agent_id=agent_id, run_id=run_id, role=role, parent_id=parent_id, team_id=team_id)
         self._agents[run_id] = node
 
         # Update parent's children list
@@ -453,7 +478,7 @@ class AgentHierarchyManager:
         child_id: str,
         relationship_type: RelationshipType,
         task_id: Optional[str] = None,
-        delegation_prompt: Optional[str] = None
+        delegation_prompt: Optional[str] = None,
     ) -> AgentRelationship:
         """Create a relationship between agents."""
         rel_id = f"REL-{uuid.uuid4().hex[:8]}"
@@ -463,7 +488,7 @@ class AgentHierarchyManager:
             child_id=child_id,
             relationship_type=relationship_type,
             task_id=task_id,
-            delegation_prompt=delegation_prompt
+            delegation_prompt=delegation_prompt,
         )
         self._relationships[rel_id] = relationship
         self._save()
@@ -476,7 +501,7 @@ class AgentHierarchyManager:
         description: str,
         team_type: TeamType,
         coordination_mode: CoordinationMode,
-        lead_id: str
+        lead_id: str,
     ) -> AgentTeam:
         """Create a new team."""
         team = AgentTeam(
@@ -485,7 +510,7 @@ class AgentHierarchyManager:
             description=description,
             team_type=team_type,
             coordination_mode=coordination_mode,
-            lead_id=lead_id
+            lead_id=lead_id,
         )
         self._teams[team_id] = team
         self._save()
@@ -539,12 +564,7 @@ class AgentHierarchyManager:
 
         return ancestors
 
-    def can_delegate(
-        self,
-        from_agent_id: str,
-        to_agent_id: str,
-        task_context: Dict[str, Any]
-    ) -> bool:
+    def can_delegate(self, from_agent_id: str, to_agent_id: str, task_context: Dict[str, Any]) -> bool:
         """Check if agent can delegate to another agent."""
         from_agent = self._agents.get(from_agent_id)
         to_agent = self._agents.get(from_agent_id)
@@ -584,11 +604,7 @@ class TeamCoordinator:
         self.hierarchy = hierarchy_manager
 
     def delegate_within_team(
-        self,
-        from_agent_id: str,
-        to_agent_id: str,
-        task: str,
-        context: Dict[str, Any]
+        self, from_agent_id: str, to_agent_id: str, task: str, context: Dict[str, Any]
     ) -> DelegationRequest:
         """Delegate task within same team."""
         from_agent = self.hierarchy._agents.get(from_agent_id)
@@ -605,7 +621,7 @@ class TeamCoordinator:
             parent_id=from_agent_id,
             child_id=to_agent_id,
             relationship_type=RelationshipType.TEAM_MEMBERSHIP,
-            delegation_prompt=task
+            delegation_prompt=task,
         )
 
         return relationship
@@ -616,7 +632,7 @@ class TeamCoordinator:
         to_agent_id: str,
         task: str,
         context: Dict[str, Any],
-        mediator_id: Optional[str] = None
+        mediator_id: Optional[str] = None,
     ) -> DelegationRequest:
         """Delegate task across teams (requires coordination)."""
         from_agent = self.hierarchy._agents.get(from_agent_id)
@@ -639,11 +655,7 @@ class TeamCoordinator:
             child_id=to_agent_id,
             relationship_type=RelationshipType.CROSS_TEAM_COLLABORATION,
             delegation_prompt=task,
-            handoff_context={
-                "mediator_id": mediator_id,
-                "cross_team": True,
-                **context
-            }
+            handoff_context={"mediator_id": mediator_id, "cross_team": True, **context},
         )
 
         return relationship
@@ -660,6 +672,7 @@ The existing `TeammateManager` will be extended to support hierarchy:
 ```python
 # src/thegent/governance/teammates.py (extended)
 
+
 class TeammateManager:
     """Manages discovery and delegation for the teammate swarm."""
 
@@ -675,7 +688,7 @@ class TeammateManager:
         parent_run_id: str,
         prompt: str,
         team_id: Optional[str] = None,
-        relationship_type: RelationshipType = RelationshipType.DIRECT_PARENT_CHILD
+        relationship_type: RelationshipType = RelationshipType.DIRECT_PARENT_CHILD,
     ) -> DelegationRequest:
         """WP-16002: Delegate a task to a teammate with hierarchy support."""
         req_id = f"DEL-{uuid.uuid4().hex[:8]}"
@@ -686,24 +699,17 @@ class TeammateManager:
             run_id=req_id,
             role=self._infer_role(teammate_id),
             parent_id=parent_run_id,
-            team_id=team_id
+            team_id=team_id,
         )
 
         # Create relationship
         relationship = self.hierarchy.create_relationship(
-            parent_id=parent_run_id,
-            child_id=req_id,
-            relationship_type=relationship_type,
-            delegation_prompt=prompt
+            parent_id=parent_run_id, child_id=req_id, relationship_type=relationship_type, delegation_prompt=prompt
         )
 
         # Create delegation request
         request = DelegationRequest(
-            id=req_id,
-            teammate_id=teammate_id,
-            parent_run_id=parent_run_id,
-            prompt=prompt,
-            status="pending"
+            id=req_id, teammate_id=teammate_id, parent_run_id=parent_run_id, prompt=prompt, status="pending"
         )
         self._delegations[req_id] = request
         self._save()
@@ -717,7 +723,7 @@ class TeammateManager:
         description: str,
         team_type: TeamType,
         coordination_mode: CoordinationMode,
-        lead_id: str
+        lead_id: str,
     ) -> AgentTeam:
         """Create a new team."""
         return self.hierarchy.create_team(
@@ -726,7 +732,7 @@ class TeammateManager:
             description=description,
             team_type=team_type,
             coordination_mode=coordination_mode,
-            lead_id=lead_id
+            lead_id=lead_id,
         )
 ```
 
@@ -761,6 +767,7 @@ thegent teammates delegate --to-team <team-id> <prompt>
 ### 8.1 Scenario: Multi-Team Feature Development
 
 **Setup**:
+
 - Orchestrator: `sitback`
 - Frontend Team: Lead + 3 specialists
 - Backend Team: Lead + 2 specialists
@@ -769,6 +776,7 @@ thegent teammates delegate --to-team <team-id> <prompt>
 **Task**: "Build user authentication feature"
 
 **Flow**:
+
 1. Orchestrator breaks down task:
    - Frontend: Login UI
    - Backend: Auth API
@@ -797,12 +805,14 @@ thegent teammates delegate --to-team <team-id> <prompt>
 ### 8.2 Scenario: Ad-Hoc Security Audit
 
 **Setup**:
+
 - Orchestrator creates ad-hoc team
 - Security specialists from multiple teams
 
 **Task**: "Audit authentication security"
 
 **Flow**:
+
 1. Orchestrator creates ad-hoc team:
    - `thegent teams create --name "Security Audit" --type ad-hoc --lead security-lead`
 
@@ -823,21 +833,25 @@ thegent teammates delegate --to-team <team-id> <prompt>
 ## 9. Benefits
 
 ### 9.1 Clear Accountability
+
 - Explicit parent-child relationships
 - Clear ownership chains
 - Traceable delegation paths
 
 ### 9.2 Efficient Coordination
+
 - Team-based organization reduces coordination overhead
 - Cross-team collaboration when needed
 - Hierarchical escalation for conflicts
 
 ### 9.3 Scalability
+
 - Teams can scale independently
 - New teams can be created dynamically
 - Specialists can join multiple teams
 
 ### 9.4 Observability
+
 - Full hierarchy visualization
 - Team activity tracking
 - Relationship graph analysis
@@ -847,24 +861,28 @@ thegent teammates delegate --to-team <team-id> <prompt>
 ## 10. Next Steps
 
 ### Phase 1: Core Hierarchy (Week 1-2)
+
 - [ ] Implement `AgentHierarchyManager`
 - [ ] Extend `TeammateManager` with hierarchy support
 - [ ] Add hierarchy visualization commands
 - [ ] Unit tests for hierarchy operations
 
 ### Phase 2: Team Management (Week 3-4)
+
 - [ ] Implement team creation and management
 - [ ] Add team coordination protocols
 - [ ] Cross-team collaboration support
 - [ ] Integration tests
 
 ### Phase 3: UI/UX (Week 5-6)
+
 - [ ] Hierarchy visualization in dashboard
 - [ ] Team activity monitoring
 - [ ] Relationship graph visualization
 - [ ] CLI improvements
 
 ### Phase 4: Advanced Features (Week 7-8)
+
 - [ ] Dynamic team creation
 - [ ] Team templates
 - [ ] Advanced coordination modes
@@ -877,6 +895,7 @@ thegent teammates delegate --to-team <team-id> <prompt>
 This design has been validated through comprehensive research:
 
 ### 11.1 Local Research
+
 - **CRUN Deep Dive**: Hierarchical, P2P, and hybrid coordination strategies
 - **SmolGents**: Hierarchical execution modes, manager-first assignment
 - **Multi-Swarm Hierarchy**: Hierarchical blackboard, stigmergic handoff
@@ -884,18 +903,21 @@ This design has been validated through comprehensive research:
 - **Teammates System**: Delegation patterns, handoff protocols
 
 ### 11.2 Web Framework Research
+
 - **CrewAI**: Hierarchical process with manager agent, role-based teams
 - **MetaGPT**: Software company simulation, SOP-driven teams, role-based hierarchy
 - **LangGraph**: Stateful workflows, durable execution, graph-based orchestration
 - **AutoGen**: Multi-agent orchestration, AgentTool pattern, group chat
 
 ### 11.3 Academic & Production Research
+
 - **Cursor Research**: Planner-Worker-Judge hierarchy, partitioned work
 - **MetaGPT Patterns**: Global message pool, artifact-based coordination
 - **Claude Code Teams**: Team lead coordination, peer-to-peer messaging
 - **Google A2A Protocol**: Agent Cards, task lifecycle, JSON-RPC
 
 **See**:
+
 - [LOCAL_RESEARCH_AUDIT.md](./LOCAL_RESEARCH_AUDIT.md) - Complete local codebase audit
 - [WEB_RESEARCH_AUDIT.md](./WEB_RESEARCH_AUDIT.md) - Framework and production system analysis
 - [RESEARCH_SYNTHESIS.md](./RESEARCH_SYNTHESIS.md) - Comprehensive synthesis and validation
@@ -916,11 +938,13 @@ This design has been validated through comprehensive research:
 ## Appendix: Role Definitions
 
 ### Executive Roles
+
 - `sitback`: Primary orchestrator, strategic planning
 - `manager`: Project management, coordination
 - `orchestrator`: Multi-team coordination
 
 ### Team Lead Roles
+
 - `frontend-lead`: Frontend team coordination
 - `backend-lead`: Backend team coordination
 - `devops-lead`: DevOps team coordination
@@ -928,6 +952,7 @@ This design has been validated through comprehensive research:
 - `security-lead`: Security team coordination
 
 ### Specialist Roles
+
 - `coder`: Code implementation
 - `researcher`: Research and investigation
 - `reviewer`: Code review

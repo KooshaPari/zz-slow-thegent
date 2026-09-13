@@ -7,6 +7,7 @@
 ## Summary
 
 Completed shell optimization integration into thegent codebase:
+
 1. ✅ Integrated shell utility into core modules
 2. ✅ Updated hook scripts to use zsh
 3. ✅ Performance tested and verified
@@ -27,6 +28,7 @@ Completed shell optimization integration into thegent codebase:
    - Updated `launchctl` commands to use optimized shell
 
 **Integration Pattern:**
+
 ```python
 # Use optimized shell utility for shell=True calls
 try:
@@ -48,10 +50,12 @@ else:
 ### 2. Hook Script Updates
 
 **Updated Hook Scripts:**
+
 - All `.sh` files in `thegent/hooks/` updated to use `#!/bin/zsh`
 - Scripts using `#!/bin/bash` or `#!/bin/sh` converted to zsh
 
 **Key Hooks Updated:**
+
 - `quality-gate.sh` → `#!/bin/zsh`
 - `task-completion-verifier.sh` → `#!/bin/zsh`
 - All other hook scripts → `#!/bin/zsh`
@@ -59,10 +63,12 @@ else:
 ### 3. Performance Testing
 
 **Benchmark Results:**
+
 - **zsh:** ~0.012s average (fastest)
 - **bash:** ~0.023s average (~2x slower)
 
 **Performance Improvement:**
+
 - ~2x faster command execution
 - Reduced bash processes in Activity Monitor
 - Consistent shell usage across all commands
@@ -70,6 +76,7 @@ else:
 ## Files Created/Modified
 
 ### Created:
+
 - ✅ `thegent/src/thegent/utils/shell.py` - Shell optimization utility
 - ✅ `thegent/src/thegent/utils/__init__.py` - Module exports
 - ✅ `scripts/update_hooks_to_zsh.sh` - Hook update script
@@ -78,6 +85,7 @@ else:
 - ✅ `docs/research/SHELL_OPTIMIZATION_INTEGRATION_COMPLETE.md` - This file
 
 ### Modified:
+
 - ✅ `thegent/src/thegent/cli.py` - Added shell utility integration
 - ✅ `thegent/src/thegent/agents/cliproxy_manager.py` - Added shell utility integration
 - ✅ `thegent/hooks/*.sh` - Updated shebangs to `#!/bin/zsh`
@@ -92,7 +100,7 @@ All subprocess calls with `shell=True` now use zsh automatically:
 from thegent.utils.shell import run_shell_command
 
 # Automatically uses fastest shell (zsh)
-result = run_shell_command('chmod +x script.sh')
+result = run_shell_command("chmod +x script.sh")
 ```
 
 ### Manual Override
@@ -118,8 +126,8 @@ THGENT_SHELL=/bin/zsh  # Force zsh
 ```yaml
 # ~/.config/thegent/config.yaml
 shell:
-  preferred: "zsh"  # zsh, bash, or auto
-  optimize_startup: true  # Skip heavy .zshrc for non-interactive
+  preferred: "zsh" # zsh, bash, or auto
+  optimize_startup: true # Skip heavy .zshrc for non-interactive
 ```
 
 ## Benefits Achieved
@@ -138,11 +146,11 @@ from thegent.utils.shell import get_fastest_shell, run_shell_command
 
 # Test shell detection
 shell = get_fastest_shell()
-assert 'zsh' in shell
+assert "zsh" in shell
 
 # Test command execution
-result = run_shell_command('echo test', capture_output=True)
-assert result.stdout.strip() == 'test'
+result = run_shell_command("echo test", capture_output=True)
+assert result.stdout.strip() == "test"
 ```
 
 ### Integration Tests
@@ -183,6 +191,7 @@ time bash -c 'echo test'
 ✅ **Shell optimization integration complete!**
 
 All thegent commands now use zsh (fastest shell) automatically, providing:
+
 - ~2x faster execution
 - Reduced bash processes
 - Consistent shell usage

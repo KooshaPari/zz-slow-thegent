@@ -70,7 +70,6 @@ from thegent.governance.policy_engine import (
     Verdict,
 )
 
-
 # All tests in this module are unit tests.
 pytestmark = pytest.mark.unit
 
@@ -127,7 +126,14 @@ class TestGovernanceMcpEnvelopeParity:
             cached=False,
         )
         envelope = decision.to_dict()
-        for required in ("verdict", "reason", "reason_code", "rule_id", "override_applied", "cached"):
+        for required in (
+            "verdict",
+            "reason",
+            "reason_code",
+            "rule_id",
+            "override_applied",
+            "cached",
+        ):
             assert required in envelope, f"missing key: {required}"
         assert envelope["verdict"] == "deny"
         assert envelope["reason_code"] == "unknown_agent_production"
@@ -204,7 +210,10 @@ class TestMcpBudgetGovernanceInteraction:
         # require fastmcp at module-import time (matches other tests'
         # collection-time posture).
         from thegent.mcp.server import mcp_perf_gates
-        from thegent.mcp.server.mcp_perf_gates import MCPBudgetExceeded, mcp_budget_context
+        from thegent.mcp.server.mcp_perf_gates import (
+            MCPBudgetExceeded,
+            mcp_budget_context,
+        )
 
         # Confirm the helper is importable from the canonical home.
         assert mcp_budget_context is not None
@@ -216,14 +225,6 @@ class TestMcpBudgetGovernanceInteraction:
 
         # Surface it through a mock _ToolResult so we can assert that
         # the governance-shaped envelope is what the cockpit receives.
-        envelope = {
-            "error_kind": "budget_exceeded",
-            "operation": exc.operation,
-            "elapsed_ms": exc.elapsed_ms,
-            "budget_ms": exc.budget_ms,
-            "verdict": "deny",
-            "reason_code": "budget_exceeded",
-        }
         # The MCP session_contract_health_gate tool returns an envelope
         # on ``MCPBudgetExceeded`` (see src/thegent/mcp/server/__init__.py:
         # thegent_session_contract_health_gate). Confirm that contract by
@@ -232,7 +233,9 @@ class TestMcpBudgetGovernanceInteraction:
         original = dict(mcp_perf_gates.MCP_PERF_BUDGETS)
         try:
             mcp_perf_gates.MCP_PERF_BUDGETS["tool_invoke_ms"] = 0.001  # 1us budget
-            from thegent.mcp.server import thegent_session_contract_health_gate as _gate_tool
+            from thegent.mcp.server import (
+                thegent_session_contract_health_gate as _gate_tool,
+            )
 
             with patch(
                 "thegent.mcp.server.session_contract_health_gate_impl",
@@ -249,7 +252,9 @@ class TestMcpBudgetGovernanceInteraction:
         """When an MCP tool completes within budget, the envelope is the
         normal ``meta`` block carrying the contract-health fields, NOT a
         budget error shape."""
-        from thegent.mcp.server import thegent_session_contract_health_gate as _gate_tool
+        from thegent.mcp.server import (
+            thegent_session_contract_health_gate as _gate_tool,
+        )
 
         fake_payload = {
             "status": "healthy",
@@ -411,7 +416,6 @@ class TestTtlOverrideThroughMcpDispatch:
         still surfaces the override (the OPT-008 cache is bypassed for the
         freshly-flipped decision because ``_apply_override`` runs in the
         uncached path)."""
-        from thegent.mcp.server import thegent_session_contract_health_gate as _gate_tool
 
         # Use isolated settings so a stale operator override cannot
         # poison this assertion (see conftest fixture).
@@ -606,6 +610,7 @@ class TestGovernanceMcpPerfBudgetGuard:
         the budget context + audit context). A regression that drops
         a wrap below this threshold must fail."""
         import inspect
+
         from thegent.mcp import server as _mcp_server_mod
 
         source = inspect.getsource(_mcp_server_mod)
@@ -659,6 +664,7 @@ class TestGovernanceMcpPerfBudgetGuard:
         """``health_trend_ms`` budget is reserved for trend ops; confirm
         the resource variant uses it (not ``tool_invoke_ms``)."""
         import inspect
+
         from thegent.mcp import server as _mcp_server_mod
 
         src = inspect.getsource(_mcp_server_mod.resource_session_contract_health_trend)
@@ -912,8 +918,10 @@ class TestBudgetExceededRecoveryPath:
         budget, confirm the governance-shaped error envelope; then
         restore a fast impl and confirm the same tool now returns the
         healthy envelope (no circuit-breaker leak)."""
-        from thegent.mcp.server import thegent_session_contract_health_gate as _gate_tool
         from thegent.mcp.server import mcp_perf_gates
+        from thegent.mcp.server import (
+            thegent_session_contract_health_gate as _gate_tool,
+        )
 
         original = dict(mcp_perf_gates.MCP_PERF_BUDGETS)
         try:
@@ -1108,7 +1116,9 @@ class TestRecordDecisionThreadSafety:
         # Cockpit state must remain empty after the rejected writes.
         assert cockpit.snapshot()["decision_notices"] == []
 
-    def test_record_decision_fills_zero_evaluated_at_under_concurrent_writes(self) -> None:
+    def test_record_decision_fills_zero_evaluated_at_under_concurrent_writes(
+        self,
+    ) -> None:
         """``record_decision`` must fill ``evaluated_at == 0`` with the
         cockpit's clock. Under 5 concurrent writers all pushing
         zero-init notices, every snapshot entry must have a positive

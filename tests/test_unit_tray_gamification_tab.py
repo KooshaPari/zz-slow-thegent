@@ -7,11 +7,9 @@ import pytest
 pytest.importorskip("PySide6")
 
 
-from typing import Any
-from unittest.mock import MagicMock, patch
+from unittest.mock import MagicMock
 
 from PySide6.QtWidgets import QApplication
-
 from thegent.tray.plugins.thegent.api_client import GamificationStats, ThegentAPIClient
 from thegent.tray.plugins.thegent.tabs.gamification import (
     AchievementsDialog,
@@ -104,7 +102,7 @@ class TestGamificationTab:
 
     def test_tab_loads_data_on_init(self, qapp, mock_api_client):
         """Test that the tab loads data on initialization."""
-        tab = GamificationTab(api_client=mock_api_client)
+        GamificationTab(api_client=mock_api_client)
 
         mock_api_client.get_gamification_stats.assert_called_once()
         mock_api_client.get_achievements.assert_called_once()
@@ -189,7 +187,7 @@ class TestGamificationTab:
         mock_api_client.get_gamification_stats.side_effect = Exception("API Error")
 
         # Should not raise, just log warning
-        tab = GamificationTab(api_client=mock_api_client)
+        GamificationTab(api_client=mock_api_client)
 
         # Tab should still be created with empty/default values
 

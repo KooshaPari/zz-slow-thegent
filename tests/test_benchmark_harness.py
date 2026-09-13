@@ -1,10 +1,11 @@
 from __future__ import annotations
 
-import orjson as json
 import os
 import stat
 import subprocess
 from pathlib import Path
+
+import orjson as json
 
 HARNESS_PATH = Path("scripts/benchmark-comprehensive.sh")
 
@@ -40,7 +41,10 @@ def test_harness_writes_report_summary_and_manifest(tmp_path: Path) -> None:
     )
 
     _write_exec(fake_bin / "thegent-tool-detect", "#!/usr/bin/env bash\necho '{}'\n")
-    _write_exec(fake_bin / "thegent-path-resolve", "#!/usr/bin/env bash\necho '/usr/bin/codex'\n")
+    _write_exec(
+        fake_bin / "thegent-path-resolve",
+        "#!/usr/bin/env bash\necho '/usr/bin/codex'\n",
+    )
 
     result_root = tmp_path / "results"
     env = os.environ.copy()

@@ -10,6 +10,7 @@
 Implement **MAIF (Multi-Agent Immutable Framework) Action Artifacts**: a system for creating cryptographically signed, immutable records of every significant agent action. Artifacts are stored in Supermemory's L4 (Documents API) with hash chain verification for tamper detection, enabling comprehensive audit trails, deterministic replay for debugging, and compliance verification.
 
 **Business Value**:
+
 - **Auditability**: Complete, tamper-proof record of all agent actions
 - **Debuggability**: Deterministic replay to understand decision history
 - **Compliance**: Hash chain verification for regulatory requirements
@@ -22,6 +23,7 @@ Implement **MAIF (Multi-Agent Immutable Framework) Action Artifacts**: a system 
 ### Current State
 
 thegent lacks:
+
 1. **Immutable Action Logs**: Agent actions are not cryptographically signed or tamper-proof
 2. **Deterministic Replay**: No way to replay past decisions to understand why they were made
 3. **Audit Trail Gaps**: No hash chain to detect tampering
@@ -83,13 +85,13 @@ Supermemory L4 (immutable storage)
 
 ### Key Components
 
-| Component | Purpose | Location |
-|-----------|---------|----------|
-| `MAIFArtifact` struct | Artifact definition | `thegent-maif/src/lib.rs` |
-| `MAIFStorage` | L4 storage & retrieval | `thegent/src/maif/storage.py` |
-| `HashChain` | Hash chain management | `thegent/src/maif/hash_chain.py` |
-| `ArtifactHooks` | Action → artifact conversion | `hooks/maif-artifact-hooks.sh` |
-| `AuditAPI` | Artifact querying | `thegent/src/maif/audit.py` |
+| Component             | Purpose                      | Location                         |
+| --------------------- | ---------------------------- | -------------------------------- |
+| `MAIFArtifact` struct | Artifact definition          | `thegent-maif/src/lib.rs`        |
+| `MAIFStorage`         | L4 storage & retrieval       | `thegent/src/maif/storage.py`    |
+| `HashChain`           | Hash chain management        | `thegent/src/maif/hash_chain.py` |
+| `ArtifactHooks`       | Action → artifact conversion | `hooks/maif-artifact-hooks.sh`   |
+| `AuditAPI`            | Artifact querying            | `thegent/src/maif/audit.py`      |
 
 ### Hash Chain Mechanism
 
@@ -134,28 +136,31 @@ Any tampering breaks the chain forward (all subsequent artifacts invalidate).
 
 ## Risks & Mitigations
 
-| Risk | Impact | Mitigation |
-|------|--------|------------|
-| **Hash chain broken (data corruption)** | High | Immutable L4 storage, periodic integrity checks, alerts |
-| **Storage failure** | High | Local queue, retry with exponential backoff, fallback to L2 |
-| **Signature verification expensive** | Medium | Batch verification, caching, hardware acceleration |
-| **Supermemory API unavailable** | Medium | Fallback to local storage, queue for later sync |
-| **Replay non-deterministic** | Low | Separate concern (WP-4007); mark non-replayable |
+| Risk                                    | Impact | Mitigation                                                  |
+| --------------------------------------- | ------ | ----------------------------------------------------------- |
+| **Hash chain broken (data corruption)** | High   | Immutable L4 storage, periodic integrity checks, alerts     |
+| **Storage failure**                     | High   | Local queue, retry with exponential backoff, fallback to L2 |
+| **Signature verification expensive**    | Medium | Batch verification, caching, hardware acceleration          |
+| **Supermemory API unavailable**         | Medium | Fallback to local storage, queue for later sync             |
+| **Replay non-deterministic**            | Low    | Separate concern (WP-4007); mark non-replayable             |
 
 ---
 
 ## Related Work
 
 **Depends On**:
+
 - WP-5001-SM: Supermemory integration (L4 Documents API)
 - WP-5001: Lifecycle loop optimization
 
 **Enables**:
+
 - WP-4007: Simulation & replay engine (uses artifacts)
 - WP-AUDIT: Audit system (uses artifact chain)
 - WP-COMPLIANCE: Regulatory compliance module
 
 **References**:
+
 - [SESSION_RESEARCH_FRAGMENTS_EXPANDED.md § 4](../SESSION_RESEARCH_FRAGMENTS_EXPANDED.md#4-maif-action-artifacts)
 - [Supermemory.ai Documentation](https://supermemory.ai/docs)
 

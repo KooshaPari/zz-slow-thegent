@@ -1,5 +1,3 @@
-import pytest
-
 from thegent.research.cost_sensitivity import CostSensitivityFramework
 
 

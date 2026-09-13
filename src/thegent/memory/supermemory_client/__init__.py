@@ -1,16 +1,24 @@
 """Stub module."""
+
 from dataclasses import dataclass
 
 
 @dataclass
 class MemoryEntry:
     """A memory entry."""
+
     key: str
     value: str
     timestamp: float = 0.0
 
 
-__all__ = ["MemoryEntry", "SupermemoryConfigError", "SupermemoryAPIError", "SupermemoryClient", "_is_retryable"]
+__all__ = [
+    "MemoryEntry",
+    "SupermemoryConfigError",
+    "SupermemoryAPIError",
+    "SupermemoryClient",
+    "_is_retryable",
+]
 
 
 class SupermemoryClient:

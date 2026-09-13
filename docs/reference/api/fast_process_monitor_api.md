@@ -6,12 +6,14 @@ Fast process and system monitoring with optimized backends.
 
 This module provides a high-performance abstraction layer for process monitoring
 that automatically selects the fastest available backend:
+
 - Linux: Direct /proc filesystem access (10-100x faster than psutil.process_iter)
 - Optional: procfs library (if installed) for structured /proc access
 - macOS/Other: psutil (cross-platform, well-optimized)
 - Fallback: Native system APIs where available
 
 Performance improvements:
+
 - Direct /proc access avoids subprocess overhead (10-100x faster)
 - Batch directory scanning with os.scandir() (faster than Path.iterdir())
 - Cached process enumeration for repeated queries (1s TTL)
@@ -20,6 +22,7 @@ Performance improvements:
 - Memory-efficient iteration (generators, not lists)
 
 Research-based optimizations:
+
 - Using os.scandir() instead of Path.iterdir() for 2-3x speedup
 - Reading /proc/PID/stat in one syscall (faster than multiple reads)
 - Caching boot_time and clock_ticks (rarely change)
@@ -32,13 +35,14 @@ Research-based optimizations:
 High-performance process monitor with automatic backend selection.
 
 Backend priority (fastest first):
+
 1. procfs library (if installed) - structured /proc access
 2. Direct /proc filesystem (Linux only) - raw file reads
 3. psutil (cross-platform) - well-optimized fallback
 
 ### Methods
 
-#### FastProcessMonitor.__init__
+#### FastProcessMonitor.**init**
 
 ```python
 __init__(self: Any)
@@ -127,6 +131,7 @@ iter_processes(self: Any, attrs: Any, use_cache: bool)
 Iterate through all processes using the fastest available backend.
 
 Backend selection priority:
+
 1. procfs library (if installed) - fastest, structured access
 2. Direct /proc filesystem (Linux) - very fast, raw file reads
 3. psutil (cross-platform) - slower but reliable fallback
@@ -235,6 +240,7 @@ iter_processes(self: Any, attrs: Any, use_cache: bool)
 Iterate through all processes using the fastest available backend.
 
 Backend selection priority:
+
 1. procfs library (if installed) - fastest, structured access
 2. Direct /proc filesystem (Linux) - very fast, raw file reads
 3. psutil (cross-platform) - slower but reliable fallback

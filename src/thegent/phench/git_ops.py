@@ -80,7 +80,15 @@ def materialize_repo_checkout(source_repo: Path, checkout_path: Path, resolved_s
     if checkout_path.exists():
         # Attempt to remove as worktree first; ignore if not registered.
         subprocess.run(
-            ["git", "-C", str(source_repo), "worktree", "remove", "--force", str(checkout_path)],
+            [
+                "git",
+                "-C",
+                str(source_repo),
+                "worktree",
+                "remove",
+                "--force",
+                str(checkout_path),
+            ],
             capture_output=True,
             text=True,
             check=False,
@@ -88,16 +96,22 @@ def materialize_repo_checkout(source_repo: Path, checkout_path: Path, resolved_s
         _safe_remove_path(checkout_path)
 
     proc = subprocess.run(
-        ["git", "-C", str(source_repo), "worktree", "add", "--detach", str(checkout_path), resolved_sha],
+        [
+            "git",
+            "-C",
+            str(source_repo),
+            "worktree",
+            "add",
+            "--detach",
+            str(checkout_path),
+            resolved_sha,
+        ],
         capture_output=True,
         text=True,
         check=False,
     )
     if proc.returncode != 0:
-        raise RuntimeError(
-            "git worktree add failed for "
-            f"{source_repo} @ {resolved_sha}: {proc.stderr.strip()}"
-        )
+        raise RuntimeError(f"git worktree add failed for {source_repo} @ {resolved_sha}: {proc.stderr.strip()}")
 
 
 def detect_head_branch(checkout_path: Path) -> str | None:

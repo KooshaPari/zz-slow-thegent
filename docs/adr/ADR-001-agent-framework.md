@@ -2,11 +2,12 @@
 
 **Date**: 2026-04-02  
 **Status**: Accepted  
-**Deciders**: Agent  
+**Deciders**: Agent
 
 ## Context
 
 thegent requires an agent architecture for managing dotfiles and executing environment configuration tasks. The system needs to:
+
 1. Execute user commands in a structured way
 2. Support multi-step workflows (detect OS → install packages → configure shell)
 3. Integrate with sandboxing for security
@@ -25,6 +26,7 @@ thegent requires an agent architecture for managing dotfiles and executing envir
 ### Option A: CrewAI (Role-Based Framework)
 
 **Pros**:
+
 - Intuitive role-based model (perfect for "dotfiles manager" role)
 - YAML configuration support (fits thegent's config-driven approach)
 - Fast execution (5.76x faster than LangGraph per benchmarks)
@@ -32,6 +34,7 @@ thegent requires an agent architecture for managing dotfiles and executing envir
 - Built-in task delegation patterns
 
 **Cons**:
+
 - Python dependency (thegent is primarily Rust/Go)
 - Less granular control than custom implementation
 - Limited to Python ecosystem
@@ -42,12 +45,14 @@ thegent requires an agent architecture for managing dotfiles and executing envir
 ### Option B: LangGraph (State Machine Framework)
 
 **Pros**:
+
 - Explicit control flow via state machines
 - State persistence for long workflows
 - Better for complex, multi-step processes
 - Part of LangChain ecosystem (integration)
 
 **Cons**:
+
 - Steep learning curve
 - More boilerplate code required
 - LangChain dependency (large)
@@ -58,6 +63,7 @@ thegent requires an agent architecture for managing dotfiles and executing envir
 ### Option C: Custom Implementation (Hybrid Approach)
 
 **Pros**:
+
 - Full control over architecture
 - Native language (Rust/Go)
 - Optimized for thegent's specific use cases
@@ -65,6 +71,7 @@ thegent requires an agent architecture for managing dotfiles and executing envir
 - Can incorporate patterns from CrewAI/LangGraph
 
 **Cons**:
+
 - Development time investment
 - Maintenance burden
 - No community ecosystem
@@ -74,11 +81,13 @@ thegent requires an agent architecture for managing dotfiles and executing envir
 ### Option D: Temporal (Durable Execution)
 
 **Pros**:
+
 - Durable execution (survives crashes)
 - Workflow replay capability
 - Production-grade reliability
 
 **Cons**:
+
 - Heavy infrastructure (requires Temporal server)
 - Overkill for dotfiles management
 - Go/Java/TS focused
@@ -147,16 +156,17 @@ thegent requires an agent architecture for managing dotfiles and executing envir
 
 ### Language Choice
 
-| Component | Language | Rationale |
-|-----------|----------|-----------|
-| Agent core | Rust | Performance, safety, existing thegent stack |
-| Tool implementations | Rust | Sandboxing integration |
-| LLM integration | Rust | `llm` crate ecosystem |
-| Configuration | TOML | thegent standard |
+| Component            | Language | Rationale                                   |
+| -------------------- | -------- | ------------------------------------------- |
+| Agent core           | Rust     | Performance, safety, existing thegent stack |
+| Tool implementations | Rust     | Sandboxing integration                      |
+| LLM integration      | Rust     | `llm` crate ecosystem                       |
+| Configuration        | TOML     | thegent standard                            |
 
 ## Consequences
 
 ### Positive
+
 - **Optimal performance**: Native Rust implementation
 - **Full control**: No framework limitations
 - **CrewAI patterns**: Proven role-based model
@@ -164,6 +174,7 @@ thegent requires an agent architecture for managing dotfiles and executing envir
 - **Language alignment**: Fits thegent's Rust stack
 
 ### Negative
+
 - **Development time**: ~2-3 weeks for core implementation
 - **Maintenance burden**: No upstream updates
 - **Documentation**: Must write our own
@@ -207,4 +218,4 @@ pub struct Task {
 
 ---
 
-*This ADR will be updated as implementation progresses*
+_This ADR will be updated as implementation progresses_

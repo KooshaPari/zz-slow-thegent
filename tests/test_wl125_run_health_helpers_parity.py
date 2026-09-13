@@ -27,7 +27,10 @@ def test_wl125_append_health_snapshot_wrapper_delegates_with_impl_callbacks(monk
     expected_path = tmp_path / "snapshots.jsonl"
 
     monkeypatch.setattr("thegent.cli.commands.impl._health_snapshot_log_path", lambda: expected_path)
-    monkeypatch.setattr("thegent.cli.commands.impl._coerce_issue_types", lambda value: ["patched", str(value)])
+    monkeypatch.setattr(
+        "thegent.cli.commands.impl._coerce_issue_types",
+        lambda value: ["patched", str(value)],
+    )
 
     def _fake(payload, scope_key, *, log_path_resolver, compact_log_fn, coerce_issue_types_fn):
         captured["payload"] = payload
@@ -38,11 +41,15 @@ def test_wl125_append_health_snapshot_wrapper_delegates_with_impl_callbacks(monk
 
     compact_calls: list[str] = []
     monkeypatch.setattr(
-        "thegent.cli.commands.impl._compact_health_snapshot_log", lambda: compact_calls.append("called")
+        "thegent.cli.commands.impl._compact_health_snapshot_log",
+        lambda: compact_calls.append("called"),
     )
     monkeypatch.setattr("thegent.cli.commands.impl.run_health_helpers.append_health_snapshot", _fake)
 
-    payload = {"payload_type": "session_contract_health_report", "issue_counts": {"A": 1}}
+    payload = {
+        "payload_type": "session_contract_health_report",
+        "issue_counts": {"A": 1},
+    }
     scope_key = {"owner": "dev"}
     impl._append_health_snapshot(payload, scope_key)
 
@@ -63,7 +70,10 @@ def test_wl125_compact_health_snapshot_log_wrapper_delegates_with_impl_resolvers
         captured["path"] = log_path_resolver()
         captured["max_lines"] = max_lines_resolver()
 
-    monkeypatch.setattr("thegent.cli.commands.impl.run_health_helpers.compact_health_snapshot_log", _fake)
+    monkeypatch.setattr(
+        "thegent.cli.commands.impl.run_health_helpers.compact_health_snapshot_log",
+        _fake,
+    )
 
     impl._compact_health_snapshot_log()
 
@@ -74,7 +84,10 @@ def test_wl125_compact_health_snapshot_log_wrapper_delegates_with_impl_resolvers
 def test_wl125_health_snapshot_log_path_wrapper_parity_with_explicit_setting(monkeypatch, tmp_path: Path) -> None:
     configured = tmp_path / "logs" / "health.jsonl"
     fake_settings = SimpleNamespace(health_snapshot_path=str(configured), health_snapshot_max_lines=5000)
-    monkeypatch.setattr("thegent.cli.commands.impl.run_health_helpers.ThegentSettings", lambda: fake_settings)
+    monkeypatch.setattr(
+        "thegent.cli.commands.impl.run_health_helpers.ThegentSettings",
+        lambda: fake_settings,
+    )
 
     resolved = impl._health_snapshot_log_path()
 
@@ -84,7 +97,10 @@ def test_wl125_health_snapshot_log_path_wrapper_parity_with_explicit_setting(mon
 
 def test_wl125_health_snapshot_log_path_wrapper_parity_with_default_home(monkeypatch, tmp_path: Path) -> None:
     fake_settings = SimpleNamespace(health_snapshot_path="", health_snapshot_max_lines=5000)
-    monkeypatch.setattr("thegent.cli.commands.impl.run_health_helpers.ThegentSettings", lambda: fake_settings)
+    monkeypatch.setattr(
+        "thegent.cli.commands.impl.run_health_helpers.ThegentSettings",
+        lambda: fake_settings,
+    )
     monkeypatch.setattr("thegent.cli.commands.impl.run_health_helpers.Path.home", lambda: tmp_path)
 
     resolved = impl._health_snapshot_log_path()

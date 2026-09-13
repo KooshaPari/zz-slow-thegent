@@ -7,16 +7,16 @@ import pytest
 pytestmark = pytest.mark.skip(reason="API mismatch - requires full WorktreePool implementation")
 
 from pathlib import Path
-from unittest.mock import Mock, patch, MagicMock
+from unittest.mock import MagicMock, Mock, patch
+
 from thegent.mesh.git_parallelism import (
     WorktreeContext,
     WorktreePool,
-    _project_hash,
     _atomic_write,
     _git_available,
+    _project_hash,
     _worktrees_supported,
 )
-
 
 # ============================================================================
 # Test: WorktreeContext

@@ -15,11 +15,8 @@ Traces to: FR-ACP-001 (ACP Server Adapter)
 
 from __future__ import annotations
 
-import asyncio
-import orjson as json
 from pathlib import Path
-from typing import Any
-from unittest.mock import AsyncMock, MagicMock, patch
+from unittest.mock import MagicMock, patch
 
 import pytest
 from starlette.testclient import TestClient
@@ -163,7 +160,10 @@ class TestCliEntryPoint:
             patch("thegent.adapters.acp_server.ACPServerAdapter") as mock_adapter_cls,
             patch("thegent.adapters.acp_server.asyncio.run") as mock_asyncio_run,
         ):
-            result = runner.invoke(acp_cli_app, ["--http", "--host", "0.0.0.0", "--port", str(ACP_DEFAULT_PORT + 1)])
+            result = runner.invoke(
+                acp_cli_app,
+                ["--http", "--host", "0.0.0.0", "--port", str(ACP_DEFAULT_PORT + 1)],
+            )
 
         assert result.exit_code == 0
         mock_adapter = mock_adapter_cls.return_value
@@ -224,7 +224,11 @@ class TestHandleAcpMessage:
     async def test_task_returns_result(self, adapter_with_agent: tuple) -> None:
         inst, _runner = adapter_with_agent
         response = await inst.handle_acp_message(
-            {"type": "task", "payload": {"agent": "claude", "prompt": "hi"}, "agent_id": "caller-1"}
+            {
+                "type": "task",
+                "payload": {"agent": "claude", "prompt": "hi"},
+                "agent_id": "caller-1",
+            }
         )
         assert response["type"] == "result"
         assert response["result"]["stdout"] == "Hello from claude"
@@ -239,7 +243,11 @@ class TestHandleAcpMessage:
     @pytest.mark.asyncio
     async def test_unknown_agent_returns_error(self, adapter: ACPServerAdapter) -> None:
         response = await adapter.handle_acp_message(
-            {"type": "task", "payload": {"agent": "nonexistent", "prompt": "hi"}, "agent_id": "x"}
+            {
+                "type": "task",
+                "payload": {"agent": "nonexistent", "prompt": "hi"},
+                "agent_id": "x",
+            }
         )
         assert response["type"] == "error"
         assert "AGENT_NOT_FOUND" in response["error"]["code"]
@@ -254,7 +262,13 @@ class TestHandleAcpMessage:
     @pytest.mark.asyncio
     async def test_session_created_in_sessions_dict(self, adapter_with_agent: tuple) -> None:
         inst, _ = adapter_with_agent
-        await inst.handle_acp_message({"type": "task", "payload": {"agent": "claude", "prompt": "go"}, "agent_id": "c"})
+        await inst.handle_acp_message(
+            {
+                "type": "task",
+                "payload": {"agent": "claude", "prompt": "go"},
+                "agent_id": "c",
+            }
+        )
         assert len(inst.sessions) == 1
 
     @pytest.mark.asyncio
@@ -264,7 +278,11 @@ class TestHandleAcpMessage:
         adapter.agents["crasher"] = bad_runner
 
         response = await adapter.handle_acp_message(
-            {"type": "task", "payload": {"agent": "crasher", "prompt": "boom"}, "agent_id": "x"}
+            {
+                "type": "task",
+                "payload": {"agent": "crasher", "prompt": "boom"},
+                "agent_id": "x",
+            }
         )
         assert response["type"] == "error"
 
@@ -306,7 +324,12 @@ class TestRpcSpawn:
     async def test_spawn_known_agent_returns_result(self, adapter_with_agent: tuple) -> None:
         inst, _ = adapter_with_agent
         response = await inst.handle_jsonrpc(
-            {"jsonrpc": "2.0", "id": 2, "method": "agent/spawn", "params": {"agent": "claude", "prompt": "hello"}}
+            {
+                "jsonrpc": "2.0",
+                "id": 2,
+                "method": "agent/spawn",
+                "params": {"agent": "claude", "prompt": "hello"},
+            }
         )
         assert "result" in response
         assert response["result"]["stdout"] == "Hello from claude"
@@ -321,7 +344,13 @@ class TestRpcSpawn:
     @pytest.mark.asyncio
     async def test_spawn_creates_session(self, adapter_with_agent: tuple) -> None:
         inst, _ = adapter_with_agent
-        await inst.handle_jsonrpc({"id": 2, "method": "agent/spawn", "params": {"agent": "claude", "prompt": "go"}})
+        await inst.handle_jsonrpc(
+            {
+                "id": 2,
+                "method": "agent/spawn",
+                "params": {"agent": "claude", "prompt": "go"},
+            }
+        )
         assert len(inst.sessions) == 1
 
     @pytest.mark.asyncio
@@ -330,7 +359,11 @@ class TestRpcSpawn:
         bad.run.side_effect = ValueError("oops")
         adapter.agents["oops"] = bad
         response = await adapter.handle_jsonrpc(
-            {"id": 2, "method": "agent/spawn", "params": {"agent": "oops", "prompt": "x"}}
+            {
+                "id": 2,
+                "method": "agent/spawn",
+                "params": {"agent": "oops", "prompt": "x"},
+            }
         )
         assert "error" in response
 
@@ -366,7 +399,11 @@ class TestRpcMessage:
     @pytest.mark.asyncio
     async def test_message_unknown_session(self, adapter: ACPServerAdapter) -> None:
         response = await adapter.handle_jsonrpc(
-            {"id": 3, "method": "agent/message", "params": {"agent_id": "ghost-session", "message": "hi"}}
+            {
+                "id": 3,
+                "method": "agent/message",
+                "params": {"agent_id": "ghost-session", "message": "hi"},
+            }
         )
         assert response["error"]["code"] == -32602
 
@@ -375,14 +412,22 @@ class TestRpcMessage:
         inst, runner = adapter_with_agent
         # Spawn first
         spawn_resp = await inst.handle_jsonrpc(
-            {"id": 2, "method": "agent/spawn", "params": {"agent": "claude", "prompt": "init"}}
+            {
+                "id": 2,
+                "method": "agent/spawn",
+                "params": {"agent": "claude", "prompt": "init"},
+            }
         )
         session_id = spawn_resp["result"]["agent_id"]
 
         runner.run.return_value = RunResult(exit_code=0, stdout="follow-up reply", stderr="", timed_out=False)
 
         msg_resp = await inst.handle_jsonrpc(
-            {"id": 3, "method": "agent/message", "params": {"agent_id": session_id, "message": "follow up"}}
+            {
+                "id": 3,
+                "method": "agent/message",
+                "params": {"agent_id": session_id, "message": "follow up"},
+            }
         )
         assert msg_resp["result"]["stdout"] == "follow-up reply"
 
@@ -390,12 +435,20 @@ class TestRpcMessage:
     async def test_message_appends_to_conversation_history(self, adapter_with_agent: tuple) -> None:
         inst, _ = adapter_with_agent
         spawn_resp = await inst.handle_jsonrpc(
-            {"id": 2, "method": "agent/spawn", "params": {"agent": "claude", "prompt": "start"}}
+            {
+                "id": 2,
+                "method": "agent/spawn",
+                "params": {"agent": "claude", "prompt": "start"},
+            }
         )
         session_id = spawn_resp["result"]["agent_id"]
 
         await inst.handle_jsonrpc(
-            {"id": 3, "method": "agent/message", "params": {"agent_id": session_id, "message": "next"}}
+            {
+                "id": 3,
+                "method": "agent/message",
+                "params": {"agent_id": session_id, "message": "next"},
+            }
         )
 
         session = inst.sessions[session_id]
@@ -425,7 +478,11 @@ class TestRpcStop:
     async def test_stop_known_session(self, adapter_with_agent: tuple) -> None:
         inst, _ = adapter_with_agent
         spawn_resp = await inst.handle_jsonrpc(
-            {"id": 2, "method": "agent/spawn", "params": {"agent": "claude", "prompt": "go"}}
+            {
+                "id": 2,
+                "method": "agent/spawn",
+                "params": {"agent": "claude", "prompt": "go"},
+            }
         )
         session_id = spawn_resp["result"]["agent_id"]
 
@@ -437,7 +494,11 @@ class TestRpcStop:
     async def test_stop_marks_session_stopped(self, adapter_with_agent: tuple) -> None:
         inst, _ = adapter_with_agent
         spawn_resp = await inst.handle_jsonrpc(
-            {"id": 2, "method": "agent/spawn", "params": {"agent": "claude", "prompt": "go"}}
+            {
+                "id": 2,
+                "method": "agent/spawn",
+                "params": {"agent": "claude", "prompt": "go"},
+            }
         )
         session_id = spawn_resp["result"]["agent_id"]
 
@@ -485,7 +546,10 @@ class TestStarletteApp:
         assert resp.text == "ok"
 
     def test_rpc_initialize(self, client: TestClient) -> None:
-        resp = client.post("/rpc", json={"jsonrpc": "2.0", "id": 1, "method": "initialize", "params": {}})
+        resp = client.post(
+            "/rpc",
+            json={"jsonrpc": "2.0", "id": 1, "method": "initialize", "params": {}},
+        )
         assert resp.status_code == 200
         body = resp.json()
         assert "result" in body
@@ -498,7 +562,12 @@ class TestStarletteApp:
     def test_rpc_spawn_known_agent(self, client: TestClient) -> None:
         resp = client.post(
             "/rpc",
-            json={"jsonrpc": "2.0", "id": 2, "method": "agent/spawn", "params": {"agent": "claude", "prompt": "hi"}},
+            json={
+                "jsonrpc": "2.0",
+                "id": 2,
+                "method": "agent/spawn",
+                "params": {"agent": "claude", "prompt": "hi"},
+            },
         )
         assert resp.status_code == 200
         assert "result" in resp.json()
@@ -506,14 +575,23 @@ class TestStarletteApp:
     def test_rpc_spawn_unknown_agent_returns_422(self, client: TestClient) -> None:
         resp = client.post(
             "/rpc",
-            json={"jsonrpc": "2.0", "id": 2, "method": "agent/spawn", "params": {"agent": "ghost"}},
+            json={
+                "jsonrpc": "2.0",
+                "id": 2,
+                "method": "agent/spawn",
+                "params": {"agent": "ghost"},
+            },
         )
         assert resp.status_code == 422
 
     def test_acp_task_message(self, client: TestClient) -> None:
         resp = client.post(
             "/acp",
-            json={"type": "task", "payload": {"agent": "claude", "prompt": "go"}, "agent_id": "caller-1"},
+            json={
+                "type": "task",
+                "payload": {"agent": "claude", "prompt": "go"},
+                "agent_id": "caller-1",
+            },
         )
         assert resp.status_code == 200
         body = resp.json()
@@ -526,7 +604,11 @@ class TestStarletteApp:
     def test_acp_error_type_returns_422(self, client: TestClient) -> None:
         resp = client.post(
             "/acp",
-            json={"type": "task", "payload": {"agent": "ghost", "prompt": "x"}, "agent_id": "c"},
+            json={
+                "type": "task",
+                "payload": {"agent": "ghost", "prompt": "x"},
+                "agent_id": "c",
+            },
         )
         assert resp.status_code == 422
 

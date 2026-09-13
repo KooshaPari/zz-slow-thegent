@@ -8,7 +8,6 @@ FR traceability: FR-AUTO-001 through FR-AUTO-007 (macOS desktop automation).
 # @trace FR-AUTO-001 FR-AUTO-002 FR-AUTO-003 FR-AUTO-004 FR-AUTO-005 FR-AUTO-006 FR-AUTO-007
 
 import subprocess
-import sys
 from unittest.mock import MagicMock, patch
 
 import pytest
@@ -44,7 +43,10 @@ class TestIsAvailable:
     def test_available_on_darwin_with_binary(self):
         """Returns True when platform is darwin and osascript is found."""
         automation = MacOSDesktopAutomation()
-        with patch("sys.platform", "darwin"), patch("shutil.which", return_value="/usr/bin/osascript"):
+        with (
+            patch("sys.platform", "darwin"),
+            patch("shutil.which", return_value="/usr/bin/osascript"),
+        ):
             assert automation.is_available() is True
 
     def test_not_available_on_linux(self):
@@ -123,7 +125,10 @@ class TestRunApplescript:
         """TimeoutExpired returns AutomationResult(success=False, error=...timeout...)."""
         with (
             patch.object(automation, "is_available", return_value=True),
-            patch("subprocess.run", side_effect=subprocess.TimeoutExpired(cmd="osascript", timeout=5.0)),
+            patch(
+                "subprocess.run",
+                side_effect=subprocess.TimeoutExpired(cmd="osascript", timeout=5.0),
+            ),
         ):
             result = automation.run_applescript("delay 999", timeout_s=5.0)
 
@@ -206,7 +211,10 @@ class TestRunJxa:
         """TimeoutExpired in JXA mode returns graceful failure."""
         with (
             patch.object(automation, "is_available", return_value=True),
-            patch("subprocess.run", side_effect=subprocess.TimeoutExpired(cmd="osascript", timeout=3.0)),
+            patch(
+                "subprocess.run",
+                side_effect=subprocess.TimeoutExpired(cmd="osascript", timeout=3.0),
+            ),
         ):
             result = automation.run_jxa("while(true){}", timeout_s=3.0)
 

@@ -6,9 +6,10 @@ across macOS, Linux, and Windows.
 
 import logging
 import platform
-from thegent.infra.shim_subprocess import run as shim_run
 from dataclasses import dataclass
 from pathlib import Path
+
+from thegent.infra.shim_subprocess import run as shim_run
 
 logger = logging.getLogger(__name__)
 
@@ -70,7 +71,11 @@ class OSUserManager:
                 # macOS deletion is multi-step or uses sysadminctl
                 cmd = ["sysadminctl", "-deleteUser", username]
             elif self.os_type == "windows":
-                cmd = ["powershell.exe", "-Command", f"Remove-LocalUser -Name '{username}'"]
+                cmd = [
+                    "powershell.exe",
+                    "-Command",
+                    f"Remove-LocalUser -Name '{username}'",
+                ]
 
             shim_run(cmd, check=True, capture_output=True)
             return True
@@ -105,7 +110,13 @@ class OSUserManager:
         import pwd
 
         info = pwd.getpwnam(username)
-        return OSUser(username=username, uid=info.pw_uid, gid=info.pw_gid, home_dir=info.pw_dir, is_created=True)
+        return OSUser(
+            username=username,
+            uid=info.pw_uid,
+            gid=info.pw_gid,
+            home_dir=info.pw_dir,
+            is_created=True,
+        )
 
     def _create_linux_user(self, username: str, home_base: str | None) -> None:
         """Linux-specific user creation."""
@@ -120,7 +131,15 @@ class OSUserManager:
     def _create_macos_user(self, username: str, home_base: str | None) -> None:
         """macOS-specific user creation using sysadminctl or dscl."""
         # Using sysadminctl is cleaner on modern macOS
-        cmd = ["sysadminctl", "-addUser", username, "-fullName", f"TheGent Agent {username}", "-type", "standard"]
+        cmd = [
+            "sysadminctl",
+            "-addUser",
+            username,
+            "-fullName",
+            f"TheGent Agent {username}",
+            "-type",
+            "standard",
+        ]
         # Note: In a real system, we'd also handle password/secure-token if needed
         # but for internal agent accounts, we might want them hidden.
         shim_run(cmd, check=True, capture_output=True)

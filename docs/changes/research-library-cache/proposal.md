@@ -57,6 +57,7 @@ Replace ad-hoc custom caching implementations with the industry-standard `cachet
 ## Rationale
 
 **Why cachetools?**
+
 - Mature, battle-tested library (10+ years, widely used)
 - Minimal dependencies (zero external deps)
 - Supports LRU, LFU, TTL, and custom eviction policies
@@ -64,6 +65,7 @@ Replace ad-hoc custom caching implementations with the industry-standard `cachet
 - ~100 LOC overhead vs. custom implementations
 
 **Why now?**
+
 - Library-first governance mandate active
 - No active cache refactoring in progress
 - Quality gate will flag custom cache implementations as anti-pattern

@@ -50,12 +50,12 @@
 
 ### Layers & Responsibilities
 
-| Layer | System | Role |
-|-------|--------|------|
-| **L1** | In-memory cache (LRU) | Hot artifacts for current session |
-| **L2** | Local disk cache | Warm artifacts for replay |
-| **L3** | Supermemory Knowledge Graph | Context relationships for replay |
-| **L4** | Supermemory Documents API | Immutable artifact storage |
+| Layer  | System                      | Role                              |
+| ------ | --------------------------- | --------------------------------- |
+| **L1** | In-memory cache (LRU)       | Hot artifacts for current session |
+| **L2** | Local disk cache            | Warm artifacts for replay         |
+| **L3** | Supermemory Knowledge Graph | Context relationships for replay  |
+| **L4** | Supermemory Documents API   | Immutable artifact storage        |
 
 ---
 
@@ -67,6 +67,7 @@
 
 ```python
 # thegent/src/thegent/maif/artifact_generator.py
+
 
 class MAIFArtifactGenerator:
     def __init__(self, signer: SigningKey):
@@ -125,6 +126,7 @@ class MAIFArtifactGenerator:
 ```python
 # thegent/src/thegent/maif/hash_chain.py
 
+
 class HashChainValidator:
     def __init__(self):
         self.chain_heads: dict[str, str] = {}  # session_id -> latest_artifact_hash
@@ -141,9 +143,7 @@ class HashChainValidator:
             if i == 0:
                 expected_prev = ""
             else:
-                expected_prev = self._hash(
-                    self._serialize(artifacts[i - 1])
-                )
+                expected_prev = self._hash(self._serialize(artifacts[i - 1]))
 
             if artifact.previous_hash != expected_prev:
                 return False, f"Artifact {i}: hash chain broken"
@@ -153,9 +153,7 @@ class HashChainValidator:
                 return False, f"Artifact {i}: signature invalid"
 
         # Update chain head
-        self.chain_heads[session_id] = self._hash(
-            self._serialize(artifacts[-1])
-        )
+        self.chain_heads[session_id] = self._hash(self._serialize(artifacts[-1]))
 
         return True, "OK"
 
@@ -185,7 +183,7 @@ class HashChainValidator:
 
 **Responsibility**: Persist artifacts to Supermemory L4.
 
-```python
+````python
 # thegent/src/thegent/maif/storage.py
 
 class MAIFStorage:
@@ -273,7 +271,7 @@ is_significant_call() {
 }
 
 main "$@"
-```
+````
 
 ---
 
@@ -288,12 +286,14 @@ from enum import Enum
 from typing import Optional
 from pydantic import BaseModel
 
+
 class ActionType(str, Enum):
     CODE_CHANGE = "code_change"
     FILE_OPERATION = "file_operation"
     SYSTEM_CALL = "system_call"
     DECISION = "decision"
     ERROR = "error"
+
 
 class MAIFArtifact(BaseModel):
     id: str
@@ -339,7 +339,7 @@ class MAIFArtifact(BaseModel):
   "agent_id": "agent-1",
   "id": "a1b2c3d4e5f6g7h8i9j0",
   "input_hash": "abc123...",
-  "metadata": {"file": "/path/to/file.py"},
+  "metadata": { "file": "/path/to/file.py" },
   "output_hash": "def456...",
   "previous_hash": "prev0ab...",
   "session_id": "session-xyz",
@@ -356,6 +356,7 @@ class MAIFArtifact(BaseModel):
 ```python
 # thegent_maif_gen CLI or function
 
+
 async def create_artifact(
     action_type: ActionType,
     agent_id: str,
@@ -366,9 +367,7 @@ async def create_artifact(
 ) -> MAIFArtifact:
     """Create and store a MAIF artifact."""
     generator = MAIFArtifactGenerator(signer=get_signing_key())
-    artifact = generator.create_artifact(
-        action_type, agent_id, session_id, input_data, output_data, metadata
-    )
+    artifact = generator.create_artifact(action_type, agent_id, session_id, input_data, output_data, metadata)
 
     storage = MAIFStorage(supermemory_client)
     await storage.store(artifact)
@@ -449,28 +448,28 @@ async def query_artifacts(
 
 ### 6.1 Artifact Creation Failures
 
-| Failure | Impact | Handling |
-|---------|--------|----------|
-| Signer unavailable | Critical | Queue for retry, alert |
-| Supermemory L4 unavailable | High | Fallback to local cache, circuit breaker |
-| Input/output data too large | Medium | Chunk and store separately |
-| Hash collision (impossible) | Low | Alert, investigate |
+| Failure                     | Impact   | Handling                                 |
+| --------------------------- | -------- | ---------------------------------------- |
+| Signer unavailable          | Critical | Queue for retry, alert                   |
+| Supermemory L4 unavailable  | High     | Fallback to local cache, circuit breaker |
+| Input/output data too large | Medium   | Chunk and store separately               |
+| Hash collision (impossible) | Low      | Alert, investigate                       |
 
 ### 6.2 Chain Verification Failures
 
-| Failure | Impact | Handling |
-|---------|--------|----------|
-| Hash mismatch | High | Quarantine session, alert |
-| Signature invalid | Critical | Reject artifact, investigate |
-| Missing artifact | Medium | Partial chain verification, log gap |
+| Failure           | Impact   | Handling                            |
+| ----------------- | -------- | ----------------------------------- |
+| Hash mismatch     | High     | Quarantine session, alert           |
+| Signature invalid | Critical | Reject artifact, investigate        |
+| Missing artifact  | Medium   | Partial chain verification, log gap |
 
 ### 6.3 Storage Failures
 
-| Failure | Impact | Handling |
-|---------|--------|----------|
-| L4 store fails | Medium | Retry with backoff, fallback to L2 |
-| L4 retrieve fails | Low | Fallback to L2 cache |
-| Network timeout | Medium | Retry, eventual consistency |
+| Failure           | Impact | Handling                           |
+| ----------------- | ------ | ---------------------------------- |
+| L4 store fails    | Medium | Retry with backoff, fallback to L2 |
+| L4 retrieve fails | Low    | Fallback to L2 cache               |
+| Network timeout   | Medium | Retry, eventual consistency        |
 
 ---
 
@@ -478,12 +477,12 @@ async def query_artifacts(
 
 ### 7.1 Latency Targets
 
-| Operation | Target | Baseline |
-|-----------|--------|----------|
-| Artifact creation | <1ms | Hashing: 0.1ms, Signing: 0.5ms, Store: 0.4ms |
-| Chain verification (1000 artifacts) | <100ms | Hashing: 50ms, Signature verify: 40ms |
-| Artifact retrieval | <100ms | L4 query: 80ms |
-| Audit query (10k artifacts) | <500ms | L4 query: 400ms |
+| Operation                           | Target | Baseline                                     |
+| ----------------------------------- | ------ | -------------------------------------------- |
+| Artifact creation                   | <1ms   | Hashing: 0.1ms, Signing: 0.5ms, Store: 0.4ms |
+| Chain verification (1000 artifacts) | <100ms | Hashing: 50ms, Signature verify: 40ms        |
+| Artifact retrieval                  | <100ms | L4 query: 80ms                               |
+| Audit query (10k artifacts)         | <500ms | L4 query: 400ms                              |
 
 ### 7.2 Storage Scaling
 

@@ -1,7 +1,7 @@
 """Stub module."""
 
-from typing import Any
 from collections.abc import Callable
+from typing import Any
 
 
 def register_modules_commands(

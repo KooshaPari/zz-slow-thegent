@@ -8,6 +8,7 @@ threshold-ladder action picker (``continue`` / ``pause`` /
 
 from __future__ import annotations
 
+import contextlib
 import json
 import os
 import tempfile
@@ -49,10 +50,8 @@ def _save_state(root: Path, agent: str, state: dict[str, Any]) -> None:
             json.dump(state, fh)
         os.replace(tmp, f)
     except Exception:
-        try:
+        with contextlib.suppress(OSError):
             os.unlink(tmp)
-        except OSError:
-            pass
         raise
 
 

@@ -51,7 +51,13 @@ def test_wl9741_parse_path_returns_turn_context() -> None:
     # @trace WL-9741
     _reset_state()
     session_id = _seed_session()
-    turn = {"id": "turn-0001", "session_id": session_id, "status": "in_progress", "input": "x", "approval_id": None}
+    turn = {
+        "id": "turn-0001",
+        "session_id": session_id,
+        "status": "in_progress",
+        "input": "x",
+        "approval_id": None,
+    }
     SERVER_STATE.turns[turn["id"]] = turn
     turn_id, resolved_turn, error = _parse_turn_cancel_request("turn/cancel", "req-9741", {"turn_id": "turn-0001"})
     assert error is None
@@ -87,7 +93,13 @@ def test_wl9744_state_error_projection_sets_jsonrpc_envelope_for_requests() -> N
     projected = _project_turn_cancel_response(
         "turn/cancel",
         "turn-0001",
-        {"id": "turn-0001", "session_id": "session-1", "status": "cancelled", "input": "x", "approval_id": None},
+        {
+            "id": "turn-0001",
+            "session_id": "session-1",
+            "status": "cancelled",
+            "input": "x",
+            "approval_id": None,
+        },
     )
     assert projected is not None
     assert projected["turn"]["id"] == "turn-0001"
@@ -117,7 +129,13 @@ def test_wl9746_execute_path_cancels_turn_state() -> None:
     # @trace WL-9746
     _reset_state()
     session_id = _seed_session()
-    turn = {"id": "turn-0001", "session_id": session_id, "status": "in_progress", "input": "x", "approval_id": None}
+    turn = {
+        "id": "turn-0001",
+        "session_id": session_id,
+        "status": "in_progress",
+        "input": "x",
+        "approval_id": None,
+    }
     _execute_turn_cancel_resolution("turn/cancel", turn)
     assert turn["status"] == "cancelled"
 
@@ -181,7 +199,12 @@ def test_wl9749_notification_turn_cancel_has_side_effect_without_response() -> N
                 "jsonrpc": "2.0",
                 "id": "t",
                 "method": "turn/submit",
-                "params": {"session_id": session_id, "input": "lane-o", "requires_approval": True, "unified_diff": "x"},
+                "params": {
+                    "session_id": session_id,
+                    "input": "lane-o",
+                    "requires_approval": True,
+                    "unified_diff": "x",
+                },
             }
         )
     )

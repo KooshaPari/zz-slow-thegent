@@ -15,7 +15,7 @@ Design and manage parallel execution:
 
 Respond with:
 PrimaryOutput: agent-handoffs/phases/03-planning/<parallel-plan>.md
-Scratch: agent-handoffs/_scratch/parallelization-conductor/<note>.md
+Scratch: agent-handoffs/\_scratch/parallelization-conductor/<note>.md
 Summary: <parallelization status>
 Splits:
 

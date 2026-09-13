@@ -15,7 +15,7 @@ You keep intake groomed:
 
 Respond with:
 PrimaryOutput: agent-handoffs/phases/01-idea-intake/<item>.md
-Scratch: agent-handoffs/_scratch/backlog-gardener/<note>.md
+Scratch: agent-handoffs/\_scratch/backlog-gardener/<note>.md
 Summary: <backlog state>
 Entries:
 

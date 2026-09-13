@@ -5,10 +5,10 @@ Provides command-line interface for governance setup, quality assessment,
 auditing, and reporting.
 """
 
-import orjson as json
 from pathlib import Path
 
 import click
+import orjson as json
 
 from ...governance.audit_framework import AuditFramework, AuditType
 from ...governance.project_setup_enhanced import ProjectGovernanceSetupEnhanced
@@ -155,7 +155,11 @@ def run_audit(project_path: str, audit_type: str, output: str | None):
 
 @governance_cmd.command("report")
 @click.argument("project_path", type=click.Path(exists=True))
-@click.option("--format", type=click.Choice(["json", "yaml", "markdown", "html", "console"]), default="console")
+@click.option(
+    "--format",
+    type=click.Choice(["json", "yaml", "markdown", "html", "console"]),
+    default="console",
+)
 @click.option("--output", "-o", type=click.Path(), help="Output file path")
 def generate_report(project_path: str, format: str, output: str | None):
     """Generate comprehensive governance report."""
@@ -184,7 +188,7 @@ def generate_report(project_path: str, format: str, output: str | None):
     audit_results = None
     try:
         framework = AuditFramework(project)
-        results = framework.run_all_audits()
+        framework.run_all_audits()
         audit_results = framework.generate_report()
     except Exception as e:
         click.echo(f"Warning: Could not run audits: {e}")
@@ -204,7 +208,12 @@ def generate_report(project_path: str, format: str, output: str | None):
         if output:
             output_path = Path(output)
         else:
-            ext = {"json": ".json", "yaml": ".yaml", "markdown": ".md", "html": ".html"}.get(format, ".json")
+            ext = {
+                "json": ".json",
+                "yaml": ".yaml",
+                "markdown": ".md",
+                "html": ".html",
+            }.get(format, ".json")
             output_path = project / "governance" / f"report{ext}"
 
         generator.save_report(report, output_path, format_enum)
@@ -212,9 +221,17 @@ def generate_report(project_path: str, format: str, output: str | None):
 
 
 @governance_cmd.command("tasks")
-@click.option("--status", type=click.Choice(["pending", "in_progress", "completed", "all"]), default="all")
+@click.option(
+    "--status",
+    type=click.Choice(["pending", "in_progress", "completed", "all"]),
+    default="all",
+)
 @click.option("--project", type=click.Path(), help="Filter by project")
-@click.option("--priority", type=click.Choice(["critical", "high", "medium", "low"]), help="Filter by priority")
+@click.option(
+    "--priority",
+    type=click.Choice(["critical", "high", "medium", "low"]),
+    help="Filter by priority",
+)
 def list_tasks(status: str, project: str | None, priority: str | None):
     """List tasks."""
     manager = TaskManagerEnhanced()

@@ -37,15 +37,10 @@ from __future__ import annotations
 
 import inspect
 import json
-import tempfile
 from pathlib import Path
-from typing import Any
-
-import pytest
 
 from thegent.cli.commands.impl import run_impl
 from thegent.execution import Auditor, RunMeta, RunRegistry
-
 
 # ---------------------------------------------------------------------------
 # Lane 1 — run_impl signature exposes audio_files + google_grounding

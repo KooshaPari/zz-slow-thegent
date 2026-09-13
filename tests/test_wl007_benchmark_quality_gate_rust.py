@@ -37,7 +37,9 @@ def test_wl007_benchmark_quality_gate_rust_unknown_option_exits_nonzero() -> Non
     assert "Usage:" in result.stdout
 
 
-def test_wl007_benchmark_quality_gate_rust_missing_deps_exit_nonzero(tmp_path: Path) -> None:
+def test_wl007_benchmark_quality_gate_rust_missing_deps_exit_nonzero(
+    tmp_path: Path,
+) -> None:
     fake_bin = tmp_path / "bin"
     fake_bin.mkdir()
     (fake_bin / "dirname").symlink_to("/usr/bin/dirname")

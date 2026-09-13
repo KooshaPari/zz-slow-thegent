@@ -33,7 +33,7 @@ Analyzes markdown documents.
 
 ### Methods
 
-#### DocumentAnalyzer.__init__
+#### DocumentAnalyzer.**init**
 
 ```python
 __init__(self: Any)

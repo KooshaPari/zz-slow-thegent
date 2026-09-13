@@ -3,6 +3,7 @@
 Pure planning logic with no CLI imports.
 Decomposes high-level tasks into executable subtasks.
 """
+
 from __future__ import annotations
 
 from dataclasses import dataclass
@@ -12,10 +13,11 @@ from typing import Any, Optional
 @dataclass
 class TaskSpec:
     """Specification for a decomposed task."""
+
     task_id: str
     description: str
-    agent_name: Optional[str] = None
-    model_name: Optional[str] = None
+    agent_name: str | None = None
+    model_name: str | None = None
     dependencies: list[str] = None
     parameters: dict[str, Any] = None
 
